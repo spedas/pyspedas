@@ -3,15 +3,14 @@ import datetime
 import numpy as np
 import math
 
-from bokeh.io import output_file, show, gridplot, output_notebook
+from bokeh.io import output_file, show, output_notebook
 from bokeh.plotting.figure import Figure
-from bokeh.layouts import gridplot, widgetbox, layout
-from bokeh.models import (CustomJS, Label, LogColorMapper, LogTicker, ColorBar, LinearColorMapper, 
+from bokeh.models import (CustomJS, LogColorMapper, LogTicker, ColorBar, LinearColorMapper, 
                           BasicTicker, ColumnDataSource, DatetimeAxis, HoverTool, LinearAxis, 
-                          Range1d, Span, Title, Legend, LogAxis)
+                          Range1d, Span, Title, Legend)
 from bokeh.models.glyphs import Line
 from bokeh.models.tools import BoxZoomTool
-from bokeh.models.formatters import DatetimeTickFormatter, FuncTickFormatter, NumeralTickFormatter
+from bokeh.models.formatters import NumeralTickFormatter
 
 from . import tplot_common
 from .timestamp import TimeStamp
@@ -156,7 +155,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             hover = HoverTool()
             hover.tooltips = [("Time","@corrected_time"), ("Value","@y")]
             new_plot.add_tools(hover)
-            new_plot.add_tools(BoxZoomTool(dimensions=['width']))
+            new_plot.add_tools(BoxZoomTool(dimensions='width'))
             
             #Add the Legend is applicable
             if line_num>1 and ('legend_names' in yaxis_opt):
@@ -356,8 +355,8 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
             corrected_time.append(tplot_utilities.int_to_str(x[j]/1000))
              
     #Here is where we add all of the rectangles to the plot
-    cds = ColumnDataSource(data=dict(x=left,y=bottom,z=color,value=value, corrected_time=corrected_time))
-    new_plot.quad(bottom = 'y', left='x', right=right, top=top, color='z', source=cds)
+    cds = ColumnDataSource(data=dict(x=left,y=bottom,right=right, top = top, z=color,value=value, corrected_time=corrected_time))
+    new_plot.quad(bottom = 'y', left='x', right='right', top='top', color='z', source=cds)
         
     if interactive:
         if 'y_axis_type' in yaxis_opt:
@@ -453,6 +452,6 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     hover = HoverTool(callback=callback)
     hover.tooltips = [("Time","@corrected_time"), ("Energy", "@y"), ("Value","@value")]
     new_plot.add_tools(hover)
-    new_plot.add_tools(BoxZoomTool(dimensions=['width']))
+    new_plot.add_tools(BoxZoomTool(dimensions='width'))
     return new_plot, interactive_plot
 

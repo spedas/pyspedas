@@ -8,8 +8,7 @@ tplot_num = 1
 #Global variable for tplot options
 tplot_opt_glob = dict(tools = "xpan,xwheel_zoom,crosshair,reset", 
                  min_border_top = 15, min_border_bottom = 0)
-dttf = DatetimeTickFormatter(formats=dict(
-            microseconds=["%H:%M:%S"],                        
+dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
             milliseconds=["%H:%M:%S"],
             seconds=["%H:%M:%S"],
             minsec=["%H:%M:%S"],
@@ -18,7 +17,7 @@ dttf = DatetimeTickFormatter(formats=dict(
             hours=["%H:%M"],
             days=["%F"],
             months=["%F"],
-            years=["%F"]))
+            years=["%F"])
 xaxis_opt_glob = dict(formatter = dttf)
 title_opt = dict(align = 'center')
 window_size = [800, 200]
