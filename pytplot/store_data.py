@@ -2,16 +2,15 @@ from __future__ import division
 import datetime
 import pandas as pd
 import numpy as np
-import pytz
 from . import tplot_common
-
+from .del_data import del_data
 
 def store_data(name, data=None, delete=False):
     global tplot_num
     create_time = datetime.datetime.now()
     
     if delete is True:
-        py_del(name)
+        del_data(name)
         return
 
     if data is None:

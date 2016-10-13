@@ -15,3 +15,4 @@ from .timebar import timebar
 from .del_data import del_data
 from .timespan import timespan
 from .options import options
+from .overplot import overplot

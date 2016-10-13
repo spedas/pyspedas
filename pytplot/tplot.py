@@ -3,11 +3,12 @@ import datetime
 import numpy as np
 import math
 
-from bokeh.io import output_file, show, output_notebook
+from bokeh.io import output_file, show, gridplot, output_notebook
 from bokeh.plotting.figure import Figure
-from bokeh.models import (CustomJS, LogColorMapper, LogTicker, ColorBar, LinearColorMapper, 
+from bokeh.layouts import gridplot, widgetbox, layout
+from bokeh.models import (CustomJS, Label, LogColorMapper, LogTicker, ColorBar, LinearColorMapper, 
                           BasicTicker, ColumnDataSource, DatetimeAxis, HoverTool, LinearAxis, 
-                          Range1d, Span, Title, Legend)
+                          Range1d, Span, Title, Legend, LogAxis)
 from bokeh.models.glyphs import Line
 from bokeh.models.tools import BoxZoomTool
 from bokeh.models.formatters import NumeralTickFormatter
