@@ -187,7 +187,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         else:
             all_plots.append([new_plot, interactive_plot])
         i += 1 
-           
+        
     # Add date of data to the bottom left corner and timestamp to lower right
     # if py_timestamp('on') was previously called
     total_string = ""
@@ -242,12 +242,12 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
     
     out_name += '.html'
     
-    if nb==True:
+    if nb:
         output_notebook()
     else:
         output_file(out_name)
-    show(final)
-    
+        
+    show(final)    
     return
 
 def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=None, interactive=False):
@@ -257,7 +257,7 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     if 'colormap' in temp_data_quant['extras']:
         rainbow_colormap = tplot_utilities.return_bokeh_colormap(temp_data_quant['extras']['colormap'])
     else:
-        rainbow_colormap = tplot_utilities.return_bokeh_colormap('spectral')
+        rainbow_colormap = tplot_utilities.return_bokeh_colormap('magma')
     
     yaxis_opt = temp_data_quant['yaxis_opt']
     zaxis_opt = temp_data_quant['zaxis_opt']
@@ -318,8 +318,7 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     
     #GET CORRECT X DATA
     x = temp_data_quant['data'].index.tolist()
-    x[:] = [a*1000 for a in x]
-    temp = [a for a in x if (a <= tplot_common.tplot_opt_glob['x_range'].end and a >= tplot_common.tplot_opt_glob['x_range'].start)]
+    temp = [a for a in x if (a <= (tplot_common.tplot_opt_glob['x_range'].end/1000) and a >= (tplot_common.tplot_opt_glob['x_range'].start/1000))]
     x= temp
 
     #Sometimes X will be huge, we'll need to cut down so that each x will stay about 1 pixel in size
@@ -341,20 +340,22 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     right=[]
     value=[]
     corrected_time=[]
+    ind = 0
     for i in range(size_y-1):
+        temp = temp_data_quant['data'][temp_data_quant['spec_bins'][i]][x[0:size_x-1]].tolist()
+        value.extend(temp)
         for j in range(size_x-1):
-            temp = temp_data_quant['data'][temp_data_quant['spec_bins'][i]].iloc[j*step_size]
-            value.append(temp)
-            if np.isfinite(temp):
-                color.append(tplot_utilities.get_heatmap_color(color_map=rainbow_colormap, min=zmin, max=zmax, value=temp, zscale=zscale))
+            if np.isfinite(value[ind]):
+                color.append(tplot_utilities.get_heatmap_color(color_map=rainbow_colormap, min=zmin, max=zmax, value=value[ind], zscale=zscale))
             else:
                 color.append("#%02x%02x%02x" % (255, 255, 255))
             bottom.append(temp_data_quant['spec_bins'][i])
-            left.append(x[j])
-            right.append(x[j+1])
+            left.append(x[j]*1000)
+            right.append(x[j+1]*1000)
             top.append(temp_data_quant['spec_bins'][i+1])
-            corrected_time.append(tplot_utilities.int_to_str(x[j]/1000))
-             
+            corrected_time.append(tplot_utilities.int_to_str(x[j]))
+            ind = ind + 1
+
     #Here is where we add all of the rectangles to the plot
     cds = ColumnDataSource(data=dict(x=left,y=bottom,right=right, top = top, z=color,value=value, corrected_time=corrected_time))
     new_plot.quad(bottom = 'y', left='x', right='right', top='top', color='z', source=cds)
