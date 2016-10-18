@@ -15,6 +15,7 @@ from bokeh.models.formatters import NumeralTickFormatter
 
 from . import tplot_common
 from .timestamp import TimeStamp
+from .colorbarsidetitle import ColorBarSideTitle
 from . import tplot_utilities
 
 def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
@@ -52,7 +53,6 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         interactive_plot=None
         temp_data_quant = tplot_common.data_quants[name[i]]
         yaxis_opt = temp_data_quant['yaxis_opt']
-        zaxis_opt = temp_data_quant['zaxis_opt']
         line_opt = temp_data_quant['line_opt']
         
         p_height = int(temp_data_quant['extras']['panel_size'] * p_to_use)
@@ -187,7 +187,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         else:
             all_plots.append([new_plot, interactive_plot])
         i += 1 
-        
+    
     # Add date of data to the bottom left corner and timestamp to lower right
     # if py_timestamp('on') was previously called
     total_string = ""
@@ -231,12 +231,10 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             x_axes_index += 1
     
     # Add toolbar and title (if applicable) to top plot.
-    #all_plots[0][0].toolbar_location = "above"  
     if 'text' in tplot_common.title_opt:
         title1 = Title(**tplot_common.title_opt)  
         all_plots[0][0].title = title1
         all_plots[0][0].plot_height += 22
-    #final.children[0].add_tools(HoverTool())
     final = gridplot(all_plots)
     
     
@@ -261,7 +259,6 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     
     yaxis_opt = temp_data_quant['yaxis_opt']
     zaxis_opt = temp_data_quant['zaxis_opt']
-    line_opt = temp_data_quant['line_opt']
     
     if 'x_range' not in tplot_common.tplot_opt_glob:
         tplot_common.tplot_opt_glob['x_range'] = Range1d(np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist()))
@@ -340,22 +337,24 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     right=[]
     value=[]
     corrected_time=[]
-    ind = 0
+    
+    #left, right, and time do not depend on the values in spec_bins
+    for j in range(size_x-1):
+        left.append(x[j]*1000)
+        right.append(x[j+1]*1000)
+        corrected_time.append(tplot_utilities.int_to_str(x[j]))
+        
+    left = left * (size_y-1)
+    right = right * (size_y-1)
+    corrected_time = corrected_time * (size_y-1)
+    
     for i in range(size_y-1):
         temp = temp_data_quant['data'][temp_data_quant['spec_bins'][i]][x[0:size_x-1]].tolist()
         value.extend(temp)
-        for j in range(size_x-1):
-            if np.isfinite(value[ind]):
-                color.append(tplot_utilities.get_heatmap_color(color_map=rainbow_colormap, min=zmin, max=zmax, value=value[ind], zscale=zscale))
-            else:
-                color.append("#%02x%02x%02x" % (255, 255, 255))
-            bottom.append(temp_data_quant['spec_bins'][i])
-            left.append(x[j]*1000)
-            right.append(x[j+1]*1000)
-            top.append(temp_data_quant['spec_bins'][i+1])
-            corrected_time.append(tplot_utilities.int_to_str(x[j]))
-            ind = ind + 1
-
+        color.extend(tplot_utilities.get_heatmap_color(color_map=rainbow_colormap, min_val=zmin, max_val=zmax, values=temp, zscale=zscale))
+        bottom.extend([temp_data_quant['spec_bins'][i]]*(size_x-1))
+        top.extend([temp_data_quant['spec_bins'][i+1]]*(size_x-1))
+        
     #Here is where we add all of the rectangles to the plot
     cds = ColumnDataSource(data=dict(x=left,y=bottom,right=right, top = top, z=color,value=value, corrected_time=corrected_time))
     new_plot.quad(bottom = 'y', left='x', right='right', top='top', color='z', source=cds)
@@ -424,13 +423,13 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     if 'z_axis_type' in zaxis_opt:
         if zaxis_opt['z_axis_type'] == 'log':
             color_mapper=LogColorMapper(palette=rainbow_colormap, low=zmin, high=zmax)
-            color_bar=ColorBar(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+            color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
         else:
             color_mapper=LinearColorMapper(palette=rainbow_colormap, low=zmin, high=zmax)
-            color_bar=ColorBar(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
+            color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
     else:
         color_mapper=LogColorMapper(palette=rainbow_colormap, low=zmin, high=zmax)
-        color_bar=ColorBar(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+        color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
     color_bar.width=10
     color_bar.formatter = NumeralTickFormatter(format="0,0")
     color_bar.major_label_text_align = 'left'
@@ -455,5 +454,6 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     hover.tooltips = [("Time","@corrected_time"), ("Energy", "@y"), ("Value","@value")]
     new_plot.add_tools(hover)
     new_plot.add_tools(BoxZoomTool(dimensions='width'))
+    
     return new_plot, interactive_plot
 

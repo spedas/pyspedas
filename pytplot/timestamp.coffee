@@ -14,7 +14,7 @@ class TimeStampView extends LayoutDOM.View
 		
 	render: () ->
 		@$el.html("<p>#{ @model.text }</p>")
-		@$('p').css({ 'width': '800px', 'word-spacing': '683px', 'font-size': '11px', 'color': '#000000', 'background-color': '#ffffff' })
+		@$('p').css({ 'width': '800px', 'word-spacing': '10px', 'font-size': '11px', 'color': '#000000', 'background-color': '#ffffff' })
 
 class TimeStamp extends LayoutDOM.Model
 

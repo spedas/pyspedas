@@ -219,23 +219,32 @@ def rgb_to_hex(rgb):
     blue = rgb[2]
     return '#%02x%02x%02x' % (red, green, blue)
 
-def get_heatmap_color(color_map, min, max, value, zscale = 'log'):
-    if value > max:
-        value = max
-    if value < min:
-        return ("#%02x%02x%02x" % (255, 255, 255))
-    if zscale=='log':
-        log_min=np.log10(min)
-        log_max=np.log10(max)
-        log_val=np.log10(value)
-        if np.isfinite(np.log10(value)):
-            cm_index = int((((log_val-log_min) / (log_max-log_min)) * (len(color_map)-1)))
-            return color_map[cm_index]
+def get_heatmap_color(color_map, min_val, max_val, values, zscale = 'log'):
+    colors = []
+    if not isinstance(values, list):
+        values = [values]
+    for value in values:
+        if np.isfinite(value):
+            if value > max_val:
+                value = max_val
+            if value < min_val:
+                colors.append("#%02x%02x%02x" % (255, 255, 255))
+                continue
+            if zscale=='log':
+                log_min=np.log10(min_val)
+                log_max=np.log10(max_val)
+                log_val=np.log10(value)
+                if np.isfinite(np.log10(value)):
+                    cm_index = int((((log_val-log_min) / (log_max-log_min)) * (len(color_map)-1)))
+                    colors.append(color_map[cm_index])
+                else:
+                    colors.append(("#%02x%02x%02x" % (255, 255, 255)))
+            else:
+                cm_index = int((((value-min) / (max-min)) * len(color_map)))
+                colors.append(color_map[cm_index])
         else:
-            return ("#%02x%02x%02x" % (255, 255, 255))
-    else:
-        cm_index = int((((value-min) / (max-min)) * len(color_map)))
-        return color_map[cm_index]
+            colors.append("#%02x%02x%02x" % (255, 255, 255))
+    return colors
     
 def timebar_delete(t, varname=None, dim='height'):
     if varname is None:

@@ -5,14 +5,12 @@ import datetime
 
 from . import tplot_common
 
-def timestamp(val):
-    global extra_layouts
-    
+def timestamp(val):  
     if val is 'on':
         todaystring = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         tplot_common.extra_layouts['time_stamp'] = todaystring
     else:
-        if 'time_stamp' in tplot_globals.extra_layouts:
+        if 'time_stamp' in tplot_common.extra_layouts:
             del tplot_common.extra_layouts['time_stamp']
     
     return

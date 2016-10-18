@@ -1,6 +1,5 @@
 from . import tplot_common
-from .tplot_utilities import set_options, set_tplot_options
-from . import tplot_common
+from .tplot_utilities import set_options
 
 def options(name, option, value):
     
