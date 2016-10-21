@@ -6,6 +6,7 @@ from .ylim import ylim
 from .zlim import zlim
 from .tlimit import tlimit
 from .tplot_save import tplot_save
+from .tplot_names import tplot_names
 from .tplot_restore import tplot_restore
 from .get_timespan import get_timespan
 from .tplot_options import tplot_options
