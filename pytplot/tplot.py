@@ -169,7 +169,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
                 for legend_name in yaxis_opt['legend_names']:
                     legend_items.append((legend_name, [line_glyphs[j]]))
                     j = j+1
-                legend.legends = legend_items
+                legend.items = legend_items
                 legend.label_text_font_size = "6pt"
                 legend.border_line_color = None
                 legend.glyph_height = int(p_height / (len(legend_items) + 1))
@@ -238,7 +238,10 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
     final = gridplot(all_plots)
     
     
-    out_name += '.html'
+    if 'text' in tplot_common.title_opt:
+        out_name = tplot_common.title_opt['text']+'.html'
+    else:
+        out_name += '.html'
     
     if nb:
         output_notebook()
