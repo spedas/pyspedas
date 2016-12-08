@@ -12,6 +12,5 @@ def xlim(min, max):
     else:
         tplot_common.lim_info['xfull'] = Range1d(min, max)
         tplot_common.lim_info['xlast'] = Range1d(min, max)
-    tplot_common.tplot_opt_glob['x_range'] = Range1d(min, max)
-    tplot_common.time_range_adjusted = False
+    tplot_common.tplot_opt_glob['x_range'] = [min, max]
     return

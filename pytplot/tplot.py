@@ -2,7 +2,7 @@ from __future__ import division
 import datetime
 import numpy as np
 import math
-
+import os 
 from bokeh.io import output_file, show, gridplot, output_notebook
 from bokeh.plotting.figure import Figure
 from bokeh.layouts import gridplot, widgetbox, layout
@@ -17,6 +17,19 @@ from . import tplot_common
 from .timestamp import TimeStamp
 from .colorbarsidetitle import ColorBarSideTitle
 from . import tplot_utilities
+from .tplot_directory import get_tplot_directory
+from bokeh.models.formatters import DatetimeTickFormatter
+
+dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
+            milliseconds=["%H:%M:%S"],
+            seconds=["%H:%M:%S"],
+            minsec=["%H:%M:%S"],
+            minutes=["%H:%M:%S"],
+            hourmin=["%H:%M:%S"],
+            hours=["%H:%M"],
+            days=["%F"],
+            months=["%F"],
+            years=["%F"])
 
 def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
 
@@ -46,7 +59,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
     while(j < num_plots):
         total_psize += tplot_common.data_quants[name[j]]['extras']['panel_size']
         j += 1
-    p_to_use = tplot_common.window_size[1]/total_psize
+    p_to_use = tplot_common.tplot_opt_glob['window_size'][1]/total_psize
     
     # Create all plots  
     while(i < num_plots):
@@ -56,7 +69,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         line_opt = temp_data_quant['line_opt']
         
         p_height = int(temp_data_quant['extras']['panel_size'] * p_to_use)
-        p_width = tplot_common.window_size[0]
+        p_width = tplot_common.tplot_opt_glob['window_size'][0]
         
         #Check if we're doing a spec plot
         has_spec_bins = (temp_data_quant['spec_bins'] is not None)
@@ -71,26 +84,26 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         else:
             # Make plot
             if 'x_range' not in tplot_common.tplot_opt_glob:
-                tplot_common.tplot_opt_glob['x_range'] = Range1d(np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist()))
+                tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist())]
+                tplot_x_range = Range1d(np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist()))
                 if i == num_plots-1:
-                    tplot_common.lim_info['xfull'] = tplot_common.tplot_opt_glob['x_range']
-                    tplot_common.lim_info['xlast'] = tplot_common.tplot_opt_glob['x_range']
+                    tplot_common.lim_info['xfull'] = tplot_x_range
+                    tplot_common.lim_info['xlast'] = tplot_x_range
             if 'y_range' not in yaxis_opt:
                 ymin = min(temp_data_quant['data'].min(skipna=True).tolist())
                 ymax = max(temp_data_quant['data'].max(skipna=True).tolist())
-                yaxis_opt['y_range'] = [ymin - 1, ymax + 1]
+                yaxis_opt['y_range'] = [ymin, ymax]
             
             all_tplot_opt = {}
-            all_tplot_opt.update(tplot_common.tplot_opt_glob)
+            all_tplot_opt['tools'] = tplot_common.tplot_opt_glob['tools']
+            all_tplot_opt['min_border_top'] = tplot_common.tplot_opt_glob['min_border_top']
+            all_tplot_opt['min_border_bottom'] = tplot_common.tplot_opt_glob['min_border_bottom']
+            all_tplot_opt['x_range'] = Range1d(tplot_common.tplot_opt_glob['x_range'][0]* 1000, tplot_common.tplot_opt_glob['x_range'][1]* 1000)
             all_tplot_opt['y_range'] = Range1d(yaxis_opt['y_range'][0], yaxis_opt['y_range'][1])
             if 'y_axis_type' in yaxis_opt:
                 all_tplot_opt['y_axis_type'] = yaxis_opt['y_axis_type']
 
             new_plot = Figure(x_axis_type='datetime', plot_height = p_height, plot_width = p_width, **all_tplot_opt)
-            if not tplot_common.time_range_adjusted:
-                new_plot.x_range.start = new_plot.x_range.start * 1000
-                new_plot.x_range.end = new_plot.x_range.end * 1000
-                tplot_common.time_range_adjusted = True
                 
             if num_plots > 1 and i == num_plots-1:
                 new_plot.plot_height += 22
@@ -99,7 +112,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             new_plot.grid.grid_line_color = None
             new_plot.axis.major_tick_line_color = None
             new_plot.axis.major_label_standoff = 0
-            new_plot.xaxis.formatter = tplot_common.dttf
+            new_plot.xaxis.formatter = dttf
             new_plot.title = None
             
             #Check for time bars
@@ -111,7 +124,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             new_plot.renderers.extend(tplot_common.extra_renderers)
             new_plot.toolbar.active_drag='auto'
             
-            xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', **tplot_common.xaxis_opt_glob)
+            xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', formatter=dttf)
             new_plot.add_layout(xaxis1, 'above')
                 
             #Turn off the axes for all but last plot    
@@ -231,22 +244,24 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             x_axes_index += 1
     
     # Add toolbar and title (if applicable) to top plot.
-    if 'text' in tplot_common.title_opt:
-        title1 = Title(**tplot_common.title_opt)  
+    if 'title_text' in tplot_common.tplot_opt_glob:
+        title1 = Title(text = tplot_common.tplot_opt_glob['title_text'], 
+                       align=tplot_common.tplot_opt_glob['title_align'],
+                       text_font_size=tplot_common.tplot_opt_glob['title_size'])  
         all_plots[0][0].title = title1
         all_plots[0][0].plot_height += 22
     final = gridplot(all_plots)
     
     
-    if 'text' in tplot_common.title_opt:
-        out_name = tplot_common.title_opt['text']+'.html'
+    if 'title_text' in tplot_common.tplot_opt_glob:
+        out_name = tplot_common.tplot_opt_glob['title_text']+'.html'
     else:
         out_name += '.html'
     
     if nb:
         output_notebook()
     else:
-        output_file(out_name)
+        output_file(os.path.join(get_tplot_directory(),out_name))
         
     show(final)    
     return
@@ -264,17 +279,21 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     zaxis_opt = temp_data_quant['zaxis_opt']
     
     if 'x_range' not in tplot_common.tplot_opt_glob:
-        tplot_common.tplot_opt_glob['x_range'] = Range1d(np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist()))
+        tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist())]
+        tplot_x_range = Range1d(np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist()))
         if last_plot:
-            tplot_common.lim_info['xfull'] = tplot_common.tplot_opt_glob['x_range']
-            tplot_common.lim_info['xlast'] = tplot_common.tplot_opt_glob['x_range']
+            tplot_common.lim_info['xfull'] = tplot_x_range
+            tplot_common.lim_info['xlast'] = tplot_x_range
     if 'y_range' not in yaxis_opt:
         ymin = np.nanmin(temp_data_quant['spec_bins'])
         ymax = np.nanmax(temp_data_quant['spec_bins'])
         yaxis_opt['y_range'] = [ymin, ymax]
             
     all_tplot_opt = {}
-    all_tplot_opt.update(tplot_common.tplot_opt_glob)
+    all_tplot_opt['tools'] = tplot_common.tplot_opt_glob['tools']
+    all_tplot_opt['min_border_top'] = tplot_common.tplot_opt_glob['min_border_top']
+    all_tplot_opt['min_border_bottom'] = tplot_common.tplot_opt_glob['min_border_bottom']
+    all_tplot_opt['x_range'] = Range1d(tplot_common.tplot_opt_glob['x_range'][0]* 1000, tplot_common.tplot_opt_glob['x_range'][1]* 1000)
     all_tplot_opt['y_range'] = Range1d(yaxis_opt['y_range'][0], yaxis_opt['y_range'][1])
     if 'y_axis_type' in yaxis_opt:
         all_tplot_opt['y_axis_type'] = yaxis_opt['y_axis_type']
@@ -305,10 +324,6 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     new_plot.lod_interval = 30
     new_plot.lod_threshold = 100
     new_plot.yaxis.axis_label_text_font_size = "10pt"
-    if not tplot_common.time_range_adjusted:
-        new_plot.x_range.start = new_plot.x_range.start * 1000
-        new_plot.x_range.end = new_plot.x_range.end * 1000
-        tplot_common.time_range_adjusted = True
     
     #APPARENTLY NEEDED
     if num_plots > 1 and last_plot==True:
@@ -318,7 +333,7 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     
     #GET CORRECT X DATA
     x = temp_data_quant['data'].index.tolist()
-    temp = [a for a in x if (a <= (tplot_common.tplot_opt_glob['x_range'].end/1000) and a >= (tplot_common.tplot_opt_glob['x_range'].start/1000))]
+    temp = [a for a in x if (a <= (tplot_common.tplot_opt_glob['x_range'][1]) and a >= (tplot_common.tplot_opt_glob['x_range'][0]))]
     x= temp
 
     #Sometimes X will be huge, we'll need to cut down so that each x will stay about 1 pixel in size
@@ -404,7 +419,7 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     new_plot.grid.grid_line_color = None
     new_plot.axis.major_tick_line_color = None
     new_plot.axis.major_label_standoff = 0
-    new_plot.xaxis.formatter = tplot_common.dttf
+    new_plot.xaxis.formatter = dttf
     new_plot.title = None
     #Check for time bars
     if temp_data_quant['time_bar']:
@@ -417,7 +432,7 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
     new_plot.toolbar.active_drag='auto'
     
     #Add axes
-    xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', **tplot_common.xaxis_opt_glob)
+    xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', formatter=dttf)
     new_plot.add_layout(xaxis1, 'above')
     if num_plots > 1 and not last_plot:
         new_plot.xaxis.major_label_text_font_size = '0pt'

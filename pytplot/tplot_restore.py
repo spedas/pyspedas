@@ -78,9 +78,12 @@ def tplot_restore(file_name):
             #temp_tplot['tv'][0][1]['Y'][0] is y axis options
         ####################################################################
     else:
-        temp_data_quant = pickle.load(open(file_name,"rb"))
-        tplot_common.data_quants[temp_data_quant['name']] = temp_data_quant
-        tplot_common.data_quants[temp_data_quant['number']] = temp_data_quant
-        tplot_common.tplot_num += 1
+        temp = pickle.load(open(file_name,"rb"))
+        num_data_quants = temp[0]
+        for i in range(0, num_data_quants):
+            tplot_common.data_quants[temp[i+1]['name']] = temp[i+1]
+            tplot_common.data_quants[temp[i+1]['number']] = temp[i+1]
+            tplot_common.tplot_num += 1
+        tplot_common.tplot_opt_glob = temp[num_data_quants+1]
     
     return

@@ -176,21 +176,23 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
     
     return (new_yaxis_opt, new_zaxis_opt, new_line_opt, new_extras)
 
-def set_tplot_options(option, value, old_tplot_opt_glob, old_title_opt, window_size):
+def set_tplot_options(option, value, old_tplot_opt_glob):
     new_tplot_opt_glob = old_tplot_opt_glob
-    new_title_opt = old_title_opt
     
     if option == 'title':
-        new_title_opt['text'] = value
+        new_tplot_opt_glob['title_text'] = value
     
     elif option == 'title_size':
         str_size = str(value) + 'pt'
-        new_title_opt['text_font_size'] = str_size
+        new_tplot_opt_glob['title_size'] = str_size
         
     elif option == 'wsize':
-        window_size = value
+        new_tplot_opt_glob['window_size'] = value
+        
+    elif option == 'title_align':
+        new_tplot_opt_glob['title_align'] = value
     
-    return (new_tplot_opt_glob, new_title_opt, window_size)
+    return (new_tplot_opt_glob)
 
 def str_to_int(time_str):
     epoch_t = "1970-1-1 00:00:00"

@@ -18,3 +18,4 @@ from .timespan import timespan
 from .options import options
 from .overplot import overplot
 from .timestamp import timestamp
+from .tplot_directory import tplot_directory
