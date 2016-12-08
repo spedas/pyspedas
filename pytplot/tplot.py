@@ -43,9 +43,14 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         num_plots = len(name)
     
     for i in range(num_plots):
+        if isinstance(name[i], int):
+            name[i] = list(tplot_common.data_quants.keys())[name[i]]
         if name[i] not in tplot_common.data_quants.keys():
             print(str(i) + " is currently not in pytplot")
             return
+    
+    if isinstance(var_label, int):
+        var_label = list(tplot_common.data_quants.keys())[var_label]
     
     # Vertical Box layout to store plots
     all_plots = []

@@ -2,7 +2,6 @@ from _collections import OrderedDict
 
 #Global variable is data_quants
 data_quants = OrderedDict()
-tplot_num = 1
 
 #Global variable for tplot options
 tplot_opt_glob = dict(tools = "xpan,xwheel_zoom,crosshair,reset", 

@@ -1,9 +1,8 @@
 from . import tplot_common
 
 def tplot_names():
-    print(iter(tplot_common.data_quants))
-    for key, value in tplot_common.data_quants.items():
-        if isinstance(key, int):
-            print(key, ":", tplot_common.data_quants[key]['name'])
-        
+    num=0
+    for key, _ in tplot_common.data_quants.items():
+        print(num, ":", tplot_common.data_quants[key]['name'])
+        num=num+1    
     return

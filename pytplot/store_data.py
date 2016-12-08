@@ -6,7 +6,6 @@ from . import tplot_common
 from .del_data import del_data
 
 def store_data(name, data=None, delete=False):
-    global tplot_num
     create_time = datetime.datetime.now()
     
     if delete is True:
@@ -42,13 +41,10 @@ def store_data(name, data=None, delete=False):
     tag_names = ['name', 'data', 'spec_bins', 'yaxis_opt', 'zaxis_opt', 'line_opt',
                  'trange','dtype','create_time', 'time_bar', 'extras', 'number']
     data_tags = [name, df, spec_bins, yaxis_opt, zaxis_opt, line_opt,
-                 trange, dtype, create_time, time_bar, extras, tplot_common.tplot_num]
+                 trange, dtype, create_time, time_bar, extras]
     # return a dictionary made from tag_names and data_tags
     temp = ( dict( zip( tag_names, data_tags ) ) )
     
     tplot_common.data_quants[name] = temp
-    tplot_common.data_quants[tplot_common.tplot_num] = temp
-        
-    tplot_common.tplot_num += 1
     
     return
