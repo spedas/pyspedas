@@ -69,7 +69,17 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
     # Create all plots  
     while(i < num_plots):
         interactive_plot=None
+        
         temp_data_quant = tplot_common.data_quants[name[i]]
+        
+        #There could be multiple datasets if we are overplotting
+        datasets = []
+        if isinstance(temp_data_quant['data'], list):
+            for oplot_name in temp_data_quant['data']:
+                datasets.append(tplot_common.data_quants[oplot_name]['data'])
+        else:
+            datasets.append(temp_data_quant['data'])
+            
         yaxis_opt = temp_data_quant['yaxis_opt']
         line_opt = temp_data_quant['line_opt']
         
@@ -86,19 +96,31 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             
         if spec_keyword:
             new_plot, interactive_plot = specplot(name[i], num_plots, last_plot = (i == num_plots-1), height=p_height, width=p_width, var_label=var_label, interactive=interactive)       
+            
         else:
-            # Make plot
+            #Check if x and y ranges are set, if not, set good ones
             if 'x_range' not in tplot_common.tplot_opt_glob:
-                tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist())]
-                tplot_x_range = Range1d(np.nanmin(temp_data_quant['data'].index.tolist()), np.nanmax(temp_data_quant['data'].index.tolist()))
+                x_min_list = []
+                x_max_list = []
+                for dataset in datasets:
+                    x_min_list.append(np.nanmin(dataset.index.tolist()))
+                    x_max_list.append(np.nanmax(dataset.index.tolist()))
+                tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
+                tplot_x_range = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
                 if i == num_plots-1:
                     tplot_common.lim_info['xfull'] = tplot_x_range
                     tplot_common.lim_info['xlast'] = tplot_x_range
             if 'y_range' not in yaxis_opt:
-                ymin = min(temp_data_quant['data'].min(skipna=True).tolist())
-                ymax = max(temp_data_quant['data'].max(skipna=True).tolist())
-                yaxis_opt['y_range'] = [ymin, ymax]
+                y_min_list = []
+                y_max_list = []
+                for dataset in datasets:
+                    y_min_list.append(np.nanmin(dataset.min(skipna=True).tolist()))
+                    y_max_list.append(np.nanmax(dataset.max(skipna=True).tolist()))
+                y_min = min(y_min_list)
+                y_max = max(y_max_list)
+                yaxis_opt['y_range'] = [y_min, y_max]
             
+            #Convert all tplot options into variables for bokeh
             all_tplot_opt = {}
             all_tplot_opt['tools'] = tplot_common.tplot_opt_glob['tools']
             all_tplot_opt['min_border_top'] = tplot_common.tplot_opt_glob['min_border_top']
@@ -107,7 +129,8 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             all_tplot_opt['y_range'] = Range1d(yaxis_opt['y_range'][0], yaxis_opt['y_range'][1])
             if 'y_axis_type' in yaxis_opt:
                 all_tplot_opt['y_axis_type'] = yaxis_opt['y_axis_type']
-
+            
+            #Make the plot
             new_plot = Figure(x_axis_type='datetime', plot_height = p_height, plot_width = p_width, **all_tplot_opt)
                 
             if num_plots > 1 and i == num_plots-1:
@@ -142,31 +165,32 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             else:
                 multi_line_colors = ['black', 'red', 'green', 'navy', 'orange', 'firebrick', 'pink', 'blue', 'olive']
             
-            yother = temp_data_quant['data']
             line_glyphs = []
             line_num = 0
-            line_style = None
-            if 'linestyle' in temp_data_quant['extras']:
-                line_style = temp_data_quant['extras']['linestyle']
-            for column_name in yother.columns:
-                corrected_time = []
-                for x in temp_data_quant['data'].index:
-                    corrected_time.append(tplot_utilities.int_to_str(x))
-                x = temp_data_quant['data'].index * 1000
-                y = yother[column_name]
-                line_opt = temp_data_quant['line_opt']
-                line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
-                if auto_color:
-                    line = Line(x='x', y='y', line_color = multi_line_colors[line_num % len(multi_line_colors)], **line_opt)
-                else:
-                    line = Line(x='x', y='y', **line_opt)
-                if 'line_style' not in line_opt:
-                    if line_style is not None:
-                        line.line_dash = line_style[line_num % len(line_style)]
-                else:
-                    line.line_dash = line_opt['line_style']
-                line_glyphs.append(new_plot.add_glyph(line_source, line))
-                line_num += 1
+            for dataset in datasets:
+                yother = dataset
+                line_style = None
+                if 'linestyle' in temp_data_quant['extras']:
+                    line_style = temp_data_quant['extras']['linestyle']
+                for column_name in yother.columns:
+                    corrected_time = []
+                    for x in dataset.index:
+                        corrected_time.append(tplot_utilities.int_to_str(x))
+                    x = dataset.index * 1000
+                    y = yother[column_name]
+                    line_opt = temp_data_quant['line_opt']
+                    line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
+                    if auto_color:
+                        line = Line(x='x', y='y', line_color = multi_line_colors[line_num % len(multi_line_colors)], **line_opt)
+                    else:
+                        line = Line(x='x', y='y', **line_opt)
+                    if 'line_style' not in line_opt:
+                        if line_style is not None:
+                            line.line_dash = line_style[line_num % len(line_style)]
+                    else:
+                        line.line_dash = line_opt['line_style']
+                    line_glyphs.append(new_plot.add_glyph(line_source, line))
+                    line_num += 1
             
             #Set y/z labels
             new_plot.yaxis.axis_label = yaxis_opt['axis_label']
@@ -223,9 +247,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         all_plots[k][0].x_range = all_plots[num_plots - 1][0].x_range
         k += 1
     
-    #
     #Add extra x axes if applicable 
-    #
     if var_label is not None:
         if not isinstance(var_label, list):
             var_label = [var_label]
@@ -250,16 +272,20 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
     
     # Add toolbar and title (if applicable) to top plot.
     if 'title_text' in tplot_common.tplot_opt_glob:
-        title1 = Title(text = tplot_common.tplot_opt_glob['title_text'], 
-                       align=tplot_common.tplot_opt_glob['title_align'],
-                       text_font_size=tplot_common.tplot_opt_glob['title_size'])  
-        all_plots[0][0].title = title1
-        all_plots[0][0].plot_height += 22
+        if tplot_common.tplot_opt_glob['title_text'] != '':
+            title1 = Title(text = tplot_common.tplot_opt_glob['title_text'], 
+                           align=tplot_common.tplot_opt_glob['title_align'],
+                           text_font_size=tplot_common.tplot_opt_glob['title_size'])  
+            all_plots[0][0].title = title1
+            all_plots[0][0].plot_height += 22
     final = gridplot(all_plots)
     
     
     if 'title_text' in tplot_common.tplot_opt_glob:
-        out_name = tplot_common.tplot_opt_glob['title_text']+'.html'
+        if tplot_common.tplot_opt_glob['title_text'] != '':
+            out_name = tplot_common.tplot_opt_glob['title_text']+'.html'
+        else:
+            out_name += '.html'
     else:
         out_name += '.html'
     

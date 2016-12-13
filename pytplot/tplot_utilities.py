@@ -191,6 +191,9 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         
     elif option == 'title_align':
         new_tplot_opt_glob['title_align'] = value
+        
+    elif option == 'var_label':
+        new_tplot_opt_glob['var_label'] = value
     
     return (new_tplot_opt_glob)
 
