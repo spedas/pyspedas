@@ -1,5 +1,6 @@
 from . import tplot_common
 
+
 def del_data(name):
     
     if not isinstance(name, list):
