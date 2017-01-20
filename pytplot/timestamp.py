@@ -5,6 +5,41 @@ import datetime
 
 from . import tplot_common
 
+JS_CODE = '''
+import * as _ from "underscore"
+import * as $ from "jquery"
+
+import * as p from "core/properties"
+
+import {LayoutDOM, LayoutDOMView} from "models/layouts/layout_dom"
+
+export class TimeStampView extends LayoutDOMView
+
+    initialize: (options) ->
+        super(options)
+        
+        @render()
+        
+    render: () ->
+        @$el.html("<p>#{ @model.text }</p>")
+        @$el.find('p').css({ 'width': '800px', 'word-spacing': '10px', 'font-size': '11px', 'color': '#000000', 'background-color': '#ffffff' })
+
+export class TimeStamp extends LayoutDOM
+
+    default_view: TimeStampView
+    
+    type: "TimeStamp"
+    
+    @define {
+        text: [ p.String ]
+    }
+ 
+
+
+'''
+
+
+
 def timestamp(val):  
     if val is 'on':
         todaystring = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -16,7 +51,7 @@ def timestamp(val):
     return
 
 class TimeStamp(LayoutDOM):
-    __implementation__ = open(os.path.dirname(os.path.realpath(__file__)) + os.path.sep + "timestamp.coffee").read()
+    __implementation__ = JS_CODE
     text = String(default = "Testing")
 
     

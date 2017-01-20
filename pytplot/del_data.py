@@ -13,9 +13,7 @@ def del_data(name):
         
         temp_data_quants = tplot_common.data_quants[i]
         str_name = temp_data_quants['name']
-        int_name = temp_data_quants['number']
         
         del tplot_common.data_quants[str_name]
-        del tplot_common.data_quants[int_name]
     
     return
