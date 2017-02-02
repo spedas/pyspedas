@@ -11,7 +11,7 @@ from bokeh.models import (CustomJS, Label, LogColorMapper, LogTicker, ColorBar, 
                           Range1d, Span, Title, Legend, LogAxis)
 from bokeh.models.glyphs import Line
 from bokeh.models.tools import BoxZoomTool
-from bokeh.models.formatters import NumeralTickFormatter
+from bokeh.models.formatters import BasicTickFormatter
 
 from . import tplot_common
 from .timestamp import TimeStamp
@@ -480,7 +480,7 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
         color_mapper=LogColorMapper(palette=rainbow_colormap, low=zmin, high=zmax)
         color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
     color_bar.width=10
-    color_bar.formatter = NumeralTickFormatter(format="0,0")
+    color_bar.formatter = BasicTickFormatter(precision=1)
     color_bar.major_label_text_align = 'left'
     color_bar.label_standoff = 5
     color_bar.major_label_text_baseline = 'middle'
