@@ -103,6 +103,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
                 x_min_list = []
                 x_max_list = []
                 for dataset in datasets:
+                    #Get rid of infinities 
                     x_min_list.append(np.nanmin(dataset.index.tolist()))
                     x_max_list.append(np.nanmax(dataset.index.tolist()))
                 tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
@@ -114,8 +115,9 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
                 y_min_list = []
                 y_max_list = []
                 for dataset in datasets:
-                    y_min_list.append(np.nanmin(dataset.min(skipna=True).tolist()))
-                    y_max_list.append(np.nanmax(dataset.max(skipna=True).tolist()))
+                    dataset_temp = dataset.replace([np.inf, -np.inf], np.nan)
+                    y_min_list.append(np.nanmin(dataset_temp.min(skipna=True).tolist()))
+                    y_max_list.append(np.nanmax(dataset_temp.max(skipna=True).tolist()))
                 y_min = min(y_min_list)
                 y_max = max(y_max_list)
                 yaxis_opt['y_range'] = [y_min, y_max]
