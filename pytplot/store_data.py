@@ -17,8 +17,10 @@ def store_data(name, data=None, delete=False):
         return
     
     if isinstance(data, list):
-        trange = [np.nanmin(tplot_common.data_quants[data[0]]['data'].index), np.nanmax(tplot_common.data_quants[data[0]]['data'].index)]
-        df = data
+        base_data = get_base_tplot_vars(data)
+        #Use first tplot var as the time range
+        trange = [np.nanmin(tplot_common.data_quants[base_data[0]]['data'].index), np.nanmax(tplot_common.data_quants[base_data[0]]['data'].index)]
+        df = base_data
         spec_bins=None
     else:
         df = pd.DataFrame(data['y'])
@@ -53,3 +55,14 @@ def store_data(name, data=None, delete=False):
     tplot_common.data_quants[name] = temp
     
     return
+
+def get_base_tplot_vars(data):
+    base_vars = []
+    if not isinstance(data, list):
+        data = [data]
+    for var in data:
+        if isinstance(tplot_common.data_quants[var]['data'], list):
+            base_vars += get_base_tplot_vars(tplot_common.data_quants[var]['data'])
+        else:
+            base_vars += [var]
+    return base_vars

@@ -103,7 +103,6 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
                 x_min_list = []
                 x_max_list = []
                 for dataset in datasets:
-                    #Get rid of infinities 
                     x_min_list.append(np.nanmin(dataset.index.tolist()))
                     x_max_list.append(np.nanmax(dataset.index.tolist()))
                 tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
@@ -133,7 +132,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
                 all_tplot_opt['y_axis_type'] = yaxis_opt['y_axis_type']
             
             #Make the plot
-            new_plot = Figure(x_axis_type='datetime', plot_height = p_height, plot_width = p_width, **all_tplot_opt)
+            new_plot = Figure(webgl=True, x_axis_type='datetime', plot_height = p_height, plot_width = p_width, **all_tplot_opt)
                 
             if num_plots > 1 and i == num_plots-1:
                 new_plot.plot_height += 22
@@ -169,17 +168,23 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             
             line_glyphs = []
             line_num = 0
-            for dataset in datasets:
-                yother = dataset
+            for dataset in datasets:                
+                #Get Linestyle
                 line_style = None
                 if 'linestyle' in temp_data_quant['extras']:
                     line_style = temp_data_quant['extras']['linestyle']
-                for column_name in yother.columns:
-                    corrected_time = []
-                    for x in dataset.index:
-                        corrected_time.append(tplot_utilities.int_to_str(x))
-                    x = dataset.index * 1000
-                    y = yother[column_name]
+                    
+                #Get a list of formatted times  
+                corrected_time = [] 
+                for x in dataset.index:
+                    corrected_time.append(tplot_utilities.int_to_str(x))
+                    
+                #Bokeh uses milliseconds since epoch for some reason
+                x = dataset.index * 1000
+                
+                #Create lines from each column in the dataframe    
+                for column_name in dataset.columns:
+                    y = dataset[column_name]
                     line_opt = temp_data_quant['line_opt']
                     line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
                     if auto_color:
@@ -202,7 +207,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
             new_plot.add_tools(hover)
             new_plot.add_tools(BoxZoomTool(dimensions='width'))
             
-            #Add the Legend is applicable
+            #Add the Legend if applicable
             if line_num>1 and ('legend_names' in yaxis_opt):
                 if len(yaxis_opt['legend_names']) != line_num:
                     print("Number of lines do not match length of legend names")
@@ -213,6 +218,8 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
                 for legend_name in yaxis_opt['legend_names']:
                     legend_items.append((legend_name, [line_glyphs[j]]))
                     j = j+1
+                    if j>=len(line_glyphs):
+                        break
                 legend.items = legend_items
                 legend.label_text_font_size = "6pt"
                 legend.border_line_color = None
@@ -342,8 +349,9 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
         zmin = temp_data_quant['zaxis_opt']['z_range'][0]
         zmax = temp_data_quant['zaxis_opt']['z_range'][1]
     else:
-        zmax = temp_data_quant['data'].max().max()
-        zmin = temp_data_quant['data'].min().min()
+        dataset_temp = temp_data_quant['data'].replace([np.inf, -np.inf], np.nan)
+        zmax = dataset_temp.max().max()
+        zmin = dataset_temp.min().min()
         if zscale=='log':
             zmin_list = []
             for column in temp_data_quant['data'].columns:
@@ -352,7 +360,7 @@ def specplot(name, num_plots, last_plot=False, height=200, width=800, var_label=
             zmin = min(zmin_list)
     
     
-    new_plot=Figure(x_axis_type='datetime', plot_height = height, plot_width = width, **all_tplot_opt)
+    new_plot=Figure(webgl=True, x_axis_type='datetime', plot_height = height, plot_width = width, **all_tplot_opt)
     new_plot.lod_factor = 100
     new_plot.lod_interval = 30
     new_plot.lod_threshold = 100
