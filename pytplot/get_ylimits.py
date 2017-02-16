@@ -12,7 +12,7 @@ def get_ylimits(name, trg = None):
             print(str(name[i]) + " is currently not in pytplot.")
             return
         temp_data_quant = tplot_common.data_quants[name[i]]
-        yother = temp_data_quant['data']
+        yother = temp_data_quant.data
         if trg is not None:
             for column_name in yother.columns:
                 y = yother[column_name]
