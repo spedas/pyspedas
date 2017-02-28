@@ -1,0 +1,279 @@
+from __future__ import division
+import numpy as np
+import math
+from bokeh.plotting.figure import Figure
+from bokeh.models import (CustomJS, LogColorMapper, LogTicker, LinearColorMapper, 
+                          BasicTicker, ColumnDataSource, DatetimeAxis, HoverTool, 
+                          Range1d, Span, Title)
+from bokeh.models.glyphs import Line
+from bokeh.models.tools import BoxZoomTool
+from bokeh.models.formatters import BasicTickFormatter
+
+from . import tplot_common
+from .colorbarsidetitle import ColorBarSideTitle
+from . import tplot_utilities
+from bokeh.models.formatters import DatetimeTickFormatter
+
+dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
+            milliseconds=["%H:%M:%S"],
+            seconds=["%H:%M:%S"],
+            minsec=["%H:%M:%S"],
+            minutes=["%H:%M:%S"],
+            hourmin=["%H:%M:%S"],
+            hours=["%H:%M"],
+            days=["%F"],
+            months=["%F"],
+            years=["%F"])
+
+
+class TVarFigureSpec(object):
+    
+    def __init__(self, tvar, last_plot=False, interactive=False):
+        self.fig = Figure(webgl=True, x_axis_type='datetime', tools = tplot_common.tplot_opt_glob['tools'])
+        self.tvar = tvar
+        self.last_plot=last_plot
+        self.interactive = interactive
+        #Formatting stuff
+        self.fig.grid.grid_line_color = None
+        self.fig.axis.major_tick_line_color = None
+        self.fig.axis.major_label_standoff = 0
+        self.fig.xaxis.formatter = dttf
+        self.fig.title = None
+        self.fig.toolbar.active_drag='auto'
+        if not last_plot:
+            self.fig.xaxis.major_label_text_font_size = '0pt'
+        self.fig.lod_factor = 100
+        self.fig.lod_interval = 30
+        self.fig.lod_threshold = 100
+        self.fig.yaxis.axis_label_text_font_size = "10pt"
+        #Variables needed across functions
+        self.colors = tplot_utilities.return_bokeh_colormap('magma')
+        self.lineglyphs = []
+        self.linenum = 0
+        self.zscale = 'log'
+        self.zmin = 0
+        self.zmax = 1
+        self.callback = None
+        self.interactive_plot = None
+        
+    def getfig(self):
+        if self.interactive:
+            return [self.fig, self.interactive_plot]
+        else:
+            return [self.fig]
+    
+    def setsize(self, width, height):
+        self.fig.plot_width = width
+        if self.last_plot:
+            self.fig.plot_height = height + 22
+        else:
+            self.fig.plot_height = height
+
+    def add_title(self):
+        if 'title_text' in tplot_common.tplot_opt_glob:
+            if tplot_common.tplot_opt_glob['title_text'] != '':
+                title1 = Title(text = tplot_common.tplot_opt_glob['title_text'], 
+                               align=tplot_common.tplot_opt_glob['title_align'],
+                               text_font_size=tplot_common.tplot_opt_glob['title_size'])  
+                self.fig.title = title1
+                self.fig.plot_height += 22
+                
+    def buildfigure(self):
+        self._setminborder()
+        self._setxrange()
+        self._setxaxis()
+        self._setyrange()
+        self._setzrange()
+        self._setyaxistype()
+        self._setzaxistype()
+        self._addtimebars()
+        self._visdata()
+        self._setyaxislabel()
+        self._addhoverlines()
+        self._addlegend()
+        self._addextras()
+        
+    def _setxrange(self):
+        #Check if x range is not set, if not, set good ones
+        if 'x_range' not in tplot_common.tplot_opt_glob:
+            tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(self.tvar['data'].index.tolist()), np.nanmax(self.tvar['data'].index.tolist())]
+            tplot_x_range = Range1d(np.nanmin(self.tvar['data'].index.tolist()), np.nanmax(self.tvar['data'].index.tolist()))
+            if self.last_plot:
+                tplot_common.lim_info['xfull'] = tplot_x_range
+                tplot_common.lim_info['xlast'] = tplot_x_range
+        
+        #Bokeh uses milliseconds since epoch for some reason
+        x_range = Range1d(tplot_common.tplot_opt_glob['x_range'][0]* 1000, tplot_common.tplot_opt_glob['x_range'][1]* 1000)
+        self.fig.x_range = x_range
+    
+    def _setyrange(self):
+        y_range = Range1d(self.tvar['yaxis_opt']['yrange'][0], self.tvar['yaxis_opt']['yrange'][1])
+        self.fig.y_range = y_range
+        
+    def _setzrange(self):
+        #Get Z Range
+        if 'z_range' in self.tvar['zaxis_opt']:
+            self.zmin = self.tvar['zaxis_opt']['z_range'][0]
+            self.zmax = self.tvar['zaxis_opt']['z_range'][1]
+        else:
+            dataset_temp = self.tvar['data'].replace([np.inf, -np.inf], np.nan)
+            self.zmax = dataset_temp.max().max()
+            self.zmin = dataset_temp.min().min()
+            
+            #Cannot have a 0 minimum in a log scale
+            if self.zscale=='log':
+                zmin_list = []
+                for column in self.tvar['data'].columns:
+                    series = self.tvar['data'][column]
+                    zmin_list.append(series.iloc[series.nonzero()[0]].min())
+                self.zmin = min(zmin_list)
+        
+    def _setminborder(self):
+        self.fig.min_border_bottom = tplot_common.tplot_opt_glob['min_border_bottom']
+        self.fig.min_border_top = tplot_common.tplot_opt_glob['min_border_top']
+    
+    def _addtools(self, tools):
+        self.fig.tools = tools
+        
+    def _addtimebars(self):
+        for time_bar in self.tvar['time_bar']:
+            time_bar_line = Span(location = time_bar['location'], dimension = time_bar['dimension'], line_color = time_bar['line_color'], line_width = time_bar['line_width'])
+            self.fig.renderers.extend([time_bar_line])
+            
+    def _setxaxis(self):
+        xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', formatter=dttf)
+        self.fig.add_layout(xaxis1, 'above')
+        
+    def _setyaxistype(self):
+        if 'y_axis_type' in self.tvar['yaxis_opt']:
+            self.fig.y_mapper_type = self.tvar['yaxis_opt']['y_axis_type']
+    
+    def _setzaxistype(self):
+        if 'z_axis_type' in self.tvar['zaxis_opt']:
+            self.zscale = self.tvar['zaxis_opt']['z_axis_type']
+
+        
+    def _setcolors(self):          
+        if 'colormap' in self.tvar['extras']:
+            self.colors = tplot_utilities.return_bokeh_colormap(self.tvar['extras']['colormap'])
+
+    
+    def _setyaxislabel(self):
+        self.fig.yaxis.axis_label = self.tvar['yaxis_opt']['axis_label']
+        
+    def _visdata(self):
+        self._setcolors()
+        
+        x = self.tvar['data'].index.tolist()
+        temp = [a for a in x if (a <= (tplot_common.tplot_opt_glob['x_range'][1]) and a >= (tplot_common.tplot_opt_glob['x_range'][0]))]
+        x= temp
+    
+        #Sometimes X will be huge, we'll need to cut down so that each x will stay about 1 pixel in size
+        step_size=1
+        num_rect_displayed = len(x)
+        if (self.fig.plot_width*2) < num_rect_displayed:
+            step_size=int(math.floor(num_rect_displayed/(self.fig.plot_width*2)))
+            x[:] = x[0::step_size]
+    
+        #Get length of arrays
+        size_x = len(x)
+        size_y = len(self.tvar['spec_bins'])
+        
+        #These arrays will be populated with data for the rectangle glyphs
+        color = []
+        bottom = []
+        top = []
+        left = []
+        right = []
+        value = []
+        corrected_time = []
+        
+        #left, right, and time do not depend on the values in spec_bins
+        for j in range(size_x-1):
+            left.append(x[j]*1000)
+            right.append(x[j+1]*1000)
+            corrected_time.append(tplot_utilities.int_to_str(x[j]))
+            
+        left = left * (size_y-1)
+        right = right * (size_y-1)
+        corrected_time = corrected_time * (size_y-1)
+        
+        for i in range(size_y-1):
+            temp = self.tvar['data'][self.tvar['spec_bins'][i]][x[0:size_x-1]].tolist()
+            value.extend(temp)
+            color.extend(tplot_utilities.get_heatmap_color(color_map=self.colors, min_val=self.zmin, max_val=self.zmax, values=temp, zscale=self.zscale))
+            bottom.extend([self.tvar['spec_bins'][i]]*(size_x-1))
+            top.extend([self.tvar['spec_bins'][i+1]]*(size_x-1))
+        
+        #Here is where we add all of the rectangles to the plot
+        cds = ColumnDataSource(data=dict(x=left,y=bottom,right=right, top = top, z=color,value=value, corrected_time=corrected_time))
+        self.fig.quad(bottom = 'y', left='x', right='right', top='top', color='z', source=cds)
+            
+        if self.interactive:
+            if 'y_axis_type' in self.tvar['yaxis_opt']:
+                y_interactive_log = 'log'
+            else:
+                y_interactive_log = 'linear'
+            self.interactive_plot = Figure(plot_height = self.fig.plot_height, plot_width = self.fig.plot_width, y_range = (self.zmin, self.zmax), y_axis_type=y_interactive_log)
+            self.interactive_plot.min_border_left = 100
+            spec_bins = self.tvar['spec_bins']
+            flux = [0]*len(spec_bins)
+            interactive_line_source = ColumnDataSource(data=dict(x=spec_bins, y=flux))
+            interactive_line = Line(x='x', y='y')
+            self.interactive_plot.add_glyph(interactive_line_source, interactive_line)
+            self.callback = CustomJS(args=dict(cds=cds, interactive_line_source=interactive_line_source), code="""
+                    var geometry = cb_data['geometry'];
+                    var x_data = geometry.x; // current mouse x position in plot coordinates
+                    var y_data = geometry.y; // current mouse y position in plot coordinates
+                    var d2 = interactive_line_source.get('data');
+                    var asdf = cds.get('data');
+                    var j = 0;
+                    x=d2['x']
+                    y=d2['y']
+                    time=asdf['x']
+                    energies=asdf['y']
+                    flux=asdf['value']
+                    for (i = 0; i < time.length-1; i++) {
+                        if(x_data >= time[i] && x_data <= time[i+1] ) {
+                            x[j] = energies[i]
+                            y[j] = flux[i]
+                            j=j+1
+                        }
+                    }
+                    j=0
+                    interactive_line_source.trigger('change');
+                """)
+    
+    
+    
+    def _addhoverlines(self):
+        #Add tools
+        hover = HoverTool(callback=self.callback)
+        hover.tooltips = [("Time","@corrected_time"), ("Energy", "@y"), ("Value","@value")]
+        self.fig.add_tools(hover)
+        self.fig.add_tools(BoxZoomTool(dimensions='width'))
+
+    
+    def _addextras(self):
+        self.fig.renderers.extend(tplot_common.extra_renderers)
+        
+    def _addlegend(self):
+        #Add the color bar
+        if 'z_axis_type' in self.tvar['zaxis_opt']:
+            if self.tvar['zaxis_opt']['z_axis_type'] == 'log':
+                color_mapper=LogColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+                color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+            else:
+                color_mapper=LinearColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+                color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
+        else:
+            color_mapper=LogColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+            color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+        color_bar.width=10
+        color_bar.formatter = BasicTickFormatter(precision=1)
+        color_bar.major_label_text_align = 'left'
+        color_bar.label_standoff = 5
+        color_bar.major_label_text_baseline = 'middle'
+        
+        self.fig.add_layout(color_bar, 'right')
+    
