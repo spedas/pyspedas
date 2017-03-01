@@ -54,7 +54,7 @@ def store_data(name, data=None, delete=False):
     
     tplot_common.data_quants[name] = temp
     
-    tplot_common.data_quants[name]['yaxis_opt']['yrange'] = get_y_range(df, spec_bins)
+    tplot_common.data_quants[name]['yaxis_opt']['y_range'] = get_y_range(df, spec_bins)
     return
 
 def get_base_tplot_vars(data):

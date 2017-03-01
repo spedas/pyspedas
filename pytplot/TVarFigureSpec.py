@@ -28,25 +28,13 @@ dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],
 
 class TVarFigureSpec(object):
     
-    def __init__(self, tvar, last_plot=False, interactive=False):
-        self.fig = Figure(webgl=True, x_axis_type='datetime', tools = tplot_common.tplot_opt_glob['tools'])
+    def __init__(self, tvar, last_plot=False, interactive=False, y_axis_type='log'):
         self.tvar = tvar
         self.last_plot=last_plot
         self.interactive = interactive
-        #Formatting stuff
-        self.fig.grid.grid_line_color = None
-        self.fig.axis.major_tick_line_color = None
-        self.fig.axis.major_label_standoff = 0
-        self.fig.xaxis.formatter = dttf
-        self.fig.title = None
-        self.fig.toolbar.active_drag='auto'
-        if not last_plot:
-            self.fig.xaxis.major_label_text_font_size = '0pt'
-        self.fig.lod_factor = 100
-        self.fig.lod_interval = 30
-        self.fig.lod_threshold = 100
-        self.fig.yaxis.axis_label_text_font_size = "10pt"
+
         #Variables needed across functions
+        self.fig=None
         self.colors = tplot_utilities.return_bokeh_colormap('magma')
         self.lineglyphs = []
         self.linenum = 0
@@ -79,19 +67,39 @@ class TVarFigureSpec(object):
                 self.fig.plot_height += 22
                 
     def buildfigure(self):
+        self.fig = Figure(webgl=True, 
+                          x_axis_type='datetime', 
+                          tools = tplot_common.tplot_opt_glob['tools'], 
+                          y_axis_type=self._getyaxistype() )
+        self._format()
         self._setminborder()
         self._setxrange()
         self._setxaxis()
         self._setyrange()
         self._setzrange()
-        self._setyaxistype()
         self._setzaxistype()
         self._addtimebars()
         self._visdata()
         self._setyaxislabel()
+        self._setzaxislabel()
         self._addhoverlines()
         self._addlegend()
         self._addextras()
+        
+    def _format(self):
+        #Formatting stuff
+        self.fig.grid.grid_line_color = None
+        self.fig.axis.major_tick_line_color = None
+        self.fig.axis.major_label_standoff = 0
+        self.fig.xaxis.formatter = dttf
+        self.fig.title = None
+        self.fig.toolbar.active_drag='auto'
+        if not self.last_plot:
+            self.fig.xaxis.major_label_text_font_size = '0pt'
+        self.fig.lod_factor = 100
+        self.fig.lod_interval = 30
+        self.fig.lod_threshold = 100
+        self.fig.yaxis.axis_label_text_font_size = "10pt"
         
     def _setxrange(self):
         #Check if x range is not set, if not, set good ones
@@ -107,7 +115,7 @@ class TVarFigureSpec(object):
         self.fig.x_range = x_range
     
     def _setyrange(self):
-        y_range = Range1d(self.tvar['yaxis_opt']['yrange'][0], self.tvar['yaxis_opt']['yrange'][1])
+        y_range = Range1d(self.tvar['yaxis_opt']['y_range'][0], self.tvar['yaxis_opt']['y_range'][1])
         self.fig.y_range = y_range
         
     def _setzrange(self):
@@ -144,10 +152,12 @@ class TVarFigureSpec(object):
         xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', formatter=dttf)
         self.fig.add_layout(xaxis1, 'above')
         
-    def _setyaxistype(self):
+    def _getyaxistype(self):
         if 'y_axis_type' in self.tvar['yaxis_opt']:
-            self.fig.y_mapper_type = self.tvar['yaxis_opt']['y_axis_type']
-    
+            return self.tvar['yaxis_opt']['y_axis_type']
+        else:
+            return 'log'
+        
     def _setzaxistype(self):
         if 'z_axis_type' in self.tvar['zaxis_opt']:
             self.zscale = self.tvar['zaxis_opt']['z_axis_type']
@@ -159,6 +169,9 @@ class TVarFigureSpec(object):
 
     
     def _setyaxislabel(self):
+        self.fig.yaxis.axis_label = self.tvar['yaxis_opt']['axis_label']
+    
+    def _setzaxislabel(self):
         self.fig.yaxis.axis_label = self.tvar['yaxis_opt']['axis_label']
         
     def _visdata(self):
@@ -274,6 +287,13 @@ class TVarFigureSpec(object):
         color_bar.major_label_text_align = 'left'
         color_bar.label_standoff = 5
         color_bar.major_label_text_baseline = 'middle'
+        
+        if 'axis_label' in self.tvar['zaxis_opt']:
+            color_bar.title = self.tvar['zaxis_opt']['axis_label']
+            color_bar.title_text_font_size = '8pt'
+            color_bar.title_text_font_style = 'bold'
+            color_bar.title_standoff = 20
+        
         
         self.fig.add_layout(color_bar, 'right')
     

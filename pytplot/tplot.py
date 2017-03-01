@@ -78,8 +78,9 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         else:
             new_fig = TVarFigure1D(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
         
-        new_fig.setsize(height=p_height, width=p_width)     
         new_fig.buildfigure()
+        new_fig.setsize(height=p_height, width=p_width)     
+        
             
         # Add name of variable to output file name
         if last_plot:    

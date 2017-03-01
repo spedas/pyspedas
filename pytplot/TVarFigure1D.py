@@ -25,21 +25,11 @@ dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],
 class TVarFigure1D(object):
     
     def __init__(self, tvar, auto_color, last_plot=False, interactive=False):
-        self.fig = Figure(webgl=True, x_axis_type='datetime', tools = tplot_common.tplot_opt_glob['tools'])
         self.tvar = tvar
         self.auto_color=auto_color
         self.last_plot=last_plot
         self.interactive=interactive
-        #Formatting stuff
-        self.fig.grid.grid_line_color = None
-        self.fig.axis.major_tick_line_color = None
-        self.fig.axis.major_label_standoff = 0
-        self.fig.xaxis.formatter = dttf
-        self.fig.title = None
-        self.fig.toolbar.active_drag='auto'
-        if not last_plot:
-            self.fig.xaxis.major_label_text_font_size = '0pt'
-        
+       
         #Variables needed across functions
         self.colors = ['black', 'red', 'green', 'navy', 'orange', 'firebrick', 'pink', 'blue', 'olive']
         self.lineglyphs = []
@@ -69,18 +59,33 @@ class TVarFigure1D(object):
                 self.fig.plot_height += 22
 
     def buildfigure(self):
+        self.fig = Figure(webgl=True, 
+                          x_axis_type='datetime', 
+                          tools = tplot_common.tplot_opt_glob['tools'],
+                          y_axis_type=self._getyaxistype())
+        self._format()
         self._setminborder()
         self._setxrange()
         self._setxaxis()
         self._setyrange()
-        self._setyaxistype()
         self._addtimebars()
         self._visdata()
         self._setyaxislabel()
         self._addhoverlines()
         self._addlegend()
         self._addextras()
-        
+    
+    def _format(self):
+        #Formatting stuff
+        self.fig.grid.grid_line_color = None
+        self.fig.axis.major_tick_line_color = None
+        self.fig.axis.major_label_standoff = 0
+        self.fig.xaxis.formatter = dttf
+        self.fig.title = None
+        self.fig.toolbar.active_drag='auto'
+        if not self.last_plot:
+            self.fig.xaxis.major_label_text_font_size = '0pt'
+            
     def _setxrange(self):
         #Check if x range is not set, if not, set good ones
         if 'x_range' not in tplot_common.tplot_opt_glob:
@@ -106,7 +111,7 @@ class TVarFigure1D(object):
         self.fig.x_range = x_range
     
     def _setyrange(self):
-        y_range = Range1d(self.tvar['yaxis_opt']['yrange'][0], self.tvar['yaxis_opt']['yrange'][1])
+        y_range = Range1d(self.tvar['yaxis_opt']['y_range'][0], self.tvar['yaxis_opt']['y_range'][1])
         self.fig.y_range = y_range
         
     def _setminborder(self):
@@ -125,9 +130,11 @@ class TVarFigure1D(object):
         xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', formatter=dttf)
         self.fig.add_layout(xaxis1, 'above')
         
-    def _setyaxistype(self):
+    def _getyaxistype(self):
         if 'y_axis_type' in self.tvar['yaxis_opt']:
-            self.fig.y_mapper_type = self.tvar['yaxis_opt']['y_axis_type']
+            return self.tvar['yaxis_opt']['y_axis_type']
+        else:
+            return 'linear'
         
     def _setcolors(self):
         if 'line_color' in self.tvar['extras']:
