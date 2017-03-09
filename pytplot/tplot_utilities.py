@@ -33,6 +33,12 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
     if option == 'spec':
         new_extras['spec'] = value
     
+    if option == 'alt':
+        new_extras['alt'] = value
+
+    if option == 'map':
+        new_extras['map'] = value
+    
     elif option == 'ylog':
         if value == 1:
             new_yaxis_opt['y_axis_type'] = 'log'
@@ -245,7 +251,7 @@ def get_heatmap_color(color_map, min_val, max_val, values, zscale = 'log'):
                 else:
                     colors.append(("#%02x%02x%02x" % (255, 255, 255)))
             else:
-                cm_index = int((((value-min) / (max-min)) * len(color_map)))
+                cm_index = int((((value-min_val) / (max_val-min_val)) * (len(color_map)-1)))
                 colors.append(color_map[cm_index])
         else:
             colors.append("#%02x%02x%02x" % (255, 255, 255))

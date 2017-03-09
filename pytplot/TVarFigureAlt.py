@@ -8,21 +8,9 @@ from bokeh.models.tools import BoxZoomTool
 
 from . import tplot_common
 from . import tplot_utilities
-from bokeh.models.formatters import DatetimeTickFormatter
-
-dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
-            milliseconds=["%H:%M:%S"],
-            seconds=["%H:%M:%S"],
-            minsec=["%H:%M:%S"],
-            minutes=["%H:%M:%S"],
-            hourmin=["%H:%M:%S"],
-            hours=["%H:%M"],
-            days=["%F"],
-            months=["%F"],
-            years=["%F"])
 
 
-class TVarFigure1D(object):
+class TVarFigureAlt(object):
     
     def __init__(self, tvar, auto_color, last_plot=False, interactive=False):
         self.tvar = tvar
@@ -31,16 +19,16 @@ class TVarFigure1D(object):
         self.interactive=interactive
        
         #Variables needed across functions
-        self.colors = ['black', 'red', 'green', 'navy', 'orange', 'firebrick', 'pink', 'blue', 'olive']
+        self.colors = ['red', 'green', 'navy', 'orange', 'firebrick', 'pink', 'blue', 'olive', 'black']
         self.lineglyphs = []
         self.linenum = 0
         self.interactive_plot = None
-
+    
     def getaxistype(self):
-        axis_type = 'time'
+        axis_type = 'altitude'
         link_y_axis = False
         return axis_type, link_y_axis
-
+    
     def getfig(self):
         if self.interactive:
             return [self.fig, self.interactive_plot]
@@ -65,7 +53,6 @@ class TVarFigure1D(object):
 
     def buildfigure(self):
         self.fig = Figure(webgl=True, 
-                          x_axis_type='datetime', 
                           tools = tplot_common.tplot_opt_glob['tools'],
                           y_axis_type=self._getyaxistype())
         self.fig.add_tools(BoxZoomTool(dimensions='width'))
@@ -86,7 +73,6 @@ class TVarFigure1D(object):
         self.fig.grid.grid_line_color = None
         self.fig.axis.major_tick_line_color = None
         self.fig.axis.major_label_standoff = 0
-        self.fig.xaxis.formatter = dttf
         self.fig.title = None
         self.fig.toolbar.active_drag='auto'
         if not self.last_plot:
@@ -94,7 +80,7 @@ class TVarFigure1D(object):
             
     def _setxrange(self):
         #Check if x range is not set, if not, set good ones
-        if 'x_range' not in tplot_common.tplot_opt_glob:
+        if 'alt_range' not in tplot_common.tplot_opt_glob:
             datasets = []
             x_min_list = []
             x_max_list = []
@@ -106,14 +92,14 @@ class TVarFigure1D(object):
             for dataset in datasets:
                 x_min_list.append(np.nanmin(dataset.index.tolist()))
                 x_max_list.append(np.nanmax(dataset.index.tolist()))
-            tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
+            tplot_common.tplot_opt_glob['alt_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
             tplot_x_range = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
             if self.last_plot:
                 tplot_common.lim_info['xfull'] = tplot_x_range
                 tplot_common.lim_info['xlast'] = tplot_x_range
         
-        #Bokeh uses milliseconds since epoch for some reason
-        x_range = Range1d(tplot_common.tplot_opt_glob['x_range'][0]* 1000, tplot_common.tplot_opt_glob['x_range'][1]* 1000)
+        x_range = Range1d(tplot_common.tplot_opt_glob['alt_range'][0], tplot_common.tplot_opt_glob['alt_range'][1])
+        
         self.fig.x_range = x_range
     
     def _setyrange(self):
@@ -131,8 +117,8 @@ class TVarFigure1D(object):
             self.fig.renderers.extend([time_bar_line])
             
     def _setxaxis(self):
-        xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', formatter=dttf)
-        self.fig.add_layout(xaxis1, 'above')
+        #Nothing to set for now
+        return
         
     def _getyaxistype(self):
         if 'y_axis_type' in self.tvar['yaxis_opt']:
@@ -164,20 +150,15 @@ class TVarFigure1D(object):
             if 'linestyle' in self.tvar['extras']:
                 line_style = self.tvar['extras']['linestyle']
                 
-            #Get a list of formatted times  
-            corrected_time = [] 
-            for x in dataset.index:
-                corrected_time.append(tplot_utilities.int_to_str(x))
-                
             #Bokeh uses milliseconds since epoch for some reason
-            x = dataset.index * 1000
+            x = dataset.index
             
             #Create lines from each column in the dataframe    
             for column_name in dataset.columns:
                 y = dataset[column_name]
-                line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
+                line_source = ColumnDataSource(data=dict(x=x, y=y))
                 if self.auto_color:
-                    line = Line(x='x', y='y', line_color = self.colors[self.linenum % len(self.colors)], **self.tvar['line_opt'])
+                    line = Line(x='x', y='y', line_color = 'red', **self.tvar['line_opt'])
                 else:
                     line = Line(x='x', y='y', **self.tvar['line_opt'])
                 if 'line_style' not in self.tvar['line_opt']:
@@ -191,7 +172,7 @@ class TVarFigure1D(object):
     def _addhoverlines(self):
         #Add tools
         hover = HoverTool()
-        hover.tooltips = [("Time","@corrected_time"), ("Value","@y")]
+        hover.tooltips = [("Value","@y")]
         self.fig.add_tools(hover)
         
     def _addlegend(self):

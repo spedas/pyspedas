@@ -22,7 +22,7 @@ def store_data(name, data=None, delete=False):
         trange = [np.nanmin(tplot_common.data_quants[base_data[0]]['data'].index), np.nanmax(tplot_common.data_quants[base_data[0]]['data'].index)]
         df = base_data
         spec_bins=None
-    else:
+    else:             
         df = pd.DataFrame(data['y'])
         if 'v' in data:
             spec_bins = data['v']
@@ -33,8 +33,15 @@ def store_data(name, data=None, delete=False):
             spec_bins = None
             
         times = data['x']
-        df['Index'] = times
-        df = df.set_index('Index', drop=True)
+        if len(times) != len(df.index):
+            if len(times[0]) == len(df.index):
+                df = df.set_index(data['x'])
+            else:
+                print("The lengths of x and y do not match!")
+                return
+        else:
+            df['Index'] = times
+            df = df.set_index('Index', drop=True)
         trange = [np.nanmin(times), np.nanmax(times)]
         
     yaxis_opt = dict(axis_label = name)

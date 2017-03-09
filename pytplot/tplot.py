@@ -20,10 +20,11 @@ dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],
             years=["%F"])
 
 from .TVarFigure1D import TVarFigure1D
+from .TVarFigure2D import TVarFigure2D
 from .TVarFigureSpec import TVarFigureSpec
+from .TVarFigureAlt import TVarFigureAlt
 
-
-def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
+def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, combine_axes=True):
 
     # Name for .html file containing plots
     out_name = ""
@@ -47,6 +48,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
     
     # Vertical Box layout to store plots
     all_plots = []
+    axis_types=[]
     i = 0
     
     # Configure plot sizes
@@ -65,19 +67,34 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         p_height = int(temp_data_quant['extras']['panel_size'] * p_to_use)
         p_width = tplot_common.tplot_opt_glob['window_size'][0]
         
-        #Check if we're doing a spec plot
+        #Check plot type
         has_spec_bins = (temp_data_quant['spec_bins'] is not None)
         has_spec_keyword = ('spec' in temp_data_quant['extras'].keys())
+        has_alt_keyword = ('alt' in temp_data_quant['extras'].keys())
+        has_map_keyword = ('map' in temp_data_quant['extras'].keys())
         if has_spec_bins and has_spec_keyword:
             spec_keyword = temp_data_quant['extras']['spec']
         else:
             spec_keyword = False
-            
+        if has_alt_keyword:
+            alt_keyword = temp_data_quant['extras']['alt']
+        else:
+            alt_keyword = False
+        if has_map_keyword:
+            map_keyword = temp_data_quant['extras']['map']
+        else:
+            map_keyword = False
+        
         if spec_keyword:     
             new_fig = TVarFigureSpec(temp_data_quant, interactive=interactive, last_plot=last_plot)
+        elif alt_keyword:
+            new_fig = TVarFigureAlt(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
+        elif map_keyword:    
+            new_fig = TVarFigure2D(temp_data_quant, interactive=interactive, last_plot=last_plot)
         else:
             new_fig = TVarFigure1D(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
-        
+            
+        axis_types.append(new_fig.getaxistype())
         new_fig.buildfigure()
         new_fig.setsize(height=p_height, width=p_width)     
         
@@ -102,10 +119,17 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False):
         
     # Set all plots' x_range and plot_width to that of the bottom plot
     #     so all plots will pan and be resized together.
-    k = 0
-    while(k < num_plots - 1):
-        all_plots[k][0].x_range = all_plots[num_plots - 1][0].x_range
-        k += 1
+    first_type = {}
+    if combine_axes:
+        k=0
+        while(k < num_plots):
+            if axis_types[k][0] not in first_type:
+                first_type[axis_types[k][0]] = k
+            else:
+                all_plots[k][0].x_range = all_plots[first_type[axis_types[k][0]]][0].x_range
+                if axis_types[k][1]:
+                    all_plots[k][0].y_range = all_plots[first_type[axis_types[k][0]]][0].y_range
+            k+=1
     
     #Add extra x axes if applicable 
     if var_label is not None:
