@@ -1,6 +1,7 @@
 from . import tplot_common
 from .timestamp import TimeStamp
 from . import tplot_utilities
+from bokeh.models import Span
 
 
 def timebar(t, varname = None, databar = False, delete = False, color = 'black', thick = 1, dash = False):    
@@ -40,7 +41,7 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
             tbar['line_dash'] = dash_pattern
             for name in tplot_common.data_quants:
                 temp_data_quants = tplot_common.data_quants[name]
-                temp_data_quants['time_bar'].append(tbar)
+                temp_data_quants.time_bar.append(tbar)
     else:
         if not isinstance(varname, list):
             varname = [varname]
@@ -52,5 +53,5 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
                 for i in range(num_bars):
                     tbar = Span(location = t[i], dimension = dim, line_color = color, line_width = thick, line_dash = dash_pattern)
                     temp_data_quants = tplot_common.data_quants[j]
-                    temp_data_quants['time_bar'].append(tbar)
+                    temp_data_quants.time_bar.append(tbar)
     return

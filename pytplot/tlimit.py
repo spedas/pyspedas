@@ -1,7 +1,6 @@
 from __future__ import division
 from . import tplot_common
 
-
 from .xlim import xlim
 
 def tlimit(arg):
@@ -14,8 +13,8 @@ def tlimit(arg):
     elif arg is 'full':
         tplot_common.tplot_opt_glob['x_range'] = tplot_common.lim_info['xfull'] 
     elif isinstance(arg, list):
-        min = arg[0]
-        max = arg[1]
-        xlim(min, max)
+        minn = arg[0]
+        maxx = arg[1]
+        xlim(minn, maxx)
         
     return

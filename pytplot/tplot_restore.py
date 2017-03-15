@@ -55,9 +55,9 @@ def tplot_restore(file_name):
                 for option_name in temp_tplot['dq'][i][3].dtype.names:
                     options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0])
             
-            tplot_common.data_quants[data_name]['trange'] =  temp_tplot['dq'][i][4].tolist()
-            tplot_common.data_quants[data_name]['dtype'] =  temp_tplot['dq'][i][5]
-            tplot_common.data_quants[data_name]['create_time'] =  temp_tplot['dq'][i][6]
+            tplot_common.data_quants[data_name].trange =  temp_tplot['dq'][i][4].tolist()
+            tplot_common.data_quants[data_name].dtype =  temp_tplot['dq'][i][5]
+            tplot_common.data_quants[data_name].create_time =  temp_tplot['dq'][i][6]
         
             for option_name in temp_tplot['tv'][0][0].dtype.names:
                 if option_name == 'TRANGE':
@@ -81,7 +81,7 @@ def tplot_restore(file_name):
         temp = pickle.load(open(file_name,"rb"))
         num_data_quants = temp[0]
         for i in range(0, num_data_quants):
-            tplot_common.data_quants[temp[i+1]['name']] = temp[i+1]
+            tplot_common.data_quants[temp[i+1].name] = temp[i+1]
         tplot_common.tplot_opt_glob = temp[num_data_quants+1]
     
     return

@@ -8,7 +8,7 @@ from .timestamp import TimeStamp
 from bokeh.layouts import gridplot
 from bokeh.models.formatters import DatetimeTickFormatter
 
-dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
+'''dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
             milliseconds=["%H:%M:%S"],
             seconds=["%H:%M:%S"],
             minsec=["%H:%M:%S"],
@@ -18,7 +18,7 @@ dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],
             days=["%F"],
             months=["%F"],
             years=["%F"])
-
+'''
 from .TVarFigure1D import TVarFigure1D
 from .TVarFigure2D import TVarFigure2D
 from .TVarFigureSpec import TVarFigureSpec
@@ -38,7 +38,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
     
     for i in range(num_plots):
         if isinstance(name[i], int):
-            name[i] = list(tplot_common.data_quants.keys())[name[i]]
+            name[i] = list(tplot_common.data_quants.keys())[name[i]-1]
         if name[i] not in tplot_common.data_quants.keys():
             print(str(i) + " is currently not in pytplot")
             return
@@ -55,7 +55,8 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
     total_psize = 1
     j = 0
     while(j < num_plots):
-        total_psize += tplot_common.data_quants[name[j]]['extras']['panel_size']
+        #total_psize += tplot_common.data_quants[name[j]]['extras']['panel_size']
+        total_psize += tplot_common.data_quants[name[j]].extras['panel_size']
         j += 1
     p_to_use = tplot_common.tplot_opt_glob['window_size'][1]/total_psize
     
@@ -64,16 +65,16 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
         last_plot = (i == num_plots-1)
         temp_data_quant = tplot_common.data_quants[name[i]]
         
-        p_height = int(temp_data_quant['extras']['panel_size'] * p_to_use)
+        p_height = int(temp_data_quant.extras['panel_size'] * p_to_use)
         p_width = tplot_common.tplot_opt_glob['window_size'][0]
         
         #Check plot type
-        has_spec_bins = (temp_data_quant['spec_bins'] is not None)
-        has_spec_keyword = ('spec' in temp_data_quant['extras'].keys())
+        has_spec_bins = (temp_data_quant.spec_bins is not None)
+        has_spec_keyword = ('spec' in temp_data_quant.extras.keys())
         has_alt_keyword = ('alt' in temp_data_quant['extras'].keys())
         has_map_keyword = ('map' in temp_data_quant['extras'].keys())
         if has_spec_bins and has_spec_keyword:
-            spec_keyword = temp_data_quant['extras']['spec']
+            spec_keyword = temp_data_quant.extras['spec']
         else:
             spec_keyword = False
         if has_alt_keyword:
@@ -82,6 +83,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
             alt_keyword = False
         if has_map_keyword:
             map_keyword = temp_data_quant['extras']['map']
+            xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt')
         else:
             map_keyword = False
         
@@ -97,13 +99,14 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
         axis_types.append(new_fig.getaxistype())
         new_fig.buildfigure()
         new_fig.setsize(height=p_height, width=p_width)     
+            new_plot.add_tools(BoxZoomTool())
         
             
         # Add name of variable to output file name
         if last_plot:    
-            out_name += temp_data_quant['name']
+            out_name += temp_data_quant.name
         else:
-            out_name += temp_data_quant['name'] + '+'
+            out_name += temp_data_quant.name + '+'
         # Add plot to GridPlot layout
         all_plots.append(new_fig.getfig())
         i = i+1
@@ -140,8 +143,8 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
         for new_x_axis in var_label:
             
             axis_data_quant = tplot_common.data_quants[new_x_axis]
-            axis_start = min(axis_data_quant['data'].min(skipna=True).tolist())
-            axis_end = max(axis_data_quant['data'].max(skipna=True).tolist())
+            axis_start = min(axis_data_quant.data.min(skipna=True).tolist())
+            axis_end = max(axis_data_quant.data.max(skipna=True).tolist())
             x_axes.append(Range1d(start = axis_start, end = axis_end))
             k = 0
             while(k < num_plots ):
@@ -174,4 +177,6 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
     show(final)    
     return
 
+
+    xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt')
     

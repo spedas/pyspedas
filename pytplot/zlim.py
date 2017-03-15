@@ -7,6 +7,6 @@ def zlim(name, min, max, log_opt=False):
         return
     
     temp_data_quant = tplot_common.data_quants[name]
-    temp_data_quant['zaxis_opt']['z_range'] = [min, max]
+    temp_data_quant.zaxis_opt['z_range'] = [min, max]
     
     return

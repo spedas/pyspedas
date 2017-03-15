@@ -281,7 +281,7 @@ def get_heatmap_color(color_map, min_val, max_val, values, zscale = 'log'):
 def timebar_delete(t, varname=None, dim='height'):
     if varname is None:
         for name in tplot_common.data_quants:
-            list_timebars = tplot_common.data_quants[name]['time_bar']
+            list_timebars = tplot_common.data_quants[name].time_bar
             elem_to_delete = []
             for elem in list_timebars:
                 for num in t:
@@ -289,7 +289,7 @@ def timebar_delete(t, varname=None, dim='height'):
                         elem_to_delete.append(elem)
             for i in elem_to_delete:
                 list_timebars.remove(i)
-            tplot_common.data_quants[name]['time_bar'] = list_timebars
+            tplot_common.data_quants[name].time_bar = list_timebars
     else:
         if not isinstance(varname, list):
             varname = [varname]
@@ -297,7 +297,7 @@ def timebar_delete(t, varname=None, dim='height'):
             if i not in tplot_common.data_quants.keys():
                 print(str(i) + " is currently not in pytplot.")
                 return
-            list_timebars = tplot_common.data_quants[i]['time_bar']
+            list_timebars = tplot_common.data_quants[i].time_bar
             elem_to_delete = []
             for elem in list_timebars:
                 for num in t:
@@ -305,5 +305,5 @@ def timebar_delete(t, varname=None, dim='height'):
                         elem_to_delete.append(elem)
             for j in elem_to_delete:
                 list_timebars.remove(j)
-            tplot_common.data_quants[i]['time_bar'] = list_timebars
+            tplot_common.data_quants[i].time_bar = list_timebars
     return    

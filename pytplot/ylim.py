@@ -7,6 +7,6 @@ def ylim(name, min, max, log_opt=False):
         return
     
     temp_data_quant = tplot_common.data_quants[name]
-    temp_data_quant['yaxis_opt']['y_range'] = [min, max]
+    temp_data_quant.yaxis_opt['y_range'] = [min, max]
     
     return

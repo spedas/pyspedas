@@ -44,7 +44,7 @@ def overplot(new_name, names, auto_format = False):
 
     store_data(new_name, data={'x':new_time, 'y':new_data})
     if auto_format:
-        tplot_common.data_quants[new_name]['extras']['linestyle'] = linestyle_list
+        tplot_common.data_quants[new_name].extras['linestyle'] = linestyle_list
 
     return
 

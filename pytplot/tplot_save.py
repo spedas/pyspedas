@@ -8,8 +8,8 @@ def tplot_save(names, filename=None):
     
     #Check that we have all available data
     for name in names: 
-        if isinstance(tplot_common.data_quants[name]['data'], list):
-            for data_name in tplot_common.data_quants[name]['data']:
+        if isinstance(tplot_common.data_quants[name].data, list):
+            for data_name in tplot_common.data_quants[name].data:
                 if data_name not in names:
                     names.append(data_name)
     
