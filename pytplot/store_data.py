@@ -60,11 +60,8 @@ def store_data(name, data=None, delete=False):
                 trange, dtype, create_time, time_bar, extras)
     
     tplot_common.data_quants[name] = temp
-    tplot_common.data_quants[tplot_num] = temp
+    tplot_common.data_quants[name].yaxis_opt['y_range'] = get_y_range(df, spec_bins)
     
-    tplot_num += 1
-    
-    tplot_common.data_quants[name]['yaxis_opt']['y_range'] = get_y_range(df, spec_bins)
     return
 
 def get_base_tplot_vars(data):
@@ -72,8 +69,8 @@ def get_base_tplot_vars(data):
     if not isinstance(data, list):
         data = [data]
     for var in data:
-        if isinstance(tplot_common.data_quants[var]['data'], list):
-            base_vars += get_base_tplot_vars(tplot_common.data_quants[var]['data'])
+        if isinstance(tplot_common.data_quants[var].data, list):
+            base_vars += get_base_tplot_vars(tplot_common.data_quants[var].data)
         else:
             base_vars += [var]
     return base_vars
@@ -89,7 +86,7 @@ def get_y_range(data, spec_bins):
         y_max_list = []
         if isinstance(data, list):
             for oplot_name in data:
-                datasets.append(tplot_common.data_quants[oplot_name]['data'])
+                datasets.append(tplot_common.data_quants[oplot_name].data)
         else:
             datasets.append(data)
     

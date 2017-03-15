@@ -6,7 +6,6 @@ from .tplot_directory import get_tplot_directory
 from . import tplot_common
 from .timestamp import TimeStamp
 from bokeh.layouts import gridplot
-from bokeh.models.formatters import DatetimeTickFormatter
 
 '''dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
             milliseconds=["%H:%M:%S"],
@@ -38,7 +37,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
     
     for i in range(num_plots):
         if isinstance(name[i], int):
-            name[i] = list(tplot_common.data_quants.keys())[name[i]-1]
+            name[i] = list(tplot_common.data_quants.keys())[name[i]]
         if name[i] not in tplot_common.data_quants.keys():
             print(str(i) + " is currently not in pytplot")
             return
@@ -55,7 +54,6 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
     total_psize = 1
     j = 0
     while(j < num_plots):
-        #total_psize += tplot_common.data_quants[name[j]]['extras']['panel_size']
         total_psize += tplot_common.data_quants[name[j]].extras['panel_size']
         j += 1
     p_to_use = tplot_common.tplot_opt_glob['window_size'][1]/total_psize
@@ -71,19 +69,18 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
         #Check plot type
         has_spec_bins = (temp_data_quant.spec_bins is not None)
         has_spec_keyword = ('spec' in temp_data_quant.extras.keys())
-        has_alt_keyword = ('alt' in temp_data_quant['extras'].keys())
-        has_map_keyword = ('map' in temp_data_quant['extras'].keys())
+        has_alt_keyword = ('alt' in temp_data_quant.extras.keys())
+        has_map_keyword = ('map' in temp_data_quant.extras.keys())
         if has_spec_bins and has_spec_keyword:
             spec_keyword = temp_data_quant.extras['spec']
         else:
             spec_keyword = False
         if has_alt_keyword:
-            alt_keyword = temp_data_quant['extras']['alt']
+            alt_keyword = temp_data_quant.extras['alt']
         else:
             alt_keyword = False
         if has_map_keyword:
-            map_keyword = temp_data_quant['extras']['map']
-            xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt')
+            map_keyword = temp_data_quant.extras['map']
         else:
             map_keyword = False
         
@@ -99,7 +96,6 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
         axis_types.append(new_fig.getaxistype())
         new_fig.buildfigure()
         new_fig.setsize(height=p_height, width=p_width)     
-            new_plot.add_tools(BoxZoomTool())
         
             
         # Add name of variable to output file name
@@ -177,6 +173,4 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
     show(final)    
     return
 
-
-    xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt')
     

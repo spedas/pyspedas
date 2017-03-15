@@ -10,10 +10,10 @@ def del_data(name):
             print(str(i) + " is currently not in pytplot.")
             return
         
-    temp_data_quants = tplot_common.data_quants[i]
-    str_name = temp_data_quants.name
-    
+        temp_data_quants = tplot_common.data_quants[i]
+        str_name = temp_data_quants.name
         
-    del tplot_common.data_quants[str_name]
+            
+        del tplot_common.data_quants[str_name]
         
     return
