@@ -23,7 +23,7 @@ class TVarFigure2D(object):
 
         #Variables needed across functions
         self.fig=None
-        self.colors = tplot_utilities.return_bokeh_colormap('magma')
+        self.colors = []
         self.lineglyphs = []
         self.linenum = 0
         self.zscale = 'linear'
@@ -119,15 +119,18 @@ class TVarFigure2D(object):
             self.zmin = self.tvar['zaxis_opt']['z_range'][0]
             self.zmax = self.tvar['zaxis_opt']['z_range'][1]
         else:
-            dataset_temp = self.tvar['data'].replace([np.inf, -np.inf], np.nan)
+            if isinstance(self.tvar['data'], list):
+                dataset_temp = tplot_common.data_quants[self.tvar['data'][0]]['data'].replace([np.inf, -np.inf], np.nan)
+            else:
+                dataset_temp = self.tvar['data'].replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
             
             #Cannot have a 0 minimum in a log scale
             if self.zscale=='log':
                 zmin_list = []
-                for column in self.tvar['data'].columns:
-                    series = self.tvar['data'][column]
+                for column in dataset_temp.columns:
+                    series = dataset_temp[column]
                     zmin_list.append(series.iloc[series.nonzero()[0]].min())
                 self.zmin = min(zmin_list)
         
@@ -155,7 +158,10 @@ class TVarFigure2D(object):
         
     def _setcolors(self):          
         if 'colormap' in self.tvar['extras']:
-            self.colors = tplot_utilities.return_bokeh_colormap(self.tvar['extras']['colormap'])
+            for cm in self.tvar['extras']['colormap']:
+                self.colors.append(tplot_utilities.return_bokeh_colormap(cm))
+        else:
+            self.colors.append(tplot_utilities.return_bokeh_colormap('magma'))
 
     
     def _setyaxislabel(self):
@@ -175,19 +181,19 @@ class TVarFigure2D(object):
         else:
             datasets.append(self.tvar['data'])
         
-        
+        cm_index=0
         for dataset in datasets:   
-            x = self.tvar['data'].index.tolist()
+            x = dataset.index.tolist()
             x = list(zip(*x))
-
-
+            
             for column_name in dataset.columns:
                 values = dataset[column_name].tolist()
                 colors=[]
-                colors.extend(tplot_utilities.get_heatmap_color(color_map=self.colors, min_val=self.zmin, max_val=self.zmax, values=values, zscale=self.zscale))
+                colors.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index], min_val=self.zmin, max_val=self.zmax, values=values, zscale=self.zscale))
                 circle_source = ColumnDataSource(data=dict(x=x[0], y=x[1], value=values, colors=colors))
                 self.fig.scatter(x='x',y='y', radius=.5, fill_color='colors', fill_alpha=0.5, line_color=None, source=circle_source)
-    
+            cm_index+=1
+            
     def _addhoverlines(self):
         #Add tools
         hover = HoverTool()
@@ -201,13 +207,13 @@ class TVarFigure2D(object):
         #Add the color bar
         if 'z_axis_type' in self.tvar['zaxis_opt']:
             if self.tvar['zaxis_opt']['z_axis_type'] == 'log':
-                color_mapper=LogColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+                color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
             else:
-                color_mapper=LinearColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+                color_mapper=LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
         else:
-            color_mapper=LinearColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+            color_mapper=LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
             color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
         color_bar.width=10
         color_bar.formatter = BasicTickFormatter(precision=1)

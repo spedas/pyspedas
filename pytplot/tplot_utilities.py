@@ -7,7 +7,8 @@ import pandas as pd
 import numpy as np
 import pytz
 from _collections import OrderedDict
-
+import matplotlib as mpl
+from matplotlib import cm
 from . import tplot_common
 from .timestamp import TimeStamp
 
@@ -28,7 +29,10 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
             new_extras['line_color'] = [value]
     
     if option == 'colormap':
-        new_extras['colormap'] = value
+        if isinstance(value, list):
+            new_extras['colormap'] = value
+        else:
+            new_extras['colormap'] = [value]
     
     if option == 'spec':
         new_extras['spec'] = value
@@ -218,11 +222,28 @@ def int_to_str(time_int):
         return datetime.datetime.fromtimestamp(int(round(time_int)), tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
 
 def return_bokeh_colormap(name):
-    import matplotlib as mpl
-    from matplotlib import cm
-    cm = mpl.cm.get_cmap(name)
-    colormap = [rgb_to_hex(tuple((np.array(cm(x))*255).astype(np.int))) for x in range(0,cm.N)]
-    return colormap
+    if name=='yellow':
+        map = [rgb_to_hex(tuple((np.array([1,1,0,1])*255).astype(np.int))) for x in range(0,256)]
+        return map
+    elif name=='red':
+        map = [rgb_to_hex(tuple((np.array([1,0,0,1])*255).astype(np.int))) for x in range(0,256)]
+        return map
+    elif name=='blue':
+        map = [rgb_to_hex(tuple((np.array([0,0,1,1])*255).astype(np.int))) for x in range(0,256)]
+        return map
+    elif name=='green':
+        map = [rgb_to_hex(tuple((np.array([0,1,0,1])*255).astype(np.int))) for x in range(0,256)]
+        return map
+    elif name=='purple':
+        map = [rgb_to_hex(tuple((np.array([1,0,1,1])*255).astype(np.int))) for x in range(0,256)]
+        return map
+    elif name=='teal':
+        map = [rgb_to_hex(tuple((np.array([0,1,1,1])*255).astype(np.int))) for x in range(0,256)]
+        return map
+    else:
+        cm = mpl.cm.get_cmap(name)
+        map = [rgb_to_hex(tuple((np.array(cm(x))*255).astype(np.int))) for x in range(0,cm.N)]
+        return map
 
 def rgb_to_hex(rgb):
     red = rgb[0]

@@ -35,7 +35,7 @@ class TVarFigureSpec(object):
 
         #Variables needed across functions
         self.fig=None
-        self.colors = tplot_utilities.return_bokeh_colormap('magma')
+        self.colors = []
         self.lineglyphs = []
         self.linenum = 0
         self.zscale = 'log'
@@ -168,7 +168,10 @@ class TVarFigureSpec(object):
         
     def _setcolors(self):          
         if 'colormap' in self.tvar['extras']:
-            self.colors = tplot_utilities.return_bokeh_colormap(self.tvar['extras']['colormap'])
+            for cm in self.tvar['extras']['colormap']:
+                self.colors.append(tplot_utilities.return_bokeh_colormap(cm))
+        else:
+            self.colors.append(tplot_utilities.return_bokeh_colormap('magma'))
 
     
     def _setyaxislabel(self):
@@ -217,7 +220,7 @@ class TVarFigureSpec(object):
         for i in range(size_y-1):
             temp = self.tvar['data'][self.tvar['spec_bins'][i]][x[0:size_x-1]].tolist()
             value.extend(temp)
-            color.extend(tplot_utilities.get_heatmap_color(color_map=self.colors, min_val=self.zmin, max_val=self.zmax, values=temp, zscale=self.zscale))
+            color.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[0], min_val=self.zmin, max_val=self.zmax, values=temp, zscale=self.zscale))
             bottom.extend([self.tvar['spec_bins'][i]]*(size_x-1))
             top.extend([self.tvar['spec_bins'][i+1]]*(size_x-1))
         
@@ -276,13 +279,13 @@ class TVarFigureSpec(object):
         #Add the color bar
         if 'z_axis_type' in self.tvar['zaxis_opt']:
             if self.tvar['zaxis_opt']['z_axis_type'] == 'log':
-                color_mapper=LogColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+                color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
             else:
-                color_mapper=LinearColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+                color_mapper=LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
         else:
-            color_mapper=LogColorMapper(palette=self.colors, low=self.zmin, high=self.zmax)
+            color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
             color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
         color_bar.width=10
         color_bar.formatter = BasicTickFormatter(precision=1)
