@@ -84,11 +84,11 @@ class TVarFigureAlt(object):
             datasets = []
             x_min_list = []
             x_max_list = []
-            if isinstance(self.tvar['data'], list):
-                for oplot_name in self.tvar['data']:
-                    datasets.append(tplot_common.data_quants[oplot_name]['data'])
+            if isinstance(self.tvar.data, list):
+                for oplot_name in self.tvar.data:
+                    datasets.append(tplot_common.data_quants[oplot_name].data)
             else:
-                datasets.append(self.tvar['data'])
+                datasets.append(self.tvar.data)
             for dataset in datasets:
                 x_min_list.append(np.nanmin(dataset.index.tolist()))
                 x_max_list.append(np.nanmax(dataset.index.tolist()))
@@ -103,7 +103,7 @@ class TVarFigureAlt(object):
         self.fig.x_range = x_range
     
     def _setyrange(self):
-        y_range = Range1d(self.tvar['yaxis_opt']['y_range'][0], self.tvar['yaxis_opt']['y_range'][1])
+        y_range = Range1d(self.tvar.yaxis_opt['y_range'][0], self.tvar.yaxis_opt['y_range'][1])
         self.fig.y_range = y_range
         
     def _setminborder(self):
@@ -112,8 +112,11 @@ class TVarFigureAlt(object):
     
         
     def _addtimebars(self):
-        for time_bar in self.tvar['time_bar']:
-            time_bar_line = Span(location = time_bar['location'], dimension = time_bar['dimension'], line_color = time_bar['line_color'], line_width = time_bar['line_width'])
+        for time_bar in self.tvar.time_bar:
+            time_bar_line = Span(location = time_bar['location'], 
+                                 dimension = time_bar['dimension'], 
+                                 line_color = time_bar['line_color'], 
+                                 line_width = time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
             
     def _setxaxis(self):
@@ -121,34 +124,34 @@ class TVarFigureAlt(object):
         return
         
     def _getyaxistype(self):
-        if 'y_axis_type' in self.tvar['yaxis_opt']:
-            return self.tvar['yaxis_opt']['y_axis_type']
+        if 'y_axis_type' in self.tvar.yaxis_opt:
+            return self.tvar.yaxis_opt['y_axis_type']
         else:
             return 'linear'
         
     def _setcolors(self):
-        if 'line_color' in self.tvar['extras']:
-            self.colors = self.tvar['extras']['line_color']
+        if 'line_color' in self.tvar.extras:
+            self.colors = self.tvar.extras['line_color']
     
     def _setyaxislabel(self):
-        self.fig.yaxis.axis_label = self.tvar['yaxis_opt']['axis_label']
+        self.fig.yaxis.axis_label = self.tvar.yaxis_opt['axis_label']
         
     def _visdata(self):
         self._setcolors()
         
         datasets = []
-        if isinstance(self.tvar['data'], list):
-            for oplot_name in self.tvar['data']:
-                datasets.append(tplot_common.data_quants[oplot_name]['data'])
+        if isinstance(self.tvar.data, list):
+            for oplot_name in self.tvar.data:
+                datasets.append(tplot_common.data_quants[oplot_name].data)
         else:
-            datasets.append(self.tvar['data'])
+            datasets.append(self.tvar.data)
         
         
         for dataset in datasets:                
             #Get Linestyle
             line_style = None
-            if 'linestyle' in self.tvar['extras']:
-                line_style = self.tvar['extras']['linestyle']
+            if 'linestyle' in self.tvar.extras:
+                line_style = self.tvar.extras['linestyle']
                 
             #Bokeh uses milliseconds since epoch for some reason
             x = dataset.index
@@ -158,14 +161,14 @@ class TVarFigureAlt(object):
                 y = dataset[column_name]
                 line_source = ColumnDataSource(data=dict(x=x, y=y))
                 if self.auto_color:
-                    line = Line(x='x', y='y', line_color = 'red', **self.tvar['line_opt'])
+                    line = Line(x='x', y='y', line_color = 'red', **self.tvar.line_opt)
                 else:
-                    line = Line(x='x', y='y', **self.tvar['line_opt'])
-                if 'line_style' not in self.tvar['line_opt']:
+                    line = Line(x='x', y='y', **self.tvar.line_opt)
+                if 'line_style' not in self.tvar.line_opt:
                     if line_style is not None:
                         line.line_dash = line_style[self.linenum % len(line_style)]
                 else:
-                    line.line_dash = self.tvar['line_opt']['line_style']
+                    line.line_dash = self.tvar.line_opt['line_style']
                 self.lineglyphs.append(self.fig.add_glyph(line_source, line))
                 self.linenum += 1
     
@@ -177,8 +180,8 @@ class TVarFigureAlt(object):
         
     def _addlegend(self):
         #Add the Legend if applicable
-        if 'legend_names' in self.tvar['yaxis_opt']:
-            legend_names = self.tvar['yaxis_opt']['legend_names']
+        if 'legend_names' in self.tvar.yaxis_opt:
+            legend_names = self.tvar.yaxis_opt['legend_names']
             if len(legend_names) != self.linenum:
                 print("Number of lines do not match length of legend names")
             legend = Legend()

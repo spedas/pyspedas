@@ -115,14 +115,14 @@ class TVarFigure2D(object):
         
     def _setzrange(self):
         #Get Z Range
-        if 'z_range' in self.tvar['zaxis_opt']:
-            self.zmin = self.tvar['zaxis_opt']['z_range'][0]
-            self.zmax = self.tvar['zaxis_opt']['z_range'][1]
+        if 'z_range' in self.tvar.zaxis_opt:
+            self.zmin = self.tvar.zaxis_opt['z_range'][0]
+            self.zmax = self.tvar.zaxis_opt['z_range'][1]
         else:
-            if isinstance(self.tvar['data'], list):
-                dataset_temp = tplot_common.data_quants[self.tvar['data'][0]]['data'].replace([np.inf, -np.inf], np.nan)
+            if isinstance(self.tvar.data, list):
+                dataset_temp = tplot_common.data_quants[self.tvar.data[0]].data.replace([np.inf, -np.inf], np.nan)
             else:
-                dataset_temp = self.tvar['data'].replace([np.inf, -np.inf], np.nan)
+                dataset_temp = self.tvar.data.replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
             
@@ -139,8 +139,11 @@ class TVarFigure2D(object):
         self.fig.min_border_top = tplot_common.tplot_opt_glob['min_border_top']
         
     def _addtimebars(self):
-        for time_bar in self.tvar['time_bar']:
-            time_bar_line = Span(location = time_bar['location'], dimension = time_bar['dimension'], line_color = time_bar['line_color'], line_width = time_bar['line_width'])
+        for time_bar in self.tvar.time_bar:
+            time_bar_line = Span(location = time_bar['location'], 
+                                 dimension = time_bar['dimension'], 
+                                 line_color = time_bar['line_color'], 
+                                 line_width = time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
             
     def _setxaxis(self):
@@ -152,34 +155,34 @@ class TVarFigure2D(object):
         return 'linear'
         
     def _setzaxistype(self):
-        if 'z_axis_type' in self.tvar['zaxis_opt']:
-            self.zscale = self.tvar['zaxis_opt']['z_axis_type']
+        if 'z_axis_type' in self.tvar.zaxis_opt:
+            self.zscale = self.tvar.zaxis_opt['z_axis_type']
 
         
     def _setcolors(self):          
-        if 'colormap' in self.tvar['extras']:
-            for cm in self.tvar['extras']['colormap']:
+        if 'colormap' in self.tvar.extras:
+            for cm in self.tvar.extras['colormap']:
                 self.colors.append(tplot_utilities.return_bokeh_colormap(cm))
         else:
             self.colors.append(tplot_utilities.return_bokeh_colormap('magma'))
 
     
     def _setyaxislabel(self):
-        self.fig.yaxis.axis_label = self.tvar['yaxis_opt']['axis_label']
+        self.fig.yaxis.axis_label = self.tvar.yaxis_opt['axis_label']
     
     def _setzaxislabel(self):
-        self.fig.yaxis.axis_label = self.tvar['yaxis_opt']['axis_label']
+        self.fig.yaxis.axis_label = self.tvar.yaxis_opt['axis_label']
         
     def _visdata(self):
         self._setcolors()
         
         
         datasets = []
-        if isinstance(self.tvar['data'], list):
-            for oplot_name in self.tvar['data']:
-                datasets.append(tplot_common.data_quants[oplot_name]['data'])
+        if isinstance(self.tvar.data, list):
+            for oplot_name in self.tvar.data:
+                datasets.append(tplot_common.data_quants[oplot_name].data)
         else:
-            datasets.append(self.tvar['data'])
+            datasets.append(self.tvar.data)
         
         cm_index=0
         for dataset in datasets:   
@@ -189,9 +192,21 @@ class TVarFigure2D(object):
             for column_name in dataset.columns:
                 values = dataset[column_name].tolist()
                 colors=[]
-                colors.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index], min_val=self.zmin, max_val=self.zmax, values=values, zscale=self.zscale))
-                circle_source = ColumnDataSource(data=dict(x=x[0], y=x[1], value=values, colors=colors))
-                self.fig.scatter(x='x',y='y', radius=.5, fill_color='colors', fill_alpha=0.5, line_color=None, source=circle_source)
+                colors.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index], 
+                                                                min_val=self.zmin, 
+                                                                max_val=self.zmax, 
+                                                                values=values, 
+                                                                zscale=self.zscale))
+                circle_source = ColumnDataSource(data=dict(x=x[0], 
+                                                           y=x[1], 
+                                                           value=values, 
+                                                           colors=colors))
+                self.fig.scatter(x='x',y='y', 
+                                 radius=.5, 
+                                 fill_color='colors', 
+                                 fill_alpha=0.5, 
+                                 line_color=None, 
+                                 source=circle_source)
             cm_index+=1
             
     def _addhoverlines(self):
@@ -205,24 +220,39 @@ class TVarFigure2D(object):
         
     def _addlegend(self):
         #Add the color bar
-        if 'z_axis_type' in self.tvar['zaxis_opt']:
-            if self.tvar['zaxis_opt']['z_axis_type'] == 'log':
-                color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
-                color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+        if 'z_axis_type' in self.tvar.zaxis_opt:
+            if self.tvar.zaxis_opt['z_axis_type'] == 'log':
+                color_mapper=LogColorMapper(palette=self.colors[0], 
+                                            low=self.zmin, 
+                                            high=self.zmax)
+                color_bar=ColorBarSideTitle(color_mapper=color_mapper, 
+                                            border_line_color=None, 
+                                            location=(0,0),
+                                            ticker=LogTicker())
             else:
-                color_mapper=LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
-                color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
+                color_mapper=LinearColorMapper(palette=self.colors[0], 
+                                               low=self.zmin, 
+                                               high=self.zmax)
+                color_bar=ColorBarSideTitle(color_mapper=color_mapper, 
+                                            border_line_color=None, 
+                                            location=(0,0),
+                                            ticker=BasicTicker())
         else:
-            color_mapper=LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
-            color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
+            color_mapper=LinearColorMapper(palette=self.colors[0], 
+                                           low=self.zmin, 
+                                           high=self.zmax)
+            color_bar=ColorBarSideTitle(color_mapper=color_mapper, 
+                                        border_line_color=None, 
+                                        location=(0,0),
+                                        ticker=BasicTicker())
         color_bar.width=10
         color_bar.formatter = BasicTickFormatter(precision=1)
         color_bar.major_label_text_align = 'left'
         color_bar.label_standoff = 5
         color_bar.major_label_text_baseline = 'middle'
         
-        if 'axis_label' in self.tvar['zaxis_opt']:
-            color_bar.title = self.tvar['zaxis_opt']['axis_label']
+        if 'axis_label' in self.tvar.zaxis_opt:
+            color_bar.title = self.tvar.zaxis_opt['axis_label']
             color_bar.title_text_font_size = '8pt'
             color_bar.title_text_font_style = 'bold'
             color_bar.title_standoff = 20

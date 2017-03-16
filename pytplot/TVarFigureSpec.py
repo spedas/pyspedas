@@ -110,8 +110,8 @@ class TVarFigureSpec(object):
     def _setxrange(self):
         #Check if x range is not set, if not, set good ones
         if 'x_range' not in tplot_common.tplot_opt_glob:
-            tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(self.tvar['data'].index.tolist()), np.nanmax(self.tvar['data'].index.tolist())]
-            tplot_x_range = Range1d(np.nanmin(self.tvar['data'].index.tolist()), np.nanmax(self.tvar['data'].index.tolist()))
+            tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(self.tvar.data.index.tolist()), np.nanmax(self.tvar.data.index.tolist())]
+            tplot_x_range = Range1d(np.nanmin(self.tvar.data.index.tolist()), np.nanmax(self.tvar.data.index.tolist()))
             if self.last_plot:
                 tplot_common.lim_info['xfull'] = tplot_x_range
                 tplot_common.lim_info['xlast'] = tplot_x_range
@@ -121,24 +121,24 @@ class TVarFigureSpec(object):
         self.fig.x_range = x_range
     
     def _setyrange(self):
-        y_range = Range1d(self.tvar['yaxis_opt']['y_range'][0], self.tvar['yaxis_opt']['y_range'][1])
+        y_range = Range1d(self.tvar.yaxis_opt['y_range'][0], self.tvar.yaxis_opt['y_range'][1])
         self.fig.y_range = y_range
         
     def _setzrange(self):
         #Get Z Range
-        if 'z_range' in self.tvar['zaxis_opt']:
-            self.zmin = self.tvar['zaxis_opt']['z_range'][0]
-            self.zmax = self.tvar['zaxis_opt']['z_range'][1]
+        if 'z_range' in self.tvar.zaxis_opt:
+            self.zmin = self.tvar.zaxis_opt['z_range'][0]
+            self.zmax = self.tvar.zaxis_opt['z_range'][1]
         else:
-            dataset_temp = self.tvar['data'].replace([np.inf, -np.inf], np.nan)
+            dataset_temp = self.tvar.data.replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
             
             #Cannot have a 0 minimum in a log scale
             if self.zscale=='log':
                 zmin_list = []
-                for column in self.tvar['data'].columns:
-                    series = self.tvar['data'][column]
+                for column in self.tvar.data.columns:
+                    series = self.tvar.data[column]
                     zmin_list.append(series.iloc[series.nonzero()[0]].min())
                 self.zmin = min(zmin_list)
         
@@ -147,8 +147,11 @@ class TVarFigureSpec(object):
         self.fig.min_border_top = tplot_common.tplot_opt_glob['min_border_top']
         
     def _addtimebars(self):
-        for time_bar in self.tvar['time_bar']:
-            time_bar_line = Span(location = time_bar['location'], dimension = time_bar['dimension'], line_color = time_bar['line_color'], line_width = time_bar['line_width'])
+        for time_bar in self.tvar.time_bar:
+            time_bar_line = Span(location = time_bar['location'], 
+                                 dimension = time_bar['dimension'], 
+                                 line_color = time_bar['line_color'], 
+                                 line_width = time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
             
     def _setxaxis(self):
@@ -156,34 +159,34 @@ class TVarFigureSpec(object):
         self.fig.add_layout(xaxis1, 'above')
         
     def _getyaxistype(self):
-        if 'y_axis_type' in self.tvar['yaxis_opt']:
-            return self.tvar['yaxis_opt']['y_axis_type']
+        if 'y_axis_type' in self.tvar.yaxis_opt:
+            return self.tvar.yaxis_opt['y_axis_type']
         else:
             return 'log'
         
     def _setzaxistype(self):
-        if 'z_axis_type' in self.tvar['zaxis_opt']:
-            self.zscale = self.tvar['zaxis_opt']['z_axis_type']
+        if 'z_axis_type' in self.tvar.zaxis_opt:
+            self.zscale = self.tvar.zaxis_opt['z_axis_type']
 
         
     def _setcolors(self):          
-        if 'colormap' in self.tvar['extras']:
-            for cm in self.tvar['extras']['colormap']:
+        if 'colormap' in self.tvar.extras:
+            for cm in self.tvar.extras['colormap']:
                 self.colors.append(tplot_utilities.return_bokeh_colormap(cm))
         else:
             self.colors.append(tplot_utilities.return_bokeh_colormap('magma'))
 
     
     def _setyaxislabel(self):
-        self.fig.yaxis.axis_label = self.tvar['yaxis_opt']['axis_label']
+        self.fig.yaxis.axis_label = self.tvar.yaxis_opt['axis_label']
     
     def _setzaxislabel(self):
-        self.fig.yaxis.axis_label = self.tvar['yaxis_opt']['axis_label']
+        self.fig.yaxis.axis_label = self.tvar.yaxis_opt['axis_label']
         
     def _visdata(self):
         self._setcolors()
         
-        x = self.tvar['data'].index.tolist()
+        x = self.tvar.data.index.tolist()
         temp = [a for a in x if (a <= (tplot_common.tplot_opt_glob['x_range'][1]) and a >= (tplot_common.tplot_opt_glob['x_range'][0]))]
         x= temp
     
@@ -196,7 +199,7 @@ class TVarFigureSpec(object):
     
         #Get length of arrays
         size_x = len(x)
-        size_y = len(self.tvar['spec_bins'])
+        size_y = len(self.tvar.spec_bins)
         
         #These arrays will be populated with data for the rectangle glyphs
         color = []
@@ -218,24 +221,38 @@ class TVarFigureSpec(object):
         corrected_time = corrected_time * (size_y-1)
         
         for i in range(size_y-1):
-            temp = self.tvar['data'][self.tvar['spec_bins'][i]][x[0:size_x-1]].tolist()
+            temp = self.tvar.data[self.tvar.spec_bins[i]][x[0:size_x-1]].tolist()
             value.extend(temp)
-            color.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[0], min_val=self.zmin, max_val=self.zmax, values=temp, zscale=self.zscale))
-            bottom.extend([self.tvar['spec_bins'][i]]*(size_x-1))
-            top.extend([self.tvar['spec_bins'][i+1]]*(size_x-1))
+            color.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[0], 
+                                                           min_val=self.zmin, 
+                                                           max_val=self.zmax, 
+                                                           values=temp, 
+                                                           zscale=self.zscale))
+            bottom.extend([self.tvar.spec_bins[i]]*(size_x-1))
+            top.extend([self.tvar.spec_bins[i+1]]*(size_x-1))
         
         #Here is where we add all of the rectangles to the plot
-        cds = ColumnDataSource(data=dict(x=left,y=bottom,right=right, top = top, z=color,value=value, corrected_time=corrected_time))
+        cds = ColumnDataSource(data=dict(x=left,
+                                         y=bottom,
+                                         right=right, 
+                                         top = top, 
+                                         z=color,
+                                         value=value, 
+                                         corrected_time=corrected_time))
+        
         self.fig.quad(bottom = 'y', left='x', right='right', top='top', color='z', source=cds)
             
         if self.interactive:
-            if 'y_axis_type' in self.tvar['yaxis_opt']:
+            if 'y_axis_type' in self.tvar.yaxis_opt:
                 y_interactive_log = 'log'
             else:
                 y_interactive_log = 'linear'
-            self.interactive_plot = Figure(plot_height = self.fig.plot_height, plot_width = self.fig.plot_width, y_range = (self.zmin, self.zmax), y_axis_type=y_interactive_log)
+            self.interactive_plot = Figure(plot_height = self.fig.plot_height, 
+                                           plot_width = self.fig.plot_width, 
+                                           y_range = (self.zmin, self.zmax), 
+                                           y_axis_type=y_interactive_log)
             self.interactive_plot.min_border_left = 100
-            spec_bins = self.tvar['spec_bins']
+            spec_bins = self.tvar.spec_bins
             flux = [0]*len(spec_bins)
             interactive_line_source = ColumnDataSource(data=dict(x=spec_bins, y=flux))
             interactive_line = Line(x='x', y='y')
@@ -277,8 +294,8 @@ class TVarFigureSpec(object):
         
     def _addlegend(self):
         #Add the color bar
-        if 'z_axis_type' in self.tvar['zaxis_opt']:
-            if self.tvar['zaxis_opt']['z_axis_type'] == 'log':
+        if 'z_axis_type' in self.tvar.zaxis_opt:
+            if self.tvar.zaxis_opt['z_axis_type'] == 'log':
                 color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
             else:
@@ -293,8 +310,8 @@ class TVarFigureSpec(object):
         color_bar.label_standoff = 5
         color_bar.major_label_text_baseline = 'middle'
         
-        if 'axis_label' in self.tvar['zaxis_opt']:
-            color_bar.title = self.tvar['zaxis_opt']['axis_label']
+        if 'axis_label' in self.tvar.zaxis_opt:
+            color_bar.title = self.tvar.zaxis_opt['axis_label']
             color_bar.title_text_font_size = '8pt'
             color_bar.title_text_font_style = 'bold'
             color_bar.title_standoff = 20

@@ -6,18 +6,6 @@ from .tplot_directory import get_tplot_directory
 from . import tplot_common
 from .timestamp import TimeStamp
 from bokeh.layouts import gridplot
-
-'''dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
-            milliseconds=["%H:%M:%S"],
-            seconds=["%H:%M:%S"],
-            minsec=["%H:%M:%S"],
-            minutes=["%H:%M:%S"],
-            hourmin=["%H:%M:%S"],
-            hours=["%H:%M"],
-            days=["%F"],
-            months=["%F"],
-            years=["%F"])
-'''
 from .TVarFigure1D import TVarFigure1D
 from .TVarFigure2D import TVarFigure2D
 from .TVarFigureSpec import TVarFigureSpec

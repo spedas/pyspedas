@@ -22,7 +22,8 @@ def store_data(name, data=None, delete=False):
     if isinstance(data, list):
         base_data = get_base_tplot_vars(data)
         #Use first tplot var as the time range
-        trange = [np.nanmin(tplot_common.data_quants[base_data[0]]['data'].index), np.nanmax(tplot_common.data_quants[base_data[0]]['data'].index)]
+        trange = [np.nanmin(tplot_common.data_quants[base_data[0]].data.index), 
+                  np.nanmax(tplot_common.data_quants[base_data[0]].data.index)]
         df = base_data
         spec_bins=None
     else:             
