@@ -31,7 +31,10 @@ class TVarFigure2D(object):
         self.zmax = 1
         self.callback = None
         self.interactive_plot = None
-    
+        self.fig = Figure(webgl=True, 
+                          tools = "pan,wheel_zoom,crosshair,reset,box_zoom", 
+                          y_axis_type=self._getyaxistype() )
+        self._format()
     def getaxistype(self):
         axis_type = 'map'
         link_y_axis = True
@@ -60,10 +63,6 @@ class TVarFigure2D(object):
                 self.fig.plot_height += 22
     
     def buildfigure(self):
-        self.fig = Figure(webgl=True, 
-                          tools = "pan,wheel_zoom,crosshair,reset,box_zoom", 
-                          y_axis_type=self._getyaxistype() )
-        self._format()
         self._setminborder()
         self._setxrange()
         self._setxaxis()

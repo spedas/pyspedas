@@ -82,8 +82,12 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
             new_fig = TVarFigure1D(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
             
         axis_types.append(new_fig.getaxistype())
+        
+        new_fig.setsize(height=p_height, width=p_width) 
+        if i == 0:
+            new_fig.add_title()
+        
         new_fig.buildfigure()
-        new_fig.setsize(height=p_height, width=p_width)     
         
             
         # Add name of variable to output file name
@@ -138,10 +142,7 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
             all_plots[k-1][0].plot_height += 22
             x_axes_index += 1
     
-    # Add toolbar and title (if applicable) to top plot.
-    if i == 0:
-        new_fig.add_title()
-        
+    # Add toolbar and title (if applicable) to top plot.        
     final = gridplot(all_plots)
     
     

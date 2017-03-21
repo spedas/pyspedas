@@ -36,6 +36,13 @@ class TVarFigure1D(object):
         self.linenum = 0
         self.interactive_plot = None
 
+        self.fig = Figure(webgl=True, 
+                          x_axis_type='datetime', 
+                          tools = tplot_common.tplot_opt_glob['tools'],
+                          y_axis_type=self._getyaxistype())
+        self.fig.add_tools(BoxZoomTool(dimensions='width'))
+        self._format()
+        
     def getaxistype(self):
         axis_type = 'time'
         link_y_axis = False
@@ -64,12 +71,6 @@ class TVarFigure1D(object):
                 self.fig.plot_height += 22
 
     def buildfigure(self):
-        self.fig = Figure(webgl=True, 
-                          x_axis_type='datetime', 
-                          tools = tplot_common.tplot_opt_glob['tools'],
-                          y_axis_type=self._getyaxistype())
-        self.fig.add_tools(BoxZoomTool(dimensions='width'))
-        self._format()
         self._setminborder()
         self._setxrange()
         self._setxaxis()
