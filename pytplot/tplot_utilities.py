@@ -91,7 +91,16 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
             print("Invalid value. Should be (0, 1]")
             return
         new_extras['panel_size'] = value
-            
+    
+    elif option =='basemap':
+        new_extras['basemap'] = value
+    
+    elif option =='alpha':
+        if value > 1 or value < 0:
+            print("Invalid value. Should be [0, 1]")
+            return
+        new_extras['alpha'] = value
+        
     elif option == 'thick':
         new_line_opt['line_width'] = value
     

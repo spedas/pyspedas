@@ -1,6 +1,6 @@
 from __future__ import division
 import numpy as np
-import math
+import os
 from bokeh.plotting.figure import Figure
 from bokeh.models import (CustomJS, LogColorMapper, LogTicker, LinearColorMapper, 
                           BasicTicker, ColumnDataSource, DatetimeAxis, HoverTool, 
@@ -12,7 +12,6 @@ from bokeh.models.formatters import BasicTickFormatter
 from . import tplot_common
 from .colorbarsidetitle import ColorBarSideTitle
 from . import tplot_utilities
-
 
 class TVarFigure2D(object):
     
@@ -76,6 +75,7 @@ class TVarFigure2D(object):
         self._addhoverlines()
         self._addlegend()
         self._addextras()
+        self._setbackground()
         
     def _format(self):
         #Formatting stuff
@@ -207,7 +207,8 @@ class TVarFigure2D(object):
                                  line_color=None, 
                                  source=circle_source)
             cm_index+=1
-            
+        
+        
     def _addhoverlines(self):
         #Add tools
         hover = HoverTool()
@@ -259,3 +260,11 @@ class TVarFigure2D(object):
         
         self.fig.add_layout(color_bar, 'right')
     
+    def _setbackground(self):
+        if 'alpha' in self.tvar.extras:
+            alpha=self.tvar.extras['alpha']
+        else:
+            alpha=1
+        if 'basemap' in self.tvar.extras:
+            if os.path.isfile(self.tvar.extras['basemap']):
+                self.fig.image_url(url=[self.tvar.extras['basemap']], x = 0, y=90, w=360, h=180, global_alpha=alpha)
