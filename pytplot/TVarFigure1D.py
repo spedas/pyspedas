@@ -152,7 +152,7 @@ class TVarFigure1D(object):
         self._setcolors()
         
         datasets = []
-        if isinstance(self.tvar.yaxis_opt, list):
+        if isinstance(self.tvar.data, list):
             for oplot_name in self.tvar.data:
                 datasets.append(tplot_common.data_quants[oplot_name].data)
         else:

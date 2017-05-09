@@ -66,10 +66,10 @@ def tplot_restore(file_name):
                     tplot_options('wsize', temp_tplot['tv'][0][0][option_name][0])
                 if option_name == 'VAR_LABEL':
                     tplot_options('var_label', temp_tplot['tv'][0][0][option_name][0])
-            
-            for option_name in temp_tplot['tv'][0][1]['P'][0].dtype.names:
-                if option_name == 'TITLE':
-                    tplot_options('title', temp_tplot['tv'][0][1]['P'][0][option_name][0])
+            if 'P' in temp_tplot['tv'][0][1].tolist():
+                for option_name in temp_tplot['tv'][0][1]['P'][0].dtype.names:
+                    if option_name == 'TITLE':
+                        tplot_options('title', temp_tplot['tv'][0][1]['P'][0][option_name][0])
                 
         #temp_tplot['tv'][0][1] is all of the "settings" variables
             #temp_tplot['tv'][0][1]['D'][0] is "device" options

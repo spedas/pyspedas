@@ -43,6 +43,8 @@ def store_data(name, data=None, delete=False):
             else:
                 print("The lengths of x and y do not match!")
                 return
+        elif isinstance(times, pd.Series):
+            df = df.set_index(data['x'])
         else:
             df['Index'] = times
             df = df.set_index('Index', drop=True)
