@@ -6,11 +6,8 @@ import datetime
 from . import tplot_common
 
 JS_CODE = '''
-import * as _ from "underscore"
-import * as $ from "jquery"
-
 import * as p from "core/properties"
-
+import {div, empty} from "core/dom"
 import {LayoutDOM, LayoutDOMView} from "models/layouts/layout_dom"
 
 export class TimeStampView extends LayoutDOMView
@@ -21,8 +18,16 @@ export class TimeStampView extends LayoutDOMView
         @render()
         
     render: () ->
-        @$el.html("<p>#{ @model.text }</p>")
-        @$el.find('p').css({ 'width': '800px', 'word-spacing': '10px', 'font-size': '11px', 'color': '#000000', 'background-color': '#ffffff' })
+        empty(@el)
+        @el.appendChild(div({
+          style: {
+            'width': '800px'
+            'word-spacing': '10px'
+            'font-size': '11px'
+            'color': '#000000'
+            'background-color': '#ffffff'
+            }
+        }, "#{ @model.text }"))
 
 export class TimeStamp extends LayoutDOM
 
