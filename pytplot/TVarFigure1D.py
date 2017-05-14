@@ -176,6 +176,8 @@ class TVarFigure1D(object):
             #Create lines from each column in the dataframe    
             for column_name in dataset.columns:
                 y = dataset[column_name]
+                if self._getyaxistype() == 'log':
+                    y.loc[y <= 0] = np.NaN
                 line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
                 if self.auto_color:
                     line = Line(x='x', y='y', line_color = self.colors[self.linenum % len(self.colors)], **self.tvar.line_opt)

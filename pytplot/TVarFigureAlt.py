@@ -159,6 +159,8 @@ class TVarFigureAlt(object):
             #Create lines from each column in the dataframe    
             for column_name in dataset.columns:
                 y = dataset[column_name]
+                if self._getyaxistype() == 'log':
+                    y.loc[y <= 0] = np.NaN
                 line_source = ColumnDataSource(data=dict(x=x, y=y))
                 if self.auto_color:
                     line = Line(x='x', y='y', line_color = 'red', **self.tvar.line_opt)
