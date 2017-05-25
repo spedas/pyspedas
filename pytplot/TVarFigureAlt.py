@@ -19,7 +19,7 @@ class TVarFigureAlt(object):
         self.interactive=interactive
        
         #Variables needed across functions
-        self.colors = ['red', 'green', 'navy', 'orange', 'firebrick', 'pink', 'blue', 'olive', 'black']
+        self.colors = ['black', 'red', 'green', 'navy', 'orange', 'firebrick', 'pink', 'blue', 'olive']
         self.lineglyphs = []
         self.linenum = 0
         self.interactive_plot = None
@@ -163,7 +163,7 @@ class TVarFigureAlt(object):
                     y.loc[y <= 0] = np.NaN
                 line_source = ColumnDataSource(data=dict(x=x, y=y))
                 if self.auto_color:
-                    line = Line(x='x', y='y', line_color = 'red', **self.tvar.line_opt)
+                    line = Line(x='x', y='y', line_color = self.colors[self.linenum % len(self.colors)], **self.tvar.line_opt)
                 else:
                     line = Line(x='x', y='y', **self.tvar.line_opt)
                 if 'line_style' not in self.tvar.line_opt:
