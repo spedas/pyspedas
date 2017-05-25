@@ -1,13 +1,12 @@
 from __future__ import division
 import numpy as np
 from bokeh.plotting.figure import Figure
-from bokeh.models import (ColumnDataSource, DatetimeAxis, HoverTool, 
+from bokeh.models import (ColumnDataSource, HoverTool, 
                           Range1d, Span, Title, Legend)
-from bokeh.models.glyphs import Line
+from bokeh.models.glyphs import Line, Square
 from bokeh.models.tools import BoxZoomTool
 
 from . import tplot_common
-from . import tplot_utilities
 
 
 class TVarFigureAlt(object):
@@ -103,6 +102,9 @@ class TVarFigureAlt(object):
         self.fig.x_range = x_range
     
     def _setyrange(self):
+        if self._getyaxistype() == 'log':
+            if self.tvar.yaxis_opt['y_range'][0] <0 or self.tvar.yaxis_opt['y_range'][1] < 0:
+                return
         y_range = Range1d(self.tvar.yaxis_opt['y_range'][0], self.tvar.yaxis_opt['y_range'][1])
         self.fig.y_range = y_range
         
@@ -159,8 +161,12 @@ class TVarFigureAlt(object):
             #Create lines from each column in the dataframe    
             for column_name in dataset.columns:
                 y = dataset[column_name]
+                
+                
                 if self._getyaxistype() == 'log':
                     y.loc[y <= 0] = np.NaN
+                                 
+                
                 line_source = ColumnDataSource(data=dict(x=x, y=y))
                 if self.auto_color:
                     line = Line(x='x', y='y', line_color = self.colors[self.linenum % len(self.colors)], **self.tvar.line_opt)

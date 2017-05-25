@@ -118,6 +118,9 @@ class TVarFigure1D(object):
         self.fig.x_range = x_range
     
     def _setyrange(self):
+        if self._getyaxistype() == 'log':
+            if self.tvar.yaxis_opt['y_range'][0] <0 or self.tvar.yaxis_opt['y_range'][1] < 0:
+                return
         y_range = Range1d(self.tvar.yaxis_opt['y_range'][0], self.tvar.yaxis_opt['y_range'][1])
         self.fig.y_range = y_range
         
@@ -176,8 +179,10 @@ class TVarFigure1D(object):
             #Create lines from each column in the dataframe    
             for column_name in dataset.columns:
                 y = dataset[column_name]
+                
                 if self._getyaxistype() == 'log':
-                    y.loc[y <= 0] = np.NaN
+                    y.loc[y <= 0] = np.NaN                
+                
                 line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
                 if self.auto_color:
                     line = Line(x='x', y='y', line_color = self.colors[self.linenum % len(self.colors)], **self.tvar.line_opt)

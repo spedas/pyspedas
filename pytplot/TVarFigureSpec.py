@@ -121,6 +121,9 @@ class TVarFigureSpec(object):
         self.fig.x_range = x_range
     
     def _setyrange(self):
+        if self._getyaxistype() == 'log':
+            if self.tvar.yaxis_opt['y_range'][0] <0 or self.tvar.yaxis_opt['y_range'][1] < 0:
+                return
         y_range = Range1d(self.tvar.yaxis_opt['y_range'][0], self.tvar.yaxis_opt['y_range'][1])
         self.fig.y_range = y_range
         

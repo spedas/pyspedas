@@ -213,6 +213,9 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         
     elif option == 'var_label':
         new_tplot_opt_glob['var_label'] = value
+        
+    elif option == 'alt_range':
+        new_tplot_opt_glob['alt_range'] = value
     
     return (new_tplot_opt_glob)
 
