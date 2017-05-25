@@ -7,8 +7,6 @@ import pandas as pd
 import numpy as np
 import pytz
 from _collections import OrderedDict
-import matplotlib as mpl
-from matplotlib import cm
 from . import tplot_common
 from .timestamp import TimeStamp
 
@@ -234,6 +232,10 @@ def int_to_str(time_int):
         return datetime.datetime.fromtimestamp(int(round(time_int)), tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
 
 def return_bokeh_colormap(name):
+    import matplotlib as mpl
+    mpl.use('tkagg')
+    from matplotlib import cm
+    
     if name=='yellow':
         map = [rgb_to_hex(tuple((np.array([1,1,0,1])*255).astype(np.int))) for x in range(0,256)]
         return map
