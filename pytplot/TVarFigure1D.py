@@ -1,3 +1,8 @@
+# Copyright 2017 Regents of the University of Colorado. All Rights Reserved.
+# Released under the MIT license.
+# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
+# Verify current version before use at: https://github.com/MAVENSDC/PyTplot
+
 from __future__ import division
 import numpy as np
 from bokeh.plotting.figure import Figure
