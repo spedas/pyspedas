@@ -35,7 +35,7 @@ class TVarFigure2D(object):
         self.zmax = 1
         self.callback = None
         self.interactive_plot = None
-        self.fig = Figure(webgl=True, 
+        self.fig = Figure(output_backend='webgl', 
                           tools = "pan,wheel_zoom,crosshair,reset,box_zoom", 
                           y_axis_type=self._getyaxistype() )
         self._format()
