@@ -27,8 +27,7 @@ class TVarFigureAlt(object):
         self.lineglyphs = []
         self.linenum = 0
         self.interactive_plot = None
-        self.fig = Figure(output_backend='webgl', 
-                          tools = tplot_common.tplot_opt_glob['tools'],
+        self.fig = Figure(tools = tplot_common.tplot_opt_glob['tools'],
                           y_axis_type=self._getyaxistype())
         self.fig.add_tools(BoxZoomTool(dimensions='width'))
         self._format()

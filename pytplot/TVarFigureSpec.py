@@ -48,8 +48,7 @@ class TVarFigureSpec(object):
         self.zmax = 1
         self.callback = None
         self.interactive_plot = None
-        self.fig = Figure(output_backend='webgl', 
-                          x_axis_type='datetime', 
+        self.fig = Figure(x_axis_type='datetime', 
                           tools = tplot_common.tplot_opt_glob['tools'], 
                           y_axis_type=self._getyaxistype())
         self.fig.add_tools(BoxZoomTool(dimensions='width'))

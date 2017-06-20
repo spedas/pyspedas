@@ -12,7 +12,11 @@ JS_CODE = '''
 import {min, max} from "core/util/array"
  
 import {ColorBar, ColorBarView} from "models/annotations/color_bar"
- 
+import {isEmpty} from "core/util/object"
+
+SHORT_DIM = 25
+LONG_DIM_MIN_SCALAR = 0.3
+LONG_DIM_MAX_SCALAR = 0.8
 export class ColorBarSideTitleView extends ColorBarView
  
   compute_legend_dimensions: () ->
@@ -33,7 +37,6 @@ export class ColorBarSideTitleView extends ColorBarView
         legend_width = image_width + title_extent + padding * 2
  
     return {height: legend_height, width: legend_width}
- 
  
   render: () ->
     if @model.visible == false
@@ -102,11 +105,9 @@ export class ColorBarSideTitleView extends ColorBarView
       label_extent = 0
     return label_extent
  
-   
 export class ColorBarSideTitle extends ColorBar
   default_view: ColorBarSideTitleView
   type: 'ColorBarSideTitle'
- 
  
   _computed_image_dimensions: () ->
     ###
@@ -128,11 +129,11 @@ export class ColorBarSideTitle extends ColorBar
     But not greater than:
       * The parallel frame dimension * 0.80
     ###
- 
-    frame_height = @plot.plot_canvas.frame.height
-    frame_width = @plot.plot_canvas.frame.width
+
+    frame_height = @plot.plot_canvas.frame._height.value
+    frame_width = @plot.plot_canvas.frame._width.value
     title_extent = 0
- 
+
     switch @orientation
       when "vertical"
         if @height == 'auto'
@@ -147,7 +148,7 @@ export class ColorBarSideTitle extends ColorBar
           height = @height
  
         width = if @width == 'auto' then SHORT_DIM else @width
- 
+
       when "horizontal"
         height = if @height == 'auto' then SHORT_DIM else @height
  
@@ -161,7 +162,7 @@ export class ColorBarSideTitle extends ColorBar
                            frame_width * LONG_DIM_MAX_SCALAR - 2 * @padding])
         else
           width = @width
- 
+
     return {"height": height, "width": width}
      
  
