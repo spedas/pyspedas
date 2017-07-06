@@ -106,6 +106,7 @@ class TVarFigureSpec(object):
         self.fig.toolbar.active_drag='auto'
         if not self.last_plot:
             self.fig.xaxis.major_label_text_font_size = '0pt'
+            self.fig.xaxis.visible = False
         self.fig.lod_factor = 100
         self.fig.lod_interval = 30
         self.fig.lod_threshold = 100
@@ -163,6 +164,7 @@ class TVarFigureSpec(object):
             
     def _setxaxis(self):
         xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', formatter=dttf)
+        xaxis1.visible = False
         self.fig.add_layout(xaxis1, 'above')
         
     def _getyaxistype(self):

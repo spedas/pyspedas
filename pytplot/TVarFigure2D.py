@@ -90,6 +90,7 @@ class TVarFigure2D(object):
         self.fig.toolbar.active_drag='auto'
         if not self.last_plot:
             self.fig.xaxis.major_label_text_font_size = '0pt'
+            self.fig.xaxis.visible = False
         self.fig.lod_factor = 100
         self.fig.lod_interval = 30
         self.fig.lod_threshold = 100

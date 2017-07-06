@@ -4,7 +4,8 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from __future__ import division
-import os 
+import os
+import sys
 from bokeh.io import output_file, show, output_notebook
 from bokeh.models import LinearAxis, Range1d
 from .tplot_directory import get_tplot_directory
@@ -15,8 +16,18 @@ from .TVarFigure1D import TVarFigure1D
 from .TVarFigure2D import TVarFigure2D
 from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureAlt import TVarFigureAlt
+from bokeh.embed import components
 
-def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, combine_axes=True):
+
+def tplot(name, 
+          var_label = None, 
+          auto_color=True, 
+          interactive=False, 
+          nb=False, 
+          combine_axes=True, 
+          save_file=None,
+          gui=False, 
+          qt=True):
 
     # Name for .html file containing plots
     out_name = ""
@@ -149,22 +160,94 @@ def tplot(name, var_label = None, auto_color=True, interactive=False, nb=False, 
     
     # Add toolbar and title (if applicable) to top plot.        
     final = gridplot(all_plots)
-    
-    
-    if 'title_text' in tplot_common.tplot_opt_glob:
-        if tplot_common.tplot_opt_glob['title_text'] != '':
-            out_name = tplot_common.tplot_opt_glob['title_text']+'.html'
-        else:
-            out_name += '.html'
-    else:
-        out_name += '.html'
-    
-    if nb:
-        output_notebook()
-    else:
-        output_file(os.path.join(get_tplot_directory(),out_name))
-    
-    show(final)    
-    return
 
+
+    #Output types
+    if gui:
+        script, div = components(final)
+        return script, div
+    elif nb:
+        output_notebook()
+        show(final)
+        return
+    elif save_file != None:
+        output_file(save_file, mode='inline')
+        show(final)    
+        return
+    else:        
+        script, div = components(final)
+        _generate_gui(div, script)
+        return
+
+def _generate_gui(div, script):
+    from PyQt5.QtWebKitWidgets import QWebView
+    from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
+    from PyQt5.QtGui import QIcon
+    
+    build_html = '''
+                <!DOCTYPE html>
+                <html lang="en">
+                    <head>
+                        <meta charset="utf-8">
+                        <title>Bokeh Scatter Plots</title>
+                
+                        <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.css" type="text/css" />
+                        <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.js"></script>
+                    </head>
+                    <body>
+                '''
+                
+    final_html = '''
+    
+    </body>
+    </html>
+    '''
+                
+    total_html = build_html + div + script + final_html
+    
+    
+    class PlotWindow(QMainWindow):
+        
+        def __init__(self):
+            super().__init__()
+            self.initUI()
+            
+        def initUI(self):
+            self.setWindowTitle('PyTplot')
+            self.plot_window = QWebView()
+            self.setCentralWidget(self.plot_window)
+            
+            self.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
+            self.plot_window.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
+            
+            self.total_html = total_html
+            self.plot_window.setHtml(self.total_html)
+            
+            menubar = self.menuBar()
+            exportMenu = menubar.addMenu('Export')
+            exportDatahtmlAction = QAction(QIcon('exit.png'), "HTML", self)
+            exportDatahtmlAction.triggered.connect(self.exporthtml)
+            exportMenu.addAction(exportDatahtmlAction)        
+            exportDatapngAction = QAction(QIcon('exit.png'), "PNG", self)
+            exportDatapngAction.triggered.connect(self.exportpng)
+            exportMenu.addAction(exportDatapngAction)
+            
+            self.show()
+        
+        def exporthtml(self):
+            fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.html', filter ="html (*.html *.)")
+            with open(fname[0], 'w+') as html_file:
+                html_file.write(self.total_html)
+            
+        def exportpng(self):
+            fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
+            sshot = self.plot_window.grab()
+            sshot.save(fname[0])            
+    
+    app = QApplication(sys.argv)
+    web = PlotWindow()    
+    web.show()
+    web.activateWindow()
+    sys.exit(app.exec_())
+    return
     
