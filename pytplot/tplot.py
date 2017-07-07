@@ -4,11 +4,9 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from __future__ import division
-import os
 import sys
 from bokeh.io import output_file, show, output_notebook
 from bokeh.models import LinearAxis, Range1d
-from .tplot_directory import get_tplot_directory
 from . import tplot_common
 from .timestamp import TimeStamp
 from bokeh.layouts import gridplot
