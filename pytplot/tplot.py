@@ -16,9 +16,8 @@ from .TVarFigure1D import TVarFigure1D
 from .TVarFigure2D import TVarFigure2D
 from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureAlt import TVarFigureAlt
-from bokeh.embed import components
-
-
+from bokeh.embed import components, file_html
+from bokeh.resources import JSResources, CSSResources
 def tplot(name, 
           var_label = None, 
           auto_color=True, 
@@ -175,36 +174,17 @@ def tplot(name,
         show(final)    
         return
     else:        
-        script, div = components(final)
-        _generate_gui(div, script)
+        js = JSResources(mode='inline')
+        css = CSSResources(mode='inline')
+        total_html = file_html(final, (js, css))
+        _generate_gui(total_html)
         return
 
-def _generate_gui(div, script):
+def _generate_gui(total_html):
+    
     from PyQt5.QtWebKitWidgets import QWebView
     from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
-    from PyQt5.QtGui import QIcon
-    
-    build_html = '''
-                <!DOCTYPE html>
-                <html lang="en">
-                    <head>
-                        <meta charset="utf-8">
-                        <title>Bokeh Scatter Plots</title>
-                
-                        <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.css" type="text/css" />
-                        <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.js"></script>
-                    </head>
-                    <body>
-                '''
-                
-    final_html = '''
-    
-    </body>
-    </html>
-    '''
-                
-    total_html = build_html + div + script + final_html
-    
+   
     
     class PlotWindow(QMainWindow):
         
@@ -220,15 +200,14 @@ def _generate_gui(div, script):
             self.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
             self.plot_window.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
             
-            self.total_html = total_html
-            self.plot_window.setHtml(self.total_html)
+            self.plot_window.setHtml(total_html)
             
             menubar = self.menuBar()
             exportMenu = menubar.addMenu('Export')
-            exportDatahtmlAction = QAction(QIcon('exit.png'), "HTML", self)
+            exportDatahtmlAction = QAction("HTML", self)
             exportDatahtmlAction.triggered.connect(self.exporthtml)
             exportMenu.addAction(exportDatahtmlAction)        
-            exportDatapngAction = QAction(QIcon('exit.png'), "PNG", self)
+            exportDatapngAction = QAction("PNG", self)
             exportDatapngAction.triggered.connect(self.exportpng)
             exportMenu.addAction(exportDatapngAction)
             
@@ -237,7 +216,7 @@ def _generate_gui(div, script):
         def exporthtml(self):
             fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.html', filter ="html (*.html *.)")
             with open(fname[0], 'w+') as html_file:
-                html_file.write(self.total_html)
+                html_file.write(total_html)
             
         def exportpng(self):
             fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
