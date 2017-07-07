@@ -202,8 +202,8 @@ class TVarFigureSpec(object):
         #Sometimes X will be huge, we'll need to cut down so that each x will stay about 1 pixel in size
         step_size=1
         num_rect_displayed = len(x)
-        if (self.fig.plot_width*2) < num_rect_displayed:
-            step_size=int(math.floor(num_rect_displayed/(self.fig.plot_width*2)))
+        if (self.fig.plot_width) < num_rect_displayed:
+            step_size=int(math.floor(num_rect_displayed/(self.fig.plot_width)))
             x[:] = x[0::step_size]
     
         #Get length of arrays
