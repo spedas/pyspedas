@@ -5,8 +5,33 @@
 
 from . import tplot_common
 
-def zlim(name, min, max, log_opt=False):
-   
+def zlim(name, min, max):
+    """
+    This function will set the z axis range displayed for a specific tplot variable.
+    This is only used for spec plots, where the z axis represents the magnitude of the values
+    in each bin.  
+    
+    Parameters:
+        name : str
+            The name of the tplot variable that you wish to set z limits for.  
+        min : flt
+            The start of the z axis.
+        max : flt
+            The end of the z axis.   
+            
+    Returns:
+        None
+    
+    Examples:
+        >>> # Change the z range of Variable1 
+        >>> import pytplot
+        >>> x_data = [1,2,3]
+        >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
+        >>> v_data = [1,2,3]
+        >>> pytplot.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+        >>> pytplot.zlim('Variable1', 2, 3)
+
+    """
     if name not in tplot_common.data_quants.keys():
         print("That name is currently not in pytplot.")
         return

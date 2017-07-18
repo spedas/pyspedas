@@ -6,6 +6,26 @@
 from . import tplot_common
 
 def tplot_rename(old_name, new_name):
+    """
+    This function will rename tplot variables that are already stored in memory.  
+    
+    Parameters:
+        old_name : str 
+            Old name of the Tplot Variable
+        new_name : str
+            New name of the Tplot Variable
+         
+    Returns:
+        None
+        
+    Examples:
+        >>> # Rename Variable 1 to Variable 2
+        >>> import pytplot
+        >>> pytplot.tplot_rename("Variable1", "Variable2")
+
+    """
+    
+    
     if old_name not in tplot_common.data_quants.keys():
         print("That name is currently not in pytplot")
         return

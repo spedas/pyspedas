@@ -13,6 +13,57 @@ from .del_data import del_data
 tplot_num = 1
 
 def store_data(name, data=None, delete=False):
+    
+    """
+    This function creates a "Tplot Variable" based on the inputs, and
+    stores this data in memory.  Tplot Variables store all of the information
+    needed to generate a plot.  
+    
+    Parameters:
+        name : str 
+            Name of the tplot variable that will be created
+        data : dict
+            A python dictionary object.  
+            
+            'x' should be a 1-dimensional array that represents the data's x axis.  Typically this data is time, represented in seconds since epoch (January 1st 1970)
+            
+            'y' should be the data values. This can be 2 dimensions if multiple lines or a spectrogram are desired.
+            
+            'v' is optional, and is only used for spectrogram plots.  This will be a list of bins to be used.  If this is provided, then 'y' should have dimensions of x by z. 
+            
+            'x' and 'y' can be any data format that can be read in by the pandas module.  Python lists, numpy arrays, or any pandas data type will all work.   
+        delete : bool, optional
+            Deletes the tplot variable matching the "name" parameter
+        
+        .. note::
+        If you want to combine multiple tplot variables into one, simply supply the list of tplot variables to the "data" parameter.  This will cause the data to overlay when plotted. 
+        
+    Returns:
+        None
+        
+    Examples:
+        >>> # Store a single line
+        >>> import pytplot
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [1,2,3,4,5]
+        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+    
+        >>> # Store a two lines
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [ [1,2,3,4,5], [5,4,3,2,1] ]
+        >>> pytplot.store_data("Variable2", data={'x':x_data, 'y':y_data})
+        
+        >>> # Store a specrogram
+        >>> x_data = [1,2,3]
+        >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
+        >>> v_data = [1,2,3]
+        >>> pytplot.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+        
+        >>> # Combine two different line plots
+        >>> pytplot.store_data("Variable1and2", data=['Variable1', 'Variable2'])
+
+    """
+    
     global tplot_num
     create_time = datetime.datetime.now()
     

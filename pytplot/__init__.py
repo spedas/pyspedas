@@ -1,3 +1,7 @@
+'''
+BANANA PHONE
+'''
+
 from .store_data import store_data
 from .tplot import tplot
 from .get_data import get_data
@@ -16,5 +20,4 @@ from .timebar import timebar
 from .del_data import del_data
 from .timespan import timespan
 from .options import options
-from .overplot import overplot
 from .timestamp import timestamp

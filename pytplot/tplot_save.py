@@ -7,6 +7,31 @@ import pickle
 from . import tplot_common
 
 def tplot_save(names, filename=None):
+    """
+    This function will save tplot variables into a single file by using the python "pickle" function.
+    This file can then be "restored" using tplot_restore.  This is useful if you want to end the pytplot session,
+    but save all of your data/options.  All variables and plot options can be read back into tplot with the 
+    "tplot_restore" command.  
+    
+    Parameters:
+        names : str/list
+            A string or a list of strings of the tplot variables you would like saved.  
+        filename : str, optional
+            The filename where you want to save the file.  
+            
+    Returns:
+        None
+    
+    Examples:
+        >>> # Save a single tplot variable
+        >>> import pytplot
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [1,2,3,4,5]
+        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pytplot.ylim('Variable1', 2, 4)
+        >>> pytplot.save('Variable1', filename='C:/temp/variable1.pytplot')
+
+    """
     
     if not isinstance(names, list):
         names = [names]

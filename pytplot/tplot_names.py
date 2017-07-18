@@ -6,6 +6,26 @@
 from . import tplot_common
 
 def tplot_names():
+    """
+    This function will print out and return a list of all current Tplot Variables stored in the memory.  
+    
+    Parameters:
+        None
+         
+    Returns:
+        list : list of str
+            A list of all Tplot Variables stored in the memory
+            
+    Examples:
+        >>> import pytplot
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [1,2,3,4,5]
+        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> tnames = pyplot.tplot_names()
+        0 : Variable 1
+
+    """
+    
     index = 0
     return_names=[]
     for key, _ in tplot_common.data_quants.items():

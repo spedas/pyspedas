@@ -51,6 +51,24 @@ export class TimeStamp extends LayoutDOM
 
 
 def timestamp(val):  
+    """
+    This function will turn on a time stamp that shows up at the bottom of every generated plot.
+    
+    Parameters:
+        val : str
+            A string that can either be 'on' or 'off'.  
+            
+    Returns:
+        None
+    
+    Examples:
+        >>> # Turn on the timestamp
+        >>> import pytplot
+        >>> pytplot.timestamp('on')
+
+    """
+    
+    
     if val is 'on':
         todaystring = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         tplot_common.extra_layouts['time_stamp'] = todaystring
@@ -64,10 +82,3 @@ class TimeStamp(LayoutDOM):
     __implementation__ = JS_CODE
     text = String(default = "Testing")
 
-    
-def timestamp_help(in_date):
-    
-    form_datetime = datetime.datetime.utcfromtimestamp(in_date)
-    form_string = form_datetime.strftime("%m/%d/%Y")
-    
-    return form_string

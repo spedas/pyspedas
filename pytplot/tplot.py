@@ -1,8 +1,3 @@
-# Copyright 2017 Regents of the University of Colorado. All Rights Reserved.
-# Released under the MIT license.
-# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
-# Verify current version before use at: https://github.com/MAVENSDC/PyTplot
-
 from __future__ import division
 import sys
 from bokeh.io import output_file, show, output_notebook
@@ -16,15 +11,69 @@ from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureAlt import TVarFigureAlt
 from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
+
+
 def tplot(name, 
           var_label = None, 
           auto_color=True, 
           interactive=False, 
-          nb=False, 
           combine_axes=True, 
+          nb=False, 
           save_file=None,
           gui=False, 
           qt=True):
+    
+    """
+    This is the function used to display the tplot variables stored in memory by taking all of the plot options previously set and creating the plots stacked atop one another.
+    The default output is to show the plots inside a GUI window.  The GUI window has the option to export the plots in either PNG or HTML formats.
+    
+    .. note::
+        This plotting routine uses the python Bokeh library, which creates plots using HTML and Javascript.  
+        Bokeh is technically still in beta, so future patches to Bokeh may require updates to this file.  
+    
+    Parameters
+    ----------
+    
+        name : str / list
+            List of tplot variables that will be plotted
+        var_label : str, optional
+            The name of the tplot variable you would like as
+            a second x axis. 
+        auto_color : bool, optional
+            Automatically color the plot lines.
+        interactive : bool, optional
+            If True, a secondary interactive plot will be generated next to spectrogram plots.  
+            Mousing over the spectrogram will display a slice of data from that time on the 
+            interactive chart.
+        combine_axis : bool, optional
+            If True, the axes are combined so that they all display the same x range.  This also enables
+            scrolling/zooming/panning on one plot to affect all of the other plots simultaneously.  
+        nb : bool, optional
+            If True, the plot will be displayed inside of a current Jupyter notebook session.  
+        save_file : str, optional
+            A full file name and path.  
+            If this option is set, the plot will be automatically saved to the file name provided in an HTML format.
+            The plots can then be opened and viewed on any browser without any requirements. 
+        gui : bool, optional
+            If True, then this function will output the 2 HTML components of the generated plots as string variables.
+            This is useful if you are embedded the plots in your own GUI.  For more information, see 
+            http://bokeh.pydata.org/en/latest/docs/user_guide/embed.html  
+        qt : bool, optional
+            If True, then this function will display the plot inside of the Qt window.  From this window, you
+            can choose to export the plots as either an HTML file, or as a PNG.   
+        
+    
+    Returns
+    -------
+    
+    None
+        
+        
+    Examples
+    --------
+    
+    TODO: SET EXAMPLES
+    """
 
     # Name for .html file containing plots
     out_name = ""

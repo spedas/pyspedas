@@ -7,9 +7,34 @@ from . import tplot_common
 from . import tplot_utilities
 from .xlim import xlim
 
-def timespan(t1, dt, keyword = None):
-    if keyword is None or keyword is 'days':
-        # days is the duration
+def timespan(t1, dt, keyword = 'days'):
+    """
+    This function will set the time range for all time series plots.  This is a wrapper for the function "xlim" to
+    better handle time axes.  
+    
+    Parameters:
+        t1 : flt/str
+            The time to start all time series plots.  Can be given in seconds since epoch, or as a string
+            in the format "YYYY-MM-DD HH:MM:SS"
+        dt : flt
+            The time duration of the plots.  Default is number of days.  
+        keyword : str
+            Sets the units of the "dt" variable.  Days, hours, minutes, and seconds are all accepted.  
+            
+    Returns:
+        None
+    
+    Examples:
+        >>> # Set the timespan to be 2017-07-17 00:00:00 plus 1 day
+        >>> import pytplot
+        >>> pytplot.timespan(1500249600, 1)
+        
+        >>> # The same as above, but using different inputs
+        >>> pytplot.timespan("2017-07-17 00:00:00", 24, keyword='hours')
+
+    """
+    
+    if keyword is 'days':
         dt *= 86400
     elif keyword is 'hours':
         dt *= 3600

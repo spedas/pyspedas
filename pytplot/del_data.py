@@ -7,7 +7,22 @@ from . import tplot_common
 
 
 def del_data(name):
+    """
+    This function will delete tplot variables that are already stored in memory.  
     
+    Parameters:
+        name : str 
+            Name of the tplot variable to be deleted
+         
+    Returns:
+        None
+        
+    Examples:
+        >>> # Delete Variable 1
+        >>> import pytplot
+        >>> pytplot.del_data("Varaible1")
+
+    """
     if not isinstance(name, list):
         name = [name]
     for i in name:

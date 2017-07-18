@@ -5,8 +5,30 @@
 
 from . import tplot_common
 
-def ylim(name, min, max, log_opt=False):
+def ylim(name, min, max):
+    """
+    This function will set the y axis range displayed for a specific tplot variable.
     
+    Parameters:
+        name : str
+            The name of the tplot variable that you wish to set y limits for.  
+        min : flt
+            The start of the y axis.
+        max : flt
+            The end of the y axis.   
+            
+    Returns:
+        None
+    
+    Examples:
+        >>> # Change the y range of Variable1 
+        >>> import pytplot
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [1,2,3,4,5]
+        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pytplot.ylim('Variable1', 2, 4)
+
+    """
     if name not in tplot_common.data_quants.keys():
         print("That name is currently not in pytplot.")
         return
