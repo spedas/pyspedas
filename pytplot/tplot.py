@@ -24,16 +24,15 @@ def tplot(name,
           qt=True):
     
     """
-    This is the function used to display the tplot variables stored in memory by taking all of the plot options previously set and creating the plots stacked atop one another.
-    The default output is to show the plots inside a GUI window.  The GUI window has the option to export the plots in either PNG or HTML formats.
+    This is the function used to display the tplot variables stored in memory.
+    The default output is to show the plots stacked on top of one another inside a GUI window.  
+    The GUI window has the option to export the plots in either PNG or HTML formats.
     
     .. note::
         This plotting routine uses the python Bokeh library, which creates plots using HTML and Javascript.  
-        Bokeh is technically still in beta, so future patches to Bokeh may require updates to this file.  
+        Bokeh is technically still in beta, so future patches to Bokeh may require updates to this function.  
     
-    Parameters
-    ----------
-    
+    Parameters:
         name : str / list
             List of tplot variables that will be plotted
         var_label : str, optional
@@ -62,17 +61,36 @@ def tplot(name,
             If True, then this function will display the plot inside of the Qt window.  From this window, you
             can choose to export the plots as either an HTML file, or as a PNG.   
         
-    
-    Returns
-    -------
-    
-    None
+    Returns:
+        None
         
+    Examples:
+        >>> #Plot a single line
+        >>> import pytplot
+        >>> x_data = [2,3,4,5,6]
+        >>> y_data = [1,2,3,4,5]
+        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pytplot.tplot("Variable1")
         
-    Examples
-    --------
-    
-    TODO: SET EXAMPLES
+        >>> #Display two plots
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
+        >>> pytplot.store_data("Variable2", data={'x':x_data, 'y':y_data})
+        >>> pytplot.tplot(["Variable1", "Variable2"])
+        
+        >>> #Display 2 plots, using Variable1 as another x axis
+        >>> x_data = [1,2,3]
+        >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
+        >>> v_data = [1,2,3]
+        >>> pytplot.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+        >>> pytplot.options("Variable3", 'spec', 1)
+        >>> pytplot.tplot(["Variable2", "Variable3"], var_label='Variable1')
+        
+        >>> #Plot all 3 tplot variables, sending the output to an HTML file
+        >>> pytplot.tplot(["Variable1", "Variable2", "Variable3"], save_file='C:/temp/pytplot_example.html')
+        
+        >>> #Plot all 3 tplot variables, sending the HTML output to a pair of strings
+        >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
 
     # Name for .html file containing plots
@@ -274,6 +292,6 @@ def _generate_gui(total_html):
     web = PlotWindow()    
     web.show()
     web.activateWindow()
-    sys.exit(app.exec_())
+    app.exec_()
     return
     

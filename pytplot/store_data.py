@@ -35,7 +35,7 @@ def store_data(name, data=None, delete=False):
         delete : bool, optional
             Deletes the tplot variable matching the "name" parameter
         
-        .. note::
+    .. note::
         If you want to combine multiple tplot variables into one, simply supply the list of tplot variables to the "data" parameter.  This will cause the data to overlay when plotted. 
         
     Returns:
@@ -50,7 +50,7 @@ def store_data(name, data=None, delete=False):
     
         >>> # Store a two lines
         >>> x_data = [1,2,3,4,5]
-        >>> y_data = [ [1,2,3,4,5], [5,4,3,2,1] ]
+        >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
         >>> pytplot.store_data("Variable2", data={'x':x_data, 'y':y_data})
         
         >>> # Store a specrogram
