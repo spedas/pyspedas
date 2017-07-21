@@ -119,7 +119,7 @@ def tplot(name,
     i = 0
     
     # Configure plot sizes
-    total_psize = 1
+    total_psize = 0
     j = 0
     while(j < num_plots):
         total_psize += tplot_common.data_quants[name[j]].extras['panel_size']
@@ -262,7 +262,7 @@ def _generate_gui(total_html):
             self.plot_window = QWebView()
             self.setCentralWidget(self.plot_window)
             
-            self.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
+            self.resize(tplot_common.tplot_opt_glob['window_size'][0]+100,tplot_common.tplot_opt_glob['window_size'][1]+100)
             self.plot_window.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
             
             self.plot_window.setHtml(total_html)

@@ -9,7 +9,7 @@ from _collections import OrderedDict
 data_quants = OrderedDict()
 
 #Global variable for tplot options
-tplot_opt_glob = dict(tools = "xpan,xwheel_zoom,crosshair,reset", 
+tplot_opt_glob = dict(tools = "xpan,crosshair,reset", 
                  min_border_top = 15, min_border_bottom = 0, 
                  title_align = 'center', window_size = [800, 400],
                  title_size='12pt')

@@ -35,7 +35,7 @@ class TVarFigure2D(object):
         self.zmax = 1
         self.callback = None
         self.interactive_plot = None
-        self.fig = Figure(tools = "pan,wheel_zoom,crosshair,reset,box_zoom", 
+        self.fig = Figure(tools = "pan,crosshair,reset,box_zoom", 
                           y_axis_type=self._getyaxistype() )
         self._format()
     def getaxistype(self):
@@ -73,13 +73,13 @@ class TVarFigure2D(object):
         self._setzrange()
         self._setzaxistype()
         self._addtimebars()
+        self._setbackground()
         self._visdata()
         self._setyaxislabel()
         self._setzaxislabel()
         self._addhoverlines()
         self._addlegend()
         self._addextras()
-        self._setbackground()
         
     def _format(self):
         #Formatting stuff
@@ -272,4 +272,9 @@ class TVarFigure2D(object):
             alpha=1
         if 'basemap' in self.tvar.extras:
             if os.path.isfile(self.tvar.extras['basemap']):
-                self.fig.image_url(url=[self.tvar.extras['basemap']], x = 0, y=90, w=360, h=180, global_alpha=alpha)
+                from scipy import misc
+                img = misc.imread(self.tvar.extras['basemap'], mode='RGBA') 
+                #Need to flip the image upside down...This will probably be fixed in 
+                #a future release, so this will need to be deleted at some point
+                img = img[::-1]          
+                self.fig.image_rgba(image = [img], x = 0, y=-90, dw=360, dh=180, alpha=alpha)
