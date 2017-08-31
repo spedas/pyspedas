@@ -24,7 +24,6 @@ def tplot(name,
           qt=True):
     
     """
-    HI - ELYSIA
     This is the function used to display the tplot variables stored in memory.
     The default output is to show the plots stacked on top of one another inside a GUI window.  
     The GUI window has the option to export the plots in either PNG or HTML formats.
