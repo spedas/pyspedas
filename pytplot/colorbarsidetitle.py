@@ -61,9 +61,10 @@ export class ColorBarSideTitleView extends ColorBarView
     @_draw_image(ctx)
  
     if @model.color_mapper.low? and @model.color_mapper.high?
-      @_draw_major_ticks(ctx)
-      @_draw_minor_ticks(ctx)
-      @_draw_major_labels(ctx)
+      tick_info = @model.tick_info()
+      @_draw_major_ticks(ctx, tick_info)
+      @_draw_minor_ticks(ctx, tick_info)
+      @_draw_major_labels(ctx, tick_info)
  
     if @model.title
       @_draw_title(ctx)
@@ -87,15 +88,15 @@ export class ColorBarSideTitleView extends ColorBarView
     return {x: x, y: y}
  
   _get_label_extent: () ->
-    if @model.color_mapper.low? and @model.color_mapper.high?
+    major_labels = @model.tick_info().labels.major
+    if @model.color_mapper.low? and @model.color_mapper.high? and not isEmpty(major_labels)
       ctx = @plot_view.canvas_view.ctx
       ctx.save()
       @visuals.major_label_text.set_value(ctx)
  
       switch @model.orientation
         when "vertical"
-          formatted_labels = @model.formatter.doFormat(@model._tick_coordinates().major_labels)
-          label_extent = max((ctx.measureText(label.toString()).width for label in formatted_labels))
+          label_extent = max((ctx.measureText(label.toString()).width for label in major_labels))
         when "horizontal"
           label_extent = text_util.get_text_height(@visuals.major_label_text.font_value()).height
  

@@ -1,6 +1,5 @@
-'''
-BANANA PHONE
-'''
+
+__version__ = "1.0.1"
 
 from .store_data import store_data
 from .tplot import tplot
