@@ -23,23 +23,21 @@ def compare_versions():
     pytplot_url = "https://pypi.python.org/pypi/pytplot/json"
     pt_pypi_vn = sorted(requests.get(pytplot_url).json()['releases'])
     
-    #print PyPI version number
-    print("PyPI PyTplot Version")
+    #find PyPI version number
     pt_pypi_vn = pt_pypi_vn[-1]
-    print(pt_pypi_vn)
+    pr1 = pt_pypi_vn
     pt_pypi_vn = pt_pypi_vn.split(".")
     #convert to integer array for comparison
     pt_pypi_vn = [int(i) for i in pt_pypi_vn]
     
     #find current directory out of which code is executing
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    print("Your PyTplot Version in " + dir_path)
     version_path = dir_path + '/version.txt'
     #open version.txt in current directory and read
     with open(version_path) as f:
         cur_vn = f.readlines()
     cur_vn = "".join(cur_vn)
-    print(cur_vn)
+    pr2 = cur_vn
     cur_vn = cur_vn.split(".")
     #convert to integer array for comparison
     cur_vn = [int(i) for i in cur_vn]
@@ -61,18 +59,18 @@ def compare_versions():
 
     #if not running latest version, throw warning
     if old_flag == 1:
+        print("PyPI PyTplot Version")
+        print(pr1)
+        print("Your PyTplot Version in " + dir_path)
+        print(pr2)
         print("")
         print('****************************** WARNING! ******************************')
         print('*                                                                    *')
         print('*          You are running an outdated version of PyTplot.           *')
-        print('*            Sync your repository for the latest updates.            *')
+        print('*              Sync your module for the latest updates.              *')
         print('*                                                                    *')
         print('****************************** WARNING! ******************************')
-    #else inform user of updated status
-    else:
-        print("")
-        print('You are running the latest version of PyTplot.')
-        
+    return 
         
 def option_usage():
     print("options 'tplot variable name' 'plot option' value[s]")
