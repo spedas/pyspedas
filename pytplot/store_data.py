@@ -83,15 +83,7 @@ def store_data(name, data=None, delete=False):
         df = base_data
         spec_bins=None
     else:             
-        df = pd.DataFrame(data['y'])
-        if 'v' in data:
-            spec_bins = data['v']
-            df.columns = spec_bins.copy()
-            spec_bins.sort()
-            df = df.sort_index(axis=1)
-        else:
-            spec_bins = None
-            
+        df = pd.DataFrame(data['y'])            
         times = data['x']
         if len(times) != len(df.index):
             if len(times[0]) == len(df.index):
@@ -105,6 +97,19 @@ def store_data(name, data=None, delete=False):
             df['Index'] = times
             df = df.set_index('Index', drop=True)
         trange = [np.nanmin(times), np.nanmax(times)]
+        
+        if 'v' in data:
+            spec_bins = data['v']
+            if len(spec_bins) != len(df.index):
+                spec_bins = [spec_bins] * len(df.index)
+            spec_bins=pd.DataFrame(spec_bins)
+            if len(times) != len(spec_bins.index):
+                print("The lengths of x and v do not match!")
+                return
+            spec_bins = spec_bins.set_index(df.index)
+        else:
+            spec_bins = None
+        
         
     yaxis_opt = dict(axis_label = name)
     zaxis_opt = {}

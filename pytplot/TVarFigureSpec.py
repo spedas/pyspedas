@@ -208,7 +208,7 @@ class TVarFigureSpec(object):
     
         #Get length of arrays
         size_x = len(x)
-        size_y = len(self.tvar.spec_bins)
+        size_y = len(self.tvar.spec_bins.columns)
         
         #These arrays will be populated with data for the rectangle glyphs
         color = []
@@ -229,16 +229,32 @@ class TVarFigureSpec(object):
         right = right * (size_y-1)
         corrected_time = corrected_time * (size_y-1)
         
+        
+        temp_bins = self.tvar.spec_bins.loc[x[0:size_x-1]]
         for i in range(size_y-1):
-            temp = self.tvar.data[self.tvar.spec_bins[i]][x[0:size_x-1]].tolist()
+            temp = self.tvar.data[i][x[0:size_x-1]].tolist()
             value.extend(temp)
             color.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[0], 
                                                            min_val=self.zmin, 
                                                            max_val=self.zmax, 
                                                            values=temp, 
                                                            zscale=self.zscale))
-            bottom.extend([self.tvar.spec_bins[i]]*(size_x-1))
-            top.extend([self.tvar.spec_bins[i+1]]*(size_x-1))
+            for j in range(size_x-1):
+                bin_val = temp_bins[i].iloc[j]
+                bin_vals = temp_bins.iloc[j].tolist()
+                abs_bin_vals = bin_vals - bin_val
+                positive_numbers = [i for i in abs_bin_vals if i>0]
+                if positive_numbers==[]:
+                    upper_val = np.min(np.abs(abs_bin_vals))+bin_val
+                else:
+                    upper_val = np.min(positive_numbers) + bin_val
+                bottom.extend([bin_val])
+                top.extend([upper_val])
+                if upper_val<bin_val:
+                    asdf=2
+                
+            #bottom.extend([self.tvar.spec_bins[i]]*(size_x-1))
+            #top.extend([self.tvar.spec_bins[i+1]]*(size_x-1))
         
         #Here is where we add all of the rectangles to the plot
         cds = ColumnDataSource(data=dict(x=left,
