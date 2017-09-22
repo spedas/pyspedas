@@ -86,8 +86,8 @@ class TVarFigureSpec(object):
         self._setxrange()
         self._setxaxis()
         self._setyrange()
-        self._setzrange()
         self._setzaxistype()
+        self._setzrange()
         self._addtimebars()
         self._visdata()
         self._setyaxislabel()
@@ -307,14 +307,16 @@ class TVarFigureSpec(object):
             if self.tvar.zaxis_opt['z_axis_type'] == 'log':
                 color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+                color_bar.formatter = BasicTickFormatter(precision=2)
             else:
                 color_mapper=LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
+                color_bar.formatter = BasicTickFormatter(precision=4)
         else:
             color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
             color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+            color_bar.formatter = BasicTickFormatter(precision=2)
         color_bar.width=10
-        color_bar.formatter = BasicTickFormatter(precision=1)
         color_bar.major_label_text_align = 'left'
         color_bar.label_standoff = 5
         color_bar.major_label_text_baseline = 'middle'

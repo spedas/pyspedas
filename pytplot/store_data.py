@@ -155,5 +155,10 @@ def get_y_range(data, spec_bins):
             y_max_list.append(np.nanmax(dataset_temp.max(skipna=True).tolist()))
         y_min = min(y_min_list)
         y_max = max(y_max_list)
+        
+        if y_min==y_max:
+            y_min = y_min-(.1*np.abs(y_min))
+            y_max = y_max+(.1*np.abs(y_max))
+            
         return [y_min, y_max]
     

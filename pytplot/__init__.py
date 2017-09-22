@@ -20,3 +20,4 @@ from .del_data import del_data
 from .timespan import timespan
 from .options import options
 from .timestamp import timestamp
+from .cdf_to_tplot import cdf_to_tplot
