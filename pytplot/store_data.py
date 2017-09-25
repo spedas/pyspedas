@@ -99,14 +99,18 @@ def store_data(name, data=None, delete=False):
         trange = [np.nanmin(times), np.nanmax(times)]
         
         if 'v' in data:
+            #Generally the data is 1D, but occasionally
+            #the bins will vary in time.  
             spec_bins = data['v']
-            if len(spec_bins) != len(df.index):
-                spec_bins = [spec_bins] * len(df.index)
             spec_bins=pd.DataFrame(spec_bins)
-            if len(times) != len(spec_bins.index):
-                print("The lengths of x and v do not match!")
-                return
-            spec_bins = spec_bins.set_index(df.index)
+            if len(spec_bins.columns) != 1:
+                if len(spec_bins) == len(df.index):
+                    spec_bins = spec_bins.set_index(df.index)  
+                else:
+                    print("Length of v and x do not match.  Cannot create tplot variable.")
+                    return 
+            else:
+                spec_bins = spec_bins.transpose()         
         else:
             spec_bins = None
         

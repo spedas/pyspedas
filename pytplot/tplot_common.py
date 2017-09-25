@@ -32,10 +32,8 @@ class TVar(object):
         self.number = number
         self.data = data
         self.spec_bins = spec_bins
-        if self.spec_bins is not None:
-            self.spec_bins_ascending = self._check_spec_bins_ordering()
-        else:
-            self.spec_bins_ascending = None
+        self.spec_bins_time_varying = False
+        self.spec_bins_ascending = self._check_spec_bins_ordering()
         self.yaxis_opt = yaxis_opt
         self.zaxis_opt = zaxis_opt
         self.line_opt = line_opt
@@ -46,7 +44,10 @@ class TVar(object):
         self.extras = extras
         
     def _check_spec_bins_ordering(self):
+        if self.spec_bins == None:
+            return
         if len(self.spec_bins) == len(self.data.index):
+            self.spec_bins_time_varying = True
             break_top_loop = False
             for index,row in self.spec_bins.iterrows():
                 if row.isnull().values.all():
@@ -62,5 +63,5 @@ class TVar(object):
                     if break_top_loop:
                         break
         else:
-            ascending = self.spec_bins[0] < self.spec_bins[1]
+            ascending = self.spec_bins[0].iloc[0] < self.spec_bins[1].iloc[0]
         return ascending

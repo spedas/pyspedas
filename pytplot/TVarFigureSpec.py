@@ -229,13 +229,19 @@ class TVarFigureSpec(object):
         right = right * (size_y-1)
         corrected_time = corrected_time * (size_y-1)
         
-        
-        temp_bins = self.tvar.spec_bins.loc[x[0:size_x-1]]
+        #Handle the case of time-varying bin sizes
+        if self.tvar.spec_bins_time_varying:
+            temp_bins = self.tvar.spec_bins.loc[x[0:size_x-1]]
+            repeat_factor=1
+        else:
+            temp_bins = self.tvar.spec_bins.loc[0]
+            repeat_factor= (size_x-1)
 
         if self.tvar.spec_bins_ascending:
             bin_index_range = range(0,size_y-1,1)
         else:
             bin_index_range = range(size_y-1,0,-1)
+        
         
         for i in bin_index_range:
             temp = self.tvar.data[i][x[0:size_x-1]].tolist()
@@ -245,11 +251,12 @@ class TVarFigureSpec(object):
                                                            max_val=self.zmax, 
                                                            values=temp, 
                                                            zscale=self.zscale))
-            bottom.extend(temp_bins[i].tolist())
+            
+            bottom.extend([temp_bins[i].tolist()]*repeat_factor)
             if self.tvar.spec_bins_ascending:
-                top.extend(temp_bins[i+1].tolist())
+                top.extend([temp_bins[i+1].tolist()]*repeat_factor)
             else:
-                top.extend(temp_bins[i-1].tolist())
+                top.extend([temp_bins[i-1].tolist()]*repeat_factor)
         
         #Here is where we add all of the rectangles to the plot
         cds = ColumnDataSource(data=dict(x=left,
