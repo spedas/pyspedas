@@ -100,6 +100,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             
             if var_atts['VAR_TYPE'] in var_type:
                 var_atts = cdf_file.varattsget(var)
+                var_properties = cdf_file.varinq(var)
                 if "DEPEND_TIME" in var_atts:
                     x_axis_var = var_atts["DEPEND_TIME"]
                 elif "DEPEND_0" in var_atts:
@@ -116,16 +117,21 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 
                 ydata=cdf_file.varget(var)
                 if "FILLVAL" in var_atts:
-                    ydata[ydata==var_atts["FILLVAL"]] = np.nan
+                    if (var_properties['data_type_description'] == 'CDF_FLOAT' or
+                        var_properties['data_type_description'] == 'CDF_REAL4' or 
+                        var_properties['data_type_description'] == 'CDF_DOUBLE' or 
+                        var_properties['data_type_description'] == 'CDF_REAL8'):
+                        
+                        ydata[ydata==var_atts["FILLVAL"]] = np.nan
                     
                 
                 var_name = prefix+var+suffix
                 if "DEPEND_1" in var_atts:
                     depend_1 = cdf_file.varget(var_atts["DEPEND_1"])
-                    store_data(var_name, data={'x':xdata,'y':cdf_file.varget(var), 'v':depend_1})
+                    store_data(var_name, data={'x':xdata,'y':ydata, 'v':depend_1})
                     options(var_name, 'spec', 1)
                 else:
-                    store_data(var_name, data={'x':xdata,'y':cdf_file.varget(var)})
+                    store_data(var_name, data={'x':xdata,'y':ydata})
                     
                 stored_variables.append(var_name)
                 

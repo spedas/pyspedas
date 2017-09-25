@@ -32,8 +32,6 @@ class TVar(object):
         self.number = number
         self.data = data
         self.spec_bins = spec_bins
-        self.spec_bins_time_varying = False
-        self.spec_bins_ascending = self._check_spec_bins_ordering()
         self.yaxis_opt = yaxis_opt
         self.zaxis_opt = zaxis_opt
         self.line_opt = line_opt
@@ -43,8 +41,12 @@ class TVar(object):
         self.time_bar = time_bar
         self.extras = extras
         
+        #Other variables to calculate
+        self.spec_bins_time_varying = False
+        self.spec_bins_ascending = self._check_spec_bins_ordering()
+        
     def _check_spec_bins_ordering(self):
-        if self.spec_bins == None:
+        if self.spec_bins is None:
             return
         if len(self.spec_bins) == len(self.data.index):
             self.spec_bins_time_varying = True
