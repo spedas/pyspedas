@@ -127,9 +127,15 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 
                 var_name = prefix+var+suffix
                 if "DEPEND_1" in var_atts:
-                    depend_1 = cdf_file.varget(var_atts["DEPEND_1"])
-                    store_data(var_name, data={'x':xdata,'y':ydata, 'v':depend_1})
-                    options(var_name, 'spec', 1)
+                    if var_atts["DEPEND_1"] in all_cdf_variables:
+                        depend_1 = cdf_file.varget(var_atts["DEPEND_1"])
+                        if depend_1 is not None: 
+                            store_data(var_name, data={'x':xdata,'y':ydata, 'v':depend_1})
+                            options(var_name, 'spec', 1)
+                        else:
+                            store_data(var_name, data={'x':xdata,'y':ydata})
+                    else:
+                        store_data(var_name, data={'x':xdata,'y':ydata})
                 else:
                     store_data(var_name, data={'x':xdata,'y':ydata})
                     
