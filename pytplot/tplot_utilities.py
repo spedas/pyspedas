@@ -21,7 +21,10 @@ def compare_versions():
 
     #access complete list of revision numbers on PyPI 
     pytplot_url = "https://pypi.python.org/pypi/pytplot/json"
-    pt_pypi_vn = sorted(requests.get(pytplot_url).json()['releases'])
+    try:
+        pt_pypi_vn = sorted(requests.get(pytplot_url).json()['releases'])
+    except:
+        return
     
     #find PyPI version number
     pt_pypi_vn = pt_pypi_vn[-1]
@@ -35,7 +38,7 @@ def compare_versions():
     version_path = dir_path + '/version.txt'
     #open version.txt in current directory and read
     with open(version_path) as f:
-        cur_vn = f.readlines()
+        cur_vn = f.readline()
     cur_vn = "".join(cur_vn)
     pr2 = cur_vn
     cur_vn = cur_vn.split(".")

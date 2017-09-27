@@ -1,6 +1,3 @@
-
-__version__ = "1.0.1"
-
 from .store_data import store_data
 from .tplot import tplot
 from .get_data import get_data
@@ -21,3 +18,6 @@ from .timespan import timespan
 from .options import options
 from .timestamp import timestamp
 from .cdf_to_tplot import cdf_to_tplot
+from .tplot_utilities import compare_versions
+
+compare_versions()
