@@ -122,23 +122,32 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                         var_properties['data_type_description'] == 'CDF_DOUBLE' or 
                         var_properties['data_type_description'] == 'CDF_REAL8'):
                         
-                        ydata[ydata==var_atts["FILLVAL"]] = np.nan
+                        if ydata[ydata==var_atts["FILLVAL"]].size != 0:
+                            ydata[ydata==var_atts["FILLVAL"]] = np.nan
+                        
                     
                 
                 var_name = prefix+var+suffix
+                tplot_data ={'x':xdata,'y':ydata}
+                
+                depend_1 = None
+                depend_2 = None
                 if "DEPEND_1" in var_atts:
                     if var_atts["DEPEND_1"] in all_cdf_variables:
                         depend_1 = cdf_file.varget(var_atts["DEPEND_1"])
-                        if depend_1 is not None: 
-                            store_data(var_name, data={'x':xdata,'y':ydata, 'v':depend_1})
-                            options(var_name, 'spec', 1)
-                        else:
-                            store_data(var_name, data={'x':xdata,'y':ydata})
-                    else:
-                        store_data(var_name, data={'x':xdata,'y':ydata})
-                else:
-                    store_data(var_name, data={'x':xdata,'y':ydata})
+                if "DEPEND_2" in var_atts:
+                    if var_atts["DEPEND_2"] in all_cdf_variables:
+                        depend_2 = cdf_file.varget(var_atts["DEPEND_2"])
+                if depend_1 is not None and depend_2 is not None:
+                    tplot_data['v1'] = depend_1
+                    tplot_data['v2'] = depend_2
+                elif depend_1 is not None:
+                    tplot_data['v'] = depend_1
+                elif depend_2 is not None:
+                    tplot_data['v'] = depend_2
                     
+                    
+                store_data(var_name, data=tplot_data)
                 stored_variables.append(var_name)
                 
                 display_type = var_atts.get("DISPLAY_TYPE", "time_series")
