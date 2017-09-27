@@ -15,6 +15,63 @@ from _collections import OrderedDict
 from . import tplot_common
 from .timestamp import TimeStamp
 
+def compare_versions():
+    #import libraries
+    import requests
+
+    #access complete list of revision numbers on PyPI 
+    pytplot_url = "https://pypi.python.org/pypi/pytplot/json"
+    pt_pypi_vn = sorted(requests.get(pytplot_url).json()['releases'])
+    
+    #find PyPI version number
+    pt_pypi_vn = pt_pypi_vn[-1]
+    pr1 = pt_pypi_vn
+    pt_pypi_vn = pt_pypi_vn.split(".")
+    #convert to integer array for comparison
+    pt_pypi_vn = [int(i) for i in pt_pypi_vn]
+    
+    #find current directory out of which code is executing
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    version_path = dir_path + '/version.txt'
+    #open version.txt in current directory and read
+    with open(version_path) as f:
+        cur_vn = f.readlines()
+    cur_vn = "".join(cur_vn)
+    pr2 = cur_vn
+    cur_vn = cur_vn.split(".")
+    #convert to integer array for comparison
+    cur_vn = [int(i) for i in cur_vn]
+
+    #for each item in version number array [X.Y.Z]
+    for i in range(len(cur_vn)):
+        #if current item > PyPI item (hypothetical), break, latest version is running
+        if cur_vn[i] > pt_pypi_vn[i]:
+            old_flag = 0
+            break
+        #if current item = PyPI item, continue to check next item
+        elif cur_vn[i] == pt_pypi_vn[i]:
+            old_flag = 0
+            continue
+        #if current item < PyPI item, indicative of old version, throw flag to initiate warning
+        else:
+            old_flag = 1
+            break
+
+    #if not running latest version, throw warning
+    if old_flag == 1:
+        print("PyPI PyTplot Version")
+        print(pr1)
+        print("Your PyTplot Version in " + dir_path)
+        print(pr2)
+        print("")
+        print('****************************** WARNING! ******************************')
+        print('*                                                                    *')
+        print('*          You are running an outdated version of PyTplot.           *')
+        print('*              Sync your module for the latest updates.              *')
+        print('*                                                                    *')
+        print('****************************** WARNING! ******************************')
+    return 
+        
 def option_usage():
     print("options 'tplot variable name' 'plot option' value[s]")
     return
