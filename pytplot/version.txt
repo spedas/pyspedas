@@ -1,4 +1,4 @@
-1.0.2
+1.0.4
 
 1.0.2 Changes:
 	-Added cdf_to_tplot routine
