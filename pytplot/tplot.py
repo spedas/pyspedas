@@ -134,23 +134,10 @@ def tplot(name,
         p_height = int(temp_data_quant.extras['panel_size'] * p_to_use)
         p_width = tplot_common.tplot_opt_glob['window_size'][0]
         
-        #Check plot type
-        has_spec_bins = (temp_data_quant.spec_bins is not None)
-        has_spec_keyword = ('spec' in temp_data_quant.extras.keys())
-        has_alt_keyword = ('alt' in temp_data_quant.extras.keys())
-        has_map_keyword = ('map' in temp_data_quant.extras.keys())
-        if has_spec_bins and has_spec_keyword:
-            spec_keyword = temp_data_quant.extras['spec']
-        else:
-            spec_keyword = False
-        if has_alt_keyword:
-            alt_keyword = temp_data_quant.extras['alt']
-        else:
-            alt_keyword = False
-        if has_map_keyword:
-            map_keyword = temp_data_quant.extras['map']
-        else:
-            map_keyword = False
+        #Check plot type       
+        spec_keyword = temp_data_quant.extras.get('spec', False)
+        alt_keyword = temp_data_quant.extras.get('alt', False)
+        map_keyword = temp_data_quant.extras.get('map', False)
         
         if spec_keyword:     
             new_fig = TVarFigureSpec(temp_data_quant, interactive=interactive, last_plot=last_plot)

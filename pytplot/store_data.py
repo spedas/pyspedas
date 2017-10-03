@@ -83,15 +83,8 @@ def store_data(name, data=None, delete=False):
         df = base_data
         spec_bins=None
     else:             
-        df = pd.DataFrame(data['y'])
-        if 'v' in data:
-            spec_bins = data['v']
-            df.columns = spec_bins.copy()
-            spec_bins.sort()
-            df = df.sort_index(axis=1)
-        else:
-            spec_bins = None
-            
+        
+        df = format_ydata(data['y'])            
         times = data['x']
         if len(times) != len(df.index):
             if len(times[0]) == len(df.index):
@@ -105,6 +98,26 @@ def store_data(name, data=None, delete=False):
             df['Index'] = times
             df = df.set_index('Index', drop=True)
         trange = [np.nanmin(times), np.nanmax(times)]
+        
+        if 'v' in data or 'v2' in data:
+            #Generally the data is 1D, but occasionally
+            #the bins will vary in time.  
+            if 'v' in data:
+                spec_bins = data['v']
+            else:
+                spec_bins = data['v2']
+            spec_bins=pd.DataFrame(spec_bins)
+            if len(spec_bins.columns) != 1:
+                if len(spec_bins) == len(df.index):
+                    spec_bins = spec_bins.set_index(df.index)  
+                else:
+                    print("Length of v and x do not match.  Cannot create tplot variable.")
+                    return 
+            else:
+                spec_bins = spec_bins.transpose()         
+        else:
+            spec_bins = None
+        
         
     yaxis_opt = dict(axis_label = name)
     zaxis_opt = {}
@@ -155,5 +168,29 @@ def get_y_range(data, spec_bins):
             y_max_list.append(np.nanmax(dataset_temp.max(skipna=True).tolist()))
         y_min = min(y_min_list)
         y_max = max(y_max_list)
+        
+        if y_min==y_max:
+            y_min = y_min-(.1*np.abs(y_min))
+            y_max = y_max+(.1*np.abs(y_max))
+            
         return [y_min, y_max]
     
+def format_ydata(data):
+    #This function is not final, and will presumably change in the future
+    #
+    #For 2D data, turn it into a Pandas dataframe
+    #For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
+    #For 4D data, ignore the last dimension
+    
+    if data is not pd.DataFrame:
+        matrix = np.array(data)
+        if len(matrix.shape) > 2:
+            matrix = np.nansum(matrix, 1)
+        if len(matrix.shape) > 2:
+            matrix = matrix[:,:,0]
+            
+    else:
+        return data
+    
+    return_data = pd.DataFrame(matrix)
+    return return_data

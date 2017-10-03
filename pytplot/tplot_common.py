@@ -16,10 +16,11 @@ tplot_opt_glob = dict(tools = "xpan,crosshair,reset",
 lim_info = {}
 extra_renderers = []
 extra_layouts = {}
-
+import numpy as np
 class TVar(object):
     """ A PyTplot variable.
     
+    TODO: Fill in
     Attributes:
         name: String representing the PyTplot variable
         data: 
@@ -39,3 +40,30 @@ class TVar(object):
         self.create_time = create_time
         self.time_bar = time_bar
         self.extras = extras
+        
+        #Other variables to calculate
+        self.spec_bins_time_varying = False
+        self.spec_bins_ascending = self._check_spec_bins_ordering()
+        
+    def _check_spec_bins_ordering(self):
+        if self.spec_bins is None:
+            return
+        if len(self.spec_bins) == len(self.data.index):
+            self.spec_bins_time_varying = True
+            break_top_loop = False
+            for index,row in self.spec_bins.iterrows():
+                if row.isnull().values.all():
+                    continue
+                else:
+                    for i in row.index:
+                        if np.isfinite(row[i]) and np.isfinite(row[i+1]):
+                            ascending = row[i] < row[i+1]
+                            break_top_loop = True
+                            break
+                        else:
+                            continue
+                    if break_top_loop:
+                        break
+        else:
+            ascending = self.spec_bins[0].iloc[0] < self.spec_bins[1].iloc[0]
+        return ascending

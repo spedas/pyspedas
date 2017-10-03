@@ -5,6 +5,7 @@
 
 from __future__ import division
 import numpy as np
+import pandas as pd
 import math
 from bokeh.plotting.figure import Figure
 from bokeh.models import (CustomJS, LogColorMapper, LogTicker, LinearColorMapper, 
@@ -18,6 +19,7 @@ from . import tplot_common
 from .colorbarsidetitle import ColorBarSideTitle
 from . import tplot_utilities
 from bokeh.models.formatters import DatetimeTickFormatter
+
 
 dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
             milliseconds=["%H:%M:%S"],
@@ -86,8 +88,8 @@ class TVarFigureSpec(object):
         self._setxrange()
         self._setxaxis()
         self._setyrange()
-        self._setzrange()
         self._setzaxistype()
+        self._setzrange()
         self._addtimebars()
         self._visdata()
         self._setyaxislabel()
@@ -205,10 +207,20 @@ class TVarFigureSpec(object):
         if (self.fig.plot_width) < num_rect_displayed:
             step_size=int(math.floor(num_rect_displayed/(self.fig.plot_width)))
             x[:] = x[0::step_size]
-    
+        
+        
+        #Determine bin sizes
+        if self.tvar.spec_bins is not None:
+            bins = self.tvar.spec_bins
+            bins_vary = self.tvar.spec_bins_time_varying
+            bins_increasing = self.tvar.spec_bins_ascending
+        else:
+            bins = pd.DataFrame(np.arange(len(self.tvar.data.columns))).transpose()
+            bins_vary = False
+            bins_increasing = True
         #Get length of arrays
         size_x = len(x)
-        size_y = len(self.tvar.spec_bins)
+        size_y = len(bins.columns)
         
         #These arrays will be populated with data for the rectangle glyphs
         color = []
@@ -229,16 +241,40 @@ class TVarFigureSpec(object):
         right = right * (size_y-1)
         corrected_time = corrected_time * (size_y-1)
         
-        for i in range(size_y-1):
-            temp = self.tvar.data[self.tvar.spec_bins[i]][x[0:size_x-1]].tolist()
+        #Handle the case of time-varying bin sizes
+        if bins_vary:
+            temp_bins = bins.loc[x[0:size_x-1]]
+        else:
+            temp_bins = bins.loc[0]
+
+        if bins_increasing:
+            bin_index_range = range(0,size_y-1,1)
+        else:
+            bin_index_range = range(size_y-1,0,-1)
+        
+        
+        for i in bin_index_range:
+            temp = self.tvar.data[i][x[0:size_x-1]].tolist()
             value.extend(temp)
             color.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[0], 
                                                            min_val=self.zmin, 
                                                            max_val=self.zmax, 
                                                            values=temp, 
                                                            zscale=self.zscale))
-            bottom.extend([self.tvar.spec_bins[i]]*(size_x-1))
-            top.extend([self.tvar.spec_bins[i+1]]*(size_x-1))
+            
+            #Handle the case of time-varying bin sizes
+            if bins_vary:
+                bottom.extend(temp_bins[i].tolist())
+                if bins_increasing:
+                    top.extend(temp_bins[i+1].tolist())
+                else:
+                    top.extend(temp_bins[i-1].tolist())
+            else:
+                bottom.extend([temp_bins[i]]*(size_x-1))
+                if bins_increasing:
+                    top.extend([temp_bins[i+1]]*(size_x-1))
+                else:
+                    top.extend([temp_bins[i-1]]*(size_x-1))
         
         #Here is where we add all of the rectangles to the plot
         cds = ColumnDataSource(data=dict(x=left,
@@ -261,7 +297,7 @@ class TVarFigureSpec(object):
                                            y_range = (self.zmin, self.zmax), 
                                            y_axis_type=y_interactive_log)
             self.interactive_plot.min_border_left = 100
-            spec_bins = self.tvar.spec_bins
+            spec_bins = bins
             flux = [0]*len(spec_bins)
             interactive_line_source = ColumnDataSource(data=dict(x=spec_bins, y=flux))
             interactive_line = Line(x='x', y='y')
@@ -307,14 +343,16 @@ class TVarFigureSpec(object):
             if self.tvar.zaxis_opt['z_axis_type'] == 'log':
                 color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+                color_bar.formatter = BasicTickFormatter(precision=2)
             else:
                 color_mapper=LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
+                color_bar.formatter = BasicTickFormatter(precision=4)
         else:
             color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
             color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+            color_bar.formatter = BasicTickFormatter(precision=2)
         color_bar.width=10
-        color_bar.formatter = BasicTickFormatter(precision=1)
         color_bar.major_label_text_align = 'left'
         color_bar.label_standoff = 5
         color_bar.major_label_text_baseline = 'middle'
