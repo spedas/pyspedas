@@ -104,16 +104,33 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
         new_extras['map'] = value
     
     elif option == 'ylog':
+        ##check variable data
+        #if negative numbers, don't allow log setting
         if value == 1:
+            for number in XXXXX.data.header:
+                if number < 0:
+                    print('Negative data is incompatible with log plotting.')
+                    return
             new_yaxis_opt['y_axis_type'] = 'log'
         if value == 0:
+            for number in XXXXX.data:
+                if number < 0:
+                    print('Negative data is incompatible with log plotting.')
+                    return
             new_yaxis_opt['y_axis_type'] = 'linear'
     
+        
     elif option == 'legend_names':
         new_yaxis_opt['legend_names'] = value
     
     elif option == 'zlog':
+        ##check variable data
+        #if negative numbers, don't allow log setting
         if value == 1:
+            for number in XXXXX.data.header:
+                if number < 0:
+                    print('Negative data is incompatible with log plotting.')
+                    return
             new_zaxis_opt['z_axis_type'] = 'log'
         if value == 0:
             new_zaxis_opt['z_axis_type'] = 'linear'
