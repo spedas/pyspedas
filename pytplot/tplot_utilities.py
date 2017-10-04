@@ -110,7 +110,7 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
         ##check variable data
         #if negative numbers, don't allow log setting
         if value == 1:
-            for number in XXXXX.data.header:
+            for number in XXXXX.spec_bins:
                 if number < 0:
                     print('Negative data is incompatible with log plotting.')
                     return
@@ -130,7 +130,7 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
         ##check variable data
         #if negative numbers, don't allow log setting
         if value == 1:
-            for number in XXXXX.data.header:
+            for number in XXXXX.data:
                 if number < 0:
                     print('Negative data is incompatible with log plotting.')
                     return
