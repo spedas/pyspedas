@@ -12,6 +12,10 @@ from .TVarFigureAlt import TVarFigureAlt
 from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
 
+from PyQt5 import QtCore
+from PyQt5.QtWebKitWidgets import QWebView
+from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
+
 
 def tplot(name, 
           var_label = None, 
@@ -232,17 +236,14 @@ def tplot(name,
         _generate_gui(total_html)
         return
 
-def _generate_gui(total_html):
-    
-    from PyQt5.QtWebKitWidgets import QWebView
-    from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
-   
+def _generate_gui(total_html):  
     
     class PlotWindow(QMainWindow):
         
         def __init__(self):
             super().__init__()
             self.initUI()
+            self.setcleanup()
             
         def initUI(self):
             self.setWindowTitle('PyTplot')
@@ -264,6 +265,13 @@ def _generate_gui(total_html):
             exportMenu.addAction(exportDatapngAction)
             
             self.show()
+        
+        def setcleanup(self):
+            self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            self.plot_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            for child in self.findChildren(QWebView):
+                if child is not self.plot_window:
+                    child.deleteLater()
         
         def exporthtml(self):
             fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.html', filter ="html (*.html *.)")
