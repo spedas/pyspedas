@@ -1,4 +1,8 @@
-1.0.5
+1.0.6
+
+1.0.6 Changes:
+	-Qt is getting rid of support for QtWebView.  QWebEngineView will replace it, but has great difficulty viewing html greater than 2GB.  
+	-As a temporary solution, a local html file is saved, and then read into QWebEngineView.  
 
 1.0.5 Changes:
 	-Fixed a memory leak

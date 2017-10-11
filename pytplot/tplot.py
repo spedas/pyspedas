@@ -1,6 +1,7 @@
 from __future__ import division
 import sys
-from bokeh.io import output_file, show, output_notebook
+import os
+from bokeh.io import output_file, show, output_notebook, save
 from bokeh.models import LinearAxis, Range1d
 from . import tplot_common
 from .timestamp import TimeStamp
@@ -13,7 +14,7 @@ from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
 
 from PyQt5 import QtCore
-from PyQt5.QtWebKitWidgets import QWebView
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
 
 
@@ -230,6 +231,9 @@ def tplot(name,
         show(final)    
         return
     else:        
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        output_file(os.path.join(dir_path, "temp.html"), mode='inline')
+        save(final)
         js = JSResources(mode='inline')
         css = CSSResources(mode='inline')
         total_html = file_html(final, (js, css))
@@ -247,14 +251,15 @@ def _generate_gui(total_html):
             
         def initUI(self):
             self.setWindowTitle('PyTplot')
-            self.plot_window = QWebView()
+            self.plot_window = QWebEngineView()
             self.setCentralWidget(self.plot_window)
             
             self.resize(tplot_common.tplot_opt_glob['window_size'][0]+100,tplot_common.tplot_opt_glob['window_size'][1]+100)
             self.plot_window.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
             
-            self.plot_window.setHtml(total_html)
-            
+            #self.plot_window.setHtml(total_html)
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            self.plot_window.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
             menubar = self.menuBar()
             exportMenu = menubar.addMenu('Export')
             exportDatahtmlAction = QAction("HTML", self)
@@ -269,7 +274,7 @@ def _generate_gui(total_html):
         def setcleanup(self):
             self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
             self.plot_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-            for child in self.findChildren(QWebView):
+            for child in self.findChildren(QWebEngineView):
                 if child is not self.plot_window:
                     child.deleteLater()
         
