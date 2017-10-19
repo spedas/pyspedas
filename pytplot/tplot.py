@@ -228,7 +228,7 @@ def tplot(name,
         return
     elif save_file != None:
         output_file(save_file, mode='inline')
-        show(final)    
+        save(final)    
         return
     else:        
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -279,9 +279,11 @@ def _generate_gui(total_html):
                     child.deleteLater()
         
         def exporthtml(self):
+            dir_path = os.path.dirname(os.path.realpath(__file__))
             fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.html', filter ="html (*.html *.)")
             with open(fname[0], 'w+') as html_file:
-                html_file.write(total_html)
+                with open(os.path.join(dir_path, "temp.html")) as read_file:
+                    html_file.write(read_file.read())
             
         def exportpng(self):
             fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
@@ -294,4 +296,5 @@ def _generate_gui(total_html):
     web.activateWindow()
     app.exec_()
     return
+    
     
