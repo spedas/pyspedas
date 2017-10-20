@@ -14,7 +14,7 @@ from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
 
 from PyQt5 import QtCore
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWebKitWidgets import QWebView
 from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
 
 
@@ -251,7 +251,7 @@ def _generate_gui(total_html):
             
         def initUI(self):
             self.setWindowTitle('PyTplot')
-            self.plot_window = QWebEngineView()
+            self.plot_window = QWebView()
             self.setCentralWidget(self.plot_window)
             
             self.resize(tplot_common.tplot_opt_glob['window_size'][0]+100,tplot_common.tplot_opt_glob['window_size'][1]+100)
@@ -274,7 +274,7 @@ def _generate_gui(total_html):
         def setcleanup(self):
             self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
             self.plot_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-            for child in self.findChildren(QWebEngineView):
+            for child in self.findChildren(QWebView):
                 if child is not self.plot_window:
                     child.deleteLater()
         

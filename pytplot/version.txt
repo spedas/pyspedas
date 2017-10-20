@@ -1,4 +1,10 @@
-1.0.6
+1.0.9
+
+1.0.8 Changes:
+	-Reverting back QWebEngineView changes from 1.0.6
+
+1.0.7 Changes:
+	-Should be able to export to HTML properly now.  
 
 1.0.6 Changes:
 	-Qt is getting rid of support for QtWebView.  QWebEngineView will replace it, but has great difficulty viewing html greater than 2GB.  
