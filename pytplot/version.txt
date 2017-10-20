@@ -1,4 +1,7 @@
-1.0.9
+1.0.11
+
+1.0.11 Changes:
+	-Bug fixes in the last couple of revisions
 
 1.0.8 Changes:
 	-Reverting back QWebEngineView changes from 1.0.6
