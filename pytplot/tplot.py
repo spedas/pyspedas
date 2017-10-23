@@ -1,6 +1,7 @@
 from __future__ import division
 import sys
-from bokeh.io import output_file, show, output_notebook
+import os
+from bokeh.io import output_file, show, output_notebook, save
 from bokeh.models import LinearAxis, Range1d
 from . import tplot_common
 from .timestamp import TimeStamp
@@ -11,6 +12,10 @@ from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureAlt import TVarFigureAlt
 from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
+
+from PyQt5 import QtCore
+from PyQt5.QtWebKitWidgets import QWebView
+from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
 
 
 def tplot(name, 
@@ -223,26 +228,26 @@ def tplot(name,
         return
     elif save_file != None:
         output_file(save_file, mode='inline')
-        show(final)    
+        save(final)    
         return
     else:        
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        output_file(os.path.join(dir_path, "temp.html"), mode='inline')
+        save(final)
         js = JSResources(mode='inline')
         css = CSSResources(mode='inline')
         total_html = file_html(final, (js, css))
         _generate_gui(total_html)
         return
 
-def _generate_gui(total_html):
-    
-    from PyQt5.QtWebKitWidgets import QWebView
-    from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
-   
+def _generate_gui(total_html):  
     
     class PlotWindow(QMainWindow):
         
         def __init__(self):
             super().__init__()
             self.initUI()
+            self.setcleanup()
             
         def initUI(self):
             self.setWindowTitle('PyTplot')
@@ -252,8 +257,9 @@ def _generate_gui(total_html):
             self.resize(tplot_common.tplot_opt_glob['window_size'][0]+100,tplot_common.tplot_opt_glob['window_size'][1]+100)
             self.plot_window.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
             
-            self.plot_window.setHtml(total_html)
-            
+            #self.plot_window.setHtml(total_html)
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            self.plot_window.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
             menubar = self.menuBar()
             exportMenu = menubar.addMenu('Export')
             exportDatahtmlAction = QAction("HTML", self)
@@ -265,10 +271,19 @@ def _generate_gui(total_html):
             
             self.show()
         
+        def setcleanup(self):
+            self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            self.plot_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            for child in self.findChildren(QWebView):
+                if child is not self.plot_window:
+                    child.deleteLater()
+        
         def exporthtml(self):
+            dir_path = os.path.dirname(os.path.realpath(__file__))
             fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.html', filter ="html (*.html *.)")
             with open(fname[0], 'w+') as html_file:
-                html_file.write(total_html)
+                with open(os.path.join(dir_path, "temp.html")) as read_file:
+                    html_file.write(read_file.read())
             
         def exportpng(self):
             fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
@@ -281,4 +296,5 @@ def _generate_gui(total_html):
     web.activateWindow()
     app.exec_()
     return
+    
     

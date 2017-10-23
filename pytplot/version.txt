@@ -1,4 +1,20 @@
-1.0.4
+1.0.11
+
+1.0.11 Changes:
+	-Bug fixes in the last couple of revisions
+
+1.0.8 Changes:
+	-Reverting back QWebEngineView changes from 1.0.6
+
+1.0.7 Changes:
+	-Should be able to export to HTML properly now.  
+
+1.0.6 Changes:
+	-Qt is getting rid of support for QtWebView.  QWebEngineView will replace it, but has great difficulty viewing html greater than 2GB.  
+	-As a temporary solution, a local html file is saved, and then read into QWebEngineView.  
+
+1.0.5 Changes:
+	-Fixed a memory leak
 
 1.0.2 Changes:
 	-Added cdf_to_tplot routine
