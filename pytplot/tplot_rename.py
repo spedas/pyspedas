@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from . import tplot_common
+from collections import OrderedDict
 
 def tplot_rename(old_name, new_name):
     """
@@ -31,8 +32,15 @@ def tplot_rename(old_name, new_name):
         return
     if isinstance(old_name, int):
         old_name = tplot_common.data_quants[old_name].name
-    
-    tplot_common.data_quants[new_name] = tplot_common.data_quants.pop(old_name)
-    tplot_common.data_quants[new_name].name = new_name
+        #old_name = tplot_common.data_quants[old_name].name
+        
+        
+    d = tplot_common.data_quants
+    d2 = OrderedDict([(new_name, v) if k == old_name else (k, v) for k, v in d.items()])
+    tplot_common.data_quants = d2
+    print(tplot_common.data_quants.items())
+    #tplot_common.data_quants[new_name] = tplot_common.data_quants.pop(old_name)
+    #tplot_common.data_quants[new_name].name = new_name
+
     
     return
