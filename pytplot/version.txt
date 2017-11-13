@@ -1,4 +1,7 @@
-1.0.11
+1.0.14
+
+1.0.14 Changes:
+	-Fixed a bug in cdf_to_tplot
 
 1.0.11 Changes:
 	-Bug fixes in the last couple of revisions
