@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from . import tplot_common
+from collections import OrderedDict
 
 def tplot_rename(old_name, new_name):
     """
@@ -25,14 +26,19 @@ def tplot_rename(old_name, new_name):
 
     """
     
-    
+    #check if old name is in current dictionary
     if old_name not in tplot_common.data_quants.keys():
         print("That name is currently not in pytplot")
         return
+    #if old name input is a number, convert to corresponding name
     if isinstance(old_name, int):
         old_name = tplot_common.data_quants[old_name].name
-    
-    tplot_common.data_quants[new_name] = tplot_common.data_quants.pop(old_name)
-    tplot_common.data_quants[new_name].name = new_name
+         
+    #remake dictionary with new name in old name's slot
+    d = tplot_common.data_quants
+    d2 = OrderedDict([(new_name, v) if k == old_name else (k, v) for k, v in d.items()])
+    tplot_common.data_quants = d2
+    for key in d2:
+        tplot_common.data_quants[key].name = key
     
     return

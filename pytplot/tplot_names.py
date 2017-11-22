@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from . import tplot_common
+import collections
 
 def tplot_names():
     """
@@ -28,6 +29,7 @@ def tplot_names():
     
     index = 0
     return_names=[]
+    names_to_print = collections.OrderedDict()
     for key, _ in tplot_common.data_quants.items():
         if isinstance(tplot_common.data_quants[key].data, list):
             if isinstance(key, str):
