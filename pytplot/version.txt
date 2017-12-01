@@ -1,4 +1,7 @@
-1.0.14
+1.0.15
+
+1.0.15 Changes:
+	-Changing tplot to use QtWebKitWidgets by default, but attempt to use QWebEngineView if not found
 
 1.0.14 Changes:
 	-Fixed a bug in cdf_to_tplot
