@@ -7,7 +7,7 @@ from __future__ import division
 import datetime
 import pandas as pd
 import numpy as np
-from . import tplot_common
+from pytplot import data_quants, TVar
 from .del_data import del_data
 
 tplot_num = 1
@@ -78,8 +78,8 @@ def store_data(name, data=None, delete=False):
     if isinstance(data, list):
         base_data = get_base_tplot_vars(data)
         #Use first tplot var as the time range
-        trange = [np.nanmin(tplot_common.data_quants[base_data[0]].data.index), 
-                  np.nanmax(tplot_common.data_quants[base_data[0]].data.index)]
+        trange = [np.nanmin(data_quants[base_data[0]].data.index), 
+                  np.nanmax(data_quants[base_data[0]].data.index)]
         df = base_data
         spec_bins=None
     else:             
@@ -128,11 +128,11 @@ def store_data(name, data=None, delete=False):
     #     that aren't actual attributes in Bokeh
     extras = dict(panel_size = 1)
     
-    temp = tplot_common.TVar(name, tplot_num, df, spec_bins, yaxis_opt, zaxis_opt, line_opt,
+    temp = TVar(name, tplot_num, df, spec_bins, yaxis_opt, zaxis_opt, line_opt,
                 trange, dtype, create_time, time_bar, extras)
     
-    tplot_common.data_quants[name] = temp
-    tplot_common.data_quants[name].yaxis_opt['y_range'] = get_y_range(df, spec_bins)
+    data_quants[name] = temp
+    data_quants[name].yaxis_opt['y_range'] = get_y_range(df, spec_bins)
     
     return
 
@@ -141,8 +141,8 @@ def get_base_tplot_vars(data):
     if not isinstance(data, list):
         data = [data]
     for var in data:
-        if isinstance(tplot_common.data_quants[var].data, list):
-            base_vars += get_base_tplot_vars(tplot_common.data_quants[var].data)
+        if isinstance(data_quants[var].data, list):
+            base_vars += get_base_tplot_vars(data_quants[var].data)
         else:
             base_vars += [var]
     return base_vars
@@ -158,7 +158,7 @@ def get_y_range(data, spec_bins):
         y_max_list = []
         if isinstance(data, list):
             for oplot_name in data:
-                datasets.append(tplot_common.data_quants[oplot_name].data)
+                datasets.append(data_quants[oplot_name].data)
         else:
             datasets.append(data)
     

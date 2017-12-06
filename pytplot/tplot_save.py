@@ -4,7 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import pickle
-from . import tplot_common
+from pytplot import data_quants, tplot_opt_glob
 
 def tplot_save(names, filename=None):
     """
@@ -38,22 +38,22 @@ def tplot_save(names, filename=None):
     
     #Check that we have all available data
     for name in names: 
-        if isinstance(tplot_common.data_quants[name].data, list):
-            for data_name in tplot_common.data_quants[name].data:
+        if isinstance(data_quants[name].data, list):
+            for data_name in data_quants[name].data:
                 if data_name not in names:
                     names.append(data_name)
     
     #Pickle it up
     to_pickle =[]
     for name in names:    
-        if name not in tplot_common.data_quants.keys():
+        if name not in data_quants.keys():
             print("That name is currently not in pytplot") 
             return
-        to_pickle.append(tplot_common.data_quants[name])
+        to_pickle.append(data_quants[name])
     
     num_quants = len(to_pickle)
     to_pickle = [num_quants] + to_pickle
-    temp_tplot_opt_glob = tplot_common.tplot_opt_glob
+    temp_tplot_opt_glob = tplot_opt_glob
     to_pickle.append(temp_tplot_opt_glob)
     
     if filename==None:

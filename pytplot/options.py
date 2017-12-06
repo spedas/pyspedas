@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from . import tplot_common
+from pytplot import data_quants
 from .tplot_utilities import set_options
 
 def options(name, option, value):
@@ -66,15 +66,15 @@ def options(name, option, value):
     option = option.lower()
     
     for i in name:
-        if i not in tplot_common.data_quants.keys():
+        if i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
-        (new_yaxis_opt, new_zaxis_opt, new_line_opt, new_extras) = set_options(option, value, tplot_common.data_quants[i].yaxis_opt, tplot_common.data_quants[i].zaxis_opt, tplot_common.data_quants[i].line_opt, tplot_common.data_quants[i].extras)
+        (new_yaxis_opt, new_zaxis_opt, new_line_opt, new_extras) = set_options(option, value, data_quants[i].yaxis_opt, data_quants[i].zaxis_opt, data_quants[i].line_opt, data_quants[i].extras)
 
-        tplot_common.data_quants[i].yaxis_opt = new_yaxis_opt
-        tplot_common.data_quants[i].zaxis_opt = new_zaxis_opt
-        tplot_common.data_quants[i].line_opt = new_line_opt
-        tplot_common.data_quants[i].extras = new_extras
+        data_quants[i].yaxis_opt = new_yaxis_opt
+        data_quants[i].zaxis_opt = new_zaxis_opt
+        data_quants[i].line_opt = new_line_opt
+        data_quants[i].extras = new_extras
     
     return
         

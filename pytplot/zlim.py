@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from . import tplot_common
+from pytplot import data_quants
 
 def zlim(name, min, max):
     """
@@ -32,11 +32,11 @@ def zlim(name, min, max):
         >>> pytplot.zlim('Variable1', 2, 3)
 
     """
-    if name not in tplot_common.data_quants.keys():
+    if name not in data_quants.keys():
         print("That name is currently not in pytplot.")
         return
     
-    temp_data_quant = tplot_common.data_quants[name]
+    temp_data_quant = data_quants[name]
     temp_data_quant.zaxis_opt['z_range'] = [min, max]
     
     return

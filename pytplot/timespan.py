@@ -3,7 +3,6 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from . import tplot_common
 from . import tplot_utilities
 from .xlim import xlim
 
