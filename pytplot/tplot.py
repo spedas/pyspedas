@@ -3,7 +3,6 @@ import sys
 import os
 from bokeh.io import output_file, show, output_notebook, save
 from bokeh.models import LinearAxis, Range1d
-from . import tplot_common
 from .timestamp import TimeStamp
 from bokeh.layouts import gridplot
 from .TVarFigure1D import TVarFigure1D
@@ -12,7 +11,7 @@ from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureAlt import TVarFigureAlt
 from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
-
+import pytplot
 from PyQt5 import QtCore
 
 try:
@@ -115,13 +114,13 @@ def tplot(name,
     
     for i in range(num_plots):
         if isinstance(name[i], int):
-            name[i] = list(tplot_common.data_quants.keys())[name[i]]
-        if name[i] not in tplot_common.data_quants.keys():
+            name[i] = list(pytplot.data_quants.keys())[name[i]]
+        if name[i] not in pytplot.data_quants.keys():
             print(str(i) + " is currently not in pytplot")
             return
     
     if isinstance(var_label, int):
-        var_label = list(tplot_common.data_quants.keys())[var_label]
+        var_label = list(pytplot.data_quants.keys())[var_label]
     
     # Vertical Box layout to store plots
     all_plots = []
@@ -132,17 +131,17 @@ def tplot(name,
     total_psize = 0
     j = 0
     while(j < num_plots):
-        total_psize += tplot_common.data_quants[name[j]].extras['panel_size']
+        total_psize += pytplot.data_quants[name[j]].extras['panel_size']
         j += 1
-    p_to_use = tplot_common.tplot_opt_glob['window_size'][1]/total_psize
+    p_to_use = pytplot.tplot_opt_glob['window_size'][1]/total_psize
     
     # Create all plots  
     while(i < num_plots):
         last_plot = (i == num_plots-1)
-        temp_data_quant = tplot_common.data_quants[name[i]]
+        temp_data_quant = pytplot.data_quants[name[i]]
         
         p_height = int(temp_data_quant.extras['panel_size'] * p_to_use)
-        p_width = tplot_common.tplot_opt_glob['window_size'][0]
+        p_width = pytplot.tplot_opt_glob['window_size'][0]
         
         #Check plot type       
         spec_keyword = temp_data_quant.extras.get('spec', False)
@@ -178,12 +177,12 @@ def tplot(name,
     # Add date of data to the bottom left corner and timestamp to lower right
     # if py_timestamp('on') was previously called
     total_string = ""
-    if 'time_stamp' in tplot_common.extra_layouts:
-        total_string = tplot_common.extra_layouts['time_stamp']
+    if 'time_stamp' in pytplot.extra_layouts:
+        total_string = pytplot.extra_layouts['time_stamp']
     
     ts = TimeStamp(text = total_string)
-    tplot_common.extra_layouts['data_time'] = ts
-    all_plots.append([tplot_common.extra_layouts['data_time']])
+    pytplot.extra_layouts['data_time'] = ts
+    all_plots.append([pytplot.extra_layouts['data_time']])
         
     # Set all plots' x_range and plot_width to that of the bottom plot
     #     so all plots will pan and be resized together.
@@ -207,7 +206,7 @@ def tplot(name,
         x_axes_index = 0
         for new_x_axis in var_label:
             
-            axis_data_quant = tplot_common.data_quants[new_x_axis]
+            axis_data_quant = pytplot.data_quants[new_x_axis]
             axis_start = min(axis_data_quant.data.min(skipna=True).tolist())
             axis_end = max(axis_data_quant.data.max(skipna=True).tolist())
             x_axes.append(Range1d(start = axis_start, end = axis_end))
@@ -259,8 +258,8 @@ def _generate_gui(total_html):
             self.plot_window = WebView()
             self.setCentralWidget(self.plot_window)
             
-            self.resize(tplot_common.tplot_opt_glob['window_size'][0]+100,tplot_common.tplot_opt_glob['window_size'][1]+100)
-            self.plot_window.resize(tplot_common.tplot_opt_glob['window_size'][0],tplot_common.tplot_opt_glob['window_size'][1])
+            self.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
+            self.plot_window.resize(pytplot.tplot_opt_glob['window_size'][0],pytplot.tplot_opt_glob['window_size'][1])
             
             #self.plot_window.setHtml(total_html)
             dir_path = os.path.dirname(os.path.realpath(__file__))
