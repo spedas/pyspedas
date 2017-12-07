@@ -18,7 +18,6 @@ from .TVarFigureAlt import TVarFigureAlt
 from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
 
-from PyQt5 import QtCore
 try:
     from PyQt5.QtWebKitWidgets import QWebView as WebView
 except:
