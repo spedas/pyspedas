@@ -1,6 +1,12 @@
 from __future__ import division
 import sys
 import os
+import pytplot
+
+from pytplot.PyQtGraphModels.TVarFigure import TVarFigure
+from pytplot.PyQtGraphModels.TVarFigureAxisOnly import TVarFigureAxisOnly
+from pyqtgraph.Qt import QtCore, QtGui
+
 from bokeh.io import output_file, show, output_notebook, save
 from bokeh.models import LinearAxis, Range1d
 from .timestamp import TimeStamp
@@ -11,9 +17,8 @@ from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureAlt import TVarFigureAlt
 from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
-import pytplot
-from PyQt5 import QtCore
 
+from PyQt5 import QtCore
 try:
     from PyQt5.QtWebKitWidgets import QWebView as WebView
 except:
@@ -30,7 +35,8 @@ def tplot(name,
           nb=False, 
           save_file=None,
           gui=False, 
-          qt=True):
+          qt=True,
+          pyqtgraph=False):
     
     """
     This is the function used to display the tplot variables stored in memory.
@@ -102,6 +108,14 @@ def tplot(name,
         >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
 
+    #Variables needed for pyqtgraph plots
+    xaxis_thickness = 35
+    varlabel_xaxis_thickness = 20
+    
+    #Setting up the pyqtgraph window
+    pytplot.win.setWindowTitle(pytplot.tplot_opt_glob['title_text'])
+    pytplot.win.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+    
     # Name for .html file containing plots
     out_name = ""
     
@@ -133,7 +147,12 @@ def tplot(name,
     while(j < num_plots):
         total_psize += pytplot.data_quants[name[j]].extras['panel_size']
         j += 1
-    p_to_use = pytplot.tplot_opt_glob['window_size'][1]/total_psize
+    
+    if var_label is not None and pyqtgraph:
+        varlabel_correction = len(var_label) * varlabel_xaxis_thickness
+    else:
+        varlabel_correction = 0
+    p_to_use = (pytplot.tplot_opt_glob['window_size'][1]-xaxis_thickness - varlabel_correction)/total_psize
     
     # Create all plots  
     while(i < num_plots):
@@ -148,20 +167,27 @@ def tplot(name,
         alt_keyword = temp_data_quant.extras.get('alt', False)
         map_keyword = temp_data_quant.extras.get('map', False)
         
-        if spec_keyword:     
-            new_fig = TVarFigureSpec(temp_data_quant, interactive=interactive, last_plot=last_plot)
-        elif alt_keyword:
-            new_fig = TVarFigureAlt(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
-        elif map_keyword:    
-            new_fig = TVarFigure2D(temp_data_quant, interactive=interactive, last_plot=last_plot)
+        if pyqtgraph:
+            if last_plot:
+                p_height += xaxis_thickness
+            pytplot.win.ci.layout.setRowPreferredHeight(i, p_height) 
+            new_fig = TVarFigure(temp_data_quant, last_plot)
+            pytplot.win.addItem(new_fig, row=i, col=0)
         else:
-            new_fig = TVarFigure1D(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
+            if spec_keyword:     
+                new_fig = TVarFigureSpec(temp_data_quant, interactive=interactive, last_plot=last_plot)
+            elif alt_keyword:
+                new_fig = TVarFigureAlt(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
+            elif map_keyword:    
+                new_fig = TVarFigure2D(temp_data_quant, interactive=interactive, last_plot=last_plot)
+            else:
+                new_fig = TVarFigure1D(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
+            
+            new_fig.setsize(height=p_height, width=p_width) 
+            if i == 0:
+                new_fig.add_title()
             
         axis_types.append(new_fig.getaxistype())
-        
-        new_fig.setsize(height=p_height, width=p_width) 
-        if i == 0:
-            new_fig.add_title()
         
         new_fig.buildfigure()
         
@@ -176,77 +202,98 @@ def tplot(name,
         i = i+1
     # Add date of data to the bottom left corner and timestamp to lower right
     # if py_timestamp('on') was previously called
-    total_string = ""
-    if 'time_stamp' in pytplot.extra_layouts:
-        total_string = pytplot.extra_layouts['time_stamp']
     
-    ts = TimeStamp(text = total_string)
-    pytplot.extra_layouts['data_time'] = ts
-    all_plots.append([pytplot.extra_layouts['data_time']])
+    if not pyqtgraph:
+        total_string = ""
+        if 'time_stamp' in pytplot.extra_layouts:
+            total_string = pytplot.extra_layouts['time_stamp']
         
-    # Set all plots' x_range and plot_width to that of the bottom plot
-    #     so all plots will pan and be resized together.
-    first_type = {}
-    if combine_axes:
-        k=0
-        while(k < num_plots):
-            if axis_types[k][0] not in first_type:
-                first_type[axis_types[k][0]] = k
-            else:
-                all_plots[k][0].x_range = all_plots[first_type[axis_types[k][0]]][0].x_range
-                if axis_types[k][1]:
-                    all_plots[k][0].y_range = all_plots[first_type[axis_types[k][0]]][0].y_range
-            k+=1
+        ts = TimeStamp(text = total_string)
+        pytplot.extra_layouts['data_time'] = ts
+        all_plots.append([pytplot.extra_layouts['data_time']])
     
     #Add extra x axes if applicable 
     if var_label is not None:
         if not isinstance(var_label, list):
             var_label = [var_label]
-        x_axes = []
-        x_axes_index = 0
-        for new_x_axis in var_label:
-            
-            axis_data_quant = pytplot.data_quants[new_x_axis]
-            axis_start = min(axis_data_quant.data.min(skipna=True).tolist())
-            axis_end = max(axis_data_quant.data.max(skipna=True).tolist())
-            x_axes.append(Range1d(start = axis_start, end = axis_end))
-            k = 0
-            while(k < num_plots ):
-                all_plots[k][0].extra_x_ranges['extra_'+str(new_x_axis)] = x_axes[x_axes_index]
-                k += 1
-            all_plots[k-1][0].add_layout(LinearAxis(x_range_name = 'extra_'+str(new_x_axis)), 'below')
-            all_plots[k-1][0].plot_height += 22
-            x_axes_index += 1
+        if pyqtgraph:
+            x_axes_index=0
+            for new_x_axis in var_label:
+                axis_data_quant = pytplot.data_quants[new_x_axis]
+                new_axis = TVarFigureAxisOnly(axis_data_quant)
+                pytplot.win.addItem(new_axis, row=num_plots+x_axes_index, col=0)
+                x_axes_index += 1
+                axis_types.append(('time', False))
+                all_plots.append(new_axis)
+        else:
+            x_axes = []
+            x_axes_index = 0
+            for new_x_axis in var_label:
+                
+                axis_data_quant = pytplot.data_quants[new_x_axis]
+                axis_start = min(axis_data_quant.data.min(skipna=True).tolist())
+                axis_end = max(axis_data_quant.data.max(skipna=True).tolist())
+                x_axes.append(Range1d(start = axis_start, end = axis_end))
+                k = 0
+                while(k < num_plots ):
+                    all_plots[k][0].extra_x_ranges['extra_'+str(new_x_axis)] = x_axes[x_axes_index]
+                    k += 1
+                all_plots[k-1][0].add_layout(LinearAxis(x_range_name = 'extra_'+str(new_x_axis)), 'below')
+                all_plots[k-1][0].plot_height += 22
+                x_axes_index += 1
     
-    # Add toolbar and title (if applicable) to top plot.        
-    final = gridplot(all_plots)
+    # Set all plots' x_range and plot_width to that of the bottom plot
+    #     so all plots will pan and be resized together.
+    first_type = {}
+    if combine_axes:
+        k=0
+        while(k < len(axis_types)):
+            if axis_types[k][0] not in first_type:
+                first_type[axis_types[k][0]] = k
+            else:
+                if pyqtgraph:
+                    all_plots[k].plotwindow.setXLink(all_plots[first_type[axis_types[k][0]]].plotwindow)
+                else:
+                    all_plots[k][0].x_range = all_plots[first_type[axis_types[k][0]]][0].x_range
+                    if axis_types[k][1]:
+                        all_plots[k][0].y_range = all_plots[first_type[axis_types[k][0]]][0].y_range
+            k+=1
+           
+    if pyqtgraph:
+        x = PlotWindow()
+        x.show()
+        x.activateWindow()
+        import sys
+        if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+            print(sys.flags.interactive)
+            QtGui.QApplication.instance().exec_()
+    else:
+        final = gridplot(all_plots)
+        #Output types
+        if gui:
+            script, div = components(final)
+            return script, div
+        elif nb:
+            output_notebook()
+            show(final)
+            return
+        elif save_file != None:
+            output_file(save_file, mode='inline')
+            save(final)    
+            return
+        else:        
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            output_file(os.path.join(dir_path, "temp.html"), mode='inline')
+            save(final)
+            js = JSResources(mode='inline')
+            css = CSSResources(mode='inline')
+            total_html = file_html(final, (js, css))
+            _generate_bokeh_gui()
+            return
 
-
-    #Output types
-    if gui:
-        script, div = components(final)
-        return script, div
-    elif nb:
-        output_notebook()
-        show(final)
-        return
-    elif save_file != None:
-        output_file(save_file, mode='inline')
-        save(final)    
-        return
-    else:        
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        output_file(os.path.join(dir_path, "temp.html"), mode='inline')
-        save(final)
-        js = JSResources(mode='inline')
-        css = CSSResources(mode='inline')
-        total_html = file_html(final, (js, css))
-        _generate_gui(total_html)
-        return
-
-def _generate_gui(total_html):  
+def _generate_bokeh_gui():  
     
-    class PlotWindow(QMainWindow):
+    class HTMLPlotWindow(QMainWindow):
         
         def __init__(self):
             super().__init__()
@@ -261,7 +308,6 @@ def _generate_gui(total_html):
             self.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
             self.plot_window.resize(pytplot.tplot_opt_glob['window_size'][0],pytplot.tplot_opt_glob['window_size'][1])
             
-            #self.plot_window.setHtml(total_html)
             dir_path = os.path.dirname(os.path.realpath(__file__))
             self.plot_window.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
             menubar = self.menuBar()
@@ -295,10 +341,38 @@ def _generate_gui(total_html):
             sshot.save(fname[0])            
     
     app = QApplication(sys.argv)
-    web = PlotWindow()    
+    web = HTMLPlotWindow()    
     web.show()
     web.activateWindow()
     app.exec_()
     return
+
+class PlotWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+        self.setcleanup()
+        
+    def initUI(self):
+        self.setWindowTitle('PyTplot')
+        self.setCentralWidget(pytplot.win)
+        menubar = self.menuBar()
+        exportMenu = menubar.addMenu('Export')
+        exportDatapngAction = QAction("PNG", self)
+        exportDatapngAction.triggered.connect(self.exportpng)
+        exportMenu.addAction(exportDatapngAction)
+        
+        self.show()
     
-    
+    def setcleanup(self):
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.centralWidget().setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        for child in self.findChildren(WebView):
+            if child is not self.plot_window:
+                child.deleteLater()
+        
+    def exportpng(self):
+        fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
+        sshot = self.centralWidget().grab()
+        sshot.save(fname[0])        
+        

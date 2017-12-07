@@ -47,7 +47,7 @@ class TVarFigure(pg.GraphicsLayout):
             
 
 
-    def buildFigure(self):
+    def buildfigure(self):
         self._setxrange()
         self._setyrange()
         self._setyaxistype()
@@ -67,7 +67,8 @@ class TVarFigure(pg.GraphicsLayout):
     def _setxaxislabel(self):
         self.xaxis.setLabel("Time")
     
-    
+    def getfig(self):
+        return self
     
     def _visdata(self):
         spec_keyword = self.tvar.extras.get('spec', False)
@@ -192,7 +193,9 @@ class TVarFigure(pg.GraphicsLayout):
             return tplot_utilities.return_lut("inferno")
     
     def getaxistype(self):
-        return 'time'
+        axis_type = 'time'
+        link_y_axis = False
+        return axis_type, link_y_axis
     
     def _setxrange(self):
         #Check if x range is set.  Otherwise, x range is automatic 
