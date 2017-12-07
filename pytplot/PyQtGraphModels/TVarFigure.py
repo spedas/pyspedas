@@ -200,7 +200,7 @@ class TVarFigure(pg.GraphicsLayout):
     def _setxrange(self):
         #Check if x range is set.  Otherwise, x range is automatic 
         if 'x_range' in tplot_opt_glob:
-            self.plotwindow.setXRange(self.tvar.yaxis_opt['x_range'][0], self.tvar.yaxis_opt['x_range'][1])
+            self.plotwindow.setXRange(tplot_opt_glob['x_range'][0], tplot_opt_glob['x_range'][1])
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
@@ -235,3 +235,10 @@ class TVarFigure(pg.GraphicsLayout):
     def _addextras(self):
         #Not yet implemented
         return
+    
+    def add_title(self, text=None):
+        if text is not None:
+            self.plotwindow.setTitle(text)
+        elif 'title_text' in pytplot.tplot_opt_glob:
+            if pytplot.tplot_opt_glob['title_text'] != '':
+                self.plotwindow.setTitle(pytplot.tplot_opt_glob['title_text'])

@@ -2,11 +2,12 @@ import pyqtgraph as pg
 import numpy as np
 from _collections import OrderedDict
 
+
 pg.setConfigOptions(imageAxisOrder='row-major')
 pg.setConfigOptions(background='w')
 pg.mkQApp()
-win = pg.GraphicsLayoutWidget()
-win.ci.layout.setHorizontalSpacing(50)
+layout = pg.GraphicsLayoutWidget()
+layout.ci.layout.setHorizontalSpacing(50)
 
 #This variable will be constantly changed depending on what x value the user is hovering over
 hover_time = 0
@@ -19,7 +20,7 @@ data_quants = OrderedDict()
 tplot_opt_glob = dict(tools = "xpan,crosshair,reset", 
                  min_border_top = 15, min_border_bottom = 0, 
                  title_align = 'center', window_size = [800, 800],
-                 title_size='12pt', title_text='PyTplot')
+                 title_size='12pt', title_text='')
 lim_info = {}
 extra_renderers = []
 extra_layouts = {}
@@ -97,5 +98,42 @@ from .options import options
 from .timestamp import timestamp
 from .cdf_to_tplot import cdf_to_tplot
 from .tplot_utilities import compare_versions
+
+from pytplot.PyQtGraphModels.TVarFigure import TVarFigure
+from pytplot.PyQtGraphModels.TVarFigureAxisOnly import TVarFigureAxisOnly
+from pyqtgraph.Qt import QtCore, QtGui
+from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
+
+class PlotWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+        self.setcleanup()
+         
+    def initUI(self):
+        self.setWindowTitle('PyTplot')
+        self.setCentralWidget(layout)
+        menubar = self.menuBar()
+        exportMenu = menubar.addMenu('Export')
+        exportDatapngAction = QAction("PNG", self)
+        exportDatapngAction.triggered.connect(self.exportpng)
+        exportMenu.addAction(exportDatapngAction)
+     
+    def setcleanup(self):
+        #self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        #self.centralWidget().setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        for child in self.findChildren(TVarFigure):
+            child.deleteLater()
+         
+    def exportpng(self):
+        fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
+        sshot = self.centralWidget().grab()
+        sshot.save(fname[0])
+    
+    def newlayout(self, layout):
+        self.setCentralWidget(layout)
+        
+pytplotWindow = PlotWindow()
+
 
 compare_versions()
