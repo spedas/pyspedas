@@ -3,12 +3,9 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from . import tplot_common
-from .timestamp import TimeStamp
+from pytplot import data_quants
 from . import tplot_utilities
 from bokeh.models import Span
-
-#ELYSIA WAS HERE
 
 def timebar(t, varname = None, databar = False, delete = False, color = 'black', thick = 1, dash = False):    
     """
@@ -83,19 +80,19 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
             tbar['line_color'] = color
             tbar['line_width'] = thick
             tbar['line_dash'] = dash_pattern
-            for name in tplot_common.data_quants:
-                temp_data_quants = tplot_common.data_quants[name]
+            for name in data_quants:
+                temp_data_quants = data_quants[name]
                 temp_data_quants.time_bar.append(tbar)
     else:
         if not isinstance(varname, list):
             varname = [varname]
         for j in varname:
-            if j not in tplot_common.data_quants.keys():
+            if j not in data_quants.keys():
                 print(str(j) + "is currently not in pytplot")
             else:
                 num_bars = len(t)
                 for i in range(num_bars):
                     tbar = Span(location = t[i], dimension = dim, line_color = color, line_width = thick, line_dash = dash_pattern)
-                    temp_data_quants = tplot_common.data_quants[j]
+                    temp_data_quants = data_quants[j]
                     temp_data_quants.time_bar.append(tbar)
     return

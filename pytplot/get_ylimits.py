@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from . import tplot_common
+from pytplot import data_quants
 
 
 def get_ylimits(name, trg = None):
@@ -38,10 +38,10 @@ def get_ylimits(name, trg = None):
     ymin = None
     ymax = None
     for i in range(name_num):
-        if name[i] not in tplot_common.data_quants.keys():
+        if name[i] not in data_quants.keys():
             print(str(name[i]) + " is currently not in pytplot.")
             return
-        temp_data_quant = tplot_common.data_quants[name[i]]
+        temp_data_quant = data_quants[name[i]]
         yother = temp_data_quant.data
         if trg is not None:
             for column_name in yother.columns:

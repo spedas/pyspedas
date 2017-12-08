@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from . import tplot_common
+import pytplot
 from . import tplot_utilities
 
 def tplot_options(option, value):
@@ -46,6 +46,7 @@ def tplot_options(option, value):
     
     option = option.lower()
     
-    tplot_common.tplot_opt_glob = tplot_utilities.set_tplot_options(option, value, tplot_common.tplot_opt_glob)
+    temp = tplot_utilities.set_tplot_options(option, value, pytplot.tplot_opt_glob)
+    pytplot.tplot_opt_glob = temp
     
     return

@@ -11,7 +11,7 @@ from bokeh.models import (ColumnDataSource, DatetimeAxis, HoverTool,
 from bokeh.models.glyphs import Line
 from bokeh.models.tools import BoxZoomTool
 
-from . import tplot_common
+import pytplot
 from . import tplot_utilities
 from bokeh.models.formatters import DatetimeTickFormatter
 
@@ -42,7 +42,7 @@ class TVarFigure1D(object):
         self.interactive_plot = None
 
         self.fig = Figure(x_axis_type='datetime', 
-                          tools = tplot_common.tplot_opt_glob['tools'],
+                          tools = pytplot.tplot_opt_glob['tools'],
                           y_axis_type=self._getyaxistype())
         self.fig.add_tools(BoxZoomTool(dimensions='width'))
         self._format()
@@ -66,11 +66,11 @@ class TVarFigure1D(object):
             self.fig.plot_height = height
 
     def add_title(self):
-        if 'title_text' in tplot_common.tplot_opt_glob:
-            if tplot_common.tplot_opt_glob['title_text'] != '':
-                title1 = Title(text = tplot_common.tplot_opt_glob['title_text'], 
-                               align=tplot_common.tplot_opt_glob['title_align'],
-                               text_font_size=tplot_common.tplot_opt_glob['title_size'])  
+        if 'title_text' in pytplot.tplot_opt_glob:
+            if pytplot.tplot_opt_glob['title_text'] != '':
+                title1 = Title(text = pytplot.tplot_opt_glob['title_text'], 
+                               align=pytplot.tplot_opt_glob['title_align'],
+                               text_font_size=pytplot.tplot_opt_glob['title_size'])  
                 self.fig.title = title1
                 self.fig.plot_height += 22
 
@@ -100,26 +100,26 @@ class TVarFigure1D(object):
             
     def _setxrange(self):
         #Check if x range is not set, if not, set good ones
-        if 'x_range' not in tplot_common.tplot_opt_glob:
+        if 'x_range' not in pytplot.tplot_opt_glob:
             datasets = []
             x_min_list = []
             x_max_list = []
             if isinstance(self.tvar.data, list):
                 for oplot_name in self.tvar.data:
-                    datasets.append(tplot_common.data_quants[oplot_name].data)
+                    datasets.append(pytplot.data_quants[oplot_name].data)
             else:
                 datasets.append(self.tvar.data)
             for dataset in datasets:
                 x_min_list.append(np.nanmin(dataset.index.tolist()))
                 x_max_list.append(np.nanmax(dataset.index.tolist()))
-            tplot_common.tplot_opt_glob['x_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
+            pytplot.tplot_opt_glob['x_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
             tplot_x_range = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
             if self.last_plot:
-                tplot_common.lim_info['xfull'] = tplot_x_range
-                tplot_common.lim_info['xlast'] = tplot_x_range
+                pytplot.lim_info['xfull'] = tplot_x_range
+                pytplot.lim_info['xlast'] = tplot_x_range
         
         #Bokeh uses milliseconds since epoch for some reason
-        x_range = Range1d(tplot_common.tplot_opt_glob['x_range'][0]* 1000, tplot_common.tplot_opt_glob['x_range'][1]* 1000)
+        x_range = Range1d(pytplot.tplot_opt_glob['x_range'][0]* 1000, pytplot.tplot_opt_glob['x_range'][1]* 1000)
         self.fig.x_range = x_range
     
     def _setyrange(self):
@@ -130,8 +130,8 @@ class TVarFigure1D(object):
         self.fig.y_range = y_range
         
     def _setminborder(self):
-        self.fig.min_border_bottom = tplot_common.tplot_opt_glob['min_border_bottom']
-        self.fig.min_border_top = tplot_common.tplot_opt_glob['min_border_top']
+        self.fig.min_border_bottom = pytplot.tplot_opt_glob['min_border_bottom']
+        self.fig.min_border_top = pytplot.tplot_opt_glob['min_border_top']
     
         
     def _addtimebars(self):
@@ -163,7 +163,7 @@ class TVarFigure1D(object):
         datasets = []
         if isinstance(self.tvar.data, list):
             for oplot_name in self.tvar.data:
-                datasets.append(tplot_common.data_quants[oplot_name].data)
+                datasets.append(pytplot.data_quants[oplot_name].data)
         else:
             datasets.append(self.tvar.data)
         
@@ -230,5 +230,5 @@ class TVarFigure1D(object):
             self.fig.add_layout(legend, 'right')
             
     def _addextras(self):
-        self.fig.renderers.extend(tplot_common.extra_renderers)
+        self.fig.renderers.extend(pytplot.extra_renderers)
                 

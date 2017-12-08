@@ -12,8 +12,7 @@ import pandas as pd
 import numpy as np
 import pytz
 from _collections import OrderedDict
-from . import tplot_common
-from .timestamp import TimeStamp
+from . import data_quants
 
 def compare_versions():
     #import libraries
@@ -386,3 +385,31 @@ def timebar_delete(t, varname=None, dim='height'):
                 list_timebars.remove(j)
             tplot_common.data_quants[i].time_bar = list_timebars
     return    
+
+def return_lut(name):
+    import matplotlib as mpl
+    mpl.use('tkagg')
+    from matplotlib import cm
+    
+    if name=='yellow':
+        map = [(np.array([1,1,0,1])*255).astype(np.int) for x in range(0,256)]
+        return map
+    elif name=='red':
+        map = [(np.array([1,0,0,1])*255).astype(np.int) for x in range(0,256)]
+        return map
+    elif name=='blue':
+        map = [(np.array([0,0,1,1])*255).astype(np.int) for x in range(0,256)]
+        return map
+    elif name=='green':
+        map = [(np.array([0,1,0,1])*255).astype(np.int) for x in range(0,256)]
+        return map
+    elif name=='purple':
+        map = [(np.array([1,0,1,1])*255).astype(np.int) for x in range(0,256)]
+        return map
+    elif name=='teal':
+        map = [(np.array([0,1,1,1])*255).astype(np.int) for x in range(0,256)]
+        return map
+    else:
+        cm = mpl.cm.get_cmap(name)
+        map = [(np.array(cm(x))*255).astype(np.int) for x in range(0,cm.N)]
+        return map
