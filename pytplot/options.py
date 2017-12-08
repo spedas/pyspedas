@@ -59,7 +59,8 @@ def options(name, option, value):
         >>> pytplot.options('Variable1', 'ylog', 1)
     
     """
-    
+    #if isinstance(name,int):
+    #    name = tplot_common.data_quants.keys()[name]
     if not isinstance(name, list):
         name = [name]
     
