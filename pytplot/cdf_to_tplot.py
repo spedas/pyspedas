@@ -114,8 +114,9 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 
                 if 'CDF_TIME' in data_type_description:
                     xdata = cdflib.cdfepoch.unixtime(xdata)
-                
                 ydata=cdf_file.varget(var)
+                if ydata is None:
+                    continue
                 if "FILLVAL" in var_atts:
                     if (var_properties['data_type_description'] == 'CDF_FLOAT' or
                         var_properties['data_type_description'] == 'CDF_REAL4' or 
