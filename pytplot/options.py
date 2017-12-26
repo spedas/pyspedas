@@ -5,8 +5,10 @@
 
 from pytplot import data_quants
 from .tplot_utilities import set_options
+from astropy.wcs.docstrings import name
 
 def options(name, option, value):
+    
     """
     This function allows the user to set a large variety of options for individual plots.  
     
@@ -59,14 +61,14 @@ def options(name, option, value):
         >>> pytplot.options('Variable1', 'ylog', 1)
     
     """
-    #if isinstance(name,int):
-    #    name = tplot_common.data_quants.keys()[name]
+    if isinstance(name,int):
+        name = list(data_quants.keys())[name]
     if not isinstance(name, list):
         name = [name]
     
     option = option.lower()
-    
     for i in name:
+        #print(i)
         if i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return

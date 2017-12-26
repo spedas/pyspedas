@@ -13,7 +13,7 @@ import numpy as np
 import pytz
 from _collections import OrderedDict
 from . import data_quants
-
+        
 def compare_versions():
     #import libraries
     import requests
@@ -83,6 +83,8 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
     new_zaxis_opt = old_zaxis_opt
     new_line_opt = old_line_opt
     new_extras = old_extras
+    #global i
+    #i = str(i)
     
     if option == 'color':
         if isinstance(value, list):
@@ -106,20 +108,59 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
         new_extras['map'] = value
     
     elif option == 'ylog':
-        if value == 1:
-            new_yaxis_opt['y_axis_type'] = 'log'
-        if value == 0:
-            new_yaxis_opt['y_axis_type'] = 'linear'
-    
+        negflag = 0
+        ##check variable data
+        namedata = data_quants[i]
+        #if negative numbers, don't allow log setting
+        if old_extras['spec'] == 0:
+            for number in namedata.data:
+                if number < 0:
+                    print('Negative data is incompatible with log plotting.')
+                    negflag = 1
+                    break
+            if value == 1 and negflag == 0:
+                new_yaxis_opt['y_axis_type'] = 'log'
+            if value == 0:
+                new_yaxis_opt['y_axis_type'] = 'linear'
+        
+        negflag = 0
+        if old_extras['spec']==1:
+            for number in namedata.spec_bins:
+                if number < 0:
+                    print('Negative data is incompatible with log plotting.')
+                    negflag = 1
+                    break
+            if value == 1 and negflag == 0:
+                new_yaxis_opt['y_axis_type'] = 'log'
+            if value == 0:
+                new_yaxis_opt['y_axis_type'] = 'linear'
+   
     elif option == 'legend_names':
         new_yaxis_opt['legend_names'] = value
     
     elif option == 'zlog':
-        if value == 1:
-            new_zaxis_opt['z_axis_type'] = 'log'
-        if value == 0:
-            new_zaxis_opt['z_axis_type'] = 'linear'
-    
+        #check variable data
+        namedata =  data_quants[i]
+        #if negative numbers, don't allow log setting
+        if old_extras['spec'] == 0:
+            if value == 1:
+                new_zaxis_opt['z_axis_type'] = 'log'
+            if value == 0:
+                new_zaxis_opt['z_axis_type'] = 'linear'
+        
+        negflag = 0
+        if old_extras['spec'] == 1:
+            for number in namedata.data:
+                if number < 0:
+                    print('Negative data is incompatible with log plotting.')
+                    negflag = 1
+                    break
+            #verify there are no negative values
+            if negflag == 0 and value == 1:
+                new_zaxis_opt['z_axis_type'] = 'log'
+            if value == 0:
+                new_zaxis_opt['z_axis_type'] = 'linear'
+   
     # elif(option == 'ymajor'):  
     
     elif option == 'nodata':
