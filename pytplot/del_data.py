@@ -6,13 +6,14 @@
 from pytplot import data_quants
 
 
-def del_data(name):
+def del_data(name=None):
     """
     This function will delete tplot variables that are already stored in memory.  
     
     Parameters:
         name : str 
-            Name of the tplot variable to be deleted
+            Name of the tplot variable to be deleted.  If no name is provided, then 
+            all tplot variables will be deleted.  
          
     Returns:
         None
@@ -23,6 +24,12 @@ def del_data(name):
         >>> pytplot.del_data("Varaible1")
 
     """
+    if name is None:
+        tplot_names = list(data_quants.keys())
+        for i in tplot_names:
+            del data_quants[i]
+        return
+    
     if not isinstance(name, list):
         name = [name]
     for i in name:

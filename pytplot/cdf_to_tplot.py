@@ -109,7 +109,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     print("Cannot find x axis.")
                     print("No attribute named DEPEND_TIME or DEPEND_0 in variable "+var)
                     continue
-                data_type_description = cdf_file.varinq(x_axis_var)['data_type_description']
+                data_type_description = cdf_file.varinq(x_axis_var)['Data_Type_Description']
                 xdata=cdf_file.varget(x_axis_var)
                 
                 if 'CDF_TIME' in data_type_description:
@@ -118,10 +118,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 if ydata is None:
                     continue
                 if "FILLVAL" in var_atts:
-                    if (var_properties['data_type_description'] == 'CDF_FLOAT' or
-                        var_properties['data_type_description'] == 'CDF_REAL4' or 
-                        var_properties['data_type_description'] == 'CDF_DOUBLE' or 
-                        var_properties['data_type_description'] == 'CDF_REAL8'):
+                    if (var_properties['Data_Type_Description'] == 'CDF_FLOAT' or
+                        var_properties['Data_Type_Description'] == 'CDF_REAL4' or 
+                        var_properties['Data_Type_Description'] == 'CDF_DOUBLE' or 
+                        var_properties['Data_Type_Description'] == 'CDF_REAL8'):
                         
                         if ydata[ydata==var_atts["FILLVAL"]].size != 0:
                             ydata[ydata==var_atts["FILLVAL"]] = np.nan

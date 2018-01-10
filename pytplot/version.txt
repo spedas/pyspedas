@@ -1,4 +1,7 @@
-1.0.15
+1.1.0
+
+1.1.0 Changes:
+	-Added the ability to plot directly in the Qt Window with pyqtgraph.  This may entirely replace the bokeh plotting routines at some point.
 
 1.0.15 Changes:
 	-Changing tplot to use QtWebKitWidgets by default, but attempt to use QWebEngineView if not found
