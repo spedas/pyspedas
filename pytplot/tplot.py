@@ -107,17 +107,17 @@ def tplot(name,
         >>> #Plot all 3 tplot variables, sending the HTML output to a pair of strings
         >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
-
-    layout = pg.GraphicsLayoutWidget()
-    layout.ci.layout.setHorizontalSpacing(50)
-    pytplot.pytplotWindow.newlayout(layout)
-    #Variables needed for pyqtgraph plots
-    xaxis_thickness = 35
-    varlabel_xaxis_thickness = 20
-    title_thickness = 50
-    #Setting up the pyqtgraph window
-    layout.setWindowTitle(pytplot.tplot_opt_glob['title_text'])
-    layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+    if pyqtgraph:
+        pytplot.layout = pg.GraphicsLayoutWidget()
+        pytplot.layout.ci.layout.setHorizontalSpacing(50)
+        pytplot.pytplotWindow.newlayout(pytplot.layout)
+        #Variables needed for pyqtgraph plots
+        xaxis_thickness = 35
+        varlabel_xaxis_thickness = 20
+        title_thickness = 50
+        #Setting up the pyqtgraph window
+        pytplot.layout.setWindowTitle(pytplot.tplot_opt_glob['title_text'])
+        pytplot.layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
     
     # Name for .html file containing plots
     out_name = ""
@@ -179,11 +179,11 @@ def tplot(name,
             if last_plot:
                 p_height += xaxis_thickness
             if i == 0:
-                if _set_pyqtgraph_title(layout):
+                if _set_pyqtgraph_title(pytplot.layout):
                     titlerow=1
-            layout.ci.layout.setRowPreferredHeight(i+titlerow, p_height) 
+            pytplot.layout.ci.layout.setRowPreferredHeight(i+titlerow, p_height) 
             new_fig = TVarFigure(temp_data_quant, last_plot)
-            layout.addItem(new_fig, row=i+titlerow, col=0)
+            pytplot.layout.addItem(new_fig, row=i+titlerow, col=0)
         else:
             if spec_keyword:     
                 new_fig = TVarFigureSpec(temp_data_quant, interactive=interactive, last_plot=last_plot)
@@ -233,7 +233,7 @@ def tplot(name,
             for new_x_axis in var_label:
                 axis_data_quant = pytplot.data_quants[new_x_axis]
                 new_axis = TVarFigureAxisOnly(axis_data_quant)
-                layout.addItem(new_axis, row=num_plots+titlerow+x_axes_index, col=0)
+                pytplot.layout.addItem(new_axis, row=num_plots+titlerow+x_axes_index, col=0)
                 x_axes_index += 1
                 axis_types.append(('time', False))
                 all_plots.append(new_axis)
@@ -340,11 +340,12 @@ def _generate_bokeh_gui():
                     html_file.write(read_file.read())
                  
     
-    app = QApplication(sys.argv)
+    #app = QApplication(sys.argv)
     web = HTMLPlotWindow()    
     web.show()
     web.activateWindow()
-    app.exec_()
+    if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+        QtGui.QApplication.instance().exec_()
     return
 
 # class PlotWindow(QMainWindow):
