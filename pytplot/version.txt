@@ -1,4 +1,8 @@
-1.1.2
+1.1.3
+
+1.1.3 Changes:
+	-Bug fix, pyqtgraph was creating a layout every time which eventually caused a crash
+	-Still a known error where bokeh will no longer plot more than once
 
 1.1.2 Changes:
 	-Added support for bokeh 0.12.13
