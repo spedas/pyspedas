@@ -18,7 +18,7 @@ from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureAlt import TVarFigureAlt
 from bokeh.embed import components, file_html
 from bokeh.resources import JSResources, CSSResources
-
+from pytplot import PlotWindow
 try:
     from PyQt5.QtWebKitWidgets import QWebView as WebView
 except:
@@ -110,6 +110,8 @@ def tplot(name,
     if pyqtgraph:
         pytplot.layout = pg.GraphicsLayoutWidget()
         pytplot.layout.ci.layout.setHorizontalSpacing(50)
+        if isinstance(pytplot.pytplotWindow, HTMLPlotWindow):
+            pytplot.pytplotWindow = pytplot.PlotWindow()
         pytplot.pytplotWindow.newlayout(pytplot.layout)
         #Variables needed for pyqtgraph plots
         xaxis_thickness = 35
@@ -300,10 +302,17 @@ def tplot(name,
             _generate_bokeh_gui()
             return
 
-def _generate_bokeh_gui():  
+def _generate_bokeh_gui():                   
     
-    class HTMLPlotWindow(pytplot.PlotWindow):
-        
+    #app = QApplication(sys.argv)
+    pytplot.pytplotWindow = HTMLPlotWindow()    
+    pytplot.pytplotWindow.show()
+    pytplot.pytplotWindow.activateWindow()
+    if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+        QtGui.QApplication.instance().exec_()
+    return
+
+class HTMLPlotWindow(pytplot.PlotWindow):
         def initUI(self):
             self.setWindowTitle('PyTplot')
             self.plot_window = WebView()
@@ -338,16 +347,7 @@ def _generate_bokeh_gui():
             with open(fname[0], 'w+') as html_file:
                 with open(os.path.join(dir_path, "temp.html")) as read_file:
                     html_file.write(read_file.read())
-                 
-    
-    #app = QApplication(sys.argv)
-    web = HTMLPlotWindow()    
-    web.show()
-    web.activateWindow()
-    if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
-    return
-
+                    
 # class PlotWindow(QMainWindow):
 #     def __init__(self):
 #         super().__init__()

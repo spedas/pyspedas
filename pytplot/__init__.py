@@ -2,6 +2,12 @@ import pyqtgraph as pg
 import numpy as np
 from _collections import OrderedDict
 
+try:
+    magic = get_ipython().magic
+    magic(u'%gui qt5')
+except:
+    pass
+
 
 pg.setConfigOptions(imageAxisOrder='row-major')
 pg.setConfigOptions(background='w')
@@ -76,29 +82,6 @@ class TVar(object):
             ascending = self.spec_bins[0].iloc[0] < self.spec_bins[1].iloc[0]
         return ascending
 
-
-from .store_data import store_data
-from .tplot import tplot
-from .get_data import get_data
-from .xlim import xlim
-from .ylim import ylim
-from .zlim import zlim
-from .tlimit import tlimit
-from .tplot_save import tplot_save
-from .tplot_names import tplot_names
-from .tplot_restore import tplot_restore
-from .get_timespan import get_timespan
-from .tplot_options import tplot_options
-from .tplot_rename import tplot_rename
-from .get_ylimits import get_ylimits
-from .timebar import timebar
-from .del_data import del_data
-from .timespan import timespan
-from .options import options
-from .timestamp import timestamp
-from .cdf_to_tplot import cdf_to_tplot
-from .tplot_utilities import compare_versions
-
 from pytplot.PyQtGraphModels.TVarFigure import TVarFigure
 from pytplot.PyQtGraphModels.TVarFigureAxisOnly import TVarFigureAxisOnly
 from pyqtgraph.Qt import QtCore, QtGui
@@ -135,5 +118,32 @@ class PlotWindow(QMainWindow):
         
 pytplotWindow = PlotWindow()
 
+from .store_data import store_data
+from .tplot import tplot
+from .get_data import get_data
+from .xlim import xlim
+from .ylim import ylim
+from .zlim import zlim
+from .tlimit import tlimit
+from .tplot_save import tplot_save
+from .tplot_names import tplot_names
+from .tplot_restore import tplot_restore
+from .get_timespan import get_timespan
+from .tplot_options import tplot_options
+from .tplot_rename import tplot_rename
+from .get_ylimits import get_ylimits
+from .timebar import timebar
+from .del_data import del_data
+from .timespan import timespan
+from .options import options
+from .timestamp import timestamp
+from .cdf_to_tplot import cdf_to_tplot
+from .tplot_utilities import compare_versions
+
 
 compare_versions()
+
+try:
+    from PyQt5.QtWebKitWidgets import QWebView as WebView
+except:
+    from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
