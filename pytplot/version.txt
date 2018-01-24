@@ -1,5 +1,8 @@
-1.1.3
+1.1.5
 
+1.1.4 Changes:
+	-Added a qt option to tplot, which will allow users to just open the HTML file in a browser window
+	
 1.1.3 Changes:
 	-Bug fix, pyqtgraph was creating a layout every time which eventually caused a crash
 	-Still a known error where bokeh will no longer plot more than once
