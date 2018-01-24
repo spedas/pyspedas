@@ -153,7 +153,6 @@ def get_y_range(data, spec_bins):
     import warnings
     warnings.filterwarnings("error")
     ###
-    
     if spec_bins is not None:
         ymin = np.nanmin(spec_bins)
         ymax = np.nanmax(spec_bins)
@@ -184,7 +183,7 @@ def get_y_range(data, spec_bins):
             #Show 10% and 10% below the straight line
             y_min = y_min-(.1*np.abs(y_min))
             y_max = y_max+(.1*np.abs(y_max))
-            
+        warnings.resetwarnings()
         return [y_min, y_max]
     
 def format_ydata(data):

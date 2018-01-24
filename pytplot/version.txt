@@ -1,4 +1,7 @@
-1.1.5
+1.1.6
+
+1.1.6 Changes:
+	-Fixed a spot where python warnings were changed to change back after the function was over
 
 1.1.4 Changes:
 	-Added a qt option to tplot, which will allow users to just open the HTML file in a browser window
