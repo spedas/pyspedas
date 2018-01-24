@@ -297,7 +297,7 @@ def int_to_str(time_int):
 
 def return_bokeh_colormap(name):
     import matplotlib as mpl
-    mpl.use('tkagg')
+    #mpl.use('tkagg')
     from matplotlib import cm
     
     if name=='yellow':

@@ -8,7 +8,7 @@ from pytplot.PyQtGraphModels.TVarFigureAxisOnly import TVarFigureAxisOnly
 from pyqtgraph.Qt import QtCore, QtGui
 from pyqtgraph import LabelItem
 import pyqtgraph as pg
-from bokeh.io import output_file, show, output_notebook, save
+from bokeh.io import output_file, show, output_notebook, save, doc
 from bokeh.models import LinearAxis, Range1d
 from .timestamp import TimeStamp
 from bokeh.layouts import gridplot
@@ -120,6 +120,8 @@ def tplot(name,
         #Setting up the pyqtgraph window
         pytplot.layout.setWindowTitle(pytplot.tplot_opt_glob['title_text'])
         pytplot.layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+    else:
+        doc.curdoc().clear()
     
     # Name for .html file containing plots
     out_name = ""
@@ -295,11 +297,16 @@ def tplot(name,
             output_file(save_file, mode='inline')
             save(final)    
             return
-        else:        
+        elif qt:        
             dir_path = os.path.dirname(os.path.realpath(__file__))
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
             save(final)
             _generate_bokeh_gui()
+            return
+        else:      
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            output_file(os.path.join(dir_path, "temp.html"), mode='inline')
+            show(final)
             return
 
 def _generate_bokeh_gui():                   
