@@ -62,22 +62,22 @@ def options(name, option, value):
     
     """
     if isinstance(name,int):
-        name = list(data_quants.keys())[name]
+        name = list(data_quants.keys())[name-1]
     if not isinstance(name, list):
         name = [name]
     
     option = option.lower()
     for i in name:
-        #print(i)
         if i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
-        (new_yaxis_opt, new_zaxis_opt, new_line_opt, new_extras) = set_options(option, value, data_quants[i].yaxis_opt, data_quants[i].zaxis_opt, data_quants[i].line_opt, data_quants[i].extras)
+        (new_yaxis_opt, new_zaxis_opt, new_line_opt, new_extras,full_data) = set_options(option, value, data_quants[i].yaxis_opt, data_quants[i].zaxis_opt, data_quants[i].line_opt, data_quants[i].extras,data_quants[i])
 
         data_quants[i].yaxis_opt = new_yaxis_opt
         data_quants[i].zaxis_opt = new_zaxis_opt
         data_quants[i].line_opt = new_line_opt
         data_quants[i].extras = new_extras
+        
     
     return
         
