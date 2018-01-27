@@ -32,7 +32,8 @@ def tplot_save(names, filename=None):
         >>> pytplot.save('Variable1', filename='C:/temp/variable1.pytplot')
 
     """
-    
+    if isinstance(names,int):
+        names = list(data_quants.keys())[names-1]
     if not isinstance(names, list):
         names = [names]
     

@@ -78,7 +78,7 @@ def option_usage():
     print("options 'tplot variable name' 'plot option' value[s]")
     return
 
-def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_extras):
+def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_extras,full_data):
     new_yaxis_opt = old_yaxis_opt
     new_zaxis_opt = old_zaxis_opt
     new_line_opt = old_line_opt
@@ -110,10 +110,11 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
     elif option == 'ylog':
         negflag = 0
         ##check variable data
-        namedata = data_quants[i]
-        #if negative numbers, don't allow log setting
-        if old_extras['spec'] == 0:
-            for number in namedata.data:
+        namedata = full_data.data
+        namespec = full_data.spec_bins
+        
+        if old_extras.get('spec',0) == 0:
+            for number in namedata[namedata.columns[0]]:
                 if number < 0:
                     print('Negative data is incompatible with log plotting.')
                     negflag = 1
@@ -124,8 +125,8 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
                 new_yaxis_opt['y_axis_type'] = 'linear'
         
         negflag = 0
-        if old_extras['spec']==1:
-            for number in namedata.spec_bins:
+        if old_extras.get('spec',0) == 1:
+            for number in namespec[namespec.columns[0]]:
                 if number < 0:
                     print('Negative data is incompatible with log plotting.')
                     negflag = 1
@@ -139,18 +140,18 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
         new_yaxis_opt['legend_names'] = value
     
     elif option == 'zlog':
-        #check variable data
-        namedata =  data_quants[i]
+        ##check variable data
+        namedata = full_data.data
         #if negative numbers, don't allow log setting
-        if old_extras['spec'] == 0:
+        if old_extras.get('spec',0) == 0:
             if value == 1:
                 new_zaxis_opt['z_axis_type'] = 'log'
             if value == 0:
                 new_zaxis_opt['z_axis_type'] = 'linear'
         
         negflag = 0
-        if old_extras['spec'] == 1:
-            for number in namedata.data:
+        if old_extras.get('spec',0) == 1:
+            for number in namedata[namedata.columns[0]]:
                 if number < 0:
                     print('Negative data is incompatible with log plotting.')
                     negflag = 1
@@ -296,7 +297,7 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
         fig.yaxis.axis_label = value
     '''
     
-    return (new_yaxis_opt, new_zaxis_opt, new_line_opt, new_extras)
+    return (new_yaxis_opt, new_zaxis_opt, new_line_opt, new_extras, full_data)
 
 def set_tplot_options(option, value, old_tplot_opt_glob):
     new_tplot_opt_glob = old_tplot_opt_glob
