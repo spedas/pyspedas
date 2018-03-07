@@ -13,6 +13,7 @@ import numpy as np
 import pytz
 from _collections import OrderedDict
 from . import data_quants
+import pytplot
 
 def compare_versions():
     #import libraries
@@ -181,7 +182,9 @@ def set_options(option, value, old_yaxis_opt, old_zaxis_opt, old_line_opt, old_e
     
     elif option == 'ztitle':
         new_zaxis_opt['axis_label'] = value
-        
+    
+    elif option == 'plotter': 
+        new_extras['plotter'] = value
     '''       
     # value: NumberSpec(String, Dict(String, Either(String, Float)), Float)
     if(option == 'alpha'):
@@ -358,8 +361,8 @@ def get_heatmap_color(color_map, min_val, max_val, values, zscale = 'log'):
     
 def timebar_delete(t, varname=None, dim='height'):
     if varname is None:
-        for name in tplot_common.data_quants:
-            list_timebars = tplot_common.data_quants[name].time_bar
+        for name in pytplot.data_quants:
+            list_timebars = pytplot.data_quants[name].time_bar
             elem_to_delete = []
             for elem in list_timebars:
                 for num in t:
@@ -367,15 +370,15 @@ def timebar_delete(t, varname=None, dim='height'):
                         elem_to_delete.append(elem)
             for i in elem_to_delete:
                 list_timebars.remove(i)
-            tplot_common.data_quants[name].time_bar = list_timebars
+            pytplot.data_quants[name].time_bar = list_timebars
     else:
         if not isinstance(varname, list):
             varname = [varname]
         for i in varname:
-            if i not in tplot_common.data_quants.keys():
+            if i not in pytplot.data_quants.keys():
                 print(str(i) + " is currently not in pytplot.")
                 return
-            list_timebars = tplot_common.data_quants[i].time_bar
+            list_timebars = pytplot.data_quants[i].time_bar
             elem_to_delete = []
             for elem in list_timebars:
                 for num in t:
@@ -383,7 +386,7 @@ def timebar_delete(t, varname=None, dim='height'):
                         elem_to_delete.append(elem)
             for j in elem_to_delete:
                 list_timebars.remove(j)
-            tplot_common.data_quants[i].time_bar = list_timebars
+            pytplot.data_quants[i].time_bar = list_timebars
     return    
 
 def return_lut(name):

@@ -1,7 +1,8 @@
-import pyqtgraph as pg
 import numpy as np
 from _collections import OrderedDict
 
+
+#If we are in an ipython environment, set the gui to be qt5
 try:
     magic = get_ipython().magic
     magic(u'%gui qt5')
@@ -9,57 +10,93 @@ except:
     pass
 
 
+#This variable will be constantly changed depending on what x value the user is hovering over
+class HoverTime(object):
+    
+    hover_time = 0
+    functions_to_call = []
+    
+    def register_listener(self, fn):
+        self.functions_to_call.append(fn)
+        return
+    
+    def change_hover_time(self, new_time):
+        self.hover_time = new_time
+        for f in self.functions_to_call:
+            f(self.hover_time)
+        return
+
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtWidgets 
+
 pg.setConfigOptions(imageAxisOrder='row-major')
 pg.setConfigOptions(background='w')
 pg.mkQApp()
-layout = pg.GraphicsLayoutWidget()
-layout.ci.layout.setHorizontalSpacing(50)
 
-#This variable will be constantly changed depending on what x value the user is hovering over
-hover_time = 0
-
-
-#Global variable is data_quants
-data_quants = OrderedDict()
-
-#Global variable for tplot options
-tplot_opt_glob = dict(tools = "xpan,crosshair,reset", 
-                 min_border_top = 15, min_border_bottom = 0, 
-                 title_align = 'center', window_size = [800, 800],
-                 title_size='12pt', title_text='')
-lim_info = {}
-extra_renderers = []
-extra_layouts = {}
+class PlotWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+         
+    def initUI(self):
+        self.setWindowTitle('PyTplot')
+        menubar = self.menuBar()
+        exportMenu = menubar.addMenu('Export')
+        exportDatapngAction = QtWidgets.QAction("PNG", self)
+        exportDatapngAction.triggered.connect(self.exportpng)
+        exportMenu.addAction(exportDatapngAction)
+         
+    def exportpng(self):
+        fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
+        sshot = self.centralWidget().grab()
+        sshot.save(fname[0])
+    
+    def newlayout(self, layout):
+        self.setCentralWidget(layout)
 
 class TVar(object):
-    """ A PyTplot variable.
-    
-    TODO: Fill in
-    Attributes:
-        name: String representing the PyTplot variable
-        data: 
+    """ 
+    The basic data object in pytplot.  Each dataset is its own separate TVar object.  
+    This exists to encapsulate the data and details about how to plot the data.  
     """
     
     def __init__(self, name, number, data, spec_bins, yaxis_opt, zaxis_opt, line_opt,
                  trange, dtype, create_time, time_bar, extras):
-        self.name = name
-        self.number = number
-        self.data = data
-        self.spec_bins = spec_bins
-        self.yaxis_opt = yaxis_opt
-        self.zaxis_opt = zaxis_opt
-        self.line_opt = line_opt
-        self.trange = trange
-        self.dtype = dtype
-        self.create_time = create_time
-        self.time_bar = time_bar
-        self.extras = extras
         
-        #Other variables to calculate
+        #Name of the TVar
+        self.name = name
+        #TVar number
+        self.number = number
+        #The data of the TVar
+        self.data = data
+        #The spec_bins, if applicable
+        self.spec_bins = spec_bins
+        #Dictionary of the y axis options
+        self.yaxis_opt = yaxis_opt
+        #Dictionary of the z axis options
+        self.zaxis_opt = zaxis_opt
+        #Dictionary of line options
+        self.line_opt = line_opt
+        #The time range
+        self.trange = trange
+        #The data type of the data (ex - int/double)
+        self.dtype = dtype
+        #String of creation time of this object
+        self.create_time = create_time
+        #Array of time bar objects
+        self.time_bar = time_bar
+        #Dictionary of extra objects
+        self.extras = extras
+        #Whether or not the spec_bins vary in time
         self.spec_bins_time_varying = False
+        #Whether the spec_bins are ascending or decending order
         self.spec_bins_ascending = self._check_spec_bins_ordering()
         
     def _check_spec_bins_ordering(self):
+        '''
+        This is a private function of the TVar object, this is run during 
+        object creation to check if spec_bins are ascending or descending
+        '''
         if self.spec_bins is None:
             return
         if len(self.spec_bins) == len(self.data.index):
@@ -82,41 +119,26 @@ class TVar(object):
             ascending = self.spec_bins[0].iloc[0] < self.spec_bins[1].iloc[0]
         return ascending
 
-from pytplot.PyQtGraphModels.TVarFigure import TVarFigure
-from pytplot.PyQtGraphModels.TVarFigureAxisOnly import TVarFigureAxisOnly
-from pyqtgraph.Qt import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
-
-class PlotWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-        self.setcleanup()
-         
-    def initUI(self):
-        self.setWindowTitle('PyTplot')
-        self.setCentralWidget(layout)
-        menubar = self.menuBar()
-        exportMenu = menubar.addMenu('Export')
-        exportDatapngAction = QAction("PNG", self)
-        exportDatapngAction.triggered.connect(self.exportpng)
-        exportMenu.addAction(exportDatapngAction)
-     
-    def setcleanup(self):
-        #self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        #self.centralWidget().setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        for child in self.findChildren(TVarFigure):
-            child.deleteLater()
-         
-    def exportpng(self):
-        fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
-        sshot = self.centralWidget().grab()
-        sshot.save(fname[0])
-    
-    def newlayout(self, layout):
-        self.setCentralWidget(layout)
-        
+#Global Variables
+hover_time = HoverTime()
+data_quants = OrderedDict()
+tplot_opt_glob = dict(tools = "xpan,crosshair,reset", 
+                 min_border_top = 15, min_border_bottom = 0, 
+                 title_align = 'center', window_size = [800, 800],
+                 title_size='12pt', title_text='')
+lim_info = {}
+extra_layouts = {}
 pytplotWindow = PlotWindow()
+
+from . import QtPlotter
+from . import HTMLPlotter
+
+qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
+               'qtTVarFigureSpec':QtPlotter.TVarFigureSpec}
+bokeh_plotters = {'bkTVarFigure1D':HTMLPlotter.TVarFigure1D,
+                  'bkTVarFigure2D':HTMLPlotter.TVarFigure2D,
+                  'bkTVarFigureAlt':HTMLPlotter.TVarFigureAlt,
+                  'bkTVarFigureSpec':HTMLPlotter.TVarFigureSpec}
 
 from .store_data import store_data
 from .tplot import tplot
@@ -140,10 +162,7 @@ from .timestamp import timestamp
 from .cdf_to_tplot import cdf_to_tplot
 from .tplot_utilities import compare_versions
 
-
 compare_versions()
 
-try:
-    from PyQt5.QtWebKitWidgets import QWebView as WebView
-except:
-    from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
+
+

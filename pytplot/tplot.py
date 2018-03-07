@@ -2,30 +2,15 @@ from __future__ import division
 import sys
 import os
 import pytplot
-
-from pytplot.PyQtGraphModels.TVarFigure import TVarFigure
-from pytplot.PyQtGraphModels.TVarFigureAxisOnly import TVarFigureAxisOnly
 from pyqtgraph.Qt import QtCore, QtGui
-from pyqtgraph import LabelItem
-import pyqtgraph as pg
-from bokeh.io import output_file, show, output_notebook, save, doc
-from bokeh.models import LinearAxis, Range1d
-from .timestamp import TimeStamp
-from bokeh.layouts import gridplot
-from .TVarFigure1D import TVarFigure1D
-from .TVarFigure2D import TVarFigure2D
-from .TVarFigureSpec import TVarFigureSpec
-from .TVarFigureAlt import TVarFigureAlt
-from bokeh.embed import components, file_html
-from bokeh.resources import JSResources, CSSResources
-from pytplot import PlotWindow
+from bokeh.io import output_file, show, output_notebook, save
+from . import QtPlotter
+from . import HTMLPlotter
+from bokeh.embed import components
 try:
     from PyQt5.QtWebKitWidgets import QWebView as WebView
 except:
     from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
-    
-from PyQt5.QtWidgets import QApplication, QFileDialog, QAction, QMainWindow
-
 
 def tplot(name, 
           var_label = None, 
@@ -107,24 +92,6 @@ def tplot(name,
         >>> #Plot all 3 tplot variables, sending the HTML output to a pair of strings
         >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
-    if pyqtgraph:
-        pytplot.layout = pg.GraphicsLayoutWidget()
-        pytplot.layout.ci.layout.setHorizontalSpacing(50)
-        if isinstance(pytplot.pytplotWindow, HTMLPlotWindow):
-            pytplot.pytplotWindow = pytplot.PlotWindow()
-        pytplot.pytplotWindow.newlayout(pytplot.layout)
-        #Variables needed for pyqtgraph plots
-        xaxis_thickness = 35
-        varlabel_xaxis_thickness = 20
-        title_thickness = 50
-        #Setting up the pyqtgraph window
-        pytplot.layout.setWindowTitle(pytplot.tplot_opt_glob['title_text'])
-        pytplot.layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
-    else:
-        doc.curdoc().clear()
-    
-    # Name for .html file containing plots
-    out_name = ""
     
     #Check a bunch of things
     if(not isinstance(name, list)):
@@ -143,256 +110,50 @@ def tplot(name,
     if isinstance(var_label, int):
         var_label = list(pytplot.data_quants.keys())[var_label]
     
-    # Vertical Box layout to store plots
-    all_plots = []
-    axis_types=[]
-    i = 0
-    
-    # Configure plot sizes
-    total_psize = 0
-    j = 0
-    while(j < num_plots):
-        total_psize += pytplot.data_quants[name[j]].extras['panel_size']
-        j += 1
-    
-    if var_label is not None and pyqtgraph:
-        varlabel_correction = len(var_label) * varlabel_xaxis_thickness
-    else:
-        varlabel_correction = 0
-        xaxis_thickness = 0
-        title_thickness = 0
-    p_to_use = (pytplot.tplot_opt_glob['window_size'][1]-xaxis_thickness-title_thickness-varlabel_correction)/total_psize
-    
-    #Whether or not there is a title row in pyqtgraph
-    titlerow=0
-    
-    # Create all plots  
-    while(i < num_plots):
-        last_plot = (i == num_plots-1)
-        temp_data_quant = pytplot.data_quants[name[i]]
-        
-        p_height = int(temp_data_quant.extras['panel_size'] * p_to_use)
-        p_width = pytplot.tplot_opt_glob['window_size'][0]
-        
-        #Check plot type       
-        spec_keyword = temp_data_quant.extras.get('spec', False)
-        alt_keyword = temp_data_quant.extras.get('alt', False)
-        map_keyword = temp_data_quant.extras.get('map', False)
-        
-        if pyqtgraph:
-            if last_plot:
-                p_height += xaxis_thickness
-            if i == 0:
-                if _set_pyqtgraph_title(pytplot.layout):
-                    titlerow=1
-            pytplot.layout.ci.layout.setRowPreferredHeight(i+titlerow, p_height) 
-            new_fig = TVarFigure(temp_data_quant, last_plot)
-            pytplot.layout.addItem(new_fig, row=i+titlerow, col=0)
-        else:
-            if spec_keyword:     
-                new_fig = TVarFigureSpec(temp_data_quant, interactive=interactive, last_plot=last_plot)
-            elif alt_keyword:
-                new_fig = TVarFigureAlt(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
-            elif map_keyword:    
-                new_fig = TVarFigure2D(temp_data_quant, interactive=interactive, last_plot=last_plot)
-            else:
-                new_fig = TVarFigure1D(temp_data_quant, auto_color=auto_color, interactive=interactive, last_plot=last_plot)
-            
-            new_fig.setsize(height=p_height, width=p_width) 
-        
-            if i == 0:
-                new_fig.add_title()
-            
-        axis_types.append(new_fig.getaxistype())
-        
-        new_fig.buildfigure()
-        
-            
-        # Add name of variable to output file name
-        if last_plot:    
-            out_name += temp_data_quant.name
-        else:
-            out_name += temp_data_quant.name + '+'
-        # Add plot to GridPlot layout
-        all_plots.append(new_fig.getfig())
-        i = i+1
-    # Add date of data to the bottom left corner and timestamp to lower right
-    # if py_timestamp('on') was previously called
-    
-    if not pyqtgraph:
-        total_string = ""
-        if 'time_stamp' in pytplot.extra_layouts:
-            total_string = pytplot.extra_layouts['time_stamp']
-        
-        ts = TimeStamp(text = total_string)
-        pytplot.extra_layouts['data_time'] = ts
-        all_plots.append([pytplot.extra_layouts['data_time']])
-    
-    #Add extra x axes if applicable 
-    if var_label is not None:
-        if not isinstance(var_label, list):
-            var_label = [var_label]
-        if pyqtgraph:
-            x_axes_index=0
-            for new_x_axis in var_label:
-                axis_data_quant = pytplot.data_quants[new_x_axis]
-                new_axis = TVarFigureAxisOnly(axis_data_quant)
-                pytplot.layout.addItem(new_axis, row=num_plots+titlerow+x_axes_index, col=0)
-                x_axes_index += 1
-                axis_types.append(('time', False))
-                all_plots.append(new_axis)
-        else:
-            x_axes = []
-            x_axes_index = 0
-            for new_x_axis in var_label:
-                
-                axis_data_quant = pytplot.data_quants[new_x_axis]
-                axis_start = min(axis_data_quant.data.min(skipna=True).tolist())
-                axis_end = max(axis_data_quant.data.max(skipna=True).tolist())
-                x_axes.append(Range1d(start = axis_start, end = axis_end))
-                k = 0
-                while(k < num_plots ):
-                    all_plots[k][0].extra_x_ranges['extra_'+str(new_x_axis)] = x_axes[x_axes_index]
-                    k += 1
-                all_plots[k-1][0].add_layout(LinearAxis(x_range_name = 'extra_'+str(new_x_axis)), 'below')
-                all_plots[k-1][0].plot_height += 22
-                x_axes_index += 1
-    
-    # Set all plots' x_range and plot_width to that of the bottom plot
-    #     so all plots will pan and be resized together.
-    first_type = {}
-    if combine_axes:
-        k=0
-        while(k < len(axis_types)):
-            if axis_types[k][0] not in first_type:
-                first_type[axis_types[k][0]] = k
-            else:
-                if pyqtgraph:
-                    all_plots[k].plotwindow.setXLink(all_plots[first_type[axis_types[k][0]]].plotwindow)
-                else:
-                    all_plots[k][0].x_range = all_plots[first_type[axis_types[k][0]]][0].x_range
-                    if axis_types[k][1]:
-                        all_plots[k][0].y_range = all_plots[first_type[axis_types[k][0]]][0].y_range
-            k+=1
-           
     if pyqtgraph:
+        layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, mouse_moved_event=pytplot.hover_time.change_hover_time)
+        pytplot.pytplotWindow.newlayout(layout)
         pytplot.pytplotWindow.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
         pytplot.pytplotWindow.show()
         pytplot.pytplotWindow.activateWindow()
-        #Check if we're running in an interactive mode.  
-        #"ps1" will only be defined if we're running from a command line environment
         if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
             QtGui.QApplication.instance().exec_()
+        return
     else:
-        final = gridplot(all_plots)
+        layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, interactive=interactive)
         #Output types
         if gui:
-            script, div = components(final)
+            script, div = components(layout)
             return script, div
         elif nb:
             output_notebook()
-            show(final)
+            show(layout)
             return
         elif save_file != None:
             output_file(save_file, mode='inline')
-            save(final)    
+            save(layout)    
             return
         elif qt:        
             dir_path = os.path.dirname(os.path.realpath(__file__))
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
-            save(final)
-            _generate_bokeh_gui()
+            save(layout)
+            new_layout = WebView()
+            pytplot.pytplotWindow.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
+            new_layout.resize(pytplot.tplot_opt_glob['window_size'][0],pytplot.tplot_opt_glob['window_size'][1])
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            new_layout.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
+            pytplot.pytplotWindow.newlayout(new_layout)
+            pytplot.pytplotWindow.show()
+            pytplot.pytplotWindow.activateWindow()
+            if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+                QtGui.QApplication.instance().exec_()
             return
         else:      
             dir_path = os.path.dirname(os.path.realpath(__file__))
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
-            show(final)
+            show(layout)
             return
 
-def _generate_bokeh_gui():                   
     
-    #app = QApplication(sys.argv)
-    pytplot.pytplotWindow = HTMLPlotWindow()    
-    pytplot.pytplotWindow.show()
-    pytplot.pytplotWindow.activateWindow()
-    if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
-    return
 
-class HTMLPlotWindow(pytplot.PlotWindow):
-        def initUI(self):
-            self.setWindowTitle('PyTplot')
-            self.plot_window = WebView()
-            self.setCentralWidget(self.plot_window)
-            
-            self.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
-            self.plot_window.resize(pytplot.tplot_opt_glob['window_size'][0],pytplot.tplot_opt_glob['window_size'][1])
-            
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-            self.plot_window.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
-            menubar = self.menuBar()
-            exportMenu = menubar.addMenu('Export')
-            exportDatahtmlAction = QAction("HTML", self)
-            exportDatahtmlAction.triggered.connect(self.exporthtml)
-            exportMenu.addAction(exportDatahtmlAction)        
-            exportDatapngAction = QAction("PNG", self)
-            exportDatapngAction.triggered.connect(self.exportpng)
-            exportMenu.addAction(exportDatapngAction)
-            
-            self.show()
-        
-        def setcleanup(self):
-            self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-            self.plot_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-            for child in self.findChildren(WebView):
-                if child is not self.plot_window:
-                    child.deleteLater()
-        
-        def exporthtml(self):
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-            fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.html', filter ="html (*.html *.)")
-            with open(fname[0], 'w+') as html_file:
-                with open(os.path.join(dir_path, "temp.html")) as read_file:
-                    html_file.write(read_file.read())
                     
-# class PlotWindow(QMainWindow):
-#     def __init__(self):
-#         super().__init__()
-#         self.initUI()
-#         self.setcleanup()
-#         
-#     def initUI(self):
-#         self.setWindowTitle('PyTplot')
-#         self.setCentralWidget(pytplot.win)
-#         menubar = self.menuBar()
-#         exportMenu = menubar.addMenu('Export')
-#         exportDatapngAction = QAction("PNG", self)
-#         exportDatapngAction.triggered.connect(self.exportpng)
-#         exportMenu.addAction(exportDatapngAction)
-#         
-#         self.show()
-#     
-#     def setcleanup(self):
-#         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-#         #self.centralWidget().setAttribute(QtCore.Qt.WA_DeleteOnClose)
-#         for child in self.findChildren(TVarFigure):
-#             if child is not self.plot_window:
-#                 child.deleteLater()
-#         
-#     def exportpng(self):
-#         fname = QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
-#         sshot = self.centralWidget().grab()
-#         sshot.save(fname[0])        
-
-def _set_pyqtgraph_title(layout):
-    '''
-    Private function to add a title to the first row of the window.  
-    Returns True if a Title is set.  Else, returns False.  
-    '''
-    if 'title_size' in pytplot.tplot_opt_glob:
-        size = pytplot.tplot_opt_glob['title_size']
-    if 'title_text' in pytplot.tplot_opt_glob:
-            if pytplot.tplot_opt_glob['title_text'] != '':
-                layout.addItem(LabelItem(pytplot.tplot_opt_glob['title_text'], size=size, color='k'), row=0, col=0)
-                return True
-    return False
