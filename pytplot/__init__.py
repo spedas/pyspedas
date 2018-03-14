@@ -61,7 +61,7 @@ class TVar(object):
     """
     
     def __init__(self, name, number, data, spec_bins, yaxis_opt, zaxis_opt, line_opt,
-                 trange, dtype, create_time, time_bar, extras):
+                 trange, dtype, create_time, time_bar, extras, links):
         
         #Name of the TVar
         self.name = name
@@ -87,6 +87,8 @@ class TVar(object):
         self.time_bar = time_bar
         #Dictionary of extra objects
         self.extras = extras
+        #Dictionary of linked tvars (things like latitude/longitude/altitude)
+        self.links = links
         #Whether or not the spec_bins vary in time
         self.spec_bins_time_varying = False
         #Whether the spec_bins are ascending or decending order
@@ -119,6 +121,15 @@ class TVar(object):
             ascending = self.spec_bins[0].iloc[0] < self.spec_bins[1].iloc[0]
         return ascending
 
+    def link_to_tvar(self, name, secondary_tvar_name):
+        #name should be something like alt/lat/lon
+        
+        #TODO: probably should interpolate these variables if they're not on the same time
+        
+        
+        self.links[name] = secondary_tvar_name
+        
+
 #Global Variables
 hover_time = HoverTime()
 data_quants = OrderedDict()
@@ -134,7 +145,8 @@ from . import QtPlotter
 from . import HTMLPlotter
 
 qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
-               'qtTVarFigureSpec':QtPlotter.TVarFigureSpec}
+               'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
+               'qtTVarFigureAlt':QtPlotter.TVarFigureAlt}
 bokeh_plotters = {'bkTVarFigure1D':HTMLPlotter.TVarFigure1D,
                   'bkTVarFigure2D':HTMLPlotter.TVarFigure2D,
                   'bkTVarFigureAlt':HTMLPlotter.TVarFigureAlt,

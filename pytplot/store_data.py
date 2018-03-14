@@ -87,11 +87,8 @@ def store_data(name, data=None, delete=False):
         df = format_ydata(data['y'])            
         times = data['x']
         if len(times) != len(df.index):
-            if len(times[0]) == len(df.index):
-                df = df.set_index(data['x'])
-            else:
-                print("The lengths of x and y do not match!")
-                return
+            print("The lengths of x and y do not match!")
+            return
         elif isinstance(times, pd.Series):
             df = df.set_index(data['x'])
         else:
@@ -127,9 +124,9 @@ def store_data(name, data=None, delete=False):
     # Dictionary to keep track of extra details needed for plotting
     #     that aren't actual attributes in Bokeh
     extras = dict(panel_size = 1)
-    
+    links = {}
     temp = TVar(name, tplot_num, df, spec_bins, yaxis_opt, zaxis_opt, line_opt,
-                trange, dtype, create_time, time_bar, extras)
+                trange, dtype, create_time, time_bar, extras, links)
     
     data_quants[name] = temp
     data_quants[name].yaxis_opt['y_range'] = get_y_range(df, spec_bins)

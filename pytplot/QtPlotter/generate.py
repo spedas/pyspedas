@@ -111,8 +111,11 @@ def _get_figure_class(temp_data_quant, show_xaxis=True, mouse_moved=None):
         cls = pytplot.qt_plotters[temp_data_quant.extras['plotter']]
     else:
         spec_keyword = temp_data_quant.extras.get('spec', False)
+        alt_keyword = temp_data_quant.extras.get('alt', False)
         if spec_keyword:
             cls = pytplot.qt_plotters['qtTVarFigureSpec']
+        elif alt_keyword:
+            cls = pytplot.qt_plotters['qtTVarFigureAlt']
         else:
             cls = pytplot.qt_plotters['qtTVarFigure1D']
     return cls(temp_data_quant, show_xaxis=show_xaxis, mouse_function = mouse_moved)

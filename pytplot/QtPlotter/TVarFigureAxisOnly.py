@@ -14,7 +14,7 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
         
         vb = CustomVB(enableMouse=False)
         yaxis = pg.AxisItem("left")
-        yaxis.setLabel("ORBIT")
+        yaxis.setLabel(self.tvar.yaxis_opt['axis_label'])
         yaxis.setWidth(100)
         yaxis.label.rotate(90)
         yaxis.label.translate(0, -40)

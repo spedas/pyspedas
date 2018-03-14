@@ -89,12 +89,13 @@ class TVarFigureAlt(object):
             x_max_list = []
             if isinstance(self.tvar.data, list):
                 for oplot_name in self.tvar.data:
-                    datasets.append(pytplot.data_quants[oplot_name].data)
+                    datasets.append(pytplot.data_quants[oplot_name])
             else:
-                datasets.append(self.tvar.data)
+                datasets.append(self.tvar)
             for dataset in datasets:
-                x_min_list.append(np.nanmin(dataset.index.tolist()))
-                x_max_list.append(np.nanmax(dataset.index.tolist()))
+                _, alt = pytplot.get_data(dataset.links['alt'])
+                x_min_list.append(np.nanmin(alt.tolist()))
+                x_max_list.append(np.nanmax(alt.tolist()))
             pytplot.tplot_opt_glob['alt_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
             tplot_x_range = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
             if self.show_xaxis:
@@ -148,10 +149,9 @@ class TVarFigureAlt(object):
         datasets = []
         if isinstance(self.tvar.data, list):
             for oplot_name in self.tvar.data:
-                datasets.append(pytplot.data_quants[oplot_name].data)
+                datasets.append(pytplot.data_quants[oplot_name])
         else:
-            datasets.append(self.tvar.data)
-        
+            datasets.append(self.tvar)
         
         for dataset in datasets:                
             #Get Linestyle
@@ -159,12 +159,11 @@ class TVarFigureAlt(object):
             if 'linestyle' in self.tvar.extras:
                 line_style = self.tvar.extras['linestyle']
                 
-            #Bokeh uses milliseconds since epoch for some reason
-            x = dataset.index
+            _, x = pytplot.get_data(dataset.links['alt'])
             
             #Create lines from each column in the dataframe    
-            for column_name in dataset.columns:
-                y = dataset[column_name]
+            for column_name in dataset.data.columns:
+                y = dataset.data[column_name]
                 
                 
                 if self._getyaxistype() == 'log':

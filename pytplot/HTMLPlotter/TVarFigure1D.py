@@ -162,9 +162,9 @@ class TVarFigure1D(object):
         datasets = []
         if isinstance(self.tvar.data, list):
             for oplot_name in self.tvar.data:
-                datasets.append(pytplot.data_quants[oplot_name].data)
+                datasets.append(pytplot.data_quants[oplot_name])
         else:
-            datasets.append(self.tvar.data)
+            datasets.append(self.tvar)
         
         
         for dataset in datasets:                
@@ -175,15 +175,15 @@ class TVarFigure1D(object):
                 
             #Get a list of formatted times  
             corrected_time = [] 
-            for x in dataset.index:
+            for x in dataset.data.index:
                 corrected_time.append(tplot_utilities.int_to_str(x))
                 
             #Bokeh uses milliseconds since epoch for some reason
-            x = dataset.index * 1000
+            x = dataset.data.index * 1000
             
             #Create lines from each column in the dataframe    
-            for column_name in dataset.columns:
-                y = dataset[column_name]
+            for column_name in dataset.data.columns:
+                y = dataset.data[column_name]
                 
                 if self._getyaxistype() == 'log':
                     y.loc[y <= 0] = np.NaN                

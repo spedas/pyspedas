@@ -4,7 +4,6 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from pytplot import data_quants
-from .tplot_utilities import set_options
 
 def options(name, option, value):
     """
@@ -70,12 +69,109 @@ def options(name, option, value):
         if i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
-        (new_yaxis_opt, new_zaxis_opt, new_line_opt, new_extras) = set_options(option, value, data_quants[i].yaxis_opt, data_quants[i].zaxis_opt, data_quants[i].line_opt, data_quants[i].extras)
-
-        data_quants[i].yaxis_opt = new_yaxis_opt
-        data_quants[i].zaxis_opt = new_zaxis_opt
-        data_quants[i].line_opt = new_line_opt
-        data_quants[i].extras = new_extras
+    
+        if option == 'color':
+            if isinstance(value, list):
+                data_quants[i].extras['line_color'] = value
+            else:
+                data_quants[i].extras['line_color'] = [value]
+        
+        if option == 'link':
+            if isinstance(value, list):
+                data_quants[i].link_to_tvar(value[0], value[1])
+                
+        if option == 'colormap':
+            if isinstance(value, list):
+                data_quants[i].extras['colormap'] = value
+            else:
+                data_quants[i].extras['colormap'] = [value]
+        
+        if option == 'spec':
+            data_quants[i].extras['spec'] = value
+        
+        if option == 'alt':
+            data_quants[i].extras['alt'] = value
+    
+        if option == 'map':
+            data_quants[i].extras['map'] = value
+        
+        if option == 'ylog':
+            if value == 1:
+                data_quants[i].yaxis_opt['y_axis_type'] = 'log'
+            if value == 0:
+                data_quants[i].yaxis_opt['y_axis_type'] = 'linear'
+        
+        if option == 'legend_names':
+            data_quants[i].yaxis_opt['legend_names'] = value
+        
+        if option == 'zlog':
+            if value == 1:
+                data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+            if value == 0:
+                data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
+        
+        if option == 'nodata':
+            data_quants[i].line_opt['visible'] = value
+        
+        if option == 'line_style':
+            to_be = []
+            if value == 0 or value == 'solid_line':
+                to_be = []
+            elif value == 1 or value == 'dot':
+                to_be = [2, 4]
+            elif value == 2 or value == 'dash':
+                to_be = [6]
+            elif value == 3 or value == 'dash_dot':
+                to_be = [6, 4, 2, 4]
+            elif value == 4 or value == 'dash_dot_dot_dot':
+                to_be = [6, 4, 2, 4, 2, 4, 2, 4]
+            elif value == 5 or value == 'long_dash':
+                to_be = [10]
+                
+            data_quants[i].line_opt['line_dash'] = to_be
+            
+            if(value == 6 or value == 'none'):
+                data_quants[i].line_opt['visible'] = False
+                
+        if option == 'name':
+            data_quants[i].line_opt['name'] = value
+        
+        if option == "panel_size":
+            if value > 1 or value <= 0:
+                print("Invalid value. Should be (0, 1]")
+                return
+            data_quants[i].extras['panel_size'] = value
+        
+        if option =='basemap':
+            data_quants[i].extras['basemap'] = value
+        
+        if option =='alpha':
+            if value > 1 or value < 0:
+                print("Invalid value. Should be [0, 1]")
+                return
+            data_quants[i].extras['alpha'] = value
+            
+        if option == 'thick':
+            data_quants[i].line_opt['line_width'] = value
+        
+        if option == 'transparency':
+            alpha_val = value/100
+            data_quants[i].line_opt['line_alpha'] = alpha_val
+        
+        if option == ('yrange' or 'y_range'):
+            data_quants[i].yaxis_opt['y_range'] = [value[0], value[1]]
+            
+        if option == ('zrange' or 'z_range'):
+            data_quants[i].zaxis_opt['z_range'] = [value[0], value[1]]
+        
+        if option == 'ytitle':
+            data_quants[i].yaxis_opt['axis_label'] = value
+        
+        if option == 'ztitle':
+            data_quants[i].zaxis_opt['axis_label'] = value
+        
+        if option == 'plotter': 
+            data_quants[i].extras['plotter'] = value
     
     return
         

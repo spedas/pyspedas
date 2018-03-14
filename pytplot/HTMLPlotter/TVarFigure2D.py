@@ -7,16 +7,13 @@ from __future__ import division
 import numpy as np
 import os
 from bokeh.plotting.figure import Figure
-from bokeh.models import (CustomJS, LogColorMapper, LogTicker, LinearColorMapper, 
-                          BasicTicker, ColumnDataSource, DatetimeAxis, HoverTool, 
+from bokeh.models import (LogColorMapper, LogTicker, LinearColorMapper, 
+                          BasicTicker, ColumnDataSource, HoverTool, 
                           Range1d, Span, Title)
-from bokeh.models.glyphs import Line
-from bokeh.models.tools import BoxZoomTool, PanTool
 from bokeh.models.formatters import BasicTickFormatter
 
 import pytplot
 from .CustomModels.colorbarsidetitle import ColorBarSideTitle
-from pytplot import tplot_utilities
 
 class TVarFigure2D(object):
     
@@ -38,6 +35,7 @@ class TVarFigure2D(object):
         self.fig = Figure(tools = "pan,crosshair,reset,box_zoom", 
                           y_axis_type=self._getyaxistype() )
         self._format()
+        
     def getaxistype(self):
         axis_type = 'map'
         link_y_axis = True
@@ -111,9 +109,7 @@ class TVarFigure2D(object):
         self.fig.x_range = x_range
     
     def _setyrange(self):
-        y_range = Range1d(-90, 
-                          90, 
-                          bounds=(-90, 90))
+        y_range = Range1d(-90, 90, bounds=(-90, 90))
         self.fig.y_range = y_range
         
     def _setzrange(self):
@@ -165,9 +161,9 @@ class TVarFigure2D(object):
     def _setcolors(self):          
         if 'colormap' in self.tvar.extras:
             for cm in self.tvar.extras['colormap']:
-                self.colors.append(tplot_utilities.return_bokeh_colormap(cm))
+                self.colors.append(pytplot.tplot_utilities.return_bokeh_colormap(cm))
         else:
-            self.colors.append(tplot_utilities.return_bokeh_colormap('magma'))
+            self.colors.append(pytplot.tplot_utilities.return_bokeh_colormap('magma'))
 
     
     def _setyaxislabel(self):
@@ -178,30 +174,28 @@ class TVarFigure2D(object):
         
     def _visdata(self):
         self._setcolors()
-        
-        
         datasets = []
         if isinstance(self.tvar.data, list):
             for oplot_name in self.tvar.data:
-                datasets.append(pytplot.data_quants[oplot_name].data)
+                datasets.append(pytplot.data_quants[oplot_name])
         else:
-            datasets.append(self.tvar.data)
+            datasets.append(self.tvar)
         
         cm_index=0
         for dataset in datasets:   
-            x = dataset.index.tolist()
-            x = list(zip(*x))
-            
-            for column_name in dataset.columns:
-                values = dataset[column_name].tolist()
+            #TODO: Add a check that lon and lat are only 1D
+            _, x = pytplot.get_data(dataset.links['lon'])
+            _, y = pytplot.get_data(dataset.links['lat'])
+            for column_name in dataset.data.columns:
+                values = dataset.data[column_name].tolist()
                 colors=[]
-                colors.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index], 
+                colors.extend(pytplot.tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index], 
                                                                 min_val=self.zmin, 
                                                                 max_val=self.zmax, 
                                                                 values=values, 
                                                                 zscale=self.zscale))
-                circle_source = ColumnDataSource(data=dict(x=x[0], 
-                                                           y=x[1], 
+                circle_source = ColumnDataSource(data=dict(x=x, 
+                                                           y=y, 
                                                            value=values, 
                                                            colors=colors))
                 self.fig.scatter(x='x',y='y', 
