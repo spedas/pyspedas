@@ -1,5 +1,6 @@
 import pyqtgraph as pg
 import numpy as np
+import os
 from .. import tplot_utilities 
 from pytplot import tplot_opt_glob
 import pytplot
@@ -55,11 +56,13 @@ class TVarFigureMap(pg.GraphicsLayout):
         self._setzaxistype()
         self._setzrange()
         self._addtimebars()
+        self._setbackground()
         self._visdata()
         self._setyaxislabel()
         self._setxaxislabel()
         self._addmouseevents()
         self._addlegend()
+        
     
     def _setyaxislabel(self):
         self.yaxis.setLabel(self.tvar.yaxis_opt['axis_label'])
@@ -201,3 +204,19 @@ class TVarFigureMap(pg.GraphicsLayout):
     def _addtimebars(self):
         #Not yet implemented
         return
+    
+    def _setbackground(self):
+        if 'alpha' in self.tvar.extras:
+            alpha=self.tvar.extras['alpha']
+        else:
+            alpha=1
+        if 'basemap' in self.tvar.extras:
+            if os.path.isfile(self.tvar.extras['basemap']):
+                from scipy import misc
+                img = misc.imread(self.tvar.extras['basemap'], mode='RGBA') 
+                #Need to flip the image upside down...This will probably be fixed in 
+                #a future release, so this will need to be deleted at some point
+                img = img[::-1]  
+                bm = pg.ImageItem(image = img)
+                bm.setRect(QtCore.QRect(0,-90, 360, 180))
+                self.plotwindow.addItem(bm)
