@@ -159,5 +159,5 @@ class TVarFigureAlt(pg.GraphicsLayout):
         for i in range(0,len(self.tvar.data.columns)):
             _, x = pytplot.get_data(self.tvar.links['alt']) 
             x = x.transpose()[0]
-            self.curves.append(self.plotwindow.plot(x.tolist(), self.tvar.data[i].tolist(), 
-                                                    pen=self.colors[i % len(self.colors)]))
+            self.curves.append(self.plotwindow.scatterPlot(x.tolist(), self.tvar.data[i].tolist(), 
+                                                    pen=pg.mkPen(None), brush=self.colors[i % len(self.colors)]))

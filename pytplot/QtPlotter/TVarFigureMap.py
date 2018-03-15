@@ -65,7 +65,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         
     
     def _setyaxislabel(self):
-        self.yaxis.setLabel(self.tvar.yaxis_opt['axis_label'])
+        self.yaxis.setLabel("Longitude")
     
     def _setxaxislabel(self):
         self.xaxis.setLabel("Latitude")
@@ -110,7 +110,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         zaxis=pg.AxisItem('right')
         
         if 'axis_label' in self.tvar.zaxis_opt:
-            zaxis.setLabel(self.tvar.zaxis_opt['axis_label'])
+            zaxis.setLabel(self.tvar.yaxis_opt['axis_label'])
         else:
             zaxis.setLabel(' ')
         
@@ -134,6 +134,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         p2.setXRange(0,1, padding=0)
         if self.zscale=='log':
             colorbar.setRect(QtCore.QRectF(0,np.log10(self.zmin),1,np.log10(self.zmax)-np.log10(self.zmin)))
+            #I have literally no idea why this is true, but I need to set the range twice
+            p2.setYRange(np.log10(self.zmin),np.log10(self.zmax), padding=0)
             p2.setYRange(np.log10(self.zmin),np.log10(self.zmax), padding=0)
         else:
             colorbar.setRect(QtCore.QRectF(0,self.zmin,1,self.zmax-self.zmin))
@@ -217,6 +219,6 @@ class TVarFigureMap(pg.GraphicsLayout):
                 #Need to flip the image upside down...This will probably be fixed in 
                 #a future release, so this will need to be deleted at some point
                 img = img[::-1]  
-                bm = pg.ImageItem(image = img)
+                bm = pg.ImageItem(image = img, opacity=alpha)
                 bm.setRect(QtCore.QRect(0,-90, 360, 180))
                 self.plotwindow.addItem(bm)
