@@ -38,13 +38,12 @@ def generate_stack(name,
     # Create all plots  
     while(i < num_plots):
         last_plot = (i == num_plots-1)
-        temp_data_quant = pytplot.data_quants[name[i]]
         
-        p_height = int(temp_data_quant.extras['panel_size'] * p_to_use)
+        p_height = int(pytplot.data_quants[name[i]].extras['panel_size'] * p_to_use)
         p_width = pytplot.tplot_opt_glob['window_size'][0]
         
         #Check plot type       
-        new_fig = _get_figure_class(temp_data_quant, auto_color=auto_color, interactive=interactive, show_xaxis=last_plot)
+        new_fig = _get_figure_class(name[i], auto_color=auto_color, interactive=interactive, show_xaxis=last_plot)
         
         new_fig.setsize(height=p_height, width=p_width) 
     
@@ -58,9 +57,9 @@ def generate_stack(name,
             
         # Add name of variable to output file name
         if last_plot:    
-            out_name += temp_data_quant.name
+            out_name += name[i]
         else:
-            out_name += temp_data_quant.name + '+'
+            out_name += name[i] + '+'
             
         # Add plot to GridPlot layout
         all_plots.append(new_fig.getfig())
@@ -111,13 +110,13 @@ def generate_stack(name,
     
     return gridplot(all_plots)
 
-def _get_figure_class(temp_data_quant, auto_color=True, interactive=False, show_xaxis=True):
-    if 'plotter' in temp_data_quant.extras and temp_data_quant.extras['plotter'] in pytplot.bokeh_plotters:
-        cls = pytplot.bokeh_plotters[temp_data_quant.extras['plotter']]
+def _get_figure_class(tvar_name, auto_color=True, interactive=False, show_xaxis=True):
+    if 'plotter' in pytplot.data_quants[tvar_name].extras and pytplot.data_quants[tvar_name].extras['plotter'] in pytplot.bokeh_plotters:
+        cls = pytplot.bokeh_plotters[pytplot.data_quants[tvar_name].extras['plotter']]
     else:
-        spec_keyword = temp_data_quant.extras.get('spec', False)
-        alt_keyword = temp_data_quant.extras.get('alt', False)
-        map_keyword = temp_data_quant.extras.get('map', False)
+        spec_keyword = pytplot.data_quants[tvar_name].extras.get('spec', False)
+        alt_keyword = pytplot.data_quants[tvar_name].extras.get('alt', False)
+        map_keyword = pytplot.data_quants[tvar_name].extras.get('map', False)
         if spec_keyword:
             cls = pytplot.bokeh_plotters['bkTVarFigureSpec']
         elif alt_keyword:
@@ -126,4 +125,4 @@ def _get_figure_class(temp_data_quant, auto_color=True, interactive=False, show_
             cls = pytplot.bokeh_plotters['bkTVarFigureMap']
         else:
             cls = pytplot.bokeh_plotters['bkTVarFigure1D']
-    return cls(temp_data_quant,auto_color=auto_color, interactive=interactive, show_xaxis=show_xaxis)
+    return cls(tvar_name,auto_color=auto_color, interactive=interactive, show_xaxis=show_xaxis)

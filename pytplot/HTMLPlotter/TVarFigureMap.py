@@ -17,8 +17,8 @@ from .CustomModels.colorbarsidetitle import ColorBarSideTitle
 
 class TVarFigureMap(object):
     
-    def __init__(self, tvar, auto_color = False, show_xaxis=False, interactive=False):
-        self.tvar = tvar
+    def __init__(self, tvar_name, auto_color = False, show_xaxis=False, interactive=False):
+        self.tvar_name = tvar_name
         self.show_xaxis=show_xaxis
         self.interactive = interactive
 
@@ -114,14 +114,14 @@ class TVarFigureMap(object):
         
     def _setzrange(self):
         #Get Z Range
-        if 'z_range' in self.tvar.zaxis_opt:
-            self.zmin = self.tvar.zaxis_opt['z_range'][0]
-            self.zmax = self.tvar.zaxis_opt['z_range'][1]
+        if 'z_range' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            self.zmin = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][0]
+            self.zmax = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][1]
         else:
-            if isinstance(self.tvar.data, list):
-                dataset_temp = pytplot.data_quants[self.tvar.data[0]].data.replace([np.inf, -np.inf], np.nan)
+            if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+                dataset_temp = pytplot.data_quants[pytplot.data_quants[self.tvar_name].data[0]].data.replace([np.inf, -np.inf], np.nan)
             else:
-                dataset_temp = self.tvar.data.replace([np.inf, -np.inf], np.nan)
+                dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
             
@@ -138,7 +138,7 @@ class TVarFigureMap(object):
         self.fig.min_border_top = pytplot.tplot_opt_glob['min_border_top']
         
     def _addtimebars(self):
-        for time_bar in self.tvar.time_bar:
+        for time_bar in pytplot.data_quants[self.tvar_name].time_bar:
             time_bar_line = Span(location = time_bar['location'], 
                                  dimension = time_bar['dimension'], 
                                  line_color = time_bar['line_color'], 
@@ -154,32 +154,32 @@ class TVarFigureMap(object):
         return 'linear'
         
     def _setzaxistype(self):
-        if 'z_axis_type' in self.tvar.zaxis_opt:
-            self.zscale = self.tvar.zaxis_opt['z_axis_type']
+        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            self.zscale = pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type']
 
         
     def _setcolors(self):          
-        if 'colormap' in self.tvar.extras:
-            for cm in self.tvar.extras['colormap']:
+        if 'colormap' in pytplot.data_quants[self.tvar_name].extras:
+            for cm in pytplot.data_quants[self.tvar_name].extras['colormap']:
                 self.colors.append(pytplot.tplot_utilities.return_bokeh_colormap(cm))
         else:
             self.colors.append(pytplot.tplot_utilities.return_bokeh_colormap('magma'))
 
     
     def _setyaxislabel(self):
-        self.fig.yaxis.axis_label = self.tvar.yaxis_opt['axis_label']
+        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
     
     def _setzaxislabel(self):
-        self.fig.yaxis.axis_label = self.tvar.yaxis_opt['axis_label']
+        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
         
     def _visdata(self):
         self._setcolors()
         datasets = []
-        if isinstance(self.tvar.data, list):
-            for oplot_name in self.tvar.data:
+        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            for oplot_name in pytplot.data_quants[self.tvar_name].data:
                 datasets.append(pytplot.data_quants[oplot_name])
         else:
-            datasets.append(self.tvar)
+            datasets.append(pytplot.data_quants[self.tvar_name])
         
         cm_index=0
         for dataset in datasets:   
@@ -216,8 +216,8 @@ class TVarFigureMap(object):
         
     def _addlegend(self):
         #Add the color bar
-        if 'z_axis_type' in self.tvar.zaxis_opt:
-            if self.tvar.zaxis_opt['z_axis_type'] == 'log':
+        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            if pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type'] == 'log':
                 color_mapper=LogColorMapper(palette=self.colors[0], 
                                             low=self.zmin, 
                                             high=self.zmax)
@@ -247,8 +247,8 @@ class TVarFigureMap(object):
         color_bar.label_standoff = 5
         color_bar.major_label_text_baseline = 'middle'
         
-        if 'axis_label' in self.tvar.zaxis_opt:
-            color_bar.title = self.tvar.zaxis_opt['axis_label']
+        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            color_bar.title = pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label']
             color_bar.title_text_font_size = '8pt'
             color_bar.title_text_font_style = 'bold'
             color_bar.title_standoff = 20
@@ -257,14 +257,14 @@ class TVarFigureMap(object):
         self.fig.add_layout(color_bar, 'right')
     
     def _setbackground(self):
-        if 'alpha' in self.tvar.extras:
-            alpha=self.tvar.extras['alpha']
+        if 'alpha' in pytplot.data_quants[self.tvar_name].extras:
+            alpha=pytplot.data_quants[self.tvar_name].extras['alpha']
         else:
             alpha=1
-        if 'basemap' in self.tvar.extras:
-            if os.path.isfile(self.tvar.extras['basemap']):
+        if 'basemap' in pytplot.data_quants[self.tvar_name].extras:
+            if os.path.isfile(pytplot.data_quants[self.tvar_name].extras['basemap']):
                 from scipy import misc
-                img = misc.imread(self.tvar.extras['basemap'], mode='RGBA') 
+                img = misc.imread(pytplot.data_quants[self.tvar_name].extras['basemap'], mode='RGBA') 
                 #Need to flip the image upside down...This will probably be fixed in 
                 #a future release, so this will need to be deleted at some point
                 img = img[::-1]          

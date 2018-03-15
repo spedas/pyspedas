@@ -46,9 +46,8 @@ def generate_stack(name,
     # Create all plots  
     while(i < num_plots):
         last_plot = (i == num_plots-1)
-        temp_data_quant = pytplot.data_quants[name[i]]
         
-        p_height = int(temp_data_quant.extras['panel_size'] * p_to_use)
+        p_height = int(pytplot.data_quants[name[i]].extras['panel_size'] * p_to_use)
         
         if last_plot:
             p_height += xaxis_thickness
@@ -56,7 +55,7 @@ def generate_stack(name,
             if _set_pyqtgraph_title(new_stack):
                 titlerow=1
         new_stack.ci.layout.setRowPreferredHeight(i+titlerow, p_height) 
-        new_fig = _get_figure_class(temp_data_quant, show_xaxis=last_plot, mouse_moved=mouse_moved_event)
+        new_fig = _get_figure_class(name[i], show_xaxis=last_plot, mouse_moved=mouse_moved_event)
         new_stack.addItem(new_fig, row=i+titlerow, col=0)
             
         axis_types.append(new_fig.getaxistype())
@@ -72,8 +71,7 @@ def generate_stack(name,
             var_label = [var_label]
         x_axes_index=0
         for new_x_axis in var_label:
-            axis_data_quant = pytplot.data_quants[new_x_axis]
-            new_axis = TVarFigureAxisOnly(axis_data_quant)
+            new_axis = TVarFigureAxisOnly(new_x_axis)
             new_stack.addItem(new_axis, row=num_plots+titlerow+x_axes_index, col=0)
             x_axes_index += 1
             axis_types.append(('time', False))
@@ -106,13 +104,13 @@ def _set_pyqtgraph_title(layout):
                 return True
     return False
 
-def _get_figure_class(temp_data_quant, show_xaxis=True, mouse_moved=None):
-    if 'plotter' in temp_data_quant.extras and temp_data_quant.extras['plotter'] in pytplot.qt_plotters:
-        cls = pytplot.qt_plotters[temp_data_quant.extras['plotter']]
+def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None):
+    if 'plotter' in pytplot.data_quants[tvar_name].extras and pytplot.data_quants[tvar_name].extras['plotter'] in pytplot.qt_plotters:
+        cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].extras['plotter']]
     else:
-        spec_keyword = temp_data_quant.extras.get('spec', False)
-        alt_keyword = temp_data_quant.extras.get('alt', False)
-        map_keyword = temp_data_quant.extras.get('map', False)
+        spec_keyword = pytplot.data_quants[tvar_name].extras.get('spec', False)
+        alt_keyword = pytplot.data_quants[tvar_name].extras.get('alt', False)
+        map_keyword = pytplot.data_quants[tvar_name].extras.get('map', False)
         if spec_keyword:
             cls = pytplot.qt_plotters['qtTVarFigureSpec']
         elif alt_keyword:
@@ -121,4 +119,4 @@ def _get_figure_class(temp_data_quant, show_xaxis=True, mouse_moved=None):
             cls = pytplot.qt_plotters['qtTVarFigureMap']
         else:
             cls = pytplot.qt_plotters['qtTVarFigure1D']
-    return cls(temp_data_quant, show_xaxis=show_xaxis, mouse_function = mouse_moved)
+    return cls(tvar_name, show_xaxis=show_xaxis, mouse_function = mouse_moved)

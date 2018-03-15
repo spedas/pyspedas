@@ -3,14 +3,15 @@ import numpy as np
 from .. import tplot_utilities 
 from pytplot import tplot_opt_glob
 from pyqtgraph.Qt import QtCore
+import pytplot
 from .CustomAxis.DateAxis import DateAxis
 from .CustomImage.UpdatingImage import UpdatingImage
 from .CustomAxis.BlankAxis import BlankAxis
 
 class TVarFigureSpec(pg.GraphicsLayout):
-    def __init__(self, tvar, show_xaxis=False, mouse_function=None):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
         
-        self.tvar=tvar
+        self.tvar_name=tvar_name
         self.show_xaxis = show_xaxis
         
         #Sets up the layout of the Tplot Object
@@ -61,7 +62,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._addlegend()
     
     def _setyaxislabel(self):
-        self.yaxis.setLabel(self.tvar.yaxis_opt['axis_label'])
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
     
     def _setxaxislabel(self):
         self.xaxis.setLabel("Time")
@@ -71,9 +72,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
     
     def _visdata(self):
         self._setzrange()
-        specplot = UpdatingImage(self.tvar.data, 
-                                 self.tvar.spec_bins, 
-                                 self.tvar.spec_bins_ascending, 
+        specplot = UpdatingImage(pytplot.data_quants[self.tvar_name].data, 
+                                 pytplot.data_quants[self.tvar_name].spec_bins, 
+                                 pytplot.data_quants[self.tvar_name].spec_bins_ascending, 
                                  self._getyaxistype(), 
                                  self._getzaxistype(),
                                  self.colormap,
@@ -91,8 +92,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
     def _addlegend(self):
         zaxis=pg.AxisItem('right')
         
-        if 'axis_label' in self.tvar.zaxis_opt:
-            zaxis.setLabel(self.tvar.zaxis_opt['axis_label'])
+        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'])
         else:
             zaxis.setLabel(' ')
         
@@ -138,8 +139,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
                 self._mouseMovedFunction(int(mousePoint.x()))
     
     def _getyaxistype(self):
-        if 'y_axis_type' in self.tvar.yaxis_opt:
-            return self.tvar.yaxis_opt['y_axis_type']
+        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
+            return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
         else:
             return 'linear'
     
@@ -150,20 +151,20 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.zscale = 'linear'
     
     def _getzaxistype(self):
-        if 'z_axis_type' in self.tvar.zaxis_opt:
-            return  self.tvar.zaxis_opt['z_axis_type']
+        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            return  pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type']
         else:
             return 'log'
             
     def _setcolors(self):
-        if 'line_color' in self.tvar.extras:
-            return self.tvar.extras['line_color']
+        if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
+            return pytplot.data_quants[self.tvar_name].extras['line_color']
         else: 
             return ['k', 'r', 'g', 'c', 'y', 'm', 'b']
     
     def _setcolormap(self):          
-        if 'colormap' in self.tvar.extras:
-            for cm in self.tvar.extras['colormap']:
+        if 'colormap' in pytplot.data_quants[self.tvar_name].extras:
+            for cm in pytplot.data_quants[self.tvar_name].extras['colormap']:
                 return tplot_utilities.return_lut(cm)
         else:
             return tplot_utilities.return_lut("inferno")
@@ -180,27 +181,27 @@ class TVarFigureSpec(pg.GraphicsLayout):
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if self.tvar.yaxis_opt['y_range'][0] <0 or self.tvar.yaxis_opt['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] <0 or pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
                 return
-            self.plotwindow.vb.setYRange(np.log10(self.tvar.yaxis_opt['y_range'][0]), np.log10(self.tvar.yaxis_opt['y_range'][1]), padding=0)
+            self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0]), np.log10(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1]), padding=0)
         else:
-            self.plotwindow.vb.setYRange(self.tvar.yaxis_opt['y_range'][0], self.tvar.yaxis_opt['y_range'][1], padding=0)
+            self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0], pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1], padding=0)
     
     def _setzrange(self):
         #Get Z Range
-        if 'z_range' in self.tvar.zaxis_opt:
-            self.zmin = self.tvar.zaxis_opt['z_range'][0]
-            self.zmax = self.tvar.zaxis_opt['z_range'][1]
+        if 'z_range' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            self.zmin = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][0]
+            self.zmax = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][1]
         else:
-            dataset_temp = self.tvar.data.replace([np.inf, -np.inf], np.nan)
+            dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
             
             #Cannot have a 0 minimum in a log scale
             if self.zscale=='log':
                 zmin_list = []
-                for column in self.tvar.data.columns:
-                    series = self.tvar.data[column]
+                for column in pytplot.data_quants[self.tvar_name].data.columns:
+                    series = pytplot.data_quants[self.tvar_name].data[column]
                     zmin_list.append(series.iloc[series.nonzero()[0]].min())
                 self.zmin = min(zmin_list)
     

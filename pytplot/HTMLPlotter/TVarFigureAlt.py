@@ -16,8 +16,8 @@ import pytplot
 
 class TVarFigureAlt(object):
     
-    def __init__(self, tvar, auto_color, show_xaxis=False, interactive=False):
-        self.tvar = tvar
+    def __init__(self, tvar_name, auto_color, show_xaxis=False, interactive=False):
+        self.tvar_name = tvar_name
         self.auto_color=auto_color
         self.show_xaxis=show_xaxis
         self.interactive=interactive
@@ -87,11 +87,11 @@ class TVarFigureAlt(object):
             datasets = []
             x_min_list = []
             x_max_list = []
-            if isinstance(self.tvar.data, list):
-                for oplot_name in self.tvar.data:
+            if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+                for oplot_name in pytplot.data_quants[self.tvar_name].data:
                     datasets.append(pytplot.data_quants[oplot_name])
             else:
-                datasets.append(self.tvar)
+                datasets.append(pytplot.data_quants[self.tvar_name])
             for dataset in datasets:
                 _, alt = pytplot.get_data(dataset.links['alt'])
                 x_min_list.append(np.nanmin(alt.tolist()))
@@ -108,9 +108,9 @@ class TVarFigureAlt(object):
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if self.tvar.yaxis_opt['y_range'][0] <0 or self.tvar.yaxis_opt['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] <0 or pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
                 return
-        y_range = Range1d(self.tvar.yaxis_opt['y_range'][0], self.tvar.yaxis_opt['y_range'][1])
+        y_range = Range1d(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0], pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1])
         self.fig.y_range = y_range
         
     def _setminborder(self):
@@ -119,7 +119,7 @@ class TVarFigureAlt(object):
     
         
     def _addtimebars(self):
-        for time_bar in self.tvar.time_bar:
+        for time_bar in pytplot.data_quants[self.tvar_name].time_bar:
             time_bar_line = Span(location = time_bar['location'], 
                                  dimension = time_bar['dimension'], 
                                  line_color = time_bar['line_color'], 
@@ -131,33 +131,33 @@ class TVarFigureAlt(object):
         return
         
     def _getyaxistype(self):
-        if 'y_axis_type' in self.tvar.yaxis_opt:
-            return self.tvar.yaxis_opt['y_axis_type']
+        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
+            return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
         else:
             return 'linear'
         
     def _setcolors(self):
-        if 'line_color' in self.tvar.extras:
-            self.colors = self.tvar.extras['line_color']
+        if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
+            self.colors = pytplot.data_quants[self.tvar_name].extras['line_color']
     
     def _setyaxislabel(self):
-        self.fig.yaxis.axis_label = self.tvar.yaxis_opt['axis_label']
+        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
         
     def _visdata(self):
         self._setcolors()
         
         datasets = []
-        if isinstance(self.tvar.data, list):
-            for oplot_name in self.tvar.data:
+        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            for oplot_name in pytplot.data_quants[self.tvar_name].data:
                 datasets.append(pytplot.data_quants[oplot_name])
         else:
-            datasets.append(self.tvar)
+            datasets.append(pytplot.data_quants[self.tvar_name])
         
         for dataset in datasets:                
             #Get Linestyle
             line_style = None
-            if 'linestyle' in self.tvar.extras:
-                line_style = self.tvar.extras['linestyle']
+            if 'linestyle' in pytplot.data_quants[self.tvar_name].extras:
+                line_style = pytplot.data_quants[self.tvar_name].extras['linestyle']
                 
             _, x = pytplot.get_data(dataset.links['alt'])
             
@@ -172,14 +172,14 @@ class TVarFigureAlt(object):
                 
                 line_source = ColumnDataSource(data=dict(x=x, y=y))
                 if self.auto_color:
-                    line = Line(x='x', y='y', line_color = self.colors[self.linenum % len(self.colors)], **self.tvar.line_opt)
+                    line = Line(x='x', y='y', line_color = self.colors[self.linenum % len(self.colors)], **pytplot.data_quants[self.tvar_name].line_opt)
                 else:
-                    line = Line(x='x', y='y', **self.tvar.line_opt)
-                if 'line_style' not in self.tvar.line_opt:
+                    line = Line(x='x', y='y', **pytplot.data_quants[self.tvar_name].line_opt)
+                if 'line_style' not in pytplot.data_quants[self.tvar_name].line_opt:
                     if line_style is not None:
                         line.line_dash = line_style[self.linenum % len(line_style)]
                 else:
-                    line.line_dash = self.tvar.line_opt['line_style']
+                    line.line_dash = pytplot.data_quants[self.tvar_name].line_opt['line_style']
                 self.lineglyphs.append(self.fig.add_glyph(line_source, line))
                 self.linenum += 1
     
@@ -191,8 +191,8 @@ class TVarFigureAlt(object):
         
     def _addlegend(self):
         #Add the Legend if applicable
-        if 'legend_names' in self.tvar.yaxis_opt:
-            legend_names = self.tvar.yaxis_opt['legend_names']
+        if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
+            legend_names = pytplot.data_quants[self.tvar_name].yaxis_opt['legend_names']
             if len(legend_names) != self.linenum:
                 print("Number of lines do not match length of legend names")
             legend = Legend()

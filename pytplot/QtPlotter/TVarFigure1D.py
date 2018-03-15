@@ -1,15 +1,16 @@
 import pyqtgraph as pg
 import numpy as np
 from .. import tplot_utilities 
+import pytplot
 from pytplot import tplot_opt_glob
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.DateAxis import DateAxis
 from .CustomAxis.BlankAxis import BlankAxis
 
 class TVarFigure1D(pg.GraphicsLayout):
-    def __init__(self, tvar, show_xaxis=False, mouse_function=None):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
         
-        self.tvar=tvar
+        self.tvar_name=tvar_name
         self.show_xaxis = show_xaxis
         
         #Sets up the layout of the Tplot Object
@@ -60,7 +61,7 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._addlegend()
     
     def _setyaxislabel(self):
-        self.yaxis.setLabel(self.tvar.yaxis_opt['axis_label'])
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
     
     def _setxaxislabel(self):
         self.xaxis.setLabel("Time")
@@ -69,9 +70,9 @@ class TVarFigure1D(pg.GraphicsLayout):
         return self
     
     def _visdata(self):
-        for i in range(0,len(self.tvar.data.columns)):
-            self.curves.append(self.plotwindow.plot(self.tvar.data.index.tolist(), 
-                                                    self.tvar.data[i].tolist(), 
+        for i in range(0,len(pytplot.data_quants[self.tvar_name].data.columns)):
+            self.curves.append(self.plotwindow.plot(pytplot.data_quants[self.tvar_name].data.index.tolist(), 
+                                                    pytplot.data_quants[self.tvar_name].data[i].tolist(), 
                                                     pen=self.colors[i % len(self.colors)]))
 
     def _setyaxistype(self):
@@ -82,8 +83,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         return
         
     def _addlegend(self):
-        if 'legend_names' in self.tvar.yaxis_opt:
-            legend_names = self.tvar.yaxis_opt['legend_names']
+        if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
+            legend_names = pytplot.data_quants[self.tvar_name].yaxis_opt['legend_names']
             if len(legend_names) != len(self.curves):
                 print("Number of lines do not match length of legend names")
             if len(legend_names) == 1:
@@ -114,8 +115,8 @@ class TVarFigure1D(pg.GraphicsLayout):
                 self._mouseMovedFunction(int(mousePoint.x()))
     
     def _getyaxistype(self):
-        if 'y_axis_type' in self.tvar.yaxis_opt:
-            return self.tvar.yaxis_opt['y_axis_type']
+        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
+            return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
         else:
             return 'linear'
     
@@ -129,8 +130,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         return
             
     def _setcolors(self):
-        if 'line_color' in self.tvar.extras:
-            return self.tvar.extras['line_color']
+        if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
+            return pytplot.data_quants[self.tvar_name].extras['line_color']
         else: 
             return ['k', 'r', 'g', 'c', 'y', 'm', 'b']
     
@@ -149,11 +150,11 @@ class TVarFigure1D(pg.GraphicsLayout):
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if self.tvar.yaxis_opt['y_range'][0] <0 or self.tvar.yaxis_opt['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] <0 or pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
                 return
-            self.plotwindow.vb.setYRange(np.log10(self.tvar.yaxis_opt['y_range'][0]), np.log10(self.tvar.yaxis_opt['y_range'][1]), padding=0)
+            self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0]), np.log10(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1]), padding=0)
         else:
-            self.plotwindow.vb.setYRange(self.tvar.yaxis_opt['y_range'][0], self.tvar.yaxis_opt['y_range'][1], padding=0)
+            self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0], pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1], padding=0)
     
     def _setzrange(self):
         return

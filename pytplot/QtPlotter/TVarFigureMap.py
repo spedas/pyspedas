@@ -8,9 +8,9 @@ from pyqtgraph.Qt import QtCore
 from .CustomAxis.BlankAxis import BlankAxis
 
 class TVarFigureMap(pg.GraphicsLayout):
-    def __init__(self, tvar, show_xaxis=False, mouse_function=None):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
         
-        self.tvar=tvar
+        self.tvar_name=tvar_name
         self.show_xaxis = show_xaxis
         
         #Sets up the layout of the Tplot Object
@@ -75,16 +75,16 @@ class TVarFigureMap(pg.GraphicsLayout):
     
     def _visdata(self):    
         datasets = []
-        if isinstance(self.tvar.data, list):
-            for oplot_name in self.tvar.data:
+        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            for oplot_name in pytplot.data_quants[self.tvar_name].data:
                 datasets.append(pytplot.data_quants[oplot_name])
         else:
-            datasets.append(self.tvar)
+            datasets.append(pytplot.data_quants[self.tvar_name])
         
         for dataset in datasets: 
-            _, lat = pytplot.get_data(self.tvar.links['lat']) 
+            _, lat = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lat']) 
             lat = lat.transpose()[0]
-            _, lon = pytplot.get_data(self.tvar.links['lon']) 
+            _, lon = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lon']) 
             lon = lon.transpose()[0]    
             for column_name in dataset.data.columns:
                 values = dataset.data[column_name].tolist()
@@ -109,8 +109,8 @@ class TVarFigureMap(pg.GraphicsLayout):
     def _addlegend(self):
         zaxis=pg.AxisItem('right')
         
-        if 'axis_label' in self.tvar.zaxis_opt:
-            zaxis.setLabel(self.tvar.yaxis_opt['axis_label'])
+        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
         else:
             zaxis.setLabel(' ')
         
@@ -155,20 +155,20 @@ class TVarFigureMap(pg.GraphicsLayout):
             self.zscale = 'linear'
     
     def _getzaxistype(self):
-        if 'z_axis_type' in self.tvar.zaxis_opt:
-            return  self.tvar.zaxis_opt['z_axis_type']
+        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            return  pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type']
         else:
             return 'linear'
             
     def _setcolors(self):
-        if 'line_color' in self.tvar.extras:
-            return self.tvar.extras['line_color']
+        if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
+            return pytplot.data_quants[self.tvar_name].extras['line_color']
         else: 
             return ['k', 'r', 'g', 'c', 'y', 'm', 'b']
     
     def _setcolormap(self):          
-        if 'colormap' in self.tvar.extras:
-            for cm in self.tvar.extras['colormap']:
+        if 'colormap' in pytplot.data_quants[self.tvar_name].extras:
+            for cm in pytplot.data_quants[self.tvar_name].extras['colormap']:
                 return tplot_utilities.return_lut(cm)
         else:
             return pytplot.tplot_utilities.return_lut("inferno")
@@ -187,19 +187,19 @@ class TVarFigureMap(pg.GraphicsLayout):
     
     def _setzrange(self):
         #Get Z Range
-        if 'z_range' in self.tvar.zaxis_opt:
-            self.zmin = self.tvar.zaxis_opt['z_range'][0]
-            self.zmax = self.tvar.zaxis_opt['z_range'][1]
+        if 'z_range' in pytplot.data_quants[self.tvar_name].zaxis_opt:
+            self.zmin = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][0]
+            self.zmax = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][1]
         else:
-            dataset_temp = self.tvar.data.replace([np.inf, -np.inf], np.nan)
+            dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
             
             #Cannot have a 0 minimum in a log scale
             if self.zscale=='log':
                 zmin_list = []
-                for column in self.tvar.data.columns:
-                    series = self.tvar.data[column]
+                for column in pytplot.data_quants[self.tvar_name].data.columns:
+                    series = pytplot.data_quants[self.tvar_name].data[column]
                     zmin_list.append(series.iloc[series.nonzero()[0]].min())
                 self.zmin = min(zmin_list)
     
@@ -208,14 +208,14 @@ class TVarFigureMap(pg.GraphicsLayout):
         return
     
     def _setbackground(self):
-        if 'alpha' in self.tvar.extras:
-            alpha=self.tvar.extras['alpha']
+        if 'alpha' in pytplot.data_quants[self.tvar_name].extras:
+            alpha=pytplot.data_quants[self.tvar_name].extras['alpha']
         else:
             alpha=1
-        if 'basemap' in self.tvar.extras:
-            if os.path.isfile(self.tvar.extras['basemap']):
+        if 'basemap' in pytplot.data_quants[self.tvar_name].extras:
+            if os.path.isfile(pytplot.data_quants[self.tvar_name].extras['basemap']):
                 from scipy import misc
-                img = misc.imread(self.tvar.extras['basemap'], mode='RGBA') 
+                img = misc.imread(pytplot.data_quants[self.tvar_name].extras['basemap'], mode='RGBA') 
                 #Need to flip the image upside down...This will probably be fixed in 
                 #a future release, so this will need to be deleted at some point
                 img = img[::-1]  
