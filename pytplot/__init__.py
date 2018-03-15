@@ -146,7 +146,8 @@ from . import HTMLPlotter
 
 qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
                'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
-               'qtTVarFigureAlt':QtPlotter.TVarFigureAlt}
+               'qtTVarFigureAlt':QtPlotter.TVarFigureAlt,
+               'qtTVarFigureMap':QtPlotter.TVarFigureMap}
 bokeh_plotters = {'bkTVarFigure1D':HTMLPlotter.TVarFigure1D,
                   'bkTVarFigure2D':HTMLPlotter.TVarFigure2D,
                   'bkTVarFigureAlt':HTMLPlotter.TVarFigureAlt,

@@ -4,7 +4,6 @@ from .. import tplot_utilities
 from pytplot import tplot_opt_glob
 import pytplot
 from pyqtgraph.Qt import QtCore
-from .CustomAxis.DateAxis import DateAxis
 from .CustomAxis.BlankAxis import BlankAxis
 
 

@@ -112,10 +112,13 @@ def _get_figure_class(temp_data_quant, show_xaxis=True, mouse_moved=None):
     else:
         spec_keyword = temp_data_quant.extras.get('spec', False)
         alt_keyword = temp_data_quant.extras.get('alt', False)
+        map_keyword = temp_data_quant.extras.get('map', False)
         if spec_keyword:
             cls = pytplot.qt_plotters['qtTVarFigureSpec']
         elif alt_keyword:
             cls = pytplot.qt_plotters['qtTVarFigureAlt']
+        elif map_keyword:
+            cls = pytplot.qt_plotters['qtTVarFigureMap']
         else:
             cls = pytplot.qt_plotters['qtTVarFigure1D']
     return cls(temp_data_quant, show_xaxis=show_xaxis, mouse_function = mouse_moved)

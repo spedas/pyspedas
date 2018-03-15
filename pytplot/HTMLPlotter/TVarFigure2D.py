@@ -190,10 +190,10 @@ class TVarFigure2D(object):
                 values = dataset.data[column_name].tolist()
                 colors=[]
                 colors.extend(pytplot.tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index], 
-                                                                min_val=self.zmin, 
-                                                                max_val=self.zmax, 
-                                                                values=values, 
-                                                                zscale=self.zscale))
+                                                                        min_val=self.zmin, 
+                                                                        max_val=self.zmax, 
+                                                                        values=values, 
+                                                                        zscale=self.zscale))
                 circle_source = ColumnDataSource(data=dict(x=x, 
                                                            y=y, 
                                                            value=values, 
