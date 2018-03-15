@@ -15,7 +15,7 @@ from bokeh.models.formatters import BasicTickFormatter
 import pytplot
 from .CustomModels.colorbarsidetitle import ColorBarSideTitle
 
-class TVarFigure2D(object):
+class TVarFigureMap(object):
     
     def __init__(self, tvar, auto_color = False, show_xaxis=False, interactive=False):
         self.tvar = tvar

@@ -149,7 +149,7 @@ qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
                'qtTVarFigureAlt':QtPlotter.TVarFigureAlt,
                'qtTVarFigureMap':QtPlotter.TVarFigureMap}
 bokeh_plotters = {'bkTVarFigure1D':HTMLPlotter.TVarFigure1D,
-                  'bkTVarFigure2D':HTMLPlotter.TVarFigure2D,
+                  'bkTVarFigureMap':HTMLPlotter.TVarFigureMap,
                   'bkTVarFigureAlt':HTMLPlotter.TVarFigureAlt,
                   'bkTVarFigureSpec':HTMLPlotter.TVarFigureSpec}
 

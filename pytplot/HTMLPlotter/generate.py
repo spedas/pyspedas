@@ -123,7 +123,7 @@ def _get_figure_class(temp_data_quant, auto_color=True, interactive=False, show_
         elif alt_keyword:
             cls = pytplot.bokeh_plotters['bkTVarFigureAlt']
         elif map_keyword:
-            cls = pytplot.bokeh_plotters['bkTVarFigure2D']
+            cls = pytplot.bokeh_plotters['bkTVarFigureMap']
         else:
             cls = pytplot.bokeh_plotters['bkTVarFigure1D']
     return cls(temp_data_quant,auto_color=auto_color, interactive=interactive, show_xaxis=show_xaxis)
