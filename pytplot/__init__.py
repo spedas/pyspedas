@@ -120,14 +120,47 @@ class TVar(object):
         else:
             ascending = self.spec_bins[0].iloc[0] < self.spec_bins[1].iloc[0]
         return ascending
+        
+    def link_to_tvar(self, name, link, method='linear'):
+        from scipy import interpolate
+        from scipy.interpolate import interp1d
+        from .store_data import store_data
+        #pull saved variables from data_quants
+        link_timeorig = np.asarray(data_quants[link].data.index.tolist())
+        link_dataorig = np.asarray(data_quants[link].data[0].tolist())
+        tvar_timeorig = np.asarray(self.data.index.tolist())
+         
+        #shorten tvar array to be within link array
+        while tvar_timeorig[-1] > link_timeorig[-1]:
+            tvar_timeorig = np.delete(tvar_timeorig,-1)
+        while tvar_timeorig[0] < link_timeorig[0]:
+            tvar_timeorig = np.delete(tvar_timeorig,0)
+     
+        x = link_timeorig
+        y = link_dataorig
+        xnew = tvar_timeorig
+     
+        #choose method, interpolate, plot, and store
+        if method == 'linear':
+            f = interp1d(x,y)
+            newvarname = link + "_" + self.name + "_link"
+            store_data(newvarname, data={'x':xnew,'y':f(xnew)})
+        elif method == 'cubic':
+            f2 = interp1d(x, y, kind='cubic')
+            newvarname = link + "_" + self.name + "_link"
+            store_data(newvarname, data={'x':xnew,'y':f2(xnew)})
+        elif method == 'spline':
+            tck = interpolate.splrep(x, y, s=0)
+            ynew = interpolate.splev(xnew, tck, der=0)
+            newvarname = link + "_" + self.name + "_link"
+            store_data(newvarname, data={'x':xnew,'y':ynew})
+             
+        else:
+            print('Error: choose interpolation method.')
+            print('linear, cubic, spline')
+            return
 
-    def link_to_tvar(self, name, secondary_tvar_name):
-        #name should be something like alt/lat/lon
-        
-        #TODO: probably should interpolate these variables if they're not on the same time
-        
-        
-        self.links[name] = secondary_tvar_name
+        self.links[name] = newvarname
         
 
 #Global Variables
