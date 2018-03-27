@@ -4,7 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from pytplot import data_quants
-
+import fnmatch
 
 def del_data(name=None):
     """
@@ -32,15 +32,29 @@ def del_data(name=None):
     
     if not isinstance(name, list):
         name = [name]
+    
+    entries = []  
+    ###    
     for i in name:
-        if i not in data_quants.keys():
+        if ('?' in i) or ('*' in i):
+            for j in data_quants.keys():
+                var_verif = fnmatch.fnmatch(data_quants[j].name, i)
+                if var_verif == 1:
+                    entries.append(data_quants[j].name)
+                else:
+                    continue
+            for key in entries:
+                if key in data_quants:
+                    del data_quants[key]       
+    ###            
+        elif i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
         
-        temp_data_quants = data_quants[i]
-        str_name = temp_data_quants.name
-        
+        else:
+            temp_data_quants = data_quants[i]
+            str_name = temp_data_quants.name
             
-        del data_quants[str_name]
+            del data_quants[str_name]
         
     return
