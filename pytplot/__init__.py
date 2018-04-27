@@ -36,29 +36,33 @@ try:
     pg.setConfigOptions(imageAxisOrder='row-major')
     pg.setConfigOptions(background='w')
     pg.mkQApp()
+    
+    class PlotWindow(QtWidgets.QMainWindow):
+        def __init__(self):
+            super().__init__()
+            self.initUI()
+             
+        def initUI(self):
+            self.setWindowTitle('PyTplot')
+            menubar = self.menuBar()
+            exportMenu = menubar.addMenu('Export')
+            exportDatapngAction = QtWidgets.QAction("PNG", self)
+            exportDatapngAction.triggered.connect(self.exportpng)
+            exportMenu.addAction(exportDatapngAction)
+             
+        def exportpng(self):
+            fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
+            sshot = self.centralWidget().grab()
+            sshot.save(fname[0])
+        
+        def newlayout(self, layout):
+            self.setCentralWidget(layout)
+            
 except:
+    
     using_graphics = False
 
-class PlotWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-         
-    def initUI(self):
-        self.setWindowTitle('PyTplot')
-        menubar = self.menuBar()
-        exportMenu = menubar.addMenu('Export')
-        exportDatapngAction = QtWidgets.QAction("PNG", self)
-        exportDatapngAction.triggered.connect(self.exportpng)
-        exportMenu.addAction(exportDatapngAction)
-         
-    def exportpng(self):
-        fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
-        sshot = self.centralWidget().grab()
-        sshot.save(fname[0])
-    
-    def newlayout(self, layout):
-        self.setCentralWidget(layout)
+
 
 class TVar(object):
     """ 
