@@ -3,6 +3,7 @@ from _collections import OrderedDict
 
 
 #If we are in an ipython environment, set the gui to be qt5
+#This allows the user to interact with the window in real time
 try:
     magic = get_ipython().magic
     magic(u'%gui qt5')
@@ -26,12 +27,17 @@ class HoverTime(object):
             f(self.hover_time)
         return
 
-import pyqtgraph as pg
-from pyqtgraph.Qt import QtWidgets 
+using_graphics = True
 
-pg.setConfigOptions(imageAxisOrder='row-major')
-pg.setConfigOptions(background='w')
-pg.mkQApp()
+try:
+    import pyqtgraph as pg
+    from pyqtgraph.Qt import QtWidgets 
+    
+    pg.setConfigOptions(imageAxisOrder='row-major')
+    pg.setConfigOptions(background='w')
+    pg.mkQApp()
+except:
+    using_graphics = False
 
 class PlotWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -172,15 +178,16 @@ tplot_opt_glob = dict(tools = "xpan,crosshair,reset",
                  title_size='12pt', title_text='')
 lim_info = {}
 extra_layouts = {}
-pytplotWindow = PlotWindow()
 
-from . import QtPlotter
+if using_graphics:
+    pytplotWindow = PlotWindow()
+    from . import QtPlotter
+    qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
+                   'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
+                   'qtTVarFigureAlt':QtPlotter.TVarFigureAlt,
+                   'qtTVarFigureMap':QtPlotter.TVarFigureMap}
+
 from . import HTMLPlotter
-
-qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
-               'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
-               'qtTVarFigureAlt':QtPlotter.TVarFigureAlt,
-               'qtTVarFigureMap':QtPlotter.TVarFigureMap}
 bokeh_plotters = {'bkTVarFigure1D':HTMLPlotter.TVarFigure1D,
                   'bkTVarFigureMap':HTMLPlotter.TVarFigureMap,
                   'bkTVarFigureAlt':HTMLPlotter.TVarFigureAlt,

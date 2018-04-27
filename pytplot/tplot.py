@@ -2,15 +2,18 @@ from __future__ import division
 import sys
 import os
 import pytplot
-from pyqtgraph.Qt import QtCore, QtGui
 from bokeh.io import output_file, show, output_notebook, save
-from . import QtPlotter
 from . import HTMLPlotter
 from bokeh.embed import components
-try:
-    from PyQt5.QtWebKitWidgets import QWebView as WebView
-except:
-    from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
+
+if pytplot.using_graphics:
+    from pyqtgraph.Qt import QtCore, QtGui
+    from . import QtPlotter
+    try:
+        from PyQt5.QtWebKitWidgets import QWebView as WebView
+    except:
+        from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
+
 
 def tplot(name, 
           var_label = None, 
@@ -93,6 +96,9 @@ def tplot(name,
         >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
     
+    if pytplot.using_graphics == False and save_file==None:
+        print("Qt was not successfully imported.  Specify save_file to save the file as a .html file.")
+        return
     #Check a bunch of things
     if(not isinstance(name, list)):
         name=[name]
