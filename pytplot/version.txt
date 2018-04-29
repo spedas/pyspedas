@@ -1,4 +1,8 @@
-1.1.6
+1.1.11
+
+1.1.11 Changes:
+	-Fixed major issue with pip installer
+	-Added ability to use pytplot without a graphics interface, if building only html files are desired.
 
 1.1.6 Changes:
 	-Fixed a spot where python warnings were changed to change back after the function was over
