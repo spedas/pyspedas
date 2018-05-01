@@ -1,4 +1,7 @@
-1.1.12
+1.1.13
+
+1.1.13 Changes: 
+	-Added overplot capabilities to the Qt Plotting routines
 
 1.1.12 Changes:
 	-Fixed major issue with pip installer

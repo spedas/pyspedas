@@ -156,8 +156,17 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return
     
     def _visdata(self):
-        for i in range(0,len(pytplot.data_quants[self.tvar_name].data.columns)):
-            _, x = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['alt']) 
-            x = x.transpose()[0]
-            self.curves.append(self.plotwindow.scatterPlot(x.tolist(), pytplot.data_quants[self.tvar_name].data[i].tolist(), 
-                                                    pen=pg.mkPen(None), brush=self.colors[i % len(self.colors)]))
+        datasets = []
+        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            for oplot_name in pytplot.data_quants[self.tvar_name].data:
+                datasets.append(pytplot.data_quants[oplot_name])
+        else:
+            datasets.append(pytplot.data_quants[self.tvar_name])
+        line_num = 0
+        for dataset in datasets:  
+            for i in range(0,len(dataset.data.columns)):
+                _, x = pytplot.get_data(dataset.links['alt']) 
+                x = x.transpose()[0]
+                self.curves.append(self.plotwindow.scatterPlot(x.tolist(), dataset.data[i].tolist(), 
+                                                        pen=pg.mkPen(None), brush=self.colors[line_num % len(self.colors)]))
+                line_num+=1
