@@ -5,6 +5,7 @@ import pytplot
 from bokeh.io import output_file, show, output_notebook, save
 from . import HTMLPlotter
 from bokeh.embed import components
+from pytplot import tplot_utilities
 
 if pytplot.using_graphics:
     from pyqtgraph.Qt import QtCore, QtGui
@@ -117,11 +118,12 @@ def tplot(name,
         var_label = list(pytplot.data_quants.keys())[var_label]
     
     if pyqtgraph:
+        available_qt_window = tplot_utilities.get_available_qt_window()
         layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, mouse_moved_event=pytplot.hover_time.change_hover_time)
-        pytplot.pytplotWindow.newlayout(layout)
-        pytplot.pytplotWindow.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
-        pytplot.pytplotWindow.show()
-        pytplot.pytplotWindow.activateWindow()
+        available_qt_window.newlayout(layout)
+        available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+        available_qt_window.show()
+        available_qt_window.activateWindow()
         if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
             QtGui.QApplication.instance().exec_()
         return
@@ -140,17 +142,18 @@ def tplot(name,
             save(layout)    
             return
         elif qt:        
+            available_qt_window = tplot_utilities.get_available_qt_window()
             dir_path = os.path.dirname(os.path.realpath(__file__))
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
             save(layout)
             new_layout = WebView()
-            pytplot.pytplotWindow.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
+            available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
             new_layout.resize(pytplot.tplot_opt_glob['window_size'][0],pytplot.tplot_opt_glob['window_size'][1])
             dir_path = os.path.dirname(os.path.realpath(__file__))
             new_layout.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
-            pytplot.pytplotWindow.newlayout(new_layout)
-            pytplot.pytplotWindow.show()
-            pytplot.pytplotWindow.activateWindow()
+            available_qt_window.newlayout(new_layout)
+            available_qt_window.show()
+            available_qt_window.activateWindow()
             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
             return

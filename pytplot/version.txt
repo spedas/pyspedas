@@ -1,4 +1,7 @@
-1.1.13
+1.2.0
+
+1.2.0 Changes:
+	-Added ability to display an arbitrarily large number of qt plot windows, if done from ipython
 
 1.1.13 Changes: 
 	-Added overplot capabilities to the Qt Plotting routines

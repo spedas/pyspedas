@@ -184,7 +184,7 @@ lim_info = {}
 extra_layouts = {}
 
 if using_graphics:
-    pytplotWindow = PlotWindow()
+    pytplotWindows = [] #This is a list that will hold future qt windows
     from . import QtPlotter
     qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
                    'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
