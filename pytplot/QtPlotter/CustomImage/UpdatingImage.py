@@ -74,15 +74,15 @@ class UpdatingImage(pg.ImageItem):
 
             closest_xs = np.searchsorted(self.x, xp)
             y_sort = np.argsort(self.y.values)
-            if len(self.bin_sizes) == 1:
-                closest_ys = np.searchsorted(self.y.values, yp, sorter=y_sort)
-                if not self.bins_inc:
-                    closest_ys = np.flipud(closest_ys)
-                data = self.data.iloc[closest_xs][closest_ys].values
-            else:
-                for j in range(0,self.w):
-                    closest_ys = np.searchsorted(self.y.iloc[closest_xs[j]], yp, sorter=y_sort)
-                    data[:,j] = self.data.iloc[closest_xs[j]].iloc[closest_ys].values
+            #if len(self.bin_sizes) == 1:
+            closest_ys = np.searchsorted(self.y.values, yp, sorter=y_sort)
+            if not self.bins_inc:
+                closest_ys = np.flipud(closest_ys)
+            data = self.data.iloc[closest_xs][closest_ys].values
+            #else:
+            #    for j in range(0,self.w):
+            #        closest_ys = np.searchsorted(self.y.iloc[closest_xs[j]], yp, sorter=y_sort)
+            #        data[:,j] = self.data.iloc[closest_xs[j]].iloc[closest_ys].values
             
             self.setImage(data.T, levels=(self.zmin, self.zmax))
 

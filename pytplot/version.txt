@@ -1,4 +1,7 @@
-1.2.0
+1.2.1
+
+1.2.1 Changes:
+	-Fixed a bug in the pyqtgraph spec plots with time varying bins
 
 1.2.0 Changes:
 	-Added ability to display an arbitrarily large number of qt plot windows, if done from ipython
