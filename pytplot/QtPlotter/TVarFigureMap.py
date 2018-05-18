@@ -82,9 +82,9 @@ class TVarFigureMap(pg.GraphicsLayout):
             datasets.append(pytplot.data_quants[self.tvar_name])
         
         for dataset in datasets: 
-            _, lat = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lat']) 
+            _, lat = pytplot.get_data(dataset.links['lat']) 
             lat = lat.transpose()[0]
-            _, lon = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lon']) 
+            _, lon = pytplot.get_data(dataset.links['lon']) 
             lon = lon.transpose()[0]    
             for column_name in dataset.data.columns:
                 values = dataset.data[column_name].tolist()
@@ -191,7 +191,11 @@ class TVarFigureMap(pg.GraphicsLayout):
             self.zmin = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][0]
             self.zmax = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][1]
         else:
-            dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
+            if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+                #Check the first one
+                dataset_temp = pytplot.data_quants[pytplot.data_quants[self.tvar_name].data[0]].data.replace([np.inf, -np.inf], np.nan)
+            else:
+                dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
             

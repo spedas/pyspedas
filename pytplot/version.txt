@@ -1,4 +1,17 @@
-1.1.6
+1.2.2
+
+1.2.1 Changes:
+	-Fixed a bug in the pyqtgraph spec plots with time varying bins
+
+1.2.0 Changes:
+	-Added ability to display an arbitrarily large number of qt plot windows, if done from ipython
+
+1.1.13 Changes: 
+	-Added overplot capabilities to the Qt Plotting routines
+
+1.1.12 Changes:
+	-Fixed major issue with pip installer
+	-Added ability to use pytplot without a graphics interface, if building only html files are desired.
 
 1.1.6 Changes:
 	-Fixed a spot where python warnings were changed to change back after the function was over

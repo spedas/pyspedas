@@ -3,6 +3,7 @@ from _collections import OrderedDict
 
 
 #If we are in an ipython environment, set the gui to be qt5
+#This allows the user to interact with the window in real time
 try:
     magic = get_ipython().magic
     magic(u'%gui qt5')
@@ -26,33 +27,42 @@ class HoverTime(object):
             f(self.hover_time)
         return
 
-import pyqtgraph as pg
-from pyqtgraph.Qt import QtWidgets 
+using_graphics = True
 
-pg.setConfigOptions(imageAxisOrder='row-major')
-pg.setConfigOptions(background='w')
-pg.mkQApp()
-
-class PlotWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-         
-    def initUI(self):
-        self.setWindowTitle('PyTplot')
-        menubar = self.menuBar()
-        exportMenu = menubar.addMenu('Export')
-        exportDatapngAction = QtWidgets.QAction("PNG", self)
-        exportDatapngAction.triggered.connect(self.exportpng)
-        exportMenu.addAction(exportDatapngAction)
-         
-    def exportpng(self):
-        fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
-        sshot = self.centralWidget().grab()
-        sshot.save(fname[0])
+try:
+    import pyqtgraph as pg
+    from pyqtgraph.Qt import QtWidgets 
     
-    def newlayout(self, layout):
-        self.setCentralWidget(layout)
+    pg.setConfigOptions(imageAxisOrder='row-major')
+    pg.setConfigOptions(background='w')
+    pg.mkQApp()
+    
+    class PlotWindow(QtWidgets.QMainWindow):
+        def __init__(self):
+            super().__init__()
+            self.initUI()
+             
+        def initUI(self):
+            self.setWindowTitle('PyTplot')
+            menubar = self.menuBar()
+            exportMenu = menubar.addMenu('Export')
+            exportDatapngAction = QtWidgets.QAction("PNG", self)
+            exportDatapngAction.triggered.connect(self.exportpng)
+            exportMenu.addAction(exportDatapngAction)
+             
+        def exportpng(self):
+            fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
+            sshot = self.centralWidget().grab()
+            sshot.save(fname[0])
+        
+        def newlayout(self, layout):
+            self.setCentralWidget(layout)
+            
+except:
+    
+    using_graphics = False
+
+
 
 class TVar(object):
     """ 
@@ -172,15 +182,16 @@ tplot_opt_glob = dict(tools = "xpan,crosshair,reset",
                  title_size='12pt', title_text='')
 lim_info = {}
 extra_layouts = {}
-pytplotWindow = PlotWindow()
 
-from . import QtPlotter
+if using_graphics:
+    pytplotWindows = [] #This is a list that will hold future qt windows
+    from . import QtPlotter
+    qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
+                   'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
+                   'qtTVarFigureAlt':QtPlotter.TVarFigureAlt,
+                   'qtTVarFigureMap':QtPlotter.TVarFigureMap}
+
 from . import HTMLPlotter
-
-qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
-               'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
-               'qtTVarFigureAlt':QtPlotter.TVarFigureAlt,
-               'qtTVarFigureMap':QtPlotter.TVarFigureMap}
 bokeh_plotters = {'bkTVarFigure1D':HTMLPlotter.TVarFigure1D,
                   'bkTVarFigureMap':HTMLPlotter.TVarFigureMap,
                   'bkTVarFigureAlt':HTMLPlotter.TVarFigureAlt,

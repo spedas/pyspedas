@@ -70,10 +70,19 @@ class TVarFigure1D(pg.GraphicsLayout):
         return self
     
     def _visdata(self):
-        for i in range(0,len(pytplot.data_quants[self.tvar_name].data.columns)):
-            self.curves.append(self.plotwindow.plot(pytplot.data_quants[self.tvar_name].data.index.tolist(), 
-                                                    pytplot.data_quants[self.tvar_name].data[i].tolist(), 
-                                                    pen=self.colors[i % len(self.colors)]))
+        datasets = []
+        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            for oplot_name in pytplot.data_quants[self.tvar_name].data:
+                datasets.append(pytplot.data_quants[oplot_name])
+        else:
+            datasets.append(pytplot.data_quants[self.tvar_name])
+        line_num = 0
+        for dataset in datasets: 
+            for i in range(0,len(dataset.data.columns)):
+                self.curves.append(self.plotwindow.plot(dataset.data.index.tolist(), 
+                                                        dataset.data[i].tolist(), 
+                                                        pen=self.colors[line_num % len(self.colors)]))
+                line_num+=1
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':

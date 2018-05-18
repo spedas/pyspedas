@@ -119,6 +119,7 @@ class TVarFigureMap(object):
             self.zmax = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][1]
         else:
             if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+                #Check the first one
                 dataset_temp = pytplot.data_quants[pytplot.data_quants[self.tvar_name].data[0]].data.replace([np.inf, -np.inf], np.nan)
             else:
                 dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
@@ -189,7 +190,7 @@ class TVarFigureMap(object):
             for column_name in dataset.data.columns:
                 values = dataset.data[column_name].tolist()
                 colors=[]
-                colors.extend(pytplot.tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index], 
+                colors.extend(pytplot.tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index % len(self.colors)], 
                                                                         min_val=self.zmin, 
                                                                         max_val=self.zmax, 
                                                                         values=values, 

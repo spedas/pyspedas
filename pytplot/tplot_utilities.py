@@ -235,3 +235,15 @@ def return_lut(name):
         cm = mpl.cm.get_cmap(name)
         map = [(np.array(cm(x))*255).astype(np.int) for x in range(0,cm.N)]
         return map
+    
+def get_available_qt_window():
+    #Delete old windows
+    for w in pytplot.pytplotWindows:
+        if not w.isVisible():
+            del w
+            
+    #Add a new one to the list
+    pytplot.pytplotWindows.append(pytplot.PlotWindow())
+    
+    #Return the latest window
+    return pytplot.pytplotWindows[-1]
