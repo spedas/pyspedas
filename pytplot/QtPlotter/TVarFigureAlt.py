@@ -152,7 +152,12 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return
     
     def _addtimebars(self):
-        #Not yet implemented
+        self.tvar_name.time_bar
+        time_list = pytplot.data_quants[self.tvar_name].data.index
+        date_to_highlight = []
+        for i, val in enumerate(time_list):
+            date_to_highlight = pytplot.tplot_utilities.str_to_int(self[i])
+            pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(self.color),width = self.lwidth)
         return
     
     def _visdata(self):
