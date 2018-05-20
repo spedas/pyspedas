@@ -6,6 +6,8 @@ from bokeh.io import output_file, show, output_notebook, save
 from . import HTMLPlotter
 from bokeh.embed import components
 from pytplot import tplot_utilities
+import tempfile
+
 
 if pytplot.using_graphics:
     from pyqtgraph.Qt import QtCore, QtGui
@@ -143,13 +145,13 @@ def tplot(name,
             return
         elif qt:        
             available_qt_window = tplot_utilities.get_available_qt_window()
-            dir_path = os.path.dirname(os.path.realpath(__file__))
+            dir_path = tempfile.gettempdir() #send to user's temp directory
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
             save(layout)
             new_layout = WebView()
             available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
             new_layout.resize(pytplot.tplot_opt_glob['window_size'][0],pytplot.tplot_opt_glob['window_size'][1])
-            dir_path = os.path.dirname(os.path.realpath(__file__))
+            dir_path = tempfile.gettempdir() #send to user's temp directory
             new_layout.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
             available_qt_window.newlayout(new_layout)
             available_qt_window.show()
@@ -158,7 +160,7 @@ def tplot(name,
                 QtGui.QApplication.instance().exec_()
             return
         else:      
-            dir_path = os.path.dirname(os.path.realpath(__file__))
+            dir_path = tempfile.gettempdir() #send to user's temp directory
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
             show(layout)
             return
