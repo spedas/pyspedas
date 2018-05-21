@@ -47,7 +47,9 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
     
     
     if not isinstance(t, (int, float, complex)):
-        t = tplot_utilities.str_to_int(t)
+        t = []
+        for time in t:
+            t = t.append(tplot_utilities.str_to_int(time))
     
     dim = 'height'
     if databar is True:
@@ -92,7 +94,12 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
             else:
                 num_bars = len(t)
                 for i in range(num_bars):
-                    tbar = Span(location = t[i], dimension = dim, line_color = color, line_width = thick, line_dash = dash_pattern)
+                    tbar = {}
+                    tbar['location'] = t[i]
+                    tbar['dimension'] = dim
+                    tbar['line_color'] = color
+                    tbar['line_width'] = thick
+                    tbar['line_dash'] = dash_pattern
                     temp_data_quants = data_quants[j]
                     temp_data_quants.time_bar.append(tbar)
     return
