@@ -59,7 +59,7 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._setxaxislabel()
         self._addmouseevents()
         self._addlegend()
-        
+    
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
     
@@ -169,20 +169,12 @@ class TVarFigure1D(pg.GraphicsLayout):
         return
     
     def _addtimebars(self):
-        print("adding timebars")
-        #time_list = [11000]
-        #print(pytplot.data_quants[self.tvar_name].time_bar)#[0]["location"])
-        time_list = pytplot.data_quants[self.tvar_name].time_bar[0]["location"]
-        color = pytplot.data_quants[self.tvar_name].time_bar[0]["line_color"]
-        thick = pytplot.data_quants[self.tvar_name].time_bar[0]["line_width"]
-        if not isinstance(time_list,list):
-            time_list = [time_list]
+        self.tvar_name.time_bar
+        time_list = pytplot.data_quants[self.tvar_name].data.index
+        date_to_highlight = []
         for i, val in enumerate(time_list):
-            date_to_highlight = time_list[i]/1000#pytplot.tplot_utilities.str_to_int(time_list[i])
-            #pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(self.colors),width = self.lwidth)
-            infline = pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(color,width = thick))
-            self.plotwindow.addItem(infline)
-        
+            date_to_highlight = pytplot.tplot_utilities.str_to_int(self[i])
+            pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(self.color),width = self.lwidth)
         return
     
     
