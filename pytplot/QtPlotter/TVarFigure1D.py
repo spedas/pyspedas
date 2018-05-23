@@ -169,12 +169,19 @@ class TVarFigure1D(pg.GraphicsLayout):
         return
     
     def _addtimebars(self):
-        #self.tvar_name.time_bar
-        #time_list = pytplot.data_quants[self.tvar_name].data.index
-        #date_to_highlight = []
-        #for i, val in enumerate(time_list):
-        #    date_to_highlight = pytplot.tplot_utilities.str_to_int(self[i])
-        #    pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(self.color),width = self.lwidth)
+        #find number of times to plot
+        dict_length = len(pytplot.data_quants[self.tvar_name].time_bar)
+        #for each time
+        for i in range(dict_length):
+            #pull date, color, thickness
+            date_to_highlight = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
+            color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
+            thick = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+            #make infinite line w/ parameters
+            infline = pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(color,width = thick))
+            #add to plot window
+            self.plotwindow.addItem(infline)
+                
         return
     
     

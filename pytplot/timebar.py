@@ -38,17 +38,29 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
     Examples:
         >>> # Place a green time bar at 2017-07-17 00:00:00
         >>> import pytplot
-        >>> pytplot.timebar(1500249600, color='grean)
+        >>> pytplot.timebar(1500249600, color='green')
         
         >>> # Place a dashed data bar at 5500 on the y axis
         >>> pytplot.timebar(5500, dashed=True, databar=True)
+        
+        >>> Place 3 magenta time bars of thickness 5 
+            at [2015-12-26 05:20:01, 2015-12-26 08:06:40, 2015-12-26 08:53:19]
+            for variable 'sgx' plot
+        >>> pytplot.timebar([1451107201,1451117200,1451119999],'sgx',color='m',thick=5)
 
     """
     
+    # make sure t entered is a list
+    if not isinstance(t, list):
+        t = [t]
     
-    if not isinstance(t, (int, float, complex)):
-        t = tplot_utilities.str_to_int(t)
-    
+    #if entries in list not numerical, run str_to_int
+    if not isinstance(t[0], (int, float, complex)):
+        t1 = []
+        for time in t:
+            t1 = t1.append(tplot_utilities.str_to_int(time))
+        t = t1
+        
     dim = 'height'
     if databar is True:
         dim = 'width'
@@ -57,20 +69,12 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
     if dash is True:
         dash_pattern = 'dashed'
         
-    # Convert single value to a list so we don't have to write code to deal with
-    # both single values and lists.
-    if not isinstance(t, list):
-        t = [t]
-    # Convert values to seconds by multiplying by 1000
-    if databar is False:
-        num_bars = len(t)
-        for j in range(num_bars):
-            t[j] *= 1000
             
     if delete is True:
         tplot_utilities.timebar_delete(t, varname, dim)
         return
-    # If no varname specified, add timebars to every plot
+    
+    #if no varname specified, add timebars to every plot
     if varname is None:
         num_bars = len(t)
         for i in range(num_bars):
@@ -83,6 +87,7 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
             for name in data_quants:
                 temp_data_quants = data_quants[name]
                 temp_data_quants.time_bar.append(tbar)
+    #if varname specified
     else:
         if not isinstance(varname, list):
             varname = [varname]
@@ -92,7 +97,12 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
             else:
                 num_bars = len(t)
                 for i in range(num_bars):
-                    tbar = Span(location = t[i], dimension = dim, line_color = color, line_width = thick, line_dash = dash_pattern)
+                    tbar = {}
+                    tbar['location'] = t[i]
+                    tbar['dimension'] = dim
+                    tbar['line_color'] = color
+                    tbar['line_width'] = thick
+                    tbar['line_dash'] = dash_pattern
                     temp_data_quants = data_quants[j]
                     temp_data_quants.time_bar.append(tbar)
     return

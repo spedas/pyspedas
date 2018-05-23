@@ -206,7 +206,19 @@ class TVarFigureSpec(pg.GraphicsLayout):
                 self.zmin = min(zmin_list)
     
     def _addtimebars(self):
-        #Not yet implemented
+        #find number of times to plot
+        dict_length = len(pytplot.data_quants[self.tvar_name].time_bar)
+        #for each time
+        for i in range(dict_length):
+            #pull date, color, thickness
+            date_to_highlight = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
+            color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
+            thick = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+            #make infinite line w/ parameters
+            infline = pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(color,width = thick))
+            #add to plot window
+            self.plotwindow.addItem(infline)
+                
         return
     
     
