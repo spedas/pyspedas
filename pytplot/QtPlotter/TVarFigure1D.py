@@ -59,7 +59,7 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._setxaxislabel()
         self._addmouseevents()
         self._addlegend()
-        
+    
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
     
