@@ -157,7 +157,7 @@ class TVarFigureSpec(object):
         
     def _addtimebars(self):
         for time_bar in pytplot.data_quants[self.tvar_name].time_bar:
-            time_bar_line = Span(location = time_bar['location'], 
+            time_bar_line = Span(location = time_bar['location']*1000, 
                                  dimension = time_bar['dimension'], 
                                  line_color = time_bar['line_color'], 
                                  line_width = time_bar['line_width'])

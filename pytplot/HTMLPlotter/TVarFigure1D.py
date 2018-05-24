@@ -135,7 +135,7 @@ class TVarFigure1D(object):
         
     def _addtimebars(self):
         for time_bar in pytplot.data_quants[self.tvar_name].time_bar:
-            time_bar_line = Span(location = time_bar['location'], dimension = time_bar['dimension'], line_color = time_bar['line_color'], line_width = time_bar['line_width'])
+            time_bar_line = Span(location = time_bar['location']*1000, dimension = time_bar['dimension'], line_color = time_bar['line_color'], line_width = time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
             
     def _setxaxis(self):
