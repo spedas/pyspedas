@@ -55,20 +55,21 @@ class TVarFigureMap(pg.GraphicsLayout):
         self._setyaxistype()
         self._setzaxistype()
         self._setzrange()
-        self._addtimebars()
         self._setbackground()
         self._visdata()
         self._setyaxislabel()
         self._setxaxislabel()
         self._addmouseevents()
         self._addlegend()
+        self._addtimebars()
+
         
     
     def _setyaxislabel(self):
-        self.yaxis.setLabel("Longitude")
+        self.yaxis.setLabel("Latitude")
     
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Latitude")
+        self.xaxis.setLabel("Longitude")
     
     def getfig(self):
         return self
@@ -208,7 +209,34 @@ class TVarFigureMap(pg.GraphicsLayout):
                 self.zmin = min(zmin_list)
     
     def _addtimebars(self):
-        #Not yet implemented
+        #initialize dataset variable
+        datasets = []
+        #grab tbardict
+        tbardict = pytplot.data_quants[self.tvar_name].time_bar
+        ltbar = len(tbardict)
+        #make sure data is in list format
+        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            for oplot_name in pytplot.data_quants[self.tvar_name].data:
+                datasets.append(pytplot.data_quants[oplot_name])
+        else:
+            datasets.append(pytplot.data_quants[self.tvar_name])        
+        for dataset in datasets:  
+            #for location in tbar dict
+            for i in range(ltbar):
+                #get times, color, point size
+                test_time = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
+                color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
+                pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+                #correlate given time with corresponding lat/lon points
+                time, latitude = pytplot.get_data(dataset.links['lat']) 
+                time, longitude = pytplot.get_data(dataset.links['lon']) 
+                latitude = latitude.transpose()[0]
+                longitude = longitude.transpose()[0]
+                nearest_time_index = np.abs(time - test_time).argmin()
+                lat_point = latitude[nearest_time_index]
+                lon_point = longitude[nearest_time_index]
+                self.plotwindow.scatterPlot([lon_point], [lat_point], size = pointsize, pen=pg.mkPen(None), brush=color)
+        
         return
     
     def _setbackground(self):
