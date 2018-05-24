@@ -53,8 +53,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self._setyaxistype()
         self._setzaxistype()
         self._setzrange()
-        self._addtimebars()
         self._visdata()
+        self._addtimebars()
         self._setyaxislabel()
         self._setxaxislabel()
         self._addmouseevents()
@@ -152,14 +152,34 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return
     
     def _addtimebars(self):
-        self.tvar_name.time_bar
-        time_list = pytplot.data_quants[self.tvar_name].data.index
-        date_to_highlight = []
-        for i, val in enumerate(time_list):
-            date_to_highlight = pytplot.tplot_utilities.str_to_int(self[i])
-            pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(self.color),width = self.lwidth)
+        #initialize dataset variable
+        datasets = []
+        #grab tbardict
+        tbardict = pytplot.data_quants[self.tvar_name].time_bar
+        ltbar = len(tbardict)
+        #make sure data is in list format
+        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            for oplot_name in pytplot.data_quants[self.tvar_name].data:
+                datasets.append(pytplot.data_quants[oplot_name])
+        else:
+            datasets.append(pytplot.data_quants[self.tvar_name])        
+        for dataset in datasets:  
+            #for location in tbar dict
+            for i in range(ltbar):
+                #get times, color, point size
+                test_time = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
+                print(test_time)
+                color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
+                pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+                #correlate given time with corresponding data/alt points
+                time, altitude = pytplot.get_data(dataset.links['alt']) 
+                altitude = altitude.transpose()[0]
+                nearest_time_index = np.abs(time - test_time).argmin()
+                data_point = dataset.data.iloc[nearest_time_index][0]
+                alt_point = altitude[nearest_time_index]
+                print(alt_point,data_point)
+                self.plotwindow.scatterPlot([alt_point], [data_point], size = pointsize, pen=pg.mkPen(None), brush=color)
         return
-    
     def _visdata(self):
         datasets = []
         if isinstance(pytplot.data_quants[self.tvar_name].data, list):
