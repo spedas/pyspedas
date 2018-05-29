@@ -6,6 +6,9 @@ from pytplot import tplot_opt_glob
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.DateAxis import DateAxis
 from .CustomAxis.BlankAxis import BlankAxis
+from pyqtgraph.Qt import QtGui, QtCore
+from pyqtgraph.Point import Point
+#import mpld3
 
 class TVarFigure1D(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
@@ -46,7 +49,18 @@ class TVarFigure1D(pg.GraphicsLayout):
         
         self._mouseMovedFunction = mouse_function
 
-
+        ##
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        
+        self.label = pg.LabelItem(justify='left')
+        self.addItem(self.label,row=1,col=0)
+        #self.addItem(self.label)
+        ##
+        
+        
     def buildfigure(self):
         self._setxrange()
         self._setyrange()
@@ -117,12 +131,23 @@ class TVarFigure1D(pg.GraphicsLayout):
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
     
     def _mousemoved(self, evt):
+        #get current position
         pos = evt
+        #if plot window contains position
         if self.plotwindow.sceneBoundingRect().contains(pos):
             mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            #grab x and y mouse locations
+            index_x = int(mousePoint.x())
+            index_y = int(mousePoint.y())
+            #print time and data
+            self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(index_x) + "   |   " + "Data: " + str(index_y))
+            #add crosshairs
             if self._mouseMovedFunction != None:
                 self._mouseMovedFunction(int(mousePoint.x()))
-    
+                self.vLine.setPos(mousePoint.x())
+                self.hLine.setPos(mousePoint.y())
+
+
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
             return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']

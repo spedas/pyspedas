@@ -46,6 +46,16 @@ class TVarFigureAlt(pg.GraphicsLayout):
         
         self._mouseMovedFunction = mouse_function
     
+         ##
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        
+        self.label = pg.LabelItem(justify='left')
+        self.addItem(self.label,row=1,col=0)
+        #self.addItem(self.label)
+        ##
     
     def buildfigure(self):
         self._setxrange()
@@ -99,7 +109,26 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return axis_type, link_y_axis
     
     def _addmouseevents(self):
-        return
+        
+        if self.plotwindow.scene() is not None:
+            self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
+    
+    def _mousemoved(self, evt):
+        #get current position
+        pos = evt
+        #if plot window contains position
+        if self.plotwindow.sceneBoundingRect().contains(pos):
+            mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            #grab x and y mouse locations
+            index_x = int(mousePoint.x())
+            index_y = int(mousePoint.y())
+            #print time and data
+            self.label.setText("Altitude: " + str(index_x) +"   |   " + "Data: " + str(index_y))
+            #add crosshairs
+            if self._mouseMovedFunction != None:
+                self._mouseMovedFunction(int(mousePoint.x()))
+                self.vLine.setPos(mousePoint.x())
+                self.hLine.setPos(mousePoint.y())
     
     def _addlegend(self):
         if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
