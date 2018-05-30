@@ -123,7 +123,7 @@ class TVarFigureSpec(object):
                 pytplot.lim_info['xlast'] = tplot_x_range
         
         #Bokeh uses milliseconds since epoch for some reason
-        x_range = Range1d(pytplot.tplot_opt_glob['x_range'][0]* 1000, pytplot.tplot_opt_glob['x_range'][1]* 1000)
+        x_range = Range1d(int(pytplot.tplot_opt_glob['x_range'][0])* 1000, int(pytplot.tplot_opt_glob['x_range'][1])* 1000)
         self.fig.x_range = x_range
     
     def _setyrange(self):
@@ -157,7 +157,7 @@ class TVarFigureSpec(object):
         
     def _addtimebars(self):
         for time_bar in pytplot.data_quants[self.tvar_name].time_bar:
-            time_bar_line = Span(location = time_bar['location'], 
+            time_bar_line = Span(location = time_bar['location']*1000, 
                                  dimension = time_bar['dimension'], 
                                  line_color = time_bar['line_color'], 
                                  line_width = time_bar['line_width'])
