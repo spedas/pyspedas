@@ -67,12 +67,13 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._setyaxistype()
         self._setzaxistype()
         self._setzrange()
-        self._addtimebars()
         self._visdata()
         self._setyaxislabel()
         self._setxaxislabel()
-        self._addmouseevents()
         self._addlegend()
+        self._addtimebars()
+        self._addmouseevents()
+
     
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
@@ -138,7 +139,7 @@ class TVarFigure1D(pg.GraphicsLayout):
             mousePoint = self.plotwindow.vb.mapSceneToView(pos)
             #grab x and y mouse locations
             index_x = int(mousePoint.x())
-            index_y = int(mousePoint.y())
+            index_y = round(float(mousePoint.y()),4)
             #print time and data
             self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(index_x) + "   |   " + "Data: " + str(index_y))
             #add crosshairs
