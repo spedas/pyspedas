@@ -33,6 +33,8 @@ class CustomLegendItem(pg.LegendItem):
         for label, data in self.items:
             if label.text == label_name:
                 data.setText(new_data)
+                return
+        self.addItem(label_name, new_data)
                 
     def paint(self, p, *args):
         p.setPen(fn.mkPen(255,255,255,0))
