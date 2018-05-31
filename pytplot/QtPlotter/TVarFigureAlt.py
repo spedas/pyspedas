@@ -5,6 +5,7 @@ from pytplot import tplot_opt_glob
 import pytplot
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.BlankAxis import BlankAxis
+from .CustomLegend.CustomLegend import CustomLegendItem
 
 
 class TVarFigureAlt(pg.GraphicsLayout):
@@ -46,7 +47,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         
         self._mouseMovedFunction = mouse_function
     
-         ##
+         
         self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
         self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
@@ -55,7 +56,12 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label,row=1,col=0)
         #self.addItem(self.label)
-        ##
+        
+        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend.setItem("Altitude:", "0")
+        self.hoverlegend.setItem("Data:", "0")
+        self.hoverlegend.setVisible(False)
+        self.hoverlegend.setParentItem(self.plotwindow.vb)
     
     def buildfigure(self):
         self._setxrange()
@@ -123,12 +129,17 @@ class TVarFigureAlt(pg.GraphicsLayout):
             index_x = int(mousePoint.x())
             index_y = int(mousePoint.y())
             #print time and data
-            self.label.setText("Altitude: " + str(index_x) +"   |   " + "Data: " + str(index_y))
+            #self.label.setText("Altitude: " + str(index_x) +"   |   " + "Data: " + str(index_y))
             #add crosshairs
             if self._mouseMovedFunction != None:
                 self._mouseMovedFunction(int(mousePoint.x()))
                 self.vLine.setPos(mousePoint.x())
                 self.hLine.setPos(mousePoint.y())
+            self.hoverlegend.setVisible(True)
+            self.hoverlegend.setItem("Altitude:", index_x)
+            self.hoverlegend.setItem("Data:", index_y)
+        else:
+            self.hoverlegend.setVisible(False)
     
     def _addlegend(self):
         if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:

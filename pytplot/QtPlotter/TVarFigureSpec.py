@@ -7,6 +7,7 @@ import pytplot
 from .CustomAxis.DateAxis import DateAxis
 from .CustomImage.UpdatingImage import UpdatingImage
 from .CustomAxis.BlankAxis import BlankAxis
+from .CustomLegend.CustomLegend import CustomLegendItem
 
 class TVarFigureSpec(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
@@ -46,7 +47,24 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.plotwindow.hideAxis('bottom')
         
         self._mouseMovedFunction = mouse_function
+        
+        self.label = pg.LabelItem(justify='left')
+        self.addItem(self.label,row=1,col=0)
 
+        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend.setItem("Date:", "0")
+        self.hoverlegend.setItem("Time:", "0")
+        self.hoverlegend.setItem("Energy:", "0")
+        self.hoverlegend.setItem("Flux:", "0")
+        self.hoverlegend.setVisible(False)
+        self.hoverlegend.setParentItem(self.plotwindow.vb)
+        
+    def _set_crosshairs(self):
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        
 
     def buildfigure(self):
         self._setxrange()
@@ -54,12 +72,15 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._setyaxistype()
         self._setzaxistype()
         self._setzrange()
-        self._addtimebars()
         self._visdata()
         self._setyaxislabel()
         self._setxaxislabel()
-        self._addmouseevents()
         self._addlegend()
+        self._addtimebars()
+        self._set_crosshairs()
+        self._addmouseevents()
+
+
     
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
@@ -132,12 +153,59 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
     
     def _mousemoved(self, evt):
+        #get current position
         pos = evt
+        flag = 0
+        #if plot window contains position
         if self.plotwindow.sceneBoundingRect().contains(pos):
             mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            #grab x and y mouse locations
+            index_x = int(mousePoint.x())
+            index_y = 10**(round(float(mousePoint.y()),4))
+            #print(index_y)
+            dataframe = pytplot.data_quants[self.tvar_name].data
+            specframe = pytplot.data_quants[self.tvar_name].spec_bins
+            
+            if flag  == 0:
+                #print(dataframe.head(20))
+                #print(specframe.head(20))
+                flag = 1
+            x = np.asarray(dataframe.index.tolist())            
+            x_sub = abs(x-index_x*np.ones(len(x)))
+            x_argmin = np.argmin(x_sub)
+            x_closest = x[x_argmin]
+            
+            speclength = len(specframe.loc[0])
+            y = np.asarray((specframe.loc[0,0:speclength-1]))
+            #print(pytplot.tplot_utilities.int_to_str(x_closest))
+            y_sub = abs(y-index_y*np.ones(y.size))
+            #print(y_sub)
+            y_argmin = np.argmin(y_sub)
+            y_closest = y[y_argmin]
+            index = int((np.nonzero(y == y_closest))[0])
+            dp = dataframe[index][x_closest]
+            #print(str(dp) + " | " + str(y_closest) + " | " + str(x_closest))
+            #datapoint = pytplot.data_quants[self.tvar_name].data[x_argmin][y_argmin]
+            
+            #print time and data
+            #self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(x_closest)+ "   |   " + "Energy: " + str(y_closest) + "   |   " + "Flux: " + str(dp))
+            #add crosshairs
             if self._mouseMovedFunction != None:
                 self._mouseMovedFunction(int(mousePoint.x()))
-    
+                self.vLine.setPos(mousePoint.x())
+                self.hLine.setPos(mousePoint.y())
+            
+            date = (pytplot.tplot_utilities.int_to_str(x_closest))[0:10]
+            time = (pytplot.tplot_utilities.int_to_str(x_closest))[11:19]
+            
+            self.hoverlegend.setVisible(True)
+            self.hoverlegend.setItem("Date:", date)
+            self.hoverlegend.setItem("Time:", time)
+            self.hoverlegend.setItem("Energy:", str(y_closest))
+            self.hoverlegend.setItem("Flux:", str(dp))
+        else:
+            self.hoverlegend.setVisible(False)
+        #data.iloc[145298505][2]
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
             return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']

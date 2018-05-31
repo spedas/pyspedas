@@ -8,6 +8,7 @@ from .CustomAxis.DateAxis import DateAxis
 from .CustomAxis.BlankAxis import BlankAxis
 from pyqtgraph.Qt import QtGui, QtCore
 from pyqtgraph.Point import Point
+from .CustomLegend.CustomLegend import CustomLegendItem
 #import mpld3
 
 class TVarFigure1D(pg.GraphicsLayout):
@@ -60,6 +61,12 @@ class TVarFigure1D(pg.GraphicsLayout):
         #self.addItem(self.label)
         ##
         
+        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend.setItem("Date:", "0")
+        self.hoverlegend.setItem("Time:", "0")
+        self.hoverlegend.setItem("Data:", "0")
+        self.hoverlegend.setVisible(False)
+        self.hoverlegend.setParentItem(self.plotwindow.vb)  
         
     def buildfigure(self):
         self._setxrange()
@@ -140,14 +147,22 @@ class TVarFigure1D(pg.GraphicsLayout):
             #grab x and y mouse locations
             index_x = int(mousePoint.x())
             index_y = round(float(mousePoint.y()),4)
+            date = (pytplot.tplot_utilities.int_to_str(index_x))[0:10]
+            time = (pytplot.tplot_utilities.int_to_str(index_x))[11:19]
             #print time and data
-            self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(index_x) + "   |   " + "Data: " + str(index_y))
+            #self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(index_x) + "   |   " + "Data: " + str(index_y))
             #add crosshairs
             if self._mouseMovedFunction != None:
                 self._mouseMovedFunction(int(mousePoint.x()))
                 self.vLine.setPos(mousePoint.x())
                 self.hLine.setPos(mousePoint.y())
-
+                
+            self.hoverlegend.setVisible(True)
+            self.hoverlegend.setItem("Date:", date)
+            self.hoverlegend.setItem("Time:", time)
+            self.hoverlegend.setItem("Data:", str(index_y))
+        else:
+            self.hoverlegend.setVisible(False)
 
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
