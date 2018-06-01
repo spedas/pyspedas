@@ -35,8 +35,6 @@ def get_ylimits(name, trg = None):
         name = list(data_quants.keys())[name-1]
     if not isinstance(name, list):
         name = [name]
-    if not isinstance(name, list):
-        name = [name]
     name_num = len(name)
     ymin = None
     ymax = None
