@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from pytplot import data_quants
+import numpy as np
 
 def options(name, option, value):
     """
@@ -96,19 +97,58 @@ def options(name, option, value):
             data_quants[i].extras['map'] = value
         
         if option == 'ylog':
-            if value == 1:
+            negflag = 0
+            namedata =  data_quants[i]
+            ##check variable data
+            #if negative numbers, don't allow log setting
+            if 'spec' not in data_quants[i].extras:
+                for column in namedata.data:
+                    if np.nanmin(namedata.data[column]) < 0:
+                        print('Negative data is incompatible with log plotting.')
+                        negflag = 1
+                        break
+            else:
+                if data_quants[i].extras['spec'] == 1:
+                    for column in namedata.spec_bins:
+                        if np.nanmin(namedata.spec_bins[column]) < 0:
+                            print('Negative data is incompatible with log plotting.')
+                            negflag = 1
+                            break
+                        
+            if value == 1 and negflag == 0:
                 data_quants[i].yaxis_opt['y_axis_type'] = 'log'
-            if value == 0:
+            else:
                 data_quants[i].yaxis_opt['y_axis_type'] = 'linear'
+            
         
         if option == 'legend_names':
             data_quants[i].yaxis_opt['legend_names'] = value
         
         if option == 'zlog':
-            if value == 1:
-                data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-            if value == 0:
-                data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
+            if 'spec' in data_quants[i].extras:                       
+                if data_quants[i].extras['spec'] == 1:
+                    namedata =  data_quants[i]
+                    negflag = 0
+                    for column in namedata.data:
+                        if np.nanmin(namedata.data[column])  < 0:
+                            print('Negative data is incompatible with log plotting.')
+                            negflag = 1
+                            break
+                    #verify there are no negative values
+                    if negflag == 0 and value == 1:
+                        data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+                    else:
+                        data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
+                else:
+                    if value == 1:
+                        data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+                    else:
+                        data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
+            else:
+                if value == 1:
+                    data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+                else:
+                    data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
         
         if option == 'nodata':
             data_quants[i].line_opt['visible'] = value
