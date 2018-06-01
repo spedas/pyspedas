@@ -6,6 +6,7 @@ from pytplot import tplot_opt_glob
 import pytplot
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.BlankAxis import BlankAxis
+from .CustomLegend.CustomLegend import CustomLegendItem
 
 class TVarFigureMap(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
@@ -49,6 +50,29 @@ class TVarFigureMap(pg.GraphicsLayout):
         self._mouseMovedFunction = mouse_function
 
 
+        #self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        #self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        #self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        #self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        
+        self.label = pg.LabelItem(justify='left')
+        self.addItem(self.label,row=1,col=0)
+
+        
+        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend.setItem("Date: ", "0")
+        self.hoverlegend.setItem("Time: ", "0")
+        self.hoverlegend.setItem("Latitude:", "0")
+        self.hoverlegend.setItem("Longitude:", "0")
+        self.hoverlegend.setVisible(False)
+        self.hoverlegend.setParentItem(self.plotwindow.vb)  
+        
+    def _set_crosshairs(self):
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        
     def buildfigure(self):
         self._setxrange()
         self._setyrange()
@@ -59,9 +83,12 @@ class TVarFigureMap(pg.GraphicsLayout):
         self._visdata()
         self._setyaxislabel()
         self._setxaxislabel()
-        self._addmouseevents()
         self._addlegend()
         self._addtimebars()
+        self._set_crosshairs()
+        self._addmouseevents()
+
+
 
         
     
@@ -144,7 +171,61 @@ class TVarFigureMap(pg.GraphicsLayout):
         colorbar.setLookupTable(self.colormap)
     
     def _addmouseevents(self):
-        return
+        if self.plotwindow.scene() is not None:
+            self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
+    
+    def _mousemoved(self, evt):
+        #get current position
+        pos = evt
+        #if plot window contains position
+        if self.plotwindow.sceneBoundingRect().contains(pos):
+            mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            #grab x and y mouse locations
+            index_x = round(float(mousePoint.x()),2)
+            index_y = round(float(mousePoint.y()),2)
+            #datasets = []
+            time, latitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lat']) 
+            latitude = latitude.transpose()[0]
+            nearest_lat_index = np.abs(latitude - index_y).argmin()
+            time_point = time[nearest_lat_index]
+            
+            date = (pytplot.tplot_utilities.int_to_str(time_point))[0:10]
+            time = (pytplot.tplot_utilities.int_to_str(time_point))[11:19]
+            #grab tbardict
+            #make sure data is in list format
+            # if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            #     for oplot_name in pytplot.data_quants[self.tvar_name].data:
+            #         datasets.append(pytplot.data_quants[oplot_name])
+            # else:
+            #     datasets.append(pytplot.data_quants[self.tvar_name])
+            #for dataset in datasets:
+                #for location in tbar dict
+                #for i in range(ltbar):
+            #NAH
+            # time, latitude = pytplot.get_data(dataset.links['lat'])
+            # time, longitude = pytplot.get_data(dataset.links['lon'])
+            # latitude = latitude.transpose()[0]
+            # longitude = longitude.transpose()[0]
+            # nearest_time_index = np.abs(time - test_time).argmin()
+            # lat_point = latitude[nearest_time_index]
+            # lon_point = longitude[nearest_time_index]
+            #NO
+            
+            #print time and data
+            #self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(index_x) + "   |   " + "Data: " + str(index_y))
+            #add crosshairs
+            if self._mouseMovedFunction != None:
+                self._mouseMovedFunction(int(mousePoint.x()))
+                self.vLine.setPos(mousePoint.x())
+                self.hLine.setPos(mousePoint.y())
+                
+            self.hoverlegend.setVisible(True)
+            self.hoverlegend.setItem("Date: ", date)
+            self.hoverlegend.setItem("Time: ", time)
+            self.hoverlegend.setItem("Longitude:", str(index_x))
+            self.hoverlegend.setItem("Latitude:", str(index_y))
+        else:
+            self.hoverlegend.setVisible(False)
     
     def _getyaxistype(self):
         return 'linear'
