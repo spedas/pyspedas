@@ -5,24 +5,24 @@
 
 # TPLOT_MATH
 #   List of various mathematical functions for TVar manipulation.
-#        add_data:
-#        sub_data:
-#        mult_data:
-#        div_data:
-#        deriv_data:
-#        flatten_data:
-#        interp_gap:
-#        lin_interp: linear interpolation, subfunction called in add/sub/mult/div
-#        crop_data: shortens arrays to same timespan, subfunction called in lin_interp
-
-
+#        add_data: add TVar1/2 data
+#        sub_data: subtract TVar1/2 data
+#        mult_data: multiply TVar1/2 data
+#        div_data: divide TVar1/2 data, NaN for division by 0
+#        deriv_data: take derivative w.r.t. of TVar data
+#        full_flatten: divide each data column by column average
+#        interp_gap: interpolate through NaN data
+#        fn_interp: linear interpolation, subfunction called in add/sub/mult/div
+#        crop_data: shortens arrays to same timespan, subfunction called in fn_interp
 
 import pytplot
 import pydivide
 import numpy as np
+import pandas as pd
 from scipy import interpolate
 from scipy.interpolate import interp1d
-        
+from blaze import nan
+
 insitu = pydivide.read('2017-06-19')
 t = insitu['Time']
 data = insitu['SPACECRAFT']['ALTITUDE']
@@ -31,18 +31,13 @@ lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
 pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
 pytplot.store_data('sc_alt', data={'x':t, 'y':data})
 pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[1,2,3,4,5,6,7]})
-
-#print(pytplot.data_quants['sc_lon'].data.head(1))
-#print(pytplot.data_quants['sc_alt'].data.head(1))
-#print(pytplot.data_quants['sc_lon'].data.tail(1))
-#print(pytplot.data_quants['sc_alt'].data.tail(1))
+pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1],[2,2],[3,100],[4,4],[5,5],[6,6],[7,7]]})
 
 #ADD
 #add two tvar data arrays, store in new_tvar
-def add_data(tvar1,tvar2,new_tvar):
+def add_data(tvar1,tvar2,new_tvar,interp='linear'):
     #interpolate tvars
-    tv1,tv2 = lin_interp(tvar1,tvar2)
+    tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
     #separate and add data
     time = pytplot.data_quants[tv1].data.index
     data1 = pytplot.data_quants[tv1].data[0]
@@ -54,9 +49,9 @@ def add_data(tvar1,tvar2,new_tvar):
 
 #SUBTRACT
 #subtract two tvar data arrays, store in new_tvar
-def sub_data(tvar1,tvar2,new_tvar):
+def sub_data(tvar1,tvar2,new_tvar,interp='linear'):
     #interpolate tvars
-    tv1,tv2 = lin_interp(tvar1,tvar2)
+    tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
     #separate and subtract data
     time = pytplot.data_quants[tv1].data.index
     data1 = pytplot.data_quants[tv1].data[0]
@@ -68,30 +63,31 @@ def sub_data(tvar1,tvar2,new_tvar):
 
 #MULTIPLY
 #multiply two tvar data arrays, store in new_tvar
-def mult_data(tvar1,tvar2,new_tvar):
+def mult_data(tvar1,tvar2,new_tvar,interp='linear'):
     #interpolate tvars
-    tv1,tv2 = lin_interp(tvar1,tvar2)
-    #separate and add data
+    tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
+    #separate and multiply data
     time = pytplot.data_quants[tv1].data.index
     data1 = pytplot.data_quants[tv1].data[0]
     data2 = pytplot.data_quants[tv2].data[0]
     data = data1*data2
-    #store added data
+    #store multiplied data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
     return new_tvar
 
-## WILL NEED DIV BY 0 ERROR HANDLING
 #DIVIDE
 #divide two tvar data arrays, store in new_tvar
-def div_data(tvar1,tvar2,new_tvar):
+def div_data(tvar1,tvar2,new_tvar,interp='linear'):
     #interpolate tvars
-    tv1,tv2 = lin_interp(tvar1,tvar2)
-    #separate and add data
+    tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
+    #separate and divide data
     time = pytplot.data_quants[tv1].data.index
     data1 = pytplot.data_quants[tv1].data[0]
     data2 = pytplot.data_quants[tv2].data[0]
     data = data1/data2
-    #store added data
+    #if division by 0, replace with NaN
+    data = data.replace([np.inf,-np.inf],np.nan)
+    #store divided data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
     return new_tvar
 
@@ -101,33 +97,81 @@ def deriv_data(tvar1,new_tvar):
     #separate and derive data
     time = pytplot.data_quants[tvar1].data.index
     data1 = pytplot.data_quants[tvar1].data[0]
-    data = np.diff(data1)
+    data = np.diff(data1)/np.diff(time)
     time = np.delete(time,0)
-    #store added data
+    #store differentiated data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
     return new_tvar
 
-def flatten_data(tvar1,tvar2):
-    pass
+#PARTIAL FLATTEN
+#take average of each column of data, divide column by average over specified time
+def flatten_data(tvar1,start_t,end_t):
+    df = pytplot.data_quants[tvar1].data
+    time = df.index
+    #if time given not an index, choose closest time
+    if start_t not in time:
+        tdiff = abs(time - start_t)
+        start_t = time[tdiff.argmin()]
+    if end_t not in time:
+        tdiff = abs(time - end_t)
+        end_t = time[tdiff.argmin()]
+    df_index = list(df.columns)
+    #divide by specified time average
+    for i in df_index:
+        df[i] = df[i]/((df.loc[start_t:end_t])[i]).mean()
     return
 
-def interp_gap(tvar1,tvar2):
-    pass
+#FULL FLATTEN
+#take average of each column of data, divide column by column average
+def full_flatten(tvar1):
+    df = pytplot.data_quants[tvar1].data
+    df_index = list(df.columns)
+    #divide by column average
+    for i in df_index:
+        df[i] = df[i]/df[i].mean()
     return
 
 #LINEAR INTERPOLATION
+#interpolate over NaN data
+def interp_gap(tvar1):
+    tv1 = pytplot.data_quants[tvar1].data
+    print(tv1.dtypes)
+    tv1 = tv1.astype(float)
+    tv1 = tv1.interpolate(method='linear')
+    tv1 = tv1.astype(object)
+    return
+
+#TVAR INTERPOLATION
 #interpolate tvar2 to tvar1 cadence
-def lin_interp(tvar1,tvar2):
+def fn_interp(tvar1,tvar2,interp='linear'):
     #crop data
     tv1_t,tv1_d,tv2_t,tv2_d = crop_data(tvar1,tvar2)
-        
     #interpolate to tvar1 cadence
-    f = interp1d(tv2_t,tv2_d,fill_value="extrapolate")
-    name1 = tvar1 + "_interp"
-    name2 = tvar2 + "_interp"
-    #store interpolated tvars as 'X_interp'
-    pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
-    pytplot.store_data(name2, data={'x':tv1_t,'y':f(tv1_t)})
+    if interp == 'linear':
+        print("linear interpolation")
+        f = interp1d(tv2_t,tv2_d,fill_value="extrapolate")
+        name1 = tvar1 + "_interp"
+        name2 = tvar2 + "_interp"
+        #store interpolated tvars as 'X_interp'
+        pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
+        pytplot.store_data(name2, data={'x':tv1_t,'y':f(tv1_t)})
+    elif interp == 'cubic':
+        print("cubic interpolation")
+        f = interp1d(tv2_t,tv2_d,fill_value="extrapolate",kind='cubic')
+        name1 = tvar1 + "_interp"
+        name2 = tvar2 + "_interp"
+        #store interpolated tvars as 'X_interp'
+        pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
+        pytplot.store_data(name2, data={'x':tv1_t,'y':f(tv1_t)})
+    elif interp == 'spline':
+        print("spline interpolation")
+        tck = interpolate.splrep(tv2_t, tv2_d, s=0)
+        ynew = interpolate.splev(tv1_t, tck, der=0)
+        name1 = tvar1 + "_interp"
+        name2 = tvar2 + "_interp"
+        #store interpolated tvars as 'X_interp'
+        pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
+        pytplot.store_data(name2, data={'x':tv1_t,'y':ynew})
 
     return name1,name2
 
@@ -163,15 +207,10 @@ def crop_data(tvar1,tvar2):
     while tv2_t[0] < cut1:
         tv2_t = np.delete(tv2_t,0)
         tv2_d = np.delete(tv2_d,0)
-        
-    #pass only tvar1 time to interpolation
-    #print(tv1_t,tv1_d,tv2_t,tv2_d)
+    
+    #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
 
-deriv_data('sc_lon','a*b')
-#print(pytplot.data_quants['sc_lon_interp'].data.head(2))
-#print(pytplot.data_quants['sc_alt_interp'].data.head(2))
-print(pytplot.data_quants['a*b'].data)
-#print(np.diff(pytplot.data_quants['sc_lon_interp'].data.index))
-#lin_interp('a','b')
-#print(pytplot.data_quants['b_interp'].data)
+#flatten_data('b',8,17)
+flatten_data('sc_lon',1497830400,1497830528)
+print(pytplot.data_quants['sc_lon'].data)
