@@ -10,6 +10,7 @@
 #        mult_data: multiply TVar1/2 data
 #        div_data: divide TVar1/2 data, NaN for division by 0
 #        deriv_data: take derivative w.r.t. of TVar data
+#        flatten_data: divide each data column by column average over specified time
 #        full_flatten: divide each data column by column average
 #        interp_gap: interpolate through NaN data
 #        fn_interp: linear interpolation, subfunction called in add/sub/mult/div
@@ -22,16 +23,6 @@ import pandas as pd
 from scipy import interpolate
 from scipy.interpolate import interp1d
 from blaze import nan
-
-insitu = pydivide.read('2017-06-19')
-t = insitu['Time']
-data = insitu['SPACECRAFT']['ALTITUDE']
-lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
-lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
-pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
-pytplot.store_data('sc_alt', data={'x':t, 'y':data})
-pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1],[2,2],[3,100],[4,4],[5,5],[6,6],[7,7]]})
 
 #ADD
 #add two tvar data arrays, store in new_tvar
@@ -210,7 +201,3 @@ def crop_data(tvar1,tvar2):
     
     #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
-
-#flatten_data('b',8,17)
-flatten_data('sc_lon',1497830400,1497830528)
-print(pytplot.data_quants['sc_lon'].data)
