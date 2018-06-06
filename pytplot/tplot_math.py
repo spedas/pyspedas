@@ -24,6 +24,16 @@ from scipy import interpolate
 from scipy.interpolate import interp1d
 from blaze import nan
 
+insitu = pydivide.read('2017-06-19')
+t = insitu['Time']
+data = insitu['SPACECRAFT']['ALTITUDE']
+lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
+lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
+pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
+pytplot.store_data('sc_alt', data={'x':t, 'y':data})
+pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1],[2,2],[3,100],[4,4],[5,5],[6,6],[7,7]]})
+
 #ADD
 #add two tvar data arrays, store in new_tvar
 def add_data(tvar1,tvar2,new_tvar,interp='linear'):
@@ -122,6 +132,62 @@ def full_flatten(tvar1):
         df[i] = df[i]/df[i].mean()
     return
 
+def avg_res_data(tvar1,res,new_tvar):
+    df = pytplot.data_quants[tvar1].data
+    time = df.index
+    start_t = df.index[0]
+    end_t = df.index[-1]
+    #print(start_t,end_t)
+    #if time given not an index, choose closest time
+#     if start_t not in time:
+#         tdiff = abs(time - start_t)
+#         start_t = time[tdiff.argmin()]
+#     if end_t not in time:
+#         tdiff = abs(time - end_t)
+#         end_t = time[tdiff.argmin()]
+    df_index = list(df.columns)
+    res_time = np.arange(start_t,end_t,res)
+    #print(res_time)
+    new_res_time = np.array([])
+    for t in res_time:
+        if t not in time:
+            tdiff = abs(time-t)
+            new_res_time = np.append(new_res_time,time[tdiff.argmin()])
+        else:
+            new_res_time = np.append(new_res_time,t)
+    np.set_printoptions(suppress=True,formatter={'float_kind':'{:f}'.format})
+    new_res_time = np.unique(new_res_time)
+    start_t = np.roll(new_res_time,1)
+    end_t = new_res_time
+    start_t = np.delete(start_t,0)
+    end_t = np.delete(end_t,0)
+    #print(start_t,end_t)
+    #divide by specified time average
+    avg_bin_data = []
+    avg_bin_time = np.array([])
+    #data_avg_bin = np.array([])
+    #for each time bin
+    for it,t in enumerate(start_t):
+        #for each data column
+        data_avg_bin = np.array([])
+        #print(start_t[it],end_t[it])
+
+        for i in df_index:
+            #print(i)
+            data_avg_bin = np.append(data_avg_bin,[(df.loc[start_t[it]:end_t[it]])[i].mean()])
+        avg_bin_data = avg_bin_data + [data_avg_bin.tolist()]
+        avg_bin_time = np.append(avg_bin_time,t)
+    print(avg_bin_time,avg_bin_data)   
+    pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data})
+ 
+    return   
+        #avg_bin_data = np.append(avg_bin_data,(df.loc[start_t:end_t])[i].mean())
+        #avg_bin_time = np.append(avg_bin_time,t)
+ 
+    #return
+    
+    
+    
 #LINEAR INTERPOLATION
 #interpolate over NaN data
 def interp_gap(tvar1):
@@ -201,3 +267,7 @@ def crop_data(tvar1,tvar2):
     
     #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
+
+avg_res_data('sc_lon',360,'sclon')
+pd.set_option('display.float_format', lambda x: '%.2f' % x)
+print(pytplot.data_quants['sclon'].data)
