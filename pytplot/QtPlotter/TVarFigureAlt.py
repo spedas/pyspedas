@@ -224,6 +224,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
                 data_point = dataset.data.iloc[nearest_time_index][0]
                 alt_point = altitude[nearest_time_index]
                 print(alt_point,data_point)
+                color = pytplot.tplot_utilities.rgb_color(color)
                 self.plotwindow.scatterPlot([alt_point], [data_point], size = pointsize, pen=pg.mkPen(None), brush=color)
         return
     def _visdata(self):
