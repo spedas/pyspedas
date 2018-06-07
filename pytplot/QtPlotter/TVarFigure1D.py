@@ -55,6 +55,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
         
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label,row=1,col=0)
@@ -156,14 +158,19 @@ class TVarFigure1D(pg.GraphicsLayout):
                 self._mouseMovedFunction(int(mousePoint.x()))
                 self.vLine.setPos(mousePoint.x())
                 self.hLine.setPos(mousePoint.y())
-                
+                self.vLine.setVisible(True)
+                self.hLine.setVisible(True)
+                           
             self.hoverlegend.setVisible(True)
             self.hoverlegend.setItem("Date:", date)
             self.hoverlegend.setItem("Time:", time)
             self.hoverlegend.setItem("Data:", str(index_y))
         else:
             self.hoverlegend.setVisible(False)
-
+            self.vLine.setVisible(False)
+            self.hLine.setVisible(False)
+            
+            
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
             return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']

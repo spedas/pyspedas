@@ -52,6 +52,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
         
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label,row=1,col=0)
@@ -135,11 +137,15 @@ class TVarFigureAlt(pg.GraphicsLayout):
                 self._mouseMovedFunction(int(mousePoint.x()))
                 self.vLine.setPos(mousePoint.x())
                 self.hLine.setPos(mousePoint.y())
+                self.vLine.setVisible(True)
+                self.hLine.setVisible(True)
             self.hoverlegend.setVisible(True)
             self.hoverlegend.setItem("Altitude:", index_x)
             self.hoverlegend.setItem("Data:", index_y)
         else:
             self.hoverlegend.setVisible(False)
+            self.vLine.setVisible(False)
+            self.hLine.setVisible(False)
     
     def _addlegend(self):
         if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:

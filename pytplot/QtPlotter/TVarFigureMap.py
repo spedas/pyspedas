@@ -7,6 +7,7 @@ import pytplot
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
+import pandas as pd
 
 class TVarFigureMap(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
@@ -72,6 +73,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
         
     def buildfigure(self):
         self._setxrange()
@@ -183,42 +186,26 @@ class TVarFigureMap(pg.GraphicsLayout):
             #grab x and y mouse locations
             index_x = round(float(mousePoint.x()),2)
             index_y = round(float(mousePoint.y()),2)
-            #datasets = []
+            #get latitude and longitude arrays
             time, latitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lat']) 
             latitude = latitude.transpose()[0]
-            nearest_lat_index = np.abs(latitude - index_y).argmin()
-            time_point = time[nearest_lat_index]
-            
+            time, longitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lon']) 
+            longitude = longitude.transpose()[0]
+            #find closest time point to cursor
+            radius = np.sqrt((latitude - index_y)**2 + (longitude - index_x)**2).argmin()
+            time_point = time[radius]
+            #get date and time
             date = (pytplot.tplot_utilities.int_to_str(time_point))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(time_point))[11:19]
-            #grab tbardict
-            #make sure data is in list format
-            # if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-            #     for oplot_name in pytplot.data_quants[self.tvar_name].data:
-            #         datasets.append(pytplot.data_quants[oplot_name])
-            # else:
-            #     datasets.append(pytplot.data_quants[self.tvar_name])
-            #for dataset in datasets:
-                #for location in tbar dict
-                #for i in range(ltbar):
-            #NAH
-            # time, latitude = pytplot.get_data(dataset.links['lat'])
-            # time, longitude = pytplot.get_data(dataset.links['lon'])
-            # latitude = latitude.transpose()[0]
-            # longitude = longitude.transpose()[0]
-            # nearest_time_index = np.abs(time - test_time).argmin()
-            # lat_point = latitude[nearest_time_index]
-            # lon_point = longitude[nearest_time_index]
-            #NO
             
-            #print time and data
-            #self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(index_x) + "   |   " + "Data: " + str(index_y))
             #add crosshairs
             if self._mouseMovedFunction != None:
                 self._mouseMovedFunction(int(mousePoint.x()))
+                self.vLine.setVisible(True)
+                self.hLine.setVisible(True)
                 self.vLine.setPos(mousePoint.x())
                 self.hLine.setPos(mousePoint.y())
-                
+            #set legend
             self.hoverlegend.setVisible(True)
             self.hoverlegend.setItem("Date: ", date)
             self.hoverlegend.setItem("Time: ", time)
@@ -226,7 +213,8 @@ class TVarFigureMap(pg.GraphicsLayout):
             self.hoverlegend.setItem("Latitude:", str(index_y))
         else:
             self.hoverlegend.setVisible(False)
-    
+            self.vLine.setVisible(False)
+            self.hLine.setVisible(False)
     def _getyaxistype(self):
         return 'linear'
     
@@ -310,7 +298,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                 pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
                 #correlate given time with corresponding lat/lon points
                 time, latitude = pytplot.get_data(dataset.links['lat']) 
-                time, longitude = pytplot.get_data(dataset.links['lon']) 
+                time, longitude = pytplot.get_data(dataset.links['lon'])
                 latitude = latitude.transpose()[0]
                 longitude = longitude.transpose()[0]
                 nearest_time_index = np.abs(time - test_time).argmin()

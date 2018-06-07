@@ -64,6 +64,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
         
 
     def buildfigure(self):
@@ -194,6 +196,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
                 self._mouseMovedFunction(int(mousePoint.x()))
                 self.vLine.setPos(mousePoint.x())
                 self.hLine.setPos(mousePoint.y())
+                self.vLine.setVisible(True)
+                self.hLine.setVisible(True)       
             
             date = (pytplot.tplot_utilities.int_to_str(x_closest))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(x_closest))[11:19]
@@ -205,6 +209,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.hoverlegend.setItem("Flux:", str(dp))
         else:
             self.hoverlegend.setVisible(False)
+            self.vLine.setVisible(False)
+            self.hLine.setVisible(False)
         #data.iloc[145298505][2]
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
