@@ -163,7 +163,10 @@ class TVarFigureSpec(pg.GraphicsLayout):
             mousePoint = self.plotwindow.vb.mapSceneToView(pos)
             #grab x and y mouse locations
             index_x = int(mousePoint.x())
-            index_y = 10**(round(float(mousePoint.y()),4))
+            if self._getyaxistype() == 'log':
+                index_y = 10**(round(float(mousePoint.y()),4))
+            else:
+                index_y = round(float(mousePoint.y()),4)
             #print(index_y)
             dataframe = pytplot.data_quants[self.tvar_name].data
             specframe = pytplot.data_quants[self.tvar_name].spec_bins
