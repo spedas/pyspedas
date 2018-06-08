@@ -6,6 +6,7 @@
 from pytplot import data_quants
 from . import tplot_utilities
 from bokeh.models import Span
+import pytplot
 
 def timebar(t, varname = None, databar = False, delete = False, color = 'black', thick = 1, dash = False):    
     """
@@ -81,7 +82,8 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
             tbar = {}
             tbar['location'] = t[i]
             tbar['dimension'] = dim
-            tbar['line_color'] = color
+            tbar['line_color'] = pytplot.tplot_utilities.rgb_color(color)
+
             tbar['line_width'] = thick
             tbar['line_dash'] = dash_pattern
             for name in data_quants:
@@ -100,7 +102,7 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
                     tbar = {}
                     tbar['location'] = t[i]
                     tbar['dimension'] = dim
-                    tbar['line_color'] = color
+                    tbar['line_color'] = pytplot.tplot_utilities.rgb_color(color)
                     tbar['line_width'] = thick
                     tbar['line_dash'] = dash_pattern
                     temp_data_quants = data_quants[j]

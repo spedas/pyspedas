@@ -289,7 +289,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
             color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
             thick = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
             #make infinite line w/ parameters
-            color = pytplot.tplot_utilities.rgb_color(color)
+            #color = pytplot.tplot_utilities.rgb_color(color)
             infline = pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(color,width = thick))
             #add to plot window
             self.plotwindow.addItem(infline)

@@ -304,7 +304,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                 nearest_time_index = np.abs(time - test_time).argmin()
                 lat_point = latitude[nearest_time_index]
                 lon_point = longitude[nearest_time_index]
-                color = pytplot.tplot_utilities.rgb_color(color)
+                #color = pytplot.tplot_utilities.rgb_color(color)
                 self.plotwindow.scatterPlot([lon_point], [lat_point], size = pointsize, pen=pg.mkPen(None), brush=color)
         
         return
