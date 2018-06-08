@@ -189,11 +189,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
             y_closest = y[y_argmin]
             index = int((np.nonzero(y == y_closest))[0])
             dp = dataframe[index][x_closest]
-            #print(str(dp) + " | " + str(y_closest) + " | " + str(x_closest))
-            #datapoint = pytplot.data_quants[self.tvar_name].data[x_argmin][y_argmin]
-            
-            #print time and data
-            #self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(x_closest)+ "   |   " + "Energy: " + str(y_closest) + "   |   " + "Flux: " + str(dp))
             #add crosshairs
             if self._mouseMovedFunction != None:
                 self._mouseMovedFunction(int(mousePoint.x()))
@@ -214,7 +209,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
             self.hLine.setVisible(False)
-        #data.iloc[145298505][2]
+
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
             return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
