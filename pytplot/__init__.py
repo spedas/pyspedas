@@ -35,7 +35,6 @@ try:
     
     pg.setConfigOptions(imageAxisOrder='row-major')
     pg.setConfigOptions(background='w')
-    pg.mkQApp()
     
     class PlotWindow(QtWidgets.QMainWindow):
         def __init__(self):
@@ -219,6 +218,9 @@ from .timestamp import timestamp
 from .cdf_to_tplot import cdf_to_tplot
 from .tplot_utilities import compare_versions
 from .link import link
+
+if using_graphics:
+    pg.mkQApp()
 
 compare_versions()
 
