@@ -21,19 +21,6 @@ import pydivide
 import numpy as np
 from scipy import interpolate
 from scipy.interpolate import interp1d
-import pandas as pd
-
-insitu = pydivide.read('2017-06-19')
-t = insitu['Time']
-data = insitu['SPACECRAFT']['ALTITUDE']
-lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
-lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
-pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
-pytplot.store_data('sc_alt', data={'x':t, 'y':data})
-pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[[2,1],[2,1],[2,1],[2,1],[2,1]]})
-pytplot.store_data('b', data={'x':[2,5,8,11,14], 'y':[[1,1],[2,50],[3,100],[4,50],[5,1]]})
-pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,1,1,1,1,1,1]})
-pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[1,2,100,4,5,6,7]})
 
 #ADD
 #add two tvar data arrays, store in new_tvar
@@ -42,7 +29,6 @@ def add_data(tvar1,tvar2,new_tvar,interp='linear'):
     tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
     #separate and add data
     time = pytplot.data_quants[tv1].data.index
-    df_index = list(pytplot.data_quants[tv1].data.columns)
     data1 = pytplot.data_quants[tv1].data
     data2 = pytplot.data_quants[tv2].data
     data = data1+data2
@@ -100,7 +86,6 @@ def deriv_data(tvar1,new_tvar):
     #separate and derive data
     time = pytplot.data_quants[tvar1].data.index
     data1 = pytplot.data_quants[tvar1].data
-    print(data1)
     df_index = pytplot.data_quants[tvar1].data.columns
     new_df = []
     for i in df_index:
@@ -189,7 +174,6 @@ def avg_res_data(tvar1,res,new_tvar):
 #interpolate over NaN data
 def interp_gap(tvar1):
     tv1 = pytplot.data_quants[tvar1].data
-    print(tv1.dtypes)
     tv1 = tv1.astype(float)
     tv1 = tv1.interpolate(method='linear')
     tv1 = tv1.astype(object)
@@ -245,8 +229,6 @@ def fn_interp(tvar1,tvar2,interp='linear'):
 
     return name1,name2
 
-### FIX 
-
 #DATA CROPPING
 #crop tvar arrays to same timespan
 def crop_data(tvar1,tvar2):
@@ -282,8 +264,3 @@ def crop_data(tvar1,tvar2):
     
     #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
-
-deriv_data('b','e')
-#print(pytplot.data_quants['a_interp'].data)
-print(pytplot.data_quants['b'].data)
-print(pytplot.data_quants['e'].data)
