@@ -19,10 +19,21 @@
 import pytplot
 import pydivide
 import numpy as np
-import pandas as pd
 from scipy import interpolate
 from scipy.interpolate import interp1d
-from blaze import nan
+import pandas as pd
+
+insitu = pydivide.read('2017-06-19')
+t = insitu['Time']
+data = insitu['SPACECRAFT']['ALTITUDE']
+lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
+lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
+pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
+pytplot.store_data('sc_alt', data={'x':t, 'y':data})
+pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[[2,1],[2,1],[2,1],[2,1],[2,1]]})
+pytplot.store_data('b', data={'x':[2,5,8,11,14], 'y':[[1,1],[2,50],[3,100],[4,50],[5,1]]})
+pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,1,1,1,1,1,1]})
+pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[1,2,100,4,5,6,7]})
 
 #ADD
 #add two tvar data arrays, store in new_tvar
@@ -31,9 +42,10 @@ def add_data(tvar1,tvar2,new_tvar,interp='linear'):
     tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
     #separate and add data
     time = pytplot.data_quants[tv1].data.index
-    data1 = pytplot.data_quants[tv1].data[0]
-    data2 = pytplot.data_quants[tv2].data[0]
-    data = data1 + data2
+    df_index = list(pytplot.data_quants[tv1].data.columns)
+    data1 = pytplot.data_quants[tv1].data
+    data2 = pytplot.data_quants[tv2].data
+    data = data1+data2
     #store added data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
     return new_tvar
@@ -45,8 +57,8 @@ def sub_data(tvar1,tvar2,new_tvar,interp='linear'):
     tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
     #separate and subtract data
     time = pytplot.data_quants[tv1].data.index
-    data1 = pytplot.data_quants[tv1].data[0]
-    data2 = pytplot.data_quants[tv2].data[0]
+    data1 = pytplot.data_quants[tv1].data
+    data2 = pytplot.data_quants[tv2].data
     data = data1 - data2
     #store subtracted data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
@@ -59,8 +71,8 @@ def mult_data(tvar1,tvar2,new_tvar,interp='linear'):
     tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
     #separate and multiply data
     time = pytplot.data_quants[tv1].data.index
-    data1 = pytplot.data_quants[tv1].data[0]
-    data2 = pytplot.data_quants[tv2].data[0]
+    data1 = pytplot.data_quants[tv1].data
+    data2 = pytplot.data_quants[tv2].data
     data = data1*data2
     #store multiplied data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
@@ -73,8 +85,8 @@ def div_data(tvar1,tvar2,new_tvar,interp='linear'):
     tv1,tv2 = fn_interp(tvar1,tvar2,interp=interp)
     #separate and divide data
     time = pytplot.data_quants[tv1].data.index
-    data1 = pytplot.data_quants[tv1].data[0]
-    data2 = pytplot.data_quants[tv2].data[0]
+    data1 = pytplot.data_quants[tv1].data
+    data2 = pytplot.data_quants[tv2].data
     data = data1/data2
     #if division by 0, replace with NaN
     data = data.replace([np.inf,-np.inf],np.nan)
@@ -87,16 +99,23 @@ def div_data(tvar1,tvar2,new_tvar,interp='linear'):
 def deriv_data(tvar1,new_tvar):
     #separate and derive data
     time = pytplot.data_quants[tvar1].data.index
-    data1 = pytplot.data_quants[tvar1].data[0]
-    data = np.diff(data1)/np.diff(time)
+    data1 = pytplot.data_quants[tvar1].data
+    print(data1)
+    df_index = pytplot.data_quants[tvar1].data.columns
+    new_df = []
+    for i in df_index:
+        tv1_col = data1[i]
+        data = np.diff(tv1_col)/np.diff(time)
+        new_df = new_df + [data]
+    new_df = np.transpose((list(new_df)))
     time = np.delete(time,0)
     #store differentiated data
-    pytplot.store_data(new_tvar,data={'x':time, 'y':data})
+    pytplot.store_data(new_tvar,data={'x':time, 'y':new_df})
     return new_tvar
 
 #PARTIAL FLATTEN
 #take average of each column of data, divide column by average over specified time
-def flatten_data(tvar1,start_t,end_t):
+def flatten_data(tvar1,start_t,end_t,new_tvar):
     df = pytplot.data_quants[tvar1].data
     time = df.index
     #if time given not an index, choose closest time
@@ -110,16 +129,18 @@ def flatten_data(tvar1,start_t,end_t):
     #divide by specified time average
     for i in df_index:
         df[i] = df[i]/((df.loc[start_t:end_t])[i]).mean()
+    pytplot.store_data(new_tvar,data = {'x':df.index,'y':df})
     return
 
 #FULL FLATTEN
 #take average of each column of data, divide column by column average
-def full_flatten(tvar1):
+def full_flatten(tvar1,new_tvar):
     df = pytplot.data_quants[tvar1].data
     df_index = list(df.columns)
     #divide by column average
     for i in df_index:
         df[i] = df[i]/df[i].mean()
+    pytplot.store_data(new_tvar,data = {'x':df.index,'y':df})
     return
 
 def avg_res_data(tvar1,res,new_tvar):
@@ -162,13 +183,7 @@ def avg_res_data(tvar1,res,new_tvar):
     #store data in new_tvar
     pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data})
  
-    return   
-        #avg_bin_data = np.append(avg_bin_data,(df.loc[start_t:end_t])[i].mean())
-        #avg_bin_time = np.append(avg_bin_time,t)
- 
-    #return
-    
-    
+    return       
     
 #LINEAR INTERPOLATION
 #interpolate over NaN data
@@ -185,43 +200,61 @@ def interp_gap(tvar1):
 def fn_interp(tvar1,tvar2,interp='linear'):
     #crop data
     tv1_t,tv1_d,tv2_t,tv2_d = crop_data(tvar1,tvar2)
+    df_index = pytplot.data_quants[tvar1].data.columns
     #interpolate to tvar1 cadence
     if interp == 'linear':
         print("linear interpolation")
-        f = interp1d(tv2_t,tv2_d,fill_value="extrapolate")
         name1 = tvar1 + "_interp"
         name2 = tvar2 + "_interp"
+        new_df = []
+        for i in df_index:
+            tv2_col = [item[i] for item in tv2_d]
+            f = interp1d(tv2_t,tv2_col,fill_value="extrapolate")
+            new_df = new_df + [f(tv1_t)]
+        new_df = np.transpose((list(new_df)))
         #store interpolated tvars as 'X_interp'
         pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
-        pytplot.store_data(name2, data={'x':tv1_t,'y':f(tv1_t)})
+        pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
     elif interp == 'cubic':
         print("cubic interpolation")
-        f = interp1d(tv2_t,tv2_d,fill_value="extrapolate",kind='cubic')
+        new_df = []
+        for i in df_index:
+            tv2_col = [item[i] for item in tv2_d]
+            f = interp1d(tv2_t,tv2_col,kind='cubic')
+            new_df = new_df + [f(tv1_t)]
+        new_df = np.transpose((list(new_df)))
         name1 = tvar1 + "_interp"
         name2 = tvar2 + "_interp"
         #store interpolated tvars as 'X_interp'
         pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
-        pytplot.store_data(name2, data={'x':tv1_t,'y':f(tv1_t)})
+        pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
     elif interp == 'spline':
         print("spline interpolation")
-        tck = interpolate.splrep(tv2_t, tv2_d, s=0)
-        ynew = interpolate.splev(tv1_t, tck, der=0)
+        new_df = []
+        for i in df_index:
+            tv2_col = [item[i] for item in tv2_d]
+            tck = interpolate.splrep(tv2_t, tv2_col, s=0,k=2)
+            ynew = interpolate.splev(tv1_t, tck, der=0)
+            new_df = new_df + [ynew]
+        new_df = np.transpose((list(new_df)))
         name1 = tvar1 + "_interp"
         name2 = tvar2 + "_interp"
         #store interpolated tvars as 'X_interp'
         pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
-        pytplot.store_data(name2, data={'x':tv1_t,'y':ynew})
+        pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
 
     return name1,name2
+
+### FIX 
 
 #DATA CROPPING
 #crop tvar arrays to same timespan
 def crop_data(tvar1,tvar2):
     #grab time and data arrays
     tv1_t = np.asarray(pytplot.data_quants[tvar1].data.index.tolist())
-    tv1_d = np.asarray(pytplot.data_quants[tvar1].data[0].tolist())
+    tv1_d = np.asarray(pytplot.data_quants[tvar1].data)
     tv2_t = np.asarray(pytplot.data_quants[tvar2].data.index.tolist())
-    tv2_d = np.asarray(pytplot.data_quants[tvar2].data[0].tolist())
+    tv2_d = np.asarray(pytplot.data_quants[tvar2].data)
         
     #find first and last time indices
     t0_1 = tv1_t[0]
@@ -235,17 +268,22 @@ def crop_data(tvar1,tvar2):
     
     #trim data
     while tv1_t[-1] > cut2:
-            tv1_t = np.delete(tv1_t,-1)
-            tv1_d = np.delete(tv1_d,-1)
+        tv1_t = np.delete(tv1_t,-1,axis=0)
+        tv1_d = np.delete(tv1_d,-1,axis=0)
     while tv1_t[0] < cut1:
-        tv1_t = np.delete(tv1_t,0)
-        tv1_d = np.delete(tv1_d,0)
+        tv1_t = np.delete(tv1_t,0,axis=0)
+        tv1_d = np.delete(tv1_d,0,axis=0)
     while tv2_t[-1] > cut2:
-        tv2_t = np.delete(tv2_t,-1)
-        tv2_d = np.delete(tv2_d,-1)
+        tv2_t = np.delete(tv2_t,-1,axis=0)
+        tv2_d = np.delete(tv2_d,-1,axis=0)
     while tv2_t[0] < cut1:
-        tv2_t = np.delete(tv2_t,0)
-        tv2_d = np.delete(tv2_d,0)
+        tv2_t = np.delete(tv2_t,0,axis=0)
+        tv2_d = np.delete(tv2_d,0,axis=0)
     
     #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
+
+deriv_data('b','e')
+#print(pytplot.data_quants['a_interp'].data)
+print(pytplot.data_quants['b'].data)
+print(pytplot.data_quants['e'].data)
