@@ -151,8 +151,6 @@ class TVarFigure1D(pg.GraphicsLayout):
             index_y = round(float(mousePoint.y()),4)
             date = (pytplot.tplot_utilities.int_to_str(index_x))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(index_x))[11:19]
-            #print time and data
-            #self.label.setText("Time: " + pytplot.tplot_utilities.int_to_str(index_x) + "   |   " + "Data: " + str(index_y))
             #add crosshairs
             if self._mouseMovedFunction != None:
                 self._mouseMovedFunction(int(mousePoint.x()))

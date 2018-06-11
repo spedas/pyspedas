@@ -163,28 +163,23 @@ class TVarFigureSpec(pg.GraphicsLayout):
             mousePoint = self.plotwindow.vb.mapSceneToView(pos)
             #grab x and y mouse locations
             index_x = int(mousePoint.x())
+            #set log magnitude if log plot
             if self._getyaxistype() == 'log':
                 index_y = 10**(round(float(mousePoint.y()),4))
             else:
                 index_y = round(float(mousePoint.y()),4)
-            #print(index_y)
+
             dataframe = pytplot.data_quants[self.tvar_name].data
             specframe = pytplot.data_quants[self.tvar_name].spec_bins
             
-            if flag  == 0:
-                #print(dataframe.head(20))
-                #print(specframe.head(20))
-                flag = 1
+            #find closest time/data to cursor location
             x = np.asarray(dataframe.index.tolist())            
             x_sub = abs(x-index_x*np.ones(len(x)))
             x_argmin = np.argmin(x_sub)
             x_closest = x[x_argmin]
-            
             speclength = len(specframe.loc[0])
             y = np.asarray((specframe.loc[0,0:speclength-1]))
-            #print(pytplot.tplot_utilities.int_to_str(x_closest))
             y_sub = abs(y-index_y*np.ones(y.size))
-            #print(y_sub)
             y_argmin = np.argmin(y_sub)
             y_closest = y[y_argmin]
             index = int((np.nonzero(y == y_closest))[0])
