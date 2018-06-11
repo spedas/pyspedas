@@ -22,7 +22,7 @@ import numpy as np
 from scipy import interpolate
 from scipy.interpolate import interp1d
 
-#ADD
+#ADD TWO ARRAYS
 #add two tvar data arrays, store in new_tvar
 def add_data(tvar1,tvar2,new_tvar,interp='linear'):
     #interpolate tvars
@@ -32,6 +32,17 @@ def add_data(tvar1,tvar2,new_tvar,interp='linear'):
     data1 = pytplot.data_quants[tv1].data
     data2 = pytplot.data_quants[tv2].data
     data = data1+data2
+    #store added data
+    pytplot.store_data(new_tvar,data={'x':time, 'y':data})
+    return new_tvar
+
+#ADD ACROSS COLUMNS
+#add tvar data across columns, store in new_tvar
+def add_data_across(tvar1,new_tvar):
+    #separate and add data
+    time = pytplot.data_quants[tvar1].data.index
+    data1 = pytplot.data_quants[tvar1].data
+    data = data1.sum(axis=1)
     #store added data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
     return new_tvar
@@ -115,7 +126,7 @@ def flatten_data(tvar1,start_t,end_t,new_tvar):
     for i in df_index:
         df[i] = df[i]/((df.loc[start_t:end_t])[i]).mean()
     pytplot.store_data(new_tvar,data = {'x':df.index,'y':df})
-    return
+    return new_tvar
 
 #FULL FLATTEN
 #take average of each column of data, divide column by column average
@@ -126,7 +137,7 @@ def full_flatten(tvar1,new_tvar):
     for i in df_index:
         df[i] = df[i]/df[i].mean()
     pytplot.store_data(new_tvar,data = {'x':df.index,'y':df})
-    return
+    return new_tvar
 
 def avg_res_data(tvar1,res,new_tvar):
     #grab info from tvar
@@ -167,8 +178,7 @@ def avg_res_data(tvar1,res,new_tvar):
         avg_bin_time = np.append(avg_bin_time,t)
     #store data in new_tvar
     pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data})
- 
-    return       
+    return new_tvar    
     
 #LINEAR INTERPOLATION
 #interpolate over NaN data
@@ -177,7 +187,7 @@ def interp_gap(tvar1):
     tv1 = tv1.astype(float)
     tv1 = tv1.interpolate(method='linear')
     tv1 = tv1.astype(object)
-    return
+    return tv1
 
 #TVAR INTERPOLATION
 #interpolate tvar2 to tvar1 cadence
@@ -226,7 +236,6 @@ def fn_interp(tvar1,tvar2,interp='linear'):
         #store interpolated tvars as 'X_interp'
         pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
         pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
-
     return name1,name2
 
 #DATA CROPPING
@@ -237,17 +246,14 @@ def crop_data(tvar1,tvar2):
     tv1_d = np.asarray(pytplot.data_quants[tvar1].data)
     tv2_t = np.asarray(pytplot.data_quants[tvar2].data.index.tolist())
     tv2_d = np.asarray(pytplot.data_quants[tvar2].data)
-        
     #find first and last time indices
     t0_1 = tv1_t[0]
     t0_2 = tv2_t[0]
     tx_1 = tv1_t[-1]
     tx_2 = tv2_t[-1]
-    
     #find cut locations
     cut1 = max([t0_1, t0_2])
     cut2 = min([tx_1, tx_2])
-    
     #trim data
     while tv1_t[-1] > cut2:
         tv1_t = np.delete(tv1_t,-1,axis=0)
@@ -261,6 +267,5 @@ def crop_data(tvar1,tvar2):
     while tv2_t[0] < cut1:
         tv2_t = np.delete(tv2_t,0,axis=0)
         tv2_d = np.delete(tv2_d,0,axis=0)
-    
     #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
