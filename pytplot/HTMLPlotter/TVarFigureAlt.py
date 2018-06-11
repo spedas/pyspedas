@@ -13,7 +13,6 @@ from bokeh.models.tools import BoxZoomTool
 
 import pytplot
 
-
 class TVarFigureAlt(object):
     
     def __init__(self, tvar_name, auto_color, show_xaxis=False, interactive=False):
@@ -64,12 +63,12 @@ class TVarFigureAlt(object):
         self._setxrange()
         self._setxaxis()
         self._setyrange()
-        self._addtimebars()
         self._visdata()
         self._setyaxislabel()
         self._addhoverlines()
         self._addlegend()
-    
+        self._addtimebars()
+
     def _format(self):
         #Formatting stuff
         self.fig.grid.grid_line_color = None
@@ -125,6 +124,34 @@ class TVarFigureAlt(object):
                                  line_color = time_bar['line_color'], 
                                  line_width = time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
+        #initialize dataset variable
+        datasets = []
+        #grab tbardict
+        tbardict = pytplot.data_quants[self.tvar_name].time_bar
+        ltbar = len(tbardict)
+        #make sure data is in list format
+        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+            for oplot_name in pytplot.data_quants[self.tvar_name].data:
+                datasets.append(pytplot.data_quants[oplot_name])
+        else:
+            datasets.append(pytplot.data_quants[self.tvar_name])        
+        for dataset in datasets:  
+            #for location in tbar dict
+            for i in range(ltbar):
+                #get times, color, point size
+                test_time = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
+                #print(test_time)
+                color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
+                pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+                #correlate given time with corresponding data/alt points
+                time, altitude = pytplot.get_data(dataset.links['alt']) 
+                altitude = altitude.transpose()[0]
+                nearest_time_index = np.abs(time - test_time).argmin()
+                data_point = dataset.data.iloc[nearest_time_index][0]
+                alt_point = altitude[nearest_time_index]
+                #color = pytplot.tplot_utilities.rgb_color(color)
+                self.fig.circle([alt_point], [data_point], size = pointsize, color = color)
+        return
             
     def _setxaxis(self):
         #Nothing to set for now
