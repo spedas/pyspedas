@@ -59,30 +59,24 @@ def add_data_across(tvar1,new_tvar):
     return new_tvar
 
 #PARTIAL ADD ACROSS COLUMNS
+#add tvar data across specific columns, store in new_tvar
 def partial_add_across(tvar1,column_range,new_tvar):
     #separate and add data
     time = pytplot.data_quants[tvar1].data.index
     data1 = pytplot.data_quants[tvar1].data
     data = []
-    #print(len(column_range))
-    if len(column_range) == 1:
-        range_start = i[0]
-        range_end = i[1]
-        add_col = list(range(range_start,range_end+1))
-        datasum = data1[add_col].sum(axis=1)
-        data = data + [list(datasum)]
-    #find column range, add data
-    else:
-        for i in column_range:
-            if type(i) == int:
-                print(i)
-                data = data + [list(data1[i])]
-            else:
-                range_start = i[0]
-                range_end = i[1]
-                add_col = list(range(range_start,range_end+1))
-                datasum = data1[add_col].sum(axis=1)
-                data = data + [list(datasum)]
+    #grab column data
+    for i in column_range:
+        #if not a list
+        if type(i) == int:
+            data = data + [list(data1[i])]
+        #sum across listed column range
+        else:
+            range_start = i[0]
+            range_end = i[1]
+            add_col = list(range(range_start,range_end+1))
+            datasum = data1[add_col].sum(axis=1)
+            data = data + [list(datasum)]
     #store added data
     pytplot.store_data(new_tvar,data={'x':time, 'y':np.transpose(data)})
     return new_tvar
@@ -310,6 +304,6 @@ def crop_data(tvar1,tvar2):
     #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
 
-partial_add_across('b',[[0,1],[2,4],5],'e')
+partial_add_across('b',[[0,1],2,[3,4],5],'e')
 print(pytplot.data_quants['b'].data)
 print(pytplot.data_quants['e'].data)
