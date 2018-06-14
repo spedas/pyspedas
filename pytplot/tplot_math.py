@@ -22,17 +22,6 @@ import numpy as np
 from scipy import interpolate
 from scipy.interpolate import interp1d
 
-insitu = pydivide.read('2017-06-19')
-t = insitu['Time']
-data = insitu['SPACECRAFT']['ALTITUDE']
-lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
-lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
-pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
-pytplot.store_data('sc_alt', data={'x':t, 'y':data})
-pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
-
-
 #ADD TWO ARRAYS
 #add two tvar data arrays, store in new_tvar
 def add_data(tvar1,tvar2,new_tvar,interp='linear'):
@@ -303,7 +292,3 @@ def crop_data(tvar1,tvar2):
         tv2_d = np.delete(tv2_d,0,axis=0)
     #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
-
-partial_add_across('b',[[0,1],2,[3,4],5],'e')
-print(pytplot.data_quants['b'].data)
-print(pytplot.data_quants['e'].data)
