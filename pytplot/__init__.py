@@ -159,15 +159,15 @@ class TVar(object):
             f2 = interp1d(x, y, kind='cubic')
             newvarname = link + "_" + self.name + "_link"
             store_data(newvarname, data={'x':xnew,'y':f2(xnew)})
-        elif method == 'spline':
-            tck = interpolate.splrep(x, y, s=0)
+        elif method == 'quad_spline':
+            tck = interpolate.splrep(x,y,s=0,k=2)
             ynew = interpolate.splev(xnew, tck, der=0)
             newvarname = link + "_" + self.name + "_link"
             store_data(newvarname, data={'x':xnew,'y':ynew})
              
         else:
             print('Error: choose interpolation method.')
-            print('linear, cubic, spline')
+            print('linear, cubic, quad_spline')
             return
 
         self.links[name] = newvarname

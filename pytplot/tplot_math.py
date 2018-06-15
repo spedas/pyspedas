@@ -6,12 +6,16 @@
 # TPLOT_MATH
 #   List of various mathematical functions for TVar manipulation.
 #        add_data: add TVar1/2 data
+#        add_data_across: add TVar column data per row
+#        partial_add_across: add specific TVar columns per row
 #        sub_data: subtract TVar1/2 data
 #        mult_data: multiply TVar1/2 data
+#        spec_mult: multiply TVar data by spec_bin values
 #        div_data: divide TVar1/2 data, NaN for division by 0
 #        deriv_data: take derivative w.r.t. of TVar data
 #        flatten_data: divide each data column by column average over specified time
 #        full_flatten: divide each data column by column average
+#        avg_res_data: take average of rows @ resolution per column
 #        interp_gap: interpolate through NaN data
 #        fn_interp: linear interpolation, subfunction called in add/sub/mult/div
 #        crop_data: shortens arrays to same timespan, subfunction called in fn_interp
@@ -21,6 +25,33 @@ import pydivide
 import numpy as np
 from scipy import interpolate
 from scipy.interpolate import interp1d
+import pandas as pd
+
+insitu = pydivide.read('2017-06-19')
+t = insitu['Time']
+data = insitu['SPACECRAFT']['ALTITUDE']
+lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
+lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
+pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
+pytplot.store_data('sc_alt', data={'x':t, 'y':data})
+pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
+pytplot.cdf_to_tplot(r"C:\Users\Elysia\Desktop\maven_code\maven_data\mvn_swe_l2_svyspec_20170619_v04_r04.cdf")
+#pytplot.cdf_to_tplot("C:\Users\Elysia\Desktop\maven_code\maven_data\mvn_swe_l2_svyspec_20170619_v04_r04.cdf")
+#pytplot.cdf_to_tplot("C:\Users\Elysia\Desktop\maven_code\maven_data\mvn_swe_l2_svyspec_20170619_v04_r04.cdf")
+pytplot.cdf_to_tplot(r"C:\Users\Elysia\Desktop\maven_code\maven_data\mvn_euv_l2_bands_20170619_v09_r03.cdf",prefix="mvn_euv_")
+pytplot.store_data('orbit', data={'x':[1497700000, 1498000000], 'y':[3350, 3360]})
+pytplot.options('diff_en_fluxes', 'colormap', 'magma')
+pytplot.options('diff_en_fluxes', 'ztitle', 'FLUX')
+pytplot.options('diff_en_fluxes', 'ytitle', 'Energy')
+pytplot.options("diff_en_fluxes", "spec", 1)
+pytplot.options("mvn_euv_data" , 'legend_names', ['Low', 'Medium', 'High'])
+pytplot.options("diff_en_fluxes" , 'panel_size', 1)
+pytplot.options('diff_en_fluxes', 'ylog', 1)
+pytplot.options('diff_en_fluxes', 'zlog', 1)
+pytplot.tplot_options('wsize', [1000,1000])
+pytplot.tplot_options('title', "MAVEN Orbit 3355")
+pytplot.tplot_options('title_size', 8)
 
 #ADD TWO ARRAYS
 #add two tvar data arrays, store in new_tvar
@@ -98,6 +129,15 @@ def mult_data(tvar1,tvar2,new_tvar,interp='linear'):
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
     return new_tvar
 
+#SPEC BIN MULTIPLICATION
+#multiply spec_bin values by tvar data, store in new_tvar
+def spec_mult(tvar1,new_tvar):
+    dataframe = pytplot.data_quants[tvar1].data
+    specframe = pytplot.data_quants[tvar1].spec_bins
+    new_df = pd.DataFrame(dataframe.values*specframe.values, columns=dataframe.columns, index=dataframe.index)    
+    pytplot.store_data(new_tvar,data={'x':new_df.index,'y':new_df.values})
+    return new_tvar
+
 #DIVIDE
 #divide two tvar data arrays, store in new_tvar
 def div_data(tvar1,tvar2,new_tvar,interp='linear'):
@@ -162,6 +202,8 @@ def full_flatten(tvar1,new_tvar):
     pytplot.store_data(new_tvar,data = {'x':df.index,'y':df})
     return new_tvar
 
+#AVERAGE AT RESOLUTION
+#take average of column over discrete periods of time
 def avg_res_data(tvar1,res,new_tvar):
     #grab info from tvar
     df = pytplot.data_quants[tvar1].data
@@ -245,8 +287,8 @@ def fn_interp(tvar1,tvar2,interp='linear'):
         #store interpolated tvars as 'X_interp'
         pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
         pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
-    elif interp == 'spline':
-        print("spline interpolation")
+    elif interp == 'quad_spline':
+        print("quadratic spline interpolation")
         new_df = []
         for i in df_index:
             tv2_col = [item[i] for item in tv2_d]
@@ -292,3 +334,8 @@ def crop_data(tvar1,tvar2):
         tv2_d = np.delete(tv2_d,0,axis=0)
     #return time and data arrays
     return tv1_t,tv1_d,tv2_t,tv2_d
+
+
+avg_res_data('diff_en_fluxes',60,'e')
+print(pytplot.data_quants['diff_en_fluxes'].data)
+print(pytplot.data_quants['e'].data)
