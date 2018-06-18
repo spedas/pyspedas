@@ -1,4 +1,9 @@
-1.2.4
+1.2.5
+
+1.2.5 Changes:
+	-Adding tplot_math, with various basic functions to begin data analysis
+	-Crosshairs now implemented in pyqtgraph
+	-Timebars work in alt/map plots
 
 1.2.4 Changes:
 	-Fixed for latest version of Anaconda
