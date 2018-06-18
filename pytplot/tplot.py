@@ -27,7 +27,8 @@ def tplot(name,
           save_file=None,
           gui=False, 
           qt=False,
-          bokeh=False):
+          bokeh=False,
+          pyqtgraph=True):
     
     """
     This is the function used to display the tplot variables stored in memory.
