@@ -101,19 +101,27 @@ def options(name, option, value):
             namedata =  data_quants[i]
             ##check variable data
             #if negative numbers, don't allow log setting
-            if 'spec' not in data_quants[i].extras:
-                for column in namedata.data:
-                    if np.nanmin(namedata.data[column]) < 0:
-                        print('Negative data is incompatible with log plotting.')
-                        negflag = 1
-                        break
+            datasets = []
+            if isinstance(namedata.data, list):
+                for oplot_name in namedata.data:
+                    datasets.append(data_quants[oplot_name])
             else:
-                if data_quants[i].extras['spec'] == 1:
-                    for column in namedata.spec_bins:
-                        if np.nanmin(namedata.spec_bins[column]) < 0:
+                datasets.append(namedata)
+                
+            for dataset in datasets:
+                if 'spec' not in dataset.extras:
+                    for column in dataset.data:
+                        if np.nanmin(dataset.data[column]) < 0:
                             print('Negative data is incompatible with log plotting.')
                             negflag = 1
                             break
+                else:
+                    if dataset.extras['spec'] == 1:
+                        for column in dataset.spec_bins:
+                            if np.nanmin(dataset.spec_bins[column]) < 0:
+                                print('Negative data is incompatible with log plotting.')
+                                negflag = 1
+                                break
                         
             if value == 1 and negflag == 0:
                 data_quants[i].yaxis_opt['y_axis_type'] = 'log'
@@ -125,25 +133,36 @@ def options(name, option, value):
             data_quants[i].yaxis_opt['legend_names'] = value
         
         if option == 'zlog':
-            if 'spec' in data_quants[i].extras:                       
-                if data_quants[i].extras['spec'] == 1:
-                    namedata =  data_quants[i]
-                    negflag = 0
-                    for column in namedata.data:
-                        if np.nanmin(namedata.data[column])  < 0:
-                            print('Negative data is incompatible with log plotting.')
-                            negflag = 1
-                            break
-                    #verify there are no negative values
-                    if negflag == 0 and value == 1:
-                        data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+            negflag = 0
+            namedata =  data_quants[i]
+            ##check variable data
+            #if negative numbers, don't allow log setting
+            datasets = []
+            if isinstance(namedata.data, list):
+                for oplot_name in namedata.data:
+                    datasets.append(data_quants[oplot_name])
+            else:
+                datasets.append(namedata)
+                
+            for dataset in datasets:
+                if 'spec' in dataset.extras:                       
+                    if dataset.extras['spec'] == 1:
+                        negflag = 0
+                        for column in dataset.data:
+                            if np.nanmin(dataset.data[column])  < 0:
+                                print('Negative data is incompatible with log plotting.')
+                                negflag = 1
+                                break
+                        #verify there are no negative values
+                        if negflag == 0 and value == 1:
+                            data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+                        else:
+                            data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
                     else:
-                        data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
-                else:
-                    if value == 1:
-                        data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-                    else:
-                        data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
+                        if value == 1:
+                            data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+                        else:
+                            data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
             else:
                 if value == 1:
                     data_quants[i].zaxis_opt['z_axis_type'] = 'log'
