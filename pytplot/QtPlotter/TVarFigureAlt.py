@@ -5,6 +5,7 @@ from pytplot import tplot_opt_glob
 import pytplot
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.BlankAxis import BlankAxis
+from .CustomLegend.CustomLegend import CustomLegendItem
 
 
 class TVarFigureAlt(pg.GraphicsLayout):
@@ -46,6 +47,23 @@ class TVarFigureAlt(pg.GraphicsLayout):
         
         self._mouseMovedFunction = mouse_function
     
+         
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
+        
+        self.label = pg.LabelItem(justify='left')
+        self.addItem(self.label,row=1,col=0)
+        #self.addItem(self.label)
+        
+        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend.setItem("Altitude:", "0")
+        self.hoverlegend.setItem("Data:", "0")
+        self.hoverlegend.setVisible(False)
+        self.hoverlegend.setParentItem(self.plotwindow.vb)
     
     def buildfigure(self):
         self._setxrange()
@@ -99,7 +117,33 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return axis_type, link_y_axis
     
     def _addmouseevents(self):
-        return
+        
+        if self.plotwindow.scene() is not None:
+            self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
+    
+    def _mousemoved(self, evt):
+        #get current position
+        pos = evt
+        #if plot window contains position
+        if self.plotwindow.sceneBoundingRect().contains(pos):
+            mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            #grab x and y mouse locations
+            index_x = int(mousePoint.x())
+            index_y = int(mousePoint.y())
+            #add crosshairs
+            if self._mouseMovedFunction != None:
+                self._mouseMovedFunction(int(mousePoint.x()))
+                self.vLine.setPos(mousePoint.x())
+                self.hLine.setPos(mousePoint.y())
+                self.vLine.setVisible(True)
+                self.hLine.setVisible(True)
+            self.hoverlegend.setVisible(True)
+            self.hoverlegend.setItem("Altitude:", index_x)
+            self.hoverlegend.setItem("Data:", index_y)
+        else:
+            self.hoverlegend.setVisible(False)
+            self.vLine.setVisible(False)
+            self.hLine.setVisible(False)
     
     def _addlegend(self):
         if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
@@ -168,7 +212,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
             for i in range(ltbar):
                 #get times, color, point size
                 test_time = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
-                print(test_time)
+                #print(test_time)
                 color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
                 pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
                 #correlate given time with corresponding data/alt points
@@ -177,7 +221,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
                 nearest_time_index = np.abs(time - test_time).argmin()
                 data_point = dataset.data.iloc[nearest_time_index][0]
                 alt_point = altitude[nearest_time_index]
-                print(alt_point,data_point)
+                #color = pytplot.tplot_utilities.rgb_color(color)
                 self.plotwindow.scatterPlot([alt_point], [data_point], size = pointsize, pen=pg.mkPen(None), brush=color)
         return
     def _visdata(self):

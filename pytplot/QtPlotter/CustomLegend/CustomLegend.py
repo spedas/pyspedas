@@ -38,7 +38,7 @@ class CustomLegendItem(pg.LegendItem):
                 
     def paint(self, p, *args):
         p.setPen(fn.mkPen(255,255,255,0))
-        p.setBrush(fn.mkBrush(0,0,0,0))
+        p.setBrush(fn.mkBrush(0,0,0,190))
         p.drawRect(self.boundingRect())
 
     def hoverEvent(self, ev):

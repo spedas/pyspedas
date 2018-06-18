@@ -27,7 +27,7 @@ def tplot(name,
           save_file=None,
           gui=False, 
           qt=True,
-          pyqtgraph=False):
+          bokeh=False):
     
     """
     This is the function used to display the tplot variables stored in memory.
@@ -118,18 +118,8 @@ def tplot(name,
     
     if isinstance(var_label, int):
         var_label = list(pytplot.data_quants.keys())[var_label]
-    
-    if pyqtgraph:
-        available_qt_window = tplot_utilities.get_available_qt_window()
-        layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, mouse_moved_event=pytplot.hover_time.change_hover_time)
-        available_qt_window.newlayout(layout)
-        available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
-        available_qt_window.show()
-        available_qt_window.activateWindow()
-        if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
-            QtGui.QApplication.instance().exec_()
-        return
-    else:
+        
+    if bokeh:
         layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, interactive=interactive)
         #Output types
         if gui:
@@ -164,7 +154,59 @@ def tplot(name,
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
             show(layout)
             return
-
-    
-
+    else:
+        available_qt_window = tplot_utilities.get_available_qt_window()
+        layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, mouse_moved_event=pytplot.hover_time.change_hover_time)
+        available_qt_window.newlayout(layout)
+        available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+        available_qt_window.show()
+        available_qt_window.activateWindow()
+        if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+            QtGui.QApplication.instance().exec_()
+        return
+#     if pyqtgraph:
+#         available_qt_window = tplot_utilities.get_available_qt_window()
+#         layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, mouse_moved_event=pytplot.hover_time.change_hover_time)
+#         available_qt_window.newlayout(layout)
+#         available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+#         available_qt_window.show()
+#         available_qt_window.activateWindow()
+#         if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+#             QtGui.QApplication.instance().exec_()
+#         return
+#     else:
+#         layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, interactive=interactive)
+#         #Output types
+#         if gui:
+#             script, div = components(layout)
+#             return script, div
+#         elif nb:
+#             output_notebook()
+#             show(layout)
+#             return
+#         elif save_file != None:
+#             output_file(save_file, mode='inline')
+#             save(layout)    
+#             return
+#         elif qt:        
+#             available_qt_window = tplot_utilities.get_available_qt_window()
+#             dir_path = tempfile.gettempdir() #send to user's temp directory
+#             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
+#             save(layout)
+#             new_layout = WebView()
+#             available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
+#             new_layout.resize(pytplot.tplot_opt_glob['window_size'][0],pytplot.tplot_opt_glob['window_size'][1])
+#             dir_path = tempfile.gettempdir() #send to user's temp directory
+#             new_layout.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
+#             available_qt_window.newlayout(new_layout)
+#             available_qt_window.show()
+#             available_qt_window.activateWindow()
+#             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+#                 QtGui.QApplication.instance().exec_()
+#             return
+#         else:      
+#             dir_path = tempfile.gettempdir() #send to user's temp directory
+#             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
+#             show(layout)
+#             return
                     

@@ -6,6 +6,10 @@ from pytplot import tplot_opt_glob
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.DateAxis import DateAxis
 from .CustomAxis.BlankAxis import BlankAxis
+from pyqtgraph.Qt import QtGui, QtCore
+from pyqtgraph.Point import Point
+from .CustomLegend.CustomLegend import CustomLegendItem
+#import mpld3
 
 class TVarFigure1D(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
@@ -46,19 +50,39 @@ class TVarFigure1D(pg.GraphicsLayout):
         
         self._mouseMovedFunction = mouse_function
 
-
+        ##
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
+        
+        self.label = pg.LabelItem(justify='left')
+        self.addItem(self.label,row=1,col=0)
+        #self.addItem(self.label)
+        ##
+        
+        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend.setItem("Date:", "0")
+        self.hoverlegend.setItem("Time:", "0")
+        self.hoverlegend.setItem("Data:", "0")
+        self.hoverlegend.setVisible(False)
+        self.hoverlegend.setParentItem(self.plotwindow.vb)  
+        
     def buildfigure(self):
         self._setxrange()
         self._setyrange()
         self._setyaxistype()
         self._setzaxistype()
         self._setzrange()
-        self._addtimebars()
         self._visdata()
         self._setyaxislabel()
         self._setxaxislabel()
-        self._addmouseevents()
         self._addlegend()
+        self._addtimebars()
+        self._addmouseevents()
+
     
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
@@ -117,12 +141,34 @@ class TVarFigure1D(pg.GraphicsLayout):
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
     
     def _mousemoved(self, evt):
+        #get current position
         pos = evt
+        #if plot window contains position
         if self.plotwindow.sceneBoundingRect().contains(pos):
             mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            #grab x and y mouse locations
+            index_x = int(mousePoint.x())
+            index_y = round(float(mousePoint.y()),4)
+            date = (pytplot.tplot_utilities.int_to_str(index_x))[0:10]
+            time = (pytplot.tplot_utilities.int_to_str(index_x))[11:19]
+            #add crosshairs
             if self._mouseMovedFunction != None:
                 self._mouseMovedFunction(int(mousePoint.x()))
-    
+                self.vLine.setPos(mousePoint.x())
+                self.hLine.setPos(mousePoint.y())
+                self.vLine.setVisible(True)
+                self.hLine.setVisible(True)
+                           
+            self.hoverlegend.setVisible(True)
+            self.hoverlegend.setItem("Date:", date)
+            self.hoverlegend.setItem("Time:", time)
+            self.hoverlegend.setItem("Data:", str(index_y))
+        else:
+            self.hoverlegend.setVisible(False)
+            self.vLine.setVisible(False)
+            self.hLine.setVisible(False)
+            
+            
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
             return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
@@ -178,6 +224,7 @@ class TVarFigure1D(pg.GraphicsLayout):
             color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
             thick = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
             #make infinite line w/ parameters
+            #color = pytplot.tplot_utilities.rgb_color(color)
             infline = pg.InfiniteLine(pos=date_to_highlight,pen=pg.mkPen(color,width = thick))
             #add to plot window
             self.plotwindow.addItem(infline)
