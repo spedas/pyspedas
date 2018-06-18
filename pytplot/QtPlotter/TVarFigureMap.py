@@ -112,6 +112,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         else:
             datasets.append(pytplot.data_quants[self.tvar_name])
         
+        cm_index=0
         for dataset in datasets: 
             _, lat = pytplot.get_data(dataset.links['lat']) 
             lat = lat.transpose()[0]
@@ -119,7 +120,7 @@ class TVarFigureMap(pg.GraphicsLayout):
             lon = lon.transpose()[0]    
             for column_name in dataset.data.columns:
                 values = dataset.data[column_name].tolist()
-                colors = pytplot.tplot_utilities.get_heatmap_color(color_map=self.colormap, 
+                colors = pytplot.tplot_utilities.get_heatmap_color(color_map=self.colormap[cm_index % len(self.colormap)], 
                                                                         min_val=self.zmin, 
                                                                         max_val=self.zmax, 
                                                                         values=values, 
@@ -129,6 +130,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                     brushes.append(pg.mkBrush(color))
                 self.curves.append(self.plotwindow.scatterPlot(lon.tolist(), lat.tolist(), 
                                                                pen=pg.mkPen(None), brush=brushes))
+                cm_index+=1
         
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
@@ -171,7 +173,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         else:
             colorbar.setRect(QtCore.QRectF(0,self.zmin,1,self.zmax-self.zmin))
             p2.setYRange(self.zmin,self.zmax, padding=0)
-        colorbar.setLookupTable(self.colormap)
+        colorbar.setLookupTable(self.colormap[0])
     
     def _addmouseevents(self):
         if self.plotwindow.scene() is not None:
@@ -187,9 +189,16 @@ class TVarFigureMap(pg.GraphicsLayout):
             index_x = round(float(mousePoint.x()),2)
             index_y = round(float(mousePoint.y()),2)
             #get latitude and longitude arrays
-            time, latitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lat']) 
+            datasets = []
+            if isinstance(pytplot.data_quants[self.tvar_name].data, list):
+                for oplot_name in pytplot.data_quants[self.tvar_name].data:
+                    datasets.append(pytplot.data_quants[oplot_name])
+            else:
+                datasets.append(pytplot.data_quants[self.tvar_name])
+            
+            time, latitude = pytplot.get_data(datasets[0].links['lat']) 
             latitude = latitude.transpose()[0]
-            time, longitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].links['lon']) 
+            time, longitude = pytplot.get_data(datasets[0].links['lon']) 
             longitude = longitude.transpose()[0]
             #find closest time point to cursor
             radius = np.sqrt((latitude - index_y)**2 + (longitude - index_x)**2).argmin()
@@ -215,6 +224,7 @@ class TVarFigureMap(pg.GraphicsLayout):
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
             self.hLine.setVisible(False)
+    
     def _getyaxistype(self):
         return 'linear'
     
@@ -236,12 +246,14 @@ class TVarFigureMap(pg.GraphicsLayout):
         else: 
             return ['k', 'r', 'g', 'c', 'y', 'm', 'b']
     
-    def _setcolormap(self):          
+    def _setcolormap(self):     
+        colors = []     
         if 'colormap' in pytplot.data_quants[self.tvar_name].extras:
             for cm in pytplot.data_quants[self.tvar_name].extras['colormap']:
-                return tplot_utilities.return_lut(cm)
+                colors.append(pytplot.tplot_utilities.return_lut(cm))
+            return colors
         else:
-            return pytplot.tplot_utilities.return_lut("inferno")
+            return [pytplot.tplot_utilities.return_lut("inferno")]
     
     def getaxistype(self):
         axis_type = 'lat'

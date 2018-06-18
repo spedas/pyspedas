@@ -127,11 +127,11 @@ class TVarFigure1D(pg.GraphicsLayout):
             i=0
             for legend_name in legend_names:
                 if i+1 == len(legend_names): #Last
-                    text = pg.TextItem(text=legend_name, anchor=(0,1.5), color=self.colors[i])
+                    text = pg.TextItem(text=legend_name, anchor=(0,1.5), color=self.colors[i % len(self.colors)])
                 elif i==0: #First
-                    text = pg.TextItem(text=legend_name, anchor=(0,-.5), color=self.colors[i])
+                    text = pg.TextItem(text=legend_name, anchor=(0,-.5), color=self.colors[i % len(self.colors)])
                 else: #All others
-                    text = pg.TextItem(text=legend_name, anchor=(0,0.5), color=self.colors[i])
+                    text = pg.TextItem(text=legend_name, anchor=(0,0.5), color=self.colors[i % len(self.colors)])
                 self.legendvb.addItem(text)
                 text.setPos(0,pos_array[i])
                 i+=1
