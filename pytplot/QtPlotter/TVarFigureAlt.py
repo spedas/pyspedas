@@ -81,11 +81,6 @@ class TVarFigureAlt(pg.GraphicsLayout):
     def getfig(self):
         return self
     
-    def getaxistype(self):
-        axis_type = 'alt'
-        link_y_axis = False
-        return axis_type, link_y_axis
-    
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
     
@@ -224,6 +219,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
                 #color = pytplot.tplot_utilities.rgb_color(color)
                 self.plotwindow.scatterPlot([alt_point], [data_point], size = pointsize, pen=pg.mkPen(None), brush=color)
         return
+    
     def _visdata(self):
         datasets = []
         if isinstance(pytplot.data_quants[self.tvar_name].data, list):
