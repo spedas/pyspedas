@@ -15,10 +15,11 @@ from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 
 class TVarFigureSpec(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
         
         self.tvar_name=tvar_name
         self.show_xaxis = show_xaxis
+        self.crosshair = crosshair
         
         #Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
@@ -84,8 +85,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._setxaxislabel()
         self._addlegend()
         self._addtimebars()
-        self._set_crosshairs()
-        self._addmouseevents()
+        if self.crosshair == True:
+            self._set_crosshairs()
+            self._addmouseevents()
 
 
     
