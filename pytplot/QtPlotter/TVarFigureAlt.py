@@ -181,7 +181,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
             return pytplot.data_quants[self.tvar_name].extras['line_color']
         else: 
-            return ['k', 'r', 'g', 'c', 'y', 'm', 'b']
+            return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
     
     def _setcolormap(self):          
         return
