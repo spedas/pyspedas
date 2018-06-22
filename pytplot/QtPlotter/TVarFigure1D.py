@@ -125,18 +125,21 @@ class TVarFigure1D(pg.GraphicsLayout):
     def _addlegend(self):
         if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
             legend_names = pytplot.data_quants[self.tvar_name].yaxis_opt['legend_names']
+            n_items = len(legend_names)
+            bottom_bound = 0.5 + (n_items-1)*0.05
+            top_bound = 0.5 - (n_items-1)*0.05
             if len(legend_names) != len(self.curves):
                 print("Number of lines do not match length of legend names")
             if len(legend_names) == 1:
                 pos_array=[.5]
             else:
-                pos_array=np.linspace(1,0,len(legend_names))
+                pos_array=np.linspace(bottom_bound,top_bound,len(legend_names))
             i=0
             for legend_name in legend_names:
                 if i+1 == len(legend_names): #Last
-                    text = pg.TextItem(text=legend_name, anchor=(0,1.5), color=self.colors[i % len(self.colors)])
+                    text = pg.TextItem(text=legend_name, anchor=(0,0.5), color=self.colors[i % len(self.colors)])
                 elif i==0: #First
-                    text = pg.TextItem(text=legend_name, anchor=(0,-.5), color=self.colors[i % len(self.colors)])
+                    text = pg.TextItem(text=legend_name, anchor=(0,0.5), color=self.colors[i % len(self.colors)])
                 else: #All others
                     text = pg.TextItem(text=legend_name, anchor=(0,0.5), color=self.colors[i % len(self.colors)])
                 self.legendvb.addItem(text)
@@ -195,7 +198,7 @@ class TVarFigure1D(pg.GraphicsLayout):
         if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
             return pytplot.data_quants[self.tvar_name].extras['line_color']
         else: 
-            return ['k', 'r', 'g', 'c', 'y', 'm', 'b']
+            return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
     
     def _setcolormap(self):          
         return

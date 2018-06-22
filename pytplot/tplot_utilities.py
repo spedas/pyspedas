@@ -408,6 +408,11 @@ def rgb_color(color):
                 'w':(255,255,255),
                 'k':(0,0,0)
                  }
-    
-    rgbcolor = color_opt[color]
+
+    if type(color) is not list:
+        rgbcolor = color_opt[color]
+    else:
+        rgbcolor = len(color)*[0]
+        for i,val in enumerate(color):
+            rgbcolor[i] = color_opt[val]
     return rgbcolor

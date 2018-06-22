@@ -9,10 +9,11 @@ import pandas as pd
 import numpy as np
 from pytplot import data_quants, TVar
 from .del_data import del_data
+import pytplot
 
 tplot_num = 1
 
-def store_data(name, data=None, delete=False):
+def store_data(name, data=None, delete=False, newname=None):
     
     """
     This function creates a "Tplot Variable" based on the inputs, and
@@ -34,6 +35,8 @@ def store_data(name, data=None, delete=False):
             'x' and 'y' can be any data format that can be read in by the pandas module.  Python lists, numpy arrays, or any pandas data type will all work.   
         delete : bool, optional
             Deletes the tplot variable matching the "name" parameter
+        newname: str
+            Renames TVar to new name
         
     .. note::
         If you want to combine multiple tplot variables into one, simply supply the list of tplot variables to the "data" parameter.  This will cause the data to overlay when plotted. 
@@ -61,6 +64,10 @@ def store_data(name, data=None, delete=False):
         
         >>> # Combine two different line plots
         >>> pytplot.store_data("Variable1and2", data=['Variable1', 'Variable2'])
+        
+        >>> #Rename TVar
+        >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+        >>> pytplot.store_data('a',newname='f')
 
     """
     
@@ -71,8 +78,12 @@ def store_data(name, data=None, delete=False):
         del_data(name)
         return
 
-    if data is None:
+    if data is None and newname is None:
         print('Please provide data.')
+        return
+    
+    if newname != None:
+        pytplot.tplot_rename(name,newname)
         return
     
     if isinstance(data, list):
@@ -83,7 +94,6 @@ def store_data(name, data=None, delete=False):
         df = base_data
         spec_bins=None
     else:             
-        
         df = format_ydata(data['y'])            
         times = data['x']
         if len(times) != len(df.index):

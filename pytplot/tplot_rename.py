@@ -41,4 +41,5 @@ def tplot_rename(old_name, new_name):
     for key in d2:
         data_quants[key].name = key
     
+    pytplot.data_quants = data_quants
     return
