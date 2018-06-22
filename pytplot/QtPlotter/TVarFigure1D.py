@@ -1,3 +1,8 @@
+# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Released under the MIT license.
+# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
+# Verify current version before use at: https://github.com/MAVENSDC/PyTplot
+
 import pyqtgraph as pg
 import numpy as np
 from .. import tplot_utilities 
@@ -12,10 +17,11 @@ from .CustomLegend.CustomLegend import CustomLegendItem
 #import mpld3
 
 class TVarFigure1D(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
-        
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
+
         self.tvar_name=tvar_name
         self.show_xaxis = show_xaxis
+        self.crosshair = crosshair
         
         #Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
@@ -81,7 +87,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._setxaxislabel()
         self._addlegend()
         self._addtimebars()
-        self._addmouseevents()
+        if self.crosshair == True:
+            self._addmouseevents()
 
     
     def _setyaxislabel(self):

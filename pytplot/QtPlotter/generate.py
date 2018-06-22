@@ -1,3 +1,9 @@
+# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Released under the MIT license.
+# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
+# Verify current version before use at: https://github.com/MAVENSDC/PyTplot
+
+
 from __future__ import division
 import pytplot
 from .TVarFigureAxisOnly import TVarFigureAxisOnly
@@ -8,7 +14,9 @@ import pyqtgraph as pg
 def generate_stack(name, 
                    var_label = None, 
                    auto_color=True, 
-                   combine_axes=True, mouse_moved_event=None):
+                   combine_axes=True, 
+                   mouse_moved_event=None,
+                   crosshair=True):
     
     new_stack = pg.GraphicsLayoutWidget()
     #Variables needed for pyqtgraph plots
@@ -55,7 +63,7 @@ def generate_stack(name,
             if _set_pyqtgraph_title(new_stack):
                 titlerow=1
         new_stack.ci.layout.setRowPreferredHeight(i+titlerow, p_height) 
-        new_fig = _get_figure_class(name[i], show_xaxis=last_plot, mouse_moved=mouse_moved_event)
+        new_fig = _get_figure_class(name[i], show_xaxis=last_plot, mouse_moved=mouse_moved_event,crosshair=crosshair)
         new_stack.addItem(new_fig, row=i+titlerow, col=0)
             
         axis_types.append(new_fig.getaxistype())
@@ -104,7 +112,7 @@ def _set_pyqtgraph_title(layout):
                 return True
     return False
 
-def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None):
+def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None, crosshair=True):
     if 'plotter' in pytplot.data_quants[tvar_name].extras and pytplot.data_quants[tvar_name].extras['plotter'] in pytplot.qt_plotters:
         cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].extras['plotter']]
     else:
@@ -119,4 +127,4 @@ def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None):
             cls = pytplot.qt_plotters['qtTVarFigureMap']
         else:
             cls = pytplot.qt_plotters['qtTVarFigure1D']
-    return cls(tvar_name, show_xaxis=show_xaxis, mouse_function = mouse_moved)
+    return cls(tvar_name, show_xaxis=show_xaxis, mouse_function = mouse_moved, crosshair=crosshair)
