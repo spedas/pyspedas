@@ -8,8 +8,8 @@ import pydivide
 import scipy
 import numpy as np
 import scipy.fftpack
-import matplotlib as plt
-
+import matplotlib.pyplot as plt
+from astropy.convolution import convolve,Box1DKernel
 
 insitu = pydivide.read('2017-06-19')
 t = insitu['Time']
@@ -17,20 +17,31 @@ data = insitu['SPACECRAFT']['ALTITUDE']
 pytplot.store_data('sgx',data = {'x':t, 'y':data})
  
 N= len(pytplot.data_quants['sgx'].data.index)
-
 x = pytplot.data_quants['sgx'].data.index
 y = pytplot.data_quants['sgx'].data
 print(N)
 print(x)
 print(y)
-w = scipy.fftpack.rfft(y)
-f = scipy.fftpack.rfftfreq(N, x[1]-x[0])
-spectrum = w**2
+def fourier_smooth():
+    N= len(pytplot.data_quants['sgx'].data.index)
+    x = pytplot.data_quants['sgx'].data.index
+    y = pytplot.data_quants['sgx'].data
+    w = scipy.fftpack.rfft(y)
+    f = scipy.fftpack.rfftfreq(N, x[1]-x[0])
+    w2 = w.copy()
+    y2 = scipy.fftpack.irfft(w2)
+    t = plt.plot(x,y,'r')
+    s = plt.plot(x,y2)
+    plt.show([s,t])
 
-cutoff_idx = spectrum < (spectrum.max()/5)
-w2 = w.copy()
-w2[cutoff_idx] = 0
+def boxcar_smooth():
+    N= len(pytplot.data_quants['sgx'].data.index)
+    x = pytplot.data_quants['sgx'].data.index
+    y = pytplot.data_quants['sgx'].data
+    print((y.values))
+    smoothed = convolve(y.values,Box1DKernel(4))
+    s = plt.plot(x,smoothed)
+    t = plt.plot(x,y,'r')
+    plt.show([s,t])
 
-y2 = scipy.fftpack.irfft(w2)
-
-plt.plot(x,y2)
+boxcar_smooth()
