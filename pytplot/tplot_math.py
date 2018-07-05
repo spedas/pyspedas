@@ -3,45 +3,45 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pydivide
 
-"""
-    Allows the user manipulate TVar Data.  
-    
-    Functions and Parameters:
-
-        ============            =====
-        Functions               Notes
-        ============            =====
-        add_data                add TVar1/2 data
-        add_data_across         add TVar column data per row
-        partial_add_across      add specific TVar columns per row
-        sub_data                subtract TVar1/2 data   
-        mult_data               multiply TVar1/2 data
-        spec_mult               multiply TVar data by spec_bin values
-        div_data                divide TVar1/2 data, NaN for division by 0
-        deriv_data              take derivative w.r.t. of TVar data
-        flatten_data            divide each data column by column average over specified time
-        full_flatten            divide each data column by column average
-        avg_res_data            take average of rows at resolution per column
-        interp_gap              interpolate through NaN data
-        fn_interp               linear interpolation, subfunction called in add/sub/mult/div
-        crop_data               shortens arrays to same timespan, subfunction called in fn_interp
-        ============            =====
-    
-    Returns:
-        new_tvar
-    
-    Examples:
-        >>> pytplot.store_data('b', data={'x':[2,5,8,11,14], 'y':[[1,1],[2,50],[3,100],[4,50],[5,1]]})
-        >>> pytplot.cdf_to_tplot(r"C:\Users\Elysia\Desktop\maven_code\maven_data\mvn_swe_l2_svyspec_20170619_v04_r04.cdf")
-        >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,1,1,1,1,1,1]})
-        >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[1,2,100,4,5,6,7]})
-        
-        >>> pytplot.tplot_math.deriv_data('b','dbdt')
-        >>> pytplot.tplot_math.spec_mult('diff_en_fluxes','flux_spec_mult')
-        >>> pytplot.tplot_math.flatten_data('sc_lon',1497830400,1497830528)
-        >>> pytplot.tplot_math.add_data('c','d','c+d',interp='cubic')
-
-    """
+# """
+#     Allows the user manipulate TVar Data.  
+#     
+#     Functions and Parameters:
+# 
+#         ============            =====
+#         Functions               Notes
+#         ============            =====
+#         add_data                add TVar1/2 data
+#         add_data_across         add TVar column data per row
+#         partial_add_across      add specific TVar columns per row
+#         sub_data                subtract TVar1/2 data   
+#         mult_data               multiply TVar1/2 data
+#         spec_mult               multiply TVar data by spec_bin values
+#         div_data                divide TVar1/2 data, NaN for division by 0
+#         deriv_data              take derivative w.r.t. of TVar data
+#         flatten_data            divide each data column by column average over specified time
+#         full_flatten            divide each data column by column average
+#         avg_res_data            take average of rows at resolution per column
+#         interp_gap              interpolate through NaN data
+#         fn_interp               linear interpolation, subfunction called in add/sub/mult/div
+#         crop_data               shortens arrays to same timespan, subfunction called in fn_interp
+#         ============            =====
+#     
+#     Returns:
+#         new_tvar
+#     
+#     Examples:
+#         >>> pytplot.store_data('b', data={'x':[2,5,8,11,14], 'y':[[1,1],[2,50],[3,100],[4,50],[5,1]]})
+#         >>> pytplot.cdf_to_tplot(r"C:\Users\Elysia\Desktop\maven_code\maven_data\mvn_swe_l2_svyspec_20170619_v04_r04.cdf")
+#         >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,1,1,1,1,1,1]})
+#         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[1,2,100,4,5,6,7]})
+#         
+#         >>> pytplot.tplot_math.deriv_data('b','dbdt')
+#         >>> pytplot.tplot_math.spec_mult('diff_en_fluxes','flux_spec_mult')
+#         >>> pytplot.tplot_math.flatten_data('sc_lon',1497830400,1497830528)
+#         >>> pytplot.tplot_math.add_data('c','d','c+d',interp='cubic')
+# 
+# """
 
 import pytplot
 import pydivide
@@ -49,6 +49,21 @@ import numpy as np
 from scipy import interpolate
 from scipy.interpolate import interp1d
 import pandas as pd
+
+insitu,iuvs = pydivide.read('2017-06-19')
+t = insitu['Time']
+data = insitu['SPACECRAFT']['ALTITUDE']
+lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
+lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
+pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
+pytplot.store_data('sc_alt', data={'x':t, 'y':data})
+pytplot.store_data('a', data={'x':[0,4,8,12,16,20,24],'y':[[2,5,8,11,14,17,20],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]})
+print(pytplot.data_quants['a'])
+#pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
+#pytplot.store_data('c', data={'x':[1,2,3,4,5,6,7], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
+pytplot.store_data('d', data={'x':[0,4,8,12,16,50,100], 'y':[1,2,3,4,5,90,110]})
+
+
 
 #ADD TWO ARRAYS
 #add two tvar data arrays, store in new_tvar
@@ -250,6 +265,41 @@ def interp_gap(tvar1):
     tv1 = tv1.interpolate(method='linear')
     tv1 = tv1.astype(object)
     return tv1
+
+def split_vec(tvar,newtvars,columns):
+    #separate and add data
+    time = pytplot.data_quants[tvar].data.index
+    data = pytplot.data_quants[tvar].data
+    df = pytplot.data_quants[tvar]
+    #grab column data
+    for i,val in enumerate(columns):
+        #if not a list
+        if isinstance(val,int):
+            range_start = val
+            range_end = val
+        else:
+            range_start = val[0]
+            range_end = val[1]
+        split_col = list(range(range_start,range_end+1))
+        #store split data
+        pytplot.store_data(newtvars[i],data={'x':time, 'y':data[split_col]})
+    return newtvars
+split_vec('a',['dog','cat','mouse'],[[0,2],3,[4,6]])
+print(pytplot.data_quants['dog'].data)
+print(pytplot.data_quants['cat'].data)
+print(pytplot.data_quants['mouse'].data)
+
+def join_vec(tvars,newtvar):
+    df = pytplot.data_quants[tvars[0]].data
+    for i,val in enumerate(tvars):
+        if i == 0:
+            pass
+        else:
+            df = pd.concat([df,pytplot.data_quants[val].data],axis=1)
+    pytplot.store_data(newtvar,data={'x':df.index,'y':df})
+    return newtvar
+join_vec(['a','d'],'bryan')
+print(pytplot.data_quants['bryan'].data)
 
 #TVAR INTERPOLATION
 #interpolate tvar2 to tvar1 cadence
