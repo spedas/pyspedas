@@ -50,20 +50,6 @@ from scipy import interpolate
 from scipy.interpolate import interp1d
 import pandas as pd
 
-insitu,iuvs = pydivide.read('2017-06-19')
-t = insitu['Time']
-data = insitu['SPACECRAFT']['ALTITUDE']
-lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
-lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
-pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
-pytplot.store_data('sc_alt', data={'x':t, 'y':data})
-pytplot.store_data('a', data={'x':[0,4,8,12,16,20,24],'y':[[2,5,8,11,14,17,20],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]})
-print(pytplot.data_quants['a'])
-#pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
-#pytplot.store_data('c', data={'x':[1,2,3,4,5,6,7], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
-pytplot.store_data('d', data={'x':[0,4,8,12,16,50,100], 'y':[1,2,3,4,5,90,110]})
-
-
 
 #ADD TWO ARRAYS
 #add two tvar data arrays, store in new_tvar
@@ -266,6 +252,8 @@ def interp_gap(tvar1):
     tv1 = tv1.astype(object)
     return tv1
 
+#SPLIT TVAR
+#store columns of TVar into new TVars
 def split_vec(tvar,newtvars,columns):
     #separate and add data
     time = pytplot.data_quants[tvar].data.index
@@ -284,11 +272,9 @@ def split_vec(tvar,newtvars,columns):
         #store split data
         pytplot.store_data(newtvars[i],data={'x':time, 'y':data[split_col]})
     return newtvars
-split_vec('a',['dog','cat','mouse'],[[0,2],3,[4,6]])
-print(pytplot.data_quants['dog'].data)
-print(pytplot.data_quants['cat'].data)
-print(pytplot.data_quants['mouse'].data)
 
+#JOIN TVARS
+#join TVars into single TVar with multiple columns
 def join_vec(tvars,newtvar):
     df = pytplot.data_quants[tvars[0]].data
     for i,val in enumerate(tvars):
@@ -298,8 +284,6 @@ def join_vec(tvars,newtvar):
             df = pd.concat([df,pytplot.data_quants[val].data],axis=1)
     pytplot.store_data(newtvar,data={'x':df.index,'y':df})
     return newtvar
-join_vec(['a','d'],'bryan')
-print(pytplot.data_quants['bryan'].data)
 
 #TVAR INTERPOLATION
 #interpolate tvar2 to tvar1 cadence
