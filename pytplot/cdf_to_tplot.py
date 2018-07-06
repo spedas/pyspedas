@@ -117,7 +117,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 data_type_description = cdf_file.varinq(x_axis_var)['Data_Type_Description']
                 xdata=cdf_file.varget(x_axis_var)
                 
-                if 'CDF_TIME' in data_type_description:
+                if 'CDF_TIME' or 'CDF_EPOCH' in data_type_description:
                     xdata = cdflib.cdfepoch.unixtime(xdata)
                 ydata=cdf_file.varget(var)
                 if ydata is None:
