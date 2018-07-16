@@ -224,6 +224,7 @@ from .cdf_to_tplot import cdf_to_tplot
 from .tplot_utilities import compare_versions
 from .link import link
 from .tplot_resample import tplot_resample
+from .degap import degap
 
 if using_graphics:
     pg.mkQApp()
