@@ -9,7 +9,7 @@ from scipy import interpolate
 from scipy.interpolate import interp1d
 
 """
-    Change out-of-bounds data to NaN 
+    Change out-of-bounds data to NaN.
     
     Parameters:
         tvar1 : str
