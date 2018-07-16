@@ -65,6 +65,9 @@ def tplot(name,
             A full file name and path.  
             If this option is set, the plot will be automatically saved to the file name provided in an HTML format.
             The plots can then be opened and viewed on any browser without any requirements. 
+        bokeh : bool, optional
+            If True, plots data using bokeh
+            Else (bokeh=False or omitted), plots data using PyQtGraph
         gui : bool, optional
             If True, then this function will output the 2 HTML components of the generated plots as string variables.
             This is useful if you are embedded the plots in your own GUI.  For more information, see 
@@ -77,12 +80,12 @@ def tplot(name,
         None
         
     Examples:
-        >>> #Plot a single line
+        >>> #Plot a single line in bokeh
         >>> import pytplot
         >>> x_data = [2,3,4,5,6]
         >>> y_data = [1,2,3,4,5]
         >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> pytplot.tplot("Variable1")
+        >>> pytplot.tplot("Variable1",bokeh=True)
         
         >>> #Display two plots
         >>> x_data = [1,2,3,4,5]

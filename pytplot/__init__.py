@@ -223,6 +223,7 @@ from .timestamp import timestamp
 from .cdf_to_tplot import cdf_to_tplot
 from .tplot_utilities import compare_versions
 from .link import link
+from .tplot_resample import tplot_resample
 
 if using_graphics:
     pg.mkQApp()
