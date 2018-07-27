@@ -45,7 +45,7 @@ def degap(tvar,margin,dt,func=None):
     #add any new indices to current dataframe indices
     new_index = np.unique(np.append(indices,tv1.index))
     #interpolate to create data for new values
-    pytplot.tplot_resample(tvar,new_index,tvar+'_interp')
+    pytplot.resample(tvar,new_index,tvar+'_interp')
         
     if func == 'nan':
         tv1 = pytplot.data_quants[tvar+'_interp'].data

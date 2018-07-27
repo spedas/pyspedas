@@ -36,10 +36,10 @@
 #         >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,1,1,1,1,1,1]})
 #         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[1,2,100,4,5,6,7]})
 #         
-#         >>> pytplot.tplot_math.deriv_data('b','dbdt')
-#         >>> pytplot.tplot_math.spec_mult('diff_en_fluxes','flux_spec_mult')
-#         >>> pytplot.tplot_math.flatten_data('sc_lon',1497830400,1497830528)
-#         >>> pytplot.tplot_math.add_data('c','d','c+d',interp='cubic')
+#         >>> pytplot.analysis_toolbox.derive('b','dbdt')
+#         >>> pytplot.analysis_toolbox.spec_mult('diff_en_fluxes','flux_spec_mult')
+#         >>> pytplot.analysis_toolbox.flatten('sc_lon',1497830400,1497830528)
+#         >>> pytplot.analysis_toolbox.add('c','d','c+d',interp='cubic')
 # 
 # """
 

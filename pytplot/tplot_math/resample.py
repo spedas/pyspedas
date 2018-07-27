@@ -29,7 +29,7 @@ from scipy.interpolate import interp1d
     """
 
                               
-def tplot_resample(tvar1,times,newtvar):
+def resample(tvar1,times,newtvar):
     #create dummy dataframe for times to interpolate to
     pytplot.store_data('times_for_resample',data={'x':times,'y':np.zeros(len(times))})
     df_index = pytplot.data_quants[tvar1].data.columns
