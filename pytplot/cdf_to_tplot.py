@@ -6,12 +6,15 @@
 import cdflib
 import re
 import numpy as np
-from .store_data import store_data
-from .tplot import tplot
-from .options import options
+import pandas as pd
+from pytplot.store_data import store_data
+from pytplot.tplot import tplot
+from pytplot.options import options
+#from pytplot.get_data import get_data
+from pytplot import data_quants
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
-                 prefix='', suffix='', plot=False):
+                 prefix='', suffix='', plot=False, merge=False):
     """
     This function will automatically create tplot variables from CDF files.    
     
@@ -43,28 +46,18 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         plot: bool
             The data is plotted immediately after being generated.  All tplot 
             variables generated from this function will be on the same plot.  
+        merge: bool
+            If True, then data from different cdf files will be merged into 
+            a single pytplot variable. 
             
     Returns:
         List of tplot variables created.
-    
-    Examples:
-        >>> #Create tplot variables from a MAVEN SWEA instrument
-        >>> import pytplot
-        >>> file = "C:/mavencdfs/mvn_swe_l2_svyspec_20170725_v04_r04.cdf"
-        >>> pytplot.cdf_to_tplot(file, prefix='mvn_')
-        
-        >>> #Add the prefix "mvn_", and plot immediately. 
-        >>> import pytplot
-        >>> file = "C:/mavencdfs/mvn_swe_l2_svyspec_20170725_v04_r04.cdf"
-        >>> pytplot.cdf_to_tplot(file, prefix='mvn_', plot=True)
-        
-        >>> #Filter out variables that do not start with "diff"
-        >>> import pytplot
-        >>> file = "C:/mavencdfs/mvn_swe_l2_svyspec_20170725_v04_r04.cdf"
-        >>> pytplot.cdf_to_tplot(file, varformat="diff*")
+
 
     """
+
     stored_variables=[]
+    global data_quants
     
     if isinstance(filenames, str):
         filenames = [filenames]
@@ -115,10 +108,19 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     print("No attribute named DEPEND_TIME or DEPEND_0 in variable "+var)
                     continue
                 data_type_description = cdf_file.varinq(x_axis_var)['Data_Type_Description']
+                
+                #Find data name and if it is already in stored variables
+                var_name = prefix+var+suffix  
+                to_merge = False
+                if (var_name in data_quants.keys()) and (merge == True):
+                    prev_data_quant = data_quants[var_name].data
+                    to_merge = True
+                                
                 xdata=cdf_file.varget(x_axis_var)
                 
-                if 'CDF_TIME' or 'CDF_EPOCH' in data_type_description:
+                if ('CDF_TIME' in data_type_description) or ('CDF_EPOCH' in data_type_description):
                     xdata = cdflib.cdfepoch.unixtime(xdata)
+              
                 ydata=cdf_file.varget(var)
                 if ydata is None:
                     continue
@@ -129,11 +131,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                         var_properties['Data_Type_Description'] == 'CDF_REAL8'):
                         
                         if ydata[ydata==var_atts["FILLVAL"]].size != 0:
-                            ydata[ydata==var_atts["FILLVAL"]] = np.nan
-                        
-                    
-                
-                var_name = prefix+var+suffix
+                            ydata[ydata==var_atts["FILLVAL"]] = np.nan                         
+
                 tplot_data ={'x':xdata,'y':ydata}
                 
                 depend_1 = None
@@ -144,7 +143,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 if "DEPEND_2" in var_atts:
                     if var_atts["DEPEND_2"] in all_cdf_variables:
                         depend_2 = cdf_file.varget(var_atts["DEPEND_2"])
-                if depend_1 is not None and depend_2 is not None:
+                        
+                if (depend_1 is not None) and (depend_2 is not None):        
                     tplot_data['v1'] = depend_1
                     tplot_data['v2'] = depend_2
                 elif depend_1 is not None:
@@ -154,7 +154,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     
                     
                 store_data(var_name, data=tplot_data)
-                stored_variables.append(var_name)
+                if var_name not in stored_variables:
+                    stored_variables.append(var_name)
                 
                 display_type = var_atts.get("DISPLAY_TYPE", "time_series")
                 scale_type = var_atts.get("SCALE_TYP", "linear")
@@ -162,7 +163,12 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     options(var, 'spec', 1)
                 if scale_type == 'log':
                     options(var, 'ylog', 1)
-                        
+                    
+                if to_merge == True:
+                    cur_data_quant = data_quants[var_name].data
+                    merged_data = [prev_data_quant, cur_data_quant]
+                    data_quants[var_name].data = pd.concat(merged_data)
+                    
         cdf_file.close()     
     
     if plot:
