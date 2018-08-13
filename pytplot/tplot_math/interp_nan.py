@@ -12,9 +12,13 @@ import pandas as pd
 
 #LINEAR INTERPOLATION
 #interpolate over NaN data
-def interp_nan(tvar1):
+def interp_nan(tvar1,newtvar,s_limit=0):
     tv1 = pytplot.data_quants[tvar1].data
     tv1 = tv1.astype(float)
-    tv1 = tv1.interpolate(method='linear')
+    if s_limit == 0:
+        tv1 = tv1.interpolate(method='linear')
+    else:
+        tv1 = tv1.interpolate(method='linear',limit=s_limit,limit_direction='both') 
     tv1 = tv1.astype(object)
+    pytplot.store_data(newtvar,data={'x':tv1.index,'y':tv1})
     return tv1

@@ -35,7 +35,7 @@ def interpolate(tvar1,tvar2,interp='linear'):
         new_df = []
         for i in df_index:
             tv2_col = [item[i] for item in tv2_d]
-            f = interp1d(tv2_t,tv2_col,kind='cubic')
+            f = interp1d(tv2_t,tv2_col,kind='cubic',fill_value='extrapolate')
             new_df = new_df + [f(tv1_t)]
         new_df = np.transpose((list(new_df)))
         name1 = tvar1 + "_interp"
