@@ -1,6 +1,5 @@
 import pyqtgraph as pg
 import time
-import numpy as np
 
 class DateAxis(pg.AxisItem):
     '''
