@@ -169,7 +169,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     merged_data = [prev_data_quant, cur_data_quant]
                     data_quants[var_name].data = pd.concat(merged_data)
                     
-        cdf_file.close()     
+        cdf_file.close() if hasattr(cdf_file, "close") else None
     
     if plot:
         tplot(stored_variables)
