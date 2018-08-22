@@ -8,7 +8,7 @@ from pytplot import data_quants
 
 def get_ylimits(name, trg = None):
     """
-    This function will get extract the y limites from the Tplot Variables stored in memory.  
+    This function will get extract the y-limits from the Tplot Variables stored in memory.  
     
     Parameters:
         name : str 
