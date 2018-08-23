@@ -13,7 +13,6 @@ class DateAxis(pg.AxisItem):
         for x in values:
             try:
                 rng = max(values)-min(values)
-                print([time.strftime('%H:%M:%S',time.gmtime(i)) for i in values])
                 # Less than four days' worth of data
                 if rng < 3600*24*4:
                     # If a new day (some day at 00:00:00 UTC), go ahead and actually
