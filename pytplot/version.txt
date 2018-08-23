@@ -1,4 +1,7 @@
-1.2.7
+1.2.8
+
+1.2.8 Changes:
+	-Adding merge functionality to the cdf_to_tplot routine
 
 1.2.5 Changes:
 	-Adding tplot_math, with various basic functions to begin data analysis
