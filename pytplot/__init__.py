@@ -221,6 +221,7 @@ from .timespan import timespan
 from .options import options
 from .timestamp import timestamp
 from .cdf_to_tplot import cdf_to_tplot
+from .netcdf_to_tplot import netcdf_to_tplot
 from .tplot_utilities import compare_versions
 from .link import link
 from .tplot_math import *
