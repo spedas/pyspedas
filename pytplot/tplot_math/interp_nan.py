@@ -15,10 +15,12 @@ import pandas as pd
 def interp_nan(tvar1,newtvar,s_limit=0):
     tv1 = pytplot.data_quants[tvar1].data
     tv1 = tv1.astype(float)
+    cadence = tv1.index[1] - tv1.index[0]
+    n_nans = int(round(s_limit/cadence))
     if s_limit == 0:
         tv1 = tv1.interpolate(method='linear')
     else:
-        tv1 = tv1.interpolate(method='linear',limit=s_limit,limit_direction='both') 
+        tv1 = tv1.interpolate(method='linear',limit=n_nans,limit_direction='both') 
     tv1 = tv1.astype(object)
     pytplot.store_data(newtvar,data={'x':tv1.index,'y':tv1})
     return tv1
