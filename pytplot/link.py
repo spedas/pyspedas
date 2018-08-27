@@ -13,7 +13,7 @@ def link(names, link_name, link_type='alt'):
         
     for i in names:
         if i not in data_quants.keys():
-            print(str(i) + " is currently not in pytplot.")
+            print(str(i) + " is not currently in pytplot.")
             return
         
         if isinstance(i,int):

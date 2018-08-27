@@ -23,7 +23,7 @@ def get_ylimits(name, trg = None):
             The maximum value of y
             
     Examples:
-        >>> # Retrieve the y limits from Variable 1
+        >>> # Retrieve the y-limits from Variable 1
         >>> import pytplot
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
