@@ -18,7 +18,6 @@ def interpolate(tvar1,tvar2,interp='linear'):
     df_index = pytplot.data_quants[tvar1].data.columns
     #interpolate to tvar1 cadence
     if interp == 'linear':
-        print("linear interpolation")
         name1 = tvar1 + "_interp"
         name2 = tvar2 + "_interp"
         new_df = []
@@ -31,7 +30,6 @@ def interpolate(tvar1,tvar2,interp='linear'):
         pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
         pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
     elif interp == 'cubic':
-        print("cubic interpolation")
         new_df = []
         for i in df_index:
             tv2_col = [item[i] for item in tv2_d]
@@ -44,7 +42,6 @@ def interpolate(tvar1,tvar2,interp='linear'):
         pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
         pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
     elif interp == 'quad_spline':
-        print("quadratic spline interpolation")
         new_df = []
         for i in df_index:
             tv2_col = [item[i] for item in tv2_d]
