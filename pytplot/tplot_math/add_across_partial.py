@@ -10,8 +10,8 @@ import numpy as np
 #add tvar data across specific columns, store in new_tvar
 def add_across_partial(tvar1,column_range,new_tvar):
     #separate and add data
-    time = pytplot.data_quants[tvar1].data.index
-    data1 = pytplot.data_quants[tvar1].data
+    time = pytplot.data_quants[tvar1].data.index.copy()
+    data1 = pytplot.data_quants[tvar1].data.copy()
     data = []
     #grab column data
     if len(column_range)==2 and isinstance(column_range[0],int):
