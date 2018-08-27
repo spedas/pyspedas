@@ -14,10 +14,10 @@ import pandas as pd
 #crop tvar arrays to same timespan
 def crop(tvar1,tvar2):
     #grab time and data arrays
-    tv1_t = np.asarray(pytplot.data_quants[tvar1].data.index.tolist())
-    tv1_d = np.asarray(pytplot.data_quants[tvar1].data)
-    tv2_t = np.asarray(pytplot.data_quants[tvar2].data.index.tolist())
-    tv2_d = np.asarray(pytplot.data_quants[tvar2].data)
+    tv1_t = np.asarray(pytplot.data_quants[tvar1].data.index.copy().tolist())
+    tv1_d = np.asarray(pytplot.data_quants[tvar1].data.copy())
+    tv2_t = np.asarray(pytplot.data_quants[tvar2].data.index.copy().tolist())
+    tv2_d = np.asarray(pytplot.data_quants[tvar2].data.copy())
     #find first and last time indices
     t0_1 = tv1_t[0]
     t0_2 = tv2_t[0]
