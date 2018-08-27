@@ -14,8 +14,8 @@ import pandas as pd
 #add tvar data across columns, store in new_tvar
 def add_across(tvar1,new_tvar):
     #separate and add data
-    time = pytplot.data_quants[tvar1].data.index
-    data1 = pytplot.data_quants[tvar1].data
+    time = pytplot.data_quants[tvar1].data.index.copy()
+    data1 = pytplot.data_quants[tvar1].data.copy()
     data = data1.sum(axis=1)
     #store added data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
