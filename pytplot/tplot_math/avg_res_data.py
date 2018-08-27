@@ -9,7 +9,9 @@ import pandas as pd
 #take average of column over discrete periods of time
 def avg_res_data(tvar1,res,new_tvar):
     #grab info from tvar
-    df = pytplot.data_quants[tvar1].data
+    df = pytplot.data_quants[tvar1].data.copy()
+    if pytplot.data_quants[tvar1].spec_bins is not None:
+        dfspec = pytplot.data_quants[tvar1].spec_bins.copy()
     time = df.index
     start_t = df.index[0]
     end_t = df.index[-1]
@@ -33,17 +35,26 @@ def avg_res_data(tvar1,res,new_tvar):
     end_t = np.delete(end_t,0)
     #initialize arrays
     avg_bin_data = []
+    avg_bin_spec = []
     avg_bin_time = np.array([])
     #for each time bin
     for it,t in enumerate(start_t):
         #for each data column
         data_avg_bin = np.array([])
+        spec_avg_bin = np.array([])
         for i in df_index:
             #append localized bin average to data_avg_bin
             data_avg_bin = np.append(data_avg_bin,[(df.loc[start_t[it]:end_t[it]])[i].mean()])
+            if pytplot.data_quants[tvar1].spec_bins is not None:
+                spec_avg_bin = np.append(spec_avg_bin,[(dfspec.loc[start_t[it]:end_t[it]])[i].mean()])
         #append whole array of bin averages (over n columns) to avg_bin_data
         avg_bin_data = avg_bin_data + [data_avg_bin.tolist()]
+        if pytplot.data_quants[tvar1].spec_bins is not None:
+            avg_bin_spec = avg_bin_spec + [spec_avg_bin.tolist()]
         avg_bin_time = np.append(avg_bin_time,t)
     #store data in new_tvar
-    pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data})
+    if pytplot.data_quants[tvar1].spec_bins is not None:
+        pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data,'v':avg_bin_spec})
+    else:
+        pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data})
     return new_tvar    
