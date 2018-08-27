@@ -32,18 +32,31 @@ from scipy.interpolate import interp1d
 def resample(tvar1,times,newtvar):
     #create dummy dataframe for times to interpolate to
     pytplot.store_data('times_for_resample',data={'x':times,'y':np.zeros(len(times))})
-    df_index = pytplot.data_quants[tvar1].data.columns
+    df_index = pytplot.data_quants[tvar1].data.columns.copy()
     new_df = []
-    tvar_orig = pytplot.data_quants[tvar1]
+    spec_df = []
+    tvar_orig = pytplot.data_quants[tvar1].data.copy()
+    if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+        spec_orig = pytplot.data_quants[tvar1].spec_bins.copy()
     #for each column of dataframe
     for i in df_index:
-        tv2_col = [item[i] for item in tvar_orig.data.values]
+        tv2_col = [item[i] for item in tvar_orig.values]
+        if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+            spec_col = [item[i] for item in spec_orig.values]
         #linear interpolation
-        f = interp1d(tvar_orig.data.index,tv2_col,fill_value="extrapolate")
+        f = interp1d(tvar_orig.index,tv2_col,fill_value="extrapolate")
         new_df = new_df + [f(times)]
+        if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+            g = interp1d(tvar_orig.index,spec_col,fill_value="extrapolate")
+            spec_df = spec_df + [g(times)]
     new_df = np.transpose((list(new_df)))
-    #store interpolated tvar'
-    pytplot.store_data(newtvar, data={'x':times,'y':new_df})
+    if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+        spec_df = np.transpose((list(spec_df)))
+    #store interpolated tvar
+    if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+        pytplot.store_data(newtvar, data={'x':times,'y':new_df,'v':spec_df})
+    else:
+        pytplot.store_data(newtvar, data={'x':times,'y':new_df})
     #delete dummy dataframe from pytplot.data_quants
     pytplot.del_data(name='times_for_resample')
     return
