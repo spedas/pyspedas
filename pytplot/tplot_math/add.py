@@ -17,9 +17,9 @@ def add(tvar1,tvar2,new_tvar,interp='linear'):
     #interpolate tvars
     tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
     #separate and add data
-    time = pytplot.data_quants[tv1].data.index
-    data1 = pytplot.data_quants[tv1].data
-    data2 = pytplot.data_quants[tv2].data
+    time = pytplot.data_quants[tv1].data.index.copy()
+    data1 = pytplot.data_quants[tv1].data.copy()
+    data2 = pytplot.data_quants[tv2].data.copy()
     data = data1+data2
     #store added data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
