@@ -32,7 +32,7 @@ import numpy as np
 
 #pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
 def degap(tvar,margin,dt,func=None):
-    tv1 = pytplot.data_quants[tvar].data
+    tv1 = pytplot.data_quants[tvar].data.copy()
     indices = []
     #create array of dt between margin parameters
     for m in margin:
@@ -52,7 +52,10 @@ def degap(tvar,margin,dt,func=None):
         #any location between margins will be changed to NaN
         for i in indices:
             tv1.loc[i[0]:i[-1]] = np.nan
-        pytplot.store_data(tvar+'_nan',data = {'x':tv1.index.values,'y':tv1})
+        if (pytplot.data_quants[tvar].spec_bins is not None) and (pytplot.data_quants[tvar].spec_bins_time_varying == True):
+            pytplot.store_data(tvar+'_nan',data = {'x':tv1.index.values,'y':tv1,'v':pytplot.data_quants[tvar].spec_bins})
+        else:
+            pytplot.store_data(tvar+'_nan',data = {'x':tv1.index.values,'y':tv1})
         pytplot.del_data(name=tvar+'_interp')
 
     if func == 'ffill':
@@ -62,7 +65,10 @@ def degap(tvar,margin,dt,func=None):
             tv1.loc[i[0]:i[-1]] = np.nan
         #forward fill NaNs in the dataframe
         tv1 = tv1.fillna(method='ffill')
-        pytplot.store_data(tvar+'_ffill',data = {'x':tv1.index.values,'y':tv1})
+        if (pytplot.data_quants[tvar].spec_bins is not None) and (pytplot.data_quants[tvar].spec_bins_time_varying == True):
+            pytplot.store_data(tvar+'_ffill',data = {'x':tv1.index.values,'y':tv1,'v':pytplot.data_quants[tvar].spec_bins})
+        else:
+            pytplot.store_data(tvar+'_ffill',data = {'x':tv1.index.values,'y':tv1})
         pytplot.del_data(name=tvar+'_interp')
 
     return
