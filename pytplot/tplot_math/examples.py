@@ -39,7 +39,10 @@ pytplot.store_data('h', data={'x':[0,4,8,12,16,19,21], 'y':[[8,1,1],[100,2,3],[4
 # print('clip')
 # pytplot.clip('d',2,6,'d_clip')
 # print(pytplot.data_quants['d_clip'].data)
-#  
+# pytplot.clip('h',2,6,'h_clip')
+# print(pytplot.data_quants['h_clip'].data)
+# print(pytplot.data_quants['h_clip'].spec_bins)
+#
 # print('crop')
 # pytplot.crop('a','b')
 #  
@@ -47,10 +50,16 @@ pytplot.store_data('h', data={'x':[0,4,8,12,16,19,21], 'y':[[8,1,1],[100,2,3],[4
 # pytplot.deflag('d',[100,90,7,2,57],'d_deflag')
 # print(pytplot.data_quants['d'].data)
 # print(pytplot.data_quants['d_deflag'].data)
-#  
-# print('degap')
-# pytplot.degap('b',[[3,7],[13,17]],2.3,func='nan')
-# print(pytplot.data_quants['b_nan'].data)
+# pytplot.deflag('h',[100,90,7,2,57],'h_deflag')
+# print(pytplot.data_quants['h_deflag'].data)
+# print(pytplot.data_quants['h_deflag'].spec_bins)
+#
+print('degap')
+pytplot.degap('b',[[3,7],[13,17]],2.3,func='nan')
+print(pytplot.data_quants['b_nan'].data)
+pytplot.degap('h',[[3,7],[13,17]],2.3,func='nan')
+print(pytplot.data_quants['h_nan'].data)
+print(pytplot.data_quants['h_nan'].spec_bins)
 #  
 # print('derive')
 # pytplot.derive('b','dbdt')
@@ -87,12 +96,12 @@ pytplot.store_data('h', data={'x':[0,4,8,12,16,19,21], 'y':[[8,1,1],[100,2,3],[4
 # print('pwr_spec')
 # print('FINISH POWER SPECTRUM')
 # 
-print('resample')
-# pytplot.resample('d',[3,4,5,6,7,18],'d_resampled')
-# print(pytplot.data_quants['d_resampled'].data)
-pytplot.resample('h',[3,4,5,6,7,18],'h_resampled')
-print(pytplot.data_quants['h_resampled'].data)
-print(pytplot.data_quants['h_resampled'].spec_bins)
+# print('resample')
+# # pytplot.resample('d',[3,4,5,6,7,18],'d_resampled')
+# # print(pytplot.data_quants['d_resampled'].data)
+# pytplot.resample('h',[3,4,5,6,7,18],'h_resampled')
+# print(pytplot.data_quants['h_resampled'].data)
+# print(pytplot.data_quants['h_resampled'].spec_bins)
 # 
 # print('spec_mult')
 # pytplot.spec_mult('h','h_specmult')
