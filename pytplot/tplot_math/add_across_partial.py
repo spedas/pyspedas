@@ -8,7 +8,7 @@ import numpy as np
 
 #PARTIAL ADD ACROSS COLUMNS
 #add tvar data across specific columns, store in new_tvar
-def add_across_partial(tvar1,column_range,new_tvar):
+def add_across_partial(tvar1,column_range,new_tvar='tvar_aap'):
     #separate and add data
     time = pytplot.data_quants[tvar1].data.index.copy()
     data1 = pytplot.data_quants[tvar1].data.copy()

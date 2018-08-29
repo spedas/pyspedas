@@ -7,7 +7,7 @@ import pandas as pd
 
 #JOIN TVARS
 #join TVars into single TVar with multiple columns
-def join_vec(tvars,newtvar):
+def join_vec(tvars,newtvar='tvar_join'):
     df = pytplot.data_quants[tvars[0]].data
     for i,val in enumerate(tvars):
         if i == 0:

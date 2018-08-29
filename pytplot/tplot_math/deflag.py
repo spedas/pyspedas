@@ -29,7 +29,7 @@ from scipy.interpolate import interp1d
     """
 
                               
-def deflag(tvar1,flags,newtvar):
+def deflag(tvar1,flags,newtvar='tvar_deflag'):
     #if int input, make list
     if not isinstance(flags,list):
         flags = [flags]

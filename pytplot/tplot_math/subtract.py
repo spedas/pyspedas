@@ -7,7 +7,7 @@ import pandas as pd
 
 #SUBTRACT
 #subtract two tvar data arrays, store in new_tvar
-def subtract(tvar1,tvar2,new_tvar,interp='linear'):
+def subtract(tvar1,tvar2,new_tvar='tvar_subtract',interp='linear'):
     #interpolate tvars
     tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
     #separate and subtract data

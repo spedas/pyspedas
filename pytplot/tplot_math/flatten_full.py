@@ -12,7 +12,7 @@ import pandas as pd
 
 #FULL FLATTEN
 #take average of each column of data, divide column by column average
-def flatten_full(tvar1,new_tvar):
+def flatten_full(tvar1,new_tvar='tvar_ff'):
     df = pytplot.data_quants[tvar1].data
     df_index = list(df.columns)
     #divide by column average

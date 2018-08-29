@@ -31,7 +31,7 @@ from scipy.interpolate import interp1d
     """
 
                               
-def clip(tvar1,ymin,ymax,newtvar):
+def clip(tvar1,ymin,ymax,newtvar='tvar_clip'):
     #grab column indices
     df_index = pytplot.data_quants[tvar1].data.columns.copy()
     new_df = []

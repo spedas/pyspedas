@@ -12,7 +12,7 @@ import pandas as pd
 
 #ADD ACROSS COLUMNS
 #add tvar data across columns, store in new_tvar
-def add_across(tvar1,new_tvar):
+def add_across(tvar1,new_tvar='tvar_aa'):
     #separate and add data
     time = pytplot.data_quants[tvar1].data.index.copy()
     data1 = pytplot.data_quants[tvar1].data.copy()

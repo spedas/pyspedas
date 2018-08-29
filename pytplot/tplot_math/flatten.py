@@ -12,7 +12,7 @@ import pandas as pd
 
 #PARTIAL FLATTEN
 #take average of each column of data, divide column by average over specified time
-def flatten(tvar1,start_t,end_t,new_tvar):
+def flatten(tvar1,start_t,end_t,new_tvar='tvar_flat'):
     df = pytplot.data_quants[tvar1].data
     time = df.index
     #if time given not an index, choose closest time

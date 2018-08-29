@@ -7,7 +7,7 @@ import pandas as pd
 
 #AVERAGE AT RESOLUTION
 #take average of column over discrete periods of time
-def avg_res_data(tvar1,res,new_tvar):
+def avg_res_data(tvar1,res,new_tvar='tvar_avg_res'):
     #grab info from tvar
     df = pytplot.data_quants[tvar1].data.copy()
     if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):

@@ -12,7 +12,7 @@ import pandas as pd
 
 #LINEAR INTERPOLATION
 #interpolate over NaN data
-def interp_nan(tvar1,newtvar,s_limit=0):
+def interp_nan(tvar1,newtvar='tvar_interp_nan',s_limit=0):
     tv1 = pytplot.data_quants[tvar1].data.copy()
     tv1 = tv1.astype(float)
     cadence = tv1.index[1] - tv1.index[0]

@@ -7,7 +7,7 @@ import pandas as pd
 
 #MULTIPLY
 #multiply two tvar data arrays, store in new_tvar
-def multiply(tvar1,tvar2,new_tvar,interp='linear'):
+def multiply(tvar1,tvar2,new_tvar='tvar_multiply',interp='linear'):
     #interpolate tvars
     tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
     #separate and multiply data

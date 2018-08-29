@@ -12,7 +12,7 @@ import pandas as pd
 
 #DERIVE
 #take derivative w.r.t. time, store in new_tvar
-def derive(tvar1,new_tvar):
+def derive(tvar1,new_tvar='tvar_derive'):
     #separate and derive data
     time = pytplot.data_quants[tvar1].data.index
     data1 = pytplot.data_quants[tvar1].data
@@ -25,5 +25,8 @@ def derive(tvar1,new_tvar):
     new_df = np.transpose((list(new_df)))
     time = np.delete(time,0)
     #store differentiated data
-    pytplot.store_data(new_tvar,data={'x':time, 'y':new_df})
+    if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+        pytplot.store_data(new_tvar,data={'x':time, 'y':new_df, 'v':pytplot.data_quants[tvar1].spec_bins})
+    else:
+        pytplot.store_data(new_tvar,data={'x':time, 'y':new_df})
     return new_tvar

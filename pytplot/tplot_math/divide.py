@@ -12,7 +12,7 @@ import pandas as pd
 
 #DIVIDE
 #divide two tvar data arrays, store in new_tvar
-def divide(tvar1,tvar2,new_tvar,interp='linear'):
+def divide(tvar1,tvar2,new_tvar='tvar_divide',interp='linear'):
     #interpolate tvars
     tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
     #separate and divide data
