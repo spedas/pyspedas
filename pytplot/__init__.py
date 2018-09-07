@@ -6,16 +6,6 @@
 import numpy as np
 from _collections import OrderedDict
 
-
-#If we are in an ipython environment, set the gui to be qt5
-#This allows the user to interact with the window in real time
-try:
-    magic = get_ipython().magic
-    magic(u'%gui qt5')
-except:
-    pass
-
-
 #This variable will be constantly changed depending on what x value the user is hovering over
 class HoverTime(object):
     
@@ -229,6 +219,14 @@ from .tplot_resample import tplot_resample
 from .degap import degap
 from .clip import clip
 from .deflag import deflag
+
+#If we are in an ipython environment, set the gui to be qt5
+#This allows the user to interact with the window in real time
+try:
+    magic = get_ipython().magic
+    magic(u'%gui qt5')
+except:
+    pass
 
 if using_graphics:
     pg.mkQApp()
