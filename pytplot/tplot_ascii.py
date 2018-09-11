@@ -6,7 +6,7 @@
 import pytplot
 import numpy as np
 
-def tplot_ascii(tvar,filename=None):
+def tplot_ascii(tvar,filename='tvar_data'):
     #grab data, prepend index column
     df = pytplot.data_quants[tvar].data.reset_index()
     sbf = pytplot.data_quants[tvar].spec_bins.reset_index()
