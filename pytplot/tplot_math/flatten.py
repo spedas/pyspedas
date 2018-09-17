@@ -4,11 +4,6 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
-import pydivide
-import numpy as np
-from scipy import interpolate
-from scipy.interpolate import interp1d
-import pandas as pd
 
 #PARTIAL FLATTEN
 #take average of each column of data, divide column by average over specified time

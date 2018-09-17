@@ -5,8 +5,6 @@
 
 import pytplot
 import numpy as np
-from scipy import interpolate
-from scipy.interpolate import interp1d
 
 """
     Change specified 'flagged' data to NaN.

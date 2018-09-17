@@ -1,5 +1,4 @@
 import numpy as np
-import scipy
 import pytplot
 import pydivide
 from scipy import signal
@@ -28,7 +27,8 @@ def pwr_spec(tvar,nbp=256,nsp=128):
         y_n = y_n - y_trend
         print(y_n)
     
-    w = scipy.signal.get_window("hanning",nbp)
-    w = scipy.signal.periodogram(y[0:nbp], window = w, detrend = lambda x: x)
+    w = signal.get_window("hanning",nbp)
+    f,pxx = signal.periodogram(y[0:nbp], window = w, detrend = lambda x: x)
+    
 pwr_spec('sgx')
     

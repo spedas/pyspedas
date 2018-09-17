@@ -4,11 +4,9 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
-import pydivide
 import numpy as np
 from scipy import interpolate
 from scipy.interpolate import interp1d
-import pandas as pd
 
 #TVAR INTERPOLATION
 #interpolate tvar2 to tvar1 cadence

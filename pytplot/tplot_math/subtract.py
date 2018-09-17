@@ -1,10 +1,9 @@
-import pytplot
-import pydivide
-import numpy as np
-from scipy import interpolate
-from scipy.interpolate import interp1d
-import pandas as pd
+# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Released under the MIT license.
+# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
+# Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
+import pytplot
 #SUBTRACT
 #subtract two tvar data arrays, store in new_tvar
 def subtract(tvar1,tvar2,new_tvar='tvar_subtract',interp='linear'):

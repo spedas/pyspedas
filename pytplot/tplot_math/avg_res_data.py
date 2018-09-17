@@ -1,9 +1,6 @@
 import pytplot
-import pydivide
 import numpy as np
-from scipy import interpolate
-from scipy.interpolate import interp1d
-import pandas as pd
+
 
 #AVERAGE AT RESOLUTION
 #take average of column over discrete periods of time
