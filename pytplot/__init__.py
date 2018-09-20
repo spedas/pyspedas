@@ -225,7 +225,6 @@ from .link import link
 try:
     magic = get_ipython().magic
     magic(u'%gui qt5')
-    print("i set the gui")
 except:
     pass
 
