@@ -1,4 +1,7 @@
-1.2.9
+1.2.11
+
+1.2.11 Changes:
+    -Commenting out tplot_math stuff
 
 1.2.9 Changes:
 	-Added a netcdf_to_tplot reader
