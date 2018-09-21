@@ -172,8 +172,9 @@ def tplot(name,
         available_qt_window.show()
         available_qt_window.activateWindow()
 
-        # Call 2D interactive window; This will only plot something when spectrograms are involved.
-        Interactive2DPlot.Interactive2DPlot()
+        if interactive:
+           # Call 2D interactive window; This will only plot something when spectrograms are involved.
+            Interactive2DPlot.Interactive2DPlot()
 
         # (hasattr(sys, 'ps1')) checks to see if we're in ipython
         # plots the plots!
