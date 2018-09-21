@@ -9,19 +9,21 @@ import os
 import pytplot
 from bokeh.io import output_file, show, output_notebook, save
 from . import HTMLPlotter
+from . import Interactive2DPlot
 from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
+import numpy as np
 
 
 if pytplot.using_graphics:
     from pyqtgraph.Qt import QtCore, QtGui
+    import pyqtgraph as pg
     from . import QtPlotter
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
     except:
         from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
-
 
 def tplot(name, 
           var_label = None, 
@@ -107,7 +109,6 @@ def tplot(name,
         >>> #Plot all 3 tplot variables, sending the HTML output to a pair of strings
         >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
-    
     if pytplot.using_graphics == False and save_file==None:
         print("Qt was not successfully imported.  Specify save_file to save the file as a .html file.")
         return
@@ -124,10 +125,10 @@ def tplot(name,
         if name[i] not in pytplot.data_quants.keys():
             print(str(i) + " is currently not in pytplot")
             return
-    
+
     if isinstance(var_label, int):
         var_label = list(pytplot.data_quants.keys())[var_label]
-        
+
     if bokeh:
         layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, interactive=interactive)
         #Output types
@@ -170,6 +171,13 @@ def tplot(name,
         available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
         available_qt_window.show()
         available_qt_window.activateWindow()
+
+        # Call 2D interactive window; This will only plot something when spectrograms are involved.
+        Interactive2DPlot.Interactive2DPlot()
+
+        # (hasattr(sys, 'ps1')) checks to see if we're in ipython
+        # plots the plots!
         if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
             QtGui.QApplication.instance().exec_()
+
         return
