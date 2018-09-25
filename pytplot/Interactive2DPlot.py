@@ -81,12 +81,17 @@ def Interactive2DPlot():
         # TL;DR, t comes from getting the mouse location in pyqtgraph every time the mouse is moved
         # and the below function will update the plot's position as the mouse is moved.
         def update(t, name):
-            # First, get the time closest to the x position the mouse is over.
-            time_array = np.array(data[name][2])
-            array = np.asarray(time_array)
-            idx = (np.abs(array - t)).argmin()
-            # plot data based on that located time.
-            plot_data.setData(data[name][0][:], list(data[name][1][idx]))
+            if name in valid_variables:
+                # When hovering over a spectrogram plot...
+                # First, get the time closest to the x position the mouse is over.
+                time_array = np.array(data[name][2])
+                array = np.asarray(time_array)
+                idx = (np.abs(array - t)).argmin()
+                # plot data based on that located time.
+                plot_data.setData(data[name][0][:], list(data[name][1][idx]))
+            else:
+                # Cover the situation where you hover over a non-spectrogram plot
+                plot_data.setData([],[])
 
         # Make the above function called whenever hover_time is updated.
         pytplot.hover_time.register_listener(update)
