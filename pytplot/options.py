@@ -67,6 +67,11 @@ def options(name, option, value):
     option = option.lower()
     
     for i in name:
+        # Setting default value for y_axis_type and z_axis_type due to problems with this in
+        # Interactive2DPlot if this isn't done.
+        data_quants[i].yaxis_opt['y_axis_type'] = 'linear'
+        data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
+        
         if i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
