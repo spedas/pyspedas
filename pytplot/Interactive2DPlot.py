@@ -3,23 +3,30 @@ import numpy as np
 import pytplot
 from pyqtgraph.Qt import QtGui, QtCore
 
+
 def get_data(names):
-    # Just grab variables that are spectrograms
+    # Just grab variables that are spectrograms.
     valid_vars = list()
     for n in names:
         if pytplot.data_quants[n].spec_bins is not None:
             valid_vars.append(n)
     return valid_vars
 
+
 def get_plot_labels(names):
-    # Get z label for plots
+    # Get labels and axis types for plots.
+    plot_labels = {}
     for n in names:
         if pytplot.data_quants[n].spec_bins is not None:
             zlabel = pytplot.data_quants[n].zaxis_opt['axis_label']
-    return zlabel
+            ztype = pytplot.data_quants[n].zaxis_opt['z_axis_type']
+            ytype = pytplot.data_quants[n].yaxis_opt['y_axis_type']
+            plot_labels[n] = [zlabel, ytype, ztype]
+    return plot_labels
+
 
 def get_bins(var):
-    # Get bins to be plotted
+    # Get bins to be plotted.
     bins = list()
     for name, values in pytplot.data_quants[var].spec_bins.iteritems():
         # name = variable name
@@ -27,8 +34,9 @@ def get_bins(var):
         bins.append(values.values[0])
     return bins
 
+
 def get_z_t_values(var):
-    # Get data to be plotted and time data for indexing
+    # Get data to be plotted and time data for indexing.
     time_values = list()
     z_values = list()
     for r, rows in pytplot.data_quants[var].data.iterrows():
@@ -38,7 +46,13 @@ def get_z_t_values(var):
         z_values.append(rows.values)
     return time_values, z_values
 
+
 def Interactive2DPlot():
+    """ If the interactive option is set to True in tplot, this function will take in the stored tplot variables
+    and create a 2D interactive window that will pop up when any one of the tplot variables is plotted (so long
+    as at least one of the tplot variables is a spectrogram). If the mouse hovers over a spectrogram plot, data
+    for that point in time on the spectrogram plot will be plotted in the 2D interactive window. If the mouse
+    hovers over a non-spectrogram plot, the 2D interactive window returns an empty plot. """
 
     # Grab names of data loaded in as tplot variables.
     names = list(pytplot.data_quants.keys())
@@ -48,7 +62,7 @@ def Interactive2DPlot():
     # Don't plot anything unless we have spectrograms with which to work.
     if valid_variables != []:
         # Get z label
-        zlab = get_plot_labels(names)
+        labels = get_plot_labels(names)
 
         # Put together data in easy-to-access format for plots.
         data = {}
@@ -58,12 +72,10 @@ def Interactive2DPlot():
             data[name] = [bins, z_values, time_values]
 
         # Set up the 2D interactive plot
-        pytplot.interactive_window = pg.GraphicsWindow(title='Some title')
+        pytplot.interactive_window = pg.GraphicsWindow()
         pytplot.interactive_window.resize(1000,600)
         pytplot.interactive_window.setWindowTitle('Interactive Window')
         plot = pytplot.interactive_window.addPlot(title='2D Interactive Plot', row=0, col=0)
-        plot.setLabel('bottom','{} bins'.format(zlab))
-        plot.setLabel('left','{}'.format(zlab))
         # Make it so that whenever this first starts up, you just have an empty plot
         plot_data = plot.plot([],[])
 
@@ -87,10 +99,25 @@ def Interactive2DPlot():
                 time_array = np.array(data[name][2])
                 array = np.asarray(time_array)
                 idx = (np.abs(array - t)).argmin()
-                # plot data based on that located time.
+                # If the spectrogram plot's y and z axes (corresponding to 2D interactive window's
+                # x and y axes) are logarithmic, make sure the 2D interactive plot's axes are
+                # also logarithmic.
+                x_axis = False
+                y_axis = False
+                if labels[name][1] == 'log':
+                    x_axis = True
+                if labels[name][2] == 'log':
+                    y_axis = True
+                # Set plot labels and plot data based on time we're hovering over.
+                plot.setLabel('bottom', '{} bins'.format(labels[name][0]))
+                plot.setLabel('left', '{}'.format(labels[name][0]))
+                plot.setLogMode(x_axis, y_axis)
                 plot_data.setData(data[name][0][:], list(data[name][1][idx]))
             else:
-                # Cover the situation where you hover over a non-spectrogram plot
+                # Cover the situation where you hover over a non-spectrogram plot.
+                plot.setLogMode(False, False)
+                plot.setLabel('bottom', '')
+                plot.setLabel('left', '')
                 plot_data.setData([],[])
 
         # Make the above function called whenever hover_time is updated.
