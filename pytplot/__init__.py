@@ -233,7 +233,6 @@ from .link import link
 
 #If we are in an ipython environment, set the gui to be qt5
 #This allows the user to interact with the window in real time
-
 try:
     magic = get_ipython().magic
     magic(u'%gui qt5')
