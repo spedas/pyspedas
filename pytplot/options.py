@@ -54,19 +54,18 @@ def options(name, option, value):
         
         >>> # Change Variable1 to use a log scale
         >>> pytplot.options('Variable1', 'ylog', 1)
-        
-        >>> # Change the line color of Variable1
-        >>> pytplot.options('Variable1', 'ylog', 1)
     
     """
-    #if isinstance(name,int):
-    #    name = tplot_common.data_quants.keys()[name]
+
     if not isinstance(name, list):
         name = [name]
     
     option = option.lower()
     
     for i in name:
+        data_quants[i].yaxis_opt['crosshair'] = 'Bleh'
+        data_quants[i].zaxis_opt['crosshair'] = 'GROSS'
+
         if i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
@@ -231,7 +230,17 @@ def options(name, option, value):
         
         if option == 'plotter': 
             data_quants[i].extras['plotter'] = value
-    
+
+        if option == 'crosshair_x':
+            data_quants[i].xaxis_opt['crosshair'] = value
+
+        if option == 'crosshair_y':
+            data_quants[i].yaxis_opt['crosshair'] = value
+            print(data_quants[i].yaxis_opt['crosshair'])
+
+        if option == 'crosshair_z':
+            data_quants[i].zaxis_opt['crosshair'] = value
+            print(data_quants[i].zaxis_opt['crosshair'])
     return
         
     

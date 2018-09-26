@@ -41,8 +41,11 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.legendvb.setXRange(0,1, padding=0)
         self.legendvb.setYRange(0,1, padding=0)
         self.addItem(self.legendvb,0,1)       
-        
-        
+
+        # Set crosshair names
+        self.y_crosshair_name = pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']
+        self.z_crosshair_name = pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair']
+
         self.curves = []
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
@@ -59,9 +62,22 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
         self.hoverlegend = CustomLegendItem(offset=(0,0))
         self.hoverlegend.setItem("Date:", "0")
-        self.hoverlegend.setItem("Time:", "0")
-        self.hoverlegend.setItem("Energy:", "0")
-        self.hoverlegend.setItem("Flux:", "0")
+        # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
+        try:
+            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair']+':', "0")
+        except:
+            self.hoverlegend.setItem("Time:", "0")
+
+        self.hoverlegend.setItem(self.y_crosshair_name + ':', "0")
+        self.hoverlegend.setItem(self.z_crosshair_name + ':', "0")
+        # try:
+        #     self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']+':', "0")
+        # except:
+        #     self.hoverlegend.setItem("Y:", "0")
+        # try:
+        #     self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair']+':', "0")
+        # except:
+        #     self.hoverlegend.setItem("Z:", "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
         
@@ -204,9 +220,24 @@ class TVarFigureSpec(pg.GraphicsLayout):
             
             self.hoverlegend.setVisible(True)
             self.hoverlegend.setItem("Date:", date)
-            self.hoverlegend.setItem("Time:", time)
-            self.hoverlegend.setItem("Energy:", str(y_closest))
-            self.hoverlegend.setItem("Flux:", str(dp))
+            # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
+            try:
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', time)
+            except:
+                self.hoverlegend.setItem("Time:", time)
+            # try:
+            #     self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':',
+            #                              str(y_closest))
+            # except:
+            #     self.hoverlegend.setItem("Y:", str(y_closest))
+            self.hoverlegend.setItem(self.y_crosshair_name + ':', str(y_closest))
+            self.hoverlegend.setItem(self.z_crosshair_name + ':', str(dp))
+
+            # try:
+            #     self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair'] + ':', str(dp))
+            # except:
+            #     self.hoverlegend.setItem("Z:", str(dp))
+
         else:
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
