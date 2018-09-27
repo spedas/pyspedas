@@ -63,9 +63,6 @@ def options(name, option, value):
     option = option.lower()
     
     for i in name:
-        data_quants[i].yaxis_opt['crosshair'] = 'Bleh'
-        data_quants[i].zaxis_opt['crosshair'] = 'GROSS'
-
         if i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
@@ -236,11 +233,9 @@ def options(name, option, value):
 
         if option == 'crosshair_y':
             data_quants[i].yaxis_opt['crosshair'] = value
-            print(data_quants[i].yaxis_opt['crosshair'])
 
         if option == 'crosshair_z':
             data_quants[i].zaxis_opt['crosshair'] = value
-            print(data_quants[i].zaxis_opt['crosshair'])
     return
         
     

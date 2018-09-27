@@ -40,11 +40,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.legendvb.setMaximumWidth(100)
         self.legendvb.setXRange(0,1, padding=0)
         self.legendvb.setYRange(0,1, padding=0)
-        self.addItem(self.legendvb,0,1)       
-
-        # Set crosshair names
-        self.y_crosshair_name = pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']
-        self.z_crosshair_name = pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair']
+        self.addItem(self.legendvb,0,1)
 
         self.curves = []
         self.colors = self._setcolors()
@@ -66,18 +62,15 @@ class TVarFigureSpec(pg.GraphicsLayout):
         try:
             self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair']+':', "0")
         except:
-            self.hoverlegend.setItem("Time:", "0")
-
-        self.hoverlegend.setItem(self.y_crosshair_name + ':', "0")
-        self.hoverlegend.setItem(self.z_crosshair_name + ':', "0")
-        # try:
-        #     self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']+':', "0")
-        # except:
-        #     self.hoverlegend.setItem("Y:", "0")
-        # try:
-        #     self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair']+':', "0")
-        # except:
-        #     self.hoverlegend.setItem("Z:", "0")
+            self.hoverlegend.setItem(pytplot.default_values['x_crosshair_name']+':', "0")
+        try:
+            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']+':', "0")
+        except:
+            self.hoverlegend.setItem(pytplot.default_values['y_crosshair_name'] + ':', "0")
+        try:
+            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair']+':', "0")
+        except:
+            self.hoverlegend.setItem(pytplot.default_values['z_crosshair_name']+':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
         
@@ -224,19 +217,16 @@ class TVarFigureSpec(pg.GraphicsLayout):
             try:
                 self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', time)
             except:
-                self.hoverlegend.setItem("Time:", time)
-            # try:
-            #     self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':',
-            #                              str(y_closest))
-            # except:
-            #     self.hoverlegend.setItem("Y:", str(y_closest))
-            self.hoverlegend.setItem(self.y_crosshair_name + ':', str(y_closest))
-            self.hoverlegend.setItem(self.z_crosshair_name + ':', str(dp))
+                self.hoverlegend.setItem(pytplot.default_values['x_crosshair_name'] + ':', time)
+            try:
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', str(y_closest))
+            except:
+                self.hoverlegend.setItem(pytplot.default_values['y_crosshair_name'] + ':', str(y_closest))
+            try:
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair'] + ':', str(dp))
+            except:
+                self.hoverlegend.setItem(pytplot.default_values['z_crosshair_name'] + ':', str(dp))
 
-            # try:
-            #     self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair'] + ':', str(dp))
-            # except:
-            #     self.hoverlegend.setItem("Z:", str(dp))
 
         else:
             self.hoverlegend.setVisible(False)

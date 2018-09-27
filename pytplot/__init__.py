@@ -64,7 +64,7 @@ class TVar(object):
     This exists to encapsulate the data and details about how to plot the data.  
     """
     
-    def __init__(self, name, number, data, spec_bins, yaxis_opt, zaxis_opt, line_opt,
+    def __init__(self, name, number, data, spec_bins, xaxis_opt, yaxis_opt, zaxis_opt, line_opt,
                  trange, dtype, create_time, time_bar, extras, links):
         
         #Name of the TVar
@@ -75,6 +75,8 @@ class TVar(object):
         self.data = data
         #The spec_bins, if applicable
         self.spec_bins = spec_bins
+        #Dictionary of the x axis options
+        self.xaxis_opt = xaxis_opt
         #Dictionary of the y axis options
         self.yaxis_opt = yaxis_opt
         #Dictionary of the z axis options
@@ -219,6 +221,13 @@ from .link import link
 #from .degap import degap
 #from .clip import clip
 #from .deflag import deflag
+
+# Add in default values for crosshair names, y/z axis_opt, etc.
+default_values = {'x_crosshair_name': 'X',
+                  'y_crosshair_name': 'Y',
+                  'z_crosshair_name': 'Z',
+                  'y_axis_type': 'linear',
+                  'z_axis_type': 'linear'}
 
 #If we are in an ipython environment, set the gui to be qt5
 #This allows the user to interact with the window in real time

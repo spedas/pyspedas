@@ -127,7 +127,7 @@ def store_data(name, data=None, delete=False, newname=None):
         else:
             spec_bins = None
         
-        
+    xaxis_opt = {}
     yaxis_opt = dict(axis_label = name)
     zaxis_opt = {}
     line_opt = {}
@@ -137,7 +137,7 @@ def store_data(name, data=None, delete=False, newname=None):
     #     that aren't actual attributes in Bokeh
     extras = dict(panel_size = 1)
     links = {}
-    temp = TVar(name, tplot_num, df, spec_bins, yaxis_opt, zaxis_opt, line_opt,
+    temp = TVar(name, tplot_num, df, spec_bins, xaxis_opt, yaxis_opt, zaxis_opt, line_opt,
                 trange, dtype, create_time, time_bar, extras, links)
     
     data_quants[name] = temp

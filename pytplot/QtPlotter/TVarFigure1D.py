@@ -71,8 +71,16 @@ class TVarFigure1D(pg.GraphicsLayout):
         
         self.hoverlegend = CustomLegendItem(offset=(0,0))
         self.hoverlegend.setItem("Date:", "0")
-        self.hoverlegend.setItem("Time:", "0")
-        self.hoverlegend.setItem("Data:", "0")
+        # Allow the user to set x-axis(time) and y-axis names in crosshairs
+        try:
+            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair']+':', "0")
+        except:
+            self.hoverlegend.setItem(pytplot.default_values['x_crosshair_name']+':', "0")
+        try:
+            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']+':', "0")
+        except:
+            self.hoverlegend.setItem(pytplot.default_values['y_crosshair_name'] + ':', "0")
+
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)  
         
@@ -171,8 +179,15 @@ class TVarFigure1D(pg.GraphicsLayout):
                            
             self.hoverlegend.setVisible(True)
             self.hoverlegend.setItem("Date:", date)
-            self.hoverlegend.setItem("Time:", time)
-            self.hoverlegend.setItem("Data:", str(index_y))
+            # Allow the user to set x-axis(time) and y-axis data names in crosshairs
+            try:
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', time)
+            except:
+                self.hoverlegend.setItem(pytplot.default_values['x_crosshair_name'] + ':', time)
+            try:
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', str(index_y))
+            except:
+                self.hoverlegend.setItem(pytplot.default_values['y_crosshair_name'] + ':', str(index_y))
         else:
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
