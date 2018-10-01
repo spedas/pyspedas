@@ -173,7 +173,7 @@ def tplot(name,
 
         if interactive:
             # Call 2D interactive window; This will only plot something when spectrograms are involved.
-            interactive2dPlot.interactive2DPlot()
+            interactive2dPlot.interactive2dplot()
 
         # (hasattr(sys, 'ps1')) checks to see if we're in ipython
         # plots the plots!
