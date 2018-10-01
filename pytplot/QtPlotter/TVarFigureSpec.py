@@ -191,9 +191,11 @@ class TVarFigureSpec(pg.GraphicsLayout):
             y_closest = y[y_argmin]
             index = int((np.nonzero(y == y_closest))[0])
             dp = dataframe[index][x_closest]
-            # add crosshairs
+            
+	    # add crosshairs
             if self._mouseMovedFunction is not None:
-                self._mouseMovedFunction(int(mousePoint.x()))
+                # Associate mouse position with current plot you're mousing over.
+                self._mouseMovedFunction(int(mousePoint.x()), name=self.tvar_name)
                 self.vLine.setPos(mousePoint.x())
                 self.hLine.setPos(mousePoint.y())
                 self.vLine.setVisible(True)
