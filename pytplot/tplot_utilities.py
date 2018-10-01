@@ -15,6 +15,7 @@ import pytz
 from _collections import OrderedDict
 from . import data_quants
 import pytplot
+from platform import system
 
 def compare_versions():
     #import libraries
@@ -120,8 +121,11 @@ def int_to_str(time_int):
 
 def return_bokeh_colormap(name):
     import matplotlib as mpl
-    #mpl.use('tkagg')
     from matplotlib import cm
+   
+    # This currently gives mac users a headache, so not bothering with it if on a mac 
+    if system() != 'Darwin':
+        mpl.use('tkagg')
     
     if name=='yellow':
         map = [rgb_to_hex(tuple((np.array([1,1,0,1])*255).astype(np.int))) for x in range(0,256)]
@@ -211,10 +215,11 @@ def timebar_delete(t, varname=None, dim='height'):
 
 def return_lut(name):
     import matplotlib as mpl
+    from matplotlib import cm	    
+    
     # This currently gives mac users a headache, so not bothering with it if on a mac
-    if platform != 'darwin':
+    if system() != 'Darwin':
         mpl.use('tkagg')
-    from matplotlib import cm
     
     if name=='yellow':
         map = [(np.array([1,1,0,1])*255).astype(np.int) for x in range(0,256)]

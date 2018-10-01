@@ -60,14 +60,13 @@ except:
 
     using_graphics = False
 
-
 class TVar(object):
     """
     The basic data object in pytplot.  Each dataset is its own separate TVar object.
     This exists to encapsulate the data and details about how to plot the data.
     """
 
-    def __init__(self, name, number, data, spec_bins, yaxis_opt, zaxis_opt, line_opt,
+    def __init__(self, name, number, data, spec_bins, xaxis_opt, yaxis_opt, zaxis_opt, line_opt,
                  trange, dtype, create_time, time_bar, extras, links):
 
         # Name of the TVar
@@ -83,6 +82,8 @@ class TVar(object):
         # If there are spec_bins (i.e., this is a spectrogram), interactive is True
         if self.spec_bins is not None:
             self.interactive = True
+        # Dictionary of the x axis options
+        self.xaxis_opt = xaxis_opt
         # Dictionary of the y axis options
         self.yaxis_opt = yaxis_opt
         # Dictionary of the z axis options
@@ -106,6 +107,13 @@ class TVar(object):
         # Whether the spec_bins are ascending or decending order
         self.spec_bins_ascending = self._check_spec_bins_ordering()
 
+        # Add in default values for crosshair names, y/z axis_opt, etc.
+        self.xaxis_opt['crosshair'] = 'X'
+        self.yaxis_opt['crosshair'] = 'Y'
+        self.zaxis_opt['crosshair'] = 'Z'
+        self.yaxis_opt['y_axis_type'] = 'linear'
+        self.zaxis_opt['z_axis_type'] = 'linear'
+        
     def _check_spec_bins_ordering(self):
         '''
         This is a private function of the TVar object, this is run during

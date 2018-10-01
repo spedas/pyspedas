@@ -6,6 +6,7 @@
 from pytplot import data_quants
 import numpy as np
 
+
 def options(name, option, value):
     """
     This function allows the user to set a large variety of options for individual plots.  
@@ -54,13 +55,9 @@ def options(name, option, value):
         
         >>> # Change Variable1 to use a log scale
         >>> pytplot.options('Variable1', 'ylog', 1)
-        
-        >>> # Change the line color of Variable1
-        >>> pytplot.options('Variable1', 'ylog', 1)
     
     """
-    #if isinstance(name,int):
-    #    name = tplot_common.data_quants.keys()[name]
+
     if not isinstance(name, list):
         name = [name]
     
@@ -98,9 +95,9 @@ def options(name, option, value):
         
         if option == 'ylog':
             negflag = 0
-            namedata =  data_quants[i]
-            ##check variable data
-            #if negative numbers, don't allow log setting
+            namedata = data_quants[i]
+            # check variable data
+            # if negative numbers, don't allow log setting
             datasets = []
             if isinstance(namedata.data, list):
                 for oplot_name in namedata.data:
@@ -127,16 +124,15 @@ def options(name, option, value):
                 data_quants[i].yaxis_opt['y_axis_type'] = 'log'
             else:
                 data_quants[i].yaxis_opt['y_axis_type'] = 'linear'
-            
         
         if option == 'legend_names':
             data_quants[i].yaxis_opt['legend_names'] = value
         
         if option == 'zlog':
             negflag = 0
-            namedata =  data_quants[i]
-            ##check variable data
-            #if negative numbers, don't allow log setting
+            namedata = data_quants[i]
+            # check variable data
+            # if negative numbers, don't allow log setting
             datasets = []
             if isinstance(namedata.data, list):
                 for oplot_name in namedata.data:
@@ -153,7 +149,7 @@ def options(name, option, value):
                                 print('Negative data is incompatible with log plotting.')
                                 negflag = 1
                                 break
-                        #verify there are no negative values
+                        # verify there are no negative values
                         if negflag == 0 and value == 1:
                             data_quants[i].zaxis_opt['z_axis_type'] = 'log'
                         else:
@@ -201,10 +197,10 @@ def options(name, option, value):
                 return
             data_quants[i].extras['panel_size'] = value
         
-        if option =='basemap':
+        if option == 'basemap':
             data_quants[i].extras['basemap'] = value
         
-        if option =='alpha':
+        if option == 'alpha':
             if value > 1 or value < 0:
                 print("Invalid value. Should be [0, 1]")
                 return
@@ -231,7 +227,13 @@ def options(name, option, value):
         
         if option == 'plotter': 
             data_quants[i].extras['plotter'] = value
-    
+
+        if option == 'crosshair_x':
+            data_quants[i].xaxis_opt['crosshair'] = value
+
+        if option == 'crosshair_y':
+            data_quants[i].yaxis_opt['crosshair'] = value
+
+        if option == 'crosshair_z':
+            data_quants[i].zaxis_opt['crosshair'] = value
     return
-        
-    
