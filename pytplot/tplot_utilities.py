@@ -6,6 +6,7 @@
 from __future__ import division
 import os
 import datetime
+from sys import platform
 import pickle
 import math
 import pandas as pd
@@ -210,7 +211,9 @@ def timebar_delete(t, varname=None, dim='height'):
 
 def return_lut(name):
     import matplotlib as mpl
-    mpl.use('tkagg')
+    # This currently gives mac users a headache, so not bothering with it if on a mac
+    if platform != 'darwin':
+        mpl.use('tkagg')
     from matplotlib import cm
     
     if name=='yellow':
