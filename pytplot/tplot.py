@@ -9,7 +9,6 @@ import os
 import pytplot
 from bokeh.io import output_file, show, output_notebook, save
 from . import HTMLPlotter
-from . import Interactive2DPlot
 from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
@@ -19,7 +18,7 @@ import numpy as np
 if pytplot.using_graphics:
     from pyqtgraph.Qt import QtCore, QtGui
     import pyqtgraph as pg
-    from . import QtPlotter
+    from . import QtPlotter, interactive2dPlot
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
     except:
@@ -173,8 +172,8 @@ def tplot(name,
         available_qt_window.activateWindow()
 
         if interactive:
-           # Call 2D interactive window; This will only plot something when spectrograms are involved.
-            Interactive2DPlot.Interactive2DPlot()
+            # Call 2D interactive window; This will only plot something when spectrograms are involved.
+            interactive2dPlot.interactive2DPlot()
 
         # (hasattr(sys, 'ps1')) checks to see if we're in ipython
         # plots the plots!

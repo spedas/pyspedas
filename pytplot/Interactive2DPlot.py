@@ -54,7 +54,7 @@ def get_z_t_values(var):
     return time_values, z_values
 
 
-def Interactive2DPlot():
+def interactive2DPlot():
     """ If the interactive option is set to True in tplot, this function will take in the stored tplot variables
     and create a 2D interactive window that will pop up when any one of the tplot variables is plotted (so long
     as at least one of the tplot variables is a spectrogram). If the mouse hovers over a spectrogram plot, data
