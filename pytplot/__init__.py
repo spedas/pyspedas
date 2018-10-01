@@ -57,7 +57,6 @@ except:
     using_graphics = False
 
 
-
 class TVar(object):
     """ 
     The basic data object in pytplot.  Each dataset is its own separate TVar object.  
@@ -67,38 +66,45 @@ class TVar(object):
     def __init__(self, name, number, data, spec_bins, xaxis_opt, yaxis_opt, zaxis_opt, line_opt,
                  trange, dtype, create_time, time_bar, extras, links):
         
-        #Name of the TVar
+        # Name of the TVar
         self.name = name
-        #TVar number
+        # TVar number
         self.number = number
-        #The data of the TVar
+        # The data of the TVar
         self.data = data
-        #The spec_bins, if applicable
+        # The spec_bins, if applicable
         self.spec_bins = spec_bins
-        #Dictionary of the x axis options
+        # Dictionary of the x axis options
         self.xaxis_opt = xaxis_opt
-        #Dictionary of the y axis options
+        # Dictionary of the y axis options
         self.yaxis_opt = yaxis_opt
-        #Dictionary of the z axis options
+        # Dictionary of the z axis options
         self.zaxis_opt = zaxis_opt
-        #Dictionary of line options
+        # Dictionary of line options
         self.line_opt = line_opt
-        #The time range
+        # The time range
         self.trange = trange
-        #The data type of the data (ex - int/double)
+        # The data type of the data (ex - int/double)
         self.dtype = dtype
-        #String of creation time of this object
+        # String of creation time of this object
         self.create_time = create_time
-        #Array of time bar objects
+        # Array of time bar objects
         self.time_bar = time_bar
-        #Dictionary of extra objects
+        # Dictionary of extra objects
         self.extras = extras
-        #Dictionary of linked tvars (things like latitude/longitude/altitude)
+        # Dictionary of linked tvars (things like latitude/longitude/altitude)
         self.links = links
-        #Whether or not the spec_bins vary in time
+        # Whether or not the spec_bins vary in time
         self.spec_bins_time_varying = False
-        #Whether the spec_bins are ascending or decending order
+        # Whether the spec_bins are ascending or decending order
         self.spec_bins_ascending = self._check_spec_bins_ordering()
+
+        # Add in default values for crosshair names, y/z axis_opt, etc.
+        self.xaxis_opt['crosshair'] = 'X'
+        self.yaxis_opt['crosshair'] = 'Y'
+        self.zaxis_opt['crosshair'] = 'Z'
+        self.yaxis_opt['y_axis_type'] = 'linear'
+        self.zaxis_opt['z_axis_type'] = 'linear'
         
     def _check_spec_bins_ordering(self):
         '''
@@ -221,13 +227,6 @@ from .link import link
 #from .degap import degap
 #from .clip import clip
 #from .deflag import deflag
-
-# Add in default values for crosshair names, y/z axis_opt, etc.
-default_values = {'x_crosshair_name': 'X',
-                  'y_crosshair_name': 'Y',
-                  'z_crosshair_name': 'Z',
-                  'y_axis_type': 'linear',
-                  'z_axis_type': 'linear'}
 
 #If we are in an ipython environment, set the gui to be qt5
 #This allows the user to interact with the window in real time
