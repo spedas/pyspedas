@@ -5,9 +5,10 @@ import numpy as np
 #AVERAGE AT RESOLUTION
 #take average of column over discrete periods of time
 def avg_res_data(tvar1,res,new_tvar='tvar_avg_res'):
+    time_varying = pytplot.data_quants[tvar1].spec_bins_time_varying
     #grab info from tvar
     df = pytplot.data_quants[tvar1].data.copy()
-    if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+    if (pytplot.data_quants[tvar1].spec_bins is not None) and (time_varying == True):
         dfspec = pytplot.data_quants[tvar1].spec_bins.copy()
     time = df.index
     start_t = df.index[0]
@@ -42,16 +43,18 @@ def avg_res_data(tvar1,res,new_tvar='tvar_avg_res'):
         for i in df_index:
             #append localized bin average to data_avg_bin
             data_avg_bin = np.append(data_avg_bin,[(df.loc[start_t[it]:end_t[it]])[i].mean()])
-            if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+            if (pytplot.data_quants[tvar1].spec_bins is not None) and (time_varying == True):
                 spec_avg_bin = np.append(spec_avg_bin,[(dfspec.loc[start_t[it]:end_t[it]])[i].mean()])
         #append whole array of bin averages (over n columns) to avg_bin_data
         avg_bin_data = avg_bin_data + [data_avg_bin.tolist()]
-        if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+        if (pytplot.data_quants[tvar1].spec_bins is not None) and (time_varying == True):
             avg_bin_spec = avg_bin_spec + [spec_avg_bin.tolist()]
         avg_bin_time = np.append(avg_bin_time,t)
     #store data in new_tvar
-    if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+    if (pytplot.data_quants[tvar1].spec_bins is not None) and (time_varying == True):
         pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data,'v':avg_bin_spec})
+    elif pytplot.data_quants[tvar1].spec_bins is not None:
+        pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data,'v':pytplot.data_quants[tvar1].spec_bins})
     else:
         pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data})
     return new_tvar    
