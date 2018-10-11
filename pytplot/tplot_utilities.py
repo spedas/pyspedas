@@ -210,7 +210,7 @@ def timebar_delete(t, varname=None, dim='height'):
 
 def return_lut(name):
     import matplotlib as mpl
-    mpl.use('tkagg')
+    # mpl.use('tkagg')
     from matplotlib import cm
     
     if name=='yellow':
