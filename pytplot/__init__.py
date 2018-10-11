@@ -45,7 +45,7 @@ try:
             exportMenu.addAction(exportDatapngAction)
              
         def exportpng(self):
-            fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter ="png (*.png *.)")
+            fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
             sshot = self.centralWidget().grab()
             sshot.save(fname[0])
         
@@ -184,6 +184,11 @@ if using_graphics:
                    'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
                    'qtTVarFigureAlt':QtPlotter.TVarFigureAlt,
                    'qtTVarFigureMap':QtPlotter.TVarFigureMap}
+
+    # qt_plotters = {'qtTVarFigure1D':QtPlotter.TVarFigure1D,
+    #                'qtTVarFigureSpec':QtPlotter.TVarFigureSpec,
+    #                'qtTVarFigureAlt':QtPlotter.TVarFigureAlt,
+    #                'qtTVarFigureMap':QtPlotter.TVarFigureMap}
 
 from . import HTMLPlotter
 bokeh_plotters = {'bkTVarFigure1D':HTMLPlotter.TVarFigure1D,

@@ -13,9 +13,10 @@ from .CustomAxis.DateAxis import DateAxis
 from .CustomImage.UpdatingImage import UpdatingImage
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
+from .CustomAxis.AxisItem import AxisItem
 
 class TVarFigureSpec(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=False):
         
         self.tvar_name=tvar_name
         self.show_xaxis = show_xaxis
@@ -24,7 +25,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         #Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
         self.layout.setHorizontalSpacing(50)
-        self.layout.setContentsMargins(0,0,0,0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         #Set up the x axis
         self.xaxis = DateAxis(orientation='bottom')
         self.xaxis.setHeight(35)
@@ -38,9 +39,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
         #Set up the view box needed for the legends
         self.legendvb = pg.ViewBox(enableMouse=False)
         self.legendvb.setMaximumWidth(100)
-        self.legendvb.setXRange(0,1, padding=0)
-        self.legendvb.setYRange(0,1, padding=0)
-        self.addItem(self.legendvb,0,1)       
+        self.legendvb.setXRange(0, 1, padding=0)
+        self.legendvb.setYRange(0, 1, padding=0)
+        self.addItem(self.legendvb, 0, 1)
         
         
         self.curves = []
@@ -55,9 +56,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._mouseMovedFunction = mouse_function
         
         self.label = pg.LabelItem(justify='left')
-        self.addItem(self.label,row=1,col=0)
+        self.addItem(self.label, row=1, col=0)
 
-        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date:", "0")
         self.hoverlegend.setItem("Time:", "0")
         self.hoverlegend.setItem("Energy:", "0")
@@ -120,8 +121,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         return
         
     def _addlegend(self):
-        zaxis=pg.AxisItem('right')
-        
+        zaxis = AxisItem('right')
         if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'])
         else:
@@ -135,18 +135,18 @@ class TVarFigureSpec(pg.GraphicsLayout):
             p2 = self.addPlot(row=0, col=1, axisItems={'right':zaxis}, enableMenu=False, viewBox=self.legendvb)
             p2.hideAxis('bottom')
             
-        p2.buttonsHidden=True
+        p2.buttonsHidden = True
         p2.setMaximumWidth(100)
         p2.showAxis('right')
         p2.hideAxis('left')
         colorbar = pg.ImageItem()
-        colorbar.setImage(np.array([np.linspace(1,2,200)]).T)
+        colorbar.setImage(np.array([np.linspace(1, 2, 200)]).T)
         
         p2.addItem(colorbar)
-        p2.setLogMode(y=(self.zscale=='log'))
-        p2.setXRange(0,1, padding=0)
+        p2.setLogMode(y=(self.zscale == 'log'))
+        p2.setXRange(0, 1, padding=0)
         colorbar.setLookupTable(self.colormap)
-        if self.zscale=='log':
+        if self.zscale == 'log':
             colorbar.setRect(QtCore.QRectF(0,np.log10(self.zmin),1,np.log10(self.zmax)-np.log10(self.zmin)))
             #I have literally no idea why this is true, but I need to set the range twice
             p2.setYRange(np.log10(self.zmin),np.log10(self.zmax), padding=0)

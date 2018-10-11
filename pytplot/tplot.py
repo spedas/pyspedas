@@ -7,6 +7,11 @@ from __future__ import division
 import sys
 import os
 import pytplot
+import pyqtgraph.functions as fn
+import numpy as np
+import pyqtgraph.exporters
+from pyqtgraph.exporters import Exporter
+from pyqtgraph.parametertree import Parameter
 from bokeh.io import output_file, show, output_notebook, save
 from . import HTMLPlotter
 from bokeh.embed import components
@@ -16,7 +21,9 @@ import tempfile
 
 if pytplot.using_graphics:
     from pyqtgraph.Qt import QtCore, QtGui
+    import pyqtgraph as pg
     from . import QtPlotter
+    # from . import QtPlotter, interactive2dPlot
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
     except:
@@ -24,7 +31,7 @@ if pytplot.using_graphics:
 
 
 def tplot(name, 
-          var_label = None, 
+          var_label=None,
           auto_color=True, 
           interactive=False, 
           combine_axes=True, 
@@ -33,7 +40,9 @@ def tplot(name,
           gui=False, 
           qt=False,
           bokeh=False,
-          crosshair=True):
+          crosshair=True,
+          save_png=None,
+          display=True):
     
     """
     This is the function used to display the tplot variables stored in memory.
@@ -56,7 +65,7 @@ def tplot(name,
             If True, a secondary interactive plot will be generated next to spectrogram plots.  
             Mousing over the spectrogram will display a slice of data from that time on the 
             interactive chart.
-        combine_axis : bool, optional
+        combine_axes : bool, optional
             If True, the axes are combined so that they all display the same x range.  This also enables
             scrolling/zooming/panning on one plot to affect all of the other plots simultaneously.  
         nb : bool, optional
@@ -74,7 +83,15 @@ def tplot(name,
             http://bokeh.pydata.org/en/latest/docs/user_guide/embed.html  
         qt : bool, optional
             If True, then this function will display the plot inside of the Qt window.  From this window, you
-            can choose to export the plots as either an HTML file, or as a PNG.   
+            can choose to export the plots as either an HTML file, or as a PNG.
+        crosshair: bool, optional
+            If True, then crosshairs, with a legend box containing information w.r.t. the crosshairs, will be displayed.
+        save_png : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in a PNG format.
+        display: bool, optional
+            If True, then this function will display the plotted tplot variables. Necessary to make this optional
+            so we can avoid it in a headless server environment.
         
     Returns:
         None
@@ -108,12 +125,12 @@ def tplot(name,
         >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
     
-    if pytplot.using_graphics == False and save_file==None:
+    if not pytplot.using_graphics and save_file is None:
         print("Qt was not successfully imported.  Specify save_file to save the file as a .html file.")
         return
-    #Check a bunch of things
-    if(not isinstance(name, list)):
-        name=[name]
+    # Check a bunch of things
+    if not isinstance(name, list):
+        name = [name]
         num_plots = 1
     else:
         num_plots = len(name)
@@ -129,8 +146,9 @@ def tplot(name,
         var_label = list(pytplot.data_quants.keys())[var_label]
         
     if bokeh:
-        layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, interactive=interactive)
-        #Output types
+        layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes,
+                                            interactive=interactive)
+        # Output types
         if gui:
             script, div = components(layout)
             return script, div
@@ -138,19 +156,20 @@ def tplot(name,
             output_notebook()
             show(layout)
             return
-        elif save_file != None:
+        elif save_file is not None:
             output_file(save_file, mode='inline')
             save(layout)    
             return
         elif qt:        
             available_qt_window = tplot_utilities.get_available_qt_window()
-            dir_path = tempfile.gettempdir() #send to user's temp directory
+            dir_path = tempfile.gettempdir()  # send to user's temp directory
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
             save(layout)
             new_layout = WebView()
-            available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0]+100,pytplot.tplot_opt_glob['window_size'][1]+100)
-            new_layout.resize(pytplot.tplot_opt_glob['window_size'][0],pytplot.tplot_opt_glob['window_size'][1])
-            dir_path = tempfile.gettempdir() #send to user's temp directory
+            available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0]+100,
+                                       pytplot.tplot_opt_glob['window_size'][1]+100)
+            new_layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+            dir_path = tempfile.gettempdir()  # send to user's temp directory
             new_layout.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
             available_qt_window.newlayout(new_layout)
             available_qt_window.show()
@@ -159,17 +178,171 @@ def tplot(name,
                 QtGui.QApplication.instance().exec_()
             return
         else:      
-            dir_path = tempfile.gettempdir() #send to user's temp directory
+            dir_path = tempfile.gettempdir()  # send to user's temp directory
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
             show(layout)
             return
     else:
-        available_qt_window = tplot_utilities.get_available_qt_window()
-        layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes, mouse_moved_event=pytplot.hover_time.change_hover_time,crosshair=crosshair)
-        available_qt_window.newlayout(layout)
-        available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
-        available_qt_window.show()
-        available_qt_window.activateWindow()
-        if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
-            QtGui.QApplication.instance().exec_()
+        if save_png != '':
+            print('SAVING PNG')
+            layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
+                                              combine_axes=combine_axes,
+                                              mouse_moved_event=pytplot.hover_time.change_hover_time,
+                                              crosshair=crosshair)
+            layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+            for i, item in enumerate(layout.items()):
+                if type(item) == pyqtgraph.graphicsItems.GraphicsLayout.GraphicsLayout:
+                    layout.items()[i].resize(pytplot.tplot_opt_glob['window_size'][0],
+                                             pytplot.tplot_opt_glob['window_size'][1])
+            exporter = PytplotExporter(layout)
+            exporter.parameters()['width'] = pytplot.tplot_opt_glob['window_size'][0]
+            exporter.parameters()['height'] = pytplot.tplot_opt_glob['window_size'][1]
+            exporter.export(save_png)
+            # return layout
+
+        if display:
+            print('DISPLAYING PNG')
+            available_qt_window = tplot_utilities.get_available_qt_window()
+            layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
+                                              combine_axes=combine_axes,
+                                              mouse_moved_event=pytplot.hover_time.change_hover_time,
+                                              crosshair=crosshair)
+            available_qt_window.newlayout(layout)
+            available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0],
+                                       pytplot.tplot_opt_glob['window_size'][1])
+            available_qt_window.show()
+            available_qt_window.activateWindow()
+            if interactive:
+                # Call 2D interactive window; This will only plot something when spectrograms are involved.
+                interactive2dPlot.interactive2dplot()
+
+            # (hasattr(sys, 'ps1')) checks to see if we're in ipython
+            # plots the plots!
+            if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+                QtGui.QApplication.instance().exec_()
+
+            # return
+
         return
+
+class PytplotExporter(pg.exporters.ImageExporter):
+
+    def __init__(self, item):
+        Exporter.__init__(self, item)
+        tr = self.getTargetRect()
+        if isinstance(item, QtGui.QGraphicsItem):
+            scene = item.scene()
+        else:
+            scene = item
+        # CHANGE: Used to be scene.views()[0].backgroundBrush()
+        # That wasn't how to access the background of a GraphicsLayout object
+        bgbrush = scene.backgroundBrush()
+        bg = bgbrush.color()
+        if bgbrush.style() == QtCore.Qt.NoBrush:
+            bg.setAlpha(0)
+
+        self.params = Parameter(name='params', type='group', children=[
+            {'name': 'width', 'type': 'int', 'value': tr.width(), 'limits': (0, None)},
+            {'name': 'height', 'type': 'int', 'value': tr.height(), 'limits': (0, None)},
+            {'name': 'antialias', 'type': 'bool', 'value': True},
+            {'name': 'background', 'type': 'color', 'value': bg},
+        ])
+
+        self.params.param('width').sigValueChanged.connect(self.widthChanged)
+        self.params.param('height').sigValueChanged.connect(self.heightChanged)
+
+    def export(self, fileName=None, toBytes=False, copy=False):
+        if fileName is None and not toBytes and not copy:
+            if pg.Qt.USE_PYSIDE:
+                filter = ["*." + str(f) for f in QtGui.QImageWriter.supportedImageFormats()]
+            else:
+                filter = ["*." + bytes(f).decode('utf-8') for f in QtGui.QImageWriter.supportedImageFormats()]
+            preferred = ['*.png', '*.tif', '*.jpg']
+            for p in preferred[::-1]:
+                if p in filter:
+                    filter.remove(p)
+                    filter.insert(0, p)
+            self.fileSaveDialog(filter=filter)
+            return
+
+        targetRect = QtCore.QRect(0, 0, self.params['width'], self.params['height'])
+        sourceRect = self.getSourceRect()
+
+
+        # self.png = QtGui.QImage(targetRect.size(), QtGui.QImage.Format_ARGB32)
+        # self.png.fill(pyqtgraph.mkColor(self.params['background']))
+        w, h = self.params['width'], self.params['height']
+        if w == 0 or h == 0:
+            raise Exception("Cannot export image with size=0 (requested export size is %dx%d)" % (w, h))
+        bg = np.empty((int(self.params['width']), int(self.params['height']), 4), dtype=np.ubyte)
+        color = self.params['background']
+        bg[:, :, 0] = color.blue()
+        bg[:, :, 1] = color.green()
+        bg[:, :, 2] = color.red()
+        bg[:, :, 3] = color.alpha()
+        self.png = fn.makeQImage(bg, alpha=True)
+
+        # set resolution of image:
+        origTargetRect = self.getTargetRect()
+        resolutionScale = targetRect.width() / origTargetRect.width()
+
+        painter = QtGui.QPainter(self.png)
+        # dtr = painter.deviceTransform()
+        try:
+            self.setExportMode(True,
+                               {'antialias': self.params['antialias'], 'background': self.params['background'],
+                                'painter': painter, 'resolutionScale': resolutionScale})
+            painter.setRenderHint(QtGui.QPainter.Antialiasing, self.params['antialias'])
+            # CHANGE: Rendering the scence twice onto the QImage.  The first time, make it one pixel in size.
+            # Next, render the full thing.  No idea why we need to render is twice, but we do.
+            self.getScene().render(painter, QtCore.QRectF(0, 0, 1, 1), QtCore.QRectF(0, 0, 1, 1))
+            self.getScene().render(painter, QtCore.QRectF(targetRect), QtCore.QRectF(sourceRect))
+        finally:
+            self.setExportMode(False)
+        painter.end()
+
+        if copy:
+            QtGui.QApplication.clipboard().setImage(self.png)
+        elif toBytes:
+            return self.png
+        else:
+            self.png.save(fileName)
+
+    def getPaintItems(self, root=None):
+        """Return a list of all items that should be painted in the correct order."""
+        if root is None:
+            root = self.item
+        preItems = []
+        postItems = []
+        if isinstance(root, QtGui.QGraphicsScene):
+            childs = [i for i in root.items() if i.parentItem() is None]
+            rootItem = []
+        else:
+            # CHANGE: For GraphicsLayouts, there is no function for childItems(), so I just
+            # replaced it with .items()
+            try:
+                childs = root.childItems()
+            except:
+                childs = root.items()
+            rootItem = [root]
+        childs.sort(key=lambda a: a.zValue())
+        while len(childs) > 0:
+            ch = childs.pop(0)
+            tree = self.getPaintItems(ch)
+
+            if int(ch.flags() & ch.ItemStacksBehindParent) > 0 or (
+                    ch.zValue() < 0 and int(ch.flags() & ch.ItemNegativeZStacksBehindParent) > 0):
+                preItems.extend(tree)
+            else:
+                postItems.extend(tree)
+        return preItems + rootItem + postItems
+
+    def getTargetRect(self):
+        # CHANGE: Used to return self.item.sceneBoundingRect().  GraphicsLayouts don't have a
+        # sceneBoundingRect(), but they have a rect() which appears to work just as well.
+        return self.item.rect()
+
+    def getSourceRect(self):
+        # CHANGE: Used to return self.item.mapRectToDevice(self.item.boundingRect()).  GraphicsLayouts don't have a
+        # sceneBoundingRect() OR a mapRectToDevice, but they have a rect() which appears to work just as well.
+        return self.item.rect()
