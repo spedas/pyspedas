@@ -14,16 +14,17 @@ from . import HTMLPlotter
 from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
+import numpy as np
 
 
 if pytplot.using_graphics:
     from pyqtgraph.Qt import QtCore, QtGui
-    from . import QtPlotter
+    import pyqtgraph as pg
+    from . import QtPlotter, interactive2dPlot
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
     except:
         from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
-
 
 def tplot(name, 
           var_label=None,
@@ -136,10 +137,10 @@ def tplot(name,
         if name[i] not in pytplot.data_quants.keys():
             print(str(i) + " is currently not in pytplot")
             return
-    
+
     if isinstance(var_label, int):
         var_label = list(pytplot.data_quants.keys())[var_label]
-        
+
     if bokeh:
         layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes,
                                             interactive=interactive)
@@ -192,7 +193,6 @@ def tplot(name,
             exporter.parameters()['width'] = pytplot.tplot_opt_glob['window_size'][0]
             exporter.parameters()['height'] = pytplot.tplot_opt_glob['window_size'][1]
             exporter.export(save_png)
-            # return layout
 
         if display:
             available_qt_window = tplot_utilities.get_available_qt_window()
@@ -213,8 +213,4 @@ def tplot(name,
             # plots the plots!
             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
-
-            # return
-
         return
-
