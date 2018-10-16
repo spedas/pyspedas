@@ -14,6 +14,7 @@ from .CustomImage.UpdatingImage import UpdatingImage
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
+from .CustomViewBox.CustomVB import CustomVB
 
 
 class TVarFigureSpec(pg.GraphicsLayout):
@@ -33,11 +34,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.xaxis.setHeight(35)
         self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
-        self.yaxis = pg.AxisItem("left")
+        self.yaxis = AxisItem('left')
         self.yaxis.setWidth(100)
-        
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis})
-        
+
+        vb = CustomVB(enableMouse=False)
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
+
         # Set up the view box needed for the legends
         self.legendvb = pg.ViewBox(enableMouse=False)
         self.legendvb.setMaximumWidth(100)

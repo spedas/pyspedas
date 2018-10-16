@@ -112,8 +112,10 @@ def _set_pyqtgraph_title(layout):
                 return True
     return False
 
+
 def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None, crosshair=True):
-    if 'plotter' in pytplot.data_quants[tvar_name].extras and pytplot.data_quants[tvar_name].extras['plotter'] in pytplot.qt_plotters:
+    if 'plotter' in pytplot.data_quants[tvar_name].extras and pytplot.data_quants[tvar_name].extras['plotter'] in \
+            pytplot.qt_plotters:
         cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].extras['plotter']]
     else:
         spec_keyword = pytplot.data_quants[tvar_name].extras.get('spec', False)
@@ -127,4 +129,4 @@ def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None, crosshair=Tr
             cls = pytplot.qt_plotters['qtTVarFigureMap']
         else:
             cls = pytplot.qt_plotters['qtTVarFigure1D']
-    return cls(tvar_name, show_xaxis=show_xaxis, mouse_function = mouse_moved, crosshair=crosshair)
+    return cls(tvar_name, show_xaxis=show_xaxis, mouse_function=mouse_moved, crosshair=crosshair)
