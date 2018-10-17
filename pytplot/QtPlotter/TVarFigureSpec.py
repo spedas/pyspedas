@@ -14,7 +14,7 @@ from .CustomImage.UpdatingImage import UpdatingImage
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
-from .CustomViewBox.CustomVB import CustomVB
+from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureSpec(pg.GraphicsLayout):
@@ -37,7 +37,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.yaxis = AxisItem('left')
         self.yaxis.setWidth(100)
 
-        vb = CustomVB(enableMouse=False)
+        vb = NoPaddingPlot()
         self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
 
         # Set up the view box needed for the legends
