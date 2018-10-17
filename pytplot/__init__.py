@@ -6,6 +6,9 @@
 import numpy as np
 from _collections import OrderedDict
 
+from . import HTMLPlotter
+
+
 # This variable will be constantly changed depending on what x value the user is hovering over
 class HoverTime(object):
     hover_time = 0
@@ -55,10 +58,9 @@ try:
 
         def newlayout(self, layout):
             self.setCentralWidget(layout)
-
 except:
-
     using_graphics = False
+
 
 class TVar(object):
     """
@@ -115,10 +117,10 @@ class TVar(object):
         self.zaxis_opt['z_axis_type'] = 'linear'
         
     def _check_spec_bins_ordering(self):
-        '''
+        """
         This is a private function of the TVar object, this is run during
         object creation to check if spec_bins are ascending or descending
-        '''
+        """
         if self.spec_bins is None:
             return
         if len(self.spec_bins) == len(self.data.index):
@@ -203,8 +205,6 @@ if using_graphics:
                    'qtTVarFigureAlt': QtPlotter.TVarFigureAlt,
                    'qtTVarFigureMap': QtPlotter.TVarFigureMap}
 
-from . import HTMLPlotter
-
 bokeh_plotters = {'bkTVarFigure1D': HTMLPlotter.TVarFigure1D,
                   'bkTVarFigureMap': HTMLPlotter.TVarFigureMap,
                   'bkTVarFigureAlt': HTMLPlotter.TVarFigureAlt,
@@ -233,14 +233,9 @@ from .cdf_to_tplot import cdf_to_tplot
 from .netcdf_to_tplot import netcdf_to_tplot
 from .tplot_utilities import compare_versions
 from .link import link
-#from .tplot_math import *
-#from .tplot_resample import tplot_resample
-#from .degap import degap
-#from .clip import clip
-#from .deflag import deflag
 
-#If we are in an ipython environment, set the gui to be qt5
-#This allows the user to interact with the window in real time
+# If we are in an ipython environment, set the gui to be qt5
+# This allows the user to interact with the window in real time
 try:
     magic = get_ipython().magic
     magic(u'%gui qt5')

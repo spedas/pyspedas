@@ -122,8 +122,6 @@ def options(name, option, value):
                         
             if value == 1 and negflag == 0:
                 data_quants[i].yaxis_opt['y_axis_type'] = 'log'
-            else:
-                data_quants[i].yaxis_opt['y_axis_type'] = 'linear'
         
         if option == 'legend_names':
             data_quants[i].yaxis_opt['legend_names'] = value
@@ -145,25 +143,19 @@ def options(name, option, value):
                     if dataset.extras['spec'] == 1:
                         negflag = 0
                         for column in dataset.data:
-                            if np.nanmin(dataset.data[column])  < 0:
+                            if np.nanmin(dataset.data[column]) < 0:
                                 print('Negative data is incompatible with log plotting.')
                                 negflag = 1
                                 break
                         # verify there are no negative values
                         if negflag == 0 and value == 1:
                             data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-                        else:
-                            data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
                     else:
                         if value == 1:
                             data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-                        else:
-                            data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
             else:
                 if value == 1:
                     data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-                else:
-                    data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
         
         if option == 'nodata':
             data_quants[i].line_opt['visible'] = value

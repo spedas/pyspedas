@@ -50,13 +50,6 @@ class TVarFigure1D(pg.GraphicsLayout):
         
         self._mouseMovedFunction = mouse_function
 
-        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
-        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
-        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
-        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
-        self.vLine.setVisible(False)
-        self.hLine.setVisible(False)
-        
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
 
@@ -68,7 +61,15 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']+':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)  
-        
+
+    def _set_crosshairs(self):
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
+
     def buildfigure(self):
         self._setxrange()
         self._setyrange()
@@ -80,9 +81,10 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._setxaxislabel()
         self._addlegend()
         self._addtimebars()
-        if self.crosshair:
-            self._addmouseevents()
 
+        if self.crosshair:
+            self._set_crosshairs()
+            self._addmouseevents()
     
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
@@ -232,7 +234,6 @@ class TVarFigure1D(pg.GraphicsLayout):
             color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
             thick = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
             # make infinite line w/ parameters
-            # color = pytplot.tplot_utilities.rgb_color(color)
             infline = pg.InfiniteLine(pos=date_to_highlight, pen=pg.mkPen(color, width=thick))
             # add to plot window
             self.plotwindow.addItem(infline)

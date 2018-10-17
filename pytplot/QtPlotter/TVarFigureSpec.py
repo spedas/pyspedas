@@ -13,6 +13,8 @@ from .CustomAxis.DateAxis import DateAxis
 from .CustomImage.UpdatingImage import UpdatingImage
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
+from .CustomAxis.AxisItem import AxisItem
+from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureSpec(pg.GraphicsLayout):
@@ -26,16 +28,18 @@ class TVarFigureSpec(pg.GraphicsLayout):
         pg.GraphicsLayout.__init__(self)
         self.layout.setHorizontalSpacing(50)
         self.layout.setContentsMargins(0, 0, 0, 0)
+
         # Set up the x axis
         self.xaxis = DateAxis(orientation='bottom')
         self.xaxis.setHeight(35)
         self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
-        self.yaxis = pg.AxisItem("left")
+        self.yaxis = AxisItem('left')
         self.yaxis.setWidth(100)
-        
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis})
-        
+
+        vb = NoPaddingPlot()
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
+
         # Set up the view box needed for the legends
         self.legendvb = pg.ViewBox(enableMouse=False)
         self.legendvb.setMaximumWidth(100)
@@ -120,8 +124,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         return
         
     def _addlegend(self):
-        zaxis=pg.AxisItem('right')
-        
+        zaxis = AxisItem('right')
         if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'])
         else:
@@ -191,8 +194,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
             y_closest = y[y_argmin]
             index = int((np.nonzero(y == y_closest))[0])
             dp = dataframe[index][x_closest]
-            
-	    # add crosshairs
+
+            # add crosshairs
             if self._mouseMovedFunction is not None:
                 # Associate mouse position with current plot you're mousing over.
                 self._mouseMovedFunction(int(mousePoint.x()), name=self.tvar_name)

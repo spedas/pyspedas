@@ -18,16 +18,9 @@ def get_plot_labels(names):
     plot_labels = {}
     for n in names:
         if pytplot.data_quants[n].spec_bins is not None:
-
             zlabel = pytplot.data_quants[n].zaxis_opt['axis_label']
-            try:
-                ztype = pytplot.data_quants[n].zaxis_opt['z_axis_type']
-            except:
-                ztype = pytplot.default_values['z_axis_type']
-            try:
-                ytype = pytplot.data_quants[n].yaxis_opt['y_axis_type']
-            except:
-                ytype = pytplot.default_values['y_axis_type']
+            ztype = pytplot.data_quants[n].zaxis_opt['z_axis_type']
+            ytype = pytplot.data_quants[n].yaxis_opt['y_axis_type']
             plot_labels[n] = [zlabel, ytype, ztype]
     return plot_labels
 
