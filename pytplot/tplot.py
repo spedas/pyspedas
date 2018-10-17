@@ -7,8 +7,6 @@ from __future__ import division
 import sys
 import os
 import pytplot
-import pyqtgraph.exporters
-from .QtPlotter import PyTPlot_Exporter
 from bokeh.io import output_file, show, output_notebook, save
 from . import HTMLPlotter
 from bokeh.embed import components
@@ -18,6 +16,7 @@ import numpy as np
 
 
 if pytplot.using_graphics:
+    from .QtPlotter import PyTPlot_Exporter
     from pyqtgraph.Qt import QtCore, QtGui
     import pyqtgraph as pg
     from . import QtPlotter, interactive2dPlot
