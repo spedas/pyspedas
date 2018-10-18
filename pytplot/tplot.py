@@ -16,6 +16,7 @@ import numpy as np
 
 
 if pytplot.using_graphics:
+    import pyqtgraph
     from .QtPlotter import PyTPlot_Exporter
     from pyqtgraph.Qt import QtCore, QtGui
     import pyqtgraph as pg
