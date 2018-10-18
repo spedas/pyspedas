@@ -170,6 +170,8 @@ def tplot(name,
             available_qt_window.newlayout(new_layout)
             available_qt_window.show()
             available_qt_window.activateWindow()
+            if testing:
+                return
             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
             return
@@ -211,6 +213,8 @@ def tplot(name,
 
             # (hasattr(sys, 'ps1')) checks to see if we're in ipython
             # plots the plots!
-            if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION') or not testing:
+            if testing:
+                return
+            if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
         return
