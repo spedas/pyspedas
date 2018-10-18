@@ -178,7 +178,7 @@ def tplot(name,
             show(layout)
             return
     else:
-        if save_png != '':
+        if save_png != None:
             layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
                                               combine_axes=combine_axes,
                                               mouse_moved_event=pytplot.hover_time.change_hover_time,
