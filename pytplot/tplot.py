@@ -16,7 +16,6 @@ import numpy as np
 
 
 if pytplot.using_graphics:
-    import pyqtgraph
     from .QtPlotter import PyTPlot_Exporter
     from pyqtgraph.Qt import QtCore, QtGui
     import pyqtgraph as pg
@@ -38,7 +37,8 @@ def tplot(name,
           bokeh=False,
           crosshair=True,
           save_png=None,
-          display=True):
+          display=True,
+          testing=False):
     
     """
     This is the function used to display the tplot variables stored in memory.
@@ -186,7 +186,7 @@ def tplot(name,
                                               crosshair=crosshair)
             layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout.items()):
-                if type(item) == pyqtgraph.graphicsItems.GraphicsLayout.GraphicsLayout:
+                if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
                     layout.items()[i].resize(pytplot.tplot_opt_glob['window_size'][0],
                                              pytplot.tplot_opt_glob['window_size'][1])
             exporter = PyTPlot_Exporter.PytplotExporter(layout)
@@ -211,6 +211,6 @@ def tplot(name,
 
             # (hasattr(sys, 'ps1')) checks to see if we're in ipython
             # plots the plots!
-            if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+            if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION') or not testing:
                 QtGui.QApplication.instance().exec_()
         return
