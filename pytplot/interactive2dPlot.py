@@ -21,7 +21,9 @@ def get_plot_labels(names):
             zlabel = pytplot.data_quants[n].zaxis_opt['axis_label']
             ztype = pytplot.data_quants[n].zaxis_opt['z_axis_type']
             ytype = pytplot.data_quants[n].yaxis_opt['y_axis_type']
-            plot_labels[n] = [zlabel, ytype, ztype]
+            xtype_interactive = pytplot.data_quants[n].interactive_xaxis_opt['xi_axis_type']
+            ytype_interactive = pytplot.data_quants[n].interactive_yaxis_opt['yi_axis_type']
+            plot_labels[n] = [zlabel, ytype, ztype, xtype_interactive, ytype_interactive]
     return plot_labels
 
 
@@ -73,11 +75,11 @@ def interactive2dplot():
 
         # Set up the 2D interactive plot
         pytplot.interactive_window = pg.GraphicsWindow()
-        pytplot.interactive_window.resize(1000,600)
+        pytplot.interactive_window.resize(1000, 600)
         pytplot.interactive_window.setWindowTitle('Interactive Window')
         plot = pytplot.interactive_window.addPlot(title='2D Interactive Plot', row=0, col=0)
         # Make it so that whenever this first starts up, you just have an empty plot
-        plot_data = plot.plot([],[])
+        plot_data = plot.plot([], [])
 
         # The following update function is passed to change_hover_time in the HoverTime class
         # defined in __init__.py. For reference, "t" essentially originates inside of
@@ -99,26 +101,31 @@ def interactive2dplot():
                 time_array = np.array(data[name][2])
                 array = np.asarray(time_array)
                 idx = (np.abs(array - t)).argmin()
-                # If the spectrogram plot's y and z axes (corresponding to 2D interactive window's
-                # x and y axes) are logarithmic, make sure the 2D interactive plot's axes are
-                # also logarithmic.
+                # If user indicated they wanted the interactive plot's axes to be logged, log 'em.
+                # But first make sure that values in x and y are loggable!
                 x_axis = False
                 y_axis = False
-                if labels[name][1] == 'log':
+                # Checking x axis
+                if np.nanmin(data[name][0][:]) < 0:
+                    print('Negative data is incompatible with log plotting.')
+                elif np.nanmin(data[name][0][:]) >= 0 and labels[name][3] == 'log':
                     x_axis = True
-                if labels[name][2] == 'log':
+                # Checking y axis
+                if np.nanmin(list(data[name][1][idx])) < 0:
+                    print('Negative data is incompatible with log plotting')
+                elif np.nanmin(list(data[name][1][idx])) >= 0 and labels[name][4] == 'log':
                     y_axis = True
                 # Set plot labels and plot data based on time we're hovering over.
                 plot.setLabel('bottom', '{} bins'.format(labels[name][0]))
                 plot.setLabel('left', '{}'.format(labels[name][0]))
-                plot.setLogMode(x_axis, y_axis)
+                plot.setLogMode(x=x_axis, y=y_axis)
                 plot_data.setData(data[name][0][:], list(data[name][1][idx]))
             else:
                 # Cover the situation where you hover over a non-spectrogram plot.
                 plot.setLogMode(False, False)
                 plot.setLabel('bottom', '')
                 plot.setLabel('left', '')
-                plot_data.setData([],[])
+                plot_data.setData([], [])
 
         # Make the above function called whenever hover_time is updated.
         pytplot.hover_time.register_listener(update)

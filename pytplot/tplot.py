@@ -12,8 +12,6 @@ from . import HTMLPlotter
 from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
-import numpy as np
-
 
 if pytplot.using_graphics:
     from .QtPlotter import PyTPlot_Exporter
@@ -185,7 +183,7 @@ def tplot(name,
                                               crosshair=crosshair)
             layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout.items()):
-                if type(item) == pyqtgraph.graphicsItems.GraphicsLayout.GraphicsLayout:
+                if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
                     layout.items()[i].resize(pytplot.tplot_opt_glob['window_size'][0],
                                              pytplot.tplot_opt_glob['window_size'][1])
             exporter = PyTPlot_Exporter.PytplotExporter(layout)
@@ -199,6 +197,7 @@ def tplot(name,
                                               combine_axes=combine_axes,
                                               mouse_moved_event=pytplot.hover_time.change_hover_time,
                                               crosshair=crosshair)
+
             available_qt_window.newlayout(layout)
             available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0],
                                        pytplot.tplot_opt_glob['window_size'][1])
@@ -212,4 +211,5 @@ def tplot(name,
             # plots the plots!
             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
+
         return

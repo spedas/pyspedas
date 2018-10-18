@@ -92,70 +92,25 @@ def options(name, option, value):
     
         if option == 'map':
             data_quants[i].extras['map'] = value
-        
-        if option == 'ylog':
-            negflag = 0
-            namedata = data_quants[i]
-            # check variable data
-            # if negative numbers, don't allow log setting
-            datasets = []
-            if isinstance(namedata.data, list):
-                for oplot_name in namedata.data:
-                    datasets.append(data_quants[oplot_name])
-            else:
-                datasets.append(namedata)
-                
-            for dataset in datasets:
-                if 'spec' not in dataset.extras:
-                    for column in dataset.data:
-                        if np.nanmin(dataset.data[column]) < 0:
-                            print('Negative data is incompatible with log plotting.')
-                            negflag = 1
-                            break
-                else:
-                    if dataset.extras['spec'] == 1:
-                        for column in dataset.spec_bins:
-                            if np.nanmin(dataset.spec_bins[column]) < 0:
-                                print('Negative data is incompatible with log plotting.')
-                                negflag = 1
-                                break
-                        
-            if value == 1 and negflag == 0:
-                data_quants[i].yaxis_opt['y_axis_type'] = 'log'
-        
+
         if option == 'legend_names':
             data_quants[i].yaxis_opt['legend_names'] = value
+
+        if option == 'xlog_interactive':
+            data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'log'
+        
+        if option == 'ylog':
+            negflag = ylog_check(data_quants, value, i)
+            if negflag == 0:
+                data_quants[i].yaxis_opt['y_axis_type'] = 'log'
+
+        if option == 'ylog_interactive':
+            data_quants[i].interactive_yaxis_opt['yi_axis_type'] = 'log'
         
         if option == 'zlog':
-            negflag = 0
-            namedata = data_quants[i]
-            # check variable data
-            # if negative numbers, don't allow log setting
-            datasets = []
-            if isinstance(namedata.data, list):
-                for oplot_name in namedata.data:
-                    datasets.append(data_quants[oplot_name])
-            else:
-                datasets.append(namedata)
-                
-            for dataset in datasets:
-                if 'spec' in dataset.extras:                       
-                    if dataset.extras['spec'] == 1:
-                        negflag = 0
-                        for column in dataset.data:
-                            if np.nanmin(dataset.data[column]) < 0:
-                                print('Negative data is incompatible with log plotting.')
-                                negflag = 1
-                                break
-                        # verify there are no negative values
-                        if negflag == 0 and value == 1:
-                            data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-                    else:
-                        if value == 1:
-                            data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-            else:
-                if value == 1:
-                    data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+            negflag = zlog_check(data_quants, value, i)
+            if negflag == 0:
+                data_quants[i].zaxis_opt['z_axis_type'] = 'log'
         
         if option == 'nodata':
             data_quants[i].line_opt['visible'] = value
@@ -177,7 +132,7 @@ def options(name, option, value):
                 
             data_quants[i].line_opt['line_dash'] = to_be
             
-            if(value == 6 or value == 'none'):
+            if value == 6 or value == 'none':
                 data_quants[i].line_opt['visible'] = False
                 
         if option == 'name':
@@ -229,3 +184,63 @@ def options(name, option, value):
         if option == 'crosshair_z':
             data_quants[i].zaxis_opt['crosshair'] = value
     return
+
+
+def ylog_check(data_quants, value, i):
+    negflag = 0
+    namedata = data_quants[i]
+    # check variable data
+    # if negative numbers, don't allow log setting
+    datasets = []
+    if isinstance(namedata.data, list):
+        for oplot_name in namedata.data:
+            datasets.append(data_quants[oplot_name])
+    else:
+        datasets.append(namedata)
+
+    if value == 1:
+        for dataset in datasets:
+            if 'spec' not in dataset.extras:
+                for column in dataset.data:
+                    if np.nanmin(dataset.data[column]) < 0:
+                        print('Negative data is incompatible with log plotting.')
+                        negflag = 1
+                        break
+            else:
+                if dataset.extras['spec'] == 1:
+                    for column in dataset.spec_bins:
+                        if np.nanmin(dataset.spec_bins[column]) < 0:
+                            print('Negative data is incompatible with log plotting.')
+                            negflag = 1
+                            break
+    elif value != 1:
+        # Using the 'negflag' as a way to not log something if the user doesn't want it to be logged
+        negflag = 1
+    return negflag
+
+
+def zlog_check(data_quants, value, i):
+    negflag = 0
+    namedata = data_quants[i]
+    # check variable data
+    # if negative numbers, don't allow log setting
+    datasets = []
+    if isinstance(namedata.data, list):
+        for oplot_name in namedata.data:
+            datasets.append(data_quants[oplot_name])
+    else:
+        datasets.append(namedata)
+
+    for dataset in datasets:
+        if value == 1:
+            if 'spec' in dataset.extras:
+                if dataset.extras['spec'] == 1:
+                    for column in dataset.data:
+                        if np.nanmin(dataset.data[column]) < 0:
+                            print('Negative data is incompatible with log plotting.')
+                            negflag = 1
+                            break
+        elif value != 1:
+            # Using the 'negflag' as a way to not log something if the user doesn't want it to be logged
+            negflag = 1
+    return negflag

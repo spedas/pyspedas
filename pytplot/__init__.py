@@ -51,7 +51,7 @@ try:
             exportDatapngAction.triggered.connect(self.exportpng)
             exportMenu.addAction(exportDatapngAction)
 
-        def exportpng(self):
+        def exportpng(self, layout):
             fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
             sshot = self.centralWidget().grab()
             sshot.save(fname[0])
@@ -90,6 +90,10 @@ class TVar(object):
         self.yaxis_opt = yaxis_opt
         # Dictionary of the z axis options
         self.zaxis_opt = zaxis_opt
+        # Dictionary of the x axis options for interactive plots
+        self.interactive_xaxis_opt = xaxis_opt
+        # Dictionary of the y axis options for interactive plots
+        self.interactive_yaxis_opt = yaxis_opt
         # Dictionary of line options
         self.line_opt = line_opt
         # The time range
@@ -113,8 +117,11 @@ class TVar(object):
         self.xaxis_opt['crosshair'] = 'X'
         self.yaxis_opt['crosshair'] = 'Y'
         self.zaxis_opt['crosshair'] = 'Z'
+        self.xaxis_opt['x_axis_type'] = 'linear'
         self.yaxis_opt['y_axis_type'] = 'linear'
         self.zaxis_opt['z_axis_type'] = 'linear'
+        self.interactive_xaxis_opt['xi_axis_type'] = 'linear'
+        self.interactive_yaxis_opt['yi_axis_type'] = 'linear'
         
     def _check_spec_bins_ordering(self):
         """
