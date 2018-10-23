@@ -9,6 +9,8 @@ import pytplot
 from pytplot import tplot_opt_glob
 from .CustomAxis.DateAxis import DateAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
+from .CustomAxis.AxisItem import AxisItem
+from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigure1D(pg.GraphicsLayout):
@@ -27,10 +29,11 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.xaxis.setHeight(35)
         self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
-        self.yaxis = pg.AxisItem("left")
+        self.yaxis = AxisItem("left")
         self.yaxis.setWidth(100)
-        
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis})
+
+        vb = NoPaddingPlot()
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
         
         # Set up the view box needed for the legends
         self.legendvb = pg.ViewBox(enableMouse=False)
