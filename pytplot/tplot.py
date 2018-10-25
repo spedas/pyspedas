@@ -218,6 +218,7 @@ def tplot(name,
 
             # Implement button that lets you save the PNG
             available_qt_window.init_savepng(exporter)
+
             # Show the plot window and plot
             available_qt_window.show()
             available_qt_window.activateWindow()
