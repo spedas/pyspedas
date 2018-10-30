@@ -49,6 +49,30 @@ def get_z_t_values(var):
     return time_values, z_values
 
 
+def set_x_range(var, x_axis_log, plot):
+    # Check if plot's x range has been set by user. If not, range is automatically set.
+    if 'xi_range' in pytplot.data_quants[var].interactive_xaxis_opt:
+        if x_axis_log:
+            plot.setXRange(np.log10(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][0]),
+                           np.log10(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][1]),
+                           padding=0)
+        elif not x_axis_log:
+            plot.setXRange(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][0],
+                           pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][1], padding=0)
+
+
+def set_y_range(var, y_axis_log, plot):
+    # Check if plot's y range has been set by user. If not, range is automatically set.
+    if 'yi_range' in pytplot.data_quants[var].interactive_yaxis_opt:
+        if y_axis_log:
+            plot.setYRange(np.log10(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][0]),
+                           np.log10(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][1]),
+                           padding=0)
+        elif not y_axis_log:
+            plot.setYRange(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][0],
+                           pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][1], padding=0)
+
+
 def interactive2dplot():
     """ If the interactive option is set to True in tplot, this function will take in the stored tplot variables
     and create a 2D interactive window that will pop up when any one of the tplot variables is plotted (so long
@@ -62,7 +86,7 @@ def interactive2dplot():
     valid_variables = get_data(names)
 
     # Don't plot anything unless we have spectrograms with which to work.
-    if valid_variables != []:
+    if valid_variables:
         # Get z label
         labels = get_plot_labels(names)
 
@@ -115,10 +139,14 @@ def interactive2dplot():
                     print('Negative data is incompatible with log plotting')
                 elif np.nanmin(list(data[name][1][idx])) >= 0 and labels[name][4] == 'log':
                     y_axis = True
-                # Set plot labels and plot data based on time we're hovering over.
+                # Set plot labels
                 plot.setLabel('bottom', '{} bins'.format(labels[name][0]))
                 plot.setLabel('left', '{}'.format(labels[name][0]))
                 plot.setLogMode(x=x_axis, y=y_axis)
+                # Update x and y range if user modified it
+                set_x_range(name, x_axis, plot)
+                set_y_range(name, y_axis, plot)
+                # Plot data based on time we're hovering over
                 plot_data.setData(data[name][0][:], list(data[name][1][idx]))
             else:
                 # Cover the situation where you hover over a non-spectrogram plot.
@@ -129,8 +157,3 @@ def interactive2dplot():
 
         # Make the above function called whenever hover_time is updated.
         pytplot.hover_time.register_listener(update)
-
-        # Start Qt event loop unless running in interactive mode.
-        import sys
-        if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
-            QtGui.QApplication.instance().exec_()

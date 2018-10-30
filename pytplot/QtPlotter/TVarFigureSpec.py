@@ -18,7 +18,7 @@ from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureSpec(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=True):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=False):
         
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
@@ -257,7 +257,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         return axis_type, link_y_axis
     
     def _setxrange(self):
-        # Check if x range is set.  Otherwise, x range is automatic
+        # Check if x range is set.  Otherwise, x range is automatic.
         if 'x_range' in tplot_opt_glob:
             self.plotwindow.setXRange(tplot_opt_glob['x_range'][0], tplot_opt_glob['x_range'][1])
     

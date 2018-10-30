@@ -35,7 +35,7 @@ def tplot(name,
           gui=False,
           qt=False,
           bokeh=False,
-          crosshair=True,
+          crosshair=False,
           save_png=None,
           display=True):
     """
@@ -207,10 +207,11 @@ def tplot(name,
 
             # Set up displayed plot window and grab plots to plot on it
             available_qt_window = tplot_utilities.get_available_qt_window()
+
             layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
                                               combine_axes=combine_axes,
                                               mouse_moved_event=pytplot.hover_time.change_hover_time,
-                                              crosshair=crosshair)
+                                              crosshair=pytplot.tplot_opt_glob['crosshair'])
 
             available_qt_window.newlayout(layout)
             available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0],

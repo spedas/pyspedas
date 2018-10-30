@@ -205,7 +205,7 @@ interactive_window = None  # 2D interactive window that appears whenever plottin
 tplot_opt_glob = dict(tools="xpan,crosshair,reset",
                       min_border_top=15, min_border_bottom=0,
                       title_align='center', window_size=[800, 800],
-                      title_size='12pt', title_text='')
+                      title_size='12pt', title_text='', crosshair=False)
 lim_info = {}
 extra_layouts = {}
 

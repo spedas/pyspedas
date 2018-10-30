@@ -5,18 +5,15 @@
 
 import pyqtgraph as pg
 import numpy as np
-from .. import tplot_utilities 
 from pytplot import tplot_opt_glob
 import pytplot
-from pyqtgraph.Qt import QtCore
-from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 
 
 class TVarFigureAlt(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=False):
         
-        self.tvar_name=tvar_name
+        self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
         self.crosshair = crosshair
         
@@ -112,14 +109,13 @@ class TVarFigureAlt(pg.GraphicsLayout):
     
     def _setxaxislabel(self):
         self.xaxis.setLabel("Altitude")
-        
+
     def getaxistype(self):
         axis_type = 'altitude'
         link_y_axis = False
         return axis_type, link_y_axis
     
     def _addmouseevents(self):
-        
         if self.plotwindow.scene() is not None:
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
     
@@ -128,15 +124,15 @@ class TVarFigureAlt(pg.GraphicsLayout):
         pos = evt
         # if plot window contains position
         if self.plotwindow.sceneBoundingRect().contains(pos):
-            mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            mousepoint = self.plotwindow.vb.mapSceneToView(pos)
             # grab x and y mouse locations
-            index_x = int(mousePoint.x())
-            index_y = int(mousePoint.y())
+            index_x = int(mousepoint.x())
+            index_y = int(mousepoint.y())
             # add crosshairs
             if self._mouseMovedFunction is not None:
-                self._mouseMovedFunction(int(mousePoint.x()))
-                self.vLine.setPos(mousePoint.x())
-                self.hLine.setPos(mousePoint.y())
+                self._mouseMovedFunction(int(mousepoint.x()))
+                self.vLine.setPos(mousepoint.x())
+                self.hLine.setPos(mousepoint.y())
                 self.vLine.setVisible(True)
                 self.hLine.setVisible(True)
 

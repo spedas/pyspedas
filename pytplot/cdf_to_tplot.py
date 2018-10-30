@@ -10,7 +10,6 @@ import pandas as pd
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
 from pytplot.options import options
-# from pytplot.get_data import get_data
 from pytplot import data_quants
 
 
@@ -67,7 +66,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         return stored_variables
 
     var_type = ['data']
-    if varformat == None:
+    if varformat is None:
         varformat = ".*"
     if get_support_data:
         var_type.append('support_data')
@@ -109,7 +108,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 # Find data name and if it is already in stored variables
                 var_name = prefix + var + suffix
                 to_merge = False
-                if (var_name in data_quants.keys()) and (merge == True):
+                if (var_name in data_quants.keys()) and merge:
                     prev_data_quant = data_quants[var_name].data
                     to_merge = True
 
@@ -160,7 +159,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 if scale_type == 'log':
                     options(var, 'ylog', 1)
 
-                if to_merge == True:
+                if to_merge:
                     cur_data_quant = data_quants[var_name].data
                     merged_data = [prev_data_quant, cur_data_quant]
                     data_quants[var_name].data = pd.concat(merged_data)

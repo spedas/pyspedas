@@ -12,7 +12,7 @@ from .CustomLegend.CustomLegend import CustomLegendItem
 
 
 class TVarFigure1D(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=False):
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
@@ -150,17 +150,17 @@ class TVarFigure1D(pg.GraphicsLayout):
         pos = evt
         # if plot window contains position
         if self.plotwindow.sceneBoundingRect().contains(pos):
-            mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            mousepoint = self.plotwindow.vb.mapSceneToView(pos)
             # grab x and y mouse locations
-            index_x = int(mousePoint.x())
-            index_y = round(float(mousePoint.y()),4)
+            index_x = int(mousepoint.x())
+            index_y = round(float(mousepoint.y()), 4)
             date = (pytplot.tplot_utilities.int_to_str(index_x))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(index_x))[11:19]
             # add crosshairs
-            if self._mouseMovedFunction != None:
-                self._mouseMovedFunction(int(mousePoint.x()))
-                self.vLine.setPos(mousePoint.x())
-                self.hLine.setPos(mousePoint.y())
+            if self._mouseMovedFunction is not None:
+                self._mouseMovedFunction(int(mousepoint.x()))
+                self.vLine.setPos(mousepoint.x())
+                self.hLine.setPos(mousepoint.y())
                 self.vLine.setVisible(True)
                 self.hLine.setVisible(True)
                            
@@ -198,7 +198,7 @@ class TVarFigure1D(pg.GraphicsLayout):
     
     def _setcolormap(self):          
         return
-    
+
     def getaxistype(self):
         axis_type = 'time'
         link_y_axis = False

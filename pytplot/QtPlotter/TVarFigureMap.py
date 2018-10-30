@@ -10,11 +10,11 @@ import pytplot
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
+from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureMap(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
-        
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=False):
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
         self.crosshair = crosshair
@@ -30,7 +30,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.yaxis = pg.AxisItem("left")
         self.yaxis.setWidth(100)
 
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis})
+        vb = NoPaddingPlot()
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
         self.plotwindow.vb.setLimits(xMin=0, xMax=360, yMin=-90, yMax=90)
         
         # Set up the view box needed for the legends
@@ -55,7 +56,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.addItem(self.label, row=1, col=0)
 
         # Set legend options
-        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date: ", "0")
         self.hoverlegend.setItem("Time: ", "0")
         self.hoverlegend.setItem("Latitude:", "0")
@@ -131,7 +132,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         return
         
     def _addlegend(self):
-        zaxis=pg.AxisItem('right')
+        zaxis = pg.AxisItem('right')
         
         if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
@@ -139,9 +140,9 @@ class TVarFigureMap(pg.GraphicsLayout):
             zaxis.setLabel(' ')
         
         if self.show_xaxis:
-            emptyAxis = BlankAxis('bottom')
-            emptyAxis.setHeight(35)
-            p2 = self.addPlot(row=0, col=1, axisItems={'right': zaxis, 'bottom': emptyAxis}, enableMenu=False,
+            emptyaxis = BlankAxis('bottom')
+            emptyaxis.setHeight(35)
+            p2 = self.addPlot(row=0, col=1, axisItems={'right': zaxis, 'bottom': emptyaxis}, enableMenu=False,
                               viewBox=self.legendvb)
         else:
             p2 = self.addPlot(row=0, col=1, axisItems={'right': zaxis}, enableMenu=False, viewBox=self.legendvb)
@@ -176,10 +177,10 @@ class TVarFigureMap(pg.GraphicsLayout):
         pos = evt
         # if plot window contains position
         if self.plotwindow.sceneBoundingRect().contains(pos):
-            mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            mousepoint = self.plotwindow.vb.mapSceneToView(pos)
             # grab x and y mouse locations
-            index_x = round(float(mousePoint.x()), 2)
-            index_y = round(float(mousePoint.y()), 2)
+            index_x = round(float(mousepoint.x()), 2)
+            index_y = round(float(mousepoint.y()), 2)
             # get latitude and longitude arrays
             datasets = []
             if isinstance(pytplot.data_quants[self.tvar_name].data, list):
@@ -201,11 +202,11 @@ class TVarFigureMap(pg.GraphicsLayout):
             
             # add crosshairs
             if self._mouseMovedFunction is not None:
-                self._mouseMovedFunction(int(mousePoint.x()))
+                self._mouseMovedFunction(int(mousepoint.x()))
                 self.vLine.setVisible(True)
                 self.hLine.setVisible(True)
-                self.vLine.setPos(mousePoint.x())
-                self.hLine.setPos(mousePoint.y())
+                self.vLine.setPos(mousepoint.x())
+                self.hLine.setPos(mousepoint.y())
 
             # Set legend options
             self.hoverlegend.setVisible(True)
@@ -217,10 +218,10 @@ class TVarFigureMap(pg.GraphicsLayout):
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
             self.hLine.setVisible(False)
-    
+
     def _getyaxistype(self):
         return 'linear'
-    
+
     def _setzaxistype(self):
         if self._getzaxistype() == 'log':
             self.zscale = 'log'
@@ -247,18 +248,27 @@ class TVarFigureMap(pg.GraphicsLayout):
             return colors
         else:
             return [pytplot.tplot_utilities.return_lut("inferno")]
-    
+
     def getaxistype(self):
         axis_type = 'lat'
         link_y_axis = True
         return axis_type, link_y_axis
-    
+
     def _setxrange(self):
-        # Check if x range is set.  Otherwise, x range is automatic
-        self.plotwindow.setXRange(0, 360)
+        # Check if x range is set. Otherwise, set it.
+        if 'map_x_range' in pytplot.tplot_opt_glob:
+            self.plotwindow.setXRange(pytplot.tplot_opt_glob['map_x_range'][0],
+                                      pytplot.tplot_opt_glob['map_x_range'][1])
+        else:
+            self.plotwindow.setXRange(0, 360)
     
     def _setyrange(self):
-        self.plotwindow.vb.setYRange(-90, 90)
+        # Check if y range is set.  Otherwise, y range is automatic
+        if 'map_y_range' in pytplot.tplot_opt_glob:
+            self.plotwindow.setYRange(pytplot.tplot_opt_glob['map_y_range'][0],
+                                      pytplot.tplot_opt_glob['map_y_range'][1])
+        else:
+            self.plotwindow.vb.setYRange(-90, 90)
     
     def _setzrange(self):
         # Get Z Range
