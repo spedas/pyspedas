@@ -79,7 +79,7 @@ class TVar(object):
         self.data = data
         # The spec_bins, if applicable
         self.spec_bins = spec_bins
-        # Specifies if extra 2D plot appears - only applicable with spectrogram plots
+        # Specifies if extra (interactive) 2D plot appears - only applicable with spectrogram plots
         self.interactive = False
         # If there are spec_bins (i.e., this is a spectrogram), interactive is True
         if self.spec_bins is not None:
@@ -90,6 +90,10 @@ class TVar(object):
         self.yaxis_opt = yaxis_opt
         # Dictionary of the z axis options
         self.zaxis_opt = zaxis_opt
+        # Dictionary of the x axis options for interactive plots
+        self.interactive_xaxis_opt = xaxis_opt
+        # Dictionary of the y axis options for interactive plots
+        self.interactive_yaxis_opt = yaxis_opt
         # Dictionary of line options
         self.line_opt = line_opt
         # The time range
@@ -115,6 +119,8 @@ class TVar(object):
         self.zaxis_opt['crosshair'] = 'Z'
         self.yaxis_opt['y_axis_type'] = 'linear'
         self.zaxis_opt['z_axis_type'] = 'linear'
+        self.interactive_xaxis_opt['xi_axis_type'] = 'linear'
+        self.interactive_yaxis_opt['yi_axis_type'] = 'linear'
         
     def _check_spec_bins_ordering(self):
         """
@@ -188,7 +194,8 @@ class TVar(object):
 # Global Variables
 hover_time = HoverTime()
 data_quants = OrderedDict()
-interactive_window = None # 2D interactive window that appears whenever plotting spectrograms w/ tplot
+interactive_window = None  # 2D interactive window that appears whenever plotting spectrograms w/ tplot
+static_window = None  # 2D window showing data at certain point in time from a spectrogram plot
 tplot_opt_glob = dict(tools="xpan,crosshair,reset",
                       min_border_top=15, min_border_bottom=0,
                       title_align='center', window_size=[800, 800],

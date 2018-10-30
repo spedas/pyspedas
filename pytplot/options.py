@@ -39,7 +39,9 @@ def options(name, option, value):
         yrange        flt list     Two numbers that give the y axis range of the plot
         zrange        flt list     Two numbers that give the z axis range of the plot
         ytitle        str          Title shown on the y axis
-        ztitle        str          Title shown on the z axis.  Spec plots only.  
+        ztitle        str          Title shown on the z axis.  Spec plots only.
+        static        str          If utilized, for a given time (in seconds since epoch), pops up 2d static window
+                                   with a spectrogram's y and z values at that time value
         ============  ==========   =====
     
     Returns:
@@ -228,4 +230,7 @@ def options(name, option, value):
 
         if option == 'crosshair_z':
             data_quants[i].zaxis_opt['crosshair'] = value
+
+        if option == 'static':
+            data_quants[i].extras['static'] = value
     return
