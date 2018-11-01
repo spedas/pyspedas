@@ -18,7 +18,7 @@ from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureSpec(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=True):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=False):
         
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis

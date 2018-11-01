@@ -25,7 +25,11 @@ def tplot_options(option, value):
         wsize         [int, int]   [height, width], pixel size of the plot window
         title_align   int          Offset position in pixels of the title   
         var_label     srt          Name of the tplot variable to be used as another x axis
-        alt_range     [flt, flt]   The min and max altitude to be plotted on all alt plots 
+        alt_range     [flt, flt]   The min and max altitude to be plotted on all alt plots
+        map_x_range   [int, int]   The min and max longitude to be plotted on all map plots
+        map_y_range   [int, int]   The min and max latitude to be plotted on all map plots
+        x_range       [flt, flt]   The min and max x_range (usually time) to be plotted on all Spec/1D plots
+        crosshair     bool         Optioning allowing crosshairs and crosshair legend
         ============  ==========   =====
     
     Returns:
