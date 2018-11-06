@@ -10,10 +10,12 @@ import pytplot
 from pyqtgraph.Qt import QtCore
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
+from .CustomAxis.AxisItem import AxisItem
+from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureMap(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=True):
         
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
@@ -27,10 +29,11 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.xaxis.setHeight(35)
         self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
-        self.yaxis = pg.AxisItem("left")
+        self.yaxis = AxisItem("left")
         self.yaxis.setWidth(100)
 
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis})
+        vb = NoPaddingPlot()
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
         self.plotwindow.vb.setLimits(xMin=0, xMax=360, yMin=-90, yMax=90)
         
         # Set up the view box needed for the legends
@@ -55,7 +58,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.addItem(self.label, row=1, col=0)
 
         # Set legend options
-        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date: ", "0")
         self.hoverlegend.setItem("Time: ", "0")
         self.hoverlegend.setItem("Latitude:", "0")
@@ -131,8 +134,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         return
         
     def _addlegend(self):
-        zaxis=pg.AxisItem('right')
-        
+        zaxis = AxisItem('right')
         if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
         else:
