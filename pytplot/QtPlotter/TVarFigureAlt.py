@@ -217,7 +217,6 @@ class TVarFigureAlt(pg.GraphicsLayout):
             for i in range(ltbar):
                 # get times, color, point size
                 test_time = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
-                # print(test_time)
                 color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
                 pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
                 # correlate given time with corresponding data/alt points
@@ -226,7 +225,6 @@ class TVarFigureAlt(pg.GraphicsLayout):
                 nearest_time_index = np.abs(time - test_time).argmin()
                 data_point = dataset.data.iloc[nearest_time_index][0]
                 alt_point = altitude[nearest_time_index]
-                # color = pytplot.tplot_utilities.rgb_color(color)
                 self.plotwindow.scatterPlot([alt_point], [data_point], size=pointsize, pen=pg.mkPen(None), brush=color)
         return
 

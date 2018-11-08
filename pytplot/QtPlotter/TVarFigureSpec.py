@@ -193,7 +193,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
             # add crosshairs
             if self._mouseMovedFunction is not None:
-                print('in spec')
                 # Associate mouse position with current plot you're mousing over.
                 self._mouseMovedFunction(int(mousePoint.x()), name=self.tvar_name)
                 if self.crosshair:
