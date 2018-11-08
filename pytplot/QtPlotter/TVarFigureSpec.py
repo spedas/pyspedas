@@ -5,7 +5,7 @@
 
 import pyqtgraph as pg
 import numpy as np
-from .. import tplot_utilities 
+from .. import tplot_utilities
 from pytplot import tplot_opt_glob
 from pyqtgraph.Qt import QtCore
 import pytplot
@@ -18,12 +18,12 @@ from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureSpec(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=False):
-        
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
+
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
-        self.crosshair = crosshair
-        
+        self.crosshair = pytplot.tplot_opt_glob['crosshair']
+
         # Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
         self.layout.setHorizontalSpacing(50)
@@ -55,9 +55,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.plotwindow.showAxis('bottom')
         else:
             self.plotwindow.hideAxis('bottom')
-        
+
         self._mouseMovedFunction = mouse_function
-        
+
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
 
@@ -65,20 +65,17 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date:", "0")
         # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair']+':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']+':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair']+':', "0")
-
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair'] + ':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
-        
+
     def _set_crosshairs(self):
         self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
         self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
-        self.vLine.setVisible(False)
-        self.hLine.setVisible(False)
 
     def buildfigure(self):
         self._setxrange()
@@ -91,45 +88,44 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._setxaxislabel()
         self._addlegend()
         self._addtimebars()
-        if self.crosshair:
-            self._set_crosshairs()
-            self._addmouseevents()
+        self._addmouseevents()
+        self._set_crosshairs()
 
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
-    
+
     def _setxaxislabel(self):
         self.xaxis.setLabel("Time")
-    
+
     def getfig(self):
         return self
-    
+
     def _visdata(self):
         self._setzrange()
-        specplot = UpdatingImage(pytplot.data_quants[self.tvar_name].data, 
-                                 pytplot.data_quants[self.tvar_name].spec_bins, 
-                                 pytplot.data_quants[self.tvar_name].spec_bins_ascending, 
-                                 self._getyaxistype(), 
+        specplot = UpdatingImage(pytplot.data_quants[self.tvar_name].data,
+                                 pytplot.data_quants[self.tvar_name].spec_bins,
+                                 pytplot.data_quants[self.tvar_name].spec_bins_ascending,
+                                 self._getyaxistype(),
                                  self._getzaxistype(),
                                  self.colormap,
                                  self.zmin,
                                  self.zmax)
         self.plotwindow.addItem(specplot)
-        
+
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
             self.plotwindow.setLogMode(y=True)
         else:
             self.plotwindow.setLogMode(y=False)
         return
-        
+
     def _addlegend(self):
         zaxis = AxisItem('right')
         if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'])
         else:
             zaxis.setLabel(' ')
-        
+
         if self.show_xaxis:
             emptyAxis = BlankAxis('bottom')
             emptyAxis.setHeight(35)
@@ -138,32 +134,32 @@ class TVarFigureSpec(pg.GraphicsLayout):
         else:
             p2 = self.addPlot(row=0, col=1, axisItems={'right': zaxis}, enableMenu=False, viewBox=self.legendvb)
             p2.hideAxis('bottom')
-            
+
         p2.buttonsHidden = True
         p2.setMaximumWidth(100)
         p2.showAxis('right')
         p2.hideAxis('left')
         colorbar = pg.ImageItem()
         colorbar.setImage(np.array([np.linspace(1, 2, 200)]).T)
-        
+
         p2.addItem(colorbar)
         p2.setLogMode(y=(self.zscale == 'log'))
         p2.setXRange(0, 1, padding=0)
         colorbar.setLookupTable(self.colormap)
         if self.zscale == 'log':
-            colorbar.setRect(QtCore.QRectF(0, np.log10(self.zmin), 1, np.log10(self.zmax)-np.log10(self.zmin)))
+            colorbar.setRect(QtCore.QRectF(0, np.log10(self.zmin), 1, np.log10(self.zmax) - np.log10(self.zmin)))
             # I have literally no idea why this is true, but I need to set the range twice
             p2.setYRange(np.log10(self.zmin), np.log10(self.zmax), padding=0)
             p2.setYRange(np.log10(self.zmin), np.log10(self.zmax), padding=0)
         else:
-            colorbar.setRect(QtCore.QRectF(0, self.zmin, 1, self.zmax-self.zmin))
+            colorbar.setRect(QtCore.QRectF(0, self.zmin, 1, self.zmax - self.zmin))
             p2.setYRange(self.zmin, self.zmax, padding=0)
         colorbar.setLookupTable(self.colormap)
 
     def _addmouseevents(self):
         if self.plotwindow.scene() is not None:
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
-    
+
     def _mousemoved(self, evt):
         # get current position
         pos = evt
@@ -175,21 +171,21 @@ class TVarFigureSpec(pg.GraphicsLayout):
             index_x = int(mousePoint.x())
             # set log magnitude if log plot
             if self._getyaxistype() == 'log':
-                index_y = 10**(round(float(mousePoint.y()), 4))
+                index_y = 10 ** (round(float(mousePoint.y()), 4))
             else:
                 index_y = round(float(mousePoint.y()), 4)
 
             dataframe = pytplot.data_quants[self.tvar_name].data
             specframe = pytplot.data_quants[self.tvar_name].spec_bins
-            
+
             # find closest time/data to cursor location
-            x = np.asarray(dataframe.index.tolist())            
-            x_sub = abs(x-index_x*np.ones(len(x)))
+            x = np.asarray(dataframe.index.tolist())
+            x_sub = abs(x - index_x * np.ones(len(x)))
             x_argmin = np.argmin(x_sub)
             x_closest = x[x_argmin]
             speclength = len(specframe.loc[0])
-            y = np.asarray((specframe.loc[0, 0:speclength-1]))
-            y_sub = abs(y-index_y*np.ones(y.size))
+            y = np.asarray((specframe.loc[0, 0:speclength - 1]))
+            y_sub = abs(y - index_y * np.ones(y.size))
             y_argmin = np.argmin(y_sub)
             y_closest = y[y_argmin]
             index = int((np.nonzero(y == y_closest))[0])
@@ -197,23 +193,26 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
             # add crosshairs
             if self._mouseMovedFunction is not None:
+                print('in spec')
                 # Associate mouse position with current plot you're mousing over.
                 self._mouseMovedFunction(int(mousePoint.x()), name=self.tvar_name)
-                self.vLine.setPos(mousePoint.x())
-                self.hLine.setPos(mousePoint.y())
-                self.vLine.setVisible(True)
-                self.hLine.setVisible(True)       
-            
+                if self.crosshair:
+                    self.vLine.setPos(mousePoint.x())
+                    self.hLine.setPos(mousePoint.y())
+                    self.vLine.setVisible(True)
+                    self.hLine.setVisible(True)
+
             date = (pytplot.tplot_utilities.int_to_str(x_closest))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(x_closest))[11:19]
 
             # Set legend options
-            self.hoverlegend.setVisible(True)
-            self.hoverlegend.setItem("Date:", date)
-            # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', time)
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', str(y_closest))
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair'] + ':', str(dp))
+            if self.crosshair:
+                self.hoverlegend.setVisible(True)
+                self.hoverlegend.setItem("Date:", date)
+                # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', time)
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', str(y_closest))
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].zaxis_opt['crosshair'] + ':', str(dp))
 
         else:
             self.hoverlegend.setVisible(False)
@@ -225,42 +224,42 @@ class TVarFigureSpec(pg.GraphicsLayout):
             return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
         else:
             return 'linear'
-    
+
     def _setzaxistype(self):
         if self._getzaxistype() == 'log':
             self.zscale = 'log'
         else:
             self.zscale = 'linear'
-    
+
     def _getzaxistype(self):
         if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             return pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type']
         else:
             return 'log'
-            
+
     def _setcolors(self):
         if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
             return pytplot.data_quants[self.tvar_name].extras['line_color']
-        else: 
+        else:
             return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
-    
-    def _setcolormap(self):          
+
+    def _setcolormap(self):
         if 'colormap' in pytplot.data_quants[self.tvar_name].extras:
             for cm in pytplot.data_quants[self.tvar_name].extras['colormap']:
                 return tplot_utilities.return_lut(cm)
         else:
             return tplot_utilities.return_lut("inferno")
-    
+
     def getaxistype(self):
         axis_type = 'time'
         link_y_axis = False
         return axis_type, link_y_axis
-    
+
     def _setxrange(self):
         # Check if x range is set.  Otherwise, x range is automatic.
         if 'x_range' in tplot_opt_glob:
             self.plotwindow.setXRange(tplot_opt_glob['x_range'][0], tplot_opt_glob['x_range'][1])
-    
+
     def _setyrange(self):
         if self._getyaxistype() == 'log':
             if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] < 0 or \
@@ -272,7 +271,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         else:
             self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
                                          pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1], padding=0)
-    
+
     def _setzrange(self):
         # Get Z Range
         if 'z_range' in pytplot.data_quants[self.tvar_name].zaxis_opt:
@@ -282,7 +281,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
             dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
-            
+
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
                 zmin_list = []
@@ -290,7 +289,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
                     series = pytplot.data_quants[self.tvar_name].data[column]
                     zmin_list.append(series.iloc[series.nonzero()[0]].min())
                 self.zmin = min(zmin_list)
-    
+
     def _addtimebars(self):
         # find number of times to plot
         dict_length = len(pytplot.data_quants[self.tvar_name].time_bar)
@@ -305,5 +304,5 @@ class TVarFigureSpec(pg.GraphicsLayout):
             infline = pg.InfiniteLine(pos=date_to_highlight, pen=pg.mkPen(color, width=thick))
             # add to plot window
             self.plotwindow.addItem(infline)
-                
+
         return

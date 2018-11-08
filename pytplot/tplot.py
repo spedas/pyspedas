@@ -35,7 +35,6 @@ def tplot(name,
           gui=False,
           qt=False,
           bokeh=False,
-          crosshair=False,
           save_png=None,
           display=True):
     """
@@ -78,8 +77,6 @@ def tplot(name,
         qt : bool, optional
             If True, then this function will display the plot inside of the Qt window.  From this window, you
             can choose to export the plots as either an HTML file, or as a PNG.
-        crosshair: bool, optional
-            If True, then crosshairs, with a legend box containing information w.r.t. the crosshairs, will be displayed.
         save_png : str, optional
             A full file name and path.
             If this option is set, the plot will be automatically saved to the file name provided in a PNG format.
@@ -180,8 +177,7 @@ def tplot(name,
         if save_png is not None:
             layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
                                               combine_axes=combine_axes,
-                                              mouse_moved_event=pytplot.hover_time.change_hover_time,
-                                              crosshair=crosshair)
+                                              mouse_moved_event=pytplot.hover_time.change_hover_time)
             layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout.items()):
                 if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
@@ -196,8 +192,7 @@ def tplot(name,
             # Set up all things needed for when a user asks to save plot from window
             layout_orig = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
                                                    combine_axes=combine_axes,
-                                                   mouse_moved_event=pytplot.hover_time.change_hover_time,
-                                                   crosshair=crosshair)
+                                                   mouse_moved_event=pytplot.hover_time.change_hover_time)
             layout_orig.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout_orig.items()):
                 if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
@@ -210,8 +205,7 @@ def tplot(name,
 
             layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
                                               combine_axes=combine_axes,
-                                              mouse_moved_event=pytplot.hover_time.change_hover_time,
-                                              crosshair=pytplot.tplot_opt_glob['crosshair'])
+                                              mouse_moved_event=pytplot.hover_time.change_hover_time)
 
             available_qt_window.newlayout(layout)
             available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0],
