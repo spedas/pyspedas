@@ -100,7 +100,19 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         
     elif option == 'alt_range':
         new_tplot_opt_glob['alt_range'] = value
-    
+
+    elif option == 'map_x_range':
+        new_tplot_opt_glob['map_x_range'] = value
+
+    elif option == 'map_y_range':
+        new_tplot_opt_glob['map_y_range'] = value
+
+    elif option == 'x_range':
+        new_tplot_opt_glob['x_range'] = value
+
+    elif option == 'crosshair':
+        new_tplot_opt_glob['crosshair'] = value
+
     return new_tplot_opt_glob
 
 
