@@ -111,8 +111,8 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         new_tplot_opt_glob['x_range'] = value
 
     elif option == 'crosshair':
-        new_tplot_opt_glob['crosshair'] = value
-    
+        new_tplot_opt_glob['crosshair'] = value    
+
     return new_tplot_opt_glob
 
 

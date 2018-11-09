@@ -28,7 +28,7 @@ def options(name, option, value):
         Spec              int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
         Alt               int          1 sets the Tplot Variable to altitude plot mode, 0 reverts.
         Map               int          1 sets the Tplot Variable to latitude/longitude mode, 0 reverts.
-        link
+        link              str/list     Allows a user to reference one tplot variable to another.
         ylog              int          1 sets the y axis to log scale, 0 reverts.
         zlog              int          1 sets the z axis to log scale, 0 reverts (spectrograms only).
         legend_names      list         A list of strings that will be used to identify the lines.
@@ -42,18 +42,19 @@ def options(name, option, value):
         basemap           str          Full path and name of a background image for "Map" plots.
         alpha             flt          Number between [0,1], gives the transparancy of the plot lines.
         thick             flt          Sets plot line width.
-        transparency
         yrange            flt list     Two numbers that give the y axis range of the plot.
         zrange            flt list     Two numbers that give the z axis range of the plot.
         ytitle            str          Title shown on the y axis.
+        ytitle            str          Title shown on the y axis.
         ztitle            str          Title shown on the z axis.  Spec plots only.
-        plotter
+        plotter           str          Allows a user to implement their own plotting script in place of the ones herein.
         crosshair_x       str          Title for x-axis crosshair.
         crosshair_y       str          Title for y-axis crosshair.
         crosshair_z       str          Title for z-axis crosshair.
         static            str          Datetime string that gives desired time to plot y and z values from a spec plot.
         static_tavg       str          Datetime string that gives desired time-averaged y and z values to plot
                                        from a spec plot.
+        t_average         int          Seconds around which the cursor is averaged when hovering over spectrogram plots.
         ============      ==========   =====
     
     Returns:
@@ -112,7 +113,7 @@ def options(name, option, value):
 
         if option == 'xlog_interactive':
             data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'log'
-
+        
         if option == 'ylog':
             negflag = ylog_check(data_quants, value, i)
             if negflag == 0:
@@ -146,7 +147,7 @@ def options(name, option, value):
                 
             data_quants[i].line_opt['line_dash'] = to_be
             
-            if(value == 6 or value == 'none'):
+            if value == 6 or value == 'none':
                 data_quants[i].line_opt['visible'] = False
                 
         if option == 'name':
@@ -170,15 +171,17 @@ def options(name, option, value):
         if option == 'thick':
             data_quants[i].line_opt['line_width'] = value
         
-        if option == 'transparency':
-            alpha_val = value/100
-            data_quants[i].line_opt['line_alpha'] = alpha_val
-        
         if option == ('yrange' or 'y_range'):
             data_quants[i].yaxis_opt['y_range'] = [value[0], value[1]]
             
         if option == ('zrange' or 'z_range'):
             data_quants[i].zaxis_opt['z_range'] = [value[0], value[1]]
+
+        if option == 'xrange_interactive':
+            data_quants[i].interactive_xaxis_opt['xi_range'] = [value[0], value[1]]
+
+        if option == 'yrange_interactive':
+            data_quants[i].interactive_yaxis_opt['yi_range'] = [value[0], value[1]]
         
         if option == 'ytitle':
             data_quants[i].yaxis_opt['axis_label'] = value

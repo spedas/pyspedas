@@ -14,12 +14,12 @@ from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigure1D(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
-        self.crosshair = crosshair
-        
+        self.crosshair = pytplot.tplot_opt_glob['crosshair']
+
         # Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
         self.layout.setHorizontalSpacing(50)
@@ -34,7 +34,7 @@ class TVarFigure1D(pg.GraphicsLayout):
 
         vb = NoPaddingPlot()
         self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
-        
+
         # Set up the view box needed for the legends
         self.legendvb = pg.ViewBox(enableMouse=False)
         self.legendvb.setMaximumWidth(100)
@@ -50,20 +50,20 @@ class TVarFigure1D(pg.GraphicsLayout):
             self.plotwindow.showAxis('bottom')
         else:
             self.plotwindow.hideAxis('bottom')
-        
+
         self._mouseMovedFunction = mouse_function
 
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
 
         # Set legend options
-        self.hoverlegend = CustomLegendItem(offset=(0,0))
+        self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date:", "0")
         # Allow the user to set x-axis(time) and y-axis names in crosshairs
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair']+':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair']+':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', "0")
         self.hoverlegend.setVisible(False)
-        self.hoverlegend.setParentItem(self.plotwindow.vb)  
+        self.hoverlegend.setParentItem(self.plotwindow.vb)
 
     def _set_crosshairs(self):
         self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
@@ -88,16 +88,16 @@ class TVarFigure1D(pg.GraphicsLayout):
         if self.crosshair:
             self._set_crosshairs()
             self._addmouseevents()
-    
+
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
-    
+
     def _setxaxislabel(self):
         self.xaxis.setLabel("Time")
-    
+
     def getfig(self):
         return self
-    
+
     def _visdata(self):
         datasets = []
         if isinstance(pytplot.data_quants[self.tvar_name].data, list):
@@ -106,10 +106,10 @@ class TVarFigure1D(pg.GraphicsLayout):
         else:
             datasets.append(pytplot.data_quants[self.tvar_name])
         line_num = 0
-        for dataset in datasets: 
+        for dataset in datasets:
             for i in range(0, len(dataset.data.columns)):
-                self.curves.append(self.plotwindow.plot(dataset.data.index.tolist(), 
-                                                        dataset.data[i].tolist(), 
+                self.curves.append(self.plotwindow.plot(dataset.data.index.tolist(),
+                                                        dataset.data[i].tolist(),
                                                         pen=self.colors[line_num % len(self.colors)]))
                 line_num += 1
 
@@ -119,13 +119,13 @@ class TVarFigure1D(pg.GraphicsLayout):
         else:
             self.plotwindow.setLogMode(y=False)
         return
-        
+
     def _addlegend(self):
         if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
             legend_names = pytplot.data_quants[self.tvar_name].yaxis_opt['legend_names']
             n_items = len(legend_names)
-            bottom_bound = 0.5 + (n_items-1)*0.05
-            top_bound = 0.5 - (n_items-1)*0.05
+            bottom_bound = 0.5 + (n_items - 1) * 0.05
+            top_bound = 0.5 - (n_items - 1) * 0.05
             if len(legend_names) != len(self.curves):
                 print("Number of lines do not match length of legend names")
             if len(legend_names) == 1:
@@ -134,7 +134,7 @@ class TVarFigure1D(pg.GraphicsLayout):
                 pos_array = np.linspace(bottom_bound, top_bound, len(legend_names))
             i = 0
             for legend_name in legend_names:
-                if i+1 == len(legend_names):  # Last
+                if i + 1 == len(legend_names):  # Last
                     text = pg.TextItem(text=legend_name, anchor=(0, 0.5), color=self.colors[i % len(self.colors)])
                 elif i == 0:  # First
                     text = pg.TextItem(text=legend_name, anchor=(0, 0.5), color=self.colors[i % len(self.colors)])
@@ -143,30 +143,30 @@ class TVarFigure1D(pg.GraphicsLayout):
                 self.legendvb.addItem(text)
                 text.setPos(0, pos_array[i])
                 i += 1
-    
+
     def _addmouseevents(self):
         if self.plotwindow.scene() is not None:
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
-    
+
     def _mousemoved(self, evt):
         # get current position
         pos = evt
         # if plot window contains position
         if self.plotwindow.sceneBoundingRect().contains(pos):
-            mousePoint = self.plotwindow.vb.mapSceneToView(pos)
+            mousepoint = self.plotwindow.vb.mapSceneToView(pos)
             # grab x and y mouse locations
-            index_x = int(mousePoint.x())
-            index_y = round(float(mousePoint.y()),4)
+            index_x = int(mousepoint.x())
+            index_y = round(float(mousepoint.y()), 4)
             date = (pytplot.tplot_utilities.int_to_str(index_x))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(index_x))[11:19]
             # add crosshairs
-            if self._mouseMovedFunction != None:
-                self._mouseMovedFunction(int(mousePoint.x()))
-                self.vLine.setPos(mousePoint.x())
-                self.hLine.setPos(mousePoint.y())
+            if self._mouseMovedFunction is not None:
+                self._mouseMovedFunction(int(mousepoint.x()))
+                self.vLine.setPos(mousepoint.x())
+                self.hLine.setPos(mousepoint.y())
                 self.vLine.setVisible(True)
                 self.hLine.setVisible(True)
-                           
+
             self.hoverlegend.setVisible(True)
             self.hoverlegend.setItem("Date:", date)
             # Allow the user to set x-axis(time) and y-axis data names in crosshairs
@@ -177,41 +177,41 @@ class TVarFigure1D(pg.GraphicsLayout):
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
             self.hLine.setVisible(False)
-            
+
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
             return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
         else:
             return 'linear'
-    
+
     def _setzaxistype(self):
         if self._getzaxistype() == 'log':
             self.zscale = 'log'
         else:
             self.zscale = 'linear'
-    
+
     def _getzaxistype(self):
         return
-            
+
     def _setcolors(self):
         if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
             return pytplot.data_quants[self.tvar_name].extras['line_color']
-        else: 
+        else:
             return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
-    
-    def _setcolormap(self):          
+
+    def _setcolormap(self):
         return
-    
+
     def getaxistype(self):
         axis_type = 'time'
         link_y_axis = False
         return axis_type, link_y_axis
-    
+
     def _setxrange(self):
         # Check if x range is set.  Otherwise, x range is automatic
         if 'x_range' in tplot_opt_glob:
             self.plotwindow.setXRange(tplot_opt_glob['x_range'][0], tplot_opt_glob['x_range'][1])
-    
+
     def _setyrange(self):
         if self._getyaxistype() == 'log':
             if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] < 0 or \
@@ -223,10 +223,10 @@ class TVarFigure1D(pg.GraphicsLayout):
         else:
             self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
                                          pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1], padding=0)
-    
+
     def _setzrange(self):
         return
-    
+
     def _addtimebars(self):
         # find number of times to plot
         dict_length = len(pytplot.data_quants[self.tvar_name].time_bar)
@@ -240,5 +240,5 @@ class TVarFigure1D(pg.GraphicsLayout):
             infline = pg.InfiniteLine(pos=date_to_highlight, pen=pg.mkPen(color, width=thick))
             # add to plot window
             self.plotwindow.addItem(infline)
-                
+
         return
