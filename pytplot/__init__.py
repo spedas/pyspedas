@@ -8,6 +8,7 @@ from _collections import OrderedDict
 
 from . import HTMLPlotter
 
+
 # This variable will be constantly changed depending on what x value the user is hovering over
 class HoverTime(object):
     hover_time = 0
@@ -31,8 +32,7 @@ using_graphics = True
 
 try:
     import pyqtgraph as pg
-    from pyqtgraph.Qt import QtWidgets, QtCore
-    from PyQt5.QtGui import QIcon
+    from pyqtgraph.Qt import QtWidgets
 
     pg.setConfigOptions(imageAxisOrder='row-major')
     pg.setConfigOptions(background='w')
@@ -41,28 +41,22 @@ try:
     class PlotWindow(QtWidgets.QMainWindow):
         def __init__(self):
             super().__init__()
-            # self.initUI()
+            self.initUI()
 
-        def init_savepng(self, exporter):
-            # Set up the save PNG button/call exportpng function that activates when user presses button
-            exportdatapngaction = QtWidgets.QAction("Save PNG", self)
-            exportdatapngaction.triggered.connect(lambda: self.exportpng(exporter))
-
-            # Set up menu bar to display and call creation of save PNG button
+        def initUI(self):
+            self.setWindowTitle('PyTplot')
             menubar = self.menuBar()
-            menubar.setNativeMenuBar(False)
-            menubar.addAction(exportdatapngaction)
-            self.setWindowTitle('PyTplot Window')
+            exportMenu = menubar.addMenu('Export')
+            exportDatapngAction = QtWidgets.QAction("PNG", self)
+            exportDatapngAction.triggered.connect(self.exportpng)
+            exportMenu.addAction(exportDatapngAction)
 
-        def exportpng(self, exporter):
-            # Function called by save PNG button to grab the image from the plot window and save it
+        def exportpng(self):
             fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
-            exporter.parameters()['width'] = tplot_opt_glob['window_size'][0]
-            exporter.parameters()['height'] = tplot_opt_glob['window_size'][1]
-            exporter.export(fname[0])
+            sshot = self.centralWidget().grab()
+            sshot.save(fname[0])
 
         def newlayout(self, layout):
-            # Needed for displaying plots
             self.setCentralWidget(layout)
 except:
     using_graphics = False
@@ -85,7 +79,7 @@ class TVar(object):
         self.data = data
         # The spec_bins, if applicable
         self.spec_bins = spec_bins
-        # Specifies if extra 2D plot appears - only applicable with spectrogram plots
+        # Specifies if extra (interactive) 2D plot appears - only applicable with spectrogram plots
         self.interactive = False
         # If there are spec_bins (i.e., this is a spectrogram), interactive is True
         if self.spec_bins is not None:
@@ -128,7 +122,7 @@ class TVar(object):
         self.zaxis_opt['z_axis_type'] = 'linear'
         self.interactive_xaxis_opt['xi_axis_type'] = 'linear'
         self.interactive_yaxis_opt['yi_axis_type'] = 'linear'
-
+        
     def _check_spec_bins_ordering(self):
         """
         This is a private function of the TVar object, this is run during
@@ -201,11 +195,15 @@ class TVar(object):
 # Global Variables
 hover_time = HoverTime()
 data_quants = OrderedDict()
-interactive_window = None  # 2D interactive window that appears whenever plotting spectrograms w/ tplot
+interactive_window = None  # 2D interactive window that appears whenever plotting spectrograms w/ tplot.
+# If option 't_average' is set by user, then x and y values on this plot are the average of the user-specified
+# number of seconds for which the cursor location should be averaged.
+static_window = None  # 2D window showing data at certain point in time from a spectrogram plot.
+static_tavg_window = None  # 2D window showing averaged y and z data for a specified time range from a spectrogram plot.
 tplot_opt_glob = dict(tools="xpan,crosshair,reset",
                       min_border_top=15, min_border_bottom=0,
                       title_align='center', window_size=[800, 800],
-                      title_size='12pt', title_text='', crosshair=True)
+                      title_size='12pt', title_text='', crosshair=False)
 lim_info = {}
 extra_layouts = {}
 
@@ -246,7 +244,6 @@ from .cdf_to_tplot import cdf_to_tplot
 from .netcdf_to_tplot import netcdf_to_tplot
 from .tplot_utilities import compare_versions
 from .link import link
-from .QtPlotter import PytplotExporter
 
 # If we are in an ipython environment, set the gui to be qt5
 # This allows the user to interact with the window in real time
