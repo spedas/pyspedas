@@ -5,17 +5,18 @@
 
 import pyqtgraph as pg
 import numpy as np
+from .. import tplot_utilities 
 from pytplot import tplot_opt_glob
 import pytplot
+from pyqtgraph.Qt import QtCore
+from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
-from .CustomAxis.AxisItem import AxisItem
-from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureAlt(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None, crosshair=True):
+    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None,crosshair=True):
         
-        self.tvar_name = tvar_name
+        self.tvar_name=tvar_name
         self.show_xaxis = show_xaxis
         self.crosshair = crosshair
         
@@ -28,11 +29,10 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.xaxis.setHeight(35)
         self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
-        self.yaxis = AxisItem("left")
+        self.yaxis = pg.AxisItem("left")
         self.yaxis.setWidth(100)
-
-        vb = NoPaddingPlot()
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
+        
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis})
         
         # Set up the view box needed for the legends
         self.legendvb = pg.ViewBox(enableMouse=False)
@@ -51,6 +51,13 @@ class TVarFigureAlt(pg.GraphicsLayout):
             self.plotwindow.hideAxis('bottom')
         
         self._mouseMovedFunction = mouse_function
+         
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
         
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
@@ -60,16 +67,9 @@ class TVarFigureAlt(pg.GraphicsLayout):
         # Allow the user to set x-axis(time) and y-axis data names in crosshairs
         self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', "0")
         self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', "0")
+
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
-
-    def _set_crosshairs(self):
-        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
-        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
-        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
-        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
-        self.vLine.setVisible(False)
-        self.hLine.setVisible(False)
     
     def buildfigure(self):
         self._setxrange()
@@ -81,10 +81,9 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self._addtimebars()
         self._setyaxislabel()
         self._setxaxislabel()
-        self._addlegend()
         if self.crosshair:
-            self._set_crosshairs()
             self._addmouseevents()
+        self._addlegend()
     
     def getfig(self):
         return self
