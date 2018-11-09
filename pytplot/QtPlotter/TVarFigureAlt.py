@@ -5,7 +5,6 @@
 
 import pyqtgraph as pg
 import numpy as np
-from pytplot import tplot_opt_glob
 import pytplot
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
@@ -14,6 +13,7 @@ from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 class TVarFigureAlt(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
+
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
         self.crosshair = pytplot.tplot_opt_glob['crosshair']
@@ -50,6 +50,14 @@ class TVarFigureAlt(pg.GraphicsLayout):
             self.plotwindow.hideAxis('bottom')
 
         self._mouseMovedFunction = mouse_function
+
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)
+
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
 
@@ -58,16 +66,9 @@ class TVarFigureAlt(pg.GraphicsLayout):
         # Allow the user to set x-axis(time) and y-axis data names in crosshairs
         self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', "0")
         self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', "0")
+
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
-
-    def _set_crosshairs(self):
-        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
-        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
-        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
-        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
-        self.vLine.setVisible(False)
-        self.hLine.setVisible(False)
 
     def buildfigure(self):
         self._setxrange()
@@ -79,10 +80,9 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self._addtimebars()
         self._setyaxislabel()
         self._setxaxislabel()
-        self._addlegend()
         if self.crosshair:
-            self._set_crosshairs()
             self._addmouseevents()
+        self._addlegend()
 
     def getfig(self):
         return self
@@ -104,8 +104,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
             return 'linear'
 
     def _setxrange(self):
-        if 'alt_range' in tplot_opt_glob:
-            self.plotwindow.setXRange(tplot_opt_glob['alt_range'][0], tplot_opt_glob['alt_range'][1])
+        if 'alt_range' in pytplot.tplot_opt_glob:
+            self.plotwindow.setXRange(pytplot.tplot_opt_glob['alt_range'][0], pytplot.tplot_opt_glob['alt_range'][1])
         else:
             return
 

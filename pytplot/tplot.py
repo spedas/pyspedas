@@ -36,8 +36,7 @@ def tplot(name,
           qt=False,
           bokeh=False,
           save_png=None,
-          display=True,
-          testing=False):
+          display=True):
     """
     This is the function used to display the tplot variables stored in memory.
     The default output is to show the plots stacked on top of one another inside a GUI window.
@@ -84,9 +83,6 @@ def tplot(name,
         display: bool, optional
             If True, then this function will display the plotted tplot variables. Necessary to make this optional
             so we can avoid it in a headless server environment.
-        testing: bool, optional
-            If True, then plots will not actually plot, but all the steps before plotting will occur (for bokeh and
-            pyqtgraph plots)
 
     Returns:
         None
@@ -169,8 +165,6 @@ def tplot(name,
             available_qt_window.newlayout(new_layout)
             available_qt_window.show()
             available_qt_window.activateWindow()
-            if testing:
-                return
             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
             return
@@ -180,7 +174,6 @@ def tplot(name,
             show(layout)
             return
     else:
-
         if save_png is not None:
             layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
                                               combine_axes=combine_axes,
@@ -231,8 +224,6 @@ def tplot(name,
 
             # (hasattr(sys, 'ps1')) checks to see if we're in ipython
             # plots the plots!
-            if testing:
-                return
             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
 

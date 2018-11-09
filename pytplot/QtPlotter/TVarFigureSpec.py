@@ -6,7 +6,6 @@
 import pyqtgraph as pg
 import numpy as np
 from .. import tplot_utilities
-from pytplot import tplot_opt_glob
 from pyqtgraph.Qt import QtCore
 import pytplot
 from .CustomAxis.DateAxis import DateAxis
@@ -256,8 +255,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _setxrange(self):
         # Check if x range is set.  Otherwise, x range is automatic.
-        if 'x_range' in tplot_opt_glob:
-            self.plotwindow.setXRange(tplot_opt_glob['x_range'][0], tplot_opt_glob['x_range'][1])
+        if 'x_range' in pytplot.tplot_opt_glob:
+            self.plotwindow.setXRange(pytplot.tplot_opt_glob['x_range'][0], pytplot.tplot_opt_glob['x_range'][1])
 
     def _setyrange(self):
         if self._getyaxistype() == 'log':

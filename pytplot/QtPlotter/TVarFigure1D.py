@@ -6,7 +6,6 @@
 import pyqtgraph as pg
 import numpy as np
 import pytplot
-from pytplot import tplot_opt_glob
 from .CustomAxis.DateAxis import DateAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
@@ -15,6 +14,7 @@ from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 class TVarFigure1D(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
+
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
         self.crosshair = pytplot.tplot_opt_glob['crosshair']
@@ -208,8 +208,8 @@ class TVarFigure1D(pg.GraphicsLayout):
 
     def _setxrange(self):
         # Check if x range is set.  Otherwise, x range is automatic
-        if 'x_range' in tplot_opt_glob:
-            self.plotwindow.setXRange(tplot_opt_glob['x_range'][0], tplot_opt_glob['x_range'][1])
+        if 'x_range' in pytplot.tplot_opt_glob:
+            self.plotwindow.setXRange(pytplot.tplot_opt_glob['x_range'][0], pytplot.tplot_opt_glob['x_range'][1])
 
     def _setyrange(self):
         if self._getyaxistype() == 'log':
