@@ -6,7 +6,6 @@
 import pytplot
 from . import tplot_utilities
 
-
 def tplot_options(option, value):
     """
     This function allows the user to set several global options for the generated plots.  
@@ -46,6 +45,8 @@ def tplot_options(option, value):
         
     
     """
+    
+    
     
     option = option.lower()
     

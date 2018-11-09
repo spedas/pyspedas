@@ -10,4 +10,3 @@ from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureMap import TVarFigureMap
 from .generate import generate_stack
 from .PyTPlot_Exporter import PytplotExporter
-
