@@ -113,7 +113,7 @@ def _set_pyqtgraph_title(layout):
     return False
 
 
-def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None, crosshair=True):
+def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None, crosshair=False):
     if 'plotter' in pytplot.data_quants[tvar_name].extras and pytplot.data_quants[tvar_name].extras['plotter'] in \
             pytplot.qt_plotters:
         cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].extras['plotter']]

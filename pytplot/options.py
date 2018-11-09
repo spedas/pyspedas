@@ -20,27 +20,41 @@ def options(name, option, value):
             The value of the option.  See section below.  
             
     Options:
-        ============  ==========   =====
-        Options       Value type   Notes
-        ============  ==========   =====
-        Color         str/list     Red, Orange, Yellow, Green, Blue, etc
-        Colormap      str/list     https://matplotlib.org/examples/color/colormaps_reference.html
-        Spec          int          1 sets the Tplot Variable to spectrogram mode, 0 reverts
-        Alt           int          1 sets the Tplot Variable to altitude plot mode, 0 reverts   
-        Map           int          1 sets the Tplot Variable to latitude/longitude mode, 0 reverts
-        ylog          int          1 sets the y axis to log scale, 0 reverts
-        zlog          int          1 sets the z axis to log scale, 0 reverts (spectrograms only)
-        legend_names  list         A list of strings that will be used to identify the lines
-        line_style    str          solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash
-        name          str          The title of the plot
-        panel_size    flt          Number between (0,1], representing the percent size of the plot
-        basemap       str          Full path and name of a background image for "Map" plots
-        alpha         flt          Number between [0,1], gives the transparancy of the plot lines
-        yrange        flt list     Two numbers that give the y axis range of the plot
-        zrange        flt list     Two numbers that give the z axis range of the plot
-        ytitle        str          Title shown on the y axis
-        ztitle        str          Title shown on the z axis.  Spec plots only.  
-        ============  ==========   =====
+        ============      ==========   =====
+        Options           Value type   Notes
+        ============      ==========   =====
+        Color             str/list     Red, Orange, Yellow, Green, Blue, etc.
+        Colormap          str/list     https://matplotlib.org/examples/color/colormaps_reference.html.
+        Spec              int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
+        Alt               int          1 sets the Tplot Variable to altitude plot mode, 0 reverts.
+        Map               int          1 sets the Tplot Variable to latitude/longitude mode, 0 reverts.
+        link
+        ylog              int          1 sets the y axis to log scale, 0 reverts.
+        zlog              int          1 sets the z axis to log scale, 0 reverts (spectrograms only).
+        legend_names      list         A list of strings that will be used to identify the lines.
+        xlog_interactive  bool         Sets x axis on interactive plot to log scale if True.
+        ylog              bool         Set y axis on main plot window to log scale if True.
+        ylog_interactive  bool         Sets y axis on interactive plot to log scale if True.
+        zlog              bool         Sets z axis on main plot window to log scale if True.
+        line_style        str          solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
+        name              str          The title of the plot.
+        panel_size        flt          Number between (0,1], representing the percent size of the plot.
+        basemap           str          Full path and name of a background image for "Map" plots.
+        alpha             flt          Number between [0,1], gives the transparancy of the plot lines.
+        thick             flt          Sets plot line width.
+        transparency
+        yrange            flt list     Two numbers that give the y axis range of the plot.
+        zrange            flt list     Two numbers that give the z axis range of the plot.
+        ytitle            str          Title shown on the y axis.
+        ztitle            str          Title shown on the z axis.  Spec plots only.
+        plotter
+        crosshair_x       str          Title for x-axis crosshair.
+        crosshair_y       str          Title for y-axis crosshair.
+        crosshair_z       str          Title for z-axis crosshair.
+        static            str          Datetime string that gives desired time to plot y and z values from a spec plot.
+        static_tavg       str          Datetime string that gives desired time-averaged y and z values to plot
+                                       from a spec plot.
+        ============      ==========   =====
     
     Returns:
         None
@@ -92,70 +106,25 @@ def options(name, option, value):
     
         if option == 'map':
             data_quants[i].extras['map'] = value
-        
-        if option == 'ylog':
-            negflag = 0
-            namedata = data_quants[i]
-            # check variable data
-            # if negative numbers, don't allow log setting
-            datasets = []
-            if isinstance(namedata.data, list):
-                for oplot_name in namedata.data:
-                    datasets.append(data_quants[oplot_name])
-            else:
-                datasets.append(namedata)
-                
-            for dataset in datasets:
-                if 'spec' not in dataset.extras:
-                    for column in dataset.data:
-                        if np.nanmin(dataset.data[column]) < 0:
-                            print('Negative data is incompatible with log plotting.')
-                            negflag = 1
-                            break
-                else:
-                    if dataset.extras['spec'] == 1:
-                        for column in dataset.spec_bins:
-                            if np.nanmin(dataset.spec_bins[column]) < 0:
-                                print('Negative data is incompatible with log plotting.')
-                                negflag = 1
-                                break
-                        
-            if value == 1 and negflag == 0:
-                data_quants[i].yaxis_opt['y_axis_type'] = 'log'
-        
+
         if option == 'legend_names':
             data_quants[i].yaxis_opt['legend_names'] = value
-        
+
+        if option == 'xlog_interactive':
+            data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'log'
+
+        if option == 'ylog':
+            negflag = ylog_check(data_quants, value, i)
+            if negflag == 0:
+                data_quants[i].yaxis_opt['y_axis_type'] = 'log'
+
+        if option == 'ylog_interactive':
+            data_quants[i].interactive_yaxis_opt['yi_axis_type'] = 'log'
+
         if option == 'zlog':
-            negflag = 0
-            namedata = data_quants[i]
-            # check variable data
-            # if negative numbers, don't allow log setting
-            datasets = []
-            if isinstance(namedata.data, list):
-                for oplot_name in namedata.data:
-                    datasets.append(data_quants[oplot_name])
-            else:
-                datasets.append(namedata)
-                
-            for dataset in datasets:
-                if 'spec' in dataset.extras:                       
-                    if dataset.extras['spec'] == 1:
-                        negflag = 0
-                        for column in dataset.data:
-                            if np.nanmin(dataset.data[column]) < 0:
-                                print('Negative data is incompatible with log plotting.')
-                                negflag = 1
-                                break
-                        # verify there are no negative values
-                        if negflag == 0 and value == 1:
-                            data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-                    else:
-                        if value == 1:
-                            data_quants[i].zaxis_opt['z_axis_type'] = 'log'
-            else:
-                if value == 1:
-                    data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+            negflag = zlog_check(data_quants, value, i)
+            if negflag == 0:
+                data_quants[i].zaxis_opt['z_axis_type'] = 'log'
         
         if option == 'nodata':
             data_quants[i].line_opt['visible'] = value
@@ -228,4 +197,73 @@ def options(name, option, value):
 
         if option == 'crosshair_z':
             data_quants[i].zaxis_opt['crosshair'] = value
+
+        if option == 'static':
+            data_quants[i].extras['static'] = value
+
+        if option == 'static_tavg':
+            data_quants[i].extras['static_tavg'] = [value[0], value[1]]
+
+        if option == 't_average':
+            data_quants[i].extras['t_average'] = value
     return
+
+
+def ylog_check(data_quants, value, i):
+    negflag = 0
+    namedata = data_quants[i]
+    # check variable data
+    # if negative numbers, don't allow log setting
+    datasets = []
+    if isinstance(namedata.data, list):
+        for oplot_name in namedata.data:
+            datasets.append(data_quants[oplot_name])
+    else:
+        datasets.append(namedata)
+
+    if value == 1:
+        for dataset in datasets:
+            if 'spec' not in dataset.extras:
+                for column in dataset.data:
+                    if np.nanmin(dataset.data[column]) < 0:
+                        print('Negative data is incompatible with log plotting.')
+                        negflag = 1
+                        break
+            else:
+                if dataset.extras['spec'] == 1:
+                    for column in dataset.spec_bins:
+                        if np.nanmin(dataset.spec_bins[column]) < 0:
+                            print('Negative data is incompatible with log plotting.')
+                            negflag = 1
+                            break
+    elif value != 1:
+        # Using the 'negflag' as a way to not log something if the user doesn't want it to be logged
+        negflag = 1
+    return negflag
+
+
+def zlog_check(data_quants, value, i):
+    negflag = 0
+    namedata = data_quants[i]
+    # check variable data
+    # if negative numbers, don't allow log setting
+    datasets = []
+    if isinstance(namedata.data, list):
+        for oplot_name in namedata.data:
+            datasets.append(data_quants[oplot_name])
+    else:
+        datasets.append(namedata)
+
+    for dataset in datasets:
+        if value == 1:
+            if 'spec' in dataset.extras:
+                if dataset.extras['spec'] == 1:
+                    for column in dataset.data:
+                        if np.nanmin(dataset.data[column]) < 0:
+                            print('Negative data is incompatible with log plotting.')
+                            negflag = 1
+                            break
+        elif value != 1:
+            # Using the 'negflag' as a way to not log something if the user doesn't want it to be logged
+            negflag = 1
+    return negflag

@@ -100,6 +100,18 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         
     elif option == 'alt_range':
         new_tplot_opt_glob['alt_range'] = value
+
+    elif option == 'map_x_range':
+        new_tplot_opt_glob['map_x_range'] = value
+
+    elif option == 'map_y_range':
+        new_tplot_opt_glob['map_y_range'] = value
+
+    elif option == 'x_range':
+        new_tplot_opt_glob['x_range'] = value
+
+    elif option == 'crosshair':
+        new_tplot_opt_glob['crosshair'] = value
     
     return new_tplot_opt_glob
 
@@ -431,3 +443,75 @@ def rgb_color(color):
         for i, val in enumerate(color):
             rgbcolor[i] = color_opt[val]
     return rgbcolor
+
+
+# The following functions are needed for a spectrogram's interactive, static, or time-averaged (w/ or w/o cursor)
+# supplementary plot(s).
+
+def get_data(names):
+    # Just grab variables that are spectrograms.
+    valid_vars = list()
+    for n in names:
+        if pytplot.data_quants[n].spec_bins is not None:
+            valid_vars.append(n)
+    return valid_vars
+
+
+def get_plot_labels(names):
+    # Get labels and axis types for plots.
+    plot_labels = {}
+    for n in names:
+        if pytplot.data_quants[n].spec_bins is not None:
+            zlabel = pytplot.data_quants[n].zaxis_opt['axis_label']
+            ztype = pytplot.data_quants[n].zaxis_opt['z_axis_type']
+            ytype = pytplot.data_quants[n].yaxis_opt['y_axis_type']
+            xtype_interactive = pytplot.data_quants[n].interactive_xaxis_opt['xi_axis_type']
+            ytype_interactive = pytplot.data_quants[n].interactive_yaxis_opt['yi_axis_type']
+            plot_labels[n] = [zlabel, ytype, ztype, xtype_interactive, ytype_interactive]
+    return plot_labels
+
+
+def get_bins(var):
+    # Get bins to be plotted.
+    bins = list()
+    for name, values in pytplot.data_quants[var].spec_bins.iteritems():
+        # name = variable name
+        # value = data in variable name
+        bins.append(values.values[0])
+    return bins
+
+
+def get_z_t_values(var):
+    # Get data to be plotted and time data for indexing.
+    time_values = list()
+    z_values = list()
+    for r, rows in pytplot.data_quants[var].data.iterrows():
+        # r = time
+        # rows = the flux at each time, where each row signifies a different time
+        time_values.append(r)
+        z_values.append(rows.values)
+    return time_values, z_values
+
+
+def set_x_range(var, x_axis_log, plot):
+    # Check if plot's x range has been set by user. If not, range is automatically set.
+    if 'xi_range' in pytplot.data_quants[var].interactive_xaxis_opt:
+        if x_axis_log:
+            plot.setXRange(np.log10(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][0]),
+                           np.log10(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][1]),
+                           padding=0)
+        elif not x_axis_log:
+            plot.setXRange(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][0],
+                           pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][1], padding=0)
+
+
+def set_y_range(var, y_axis_log, plot):
+    # Check if plot's y range has been set by user. If not, range is automatically set.
+    if 'yi_range' in pytplot.data_quants[var].interactive_yaxis_opt:
+        if y_axis_log:
+            plot.setYRange(np.log10(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][0]),
+                           np.log10(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][1]),
+                           padding=0)
+        elif not y_axis_log:
+            plot.setYRange(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][0],
+                           pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][1], padding=0)

@@ -12,14 +12,13 @@ from . import HTMLPlotter
 from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
-import numpy as np
 
 
 if pytplot.using_graphics:
     from .QtPlotter import PyTPlot_Exporter
     from pyqtgraph.Qt import QtCore, QtGui
     import pyqtgraph as pg
-    from . import QtPlotter, interactive2dPlot
+    from . import QtPlotter, interactiveplot, staticplot, staticplot_tavg
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
     except:
@@ -28,14 +27,14 @@ if pytplot.using_graphics:
 def tplot(name, 
           var_label=None,
           auto_color=True, 
-          interactive=False, 
+          interactive=False,
           combine_axes=True, 
           nb=False, 
           save_file=None,
           gui=False, 
           qt=False,
           bokeh=False,
-          crosshair=True,
+          crosshair=False,
           save_png=None,
           display=True,
           testing=False):
@@ -60,7 +59,7 @@ def tplot(name,
         interactive : bool, optional
             If True, a secondary interactive plot will be generated next to spectrogram plots.  
             Mousing over the spectrogram will display a slice of data from that time on the 
-            interactive chart.
+            interactive plot.
         combine_axes : bool, optional
             If True, the axes are combined so that they all display the same x range.  This also enables
             scrolling/zooming/panning on one plot to affect all of the other plots simultaneously.  
@@ -88,6 +87,8 @@ def tplot(name,
         display: bool, optional
             If True, then this function will display the plotted tplot variables. Necessary to make this optional
             so we can avoid it in a headless server environment.
+        testing: bool, optional
+            If True, plots won't actually plot.
         
     Returns:
         None
@@ -201,7 +202,7 @@ def tplot(name,
             layout = QtPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color,
                                               combine_axes=combine_axes,
                                               mouse_moved_event=pytplot.hover_time.change_hover_time,
-                                              crosshair=crosshair)
+                                              crosshair=pytplot.tplot_opt_glob['crosshair'])
             available_qt_window.newlayout(layout)
             available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0],
                                        pytplot.tplot_opt_glob['window_size'][1])
@@ -209,7 +210,19 @@ def tplot(name,
             available_qt_window.activateWindow()
             if interactive:
                 # Call 2D interactive window; This will only plot something when spectrograms are involved.
-                interactive2dPlot.interactive2dplot()
+                interactiveplot.interactiveplot()
+
+            static_list = [i for i in name if 'static' in pytplot.data_quants[i].extras]
+            for tplot_var in static_list:
+                # Call 2D static window; This will only plot something when spectrograms are involved.
+                staticplot.static2dplot(tplot_var, pytplot.data_quants[tplot_var].extras['static'])
+
+            static_tavg_list = [i for i in name if 'static_tavg' in pytplot.data_quants[i].extras]
+            for tplot_var in static_tavg_list:
+                # Call 2D static window for time-averaged values; This will only plot something when spectrograms
+                # are involved
+                staticplot_tavg.static2dplot_timeaveraged(
+                    tplot_var, pytplot.data_quants[tplot_var].extras['static_tavg'])
 
             # (hasattr(sys, 'ps1')) checks to see if we're in ipython
             # plots the plots!
