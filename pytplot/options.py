@@ -20,40 +20,45 @@ def options(name, option, value):
             The value of the option.  See section below.  
             
     Options:
-        ============      ==========   =====
-        Options           Value type   Notes
-        ============      ==========   =====
-        Color             str/list     Red, Orange, Yellow, Green, Blue, etc.
-        Colormap          str/list     https://matplotlib.org/examples/color/colormaps_reference.html.
-        Spec              int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
-        Alt               int          1 sets the Tplot Variable to altitude plot mode, 0 reverts.
-        Map               int          1 sets the Tplot Variable to latitude/longitude mode, 0 reverts.
-        link
-        ylog              int          1 sets the y axis to log scale, 0 reverts.
-        zlog              int          1 sets the z axis to log scale, 0 reverts (spectrograms only).
-        legend_names      list         A list of strings that will be used to identify the lines.
-        xlog_interactive  bool         Sets x axis on interactive plot to log scale if True.
-        ylog              bool         Set y axis on main plot window to log scale if True.
-        ylog_interactive  bool         Sets y axis on interactive plot to log scale if True.
-        zlog              bool         Sets z axis on main plot window to log scale if True.
-        line_style        str          solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
-        name              str          The title of the plot.
-        panel_size        flt          Number between (0,1], representing the percent size of the plot.
-        basemap           str          Full path and name of a background image for "Map" plots.
-        alpha             flt          Number between [0,1], gives the transparancy of the plot lines.
-        thick             flt          Sets plot line width.
-        transparency
-        yrange            flt list     Two numbers that give the y axis range of the plot.
-        zrange            flt list     Two numbers that give the z axis range of the plot.
-        ytitle            str          Title shown on the y axis.
-        ztitle            str          Title shown on the z axis.  Spec plots only.
-        plotter
-        crosshair_x       str          Title for x-axis crosshair.
-        crosshair_y       str          Title for y-axis crosshair.
-        crosshair_z       str          Title for z-axis crosshair.
-        static            str          Datetime string that gives desired time to plot y and z values from a spec plot.
-        static_tavg       str          Datetime string that gives desired time-averaged y and z values to plot
-                                       from a spec plot.
+        ============        ==========   =====
+        Options             Value type   Notes
+        ============        ==========   =====
+        Color               str/list     Red, Orange, Yellow, Green, Blue, etc.
+        Colormap            str/list     https://matplotlib.org/examples/color/colormaps_reference.html.
+        Spec                int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
+        Alt                 int          1 sets the Tplot Variable to altitude plot mode, 0 reverts.
+        Map                 int          1 sets the Tplot Variable to latitude/longitude mode, 0 reverts.
+        link                list         Allows a user to reference one tplot variable to another.
+        ylog                int          1 sets the y axis to log scale, 0 reverts.
+        zlog                int          1 sets the z axis to log scale, 0 reverts (spectrograms only).
+        legend_names        list         A list of strings that will be used to identify the lines.
+        xlog_interactive    bool         Sets x axis on interactive plot to log scale if True.
+        ylog                bool         Set y axis on main plot window to log scale if True.
+        ylog_interactive    bool         Sets y axis on interactive plot to log scale if True.
+        zlog                bool         Sets z axis on main plot window to log scale if True.
+        line_style          str          solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
+        name                str          The title of the plot.
+        panel_size          flt          Number between (0,1], representing the percent size of the plot.
+        basemap             str          Full path and name of a background image for "Map" plots.
+        alpha               flt          Number between [0,1], gives the transparancy of the plot lines.
+        thick               flt          Sets plot line width.
+        yrange              flt list     Two numbers that give the y axis range of the plot.
+        zrange              flt list     Two numbers that give the z axis range of the plot.
+        xrange_interactive  flt list     Two numberes that give the x axis range of interactive plots.
+        yrange_interactive  flt list     Two numberes that give the y axis range of interactive plots.
+        ytitle              str          Title shown on the y axis.
+        ztitle              str          Title shown on the z axis.  Spec plots only.
+        plotter             str          Allows a user to implement their own plotting script in place of the ones
+                                         herein.
+        crosshair_x         str          Title for x-axis crosshair.
+        crosshair_y         str          Title for y-axis crosshair.
+        crosshair_z         str          Title for z-axis crosshair.
+        static              str          Datetime string that gives desired time to plot y and z values from a spec
+                                         plot.
+        static_tavg         str          Datetime string that gives desired time-averaged y and z values to plot
+                                         from a spec plot.
+        t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
+                                         plots.
         ============      ==========   =====
     
     Returns:
@@ -170,15 +175,17 @@ def options(name, option, value):
         if option == 'thick':
             data_quants[i].line_opt['line_width'] = value
         
-        if option == 'transparency':
-            alpha_val = value/100
-            data_quants[i].line_opt['line_alpha'] = alpha_val
-        
         if option == ('yrange' or 'y_range'):
             data_quants[i].yaxis_opt['y_range'] = [value[0], value[1]]
             
         if option == ('zrange' or 'z_range'):
             data_quants[i].zaxis_opt['z_range'] = [value[0], value[1]]
+
+        if option == 'xrange_interactive':
+            data_quants[i].interactive_xaxis_opt['xi_range'] = [value[0], value[1]]
+
+        if option == 'yrange_interactive':
+            data_quants[i].interactive_yaxis_opt['yi_range'] = [value[0], value[1]]
         
         if option == 'ytitle':
             data_quants[i].yaxis_opt['axis_label'] = value

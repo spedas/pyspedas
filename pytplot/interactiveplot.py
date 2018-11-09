@@ -131,9 +131,16 @@ def interactiveplot(t_average=None):
                         y_values_slice = data[name][1][idx_left:]
                     y_values_avgd = np.nansum(y_values_slice, axis=0)/np.float(time_diff)
 
+                    # Update x and y range if user modified it
+                    tplot_utilities.set_x_range(name, x_axis, plot)
+                    tplot_utilities.set_y_range(name, y_axis, plot)
+
                     # Plot data based on time we're hovering over
                     plot_data.setData(data[name][0][:], y_values_avgd)
                 else:
+                    # Update x and y range if user modified it
+                    tplot_utilities.set_x_range(name, x_axis, plot)
+                    tplot_utilities.set_y_range(name, y_axis, plot)
                     # If the user just wants a plain jane interactive plot...
                     # Plot data based on time we're hovering over
                     plot_data.setData(data[name][0][:], list(data[name][1][idx]))

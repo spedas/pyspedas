@@ -134,7 +134,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         return
 
     def _addlegend(self):
-        zaxis = AxisItem('right')
+        zaxis = pg.AxisItem('right')
 
         if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])

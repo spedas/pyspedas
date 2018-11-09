@@ -41,22 +41,29 @@ try:
     class PlotWindow(QtWidgets.QMainWindow):
         def __init__(self):
             super().__init__()
-            self.initUI()
 
-        def initUI(self):
-            self.setWindowTitle('PyTplot')
+        def init_savepng(self, exporter):
+            # Set up the save PNG button/call exportpng function that activates when user presses button
+            exportdatapngaction = QtWidgets.QAction("Save PNG", self)
+            exportdatapngaction.triggered.connect(lambda: self.exportpng(exporter))
+
+            # Set up menu bar to display and call creation of save PNG button
             menubar = self.menuBar()
-            exportMenu = menubar.addMenu('Export')
-            exportDatapngAction = QtWidgets.QAction("PNG", self)
-            exportDatapngAction.triggered.connect(self.exportpng)
-            exportMenu.addAction(exportDatapngAction)
+            menubar.setNativeMenuBar(False)
+            menubar.addAction(exportdatapngaction)
+            self.setWindowTitle('PyTplot Window')
 
-        def exportpng(self):
+        def exportpng(self, exporter):
+            # Function called by save PNG button to grab the image from the plot window and save it
             fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
-            sshot = self.centralWidget().grab()
-            sshot.save(fname[0])
+            exporter.parameters()['width'] = tplot_opt_glob['window_size'][0]
+            exporter.parameters()['height'] = tplot_opt_glob['window_size'][1]
+            print(exporter.parameters()['width'])
+            print(exporter.parameters()['height'])
+            exporter.export(fname[0])
 
         def newlayout(self, layout):
+            # Needed for displaying plots
             self.setCentralWidget(layout)
 except:
     using_graphics = False
@@ -203,7 +210,7 @@ static_tavg_window = None  # 2D window showing averaged y and z data for a speci
 tplot_opt_glob = dict(tools="xpan,crosshair,reset",
                       min_border_top=15, min_border_bottom=0,
                       title_align='center', window_size=[800, 800],
-                      title_size='12pt', title_text='', crosshair=False)
+                      title_size='12pt', title_text='', crosshair=True)
 lim_info = {}
 extra_layouts = {}
 
