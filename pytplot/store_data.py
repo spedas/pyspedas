@@ -133,9 +133,9 @@ def store_data(name, data=None, delete=False, newname=None):
         else:
             spec_bins = None
         
-    xaxis_opt = {}
-    yaxis_opt = dict(axis_label=name)
-    zaxis_opt = {}
+    xaxis_opt = dict(axis_label='Time')
+    yaxis_opt = dict(axis_label=name) if (spec_bins is None) else dict(axis_label='')
+    zaxis_opt = dict(axis_label='') if (spec_bins is None) else dict(axis_label=name)
     line_opt = {}
     dtype = ''
     time_bar = []
