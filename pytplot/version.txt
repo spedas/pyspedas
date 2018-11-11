@@ -1,4 +1,7 @@
-1.2.11
+1.3.0
+
+1.3.0 Changes:
+    -Added interactive plots for spectrograms, documentation coming soon
 
 1.2.11 Changes:
     -Commenting out tplot_math stuff
