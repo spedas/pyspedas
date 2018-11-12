@@ -23,7 +23,7 @@ def interactiveplot(t_average=None):
     # Don't plot anything unless we have spectrograms with which to work.
     if valid_variables:
         # Get z label
-        labels = tplot_utilities.get_plot_labels(names)
+        labels = tplot_utilities.get_labels_axis_types(names)
 
         # Put together data in easy-to-access format for plots.
         data = {}
@@ -67,17 +67,17 @@ def interactiveplot(t_average=None):
                 # Checking x axis
                 if np.nanmin(data[name][0][:]) < 0:
                     print('Negative data is incompatible with log plotting.')
-                elif np.nanmin(data[name][0][:]) >= 0 and labels[name][3] == 'log':
+                elif np.nanmin(data[name][0][:]) >= 0 and labels[name][2] == 'log':
                     x_axis = True
                 # Checking y axis
                 if np.nanmin(list(data[name][1][idx])) < 0:
                     print('Negative data is incompatible with log plotting')
-                elif np.nanmin(list(data[name][1][idx])) >= 0 and labels[name][4] == 'log':
+                elif np.nanmin(list(data[name][1][idx])) >= 0 and labels[name][3] == 'log':
                     y_axis = True
 
                 # Set plot labels
-                plot.setLabel('bottom', '{} bins'.format(labels[name][0]))
-                plot.setLabel('left', '{}'.format(labels[name][0]))
+                plot.setLabel('bottom', '{}'.format(labels[name][0]))
+                plot.setLabel('left', '{}'.format(labels[name][1]))
                 plot.setLogMode(x=x_axis, y=y_axis)
                 # Update x and y range if user modified it
                 tplot_utilities.set_x_range(name, x_axis, plot)
@@ -135,15 +135,21 @@ def interactiveplot(t_average=None):
                     tplot_utilities.set_x_range(name, x_axis, plot)
                     tplot_utilities.set_y_range(name, y_axis, plot)
 
-                    # Plot data based on time we're hovering over
-                    plot_data.setData(data[name][0][:], y_values_avgd)
+                    try:
+                        # Plot data based on time we're hovering over
+                        plot_data.setData(data[name][0][:], y_values_avgd)
+                    except ZeroDivisionError:
+                        pass
                 else:
                     # Update x and y range if user modified it
                     tplot_utilities.set_x_range(name, x_axis, plot)
                     tplot_utilities.set_y_range(name, y_axis, plot)
                     # If the user just wants a plain jane interactive plot...
-                    # Plot data based on time we're hovering over
-                    plot_data.setData(data[name][0][:], list(data[name][1][idx]))
+                    # Plot data based on time we're hovering over'
+                    try:
+                        plot_data.setData(data[name][0][:], list(data[name][1][idx]))
+                    except ZeroDivisionError:
+                        pass
 
             else:
                 # Cover the situation where you hover over a non-spectrogram plot.
