@@ -58,7 +58,7 @@ def interactiveplot(t_average=None):
                 # Get the time closest to the x position the mouse is over.
                 time_array = np.array(data[name][2])
                 array = np.asarray(time_array)
-                idx = (np.abs(array - t)).nanargmin()
+                idx = (np.abs(array - t)).argmin()
 
                 # If user indicated they wanted the interactive plot's axes to be logged, log 'em.
                 # But first make sure that values in x and y are loggable!
