@@ -97,8 +97,8 @@ def interactiveplot(t_average=None):
 
                     if (left_bound - t_min >= 0) and (t_max - right_bound >= 0):
                         # Find index of left and right bounds, no fancy foot work necessary.
-                        idx_left = (np.abs(array - left_bound)).nanargmin()
-                        idx_right = (np.abs(array - right_bound)).nanargmin()
+                        idx_left = (np.abs(array - left_bound)).argmin()
+                        idx_right = (np.abs(array - right_bound)).argmin()
                     elif left_bound - t_min < 0:
                         # Find the number of seconds difference between the cursor's
                         # left bound and the minimum time in the dataset, add that
@@ -106,7 +106,7 @@ def interactiveplot(t_average=None):
                         # forward in time, and set the left bound's index to be 0.
                         idx_left = 0
                         diff = right_bound + (t_min - left_bound)
-                        idx_right = (np.abs(array - diff)).nanargmin()
+                        idx_right = (np.abs(array - diff)).argmin()
                     elif t_max - right_bound < 0:
                         # Find the number of seconds difference between the cursor's
                         # right bound and the maximum time in the dataset, subtract that
@@ -114,7 +114,7 @@ def interactiveplot(t_average=None):
                         # back in time), and set the right bound's index to be -1.
                         idx_right = -1
                         diff = left_bound - (right_bound - t_max)
-                        idx_left = (np.abs(array - diff)).nanargmin()
+                        idx_left = (np.abs(array - diff)).argmin()
                     elif (left_bound - t_min < 0) and (t_max - right_bound < 0):
                         # The user is asking to average the entire time frame of the dataset...
                         # dunno why they want that, but if they do, use the time-averaged static plot,
@@ -129,7 +129,7 @@ def interactiveplot(t_average=None):
                         y_values_slice = data[name][1][idx_left:idx_right + 1]
                     else:
                         y_values_slice = data[name][1][idx_left:]
-                    y_values_avgd = np.nansum(y_values_slice, axis=0)/np.float(time_diff)
+                    y_values_avgd = np.sum(y_values_slice, axis=0)/np.float(time_diff)
 
                     # Update x and y range if user modified it
                     tplot_utilities.set_x_range(name, x_axis, plot)
