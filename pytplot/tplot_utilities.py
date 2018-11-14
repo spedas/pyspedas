@@ -457,17 +457,16 @@ def get_data(names):
     return valid_vars
 
 
-def get_plot_labels(names):
+def get_labels_axis_types(names):
     # Get labels and axis types for plots.
     plot_labels = {}
     for n in names:
         if pytplot.data_quants[n].spec_bins is not None:
             zlabel = pytplot.data_quants[n].zaxis_opt['axis_label']
-            ztype = pytplot.data_quants[n].zaxis_opt['z_axis_type']
-            ytype = pytplot.data_quants[n].yaxis_opt['y_axis_type']
+            ylabel = pytplot.data_quants[n].yaxis_opt['axis_label']
             xtype_interactive = pytplot.data_quants[n].interactive_xaxis_opt['xi_axis_type']
             ytype_interactive = pytplot.data_quants[n].interactive_yaxis_opt['yi_axis_type']
-            plot_labels[n] = [zlabel, ytype, ztype, xtype_interactive, ytype_interactive]
+            plot_labels[n] = [ylabel, zlabel, xtype_interactive, ytype_interactive]
     return plot_labels
 
 
