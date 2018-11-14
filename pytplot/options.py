@@ -104,32 +104,45 @@ def options(name, option, value):
                 data_quants[i].extras['colormap'] = [value]
         
         if option == 'spec':
+            _reset_plots(i)
             data_quants[i].extras['spec'] = value
         
         if option == 'alt':
+            _reset_plots(i)
             data_quants[i].extras['alt'] = value
     
         if option == 'map':
+            _reset_plots(i)
             data_quants[i].extras['map'] = value
 
         if option == 'legend_names':
             data_quants[i].yaxis_opt['legend_names'] = value
 
         if option == 'xlog_interactive':
-            data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'log'
+            if value:
+                data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'log'
+            else:
+                data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'linear'
 
         if option == 'ylog':
-            negflag = ylog_check(data_quants, value, i)
+            negflag = _ylog_check(data_quants, value, i)
             if negflag == 0:
                 data_quants[i].yaxis_opt['y_axis_type'] = 'log'
+            else:
+                data_quants[i].yaxis_opt['y_axis_type'] = 'linear'
 
         if option == 'ylog_interactive':
-            data_quants[i].interactive_yaxis_opt['yi_axis_type'] = 'log'
+            if value:
+                data_quants[i].interactive_yaxis_opt['yi_axis_type'] = 'log'
+            else:
+                data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'linear'
 
         if option == 'zlog':
-            negflag = zlog_check(data_quants, value, i)
+            negflag = _zlog_check(data_quants, value, i)
             if negflag == 0:
                 data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+            else:
+                data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
         
         if option == 'nodata':
             data_quants[i].line_opt['visible'] = value
@@ -193,7 +206,8 @@ def options(name, option, value):
         if option == 'ztitle':
             data_quants[i].zaxis_opt['axis_label'] = value
         
-        if option == 'plotter': 
+        if option == 'plotter':
+            _reset_plots(i)
             data_quants[i].extras['plotter'] = value
 
         if option == 'crosshair_x':
@@ -216,7 +230,7 @@ def options(name, option, value):
     return
 
 
-def ylog_check(data_quants, value, i):
+def _ylog_check(data_quants, value, i):
     negflag = 0
     namedata = data_quants[i]
     # check variable data
@@ -249,7 +263,7 @@ def ylog_check(data_quants, value, i):
     return negflag
 
 
-def zlog_check(data_quants, value, i):
+def _zlog_check(data_quants, value, i):
     negflag = 0
     namedata = data_quants[i]
     # check variable data
@@ -274,3 +288,9 @@ def zlog_check(data_quants, value, i):
             # Using the 'negflag' as a way to not log something if the user doesn't want it to be logged
             negflag = 1
     return negflag
+
+def _reset_plots(name):
+    data_quants[name].extras['spec'] = 0
+    data_quants[name].extras['alt'] = 0
+    data_quants[name].extras['map'] = 0
+    data_quants[name].extras['plotter'] = None

@@ -109,12 +109,30 @@ class TVarFigureMap(pg.GraphicsLayout):
 
         cm_index = 0
         for dataset in datasets:
-            _, lat = pytplot.get_data(dataset.links['lat'])
+            t_link, lat = pytplot.get_data(dataset.links['lat'])
             lat = lat.transpose()[0]
-            _, lon = pytplot.get_data(dataset.links['lon'])
+            # Need to trim down the data points to fit within the link
+            t_tvar = dataset.data.index.values
+            data = dataset.data[0].values
+            while t_tvar[-1] > t_link[-1]:
+                t_tvar = np.delete(t_tvar, -1)
+                data = np.delete(data, -1)
+            while t_tvar[0] < t_link[0]:
+                t_tvar = np.delete(t_tvar, 0)
+                data = np.delete(data, 0)
+
+            t_link, lon = pytplot.get_data(dataset.links['lon'])
+            # Need to trim down the data points to fit within the link
+            while t_tvar[-1] > t_link[-1]:
+                t_tvar = np.delete(t_tvar, -1)
+                data = np.delete(data, -1)
+            while t_tvar[0] < t_link[0]:
+                t_tvar = np.delete(t_tvar, 0)
+                data = np.delete(data, 0)
+
             lon = lon.transpose()[0]
             for column_name in dataset.data.columns:
-                values = dataset.data[column_name].tolist()
+                values = data.tolist()
                 colors = pytplot.tplot_utilities.get_heatmap_color(color_map=
                                                                    self.colormap[cm_index % len(self.colormap)],
                                                                    min_val=self.zmin, max_val=self.zmax, values=values,

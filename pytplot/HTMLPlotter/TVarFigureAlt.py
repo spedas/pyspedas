@@ -186,12 +186,20 @@ class TVarFigureAlt(object):
             if 'linestyle' in pytplot.data_quants[self.tvar_name].extras:
                 line_style = pytplot.data_quants[self.tvar_name].extras['linestyle']
                 
-            _, x = pytplot.get_data(dataset.links['alt'])
+            t_link, x = pytplot.get_data(dataset.links['alt'])
             
             #Create lines from each column in the dataframe    
             for column_name in dataset.data.columns:
                 y = dataset.data[column_name]
-                
+
+                t_tvar = dataset.data.index.values
+                y = dataset.data[column_name].values
+                while t_tvar[-1] > t_link[-1]:
+                    t_tvar = np.delete(t_tvar, -1)
+                    y = np.delete(y, -1)
+                while t_tvar[0] < t_link[0]:
+                    t_tvar = np.delete(t_tvar, 0)
+                    y = np.delete(y, 0)
                 
                 if self._getyaxistype() == 'log':
                     y.loc[y <= 0] = np.NaN

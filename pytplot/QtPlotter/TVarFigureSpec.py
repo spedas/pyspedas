@@ -180,12 +180,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
             # find closest time/data to cursor location
             x = np.asarray(dataframe.index.tolist())
             x_sub = abs(x - index_x * np.ones(len(x)))
-            x_argmin = np.argmin(x_sub)
+            x_argmin = np.nanargmin(x_sub)
             x_closest = x[x_argmin]
             speclength = len(specframe.loc[0])
             y = np.asarray((specframe.loc[0, 0:speclength - 1]))
             y_sub = abs(y - index_y * np.ones(y.size))
-            y_argmin = np.argmin(y_sub)
+            y_argmin = np.nanargmin(y_sub)
             y_closest = y[y_argmin]
             index = int((np.nonzero(y == y_closest))[0])
             dp = dataframe[index][x_closest]

@@ -240,9 +240,19 @@ class TVarFigureAlt(pg.GraphicsLayout):
         line_num = 0
         for dataset in datasets:
             for i in range(0, len(dataset.data.columns)):
-                _, x = pytplot.get_data(dataset.links['alt'])
+                t_link, x = pytplot.get_data(dataset.links['alt'])
+                #Need to trim down the data points to fit within the link
+                t_tvar = dataset.data.index.values
+                data = dataset.data[i].values
+                while t_tvar[-1] > t_link[-1]:
+                    t_tvar = np.delete(t_tvar, -1)
+                    data = np.delete(data, -1)
+                while t_tvar[0] < t_link[0]:
+                    t_tvar = np.delete(t_tvar, 0)
+                    data = np.delete(data, 0)
+
                 x = x.transpose()[0]
-                self.curves.append(self.plotwindow.scatterPlot(x.tolist(), dataset.data[i].tolist(),
+                self.curves.append(self.plotwindow.scatterPlot(x.tolist(), data.tolist(),
                                                                pen=pg.mkPen(None), brush=self.colors[line_num %
                                                                                                      len(self.colors)]))
                 line_num += 1

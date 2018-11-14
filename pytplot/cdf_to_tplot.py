@@ -94,7 +94,6 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 continue
 
             if var_atts['VAR_TYPE'] in var_type:
-                var_atts = cdf_file.varattsget(var)
                 var_properties = cdf_file.varinq(var)
                 if "DEPEND_TIME" in var_atts:
                     x_axis_var = var_atts["DEPEND_TIME"]
@@ -160,7 +159,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 if scale_type == 'log':
                     options(var, 'ylog', 1)
 
-                if to_merge == True:
+                if to_merge:
                     cur_data_quant = data_quants[var_name].data
                     merged_data = [prev_data_quant, cur_data_quant]
                     data_quants[var_name].data = pd.concat(merged_data)
