@@ -199,6 +199,9 @@ def options(name, option, value):
 
         if option == 'yrange_interactive':
             data_quants[i].interactive_yaxis_opt['yi_range'] = [value[0], value[1]]
+            
+        if option == 'xtitle':
+            data_quants[i].xaxis_opt['axis_label'] = value
         
         if option == 'ytitle':
             data_quants[i].yaxis_opt['axis_label'] = value

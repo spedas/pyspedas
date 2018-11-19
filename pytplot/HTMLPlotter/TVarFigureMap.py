@@ -72,6 +72,7 @@ class TVarFigureMap(object):
         self._setzaxistype()
         self._setbackground()
         self._visdata()
+        self._setxaxislabel()
         self._setyaxislabel()
         self._setzaxislabel()
         self._addhoverlines()
@@ -196,7 +197,9 @@ class TVarFigureMap(object):
                 self.colors.append(pytplot.tplot_utilities.return_bokeh_colormap(cm))
         else:
             self.colors.append(pytplot.tplot_utilities.return_bokeh_colormap('magma'))
-
+        
+    def _setxaxislabel(self):
+        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label']
     
     def _setyaxislabel(self):
         self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']

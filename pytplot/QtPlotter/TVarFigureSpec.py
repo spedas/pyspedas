@@ -94,8 +94,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
 
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Time")
-
+        self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label'])
+        
     def getfig(self):
         return self
 
@@ -120,10 +120,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
-        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'])
-        else:
-            zaxis.setLabel(' ')
+        zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'])
 
         if self.show_xaxis:
             emptyAxis = BlankAxis('bottom')

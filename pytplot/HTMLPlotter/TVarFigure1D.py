@@ -82,6 +82,7 @@ class TVarFigure1D(object):
         self._addtimebars()
         self._visdata()
         self._setyaxislabel()
+        self._setxaxislabel()
         self._addhoverlines()
         self._addlegend()
     
@@ -155,6 +156,9 @@ class TVarFigure1D(object):
     
     def _setyaxislabel(self):
         self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
+        
+    def _setxaxislabel(self):
+        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label']
         
     def _visdata(self):
         self._setcolors()

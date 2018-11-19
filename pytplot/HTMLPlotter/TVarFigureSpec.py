@@ -92,6 +92,7 @@ class TVarFigureSpec(object):
         self._setzrange()
         self._addtimebars()
         self._visdata()
+        self._setxaxislabel()
         self._setyaxislabel()
         self._setzaxislabel()
         self._addhoverlines()
@@ -186,6 +187,8 @@ class TVarFigureSpec(object):
         else:
             self.colors.append(tplot_utilities.return_bokeh_colormap('magma'))
 
+    def _setxaxislabel(self):
+        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label']
     
     def _setyaxislabel(self):
         self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']

@@ -92,7 +92,7 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
 
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Time")
+        self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label'])
 
     def getfig(self):
         return self
