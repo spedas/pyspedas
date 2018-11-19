@@ -292,21 +292,21 @@ class TVarFigureSpec(object):
             else:
                 y_interactive_log = 'linear'
             self.interactive_plot = Figure(plot_height = self.fig.plot_height, 
-                                           plot_width = self.fig.plot_width, 
-                                           y_range = (self.zmin, self.zmax), 
+                                           plot_width = self.fig.plot_width,
+                                           y_range=(self.zmin, self.zmax),
+                                           x_range= (pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0], pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1]),
                                            y_axis_type=y_interactive_log)
             self.interactive_plot.min_border_left = 100
             spec_bins = bins
             flux = [0]*len(spec_bins)
             interactive_line_source = ColumnDataSource(data=dict(x=spec_bins, y=flux))
-            interactive_line = Line(x='x', y='y')
-            self.interactive_plot.add_glyph(interactive_line_source, interactive_line)
-            self.callback = CustomJS(args=dict(cds=cds, interactive_line_source=interactive_line_source), code="""
+            self.interactive_plot.line('x','y', source=interactive_line_source)
+            self.callback = CustomJS(args=dict(cds=cds, source=interactive_line_source), code="""
                     var geometry = cb_data['geometry'];
                     var x_data = geometry.x; // current mouse x position in plot coordinates
                     var y_data = geometry.y; // current mouse y position in plot coordinates
-                    var d2 = interactive_line_source.get('data');
-                    var asdf = cds.get('data');
+                    var d2 = source.data;
+                    var asdf = cds.data;
                     var j = 0;
                     x=d2['x']
                     y=d2['y']
@@ -321,11 +321,11 @@ class TVarFigureSpec(object):
                         }
                     }
                     j=0
-                    interactive_line_source.trigger('change');
+                    source.change.emit();
                 """)
-    
-    
-    
+
+
+
     def _addhoverlines(self):
         #Add tools
         hover = HoverTool(callback=self.callback)

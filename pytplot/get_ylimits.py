@@ -6,7 +6,7 @@
 from pytplot import data_quants
 
 
-def get_ylimits(name, trg = None):
+def get_ylimits(name, trg=None):
     """
     This function will get extract the y-limits from the Tplot Variables stored in memory.  
     
@@ -31,7 +31,7 @@ def get_ylimits(name, trg = None):
         >>> y1, y2 = pytplot.get_ylimits("Variable1")
 
     """
-    if isinstance(name,int):
+    if isinstance(name, int):
         name = list(data_quants.keys())[name-1]
     if not isinstance(name, list):
         name = [name]
@@ -47,7 +47,7 @@ def get_ylimits(name, trg = None):
         if trg is not None:
             for column_name in yother.columns:
                 y = yother[column_name]
-                trunc_tempt_data_quant = y.truncate(before = trg[0], after = trg[1])
+                trunc_tempt_data_quant = y.truncate(before=trg[0], after=trg[1])
                 loc_min = trunc_tempt_data_quant.min(skipna=True)
                 loc_max = trunc_tempt_data_quant.max(skipna=True)
                 if (ymin is None) or (loc_min < ymin):
@@ -66,4 +66,4 @@ def get_ylimits(name, trg = None):
     print("Y Minimum: " + str(ymin))
     print("Y Maximum: " + str(ymax))
     
-    return(ymin, ymax)
+    return ymin, ymax

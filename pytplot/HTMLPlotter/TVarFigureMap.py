@@ -216,19 +216,36 @@ class TVarFigureMap(object):
         cm_index=0
         for dataset in datasets:   
             #TODO: Add a check that lon and lat are only 1D
-            _, x = pytplot.get_data(dataset.links['lon'])
-            _, y = pytplot.get_data(dataset.links['lat'])
+            t_link_lon, x = pytplot.get_data(dataset.links['lon'])
+            t_link_lat, y = pytplot.get_data(dataset.links['lat'])
+
             for column_name in dataset.data.columns:
-                values = dataset.data[column_name].tolist()
+                data = dataset.data[column_name].values
+
+                # Need to trim down the data points to fit within the link
+                t_tvar = dataset.data.index.values
+                while t_tvar[-1] > t_link_lon[-1]:
+                    t_tvar = np.delete(t_tvar, -1)
+                    data = np.delete(data, -1)
+                while t_tvar[0] < t_link_lon[0]:
+                    t_tvar = np.delete(t_tvar, 0)
+                    data = np.delete(data, 0)
+                while t_tvar[-1] > t_link_lat[-1]:
+                    t_tvar = np.delete(t_tvar, -1)
+                    data = np.delete(data, -1)
+                while t_tvar[0] < t_link_lat[0]:
+                    t_tvar = np.delete(t_tvar, 0)
+                    data = np.delete(data, 0)
+
                 colors=[]
                 colors.extend(pytplot.tplot_utilities.get_heatmap_color(color_map=self.colors[cm_index % len(self.colors)], 
                                                                         min_val=self.zmin, 
                                                                         max_val=self.zmax, 
-                                                                        values=values, 
+                                                                        values=data.tolist(),
                                                                         zscale=self.zscale))
                 circle_source = ColumnDataSource(data=dict(x=x, 
                                                            y=y, 
-                                                           value=values, 
+                                                           value=data.tolist(),
                                                            colors=colors))
                 self.fig.scatter(x='x',y='y', 
                                  radius=1.0, 
