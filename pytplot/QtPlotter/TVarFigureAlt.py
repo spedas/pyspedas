@@ -44,6 +44,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
@@ -87,8 +89,11 @@ class TVarFigureAlt(pg.GraphicsLayout):
     def getfig(self):
         return self
 
+    def _setxaxislabel(self):
+        self.xaxis.setLabel("Altitude", **self.labelStyle)
+
     def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
@@ -108,9 +113,6 @@ class TVarFigureAlt(pg.GraphicsLayout):
             self.plotwindow.setXRange(pytplot.tplot_opt_glob['alt_range'][0], pytplot.tplot_opt_glob['alt_range'][1])
         else:
             return
-
-    def _setxaxislabel(self):
-        self.xaxis.setLabel("Altitude")
 
     def getaxistype(self):
         axis_type = 'altitude'
@@ -241,7 +243,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         for dataset in datasets:
             for i in range(0, len(dataset.data.columns)):
                 t_link, x = pytplot.get_data(dataset.links['alt'])
-                #Need to trim down the data points to fit within the link
+                # Need to trim down the data points to fit within the link
                 t_tvar = dataset.data.index.values
                 data = dataset.data[i].values
                 while t_tvar[-1] > t_link[-1]:

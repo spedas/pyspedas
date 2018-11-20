@@ -47,6 +47,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
@@ -90,11 +92,11 @@ class TVarFigureMap(pg.GraphicsLayout):
             self._set_crosshairs()
             self._addmouseevents()
 
-    def _setyaxislabel(self):
-        self.yaxis.setLabel("Latitude")
-
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Longitude")
+        self.xaxis.setLabel("Longitude", **self.labelStyle)
+
+    def _setyaxislabel(self):
+        self.yaxis.setLabel("Latitude", **self.labelStyle)
 
     def getfig(self):
         return self
@@ -155,7 +157,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         zaxis = pg.AxisItem('right')
 
         if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
+            zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
         else:
             zaxis.setLabel(' ')
 

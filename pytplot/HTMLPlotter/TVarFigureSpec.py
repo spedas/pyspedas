@@ -11,7 +11,6 @@ from bokeh.plotting.figure import Figure
 from bokeh.models import (CustomJS, LogColorMapper, LogTicker, LinearColorMapper, 
                           BasicTicker, ColumnDataSource, DatetimeAxis, HoverTool, 
                           Range1d, Span, Title)
-from bokeh.models.glyphs import Line
 from bokeh.models.tools import BoxZoomTool
 from bokeh.models.formatters import BasicTickFormatter
 
@@ -22,26 +21,26 @@ from bokeh.models.formatters import DatetimeTickFormatter
 
 
 dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
-            milliseconds=["%H:%M:%S"],
-            seconds=["%H:%M:%S"],
-            minsec=["%H:%M:%S"],
-            minutes=["%H:%M:%S"],
-            hourmin=["%H:%M:%S"],
-            hours=["%H:%M"],
-            days=["%F"],
-            months=["%F"],
-            years=["%F"])
+                             milliseconds=["%H:%M:%S"],
+                             seconds=["%H:%M:%S"],
+                             minsec=["%H:%M:%S"],
+                             minutes=["%H:%M:%S"],
+                             hourmin=["%H:%M:%S"],
+                             hours=["%H:%M"],
+                             days=["%F"],
+                             months=["%F"],
+                             years=["%F"])
 
 
 class TVarFigureSpec(object):
     
     def __init__(self, tvar_name, auto_color=False, show_xaxis=False, interactive=False, y_axis_type='log'):
         self.tvar_name = tvar_name
-        self.show_xaxis=show_xaxis
+        self.show_xaxis = show_xaxis
         self.interactive = interactive
 
-        #Variables needed across functions
-        self.fig=None
+        # Variables needed across functions
+        self.fig = None
         self.colors = []
         self.lineglyphs = []
         self.linenum = 0
@@ -51,7 +50,7 @@ class TVarFigureSpec(object):
         self.callback = None
         self.interactive_plot = None
         self.fig = Figure(x_axis_type='datetime', 
-                          tools = pytplot.tplot_opt_glob['tools'], 
+                          tools=pytplot.tplot_opt_glob['tools'],
                           y_axis_type=self._getyaxistype())
         self.fig.add_tools(BoxZoomTool(dimensions='width'))
         self._format()
@@ -77,7 +76,7 @@ class TVarFigureSpec(object):
     def add_title(self):
         if 'title_text' in pytplot.tplot_opt_glob:
             if pytplot.tplot_opt_glob['title_text'] != '':
-                title1 = Title(text = pytplot.tplot_opt_glob['title_text'], 
+                title1 = Title(text=pytplot.tplot_opt_glob['title_text'],
                                align=pytplot.tplot_opt_glob['title_align'],
                                text_font_size=pytplot.tplot_opt_glob['title_size'])  
                 self.fig.title = title1
@@ -92,49 +91,53 @@ class TVarFigureSpec(object):
         self._setzrange()
         self._addtimebars()
         self._visdata()
+        self._setxaxislabel()
         self._setyaxislabel()
-        self._setzaxislabel()
         self._addhoverlines()
         self._addlegend()
         
     def _format(self):
-        #Formatting stuff
+        # Formatting stuff
         self.fig.grid.grid_line_color = None
         self.fig.axis.major_tick_line_color = None
         self.fig.axis.major_label_standoff = 0
         self.fig.xaxis.formatter = dttf
         self.fig.title = None
-        self.fig.toolbar.active_drag='auto'
+        self.fig.toolbar.active_drag = 'auto'
         if not self.show_xaxis:
             self.fig.xaxis.major_label_text_font_size = '0pt'
             self.fig.xaxis.visible = False
         self.fig.lod_factor = 100
         self.fig.lod_interval = 30
         self.fig.lod_threshold = 100
-        self.fig.yaxis.axis_label_text_font_size = "10pt"
-        
+
     def _setxrange(self):
-        #Check if x range is not set, if not, set good ones
+        # Check if x range is not set, if not, set good ones
         if 'x_range' not in pytplot.tplot_opt_glob:
-            pytplot.tplot_opt_glob['x_range'] = [np.nanmin(pytplot.data_quants[self.tvar_name].data.index.tolist()), np.nanmax(pytplot.data_quants[self.tvar_name].data.index.tolist())]
-            tplot_x_range = Range1d(np.nanmin(pytplot.data_quants[self.tvar_name].data.index.tolist()), np.nanmax(pytplot.data_quants[self.tvar_name].data.index.tolist()))
+            pytplot.tplot_opt_glob['x_range'] = [np.nanmin(pytplot.data_quants[self.tvar_name].data.index.tolist()),
+                                                 np.nanmax(pytplot.data_quants[self.tvar_name].data.index.tolist())]
+            tplot_x_range = Range1d(np.nanmin(pytplot.data_quants[self.tvar_name].data.index.tolist()),
+                                    np.nanmax(pytplot.data_quants[self.tvar_name].data.index.tolist()))
             if self.show_xaxis:
                 pytplot.lim_info['xfull'] = tplot_x_range
                 pytplot.lim_info['xlast'] = tplot_x_range
         
-        #Bokeh uses milliseconds since epoch for some reason
-        x_range = Range1d(int(pytplot.tplot_opt_glob['x_range'][0])* 1000, int(pytplot.tplot_opt_glob['x_range'][1])* 1000)
+        # Bokeh uses milliseconds since epoch for some reason
+        x_range = Range1d(int(pytplot.tplot_opt_glob['x_range'][0]) * 1000,
+                          int(pytplot.tplot_opt_glob['x_range'][1]) * 1000)
         self.fig.x_range = x_range
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] <0 or pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] < 0 \
+                    or pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
                 return
-        y_range = Range1d(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0], pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1])
+        y_range = Range1d(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
+                          pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1])
         self.fig.y_range = y_range
         
     def _setzrange(self):
-        #Get Z Range
+        # Get Z Range
         if 'z_range' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             self.zmin = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][0]
             self.zmax = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][1]
@@ -143,8 +146,8 @@ class TVarFigureSpec(object):
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
             
-            #Cannot have a 0 minimum in a log scale
-            if self.zscale=='log':
+            # Cannot have a 0 minimum in a log scale
+            if self.zscale == 'log':
                 zmin_list = []
                 for column in pytplot.data_quants[self.tvar_name].data.columns:
                     series = pytplot.data_quants[self.tvar_name].data[column]
@@ -157,14 +160,14 @@ class TVarFigureSpec(object):
         
     def _addtimebars(self):
         for time_bar in pytplot.data_quants[self.tvar_name].time_bar:
-            time_bar_line = Span(location = time_bar['location']*1000, 
-                                 dimension = time_bar['dimension'], 
-                                 line_color = time_bar['line_color'], 
-                                 line_width = time_bar['line_width'])
+            time_bar_line = Span(location=time_bar['location']*1000,
+                                 dimension=time_bar['dimension'],
+                                 line_color=time_bar['line_color'],
+                                 line_width=time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
             
     def _setxaxis(self):
-        xaxis1 = DatetimeAxis(major_label_text_font_size = '0pt', formatter=dttf)
+        xaxis1 = DatetimeAxis(major_label_text_font_size='0pt', formatter=dttf)
         xaxis1.visible = False
         self.fig.add_layout(xaxis1, 'above')
         
@@ -178,7 +181,6 @@ class TVarFigureSpec(object):
         if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             self.zscale = pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type']
 
-        
     def _setcolors(self):          
         if 'colormap' in pytplot.data_quants[self.tvar_name].extras:
             for cm in pytplot.data_quants[self.tvar_name].extras['colormap']:
@@ -186,29 +188,29 @@ class TVarFigureSpec(object):
         else:
             self.colors.append(tplot_utilities.return_bokeh_colormap('magma'))
 
-    
+    def _setxaxislabel(self):
+        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label']
+        self.fig.xaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+
     def _setyaxislabel(self):
         self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
-    
-    def _setzaxislabel(self):
-        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
+        self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
         
     def _visdata(self):
         self._setcolors()
         
         x = pytplot.data_quants[self.tvar_name].data.index.tolist()
         temp = [a for a in x if (a <= (pytplot.tplot_opt_glob['x_range'][1]) and a >= (pytplot.tplot_opt_glob['x_range'][0]))]
-        x= temp
+        x = temp
     
-        #Sometimes X will be huge, we'll need to cut down so that each x will stay about 1 pixel in size
-        step_size=1
+        # Sometimes X will be huge, we'll need to cut down so that each x will stay about 1 pixel in size
+        step_size = 1
         num_rect_displayed = len(x)
-        if (self.fig.plot_width) < num_rect_displayed:
-            step_size=int(math.floor(num_rect_displayed/(self.fig.plot_width)))
+        if self.fig.plot_width < num_rect_displayed:
+            step_size = int(math.floor(num_rect_displayed/self.fig.plot_width))
             x[:] = x[0::step_size]
-        
-        
-        #Determine bin sizes
+
+        # Determine bin sizes
         if pytplot.data_quants[self.tvar_name].spec_bins is not None:
             bins = pytplot.data_quants[self.tvar_name].spec_bins
             bins_vary = pytplot.data_quants[self.tvar_name].spec_bins_time_varying
@@ -217,11 +219,11 @@ class TVarFigureSpec(object):
             bins = pd.DataFrame(np.arange(len(pytplot.data_quants[self.tvar_name].data.columns))).transpose()
             bins_vary = False
             bins_increasing = True
-        #Get length of arrays
+        # Get length of arrays
         size_x = len(x)
         size_y = len(bins.columns)
         
-        #These arrays will be populated with data for the rectangle glyphs
+        # These arrays will be populated with data for the rectangle glyphs
         color = []
         bottom = []
         top = []
@@ -230,7 +232,7 @@ class TVarFigureSpec(object):
         value = []
         corrected_time = []
         
-        #left, right, and time do not depend on the values in spec_bins
+        # left, right, and time do not depend on the values in spec_bins
         for j in range(size_x-1):
             left.append(x[j]*1000)
             right.append(x[j+1]*1000)
@@ -240,18 +242,17 @@ class TVarFigureSpec(object):
         right = right * (size_y-1)
         corrected_time = corrected_time * (size_y-1)
         
-        #Handle the case of time-varying bin sizes
+        # Handle the case of time-varying bin sizes
         if bins_vary:
             temp_bins = bins.loc[x[0:size_x-1]]
         else:
             temp_bins = bins.loc[0]
 
         if bins_increasing:
-            bin_index_range = range(0,size_y-1,1)
+            bin_index_range = range(0, size_y-1, 1)
         else:
-            bin_index_range = range(size_y-1,0,-1)
-        
-        
+            bin_index_range = range(size_y-1, 0, -1)
+
         for i in bin_index_range:
             temp = pytplot.data_quants[self.tvar_name].data[i][x[0:size_x-1]].tolist()
             value.extend(temp)
@@ -261,7 +262,7 @@ class TVarFigureSpec(object):
                                                            values=temp, 
                                                            zscale=self.zscale))
             
-            #Handle the case of time-varying bin sizes
+            # Handle the case of time-varying bin sizes
             if bins_vary:
                 bottom.extend(temp_bins[i].tolist())
                 if bins_increasing:
@@ -275,32 +276,33 @@ class TVarFigureSpec(object):
                 else:
                     top.extend([temp_bins[i-1]]*(size_x-1))
         
-        #Here is where we add all of the rectangles to the plot
+        # Here is where we add all of the rectangles to the plot
         cds = ColumnDataSource(data=dict(x=left,
                                          y=bottom,
                                          right=right, 
-                                         top = top, 
+                                         top=top,
                                          z=color,
                                          value=value, 
                                          corrected_time=corrected_time))
         
-        self.fig.quad(bottom = 'y', left='x', right='right', top='top', color='z', source=cds)
+        self.fig.quad(bottom='y', left='x', right='right', top='top', color='z', source=cds)
             
         if self.interactive:
             if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
                 y_interactive_log = 'log'
             else:
                 y_interactive_log = 'linear'
-            self.interactive_plot = Figure(plot_height = self.fig.plot_height, 
-                                           plot_width = self.fig.plot_width,
+            self.interactive_plot = Figure(plot_height=self.fig.plot_height,
+                                           plot_width=self.fig.plot_width,
                                            y_range=(self.zmin, self.zmax),
-                                           x_range= (pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0], pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1]),
+                                           x_range=(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
+                                                    pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1]),
                                            y_axis_type=y_interactive_log)
             self.interactive_plot.min_border_left = 100
             spec_bins = bins
             flux = [0]*len(spec_bins)
             interactive_line_source = ColumnDataSource(data=dict(x=spec_bins, y=flux))
-            self.interactive_plot.line('x','y', source=interactive_line_source)
+            self.interactive_plot.line('x', 'y', source=interactive_line_source)
             self.callback = CustomJS(args=dict(cds=cds, source=interactive_line_source), code="""
                     var geometry = cb_data['geometry'];
                     var x_data = geometry.x; // current mouse x position in plot coordinates
@@ -324,41 +326,38 @@ class TVarFigureSpec(object):
                     source.change.emit();
                 """)
 
-
-
     def _addhoverlines(self):
-        #Add tools
+        # Add tools
         hover = HoverTool(callback=self.callback)
-        hover.tooltips = [("Time","@corrected_time"), ("Energy", "@y"), ("Value","@value")]
+        hover.tooltips = [("Time", "@corrected_time"), ("Energy", "@y"), ("Value", "@value")]
         self.fig.add_tools(hover)
-
         
     def _addlegend(self):
-        #Add the color bar
+        # Add the color bar
         if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
             if pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type'] == 'log':
-                color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
-                color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+                color_mapper = LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
+                color_bar = ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None,
+                                              location=(0, 0))
                 color_bar.formatter = BasicTickFormatter(precision=2)
             else:
-                color_mapper=LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
-                color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None, location=(0,0))
+                color_mapper = LinearColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
+                color_bar = ColorBarSideTitle(color_mapper=color_mapper, ticker=BasicTicker(), border_line_color=None,
+                                              location=(0, 0))
                 color_bar.formatter = BasicTickFormatter(precision=4)
         else:
-            color_mapper=LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
-            color_bar=ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None, location=(0,0))
+            color_mapper = LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
+            color_bar = ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None,
+                                          location=(0, 0))
             color_bar.formatter = BasicTickFormatter(precision=2)
-        color_bar.width=10
+        color_bar.width = 10
         color_bar.major_label_text_align = 'left'
         color_bar.label_standoff = 5
         color_bar.major_label_text_baseline = 'middle'
         
-        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            color_bar.title = pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label']
-            color_bar.title_text_font_size = '8pt'
-            color_bar.title_text_font_style = 'bold'
-            color_bar.title_standoff = 20
-        
-        
+        color_bar.title = pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label']
+        color_bar.title_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+        color_bar.title_text_font_style = 'bold'
+        color_bar.title_standoff = 20
+
         self.fig.add_layout(color_bar, 'right')
-    

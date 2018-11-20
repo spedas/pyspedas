@@ -45,6 +45,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
@@ -79,8 +81,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._setzaxistype()
         self._setzrange()
         self._visdata()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
 
@@ -88,11 +90,11 @@ class TVarFigure1D(pg.GraphicsLayout):
             self._set_crosshairs()
             self._addmouseevents()
 
-    def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
-
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Time")
+        self.xaxis.setLabel("Time", **self.labelStyle)
+
+    def _setyaxislabel(self):
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
 
     def getfig(self):
         return self
@@ -133,12 +135,25 @@ class TVarFigure1D(pg.GraphicsLayout):
                 pos_array = np.linspace(bottom_bound, top_bound, len(legend_names))
             i = 0
             for legend_name in legend_names:
+                def rgb(red, green, blue): return '#%02x%02x%02x' % (red, green, blue)
+                r = self.colors[i % len(self.colors)][0]
+                g = self.colors[i % len(self.colors)][1]
+                b = self.colors[i % len(self.colors)][2]
+                hex_num = rgb(r, g, b)
+                color_text = 'color: ' + hex_num
+                font_size = 'font-size: '+str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+                opts = [color_text, font_size]
+                full = "<span style='%s'>%s</span>" % ('; '.join(opts), legend_name)
+                print(full)
                 if i + 1 == len(legend_names):  # Last
-                    text = pg.TextItem(text=legend_name, anchor=(0, 0.5), color=self.colors[i % len(self.colors)])
+                    text = pg.TextItem(anchor=(0, 0.5))
+                    text.setHtml(full)
                 elif i == 0:  # First
-                    text = pg.TextItem(text=legend_name, anchor=(0, 0.5), color=self.colors[i % len(self.colors)])
+                    text = pg.TextItem(anchor=(0, 0.5))
+                    text.setHtml(full)
                 else:  # All others
-                    text = pg.TextItem(text=legend_name, anchor=(0, 0.5), color=self.colors[i % len(self.colors)])
+                    text = pg.TextItem(anchor=(0, 0.5))
+                    text.setHtml(full)
                 self.legendvb.addItem(text)
                 text.setPos(0, pos_array[i])
                 i += 1

@@ -50,6 +50,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
@@ -83,18 +85,18 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._setzaxistype()
         self._setzrange()
         self._visdata()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
         self._addmouseevents()
         self._set_crosshairs()
 
     def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
 
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Time")
+        self.xaxis.setLabel("Time", **self.labelStyle)
 
     def getfig(self):
         return self
@@ -120,10 +122,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
-        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'])
-        else:
-            zaxis.setLabel(' ')
+        zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'], **self.labelStyle)
 
         if self.show_xaxis:
             emptyAxis = BlankAxis('bottom')

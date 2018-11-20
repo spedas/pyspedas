@@ -58,8 +58,6 @@ try:
             fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
             exporter.parameters()['width'] = tplot_opt_glob['window_size'][0]
             exporter.parameters()['height'] = tplot_opt_glob['window_size'][1]
-            print(exporter.parameters()['width'])
-            print(exporter.parameters()['height'])
             exporter.export(fname[0])
 
         def newlayout(self, layout):
@@ -121,12 +119,20 @@ class TVar(object):
         self.spec_bins_ascending = self._check_spec_bins_ordering()
 
         # Add in default values for crosshair names, y/z axis_opt, etc.
+        self.extras['char_size'] = 10
+
+        self.xaxis_opt['axis_label'] = 'Time'
+        self.yaxis_opt['axis_label'] = 'Y-Axis'
+        self.zaxis_opt['axis_label'] = 'Z-Axis'
+
         self.xaxis_opt['crosshair'] = 'X'
         self.yaxis_opt['crosshair'] = 'Y'
         self.zaxis_opt['crosshair'] = 'Z'
+
         self.xaxis_opt['x_axis_type'] = 'linear'
         self.yaxis_opt['y_axis_type'] = 'linear'
         self.zaxis_opt['z_axis_type'] = 'linear'
+
         self.interactive_xaxis_opt['xi_axis_type'] = 'linear'
         self.interactive_yaxis_opt['yi_axis_type'] = 'linear'
         
