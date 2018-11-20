@@ -94,7 +94,6 @@ class TVarFigureSpec(object):
         self._visdata()
         self._setxaxislabel()
         self._setyaxislabel()
-        self._setzaxislabel()
         self._addhoverlines()
         self._addlegend()
         
@@ -192,9 +191,7 @@ class TVarFigureSpec(object):
     
     def _setyaxislabel(self):
         self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
-    
-    def _setzaxislabel(self):
-        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
+
         
     def _visdata(self):
         self._setcolors()

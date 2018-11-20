@@ -82,19 +82,19 @@ class TVarFigureMap(pg.GraphicsLayout):
         self._setzrange()
         self._setbackground()
         self._visdata()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
         if self.crosshair:
             self._set_crosshairs()
             self._addmouseevents()
 
-    def _setyaxislabel(self):
-        self.yaxis.setLabel("Latitude")
-
     def _setxaxislabel(self):
         self.xaxis.setLabel("Longitude")
+
+    def _setyaxislabel(self):
+        self.yaxis.setLabel("Latitude")
 
     def getfig(self):
         return self

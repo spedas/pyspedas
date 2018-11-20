@@ -83,18 +83,18 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._setzaxistype()
         self._setzrange()
         self._visdata()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
         self._addmouseevents()
         self._set_crosshairs()
 
-    def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
-
     def _setxaxislabel(self):
         self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label'])
+
+    def _setyaxislabel(self):
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
         
     def getfig(self):
         return self

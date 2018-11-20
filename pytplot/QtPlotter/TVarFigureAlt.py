@@ -78,14 +78,17 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self._setzrange()
         self._visdata()
         self._addtimebars()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         if self.crosshair:
             self._addmouseevents()
         self._addlegend()
 
     def getfig(self):
         return self
+
+    def _setxaxislabel(self):
+        self.xaxis.setLabel("Altitude")
 
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
@@ -108,9 +111,6 @@ class TVarFigureAlt(pg.GraphicsLayout):
             self.plotwindow.setXRange(pytplot.tplot_opt_glob['alt_range'][0], pytplot.tplot_opt_glob['alt_range'][1])
         else:
             return
-
-    def _setxaxislabel(self):
-        self.xaxis.setLabel("Altitude")
 
     def getaxistype(self):
         axis_type = 'altitude'

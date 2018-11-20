@@ -74,7 +74,6 @@ class TVarFigureMap(object):
         self._visdata()
         self._setxaxislabel()
         self._setyaxislabel()
-        self._setzaxislabel()
         self._addhoverlines()
         self._addlegend()
         self._addtimebars()
@@ -202,9 +201,6 @@ class TVarFigureMap(object):
         self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label']
     
     def _setyaxislabel(self):
-        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
-    
-    def _setzaxislabel(self):
         self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
         
     def _visdata(self):
