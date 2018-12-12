@@ -28,6 +28,14 @@ from scipy.interpolate import interp1d
         >>> pytplot.tplot_resample('d',[3,4,5,6,7,18],'d_resampled')
     """
 
+def pdresample(tvar, rule, how=None, axis=0, fill_method=None, closed=None, label=None, 
+               convention='start', kind=None, loffset=None, limit=None, base=0, on=None, 
+               level=None):
+    tvar_df = pytplot.data_quants[tvar].data
+    pytplot.data_quants[tvar].data = tvar_df.resample(rule, how, axis, fill_method, closed, label, convention, kind, loffset, limit,
+                                      base, on, level)
+    
+    return
                               
 def resample(tvar1,times,newtvar='tvar_resample'):
     #create dummy dataframe for times to interpolate to
@@ -36,10 +44,10 @@ def resample(tvar1,times,newtvar='tvar_resample'):
     new_df = []
     spec_df = []
     tvar_orig = pytplot.data_quants[tvar1].data.copy()
-    
+     
     if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
         spec_orig = pytplot.data_quants[tvar1].spec_bins.copy()
-        
+         
     #for each column of dataframe
     for i in df_index:
         tv2_col = [item[i] for item in tvar_orig.values]
@@ -48,12 +56,12 @@ def resample(tvar1,times,newtvar='tvar_resample'):
         #linear interpolation
         f = interp1d(tvar_orig.index,tv2_col,fill_value="extrapolate")
         new_df = new_df + [f(times)]
-        
+         
         if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
             g = interp1d(tvar_orig.index,spec_col,fill_value="extrapolate")
             spec_df = spec_df + [g(times)]
     new_df = np.transpose((list(new_df)))
-    
+     
     if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
         spec_df = np.transpose((list(spec_df)))
     #store interpolated tvar

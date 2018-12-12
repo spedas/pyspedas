@@ -19,7 +19,7 @@ from .interp_nan import interp_nan
 from .interpolate import interpolate
 from .join_vec import join_vec
 from .multiply import multiply
-from .resample import resample
+from .resample import resample, pdresample
 from .spec_mult import spec_mult
 from .split_vec import split_vec
 from .subtract import subtract
