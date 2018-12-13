@@ -205,7 +205,6 @@ def tplot(name,
 
             # Set up displayed plot window and grab plots to plot on it
             available_qt_window = tplot_utilities.get_available_qt_window()
-
             layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes,
                                               mouse_moved_event=pytplot.hover_time.change_hover_time)
 
