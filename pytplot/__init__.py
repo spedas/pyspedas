@@ -209,7 +209,7 @@ tplot_opt_glob = dict(tools="xpan,crosshair,reset",
                       min_border_top=15, min_border_bottom=0,
                       title_align='center', window_size=[800, 800],
                       title_size='12pt', title_text='', crosshair=True,
-                      data_gap=300)
+                      data_gap=0)
 lim_info = {}
 extra_layouts = {}
 
