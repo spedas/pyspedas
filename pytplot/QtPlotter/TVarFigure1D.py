@@ -10,6 +10,7 @@ from .CustomAxis.DateAxis import DateAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
+from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionItem
 
 
 class TVarFigure1D(pg.GraphicsLayout):
@@ -74,6 +75,26 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.vLine.setVisible(False)
         self.hLine.setVisible(False)
 
+    def _set_roi_lines(self, dataset):
+        # Locating the two times between which there's a roi
+        time = dataset.data.index.tolist()
+        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
+        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+        # find closest time to user-requested time
+        x = np.asarray(time)
+        x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
+        x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
+        x_argmin_1 = np.nanargmin(x_sub_1)
+        x_argmin_2 = np.nanargmin(x_sub_2)
+        x_closest_1 = x[x_argmin_1]
+        x_closest_2 = x[x_argmin_2]
+        # Create roi box
+        roi = CustomLinearRegionItem(orientation=pg.LinearRegionItem.Vertical, values=[x_closest_1, x_closest_2])
+        roi.setBrush([211, 211, 211, 130])
+        roi.lines[0].setPen('r', width=2.5)
+        roi.lines[1].setPen('r', width=2.5)
+        self.plotwindow.addItem(roi)
+
     def buildfigure(self):
         self._setxrange()
         self._setyrange()
@@ -85,7 +106,6 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
-
         if self.crosshair:
             self._set_crosshairs()
             self._addmouseevents()
@@ -108,6 +128,9 @@ class TVarFigure1D(pg.GraphicsLayout):
             datasets.append(pytplot.data_quants[self.tvar_name])
         line_num = 0
         for dataset in datasets:
+            # Add region of interest (roi) lines if applicable
+            if 'roi_lines' in pytplot.tplot_opt_glob.keys():
+                self._set_roi_lines(dataset)
             for i in range(0, len(dataset.data.columns)):
                 self.curves.append(self.plotwindow.plot(dataset.data.index.tolist(),
                                                         dataset.data[i].tolist(),

@@ -7,7 +7,7 @@ from __future__ import division
 import numpy as np
 from bokeh.plotting.figure import Figure
 from bokeh.models import (ColumnDataSource, DatetimeAxis, HoverTool, 
-                          Range1d, Span, Title, Legend)
+                          Range1d, Span, Title, Legend, BoxAnnotation)
 from bokeh.models.glyphs import Line
 from bokeh.models.tools import BoxZoomTool
 
@@ -141,7 +141,25 @@ class TVarFigure1D(object):
             time_bar_line = Span(location=time_bar['location']*1000, dimension=time_bar['dimension'],
                                  line_color=time_bar['line_color'], line_width=time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
-            
+
+    def _set_roi_lines(self, dataset):
+        # Locating the two times between which there's a roi
+        time = dataset.data.index.tolist()
+        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
+        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+        # find closest time to user-requested time
+        x = np.asarray(time)
+        x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
+        x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
+        x_argmin_1 = np.nanargmin(x_sub_1)
+        x_argmin_2 = np.nanargmin(x_sub_2)
+        x_closest_1 = x[x_argmin_1]
+        x_closest_2 = x[x_argmin_2]
+        # Create roi box
+        roi_box = BoxAnnotation(left=x_closest_1*1000, right=x_closest_2*1000, fill_alpha=0.2, fill_color='grey',
+                                line_color='red', line_width=2.5)
+        self.fig.renderers.extend([roi_box])
+
     def _setxaxis(self):
         xaxis1 = DatetimeAxis(major_label_text_font_size='0pt', formatter=dttf)
         xaxis1.visible = False
@@ -188,6 +206,10 @@ class TVarFigure1D(object):
                 
             # Bokeh uses milliseconds since epoch for some reason
             x = dataset.data.index * 1000
+
+            # Add region of interest (roi) lines if applicable
+            if 'roi_lines' in pytplot.tplot_opt_glob.keys():
+                self._set_roi_lines(dataset)
             
             # Create lines from each column in the dataframe
             for column_name in dataset.data.columns:
