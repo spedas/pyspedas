@@ -80,8 +80,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self._setzrange()
         self._visdata()
         self._addtimebars()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         if self.crosshair:
             self._addmouseevents()
         self._addlegend()

@@ -84,8 +84,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         self._setzrange()
         self._setbackground()
         self._visdata()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
         if self.crosshair:
@@ -97,6 +97,9 @@ class TVarFigureMap(pg.GraphicsLayout):
 
     def _setyaxislabel(self):
         self.yaxis.setLabel("Latitude", **self.labelStyle)
+
+    def _setyaxislabel(self):
+        self.yaxis.setLabel("Latitude")
 
     def getfig(self):
         return self
@@ -154,12 +157,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         return
 
     def _addlegend(self):
-        zaxis = pg.AxisItem('right')
-
-        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
-        else:
-            zaxis.setLabel(' ')
+        zaxis = AxisItem('right')
+        zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
 
         if self.show_xaxis:
             emptyaxis = BlankAxis('bottom')

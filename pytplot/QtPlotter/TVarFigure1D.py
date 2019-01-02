@@ -91,7 +91,7 @@ class TVarFigure1D(pg.GraphicsLayout):
             self._addmouseevents()
 
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Time", **self.labelStyle)
+        self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label'], **self.labelStyle)
 
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)

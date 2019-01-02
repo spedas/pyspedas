@@ -7,6 +7,7 @@ import cdflib
 import re
 import numpy as np
 import pandas as pd
+import pytplot
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
 from pytplot.options import options
@@ -128,6 +129,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                         if ydata[ydata == var_atts["FILLVAL"]].size != 0:
                             ydata[ydata == var_atts["FILLVAL"]] = np.nan
+
+                # Testing case where time is datetime format instead of seconds since the epoch
+                times = data_quants['swe_1_diff_en_fluxes'].data.index.tolist()
+                print(times)
+                times_str = [tplot_utilities.int_to_str(times[i]) for i in times]
+                print(times_str)
+
 
                 tplot_data = {'x': xdata, 'y': ydata}
 

@@ -5,8 +5,6 @@
 
 import pytplot
 import numpy as np
-from scipy import interpolate
-from scipy.interpolate import interp1d
 
 """
     Change specified 'flagged' data to NaN.
@@ -29,17 +27,17 @@ from scipy.interpolate import interp1d
     """
 
                               
-def deflag(tvar1,flags,newtvar):
+def deflag(tvar1,flags,newtvar='tvar_deflag'):
     #if int input, make list
     if not isinstance(flags,list):
         flags = [flags]
     #grab column indices
     df_index = pytplot.data_quants[tvar1].data.columns
     new_df = []
-    tvar_orig = pytplot.data_quants[tvar1]
+    tvar_orig = pytplot.data_quants[tvar1].data.copy()
     #for each column of dataframe
     for i in df_index:
-        tv2_col = [item[i] for item in tvar_orig.data.values]
+        tv2_col = [item[i] for item in tvar_orig.values]
         for j,valj in enumerate(tv2_col):
             #if one of flagged values, convert to NaN
             if valj in flags:
@@ -47,5 +45,8 @@ def deflag(tvar1,flags,newtvar):
         new_df = new_df + [tv2_col]
     new_df = np.transpose((list(new_df)))
     #store deflagged tvar
-    pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df})
+    if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+        pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df,'v':pytplot.data_quants[tvar1].spec_bins})
+    else:
+        pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df})
     return

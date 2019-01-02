@@ -8,7 +8,7 @@
 
 1.2.9 Changes:
 	-Added a netcdf_to_tplot reader
-	-Changed date axis to show more relavent times
+	-Changed date axis to show more relevant times
 
 1.2.8 Changes:
 	-Adding merge functionality to the cdf_to_tplot routine

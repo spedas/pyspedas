@@ -5,7 +5,6 @@
 
 import numpy as np
 from _collections import OrderedDict
-
 from . import HTMLPlotter
 
 
@@ -257,6 +256,7 @@ from .cdf_to_tplot import cdf_to_tplot
 from .netcdf_to_tplot import netcdf_to_tplot
 from .tplot_utilities import compare_versions
 from .link import link
+from pytplot.tplot_math import *
 
 # If we are in an ipython environment, set the gui to be qt5
 # This allows the user to interact with the window in real time
@@ -266,6 +266,7 @@ try:
 except:
     pass
 
+# from module import all files
 if using_graphics:
     pg.mkQApp()
 

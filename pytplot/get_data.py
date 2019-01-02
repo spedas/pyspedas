@@ -7,7 +7,7 @@ from pytplot import data_quants
 
 def get_data(name):
     """
-    This function will get extract the data from the Tplot Variables stored in memory.  
+    This function extracts the data from the Tplot Variables stored in memory.  
     
     Parameters:
         name : str 

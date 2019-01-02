@@ -205,7 +205,7 @@ class TVarFigureMap(object):
     def _setyaxislabel(self):
         self.fig.yaxis.axis_label = 'Latitude'
         self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
-        
+
     def _visdata(self):
         self._setcolors()
         datasets = []

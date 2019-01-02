@@ -62,7 +62,7 @@ def store_data(name, data=None, delete=False, newname=None):
         >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
         >>> pytplot.store_data("Variable2", data={'x':x_data, 'y':y_data})
         
-        >>> # Store a specrogram
+        >>> # Store a spectrogram
         >>> x_data = [1,2,3]
         >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
         >>> v_data = [1,2,3]
