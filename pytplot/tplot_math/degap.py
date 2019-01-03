@@ -31,7 +31,7 @@ import numpy as np
     """
 
 pytplot.store_data('d', data={'x':[2,5,11,14,17,21], 'y':[[1,1],[100,100],[4,4],[5,5],[6,6],[7,7]]})
-print(pytplot.data_quants['d'].data)
+#print(pytplot.data_quants['d'].data)
 
 def degap(tvar,dt):
     tv = pytplot.data_quants[tvar].data.copy()
