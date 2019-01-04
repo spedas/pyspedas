@@ -10,7 +10,7 @@ import math
 from bokeh.plotting.figure import Figure
 from bokeh.models import (CustomJS, LogColorMapper, LogTicker, LinearColorMapper, 
                           BasicTicker, ColumnDataSource, DatetimeAxis, HoverTool, 
-                          Range1d, Span, Title)
+                          Range1d, Span, Title, BoxAnnotation)
 from bokeh.models.tools import BoxZoomTool
 from bokeh.models.formatters import BasicTickFormatter
 
@@ -165,6 +165,23 @@ class TVarFigureSpec(object):
                                  line_color=time_bar['line_color'],
                                  line_width=time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
+
+    def _set_roi_lines(self, time):
+        # Locating the two times between which there's a roi
+        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
+        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+        # find closest time to user-requested time
+        x = np.asarray(time)
+        x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
+        x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
+        x_argmin_1 = np.nanargmin(x_sub_1)
+        x_argmin_2 = np.nanargmin(x_sub_2)
+        x_closest_1 = x[x_argmin_1]
+        x_closest_2 = x[x_argmin_2]
+        # Create roi box
+        roi_box = BoxAnnotation(left=x_closest_1*1000, right=x_closest_2*1000, fill_alpha=0.6, fill_color='grey',
+                                line_color='red', line_width=2.5)
+        self.fig.renderers.extend([roi_box])
             
     def _setxaxis(self):
         xaxis1 = DatetimeAxis(major_label_text_font_size='0pt', formatter=dttf)
@@ -200,6 +217,9 @@ class TVarFigureSpec(object):
         self._setcolors()
         
         x = pytplot.data_quants[self.tvar_name].data.index.tolist()
+        # Add region of interest (roi) lines if applicable
+        if 'roi_lines' in pytplot.tplot_opt_glob.keys():
+            self._set_roi_lines(x)
         temp = [a for a in x if (a <= (pytplot.tplot_opt_glob['x_range'][1]) and a >= (pytplot.tplot_opt_glob['x_range'][0]))]
         x = temp
     
