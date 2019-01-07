@@ -167,7 +167,6 @@ class TVarFigure1D(pg.GraphicsLayout):
                 font_size = 'font-size: '+str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
                 opts = [color_text, font_size]
                 full = "<span style='%s'>%s</span>" % ('; '.join(opts), legend_name)
-                print(full)
                 if i + 1 == len(legend_names):  # Last
                     text = pg.TextItem(anchor=(0, 0.5))
                     text.setHtml(full)
