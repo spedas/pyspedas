@@ -30,10 +30,11 @@ import numpy as np
         >>> pytplot.degap('d',[[3,7],[13,17]],2.3,func='nan')  
     """
 
-pytplot.store_data('d', data={'x':[2,5,11,14,17,21], 'y':[[1,1],[100,100],[4,4],[5,5],[6,6],[7,7]]})
-#print(pytplot.data_quants['d'].data)
 
 def degap(tvar,dt):
+    #Not yet implemented, see below for previous code
+    pass
+    '''
     tv = pytplot.data_quants[tvar].data.copy()
     tvi = pytplot.data_quants[tvar].data.index.copy().tolist()
     try:
@@ -95,3 +96,4 @@ def degap(tvar,dt):
 # 
 #     return
 #           
+    '''
