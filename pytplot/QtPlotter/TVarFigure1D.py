@@ -6,11 +6,11 @@
 import pyqtgraph as pg
 import numpy as np
 import pytplot
+from collections import OrderedDict
 from .CustomAxis.DateAxis import DateAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
-from pandas import Index
 
 
 class TVarFigure1D(pg.GraphicsLayout):
@@ -112,16 +112,10 @@ class TVarFigure1D(pg.GraphicsLayout):
                 limit = pytplot.tplot_opt_glob['data_gap']  # How big a data gap is allowed before those nans (default
                 # is to plot as pyqtgraph would normally plot w / o worrying about data gap handling).
                 if limit != 0:
-                    index = 0  # What index in the below for loop we're on
-                    nans = dict()  # Where nan value indices + times associated with those indices are housed
-                    for j in dataset.data[i].keys():
-                        point = dataset.data[i][j]  # Just grab the point in that dataset, at a specific time
-                        if np.isnan(point):
-                            nans[index] = j  # If we have a nan value, put the index/time in the nan dictionary
-                        index += 1
-                    # Putting the keys & values from the nans dictionary to lists to make them more easily accesible
-                    nan_keys = list(nans.keys())
-                    nan_values = list(nans.values())
+                    # Grabbing the times associated with nan values (nan_values), and the associated "position" of those
+                    # keys in the dataset list (nan_keys)
+                    nan_values = dataset.data[i][dataset.data[i].isnull().values].index.tolist()
+                    nan_keys = [dataset.data[i].index.tolist().index(j) for j in nan_values]
 
                     count = 0   # Keeping a count of how big of a time gap we have
                     flag = False    # This flag changes to true when we accumulate a big enough period of time that we
@@ -130,9 +124,9 @@ class TVarFigure1D(pg.GraphicsLayout):
                     # the user-specified data gap)
                     overall_list = list()  # List of consecutive nan values (composed of indices for gaps bigger than
                     # the user-specified data gap)
-                    for val in range(len(nan_keys)):
+                    for val, actual_value in enumerate(nan_keys):
                         # Avoiding some weird issues with going to the last data point in the nan dictionary keys
-                        if val != (len(nan_keys)-1):
+                        if actual_value != nan_keys[-1]:
                             # Difference between one index and another - if consecutive indices, the diff will be 1
                             diff = abs(nan_keys[val] - nan_keys[val+1])
                             # calculate time accumulated from one index to the next
@@ -180,9 +174,7 @@ class TVarFigure1D(pg.GraphicsLayout):
                     # In order to do this, we set the identified indices from overall_list to 0, which in the
                     # connect keyword argument in self.plotwindow.plot will cause that point to not be plotted
                     time_filtered = np.array([1]*len(dataset.data.index.tolist()))
-                    for index, pos in enumerate(overall_list):
-                        # Remove unwanted time from being plotted
-                        time_filtered[pos] = 0
+                    time_filtered[overall_list] = 0
 
                     # Finally, plot the thing with data gaps removed (if applicable)
                     self.curves.append(self.plotwindow.plot(x=dataset.data.index.tolist(),

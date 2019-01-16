@@ -194,16 +194,12 @@ class TVarFigure1D(object):
                 # (default is to plot as bokeh would normally plot w/o worrying about data gap handling).
                 limit = pytplot.tplot_opt_glob['data_gap']
                 if limit != 0:
-                    index = 0  # What index in the below for loop we're on
-                    nans = dict()  # Where nan value indices + times associated with those indices are housed
-                    for j in dataset.data[column_name].keys():
-                        point = dataset.data[column_name][j]  # Just grab the point in that dataset, at a specific time
-                        if np.isnan(point):
-                            nans[index] = j  # If we have a nan value, put the index/time in the nan dictionary
-                        index += 1
-                    # Putting the keys & values from the nans dictionary to lists to make them more easily accesible
-                    nan_keys = list(nans.keys())
-                    nan_values = list(nans.values())
+                    # Grabbing the times associated with nan values (nan_values), and the associated "position" of those
+                    # keys in the dataset list (nan_keys)
+                    nan_values = y[y.isnull().values].index.tolist()
+                    nan_keys = [y.index.tolist().index(j) for j in nan_values]
+
+                    nans = dict(zip(nan_keys, nan_values))
 
                     count = 0   # Keeping a count of how big of a time gap we have
                     consec_list = list()  # List of consecutive nan values (composed of indices for gaps not bigger than
@@ -232,6 +228,7 @@ class TVarFigure1D(object):
                                 # Restart the count and add the current val to the list of nan values to remove
                                 count = 0
                                 consec_list.append(nan_keys[val])
+                    print(consec_list)
 
                     times = x.tolist()
                     for elem in consec_list:
