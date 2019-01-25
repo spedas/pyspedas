@@ -1,5 +1,6 @@
 
 # pyspedas
+[![Build Status](https://travis-ci.com/spedas/pyspedas.svg?branch=master)](https://travis-ci.com/spedas/pyspedas)
 
 Pyspedas is an implementation of the SPEDAS framework in python. 
 
