@@ -1,8 +1,8 @@
 
-# pyspedas
+# pySPEDAS
 [![Build Status](https://travis-ci.com/spedas/pyspedas.svg?branch=master)](https://travis-ci.com/spedas/pyspedas)
 
-Pyspedas is an implementation of the SPEDAS framework in python. 
+pySPEDAS is an implementation of the SPEDAS framework in python. 
 
 The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org/wiki)) framework is written in IDL and contains data loading, data analysis and data plotting tools for various scientific NASA missions.   
 
