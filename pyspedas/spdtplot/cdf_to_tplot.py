@@ -123,7 +123,11 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                    ('CDF_EPOCH' in data_type_description):
                     xdata = cdflib.cdfepoch.unixtime(xdata)
 
-                ydata = cdf_file.varget(var)
+                try:
+                    ydata = cdf_file.varget(var)
+                except:
+                    continue
+                    
                 if ydata is None:
                     continue
                 if "FILLVAL" in var_atts:
