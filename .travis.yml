@@ -8,4 +8,4 @@ install:
   - pip install .
 
 script: 
-  - python -m pyspedas.mms.tests.load_routines_ut
+  - python -m pyspedas.mms.tests.load_routine_tests
