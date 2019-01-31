@@ -87,7 +87,7 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='dsp', datatype=datatype, prefix=prefix, suffix=suffix)
     return files
 
-def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='aspoc'):
+def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype=''):
 
     files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='aspoc', datatype=datatype)
     return files
