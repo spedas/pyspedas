@@ -4,7 +4,7 @@
 import os
 import requests
 import logging
-from pytplot import cdf_to_tplot
+from ..spdtplot.cdf_to_tplot import cdf_to_tplot
 from pyspedas import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
