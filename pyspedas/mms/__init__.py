@@ -1,5 +1,8 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+"""
+This module contains routines for loading MMS data
+
+
+"""
 
 from .mms_load_data import mms_load_data
 
@@ -7,7 +10,8 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     """
     This function loads FGM data into tplot variables
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             The file names and full paths of CDF files.   
         probe : str
@@ -29,7 +33,8 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             no suffix is added.
 
             
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
 
     """
@@ -65,6 +70,11 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof'):
 
     files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis', datatype=datatype)
+    return files
+
+def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield'):
+
+    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edi', datatype=datatype)
     return files
 
 def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce'):
