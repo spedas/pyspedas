@@ -1,5 +1,5 @@
 
-## Magnetospheric Multiscale (MMS) mission data
+## Magnetospheric Multiscale (MMS) Mission
 The routines in this folder can be used to load data from the Magnetospheric Multiscale (MMS) mission into pytplot variables. 
 
 ### Fluxgate Magnetometer (FGM) Example
