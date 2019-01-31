@@ -1,11 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
-import os 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-from mms_load_data import mms_load_data
+from .mms_load_data import mms_load_data
 
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix=''):
     """

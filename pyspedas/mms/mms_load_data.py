@@ -11,7 +11,7 @@ from datetime import timedelta, datetime
 from urllib.request import urlopen
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
-from pyspedas.mms.mms_config import CONFIG
+from .mms_config import CONFIG
 
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
