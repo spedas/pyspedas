@@ -14,7 +14,9 @@ from pytplot import tplot
 
 ```python
 from pyspedas.mms import mms_load_fgm
+
 mms_load_fgm(trange=['2015-10-16', '2015-10-17'])
+
 tplot('mms1_fgm_b_gsm_srvy_l2')
 ```
 
@@ -22,7 +24,9 @@ tplot('mms1_fgm_b_gsm_srvy_l2')
 
 ```python
 from pyspedas.mms import mms_load_scm
+
 mms_load_scm(trange=['2015-10-16', '2015-10-17'])
+
 tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
 ```
 
@@ -30,7 +34,9 @@ tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
 
 ```python
 from pyspedas.mms import mms_load_edp
+
 mms_load_edp(trange=['2015-10-16', '2015-10-17'])
+
 tplot('mms1_edp_dce_gse_fast_l2')
 ```
 
@@ -38,7 +44,9 @@ tplot('mms1_edp_dce_gse_fast_l2')
 
 ```python
 from pyspedas.mms import mms_load_edi
+
 mms_load_edi(trange=['2016-10-16', '2016-10-17'])
+
 tplot('mms1_edi_e_gse_srvy_l2')
 ```
 
@@ -46,7 +54,9 @@ tplot('mms1_edi_e_gse_srvy_l2')
 
 ```python
 from pyspedas.mms import mms_load_fpi
+
 mms_load_fpi(trange=['2015-10-16', '2015-10-17'], datatype='dis-moms')
+
 tplot(['mms1_dis_bulkv_gse_fast', 'mms1_dis_numberdensity_fast'])
 ```
 
@@ -54,7 +64,9 @@ tplot(['mms1_dis_bulkv_gse_fast', 'mms1_dis_numberdensity_fast'])
 
 ```python
 from pyspedas.mms import mms_load_hpca
+
 mms_load_hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')
+
 tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity'])
 ```
 
@@ -62,7 +74,9 @@ tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity'])
 
 ```python
 from pyspedas.mms import mms_load_eis
+
 mms_load_eis(trange=['2015-10-16', '2015-10-17'], datatype=['phxtof', 'extof'])
+
 tplot(['mms1_epd_eis_extof_proton_P3_flux_t0', 'mms1_epd_eis_phxtof_proton_P3_flux_t0'])
 ```
 
@@ -70,7 +84,9 @@ tplot(['mms1_epd_eis_extof_proton_P3_flux_t0', 'mms1_epd_eis_phxtof_proton_P3_fl
 
 ```python
 from pyspedas.mms import mms_load_feeps
+
 mms_load_feeps(trange=['2015-10-16', '2015-10-17'], datatype='electron')
+
 tplot('mms1_epd_feeps_srvy_l2_electron_top_intensity_sensorid_1')
 ```
 
@@ -78,7 +94,9 @@ tplot('mms1_epd_feeps_srvy_l2_electron_top_intensity_sensorid_1')
 
 ```python
 from pyspedas.mms import mms_load_aspoc
+
 mms_load_aspoc(trange=['2015-10-16', '2015-10-17'])
+
 tplot('mms1_aspoc_ionc')
 ```
 
