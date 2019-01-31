@@ -74,8 +74,10 @@ mms_load_feeps(trange=['2015-10-16', '2015-10-17'], datatype='electron')
 tplot('mms1_epd_feeps_srvy_l2_electron_top_intensity_sensorid_1')
 ```
 
+
 ### Configuration
 Configuration settings are set in the CONFIG hash table in the mms_config.py file. 
+
 
 ### Additional Information
 
