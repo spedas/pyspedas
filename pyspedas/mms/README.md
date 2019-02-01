@@ -77,7 +77,7 @@ from pyspedas.mms import mms_load_eis
 
 mms_load_eis(trange=['2015-10-16', '2015-10-17'], datatype=['phxtof', 'extof'])
 
-tplot(['mms1_epd_eis_extof_proton_P3_flux_t0', 'mms1_epd_eis_phxtof_proton_P3_flux_t0'])
+tplot(['mms1_epd_eis_extof_proton_flux_omni', 'mms1_epd_eis_phxtof_proton_flux_omni'])
 ```
 
 #### Fly's Eye Energetic Particle Sensor (FEEPS)
