@@ -70,7 +70,15 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof'):
     from .eis.mms_eis_omni import mms_eis_omni
     files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis', datatype=datatype)
-    omni_spectra = mms_eis_omni(probe, data_rate=data_rate, datatype=datatype)
+
+    if not isinstance(probe, list): probe = [probe]
+    if not isinstance(data_rate, list): data_rate = [data_rate]
+    if not isinstance(datatype, list): datatype = [datatype]
+
+    for probe_id in probe:
+        for datatype_id in datatype:
+            for data_rate_id in data_rate:
+                omni_spectra = mms_eis_omni(probe_id, data_rate=data_rate_id, datatype=datatype_id)
     return files
 
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield'):
