@@ -34,8 +34,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         for drate in data_rate:
             for lvl in level:
                 for dtype in datatype:
-                    logging.info('Fetching MMS' + prb + ' ' + lvl.upper() + ' ' + instrument.upper() + ' ' + drate + (' ' + dtype if dtype != '' else '') + ' data')
-
                     url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/file_info/science?start_date=' + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
 
                     if dtype != '':
@@ -46,11 +44,12 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                     for file in http_json['files']:
                         file_date = parse(file['timetag'])
-                        out_dir = CONFIG['local_data_dir']+'mms/mms' + prb + '/' + instrument + '/' + drate + '/' + lvl + '/' + file_date.strftime('%Y') + '/' + file_date.strftime('%m')
-                        
-                        if os.path.exists(out_dir + '/' + file['file_name']):
-                            logging.info('Loading ' + out_dir + '/' + file['file_name'])
-                            out_files.append(out_dir + '/' + file['file_name'])
+                        out_dir = CONFIG['local_data_dir'] + os.sep.join(['mms', 'mms'+prb, instrument, drate, lvl, file_date.strftime('%Y'), file_date.strftime('%m')])
+                        out_file = os.sep.join([out_dir, file['file_name']])
+
+                        if os.path.exists(out_file):
+                            logging.info('Loading ' + out_file)
+                            out_files.append(out_file)
                             continue
 
                         download_url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/download/science?file=' + file['file_name']
@@ -63,10 +62,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                             os.makedirs(out_dir)
 
                         # if the download was successful, copy to data directory
-                        copy(ftmp.name, out_dir + '/' + file['file_name'])
-                        out_files.append(out_dir + '/' + file['file_name'])
+                        copy(ftmp.name, out_file)
+                        out_files.append(out_file)
 
-    
     out_files = sorted(out_files)
 
     new_variables = cdf_to_tplot(out_files, merge=True, prefix=prefix, suffix=suffix)
@@ -76,3 +74,4 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         print(new_var)
 
     return
+
