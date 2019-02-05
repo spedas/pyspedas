@@ -110,6 +110,16 @@ mms_load_mec(trange=['2015-10-16', '2015-10-17'])
 tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 ```
 
+#### Digital Signal Processor (DSP)
+
+```python
+from pyspedas.mms import mms_load_dsp
+
+mms_load_dsp(trange=['2015-10-16', '2015-10-17'], data_rate='fast', datatype='bpsd')
+
+tplot('mms1_dsp_bpsd_omni_fast_l2')
+```
+
 
 ### Configuration
 Configuration settings are set in the CONFIG hash table in the mms_config.py file. 
