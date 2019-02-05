@@ -100,6 +100,16 @@ mms_load_aspoc(trange=['2015-10-16', '2015-10-17'])
 tplot('mms1_aspoc_ionc')
 ```
 
+#### MMS Ephemeris and Coordinates (MEC)
+
+```python
+from pyspedas.mms import mms_load_mec
+
+mms_load_mec(trange=['2015-10-16', '2015-10-17'])
+
+tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
+```
+
 
 ### Configuration
 Configuration settings are set in the CONFIG hash table in the mms_config.py file. 
