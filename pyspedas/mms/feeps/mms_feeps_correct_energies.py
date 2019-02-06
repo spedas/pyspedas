@@ -34,4 +34,4 @@ def mms_feeps_correct_energies(probes, data_rate, level='l2', suffix=''):
 
                     energy_map = mms_feeps_energy_table(probe, sensor_type[0:3], sensor)
 
-                    store_data(var_name+suffix, data={'x': times, 'y': data, 'v': energies})
+                    store_data(var_name+suffix, data={'x': times, 'y': data, 'v': energy_map})
