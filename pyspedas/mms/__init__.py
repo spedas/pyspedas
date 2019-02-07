@@ -5,71 +5,88 @@ This module contains routines for loading MMS data
 """
 
 from .mms_load_data import mms_load_data
+from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
+from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 
-def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix=''):
+def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix='', keep_flagged=False, get_support_data=True):
     """
     This function loads FGM data into tplot variables
     
-    Parameters
-    ----------
+    Parameters:
         trange : list of str
-            The file names and full paths of CDF files.   
-        probe : str
-            The file variable formats to load into tplot.  Wildcard character 
-            "*" is accepted.  By default, all variables are loaded in.  
-        data_rate
-        level
-        datatype
+            time range of interest [starttime, endtime] with the format 
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
+        probe : str or list of str
+            list of probes, valid values for MMS probes are ['1','2','3','4']. 
+
+        data_rate : str or list of str
+            instrument data rates for FGM include 'brst' 'fast' 'slow' 'srvy'. The
+            default is 'srvy'.
+
+        level : str
+            indicates level of data processing. the default if no level is specified is 'l2'
+
+        datatype : str or list of str
+            no datatype for FGM instrument (all science data are loaded)
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
             will be loaded into tplot.  By default, only loads in data with a 
             "VAR_TYPE" attribute of "data".
+
         prefix: str
             The tplot variable names will be given this prefix.  By default, 
             no prefix is added.
+
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
             
-    Returns
-    -------
+    Returns:
         List of tplot variables created.
 
     """
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fgm', datatype=datatype, prefix=prefix, suffix=suffix)
-    return files
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fgm', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
+    
+    # remove flagged data
+    if not keep_flagged:
+        mms_fgm_remove_flags(probe, data_rate, level, suffix=suffix)
 
-def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='moments'):
+    mms_fgm_set_metadata(probe, data_rate, level, suffix=suffix)
+    return tvars
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='hpca', datatype=datatype)
-    return files
+def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='moments', get_support_data=False):
 
-def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype=['des-moms', 'dis-moms'], prefix='', suffix=''):
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='hpca', datatype=datatype, get_support_data=get_support_data)
+    return tvars
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix)
-    return files
+def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype=['des-moms', 'dis-moms'], prefix='', suffix='', get_support_data=False):
 
-def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix=''):
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
+    return tvars
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='scm', datatype=datatype, prefix=prefix, suffix=suffix)
-    return files
+def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix='', get_support_data=False):
 
-def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='ephts04d', prefix='', suffix=''):
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='scm', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
+    return tvars
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='mec', datatype=datatype)
-    return files
+def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='ephts04d', prefix='', suffix='', get_support_data=False):
 
-def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='electron'):
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='mec', datatype=datatype, get_support_data=get_support_data)
+    return tvars
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='feeps', datatype=datatype)
-    return files
+def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='electron', get_support_data=False):
 
-def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof'):
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='feeps', datatype=datatype, get_support_data=get_support_data)
+    return tvars
+
+def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof', get_support_data=False):
     from .eis.mms_eis_omni import mms_eis_omni
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis', datatype=datatype)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis', datatype=datatype, get_support_data=get_support_data)
 
     if not isinstance(probe, list): probe = [probe]
     if not isinstance(data_rate, list): data_rate = [data_rate]
@@ -79,25 +96,25 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         for datatype_id in datatype:
             for data_rate_id in data_rate:
                 omni_spectra = mms_eis_omni(probe_id, data_rate=data_rate_id, datatype=datatype_id)
-    return files
+    return tvars
 
-def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield'):
+def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield', get_support_data=False):
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edi', datatype=datatype)
-    return files
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edi', datatype=datatype, get_support_data=get_support_data)
+    return tvars
 
-def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce'):
+def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce', get_support_data=False):
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edp', datatype=datatype)
-    return files
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edp', datatype=datatype, get_support_data=get_support_data)
+    return tvars
 
-def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix=''):
+def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix='', get_support_data=False):
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='dsp', datatype=datatype, prefix=prefix, suffix=suffix)
-    return files
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='dsp', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
+    return tvars
 
-def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype=''):
+def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', get_support_data=False):
 
-    files = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='aspoc', datatype=datatype)
-    return files
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='aspoc', datatype=datatype, get_support_data=get_support_data)
+    return tvars
 

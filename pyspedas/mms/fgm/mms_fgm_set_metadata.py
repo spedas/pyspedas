@@ -1,0 +1,42 @@
+from pytplot import options
+
+def mms_fgm_set_metadata(probe, data_rate, level, suffix=''):
+    """
+    This function updates the metadata for FGM data products
+    
+    Parameters:
+        probe : str or list of str
+            probe or list of probes, valid values for MMS probes are ['1','2','3','4']. 
+
+        data_rate : str or list of str
+            instrument data rates for FGM include 'brst' 'fast' 'slow' 'srvy'. The
+            default is 'srvy'.
+
+        level : str
+            indicates level of data processing. the default if no level is specified is 'l2'
+
+        suffix: str
+            The tplot variable names will be given this suffix.  By default, 
+            no suffix is added.
+
+    """
+    if not isinstance(probe, list): probe = [probe]
+    if not isinstance(data_rate, list): data_rate = [data_rate]
+    if not isinstance(level, list): level = [level]
+
+    for this_probe in probe:
+        for this_dr in data_rate:
+            for this_lvl in level:
+                options('mms'+this_probe+'_fgm_b_gse_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
+                options('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
+                options('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
+                options('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
+                options('mms'+this_probe+'_fgm_b_gse_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                options('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                options('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                options('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                options('mms'+this_probe+'_fgm_b_gse_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSE', 'By GSE', 'Bz GSE', 'B total'])
+                options('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSM', 'By GSM', 'Bz GSM', 'B total'])
+                options('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx DMPA', 'By DMPA', 'Bz DMPA', 'B total'])
+                options('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx BCS', 'By BCS', 'Bz BCS', 'B total'])
+    return

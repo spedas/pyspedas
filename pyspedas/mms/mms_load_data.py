@@ -15,7 +15,7 @@ from .mms_config import CONFIG
 
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix=''):
+def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False):
     """
     This function loads MMS data into tplot variables
     """
@@ -67,11 +67,11 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     out_files = sorted(out_files)
 
-    new_variables = cdf_to_tplot(out_files, merge=True, prefix=prefix, suffix=suffix)
+    new_variables = cdf_to_tplot(out_files, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix)
 
     logging.info('Loaded variables:')
     for new_var in new_variables:
         print(new_var)
 
-    return
+    return new_variables
 
