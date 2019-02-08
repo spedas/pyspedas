@@ -39,4 +39,3 @@ def mms_fgm_set_metadata(probe, data_rate, level, suffix=''):
                 options('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSM', 'By GSM', 'Bz GSM', 'B total'])
                 options('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx DMPA', 'By DMPA', 'Bz DMPA', 'B total'])
                 options('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx BCS', 'By BCS', 'Bz BCS', 'B total'])
-    return
