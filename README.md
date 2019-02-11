@@ -65,3 +65,5 @@ For SPEDAS, see http://spedas.org/blog/
 
 For information on the Themis mission, see http://themis.ssl.berkeley.edu/ 
 
+(This is the permanent location of pyspedas. Previous location for the initial version of pyspedas was: https://github.com/nickssl/pyspedas)
+
