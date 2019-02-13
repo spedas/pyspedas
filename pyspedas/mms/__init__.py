@@ -7,6 +7,7 @@ This module contains routines for loading MMS data
 from .mms_load_data import mms_load_data
 from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
+from .fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
 
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix='', keep_flagged=False, get_support_data=True):
     """
@@ -67,6 +68,8 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype=['des-moms', 'dis-moms'], prefix='', suffix='', get_support_data=False):
 
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
+    
+    mms_fpi_set_metadata(probe, data_rate, level, suffix=suffix)
     return tvars
 
 def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix='', get_support_data=False):
