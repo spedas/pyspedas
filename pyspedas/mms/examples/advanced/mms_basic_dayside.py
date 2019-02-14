@@ -33,13 +33,6 @@ options('mms'+probe+'_dsp_bpsd_omni_fast_l2', 'Colormap', 'jet')
 options('mms'+probe+'_edp_hfesp_srvy_l2', 'ylog', True)
 options('mms'+probe+'_edp_hfesp_srvy_l2', 'zlog', True)
 options('mms'+probe+'_edp_hfesp_srvy_l2', 'Colormap', 'jet')
-options('mms'+probe+'_des_energyspectr_omni_fast', 'ylog', True)
-options('mms'+probe+'_des_energyspectr_omni_fast', 'zlog', True)
-options('mms'+probe+'_des_energyspectr_omni_fast', 'ytitle', 'DES (eV)')
-options('mms'+probe+'_des_energyspectr_omni_fast', 'Colormap', 'jet')
-options('mms'+probe+'_dis_energyspectr_omni_fast', 'ylog', True)
-options('mms'+probe+'_dis_energyspectr_omni_fast', 'zlog', True)
-options('mms'+probe+'_dis_energyspectr_omni_fast', 'Colormap', 'jet')
 
 tplot(['mms'+probe+'_b_gsm_vec', 
        'mms'+probe+'_b_gsm_mag', 
