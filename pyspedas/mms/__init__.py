@@ -53,6 +53,9 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fgm', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
     
+    if tvars == []:
+        return
+
     # remove flagged data
     if not keep_flagged:
         mms_fgm_remove_flags(probe, data_rate, level, suffix=suffix)
