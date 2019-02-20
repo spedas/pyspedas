@@ -75,7 +75,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     if tvars == None:
         return
 
-    mms_fpi_set_metadata(probe, data_rate, level, suffix=suffix)
+    mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=suffix)
     return tvars
 
 def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix='', get_support_data=False):
