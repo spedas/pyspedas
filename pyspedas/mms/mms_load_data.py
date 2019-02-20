@@ -47,7 +47,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                             for file in http_json['files']:
                                 file_date = parse(file['timetag'])
-                                out_dir = CONFIG['local_data_dir'] + os.sep.join(['mms', 'mms'+prb, instrument, drate, lvl, file_date.strftime('%Y'), file_date.strftime('%m')])
+                                out_dir = os.sep.join([CONFIG['local_data_dir'] , 'mms', 'mms'+prb, instrument, drate, lvl, file_date.strftime('%Y'), file_date.strftime('%m')])
                                 out_file = os.sep.join([out_dir, file['file_name']])
 
                                 if os.path.exists(out_file):
