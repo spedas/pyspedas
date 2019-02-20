@@ -53,7 +53,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fgm', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
     
-    if tvars == []:
+    if tvars == None:
         return
 
     # remove flagged data
@@ -72,6 +72,9 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
     
+    if tvars == None:
+        return
+
     mms_fpi_set_metadata(probe, data_rate, level, suffix=suffix)
     return tvars
 
@@ -93,6 +96,9 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof', get_support_data=False):
     from .eis.mms_eis_omni import mms_eis_omni
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis', datatype=datatype, get_support_data=get_support_data)
+
+    if tvars == []:
+        return
 
     if not isinstance(probe, list): probe = [probe]
     if not isinstance(data_rate, list): data_rate = [data_rate]
