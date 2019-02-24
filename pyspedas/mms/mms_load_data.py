@@ -13,6 +13,7 @@ from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
 from .mms_config import CONFIG
 from .mms_get_local_files import mms_get_local_files
+from .mms_files_in_interval import mms_files_in_interval
 
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
@@ -26,8 +27,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if not isinstance(level, list): level = [level]
     if not isinstance(datatype, list): datatype = [datatype]
     
-    start_date = parse(trange[0]).strftime('%Y-%m-%d-%H-%M-%S')
-    end_date = parse(time_string(time_double(trange[1])-0.1)).strftime('%Y-%m-%d-%H-%M-%S')
+    #start_date = parse(trange[0]).strftime('%Y-%m-%d-%H-%M-%S')
+    start_date = parse(trange[0]).strftime('%Y-%m-%d') # need to request full day, then parse out later
+    end_date = parse(time_string(time_double(trange[1])-0.1)).strftime('%Y-%m-%d-%H-%M-%S') # -1 second to avoid getting data for the next day
 
     out_files = []
 
@@ -40,15 +42,23 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                     if dtype != '':
                         url = url + '&descriptor=' + dtype
 
+                    if CONFIG['debug_mode']: logging.info('Fetching: ' + url)
+
                     if CONFIG['no_download'] == False:
                         # query list of available files
                         try:
                             http_json = requests.get(url).json()
 
-                            for file in http_json['files']:
+                            if CONFIG['debug_mode']: logging.info('Results: ' + str(len(http_json['files'])))
+
+                            files_in_interval = mms_files_in_interval(http_json['files'], trange)
+
+                            for file in files_in_interval:
                                 file_date = parse(file['timetag'])
                                 out_dir = os.sep.join([CONFIG['local_data_dir'], 'mms', 'mms'+prb, instrument, drate, lvl, file_date.strftime('%Y'), file_date.strftime('%m')])
                                 out_file = os.sep.join([out_dir, file['file_name']])
+
+                                if CONFIG['debug_mode']: logging.info('File: ' + file['file_name'] + ' / ' + file['timetag'])
 
                                 if os.path.exists(out_file):
                                     logging.info('Loading ' + out_file)
