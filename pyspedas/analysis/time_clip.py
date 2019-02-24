@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 File:
-    subtract_median.py
+    time_clip.py
 
 Desrciption:
     Time clip of data.
@@ -29,7 +29,7 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None):
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('Subtract Median error: No pytplot names were provided.')
+        print('Time clip error: No pytplot names were provided.')
         return
 
     if suffix is None:
