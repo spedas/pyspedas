@@ -5,6 +5,7 @@ import os
 import requests
 import logging
 from ..spdtplot.cdf_to_tplot import cdf_to_tplot
+from ..analysis.time_clip import time_clip as tclip
 from pyspedas import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
@@ -17,7 +18,7 @@ from .mms_files_in_interval import mms_files_in_interval
 
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False):
+def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False, time_clip=False):
     """
     This function loads MMS data into tplot variables
     """
@@ -77,6 +78,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 # if the download was successful, copy to data directory
                                 copy(ftmp.name, out_file)
                                 out_files.append(out_file)
+                                ftmp.close()
                         except requests.exceptions.ConnectionError:
                             # No/bad internet connection; try loading the files locally
                             logging.error('No internet connection!')
@@ -97,6 +99,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     logging.info('Loaded variables:')
     for new_var in new_variables:
         print(new_var)
+
+        if time_clip:
+            tclip(new_var, trange[0], trange[1], suffix='')
 
     return new_variables
 
