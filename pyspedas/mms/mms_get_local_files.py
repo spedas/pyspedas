@@ -35,8 +35,10 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
         else:
             local_dir = os.sep.join([CONFIG['local_data_dir'], 'mms', 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m')])
 
-        full_path = os.sep.join([local_dir, file_name])
-        # /Users/eric/data/mms/mms1/fgm/srvy/l2/2015/12/mms1_fgm_srvy_l2_20151215_v4.18.0.cdf
+        if os.name == 'nt':
+            full_path = os.sep.join([re.escape(local_dir)+os.sep, file_name])
+        else:
+            full_path = os.sep.join([re.escape(local_dir), file_name])
 
         regex = re.compile(full_path)
         for root, dirs, files in os.walk(os.sep.join([CONFIG['local_data_dir'], 'mms'])):
