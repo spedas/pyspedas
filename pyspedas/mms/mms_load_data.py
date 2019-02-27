@@ -28,7 +28,10 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if not isinstance(level, list): level = [level]
     if not isinstance(datatype, list): datatype = [datatype]
     
-    #start_date = parse(trange[0]).strftime('%Y-%m-%d-%H-%M-%S')
+    # allows the user to pass in trange as list of datetime objects
+    if type(trange[0]) == datetime and type(trange[1]) == datetime:
+        trange = [time_string(trange[0].timestamp()), time_string(trange[1].timestamp())]
+        
     start_date = parse(trange[0]).strftime('%Y-%m-%d') # need to request full day, then parse out later
     end_date = parse(time_string(time_double(trange[1])-0.1)).strftime('%Y-%m-%d-%H-%M-%S') # -1 second to avoid getting data for the next day
 
