@@ -5,6 +5,7 @@ import os
 
 CONFIG = {'local_data_dir': 'pydata',
           'debug_mode': False,
+          'download_only': False,
           'no_download': False}
 
 # override local data directory with environment variables

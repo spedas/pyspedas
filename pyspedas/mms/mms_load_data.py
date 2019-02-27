@@ -32,6 +32,8 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     start_date = parse(trange[0]).strftime('%Y-%m-%d') # need to request full day, then parse out later
     end_date = parse(time_string(time_double(trange[1])-0.1)).strftime('%Y-%m-%d-%H-%M-%S') # -1 second to avoid getting data for the next day
 
+    download_only = CONFIG['download_only']
+
     out_files = []
 
     for prb in probe:
@@ -62,7 +64,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 if CONFIG['debug_mode']: logging.info('File: ' + file['file_name'] + ' / ' + file['timetag'])
 
                                 if os.path.exists(out_file):
-                                    logging.info('Loading ' + out_file)
+                                    if not download_only: logging.info('Loading ' + out_file)
                                     out_files.append(out_file)
                                     continue
 
@@ -85,25 +87,26 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                     
                     if out_files == []:
-                        logging.info('Searching for local files...')
+                        if not download_only: logging.info('Searching for local files...')
                         out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
 
-    out_files = sorted(out_files)
+    if not download_only:
+        out_files = sorted(out_files)
 
-    new_variables = cdf_to_tplot(out_files, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix)
+        new_variables = cdf_to_tplot(out_files, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix)
 
-    if new_variables == []:
-        logging.warning('No data loaded.')
-        return
+        if new_variables == []:
+            logging.warning('No data loaded.')
+            return
 
-    logging.info('Loaded variables:')
-    for new_var in new_variables:
-        print(new_var)
+        logging.info('Loaded variables:')
+        for new_var in new_variables:
+            print(new_var)
 
-        if time_clip:
-            tclip(new_var, trange[0], trange[1], suffix='')
+            if time_clip:
+                tclip(new_var, trange[0], trange[1], suffix='')
 
-    return new_variables
+        return new_variables
 
 
 
