@@ -18,7 +18,7 @@ class EISLoadTestCases(unittest.TestCase):
 
 class FPILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
-        data = mms_load_fpi(trange=['2015-10-16', '2015-10-16/01:00'])
+        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
 
 class HPCALoadTestCases(unittest.TestCase):
@@ -28,7 +28,7 @@ class HPCALoadTestCases(unittest.TestCase):
 
 class EDILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
-        data = mms_load_edi(trange=['2015-10-16', '2015-10-16/01:00'])
+        data = mms_load_edi(trange=['2015-10-16/13:00', '2015-10-16/14:00'])
         self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2'))
 
 class ASPOCLoadTestCases(unittest.TestCase):
@@ -49,7 +49,7 @@ class EDPLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms4_edp_dce_gse_fast_l2'))
 
     def test_load_brst_data(self):
-        data = mms_load_edp(data_rate='brst', trange=['2015-10-16/13:00', '2015-10-16/13:10'])
+        data = mms_load_edp(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_edp_dce_gse_brst_l2'))
 
 class FGMLoadTestCases(unittest.TestCase):
@@ -65,7 +65,7 @@ class FGMLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms4_fgm_b_gse_srvy_l2'))
 
     def test_load_brst_data(self):
-        data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:00', '2015-10-16/13:10'])
+        data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
 
 class SCMLoadTestCases(unittest.TestCase):
@@ -81,7 +81,7 @@ class SCMLoadTestCases(unittest.TestCase):
     #     self.assertTrue(data_exists('mms4_scm_acb_gse_scsrvy_srvy_l2'))
 
     def test_load_brst_data(self):
-        data = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:00', '2015-10-16/13:10'])
+        data = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_scm_acb_gse_scb_brst_l2'))
 
 if __name__ == '__main__':
