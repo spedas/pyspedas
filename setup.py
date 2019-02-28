@@ -19,13 +19,13 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pyspedas',
-    version='0.7.1',
+    version='0.7.2',
     description='Python Space Physics Environment Data Analysis \
                     Software (SPEDAS)',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/nickssl/pyspedas',
-    author='Nick Hatzigeorgiu',
+    url='https://github.com/spedas/pyspedas',
+    author='Nick Hatzigeorgiu, Eric Grimes',
     author_email='nikos@berkeley.edu',
     license='MIT',
     classifiers=['Development Status :: 4 - Beta',
