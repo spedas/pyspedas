@@ -28,7 +28,7 @@ class HPCALoadTestCases(unittest.TestCase):
 
 class EDILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
-        data = mms_load_edi(trange=['2015-10-16/13:00', '2015-10-16/14:00'])
+        data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'])
         self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2'))
 
 class ASPOCLoadTestCases(unittest.TestCase):
