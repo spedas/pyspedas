@@ -5,7 +5,9 @@ import requests
 import os
 import pickle
 import logging
+import warnings
 
+warnings.simplefilter("ignore", ResourceWarning)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_login_lasp():
@@ -15,13 +17,13 @@ def mms_login_lasp():
 
     homedir = os.path.expanduser('~')
     user_input_passwd = False
+    saved_auth = None
 
     # try to read saved pickle
     try:
         saved_auth = pickle.load(open(os.sep.join([homedir, 'mms_auth_info.pkl']), 'rb'))
-        saved_auth = True
     except FileNotFoundError:
-        saved_auth = None
+        pass
 
     # try to read the IDL sav file
     try:
@@ -29,8 +31,7 @@ def mms_login_lasp():
         saved_auth = {'user': idl_auth_info['auth_info'][0][0].decode("utf-8"),
                       'passwd': idl_auth_info['auth_info'][0][1].decode("utf-8")}
     except FileNotFoundError:
-        saved_auth = None
-
+        pass
 
     if saved_auth is None:
         user = input('SDC username (blank for public access): ')
