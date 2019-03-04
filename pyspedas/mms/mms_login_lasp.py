@@ -21,7 +21,9 @@ def mms_login_lasp():
 
     # try to read saved pickle
     try:
-        saved_auth = pickle.load(open(os.sep.join([homedir, 'mms_auth_info.pkl']), 'rb'))
+        auth_file = open(os.sep.join([homedir, 'mms_auth_info.pkl']), 'rb')
+        saved_auth = pickle.load(auth_file)
+        auth_file.close()
     except FileNotFoundError:
         pass
 
