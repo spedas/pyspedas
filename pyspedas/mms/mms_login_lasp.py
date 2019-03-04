@@ -19,6 +19,7 @@ def mms_login_lasp():
     # try to read saved pickle
     try:
         saved_auth = pickle.load(open(os.sep.join([homedir, 'mms_auth_info.pkl']), 'rb'))
+        saved_auth = True
     except FileNotFoundError:
         saved_auth = None
 
@@ -36,7 +37,7 @@ def mms_login_lasp():
         if user != '': 
             passwd = getpass() 
         else: passwd = ''
-        
+
         user_input_passwd = True
     else:
         user = saved_auth['user']
