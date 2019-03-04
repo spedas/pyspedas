@@ -12,7 +12,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_login_lasp():
     '''
-    This function logs the user into the SDC and returns a requests.Session object
+    This function logs the user into the SDC and returns a tuple with: (requests.Session object, username)
     '''
 
     homedir = os.path.expanduser('~')
