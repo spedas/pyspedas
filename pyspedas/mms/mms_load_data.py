@@ -30,7 +30,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if not isinstance(datatype, list): datatype = [datatype]
     
     probe = [str(p) for p in probe]
-    
+
     # allows the user to pass in trange as list of datetime objects
     if type(trange[0]) == datetime and type(trange[1]) == datetime:
         trange = [time_string(trange[0].timestamp()), time_string(trange[1].timestamp())]
@@ -75,7 +75,8 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                                 if CONFIG['debug_mode']: logging.info('File: ' + file['file_name'] + ' / ' + file['timetag'])
 
-                                if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
+                                #if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
+                                if os.path.exists(out_file):
                                     if not download_only: logging.info('Loading ' + out_file)
                                     out_files.append(out_file)
                                     continue
