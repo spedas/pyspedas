@@ -18,5 +18,5 @@ tplot(['mms1_dis_energyspectr_omni_fast', 'mms1_dis_bulkv_gse_fast', 'mms1_dis_n
 del_data('*')
 
 # load burst mode moments data for both electrons and ions
-mms_load_fpi(data_rate='brst', datatype='dis-moms', trange=['2015-10-16/13:06', '2015-10-16/13:07'])
-tplot(['mms1_dis_energyspectr_omni_brst', 'mms1_dis_bulkv_gse_brst', 'mms1_dis_numberdensity_brst'])
+mms_load_fpi(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:07'])
+tplot(['mms1_des_bulkv_gse_brst', 'mms1_dis_bulkv_gse_brst', 'mms1_des_numberdensity_brst', 'mms1_dis_numberdensity_brst'])
