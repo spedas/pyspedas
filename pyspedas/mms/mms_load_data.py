@@ -29,6 +29,8 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if not isinstance(level, list): level = [level]
     if not isinstance(datatype, list): datatype = [datatype]
     
+    probe = [str(p) for p in probe]
+    
     # allows the user to pass in trange as list of datetime objects
     if type(trange[0]) == datetime and type(trange[1]) == datetime:
         trange = [time_string(trange[0].timestamp()), time_string(trange[1].timestamp())]
