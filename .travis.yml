@@ -6,7 +6,7 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install .
+  - python -m pyspedas.mms.tests.setup_tests
 
 script: 
-  - python -m pyspedas.mms.tests.setup_tests
   - python -m pyspedas.mms.tests.load_routine_tests
