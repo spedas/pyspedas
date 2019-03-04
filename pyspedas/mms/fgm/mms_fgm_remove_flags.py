@@ -1,7 +1,7 @@
 import numpy as np 
 from pytplot import get_data, store_data
 
-def mms_fgm_remove_flags(probe, data_rate, level, suffix=''):
+def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     """
     This function removes data flagged by the FGM 'flag' variable (flags > 0), 
     in order to only show science quality data by default.
@@ -30,11 +30,11 @@ def mms_fgm_remove_flags(probe, data_rate, level, suffix=''):
         for this_dr in data_rate:
             for this_lvl in level:
 
-                times, flags = get_data('mms'+this_probe+'_fgm_flag_'+this_dr+'_'+this_lvl+suffix)
-                times, gse_data = get_data('mms'+this_probe+'_fgm_b_gse_'+this_dr+'_'+this_lvl+suffix)
-                times, gsm_data = get_data('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix)
-                times, dmpa_data = get_data('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix)
-                times, bcs_data = get_data('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix)
+                times, flags = get_data('mms'+this_probe+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix)
+                times, gse_data = get_data('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix)
+                times, gsm_data = get_data('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix)
+                times, dmpa_data = get_data('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix)
+                times, bcs_data = get_data('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix)
 
                 flagged_data = np.where(flags != 0.0)[0]
                 gse_data[flagged_data] = np.nan
@@ -42,7 +42,7 @@ def mms_fgm_remove_flags(probe, data_rate, level, suffix=''):
                 dmpa_data[flagged_data] = np.nan
                 bcs_data[flagged_data] = np.nan
 
-                store_data('mms'+this_probe+'_fgm_b_gse_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': gse_data})
-                store_data('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': gsm_data})
-                store_data('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': dmpa_data})
-                store_data('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': bcs_data})
+                store_data('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': gse_data})
+                store_data('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': gsm_data})
+                store_data('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': dmpa_data})
+                store_data('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': bcs_data})

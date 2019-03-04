@@ -9,7 +9,7 @@ from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 from .fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
 
-def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='', prefix='', suffix='', keep_flagged=False, get_support_data=True, time_clip=False):
+def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', keep_flagged=False, get_support_data=True, time_clip=False):
     """
     This function loads FGM data into tplot variables
     
@@ -51,16 +51,16 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     """
 
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fgm', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument=instrument, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip)
     
     if tvars == None:
         return
 
     # remove flagged data
     if not keep_flagged:
-        mms_fgm_remove_flags(probe, data_rate, level, suffix=suffix)
+        mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=suffix)
 
-    mms_fgm_set_metadata(probe, data_rate, level, suffix=suffix)
+    mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=suffix)
     return tvars
 
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='moments', get_support_data=False, time_clip=False):

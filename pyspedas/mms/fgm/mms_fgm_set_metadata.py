@@ -1,6 +1,6 @@
 from pytplot import options
 
-def mms_fgm_set_metadata(probe, data_rate, level, suffix=''):
+def mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=''):
     """
     This function updates the metadata for FGM data products
     
@@ -27,15 +27,15 @@ def mms_fgm_set_metadata(probe, data_rate, level, suffix=''):
     for this_probe in probe:
         for this_dr in data_rate:
             for this_lvl in level:
-                options('mms'+this_probe+'_fgm_b_gse_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
-                options('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
-                options('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
-                options('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
-                options('mms'+this_probe+'_fgm_b_gse_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
-                options('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
-                options('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
-                options('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
-                options('mms'+this_probe+'_fgm_b_gse_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSE', 'By GSE', 'Bz GSE', 'B total'])
-                options('mms'+this_probe+'_fgm_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSM', 'By GSM', 'Bz GSM', 'B total'])
-                options('mms'+this_probe+'_fgm_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx DMPA', 'By DMPA', 'Bz DMPA', 'B total'])
-                options('mms'+this_probe+'_fgm_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx BCS', 'By BCS', 'Bz BCS', 'B total'])
+                options('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
+                options('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
+                options('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
+                options('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
+                options('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                options('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                options('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                options('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                options('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSE', 'By GSE', 'Bz GSE', 'B total'])
+                options('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSM', 'By GSM', 'Bz GSM', 'B total'])
+                options('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx DMPA', 'By DMPA', 'Bz DMPA', 'B total'])
+                options('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx BCS', 'By BCS', 'Bz BCS', 'B total'])

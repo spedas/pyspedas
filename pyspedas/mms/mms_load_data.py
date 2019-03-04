@@ -15,12 +15,13 @@ from tempfile import NamedTemporaryFile
 from .mms_config import CONFIG
 from .mms_get_local_files import mms_get_local_files
 from .mms_files_in_interval import mms_files_in_interval
+from .mms_login_lasp import mms_login_lasp
 
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False, time_clip=False):
     """
-    This function loads MMS data into tplot variables
+    This function loads MMS data into pyTplot variables
     """
 
     if not isinstance(probe, list): probe = [probe]
@@ -37,14 +38,20 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     download_only = CONFIG['download_only']
 
+    if not CONFIG['no_download']:
+        sdc_session, user = mms_login_lasp()
+
     out_files = []
 
     for prb in probe:
         for drate in data_rate:
             for lvl in level:
                 for dtype in datatype:
-                    url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/file_info/science?start_date=' + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
-
+                    if user is None:
+                        url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/file_info/science?start_date=' + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
+                    else:
+                        url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/file_info/science?start_date=' + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
+                    
                     if dtype != '':
                         url = url + '&descriptor=' + dtype
 
@@ -53,7 +60,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                     if CONFIG['no_download'] == False:
                         # query list of available files
                         try:
-                            http_json = requests.get(url).json()
+                            http_json = sdc_session.get(url).json()
 
                             if CONFIG['debug_mode']: logging.info('Results: ' + str(len(http_json['files'])))
 
@@ -71,11 +78,16 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                     out_files.append(out_file)
                                     continue
 
-                                download_url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/download/science?file=' + file['file_name']
+                                if user is None:
+                                    download_url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/download/science?file=' + file['file_name']
+                                else:
+                                    download_url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science?file=' + file['file_name']
+
                                 logging.info('Downloading ' + file['file_name'] + ' to ' + out_dir)
-                                fsrc = urlopen(download_url)
+
+                                fsrc = sdc_session.get(download_url, stream=True)
                                 ftmp = NamedTemporaryFile(delete=False)
-                                copyfileobj(fsrc, ftmp)
+                                copyfileobj(fsrc.raw, ftmp)
 
                                 if not os.path.exists(out_dir):
                                     os.makedirs(out_dir)
@@ -84,6 +96,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 copy(ftmp.name, out_file)
                                 out_files.append(out_file)
                                 ftmp.close()
+                                fsrc.close()
                         except requests.exceptions.ConnectionError:
                             # No/bad internet connection; try loading the files locally
                             logging.error('No internet connection!')
@@ -92,6 +105,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                     if out_files == []:
                         if not download_only: logging.info('Searching for local files...')
                         out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
+
+    if not CONFIG['no_download']:
+        sdc_session.close()
 
     if not download_only:
         out_files = sorted(out_files)

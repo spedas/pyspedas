@@ -51,7 +51,7 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
                     this_time = parse(matches.groups()[1])
                     if this_time >= parse(parse(trange[0]).strftime('%Y-%m-%d')) and this_time <= parse(trange[1])-timedelta(seconds=1):
                         if this_file not in files_out:
-                            files_out.append({'file_name': file, 'timetag': '', 'full_name': this_file})
+                            files_out.append({'file_name': file, 'timetag': '', 'full_name': this_file, 'file_size': ''})
 
     files_in_interval = mms_files_in_interval(files_out, trange)
 
