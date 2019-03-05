@@ -6,8 +6,14 @@ import os
 import pickle
 import logging
 import warnings
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-warnings.simplefilter("ignore", ResourceWarning)
+warnings.simplefilter('ignore', InsecureRequestWarning)
+warnings.simplefilter('ignore', ResourceWarning)
+import urllib3
+urllib3.disable_warnings()
+
+logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_login_lasp():
@@ -52,11 +58,9 @@ def mms_login_lasp():
         session.auth = (user, passwd)
 
         try:
-            auth = session.post('https://lasp.colorado.edu')
-
-            testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science')
+            auth = session.post('https://lasp.colorado.edu', verify=True, timeout=5)
+            testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science', verify=True, timeout=5)
         except:
-            logging.error('Error logging into the SDC; trying public access..')
             return (session, None)
 
         # check if the login failed

@@ -16,9 +16,16 @@ from .mms_config import CONFIG
 from .mms_get_local_files import mms_get_local_files
 from .mms_files_in_interval import mms_files_in_interval
 from .mms_login_lasp import mms_login_lasp
-import warnings
 
-warnings.simplefilter("ignore", ResourceWarning)
+import warnings
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+warnings.simplefilter('ignore', InsecureRequestWarning)
+warnings.simplefilter('ignore', ResourceWarning)
+import urllib3
+urllib3.disable_warnings()
+
+logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False, time_clip=False):
@@ -64,7 +71,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                     if CONFIG['no_download'] == False:
                         # query list of available files
                         try:
-                            http_json = sdc_session.get(url).json()
+                            http_json = sdc_session.get(url, verify=True).json()
+
+                            if CONFIG['debug_mode']: logging.info('Filtering the results down to your trange')
 
                             files_in_interval = mms_files_in_interval(http_json['files'], trange)
 
@@ -88,7 +97,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                                 logging.info('Downloading ' + file['file_name'] + ' to ' + out_dir)
 
-                                fsrc = sdc_session.get(download_url, stream=True)
+                                fsrc = sdc_session.get(download_url, stream=True, verify=True)
                                 ftmp = NamedTemporaryFile(delete=False)
                                 copyfileobj(fsrc.raw, ftmp)
 
