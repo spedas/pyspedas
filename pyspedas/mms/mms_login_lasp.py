@@ -51,9 +51,13 @@ def mms_login_lasp():
     if user != '':
         session.auth = (user, passwd)
 
-        auth = session.post('https://lasp.colorado.edu')
+        try:
+            auth = session.post('https://lasp.colorado.edu')
 
-        testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science')
+            testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science')
+        except:
+            logging.error('Error logging into the SDC; trying public access..')
+            return (session, None)
 
         # check if the login failed
         if testget.status_code == 401:
