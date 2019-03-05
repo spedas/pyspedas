@@ -66,8 +66,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                         try:
                             http_json = sdc_session.get(url).json()
 
-                            if CONFIG['debug_mode']: logging.info('Results: ' + str(len(http_json['files'])))
-
                             files_in_interval = mms_files_in_interval(http_json['files'], trange)
 
                             for file in files_in_interval:
