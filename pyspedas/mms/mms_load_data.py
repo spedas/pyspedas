@@ -9,7 +9,6 @@ from ..analysis.time_clip import time_clip as tclip
 from pyspedas import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
-from urllib.request import urlopen
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
 from .mms_config import CONFIG
