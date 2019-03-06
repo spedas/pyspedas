@@ -31,9 +31,9 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
 
     for date in days:
         if data_rate == 'brst':
-            local_dir = os.sep.join([CONFIG['local_data_dir'], 'mms', 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m'), date.strftime('%d')])
+            local_dir = os.sep.join([CONFIG['local_data_dir'], 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m'), date.strftime('%d')])
         else:
-            local_dir = os.sep.join([CONFIG['local_data_dir'], 'mms', 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m')])
+            local_dir = os.sep.join([CONFIG['local_data_dir'], 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m')])
 
         if os.name == 'nt':
             full_path = os.sep.join([re.escape(local_dir)+os.sep, file_name])
@@ -41,7 +41,7 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
             full_path = os.sep.join([re.escape(local_dir), file_name])
 
         regex = re.compile(full_path)
-        for root, dirs, files in os.walk(os.sep.join([CONFIG['local_data_dir'], 'mms'])):
+        for root, dirs, files in os.walk(CONFIG['local_data_dir']):
             for file in files:
                 this_file = os.sep.join([root, file])
                 

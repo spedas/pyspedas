@@ -78,7 +78,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                             for file in files_in_interval:
                                 file_date = parse(file['timetag'])
-                                out_dir = os.sep.join([CONFIG['local_data_dir'], 'mms', 'mms'+prb, instrument, drate, lvl, file_date.strftime('%Y'), file_date.strftime('%m')])
+                                out_dir = os.sep.join([CONFIG['local_data_dir'], 'mms'+prb, instrument, drate, lvl, file_date.strftime('%Y'), file_date.strftime('%m')])
                                 out_file = os.sep.join([out_dir, file['file_name']])
 
                                 if CONFIG['debug_mode']: logging.info('File: ' + file['file_name'] + ' / ' + file['timetag'])
