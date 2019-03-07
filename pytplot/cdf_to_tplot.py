@@ -56,6 +56,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
     """
 
     stored_variables = []
+    epoch_cache = {}
     global data_quants
 
     if isinstance(filenames, str):
@@ -112,10 +113,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     prev_data_quant = data_quants[var_name].data
                     to_merge = True
 
-                xdata = cdf_file.varget(x_axis_var)
+                if epoch_cache.get(filename+x_axis_var) is None:
+                    xdata = cdf_file.varget(x_axis_var)
 
-                if ('CDF_TIME' in data_type_description) or ('CDF_EPOCH' in data_type_description):
-                    xdata = cdflib.cdfepoch.unixtime(xdata)
+                    if ('CDF_TIME' in data_type_description) or ('CDF_EPOCH' in data_type_description):
+                        xdata = cdflib.cdfepoch.unixtime(xdata)
+                else:
+                    xdata = epoch_cache[filename+x_axis_var]
 
                 ydata = cdf_file.varget(var)
                 if ydata is None:
