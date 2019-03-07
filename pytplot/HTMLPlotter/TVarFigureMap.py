@@ -133,7 +133,7 @@ class TVarFigureMap(object):
                 zmin_list = []
                 for column in dataset_temp.columns:
                     series = dataset_temp[column]
-                    zmin_list.append(series.iloc[series.nonzero()[0]].min())
+                    zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
                 self.zmin = min(zmin_list)
         
     def _setminborder(self):

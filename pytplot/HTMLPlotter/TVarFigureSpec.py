@@ -151,7 +151,7 @@ class TVarFigureSpec(object):
                 zmin_list = []
                 for column in pytplot.data_quants[self.tvar_name].data.columns:
                     series = pytplot.data_quants[self.tvar_name].data[column]
-                    zmin_list.append(series.iloc[series.nonzero()[0]].min())
+                    zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
                 self.zmin = min(zmin_list)
         
     def _setminborder(self):
