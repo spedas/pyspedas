@@ -9,4 +9,4 @@ scipy
 pydivide
 requests
 pyqt5==5.12
-QtWebEngine
+pyqtwebengine
