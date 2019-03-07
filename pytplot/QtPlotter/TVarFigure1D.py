@@ -6,6 +6,7 @@
 import pyqtgraph as pg
 import numpy as np
 import pytplot
+from collections import OrderedDict
 from .CustomAxis.DateAxis import DateAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
@@ -127,14 +128,91 @@ class TVarFigure1D(pg.GraphicsLayout):
         else:
             datasets.append(pytplot.data_quants[self.tvar_name])
         line_num = 0
+
         for dataset in datasets:
+            for i in range(len(dataset.data.columns)):
+                limit = pytplot.tplot_opt_glob['data_gap']  # How big a data gap is allowed before those nans (default
+                # is to plot as pyqtgraph would normally plot w / o worrying about data gap handling).
+                if limit != 0:
+                    # Grabbing the times associated with nan values (nan_values), and the associated "position" of those
+                    # keys in the dataset list (nan_keys)
+                    nan_values = dataset.data[i][dataset.data[i].isnull().values].index.tolist()
+                    nan_keys = [dataset.data[i].index.tolist().index(j) for j in nan_values]
+
+                    count = 0   # Keeping a count of how big of a time gap we have
+                    flag = False    # This flag changes to true when we accumulate a big enough period of time that we
+                    #  exceed the user-specified data gap
+                    consec_list = list()  # List of consecutive nan values (composed of indices for gaps not bigger than
+                    # the user-specified data gap)
+                    overall_list = list()  # List of consecutive nan values (composed of indices for gaps bigger than
+                    # the user-specified data gap)
+                    for val, actual_value in enumerate(nan_keys):
+                        # Avoiding some weird issues with going to the last data point in the nan dictionary keys
+                        if actual_value != nan_keys[-1]:
+                            # Difference between one index and another - if consecutive indices, the diff will be 1
+                            diff = abs(nan_keys[val] - nan_keys[val+1])
+                            # calculate time accumulated from one index to the next
+                            t_now = nan_values[val]
+                            t_next = nan_values[val + 1]
+                            time_accum = abs(t_now - t_next)
+                            # If we haven't reached the allowed data gap, just keep track of how big of a gap we're at,
+                            # and the indices in the gap
+                            if diff == 1 and count < limit:
+                                count += time_accum
+                                consec_list.append(nan_keys[val])
+                            # This triggers when we initially exceed the allowed data gap
+                            elif diff == 1 and count >= limit and not flag:
+                                count += time_accum
+                                # For some reason if you don't grab the point before the big data gap happened, when you
+                                # plot this, the data gap isn't actually removed...
+                                if consec_list[0] != 0:
+                                    consec_list.insert(0, consec_list[0]-1)
+                                # Put the current datagap into the list (overall_list) whose indices will actually be
+                                # removed from the final plot
+                                overall_list.append(consec_list)
+                                overall_list.append([nan_keys[val]])
+                                flag = True
+                            # If we already exceeded the data gap, and the current index is still part of a gap,
+                            # throw that index into the overall_list
+                            elif diff == 1 and count > limit and flag:
+                                count += time_accum
+                                overall_list.append([nan_keys[val]])
+                            # When we find that the previous index and the current one are not consecutive, stop adding
+                            # to the consec_list/overall_list (if applicable), and start over the count of time
+                            # accumulated in a gap, as well as the consecutive list of time values with nans
+                            elif diff != 1:
+                                count = 0
+                                consec_list = []
+                                flag = False
+                                # For some reason if you don't grab the point after the last point where big data gap
+                                # happened, when you plot, the data gap isn't actually removed...
+                                if nan_keys[val-1] in [y for x in overall_list for y in x]:
+                                    overall_list.append([nan_keys[val]])
+
+                    # Flatten the overall_list to just one list, instead of a list of many lists
+                    overall_list = [y for x in overall_list for y in x]
+
+                    # Remove data gaps removed based on user-input acceptable time gap
+                    # In order to do this, we set the identified indices from overall_list to 0, which in the
+                    # connect keyword argument in self.plotwindow.plot will cause that point to not be plotted
+                    time_filtered = np.array([1]*len(dataset.data.index.tolist()))
+                    time_filtered[overall_list] = 0
+
+                    # Finally, plot the thing with data gaps removed (if applicable)
+                    self.curves.append(self.plotwindow.plot(x=dataset.data.index.tolist(),
+                                                            y=dataset.data[i].tolist(),
+                                                            pen=self.colors[line_num % len(self.colors)],
+                                                            connect=time_filtered))
+                else:
+                    # Plot with interpolation of all data gaps
+                    self.curves.append(self.plotwindow.plot(x=dataset.data.index.tolist(),
+                                                            y=dataset.data[i].tolist(),
+                                                            pen=self.colors[line_num % len(self.colors)]))
+
             # Add region of interest (roi) lines if applicable
             if 'roi_lines' in pytplot.tplot_opt_glob.keys():
                 self._set_roi_lines(dataset)
-            for i in range(0, len(dataset.data.columns)):
-                self.curves.append(self.plotwindow.plot(dataset.data.index.tolist(),
-                                                        dataset.data[i].tolist(),
-                                                        pen=self.colors[line_num % len(self.colors)]))
+        
                 line_num += 1
 
     def _setyaxistype(self):

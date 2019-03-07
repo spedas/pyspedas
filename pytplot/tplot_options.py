@@ -29,6 +29,7 @@ def tplot_options(option, value):
         map_x_range   [int, int]   The min and max longitude to be plotted on all map plots
         map_y_range   [int, int]   The min and max latitude to be plotted on all map plots
         x_range       [flt, flt]   The min and max x_range (usually time) to be plotted on all Spec/1D plots
+        data_gap      int          Number of seconds with consecutive nan values allowed before no interp should occur
         crosshair     bool         Option allowing crosshairs and crosshair legend
         roi           [str, str]   Times between which there's a region of interest for a user
         ============  ==========   =====
