@@ -118,6 +118,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                     if ('CDF_TIME' in data_type_description) or ('CDF_EPOCH' in data_type_description):
                         xdata = cdflib.cdfepoch.unixtime(xdata)
+                        epoch_cache[filename+x_axis_var] = xdata
                 else:
                     xdata = epoch_cache[filename+x_axis_var]
 
