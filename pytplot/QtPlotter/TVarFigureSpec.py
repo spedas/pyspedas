@@ -14,6 +14,7 @@ from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
+from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionItem
 
 
 class TVarFigureSpec(pg.GraphicsLayout):
@@ -50,6 +51,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
@@ -76,6 +79,26 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
 
+    def _set_roi_lines(self, dataset):
+        # Locating the two times between which there's a roi
+        time = dataset.data.index.tolist()
+        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
+        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+        # find closest time to user-requested time
+        x = np.asarray(time)
+        x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
+        x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
+        x_argmin_1 = np.nanargmin(x_sub_1)
+        x_argmin_2 = np.nanargmin(x_sub_2)
+        x_closest_1 = x[x_argmin_1]
+        x_closest_2 = x[x_argmin_2]
+        # Create a roi box
+        roi = CustomLinearRegionItem(orientation=pg.LinearRegionItem.Vertical, values=[x_closest_1, x_closest_2])
+        roi.setBrush([211, 211, 211, 130])
+        roi.lines[0].setPen('r', width=2.5)
+        roi.lines[1].setPen('r', width=2.5)
+        self.plotwindow.addItem(roi)
+
     def buildfigure(self):
         self._setxrange()
         self._setyrange()
@@ -83,19 +106,19 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._setzaxistype()
         self._setzrange()
         self._visdata()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
         self._addmouseevents()
         self._set_crosshairs()
 
     def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
 
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Time")
-
+        self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label'], **self.labelStyle)
+        
     def getfig(self):
         return self
 
@@ -111,6 +134,10 @@ class TVarFigureSpec(pg.GraphicsLayout):
                                  self.zmax)
         self.plotwindow.addItem(specplot)
 
+        # Add region of interest (roi) lines if applicable
+        if 'roi_lines' in pytplot.tplot_opt_glob.keys():
+            self._set_roi_lines(pytplot.data_quants[self.tvar_name])
+
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
             self.plotwindow.setLogMode(y=True)
@@ -120,10 +147,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
-        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'])
-        else:
-            zaxis.setLabel(' ')
+        zaxis.setLabel(pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label'], **self.labelStyle)
 
         if self.show_xaxis:
             emptyAxis = BlankAxis('bottom')
@@ -285,7 +309,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
                 zmin_list = []
                 for column in pytplot.data_quants[self.tvar_name].data.columns:
                     series = pytplot.data_quants[self.tvar_name].data[column]
-                    zmin_list.append(series.iloc[series.nonzero()[0]].min())
+                    zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
                 self.zmin = min(zmin_list)
 
     def _addtimebars(self):

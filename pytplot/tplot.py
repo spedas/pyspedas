@@ -85,7 +85,7 @@ def tplot(name,
             If True, then this function will display the plotted tplot variables. Necessary to make this optional
             so we can avoid it in a headless server environment.
         testing: bool, optional
-            If True, plots won't actually plot.
+            If True, doesn't run the '(hasattr(sys, 'ps1'))' line that makes plots interactive - i.e., avoiding issues
 
     Returns:
         None

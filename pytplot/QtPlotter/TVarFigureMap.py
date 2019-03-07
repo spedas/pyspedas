@@ -47,6 +47,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
@@ -82,19 +84,22 @@ class TVarFigureMap(pg.GraphicsLayout):
         self._setzrange()
         self._setbackground()
         self._visdata()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
         if self.crosshair:
             self._set_crosshairs()
             self._addmouseevents()
 
+    def _setxaxislabel(self):
+        self.xaxis.setLabel("Longitude", **self.labelStyle)
+
+    def _setyaxislabel(self):
+        self.yaxis.setLabel("Latitude", **self.labelStyle)
+
     def _setyaxislabel(self):
         self.yaxis.setLabel("Latitude")
-
-    def _setxaxislabel(self):
-        self.xaxis.setLabel("Longitude")
 
     def getfig(self):
         return self
@@ -152,12 +157,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         return
 
     def _addlegend(self):
-        zaxis = pg.AxisItem('right')
-
-        if 'axis_label' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
-        else:
-            zaxis.setLabel(' ')
+        zaxis = AxisItem('right')
+        zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
 
         if self.show_xaxis:
             emptyaxis = BlankAxis('bottom')
@@ -310,7 +311,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                 zmin_list = []
                 for column in pytplot.data_quants[self.tvar_name].data.columns:
                     series = pytplot.data_quants[self.tvar_name].data[column]
-                    zmin_list.append(series.iloc[series.nonzero()[0]].min())
+                    zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
                 self.zmin = min(zmin_list)
 
     def _addtimebars(self):

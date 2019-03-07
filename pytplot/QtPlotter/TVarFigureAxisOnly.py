@@ -17,10 +17,12 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
         pg.GraphicsLayout.__init__(self)
         self.layout.setHorizontalSpacing(50)
         self.layout.setContentsMargins(0, 0, 0, 0)
+
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
         
         vb = CustomVB(enableMouse=False)
         yaxis = pg.AxisItem("left")
-        yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
+        yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
         yaxis.setWidth(100)
         yaxis.label.rotate(90)
         yaxis.label.translate(0, -40)

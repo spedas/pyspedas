@@ -9,7 +9,7 @@ from . import tplot_utilities
 
 def get_timespan(name):
     """
-    This function will get extract the time span from the Tplot Variables stored in memory.  
+    This function extracts the time span from the Tplot Variables stored in memory.  
     
     Parameters:
         name : str 

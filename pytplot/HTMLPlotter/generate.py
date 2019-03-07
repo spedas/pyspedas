@@ -12,7 +12,7 @@ from bokeh.io import doc
 
 
 def generate_stack(name, 
-                   var_label = None, 
+                   var_label=None,
                    auto_color=True, 
                    combine_axes=True,
                    interactive=True):

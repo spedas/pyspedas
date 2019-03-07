@@ -45,3 +45,5 @@ def boxcar_smooth():
     plt.show([s,t])
 
 boxcar_smooth()
+
+

@@ -5,8 +5,6 @@
 
 import pytplot
 import numpy as np
-from scipy import interpolate
-from scipy.interpolate import interp1d
 
 """
     Change out-of-bounds data to NaN.
@@ -25,15 +23,15 @@ from scipy.interpolate import interp1d
         None
     
     Examples:
-        >>> Make any values below 2 and above 6 NaN.
+        >>> Make any values below 2 and above 6 equal to NaN.
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
         >>> pytplot.clip('d',2,6,'e')
     """
 
                               
-def clip(tvar1,ymin,ymax,newtvar):
+def clip(tvar1,ymin,ymax,newtvar='tvar_clip'):
     #grab column indices
-    df_index = pytplot.data_quants[tvar1].data.columns
+    df_index = pytplot.data_quants[tvar1].data.columns.copy()
     new_df = []
     tvar_orig = pytplot.data_quants[tvar1]
     #for each column of dataframe
@@ -46,5 +44,8 @@ def clip(tvar1,ymin,ymax,newtvar):
         new_df = new_df + [tv2_col]
     new_df = np.transpose((list(new_df)))
     #store clipped tvar
-    pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df})
+    if pytplot.data_quants[tvar1].spec_bins is not None:
+        pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df,'v':pytplot.data_quants[tvar1].spec_bins})
+    else:
+        pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df})
     return

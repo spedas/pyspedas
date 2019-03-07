@@ -11,6 +11,7 @@ from .CustomAxis.DateAxis import DateAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
+from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionItem
 
 
 class TVarFigure1D(pg.GraphicsLayout):
@@ -46,6 +47,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
@@ -73,6 +76,26 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.vLine.setVisible(False)
         self.hLine.setVisible(False)
 
+    def _set_roi_lines(self, dataset):
+        # Locating the two times between which there's a roi
+        time = dataset.data.index.tolist()
+        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
+        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+        # find closest time to user-requested time
+        x = np.asarray(time)
+        x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
+        x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
+        x_argmin_1 = np.nanargmin(x_sub_1)
+        x_argmin_2 = np.nanargmin(x_sub_2)
+        x_closest_1 = x[x_argmin_1]
+        x_closest_2 = x[x_argmin_2]
+        # Create roi box
+        roi = CustomLinearRegionItem(orientation=pg.LinearRegionItem.Vertical, values=[x_closest_1, x_closest_2])
+        roi.setBrush([211, 211, 211, 130])
+        roi.lines[0].setPen('r', width=2.5)
+        roi.lines[1].setPen('r', width=2.5)
+        self.plotwindow.addItem(roi)
+
     def buildfigure(self):
         self._setxrange()
         self._setyrange()
@@ -80,20 +103,19 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._setzaxistype()
         self._setzrange()
         self._visdata()
-        self._setyaxislabel()
         self._setxaxislabel()
+        self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
-
         if self.crosshair:
             self._set_crosshairs()
             self._addmouseevents()
 
-    def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'])
-
     def _setxaxislabel(self):
-        self.xaxis.setLabel("Time")
+        self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label'], **self.labelStyle)
+
+    def _setyaxislabel(self):
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
 
     def getfig(self):
         return self
@@ -187,6 +209,10 @@ class TVarFigure1D(pg.GraphicsLayout):
                                                             y=dataset.data[i].tolist(),
                                                             pen=self.colors[line_num % len(self.colors)]))
 
+            # Add region of interest (roi) lines if applicable
+            if 'roi_lines' in pytplot.tplot_opt_glob.keys():
+                self._set_roi_lines(dataset)
+        
                 line_num += 1
 
     def _setyaxistype(self):
@@ -210,12 +236,24 @@ class TVarFigure1D(pg.GraphicsLayout):
                 pos_array = np.linspace(bottom_bound, top_bound, len(legend_names))
             i = 0
             for legend_name in legend_names:
+                def rgb(red, green, blue): return '#%02x%02x%02x' % (red, green, blue)
+                r = self.colors[i % len(self.colors)][0]
+                g = self.colors[i % len(self.colors)][1]
+                b = self.colors[i % len(self.colors)][2]
+                hex_num = rgb(r, g, b)
+                color_text = 'color: ' + hex_num
+                font_size = 'font-size: '+str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+                opts = [color_text, font_size]
+                full = "<span style='%s'>%s</span>" % ('; '.join(opts), legend_name)
                 if i + 1 == len(legend_names):  # Last
-                    text = pg.TextItem(text=legend_name, anchor=(0, 0.5), color=self.colors[i % len(self.colors)])
+                    text = pg.TextItem(anchor=(0, 0.5))
+                    text.setHtml(full)
                 elif i == 0:  # First
-                    text = pg.TextItem(text=legend_name, anchor=(0, 0.5), color=self.colors[i % len(self.colors)])
+                    text = pg.TextItem(anchor=(0, 0.5))
+                    text.setHtml(full)
                 else:  # All others
-                    text = pg.TextItem(text=legend_name, anchor=(0, 0.5), color=self.colors[i % len(self.colors)])
+                    text = pg.TextItem(anchor=(0, 0.5))
+                    text.setHtml(full)
                 self.legendvb.addItem(text)
                 text.setPos(0, pos_array[i])
                 i += 1
