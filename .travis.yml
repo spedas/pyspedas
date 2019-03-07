@@ -4,7 +4,7 @@ python:
   - "3.6"
 
 before_install:
-  - sudo apt-get install libx11-xcb1
+  - sudo apt-get install libxcb
 
 install:
   - pip install -r requirements.txt
