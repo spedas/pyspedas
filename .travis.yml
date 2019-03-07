@@ -3,6 +3,9 @@ python:
   - "3.5"
   - "3.6"
 
+before_install:
+  - sudo apt-get install libx11-xcb1
+
 install:
   - pip install -r requirements.txt
   - pip install .
