@@ -8,4 +8,4 @@ numpy
 scipy
 pydivide
 requests
-pyqt5==5.8
+matplotlib
