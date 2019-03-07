@@ -4,12 +4,11 @@ python:
   - "3.6"
 
 before_install:
-  - sudo apt-get install xcb
+  - sudo apt-get install libqt5x11extras5
 
 install:
   - pip install -r requirements.txt
   - pip install .
-  - sudo ln -sf /usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/ /usr/bin/
   - python -m pyspedas.mms.tests.setup_tests
 
 script: 
