@@ -8,3 +8,5 @@ numpy
 scipy
 pydivide
 requests
+pyqt5
+pyqtwebengine
