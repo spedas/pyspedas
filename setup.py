@@ -19,7 +19,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pyspedas',
-    version='0.7.4',
+    version='0.7.5',
     description='Python Space Physics Environment Data Analysis \
                     Software (SPEDAS)',
     long_description=long_description,
