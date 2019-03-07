@@ -38,7 +38,7 @@ setup(
     project_urls={'Information': 'http://spedas.org/wiki/',
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    install_requires=['pyqt5==5.11.1', 'requests', 'scipy', 'pytplot', 'cdflib', 'msgpack', 'bokeh', 'nodejs',
+    install_requires=['pyqt5==5.11.3', 'requests', 'scipy', 'pytplot', 'cdflib', 'msgpack', 'bokeh', 'nodejs',
                       'pyqtgraph', 'numpy', 'pydivide'],
     python_requires='>=3.5',
 )
