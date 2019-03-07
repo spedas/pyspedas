@@ -8,4 +8,4 @@ numpy
 scipy
 pydivide
 requests
-pyqt5==5.11.3
+pyqt5==5.7.1
