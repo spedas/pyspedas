@@ -69,7 +69,7 @@ To set your local data directory for MMS, change the local_data_dir option in py
 ```python
 from pyspedas import mms_load_fgm
 
-mms_load_fgm(trange=['2015-10-16', '2015-10-17'])
+mms_load_fgm(trange=['2015-10-16', '2015-10-17'], data_rate='srvy')
 ```
 
 ### Additional Information
