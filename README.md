@@ -63,7 +63,7 @@ Folder `examples` contains some crib sheets to get you started.
 To set your local data directory for MMS, change the local_data_dir option in pyspedas/mms/mms_config.py
 
 ```python
-from pyspedas.mms import mms_load_fgm
+from pyspedas import mms_load_fgm
 
 mms_load_fgm(trange=['2015-10-16', '2015-10-17'])
 ```
