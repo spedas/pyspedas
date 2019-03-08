@@ -103,15 +103,14 @@ def store_data(name, data=None, delete=False, newname=None):
         df = format_ydata(data['y'])            
         times = data['x']
 
-        # If given a list of datetime objects - note that the datetimes in the list should NOT be timezone aware
-        # (i.e., times should be in UTC) - convert times to seconds since epoch
+        # If given a list of datetime objects, convert times to seconds since epoch.
         if any(isinstance(t, datetime.datetime) for t in times):
             for tt, time in enumerate(times):
-                times[tt] = (time-datetime.datetime(1970, 1, 1)).total_seconds()
+                times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
         # If given a list of datetime string, convert times to seconds since epoch
         elif any(isinstance(t, str) for t in times):
             for tt, time in enumerate(times):
-                times[tt] = [pytplot.tplot_utilities.str_to_int(time)]
+                times[tt] = pytplot.tplot_utilities.str_to_int(time)
 
         if len(times) != len(df.index):
             print("The lengths of x and y do not match!")
