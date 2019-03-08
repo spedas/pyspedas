@@ -141,7 +141,10 @@ def return_bokeh_colormap(name):
    
     # This currently gives mac users a headache, so not bothering with it if on a mac 
     if system() != 'Darwin':
-        mpl.use('tkagg')
+        try:
+            mpl.use('tkagg')
+        except:
+            pass
     
     if name == 'yellow':
         map = [rgb_to_hex(tuple((np.array([1, 1, 0, 1])*255).astype(np.int))) for x in range(0, 256)]
@@ -239,7 +242,10 @@ def return_lut(name):
     
     # This currently gives mac users a headache, so not bothering with it if on a mac
     if system() != 'Darwin':
-        mpl.use('tkagg')
+        try:
+            mpl.use('tkagg')
+        except:
+            pass
 
     if name == 'yellow':
         map = [(np.array([1, 1, 0, 1])*255).astype(np.int) for x in range(0, 256)]
