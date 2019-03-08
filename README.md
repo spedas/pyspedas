@@ -31,7 +31,9 @@ We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a 
 
 To install pySPEDAS, open a command line and type the command:
 
-`pip install pyspedas`
+```bash
+pip install pyspedas
+```
 
 ### Upgrade pySPEDAS
 
