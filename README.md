@@ -66,10 +66,18 @@ Folder `examples` contains some crib sheets to get you started.
 ### Magnetospheric Multiscale (MMS) data
 To set your local data directory for MMS, change the local_data_dir option in pyspedas/mms/mms_config.py
 
+To load 1 day of L2 srvy-mode FGM data:
 ```python
 from pyspedas import mms_load_fgm
 
 mms_load_fgm(trange=['2015-10-16', '2015-10-17'], data_rate='srvy')
+```
+
+To load 1 minute of L2 brst-mode FPI electron distribution moments data:
+```python
+from pyspedas import mms_load_fpi
+
+mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='des-moms')
 ```
 
 ### Additional Information
