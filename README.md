@@ -37,8 +37,9 @@ To install pySPEDAS, open a command line and type the command:
 
 If you have already installed pySPEDAS, you can upgrade to the latest version using:
 
-`pip install --upgrade pyspedas`
-
+```bash
+pip install --upgrade pyspedas
+```
 
 ## Running pySPEDAS
 
