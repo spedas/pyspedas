@@ -10,7 +10,6 @@ addons:
 
 install:
   - pip install -r .travisreqs.txt
-  - pip install .
   - python -m pyspedas.mms.tests.setup_tests
 
 script: 
