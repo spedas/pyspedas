@@ -42,7 +42,7 @@ If you have already installed pySPEDAS, you can upgrade to the latest version us
 
 ## Running pySPEDAS
 
-### THEMIS data
+### Time History of Events and Macroscale Interactions during Substorms (THEMIS) data
 After installation, please change the file `pyspedas/prefs.ini` and set `data_dir=C:\Datapy\themis` to a writable directory of your choice. This is the local directory where the CDF files will be saved. 
 
 To download CDF files for the THEMIS mission, use: 
@@ -63,7 +63,7 @@ d = pyspedas.load_data('themis', '2015-12-31', ['tha'], 'state', 'l1', False)
 
 Folder `examples` contains some crib sheets to get you started. 
 
-### MMS data
+### Magnetospheric Multiscale (MMS) data
 To set your local data directory for MMS, change the local_data_dir option in pyspedas/mms/mms_config.py
 
 ```python
