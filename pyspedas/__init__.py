@@ -14,6 +14,7 @@ from .examples.basic.ex_spectra import ex_spectra
 from .examples.basic.ex_line_spectra import ex_line_spectra
 from .examples.basic.ex_create import ex_create
 from .examples.basic.ex_omni import ex_omni
+from .utilities.data_exists import data_exists
 from .utilities.tnames import tnames
 from .utilities.time_string import time_string
 from .utilities.time_double import time_float, time_double

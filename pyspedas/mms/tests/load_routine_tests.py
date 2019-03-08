@@ -21,6 +21,10 @@ class FPILoadTestCases(unittest.TestCase):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
 
+    def test_load_small_brst_interval(self):
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-moms')
+        self.assertTrue(data_exists('mms1_dis_energyspectr_omni_brst'))
+
 class HPCALoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'])
