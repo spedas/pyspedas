@@ -25,6 +25,8 @@ def mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=''):
     if not isinstance(datatype, list): datatype = [datatype]
     if not isinstance(level, list): level = [level]
 
+    probe = [str(p) for p in probe]
+    
     for this_probe in probe:
         for this_dr in data_rate:
             for this_lvl in level:
