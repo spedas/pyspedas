@@ -4,9 +4,9 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from __future__ import division
-import datetime
 import pandas as pd
 import numpy as np
+import datetime
 
 from pytplot import data_quants, TVar
 from .del_data import del_data
@@ -99,9 +99,19 @@ def store_data(name, data=None, delete=False, newname=None):
                   np.nanmax(data_quants[base_data[0]].data.index)]
         df = base_data
         spec_bins = None
-    else:             
+    else:
         df = format_ydata(data['y'])            
         times = data['x']
+
+        # If given a list of datetime objects, convert times to seconds since epoch.
+        if any(isinstance(t, datetime.datetime) for t in times):
+            for tt, time in enumerate(times):
+                times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
+        # If given a list of datetime string, convert times to seconds since epoch
+        elif any(isinstance(t, str) for t in times):
+            for tt, time in enumerate(times):
+                times[tt] = pytplot.tplot_utilities.str_to_int(time)
+
         if len(times) != len(df.index):
             print("The lengths of x and y do not match!")
             return
@@ -110,6 +120,7 @@ def store_data(name, data=None, delete=False, newname=None):
         else:
             df['Index'] = times
             df = df.set_index('Index', drop=True)
+
         trange = [np.nanmin(times), np.nanmax(times)]
         
         if 'v' in data or 'v2' in data:
