@@ -23,37 +23,50 @@ Python 3.5+ is required.
 
 We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a suite of packages useful for science. 
 
-### Install pyspedas
+### Install pySPEDAS
 
-To install pyspedas, open a command line and type the command:
+To install pySPEDAS, open a command line and type the command:
 
 `pip install pyspedas`
 
-### Upgrade pyspedas
+### Upgrade pySPEDAS
 
-If you have already installed pyspedas, you can upgrade to the latest version using:
+If you have already installed pySPEDAS, you can upgrade to the latest version using:
 
 `pip install --upgrade pyspedas`
 
 
-## Running pyspedas
+## Running pySPEDAS
 
+### THEMIS data
 After installation, please change the file `pyspedas/prefs.ini` and set `data_dir=C:\Datapy\themis` to a writable directory of your choice. This is the local directory where the CDF files will be saved. 
 
-To download CDF files for the Themis mission, use: 
+To download CDF files for the THEMIS mission, use: 
 
-`import pyspedas`
+```python
+import pyspedas
 
-`pyspedas.load_data(mission, dates, probes, instruments, level, downloadonly)`
+pyspedas.load_data(mission, dates, probes, instruments, level, downloadonly)
 
+```
 For example: 
 
-`d = pyspedas.load_data('themis', '2015-12-31', ['tha'], 'state', 'l1', False)`
+```python
+d = pyspedas.load_data('themis', '2015-12-31', ['tha'], 'state', 'l1', False)
+```
 
-### Crib sheets
+#### Crib sheets
 
 Folder `examples` contains some crib sheets to get you started. 
 
+### MMS data
+To set your local data directory for MMS, change the local_data_dir option in pyspedas/mms/mms_config.py
+
+```python
+from pyspedas.mms import mms_load_fgm
+
+mms_load_fgm(trange=['2015-10-16', '2015-10-17'])
+```
 
 ### Additional Information
 
@@ -63,7 +76,7 @@ For cdflib, see: https://github.com/MAVENSDC/cdflib
 
 For SPEDAS, see http://spedas.org/blog/
 
-For information on the Themis mission, see http://themis.ssl.berkeley.edu/ 
+For information on the THEMIS mission, see http://themis.ssl.berkeley.edu/ 
 
 (This is the permanent location of pyspedas. Previous location for the initial version of pyspedas was: https://github.com/nickssl/pyspedas)
 
