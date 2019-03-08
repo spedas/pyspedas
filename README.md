@@ -1,8 +1,8 @@
 
 # pySPEDAS
 [![Build Status](https://travis-ci.com/spedas/pyspedas.svg?branch=master)](https://travis-ci.com/spedas/pyspedas)
-![License](https://img.shields.io/pypi/l/pyspedas.svg)
 ![Version](https://img.shields.io/pypi/v/pyspedas.svg)
+![License](https://img.shields.io/pypi/l/pyspedas.svg)
 
 pySPEDAS is an implementation of the SPEDAS framework in python. 
 
