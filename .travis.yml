@@ -8,11 +8,8 @@ addons:
   apt:
     update: true
 
-before_install:
-  - sudo apt-get install python-pyqt5
-
 install:
-  - pip install -r requirements.txt
+  - pip install -r .travisreqs.txt
   - pip install .
   - python -m pyspedas.mms.tests.setup_tests
 

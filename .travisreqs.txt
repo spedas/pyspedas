@@ -1,0 +1,10 @@
+cdflib
+pytplot
+pyqtgraph
+bokeh
+msgpack
+nodejs
+numpy
+scipy
+pydivide
+requests
