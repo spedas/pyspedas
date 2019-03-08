@@ -113,6 +113,9 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'crosshair':
         new_tplot_opt_glob['crosshair'] = value
 
+    elif option == 'data_gap':
+        new_tplot_opt_glob['data_gap'] = value
+    
     elif option == 'roi':
         new_tplot_opt_glob['roi_lines'] = [value, value]
 

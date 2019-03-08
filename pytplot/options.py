@@ -60,8 +60,6 @@ def options(name, option, value):
                                          from a spec plot.
         t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
                                          plots.
-        ============      ==========   =====
-    
     Returns:
         None
     
@@ -295,6 +293,7 @@ def _zlog_check(data_quants, value, i):
             # Using the 'negflag' as a way to not log something if the user doesn't want it to be logged
             negflag = 1
     return negflag
+
 
 def _reset_plots(name):
     data_quants[name].extras['spec'] = 0

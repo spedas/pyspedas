@@ -17,7 +17,7 @@ from bokeh.models.formatters import DatetimeTickFormatter
 
 dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
                              milliseconds=["%H:%M:%S"],
-                             seconds=["%H:%M:%S"],
+                             seconds=["%H: %M:%S"],
                              minsec=["%H:%M:%S"],
                              minutes=["%H:%M:%S"],
                              hourmin=["%H:%M:%S"],
@@ -218,11 +218,65 @@ class TVarFigure1D(object):
             # Create lines from each column in the dataframe
             for column_name in dataset.data.columns:
                 y = dataset.data[column_name]
-                
+
+                # Account for log plotting
                 if self._getyaxistype() == 'log':
-                    y.loc[y <= 0] = np.NaN                
-                
-                line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
+                    y.loc[y <= 0] = np.NaN
+
+                # Until what size of a data gap are we removing nan values from the dataset? Set by the user
+                # (default is to plot as bokeh would normally plot w/o worrying about data gap handling).
+                limit = pytplot.tplot_opt_glob['data_gap']
+                if limit != 0:
+                    # Grabbing the times associated with nan values (nan_values), and the associated "position" of those
+                    # keys in the dataset list (nan_keys)
+                    nan_values = y[y.isnull().values].index.tolist()
+                    nan_keys = [y.index.tolist().index(j) for j in nan_values]
+
+                    nans = dict(zip(nan_keys, nan_values))
+
+                    count = 0   # Keeping a count of how big of a time gap we have
+                    consec_list = list()  # List of consecutive nan values (composed of indices for gaps not bigger than
+                    # the user-specified data gap)
+                    for val in range(len(nan_keys)):
+                        # Avoiding some weird issues with going to the last data point in the nan dictionary keys
+                        if val != (len(nan_keys)-1):
+                            # Difference between one index and another - if consecutive indices, the diff will be 1
+                            diff = abs(nan_keys[val] - nan_keys[val+1])
+                            # calculate time accumulated from one index to the next
+                            t_now = nan_values[val]
+                            t_next = nan_values[val + 1]
+                            time_accum = abs(t_now - t_next)
+                            # If we haven't reached the allowed data gap, just keep track of how big of a gap we're at,
+                            # and the indices in the gap
+                            if diff == 1 and count < limit:
+                                count += time_accum
+                                consec_list.append(nan_keys[val])
+                            # This triggers when we initially exceed the allowed data gap
+                            elif diff == 1 and count >= limit:
+                                pass
+                            # When we find that the previous index and the current one are not consecutive, stop adding to
+                            # the consec_list/overall_list (if applicable), and start over the count of time accumulated
+                            # in a gap, as well as the consecutive list of time values with nans
+                            elif diff != 1:
+                                # Restart the count and add the current val to the list of nan values to remove
+                                count = 0
+                                consec_list.append(nan_keys[val])
+                    print(consec_list)
+
+                    times = x.tolist()
+                    for elem in consec_list:
+                        # Unless the data gap was big enough, we need to remove nan values from the data,
+                        # otherwise bokeh will automatically NOT interpolate (the exact opposite of behavior in
+                        # pyqtgraph, which ALWAYS interpolates...).
+                        times.remove(nans[elem]*1000)
+                        del y[nans[elem]]
+                        del corrected_time[corrected_time.index(tplot_utilities.int_to_str(nans[elem]))]
+
+                    # Data to be plotted
+                    line_source = ColumnDataSource(data=dict(x=times, y=y, corrected_time=corrected_time))
+                else:
+                    # Data to be plotted
+                    line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
                 if self.auto_color:
                     line = Line(x='x', y='y', line_color=self.colors[self.linenum % len(self.colors)],
                                 **pytplot.data_quants[self.tvar_name].line_opt)
@@ -235,7 +289,7 @@ class TVarFigure1D(object):
                     line.line_dash = pytplot.data_quants[self.tvar_name].line_opt['line_style']
                 self.lineglyphs.append(self.fig.add_glyph(line_source, line))
                 self.linenum += 1
-    
+
     def _addhoverlines(self):
         # Add tools
         hover = HoverTool()
