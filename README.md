@@ -73,7 +73,7 @@ from pyspedas import mms_load_fgm
 mms_load_fgm(trange=['2015-10-16', '2015-10-17'], data_rate='srvy')
 ```
 
-To load 1 minute of L2 brst-mode FPI electron distribution moments data:
+To load 1 minute of L2 brst-mode FPI electron moments data:
 ```python
 from pyspedas import mms_load_fpi
 
