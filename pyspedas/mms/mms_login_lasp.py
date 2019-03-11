@@ -38,7 +38,7 @@ def mms_login_lasp():
         idl_auth_info = readsav(os.sep.join([homedir, 'mms_auth_info.sav']))
         saved_auth = {'user': idl_auth_info['auth_info'][0][0].decode("utf-8"),
                       'passwd': idl_auth_info['auth_info'][0][1].decode("utf-8")}
-    except FileNotFoundError:
+    except:
         pass
 
     if saved_auth is None:
