@@ -160,8 +160,15 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 if "DEPEND_2" in var_atts:
                     if var_atts["DEPEND_2"] in all_cdf_variables:
                         depend_2 = cdf_file.varget(var_atts["DEPEND_2"])
+                if "DEPEND_3" in var_atts:
+                    if var_atts["DEPEND_3"] in all_cdf_variables:
+                        depend_3 = cdf_file.varget(var_atts["DEPEND_3"])
 
-                if depend_1 is not None and depend_2 is not None:
+                if depend_1 is not None and depend_2 is not None and depend_3 is not None:
+                    tplot_data['v1'] = depend_1
+                    tplot_data['v2'] = depend_2
+                    tplot_data['v3'] = depend_3
+                elif depend_1 is not None and depend_2 is not None:
                     tplot_data['v1'] = depend_1
                     tplot_data['v2'] = depend_2
                 elif depend_1 is not None:
