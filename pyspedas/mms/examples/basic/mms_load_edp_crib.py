@@ -4,7 +4,7 @@ This crib sheet shows how to load MMS electric field data
 
 '''
 
-from pyspedas.mms import mms_load_edp
+from pyspedas import mms_load_edp
 from pytplot import tplot
 
 # 'fast' mode electric field data for MMS1 are loaded by default

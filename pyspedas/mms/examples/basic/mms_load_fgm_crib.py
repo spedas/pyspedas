@@ -4,7 +4,7 @@ This crib sheet shows how to load MMS FGM data
 
 '''
 
-from pyspedas.mms import mms_load_fgm
+from pyspedas import mms_load_fgm
 from pytplot import tplot, get_data, del_data
 
 # by default, 'srvy' mode data for MMS1 are loaded

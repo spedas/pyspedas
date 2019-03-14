@@ -4,7 +4,7 @@ This crib sheet shows how to load MMS MEC data
 
 '''
 
-from pyspedas.mms import mms_load_mec
+from pyspedas import mms_load_mec
 from pytplot import tplot, del_data
 
 # 'srvy' mode data for MMS1 are loaded by default

@@ -4,7 +4,7 @@ This crib sheet shows how to load MMS FPI data
 
 '''
 
-from pyspedas.mms import mms_load_fpi
+from pyspedas import mms_load_fpi
 from pytplot import tplot, del_data
 
 # load the electron moments data
