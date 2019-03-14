@@ -1,9 +1,9 @@
 '''
-
+  This crib sheet produces the MMS basic dayside figure
 
 '''
 
-from pyspedas.mms import mms_load_fgm, mms_load_mec, mms_load_edp, mms_load_dsp, mms_load_fpi, mms_load_hpca
+from pyspedas import mms_load_fgm, mms_load_mec, mms_load_edp, mms_load_dsp, mms_load_fpi, mms_load_hpca
 from pytplot import tplot, options, get_data, store_data
 import numpy as np
 
