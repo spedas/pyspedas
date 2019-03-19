@@ -27,7 +27,7 @@ urllib3.disable_warnings()
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False, time_clip=False):
+def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False, time_clip=False, no_update=False):
     """
     This function loads MMS data into pyTplot variables
     """
@@ -48,7 +48,11 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     download_only = CONFIG['download_only']
 
-    if not CONFIG['no_download']:
+    no_download = False
+    if no_update or CONFIG['no_download']: no_download = True
+
+    user = None
+    if not no_download:
         sdc_session, user = mms_login_lasp()
 
     out_files = []
@@ -67,7 +71,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                     if CONFIG['debug_mode']: logging.info('Fetching: ' + url)
 
-                    if CONFIG['no_download'] == False:
+                    if no_download == False:
                         # query list of available files
                         try:
                             http_json = sdc_session.get(url, verify=True).json()
@@ -124,7 +128,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                         if not download_only: logging.info('Searching for local files...')
                         out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
 
-    if not CONFIG['no_download']:
+    if not no_download:
         sdc_session.close()
 
     if not download_only:
