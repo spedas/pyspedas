@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import numpy as np
 
 from ...mms import mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc
 from ...utilities.data_exists import data_exists
+
+from pytplot import get_data
 
 class FEEPSLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
@@ -24,6 +27,38 @@ class FPILoadTestCases(unittest.TestCase):
     def test_load_small_brst_interval(self):
         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-moms')
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_brst'))
+
+    def test_center_fast_ion_data(self):
+        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
+        centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
+        
+        t, d = get_data('mms1_dis_bulkv_gse_fast')
+        c, d = get_data('mms1_dis_bulkv_gse_fast_centered')
+        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 2.25)
+
+    def test_center_fast_electron_data(self):
+        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
+        centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
+        
+        t, d = get_data('mms1_des_bulkv_gse_fast')
+        c, d = get_data('mms1_des_bulkv_gse_fast_centered')
+        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 2.25)
+
+    def test_center_brst_ion_data(self):
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
+        centered = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', center_measurement=True, suffix='_centered')
+        
+        t, d = get_data('mms1_dis_bulkv_gse_brst')
+        c, d = get_data('mms1_dis_bulkv_gse_brst_centered')
+        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 0.075)
+
+    def test_center_brst_electron_data(self):
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
+        centered = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', center_measurement=True, suffix='_centered')
+        
+        t, d = get_data('mms1_des_bulkv_gse_brst')
+        c, d = get_data('mms1_des_bulkv_gse_brst_centered')
+        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 0.015)
 
 class HPCALoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
