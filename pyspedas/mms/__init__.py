@@ -115,7 +115,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     """
 
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='hpca', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='hpca', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement)
     return tvars
 
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', 

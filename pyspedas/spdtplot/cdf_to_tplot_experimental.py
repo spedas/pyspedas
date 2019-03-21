@@ -128,11 +128,32 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     if center_measurement:
                         if 'DELTA_PLUS_VAR' in epoch_var_atts:
                             delta_plus_var = cdf_file.varget(epoch_var_atts['DELTA_PLUS_VAR'])
+                            delta_plus_var_att = cdf_file.varattsget(epoch_var_atts['DELTA_PLUS_VAR'])
+                            if 'SI_CONVERSION' in delta_plus_var_att:
+                                si_conv = delta_plus_var_att['SI_CONVERSION']
+                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+                            elif 'SI_CONV' in delta_plus_var_att:
+                                si_conv = delta_plus_var_att['SI_CONV']
+                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+
                         if 'DELTA_MINUS_VAR' in epoch_var_atts:
                             delta_minus_var = cdf_file.varget(epoch_var_atts['DELTA_MINUS_VAR'])
-                            
-                        if delta_plus_var != 0.0 or delta_minus_var != 0.0:
+                            delta_minus_var_att = cdf_file.varattsget(epoch_var_atts['DELTA_MINUS_VAR'])
+                            if 'SI_CONVERSION' in delta_minus_var_att:
+                                si_conv = delta_minus_var_att['SI_CONVERSION']
+                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+                            elif 'SI_CONV' in delta_minus_var_att:
+                                si_conv = delta_minus_var_att['SI_CONV']
+                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+
+                        if isinstance(delta_plus_var, np.ndarray) and isinstance(delta_minus_var, np.ndarray):
                             delta_time = (delta_plus_var-delta_minus_var)/2.0
+                        else:
+                            if delta_plus_var != 0.0 or delta_minus_var != 0.0:
+                                delta_time = (delta_plus_var-delta_minus_var)/2.0
+
+                        # if we have a delta_time, we need to make sure it's in seconds
+
 
                     if ('CDF_TIME' in data_type_description) or ('CDF_EPOCH' in data_type_description):
                         xdata = cdflib.cdfepoch.unixtime(xdata)
