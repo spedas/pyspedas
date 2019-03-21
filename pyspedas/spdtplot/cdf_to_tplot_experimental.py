@@ -125,13 +125,14 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     epoch_var_atts = cdf_file.varattsget(x_axis_var)
 
                     # check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
-                    if 'DELTA_PLUS_VAR' in epoch_var_atts:
-                        delta_plus_var = cdf_file.varget(epoch_var_atts['DELTA_PLUS_VAR'])
-                    if 'DELTA_MINUS_VAR' in epoch_var_atts:
-                        delta_minus_var = cdf_file.varget(epoch_var_atts['DELTA_MINUS_VAR'])
-
-                    if center_measurement and (delta_plus_var != 0.0 or delta_minus_var != 0.0):
-                        delta_time = (delta_plus_var-delta_minus_var)/2.0
+                    if center_measurement:
+                        if 'DELTA_PLUS_VAR' in epoch_var_atts:
+                            delta_plus_var = cdf_file.varget(epoch_var_atts['DELTA_PLUS_VAR'])
+                        if 'DELTA_MINUS_VAR' in epoch_var_atts:
+                            delta_minus_var = cdf_file.varget(epoch_var_atts['DELTA_MINUS_VAR'])
+                            
+                        if delta_plus_var != 0.0 or delta_minus_var != 0.0:
+                            delta_time = (delta_plus_var-delta_minus_var)/2.0
 
                     if ('CDF_TIME' in data_type_description) or ('CDF_EPOCH' in data_type_description):
                         xdata = cdflib.cdfepoch.unixtime(xdata)
