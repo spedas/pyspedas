@@ -163,7 +163,6 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 else:
                     xdata = epoch_cache[filename+x_axis_var]
 
-                # try/except added by egrimes, 21 March 2019
                 try:
                     ydata = cdf_file.varget(var)
                 except:
