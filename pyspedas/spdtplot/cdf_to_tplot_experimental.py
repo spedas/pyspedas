@@ -102,8 +102,9 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 elif "DEPEND_0" in var_atts:
                     x_axis_var = var_atts["DEPEND_0"]
                 else:
-                    print("Cannot find x axis.")
-                    print("No attribute named DEPEND_TIME or DEPEND_0 in variable " + var)
+                    if var_atts['VAR_TYPE'].lower() == 'data':
+                        print("Cannot find x axis.")
+                        print("No attribute named DEPEND_TIME or DEPEND_0 in variable " + var)
                     continue
                 data_type_description = cdf_file.varinq(x_axis_var)['Data_Type_Description']
 
