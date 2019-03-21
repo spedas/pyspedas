@@ -69,7 +69,8 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     return tvars
 
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='moments', get_support_data=False, time_clip=False, no_update=False):
+    level='l2', datatype='moments', get_support_data=False, time_clip=False, no_update=False,
+    center_measurement=False):
     """
     This function loads HPCA data into tplot variables
     
@@ -114,12 +115,12 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     """
 
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='hpca', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='hpca', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement)
     return tvars
 
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', 
     level='l2', datatype=['des-moms', 'dis-moms'], prefix='', suffix='', 
-    get_support_data=False, time_clip=False, no_update=False):
+    get_support_data=False, time_clip=False, no_update=False, center_measurement=False):
     """
     This function loads FPI data into tplot variables
     
@@ -166,7 +167,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
     """
 
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement)
     
     if tvars == None:
         return
