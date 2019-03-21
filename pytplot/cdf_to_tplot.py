@@ -15,7 +15,8 @@ from pytplot import data_quants
 
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
-                 prefix='', suffix='', plot=False, merge=False):
+                 prefix='', suffix='', plot=False, merge=False, 
+                 center_measurement=False):
     """
     This function will automatically create tplot variables from CDF files.
 
@@ -101,8 +102,9 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 elif "DEPEND_0" in var_atts:
                     x_axis_var = var_atts["DEPEND_0"]
                 else:
-                    print("Cannot find x axis.")
-                    print("No attribute named DEPEND_TIME or DEPEND_0 in variable " + var)
+                    if var_atts['VAR_TYPE'].lower() == 'data':
+                        print("Cannot find x axis.")
+                        print("No attribute named DEPEND_TIME or DEPEND_0 in variable " + var)
                     continue
                 data_type_description = cdf_file.varinq(x_axis_var)['Data_Type_Description']
 
@@ -114,15 +116,57 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     to_merge = True
 
                 if epoch_cache.get(filename+x_axis_var) is None:
+                    delta_plus_var = 0.0
+                    delta_minus_var = 0.0
+                    delta_time = 0.0
+
                     xdata = cdf_file.varget(x_axis_var)
+                    epoch_var_atts = cdf_file.varattsget(x_axis_var)
+
+                    # check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
+                    if center_measurement:
+                        if 'DELTA_PLUS_VAR' in epoch_var_atts:
+                            delta_plus_var = cdf_file.varget(epoch_var_atts['DELTA_PLUS_VAR'])
+                            delta_plus_var_att = cdf_file.varattsget(epoch_var_atts['DELTA_PLUS_VAR'])
+
+                            # check if a conversion to seconds is required
+                            if 'SI_CONVERSION' in delta_plus_var_att:
+                                si_conv = delta_plus_var_att['SI_CONVERSION']
+                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+                            elif 'SI_CONV' in delta_plus_var_att:
+                                si_conv = delta_plus_var_att['SI_CONV']
+                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+
+                        if 'DELTA_MINUS_VAR' in epoch_var_atts:
+                            delta_minus_var = cdf_file.varget(epoch_var_atts['DELTA_MINUS_VAR'])
+                            delta_minus_var_att = cdf_file.varattsget(epoch_var_atts['DELTA_MINUS_VAR'])
+
+                            # check if a conversion to seconds is required
+                            if 'SI_CONVERSION' in delta_minus_var_att:
+                                si_conv = delta_minus_var_att['SI_CONVERSION']
+                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+                            elif 'SI_CONV' in delta_minus_var_att:
+                                si_conv = delta_minus_var_att['SI_CONV']
+                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+
+                        # sometimes these are specified as arrays
+                        if isinstance(delta_plus_var, np.ndarray) and isinstance(delta_minus_var, np.ndarray):
+                            delta_time = (delta_plus_var-delta_minus_var)/2.0
+                        else: # and sometimes constants
+                            if delta_plus_var != 0.0 or delta_minus_var != 0.0:
+                                delta_time = (delta_plus_var-delta_minus_var)/2.0
 
                     if ('CDF_TIME' in data_type_description) or ('CDF_EPOCH' in data_type_description):
                         xdata = cdflib.cdfepoch.unixtime(xdata)
-                        epoch_cache[filename+x_axis_var] = xdata
+                        epoch_cache[filename+x_axis_var] = np.array(xdata)+delta_time
                 else:
                     xdata = epoch_cache[filename+x_axis_var]
 
-                ydata = cdf_file.varget(var)
+                try:
+                    ydata = cdf_file.varget(var)
+                except:
+                    continue
+
                 if ydata is None:
                     continue
                 if "FILLVAL" in var_atts:
@@ -138,14 +182,22 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                 depend_1 = None
                 depend_2 = None
+                depend_3 = None
                 if "DEPEND_1" in var_atts:
                     if var_atts["DEPEND_1"] in all_cdf_variables:
                         depend_1 = cdf_file.varget(var_atts["DEPEND_1"])
                 if "DEPEND_2" in var_atts:
                     if var_atts["DEPEND_2"] in all_cdf_variables:
                         depend_2 = cdf_file.varget(var_atts["DEPEND_2"])
+                if "DEPEND_3" in var_atts:
+                    if var_atts["DEPEND_3"] in all_cdf_variables:
+                        depend_3 = cdf_file.varget(var_atts["DEPEND_3"])
 
-                if (depend_1 is not None) and (depend_2 is not None):
+                if (depend_1 is not None) and (depend_2 is not None) and (depend_3 is not None):
+                    tplot_data['v1'] = depend_1
+                    tplot_data['v2'] = depend_2
+                    tplot_data['v3'] = depend_3
+                elif (depend_1 is not None) and (depend_2 is not None):
                     tplot_data['v1'] = depend_1
                     tplot_data['v2'] = depend_2
                 elif depend_1 is not None:
@@ -160,9 +212,9 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 display_type = var_atts.get("DISPLAY_TYPE", "time_series")
                 scale_type = var_atts.get("SCALE_TYP", "linear")
                 if display_type == "spectrogram":
-                    options(var, 'spec', 1)
+                    options(var_name, 'spec', 1)
                 if scale_type == 'log':
-                    options(var, 'ylog', 1)
+                    options(var_name, 'ylog', 1)
 
                 if to_merge:
                     cur_data_quant = data_quants[var_name].data
