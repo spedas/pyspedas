@@ -16,14 +16,6 @@ from .mms_get_local_files import mms_get_local_files
 from .mms_files_in_interval import mms_files_in_interval
 from .mms_login_lasp import mms_login_lasp
 
-import warnings
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
-warnings.simplefilter('ignore', InsecureRequestWarning)
-warnings.simplefilter('ignore', ResourceWarning)
-import urllib3
-urllib3.disable_warnings()
-
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
@@ -118,7 +110,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 copy(ftmp.name, out_file)
                                 out_files.append(out_file)
                                 ftmp.close()
-                                fsrc.close()
                         except requests.exceptions.ConnectionError:
                             # No/bad internet connection; try loading the files locally
                             logging.error('No internet connection!')

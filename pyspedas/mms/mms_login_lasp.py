@@ -5,13 +5,6 @@ import requests
 import os
 import pickle
 import logging
-import warnings
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
-warnings.simplefilter('ignore', InsecureRequestWarning)
-warnings.simplefilter('ignore', ResourceWarning)
-import urllib3
-urllib3.disable_warnings()
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
