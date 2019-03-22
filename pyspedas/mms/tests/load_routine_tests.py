@@ -65,6 +65,22 @@ class HPCALoadTestCases(unittest.TestCase):
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
 
+    def test_center_fast_moments_data(self):
+        data = mms_load_hpca(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
+        centered = mms_load_hpca(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
+        
+        t, d = get_data('mms1_hpca_hplus_ion_bulk_velocity')
+        c, d = get_data('mms1_hpca_hplus_ion_bulk_velocity_centered')
+        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 5.0)
+
+    def test_center_brst_moments_data(self):
+        data = mms_load_hpca(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
+        centered = mms_load_hpca(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', center_measurement=True, suffix='_centered')
+        
+        t, d = get_data('mms1_hpca_hplus_ion_bulk_velocity')
+        c, d = get_data('mms1_hpca_hplus_ion_bulk_velocity_centered')
+        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 5.0)
+
 class EDILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'])
