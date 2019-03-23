@@ -4,18 +4,18 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 
 ### What's included:
 - Access to team-only data (QL, L1, L2pre), as well as L2 data
-- Access to support data via the get_support_data keyword
+- Access to support data via the `get_support_data` keyword
 - Data can be loaded from disk without internet connectivity 
 - Data files are stored in temporary directories until each download completes, to avoid partial downloads of files due to internet connectivity issues
 - Local data directory can be specified by the MMS_DATA_DIR environment variable, or by the 'local_data_dir' value in mms_config.py
 - Local data paths match those at the SDC, as well as those used by IDL SPEDAS
-- Data can be clipped to the requested time range after loading via the time_clip keyword
+- Data can be clipped to the requested time range after loading via the `time_clip` keyword
 - FGM data are automatically deflagged 
 - EIS omni-directional spectrograms are calculated from the individual telescope data by default
-- FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the center_measurement keyword
-- Keywords for specifying instrument details (level, data_rate, datatype) accept strings as well as arrays of strings
-- The probe keyword accepts strings, arrays of strings, ints and arrays of ints
-- The load routines accept a wide range of time range formats via the trange keyword
+- FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the `center_measurement` keyword
+- Keywords for specifying instrument details (`level`, `data_rate`, `datatype`) accept strings as well as arrays of strings
+- The `probe` keyword accepts strings, arrays of strings, ints and arrays of ints
+- The load routines accept a wide range of time range formats via the `trange` keyword
 - The load routines correctly handle access to all burst-mode data, even when small time ranges are requested
 - Cross platform: tested on Windows, macOS and Linux
 
