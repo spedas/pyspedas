@@ -11,7 +11,8 @@ from .fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
 
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', instrument='fgm', datatype='', prefix='', suffix='', 
-    keep_flagged=False, get_support_data=True, time_clip=False, no_update=False):
+    keep_flagged=False, get_support_data=True, time_clip=False, no_update=False, 
+    available=False):
     """
     This function loads FGM data into tplot variables
     
@@ -56,10 +57,10 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     """
 
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument=instrument, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument=instrument, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     
-    if tvars == None:
-        return
+    if tvars == None or available:
+        return tvars
 
     # remove flagged data
     if not keep_flagged:
@@ -70,7 +71,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='moments', get_support_data=False, time_clip=False, no_update=False,
-    prefix='', suffix='', center_measurement=False):
+    prefix='', suffix='', center_measurement=False, available=False):
     """
     This function loads HPCA data into tplot variables
     
@@ -115,12 +116,13 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     """
 
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='hpca', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='hpca', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available)
     return tvars
 
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', 
     level='l2', datatype=['des-moms', 'dis-moms'], prefix='', suffix='', 
-    get_support_data=False, time_clip=False, no_update=False, center_measurement=False):
+    get_support_data=False, time_clip=False, no_update=False, center_measurement=False, 
+    available=False):
     """
     This function loads FPI data into tplot variables
     
@@ -167,17 +169,17 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
     """
 
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available)
     
-    if tvars == None:
-        return
+    if tvars == None or available:
+        return tvars
 
     mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=suffix)
     return tvars
 
 def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='', prefix='', suffix='', get_support_data=False, 
-    time_clip=False, no_update=False):
+    time_clip=False, no_update=False, available=False):
     """
     This function loads SCM data into tplot variables
     
@@ -222,12 +224,12 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         List of tplot variables created.
 
     """
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='scm', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='scm', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='ephts04d', prefix='', suffix='', get_support_data=False, 
-    time_clip=False, no_update=False):
+    time_clip=False, no_update=False, available=False):
     """
     This function loads MEC data into tplot variables
     
@@ -271,12 +273,12 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         List of tplot variables created.
 
     """
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='mec', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='mec', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='electron', get_support_data=False, time_clip=False, 
-    no_update=False):
+    no_update=False, available=False):
     """
     This function loads FEEPS data into tplot variables
     
@@ -322,12 +324,12 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         List of tplot variables created.
 
     """
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='feeps', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='feeps', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='phxtof', get_support_data=False, time_clip=False, 
-    no_update=False):
+    no_update=False, available=False):
     """
     This function loads EIS data into tplot variables
     
@@ -373,10 +375,10 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     """
 
     from .eis.mms_eis_omni import mms_eis_omni
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
 
-    if tvars == []:
-        return
+    if tvars == [] or available:
+        return tvars
 
     if not isinstance(probe, list): probe = [probe]
     if not isinstance(data_rate, list): data_rate = [data_rate]
@@ -390,7 +392,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='efield', get_support_data=False, time_clip=False, 
-    no_update=False):
+    no_update=False, available=False):
     """
     This function loads EDI data into tplot variables
     
@@ -434,12 +436,12 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
         List of tplot variables created.
 
     """
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edi', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edi', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', 
     level='l2', datatype='dce', get_support_data=False, time_clip=False, 
-    no_update=False):
+    no_update=False, available=False):
     """
     This function loads EDP data into tplot variables
     
@@ -483,12 +485,12 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         List of tplot variables created.
 
     """
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edp', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='edp', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='bpsd', prefix='', suffix='', get_support_data=False, 
-    time_clip=False, no_update=False):
+    time_clip=False, no_update=False, available=False):
     """
     This function loads DSP data into tplot variables
     
@@ -532,11 +534,12 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         List of tplot variables created.
 
     """
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='dsp', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='dsp', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='', get_support_data=False, time_clip=False, no_update=False):
+    level='l2', datatype='', get_support_data=False, time_clip=False, no_update=False, 
+    available=False):
     """
     This function loads ASPOC data into tplot variables
     
@@ -580,6 +583,6 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         List of tplot variables created.
 
     """
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='aspoc', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='aspoc', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 

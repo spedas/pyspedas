@@ -4,6 +4,7 @@
 import os
 import requests
 import logging
+import numpy as np
 from ..spdtplot.cdf_to_tplot_experimental import cdf_to_tplot
 from ..analysis.time_clip import time_clip as tclip
 from pyspedas import time_double, time_string
@@ -19,7 +20,9 @@ from .mms_login_lasp import mms_login_lasp
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False, time_clip=False, no_update=False, center_measurement=False):
+def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
+    instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False, time_clip=False, 
+    no_update=False, center_measurement=False, available=False):
     """
     This function loads MMS data into pyTplot variables
     """
@@ -48,6 +51,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         sdc_session, user = mms_login_lasp()
 
     out_files = []
+    available_files = []
 
     for prb in probe:
         for drate in data_rate:
@@ -71,6 +75,12 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                             if CONFIG['debug_mode']: logging.info('Filtering the results down to your trange')
 
                             files_in_interval = mms_files_in_interval(http_json['files'], trange)
+
+                            if available:
+                                for file in files_in_interval:
+                                    logging.info(file['file_name'] + ' (' + str(np.round(file['file_size']/(1024.*1024), decimals=1)) + ' MB)')
+                                    available_files.append(file['file_name'])
+                                continue
 
                             for file in files_in_interval:
                                 file_date = parse(file['timetag'])
@@ -121,6 +131,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     if not no_download:
         sdc_session.close()
+
+    if available:
+        return available_files
 
     if not download_only:
         out_files = sorted(out_files)
