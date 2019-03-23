@@ -5,6 +5,7 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 ### What's included:
 - Access to team-only data (QL, L1, L2pre), as well as L2 data
 - Access to support data via the `get_support_data` keyword
+- Access to available data files (without downloading) with the `available` keyword
 - Data can be loaded from disk without internet connectivity 
 - Data files are stored in temporary directories until each download completes, to avoid partial downloads of files due to internet connectivity issues
 - Local data directory can be specified by the MMS_DATA_DIR environment variable, or by the 'local_data_dir' value in mms_config.py
