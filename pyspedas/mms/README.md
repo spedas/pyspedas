@@ -2,7 +2,7 @@
 ## Magnetospheric Multiscale (MMS) Mission
 The routines in this folder can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
-### What's included:
+### What's Included:
 - Access to team-only data (QL, L1, L2pre), as well as L2 data
 - Access to support data via the get_support_data keyword
 - Data can be loaded from disk without internet connectivity 
@@ -18,6 +18,19 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - The load routines accept a wide range of time range formats via the trange keyword
 - The load routines correctly handle access to all burst-mode data, even when small time ranges are requested
 - Cross platform: tested on Windows, macOS and Linux
+
+### Instruments
+- Fluxgate Magnetometer (FGM)
+- Search-coil Magnetometer (SCM)
+- Electric field Double Probe (EDP)
+- Electron Drift Instrument (EDI)
+- Fast Plasma Investigation (FPI)
+- Hot Plasma Composition Analyzer (HPCA)
+- Energetic Ion Spectrometer (EIS)
+- Fly's Eye Energetic Particle Sensor (FEEPS)
+- Active Spacecraft Potential Control (ASPOC)
+- MMS Ephemeris and Coordinates (MEC)
+- Digital Signal Processor (DSP)
 
 ### Examples
 Get started by importing tplot; this is required to plot the data:
