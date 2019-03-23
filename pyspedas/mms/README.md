@@ -2,7 +2,7 @@
 ## Magnetospheric Multiscale (MMS) Mission
 The routines in this folder can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
-### What's Included:
+### What's included:
 - Access to team-only data (QL, L1, L2pre), as well as L2 data
 - Access to support data via the get_support_data keyword
 - Data can be loaded from disk without internet connectivity 
