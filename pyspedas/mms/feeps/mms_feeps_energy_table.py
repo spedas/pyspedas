@@ -40,4 +40,4 @@ def mms_feeps_energy_table(probe, eye, sensor_id):
         mms_energies = [33.200000, 51.900000, 70.600000, 89.400000, 107.10000, 125.20000, 146.50000, 171.30000, 
             200.20000, 234.00000, 273.40000, 319.40000, 373.20000, 436.00000, 509.20000, 575.80000]
 
-    return mms_energies + table['mms'+probe+'-'+eye][sensor_id-1]
+    return [energy+ table['mms'+probe+'-'+eye][sensor_id-1] for energy in mms_energies]
