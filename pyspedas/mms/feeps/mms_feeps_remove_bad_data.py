@@ -72,8 +72,6 @@ def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'elect
             if np.isnan(np.sum(energies)): continue
 
             data[:] = np.nan
-            print('creating: ' + bad_var[0])
-            print('')
             pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies.reshape(energies.size)})
 
 
