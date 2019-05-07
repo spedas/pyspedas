@@ -201,7 +201,11 @@ def tplot(name,
                 if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
                     layout_orig.items()[i].resize(pytplot.tplot_opt_glob['window_size'][0],
                                                   pytplot.tplot_opt_glob['window_size'][1])
-            exporter = QtPlotter.PytplotExporter(layout_orig)
+
+            try: #TODO: This exporter requires h5py to be installed because that is what pyqtgraph requires.
+                exporter = QtPlotter.PytplotExporter(layout_orig)
+            except:
+                exporter = None
 
             # Set up displayed plot window and grab plots to plot on it
             available_qt_window = tplot_utilities.get_available_qt_window()

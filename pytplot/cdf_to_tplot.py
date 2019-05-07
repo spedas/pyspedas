@@ -113,6 +113,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 to_merge = False
                 if (var_name in data_quants.keys()) and (merge is True):
                     prev_data_quant = data_quants[var_name].data
+                    prev_spec_bins = data_quants[var_name].spec_bins
                     to_merge = True
 
                 if epoch_cache.get(filename+x_axis_var) is None:
@@ -226,6 +227,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     cur_data_quant = data_quants[var_name].data
                     merged_data = [prev_data_quant, cur_data_quant]
                     data_quants[var_name].data = pd.concat(merged_data)
+                    if data_quants[var_name].spec_bins_time_varying:
+                        cur_spec_bins = data_quants[var_name].spec_bins
+                        merged_spec_bins = [prev_spec_bins, cur_spec_bins]
+                        data_quants[var_name].spec_bins = pd.concat(merged_spec_bins)
 
     # cdf_file.close()
 

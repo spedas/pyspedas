@@ -42,6 +42,8 @@ try:
             super().__init__()
 
         def init_savepng(self, exporter):
+            if exporter is None:
+                return
             # Set up the save PNG button/call exportpng function that activates when user presses button
             exportdatapngaction = QtWidgets.QAction("Save PNG", self)
             exportdatapngaction.triggered.connect(lambda: self.exportpng(exporter))
@@ -53,6 +55,9 @@ try:
             self.setWindowTitle('PyTplot Window')
 
         def exportpng(self, exporter):
+            if exporter is None:
+                print("Cannot save the image.  Try installing h5py to get around this issue.")
+                return
             # Function called by save PNG button to grab the image from the plot window and save it
             fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
             exporter.parameters()['width'] = tplot_opt_glob['window_size'][0]

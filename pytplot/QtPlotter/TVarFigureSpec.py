@@ -206,8 +206,11 @@ class TVarFigureSpec(pg.GraphicsLayout):
             x_sub = abs(x - index_x * np.ones(len(x)))
             x_argmin = np.nanargmin(x_sub)
             x_closest = x[x_argmin]
-            speclength = len(specframe.loc[0])
-            y = np.asarray((specframe.loc[0, 0:speclength - 1]))
+
+            #TODO: This currently grabs only the first row of the specframe,
+            # if it is time varying this will probably give incorrect Y values in the crosshair
+            speclength = len(specframe.iloc[0])
+            y = np.asarray((specframe.iloc[0, 0:speclength - 1]))
             y_sub = abs(y - index_y * np.ones(y.size))
             y_argmin = np.nanargmin(y_sub)
             y_closest = y[y_argmin]
