@@ -19,7 +19,8 @@ from pytplot import data_quants
 
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
-                 prefix='', suffix='', plot=False, merge=False):
+                 prefix='', suffix='', plot=False, merge=False, 
+                 center_measurement=False):
     """
     This function will automatically create tplot variables from CDF files.
     .. note::
@@ -114,13 +115,52 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     prev_data_quant = data_quants[var_name].data
                     to_merge = True
 
-                xdata = cdf_file.varget(x_axis_var)
+                if epoch_cache.get(filename+x_axis_var) is None:
+                    delta_plus_var = 0.0
+                    delta_minus_var = 0.0
+                    delta_time = 0.0
+
+                    xdata = cdf_file.varget(x_axis_var)
+                    epoch_var_atts = cdf_file.varattsget(x_axis_var)
+
+                    # check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
+                    if center_measurement:
+                        if 'DELTA_PLUS_VAR' in epoch_var_atts:
+                            delta_plus_var = cdf_file.varget(epoch_var_atts['DELTA_PLUS_VAR'])
+                            delta_plus_var_att = cdf_file.varattsget(epoch_var_atts['DELTA_PLUS_VAR'])
+
+                            # check if a conversion to seconds is required
+                            if 'SI_CONVERSION' in delta_plus_var_att:
+                                si_conv = delta_plus_var_att['SI_CONVERSION']
+                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+                            elif 'SI_CONV' in delta_plus_var_att:
+                                si_conv = delta_plus_var_att['SI_CONV']
+                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+
+                        if 'DELTA_MINUS_VAR' in epoch_var_atts:
+                            delta_minus_var = cdf_file.varget(epoch_var_atts['DELTA_MINUS_VAR'])
+                            delta_minus_var_att = cdf_file.varattsget(epoch_var_atts['DELTA_MINUS_VAR'])
+
+                            # check if a conversion to seconds is required
+                            if 'SI_CONVERSION' in delta_minus_var_att:
+                                si_conv = delta_minus_var_att['SI_CONVERSION']
+                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+                            elif 'SI_CONV' in delta_minus_var_att:
+                                si_conv = delta_minus_var_att['SI_CONV']
+                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+
+                        # sometimes these are specified as arrays
+                        if isinstance(delta_plus_var, np.ndarray) and isinstance(delta_minus_var, np.ndarray):
+                            delta_time = (delta_plus_var-delta_minus_var)/2.0
+                        else: # and sometimes constants
+                            if delta_plus_var != 0.0 or delta_minus_var != 0.0:
+                                delta_time = (delta_plus_var-delta_minus_var)/2.0
 
                 if epoch_cache.get(filename + x_axis_var) is None:
                     if ('CDF_TIME' in data_type_description) or \
                             ('CDF_EPOCH' in data_type_description):
                         xdata = cdflib.cdfepoch.unixtime(xdata)
-                        epoch_cache[filename + x_axis_var] = xdata
+                        epoch_cache[filename+x_axis_var] = np.array(xdata)+delta_time
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
 
@@ -148,6 +188,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                 depend_1 = None
                 depend_2 = None
+                depend_3 = None
                 if "DEPEND_1" in var_atts:
                     if var_atts["DEPEND_1"] in all_cdf_variables:
                         depend_1 = cdf_file.varget(var_atts["DEPEND_1"])
@@ -177,9 +218,9 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 display_type = var_atts.get("DISPLAY_TYPE", "time_series")
                 scale_type = var_atts.get("SCALE_TYP", "linear")
                 if display_type == "spectrogram":
-                    options(var, 'spec', 1)
+                    options(var_name, 'spec', 1)
                 if scale_type == 'log':
-                    options(var, 'ylog', 1)
+                    options(var_name, 'ylog', 1)
 
                 if to_merge is True:
                     cur_data_quant = data_quants[var_name].data
