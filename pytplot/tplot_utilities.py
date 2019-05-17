@@ -288,6 +288,7 @@ def get_available_qt_window():
 
 
 def rgb_color(color):
+
     color_opt = {
                 'indianred': (205, 92, 92),
                 'lightcoral': (240, 128, 128),
@@ -449,11 +450,15 @@ def rgb_color(color):
                  }
 
     if type(color) is not list:
-        rgbcolor = color_opt[color]
+        if type(color) is tuple:
+            return [color]
+        rgbcolor = [color_opt.get(color, (0,0,0))]
     else:
+        if type(color[0]) is tuple:
+            return color
         rgbcolor = len(color)*[0]
         for i, val in enumerate(color):
-            rgbcolor[i] = color_opt[val]
+            rgbcolor[i] = color_opt.get(val, (0,0,0))
     return rgbcolor
 
 

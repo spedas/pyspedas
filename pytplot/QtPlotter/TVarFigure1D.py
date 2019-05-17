@@ -209,11 +209,13 @@ class TVarFigure1D(pg.GraphicsLayout):
                                                             y=dataset.data[i].tolist(),
                                                             pen=self.colors[line_num % len(self.colors)]))
 
+                line_num += 1
+
             # Add region of interest (roi) lines if applicable
             if 'roi_lines' in pytplot.tplot_opt_glob.keys():
                 self._set_roi_lines(dataset)
-        
-                line_num += 1
+
+
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
@@ -309,7 +311,7 @@ class TVarFigure1D(pg.GraphicsLayout):
 
     def _setcolors(self):
         if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
-            return pytplot.data_quants[self.tvar_name].extras['line_color']
+            return pytplot.tplot_utilities.rgb_color(pytplot.data_quants[self.tvar_name].extras['line_color'])
         else:
             return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 

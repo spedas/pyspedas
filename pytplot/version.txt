@@ -1,4 +1,7 @@
-1.3.0
+1.3.2
+
+1.3.2 Changes:
+    -Updates to the spectrogram plots and CDF reader
 
 1.3.0 Changes:
     -Added interactive plots for spectrograms, documentation coming soon
