@@ -6,6 +6,12 @@ from scipy import signal
 # First pass at the power spectrum function.  This is still missing several features of the IDL power spectrum routine, such as
 # bin, nohanning, notperhertz, and tm_sensativity.  The IDL routine is located in dpwrspc.pro.
 
+# There is also the issue of this not quite having the same units as the plot I use as my reference.
+# https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2015GL065366#grl53372-bib-0016
+# Interestingly enough, the output is the same if units of seconds are used in the periodogram instead of Hertz.
+# Perhaps they calculated it differently?
+
+
 
 def pwr_spec(tvar, nbp=256, nsp=128, name=None):
 
