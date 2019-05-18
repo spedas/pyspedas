@@ -55,8 +55,8 @@ class UpdatingImage(pg.ImageItem):
             width_in_plot_coords = self.getViewBox().viewRect().width()
             height_in_plot_coords = self.getViewBox().viewRect().height()
         
-        image_width_in_plot_coords = int(xmax - xmin)
-        image_height_in_plot_coords = int(ymax - ymin)
+        image_width_in_plot_coords = xmax - xmin
+        image_height_in_plot_coords = ymax - ymin
         
         image_width_in_pixels = int(image_width_in_plot_coords/width_in_plot_coords * width_in_pixels)
         image_height_in_pixels = int(image_height_in_plot_coords/height_in_plot_coords * height_in_pixels)
@@ -67,6 +67,11 @@ class UpdatingImage(pg.ImageItem):
         if self.w != image_width_in_pixels or self.h != image_height_in_pixels:
             self.w = image_width_in_pixels
             self.h = image_height_in_pixels
+            if self.w == 0:
+                self.w = 1
+            if self.h == 0:
+                self.h = 1
+
             data = np.zeros((self.h,self.w))
             
             xp = np.linspace(xmin, xmax, self.w)

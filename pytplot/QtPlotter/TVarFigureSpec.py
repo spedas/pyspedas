@@ -123,7 +123,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
         return self
 
     def _visdata(self):
-        self._setzrange()
         specplot = UpdatingImage(pytplot.data_quants[self.tvar_name].data,
                                  pytplot.data_quants[self.tvar_name].spec_bins,
                                  pytplot.data_quants[self.tvar_name].spec_bins_ascending,

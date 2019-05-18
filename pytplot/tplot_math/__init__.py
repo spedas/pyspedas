@@ -23,3 +23,4 @@ from .resample import resample, pdresample
 from .spec_mult import spec_mult
 from .split_vec import split_vec
 from .subtract import subtract
+from .pwr_spec import pwr_spec
