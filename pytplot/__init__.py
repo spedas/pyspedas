@@ -6,7 +6,7 @@
 import numpy as np
 from _collections import OrderedDict
 from . import HTMLPlotter
-
+import sys
 
 # This variable will be constantly changed depending on what x value the user is hovering over
 class HoverTime(object):
@@ -32,6 +32,11 @@ using_graphics = True
 try:
     import pyqtgraph as pg
     from pyqtgraph.Qt import QtWidgets
+
+    #Note: This is absolutely required for windows systems to work currently
+    #But presumably it will be fixed at some point in the future
+    if sys.platform.startswith('win'):
+        pg.ptime.time = lambda: 0
 
     pg.setConfigOptions(imageAxisOrder='row-major')
     pg.setConfigOptions(background='w')
