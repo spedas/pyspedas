@@ -39,6 +39,6 @@ setup(
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['pyqtwebengine', 'pyqt5==5.12', 'requests', 'scipy', 'pytplot', 'cdflib', 'msgpack', 'bokeh', 'nodejs',
-                      'pyqtgraph', 'numpy', 'pydivide'],
+                      'pyqtgraph', 'numpy', 'pydivide', 'pandas>=0.24'],
     python_requires='>=3.5',
 )
