@@ -22,7 +22,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
     instrument='fgm', datatype='', prefix='', suffix='', get_support_data=False, time_clip=False, 
-    no_update=False, center_measurement=False, available=False):
+    no_update=False, center_measurement=False, available=False, notplot=False):
     """
     This function loads MMS data into pyTplot variables
     """
@@ -138,7 +138,10 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if not download_only:
         out_files = sorted(out_files)
 
-        new_variables = cdf_to_tplot(out_files, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement)
+        new_variables = cdf_to_tplot(out_files, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+
+        if notplot:
+            return new_variables
 
         if new_variables == []:
             logging.warning('No data loaded.')

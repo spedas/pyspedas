@@ -20,7 +20,7 @@ from pytplot import data_quants
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                  prefix='', suffix='', plot=False, merge=False, 
-                 center_measurement=False):
+                 center_measurement=False, notplot=False):
     """
     This function will automatically create tplot variables from CDF files.
     .. note::
@@ -58,6 +58,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
     stored_variables = []
     epoch_cache = {}
+    if notplot:
+        output_table = {}
 
     global data_quants
 
@@ -212,29 +214,35 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 elif depend_2 is not None:
                     tplot_data['v'] = depend_2
 
-                store_data(var_name, data=tplot_data)
-                if var_name not in stored_variables:
-                    stored_variables.append(var_name)
+                if notplot:
+                    output_table[var_name] = tplot_data
+                else:
+                    store_data(var_name, data=tplot_data)
+                    if var_name not in stored_variables:
+                        stored_variables.append(var_name)
 
-                display_type = var_atts.get("DISPLAY_TYPE", "time_series")
-                scale_type = var_atts.get("SCALE_TYP", "linear")
-                if display_type == "spectrogram":
-                    options(var_name, 'spec', 1)
-                if scale_type == 'log':
-                    options(var_name, 'ylog', 1)
+                    display_type = var_atts.get("DISPLAY_TYPE", "time_series")
+                    scale_type = var_atts.get("SCALE_TYP", "linear")
+                    if display_type == "spectrogram":
+                        options(var_name, 'spec', 1)
+                    if scale_type == 'log':
+                        options(var_name, 'ylog', 1)
 
-                if to_merge is True:
-                    cur_data_quant = data_quants[var_name].data
-                    merged_data = [prev_data_quant, cur_data_quant]
-                    data_quants[var_name].data = pd.concat(merged_data)
-                    if data_quants[var_name].spec_bins_time_varying:
-                        cur_spec_bins = data_quants[var_name].spec_bins
-                        merged_spec_bins = [prev_spec_bins, cur_spec_bins]
-                        data_quants[var_name].spec_bins = pd.concat(merged_spec_bins)
+                    if to_merge is True:
+                        cur_data_quant = data_quants[var_name].data
+                        merged_data = [prev_data_quant, cur_data_quant]
+                        data_quants[var_name].data = pd.concat(merged_data)
+                        if data_quants[var_name].spec_bins_time_varying:
+                            cur_spec_bins = data_quants[var_name].spec_bins
+                            merged_spec_bins = [prev_spec_bins, cur_spec_bins]
+                            data_quants[var_name].spec_bins = pd.concat(merged_spec_bins)
 
     # cdf_file.close()
 
     if plot:
         tplot(stored_variables)
+
+    if notplot:
+        return output_table
 
     return stored_variables
