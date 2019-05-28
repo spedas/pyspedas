@@ -169,13 +169,12 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
     """
 
-    tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available, notplot=notplot)
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available, notplot=notplot)
     
     if tvars == None or available or notplot:
         return tvars
 
-    if not notplot:
-        mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=suffix)
+    mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=suffix)
     return tvars
 
 def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
