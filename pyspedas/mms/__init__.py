@@ -665,3 +665,50 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
+def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst', 
+    level='l3', datatype='8khz', get_support_data=False, time_clip=False, no_update=False, 
+    available=False):
+    """
+    This function loads FSM data into tplot variables
+    
+    Parameters:
+        trange : list of str
+            time range of interest [starttime, endtime] with the format 
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
+        probe : str or list of str
+            list of probes, valid values for MMS probes are ['1','2','3','4']. 
+
+        data_rate : str or list of str
+            the current instrument data rate for FSM is 'brst'
+
+        level : str
+            indicates level of data processing. the default if no level is specified is 'l2'
+
+        datatype : str or list of str
+            Valid datatype for FSM is: 8khz
+
+        get_support_data: bool
+            Data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot.  By default, only loads in data with a 
+            "VAR_TYPE" attribute of "data".
+
+        time_clip: bool
+            Data will be clipped to the exact trange specified by the trange keyword.
+            
+        prefix: str
+            The tplot variable names will be given this prefix.  By default, 
+            no prefix is added.
+
+        suffix: str
+            The tplot variable names will be given this suffix.  By default, 
+            no suffix is added.
+
+            
+    Returns:
+        List of tplot variables created.
+
+    """
+    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fsm', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
+    return tvars
