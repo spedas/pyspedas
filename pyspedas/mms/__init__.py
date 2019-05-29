@@ -667,7 +667,7 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
 def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst', 
     level='l3', datatype='8khz', get_support_data=False, time_clip=False, no_update=False, 
-    available=False):
+    available=False, varformat=None, notplot=False):
     """
     This function loads FSM data into tplot variables
     
@@ -710,5 +710,5 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
         List of tplot variables created.
 
     """
-    tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fsm', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
+    tvars = mms_load_data(trange=trange, notplot=notplot, varformat=varformat, probe=probe, data_rate=data_rate, level=level, instrument='fsm', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
