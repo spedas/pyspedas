@@ -1,5 +1,5 @@
 import numpy as np 
-from pytplot import get_data, store_data
+from pytplot import get_data, store_data, tplot_names
 
 def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     """
@@ -26,23 +26,18 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(level, list): level = [level]
 
+    tplot_vars = set(tplot_names())
+
     for this_probe in probe:
         for this_dr in data_rate:
             for this_lvl in level:
-
+                flag_var = 'mms'+this_probe+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix
                 times, flags = get_data('mms'+this_probe+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix)
-                times, gse_data = get_data('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix)
-                times, gsm_data = get_data('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix)
-                times, dmpa_data = get_data('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix)
-                times, bcs_data = get_data('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix)
-
                 flagged_data = np.where(flags != 0.0)[0]
-                gse_data[flagged_data] = np.nan
-                gsm_data[flagged_data] = np.nan
-                dmpa_data[flagged_data] = np.nan
-                bcs_data[flagged_data] = np.nan
 
-                store_data('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': gse_data})
-                store_data('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': gsm_data})
-                store_data('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': dmpa_data})
-                store_data('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, data={'x': times, 'y': bcs_data})
+                for var_specifier in ['_b_gse_', '_b_gsm_', '_b_dmpa_', '_b_bcs_']:
+                    var_name = 'mms'+this_probe+'_'+instrument+var_specifier+this_dr+'_'+this_lvl+suffix
+                    if var_name in tplot_vars:
+                        times, var_data = get_data(var_name)
+                        var_data[flagged_data] = np.nan
+                        store_data(var_name, data={'x': times, 'y': var_data})
