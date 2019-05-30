@@ -28,6 +28,12 @@ class FPILoadTestCases(unittest.TestCase):
         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-moms')
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_brst'))
 
+    def test_center_fast_ion_data_notplot(self):
+        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], notplot=True)
+        centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered', notplot=True)
+
+        self.assertTrue(np.round(centered['mms1_dis_bulkv_gse_fast_centered']['x'][0]-data['mms1_dis_bulkv_gse_fast']['x'][0], decimals=3) == 2.25)
+
     def test_center_fast_ion_data(self):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
         centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
