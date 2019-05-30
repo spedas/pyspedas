@@ -1,6 +1,3 @@
-# This file was forked from pytplot in order to experiment
-# with modifications for the needs of pyspedas.
-#
 # Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for
@@ -52,8 +49,17 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         merge: bool
             If True, then data from different cdf files will be merged into
             a single pytplot variable.
+        center_measurement: bool
+            If True, the CDF epoch variables are time-shifted to the middle
+            of the accumulation interval by their DELTA_PLUS_VAR and
+            DELTA_MINUS_VAR variable attributes
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
     Returns:
-        List of tplot variables created.
+        List of tplot variables created (unless notplot keyword is used).
     """
 
     stored_variables = []
