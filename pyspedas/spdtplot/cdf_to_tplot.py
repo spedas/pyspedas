@@ -221,7 +221,12 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     tplot_data['v'] = depend_2
 
                 if notplot:
-                    output_table[var_name] = tplot_data
+                    if var_name not in output_table:
+                        output_table[var_name] = tplot_data
+                    else:
+                        var_data = output_table[var_name]
+                        for output_var in var_data:
+                            var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
                 else:
                     store_data(var_name, data=tplot_data)
                     if var_name not in stored_variables:
