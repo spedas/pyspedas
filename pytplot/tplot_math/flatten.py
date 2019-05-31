@@ -21,5 +21,8 @@ def flatten(tvar1,start_t,end_t,new_tvar='tvar_flat'):
     #divide by specified time average
     for i in df_index:
         df[i] = df[i]/((df.loc[start_t:end_t])[i]).mean()
-    pytplot.store_data(new_tvar,data = {'x':df.index,'y':df})
-    return new_tvar
+    if (pytplot.data_quants[tvar1].spec_bins is not None):
+        pytplot.store_data(new_tvar,data = {'x':df.index,'y':df, 'v': pytplot.data_quants[tvar1].spec_bins})
+    else:
+        pytplot.store_data(new_tvar, data={'x': df.index, 'y': df})
+    return

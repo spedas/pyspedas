@@ -13,5 +13,8 @@ def flatten_full(tvar1,new_tvar='tvar_ff'):
     #divide by column average
     for i in df_index:
         df[i] = df[i]/df[i].mean()
-    pytplot.store_data(new_tvar,data = {'x':df.index,'y':df})
-    return new_tvar
+    if (pytplot.data_quants[tvar1].spec_bins is not None):
+        pytplot.store_data(new_tvar,data = {'x':df.index,'y':df, 'v': pytplot.data_quants[tvar1].spec_bins})
+    else:
+        pytplot.store_data(new_tvar, data={'x': df.index, 'y': df})
+    return

@@ -7,6 +7,13 @@ import pytplot
 #SUBTRACT
 #subtract two tvar data arrays, store in new_tvar
 def subtract(tvar1,tvar2,new_tvar='tvar_subtract',interp='linear'):
+    '''
+    :param tvar1: The first tvar
+    :param tvar2: The second tvar
+    :param new_tvar: The name of the new tplot variable
+    :param interp: Method to interpolate tvar2 to the tvar1 time cadence
+    :return: New tplot variable created.
+    '''
     #interpolate tvars
     tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
     #separate and subtract data
@@ -15,5 +22,5 @@ def subtract(tvar1,tvar2,new_tvar='tvar_subtract',interp='linear'):
     data2 = pytplot.data_quants[tv2].data
     data = data1 - data2
     #store subtracted data
-    pytplot.store_data(new_tvar,data={'x':time, 'y':data})
+    pytplot.store_data(new_tvar,data={'x': time, 'y': data})
     return new_tvar

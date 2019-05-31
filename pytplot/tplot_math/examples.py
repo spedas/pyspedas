@@ -54,12 +54,6 @@ pytplot.deflag('h',[100,90,7,2,57],'h_deflag')
 print(pytplot.data_quants['h_deflag'].data)
 print(pytplot.data_quants['h_deflag'].spec_bins)
 
-print('degap')
-pytplot.degap('b',[[3,7],[13,17]],2.3,func='nan')
-print(pytplot.data_quants['b_nan'].data)
-pytplot.degap('h',[[3,7],[13,17]],2.3,func='nan')
-print(pytplot.data_quants['h_nan'].data)
-print(pytplot.data_quants['h_nan'].spec_bins)
   
 print('derive')
 pytplot.derive('b','dbdt')

@@ -39,7 +39,6 @@ def pdresample(tvar, rule, how=None, axis=0, fill_method=None, closed=None, labe
                               
 def resample(tvar1,times,newtvar='tvar_resample'):
     #create dummy dataframe for times to interpolate to
-    pytplot.store_data('times_for_resample',data={'x':times,'y':np.zeros(len(times))})
     df_index = pytplot.data_quants[tvar1].data.columns.copy()
     new_df = []
     spec_df = []
@@ -69,6 +68,4 @@ def resample(tvar1,times,newtvar='tvar_resample'):
         pytplot.store_data(newtvar, data={'x':times,'y':new_df,'v':spec_df})
     else:
         pytplot.store_data(newtvar, data={'x':times,'y':new_df})
-    #delete dummy dataframe from pytplot.data_quants
-    pytplot.del_data(name='times_for_resample')
     return

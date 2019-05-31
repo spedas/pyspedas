@@ -2,6 +2,8 @@ import pytplot
 
 #SPLIT TVAR
 #store columns of TVar into new TVars
+
+
 def split_vec(tvar,newtvars=None,columns='all'):
     #separate and add data
     time = pytplot.data_quants[tvar].data.index
@@ -21,7 +23,7 @@ def split_vec(tvar,newtvars=None,columns='all'):
             range_end = val[1]
         split_col = list(range(range_start,range_end+1))
         #store split data
-        defaultname = 'data_' + str(i)
+        defaultname = tvar+ '_' + str(i)
         defaultlist = defaultlist + [defaultname]
         if newtvars is None:
             pytplot.store_data(defaultname,data={'x':time, 'y':data[split_col]})

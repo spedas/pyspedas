@@ -9,6 +9,8 @@ import numpy as np
 #DIVIDE
 #divide two tvar data arrays, store in new_tvar
 def divide(tvar1,tvar2,new_tvar='tvar_divide',interp='linear'):
+    if new_tvar == 'tvar_divide':
+        new_tvar= tvar1 + "_divided_by_" + tvar2
     #interpolate tvars
     tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
     #separate and divide data

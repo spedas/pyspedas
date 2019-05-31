@@ -10,9 +10,9 @@ from scipy.interpolate import interp1d
 
 #TVAR INTERPOLATION
 #interpolate tvar2 to tvar1 cadence
-def interpolate(tvar1,tvar2,interp='linear'):
+def tinterp(tvar1,tvar2,interp='linear'):
     #crop data
-    tv1_t,tv1_d,tv2_t,tv2_d = pytplot.crop(tvar1,tvar2)
+    tv1_t,_,tv2_t,tv2_d = pytplot.crop(tvar1,tvar2)
     df_index = pytplot.data_quants[tvar1].data.columns
     #interpolate to tvar1 cadence
     if interp == 'linear':
@@ -24,9 +24,6 @@ def interpolate(tvar1,tvar2,interp='linear'):
             f = interp1d(tv2_t,tv2_col,fill_value="extrapolate")
             new_df = new_df + [f(tv1_t)]
         new_df = np.transpose((list(new_df)))
-        #store interpolated tvars as 'X_interp'
-        pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
-        pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
     elif interp == 'cubic':
         new_df = []
         for i in df_index:
@@ -36,9 +33,6 @@ def interpolate(tvar1,tvar2,interp='linear'):
         new_df = np.transpose((list(new_df)))
         name1 = tvar1 + "_interp"
         name2 = tvar2 + "_interp"
-        #store interpolated tvars as 'X_interp'
-        pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
-        pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
     elif interp == 'quad_spline':
         new_df = []
         for i in df_index:
@@ -49,7 +43,6 @@ def interpolate(tvar1,tvar2,interp='linear'):
         new_df = np.transpose((list(new_df)))
         name1 = tvar1 + "_interp"
         name2 = tvar2 + "_interp"
-        #store interpolated tvars as 'X_interp'
-        pytplot.store_data(name1, data={'x':tv1_t,'y':tv1_d})
-        pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
-    return name1,name2
+    #store interpolated tvars as 'X_interp'
+    pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
+    return

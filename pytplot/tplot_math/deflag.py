@@ -28,6 +28,10 @@ import numpy as np
 
                               
 def deflag(tvar1,flags,newtvar='tvar_deflag'):
+    if newtvar == 'tvar_deflag':
+        new_tvar = tvar1 + "_deflag"
+
+
     #if int input, make list
     if not isinstance(flags,list):
         flags = [flags]
@@ -45,7 +49,7 @@ def deflag(tvar1,flags,newtvar='tvar_deflag'):
         new_df = new_df + [tv2_col]
     new_df = np.transpose((list(new_df)))
     #store deflagged tvar
-    if (pytplot.data_quants[tvar1].spec_bins is not None) and (pytplot.data_quants[tvar1].spec_bins_time_varying == True):
+    if (pytplot.data_quants[tvar1].spec_bins is not None):
         pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df,'v':pytplot.data_quants[tvar1].spec_bins})
     else:
         pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df})
