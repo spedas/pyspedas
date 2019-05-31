@@ -11,6 +11,7 @@ import datetime
 from pytplot import data_quants, TVar
 from .del_data import del_data
 import pytplot
+import xarray as xr
 
 tplot_num = 1
 
@@ -94,14 +95,13 @@ def store_data(name, data=None, delete=False, newname=None):
     
     if isinstance(data, list):
         base_data = get_base_tplot_vars(data)
-        # Use first tplot var as the time range
-        trange = [np.nanmin(data_quants[base_data[0]].data.index), 
-                  np.nanmax(data_quants[base_data[0]].data.index)]
-        df = base_data
-        spec_bins = None
+        data_quants[name] = data_quants[base_data[0]]
+        data_quants[name].attrs['overplots'] = base_data[1:]
+        return
     else:
-        df = format_ydata(data['y'])            
-        times = data['x']
+        data['times'] = data.pop('x')
+        values = data['y']
+        times = data['times']
 
         # If given a list of datetime objects, convert times to seconds since epoch.
         if any(isinstance(t, datetime.datetime) for t in times):
@@ -112,20 +112,17 @@ def store_data(name, data=None, delete=False, newname=None):
             for tt, time in enumerate(times):
                 times[tt] = pytplot.tplot_utilities.str_to_int(time)
 
-        if len(times) != len(df.index):
+        if len(times) != len(values):
             print("The lengths of x and y do not match!")
             return
-        elif isinstance(times, pd.Series):
-            df = df.set_index(data['x'])
-        else:
-            df['Index'] = times
-            df = df.set_index('Index', drop=True)
 
         trange = [np.nanmin(times), np.nanmax(times)]
-        
-        if 'v' in data or 'v2' in data:
+
+        spec_bins_exist = False
+        if 'v' in data or 'v1' in data or 'v2' in data or 'v3' in data:
             # Generally the data is 1D, but occasionally
             # the bins will vary in time.
+            spec_bins_exist = True
             if 'v' in data:
                 spec_bins = data['v']
             else:
@@ -134,31 +131,65 @@ def store_data(name, data=None, delete=False, newname=None):
             if type(spec_bins) is not pd.DataFrame:
                 spec_bins = pd.DataFrame(spec_bins)
                 if len(spec_bins.columns) != 1:
-                    if len(spec_bins) == len(df.index):
-                        spec_bins = spec_bins.set_index(df.index)  
-                    else:
+                    # The spec_bins are time varying
+                    spec_bins_time_varying = True
+                    if len(spec_bins) != len(times):
                         print("Length of v and x do not match.  Cannot create tplot variable.")
                         return 
                 else:
-                    spec_bins = spec_bins.transpose()         
+                    spec_bins = spec_bins.transpose()
+                    spec_bins_time_varying = False
         else:
             spec_bins = None
-        
+
+    # Set up xarray dimension and coordinates
+    data_key_list = list(data.keys())
+    temp = xr.DataArray(data, dims=data_key_list)
+    temp.coords['time'] = ('time', times)
+    if spec_bins_exist:
+        if spec_bins_time_varying:
+            temp.coords['spec_bins'] = (('x', 'y'), spec_bins.values)
+        else:
+            temp.coords['spec_bins'] = ('y', spec_bins.values)
+        for d in data_key_list:
+            try:
+                temp.coords[d] = (d, data[d])
+            except:
+                pass
+
+    # Set up Attributes Dictionaries
     xaxis_opt = dict(axis_label='Time')
     yaxis_opt = dict(axis_label=name) if (spec_bins is None) else dict(axis_label='')
-    zaxis_opt = dict(axis_label='') if (spec_bins is None) else dict(axis_label=name)
+    zaxis_opt = dict(axis_label='Z-Axis') if (spec_bins is None) else dict(axis_label=name)
+    xaxis_opt['crosshair'] = 'X'
+    yaxis_opt['crosshair'] = 'Y'
+    zaxis_opt['crosshair'] = 'Z'
+    xaxis_opt['x_axis_type'] = 'linear'
+    yaxis_opt['y_axis_type'] = 'linear'
+    zaxis_opt['z_axis_type'] = 'linear'
     line_opt = {}
-    dtype = ''
     time_bar = []
     # Dictionary to keep track of extra details needed for plotting
     #     that aren't actual attributes in Bokeh
-    extras = dict(panel_size=1)
+    extras = dict(panel_size=1, char_size=10)
     links = {}
-    temp = TVar(name, tplot_num, df, spec_bins, xaxis_opt, yaxis_opt, zaxis_opt, line_opt,
-                trange, dtype, create_time, time_bar, extras, links)
-    
+
+    # Add dicts to the xarray attrs
+    temp.name = name
+    temp.attrs['xaxis_opt'] = xaxis_opt
+    temp.attrs['yaxis_opt'] = yaxis_opt
+    temp.attrs['zaxis_opt'] = zaxis_opt
+    temp.attrs['line_opt'] = line_opt
+    temp.attrs['trange'] = trange
+    temp.attrs['time_bar'] = time_bar
+    temp.attrs['extras'] = extras
+    temp.attrs['create_time'] = create_time
+    temp.attrs['links'] = links
+    temp.attrs['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
+
     data_quants[name] = temp
-    data_quants[name].yaxis_opt['y_range'] = get_y_range(df, spec_bins)
+
+    data_quants[name].attrs['yaxis_opt']['y_range'] = get_y_range(values, spec_bins)
     
     return
 
@@ -215,21 +246,28 @@ def get_y_range(data, spec_bins):
         return [y_min, y_max]
 
 
-def format_ydata(data):
-    # This function is not final, and will presumably change in the future
-    # For 2D data, turn it into a Pandas dataframe
-    # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
-    # For 4D data, ignore the last dimension
-    
-    if data is not pd.DataFrame:
-        matrix = np.array(data)
-        if len(matrix.shape) > 2:
-            matrix = np.nansum(matrix, 1)
-        if len(matrix.shape) > 2:
-            matrix = matrix[:, :, 0]
-            
+def _check_spec_bins_ordering(times, spec_bins):
+    """
+    This is a private function, this is run during
+    object creation to check if spec_bins are ascending or descending
+    """
+    if spec_bins is None:
+        return
+    if len(spec_bins) == len(times):
+        break_top_loop = False
+        for index, row in spec_bins.iterrows():
+            if row.isnull().values.all():
+                continue
+            else:
+                for i in row.index:
+                    if np.isfinite(row[i]) and np.isfinite(row[i + 1]):
+                        ascending = row[i] < row[i + 1]
+                        break_top_loop = True
+                        break
+                    else:
+                        continue
+                if break_top_loop:
+                    break
     else:
-        return data
-    
-    return_data = pd.DataFrame(matrix)
-    return return_data
+        ascending = spec_bins[0].iloc[0] < spec_bins[1].iloc[0]
+    return ascending

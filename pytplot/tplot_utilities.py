@@ -531,3 +531,24 @@ def set_y_range(var, y_axis_log, plot):
         elif not y_axis_log:
             plot.setYRange(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][0],
                            pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][1], padding=0)
+
+
+def format_ydata(data):
+    import pandas as pd
+    # This function is not final, and will presumably change in the future
+    # For 2D data, turn it into a Pandas dataframe
+    # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
+    # For 4D data, ignore the last dimension
+
+    if data is not pd.DataFrame:
+        matrix = np.array(data)
+        if len(matrix.shape) > 2:
+            matrix = np.nansum(matrix, 1)
+        if len(matrix.shape) > 2:
+            matrix = matrix[:, :, 0]
+
+    else:
+        return data
+
+    return_data = pd.DataFrame(matrix)
+    return return_data

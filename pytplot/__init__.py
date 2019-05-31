@@ -5,6 +5,7 @@
 
 import numpy as np
 from _collections import OrderedDict
+import xarray as xr
 from . import HTMLPlotter
 import sys
 
@@ -127,50 +128,8 @@ class TVar(object):
         # Whether the spec_bins are ascending or decending order
         self.spec_bins_ascending = self._check_spec_bins_ordering()
 
-        # Add in default values for crosshair names, y/z axis_opt, etc.
-        self.extras['char_size'] = 10
-
-        self.xaxis_opt['axis_label'] = 'Time'
-        self.yaxis_opt['axis_label'] = 'Y-Axis'
-        self.zaxis_opt['axis_label'] = 'Z-Axis'
-
-        self.xaxis_opt['crosshair'] = 'X'
-        self.yaxis_opt['crosshair'] = 'Y'
-        self.zaxis_opt['crosshair'] = 'Z'
-
-        self.xaxis_opt['x_axis_type'] = 'linear'
-        self.yaxis_opt['y_axis_type'] = 'linear'
-        self.zaxis_opt['z_axis_type'] = 'linear'
-
         self.interactive_xaxis_opt['xi_axis_type'] = 'linear'
         self.interactive_yaxis_opt['yi_axis_type'] = 'linear'
-        
-    def _check_spec_bins_ordering(self):
-        """
-        This is a private function of the TVar object, this is run during
-        object creation to check if spec_bins are ascending or descending
-        """
-        if self.spec_bins is None:
-            return
-        if len(self.spec_bins) == len(self.data.index):
-            self.spec_bins_time_varying = True
-            break_top_loop = False
-            for index, row in self.spec_bins.iterrows():
-                if row.isnull().values.all():
-                    continue
-                else:
-                    for i in row.index:
-                        if np.isfinite(row[i]) and np.isfinite(row[i + 1]):
-                            ascending = row[i] < row[i + 1]
-                            break_top_loop = True
-                            break
-                        else:
-                            continue
-                    if break_top_loop:
-                        break
-        else:
-            ascending = self.spec_bins[0].iloc[0] < self.spec_bins[1].iloc[0]
-        return ascending
 
     def link_to_tvar(self, name, link, method='linear'):
         from scipy import interpolate
