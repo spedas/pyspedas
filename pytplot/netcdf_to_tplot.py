@@ -1,5 +1,5 @@
 import numpy as np
-import pandas as pd
+import xarray as xr
 from pytplot import tplot, data_quants, store_data
 import calendar
 
@@ -14,7 +14,7 @@ def change_time_to_unix_time(time_var):
     for date in dates:
         unix_time = calendar.timegm(date.timetuple())
         unix_times.append(unix_time)
-    return (unix_times)
+    return unix_times
 
 
 def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge=False):
@@ -126,17 +126,18 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
                 var_name = prefix + var + suffix
                 to_merge = False
                 if (var_name in data_quants.keys() and (merge == True)):
-                    prev_data_quant = data_quants[var_name].data
+                    prev_data_quant = data_quants[var_name].values
                     to_merge = True
 
                 tplot_data = {'x': unix_times, 'y': masked_vars[var]}
                 store_data(var_name, tplot_data)
                 if var_name not in stored_variables:
                     stored_variables.append(var_name)
+
                 if to_merge == True:
-                    cur_data_quant = data_quants[var_name].data
+                    cur_data_quant = data_quants[var_name].values
                     merged_data = [prev_data_quant, cur_data_quant]
-                    data_quants[var_name].data = pd.concat(merged_data)
+                    data_quants[var_name].values = xr.concat(merged_data).values
 
                 # If we are interested in seeing a quick plot of the variables, do it
                 if plot:
@@ -145,5 +146,5 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
                 # If the variable isn't time-bound, we're going to look at the next variable
                 continue
 
-        return (stored_variables)
+        return stored_variables
 

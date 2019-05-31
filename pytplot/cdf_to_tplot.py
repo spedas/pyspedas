@@ -10,7 +10,7 @@
 import cdflib
 import re
 import numpy as np
-import pandas as pd
+import xarray as xr
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
 from pytplot.options import options
@@ -112,8 +112,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 var_name = prefix + var + suffix
                 to_merge = False
                 if (var_name in data_quants.keys()) and (merge is True):
-                    prev_data_quant = data_quants[var_name].data
-                    prev_spec_bins = data_quants[var_name].spec_bins
+                    prev_data_quant = data_quants[var_name].values
+                    prev_spec_bins = data_quants[var_name].coords['spec_bins'].values
                     to_merge = True
 
                 if epoch_cache.get(filename+x_axis_var) is None:
@@ -224,13 +224,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     options(var_name, 'ylog', 1)
 
                 if to_merge is True:
-                    cur_data_quant = data_quants[var_name].data
+                    cur_data_quant = data_quants[var_name].values
                     merged_data = [prev_data_quant, cur_data_quant]
-                    data_quants[var_name].data = pd.concat(merged_data)
+                    data_quants[var_name].values = xr.concat(merged_data).values
                     if data_quants[var_name].spec_bins_time_varying:
-                        cur_spec_bins = data_quants[var_name].spec_bins
+                        cur_spec_bins = data_quants[var_name].coords['spec_bins'].values
                         merged_spec_bins = [prev_spec_bins, cur_spec_bins]
-                        data_quants[var_name].spec_bins = pd.concat(merged_spec_bins)
+                        data_quants[var_name].coords['spec_bins'].values = xr.concat(merged_spec_bins)
 
     # cdf_file.close()
 

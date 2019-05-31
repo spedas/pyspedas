@@ -80,7 +80,8 @@ def store_data(name, data=None, delete=False, newname=None):
     
     global tplot_num
     create_time = datetime.datetime.now()
-    
+
+    # If delete is specified, we are just deleting the variable
     if delete is True:
         del_data(name)
         return
@@ -88,59 +89,63 @@ def store_data(name, data=None, delete=False, newname=None):
     if data is None and newname is None:
         print('Please provide data.')
         return
-    
+
+    # If newname is specified, we are just renaming the variable
     if newname is not None:
         pytplot.tplot_rename(name, newname)
         return
-    
+
+    # If the data is a list instead of a dictionary, user is looking to overplot
     if isinstance(data, list):
-        base_data = get_base_tplot_vars(data)
+        base_data = _get_base_tplot_vars(data)
         data_quants[name] = data_quants[base_data[0]]
-        data_quants[name].attrs['overplots'] = base_data[1:]
+        data_quants[name].name = name
+        data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
         return
-    else:
-        data['times'] = data.pop('x')
-        values = data['y']
-        times = data['times']
 
-        # If given a list of datetime objects, convert times to seconds since epoch.
-        if any(isinstance(t, datetime.datetime) for t in times):
-            for tt, time in enumerate(times):
-                times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
-        # If given a list of datetime string, convert times to seconds since epoch
-        elif any(isinstance(t, str) for t in times):
-            for tt, time in enumerate(times):
-                times[tt] = pytplot.tplot_utilities.str_to_int(time)
+    data['times'] = data.pop('x')
+    values = data['y']
+    times = data['times']
 
-        if len(times) != len(values):
-            print("The lengths of x and y do not match!")
-            return
+    # If given a list of datetime objects, convert times to seconds since epoch.
+    if any(isinstance(t, datetime.datetime) for t in times):
+        for tt, time in enumerate(times):
+            times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
+    # If given a list of datetime string, convert times to seconds since epoch
+    elif any(isinstance(t, str) for t in times):
+        for tt, time in enumerate(times):
+            times[tt] = pytplot.tplot_utilities.str_to_int(time)
 
-        trange = [np.nanmin(times), np.nanmax(times)]
+    if len(times) != len(values):
+        print("The lengths of x and y do not match!")
+        return
 
-        spec_bins_exist = False
-        if 'v' in data or 'v1' in data or 'v2' in data or 'v3' in data:
-            # Generally the data is 1D, but occasionally
-            # the bins will vary in time.
-            spec_bins_exist = True
-            if 'v' in data:
-                spec_bins = data['v']
-            else:
-                spec_bins = data['v2']
-            
-            if type(spec_bins) is not pd.DataFrame:
-                spec_bins = pd.DataFrame(spec_bins)
-                if len(spec_bins.columns) != 1:
-                    # The spec_bins are time varying
-                    spec_bins_time_varying = True
-                    if len(spec_bins) != len(times):
-                        print("Length of v and x do not match.  Cannot create tplot variable.")
-                        return 
-                else:
-                    spec_bins = spec_bins.transpose()
-                    spec_bins_time_varying = False
+    trange = [np.nanmin(times), np.nanmax(times)]
+
+    # Figure out the 'v' data
+    spec_bins_exist = False
+    if 'v' in data or 'v1' in data or 'v2' in data or 'v3' in data:
+        # Generally the data is 1D, but occasionally
+        # the bins will vary in time.
+        spec_bins_exist = True
+        if 'v' in data:
+            spec_bins = data['v']
         else:
-            spec_bins = None
+            spec_bins = data['v2']
+
+        if type(spec_bins) is not pd.DataFrame:
+            spec_bins = pd.DataFrame(spec_bins)
+            if len(spec_bins.columns) != 1:
+                # The spec_bins are time varying
+                spec_bins_time_varying = True
+                if len(spec_bins) != len(times):
+                    print("Length of v and x do not match.  Cannot create tplot variable.")
+                    return
+            else:
+                spec_bins = spec_bins.transpose()
+                spec_bins_time_varying = False
+    else:
+        spec_bins = None
 
     # Set up xarray dimension and coordinates
     data_key_list = list(data.keys())
@@ -169,44 +174,43 @@ def store_data(name, data=None, delete=False, newname=None):
     zaxis_opt['z_axis_type'] = 'linear'
     line_opt = {}
     time_bar = []
-    # Dictionary to keep track of extra details needed for plotting
-    #     that aren't actual attributes in Bokeh
     extras = dict(panel_size=1, char_size=10)
     links = {}
 
     # Add dicts to the xarray attrs
     temp.name = name
-    temp.attrs['xaxis_opt'] = xaxis_opt
-    temp.attrs['yaxis_opt'] = yaxis_opt
-    temp.attrs['zaxis_opt'] = zaxis_opt
-    temp.attrs['line_opt'] = line_opt
-    temp.attrs['trange'] = trange
-    temp.attrs['time_bar'] = time_bar
-    temp.attrs['extras'] = extras
-    temp.attrs['create_time'] = create_time
-    temp.attrs['links'] = links
-    temp.attrs['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
+    temp.attrs['plot_options']['xaxis_opt'] = xaxis_opt
+    temp.attrs['plot_options']['yaxis_opt'] = yaxis_opt
+    temp.attrs['plot_options']['zaxis_opt'] = zaxis_opt
+    temp.attrs['plot_options']['line_opt'] = line_opt
+    temp.attrs['plot_options']['trange'] = trange
+    temp.attrs['plot_options']['time_bar'] = time_bar
+    temp.attrs['plot_options']['extras'] = extras
+    temp.attrs['plot_options']['create_time'] = create_time
+    temp.attrs['plot_options']['links'] = links
+    temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
+    temp.attrs['plot_options']['overplots'] = []
 
     data_quants[name] = temp
 
-    data_quants[name].attrs['yaxis_opt']['y_range'] = get_y_range(values, spec_bins)
+    data_quants[name].attrs['yaxis_opt']['y_range'] = _get_y_range(values, spec_bins)
     
     return
 
 
-def get_base_tplot_vars(data):
+def _get_base_tplot_vars(data):
     base_vars = []
     if not isinstance(data, list):
         data = [data]
     for var in data:
         if isinstance(data_quants[var].data, list):
-            base_vars += get_base_tplot_vars(data_quants[var].data)
+            base_vars += _get_base_tplot_vars(data_quants[var].data)
         else:
             base_vars += [var]
     return base_vars
 
 
-def get_y_range(data, spec_bins):
+def _get_y_range(data, spec_bins):
     # This is for the numpy RuntimeWarning: All-NaN axis encountered
     # with np.nanmin below
     import warnings

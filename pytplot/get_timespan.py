@@ -34,7 +34,5 @@ def get_timespan(name):
     if name not in data_quants.keys():
         print("That name is currently not in pytplot") 
         return
-    print("Start Time: " + tplot_utilities.int_to_str(data_quants[name].trange[0]))
-    print("End Time:   " + tplot_utilities.int_to_str(data_quants[name].trange[1]))
-    
-    return(data_quants[name].trange[0], data_quants[name].trange[1])
+
+    return data_quants[name].attrs['plot_options']['trange'][0], data_quants[name].attrs['plot_options']['trange'][1]
