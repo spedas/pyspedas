@@ -6,12 +6,13 @@
 import pytplot
 import numpy as np
 
-def tplot_ascii(tvar,filename='tvar_data'):
-    #grab data, prepend index column
-    df = pytplot.data_quants[tvar].data.reset_index()
-    sbf = pytplot.data_quants[tvar].spec_bins.reset_index()
-    #save data and spec_bins
+def tplot_ascii(tvar,filename=None):
+    # grab data, prepend index column
+    if filename is None:
+        filename=tvar
+    df = pytplot.data_quants[tvar].values
+    sbf = pytplot.data_quants[tvar].coords['spec_bins'].values
+    # save data and spec_bins
     sb_name = filename + '_v'
-    np.savetxt(filename, df, fmt="%-14s", delimiter = '   ')
-    np.savetxt(sb_name, sbf, fmt="%-14s", delimiter = '   ')
-    
+    np.savetxt(filename, df, fmt="%-14s", delimiter='   ')
+    np.savetxt(sb_name, sbf, fmt="%-14s", delimiter='   ')

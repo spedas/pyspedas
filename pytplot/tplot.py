@@ -17,7 +17,7 @@ if pytplot.using_graphics:
     from .QtPlotter import PyTPlot_Exporter
     from pyqtgraph.Qt import QtCore, QtGui, QtCore
     import pyqtgraph as pg
-    from . import QtPlotter, interactiveplot, staticplot, staticplot_tavg
+    from . import QtPlotter, spec_slicer
 
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
@@ -193,7 +193,7 @@ def tplot(name,
             exporter.export(save_png)
 
         if display:
-            # Set up all things needed for when a user asks to save plot from window
+            # This layout is used when the user wants a png image saved.
             layout_orig = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes,
                                                    mouse_moved_event=pytplot.hover_time.change_hover_time)
             layout_orig.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
@@ -225,19 +225,18 @@ def tplot(name,
 
             if interactive:
                 # Call 2D interactive window; This will only plot something when spectrograms are involved.
-                interactiveplot.interactiveplot()
+                spec_slicer.spec_slicer(interactive=True)
 
-            static_list = [i for i in name if 'static' in pytplot.data_quants[i].extras]
+            static_list = [i for i in name if 'static' in pytplot.data_quants[i].attrs['plot_otpions']['extras']]
             for tplot_var in static_list:
                 # Call 2D static window; This will only plot something when spectrograms are involved.
-                staticplot.static2dplot(tplot_var, pytplot.data_quants[tplot_var].extras['static'])
+                spec_slicer.spec_slicer(tplot_var, pytplot.data_quants[tplot_var].attrs['plot_otpions']['extras']['static'])
 
-            static_tavg_list = [i for i in name if 'static_tavg' in pytplot.data_quants[i].extras]
+            static_tavg_list = [i for i in name if 'static_tavg' in pytplot.data_quants[i].attrs['plot_otpions']['extras']]
             for tplot_var in static_tavg_list:
                 # Call 2D static window for time-averaged values; This will only plot something when spectrograms
                 # are involved
-                staticplot_tavg.static2dplot_timeaveraged(
-                    tplot_var, pytplot.data_quants[tplot_var].extras['static_tavg'])
+                spec_slicer.spec_slicer(tplot_var, pytplot.data_quants[tplot_var].attrs['plot_otpions']['extras']['static_tavg'])
 
             # (hasattr(sys, 'ps1')) checks to see if we're in ipython
             # plots the plots!

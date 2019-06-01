@@ -38,11 +38,10 @@ def tplot_save(names, filename=None):
         names = [names]
     
     #Check that we have all available data
-    for name in names: 
-        if isinstance(data_quants[name].data, list):
-            for data_name in data_quants[name].data:
-                if data_name not in names:
-                    names.append(data_name)
+    for name in names:
+        for oplot_name in data_quants[name].attrs['plot_options']['overplots']:
+            if oplot_name not in names:
+                names.append(oplot_name)
     
     #Pickle it up
     to_pickle =[]

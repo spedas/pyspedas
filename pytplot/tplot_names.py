@@ -28,19 +28,22 @@ def tplot_names():
     
     index = 0
     return_names=[]
+
+    # TODO: Print out links as well?
+
     for key, _ in data_quants.items():
-        if isinstance(data_quants[key].data, list):
-            if isinstance(key, str):
-                
-                names_to_print = data_quants[key].name + "  data from: "
-                for name in data_quants[key].data:
-                    names_to_print = names_to_print + " " + name
-                print(index, ":", names_to_print)
-                index+=1
+        if len(data_quants[key].attrs['plot_options']['overplots']) != 0:
+            names_to_print = data_quants[key].name + "  data from: "
+            for oplot_name in data_quants[key].attrs['plot_options']['overplots']:
+                names_to_print = names_to_print + " " + oplot_name
+            print(index, ":", names_to_print)
+            index+=1
         else:
             if isinstance(key, str):
                 names_to_print = data_quants[key].name
-                print(index, ":", names_to_print)
-                index+=1
+
+        print(index, ":", names_to_print)
+        index += 1
+
         return_names.append(names_to_print)
     return return_names
