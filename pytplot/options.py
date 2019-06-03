@@ -242,7 +242,7 @@ def _ylog_check(data_quants, value, i):
     # if negative numbers, don't allow log setting
     datasets = [namedata]
     for oplot_name in namedata.attrs['plot_options']['overplots']:
-        datasets.append(data_quants[oplot_name])
+        datasets.append(data_quants[data_quants.attrs['plot_options']['overplots'][oplot_name]])
 
     if value == 1:
         for dataset in datasets:

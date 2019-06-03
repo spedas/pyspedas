@@ -210,37 +210,24 @@ def _get_base_tplot_vars(data):
     return base_vars
 
 
-def _get_y_range(data, spec_bins):
+def _get_y_range(dataset, spec_bins):
     # This is for the numpy RuntimeWarning: All-NaN axis encountered
     # with np.nanmin below
     import warnings
     warnings.filterwarnings("error")
 
     if spec_bins is not None:
-        ymin = np.nanmin(spec_bins)
-        ymax = np.nanmax(spec_bins)
+        ymin = np.nanmin(spec_bins.values)
+        ymax = np.nanmax(spec_bins.values)
         return [ymin, ymax]
     else:
-        datasets = []
-        y_min_list = []
-        y_max_list = []
-        if isinstance(data, list):
-            for oplot_name in data:
-                datasets.append(data_quants[oplot_name].data)
-        else:
-            datasets.append(data)
-    
-        for dataset in datasets:
-            dataset_temp = dataset.replace([np.inf, -np.inf], np.nan)
-            try:
-                y_min_list.append(np.nanmin(dataset_temp.min(skipna=True).tolist()))
-                y_max_list.append(np.nanmax(dataset_temp.max(skipna=True).tolist()))
-            except RuntimeWarning:
-                y_min_list.append(np.nan)
-                y_max_list.append(np.nan)
-        
-        y_min = min(y_min_list)
-        y_max = max(y_max_list)
+        dataset_temp = dataset.replace([np.inf, -np.inf], np.nan)
+        try:
+            y_min = np.nanmin(dataset_temp.min(skipna=True).tolist())
+            y_max = np.nanmax(dataset_temp.max(skipna=True).tolist())
+        except RuntimeWarning:
+            y_min = np.nan
+            y_max = np.nan
         
         if y_min == y_max:
             # Show 10% and 10% below the straight line

@@ -18,15 +18,15 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
         self.layout.setHorizontalSpacing(50)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
         
         vb = CustomVB(enableMouse=False)
         yaxis = pg.AxisItem("left")
-        yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
+        yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
         yaxis.setWidth(100)
         yaxis.label.rotate(90)
         yaxis.label.translate(0, -40)
-        xaxis = NonLinearAxis(orientation='bottom', data=pytplot.data_quants[self.tvar_name])
+        xaxis = NonLinearAxis(orientation='bottom', data=pytplot.data_quants[self.tvar_name].values)
         self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': xaxis, 'left': yaxis}, viewBox=vb, colspan=1)
         self.plotwindow.buttonsHidden = True
         self.plotwindow.setMaximumHeight(20)

@@ -47,7 +47,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
 
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
@@ -105,16 +105,18 @@ class TVarFigureMap(pg.GraphicsLayout):
         return self
 
     def _visdata(self):
-        datasets = []
-        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-            for oplot_name in pytplot.data_quants[self.tvar_name].data:
-                datasets.append(pytplot.data_quants[oplot_name])
-        else:
-            datasets.append(pytplot.data_quants[self.tvar_name])
+        datasets = [pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(
+                pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots'][oplot_name]])
 
         cm_index = 0
-        for dataset in datasets:
-            t_link, lat = pytplot.get_data(dataset.links['lat'])
+        for dataset_xr in datasets:
+            # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
+            # This needs to be rewritten to use xarray
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
+
+            t_link, lat = pytplot.get_data(dataset_xr.attrs['plot_options']['links']['lat'])
             lat = lat.transpose()[0]
             # Need to trim down the data points to fit within the link
             t_tvar = dataset.data.index.values
@@ -126,7 +128,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                 t_tvar = np.delete(t_tvar, 0)
                 data = np.delete(data, 0)
 
-            t_link, lon = pytplot.get_data(dataset.links['lon'])
+            t_link, lon = pytplot.get_data(dataset_xr.attrs['plot_options']['links']['lon'])
             # Need to trim down the data points to fit within the link
             while t_tvar[-1] > t_link[-1]:
                 t_tvar = np.delete(t_tvar, -1)
@@ -158,7 +160,7 @@ class TVarFigureMap(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
-        zaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
+        zaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
 
         if self.show_xaxis:
             emptyaxis = BlankAxis('bottom')
@@ -202,17 +204,11 @@ class TVarFigureMap(pg.GraphicsLayout):
             # grab x and y mouse locations
             index_x = round(float(mousepoint.x()), 2)
             index_y = round(float(mousepoint.y()), 2)
-            # get latitude and longitude arrays
-            datasets = []
-            if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-                for oplot_name in pytplot.data_quants[self.tvar_name].data:
-                    datasets.append(pytplot.data_quants[oplot_name])
-            else:
-                datasets.append(pytplot.data_quants[self.tvar_name])
 
-            time, latitude = pytplot.get_data(datasets[0].links['lat'])
+            # get latitude and longitude arrays
+            time, latitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat'])
             latitude = latitude.transpose()[0]
-            time, longitude = pytplot.get_data(datasets[0].links['lon'])
+            time, longitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon'])
             longitude = longitude.transpose()[0]
             # find closest time point to cursor
             radius = np.sqrt((latitude - index_y) ** 2 + (longitude - index_x) ** 2).argmin()
@@ -250,21 +246,21 @@ class TVarFigureMap(pg.GraphicsLayout):
             self.zscale = 'linear'
 
     def _getzaxistype(self):
-        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            return pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type']
+        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_axis_type']
         else:
             return 'linear'
 
     def _setcolors(self):
-        if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
-            return pytplot.data_quants[self.tvar_name].extras['line_color']
+        if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
         else:
             return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 
     def _setcolormap(self):
         colors = []
-        if 'colormap' in pytplot.data_quants[self.tvar_name].extras:
-            for cm in pytplot.data_quants[self.tvar_name].extras['colormap']:
+        if 'colormap' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            for cm in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['colormap']:
                 colors.append(pytplot.tplot_utilities.return_lut(cm))
             return colors
         else:
@@ -293,49 +289,44 @@ class TVarFigureMap(pg.GraphicsLayout):
 
     def _setzrange(self):
         # Get Z Range
-        if 'z_range' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            self.zmin = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][0]
-            self.zmax = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][1]
+        if 'z_range' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            self.zmin = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][0]
+            self.zmax = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][1]
         else:
-            if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-                # Check the first one
-                dataset_temp = pytplot.data_quants[pytplot.data_quants[self.tvar_name].data[0]].data.replace(
-                    [np.inf, -np.inf], np.nan)
-            else:
-                dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
+            dataset_temp = pytplot.data_quants[self.tvar_name].values.replace([np.inf, -np.inf], np.nan)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
 
             # Cannot have a 0 minimum in a log scale
-            if self.zscale == 'log':
-                zmin_list = []
-                for column in pytplot.data_quants[self.tvar_name].data.columns:
-                    series = pytplot.data_quants[self.tvar_name].data[column]
-                    zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
-                self.zmin = min(zmin_list)
+            # TODO: Reimplement
+            #if self.zscale == 'log':
+                #zmin_list = []
+                #for column in pytplot.data_quants[self.tvar_name]:
+                    #series = pytplot.data_quants[self.tvar_name].data[column]
+                    #zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
+                #self.zmin = min(zmin_list)
 
     def _addtimebars(self):
-        # initialize dataset variable
-        datasets = []
         # grab tbardict
-        tbardict = pytplot.data_quants[self.tvar_name].time_bar
+        tbardict = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
         ltbar = len(tbardict)
         # make sure data is in list format
-        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-            for oplot_name in pytplot.data_quants[self.tvar_name].data:
-                datasets.append(pytplot.data_quants[oplot_name])
-        else:
-            datasets.append(pytplot.data_quants[self.tvar_name])
+        datasets = [pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(
+                pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots'][oplot_name]])
         for dataset in datasets:
-            # for location in tbar dict
+            # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
+            # This needs to be rewritten to use xarray
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             for i in range(ltbar):
                 # get times, color, point size
-                test_time = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
-                color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
-                pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+                test_time = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
+                color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
+                pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
                 # correlate given time with corresponding lat/lon points
-                time, latitude = pytplot.get_data(dataset.links['lat'])
-                time, longitude = pytplot.get_data(dataset.links['lon'])
+                time, latitude = pytplot.get_data(dataset.attrs['plot_options']['links']['lat'])
+                time, longitude = pytplot.get_data(dataset.attrs['plot_options']['links']['lon'])
                 latitude = latitude.transpose()[0]
                 longitude = longitude.transpose()[0]
                 nearest_time_index = np.abs(time - test_time).argmin()
@@ -346,14 +337,14 @@ class TVarFigureMap(pg.GraphicsLayout):
         return
 
     def _setbackground(self):
-        if 'alpha' in pytplot.data_quants[self.tvar_name].extras:
-            alpha = pytplot.data_quants[self.tvar_name].extras['alpha']
+        if 'alpha' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            alpha = pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['alpha']
         else:
             alpha = 1
-        if 'basemap' in pytplot.data_quants[self.tvar_name].extras:
-            if os.path.isfile(pytplot.data_quants[self.tvar_name].extras['basemap']):
+        if 'basemap' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            if os.path.isfile(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap']):
                 from scipy import misc
-                img = misc.imread(pytplot.data_quants[self.tvar_name].extras['basemap'], mode='RGBA')
+                img = misc.imread(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap'], mode='RGBA')
                 # Need to flip the image upside down...This will probably be fixed in
                 # a future release, so this will need to be deleted at some point
                 img = img[::-1]

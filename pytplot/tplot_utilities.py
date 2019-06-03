@@ -511,22 +511,23 @@ def set_y_range(var, y_axis_log, plot):
                            pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1], padding=0)
 
 
-def format_ydata(data):
+
+
+def convert_tplotxarray_to_pandas_dataframe(name):
     import pandas as pd
     # This function is not final, and will presumably change in the future
     # For 2D data, turn it into a Pandas dataframe
     # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
     # For 4D data, ignore the last dimension
-
-    if data is not pd.DataFrame:
-        matrix = np.array(data)
+    if pytplot.data_quants[name].coords['spec_bins'] is not None:
+        return pytplot.data_quants[name].to_pandas()
+    else:
+        matrix = pytplot.data_quants[name].values
         if len(matrix.shape) > 2:
             matrix = np.nansum(matrix, 1)
         if len(matrix.shape) > 2:
             matrix = matrix[:, :, 0]
-
-    else:
-        return data
-
-    return_data = pd.DataFrame(matrix)
-    return return_data
+        return_data = pd.DataFrame(matrix)
+        return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
+        spec_bins = pytplot.data_quants[name].coords['spec_bins'].to_pandas()
+    return return_data, spec_bins

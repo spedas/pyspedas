@@ -34,7 +34,7 @@ def generate_stack(name,
     total_psize = 0
     j = 0
     while j < num_plots:
-        total_psize += pytplot.data_quants[name[j]].extras['panel_size']
+        total_psize += pytplot.data_quants[name[j]].attrs['plot_options']['extras']['panel_size']
         j += 1
 
     if var_label is not None:
@@ -114,13 +114,13 @@ def _set_pyqtgraph_title(layout):
 
 
 def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None):
-    if 'plotter' in pytplot.data_quants[tvar_name].extras and pytplot.data_quants[tvar_name].extras['plotter'] in \
+    if 'plotter' in pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] and pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in \
             pytplot.qt_plotters:
-        cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].extras['plotter']]
+        cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter']]
     else:
-        spec_keyword = pytplot.data_quants[tvar_name].extras.get('spec', False)
-        alt_keyword = pytplot.data_quants[tvar_name].extras.get('alt', False)
-        map_keyword = pytplot.data_quants[tvar_name].extras.get('map', False)
+        spec_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('spec', False)
+        alt_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('alt', False)
+        map_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('map', False)
         if spec_keyword:
             cls = pytplot.qt_plotters['qtTVarFigureSpec']
         elif alt_keyword:
