@@ -103,9 +103,8 @@ def store_data(name, data=None, delete=False, newname=None):
         data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
         return
 
-    data['times'] = data.pop('x')
-    values = data['y']
-    times = data['times']
+    times = data.pop('x')
+    values = data.pop('y')
 
     # If given a list of datetime objects, convert times to seconds since epoch.
     if any(isinstance(t, datetime.datetime) for t in times):
@@ -130,8 +129,10 @@ def store_data(name, data=None, delete=False, newname=None):
         spec_bins_exist = True
         if 'v' in data:
             spec_bins = data['v']
+            spec_bins_dimension = 'v'
         else:
             spec_bins = data['v2']
+            spec_bins_dimension = 'v2'
 
         if type(spec_bins) is not pd.DataFrame:
             spec_bins = pd.DataFrame(spec_bins)
@@ -145,17 +146,18 @@ def store_data(name, data=None, delete=False, newname=None):
                 spec_bins = spec_bins.transpose()
                 spec_bins_time_varying = False
     else:
+        data['v'] = None
         spec_bins = None
 
     # Set up xarray dimension and coordinates
     data_key_list = list(data.keys())
-    temp = xr.DataArray(data, dims=data_key_list)
+    temp = xr.DataArray(values, dims=['time']+data_key_list)
     temp.coords['time'] = ('time', times)
     if spec_bins_exist:
         if spec_bins_time_varying:
-            temp.coords['spec_bins'] = (('x', 'y'), spec_bins.values)
+            temp.coords['spec_bins'] = (('x', spec_bins_dimension), spec_bins.values)
         else:
-            temp.coords['spec_bins'] = ('y', spec_bins.values)
+            temp.coords['spec_bins'] = (spec_bins_dimension, np.squeeze(spec_bins.values))
         for d in data_key_list:
             try:
                 temp.coords[d] = (d, data[d])
@@ -179,6 +181,7 @@ def store_data(name, data=None, delete=False, newname=None):
 
     # Add dicts to the xarray attrs
     temp.name = name
+    temp.attrs['plot_options'] = {}
     temp.attrs['plot_options']['xaxis_opt'] = xaxis_opt
     temp.attrs['plot_options']['yaxis_opt'] = yaxis_opt
     temp.attrs['plot_options']['zaxis_opt'] = zaxis_opt
@@ -190,11 +193,13 @@ def store_data(name, data=None, delete=False, newname=None):
     temp.attrs['plot_options']['links'] = links
     temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
     temp.attrs['plot_options']['overplots'] = []
+    temp.attrs['plot_options']['interactive_xaxis_opt'] = {}
+    temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
 
     data_quants[name] = temp
 
-    data_quants[name].attrs['yaxis_opt']['y_range'] = _get_y_range(values, spec_bins)
-    
+    data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = _get_y_range(temp, spec_bins)
+
     return
 
 
@@ -221,10 +226,11 @@ def _get_y_range(dataset, spec_bins):
         ymax = np.nanmax(spec_bins.values)
         return [ymin, ymax]
     else:
-        dataset_temp = dataset.replace([np.inf, -np.inf], np.nan)
+        dataset_temp = dataset.where(dataset != np.inf)
+        dataset_temp = dataset_temp.where(dataset != -np.inf)
         try:
-            y_min = np.nanmin(dataset_temp.min(skipna=True).tolist())
-            y_max = np.nanmax(dataset_temp.max(skipna=True).tolist())
+            y_min = np.nanmin(dataset_temp.min(skipna=True))
+            y_max = np.nanmax(dataset_temp.max(skipna=True))
         except RuntimeWarning:
             y_min = np.nan
             y_max = np.nan

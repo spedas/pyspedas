@@ -519,7 +519,7 @@ def convert_tplotxarray_to_pandas_dataframe(name):
     # For 2D data, turn it into a Pandas dataframe
     # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
     # For 4D data, ignore the last dimension
-    if pytplot.data_quants[name].coords['spec_bins'] is not None:
+    if pytplot.data_quants[name].coords['spec_bins'] is None:
         return pytplot.data_quants[name].to_pandas()
     else:
         matrix = pytplot.data_quants[name].values
@@ -530,4 +530,6 @@ def convert_tplotxarray_to_pandas_dataframe(name):
         return_data = pd.DataFrame(matrix)
         return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
         spec_bins = pytplot.data_quants[name].coords['spec_bins'].to_pandas()
+        if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 1:
+            spec_bins = spec_bins.transpose()
     return return_data, spec_bins

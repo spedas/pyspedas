@@ -88,7 +88,7 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
             tbar['line_dash'] = dash_pattern
             for name in data_quants:
                 temp_data_quants = data_quants[name]
-                temp_data_quants['plot_options']['time_bar'].append(tbar)
+                temp_data_quants.attrs['plot_options']['time_bar'].append(tbar)
     #if varname specified
     else:
         if not isinstance(varname, list):
@@ -106,5 +106,5 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
                     tbar['line_width'] = thick
                     tbar['line_dash'] = dash_pattern
                     temp_data_quants = data_quants[j]
-                    temp_data_quants['plot_options']['time_bar'].append(tbar)
+                    temp_data_quants.attrs['plot_options']['time_bar'].append(tbar)
     return

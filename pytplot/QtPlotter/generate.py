@@ -54,7 +54,7 @@ def generate_stack(name,
     while i < num_plots:
         last_plot = (i == num_plots - 1)
 
-        p_height = int(pytplot.data_quants[name[i]].extras['panel_size'] * p_to_use)
+        p_height = int(pytplot.data_quants[name[i]].attrs['plot_options']['extras']['panel_size'] * p_to_use)
 
         if last_plot:
             p_height += xaxis_thickness

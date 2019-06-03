@@ -306,7 +306,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.zmin = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][0]
             self.zmax = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][1]
         else:
-            dataset_temp = pytplot.data_quants[self.tvar_name].values.replace([np.inf, -np.inf], np.nan)
+            dataset_temp = pytplot.data_quants[self.tvar_name].where(pytplot.data_quants[self.tvar_name] != np.inf)
+            dataset_temp = dataset_temp.where(dataset_temp != -np.inf)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
 
