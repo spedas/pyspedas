@@ -515,7 +515,6 @@ def set_y_range(var, y_axis_log, plot):
 
 
 
-
 def convert_tplotxarray_to_pandas_dataframe(name):
     import pandas as pd
     # This function is not final, and will presumably change in the future
@@ -523,8 +522,8 @@ def convert_tplotxarray_to_pandas_dataframe(name):
     # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
     # For 4D data, ignore the last dimension
     if not 'spec_bins' in pytplot.data_quants[name].coords:
-        return_data = pd.DataFrame(pytplot.data_quants[name])
-        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
+        return_data = pd.DataFrame(pytplot.data_quants[name].values)
+        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
         return return_data
     else:
         matrix = pytplot.data_quants[name].values
@@ -533,10 +532,10 @@ def convert_tplotxarray_to_pandas_dataframe(name):
         if len(matrix.shape) > 2:
             matrix = matrix[:, :, 0]
         return_data = pd.DataFrame(matrix)
-        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
-        spec_bins = pd.DataFrame(pytplot.data_quants[name].coords['spec_bins'])
+        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+        spec_bins = pd.DataFrame(pytplot.data_quants[name].coords['spec_bins'].values)
         if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 1:
             spec_bins = spec_bins.transpose()
         else:
-            spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
+            spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
     return return_data, spec_bins

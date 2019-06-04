@@ -104,7 +104,7 @@ def store_data(name, data=None, delete=False, newname=None):
         return
 
     times = data.pop('x')
-    values = data.pop('y')
+    values = np.array(data.pop('y'))
 
     # If given a list of datetime objects, convert times to seconds since epoch.
     if any(isinstance(t, datetime.datetime) for t in times):
@@ -119,6 +119,7 @@ def store_data(name, data=None, delete=False, newname=None):
         print("The lengths of x and y do not match!")
         return
 
+    times = np.array(times)
     trange = [np.nanmin(times), np.nanmax(times)]
 
     # Figure out the 'v' data
@@ -150,6 +151,10 @@ def store_data(name, data=None, delete=False, newname=None):
         # Provide another dimension if values are more than 1 dimension
         if len(values.shape) > 1:
             data['v'] = None
+        if len(values.shape) > 2:
+            data['v2'] = None
+        if len(values.shape) > 3:
+            data['v3'] = None
 
     # Set up xarray dimension and coordinates
     data_key_list = list(data.keys())
@@ -157,7 +162,7 @@ def store_data(name, data=None, delete=False, newname=None):
     temp.coords['time'] = ('time', times)
     if spec_bins_exist:
         if spec_bins_time_varying:
-            temp.coords['spec_bins'] = (('x', spec_bins_dimension), spec_bins.values)
+            temp.coords['spec_bins'] = (('time', spec_bins_dimension), spec_bins.values)
         else:
             temp.coords['spec_bins'] = (spec_bins_dimension, np.squeeze(spec_bins.values))
         for d in data_key_list:

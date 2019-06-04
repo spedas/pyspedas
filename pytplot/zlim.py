@@ -35,8 +35,7 @@ def zlim(name, min, max):
     if name not in data_quants.keys():
         print("That name is currently not in pytplot.")
         return
-    
-    temp_data_quant = data_quants[name]
-    temp_data_quant.zaxis_opt['z_range'] = [min, max]
+
+    data_quants[name].attrs['plot_options']['zaxis_opt']['z_range'] = [min, max]
     
     return

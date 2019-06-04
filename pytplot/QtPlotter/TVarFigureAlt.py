@@ -210,11 +210,12 @@ class TVarFigureAlt(pg.GraphicsLayout):
         # grab tbardict
         tbardict = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
         ltbar = len(tbardict)
+
         # make sure data is in list format
         datasets = [pytplot.data_quants[self.tvar_name]]
         for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
-            datasets.append(
-                pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots'][oplot_name]])
+            datasets.append(pytplot.data_quants[oplot_name])
+
         for dataset in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
@@ -235,10 +236,11 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return
 
     def _visdata(self):
+
         datasets = [pytplot.data_quants[self.tvar_name]]
         for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
-            datasets.append(
-                pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots'][oplot_name]])
+            datasets.append(pytplot.data_quants[oplot_name])
+
         line_num = 0
         for dataset in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.

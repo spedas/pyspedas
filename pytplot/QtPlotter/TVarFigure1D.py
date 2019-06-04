@@ -124,7 +124,7 @@ class TVarFigure1D(pg.GraphicsLayout):
     def _visdata(self):
         datasets = [pytplot.data_quants[self.tvar_name]]
         for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
-            datasets.append(pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots'][oplot_name]])
+            datasets.append(pytplot.data_quants[oplot_name])
         line_num = 0
 
         for dataset in datasets:
