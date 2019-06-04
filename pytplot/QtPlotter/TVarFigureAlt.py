@@ -229,7 +229,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
                 time, altitude = pytplot.get_data(dataset.attrs['plot_options']['links']['alt'])
                 altitude = altitude.transpose()[0]
                 nearest_time_index = np.abs(time - test_time).argmin()
-                data_point = dataset.data.iloc[nearest_time_index][0]
+                data_point = dataset.iloc[nearest_time_index][0]
                 alt_point = altitude[nearest_time_index]
                 self.plotwindow.scatterPlot([alt_point], [data_point], size=pointsize, pen=pg.mkPen(None), brush=color)
         return
@@ -244,11 +244,11 @@ class TVarFigureAlt(pg.GraphicsLayout):
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
             dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
-            for i in range(0, len(dataset.data.columns)):
+            for i in range(0, len(dataset.columns)):
                 t_link, x = pytplot.get_data(dataset.attrs['plot_options']['links']['alt'])
                 # Need to trim down the data points to fit within the link
-                t_tvar = dataset.data.index.values
-                data = dataset.data[i].values
+                t_tvar = dataset.index.values
+                data = dataset[i].values
                 while t_tvar[-1] > t_link[-1]:
                     t_tvar = np.delete(t_tvar, -1)
                     data = np.delete(data, -1)

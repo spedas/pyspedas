@@ -79,25 +79,25 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
 
-    def _set_roi_lines(self, dataset):
-        # Locating the two times between which there's a roi
-        time = dataset.data.index.tolist()
-        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
-        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
-        # find closest time to user-requested time
-        x = np.asarray(time)
-        x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
-        x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
-        x_argmin_1 = np.nanargmin(x_sub_1)
-        x_argmin_2 = np.nanargmin(x_sub_2)
-        x_closest_1 = x[x_argmin_1]
-        x_closest_2 = x[x_argmin_2]
-        # Create a roi box
-        roi = CustomLinearRegionItem(orientation=pg.LinearRegionItem.Vertical, values=[x_closest_1, x_closest_2])
-        roi.setBrush([211, 211, 211, 130])
-        roi.lines[0].setPen('r', width=2.5)
-        roi.lines[1].setPen('r', width=2.5)
-        self.plotwindow.addItem(roi)
+    def _set_roi_lines(self):
+        if 'roi_lines' in pytplot.tplot_opt_glob.keys():
+            # Locating the two times between which there's a roi
+            roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
+            roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+            # find closest time to user-requested time
+            x = pytplot.data_quants[self.tvar_name].coords['time']
+            x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
+            x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
+            x_argmin_1 = np.nanargmin(x_sub_1)
+            x_argmin_2 = np.nanargmin(x_sub_2)
+            x_closest_1 = x[x_argmin_1]
+            x_closest_2 = x[x_argmin_2]
+            # Create a roi box
+            roi = CustomLinearRegionItem(orientation=pg.LinearRegionItem.Vertical, values=[x_closest_1, x_closest_2])
+            roi.setBrush([211, 211, 211, 130])
+            roi.lines[0].setPen('r', width=2.5)
+            roi.lines[1].setPen('r', width=2.5)
+            self.plotwindow.addItem(roi)
 
     def buildfigure(self):
         self._setxrange()
@@ -112,6 +112,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._addtimebars()
         self._addmouseevents()
         self._set_crosshairs()
+        self._set_roi_lines()
 
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
@@ -135,10 +136,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
                                  self.zmin,
                                  self.zmax)
         self.plotwindow.addItem(specplot)
-
-        # Add region of interest (roi) lines if applicable
-        if 'roi_lines' in pytplot.tplot_opt_glob.keys():
-            self._set_roi_lines(pytplot.data_quants[self.tvar_name])
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
@@ -201,8 +198,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
                 index_y = round(float(mousePoint.y()), 4)
 
             dataframe, specframe = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
-            dataframe = pytplot.data_quants[self.tvar_name].data
-            specframe = pytplot.data_quants[self.tvar_name].spec_bins
 
             # find closest time/data to cursor location
             x = np.asarray(dataframe.index.tolist())
@@ -308,17 +303,13 @@ class TVarFigureSpec(pg.GraphicsLayout):
         else:
             dataset_temp = pytplot.data_quants[self.tvar_name].where(pytplot.data_quants[self.tvar_name] != np.inf)
             dataset_temp = dataset_temp.where(dataset_temp != -np.inf)
-            self.zmax = dataset_temp.max().max()
-            self.zmin = dataset_temp.min().min()
-
             # Cannot have a 0 minimum in a log scale
-            # TODO: Reimplement at some point
-            #if self.zscale == 'log':
-            #    zmin_list = []
-            #    for column in pytplot.data_quants[self.tvar_name].data.columns:
-            #        series = pytplot.data_quants[self.tvar_name].data[column]
-            #        zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
-            #    self.zmin = min(zmin_list)
+            if self.zscale == 'log':
+                dataset_temp = dataset_temp.where(dataset_temp > 0)
+            self.zmax = dataset_temp.max().max().values
+            self.zmin = dataset_temp.min().min().values
+
+
 
     def _addtimebars(self):
         # find number of times to plot

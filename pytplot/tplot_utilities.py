@@ -135,7 +135,10 @@ def int_to_str(time_int):
     if math.isnan(time_int):
         return "NaN"
     else:
-        return datetime.datetime.fromtimestamp(int(round(time_int)), tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            return datetime.datetime.fromtimestamp(int(round(time_int)), tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
+        except:
+            return "NaN"
 
 
 def return_bokeh_colormap(name):
@@ -519,8 +522,10 @@ def convert_tplotxarray_to_pandas_dataframe(name):
     # For 2D data, turn it into a Pandas dataframe
     # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
     # For 4D data, ignore the last dimension
-    if pytplot.data_quants[name].coords['spec_bins'] is None:
-        return pytplot.data_quants[name].to_pandas()
+    if not 'spec_bins' in pytplot.data_quants[name].coords:
+        return_data = pd.DataFrame(pytplot.data_quants[name])
+        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
+        return return_data
     else:
         matrix = pytplot.data_quants[name].values
         if len(matrix.shape) > 2:
@@ -528,8 +533,10 @@ def convert_tplotxarray_to_pandas_dataframe(name):
         if len(matrix.shape) > 2:
             matrix = matrix[:, :, 0]
         return_data = pd.DataFrame(matrix)
-        return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
-        spec_bins = pytplot.data_quants[name].coords['spec_bins'].to_pandas()
+        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
+        spec_bins = pd.DataFrame(pytplot.data_quants[name].coords['spec_bins'])
         if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 1:
             spec_bins = spec_bins.transpose()
+        else:
+            spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time']))
     return return_data, spec_bins

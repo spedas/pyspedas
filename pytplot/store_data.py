@@ -146,8 +146,10 @@ def store_data(name, data=None, delete=False, newname=None):
                 spec_bins = spec_bins.transpose()
                 spec_bins_time_varying = False
     else:
-        data['v'] = None
         spec_bins = None
+        # Provide another dimension if values are more than 1 dimension
+        if len(values.shape) > 1:
+            data['v'] = None
 
     # Set up xarray dimension and coordinates
     data_key_list = list(data.keys())
@@ -198,7 +200,7 @@ def store_data(name, data=None, delete=False, newname=None):
 
     data_quants[name] = temp
 
-    data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = _get_y_range(temp, spec_bins)
+    data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = _get_y_range(temp)
 
     return
 
@@ -215,22 +217,22 @@ def _get_base_tplot_vars(data):
     return base_vars
 
 
-def _get_y_range(dataset, spec_bins):
+def _get_y_range(dataset):
     # This is for the numpy RuntimeWarning: All-NaN axis encountered
     # with np.nanmin below
     import warnings
     warnings.filterwarnings("error")
 
-    if spec_bins is not None:
-        ymin = np.nanmin(spec_bins.values)
-        ymax = np.nanmax(spec_bins.values)
+    if 'spec_bins' in dataset.coords:
+        ymin = np.nanmin(dataset.coords['spec_bins'].values)
+        ymax = np.nanmax(dataset.coords['spec_bins'].values)
         return [ymin, ymax]
     else:
         dataset_temp = dataset.where(dataset != np.inf)
         dataset_temp = dataset_temp.where(dataset != -np.inf)
         try:
-            y_min = np.nanmin(dataset_temp.min(skipna=True))
-            y_max = np.nanmax(dataset_temp.max(skipna=True))
+            y_min = np.nanmin(dataset_temp.values)
+            y_max = np.nanmax(dataset_temp.values)
         except RuntimeWarning:
             y_min = np.nan
             y_max = np.nan

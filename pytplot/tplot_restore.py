@@ -47,7 +47,7 @@ def tplot_restore(filename):
         temp_tplot = readsav(filename)
         for i in range(len(temp_tplot['dq'])):
             data_name = temp_tplot['dq'][i][0].decode("utf-8")
-            temp_x_data = temp_tplot['dq'][i][1][0][0]
+            temp_x_data = temp_tplot['dq'][i][1][0][0].squeeze()
             #Pandas reads in data the other way I guess
             if len(temp_tplot['dq'][i][1][0][2].shape) == 2:
                 temp_y_data = np.transpose(temp_tplot['dq'][i][1][0][2])
@@ -82,9 +82,8 @@ def tplot_restore(filename):
                 for option_name in temp_tplot['dq'][i][3].dtype.names:
                     options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0])
             
-            data_quants[data_name].trange =  temp_tplot['dq'][i][4].tolist()
-            data_quants[data_name].dtype =  temp_tplot['dq'][i][5]
-            data_quants[data_name].create_time =  temp_tplot['dq'][i][6]
+            data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
+            data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
         
             for option_name in temp_tplot['tv'][0][0].dtype.names:
                 if option_name == 'TRANGE':

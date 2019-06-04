@@ -227,16 +227,16 @@ def tplot(name,
                 # Call 2D interactive window; This will only plot something when spectrograms are involved.
                 spec_slicer.spec_slicer(interactive=True)
 
-            static_list = [i for i in name if 'static' in pytplot.data_quants[i].attrs['plot_otpions']['extras']]
+            static_list = [i for i in name if 'static' in pytplot.data_quants[i].attrs['plot_options']['extras']]
             for tplot_var in static_list:
                 # Call 2D static window; This will only plot something when spectrograms are involved.
-                spec_slicer.spec_slicer(tplot_var, pytplot.data_quants[tplot_var].attrs['plot_otpions']['extras']['static'])
+                spec_slicer.spec_slicer(tplot_var, pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static'])
 
-            static_tavg_list = [i for i in name if 'static_tavg' in pytplot.data_quants[i].attrs['plot_otpions']['extras']]
+            static_tavg_list = [i for i in name if 'static_tavg' in pytplot.data_quants[i].attrs['plot_options']['extras']]
             for tplot_var in static_tavg_list:
                 # Call 2D static window for time-averaged values; This will only plot something when spectrograms
                 # are involved
-                spec_slicer.spec_slicer(tplot_var, pytplot.data_quants[tplot_var].attrs['plot_otpions']['extras']['static_tavg'])
+                spec_slicer.spec_slicer(tplot_var, pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static_tavg'])
 
             # (hasattr(sys, 'ps1')) checks to see if we're in ipython
             # plots the plots!

@@ -119,8 +119,8 @@ class TVarFigureMap(pg.GraphicsLayout):
             t_link, lat = pytplot.get_data(dataset_xr.attrs['plot_options']['links']['lat'])
             lat = lat.transpose()[0]
             # Need to trim down the data points to fit within the link
-            t_tvar = dataset.data.index.values
-            data = dataset.data[0].values
+            t_tvar = dataset.index.values
+            data = dataset[0].values
             while t_tvar[-1] > t_link[-1]:
                 t_tvar = np.delete(t_tvar, -1)
                 data = np.delete(data, -1)
@@ -138,7 +138,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                 data = np.delete(data, 0)
 
             lon = lon.transpose()[0]
-            for column_name in dataset.data.columns:
+            for column_name in dataset.columns:
                 values = data.tolist()
                 colors = pytplot.tplot_utilities.get_heatmap_color(color_map=
                                                                    self.colormap[cm_index % len(self.colormap)],
@@ -295,17 +295,11 @@ class TVarFigureMap(pg.GraphicsLayout):
         else:
             dataset_temp = pytplot.data_quants[self.tvar_name].where(pytplot.data_quants[self.tvar_name] != np.inf)
             dataset_temp = dataset_temp.where(dataset_temp != -np.inf)
+            # Cannot have a 0 minimum in a log scale
+            if self.zscale == 'log':
+                dataset_temp = dataset_temp.where(dataset_temp > 0)
             self.zmax = dataset_temp.max().max()
             self.zmin = dataset_temp.min().min()
-
-            # Cannot have a 0 minimum in a log scale
-            # TODO: Reimplement
-            #if self.zscale == 'log':
-                #zmin_list = []
-                #for column in pytplot.data_quants[self.tvar_name]:
-                    #series = pytplot.data_quants[self.tvar_name].data[column]
-                    #zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
-                #self.zmin = min(zmin_list)
 
     def _addtimebars(self):
         # grab tbardict
