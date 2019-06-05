@@ -11,12 +11,11 @@ from scipy import signal
 # Interestingly enough, the output is the same if units of seconds are used in the periodogram instead of Hertz.
 # Perhaps they calculated it differently?
 
-
+import pytplot
 
 def pwr_spec(tvar, nbp=256, nsp=128, name=None):
-
-    x = pytplot.data_quants[tvar].data.index.values
-    y = pytplot.data_quants[tvar].data[0].values
+    x = pytplot.data_quants[tvar].coords['time']
+    y = pytplot.data_quants[tvar].values
     
     l = len(x)
     x_new = []

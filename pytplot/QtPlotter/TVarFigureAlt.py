@@ -93,7 +93,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.xaxis.setLabel("Altitude", **self.labelStyle)
 
     def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
@@ -242,12 +242,13 @@ class TVarFigureAlt(pg.GraphicsLayout):
             datasets.append(pytplot.data_quants[oplot_name])
 
         line_num = 0
-        for dataset in datasets:
+        for dataset_xr in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
             for i in range(0, len(dataset.columns)):
-                t_link, x = pytplot.get_data(dataset.attrs['plot_options']['links']['alt'])
+                t_link = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['alt']].coords['time'].values
+                x = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['alt']].values
                 # Need to trim down the data points to fit within the link
                 t_tvar = dataset.index.values
                 data = dataset[i].values
@@ -258,7 +259,6 @@ class TVarFigureAlt(pg.GraphicsLayout):
                     t_tvar = np.delete(t_tvar, 0)
                     data = np.delete(data, 0)
 
-                x = x.transpose()[0]
                 self.curves.append(self.plotwindow.scatterPlot(x.tolist(), data.tolist(),
                                                                pen=pg.mkPen(None), brush=self.colors[line_num %
                                                                                                      len(self.colors)]))

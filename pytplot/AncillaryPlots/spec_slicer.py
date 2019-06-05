@@ -2,7 +2,6 @@ import pyqtgraph as pg
 import numpy as np
 import pytplot
 from pytplot import tplot_utilities
-from pyqtgraph.Qt import QtGui, QtCore
 
 
 def spec_slicer(var=None, time=None, interactive=False):
@@ -51,15 +50,22 @@ def spec_slicer(var=None, time=None, interactive=False):
         def update(t, name):
             if name in valid_variables:
                 # Get the time closest to the x position the mouse is over.
-                time_array = pytplot.data_quants[name].coords['time']
+                time_array = pytplot.data_quants[name].coords['time'].values
                 array = np.asarray(time_array)
-                # Take the average time for bin purposes
-                if len(t) == 2:
-                    t = (t[0]+t[1]) / 2.0
-                idx = (np.abs(array - t)).argmin()
 
+                using_avg = False
+                # Take the average time for bin purposes
+                if hasattr(t, '__len__'):
+                    if len(t) == 2:
+                        tavg = (t[0]+t[1]) / 2.0
+                        using_avg = True
+                        idx = (np.abs(array - tavg)).argmin()
+                    else:
+                        idx = (np.abs(array - t)).argmin()
+                else:
+                    idx = (np.abs(array - t)).argmin()
                 # Grabbing the bins to display on the x axis
-                if len(pytplot.data_quants[name].coords['spec_bins'].shape()) == 2:
+                if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 2:
                     bins = pytplot.data_quants[name].coords['spec_bins'][idx, :]
                 else:
                     bins = pytplot.data_quants[name].coords['spec_bins'].values
@@ -83,14 +89,14 @@ def spec_slicer(var=None, time=None, interactive=False):
                 tplot_utilities.set_x_range(name, x_axis_log, plot)
                 tplot_utilities.set_y_range(name, y_axis_log, plot)
 
-                if ('t_average' in pytplot.data_quants[name].attrs['plot_options']['extras']) or (len(t) == 2):
+                if ('t_average' in pytplot.data_quants[name].attrs['plot_options']['extras']) or using_avg:
                     # If the user indicated that they wanted to average the interactive plot's y values based on a
                     # certain time range around the cursor location, we then want to get average of values around
                     # the cursor location.
                     t_min = time_array[0]
                     t_max = time_array[-1]
 
-                    if len(t) == 2:
+                    if using_avg:
                         left_bound = t[0]
                         right_bound = t[1]
                     else:
@@ -155,8 +161,11 @@ def spec_slicer(var=None, time=None, interactive=False):
                 plot.setLabel('left', '')
                 plot_data.setData([], [])
 
-        user_time = [tplot_utilities.str_to_int(i) for i in time]
-        update(user_time, var)
+        if time is not None:
+            if not isinstance(time, list):
+                time = [time]
+            user_time = [tplot_utilities.str_to_int(i) for i in time]
+            update(user_time, var)
 
         # Make the above function called whenever hover_time is updated.
         if interactive:

@@ -79,7 +79,7 @@ pytplot.interp_nan('e','e_nonan',s_limit=5)
 print(pytplot.data_quants['e_nonan'].data)
 
 print('interpolate')
-pytplot.interpolate('a','c',interp='cubic')
+pytplot.tinterp('a','c',interp='cubic')
 print(pytplot.data_quants['c_interp'].data)
  
 print('join_vec')
@@ -89,9 +89,7 @@ print(pytplot.data_quants['deg'].data)
 print('multiply')
 pytplot.multiply('a','c','ac',interp='linear')
 print(pytplot.data_quants['ac'].data)
- 
-print('pwr_spec')
-print('FINISH POWER SPECTRUM')
+
  
 print('resample')
 # pytplot.resample('d',[3,4,5,6,7,18],'d_resampled')

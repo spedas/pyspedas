@@ -18,7 +18,7 @@ from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionIte
 
 
 class TVarFigureSpec(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
+    def __init__(self, tvar_name, show_xaxis=False):
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
@@ -57,8 +57,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.plotwindow.showAxis('bottom')
         else:
             self.plotwindow.hideAxis('bottom')
-
-        self._mouseMovedFunction = mouse_function
 
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
@@ -216,14 +214,13 @@ class TVarFigureSpec(pg.GraphicsLayout):
             dp = dataframe[index][x_closest]
 
             # add crosshairs
-            if self._mouseMovedFunction is not None:
-                # Associate mouse position with current plot you're mousing over.
-                self._mouseMovedFunction(int(mousePoint.x()), name=self.tvar_name)
-                if self.crosshair:
-                    self.vLine.setPos(mousePoint.x())
-                    self.hLine.setPos(mousePoint.y())
-                    self.vLine.setVisible(True)
-                    self.hLine.setVisible(True)
+            # Associate mouse position with current plot you're mousing over.
+            pytplot.hover_time.change_hover_time(int(mousePoint.x()), name=self.tvar_name)
+            if self.crosshair:
+                self.vLine.setPos(mousePoint.x())
+                self.hLine.setPos(mousePoint.y())
+                self.vLine.setVisible(True)
+                self.hLine.setVisible(True)
 
             date = (pytplot.tplot_utilities.int_to_str(x_closest))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(x_closest))[11:19]

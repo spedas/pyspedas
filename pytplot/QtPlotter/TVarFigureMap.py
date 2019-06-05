@@ -15,7 +15,7 @@ from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 
 
 class TVarFigureMap(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
+    def __init__(self, tvar_name, show_xaxis=False):
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
         self.crosshair = pytplot.tplot_opt_glob['crosshair']
@@ -54,7 +54,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         else:
             self.plotwindow.hideAxis('bottom')
 
-        self._mouseMovedFunction = mouse_function
+        self._mouseMovedFunction
 
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
@@ -67,14 +67,6 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.hoverlegend.setItem("Longitude:", "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
-
-    def _set_crosshairs(self):
-        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
-        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
-        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
-        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
-        self.vLine.setVisible(False)
-        self.hLine.setVisible(False)
 
     def buildfigure(self):
         self._setxrange()
@@ -115,8 +107,8 @@ class TVarFigureMap(pg.GraphicsLayout):
             # This needs to be rewritten to use xarray
             dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
 
-            t_link, lat = pytplot.get_data(dataset_xr.attrs['plot_options']['links']['lat'])
-            lat = lat.transpose()[0]
+            t_link = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['lat']].coords['time'].values
+            lat = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['lat']].values
             # Need to trim down the data points to fit within the link
             t_tvar = dataset.index.values
             data = dataset[0].values
@@ -127,7 +119,8 @@ class TVarFigureMap(pg.GraphicsLayout):
                 t_tvar = np.delete(t_tvar, 0)
                 data = np.delete(data, 0)
 
-            t_link, lon = pytplot.get_data(dataset_xr.attrs['plot_options']['links']['lon'])
+            t_link = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['lon']].coords['time'].values
+            lon = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['lon']].values
             # Need to trim down the data points to fit within the link
             while t_tvar[-1] > t_link[-1]:
                 t_tvar = np.delete(t_tvar, -1)
@@ -136,7 +129,6 @@ class TVarFigureMap(pg.GraphicsLayout):
                 t_tvar = np.delete(t_tvar, 0)
                 data = np.delete(data, 0)
 
-            lon = lon.transpose()[0]
             for column_name in dataset.columns:
                 values = data.tolist()
                 colors = pytplot.tplot_utilities.get_heatmap_color(color_map=
@@ -205,10 +197,9 @@ class TVarFigureMap(pg.GraphicsLayout):
             index_y = round(float(mousepoint.y()), 2)
 
             # get latitude and longitude arrays
-            time, latitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat'])
-            latitude = latitude.transpose()[0]
-            time, longitude = pytplot.get_data(pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon'])
-            longitude = longitude.transpose()[0]
+            time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time'].values
+            latitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
+            longitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
             # find closest time point to cursor
             radius = np.sqrt((latitude - index_y) ** 2 + (longitude - index_x) ** 2).argmin()
             time_point = time[radius]
@@ -217,12 +208,11 @@ class TVarFigureMap(pg.GraphicsLayout):
             time = (pytplot.tplot_utilities.int_to_str(time_point))[11:19]
 
             # add crosshairs
-            if self._mouseMovedFunction is not None:
-                self._mouseMovedFunction(int(mousepoint.x()))
-                self.vLine.setVisible(True)
-                self.hLine.setVisible(True)
-                self.vLine.setPos(mousepoint.x())
-                self.hLine.setPos(mousepoint.y())
+            pytplot.hover_time.change_hover_time(int(mousepoint.x()), name=self.tvar_name)
+            self.vLine.setVisible(True)
+            self.hLine.setVisible(True)
+            self.vLine.setPos(mousepoint.x())
+            self.hLine.setPos(mousepoint.y())
 
             # Set legend options
             self.hoverlegend.setVisible(True)
@@ -297,8 +287,8 @@ class TVarFigureMap(pg.GraphicsLayout):
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
                 dataset_temp = dataset_temp.where(dataset_temp > 0)
-            self.zmax = dataset_temp.max().max()
-            self.zmin = dataset_temp.min().min()
+            self.zmax = dataset_temp.max().max().values
+            self.zmin = dataset_temp.min().min().values
 
     def _addtimebars(self):
         # grab tbardict
@@ -346,3 +336,11 @@ class TVarFigureMap(pg.GraphicsLayout):
                 bm = pg.ImageItem(image=img, opacity=alpha)
                 bm.setRect(QtCore.QRect(0, -90, 360, 180))
                 self.plotwindow.addItem(bm)
+
+    def _set_crosshairs(self):
+        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        self.plotwindow.addItem(self.vLine, ignoreBounds=True)
+        self.plotwindow.addItem(self.hLine, ignoreBounds=True)
+        self.vLine.setVisible(False)
+        self.hLine.setVisible(False)

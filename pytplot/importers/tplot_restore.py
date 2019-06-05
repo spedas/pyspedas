@@ -7,9 +7,9 @@ import os
 import pickle
 import numpy as np
 from pytplot import data_quants, tplot_opt_glob
-from .options import options 
-from .store_data import store_data
-from .tplot_options import tplot_options
+from pytplot.options import options
+from pytplot.store_data import store_data
+from pytplot.tplot_options import tplot_options
 from scipy.io import readsav
 
 

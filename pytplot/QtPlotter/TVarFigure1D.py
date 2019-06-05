@@ -15,7 +15,7 @@ from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionIte
 
 
 class TVarFigure1D(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
+    def __init__(self, tvar_name, show_xaxis=False):
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
@@ -53,8 +53,6 @@ class TVarFigure1D(pg.GraphicsLayout):
             self.plotwindow.showAxis('bottom')
         else:
             self.plotwindow.hideAxis('bottom')
-
-        self._mouseMovedFunction = mouse_function
 
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
@@ -273,18 +271,18 @@ class TVarFigure1D(pg.GraphicsLayout):
             date = (pytplot.tplot_utilities.int_to_str(index_x))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(index_x))[11:19]
             # add crosshairs
-            if self._mouseMovedFunction is not None:
-                self._mouseMovedFunction(int(mousepoint.x()))
+            pytplot.hover_time.change_hover_time(int(mousepoint.x()), self.tvar_name)
+            if self.crosshair:
                 self.vLine.setPos(mousepoint.x())
                 self.hLine.setPos(mousepoint.y())
                 self.vLine.setVisible(True)
                 self.hLine.setVisible(True)
 
-            self.hoverlegend.setVisible(True)
-            self.hoverlegend.setItem("Date:", date)
-            # Allow the user to set x-axis(time) and y-axis data names in crosshairs
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', time)
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', str(index_y))
+                self.hoverlegend.setVisible(True)
+                self.hoverlegend.setItem("Date:", date)
+                # Allow the user to set x-axis(time) and y-axis data names in crosshairs
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', time)
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', str(index_y))
 
         else:
             self.hoverlegend.setVisible(False)

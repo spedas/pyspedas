@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import datetime
 
-from pytplot import data_quants, TVar
+from pytplot import data_quants
 from .del_data import del_data
 import pytplot
 import xarray as xr

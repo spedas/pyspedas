@@ -13,8 +13,7 @@ from .TVarFigureAxisOnly import TVarFigureAxisOnly
 
 def generate_stack(name,
                    var_label=None,
-                   combine_axes=True,
-                   mouse_moved_event=None):
+                   combine_axes=True):
     new_stack = pg.GraphicsLayoutWidget()
     # Variables needed for pyqtgraph plots
     xaxis_thickness = 35
@@ -62,7 +61,7 @@ def generate_stack(name,
             if _set_pyqtgraph_title(new_stack):
                 titlerow = 1
         new_stack.ci.layout.setRowPreferredHeight(i + titlerow, p_height)
-        new_fig = _get_figure_class(name[i], show_xaxis=last_plot, mouse_moved=mouse_moved_event)
+        new_fig = _get_figure_class(name[i], show_xaxis=last_plot)
         new_stack.addItem(new_fig, row=i + titlerow, col=0)
 
         axis_types.append(new_fig.getaxistype())
@@ -113,7 +112,7 @@ def _set_pyqtgraph_title(layout):
     return False
 
 
-def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None):
+def _get_figure_class(tvar_name, show_xaxis=True):
     if 'plotter' in pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] and pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in \
             pytplot.qt_plotters:
         cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter']]
@@ -129,4 +128,4 @@ def _get_figure_class(tvar_name, show_xaxis=True, mouse_moved=None):
             cls = pytplot.qt_plotters['qtTVarFigureMap']
         else:
             cls = pytplot.qt_plotters['qtTVarFigure1D']
-    return cls(tvar_name, show_xaxis=show_xaxis, mouse_function=mouse_moved)
+    return cls(tvar_name, show_xaxis=show_xaxis)

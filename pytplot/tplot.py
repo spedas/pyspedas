@@ -12,12 +12,14 @@ from . import HTMLPlotter
 from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
+from pytplot.AncillaryPlots import spec_slicer
 
 if pytplot.using_graphics:
     from .QtPlotter import PyTPlot_Exporter
     from pyqtgraph.Qt import QtCore, QtGui, QtCore
     import pyqtgraph as pg
-    from . import QtPlotter, spec_slicer
+    from . import QtPlotter
+    from pytplot.AncillaryPlots import spec_slicer
 
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
@@ -37,7 +39,9 @@ def tplot(name,
           bokeh=False,
           save_png=None,
           display=True,
-          testing=False):
+          testing=False,
+          extra_functions=[],
+          extra_function_args=[]):
     """
     This is the function used to display the tplot variables stored in memory.
     The default output is to show the plots stacked on top of one another inside a GUI window.
@@ -194,8 +198,7 @@ def tplot(name,
 
         if display:
             # This layout is used when the user wants a png image saved.
-            layout_orig = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes,
-                                                   mouse_moved_event=pytplot.hover_time.change_hover_time)
+            layout_orig = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes)
             layout_orig.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout_orig.items()):
                 if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
@@ -209,8 +212,7 @@ def tplot(name,
 
             # Set up displayed plot window and grab plots to plot on it
             available_qt_window = tplot_utilities.get_available_qt_window()
-            layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes,
-                                              mouse_moved_event=pytplot.hover_time.change_hover_time)
+            layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes)
 
             available_qt_window.newlayout(layout)
             available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0],
@@ -223,26 +225,44 @@ def tplot(name,
             available_qt_window.show()
             available_qt_window.activateWindow()
 
-            if interactive:
-                # Call 2D interactive window; This will only plot something when spectrograms are involved.
-                spec_slicer.spec_slicer(interactive=True)
+            # This function is responsible for calling all of the extra plotting routines that a user might like with
+            # their data plots
+            extra_function_handler(extra_functions, extra_function_args, name, interactive)
 
-            static_list = [i for i in name if 'static' in pytplot.data_quants[i].attrs['plot_options']['extras']]
-            for tplot_var in static_list:
-                # Call 2D static window; This will only plot something when spectrograms are involved.
-                spec_slicer.spec_slicer(tplot_var, pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static'])
-
-            static_tavg_list = [i for i in name if 'static_tavg' in pytplot.data_quants[i].attrs['plot_options']['extras']]
-            for tplot_var in static_tavg_list:
-                # Call 2D static window for time-averaged values; This will only plot something when spectrograms
-                # are involved
-                spec_slicer.spec_slicer(tplot_var, pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static_tavg'])
-
-            # (hasattr(sys, 'ps1')) checks to see if we're in ipython
             # plots the plots!
             if testing:
                 return
+
+            # (hasattr(sys, 'ps1')) checks to see if we're in ipython
             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
 
         return
+
+
+def extra_function_handler(extra_functions, extra_functions_args, names, interactive):
+
+    # Handles the old way of calling the spec slicing plots, (if anyone still uses that way)
+    if interactive:
+        # Call 2D interactive window; This will only plot something when spectrograms are involved.
+        extra_functions.append(spec_slicer.spec_slicer)
+        extra_functions_args.append([None, None, True])
+
+    static_list = [i for i in names if 'static' in pytplot.data_quants[i].attrs['plot_options']['extras']]
+    for tplot_var in static_list:
+        # Call 2D static window; This will only plot something when spectrograms are involved.
+        extra_functions.append(spec_slicer.spec_slicer)
+        extra_functions_args.append(
+            [tplot_var, pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static'],
+             False])
+
+    static_tavg_list = [i for i in names if 'static_tavg' in pytplot.data_quants[i].attrs['plot_options']['extras']]
+    for tplot_var in static_tavg_list:
+        # Call 2D static window for time-averaged values; This will only plot something when spectrograms
+        # are involved
+        extra_functions.append(spec_slicer.spec_slicer)
+        extra_functions_args.append([tplot_var,pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static_tavg'],
+                             False])
+
+    for f, args in zip(extra_functions, extra_functions_args):
+        f(*args)
