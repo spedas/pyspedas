@@ -7,11 +7,18 @@ import pytplot
 
 #ADD ACROSS COLUMNS
 #add tvar data across columns, store in new_tvar
-def add_across(tvar1,new_tvar='tvar_aa'):
+def add_across(tvar1,new_tvar=None):
     #separate and add data
-    time = pytplot.data_quants[tvar1].data.index.copy()
-    data1 = pytplot.data_quants[tvar1].data.copy()
+    if new_tvar is None:
+        new_tvar=tvar1+"_summed"
+    if 'spec_bins' in pytplot.data_quants.coords:
+        d,_ = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+    else:
+        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+
+    time = d.index.copy()
+    data1 = d.values.copy()
     data = data1.sum(axis=1)
     #store added data
     pytplot.store_data(new_tvar,data={'x':time, 'y':data})
-    return new_tvar
+    return

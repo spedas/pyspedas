@@ -8,7 +8,17 @@ import numpy as np
 
 #DERIVE
 #take derivative w.r.t. time, store in new_tvar
-def derive(tvar1,new_tvar='tvar_derive'):
+def derive(tvar1,new_tvar=None):
+    a = pytplot.data_quants[tvar1].differentiate('time')
+    if new_tvar is None:
+        pytplot.data_quants[tvar1] = a
+    else:
+        if 'spec_bins' in a.coords:
+            pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values, 'v':a.coords['spec_bins']})
+        else:
+            pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values})
+
+'''
     if new_tvar=='tvar_derive':
         new_tvar=tvar1 + '_derive'
 
@@ -29,3 +39,4 @@ def derive(tvar1,new_tvar='tvar_derive'):
     else:
         pytplot.store_data(new_tvar,data={'x': time, 'y': new_df})
     return new_tvar
+'''

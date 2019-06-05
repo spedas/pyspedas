@@ -11,7 +11,12 @@ def interp_nan(tvar1,newtvar='tvar_interp_nan',s_limit=0):
     if newtvar=='tvar_interp_nan':
         newtvar = tvar1 +"_interp_nan"
 
-    tv1 = pytplot.data_quants[tvar1].data.copy()
+    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
+        d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+    else:
+        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+        s = None
+    tv1 = d.values.copy()
     tv1 = tv1.astype(float)
     cadence = tv1.index[1] - tv1.index[0]
     n_nans = int(round(s_limit/cadence))
@@ -21,7 +26,7 @@ def interp_nan(tvar1,newtvar='tvar_interp_nan',s_limit=0):
         tv1 = tv1.interpolate(method='linear',limit=n_nans,limit_direction='both') 
     tv1 = tv1.astype(object)
 
-    if (pytplot.data_quants[tvar1].spec_bins is not None):
+    if s is not None:
         pytplot.store_data(newtvar,data = {'x':tv1.index,'y':tv1, 'v': pytplot.data_quants[tvar1].spec_bins})
     else:
         pytplot.store_data(newtvar, data={'x': tv1.index, 'y': tv1})

@@ -16,7 +16,7 @@ from .divide import divide
 from .flatten_full import flatten_full
 from .flatten import flatten
 from .interp_nan import interp_nan
-from .interpolate import interpolate
+from .interpolate import tinterp
 from .join_vec import join_vec
 from .multiply import multiply
 from .resample import resample, pdresample

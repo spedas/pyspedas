@@ -7,17 +7,21 @@ import pytplot
 
 #MULTIPLY
 #multiply two tvar data arrays, store in new_tvar
-def multiply(tvar1,tvar2,new_tvar='tvar_multiply',interp='linear'):
-    if new_tvar == 'tvar_multiply':
-        new_tvar = tvar1 + "_x_" + tvar2
+def multiply(tvar1,tvar2,new_tvar=None):
+    # interpolate tvars
+    tv2 = pytplot.tplot_math.tinterp(tvar1, tvar2)
+    # separate and subtract data
+    data1 = pytplot.data_quants[tvar1].values
+    data2 = tv2.values
+    data = data1 * data2
+    # store subtracted data
 
-    #interpolate tvars
-    tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
-    #separate and multiply data
-    time = pytplot.data_quants[tv1].data.index
-    data1 = pytplot.data_quants[tv1].data
-    data2 = pytplot.data_quants[tv2].data
-    data = data1*data2
-    #store multiplied data
-    pytplot.store_data(new_tvar,data={'x':time, 'y':data})
-    return new_tvar
+    if new_tvar is None:
+        new_tvar = tvar1+'_x_'+tvar2
+        return
+
+    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
+        pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data, 'v':pytplot.data_quants[tvar1].coords['spec_bins'].values})
+    else:
+        pytplot.store_data(new_tvar,data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
+    return

@@ -6,7 +6,7 @@
 import pytplot
 #SUBTRACT
 #subtract two tvar data arrays, store in new_tvar
-def subtract(tvar1,tvar2,new_tvar='tvar_subtract',interp='linear'):
+def subtract(tvar1,tvar2,new_tvar=None):
     '''
     :param tvar1: The first tvar
     :param tvar2: The second tvar
@@ -15,12 +15,19 @@ def subtract(tvar1,tvar2,new_tvar='tvar_subtract',interp='linear'):
     :return: New tplot variable created.
     '''
     #interpolate tvars
-    tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
+    tv2 = pytplot.tplot_math.tinterp(tvar1,tvar2)
     #separate and subtract data
-    time = pytplot.data_quants[tv1].data.index
-    data1 = pytplot.data_quants[tv1].data
-    data2 = pytplot.data_quants[tv2].data
+    data1 = pytplot.data_quants[tvar1].values
+    data2 = tv2.values
     data = data1 - data2
     #store subtracted data
-    pytplot.store_data(new_tvar,data={'x': time, 'y': data})
-    return new_tvar
+
+    if new_tvar is None:
+        pytplot.data_quants[tvar1].values = data
+        return
+
+    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
+        pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data, 'v':pytplot.data_quants[tvar1].coords['spec_bins'].values})
+    else:
+        pytplot.store_data(new_tvar,data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
+    return

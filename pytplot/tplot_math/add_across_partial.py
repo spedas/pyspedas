@@ -8,10 +8,17 @@ import numpy as np
 
 #PARTIAL ADD ACROSS COLUMNS
 #add tvar data across specific columns, store in new_tvar
-def add_across_partial(tvar1,column_range,new_tvar='tvar_aap'):
-    #separate and add data
-    time = pytplot.data_quants[tvar1].data.index.copy()
-    data1 = pytplot.data_quants[tvar1].data.copy()
+def add_across_partial(tvar1,column_range,new_tvar=None):
+    # separate and add data
+    if new_tvar is None:
+        new_tvar = tvar1 + "_summed"
+    if 'spec_bins' in pytplot.data_quants.coords:
+        d, _ = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+    else:
+        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+
+    time = d.index.copy()
+    data1 = d.values.copy()
     data = []
     #grab column data
     if len(column_range)==2 and isinstance(column_range[0],int):
@@ -34,4 +41,4 @@ def add_across_partial(tvar1,column_range,new_tvar='tvar_aap'):
                 data = data + [list(datasum)]
     #store added data
     pytplot.store_data(new_tvar,data={'x':time, 'y':np.transpose(data)})
-    return new_tvar
+    return

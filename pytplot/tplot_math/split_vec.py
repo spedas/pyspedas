@@ -5,10 +5,15 @@ import pytplot
 
 
 def split_vec(tvar,newtvars=None,columns='all'):
+    if not 'spec_bins' in pytplot.data_quants[tvar].coords:
+        dataframe = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+        spec_bins = None
+    else:
+        dataframe, spec_bins = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+
     #separate and add data
-    time = pytplot.data_quants[tvar].data.index
-    data = pytplot.data_quants[tvar].data
-    df = pytplot.data_quants[tvar]
+    time = dataframe.index
+    data = dataframe
     defaultlist = []
     #grab column data
     if columns == 'all':
@@ -25,10 +30,14 @@ def split_vec(tvar,newtvars=None,columns='all'):
         #store split data
         defaultname = tvar+ '_' + str(i)
         defaultlist = defaultlist + [defaultname]
+        data_for_tplot = {'x':time, 'y':data[split_col]}
+        if spec_bins:
+            data_for_tplot['v'] = spec_bins.values
         if newtvars is None:
-            pytplot.store_data(defaultname,data={'x':time, 'y':data[split_col]})
+            pytplot.store_data(defaultname,data=data_for_tplot)
         else:
-            pytplot.store_data(newtvars[i],data={'x':time, 'y':data[split_col]})
+            pytplot.store_data(newtvars[i],data=data_for_tplot)
+
     if newtvars is None:
         return defaultlist
     else:

@@ -4,7 +4,19 @@ import numpy as np
 
 #AVERAGE AT RESOLUTION
 #take average of column over discrete periods of time
-def avg_res_data(tvar1,res,new_tvar='tvar_avg_res'):
+def avg_res_data(tvar1,res,new_tvar=None):
+
+    tvar = pytplot.data_quants[tvar1].coarsen(time=res, boundary='trim').mean()
+
+    if new_tvar is None:
+        pytplot.data_quants[tvar1] = tvar
+    else:
+        if 'spec_bins' in pytplot.data_quants[tvar1].coords:
+            pytplot.store_data(new_tvar, data={'x': tvar.coords['time'].values, 'y': tvar.values,
+                                               'v': tvar.coords['spec_bins'].values})
+        else:
+            pytplot.store_data(new_tvar, data={'x': tvar.coords['time'].values, 'y': tvar.values})
+'''
     time_varying = pytplot.data_quants[tvar1].spec_bins_time_varying
     #grab info from tvar
     df = pytplot.data_quants[tvar1].data.copy()
@@ -57,4 +69,5 @@ def avg_res_data(tvar1,res,new_tvar='tvar_avg_res'):
         pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data,'v':pytplot.data_quants[tvar1].spec_bins})
     else:
         pytplot.store_data(new_tvar, data={'x':avg_bin_time,'y':avg_bin_data})
-    return new_tvar    
+    return new_tvar
+'''
