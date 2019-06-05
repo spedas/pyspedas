@@ -14,6 +14,7 @@ import xarray as xr
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
 from pytplot.options import options
+from pytplot import data_quants
 
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
