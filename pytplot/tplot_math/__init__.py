@@ -3,7 +3,6 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
-from .add_across_partial import add_across_partial
 from .add_across import add_across
 from .add import add
 from .avg_res_data import avg_res_data
@@ -15,7 +14,7 @@ from .derive import derive
 from .divide import divide
 from .flatten import flatten
 from .interp_nan import interp_nan
-from .interpolate import tinterp
+from .tinterp import tinterp
 from .join_vec import join_vec
 from .multiply import multiply
 from .resample import resample
