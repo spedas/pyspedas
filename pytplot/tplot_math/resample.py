@@ -38,7 +38,7 @@ def resample(tvar1,times,new_tvar=None):
     if ('spec_bins' in pytplot.data_quants[tvar1].coords) and (pytplot.data_quants[tvar1]['spec_bins'].shape > 1):
         resample_spec_bins = True
 
-    if 'spec_bins' in pytplot.data_quants.coords:
+    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
         d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
     else:
         d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)

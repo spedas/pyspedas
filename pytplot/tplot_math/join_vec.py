@@ -24,7 +24,7 @@ def join_vec(tvars,new_tvar=None):
                 df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
                 s = None
         else:
-            if 'spec_bins' in pytplot.data_quants.coords:
+            if 'spec_bins' in pytplot.data_quants[tvars[i]].coords:
                 d, _ = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
             else:
                 d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])

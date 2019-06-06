@@ -7,7 +7,7 @@ import numpy as np
 def avg_res_data(tvar1,res,new_tvar=None):
 
     tvar = pytplot.data_quants[tvar1].coarsen(time=res, boundary='trim').mean()
-
+    tvar.name = pytplot.data_quants[tvar1].name
     if new_tvar is None:
         pytplot.data_quants[tvar1] = tvar
     else:

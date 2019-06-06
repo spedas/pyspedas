@@ -17,21 +17,21 @@ def split_vec(tvar,newtvars=None,columns='all'):
     defaultlist = []
     #grab column data
     if columns == 'all':
-        columns = pytplot.data_quants[tvar].data.columns.values
+        columns = dataframe.columns.values
     for i,val in enumerate(columns):
         #if not a list
-        if isinstance(val,int):
-            range_start = val
-            range_end = val
-        else:
+        if isinstance(val,list):
             range_start = val[0]
             range_end = val[1]
+        else:
+            range_start = val
+            range_end = val
         split_col = list(range(range_start,range_end+1))
         #store split data
         defaultname = tvar+ '_' + str(i)
         defaultlist = defaultlist + [defaultname]
-        data_for_tplot = {'x':time, 'y':data[split_col]}
-        if spec_bins:
+        data_for_tplot = {'x':time, 'y':data[split_col].squeeze()}
+        if spec_bins is not None:
             data_for_tplot['v'] = spec_bins.values
         if newtvars is None:
             pytplot.store_data(defaultname,data=data_for_tplot)

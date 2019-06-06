@@ -14,7 +14,7 @@ from scipy import signal
 def pwr_spec(tvar, nbp=256, nsp=128, name=None):
 
     x = pytplot.data_quants[tvar].coords['time']
-    y = pytplot.data_quants[tvar].values
+    y = pytplot.data_quants[tvar].values.squeeze()
 
     if len(y.shape) > 1:
         print("Can only perform action for a single line")

@@ -12,15 +12,18 @@ def add_across(tvar1,column_range=None,new_tvar=None):
     # separate and add data
     if new_tvar is None:
         new_tvar = tvar1 + "_summed"
-    if 'spec_bins' in pytplot.data_quants.coords:
+    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
         d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
     else:
         d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
         s = None
 
     time = d.index.copy()
-    data1 = d.values.copy()
-    data2 = d.values.copy()
+    data1 = d.copy()
+    if s is not None:
+        data2 = s.copy()
+    else:
+        data2=None
     data = []
     spec_data = []
 
@@ -47,7 +50,7 @@ def add_across(tvar1,column_range=None,new_tvar=None):
                 datasum = data1[add_col].sum(axis=1)
                 data = data + [list(datasum)]
 
-    if s is not None:
+    if data2 is not None:
         if len(column_range) == 2 and isinstance(column_range[0], int):
             range_start = column_range[0]
             range_end = column_range[1]

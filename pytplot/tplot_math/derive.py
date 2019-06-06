@@ -11,10 +11,12 @@ import numpy as np
 def derive(tvar1,new_tvar=None):
     a = pytplot.data_quants[tvar1].differentiate('time')
     if new_tvar is None:
+        a.name = tvar1
+        a.attrs['plot_options'] = pytplot.data_quants[tvar1].attrs['plot_options']
         pytplot.data_quants[tvar1] = a
     else:
         if 'spec_bins' in a.coords:
-            pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values, 'v':a.coords['spec_bins']})
+            pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values, 'v':a.coords['spec_bins'].values})
         else:
             pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values})
 

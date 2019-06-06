@@ -11,6 +11,6 @@ def spec_mult(tvar1,new_tvar=None):
     d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
     dataframe = d.values
     specframe = s.values
-    new_df = pd.DataFrame(dataframe.values*specframe.values, columns=dataframe.columns, index=dataframe.index)    
+    new_df = pd.DataFrame(dataframe*specframe, columns=d.columns, index=d.index)
     pytplot.store_data(new_tvar,data={'x': new_df.index,'y': new_df.values})
     return

@@ -45,6 +45,8 @@ def degap(tvar,dt,margin,func='nan',new_tvar = None):
     a = pytplot.data_quants[tvar].reindex({'time': new_index}, method=method)
 
     if new_tvar is None:
+        a.name = tvar
+        a.attrs['plot_options'] = pytplot.data_quants[tvar].attrs['plot_options']
         pytplot.data_quants[tvar] = a
     else:
         if 'spec_bins' in a.coords:
