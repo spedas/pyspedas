@@ -13,13 +13,12 @@ from .deflag import deflag
 from .degap import degap
 from .derive import derive
 from .divide import divide
-from .flatten_full import flatten_full
 from .flatten import flatten
 from .interp_nan import interp_nan
 from .interpolate import tinterp
 from .join_vec import join_vec
 from .multiply import multiply
-from .resample import resample, pdresample
+from .resample import resample
 from .spec_mult import spec_mult
 from .split_vec import split_vec
 from .subtract import subtract

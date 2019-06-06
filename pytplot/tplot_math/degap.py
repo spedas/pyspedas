@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import copy
     
-def degap(tvar,dt,margin,func='nan'):
+def degap(tvar,dt,margin,func='nan',new_tvar = None):
     '''
     Fills data within margin(s) where data may not be correct.
 
@@ -26,30 +26,30 @@ def degap(tvar,dt,margin,func='nan'):
             substitution or forward-filled values.
     Returns:
         None
-
-    Examples:
-        Null data between [3,7], and [13,17], with step size 2.3.
-         pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
-         pytplot.degap('d',[[3,7],[13,17]],2.3,func='nan')
     '''
 
-    new_tvar = copy.deepcopy(pytplot.data_quants[tvar])
-    gap_size = np.diff(new_tvar.data.index)
+    gap_size = np.diff(pytplot.data_quants[tvar].coords['time'])
     gap_index_locations = np.where(gap_size > dt+margin)
-    new_tvar_index = new_tvar.data.index.values
+    new_tvar_index = pytplot.data_quants[tvar].coords['time']
     values_to_add = np.array([])
     for i in gap_index_locations[0]:
         values_to_add = np.append(values_to_add, np.arange(new_tvar_index[i], new_tvar_index[i+1], dt))
 
-    new_index = pd.Index(np.sort(np.unique(np.concatenate((values_to_add, new_tvar_index)))))
+    new_index = np.sort(np.unique(np.concatenate((values_to_add, new_tvar_index))))
 
     if func == 'nan':
-        #add any new indices to current dataframe indices
-        new_tvar.data.reindex(new_index)
-        new_tvar.number = len(pytplot.data_quants)
-        pytplot.data_quants[tvar+"_degapped"] = new_tvar
+        method = None
     if func == 'ffill':
-        #interpolate to create data for new values
-        pytplot.tplot_math.resample(tvar,new_index,tvar+'_degapped')
+        method = 'ffill'
+
+    a = pytplot.data_quants[tvar].reindex({'time': new_index}, method=method)
+
+    if new_tvar is None:
+        pytplot.data_quants[tvar] = a
+    else:
+        if 'spec_bins' in a.coords:
+            pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+        else:
+            pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values})
 
     return
