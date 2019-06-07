@@ -120,8 +120,8 @@ class TVarFigureMap(object):
         else:
             dataset_temp = pytplot.data_quants[self.tvar_name].where(pytplot.data_quants[self.tvar_name] != np.inf)
             dataset_temp = dataset_temp.where(pytplot.data_quants[self.tvar_name] != -np.inf)
-            self.zmax = dataset_temp.max(skipna=True).values
-            self.zmin = dataset_temp.min(skipna=True).values
+            self.zmax = np.float(dataset_temp.max(skipna=True).values)
+            self.zmin = np.float(dataset_temp.min(skipna=True).values)
             
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
@@ -141,11 +141,10 @@ class TVarFigureMap(object):
             time_bar_line = Span(location=time_bar['location'],
                                  dimension=time_bar['dimension'],
                                  line_color=time_bar['line_color'],
-                                 line_width=time_bar['line_width'],
-                                 text_font_size=str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size']) + 'pt')
+                                 line_width=time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
         # grab tbardict
-        tbardict = pytplot.data_quants[self.tvar_name].time_bar
+        tbardict = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
         ltbar = len(tbardict)
         # make sure data is in list format
         datasets = [pytplot.data_quants[self.tvar_name]]
@@ -162,8 +161,6 @@ class TVarFigureMap(object):
                 time = pytplot.data_quants[dataset.attrs['plot_options']['links']['lat']].coords['time']
                 latitude = pytplot.data_quants[dataset.attrs['plot_options']['links']['lat']].values
                 longitude = pytplot.data_quants[dataset.attrs['plot_options']['links']['lon']].values
-                latitude = latitude.transpose()[0]
-                longitude = longitude.transpose()[0]
                 nearest_time_index = np.abs(time - test_time).argmin()
                 lat_point = latitude[nearest_time_index]
                 lon_point = longitude[nearest_time_index]
@@ -208,8 +205,10 @@ class TVarFigureMap(object):
         cm_index = 0
         for dataset in datasets:   
             # TODO: Add a check that lon and lat are only 1D
-            t_link_lon, x = pytplot.get_data(dataset.attrs['plot_options']['links']['lon'])
-            t_link_lat, y = pytplot.get_data(dataset.attrs['plot_options']['links']['lat'])
+            t_link_lon = pytplot.data_quants[dataset.attrs['plot_options']['links']['lon']].coords['time'].values
+            x = pytplot.data_quants[dataset.attrs['plot_options']['links']['lon']].values
+            t_link_lat = pytplot.data_quants[dataset.attrs['plot_options']['links']['lat']].coords['time'].values
+            y = pytplot.data_quants[dataset.attrs['plot_options']['links']['lat']].values
 
             df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             for column_name in df.columns:

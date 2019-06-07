@@ -54,8 +54,6 @@ class TVarFigureMap(pg.GraphicsLayout):
         else:
             self.plotwindow.hideAxis('bottom')
 
-        self._mouseMovedFunction
-
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
 
@@ -310,13 +308,13 @@ class TVarFigureMap(pg.GraphicsLayout):
                 color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
                 pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
                 # correlate given time with corresponding lat/lon points
-                time, latitude = pytplot.get_data(dataset.attrs['plot_options']['links']['lat'])
-                time, longitude = pytplot.get_data(dataset.attrs['plot_options']['links']['lon'])
-                latitude = latitude.transpose()[0]
-                longitude = longitude.transpose()[0]
+                time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time']
+                latitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
+                longitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
                 nearest_time_index = np.abs(time - test_time).argmin()
                 lat_point = latitude[nearest_time_index]
                 lon_point = longitude[nearest_time_index]
+                # color = pytplot.tplot_utilities.rgb_color(color)
                 self.plotwindow.scatterPlot([lon_point], [lat_point], size=pointsize, pen=pg.mkPen(None), brush=color)
 
         return
