@@ -223,12 +223,12 @@ class TVarFigureAlt(pg.GraphicsLayout):
             # for location in tbar dict
             for i in range(ltbar):
                 # get times, color, point size
-                test_time = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
-                color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
-                pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+                test_time = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
+                color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
+                pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
                 # correlate given time with corresponding data/alt points
-                time, altitude = pytplot.get_data(dataset.attrs['plot_options']['links']['alt'])
-                altitude = altitude.transpose()[0]
+                time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].coords['time'].values
+                altitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].values
                 nearest_time_index = np.abs(time - test_time).argmin()
                 data_point = dataset.iloc[nearest_time_index][0]
                 alt_point = altitude[nearest_time_index]

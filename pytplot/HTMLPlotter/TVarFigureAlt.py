@@ -92,7 +92,7 @@ class TVarFigureAlt(object):
             for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
                 datasets.append(pytplot.data_quants[oplot_name])
             for dataset in datasets:
-                _, alt = pytplot.get_data(dataset.attrs['plot_options']['links']['alt'])
+                alt = pytplot.data_quants[dataset.attrs['plot_options']['links']['alt']].values
                 x_min_list.append(np.nanmin(alt.tolist()))
                 x_max_list.append(np.nanmax(alt.tolist()))
             pytplot.tplot_opt_glob['alt_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
@@ -123,17 +123,19 @@ class TVarFigureAlt(object):
             time_bar_line = Span(location=time_bar['location'],
                                  dimension=time_bar['dimension'],
                                  line_color=time_bar['line_color'],
-                                 line_width=time_bar['line_width'],
-                                 text_font_size=str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt')
+                                 line_width=time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
         # grab tbardict
-        tbardict = pytplot.data_quants[self.tvar_name].time_bar
+        tbardict = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
         ltbar = len(tbardict)
         # make sure data is in list format
         datasets = [pytplot.data_quants[self.tvar_name]]
         for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
             datasets.append(pytplot.data_quants[oplot_name])
-        for dataset in datasets:  
+        for dataset in datasets:
+            # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
+            # This needs to be rewritten to use xarray
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             # for location in tbar dict
             for i in range(ltbar):
                 # get times, color, point size
@@ -141,12 +143,11 @@ class TVarFigureAlt(object):
                 color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
                 pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
                 # correlate given time with corresponding data/alt points
-                time, altitude = pytplot.get_data(dataset.attrs['plot_options']['links']['alt'])
-                altitude = altitude.transpose()[0]
+                time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].coords['time'].values
+                altitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].values
                 nearest_time_index = np.abs(time - test_time).argmin()
-                data_point = dataset.data.iloc[nearest_time_index][0]
+                data_point = dataset.iloc[nearest_time_index][0]
                 alt_point = altitude[nearest_time_index]
-                # color = pytplot.tplot_utilities.rgb_color(color)
                 self.fig.circle([alt_point], [data_point], size=pointsize, color=color)
         return
             
@@ -165,16 +166,15 @@ class TVarFigureAlt(object):
             self.colors = pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
 
     def _setxaxislabel(self):
+        if 'axis_label' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']:
+            self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label']
         self.fig.xaxis.axis_label = 'Altitude'
         self.fig.xaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
 
     def _setyaxislabel(self):
         self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label']
         self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
-        
-    def _setxaxislabel(self):
-        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label']
-        
+
     def _visdata(self):
         self._setcolors()
 
@@ -189,7 +189,8 @@ class TVarFigureAlt(object):
             if 'linestyle' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
                 line_style = pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['linestyle']
                 
-            t_link, x = pytplot.get_data(dataset.attrs['plot_options']['links']['alt'])
+            t_link = pytplot.data_quants[dataset.attrs['plot_options']['links']['alt']].coords['time'].values
+            x = pytplot.data_quants[dataset.attrs['plot_options']['links']['alt']].values
             df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             # Create lines from each column in the dataframe
             for column_name in df.columns:
