@@ -118,8 +118,8 @@ class TVarFigureSpec(object):
                                                  np.nanmax(pytplot.data_quants[self.tvar_name].coords['time'].values)]
 
         # Bokeh uses milliseconds since epoch for some reason
-        x_range = Range1d(int(pytplot.tplot_opt_glob['x_range'][0]) * 1000,
-                          int(pytplot.tplot_opt_glob['x_range'][1]) * 1000)
+        x_range = Range1d(int(pytplot.tplot_opt_glob['x_range'][0]) * 1000.0,
+                          int(pytplot.tplot_opt_glob['x_range'][1]) * 1000.0)
         if self.show_xaxis:
             pytplot.lim_info['xfull'] = x_range
             pytplot.lim_info['xlast'] = x_range
@@ -143,8 +143,8 @@ class TVarFigureSpec(object):
         else:
             dataset_temp = pytplot.data_quants[self.tvar_name].where(pytplot.data_quants[self.tvar_name] != np.inf)
             dataset_temp = dataset_temp.where(pytplot.data_quants[self.tvar_name] != -np.inf)
-            self.zmax = dataset_temp.max(skipna=True).values
-            self.zmin = dataset_temp.min(skipna=True).values
+            self.zmax = np.float(dataset_temp.max(skipna=True).values)
+            self.zmin = np.float(dataset_temp.min(skipna=True).values)
 
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
@@ -161,7 +161,7 @@ class TVarFigureSpec(object):
         
     def _addtimebars(self):
         for time_bar in pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']:
-            time_bar_line = Span(location=time_bar['location']*1000,
+            time_bar_line = Span(location=time_bar['location']*1000.0,
                                  dimension=time_bar['dimension'],
                                  line_color=time_bar['line_color'],
                                  line_width=time_bar['line_width'])
@@ -180,7 +180,7 @@ class TVarFigureSpec(object):
         x_closest_1 = x[x_argmin_1]
         x_closest_2 = x[x_argmin_2]
         # Create roi box
-        roi_box = BoxAnnotation(left=x_closest_1*1000, right=x_closest_2*1000, fill_alpha=0.6, fill_color='grey',
+        roi_box = BoxAnnotation(left=x_closest_1*1000.0, right=x_closest_2*1000.0, fill_alpha=0.6, fill_color='grey',
                                 line_color='red', line_width=2.5)
         self.fig.renderers.extend([roi_box])
             
@@ -257,8 +257,8 @@ class TVarFigureSpec(object):
         
         # left, right, and time do not depend on the values in spec_bins
         for j in range(size_x-1):
-            left.append(x[j]*1000)
-            right.append(x[j+1]*1000)
+            left.append(x[j]*1000.0)
+            right.append(x[j+1]*1000.0)
             corrected_time.append(tplot_utilities.int_to_str(x[j]))
             
         left = left * (size_y-1)

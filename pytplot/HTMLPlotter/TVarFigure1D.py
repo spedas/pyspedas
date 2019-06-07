@@ -117,8 +117,8 @@ class TVarFigure1D(object):
                 pytplot.lim_info['xlast'] = tplot_x_range
         
         # Bokeh uses milliseconds since epoch for some reason
-        x_range = Range1d(int(pytplot.tplot_opt_glob['x_range'][0]) * 1000,
-                          int(pytplot.tplot_opt_glob['x_range'][1]) * 1000)
+        x_range = Range1d(int(pytplot.tplot_opt_glob['x_range'][0]) * 1000.0,
+                          int(pytplot.tplot_opt_glob['x_range'][1]) * 1000.0)
         self.fig.x_range = x_range
     
     def _setyrange(self):
@@ -136,7 +136,7 @@ class TVarFigure1D(object):
 
     def _addtimebars(self):
         for time_bar in pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']:
-            time_bar_line = Span(location=time_bar['location']*1000, dimension=time_bar['dimension'],
+            time_bar_line = Span(location=time_bar['location']*1000.0, dimension=time_bar['dimension'],
                                  line_color=time_bar['line_color'], line_width=time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
 
@@ -154,7 +154,7 @@ class TVarFigure1D(object):
         x_closest_1 = x[x_argmin_1]
         x_closest_2 = x[x_argmin_2]
         # Create roi box
-        roi_box = BoxAnnotation(left=x_closest_1*1000, right=x_closest_2*1000, fill_alpha=0.2, fill_color='grey',
+        roi_box = BoxAnnotation(left=x_closest_1*1000.0, right=x_closest_2*1000.0, fill_alpha=0.2, fill_color='grey',
                                 line_color='red', line_width=2.5)
         self.fig.renderers.extend([roi_box])
 
@@ -199,11 +199,11 @@ class TVarFigure1D(object):
                 
             # Get a list of formatted times
             corrected_time = [] 
-            for x in dataset.data.index:
+            for x in dataset.coords['time'].values:
                 corrected_time.append(tplot_utilities.int_to_str(x))
                 
             # Bokeh uses milliseconds since epoch for some reason
-            x = dataset.data.index * 1000
+            x = dataset.coords['time'].values * 1000.0
 
             # Add region of interest (roi) lines if applicable
             if 'roi_lines' in pytplot.tplot_opt_glob.keys():
@@ -262,7 +262,7 @@ class TVarFigure1D(object):
                         # Unless the data gap was big enough, we need to remove nan values from the data,
                         # otherwise bokeh will automatically NOT interpolate (the exact opposite of behavior in
                         # pyqtgraph, which ALWAYS interpolates...).
-                        times.remove(nans[elem]*1000)
+                        times.remove(nans[elem]*1000.0)
                         del y[nans[elem]]
                         del corrected_time[corrected_time.index(tplot_utilities.int_to_str(nans[elem]))]
 

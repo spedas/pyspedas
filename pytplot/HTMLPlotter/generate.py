@@ -9,7 +9,7 @@ from bokeh.models import LinearAxis, Range1d
 from .CustomModels.timestamp import TimeStamp
 from bokeh.layouts import gridplot
 from bokeh.io import doc
-
+import numpy as np
 
 def generate_stack(name, 
                    var_label=None,
@@ -88,8 +88,8 @@ def generate_stack(name,
         for new_x_axis in var_label:
             # TODO: Bokeh only handles linear plots for now!!! Fix?!
             axis_data_quant = pytplot.data_quants[new_x_axis]
-            axis_start = min(axis_data_quant.min(skipna=True).tolist())
-            axis_end = max(axis_data_quant.max(skipna=True).tolist())
+            axis_start = np.float(axis_data_quant.min(skipna=True).values)
+            axis_end = np.float(axis_data_quant.max(skipna=True).values)
             x_axes.append(Range1d(start = axis_start, end = axis_end))
             k = 0
             while(k < num_plots ):

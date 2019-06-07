@@ -537,5 +537,5 @@ def convert_tplotxarray_to_pandas_dataframe(name):
         if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 1:
             spec_bins = spec_bins.transpose()
         else:
-            spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+            spec_bins = spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
     return return_data, spec_bins
