@@ -35,7 +35,7 @@ def generate_stack(name,
     total_psize = 0
     j = 0
     while(j < num_plots):
-        total_psize += pytplot.data_quants[name[j]].extras['panel_size']
+        total_psize += pytplot.data_quants[name[j]].attrs['plot_options']['extras']['panel_size']
         j += 1
     
     p_to_use = pytplot.tplot_opt_glob['window_size'][1]/total_psize
@@ -44,7 +44,7 @@ def generate_stack(name,
     while(i < num_plots):
         last_plot = (i == num_plots-1)
         
-        p_height = int(pytplot.data_quants[name[i]].extras['panel_size'] * p_to_use)
+        p_height = int(pytplot.data_quants[name[i]].attrs['plot_options']['extras']['panel_size'] * p_to_use)
         p_width = pytplot.tplot_opt_glob['window_size'][0]
         
         #Check plot type       
@@ -86,10 +86,10 @@ def generate_stack(name,
         x_axes = []
         x_axes_index = 0
         for new_x_axis in var_label:
-            
+            # TODO: Bokeh only handles linear plots for now!!! Fix?!
             axis_data_quant = pytplot.data_quants[new_x_axis]
-            axis_start = min(axis_data_quant.data.min(skipna=True).tolist())
-            axis_end = max(axis_data_quant.data.max(skipna=True).tolist())
+            axis_start = min(axis_data_quant.min(skipna=True).tolist())
+            axis_end = max(axis_data_quant.max(skipna=True).tolist())
             x_axes.append(Range1d(start = axis_start, end = axis_end))
             k = 0
             while(k < num_plots ):
@@ -116,12 +116,12 @@ def generate_stack(name,
     return gridplot(all_plots)
 
 def _get_figure_class(tvar_name, auto_color=True, interactive=False, show_xaxis=True):
-    if 'plotter' in pytplot.data_quants[tvar_name].extras and pytplot.data_quants[tvar_name].extras['plotter'] in pytplot.bokeh_plotters:
-        cls = pytplot.bokeh_plotters[pytplot.data_quants[tvar_name].extras['plotter']]
+    if 'plotter' in pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] and pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in pytplot.bokeh_plotters:
+        cls = pytplot.bokeh_plotters[pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter']]
     else:
-        spec_keyword = pytplot.data_quants[tvar_name].extras.get('spec', False)
-        alt_keyword = pytplot.data_quants[tvar_name].extras.get('alt', False)
-        map_keyword = pytplot.data_quants[tvar_name].extras.get('map', False)
+        spec_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('spec', False)
+        alt_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('alt', False)
+        map_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('map', False)
         if spec_keyword:
             cls = pytplot.bokeh_plotters['bkTVarFigureSpec']
         elif alt_keyword:

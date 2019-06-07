@@ -114,43 +114,44 @@ class TVarFigureSpec(object):
     def _setxrange(self):
         # Check if x range is not set, if not, set good ones
         if 'x_range' not in pytplot.tplot_opt_glob:
-            pytplot.tplot_opt_glob['x_range'] = [np.nanmin(pytplot.data_quants[self.tvar_name].data.index.tolist()),
-                                                 np.nanmax(pytplot.data_quants[self.tvar_name].data.index.tolist())]
-            tplot_x_range = Range1d(np.nanmin(pytplot.data_quants[self.tvar_name].data.index.tolist()),
-                                    np.nanmax(pytplot.data_quants[self.tvar_name].data.index.tolist()))
-            if self.show_xaxis:
-                pytplot.lim_info['xfull'] = tplot_x_range
-                pytplot.lim_info['xlast'] = tplot_x_range
-        
+            pytplot.tplot_opt_glob['x_range'] = [np.nanmin(pytplot.data_quants[self.tvar_name].coords['time'].values),
+                                                 np.nanmax(pytplot.data_quants[self.tvar_name].coords['time'].values)]
+
         # Bokeh uses milliseconds since epoch for some reason
         x_range = Range1d(int(pytplot.tplot_opt_glob['x_range'][0]) * 1000,
                           int(pytplot.tplot_opt_glob['x_range'][1]) * 1000)
+        if self.show_xaxis:
+            pytplot.lim_info['xfull'] = x_range
+            pytplot.lim_info['xlast'] = x_range
+
         self.fig.x_range = x_range
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] < 0 \
-                    or pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 \
+                    or pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
                 return
-        y_range = Range1d(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
-                          pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1])
+        y_range = Range1d(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
+                          pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1])
         self.fig.y_range = y_range
         
     def _setzrange(self):
         # Get Z Range
-        if 'z_range' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            self.zmin = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][0]
-            self.zmax = pytplot.data_quants[self.tvar_name].zaxis_opt['z_range'][1]
+        if 'z_range' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            self.zmin = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][0]
+            self.zmax = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][1]
         else:
-            dataset_temp = pytplot.data_quants[self.tvar_name].data.replace([np.inf, -np.inf], np.nan)
-            self.zmax = dataset_temp.max().max()
-            self.zmin = dataset_temp.min().min()
-            
+            dataset_temp = pytplot.data_quants[self.tvar_name].where(pytplot.data_quants[self.tvar_name] != np.inf)
+            dataset_temp = dataset_temp.where(pytplot.data_quants[self.tvar_name] != -np.inf)
+            self.zmax = dataset_temp.max(skipna=True).values
+            self.zmin = dataset_temp.min(skipna=True).values
+
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
+                df, _ = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
                 zmin_list = []
-                for column in pytplot.data_quants[self.tvar_name].data.columns:
-                    series = pytplot.data_quants[self.tvar_name].data[column]
+                for column in df.columns:
+                    series = df[column]
                     zmin_list.append(series.iloc[series.to_numpy().nonzero()[0]].min())
                 self.zmin = min(zmin_list)
         
@@ -159,7 +160,7 @@ class TVarFigureSpec(object):
         self.fig.min_border_top = pytplot.tplot_opt_glob['min_border_top']
         
     def _addtimebars(self):
-        for time_bar in pytplot.data_quants[self.tvar_name].time_bar:
+        for time_bar in pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']:
             time_bar_line = Span(location=time_bar['location']*1000,
                                  dimension=time_bar['dimension'],
                                  line_color=time_bar['line_color'],
@@ -189,34 +190,34 @@ class TVarFigureSpec(object):
         self.fig.add_layout(xaxis1, 'above')
         
     def _getyaxistype(self):
-        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
-            return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
+        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_axis_type']
         else:
             return 'log'
         
     def _setzaxistype(self):
-        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            self.zscale = pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type']
+        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            self.zscale = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_axis_type']
 
     def _setcolors(self):          
-        if 'colormap' in pytplot.data_quants[self.tvar_name].extras:
-            for cm in pytplot.data_quants[self.tvar_name].extras['colormap']:
+        if 'colormap' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            for cm in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['colormap']:
                 self.colors.append(tplot_utilities.return_bokeh_colormap(cm))
         else:
             self.colors.append(tplot_utilities.return_bokeh_colormap('magma'))
 
     def _setxaxislabel(self):
-        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label']
-        self.fig.xaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label']
+        self.fig.xaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
 
     def _setyaxislabel(self):
-        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
-        self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label']
+        self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
         
     def _visdata(self):
         self._setcolors()
         
-        x = pytplot.data_quants[self.tvar_name].data.index.tolist()
+        x = pytplot.data_quants[self.tvar_name].coords['time'].values.tolist()
         # Add region of interest (roi) lines if applicable
         if 'roi_lines' in pytplot.tplot_opt_glob.keys():
             self._set_roi_lines(x)
@@ -230,13 +231,15 @@ class TVarFigureSpec(object):
             step_size = int(math.floor(num_rect_displayed/self.fig.plot_width))
             x[:] = x[0::step_size]
 
+
         # Determine bin sizes
-        if pytplot.data_quants[self.tvar_name].spec_bins is not None:
-            bins = pytplot.data_quants[self.tvar_name].spec_bins
-            bins_vary = pytplot.data_quants[self.tvar_name].spec_bins_time_varying
-            bins_increasing = pytplot.data_quants[self.tvar_name].spec_bins_ascending
+        if 'spec_bins' in pytplot.data_quants[self.tvar_name].coords:
+            df, bins = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
+            bins_vary = len(pytplot.data_quants[self.tvar_name].coords['spec_bins'].shape) > 1
+            bins_increasing = pytplot.data_quants[self.tvar_name].attrs['plot_options']['spec_bins_ascending']
         else:
-            bins = pd.DataFrame(np.arange(len(pytplot.data_quants[self.tvar_name].data.columns))).transpose()
+            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
+            bins = pd.DataFrame(np.arange(len(pytplot.data_quants[self.tvar_name][0]))).transpose()
             bins_vary = False
             bins_increasing = True
         # Get length of arrays
@@ -274,7 +277,7 @@ class TVarFigureSpec(object):
             bin_index_range = range(size_y-1, 0, -1)
 
         for i in bin_index_range:
-            temp = pytplot.data_quants[self.tvar_name].data[i][x[0:size_x-1]].tolist()
+            temp = df[i][x[0:size_x-1]].tolist()
             value.extend(temp)
             color.extend(tplot_utilities.get_heatmap_color(color_map=self.colors[0], 
                                                            min_val=self.zmin, 
@@ -308,15 +311,15 @@ class TVarFigureSpec(object):
         self.fig.quad(bottom='y', left='x', right='right', top='top', color='z', source=cds)
             
         if self.interactive:
-            if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
+            if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
                 y_interactive_log = 'log'
             else:
                 y_interactive_log = 'linear'
             self.interactive_plot = Figure(plot_height=self.fig.plot_height,
                                            plot_width=self.fig.plot_width,
                                            y_range=(self.zmin, self.zmax),
-                                           x_range=(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
-                                                    pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1]),
+                                           x_range=(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
+                                                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]),
                                            y_axis_type=y_interactive_log)
             self.interactive_plot.min_border_left = 100
             spec_bins = bins
@@ -354,8 +357,8 @@ class TVarFigureSpec(object):
         
     def _addlegend(self):
         # Add the color bar
-        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].zaxis_opt:
-            if pytplot.data_quants[self.tvar_name].zaxis_opt['z_axis_type'] == 'log':
+        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_axis_type'] == 'log':
                 color_mapper = LogColorMapper(palette=self.colors[0], low=self.zmin, high=self.zmax)
                 color_bar = ColorBarSideTitle(color_mapper=color_mapper, ticker=LogTicker(), border_line_color=None,
                                               location=(0, 0))
@@ -375,8 +378,8 @@ class TVarFigureSpec(object):
         color_bar.label_standoff = 5
         color_bar.major_label_text_baseline = 'middle'
         
-        color_bar.title = pytplot.data_quants[self.tvar_name].zaxis_opt['axis_label']
-        color_bar.title_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+        color_bar.title = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label']
+        color_bar.title_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
         color_bar.title_text_font_style = 'bold'
         color_bar.title_standoff = 20
 

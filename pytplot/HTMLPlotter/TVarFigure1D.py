@@ -102,17 +102,14 @@ class TVarFigure1D(object):
     def _setxrange(self):
         # Check if x range is not set, if not, set good ones
         if 'x_range' not in pytplot.tplot_opt_glob:
-            datasets = []
+            datasets = [pytplot.data_quants[self.tvar_name]]
             x_min_list = []
             x_max_list = []
-            if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-                for oplot_name in pytplot.data_quants[self.tvar_name].data:
-                    datasets.append(pytplot.data_quants[oplot_name].data)
-            else:
-                datasets.append(pytplot.data_quants[self.tvar_name].data)
+            for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+                datasets.append(pytplot.data_quants[oplot_name])
             for dataset in datasets:
-                x_min_list.append(np.nanmin(dataset.index.tolist()))
-                x_max_list.append(np.nanmax(dataset.index.tolist()))
+                x_min_list.append(np.nanmin(dataset.coords['time']))
+                x_max_list.append(np.nanmax(dataset.coords['time']))
             pytplot.tplot_opt_glob['x_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
             tplot_x_range = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
             if self.show_xaxis:
@@ -126,11 +123,11 @@ class TVarFigure1D(object):
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] < 0 or \
-                    pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 or \
+                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
                 return
-        y_range = Range1d(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
-                          pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1])
+        y_range = Range1d(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
+                          pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1])
         self.fig.y_range = y_range
         
     def _setminborder(self):
@@ -138,14 +135,14 @@ class TVarFigure1D(object):
         self.fig.min_border_top = pytplot.tplot_opt_glob['min_border_top']
 
     def _addtimebars(self):
-        for time_bar in pytplot.data_quants[self.tvar_name].time_bar:
+        for time_bar in pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']:
             time_bar_line = Span(location=time_bar['location']*1000, dimension=time_bar['dimension'],
                                  line_color=time_bar['line_color'], line_width=time_bar['line_width'])
             self.fig.renderers.extend([time_bar_line])
 
     def _set_roi_lines(self, dataset):
         # Locating the two times between which there's a roi
-        time = dataset.data.index.tolist()
+        time = dataset.coords['time'].values
         roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
         roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
         # find closest time to user-requested time
@@ -167,41 +164,38 @@ class TVarFigure1D(object):
         self.fig.add_layout(xaxis1, 'above')
         
     def _getyaxistype(self):
-        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
-            return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
+        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_axis_type']
         else:
             return 'linear'
         
     def _setcolors(self):
-        if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
-            self.colors = pytplot.data_quants[self.tvar_name].extras['line_color']
+        if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            self.colors = pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
 
     def _setxaxislabel(self):
-        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label']
-        self.fig.xaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label']
+        self.fig.xaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
     
     def _setyaxislabel(self):
-        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label']
-        self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+        self.fig.yaxis.axis_label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label']
+        self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
         
     def _setxaxislabel(self):
-        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label']
+        self.fig.xaxis.axis_label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label']
         
     def _visdata(self):
         self._setcolors()
-        
-        datasets = []
-        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-            for oplot_name in pytplot.data_quants[self.tvar_name].data:
-                datasets.append(pytplot.data_quants[oplot_name])
-        else:
-            datasets.append(pytplot.data_quants[self.tvar_name])
+
+        datasets = [pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(pytplot.data_quants[oplot_name])
 
         for dataset in datasets:
             # Get Linestyle
             line_style = None
-            if 'linestyle' in pytplot.data_quants[self.tvar_name].extras:
-                line_style = pytplot.data_quants[self.tvar_name].extras['linestyle']
+            if 'linestyle' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+                line_style = pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['linestyle']
                 
             # Get a list of formatted times
             corrected_time = [] 
@@ -214,10 +208,11 @@ class TVarFigure1D(object):
             # Add region of interest (roi) lines if applicable
             if 'roi_lines' in pytplot.tplot_opt_glob.keys():
                 self._set_roi_lines(dataset)
-            
+
+            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             # Create lines from each column in the dataframe
-            for column_name in dataset.data.columns:
-                y = dataset.data[column_name]
+            for column_name in df.columns:
+                y = df[column_name]
 
                 # Account for log plotting
                 if self._getyaxistype() == 'log':
@@ -261,7 +256,6 @@ class TVarFigure1D(object):
                                 # Restart the count and add the current val to the list of nan values to remove
                                 count = 0
                                 consec_list.append(nan_keys[val])
-                    print(consec_list)
 
                     times = x.tolist()
                     for elem in consec_list:
@@ -279,14 +273,14 @@ class TVarFigure1D(object):
                     line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
                 if self.auto_color:
                     line = Line(x='x', y='y', line_color=self.colors[self.linenum % len(self.colors)],
-                                **pytplot.data_quants[self.tvar_name].line_opt)
+                                **pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt'])
                 else:
-                    line = Line(x='x', y='y', **pytplot.data_quants[self.tvar_name].line_opt)
-                if 'line_style' not in pytplot.data_quants[self.tvar_name].line_opt:
+                    line = Line(x='x', y='y', **pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt'])
+                if 'line_style' not in pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']:
                     if line_style is not None:
                         line.line_dash = line_style[self.linenum % len(line_style)]
                 else:
-                    line.line_dash = pytplot.data_quants[self.tvar_name].line_opt['line_style']
+                    line.line_dash = pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']['line_style']
                 self.lineglyphs.append(self.fig.add_glyph(line_source, line))
                 self.linenum += 1
 
@@ -298,8 +292,8 @@ class TVarFigure1D(object):
         
     def _addlegend(self):
         # Add the Legend if applicable
-        if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
-            legend_names = pytplot.data_quants[self.tvar_name].yaxis_opt['legend_names']
+        if 'legend_names' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            legend_names = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['legend_names']
             if len(legend_names) != self.linenum:
                 print("Number of lines do not match length of legend names")
             legend = Legend()
@@ -312,7 +306,7 @@ class TVarFigure1D(object):
                 if j >= len(self.lineglyphs):
                     break
             legend.items = legend_items
-            legend.label_text_font_size = str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+            legend.label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
             legend.border_line_color = None
             legend.glyph_height = int(self.fig.plot_height / (len(legend_items) + 1))
             self.fig.add_layout(legend, 'right')
