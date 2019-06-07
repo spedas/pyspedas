@@ -180,7 +180,8 @@ def tplot(name,
         else:
             dir_path = tempfile.gettempdir()  # send to user's temp directory
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
-            show(layout)
+            if not testing:
+                show(layout)
             return
     else:
         if save_png is not None:
