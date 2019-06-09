@@ -32,8 +32,7 @@ def ylim(name, min, max):
     if name not in data_quants.keys():
         print("That name is currently not in pytplot.")
         return
-    
-    temp_data_quant = data_quants[name]
-    temp_data_quant.yaxis_opt['y_range'] = [min, max]
+
+    data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = [min, max]
     
     return

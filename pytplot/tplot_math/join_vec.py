@@ -8,18 +8,30 @@ import pandas as pd
 
 #JOIN TVARS
 #join TVars into single TVar with multiple columns
-def join_vec(tvars,newtvar='tvar_join'):
+def join_vec(tvars,new_tvar=None):
+
     if not isinstance(tvars, list):
         tvars = [tvars]
-    if newtvar == 'tvar_join':
-        newtvar = '-'.join(tvars)+'_joined'
+    if new_tvar is None:
+        new_tvar = '-'.join(tvars)+'_joined'
 
-    df = pytplot.data_quants[tvars[0]].data
+
     for i,val in enumerate(tvars):
         if i == 0:
-            pass
+            if 'spec_bins' in pytplot.data_quants[tvars[i]].coords:
+                df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
+            else:
+                df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
+                s = None
         else:
-            df = pd.concat([df,pytplot.data_quants[val].data],axis=1)
+            if 'spec_bins' in pytplot.data_quants[tvars[i]].coords:
+                d, _ = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
+            else:
+                d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
+            df = pd.concat([df,d],axis=1)
 
-    pytplot.store_data(newtvar,data={'x': df.index,'y': df})
+    if s is None:
+        pytplot.store_data(new_tvar,data={'x': df.index,'y': df.values})
+    else:
+        pytplot.store_data(new_tvar, data={'x': df.index, 'y': df.values, 'v': s.values})
     return

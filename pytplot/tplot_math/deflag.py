@@ -12,7 +12,7 @@ import numpy as np
     Parameters:
         tvar1 : str
             Name of tvar to use for data clipping.  
-        flags : int,list
+        flag : int,list
             Flagged data will be converted to NaNs.
         newtvar : str
             Name of new tvar for deflagged data storage
@@ -27,7 +27,18 @@ import numpy as np
     """
 
                               
-def deflag(tvar1,flags,newtvar='tvar_deflag'):
+def deflag(tvar1,flag,new_tvar=None):
+    a = pytplot.data_quants[tvar1].where(pytplot.data_quants[tvar1]!=flag)
+    if new_tvar is None:
+        a.name = tvar1
+        pytplot.data_quants[tvar1] = a
+    else:
+        if 'spec_bins' in a.coords:
+            pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+        else:
+            pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values})
+
+'''
     if newtvar == 'tvar_deflag':
         new_tvar = tvar1 + "_deflag"
 
@@ -54,3 +65,4 @@ def deflag(tvar1,flags,newtvar='tvar_deflag'):
     else:
         pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df})
     return
+'''

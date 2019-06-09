@@ -1,11 +1,9 @@
 import pyqtgraph as pg
-from scipy import interpolate
 
 class NonLinearAxis(pg.AxisItem):
-    def __init__(self, orientation, pen=None, linkView=None, parent=None, maxTickLength=-5, showValues=True, data=None):
+    def __init__(self, orientation, pen=None, linkView=None, parent=None, maxTickLength=-5, showValues=True, mapping_function=None):
         pg.AxisItem.__init__(self, orientation=orientation, pen=pen, linkView=linkView, parent=parent, maxTickLength=maxTickLength, showValues=showValues)
-        self.data = data
-        self.f = interpolate.interp1d(data.data.index.tolist(), data.data[0].tolist())
+        self.f = mapping_function
         self.num_ticks = 4
     
     def tickStrings(self, values, scale, spacing):

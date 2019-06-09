@@ -7,22 +7,41 @@ import pytplot
 
 #PARTIAL FLATTEN
 #take average of each column of data, divide column by average over specified time
-def flatten(tvar1,start_t,end_t,new_tvar='tvar_flat'):
-    df = pytplot.data_quants[tvar1].data
+def flatten(tvar1,range=None,new_tvar=None):
+    if new_tvar is None:
+        new_tvar = tvar1 + "_flattened"
+
+    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
+        df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+    else:
+        df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+        s=None
+
+    if range is None:
+        pass
+
     time = df.index
     #if time given not an index, choose closest time
-    if start_t not in time:
-        tdiff = abs(time - start_t)
-        start_t = time[tdiff.argmin()]
-    if end_t not in time:
-        tdiff = abs(time - end_t)
-        end_t = time[tdiff.argmin()]
-    df_index = list(df.columns)
-    #divide by specified time average
-    for i in df_index:
-        df[i] = df[i]/((df.loc[start_t:end_t])[i]).mean()
-    if (pytplot.data_quants[tvar1].spec_bins is not None):
-        pytplot.store_data(new_tvar,data = {'x':df.index,'y':df, 'v': pytplot.data_quants[tvar1].spec_bins})
+    if range is None:
+        df_index = list(df.columns)
+        # divide by column average
+        for i in df_index:
+            df[i] = df[i] / df[i].mean()
     else:
-        pytplot.store_data(new_tvar, data={'x': df.index, 'y': df})
+        if range[0] not in time:
+            tdiff = abs(time - range[0])
+            start_t = time[tdiff.argmin()]
+        if range[1] not in time:
+            tdiff = abs(time - range[1])
+            end_t = time[tdiff.argmin()]
+        df_index = list(df.columns)
+
+        #divide by specified time average
+        for i in df_index:
+            df[i] = df[i]/((df.loc[start_t:end_t])[i]).mean()
+
+    if s is not None:
+        pytplot.store_data(new_tvar,data = {'x':df.index,'y':df.values, 'v': s.values})
+    else:
+        pytplot.store_data(new_tvar, data={'x': df.index, 'y': df.values})
     return

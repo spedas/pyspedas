@@ -88,9 +88,9 @@ def options(name, option, value):
     
         if option == 'color':
             if isinstance(value, list):
-                data_quants[i].extras['line_color'] = value
+                data_quants[i].attrs['plot_options']['extras']['line_color'] = value
             else:
-                data_quants[i].extras['line_color'] = [value]
+                data_quants[i].attrs['plot_options']['extras']['line_color'] = [value]
         
         if option == 'link':
             if isinstance(value, list):
@@ -98,53 +98,53 @@ def options(name, option, value):
                 
         if option == 'colormap':
             if isinstance(value, list):
-                data_quants[i].extras['colormap'] = value
+                data_quants[i].attrs['plot_options']['extras']['colormap'] = value
             else:
-                data_quants[i].extras['colormap'] = [value]
+                data_quants[i].attrs['plot_options']['extras']['colormap'] = [value]
         
         if option == 'spec':
             _reset_plots(i)
-            data_quants[i].extras['spec'] = value
+            data_quants[i].attrs['plot_options']['extras']['spec'] = value
         
         if option == 'alt':
             _reset_plots(i)
-            data_quants[i].extras['alt'] = value
+            data_quants[i].attrs['plot_options']['extras']['alt'] = value
     
         if option == 'map':
             _reset_plots(i)
-            data_quants[i].extras['map'] = value
+            data_quants[i].attrs['plot_options']['extras']['map'] = value
 
         if option == 'legend_names':
-            data_quants[i].yaxis_opt['legend_names'] = value
+            data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
 
         if option == 'xlog_interactive':
             if value:
-                data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'log'
+                data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type'] = 'log'
             else:
-                data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'linear'
+                data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type'] = 'linear'
 
         if option == 'ylog':
             negflag = _ylog_check(data_quants, value, i)
             if negflag == 0:
-                data_quants[i].yaxis_opt['y_axis_type'] = 'log'
+                data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'log'
             else:
-                data_quants[i].yaxis_opt['y_axis_type'] = 'linear'
+                data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'linear'
 
         if option == 'ylog_interactive':
             if value:
-                data_quants[i].interactive_yaxis_opt['yi_axis_type'] = 'log'
+                data_quants[i].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type'] = 'log'
             else:
-                data_quants[i].interactive_xaxis_opt['xi_axis_type'] = 'linear'
+                data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type'] = 'linear'
 
         if option == 'zlog':
             negflag = _zlog_check(data_quants, value, i)
             if negflag == 0:
-                data_quants[i].zaxis_opt['z_axis_type'] = 'log'
+                data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'log'
             else:
-                data_quants[i].zaxis_opt['z_axis_type'] = 'linear'
+                data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
         
         if option == 'nodata':
-            data_quants[i].line_opt['visible'] = value
+            data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
         
         if option == 'line_style':
             to_be = []
@@ -164,74 +164,74 @@ def options(name, option, value):
             data_quants[i].line_opt['line_dash'] = to_be
             
             if(value == 6 or value == 'none'):
-                data_quants[i].line_opt['visible'] = False
+                data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
 
         if option == 'char_size':
-            data_quants[i].extras['char_size'] = value
+            data_quants[i].attrs['plot_options']['extras']['char_size'] = value
                 
         if option == 'name':
-            data_quants[i].line_opt['name'] = value
+            data_quants[i].attrs['plot_options']['line_opt']['name'] = value
         
         if option == "panel_size":
             if value > 1 or value <= 0:
                 print("Invalid value. Should be (0, 1]")
                 return
-            data_quants[i].extras['panel_size'] = value
+            data_quants[i].attrs['plot_options']['extras']['panel_size'] = value
         
         if option == 'basemap':
-            data_quants[i].extras['basemap'] = value
+            data_quants[i].attrs['plot_options']['extras']['basemap'] = value
         
         if option == 'alpha':
             if value > 1 or value < 0:
                 print("Invalid value. Should be [0, 1]")
                 return
-            data_quants[i].extras['alpha'] = value
+            data_quants[i].attrs['plot_options']['extras']['alpha'] = value
             
         if option == 'thick':
-            data_quants[i].line_opt['line_width'] = value
+            data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
         
         if option == ('yrange' or 'y_range'):
-            data_quants[i].yaxis_opt['y_range'] = [value[0], value[1]]
+            data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
             
         if option == ('zrange' or 'z_range'):
-            data_quants[i].zaxis_opt['z_range'] = [value[0], value[1]]
+            data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
 
         if option == 'xrange_interactive':
-            data_quants[i].interactive_xaxis_opt['xi_range'] = [value[0], value[1]]
+            data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_range'] = [value[0], value[1]]
 
         if option == 'yrange_interactive':
-            data_quants[i].interactive_yaxis_opt['yi_range'] = [value[0], value[1]]
+            data_quants[i].attrs['plot_options']['interactive_yaxis_opt']['yi_range'] = [value[0], value[1]]
             
         if option == 'xtitle':
-            data_quants[i].xaxis_opt['axis_label'] = value
+            data_quants[i].attrs['plot_options']['xaxis_opt']['axis_label'] = value
         
         if option == 'ytitle':
-            data_quants[i].yaxis_opt['axis_label'] = value
+            data_quants[i].attrs['plot_options']['yaxis_opt']['axis_label'] = value
         
         if option == 'ztitle':
-            data_quants[i].zaxis_opt['axis_label'] = value
+            data_quants[i].attrs['plot_options']['zaxis_opt']['axis_label'] = value
         
         if option == 'plotter':
             _reset_plots(i)
-            data_quants[i].extras['plotter'] = value
+            data_quants[i].attrs['plot_options']['extras']['plotter'] = value
 
         if option == 'crosshair_x':
-            data_quants[i].xaxis_opt['crosshair'] = value
+            data_quants[i].attrs['plot_options']['xaxis_opt']['crosshair'] = value
 
         if option == 'crosshair_y':
-            data_quants[i].yaxis_opt['crosshair'] = value
+            data_quants[i].attrs['plot_options']['yaxis_opt']['crosshair'] = value
 
         if option == 'crosshair_z':
-            data_quants[i].zaxis_opt['crosshair'] = value
+            data_quants[i].attrs['plot_options']['zaxis_opt']['crosshair'] = value
 
         if option == 'static':
-            data_quants[i].extras['static'] = value
+            data_quants[i].attrs['plot_options']['extras']['static'] = value
 
         if option == 'static_tavg':
-            data_quants[i].extras['static_tavg'] = [value[0], value[1]]
+            data_quants[i].attrs['plot_options']['extras']['static_tavg'] = [value[0], value[1]]
 
         if option == 't_average':
-            data_quants[i].extras['t_average'] = value
+            data_quants[i].attrs['plot_options']['extras']['t_average'] = value
     return
 
 
@@ -240,28 +240,23 @@ def _ylog_check(data_quants, value, i):
     namedata = data_quants[i]
     # check variable data
     # if negative numbers, don't allow log setting
-    datasets = []
-    if isinstance(namedata.data, list):
-        for oplot_name in namedata.data:
-            datasets.append(data_quants[oplot_name])
-    else:
-        datasets.append(namedata)
+    datasets = [namedata]
+    for oplot_name in namedata.attrs['plot_options']['overplots']:
+        datasets.append(data_quants[oplot_name])
 
     if value == 1:
         for dataset in datasets:
-            if 'spec' not in dataset.extras:
-                for column in dataset.data:
-                    if np.nanmin(dataset.data[column]) < 0:
+            if 'spec' not in dataset.attrs['plot_options']['extras']:
+                if dataset.min(skipna=True) < 0:
+                    print('Negative data is incompatible with log plotting.')
+                    negflag = 1
+                    break
+            else:
+                if dataset.attrs['plot_options']['extras']['spec'] == 1:
+                    if dataset.coords['spec_bins'].min(skipna=True) < 0:
                         print('Negative data is incompatible with log plotting.')
                         negflag = 1
                         break
-            else:
-                if dataset.extras['spec'] == 1:
-                    for column in dataset.spec_bins:
-                        if np.nanmin(dataset.spec_bins[column]) < 0:
-                            print('Negative data is incompatible with log plotting.')
-                            negflag = 1
-                            break
     elif value != 1:
         # Using the 'negflag' as a way to not log something if the user doesn't want it to be logged
         negflag = 1
@@ -273,22 +268,18 @@ def _zlog_check(data_quants, value, i):
     namedata = data_quants[i]
     # check variable data
     # if negative numbers, don't allow log setting
-    datasets = []
-    if isinstance(namedata.data, list):
-        for oplot_name in namedata.data:
-            datasets.append(data_quants[oplot_name])
-    else:
-        datasets.append(namedata)
+    datasets = [namedata]
+    for oplot_name in namedata.attrs['plot_options']['overplots']:
+        datasets.append(data_quants[oplot_name])
 
     for dataset in datasets:
         if value == 1:
-            if 'spec' in dataset.extras:
-                if dataset.extras['spec'] == 1:
-                    for column in dataset.data:
-                        if np.nanmin(dataset.data[column]) < 0:
-                            print('Negative data is incompatible with log plotting.')
-                            negflag = 1
-                            break
+            if 'spec' in dataset.attrs['plot_options']['extras']:
+                if dataset.attrs['plot_options']['extras']['spec'] == 1:
+                    if dataset.min(skipna=True) < 0:
+                        print('Negative data is incompatible with log plotting.')
+                        negflag = 1
+                        break
         elif value != 1:
             # Using the 'negflag' as a way to not log something if the user doesn't want it to be logged
             negflag = 1
@@ -296,7 +287,7 @@ def _zlog_check(data_quants, value, i):
 
 
 def _reset_plots(name):
-    data_quants[name].extras['spec'] = 0
-    data_quants[name].extras['alt'] = 0
-    data_quants[name].extras['map'] = 0
-    data_quants[name].extras['plotter'] = None
+    data_quants[name].attrs['plot_options']['extras']['spec'] = 0
+    data_quants[name].attrs['plot_options']['extras']['alt'] = 0
+    data_quants[name].attrs['plot_options']['extras']['map'] = 0
+    data_quants[name].attrs['plot_options']['extras']['plotter'] = None

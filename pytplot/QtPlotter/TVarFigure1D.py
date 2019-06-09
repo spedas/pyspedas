@@ -15,7 +15,7 @@ from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionIte
 
 
 class TVarFigure1D(pg.GraphicsLayout):
-    def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
+    def __init__(self, tvar_name, show_xaxis=False):
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
@@ -47,14 +47,12 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
 
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
             self.plotwindow.hideAxis('bottom')
-
-        self._mouseMovedFunction = mouse_function
 
         self.label = pg.LabelItem(justify='left')
         self.addItem(self.label, row=1, col=0)
@@ -63,8 +61,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date:", "0")
         # Allow the user to set x-axis(time) and y-axis names in crosshairs
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
 
@@ -76,25 +74,25 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.vLine.setVisible(False)
         self.hLine.setVisible(False)
 
-    def _set_roi_lines(self, dataset):
-        # Locating the two times between which there's a roi
-        time = dataset.data.index.tolist()
-        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
-        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
-        # find closest time to user-requested time
-        x = np.asarray(time)
-        x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
-        x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
-        x_argmin_1 = np.nanargmin(x_sub_1)
-        x_argmin_2 = np.nanargmin(x_sub_2)
-        x_closest_1 = x[x_argmin_1]
-        x_closest_2 = x[x_argmin_2]
-        # Create roi box
-        roi = CustomLinearRegionItem(orientation=pg.LinearRegionItem.Vertical, values=[x_closest_1, x_closest_2])
-        roi.setBrush([211, 211, 211, 130])
-        roi.lines[0].setPen('r', width=2.5)
-        roi.lines[1].setPen('r', width=2.5)
-        self.plotwindow.addItem(roi)
+    def _set_roi_lines(self):
+        if 'roi_lines' in pytplot.tplot_opt_glob.keys():
+            # Locating the two times between which there's a roi
+            roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
+            roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+            # find closest time to user-requested time
+            x = pytplot.data_quants[self.tvar_name].coords['time']
+            x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
+            x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
+            x_argmin_1 = np.nanargmin(x_sub_1)
+            x_argmin_2 = np.nanargmin(x_sub_2)
+            x_closest_1 = x[x_argmin_1]
+            x_closest_2 = x[x_argmin_2]
+            # Create roi box
+            roi = CustomLinearRegionItem(orientation=pg.LinearRegionItem.Vertical, values=[x_closest_1, x_closest_2])
+            roi.setBrush([211, 211, 211, 130])
+            roi.lines[0].setPen('r', width=2.5)
+            roi.lines[1].setPen('r', width=2.5)
+            self.plotwindow.addItem(roi)
 
     def buildfigure(self):
         self._setxrange()
@@ -110,34 +108,35 @@ class TVarFigure1D(pg.GraphicsLayout):
         if self.crosshair:
             self._set_crosshairs()
             self._addmouseevents()
+        self._set_roi_lines()
 
     def _setxaxislabel(self):
-        self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].xaxis_opt['axis_label'], **self.labelStyle)
+        self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
 
     def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
 
     def getfig(self):
         return self
 
     def _visdata(self):
-        datasets = []
-        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-            for oplot_name in pytplot.data_quants[self.tvar_name].data:
-                datasets.append(pytplot.data_quants[oplot_name])
-        else:
-            datasets.append(pytplot.data_quants[self.tvar_name])
+        datasets = [pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(pytplot.data_quants[oplot_name])
         line_num = 0
 
         for dataset in datasets:
-            for i in range(len(dataset.data.columns)):
+            # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
+            # This needs to be rewritten to use xarray
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+            for i in range(len(dataset.columns)):
                 limit = pytplot.tplot_opt_glob['data_gap']  # How big a data gap is allowed before those nans (default
                 # is to plot as pyqtgraph would normally plot w / o worrying about data gap handling).
                 if limit != 0:
                     # Grabbing the times associated with nan values (nan_values), and the associated "position" of those
                     # keys in the dataset list (nan_keys)
-                    nan_values = dataset.data[i][dataset.data[i].isnull().values].index.tolist()
-                    nan_keys = [dataset.data[i].index.tolist().index(j) for j in nan_values]
+                    nan_values = dataset[i][dataset[i].isnull().values].index.tolist()
+                    nan_keys = [dataset[i].index.tolist().index(j) for j in nan_values]
 
                     count = 0   # Keeping a count of how big of a time gap we have
                     flag = False    # This flag changes to true when we accumulate a big enough period of time that we
@@ -195,25 +194,21 @@ class TVarFigure1D(pg.GraphicsLayout):
                     # Remove data gaps removed based on user-input acceptable time gap
                     # In order to do this, we set the identified indices from overall_list to 0, which in the
                     # connect keyword argument in self.plotwindow.plot will cause that point to not be plotted
-                    time_filtered = np.array([1]*len(dataset.data.index.tolist()))
+                    time_filtered = np.array([1]*len(dataset.index.tolist()))
                     time_filtered[overall_list] = 0
 
                     # Finally, plot the thing with data gaps removed (if applicable)
-                    self.curves.append(self.plotwindow.plot(x=dataset.data.index.tolist(),
-                                                            y=dataset.data[i].tolist(),
+                    self.curves.append(self.plotwindow.plot(x=dataset.index.tolist(),
+                                                            y=dataset[i].tolist(),
                                                             pen=self.colors[line_num % len(self.colors)],
                                                             connect=time_filtered))
                 else:
                     # Plot with interpolation of all data gaps
-                    self.curves.append(self.plotwindow.plot(x=dataset.data.index.tolist(),
-                                                            y=dataset.data[i].tolist(),
+                    self.curves.append(self.plotwindow.plot(x=dataset.index.tolist(),
+                                                            y=dataset[i].tolist(),
                                                             pen=self.colors[line_num % len(self.colors)]))
 
                 line_num += 1
-
-            # Add region of interest (roi) lines if applicable
-            if 'roi_lines' in pytplot.tplot_opt_glob.keys():
-                self._set_roi_lines(dataset)
 
 
 
@@ -225,8 +220,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         return
 
     def _addlegend(self):
-        if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
-            legend_names = pytplot.data_quants[self.tvar_name].yaxis_opt['legend_names']
+        if 'legend_names' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            legend_names = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['legend_names']
             n_items = len(legend_names)
             bottom_bound = 0.5 + (n_items - 1) * 0.05
             top_bound = 0.5 - (n_items - 1) * 0.05
@@ -244,7 +239,7 @@ class TVarFigure1D(pg.GraphicsLayout):
                 b = self.colors[i % len(self.colors)][2]
                 hex_num = rgb(r, g, b)
                 color_text = 'color: ' + hex_num
-                font_size = 'font-size: '+str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'
+                font_size = 'font-size: '+str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
                 opts = [color_text, font_size]
                 full = "<span style='%s'>%s</span>" % ('; '.join(opts), legend_name)
                 if i + 1 == len(legend_names):  # Last
@@ -276,18 +271,18 @@ class TVarFigure1D(pg.GraphicsLayout):
             date = (pytplot.tplot_utilities.int_to_str(index_x))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(index_x))[11:19]
             # add crosshairs
-            if self._mouseMovedFunction is not None:
-                self._mouseMovedFunction(int(mousepoint.x()))
+            pytplot.hover_time.change_hover_time(int(mousepoint.x()), self.tvar_name)
+            if self.crosshair:
                 self.vLine.setPos(mousepoint.x())
                 self.hLine.setPos(mousepoint.y())
                 self.vLine.setVisible(True)
                 self.hLine.setVisible(True)
 
-            self.hoverlegend.setVisible(True)
-            self.hoverlegend.setItem("Date:", date)
-            # Allow the user to set x-axis(time) and y-axis data names in crosshairs
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', time)
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', str(index_y))
+                self.hoverlegend.setVisible(True)
+                self.hoverlegend.setItem("Date:", date)
+                # Allow the user to set x-axis(time) and y-axis data names in crosshairs
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', time)
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', str(index_y))
 
         else:
             self.hoverlegend.setVisible(False)
@@ -295,8 +290,8 @@ class TVarFigure1D(pg.GraphicsLayout):
             self.hLine.setVisible(False)
 
     def _getyaxistype(self):
-        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
-            return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
+        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_axis_type']
         else:
             return 'linear'
 
@@ -310,8 +305,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         return
 
     def _setcolors(self):
-        if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
-            return pytplot.tplot_utilities.rgb_color(pytplot.data_quants[self.tvar_name].extras['line_color'])
+        if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            return pytplot.tplot_utilities.rgb_color(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color'])
         else:
             return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 
@@ -330,28 +325,29 @@ class TVarFigure1D(pg.GraphicsLayout):
 
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] < 0 or \
-                    pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 or \
+                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
                 return
-            self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0]),
-                                         np.log10(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1]),
+            self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]),
+                                         np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]),
                                          padding=0)
         else:
-            self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
-                                         pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1], padding=0)
+            self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
+                                         pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1],
+                                         padding=0)
 
     def _setzrange(self):
         return
 
     def _addtimebars(self):
         # find number of times to plot
-        dict_length = len(pytplot.data_quants[self.tvar_name].time_bar)
+        dict_length = len(pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'])
         # for each time
         for i in range(dict_length):
             # pull date, color, thickness
-            date_to_highlight = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
-            color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
-            thick = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+            date_to_highlight = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
+            color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
+            thick = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
             # make infinite line w/ parameters
             infline = pg.InfiniteLine(pos=date_to_highlight, pen=pg.mkPen(color, width=thick))
             # add to plot window

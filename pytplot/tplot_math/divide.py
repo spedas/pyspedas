@@ -8,18 +8,19 @@ import numpy as np
 
 #DIVIDE
 #divide two tvar data arrays, store in new_tvar
-def divide(tvar1,tvar2,new_tvar='tvar_divide',interp='linear'):
-    if new_tvar == 'tvar_divide':
-        new_tvar= tvar1 + "_divided_by_" + tvar2
-    #interpolate tvars
-    tv1,tv2 = pytplot.interpolate(tvar1,tvar2,interp=interp)
-    #separate and divide data
-    time = pytplot.data_quants[tv1].data.index
-    data1 = pytplot.data_quants[tv1].data
-    data2 = pytplot.data_quants[tv2].data
-    data = data1/data2
-    #if division by 0, replace with NaN
-    data = data.replace([np.inf,-np.inf],np.nan)
-    #store divided data
-    pytplot.store_data(new_tvar,data={'x':time, 'y':data})
-    return new_tvar
+def divide(tvar1,tvar2,new_tvar=None):
+    # interpolate tvars
+    tv2 = pytplot.tplot_math.tinterp(tvar1, tvar2)
+    # separate and subtract data
+    data1 = pytplot.data_quants[tvar1].values
+    data2 = tv2.values
+    data = data1 * data2
+    # store subtracted data
+    if new_tvar is None:
+        pytplot.data_quants[tvar1].values = data
+    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
+        pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data,
+                                           'v': pytplot.data_quants[tvar1].coords['spec_bins'].values})
+    else:
+        pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
+    return

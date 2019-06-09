@@ -44,7 +44,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].extras['char_size'])+'pt'}
+        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
 
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
@@ -66,8 +66,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
         # Allow the user to set x-axis(time) and y-axis data names in crosshairs
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
 
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
@@ -93,7 +93,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.xaxis.setLabel("Altitude", **self.labelStyle)
 
     def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].yaxis_opt['axis_label'], **self.labelStyle)
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
@@ -103,8 +103,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return
 
     def _getyaxistype(self):
-        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].yaxis_opt:
-            return pytplot.data_quants[self.tvar_name].yaxis_opt['y_axis_type']
+        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_axis_type']
         else:
             return 'linear'
 
@@ -143,16 +143,16 @@ class TVarFigureAlt(pg.GraphicsLayout):
             # Set legend options
             self.hoverlegend.setVisible(True)
             # Allow the user to set x-axis(time) and y-axis data names in crosshairs
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].xaxis_opt['crosshair'] + ':', index_x)
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].yaxis_opt['crosshair'] + ':', index_y)
+            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', index_x)
+            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', index_y)
         else:
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
             self.hLine.setVisible(False)
 
     def _addlegend(self):
-        if 'legend_names' in pytplot.data_quants[self.tvar_name].yaxis_opt:
-            legend_names = pytplot.data_quants[self.tvar_name].yaxis_opt['legend_names']
+        if 'legend_names' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            legend_names = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['legend_names']
             if len(legend_names) != len(self.curves):
                 print("Number of lines do not match length of legend names")
             if len(legend_names) == 1:
@@ -181,8 +181,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return
 
     def _setcolors(self):
-        if 'line_color' in pytplot.data_quants[self.tvar_name].extras:
-            return pytplot.data_quants[self.tvar_name].extras['line_color']
+        if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
         else:
             return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 
@@ -191,15 +191,15 @@ class TVarFigureAlt(pg.GraphicsLayout):
 
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0] < 0 or \
-                    pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 or \
+                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
                 return
-            self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0]),
-                                         np.log10(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1]),
+            self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]),
+                                         np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]),
                                          padding=0)
         else:
-            self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][0],
-                                         pytplot.data_quants[self.tvar_name].yaxis_opt['y_range'][1], padding=0)
+            self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
+                                         pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1], padding=0)
 
     def _setzrange(self):
         return
@@ -208,44 +208,50 @@ class TVarFigureAlt(pg.GraphicsLayout):
         # initialize dataset variable
         datasets = []
         # grab tbardict
-        tbardict = pytplot.data_quants[self.tvar_name].time_bar
+        tbardict = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
         ltbar = len(tbardict)
+
         # make sure data is in list format
-        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-            for oplot_name in pytplot.data_quants[self.tvar_name].data:
-                datasets.append(pytplot.data_quants[oplot_name])
-        else:
-            datasets.append(pytplot.data_quants[self.tvar_name])
+        datasets = [pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(pytplot.data_quants[oplot_name])
+
         for dataset in datasets:
+            # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
+            # This needs to be rewritten to use xarray
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             # for location in tbar dict
             for i in range(ltbar):
                 # get times, color, point size
-                test_time = pytplot.data_quants[self.tvar_name].time_bar[i]["location"]
-                color = pytplot.data_quants[self.tvar_name].time_bar[i]["line_color"]
-                pointsize = pytplot.data_quants[self.tvar_name].time_bar[i]["line_width"]
+                test_time = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
+                color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
+                pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
                 # correlate given time with corresponding data/alt points
-                time, altitude = pytplot.get_data(dataset.links['alt'])
-                altitude = altitude.transpose()[0]
+                time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].coords['time'].values
+                altitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].values
                 nearest_time_index = np.abs(time - test_time).argmin()
-                data_point = dataset.data.iloc[nearest_time_index][0]
+                data_point = dataset.iloc[nearest_time_index][0]
                 alt_point = altitude[nearest_time_index]
                 self.plotwindow.scatterPlot([alt_point], [data_point], size=pointsize, pen=pg.mkPen(None), brush=color)
         return
 
     def _visdata(self):
-        datasets = []
-        if isinstance(pytplot.data_quants[self.tvar_name].data, list):
-            for oplot_name in pytplot.data_quants[self.tvar_name].data:
-                datasets.append(pytplot.data_quants[oplot_name])
-        else:
-            datasets.append(pytplot.data_quants[self.tvar_name])
+
+        datasets = [pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(pytplot.data_quants[oplot_name])
+
         line_num = 0
-        for dataset in datasets:
-            for i in range(0, len(dataset.data.columns)):
-                t_link, x = pytplot.get_data(dataset.links['alt'])
+        for dataset_xr in datasets:
+            # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
+            # This needs to be rewritten to use xarray
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
+            for i in range(0, len(dataset.columns)):
+                t_link = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['alt']].coords['time'].values
+                x = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['alt']].values
                 # Need to trim down the data points to fit within the link
-                t_tvar = dataset.data.index.values
-                data = dataset.data[i].values
+                t_tvar = dataset.index.values
+                data = dataset[i].values
                 while t_tvar[-1] > t_link[-1]:
                     t_tvar = np.delete(t_tvar, -1)
                     data = np.delete(data, -1)
@@ -253,7 +259,6 @@ class TVarFigureAlt(pg.GraphicsLayout):
                     t_tvar = np.delete(t_tvar, 0)
                     data = np.delete(data, 0)
 
-                x = x.transpose()[0]
                 self.curves.append(self.plotwindow.scatterPlot(x.tolist(), data.tolist(),
                                                                pen=pg.mkPen(None), brush=self.colors[line_num %
                                                                                                      len(self.colors)]))

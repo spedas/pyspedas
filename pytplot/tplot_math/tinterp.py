@@ -10,9 +10,19 @@ from scipy.interpolate import interp1d
 
 #TVAR INTERPOLATION
 #interpolate tvar2 to tvar1 cadence
-def tinterp(tvar1,tvar2,interp='linear'):
-    #crop data
-    tv1_t,_,tv2_t,tv2_d = pytplot.crop(tvar1,tvar2)
+def tinterp(tvar1,tvar2,replace=False):
+
+    new_tvar2 = pytplot.data_quants[tvar2].interp_like(pytplot.data_quants[tvar1])
+
+    if replace:
+        pytplot.data_quants[tvar2] = new_tvar2
+        return
+    else:
+        return new_tvar2
+
+    '''
+    # Crop Data
+    tv1, tv2 = pytplot.crop(tvar1,tvar2)
     df_index = pytplot.data_quants[tvar1].data.columns
     #interpolate to tvar1 cadence
     if interp == 'linear':
@@ -45,4 +55,5 @@ def tinterp(tvar1,tvar2,interp='linear'):
         name2 = tvar2 + "_interp"
     #store interpolated tvars as 'X_interp'
     pytplot.store_data(name2, data={'x':tv1_t,'y':new_df})
+    '''
     return

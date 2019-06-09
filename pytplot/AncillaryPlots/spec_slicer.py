@@ -2,10 +2,9 @@ import pyqtgraph as pg
 import numpy as np
 import pytplot
 from pytplot import tplot_utilities
-from pyqtgraph.Qt import QtGui, QtCore
 
 
-def interactiveplot(t_average=None):
+def spec_slicer(var=None, time=None, interactive=False):
     """ If the interactive option is set to True in tplot, this function will take in the stored tplot variables
     and create a 2D interactive window that will pop up when any one of the tplot variables is plotted (so long
     as at least one of the tplot variables is a spectrogram). If the mouse hovers over a spectrogram plot, data
@@ -18,25 +17,18 @@ def interactiveplot(t_average=None):
     # Grab names of data loaded in as tplot variables.
     names = list(pytplot.data_quants.keys())
     # Get data we'll actually work with here.
-    valid_variables = tplot_utilities.get_data(names)
+    valid_variables = tplot_utilities.get_spec_data(names)
 
     # Don't plot anything unless we have spectrograms with which to work.
     if valid_variables:
         # Get z label
-        labels = tplot_utilities.get_labels_axis_types(names)
-
-        # Put together data in easy-to-access format for plots.
-        data = {}
-        for name in valid_variables:
-            bins = tplot_utilities.get_bins(name)
-            time_values, z_values = tplot_utilities.get_z_t_values(name)
-            data[name] = [bins, z_values, time_values]
+        labels = tplot_utilities.get_spec_slicer_axis_types(names)
 
         # Set up the 2D interactive plot
-        pytplot.interactive_window = pg.GraphicsWindow()
-        pytplot.interactive_window.resize(1000, 600)
-        pytplot.interactive_window.setWindowTitle('Interactive Window')
-        plot = pytplot.interactive_window.addPlot(title='2D Interactive Plot', row=0, col=0)
+        pytplot.pytplotWindows.append(pg.GraphicsWindow())
+        pytplot.pytplotWindows[-1].resize(1000, 600)
+        pytplot.pytplotWindows[-1].setWindowTitle('Interactive Window')
+        plot = pytplot.pytplotWindows[-1].addPlot(title='Spectrogram Slicing Plot', row=0, col=0)
         # Make it so that whenever this first starts up, you just have an empty plot
         plot_data = plot.plot([], [])
 
@@ -53,47 +45,64 @@ def interactiveplot(t_average=None):
 
         # TL;DR, t comes from getting the mouse location in pyqtgraph every time the mouse is moved
         # and the below function will update the plot's position as the mouse is moved.
+
+        # TODO: At some point, the indexing stuff can all be simplified with xarray functionality
         def update(t, name):
             if name in valid_variables:
                 # Get the time closest to the x position the mouse is over.
-                time_array = np.array(data[name][2])
+                time_array = pytplot.data_quants[name].coords['time'].values
                 array = np.asarray(time_array)
-                idx = (np.abs(array - t)).argmin()
+
+                using_avg = False
+                # Take the average time for bin purposes
+                if hasattr(t, '__len__'):
+                    if len(t) == 2:
+                        tavg = (t[0]+t[1]) / 2.0
+                        using_avg = True
+                        idx = (np.abs(array - tavg)).argmin()
+                    else:
+                        idx = (np.abs(array - t)).argmin()
+                else:
+                    idx = (np.abs(array - t)).argmin()
+                # Grabbing the bins to display on the x axis
+                if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 2:
+                    bins = pytplot.data_quants[name].coords['spec_bins'][idx, :]
+                else:
+                    bins = pytplot.data_quants[name].coords['spec_bins'].values
 
                 # If user indicated they wanted the interactive plot's axes to be logged, log 'em.
                 # But first make sure that values in x and y are loggable!
-                x_axis = False
-                y_axis = False
+                x_axis_log = False
+                y_axis_log = False
                 # Checking x axis
-                if np.nanmin(data[name][0][:]) < 0:
-                    print('Negative data is incompatible with log plotting.')
-                elif np.nanmin(data[name][0][:]) >= 0 and labels[name][2] == 'log':
-                    x_axis = True
+                if np.nanmin(bins) >= 0 and labels[name][2] == 'log':
+                    x_axis_log = True
                 # Checking y axis
-                if np.nanmin(list(data[name][1][idx])) < 0:
-                    print('Negative data is incompatible with log plotting')
-                elif np.nanmin(list(data[name][1][idx])) >= 0 and labels[name][3] == 'log':
-                    y_axis = True
+                if np.nanmin(bins) >= 0 and labels[name][3] == 'log':
+                    y_axis_log = True
 
                 # Set plot labels
                 plot.setLabel('bottom', '{}'.format(labels[name][0]))
                 plot.setLabel('left', '{}'.format(labels[name][1]))
-                plot.setLogMode(x=x_axis, y=y_axis)
+                plot.setLogMode(x=x_axis_log, y=y_axis_log)
                 # Update x and y range if user modified it
-                tplot_utilities.set_x_range(name, x_axis, plot)
-                tplot_utilities.set_y_range(name, y_axis, plot)
+                tplot_utilities.set_x_range(name, x_axis_log, plot)
+                tplot_utilities.set_y_range(name, y_axis_log, plot)
 
-                if 't_average' in pytplot.data_quants[name].extras:
+                if ('t_average' in pytplot.data_quants[name].attrs['plot_options']['extras']) or using_avg:
                     # If the user indicated that they wanted to average the interactive plot's y values based on a
                     # certain time range around the cursor location, we then want to get average of values around
                     # the cursor location.
-                    t_min = data[name][2][0]
-                    t_max = data[name][2][-1]
+                    t_min = time_array[0]
+                    t_max = time_array[-1]
 
-                    delta = pytplot.data_quants[name].extras['t_average']/int(2)
-
-                    left_bound = data[name][2][idx] - delta
-                    right_bound = data[name][2][idx] + delta
+                    if using_avg:
+                        left_bound = t[0]
+                        right_bound = t[1]
+                    else:
+                        delta = pytplot.data_quants[name].attrs['plot_options']['extras']['t_average']/int(2)
+                        left_bound = time_array[idx] - delta
+                        right_bound = time_array[idx] + delta
 
                     if (left_bound - t_min >= 0) and (t_max - right_bound >= 0):
                         # Find index of left and right bounds, no fancy foot work necessary.
@@ -121,33 +130,27 @@ def interactiveplot(t_average=None):
                         # not this.
                         print(
                             'This plot isn\'t appropriate for what you want, use the time-averaged static plot.')
+                        return
 
                     # Average values based on the calculated right and left bounds' indices.
                     time_diff = abs(idx_right - idx_left)
                     # Make sure to account for edge problem
                     if idx_right != -1:
-                        y_values_slice = data[name][1][idx_left:idx_right + 1]
+                        y_values_slice = pytplot.data_quants[name].isel(time=slice(idx_left,idx_right + 1))
                     else:
-                        y_values_slice = data[name][1][idx_left:]
+                        y_values_slice = pytplot.data_quants[name].isel(time=slice(idx_left,None))
                     y_values_avgd = np.sum(y_values_slice, axis=0)/np.float(time_diff)
-
-                    # Update x and y range if user modified it
-                    tplot_utilities.set_x_range(name, x_axis, plot)
-                    tplot_utilities.set_y_range(name, y_axis, plot)
 
                     try:
                         # Plot data based on time we're hovering over
-                        plot_data.setData(data[name][0][:], y_values_avgd)
+                        plot_data.setData(bins, y_values_avgd)
                     except ZeroDivisionError:
                         pass
                 else:
-                    # Update x and y range if user modified it
-                    tplot_utilities.set_x_range(name, x_axis, plot)
-                    tplot_utilities.set_y_range(name, y_axis, plot)
                     # If the user just wants a plain jane interactive plot...
                     # Plot data based on time we're hovering over'
                     try:
-                        plot_data.setData(data[name][0][:], list(data[name][1][idx]))
+                        plot_data.setData(bins, list(pytplot.data_quants[name].isel(time=idx)))
                     except ZeroDivisionError:
                         pass
 
@@ -158,10 +161,13 @@ def interactiveplot(t_average=None):
                 plot.setLabel('left', '')
                 plot_data.setData([], [])
 
-        # Make the above function called whenever hover_time is updated.
-        pytplot.hover_time.register_listener(update)
+        if time is not None:
+            if not isinstance(time, list):
+                time = [time]
+            user_time = [tplot_utilities.str_to_int(i) for i in time]
+            update(user_time, var)
 
-        # Start Qt event loop unless running in interactive mode.
-        #import sys
-        #if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
-        #    QtGui.QApplication.instance().exec_()
+        # Make the above function called whenever hover_time is updated.
+        if interactive:
+            pytplot.hover_time.register_listener(update)
+

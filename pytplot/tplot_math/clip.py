@@ -29,11 +29,19 @@ import numpy as np
     """
 
                               
-def clip(tvar1,ymin,ymax,newtvar='tvar_clip'):
+def clip(tvar1,ymin,ymax,newtvar=None):
+    if newtvar is None:
+        newtvar=tvar1+'_clipped'
+
+    if 'spec_bins' in pytplot.data_quants.coords:
+        d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+    else:
+        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+
     #grab column indices
-    df_index = pytplot.data_quants[tvar1].data.columns.copy()
+    df_index = d.columns.copy()
     new_df = []
-    tvar_orig = pytplot.data_quants[tvar1]
+    tvar_orig = d
     #for each column of dataframe
     for i in df_index:
         tv2_col = [item[i] for item in tvar_orig.data.values]
@@ -45,7 +53,7 @@ def clip(tvar1,ymin,ymax,newtvar='tvar_clip'):
     new_df = np.transpose((list(new_df)))
     #store clipped tvar
     if pytplot.data_quants[tvar1].spec_bins is not None:
-        pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df,'v':pytplot.data_quants[tvar1].spec_bins})
+        pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df,'v':s.values})
     else:
         pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df})
     return

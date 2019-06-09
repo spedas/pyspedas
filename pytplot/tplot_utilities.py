@@ -135,7 +135,10 @@ def int_to_str(time_int):
     if math.isnan(time_int):
         return "NaN"
     else:
-        return datetime.datetime.fromtimestamp(int(round(time_int)), tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            return datetime.datetime.fromtimestamp(int(round(time_int)), tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
+        except:
+            return "NaN"
 
 
 def return_bokeh_colormap(name):
@@ -211,7 +214,7 @@ def get_heatmap_color(color_map, min_val, max_val, values, zscale='log'):
 def timebar_delete(t, varname=None, dim='height'):
     if varname is None:
         for name in pytplot.data_quants:
-            list_timebars = pytplot.data_quants[name].time_bar
+            list_timebars = pytplot.data_quants[name]['plot_options']['time_bar']
             elem_to_delete = []
             for elem in list_timebars:
                 for num in t:
@@ -219,7 +222,7 @@ def timebar_delete(t, varname=None, dim='height'):
                         elem_to_delete.append(elem)
             for i in elem_to_delete:
                 list_timebars.remove(i)
-            pytplot.data_quants[name].time_bar = list_timebars
+            pytplot.data_quants[name]['plot_options']['time_bar'] = list_timebars
     else:
         if not isinstance(varname, list):
             varname = [varname]
@@ -227,7 +230,7 @@ def timebar_delete(t, varname=None, dim='height'):
             if i not in pytplot.data_quants.keys():
                 print(str(i) + " is currently not in pytplot.")
                 return
-            list_timebars = pytplot.data_quants[i].time_bar
+            list_timebars = pytplot.data_quants[i]['plot_options']['time_bar']
             elem_to_delete = []
             for elem in list_timebars:
                 for num in t:
@@ -235,8 +238,8 @@ def timebar_delete(t, varname=None, dim='height'):
                         elem_to_delete.append(elem)
             for j in elem_to_delete:
                 list_timebars.remove(j)
-            pytplot.data_quants[i].time_bar = list_timebars
-    return    
+            pytplot.data_quants[i]['plot_options']['time_bar']
+    return
 
 
 def return_lut(name):
@@ -465,69 +468,74 @@ def rgb_color(color):
 # The following functions are needed for a spectrogram's interactive, static, or time-averaged (w/ or w/o cursor)
 # supplementary plot(s).
 
-def get_data(names):
+def get_spec_data(names):
     # Just grab variables that are spectrograms.
     valid_vars = list()
     for n in names:
-        if pytplot.data_quants[n].spec_bins is not None:
+        if 'spec_bins' in pytplot.data_quants[n].coords:
             valid_vars.append(n)
     return valid_vars
 
 
-def get_labels_axis_types(names):
+def get_spec_slicer_axis_types(names):
     # Get labels and axis types for plots.
     plot_labels = {}
     for n in names:
-        if pytplot.data_quants[n].spec_bins is not None:
-            zlabel = pytplot.data_quants[n].zaxis_opt['axis_label']
-            ylabel = pytplot.data_quants[n].yaxis_opt['axis_label']
-            xtype_interactive = pytplot.data_quants[n].interactive_xaxis_opt['xi_axis_type']
-            ytype_interactive = pytplot.data_quants[n].interactive_yaxis_opt['yi_axis_type']
+        if 'spec_bins' in pytplot.data_quants[n].coords:
+            zlabel = pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['axis_label']
+            ylabel = pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['axis_label']
+            xtype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type']
+            ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type']
             plot_labels[n] = [ylabel, zlabel, xtype_interactive, ytype_interactive]
     return plot_labels
 
 
-def get_bins(var):
-    # Get bins to be plotted.
-    bins = list()
-    for name, values in pytplot.data_quants[var].spec_bins.iteritems():
-        # name = variable name
-        # value = data in variable name
-        bins.append(values.values[0])
-    return bins
-
-
-def get_z_t_values(var):
-    # Get data to be plotted and time data for indexing.
-    time_values = list()
-    z_values = list()
-    for r, rows in pytplot.data_quants[var].data.iterrows():
-        # r = time
-        # rows = the flux at each time, where each row signifies a different time
-        time_values.append(r)
-        z_values.append(rows.values)
-    return time_values, z_values
-
-
 def set_x_range(var, x_axis_log, plot):
     # Check if plot's x range has been set by user. If not, range is automatically set.
-    if 'xi_range' in pytplot.data_quants[var].interactive_xaxis_opt:
+    if 'xi_range' in pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']:
         if x_axis_log:
-            plot.setXRange(np.log10(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][0]),
-                           np.log10(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][1]),
+            plot.setXRange(np.log10(pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][0]),
+                           np.log10(pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][1]),
                            padding=0)
         elif not x_axis_log:
-            plot.setXRange(pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][0],
-                           pytplot.data_quants[var].interactive_xaxis_opt['xi_range'][1], padding=0)
+            plot.setXRange(pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][0],
+                           pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][1], padding=0)
 
 
 def set_y_range(var, y_axis_log, plot):
     # Check if plot's y range has been set by user. If not, range is automatically set.
-    if 'yi_range' in pytplot.data_quants[var].interactive_yaxis_opt:
+    if 'yi_range' in pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']:
         if y_axis_log:
-            plot.setYRange(np.log10(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][0]),
-                           np.log10(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][1]),
+            plot.setYRange(np.log10(pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][0]),
+                           np.log10(pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1]),
                            padding=0)
         elif not y_axis_log:
-            plot.setYRange(pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][0],
-                           pytplot.data_quants[var].interactive_yaxis_opt['yi_range'][1], padding=0)
+            plot.setYRange(pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][0],
+                           pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1], padding=0)
+
+
+
+def convert_tplotxarray_to_pandas_dataframe(name):
+    import pandas as pd
+    # This function is not final, and will presumably change in the future
+    # For 2D data, turn it into a Pandas dataframe
+    # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
+    # For 4D data, ignore the last dimension
+    if not 'spec_bins' in pytplot.data_quants[name].coords:
+        return_data = pd.DataFrame(pytplot.data_quants[name].values)
+        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+        return return_data
+    else:
+        matrix = pytplot.data_quants[name].values
+        if len(matrix.shape) > 2:
+            matrix = np.nansum(matrix, 1)
+        if len(matrix.shape) > 2:
+            matrix = matrix[:, :, 0]
+        return_data = pd.DataFrame(matrix)
+        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+        spec_bins = pd.DataFrame(pytplot.data_quants[name].coords['spec_bins'].values)
+        if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 1:
+            spec_bins = spec_bins.transpose()
+        else:
+            spec_bins = spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+    return return_data, spec_bins
