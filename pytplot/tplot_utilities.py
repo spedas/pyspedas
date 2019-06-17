@@ -117,7 +117,22 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         new_tplot_opt_glob['data_gap'] = value
     
     elif option == 'roi':
-        new_tplot_opt_glob['roi_lines'] = [value, value]
+        new_tplot_opt_glob['roi_lines'] = value
+
+    elif option == 'vertical_spacing':
+        new_tplot_opt_glob['vertical_spacing'] = value
+
+    elif option == 'show_all_axes':
+        new_tplot_opt_glob['show_all_axes'] = value
+
+    elif option == 'min_border_top':
+        new_tplot_opt_glob['min_border_top'] = value
+
+    elif option == 'min_border_bottom':
+        new_tplot_opt_glob['min_border_bottom'] = value
+
+    else:
+        print("Unknown option supplied: " + str(option))
 
     return new_tplot_opt_glob
 

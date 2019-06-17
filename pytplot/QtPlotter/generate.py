@@ -13,7 +13,8 @@ from .TVarFigureAxisOnly import TVarFigureAxisOnly
 
 def generate_stack(name,
                    var_label=None,
-                   combine_axes=True):
+                   combine_axes=True,
+                   vert_spacing=25):
     new_stack = pg.GraphicsLayoutWidget()
     # Variables needed for pyqtgraph plots
     xaxis_thickness = 35
@@ -48,7 +49,8 @@ def generate_stack(name,
 
     # Whether or not there is a title row in pyqtgraph
     titlerow = 0
-
+    spacing_in_pixels = vert_spacing
+    new_stack.ci.layout.setSpacing(spacing_in_pixels)
     # Create all plots
     while i < num_plots:
         last_plot = (i == num_plots - 1)
@@ -62,6 +64,7 @@ def generate_stack(name,
                 titlerow = 1
         new_stack.ci.layout.setRowPreferredHeight(i + titlerow, p_height)
         new_fig = _get_figure_class(name[i], show_xaxis=last_plot)
+
         new_stack.addItem(new_fig, row=i + titlerow, col=0)
 
         axis_types.append(new_fig.getaxistype())

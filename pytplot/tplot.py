@@ -41,7 +41,8 @@ def tplot(name,
           display=True,
           testing=False,
           extra_functions=[],
-          extra_function_args=[]):
+          extra_function_args=[],
+          vert_spacing=None):
     """
     This is the function used to display the tplot variables stored in memory.
     The default output is to show the plots stacked on top of one another inside a GUI window.
@@ -143,6 +144,12 @@ def tplot(name,
     if isinstance(var_label, int):
         var_label = list(pytplot.data_quants.keys())[var_label]
 
+    if vert_spacing is None:
+        if 'vertical_spacing' in pytplot.tplot_opt_glob:
+            vert_spacing = pytplot.tplot_opt_glob['vertical_spacing']
+        else:
+            vert_spacing = 25 # Just a default that looks ok
+
     if bokeh:
         layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes,
                                             interactive=interactive)
@@ -185,8 +192,7 @@ def tplot(name,
             return
     else:
         if save_png is not None:
-            layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes,
-                                              mouse_moved_event=pytplot.hover_time.change_hover_time)
+            layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes, vert_spacing=vert_spacing)
             layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout.items()):
                 if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
@@ -199,7 +205,7 @@ def tplot(name,
 
         if display:
             # This layout is used when the user wants a png image saved.
-            layout_orig = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes)
+            layout_orig = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes, vert_spacing=vert_spacing)
             layout_orig.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout_orig.items()):
                 if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
@@ -213,7 +219,7 @@ def tplot(name,
 
             # Set up displayed plot window and grab plots to plot on it
             available_qt_window = tplot_utilities.get_available_qt_window()
-            layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes)
+            layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes, vert_spacing=vert_spacing)
 
             available_qt_window.newlayout(layout)
             available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0],

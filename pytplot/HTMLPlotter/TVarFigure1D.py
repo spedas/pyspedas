@@ -33,6 +33,9 @@ class TVarFigure1D(object):
         self.tvar_name = tvar_name
         self.auto_color = auto_color
         self.show_xaxis = show_xaxis
+        if 'show_all_axes' in pytplot.tplot_opt_glob:
+            if pytplot.tplot_opt_glob['show_all_axes']:
+                self.show_xaxis = True
         self.interactive = interactive
        
         # Variables needed across functions
@@ -133,6 +136,9 @@ class TVarFigure1D(object):
     def _setminborder(self):
         self.fig.min_border_bottom = pytplot.tplot_opt_glob['min_border_bottom']
         self.fig.min_border_top = pytplot.tplot_opt_glob['min_border_top']
+        if 'vertical_spacing' in pytplot.tplot_opt_glob:
+            self.fig.min_border_bottom = int(pytplot.tplot_opt_glob['vertical_spacing'] / 2.0)
+            self.fig.min_border_top = int(pytplot.tplot_opt_glob['vertical_spacing'] / 2.0)
 
     def _addtimebars(self):
         for time_bar in pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']:
@@ -143,8 +149,8 @@ class TVarFigure1D(object):
     def _set_roi_lines(self, dataset):
         # Locating the two times between which there's a roi
         time = dataset.coords['time'].values
-        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
-        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0])
+        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][1])
         # find closest time to user-requested time
         x = np.asarray(time)
         x_sub_1 = abs(x - roi_1 * np.ones(len(x)))

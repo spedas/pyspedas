@@ -37,6 +37,9 @@ class TVarFigureSpec(object):
     def __init__(self, tvar_name, auto_color=False, show_xaxis=False, interactive=False, y_axis_type='log'):
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
+        if 'show_all_axes' in pytplot.tplot_opt_glob:
+            if pytplot.tplot_opt_glob['show_all_axes']:
+                self.show_xaxis = True
         self.interactive = interactive
 
         # Variables needed across functions
@@ -169,8 +172,8 @@ class TVarFigureSpec(object):
 
     def _set_roi_lines(self, time):
         # Locating the two times between which there's a roi
-        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
-        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+        roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0])
+        roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][1])
         # find closest time to user-requested time
         x = np.asarray(time)
         x_sub_1 = abs(x - roi_1 * np.ones(len(x)))

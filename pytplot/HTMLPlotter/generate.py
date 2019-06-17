@@ -15,7 +15,8 @@ def generate_stack(name,
                    var_label=None,
                    auto_color=True, 
                    combine_axes=True,
-                   interactive=True):
+                   interactive=True,
+                   vert_spacing=25):
     
     doc.curdoc().clear()
     num_plots = len(name)
@@ -47,7 +48,7 @@ def generate_stack(name,
         p_height = int(pytplot.data_quants[name[i]].attrs['plot_options']['extras']['panel_size'] * p_to_use)
         p_width = pytplot.tplot_opt_glob['window_size'][0]
         
-        #Check plot type       
+        # Check plot type
         new_fig = _get_figure_class(name[i], auto_color=auto_color, interactive=interactive, show_xaxis=last_plot)
         
         new_fig.setsize(height=p_height, width=p_width) 

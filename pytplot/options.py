@@ -161,7 +161,7 @@ def options(name, option, value):
             elif value == 5 or value == 'long_dash':
                 to_be = [10]
                 
-            data_quants[i].line_opt['line_dash'] = to_be
+            data_quants[i].attrs['plot_options']['line_opt']['line_dash'] = to_be
             
             if(value == 6 or value == 'none'):
                 data_quants[i].attrs['plot_options']['line_opt']['visible'] = False

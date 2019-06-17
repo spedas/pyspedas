@@ -19,21 +19,31 @@ class TVarFigure1D(pg.GraphicsLayout):
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
+        if 'show_all_axes' in pytplot.tplot_opt_glob:
+            if pytplot.tplot_opt_glob['show_all_axes']:
+                self.show_xaxis = True
         self.crosshair = pytplot.tplot_opt_glob['crosshair']
 
         # Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
-        self.layout.setHorizontalSpacing(50)
+        self.layout.setHorizontalSpacing(10)
         self.layout.setContentsMargins(0, 0, 0, 0)
+
         # Set up the x axis
-        self.xaxis = DateAxis(orientation='bottom')
-        self.xaxis.setHeight(35)
-        self.xaxis.enableAutoSIPrefix(enable=False)
+        if self.show_xaxis:
+            self.xaxis = DateAxis(orientation='bottom')
+            self.xaxis.setHeight(35)
+            self.xaxis.enableAutoSIPrefix(enable=False)
+        else:
+            self.xaxis = DateAxis(orientation='bottom', showValues=False)
+            self.xaxis.setHeight(0)
+            self.xaxis.enableAutoSIPrefix(enable=False)
+
         # Set up the y axis
         self.yaxis = AxisItem("left")
         self.yaxis.setWidth(100)
-
         vb = NoPaddingPlot()
+        #plot = pg.PlotItem()
         self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
 
         # Set up the view box needed for the legends
@@ -49,13 +59,6 @@ class TVarFigure1D(pg.GraphicsLayout):
 
         self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
 
-        if show_xaxis:
-            self.plotwindow.showAxis('bottom')
-        else:
-            self.plotwindow.hideAxis('bottom')
-
-        self.label = pg.LabelItem(justify='left')
-        self.addItem(self.label, row=1, col=0)
 
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
@@ -65,6 +68,7 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
+
 
     def _set_crosshairs(self):
         self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
@@ -77,8 +81,8 @@ class TVarFigure1D(pg.GraphicsLayout):
     def _set_roi_lines(self):
         if 'roi_lines' in pytplot.tplot_opt_glob.keys():
             # Locating the two times between which there's a roi
-            roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][0])
-            roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0][1])
+            roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0])
+            roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][1])
             # find closest time to user-requested time
             x = pytplot.data_quants[self.tvar_name].coords['time']
             x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
@@ -111,7 +115,8 @@ class TVarFigure1D(pg.GraphicsLayout):
         self._set_roi_lines()
 
     def _setxaxislabel(self):
-        self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
+        if self.show_xaxis:
+            self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
 
     def _setyaxislabel(self):
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)

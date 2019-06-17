@@ -83,7 +83,7 @@ interactive_window = None  # 2D interactive window that appears whenever plottin
 static_window = None  # 2D window showing data at certain point in time from a spectrogram plot.
 static_tavg_window = None  # 2D window showing averaged y and z data for a specified time range from a spectrogram plot.
 tplot_opt_glob = dict(tools="xpan,crosshair,reset",
-                      min_border_top=15, min_border_bottom=0,
+                      min_border_top=12, min_border_bottom=12,
                       title_align='center', window_size=[800, 800],
                       title_size='12pt', title_text='', crosshair=True,
                       data_gap=0)
