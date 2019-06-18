@@ -28,7 +28,6 @@ if pytplot.using_graphics:
 
 def tplot(name,
           var_label=None,
-          auto_color=True,
           interactive=False,
           combine_axes=True,
           nb=False,
@@ -44,12 +43,7 @@ def tplot(name,
           vert_spacing=None):
     """
     This is the function used to display the tplot variables stored in memory.
-    The default output is to show the plots stacked on top of one another inside a GUI window.
-    The GUI window has the option to export the plots in either PNG or HTML formats.
-
-    .. note::
-        This plotting routine uses the python Bokeh library, which creates plots using HTML and Javascript.
-        Bokeh is technically still in beta, so future patches to Bokeh may require updates to this function.
+    The default output is to show the plots stacked on top of one another inside of a qt window
 
     Parameters:
         name : str / list
@@ -57,8 +51,6 @@ def tplot(name,
         var_label : str, optional
             The name of the tplot variable you would like as
             a second x axis.
-        auto_color : bool, optional
-            Automatically color the plot lines.
         interactive : bool, optional
             If True, a secondary interactive plot will be generated next to spectrogram plots.
             Mousing over the spectrogram will display a slice of data from that time on the
@@ -75,6 +67,14 @@ def tplot(name,
         bokeh : bool, optional
             If True, plots data using bokeh
             Else (bokeh=False or omitted), plots data using PyQtGraph
+        extra_functions: func, optional
+            This is an extra function that gets called just prior to the data being plotted.  This is useful if you'd
+            like to build your own Qt display that reacts to the mouse movement.  Built in displays can be found in the
+            AncillaryPlots folder.
+        extra_function_args: list of tuples, optional
+            These are the arguments to give your extra_functions
+        vert_spacing: int
+            Thes distance in pixels you'd like the plots to be
         gui : bool, optional
             If True, then this function will output the 2 HTML components of the generated plots as string variables.
             This is useful if you are embedded the plots in your own GUI.  For more information, see
@@ -150,7 +150,7 @@ def tplot(name,
             vert_spacing = 25 # Just a default that looks ok
 
     if bokeh:
-        layout = HTMLPlotter.generate_stack(name, var_label=var_label, auto_color=auto_color, combine_axes=combine_axes,
+        layout = HTMLPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes,
                                             interactive=interactive)
         # Output types
         if gui:

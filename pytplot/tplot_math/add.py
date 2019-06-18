@@ -17,7 +17,7 @@ def add(tvar1,tvar2,new_tvar=None):
             tvar2 : int/float
                 Name of second tplot variable
             new_tvar : str
-                Name of new tvar for added data.  If None, data inside of tvar1 is changed.
+                Name of new tvar for added data.
 
         Returns:
             None
