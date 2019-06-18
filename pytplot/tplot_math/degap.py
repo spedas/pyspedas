@@ -10,22 +10,31 @@ import copy
     
 def degap(tvar,dt,margin,func='nan',new_tvar = None):
     '''
-    Fills data within margin(s) where data may not be correct.
+    Fills gaps in the data either with NaNs or the last number.
 
     Required Arguments:
         tvar : str
-            Name of tvar to modify.
+            Name of tplot variable to modify
         dt : int/float
             Step size of the data in seconds
         margin : int/float
-            The maximum deviation from the step size allowed before degapping occurs
+            The maximum deviation from the step size allowed before degapping occurs.  In otherwords, if you'd like to fill in data every 4 seconds
+            but occasionally the data is 4.1 seconds apart, set the margin to .1 so that a data point is not inserted there.
 
     Optional Arguments:
         func : str
             Either 'nan' or 'ffill', which overrides normal interpolation with NaN
             substitution or forward-filled values.
+        new_tvar : str
+            The new tplot variable name to store the data into.  If None, then the data is overwritten.
     Returns:
         None
+
+    Examples:
+        >>> # Fills in data between "4" and "12" with a NaN
+        >>> pytplot.store_data('a', data={'x':[0,4,12,16], 'y':[1,2,4,5]})
+        >>> pytplot.deflag('a',4)
+        >>> print(pytplot.data_quants['a'].values)
     '''
 
     gap_size = np.diff(pytplot.data_quants[tvar].coords['time'])
@@ -46,7 +55,7 @@ def degap(tvar,dt,margin,func='nan',new_tvar = None):
 
     if new_tvar is None:
         a.name = tvar
-        a.attrs['plot_options'] = pytplot.data_quants[tvar].attrs['plot_options']
+        a.attrs['plot_options'] = copy.deepcopy(pytplot.data_quants[tvar].attrs['plot_options'])
         pytplot.data_quants[tvar] = a
     else:
         if 'spec_bins' in a.coords:

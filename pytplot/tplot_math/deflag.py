@@ -6,28 +6,28 @@
 import pytplot
 import copy
 
-"""
+                              
+def deflag(tvar1,flag,new_tvar=None):
+    """
     Change specified 'flagged' data to NaN.
-    
+
     Parameters:
         tvar1 : str
-            Name of tvar to use for data clipping.  
+            Name of tplot variable to use for data clipping.
         flag : int,list
             Flagged data will be converted to NaNs.
         newtvar : str
-            Name of new tvar for deflagged data storage
-            
+            Name of new tvar for deflagged data storage.  If not specified, then the data in tvar1 will be replaced.
+
     Returns:
         None
-    
+
     Examples:
-        >>> Remove any instances of [100,90,7,2,57] from 'd', store in 'e'.
+        >>> # Remove any instances of [100,90,7,2,57] from 'd', store in 'e'.
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,4],[4,90],[5,5],[6,6],[7,7]]})
         >>> pytplot.deflag('d',[100,90,7,2,57],'e')
     """
 
-                              
-def deflag(tvar1,flag,new_tvar=None):
     a = copy.deepcopy(pytplot.data_quants[tvar1].where(pytplot.data_quants[tvar1]!=flag))
     if new_tvar is None:
         a.name = tvar1

@@ -18,7 +18,7 @@ def clip(tvar1,ymin,ymax,newtvar=None):
             ymax : int/float
                 Maximum value to keep (inclusive)
             newtvar : str
-                Name of new tvar for clipped data storage
+                Name of new tvar for clipped data storage.  If not specified, a name will be made up.
 
         Returns:
             None

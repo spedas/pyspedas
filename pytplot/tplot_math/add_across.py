@@ -6,9 +6,36 @@
 import pytplot
 import numpy as np
 
-#ADD ACROSS COLUMNS
-#add tvar data across specific columns, store in new_tvar
 def add_across(tvar1,column_range=None,new_tvar=None):
+    """
+    Adds across columns in the tplot variable
+
+    .. note::
+        This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
+
+    Parameters:
+        tvar1 : str
+            Name of tplot variable.
+        column_range: list of ints
+            The columns to add together.  For example, if [1,4] is given here, columns 1, 2, 3, and 4 will be added together.
+            If not set, then every column is added.
+        new_tvar : str
+            Name of new tvar for averaged data.  If not set, then a name is made up.
+
+    Returns:
+        None
+
+    Examples:
+        >>> #Add across every column in the data
+        >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
+        >>> pytplot.add_across('d',new_tvar='d_aa')
+        >>> print(pytplot.data_quants['d_aa'].data)
+
+        >>> #Add across specific columns in the data
+        >>> pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
+        >>> pytplot.add_across('b',column_range=[[1,2],[3,4]],new_tvar='b_aap')
+        >>> print(pytplot.data_quants['b_aap'].data)
+    """
     # separate and add data
     if new_tvar is None:
         new_tvar = tvar1 + "_summed"

@@ -7,24 +7,24 @@ import pytplot
 
 def add(tvar1,tvar2,new_tvar=None):
     """
-        Adds two tplot variables together.  Will interpolate if the two are not on the same time cadence.
+    Adds two tplot variables together.  Will interpolate if the two are not on the same time cadence.
 
-        Parameters:
-            tvar1 : str
-                Name of first tplot variable.
-            tvar2 : int/float
-                Name of second tplot variable
-            new_tvar : str
-                Name of new tvar for added data.  If not set, then the data in tvar1 is replaced.
+    Parameters:
+        tvar1 : str
+            Name of first tplot variable.
+        tvar2 : int/float
+            Name of second tplot variable
+        new_tvar : str
+            Name of new tvar for added data.  If not set, then the data in tvar1 is replaced.
 
-        Returns:
-            None
+    Returns:
+        None
 
-        Examples:
-            >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-            >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
-            >>> pytplot.add('a','c','a+c')
-        """
+    Examples:
+        >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+        >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
+        >>> pytplot.add('a','c','a+c')
+    """
     #interpolate tvars
     tv2 = pytplot.tplot_math.tinterp(tvar1, tvar2)
     # separate and subtract data
