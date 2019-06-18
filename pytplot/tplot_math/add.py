@@ -16,10 +16,8 @@ def add(tvar1,tvar2,new_tvar=None):
                 Name of first tplot variable.
             tvar2 : int/float
                 Name of second tplot variable
-            ymax : int/float
-                Maximum value to keep (inclusive)
-            newtvar : str
-                Name of new tvar for clipped data storage
+            new_tvar : str
+                Name of new tvar for added data.  If none,
 
         Returns:
             None
