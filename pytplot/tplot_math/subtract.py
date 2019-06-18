@@ -4,16 +4,28 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
-#SUBTRACT
-#subtract two tvar data arrays, store in new_tvar
+
 def subtract(tvar1,tvar2,new_tvar=None):
-    '''
-    :param tvar1: The first tvar
-    :param tvar2: The second tvar
-    :param new_tvar: The name of the new tplot variable
-    :param interp: Method to interpolate tvar2 to the tvar1 time cadence
-    :return: New tplot variable created.
-    '''
+    """
+        Subtracts two tplot variables.  Will interpolate if the two are not on the same time cadence.
+
+        Parameters:
+            tvar1 : str
+                Name of first tplot variable.
+            tvar2 : int/float
+                Name of second tplot variable
+            new_tvar : str
+                Name of new tvar for added data.  If not set, then the data in tvar1 is replaced.
+
+        Returns:
+            None
+
+        Examples:
+            >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+            >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
+            >>> pytplot.subtract('a','c','a-c')
+        """
+
     #interpolate tvars
     tv2 = pytplot.tplot_math.tinterp(tvar1,tvar2)
     #separate and subtract data

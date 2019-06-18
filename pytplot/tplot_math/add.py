@@ -5,11 +5,9 @@
 
 import pytplot
 
-#ADD TWO ARRAYS
-#add two tvar data arrays, store in new_tvar
 def add(tvar1,tvar2,new_tvar=None):
     """
-        Adds two tplot variables together
+        Adds two tplot variables together.  Will interpolate if the two are not on the same time cadence.
 
         Parameters:
             tvar1 : str
@@ -17,7 +15,7 @@ def add(tvar1,tvar2,new_tvar=None):
             tvar2 : int/float
                 Name of second tplot variable
             new_tvar : str
-                Name of new tvar for added data.
+                Name of new tvar for added data.  If not set, then the data in tvar1 is replaced.
 
         Returns:
             None
@@ -28,16 +26,15 @@ def add(tvar1,tvar2,new_tvar=None):
             >>> pytplot.add('a','c','a+c')
         """
     #interpolate tvars
-    # interpolate tvars
     tv2 = pytplot.tplot_math.tinterp(tvar1, tvar2)
     # separate and subtract data
     data1 = pytplot.data_quants[tvar1].values
     data2 = tv2.values
     data = data1 + data2
-    # store subtracted data
 
+    # store added data
     if new_tvar is None:
-        new_tvar = tvar1 + '_plus_' + tvar2
+        pytplot.data_quants[tvar1].values = data
         return
 
     if 'spec_bins' in pytplot.data_quants[tvar1].coords:
