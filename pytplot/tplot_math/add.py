@@ -17,15 +17,15 @@ def add(tvar1,tvar2,new_tvar=None):
             tvar2 : int/float
                 Name of second tplot variable
             new_tvar : str
-                Name of new tvar for added data.  If none,
+                Name of new tvar for added data.  If None, data inside of tvar1 is changed.
 
         Returns:
             None
 
         Examples:
-            >>> Make any values below 2 and above 6 equal to NaN.
-            >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
-            >>> pytplot.clip('d',2,6,'e')
+            >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+            >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
+            >>> pytplot.add('a','c','a+c')
         """
     #interpolate tvars
     # interpolate tvars

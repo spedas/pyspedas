@@ -4,7 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
-import numpy as np
+import copy
 
 """
     Change specified 'flagged' data to NaN.
@@ -28,7 +28,7 @@ import numpy as np
 
                               
 def deflag(tvar1,flag,new_tvar=None):
-    a = pytplot.data_quants[tvar1].where(pytplot.data_quants[tvar1]!=flag)
+    a = copy.deepcopy(pytplot.data_quants[tvar1].where(pytplot.data_quants[tvar1]!=flag))
     if new_tvar is None:
         a.name = tvar1
         pytplot.data_quants[tvar1] = a

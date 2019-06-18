@@ -12,7 +12,6 @@ from . import HTMLPlotter
 from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
-from pytplot.AncillaryPlots import spec_slicer
 
 if pytplot.using_graphics:
     from .QtPlotter import PyTPlot_Exporter
