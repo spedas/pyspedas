@@ -5,16 +5,39 @@
 
 import pytplot
 
-#PARTIAL FLATTEN
-#take average of each column of data, divide column by average over specified time
-def flatten(tvar1,range=None,new_tvar=None):
-    if new_tvar is None:
-        new_tvar = tvar1 + "_flattened"
+def flatten(tvar,range=None,new_tvar=None):
+    """
+    Divides the column by an average over specified time
 
-    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
-        df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+    .. note::
+        This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
+
+    Parameters:
+        tvar : str
+            Name of first tplot variable.
+        range : [int, int], optional
+            The time range to average over.  The default is the whole range.
+        new_tvar : str
+            Name of new tvar for added data.  If not set, then a name is made up.
+
+    Returns:
+        None
+
+    Examples:
+        >>> # Divide each column by the average of the data between times 8 and 14
+        >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
+        >>> pytplot.flatten('d',[8,14],'d_flatten')
+        >>> print(pytplot.data_quants['d_flatten'].values)
+    """
+
+
+    if new_tvar is None:
+        new_tvar = tvar + "_flattened"
+
+    if 'spec_bins' in pytplot.data_quants[tvar].coords:
+        df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
     else:
-        df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+        df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
         s=None
 
     if range is None:

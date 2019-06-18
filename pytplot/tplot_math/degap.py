@@ -12,21 +12,20 @@ def degap(tvar,dt,margin,func='nan',new_tvar = None):
     '''
     Fills gaps in the data either with NaNs or the last number.
 
-    Required Arguments:
+    Parameters:
         tvar : str
             Name of tplot variable to modify
         dt : int/float
             Step size of the data in seconds
-        margin : int/float
+        margin : int/float, optional
             The maximum deviation from the step size allowed before degapping occurs.  In otherwords, if you'd like to fill in data every 4 seconds
             but occasionally the data is 4.1 seconds apart, set the margin to .1 so that a data point is not inserted there.
-
-    Optional Arguments:
-        func : str
+        func : str, optional
             Either 'nan' or 'ffill', which overrides normal interpolation with NaN
             substitution or forward-filled values.
-        new_tvar : str
+        new_tvar : str, optional
             The new tplot variable name to store the data into.  If None, then the data is overwritten.
+
     Returns:
         None
 
