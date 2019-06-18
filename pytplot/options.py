@@ -9,20 +9,20 @@ import numpy as np
 
 def options(name, option, value):
     """
-    This function allows the user to set a large variety of options for individual plots.  
-    
+    This function allows the user to set a large variety of options for individual plots.
+
     Parameters:
-        name : str 
+        name : str
             Name of the tplot variable
         option : str
-            The name of the option.  See section below  
+            The name of the option.  See section below
         value : str/int/float/list
-            The value of the option.  See section below.  
-            
+            The value of the option.  See section below.
+
     Options:
-        ============        ==========   =====
+        =================== ==========   =====
         Options             Value type   Notes
-        ============        ==========   =====
+        =================== ==========   =====
         Color               str/list     Red, Orange, Yellow, Green, Blue, etc.
         Colormap            str/list     https://matplotlib.org/examples/color/colormaps_reference.html.
         Spec                int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
@@ -60,57 +60,57 @@ def options(name, option, value):
                                          from a spec plot.
         t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
                                          plots.
-        ============        ==========   =====
+        =================== ==========   =====
     Returns:
         None
-    
+
     Examples:
-        >>> # Change the y range of Variable1 
+        >>> # Change the y range of Variable1
         >>> import pytplot
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
         >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
         >>> pytplot.options('Variable1', 'yrange', [2,4])
-        
+
         >>> # Change Variable1 to use a log scale
         >>> pytplot.options('Variable1', 'ylog', 1)
-    
+
     """
 
     if not isinstance(name, list):
         name = [name]
-    
+
     option = option.lower()
-    
+
     for i in name:
         if i not in data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
-    
+
         if option == 'color':
             if isinstance(value, list):
                 data_quants[i].attrs['plot_options']['extras']['line_color'] = value
             else:
                 data_quants[i].attrs['plot_options']['extras']['line_color'] = [value]
-        
+
         if option == 'link':
             if isinstance(value, list):
                 data_quants[i].link_to_tvar(value[0], value[1])
-                
+
         if option == 'colormap':
             if isinstance(value, list):
                 data_quants[i].attrs['plot_options']['extras']['colormap'] = value
             else:
                 data_quants[i].attrs['plot_options']['extras']['colormap'] = [value]
-        
+
         if option == 'spec':
             _reset_plots(i)
             data_quants[i].attrs['plot_options']['extras']['spec'] = value
-        
+
         if option == 'alt':
             _reset_plots(i)
             data_quants[i].attrs['plot_options']['extras']['alt'] = value
-    
+
         if option == 'map':
             _reset_plots(i)
             data_quants[i].attrs['plot_options']['extras']['map'] = value
@@ -143,10 +143,10 @@ def options(name, option, value):
                 data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'log'
             else:
                 data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
-        
+
         if option == 'nodata':
             data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
-        
+
         if option == 'line_style':
             to_be = []
             if value == 0 or value == 'solid_line':
@@ -163,39 +163,39 @@ def options(name, option, value):
                 to_be = [10]
             else:
                 to_be=value
-                
+
             data_quants[i].attrs['plot_options']['line_opt']['line_style'] = to_be
-            
+
             if(value == 6 or value == 'none'):
                 data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
 
         if option == 'char_size':
             data_quants[i].attrs['plot_options']['extras']['char_size'] = value
-                
+
         if option == 'name':
             data_quants[i].attrs['plot_options']['line_opt']['name'] = value
-        
+
         if option == "panel_size":
             if value > 1 or value <= 0:
                 print("Invalid value. Should be (0, 1]")
                 return
             data_quants[i].attrs['plot_options']['extras']['panel_size'] = value
-        
+
         if option == 'basemap':
             data_quants[i].attrs['plot_options']['extras']['basemap'] = value
-        
+
         if option == 'alpha':
             if value > 1 or value < 0:
                 print("Invalid value. Should be [0, 1]")
                 return
             data_quants[i].attrs['plot_options']['extras']['alpha'] = value
-            
+
         if option == 'thick':
             data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
-        
+
         if option == ('yrange' or 'y_range'):
             data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
-            
+
         if option == ('zrange' or 'z_range'):
             data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
 
@@ -204,16 +204,16 @@ def options(name, option, value):
 
         if option == 'yrange_interactive':
             data_quants[i].attrs['plot_options']['interactive_yaxis_opt']['yi_range'] = [value[0], value[1]]
-            
+
         if option == 'xtitle':
             data_quants[i].attrs['plot_options']['xaxis_opt']['axis_label'] = value
-        
+
         if option == 'ytitle':
             data_quants[i].attrs['plot_options']['yaxis_opt']['axis_label'] = value
-        
+
         if option == 'ztitle':
             data_quants[i].attrs['plot_options']['zaxis_opt']['axis_label'] = value
-        
+
         if option == 'plotter':
             _reset_plots(i)
             data_quants[i].attrs['plot_options']['extras']['plotter'] = value

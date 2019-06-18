@@ -17,9 +17,9 @@ def tplot_options(option, value):
             The value of the option.  See section below.  
             
     Options:
-        ============     ==========   =====
+        ================ ==========   =====
         Options          Value type   Notes
-        ============     ==========   =====
+        ================ ==========   =====
         title            str          Title of the the entire output
         title_size       int          Font size of the output
         wsize            [int, int]   [height, width], pixel size of the plot window
@@ -31,9 +31,10 @@ def tplot_options(option, value):
         x_range          [flt, flt]   The min and max x_range (usually time) to be plotted on all Spec/1D plots
         data_gap         int          Number of seconds with consecutive nan values allowed before no interp should occur
         roi              [str, str]   Times between which there's a region of interest for a user
+        crosshair        bool         Option allowing crosshairs and crosshair legend
         vertical_spacing int          The space in pixels between two plots
         show_all_axes    bool         Whether or not to just use one axis at the bottom of the plot
-        ============     ==========   =====
+        ================ ==========   =====
     
     Returns:
         None
