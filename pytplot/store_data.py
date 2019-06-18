@@ -12,7 +12,7 @@ from pytplot import data_quants
 from .del_data import del_data
 import pytplot
 import xarray as xr
-
+import copy
 tplot_num = 1
 
 
@@ -98,7 +98,10 @@ def store_data(name, data=None, delete=False, newname=None):
     # If the data is a list instead of a dictionary, user is looking to overplot
     if isinstance(data, list):
         base_data = _get_base_tplot_vars(data)
-        data_quants[name] = data_quants[base_data[0]]
+        # Copying the first variable to use all of its plot options
+        # However, we probably want each overplot to retain its original plot option
+        data_quants[name] = copy.deepcopy(data_quants[base_data[0]])
+        data_quants[name].attrs = copy.deepcopy(data_quants[base_data[0]].attrs)
         data_quants[name].name = name
         data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
         return

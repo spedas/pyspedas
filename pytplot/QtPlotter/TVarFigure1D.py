@@ -133,8 +133,17 @@ class TVarFigure1D(pg.GraphicsLayout):
         for dataset in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
+            plot_options = dataset.attrs['plot_options']
             dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             for i in range(len(dataset.columns)):
+                if 'line_style' in plot_options['line_opt']:
+                    if plot_options['line_opt']['line_style'] == 'scatter':
+                        self.curves.append(self.plotwindow.scatterPlot(x=dataset.index.tolist(),
+                                                                       y=dataset[i].tolist(),
+                                                                       pen=self.colors[line_num % len(self.colors)],
+                                                                       symbol='+'))
+                        line_num+=1
+                        continue
                 limit = pytplot.tplot_opt_glob['data_gap']  # How big a data gap is allowed before those nans (default
                 # is to plot as pyqtgraph would normally plot w / o worrying about data gap handling).
                 if limit != 0:
@@ -202,7 +211,8 @@ class TVarFigure1D(pg.GraphicsLayout):
                     time_filtered = np.array([1]*len(dataset.index.tolist()))
                     time_filtered[overall_list] = 0
 
-                    # Finally, plot the thing with data gaps removed (if applicable)
+                if limit != 0:
+                    # Plot with interpolation of all data gaps
                     self.curves.append(self.plotwindow.plot(x=dataset.index.tolist(),
                                                             y=dataset[i].tolist(),
                                                             pen=self.colors[line_num % len(self.colors)],

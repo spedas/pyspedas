@@ -14,6 +14,8 @@ from bokeh.models.tools import BoxZoomTool
 import pytplot
 from pytplot import tplot_utilities
 from bokeh.models.formatters import DatetimeTickFormatter
+from bokeh.models.markers import X
+
 
 dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],                        
                              milliseconds=["%H:%M:%S"],
@@ -215,7 +217,9 @@ class TVarFigure1D(object):
             if 'roi_lines' in pytplot.tplot_opt_glob.keys():
                 self._set_roi_lines(dataset)
 
+            plot_options = dataset.attrs['plot_options']
             df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+
             # Create lines from each column in the dataframe
             for column_name in df.columns:
                 y = df[column_name]
@@ -224,6 +228,13 @@ class TVarFigure1D(object):
                 if self._getyaxistype() == 'log':
                     y.loc[y <= 0] = np.NaN
 
+                if 'line_style' in plot_options['line_opt']:
+                    if plot_options['line_opt']['line_style'] == 'scatter':
+                        Glyph = X
+                    else:
+                        Glyph = Line
+                else:
+                    Glyph = Line
                 # Until what size of a data gap are we removing nan values from the dataset? Set by the user
                 # (default is to plot as bokeh would normally plot w/o worrying about data gap handling).
                 limit = pytplot.tplot_opt_glob['data_gap']
@@ -278,15 +289,15 @@ class TVarFigure1D(object):
                     # Data to be plotted
                     line_source = ColumnDataSource(data=dict(x=x, y=y, corrected_time=corrected_time))
                 if self.auto_color:
-                    line = Line(x='x', y='y', line_color=self.colors[self.linenum % len(self.colors)],
-                                **pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt'])
+                    line = Glyph(x='x', y='y', line_color=self.colors[self.linenum % len(self.colors)])
                 else:
-                    line = Line(x='x', y='y', **pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt'])
-                if 'line_style' not in pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']:
-                    if line_style is not None:
-                        line.line_dash = line_style[self.linenum % len(line_style)]
-                else:
-                    line.line_dash = pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']['line_style']
+                    line = Glyph(x='x', y='y')
+                if Glyph == Line:
+                    if 'line_style' not in plot_options['line_opt']:
+                        if line_style is not None:
+                            line.line_dash = line_style[self.linenum % len(line_style)]
+                    else:
+                        line.line_dash = plot_options['line_style']
                 self.lineglyphs.append(self.fig.add_glyph(line_source, line))
                 self.linenum += 1
 

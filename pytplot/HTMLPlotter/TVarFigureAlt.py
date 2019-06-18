@@ -9,6 +9,7 @@ from bokeh.plotting.figure import Figure
 from bokeh.models import (ColumnDataSource, HoverTool, 
                           Range1d, Span, Title, Legend)
 from bokeh.models.glyphs import Line
+from bokeh.models.markers import Circle, X
 from bokeh.models.tools import BoxZoomTool
 
 import pytplot
@@ -186,8 +187,8 @@ class TVarFigureAlt(object):
         for dataset in datasets:                
             # Get Linestyle
             line_style = None
-            if 'linestyle' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
-                line_style = pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['linestyle']
+            if 'line_style' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']:
+                line_style = pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']['line_style']
                 
             t_link = pytplot.data_quants[dataset.attrs['plot_options']['links']['alt']].coords['time'].values
             x = pytplot.data_quants[dataset.attrs['plot_options']['links']['alt']].values
@@ -210,10 +211,9 @@ class TVarFigureAlt(object):
 
                 line_source = ColumnDataSource(data=dict(x=x, y=y))
                 if self.auto_color:
-                    line = Line(x='x', y='y', line_color=self.colors[self.linenum % len(self.colors)],
-                                **pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt'])
+                    line = Circle(x='x', y='y', line_color=self.colors[self.linenum % len(self.colors)])
                 else:
-                    line = Line(x='x', y='y', **pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt'])
+                    line = Circle(x='x', y='y')
                 if 'line_style' not in pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']:
                     if line_style is not None:
                         line.line_dash = line_style[self.linenum % len(line_style)]
