@@ -6,30 +6,30 @@
 import pytplot
 import numpy as np
 
-"""
-    Change out-of-bounds data to NaN.
-    
-    Parameters:
-        tvar1 : str
-            Name of tvar to use for data clipping.  
-        ymin : int/float
-            Minimum value to keep (inclusive)
-        ymax : int/float
-            Maximum value to keep (inclusive)
-        newtvar : str
-            Name of new tvar for clipped data storage
-            
-    Returns:
-        None
-    
-    Examples:
-        >>> Make any values below 2 and above 6 equal to NaN.
-        >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
-        >>> pytplot.clip('d',2,6,'e')
-    """
-
-                              
 def clip(tvar1,ymin,ymax,newtvar=None):
+    """
+        Change out-of-bounds data to NaN.
+
+        Parameters:
+            tvar1 : str
+                Name of tvar to use for data clipping.
+            ymin : int/float
+                Minimum value to keep (inclusive)
+            ymax : int/float
+                Maximum value to keep (inclusive)
+            newtvar : str
+                Name of new tvar for clipped data storage
+
+        Returns:
+            None
+
+        Examples:
+            >>> Make any values below 2 and above 6 equal to NaN.
+            >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
+            >>> pytplot.clip('d',2,6,'e')
+        """
+
+
     if newtvar is None:
         newtvar=tvar1+'_clipped'
 

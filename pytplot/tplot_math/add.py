@@ -8,6 +8,27 @@ import pytplot
 #ADD TWO ARRAYS
 #add two tvar data arrays, store in new_tvar
 def add(tvar1,tvar2,new_tvar=None):
+    """
+        Adds two tplot variables together
+
+        Parameters:
+            tvar1 : str
+                Name of first tplot variable.
+            tvar2 : int/float
+                Name of second tplot variable
+            ymax : int/float
+                Maximum value to keep (inclusive)
+            newtvar : str
+                Name of new tvar for clipped data storage
+
+        Returns:
+            None
+
+        Examples:
+            >>> Make any values below 2 and above 6 equal to NaN.
+            >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
+            >>> pytplot.clip('d',2,6,'e')
+        """
     #interpolate tvars
     # interpolate tvars
     tv2 = pytplot.tplot_math.tinterp(tvar1, tvar2)
