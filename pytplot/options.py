@@ -60,6 +60,7 @@ def options(name, option, value):
                                          from a spec plot.
         t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
                                          plots.
+        ============        ==========   =====
     Returns:
         None
     
