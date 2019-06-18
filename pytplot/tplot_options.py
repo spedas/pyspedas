@@ -8,7 +8,7 @@ from . import tplot_utilities
 
 def tplot_options(option, value):
     """
-    This function allows the user to set several global options for the generated plots.  
+    This function allows the user to set GLOBAL options for the generated plots.
     
     Parameters:
         option : str
@@ -17,22 +17,23 @@ def tplot_options(option, value):
             The value of the option.  See section below.  
             
     Options:
-        ============  ==========   =====
-        Options       Value type   Notes
-        ============  ==========   =====
-        title         str          Title of the the entire output
-        title_size    int          Font size of the output 
-        wsize         [int, int]   [height, width], pixel size of the plot window
-        title_align   int          Offset position in pixels of the title   
-        var_label     srt          Name of the tplot variable to be used as another x axis
-        alt_range     [flt, flt]   The min and max altitude to be plotted on all alt plots
-        map_x_range   [int, int]   The min and max longitude to be plotted on all map plots
-        map_y_range   [int, int]   The min and max latitude to be plotted on all map plots
-        x_range       [flt, flt]   The min and max x_range (usually time) to be plotted on all Spec/1D plots
-        data_gap      int          Number of seconds with consecutive nan values allowed before no interp should occur
-        crosshair     bool         Option allowing crosshairs and crosshair legend
-        roi           [str, str]   Times between which there's a region of interest for a user
-        ============  ==========   =====
+        ============     ==========   =====
+        Options          Value type   Notes
+        ============     ==========   =====
+        title            str          Title of the the entire output
+        title_size       int          Font size of the output
+        wsize            [int, int]   [height, width], pixel size of the plot window
+        title_align      int          Offset position in pixels of the title
+        var_label        srt          Name of the tplot variable to be used as another x axis
+        alt_range        [flt, flt]   The min and max altitude to be plotted on all alt plots
+        map_x_range      [int, int]   The min and max longitude to be plotted on all map plots
+        map_y_range      [int, int]   The min and max latitude to be plotted on all map plots
+        x_range          [flt, flt]   The min and max x_range (usually time) to be plotted on all Spec/1D plots
+        data_gap         int          Number of seconds with consecutive nan values allowed before no interp should occur
+        roi              [str, str]   Times between which there's a region of interest for a user
+        vertical_spacing int          The space in pixels between two plots
+        show_all_axes    bool         Whether or not to just use one axis at the bottom of the plot
+        ============     ==========   =====
     
     Returns:
         None

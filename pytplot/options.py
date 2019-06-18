@@ -36,7 +36,7 @@ def options(name, option, value):
         ylog                bool         Set y axis on main plot window to log scale if True.
         ylog_interactive    bool         Sets y axis on interactive plot to log scale if True.
         zlog                bool         Sets z axis on main plot window to log scale if True.
-        line_style          str          solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
+        line_style          str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
         char_size           int          Defines character size for plot labels, etc.
         name                str          The title of the plot.
         panel_size          flt          Number between (0,1], representing the percent size of the plot.
