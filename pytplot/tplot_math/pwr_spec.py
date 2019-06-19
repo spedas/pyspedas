@@ -12,6 +12,28 @@ from scipy import signal
 # Perhaps they calculated it differently?
 
 def pwr_spec(tvar, nbp=256, nsp=128, name=None):
+    """
+    Calculates the power spectrum of a line, and adds a tplot variable for this new spectrogram
+
+    Parameters:
+        tvar : str
+            Name of tvar to use
+        nbp : int, optional
+            The number of points to use when calculating the FFT
+        nsp : int, optional
+            The number of points to shift over to calculate the next FFT
+        name : str, optional
+            The name of the new tplot variable created,
+
+    Returns:
+        None
+
+    Examples:
+        >>> pytplot.cdf_to_tplot("/path/to/pytplot/testfiles/mvn_euv_l2_bands_20170619_v09_r03.cdf")
+        >>> pytplot.tplot_math.split_vec('data')
+        >>> pytplot.pwr_spec('data_0')
+        >>> pytplot.tplot('data_0_pwrspec')
+    """
 
     x = pytplot.data_quants[tvar].coords['time']
     y = pytplot.data_quants[tvar].values.squeeze()

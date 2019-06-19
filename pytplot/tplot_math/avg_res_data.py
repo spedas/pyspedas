@@ -21,7 +21,7 @@ def avg_res_data(tvar1,res,new_tvar=None):
         >>> #Average the data over every two seconds
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
         >>> pytplot.avg_res_data('d',2,'d2res')
-        >>> print(pytplot.data_quants['d'].data)
+        >>> print(pytplot.data_quants['d'].values)
     """
 
     tvar = pytplot.data_quants[tvar1].coarsen(time=res, boundary='trim').mean()

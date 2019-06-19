@@ -15,7 +15,7 @@ def derive(tvar,new_tvar=None):
         tvar : str
             Name of tplot variable.
         new_tvar : str
-            Name of new tvar.  If not set, then the data in tvar is replaced.
+            Name of new tplot variable.  If not set, then the data in tvar is replaced.
 
     Returns:
         None
@@ -27,7 +27,7 @@ def derive(tvar,new_tvar=None):
     """
     a = pytplot.data_quants[tvar].differentiate('time')
     if new_tvar is None:
-        a.name = tvar
+        a.name = tvar.name
         a.attrs['plot_options'] = copy.deepcopy(pytplot.data_quants[tvar].attrs['plot_options'])
         pytplot.data_quants[tvar] = a
     else:
@@ -35,26 +35,4 @@ def derive(tvar,new_tvar=None):
             pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values, 'v':a.coords['spec_bins'].values})
         else:
             pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values})
-
-'''
-    if new_tvar=='tvar_derive':
-        new_tvar=tvar1 + '_derive'
-
-    #separate and derive data
-    time = pytplot.data_quants[tvar1].data.index
-    data1 = pytplot.data_quants[tvar1].data
-    df_index = pytplot.data_quants[tvar1].data.columns
-    new_df = []
-    for i in df_index:
-        tv1_col = data1[i]
-        data = np.diff(tv1_col)/np.diff(time)
-        new_df = new_df + [data]
-    new_df = np.transpose((list(new_df)))
-    time = np.delete(time,0)
-    #store differentiated data
-    if (pytplot.data_quants[tvar1].spec_bins is not None):
-        pytplot.store_data(new_tvar,data={'x': time, 'y': new_df, 'v': pytplot.data_quants[tvar1].spec_bins})
-    else:
-        pytplot.store_data(new_tvar,data={'x': time, 'y': new_df})
-    return new_tvar
-'''
+    return
