@@ -207,7 +207,7 @@ class TVarFigureAlt(object):
                     y = np.delete(y, 0)
                 
                 if self._getyaxistype() == 'log':
-                    y.loc[y <= 0] = np.NaN
+                    y[y <= 0] = np.NaN
 
                 line_source = ColumnDataSource(data=dict(x=x, y=y))
                 if self.auto_color:

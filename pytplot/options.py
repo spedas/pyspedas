@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from pytplot import data_quants
+import pytplot
 import numpy as np
 
 
@@ -95,7 +96,7 @@ def options(name, option, value):
 
         if option == 'link':
             if isinstance(value, list):
-                data_quants[i].link_to_tvar(value[0], value[1])
+                pytplot.link(i, value[1], value[0])
 
         if option == 'colormap':
             if isinstance(value, list):
@@ -125,7 +126,7 @@ def options(name, option, value):
                 data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type'] = 'linear'
 
         if option == 'ylog':
-            negflag = _ylog_check(data_quants, value, i)
+            negflag = 0#_ylog_check(data_quants, value, i)
             if negflag == 0:
                 data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'log'
             else:
