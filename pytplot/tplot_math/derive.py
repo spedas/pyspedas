@@ -27,7 +27,7 @@ def derive(tvar,new_tvar=None):
     """
     a = pytplot.data_quants[tvar].differentiate('time')
     if new_tvar is None:
-        a.name = tvar.name
+        a.name = tvar
         a.attrs['plot_options'] = copy.deepcopy(pytplot.data_quants[tvar].attrs['plot_options'])
         pytplot.data_quants[tvar] = a
     else:
