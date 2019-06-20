@@ -20,7 +20,7 @@ def tinterp(tvar1,tvar2,replace=False):
             If true, the data in the original tplot variable is replaced.  Otherwise, a variable is created.
 
     Returns:
-        None
+        new_var2, the new tplot variable
 
     Examples:
         >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
@@ -36,4 +36,5 @@ def tinterp(tvar1,tvar2,replace=False):
     else:
         pytplot.data_quants[tvar1 + '_tinterp'] = copy.deepcopy(new_tvar2)
         pytplot.data_quants[tvar1 + '_tinterp'].attrs = copy.deepcopy(new_tvar2.attrs)
-    return
+
+    return new_tvar2
