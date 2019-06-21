@@ -499,8 +499,15 @@ def get_spec_slicer_axis_types(names):
         if 'spec_bins' in pytplot.data_quants[n].coords:
             zlabel = pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['axis_label']
             ylabel = pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['axis_label']
-            xtype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type']
-            ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type']
+            if 'xi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']:
+                xtype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type']
+            else:
+                xtype_interactive = 'log'
+            if 'yi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']:
+                ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type']
+            else:
+                ytype_interactive = 'log'
+
             plot_labels[n] = [ylabel, zlabel, xtype_interactive, ytype_interactive]
     return plot_labels
 
