@@ -1,4 +1,10 @@
-1.3.4
+1.4.0
+
+1.4.0 Changes:
+    -Added documentation
+    -Redid tplot variables as xarrays
+    -Added many unit tests
+    -Numerous bug fixes
 
 1.3.3 Changes:
     -Added power spectrum calculation routine

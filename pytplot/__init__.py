@@ -141,4 +141,4 @@ except:
 if using_graphics:
     pg.mkQApp()
 
-compare_versions()
+#compare_versions()

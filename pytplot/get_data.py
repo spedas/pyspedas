@@ -7,15 +7,20 @@ from pytplot import data_quants
 
 def get_data(name, xarray=False):
     """
-    This function extracts the data from the Tplot Variables stored in memory.  
+    This function extracts the data from the tplot Variables stored in memory.
     
     Parameters:
         name : str 
             Name of the tplot variable
          
-    Returns:
-        time_val : pandas dataframe index
-        data_val : list
+    Returns: tuple of data/dimensions stored in pytplot
+        time_val : numpy array of seconds since 1970
+        data_val : n-dimensional array of data
+        spec_bins_val (if exists) : spectral bins if the plot is a spectrogram
+        v1_val (if exists) : numpy array of v1 dimension coordinates
+        v2_val {if exists} : numpy array of v2 dimension coordinates
+        v3_val (if exists) : numpy array of v3 dimension coordinates
+
             
     Examples:
         >>> # Retrieve the data from Variable 1
