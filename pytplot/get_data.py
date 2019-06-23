@@ -5,7 +5,7 @@
 
 from pytplot import data_quants
 
-def get_data(name):
+def get_data(name, xarray=False):
     """
     This function extracts the data from the Tplot Variables stored in memory.  
     
@@ -33,5 +33,18 @@ def get_data(name):
         return
     
     temp_data_quant = data_quants[name]
-    
-    return temp_data_quant
+
+    if xarray:
+        return temp_data_quant
+
+    if 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys() and 'v3' in temp_data_quant.coords.keys():
+        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values, temp_data_quant.coords['v3'].values)
+    elif 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys():
+        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values)
+    elif 'v1' in temp_data_quant.coords.keys():
+        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values)
+    elif 'v' in temp_data_quant.coords.keys():
+        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v'].values)
+    elif 'spec_bins' in temp_data_quant.coords.keys():
+        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['spec_bins'].values)
+    return (temp_data_quant.time.values, temp_data_quant.data)
