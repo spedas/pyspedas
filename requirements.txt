@@ -1,5 +1,5 @@
 cdflib
-pytplot
+pytplot>=1.4
 pyqtgraph
 bokeh
 msgpack
@@ -11,3 +11,4 @@ requests
 pyqt5==5.12
 pyqtwebengine
 pandas>=0.24
+xarray
