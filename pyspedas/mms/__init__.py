@@ -91,7 +91,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     return tvars
 
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='moments', get_support_data=False, time_clip=False, no_update=False,
+    level='l2', datatype='moments', get_support_data=None, time_clip=False, no_update=False,
     varformat=None, prefix='', suffix='', center_measurement=False, available=False, notplot=False):
     """
     This function loads HPCA data into tplot variables
@@ -140,6 +140,9 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         List of tplot variables created.
 
     """
+
+    if get_support_data is None:
+        get_support_data = True
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='hpca',
             datatype=datatype, varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
