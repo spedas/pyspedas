@@ -113,18 +113,18 @@ def themis_load(dates, probes, instruments, level, downloadonly=False,
 
     for remotef, localf in file_list:
         count += 1
-        resp, err, locafile = pyspedas.download_files(remotef, localf)
+        resp, err, localfile = pyspedas.download_files(remotef, localf)
         if resp:
-            print(str(count) + '. File was downloaded. Location: ' + locafile)
+            print(str(count) + '. File was downloaded. Location: ' + localfile)
             dcount += 1
             if not downloadonly:
                 try:
-                    cdfvars = pyspedas.cdf_to_tplot(locafile, varformat,
+                    cdfvars = pyspedas.cdf_to_tplot(localfile, varformat,
                                                     get_support_data, prefix,
                                                     suffix, False, True)
 
                 except TypeError as e:
-                    msg = "cdf_to_tplot could not load " + locafile
+                    msg = "cdf_to_tplot could not load " + localfile
                     + "\nError:\n" + str(e)
                     print(msg)
 
