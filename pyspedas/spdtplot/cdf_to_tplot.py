@@ -117,10 +117,6 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                 # Find data name and if it is already in stored variables
                 var_name = prefix + var + suffix
-                to_merge = False
-                if (var_name in data_quants.keys()) and (merge is True):
-                    prev_data_quant = data_quants[var_name]
-                    to_merge = True
 
                 if epoch_cache.get(filename+x_axis_var) is None:
                     delta_plus_var = 0.0
@@ -232,6 +228,11 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         return output_table
 
     for var_name in output_table.keys():
+        to_merge = False
+        if (var_name in data_quants.keys()) and (merge is True):
+            prev_data_quant = data_quants[var_name]
+            to_merge = True
+            
         store_data(var_name, data=output_table[var_name])
 
         if var_name not in stored_variables:
