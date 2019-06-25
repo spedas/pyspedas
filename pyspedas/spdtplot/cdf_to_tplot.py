@@ -194,13 +194,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 depend_3 = None
                 if "DEPEND_1" in var_atts:
                     if var_atts["DEPEND_1"] in all_cdf_variables:
-                        depend_1 = cdf_file.varget(var_atts["DEPEND_1"])
+                        depend_1 = np.array(cdf_file.varget(var_atts["DEPEND_1"]))
                 if "DEPEND_2" in var_atts:
                     if var_atts["DEPEND_2"] in all_cdf_variables:
-                        depend_2 = cdf_file.varget(var_atts["DEPEND_2"])
+                        depend_2 = np.array(cdf_file.varget(var_atts["DEPEND_2"]))
                 if "DEPEND_3" in var_atts:
                     if var_atts["DEPEND_3"] in all_cdf_variables:
-                        depend_3 = cdf_file.varget(var_atts["DEPEND_3"])
+                        depend_3 = np.array(cdf_file.varget(var_atts["DEPEND_3"]))
 
                 nontime_varying_depends = []
 
@@ -250,9 +250,12 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         to_merge = False
         if (var_name in data_quants.keys()) and (merge is True):
             prev_data_quant = data_quants[var_name]
-            to_merge = True
+            to_merge = True 
 
-        store_data(var_name, data=output_table[var_name])
+        try:
+            store_data(var_name, data=output_table[var_name])
+        except ValueError:
+            continue
 
         if var_name not in stored_variables:
             stored_variables.append(var_name)
