@@ -202,17 +202,35 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     if var_atts["DEPEND_3"] in all_cdf_variables:
                         depend_3 = cdf_file.varget(var_atts["DEPEND_3"])
 
+                nontime_varying_depends = []
+
                 if depend_1 is not None and depend_2 is not None and depend_3 is not None:
                     tplot_data['v1'] = depend_1
                     tplot_data['v2'] = depend_2
                     tplot_data['v3'] = depend_3
+
+                    if len(depend_1.shape) == 1:
+                        nontime_varying_depends.append('v1')
+                    if len(depend_2.shape) == 1:
+                        nontime_varying_depends.append('v2')
+                    if len(depend_3.shape) == 1:
+                        nontime_varying_depends.append('v3')
+
                 elif depend_1 is not None and depend_2 is not None:
                     tplot_data['v1'] = depend_1
                     tplot_data['v2'] = depend_2
+                    if len(depend_1.shape) == 1:
+                        nontime_varying_depends.append('v1')
+                    if len(depend_2.shape) == 1:
+                        nontime_varying_depends.append('v2')
                 elif depend_1 is not None:
                     tplot_data['v'] = depend_1
+                    if len(depend_1.shape) == 1:
+                        nontime_varying_depends.append('v')
                 elif depend_2 is not None:
                     tplot_data['v'] = depend_2
+                    if len(depend_2.shape) == 1:
+                        nontime_varying_depends.append('v')
 
                 metadata['var_name'] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
                                         'scale_type': var_atts.get("SCALE_TYP", "linear")}
@@ -222,7 +240,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 else:
                     var_data = output_table[var_name]
                     for output_var in var_data:
-                        var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
+                        if output_var not in nontime_varying_depends:
+                            var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
 
     if notplot:
         return output_table
@@ -232,7 +251,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         if (var_name in data_quants.keys()) and (merge is True):
             prev_data_quant = data_quants[var_name]
             to_merge = True
-            
+
         store_data(var_name, data=output_table[var_name])
 
         if var_name not in stored_variables:
