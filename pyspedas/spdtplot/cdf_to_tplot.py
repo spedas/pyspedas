@@ -63,8 +63,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
     stored_variables = []
     epoch_cache = {}
-    if notplot:
-        output_table = {}
+    output_table = {}
+    metadata = {}
 
     global data_quants
 
@@ -218,39 +218,40 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 elif depend_2 is not None:
                     tplot_data['v'] = depend_2
 
-                if notplot:
-                    if var_name not in output_table:
-                        output_table[var_name] = tplot_data
-                    else:
-                        var_data = output_table[var_name]
-                        for output_var in var_data:
-                            var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
+                metadata['var_name'] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
+                                        'scale_type': var_atts.get("SCALE_TYP", "linear")}
+
+                if var_name not in output_table:
+                    output_table[var_name] = tplot_data
                 else:
-                    try:
-                        store_data(var_name, data=tplot_data)
-                    except:
-                        continue
-
-                    if var_name not in stored_variables:
-                        stored_variables.append(var_name)
-
-                    display_type = var_atts.get("DISPLAY_TYPE", "time_series")
-                    scale_type = var_atts.get("SCALE_TYP", "linear")
-                    if display_type == "spectrogram":
-                        options(var_name, 'spec', 1)
-                    if scale_type == 'log':
-                        options(var_name, 'ylog', 1)
-
-                    if to_merge is True:
-                        cur_data_quant = data_quants[var_name]
-                        plot_options = copy.deepcopy(data_quants[var_name].attrs['plot_options'])
-                        data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time')
-                        data_quants[var_name].attrs['plot_options'] = plot_options
-
-    # cdf_file.close()
+                    var_data = output_table[var_name]
+                    for output_var in var_data:
+                        var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
 
     if notplot:
         return output_table
+
+    for var_name in output_table.keys():
+        store_data(var_name, data=output_table[var_name])
+
+        if var_name not in stored_variables:
+            stored_variables.append(var_name)
+
+        if metadata.get(var_name) is not None:
+            if metadata[var_name]['display_type'] == "spectrogram":
+                options(var_name, 'spec', 1)
+            if metadata[var_name]['scale_type'] == 'log':
+                options(var_name, 'ylog', 1)
+
+        if to_merge is True:
+            cur_data_quant = data_quants[var_name]
+            plot_options = copy.deepcopy(data_quants[var_name].attrs['plot_options'])
+            data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time')
+            data_quants[var_name].attrs['plot_options'] = plot_options
+
+    if notplot:
+        return output_table
+
 
     if plot:
         tplot(stored_variables)
