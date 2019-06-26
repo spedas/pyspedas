@@ -59,7 +59,9 @@ def tclip(names, ymin, ymax, flag=None, new_names=None, suffix=None):
         n_names = [s + suffix for s in old_names]
 
     for i in range(len(old_names)):
-        time, data = pytplot.get_data(old_names[i])
+        alldata = pytplot.get_data(old_names[i])
+        time = alldata[0]
+        data = alldata[1]
         new_data = numpy.array(data)
         new_data[new_data <= ymin] = flag
         new_data[new_data >= ymax] = flag

@@ -47,7 +47,9 @@ def subtract_average(names, new_names=None, suffix=None):
         n_names = [s + suffix for s in old_names]
 
     for i in range(len(old_names)):
-        time, data = pytplot.get_data(old_names[i])
+        alldata = pytplot.get_data(old_names[i])        
+        time = alldata[0]
+        data = alldata[1]
         new_data = data-numpy.mean(data, axis=0)
         pytplot.store_data(n_names[i], data={'x': time, 'y': new_data})
         print('Subtract Average was applied to: ' + n_names[i])
