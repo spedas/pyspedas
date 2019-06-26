@@ -63,8 +63,12 @@ def tinterpol(names, interp_names=None, method=None, new_names=None,
         n_names = [s + suffix for s in old_names]
 
     for i in range(len(old_names)):
-        time, data = pytplot.get_data(old_names[i])
-        new_time, data1 = pytplot.get_data(interp_names[i])
+        alldata = pytplot.get_data(old_names[i])
+        time = alldata[0]
+        data = alldata[1]
+        alldata1 = pytplot.get_data(interp_names[i])        
+        new_time = alldata1[0]
+        new_data = alldata1[1]
         data = numpy.asarray(data).squeeze()
         f2 = interp1d(time, data, kind=method)
         new_data = f2(new_time)

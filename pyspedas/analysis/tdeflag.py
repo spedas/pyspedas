@@ -56,7 +56,9 @@ def tdeflag(names, method=None, flag=None, new_names=None, suffix=None):
         n_names = [s + suffix for s in old_names]
 
     for i in range(len(old_names)):
-        time, data = pytplot.get_data(old_names[i])
+        alldata = pytplot.get_data(old_names[i])
+        time = alldata[0]
+        data = alldata[1]
         new_time = []
         new_data = []
         for j in range(len(time)):
