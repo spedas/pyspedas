@@ -232,7 +232,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     if len(depend_2.shape) == 1:
                         nontime_varying_depends.append('v')
 
-                metadata['var_name'] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
+                metadata[var_name] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
                                         'scale_type': var_atts.get("SCALE_TYP", "linear")}
 
                 if var_name not in output_table:
