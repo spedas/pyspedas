@@ -8,6 +8,7 @@ from .mms_load_data import mms_load_data
 from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 from .fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
+from .hpca.mms_hpca_set_metadata import mms_hpca_set_metadata
 
 import re
 from pytplot import del_data
@@ -88,6 +89,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                 tvars.remove(tvar)
 
     mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=suffix)
+
     return tvars
 
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
@@ -147,7 +149,13 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='hpca',
             datatype=datatype, varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available)
+    
+    if tvars == None or available or notplot:
+        return tvars
+
+    mms_hpca_set_metadata(probe=probe, suffix=suffix)
     return tvars
+
 
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',
     level='l2', datatype=['des-moms', 'dis-moms'], varformat=None, prefix='', suffix='',
