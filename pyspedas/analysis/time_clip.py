@@ -131,8 +131,10 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None):
                 pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end, :], 'v': v_data})
             elif 'v' in tmp_dquant.coords.keys():
                 pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end, :], 'v': v_data})
+            elif data.ndim == 1:
+                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end]})
             else:
-                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end, :]})
+                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end,...]})
         except IndexError:
             print('Problem time clipping: ' + n_names[j])
             continue
