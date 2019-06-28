@@ -134,7 +134,8 @@ class TVarFigure1D(pg.GraphicsLayout):
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
             plot_options = dataset.attrs['plot_options']
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe_lineplots(dataset.name)
+
             for i in range(len(dataset.columns)):
                 if 'line_style' in plot_options['line_opt']:
                     if plot_options['line_opt']['line_style'] == 'scatter':

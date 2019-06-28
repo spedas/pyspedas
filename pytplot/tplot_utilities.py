@@ -536,6 +536,12 @@ def set_y_range(var, y_axis_log, plot):
                            pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1], padding=0)
 
 
+def convert_tplotxarray_to_pandas_dataframe_lineplots(name):
+    import pandas as pd
+    # copy of the function below, specifically for line plots
+    return_data = pd.DataFrame(pytplot.data_quants[name].values)
+    return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+    return return_data
 
 def convert_tplotxarray_to_pandas_dataframe(name):
     import pandas as pd
