@@ -1,6 +1,3 @@
-# This file was forked from pytplot in order to experiment
-# with modifications for the needs of pyspedas.
-#
 # Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for
@@ -18,8 +15,8 @@ from pytplot import data_quants
 import copy
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
-                 prefix='', suffix='', plot=False, merge=False, 
-                 center_measurement=False):
+                 prefix='', suffix='', plot=False, merge=False,
+                 center_measurement=False, notplot=False):
     """
     This function will automatically create tplot variables from CDF files.
     .. note::
@@ -51,12 +48,23 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         merge: bool
             If True, then data from different cdf files will be merged into
             a single pytplot variable.
+        center_measurement: bool
+            If True, the CDF epoch variables are time-shifted to the middle
+            of the accumulation interval by their DELTA_PLUS_VAR and
+            DELTA_MINUS_VAR variable attributes
+        notplot: bool
+            If True, then data are returned in a hash table instead of
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
     Returns:
-        List of tplot variables created.
+        List of tplot variables created (unless notplot keyword is used).
     """
 
     stored_variables = []
     epoch_cache = {}
+    output_table = {}
+    metadata = {}
 
     global data_quants
 
@@ -109,10 +117,6 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                 # Find data name and if it is already in stored variables
                 var_name = prefix + var + suffix
-                to_merge = False
-                if (var_name in data_quants.keys()) and (merge is True):
-                    prev_data_quant = data_quants[var_name]
-                    to_merge = True
 
                 if epoch_cache.get(filename+x_axis_var) is None:
                     delta_plus_var = 0.0
@@ -190,44 +194,87 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 depend_3 = None
                 if "DEPEND_1" in var_atts:
                     if var_atts["DEPEND_1"] in all_cdf_variables:
-                        depend_1 = cdf_file.varget(var_atts["DEPEND_1"])
+                        depend_1 = np.array(cdf_file.varget(var_atts["DEPEND_1"]))
                 if "DEPEND_2" in var_atts:
                     if var_atts["DEPEND_2"] in all_cdf_variables:
-                        depend_2 = cdf_file.varget(var_atts["DEPEND_2"])
+                        depend_2 = np.array(cdf_file.varget(var_atts["DEPEND_2"]))
                 if "DEPEND_3" in var_atts:
                     if var_atts["DEPEND_3"] in all_cdf_variables:
-                        depend_3 = cdf_file.varget(var_atts["DEPEND_3"])
+                        depend_3 = np.array(cdf_file.varget(var_atts["DEPEND_3"]))
+
+                nontime_varying_depends = []
 
                 if depend_1 is not None and depend_2 is not None and depend_3 is not None:
                     tplot_data['v1'] = depend_1
                     tplot_data['v2'] = depend_2
                     tplot_data['v3'] = depend_3
+
+                    if len(depend_1.shape) == 1:
+                        nontime_varying_depends.append('v1')
+                    if len(depend_2.shape) == 1:
+                        nontime_varying_depends.append('v2')
+                    if len(depend_3.shape) == 1:
+                        nontime_varying_depends.append('v3')
+
                 elif depend_1 is not None and depend_2 is not None:
                     tplot_data['v1'] = depend_1
                     tplot_data['v2'] = depend_2
+                    if len(depend_1.shape) == 1:
+                        nontime_varying_depends.append('v1')
+                    if len(depend_2.shape) == 1:
+                        nontime_varying_depends.append('v2')
                 elif depend_1 is not None:
                     tplot_data['v'] = depend_1
+                    if len(depend_1.shape) == 1:
+                        nontime_varying_depends.append('v')
                 elif depend_2 is not None:
                     tplot_data['v'] = depend_2
+                    if len(depend_2.shape) == 1:
+                        nontime_varying_depends.append('v')
 
-                store_data(var_name, data=tplot_data)
-                if var_name not in stored_variables:
-                    stored_variables.append(var_name)
+                metadata[var_name] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
+                                        'scale_type': var_atts.get("SCALE_TYP", "linear")}
 
-                display_type = var_atts.get("DISPLAY_TYPE", "time_series")
-                scale_type = var_atts.get("SCALE_TYP", "linear")
-                if display_type == "spectrogram":
-                    options(var_name, 'spec', 1)
-                if scale_type == 'log':
-                    options(var_name, 'ylog', 1)
+                if var_name not in output_table:
+                    output_table[var_name] = tplot_data
+                else:
+                    var_data = output_table[var_name]
+                    for output_var in var_data:
+                        if output_var not in nontime_varying_depends:
+                            var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
 
-                if to_merge is True:
-                    cur_data_quant = data_quants[var_name]
-                    plot_options = copy.deepcopy(data_quants[var_name].attrs['plot_options'])
-                    data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time')
-                    data_quants[var_name].attrs['plot_options'] = plot_options
+    if notplot:
+        return output_table
 
-    # cdf_file.close()
+    for var_name in output_table.keys():
+        to_merge = False
+        if (var_name in data_quants.keys()) and (merge is True):
+            prev_data_quant = data_quants[var_name]
+            to_merge = True
+
+        try:
+            store_data(var_name, data=output_table[var_name])
+        except ValueError:
+            continue
+
+        if var_name not in stored_variables:
+            stored_variables.append(var_name)
+
+        if metadata.get(var_name) is not None:
+            if metadata[var_name]['display_type'] == "spectrogram":
+                options(var_name, 'spec', 1)
+            if metadata[var_name]['scale_type'] == 'log':
+                options(var_name, 'ylog', 1)
+
+        if to_merge is True:
+            cur_data_quant = data_quants[var_name]
+            plot_options = copy.deepcopy(data_quants[var_name].attrs['plot_options'])
+            data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time')
+            data_quants[var_name].attrs['plot_options'] = plot_options
+
+    if notplot:
+        return output_table
+
 
     if plot:
         tplot(stored_variables)

@@ -78,9 +78,9 @@ class UpdatingImage(pg.ImageItem):
             yp = np.linspace(ymin, ymax, self.h)
 
             closest_xs = np.searchsorted(self.x, xp)
-            y_sort = np.argsort(self.y)
+            y_sort = np.argsort(self.y.values)
             #if len(self.bin_sizes) == 1:
-            closest_ys = np.searchsorted(self.y, yp, sorter=y_sort)
+            closest_ys = np.searchsorted(self.y.values, yp, sorter=y_sort)
             if not self.bins_inc:
                 closest_ys = np.flipud(closest_ys)
             data = self.data.iloc[closest_xs][closest_ys].values
