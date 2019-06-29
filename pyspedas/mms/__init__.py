@@ -59,6 +59,11 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
             
     Returns:
         List of tplot variables created.
@@ -137,6 +142,16 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        center_measurement: bool
+            If True, the CDF epoch variables are time-shifted to the middle
+            of the accumulation interval by their DELTA_PLUS_VAR and
+            DELTA_MINUS_VAR variable attributes
+
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
             
     Returns:
         List of tplot variables created.
@@ -205,6 +220,17 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        center_measurement: bool
+            If True, the CDF epoch variables are time-shifted to the middle
+            of the accumulation interval by their DELTA_PLUS_VAR and
+            DELTA_MINUS_VAR variable attributes
+
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
+
             
     Returns:
         List of tplot variables created.
@@ -267,6 +293,11 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
             
     Returns:
         List of tplot variables created.
@@ -322,6 +353,11 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
             
     Returns:
         List of tplot variables created.
@@ -329,7 +365,7 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     """
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='mec',
             datatype=datatype, get_support_data=get_support_data, varformat=varformat, prefix=prefix, suffix=suffix,
-            time_clip=time_clip, no_update=no_update, available=available)
+            time_clip=time_clip, no_update=no_update, available=available, notplot=notplot)
     return tvars
 
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
@@ -379,7 +415,11 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
-            
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
     Returns:
         List of tplot variables created.
 
@@ -434,6 +474,10 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
             
     Returns:
         List of tplot variables created.
@@ -503,6 +547,10 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
             
     Returns:
         List of tplot variables created.
@@ -557,6 +605,10 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
             
     Returns:
         List of tplot variables created.
@@ -612,6 +664,10 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
             
     Returns:
         List of tplot variables created.
@@ -666,7 +722,11 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
-            
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
+
     Returns:
         List of tplot variables created.
 
@@ -716,6 +776,10 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
+        notplot: bool
+            If True, then data are returned in a hash table instead of 
+            being stored in tplot variables (useful for debugging, and
+            access to multi-dimensional data products)
             
     Returns:
         List of tplot variables created.
