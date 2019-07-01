@@ -14,6 +14,68 @@ from pytplot.options import options
 from pytplot import data_quants
 import copy
 
+from astropy.time import Time
+from astropy.time.formats import erfa, TimeFromEpoch
+
+
+class TimeCdfEpoch(TimeFromEpoch):
+    name = 'cdf_epoch'
+    unit = 1.0 / (erfa.DAYSEC * 1000) # milliseconds
+    epoch_val = '0000-01-01 00:00:00'
+    epoch_val2 = None
+    epoch_scale = 'utc'
+    epoch_format = 'iso'
+
+
+class TimeCdfEpoch16(TimeFromEpoch):
+    name = 'cdf_epoch16'
+    unit = 1.0 / (erfa.DAYSEC) # seconds
+    epoch_val = '0000-01-01 00:00:00'
+    epoch_val2 = None
+    epoch_scale = 'utc'
+    epoch_format = 'iso'
+
+
+class TimeCdfTT2000(TimeFromEpoch):
+    name = 'cdf_tt2000'
+    unit = 1.0 / (erfa.DAYSEC * 1000 * 1000 * 1000) # nanoseconds
+    epoch_val = '2000-01-01 12:00:00'
+    epoch_val2 = None
+    epoch_scale = 'tt'
+    epoch_format = 'iso'
+
+
+def cdf_to_unixtime(desc, data):
+    # suppress warning
+    import warnings
+    warnings.filterwarnings(action='ignore', message=r'.*ERFA function.*dubious year.*')
+
+    is_scalar = np.isscalar(data)
+    data = np.atleast_1d(data)
+
+    if   desc == 'CDF_TIME_TT2000':
+        val1 = data
+        val2 = None
+        fmt  = 'cdf_tt2000'
+    elif desc == 'CDF_TIME_EPOCH':
+        val1 = data
+        val2 = None
+        fmt  = 'cdf_epoch'
+    elif desc == 'CDF_TIME_EPOCH16':
+        val1 = data.real
+        val2 = data.imag * 1.0e-12 # in units of picosecond
+        fmt  = 'cdf_epoch16'
+    else:
+        print("Invalid time format: %s" % (desc))
+        return None
+
+    # convert to unix time
+    ut = Time(val1, val2, format=fmt, precision=9).unix
+    if is_scalar:
+        ut = ut[0]
+    return ut
+
+
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                  prefix='', suffix='', plot=False, merge=False, 
                  center_measurement=False, notplot=False):
@@ -160,10 +222,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                                 delta_time = (delta_plus_var-delta_minus_var)/2.0
 
                 if epoch_cache.get(filename + x_axis_var) is None:
-                    if ('CDF_TIME' in data_type_description) or \
-                            ('CDF_EPOCH' in data_type_description):
-                        xdata = cdflib.cdfepoch.unixtime(xdata)
-                        epoch_cache[filename+x_axis_var] = np.array(xdata)+delta_time
+                    xdata = cdf_to_unixtime(data_type_description, xdata)
+                    epoch_cache[filename+x_axis_var] = np.array(xdata)+delta_time
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
 
