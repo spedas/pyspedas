@@ -38,6 +38,8 @@ def generate_stack(name,
         j += 1
 
     if var_label is not None:
+        if not isinstance(var_label, list):
+            var_label = [var_label]
         varlabel_correction = len(var_label) * varlabel_xaxis_thickness
     else:
         varlabel_correction = 0
@@ -76,8 +78,6 @@ def generate_stack(name,
 
     # Add extra x axes if applicable
     if var_label is not None:
-        if not isinstance(var_label, list):
-            var_label = [var_label]
         x_axes_index = 0
         for new_x_axis in var_label:
             new_axis = TVarFigureAxisOnly(new_x_axis)
