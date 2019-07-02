@@ -4,10 +4,17 @@
 import unittest
 import numpy as np
 
-from ...mms import mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc
+from ...mms import mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
 from ...utilities.data_exists import data_exists
+from ..hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from ..hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from pytplot import get_data
+
+class DSPLoadTestCases(unittest.TestCase):
+    def test_load_default_data(self):
+        data = mms_load_dsp(trange=['2015-08-01','2015-09-01'], datatype='swd', level='l2', data_rate='fast')
+        self.assertTrue(data_exists('mms1_dsp_swd_E12_Counts'))
 
 class FEEPSLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
@@ -69,6 +76,10 @@ class FPILoadTestCases(unittest.TestCase):
 class HPCALoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'])
+        self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
+
+    def test_load_ion_data(self):
+        data = mms_load_hpca(trange=['2015-10-16/5:00', '2015-10-16/6:00'], datatype='ion')
         self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
 
     def test_center_fast_moments_data(self):
