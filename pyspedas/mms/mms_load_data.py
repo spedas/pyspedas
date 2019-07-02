@@ -121,6 +121,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 # if the download was successful, copy to data directory
                                 copy(ftmp.name, out_file)
                                 out_files.append(out_file)
+                                fsrc.close()
                                 ftmp.close()
                         except requests.exceptions.ConnectionError:
                             # No/bad internet connection; try loading the files locally
