@@ -111,7 +111,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                                 fsrc = sdc_session.get(download_url, stream=True, verify=True)
                                 ftmp = NamedTemporaryFile(delete=False)
-                                copyfileobj(fsrc.raw, ftmp)
+
+                                with open(ftmp.name, 'wb') as f:
+                                    copyfileobj(fsrc.raw, f)
 
                                 if not os.path.exists(out_dir):
                                     os.makedirs(out_dir)
