@@ -7,7 +7,7 @@ CONFIG = {'local_data_dir': 'pydata',
          #'local_data_dir': '/Users/eric/data/mms', # example of setting your local data directory on macOS
          #'local_data_dir': 'c:\users\eric\data\mms', # and Windows
           'debug_mode': False,
-          'download_only': True,
+          'download_only': False,
           'no_download': False}
 
 # override local data directory with environment variables
