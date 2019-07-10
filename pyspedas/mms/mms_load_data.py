@@ -158,6 +158,8 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                 tclip(new_var, trange[0], trange[1], suffix='')
 
         return new_variables
+    else:
+        return out_files
 
 
 
