@@ -82,6 +82,10 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     if tvars == None or available or notplot:
         return tvars
 
+    # the probes will need to be strings beyond this point
+    if isinstance(probe, list):
+        probe = [str(p) for p in probe]
+
     # remove flagged data
     if not keep_flagged:
         mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=suffix)
