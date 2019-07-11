@@ -92,7 +92,7 @@ def themis_filename(dates, probes, instruments, level):
                 file_dir_local = os.path.join(probe, level, instrument, year)
                 # filename = 'tha_l2_fgm_20150101_v01.cdf'
                 filename = probe + '_' + level + '_' + instrument + '_'\
-                + year + month + day + '_v0' + version + '.cdf'
+                    + year + month + day + '_v0' + version + '.cdf'
 
                 remote_file = remote_path + '/' + file_dir + '/' + filename
                 local_file = os.path.join(data_dir, file_dir_local, filename)

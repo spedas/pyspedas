@@ -44,7 +44,7 @@ def tcopy(names_in, names_out=None, suffix=None):
         suffix = '-copy'
 
     if names_out is None:
-        names_out = [s+suffix for s in names_in]
+        names_out = [s + suffix for s in names_in]
 
     if isinstance(names_out, str):
         names_out = [names_out]

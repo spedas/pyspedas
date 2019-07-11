@@ -11,11 +11,11 @@ import xarray as xr
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
 from pytplot.options import options
-from pytplot import data_quants
 import copy
 
+
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
-                 prefix='', suffix='', plot=False, merge=False, 
+                 prefix='', suffix='', plot=False, merge=False,
                  center_measurement=False, notplot=False):
     """
     This function will automatically create tplot variables from CDF files.
@@ -53,7 +53,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             of the accumulation interval by their DELTA_PLUS_VAR and
             DELTA_MINUS_VAR variable attributes
         notplot: bool
-            If True, then data are returned in a hash table instead of 
+            If True, then data are returned in a hash table instead of
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
 
@@ -118,7 +118,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 # Find data name and if it is already in stored variables
                 var_name = prefix + var + suffix
 
-                if epoch_cache.get(filename+x_axis_var) is None:
+                if epoch_cache.get(filename + x_axis_var) is None:
                     delta_plus_var = 0.0
                     delta_minus_var = 0.0
                     delta_time = 0.0
@@ -129,61 +129,71 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     # check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
                     if center_measurement:
                         if 'DELTA_PLUS_VAR' in epoch_var_atts:
-                            delta_plus_var = cdf_file.varget(epoch_var_atts['DELTA_PLUS_VAR'])
-                            delta_plus_var_att = cdf_file.varattsget(epoch_var_atts['DELTA_PLUS_VAR'])
+                            delta_plus_var = cdf_file.varget(
+                                epoch_var_atts['DELTA_PLUS_VAR'])
+                            delta_plus_var_att = cdf_file.varattsget(
+                                epoch_var_atts['DELTA_PLUS_VAR'])
 
                             # check if a conversion to seconds is required
                             if 'SI_CONVERSION' in delta_plus_var_att:
                                 si_conv = delta_plus_var_att['SI_CONVERSION']
-                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+                                delta_plus_var = delta_plus_var.astype(float)
+                                * np.float(si_conv.split('>')[0])
                             elif 'SI_CONV' in delta_plus_var_att:
                                 si_conv = delta_plus_var_att['SI_CONV']
-                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+                                delta_plus_var = delta_plus_var.astype(float)
+                                * np.float(si_conv.split('>')[0])
 
                         if 'DELTA_MINUS_VAR' in epoch_var_atts:
-                            delta_minus_var = cdf_file.varget(epoch_var_atts['DELTA_MINUS_VAR'])
-                            delta_minus_var_att = cdf_file.varattsget(epoch_var_atts['DELTA_MINUS_VAR'])
+                            delta_minus_var = cdf_file.varget(
+                                epoch_var_atts['DELTA_MINUS_VAR'])
+                            delta_minus_var_att = cdf_file.varattsget(
+                                epoch_var_atts['DELTA_MINUS_VAR'])
 
                             # check if a conversion to seconds is required
                             if 'SI_CONVERSION' in delta_minus_var_att:
                                 si_conv = delta_minus_var_att['SI_CONVERSION']
-                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+                                delta_minus_var = delta_minus_var.astype(float)
+                                * np.float(si_conv.split('>')[0])
                             elif 'SI_CONV' in delta_minus_var_att:
                                 si_conv = delta_minus_var_att['SI_CONV']
-                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+                                delta_minus_var = delta_minus_var.astype(float)
+                                * np.float(si_conv.split('>')[0])
 
                         # sometimes these are specified as arrays
-                        if isinstance(delta_plus_var, np.ndarray) and isinstance(delta_minus_var, np.ndarray):
-                            delta_time = (delta_plus_var-delta_minus_var)/2.0
-                        else: # and sometimes constants
+                        if isinstance(delta_plus_var, np.ndarray) \
+                                and isinstance(delta_minus_var, np.ndarray):
+                            delta_time = (delta_plus_var
+                                          - delta_minus_var) / 2.0
+                        else:  # and sometimes constants
                             if delta_plus_var != 0.0 or delta_minus_var != 0.0:
-                                delta_time = (delta_plus_var-delta_minus_var)/2.0
+                                delta_time = (delta_plus_var
+                                              - delta_minus_var) / 2.0
 
                 if epoch_cache.get(filename + x_axis_var) is None:
                     if ('CDF_TIME' in data_type_description) or \
                             ('CDF_EPOCH' in data_type_description):
                         xdata = cdflib.cdfepoch.unixtime(xdata)
-                        epoch_cache[filename+x_axis_var] = np.array(xdata)+delta_time
+                        epoch_cache[filename + x_axis_var] = np.array(xdata)
+                        + delta_time
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
 
                 try:
                     ydata = cdf_file.varget(var)
-                except:
+                except (TypeError):
                     continue
 
                 if ydata is None:
                     continue
                 if "FILLVAL" in var_atts:
-                    if (var_properties['Data_Type_Description'] ==
-                            'CDF_FLOAT' or
-                            var_properties['Data_Type_Description'] ==
-                            'CDF_REAL4' or
-                            var_properties['Data_Type_Description'] ==
-                            'CDF_DOUBLE' or
-                            var_properties['Data_Type_Description'] ==
-                            'CDF_REAL8'):
-
+                    if (var_properties['Data_Type_Description'] == 'CDF_FLOAT'
+                        or var_properties['Data_Type_Description']
+                        == 'CDF_REAL4'
+                        or var_properties['Data_Type_Description']
+                        == 'CDF_DOUBLE'
+                        or var_properties['Data_Type_Description']
+                        == 'CDF_REAL8'):
                         if ydata[ydata == var_atts["FILLVAL"]].size != 0:
                             ydata[ydata == var_atts["FILLVAL"]] = np.nan
 
@@ -194,17 +204,21 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 depend_3 = None
                 if "DEPEND_1" in var_atts:
                     if var_atts["DEPEND_1"] in all_cdf_variables:
-                        depend_1 = np.array(cdf_file.varget(var_atts["DEPEND_1"]))
+                        depend_1 = np.array(cdf_file.varget(
+                            var_atts["DEPEND_1"]))
                 if "DEPEND_2" in var_atts:
                     if var_atts["DEPEND_2"] in all_cdf_variables:
-                        depend_2 = np.array(cdf_file.varget(var_atts["DEPEND_2"]))
+                        depend_2 = np.array(cdf_file.varget(
+                            var_atts["DEPEND_2"]))
                 if "DEPEND_3" in var_atts:
                     if var_atts["DEPEND_3"] in all_cdf_variables:
-                        depend_3 = np.array(cdf_file.varget(var_atts["DEPEND_3"]))
+                        depend_3 = np.array(cdf_file.varget(
+                            var_atts["DEPEND_3"]))
 
                 nontime_varying_depends = []
 
-                if depend_1 is not None and depend_2 is not None and depend_3 is not None:
+                if depend_1 is not None and depend_2 is not None \
+                        and depend_3 is not None:
                     tplot_data['v1'] = depend_1
                     tplot_data['v2'] = depend_2
                     tplot_data['v3'] = depend_3
@@ -232,8 +246,9 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     if len(depend_2.shape) == 1:
                         nontime_varying_depends.append('v')
 
-                metadata[var_name] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
-                                        'scale_type': var_atts.get("SCALE_TYP", "linear")}
+                metadata[var_name] = {'display_type': var_atts.get(
+                    "DISPLAY_TYPE", "time_series"), 'scale_type': var_atts.get(
+                    "SCALE_TYP", "linear")}
 
                 if var_name not in output_table:
                     output_table[var_name] = tplot_data
@@ -241,7 +256,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     var_data = output_table[var_name]
                     for output_var in var_data:
                         if output_var not in nontime_varying_depends:
-                            var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
+                            var_data[output_var] = np.concatenate((
+                                var_data[output_var], tplot_data[output_var]))
 
     if notplot:
         return output_table
@@ -250,7 +266,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         to_merge = False
         if (var_name in data_quants.keys()) and (merge is True):
             prev_data_quant = data_quants[var_name]
-            to_merge = True 
+            to_merge = True
 
         try:
             store_data(var_name, data=output_table[var_name])
@@ -268,13 +284,14 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
         if to_merge is True:
             cur_data_quant = data_quants[var_name]
-            plot_options = copy.deepcopy(data_quants[var_name].attrs['plot_options'])
-            data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time')
+            plot_options = copy.deepcopy(
+                data_quants[var_name].attrs['plot_options'])
+            data_quants[var_name] = xr.concat(
+                [prev_data_quant, cur_data_quant], dim='time')
             data_quants[var_name].attrs['plot_options'] = plot_options
 
     if notplot:
         return output_table
-
 
     if plot:
         tplot(stored_variables)

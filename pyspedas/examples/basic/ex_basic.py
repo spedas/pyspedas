@@ -20,7 +20,7 @@ def ex_basic():
     pyspedas.load_data('themis', ['2015-12-31 00:00:00',
                        '2016-01-01 12:00:00'], ['tha'], 'state', 'l1')
     # Get data into python variables
-    alldata = pytplot.get_data("tha_pos")      
+    alldata = pytplot.get_data("tha_pos")
     time = alldata[0]
     data = alldata[1]
     # Store a new pytplot variable
