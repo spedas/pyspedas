@@ -8,7 +8,7 @@ numpy
 scipy
 pydivide
 requests
-pyqt5==5.12
+pyqt5>=5.12
 pyqtwebengine
 pandas>=0.24
 xarray
