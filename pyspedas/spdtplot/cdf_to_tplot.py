@@ -11,6 +11,7 @@ import xarray as xr
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
 from pytplot.options import options
+from pytplot import data_quants
 import copy
 
 
@@ -137,12 +138,12 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                             # check if a conversion to seconds is required
                             if 'SI_CONVERSION' in delta_plus_var_att:
                                 si_conv = delta_plus_var_att['SI_CONVERSION']
-                                delta_plus_var = delta_plus_var.astype(float)
-                                * np.float(si_conv.split('>')[0])
+                                delta_plus_var = delta_plus_var.astype(float) \
+                                    * np.float(si_conv.split('>')[0])
                             elif 'SI_CONV' in delta_plus_var_att:
                                 si_conv = delta_plus_var_att['SI_CONV']
-                                delta_plus_var = delta_plus_var.astype(float)
-                                * np.float(si_conv.split('>')[0])
+                                delta_plus_var = delta_plus_var.astype(float) \
+                                    * np.float(si_conv.split('>')[0])
 
                         if 'DELTA_MINUS_VAR' in epoch_var_atts:
                             delta_minus_var = cdf_file.varget(
@@ -153,12 +154,14 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                             # check if a conversion to seconds is required
                             if 'SI_CONVERSION' in delta_minus_var_att:
                                 si_conv = delta_minus_var_att['SI_CONVERSION']
-                                delta_minus_var = delta_minus_var.astype(float)
-                                * np.float(si_conv.split('>')[0])
+                                delta_minus_var = \
+                                    delta_minus_var.astype(float) \
+                                    * np.float(si_conv.split('>')[0])
                             elif 'SI_CONV' in delta_minus_var_att:
                                 si_conv = delta_minus_var_att['SI_CONV']
-                                delta_minus_var = delta_minus_var.astype(float)
-                                * np.float(si_conv.split('>')[0])
+                                delta_minus_var = \
+                                    delta_minus_var.astype(float) \
+                                    * np.float(si_conv.split('>')[0])
 
                         # sometimes these are specified as arrays
                         if isinstance(delta_plus_var, np.ndarray) \
@@ -174,8 +177,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     if ('CDF_TIME' in data_type_description) or \
                             ('CDF_EPOCH' in data_type_description):
                         xdata = cdflib.cdfepoch.unixtime(xdata)
-                        epoch_cache[filename + x_axis_var] = np.array(xdata)
-                        + delta_time
+                        epoch_cache[filename + x_axis_var] = np.array(xdata) \
+                            + delta_time
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
 
