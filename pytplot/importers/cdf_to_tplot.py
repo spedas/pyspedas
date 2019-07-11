@@ -5,6 +5,14 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import cdflib
+
+# If the user has astropy installed, use the cdflib's CDFAstropy class for time conversion
+# (Converting to unix time is much, much faster this way)
+try:
+    from cdflib.epochs_astropy import CDFAstropy as cdfepoch
+except:
+    from cdflib.epochs import CDFepoch as cdfepoch
+
 import re
 import numpy as np
 import xarray as xr
@@ -162,7 +170,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 if epoch_cache.get(filename + x_axis_var) is None:
                     if ('CDF_TIME' in data_type_description) or \
                             ('CDF_EPOCH' in data_type_description):
-                        xdata = cdflib.cdfepoch.unixtime(xdata)
+                        xdata = cdfepoch.unixtime(xdata)
                         epoch_cache[filename+x_axis_var] = np.array(xdata)+delta_time
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
