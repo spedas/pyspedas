@@ -96,8 +96,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                                 if CONFIG['debug_mode']: logging.info('File: ' + file['file_name'] + ' / ' + file['timetag'])
 
-                                #if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
-                                if os.path.exists(out_file):
+                                if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
                                     if not download_only: logging.info('Loading ' + out_file)
                                     out_files.append(out_file)
                                     continue
