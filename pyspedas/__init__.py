@@ -4,7 +4,8 @@ from .prefs import get_spedas_prefs
 from .helpers import download_files, url_exists, find_latest_url_version
 from .dates import validate_date, get_date_list, get_dates
 from .themis.themis_load import themis_filename, themis_load
-from .themis.gmag_load import gmag_load, gmag_filename, check_gmag, check_greenland, gmag_groups, gmag_list, get_group, query_gmags
+from .themis.gmag_load import gmag_load, gmag_filename, check_gmag, check_greenland, gmag_groups, gmag_list, get_group,\
+    query_gmags
 from .themis.themis_helpers import get_probes, get_instruments
 from .omni.omni_load import omni_filename, omni_load
 from .examples.basic.ex_basic import ex_basic
@@ -29,4 +30,6 @@ from .analysis.time_clip import time_clip
 from .spdtplot.cdf_to_tplot import cdf_to_tplot
 from .spdtplot.tplot_names import tplot_names
 
-from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, mms_load_edp, mms_load_eis, mms_load_feeps, mms_load_hpca, mms_load_fpi, mms_load_aspoc, mms_load_dsp, mms_load_fsm
+from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, mms_load_edp, mms_load_eis, mms_load_feeps, \
+    mms_load_hpca, mms_load_fpi, mms_load_aspoc, mms_load_dsp, mms_load_fsm
+from .maven import maven_load
