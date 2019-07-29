@@ -8,7 +8,7 @@
        from Drew Turner, 1/19/2017
 
  NOTES:
- 
+    
    From Drew Turner, 1/18/17:
        Here are the correction factors that we need to apply to the current 
        ION counts/rates/fluxes in the CDF files.  
@@ -54,6 +54,7 @@
 
 import pytplot
 from pytplot import get_data, store_data
+from pyspedas import tnames
 
 def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 'brst', suffix = ''):
     G_corr = {}
@@ -97,30 +98,41 @@ def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 
     for probe in probes:
         for sensor_type in sensor_types:
             for sensor_id in sensor_ids:
-                if G_corr.has_key('mms'+probes[probe_idx]+'-'+sensor_types[sensor_type][0:3]+sensor_ids[sensor_id]):
-                    correction = G_corr['mms'+probes[probe_idx]+'-'+sensor_types[sensor_type][0:3]+sensor_ids[sensor_id]]
+                if G_corr.get('mms'+probe+'-'+sensor_type[0:3]+sensor_id) is not None:
+                    correction = G_corr['mms'+probe+'-'+sensor_type[0:3]+sensor_id]
                 else:
                     correction = 1.0
 
                 for level in levels:
                     for species_id in species:
                         if correction != 1.0:
-                            cr_var = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species_id+'_'+sensor_type+'_count_rate_sensorid_'+sensor_id+suffix
-                            i_var = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species_id+'_'+sensor_type+'_intensity_sensorid_'+sensor_id+suffix
-                            c_var = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species_id+'_'+sensor_type+'_counts_sensorid_'+sensor_id+suffix
+                            cr_var = tnames('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species_id+'_'+sensor_type+'_count_rate_sensorid_'+sensor_id+suffix)
+                            i_var = tnames('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species_id+'_'+sensor_type+'_intensity_sensorid_'+sensor_id+suffix)
+                            c_var = tnames('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species_id+'_'+sensor_type+'_counts_sensorid_'+sensor_id+suffix)
 
-                            cr_times, cr_data = get_data(cr_var)
-                            i_times, i_data = get_data(i_var)
-                            c_times, c_data = get_data(c_var)
+                            if cr_var == []:
+                                count_rate = None
+                            else:
+                                count_rate = get_data(cr_var[0])
+                            if count_rate is not None:
+                                cr_times, cr_data, cr_energies = count_rate
+                                store_data(cr_var[0], data={'x': cr_times, 'y': cr_data*correction, 'v': cr_energies})
 
-                            cr_energies = pytplot.data_quants[cr_var].spec_bins.values
-                            i_energies = pytplot.data_quants[i_var].spec_bins.values
-                            c_energies = pytplot.data_quants[c_var].spec_bins.values
+                            if i_var == []:
+                                intensity = None
+                            else:
+                                intensity = get_data(i_var[0])
+                            if intensity is not None:
+                                i_times, i_data, i_energies = intensity
+                                store_data(i_var[0], data={'x': i_times, 'y': i_data*correction, 'v': i_energies})
 
-                            store_data(cr_var, data={'x': cr_times, 'y': cr_data*correction, 'v': cr_energies})
-                            store_data(i_var, data={'x': i_times, 'y': i_data*correction, 'v': i_energies})
-                            store_data(c_var, data={'x': c_times, 'y': c_data*correction, 'v': c_energies})
-
+                            if c_var == []:
+                                counts = None
+                            else:
+                                counts = get_data(c_var[0])
+                            if counts is not None:
+                                c_times, c_data, c_energies = counts
+                                store_data(c_var[0], data={'x': c_times, 'y': c_data*correction, 'v': c_energies})
 
 
 

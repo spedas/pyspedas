@@ -37,11 +37,10 @@ def mms_feeps_correct_energies(probes, data_rate, level='l2', suffix=''):
 
                     var_data = get_data(var_name+suffix)
                     if var_data is not None:
-                        times, data = var_data
+                        times, data, energies = var_data
                     else:
                         continue
 
-                    energies = pytplot.data_quants[var_name+suffix].spec_bins.values
                     energy_map = mms_feeps_energy_table(probe, sensor_type[0:3], sensor)
 
                     try:
