@@ -55,7 +55,7 @@ def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'elect
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom ions
-    for bad_var in bad_data['top']:
+    for bad_var in bad_data['bottom']:
         if bad_var not in [6, 7, 8]: continue # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_intensity_sensorid_'+str(bad_var)+suffix))
@@ -65,14 +65,13 @@ def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'elect
         if bad_var == []: continue
         bad_var_data = pytplot.get_data(bad_var[0])
         if bad_var_data is not None:
-            times, data = bad_var_data
-            energies = pytplot.data_quants[bad_var[0]].spec_bins.values
+            times, data, energies = bad_var_data
 
-            # check if the energy table contains all names
+            # check if the energy table contains all nans
             if np.isnan(np.sum(energies)): continue
 
             data[:] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies.reshape(energies.size)})
+            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
 
 
@@ -181,26 +180,24 @@ def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'elect
         if bad_var == []: continue
         bad_var_data = pytplot.get_data(bad_var[0])
         if bad_var_data is not None:
-            times, data = bad_var_data
-            energies = pytplot.data_quants[bad_var[0]].spec_bins.values
+            times, data, energies = bad_var_data
 
-            # check if the energy table contains all names
+            # check if the energy table contains all nans
             if np.isnan(np.sum(energies)): continue
 
             data[:, 0] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies.reshape(energies.size)})
+            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
     # set the first and second energy channels to NaN
     for bad_var in bad_vars_both_chans:
         if bad_var == []: continue
         bad_var_data = pytplot.get_data(bad_var[0])
         if bad_var_data is not None:
-            times, data = bad_var_data
-            energies = pytplot.data_quants[bad_var[0]].spec_bins.values
+            times, data, energies = bad_var_data
 
             # check if the energy table contains all names
             if np.isnan(np.sum(energies)): continue
 
             data[:, 0] = np.nan
             data[:, 1] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies.reshape(energies.size)})
+            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
