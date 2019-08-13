@@ -73,4 +73,5 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
             options(var+fov_str, 'zlog', True)
             options(var+fov_str, 'Colormap', 'jet')
             output_vars.append(var+fov_str)
+    return output_vars
 

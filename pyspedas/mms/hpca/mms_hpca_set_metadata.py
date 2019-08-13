@@ -3,6 +3,21 @@ from pytplot import options
 from pyspedas import tnames
 
 def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):
+        """
+    This function sets the plot metadata for HPCA data products, and is meant 
+    to be called from the HPCA load routine
+
+    Parameters:
+        fov : list of int
+            field of view, in angles, from 0-360
+        probe : str
+            probe #, e.g., '4' for MMS4
+        suffix: str
+            suffix of the loaded data
+
+    Returns:
+        None
+    """
     prefix = 'mms'+str(probe)
     valid_density = prefix+'*_number_density'+suffix
     valid_vel = prefix+'*_ion_bulk_velocity*'+suffix
