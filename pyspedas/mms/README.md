@@ -16,7 +16,7 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - EIS omni-directional spectrograms are calculated from the individual telescope data by default
 - HPCA omni-directional spectrograms can be calculated using the routines `mms_hpca_calc_anodes` and `mms_hpca_spin_sum`
 - FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the `center_measurement` keyword
-- CDF variables loaded can be restricted with the `varformat` keyword
+- Limit the CDF variables loaded with the `varformat` keyword
 - Data can be returned in numpy arrays instead of tplot variables using the `notplot` keyword
 - Suffixes can be appended to the variable names using the `suffix` keyword
 - Keywords for specifying instrument details (`level`, `data_rate`, `datatype`) accept strings as well as arrays of strings
