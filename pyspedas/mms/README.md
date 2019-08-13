@@ -3,9 +3,10 @@
 The routines in this folder can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
 ### What's included:
-- Access to team-only data (QL, L1, L2pre, L3pre, L3), as well as L2 data
+- Access to team-only data (QL, L1, L2pre, L3pre, L3), as well as all L2 data
 - Access to support data via the `get_support_data` keyword
-- Access to available data files (without downloading) with the `available` keyword
+- Data can be loaded from disk without contacting the SDC via the `no_update` keyword, or by setting the 'no_download' option to `True` in the configuration table found in mms_config.py
+- List available data files (without downloading) with the `available` keyword
 - Data can be loaded from disk without internet connectivity 
 - Data files are stored in temporary directories until each download completes, to avoid partial downloads of files due to internet connectivity issues
 - Local data directory can be specified by the MMS_DATA_DIR environment variable, or by the 'local_data_dir' value in mms_config.py
@@ -15,10 +16,14 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - EIS omni-directional spectrograms are calculated from the individual telescope data by default
 - HPCA omni-directional spectrograms can be calculated using the routines `mms_hpca_calc_anodes` and `mms_hpca_spin_sum`
 - FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the `center_measurement` keyword
+- CDF variables loaded can be restricted with the `varformat` keyword
+- Data can be returned in numpy arrays instead of tplot variables using the `notplot` keyword
+- Suffixes can be appended to the variable names using the `suffix` keyword
 - Keywords for specifying instrument details (`level`, `data_rate`, `datatype`) accept strings as well as arrays of strings
 - The `probe` keyword accepts strings, arrays of strings, ints and arrays of ints
 - The load routines accept a wide range of time range formats via the `trange` keyword
 - The load routines correctly handle access to all burst-mode data, even when small time ranges are requested
+- Crib sheets can be found in the `examples` folder
 - Cross platform: tested on Windows, macOS and Linux
 
 ### Instruments
