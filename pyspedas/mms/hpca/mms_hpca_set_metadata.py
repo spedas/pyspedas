@@ -3,7 +3,7 @@ from pytplot import options
 from pyspedas import tnames
 
 def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):
-        """
+    """
     This function sets the plot metadata for HPCA data products, and is meant 
     to be called from the HPCA load routine
 
