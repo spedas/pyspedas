@@ -4,6 +4,7 @@
 ![Version](https://img.shields.io/pypi/v/pyspedas.svg)
 ![License](https://img.shields.io/pypi/l/pyspedas.svg)
 ![Status](https://img.shields.io/pypi/status/pyspedas.svg)
+![Downloads](https://img.shields.io/pypi/dm/pyspedas.svg)
 
 pySPEDAS is an implementation of the SPEDAS framework in python. 
 
