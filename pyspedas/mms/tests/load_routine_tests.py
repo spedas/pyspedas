@@ -9,7 +9,7 @@ from ...utilities.data_exists import data_exists
 from ..hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from ..hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
-from pytplot import get_data
+from pytplot import get_data, del_data
 
 class DSPLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
@@ -83,6 +83,7 @@ class HPCALoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_hpca_hplus_flux'))
 
     def test_load_ion_omni(self):
+        del_data('*')
         data = mms_load_hpca(trange=['2016-10-16/5:00', '2016-10-16/6:00'], datatype='ion')
         mms_hpca_calc_anodes(fov=[0, 360], probe='1')
         mms_hpca_spin_sum()
