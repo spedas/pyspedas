@@ -3,7 +3,7 @@
 The routines in this folder can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
 ### What's included:
-- Access to team-only data (QL, L1, L2pre), as well as L2 data
+- Access to team-only data (QL, L1, L2pre, L3pre, L3), as well as L2 data
 - Access to support data via the `get_support_data` keyword
 - Access to available data files (without downloading) with the `available` keyword
 - Data can be loaded from disk without internet connectivity 
@@ -13,6 +13,7 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - Data can be clipped to the requested time range after loading via the `time_clip` keyword
 - FGM data are automatically deflagged 
 - EIS omni-directional spectrograms are calculated from the individual telescope data by default
+- HPCA omni-directional spectrograms can be calculated using the routines `mms_hpca_calc_anodes` and `mms_hpca_spin_sum`
 - FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the `center_measurement` keyword
 - Keywords for specifying instrument details (`level`, `data_rate`, `datatype`) accept strings as well as arrays of strings
 - The `probe` keyword accepts strings, arrays of strings, ints and arrays of ints
