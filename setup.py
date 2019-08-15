@@ -11,7 +11,7 @@ from codecs import open
 
 setup(
     name='pyspedas',
-    version='0.8.11',
+    version='0.8.12',
     description='Python Space Physics Environment Data Analysis \
                     Software (SPEDAS)',
     long_description=open('README.md').read(),
@@ -30,7 +30,7 @@ setup(
     project_urls={'Information': 'http://spedas.org/wiki/',
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    install_requires=['pyqtwebengine', 'pyqt5==5.12', 'requests', 'scipy',
+    install_requires=['pyqtwebengine', 'requests', 'scipy',
                       'pytplot>=1.4', 'cdflib', 'msgpack', 'bokeh', 'nodejs',
                       'pyqtgraph', 'numpy', 'pydivide', 'pandas>=0.24'],
     python_requires='>=3.5',
