@@ -1,4 +1,8 @@
-1.4.1
+1.4.3
+
+1.4.3 Changes:
+
+* Bug fix where ylog could not be unset
 
 1.4.1 Changes:
 
