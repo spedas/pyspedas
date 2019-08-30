@@ -1,4 +1,8 @@
-1.4.3
+1.4.4
+
+1.4.4 Changes:
+
+* Fixing pyqtgraph's collections.abc imports
 
 1.4.3 Changes:
 
