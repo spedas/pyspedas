@@ -9,11 +9,15 @@ Desrciption:
 
 import urllib
 import os
+import socket
+import warnings
 
 
 def download_files(url, locafile):
     """Get a file from internet and save it localy."""
 
+    warnings.simplefilter("ignore", ResourceWarning)
+    
     exists = False
     httpreq = None
     err = None
@@ -33,12 +37,15 @@ def download_files(url, locafile):
         os.makedirs(dirPath)
 
     # Download file
+    print("ok")
     try:
         if not os.path.exists(locafile):
             httpreq = urllib.request.urlretrieve(url, locafile)
     except urllib.request.URLError as e:
         httpreq = None
         err = e
+    except socket.error:
+        pass
 
     if httpreq is not None:
         exists = True
@@ -51,9 +58,10 @@ def url_exists(url):
 
     ans = False
     try:
-        urllib.request.urlopen(url)
+        hreq = urllib.request.urlopen(url)
         ans = True
         err = ''
+        hreq.close()
     except urllib.request.URLError as e:
         ans = False
         err = e

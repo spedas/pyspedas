@@ -1,13 +1,10 @@
 cdflib
-pytplot>=1.4
+pytplot
 pyqtgraph
 bokeh
-msgpack
 nodejs
 numpy
 scipy
-pydivide
 requests
-pyqtwebengine
-pandas>=0.24
+pandas
 xarray
