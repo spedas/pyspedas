@@ -327,8 +327,9 @@ class TVarFigureMap(pg.GraphicsLayout):
             alpha = 1
         if 'basemap' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
             if os.path.isfile(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap']):
-                from scipy import misc
-                img = misc.imread(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap'], mode='RGBA')
+                from matplotlib.pyplot import imread
+                img = imread(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap'],
+                             format='RGBA')
                 # Need to flip the image upside down...This will probably be fixed in
                 # a future release, so this will need to be deleted at some point
                 img = img[::-1]

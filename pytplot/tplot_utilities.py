@@ -139,7 +139,12 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
 
 def str_to_int(time_str):
     epoch_t = "1970-1-1 00:00:00"
-    pattern = "%Y-%m-%d %H:%M:%S"
+    if 'T' in time_str:
+        pattern = "%Y-%m-%dT%H:%M:%S"
+        epoch_t = "1970-1-1T00:00:00"
+    else:
+        pattern = "%Y-%m-%d %H:%M:%S"
+        epoch_t = "1970-1-1 00:00:00"
     epoch_t1 = datetime.datetime.strptime(epoch_t, pattern)
     time_str1 = datetime.datetime.strptime(time_str, pattern)
     time_int = int((time_str1-epoch_t1).total_seconds())
@@ -499,11 +504,11 @@ def get_spec_slicer_axis_types(names):
         if 'spec_bins' in pytplot.data_quants[n].coords:
             zlabel = pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['axis_label']
             ylabel = pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['axis_label']
-            if 'xi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']:
+            if 'xi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt'].keys():
                 xtype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type']
             else:
                 xtype_interactive = 'log'
-            if 'yi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']:
+            if 'yi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt'].keys():
                 ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type']
             else:
                 ytype_interactive = 'log'
