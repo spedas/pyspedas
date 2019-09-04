@@ -8,6 +8,7 @@ import numpy as np
 import os
 import pytplot
 from pyqtgraph.Qt import QtCore
+from .CustomImage.ColorbarImage import ColorbarImage
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
@@ -164,7 +165,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         p2.setMaximumWidth(100)
         p2.showAxis('right')
         p2.hideAxis('left')
-        colorbar = pg.ImageItem()
+        colorbar = ColorbarImage()
         colorbar.setImage(np.array([np.linspace(1, 2, 200)]).T)
 
         p2.addItem(colorbar)
@@ -332,7 +333,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                 # Need to flip the image upside down...This will probably be fixed in
                 # a future release, so this will need to be deleted at some point
                 img = img[::-1]
-                bm = pg.ImageItem(image=img, opacity=alpha)
+                bm = ColorbarImage(image=img, opacity=alpha)
                 bm.setRect(QtCore.QRect(0, -90, 360, 180))
                 self.plotwindow.addItem(bm)
 

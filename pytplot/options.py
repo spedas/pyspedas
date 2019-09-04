@@ -126,8 +126,8 @@ def options(name, option, value):
                 data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type'] = 'linear'
 
         if option == 'ylog':
-            negflag = 0  # _ylog_check(data_quants, value, i)
-            if negflag == 0:
+            negflag = 0 # _ylog_check(data_quants, value, i)
+            if negflag == 0 and value:
                 data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'log'
             else:
                 data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'linear'

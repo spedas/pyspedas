@@ -10,6 +10,7 @@ from pyqtgraph.Qt import QtCore
 import pytplot
 from .CustomAxis.DateAxis import DateAxis
 from .CustomImage.UpdatingImage import UpdatingImage
+from .CustomImage.ColorbarImage import ColorbarImage
 from .CustomAxis.BlankAxis import BlankAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
@@ -160,7 +161,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
         p2.setMaximumWidth(100)
         p2.showAxis('right')
         p2.hideAxis('left')
-        colorbar = pg.ImageItem()
+
+        colorbar = ColorbarImage()
         colorbar.setImage(np.array([np.linspace(1, 2, 200)]).T)
 
         p2.addItem(colorbar)
@@ -176,6 +178,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
             colorbar.setRect(QtCore.QRectF(0, self.zmin, 1, self.zmax - self.zmin))
             p2.setYRange(self.zmin, self.zmax, padding=0)
         colorbar.setLookupTable(self.colormap)
+
 
     def _addmouseevents(self):
         if self.plotwindow.scene() is not None:

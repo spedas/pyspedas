@@ -4,7 +4,7 @@ from pyqtgraph.Qt import QtCore
 from pyqtgraph import functions as fn
 from pyqtgraph.Point import Point
 from pyqtgraph import debug as debug
-import collections
+from collections.abc import Callable
 from pytplot import tplot_opt_glob
 
 class UpdatingImage(pg.ImageItem):
@@ -114,7 +114,7 @@ class UpdatingImage(pg.ImageItem):
         profile = debug.Profiler()
         if self.image is None or self.image.size == 0:
             return
-        if isinstance(self.lut, collections.Callable):
+        if isinstance(self.lut, Callable):
             lut = self.lut(self.image)
         else:
             lut = self.lut

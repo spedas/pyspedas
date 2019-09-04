@@ -1,4 +1,12 @@
-1.4.1
+1.4.4
+
+1.4.4 Changes:
+
+* Fixing pyqtgraph's collections.abc imports
+
+1.4.3 Changes:
+
+* Bug fix where ylog could not be unset
 
 1.4.1 Changes:
 
