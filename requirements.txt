@@ -1,3 +1,5 @@
 requests
 cdflib
 pytplot
+bokeh
+nodejs
