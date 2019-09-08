@@ -231,3 +231,6 @@ dmypy.json
 .dropbox.attr
 .dropbox.cache
 
+# Visual Studio Code dir
+.vscode
+

@@ -32,12 +32,24 @@ We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a 
 To install pySPEDAS, open a command line and type the command:
 
 ```bash
+conda install -c spedas pyspedas
+```
+
+or 
+
+```bash
 pip install pyspedas
 ```
 
 ### Upgrade pySPEDAS
 
 If you have already installed pySPEDAS, you can upgrade to the latest version using:
+
+```bash
+conda update -c spedas pyspedas
+```
+
+or 
 
 ```bash
 pip install --upgrade pyspedas
