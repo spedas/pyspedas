@@ -43,7 +43,6 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.yaxis = AxisItem("left")
         self.yaxis.setWidth(100)
         vb = NoPaddingPlot()
-        #plot = pg.PlotItem()
         self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
 
         # Set up the view box needed for the legends
@@ -57,18 +56,25 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
-
+        if pytplot.tplot_opt_glob['black_background']:
+            self.labelStyle = {'font-size':
+                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               + 'pt', 'color': '#FFF'}
+        else:
+            self.labelStyle = {'font-size':
+                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               + 'pt', 'color': '#000'}
 
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date:", "0")
         # Allow the user to set x-axis(time) and y-axis names in crosshairs
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair']
+                                 + ':', "0")
+        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair']
+                                 + ':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
-
 
     def _set_crosshairs(self):
         self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
@@ -143,7 +149,7 @@ class TVarFigure1D(pg.GraphicsLayout):
                                                                        y=dataset[i].tolist(),
                                                                        pen=self.colors[line_num % len(self.colors)],
                                                                        symbol='+'))
-                        line_num+=1
+                        line_num += 1
                         continue
                 limit = pytplot.tplot_opt_glob['data_gap']  # How big a data gap is allowed before those nans (default
                 # is to plot as pyqtgraph would normally plot w / o worrying about data gap handling).
@@ -255,7 +261,7 @@ class TVarFigure1D(pg.GraphicsLayout):
                 b = self.colors[i % len(self.colors)][2]
                 hex_num = rgb(r, g, b)
                 color_text = 'color: ' + hex_num
-                font_size = 'font-size: '+str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
+                font_size = 'font-size: ' + str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
                 opts = [color_text, font_size]
                 full = "<span style='%s'>%s</span>" % ('; '.join(opts), legend_name)
                 if i + 1 == len(legend_names):  # Last
@@ -329,7 +335,8 @@ class TVarFigure1D(pg.GraphicsLayout):
     def _setcolormap(self):
         return
 
-    def getaxistype(self):
+    @staticmethod
+    def getaxistype():
         axis_type = 'time'
         link_y_axis = False
         return axis_type, link_y_axis

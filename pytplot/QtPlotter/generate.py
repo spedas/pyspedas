@@ -72,6 +72,10 @@ def generate_stack(name,
         axis_types.append(new_fig.getaxistype())
         new_fig.buildfigure()
 
+        # Set plot backgrounds to black if that tplot_option is set
+        if pytplot.tplot_opt_glob['black_background']:
+            pg.setConfigOptions(background='k')
+
         # Add plot to GridPlot layout
         all_plots.append(new_fig.getfig())
         i = i + 1
@@ -106,17 +110,21 @@ def _set_pyqtgraph_title(layout):
     Private function to add a title to the first row of the window.
     Returns True if a Title is set.  Else, returns False.
     """
+    title_set = False
     if 'title_size' in pytplot.tplot_opt_glob:
         size = pytplot.tplot_opt_glob['title_size']
     if 'title_text' in pytplot.tplot_opt_glob:
-        if pytplot.tplot_opt_glob['title_text'] != '':
+        title_set = True
+        if pytplot.tplot_opt_glob['title_text'] != '' and pytplot.tplot_opt_glob['black_background']:
+            layout.addItem(LabelItem(pytplot.tplot_opt_glob['title_text'], size=size, color='w'), row=0, col=0)
+        else:
             layout.addItem(LabelItem(pytplot.tplot_opt_glob['title_text'], size=size, color='k'), row=0, col=0)
-            return True
-    return False
+    return title_set
 
 
 def _get_figure_class(tvar_name, show_xaxis=True):
-    if 'plotter' in pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] and pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in \
+    if 'plotter' in pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] \
+            and pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in \
             pytplot.qt_plotters:
         cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter']]
     else:

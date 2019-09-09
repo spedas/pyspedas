@@ -60,7 +60,14 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
+        if pytplot.tplot_opt_glob['black_background']:
+            self.labelStyle = {'font-size':
+                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               + 'pt', 'color': '#FFF'}
+        else:
+            self.labelStyle = {'font-size':
+                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               + 'pt', 'color': '#000'}
 
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
@@ -71,6 +78,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
+
+    @staticmethod
+    def getaxistype():
+        axis_type = 'time'
+        link_y_axis = False
+        return axis_type, link_y_axis
 
     def _set_crosshairs(self):
         self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
@@ -274,11 +287,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
         else:
             return tplot_utilities.return_lut("inferno")
 
-    def getaxistype(self):
-        axis_type = 'time'
-        link_y_axis = False
-        return axis_type, link_y_axis
-
     def _setxrange(self):
         # Check if x range is set.  Otherwise, x range is automatic.
         if 'x_range' in pytplot.tplot_opt_glob:
@@ -309,8 +317,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
                 dataset_temp = dataset_temp.where(dataset_temp > 0)
             self.zmax = dataset_temp.max().max().values
             self.zmin = dataset_temp.min().min().values
-
-
 
     def _addtimebars(self):
         # find number of times to plot

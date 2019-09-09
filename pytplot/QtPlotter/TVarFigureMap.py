@@ -48,7 +48,14 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
+        if pytplot.tplot_opt_glob['black_background']:
+            self.labelStyle = {'font-size':
+                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               + 'pt', 'color': '#FFF'}
+        else:
+            self.labelStyle = {'font-size':
+                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               + 'pt', 'color': '#000'}
 
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
@@ -88,9 +95,6 @@ class TVarFigureMap(pg.GraphicsLayout):
 
     def _setyaxislabel(self):
         self.yaxis.setLabel("Latitude", **self.labelStyle)
-
-    def _setyaxislabel(self):
-        self.yaxis.setLabel("Latitude")
 
     def getfig(self):
         return self
@@ -254,7 +258,8 @@ class TVarFigureMap(pg.GraphicsLayout):
         else:
             return [pytplot.tplot_utilities.return_lut("inferno")]
 
-    def getaxistype(self):
+    @staticmethod
+    def getaxistype():
         axis_type = 'lat'
         link_y_axis = True
         return axis_type, link_y_axis
