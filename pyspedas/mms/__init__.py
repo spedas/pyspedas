@@ -9,6 +9,13 @@ from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 from .fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
 from .hpca.mms_hpca_set_metadata import mms_hpca_set_metadata
+from .feeps.mms_feeps_correct_energies import mms_feeps_correct_energies
+from .feeps.mms_feeps_flat_field_corrections import mms_feeps_flat_field_corrections
+from .feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
+from .feeps.mms_feeps_split_integral_ch import mms_feeps_split_integral_ch
+from .feeps.mms_feeps_remove_bad_data import mms_feeps_remove_bad_data
+from .feeps.mms_feeps_remove_sun import mms_feeps_remove_sun
+from .feeps.mms_feeps_omni import mms_feeps_omni
 
 import re
 from pytplot import del_data
@@ -373,8 +380,8 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     return tvars
 
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='electron', varformat=None, get_support_data=False, prefix='', suffix='', time_clip=False,
-    no_update=False, available=False, notplot=False):
+    level='l2', datatype='electron', varformat=None, get_support_data=True, prefix='', suffix='', time_clip=False,
+    no_update=False, available=False, notplot=False, no_flatfield_corrections=False, data_units=['count_rate', 'intensity']):
     """
     This function loads FEEPS data into tplot variables
     
@@ -431,6 +438,33 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='feeps',
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix=prefix, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available)
+
+    if tvars == [] or available or notplot:
+        return tvars
+
+    probes = probe if isinstance(probe, list) else [probe]
+    data_rates = data_rate if isinstance(data_rate, list) else [data_rate]
+    levels = level if isinstance(level, list) else [level]
+    datatypes = datatype if isinstance(datatype, list) else [datatype]
+
+    mms_feeps_correct_energies(probes, data_rate, level=level, suffix=suffix)
+
+    if not no_flatfield_corrections:
+        mms_feeps_flat_field_corrections(probes=probes, data_rate=data_rate, suffix=suffix)
+
+    for probe in probes:
+        for datatype in datatypes:
+           mms_feeps_remove_bad_data(probe=probe, data_rate=data_rate, datatype =datatype, level=level, suffix=suffix)
+           
+           for data_unit in data_units:
+               eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
+
+               mms_feeps_split_integral_ch(data_unit, datatype, probe, suffix=suffix, data_rate=data_rate, level=level, sensor_eyes=eyes)
+
+               mms_feeps_remove_sun(eyes, trange, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
+
+               mms_feeps_omni(eyes, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
+
     return tvars
 
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof',
