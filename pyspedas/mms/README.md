@@ -3,7 +3,7 @@
 The routines in this folder can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
 ### What's included:
-- Access to team-only data (QL, L1, L2pre, L3pre, L3), as well as all L2 data
+- Access to team-only data (QL, L1, L2pre, L3pre), as well as all L2 data
 - Access to support data via the `get_support_data` keyword
 - Data can be loaded from disk without contacting the SDC via the `no_update` keyword, or by setting the `no_download` option to `True` in the configuration table found in mms_config.py
 - List available data files (without downloading) with the `available` keyword
