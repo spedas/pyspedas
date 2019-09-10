@@ -25,7 +25,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
             bad_sectors = mask_sectors['mms'+probe+'imaskt'+sensor]
 
             for bad_sector in bad_sectors:
-                this_bad_sector = np.where(top_data == bad_sector)[0]
+                this_bad_sector = np.where(spin_sectors == bad_sector)[0]
                 if len(this_bad_sector) is not 0:
                     top_data[this_bad_sector] = np.nan
 
@@ -46,7 +46,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
                 bad_sectors = mask_sectors['mms'+probe+'imaskb'+sensor]
 
                 for bad_sector in bad_sectors:
-                    this_bad_sector = np.where(bot_data == bad_sector)[0]
+                    this_bad_sector = np.where(spin_sectors == bad_sector)[0]
                     if len(this_bad_sector) is not 0:
                         bot_data[this_bad_sector] = np.nan
 
