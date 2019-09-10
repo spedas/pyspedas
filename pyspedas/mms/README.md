@@ -14,6 +14,9 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - Data can be clipped to the requested time range after loading via the `time_clip` keyword
 - FGM data are automatically deflagged 
 - EIS omni-directional spectrograms are calculated from the individual telescope data by default
+- FEEPS omni-directional spectrograms are calculated from the individual telescope data by default
+- Sun contamination is removed from FEEPS omni-directional spectrograms
+- FEEPS integral channels are removed from the telescope spectrogram data and included in their own tplot variables
 - HPCA omni-directional spectrograms can be calculated using the routines `mms_hpca_calc_anodes` and `mms_hpca_spin_sum`
 - FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the `center_measurement` keyword
 - Limit the CDF variables loaded with the `varformat` keyword
@@ -141,7 +144,7 @@ from pyspedas import mms_load_feeps
 
 mms_load_feeps(trange=['2015-10-16', '2015-10-17'], datatype='electron')
 
-tplot('mms1_epd_feeps_srvy_l2_electron_top_intensity_sensorid_1')
+tplot('mms1_epd_feeps_srvy_l2_electron_intensity_omni')
 ```
 
 #### Active Spacecraft Potential Control (ASPOC)
