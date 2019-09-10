@@ -19,7 +19,7 @@ class DSPLoadTestCases(unittest.TestCase):
 class FEEPSLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_bottom_intensity_sensorid_12'))
+        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
 
 class EISLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
