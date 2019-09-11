@@ -1,4 +1,3 @@
-
 import pytplot
 
 def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate='srvy', level='l2', sensor_eyes=None):
@@ -15,9 +14,11 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
         time, data, energies = pytplot.get_data(top_name+suffix)
 
         top_name_out = top_name+'_clean'+suffix
-        pytplot.store_data(top_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
-
-        pytplot.store_data(top_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
+        try:
+            pytplot.store_data(top_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
+            pytplot.store_data(top_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
+        except Warning:
+            continue
 
         pytplot.del_data(top_name)
 
@@ -30,8 +31,10 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
         time, data, energies = pytplot.get_data(bot_name+suffix)
 
         bot_name_out = bot_name+'_clean'+suffix
-        pytplot.store_data(bot_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
-
-        pytplot.store_data(bot_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
+        try:
+            pytplot.store_data(bot_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
+            pytplot.store_data(bot_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
+        except Warning:
+            continue
 
         pytplot.del_data(bot_name)

@@ -29,8 +29,11 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
                 if len(this_bad_sector) is not 0:
                     top_data[this_bad_sector] = np.nan
 
-        store_data(var_name+'_sun_removed'+suffix, data={'x': times, 'y': top_data, 'v': top_energies})
-        out_vars.append(var_name+'_sun_removed'+suffix)
+        try:
+            store_data(var_name+'_sun_removed'+suffix, data={'x': times, 'y': top_data, 'v': top_energies})
+            out_vars.append(var_name+'_sun_removed'+suffix)
+        except Warning:
+            continue
 
     if level is not 'sitl':
         for sensor in bot_sensors:
@@ -50,5 +53,8 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
                     if len(this_bad_sector) is not 0:
                         bot_data[this_bad_sector] = np.nan
 
-            store_data(var_name+'_sun_removed'+suffix, data={'x': times, 'y': bot_data, 'v': bot_energies})
-            out_vars.append(var_name+'_sun_removed'+suffix)
+            try:
+                store_data(var_name+'_sun_removed'+suffix, data={'x': times, 'y': bot_data, 'v': bot_energies})
+                out_vars.append(var_name+'_sun_removed'+suffix)
+            except Warning:
+                continue

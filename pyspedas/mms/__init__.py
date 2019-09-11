@@ -448,6 +448,8 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     levels = level if isinstance(level, list) else [level]
     datatypes = datatype if isinstance(datatype, list) else [datatype]
 
+    probes = [str(p) for p in probes]
+
     mms_feeps_correct_energies(probes, data_rate, level=level, suffix=suffix)
 
     if not no_flatfield_corrections:

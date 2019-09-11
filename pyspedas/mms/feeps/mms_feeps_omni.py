@@ -57,16 +57,22 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
                 var_name = prefix+data_rate+'_'+level+'_'+datatype+'_top_'+data_units+'_sensorid_'+str(sensor)+'_clean_sun_removed'+suffix
                 data = get_data(var_name)
                 dalleyes[:, :, idx] = data[1]
-                iE = np.where(np.abs(energies-data[2]) > en_chk*energies)
-                if iE[0].size != 0:
-                    dalleyes[:, iE[0], idx] = np.nan
+                try:
+                    iE = np.where(np.abs(energies-data[2]) > en_chk*energies)
+                    if iE[0].size != 0:
+                        dalleyes[:, iE[0], idx] = np.nan
+                except Warning:
+                    print('NaN in energy table encountered; sensor T' + str(sensor))
             for idx, sensor in enumerate(bot_sensors):
                 var_name = prefix+data_rate+'_'+level+'_'+datatype+'_bottom_'+data_units+'_sensorid_'+str(sensor)+'_clean_sun_removed'+suffix
                 data = get_data(var_name)
                 dalleyes[:, :, idx+len(top_sensors)] = data[1]
-                iE = np.where(np.abs(energies-data[2]) > en_chk*energies)
-                if iE[0].size != 0:
-                    dalleyes[:, iE[0], idx+len(top_sensors)] = np.nan
+                try:
+                    iE = np.where(np.abs(energies-data[2]) > en_chk*energies)
+                    if iE[0].size != 0:
+                        dalleyes[:, iE[0], idx+len(top_sensors)] = np.nan
+                except Warning:
+                    print('NaN in energy table encountered; sensor B' + str(sensor))
         else: # sitl data
             dalleyes = np.empty((len(tmpdata[0]), len(tmpdata[2]), len(top_sensors)))
             dalleyes[:] = np.nan
