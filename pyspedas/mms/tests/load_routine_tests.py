@@ -23,11 +23,13 @@ class FEEPSLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
 
     def test_load_brst_data(self):
+        del_data('*')
         data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin'))
 
     def test_load_brst_multi_probe(self):
+        del_data('*')
         data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', probe=[1, 2, 3, 4])
         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin'))
