@@ -16,6 +16,7 @@ from .feeps.mms_feeps_split_integral_ch import mms_feeps_split_integral_ch
 from .feeps.mms_feeps_remove_bad_data import mms_feeps_remove_bad_data
 from .feeps.mms_feeps_remove_sun import mms_feeps_remove_sun
 from .feeps.mms_feeps_omni import mms_feeps_omni
+from .feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
 
 import re
 from pytplot import del_data
@@ -464,6 +465,8 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
                mms_feeps_remove_sun(eyes, trange, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
 
                mms_feeps_omni(eyes, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
+
+               mms_feeps_spin_avg(probe=probe, data_units=data_unit, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix)
 
     return tvars
 
