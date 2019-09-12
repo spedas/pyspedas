@@ -42,8 +42,12 @@ class UpdatingImage(pg.ImageItem):
         
         xmin = np.nanmin(self.x)
         xmax = np.nanmax(self.x)
-        ymin = self.y.min().min()
-        ymax= self.y.max().max()
+        try:
+            ymin = self.y.min().min()
+            ymax= self.y.max().max()
+        except AttributeError as e:
+            ymin = self.y.min()
+            ymax = self.y.max()
         if pixel_size is None:
             width_in_pixels = tplot_opt_glob['window_size'][0]
             height_in_pixels = tplot_opt_glob['window_size'][1]
