@@ -3,7 +3,7 @@
 File:
     subtract_average.py
 
-Desrciption:
+Description:
     Subtracts the average (mean) from the data.
 
 Parameters:

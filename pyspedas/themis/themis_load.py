@@ -3,7 +3,7 @@
 File:
     themis_load.py
 
-Desrciption:
+Description:
     Data loading functions for the THEMIS mission.
 
 Example:

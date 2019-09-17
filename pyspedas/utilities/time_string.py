@@ -3,7 +3,7 @@
 File:
     time_string.py
 
-Desrciption:
+Description:
     Transforms datetimes from decimal to string.
 
 Parameters:

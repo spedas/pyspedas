@@ -3,7 +3,7 @@
 File:
     subtract_median.py
 
-Desrciption:
+Description:
     Subtracts the median from the data.
 
 Parameters:

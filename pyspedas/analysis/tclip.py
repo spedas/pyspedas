@@ -3,7 +3,7 @@
 File:
     tclip.py
 
-Desrciption:
+Description:
     Clip data and replace values with flag.
 
 Parameters:

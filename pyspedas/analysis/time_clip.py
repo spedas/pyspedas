@@ -3,7 +3,7 @@
 File:
     time_clip.py
 
-Desrciption:
+Description:
     Time clip of data.
 
 Parameters:

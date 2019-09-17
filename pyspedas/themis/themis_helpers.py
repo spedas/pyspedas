@@ -3,7 +3,7 @@
 File:
     themis_helpers.py
 
-Desrciption:
+Description:
     Helper functions for themis.
 """
 

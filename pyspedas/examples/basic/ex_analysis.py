@@ -3,7 +3,7 @@
 File:
     ex_analysis.py
 
-Desrciption:
+Description:
     Basic example using analysis functions.
     Downloads THEMIS data and plots it.
 

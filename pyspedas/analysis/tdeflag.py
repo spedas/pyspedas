@@ -3,7 +3,7 @@
 File:
     tdeflag.py
 
-Desrciption:
+Description:
     Removes NaNs and other flags.
 
 Parameters:

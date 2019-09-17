@@ -3,7 +3,7 @@
 File:
     tinterpol.py
 
-Desrciption:
+Description:
     Interpolates data.
 
 Parameters:

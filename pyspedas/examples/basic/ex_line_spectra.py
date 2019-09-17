@@ -3,7 +3,7 @@
 File:
     ex_line_spectra.py
 
-Desrciption:
+Description:
     Basic example of plotting both a line and a spectrogram with THEMIS data.
     Downloads THEMIS data and creates a plot.
 

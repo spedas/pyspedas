@@ -3,7 +3,7 @@
 File:
     ex_gmag.py
 
-Desrciption:
+Description:
     Basic example with THEMIS GMAG data.
     Downloads THEMIS data from EPO GMAG stations and plots it.
 
@@ -24,7 +24,7 @@ def ex_gmag():
     pyspedas.load_data('gmag', time_list, sites, '', '')
     # Get a list of loaded sites
     sites_loaded = pyspedas.tplot_names()
-    # Subtact mean values
+    # Subtract mean values
     pyspedas.subtract_average(sites_loaded, '')
     # Download AE index data
     pyspedas.load_data('gmag', time_list, ['idx'], '', '')

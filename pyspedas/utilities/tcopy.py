@@ -3,7 +3,7 @@
 File:
     tcopy.py
 
-Desrciption:
+Description:
     Creates a deep copy of a tplot_variable, with a new name.
 
 Parameters:

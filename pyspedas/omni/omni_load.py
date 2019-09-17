@@ -3,7 +3,7 @@
 File:
     omni_load.py
 
-Desrciption:
+Description:
     Data loading functions for OMNI.
 
 Example:

@@ -3,7 +3,7 @@
 File:
     ex_basic.py
 
-Desrciption:
+Description:
     Basic example to verify that the installation works correctly.
     Downloads THEMIS data and plots it.
 

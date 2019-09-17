@@ -3,7 +3,7 @@
 File:
     dates.py
 
-Desrciption:
+Description:
     Date functions.
 """
 

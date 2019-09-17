@@ -3,11 +3,12 @@
 File:
     version.py
 
-Desrciption:
+Description:
     Pyspedas version number.
 
 Returns:
     The version number for the current installation.
+    Also prints the location of the preferences file. 
 """
 
 

@@ -3,7 +3,7 @@
 File:
     load_data.py
 
-Desrciption:
+Description:
     Main function for loading data.
 
 Example:

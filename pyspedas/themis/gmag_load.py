@@ -3,7 +3,7 @@
 File:
     gmag_load.py
 
-Desrciption:
+Description:
     Data loading functions for the THEMIS GMAG stations.
 
 Example:

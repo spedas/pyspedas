@@ -3,7 +3,7 @@
 File:
     ex_spectra.py
 
-Desrciption:
+Description:
     Basic example of plotting a spectrogram with THEMIS data.
     Downloads THEMIS data and plots a spectrogram.
 

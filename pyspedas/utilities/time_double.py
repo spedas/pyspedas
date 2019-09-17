@@ -3,7 +3,7 @@
 File:
     time_double.py
 
-Desrciption:
+Description:
     Transforms datetimes from string to decimal.
 
 Parameters:

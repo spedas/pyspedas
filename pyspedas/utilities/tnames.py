@@ -3,7 +3,7 @@
 File:
     tnames.py
 
-Desrciption:
+Description:
     Finds all pytplot names that follow a pattern that may contain a wildcard.
 
 Returns:

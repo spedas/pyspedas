@@ -3,7 +3,7 @@
 File:
     orbit_time.py
 
-Desrciption:
+Description:
     MAVEN orbit file handling routines.
 """
 

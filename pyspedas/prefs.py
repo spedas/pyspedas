@@ -3,7 +3,7 @@
 File:
     prefs.py
 
-Desrciption:
+Description:
     Loads preferences.
 """
 

@@ -3,7 +3,7 @@
 File:
     ex_omni.py
 
-Desrciption:
+Description:
     Basic example of plotting OMNI data.
 
 """

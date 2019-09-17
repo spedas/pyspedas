@@ -3,7 +3,7 @@
 File:
     ex_create.py
 
-Desrciption:
+Description:
     Creates a new pytplot object and applies analysis functions.
 
 """

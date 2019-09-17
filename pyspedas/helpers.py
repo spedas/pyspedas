@@ -3,7 +3,7 @@
 File:
     helpers.py
 
-Desrciption:
+Description:
     Helper functions for pyspedas.
 """
 
