@@ -17,8 +17,8 @@ def ex_basic():
     # Delete any existing pytplot variables
     pytplot.del_data()
     # Download THEMIS state data for 2015-12-31
-    pyspedas.load_data('themis', ['2015-12-31 00:00:00',
-                       '2016-01-01 12:00:00'], ['tha'], 'state', 'l1')
+    time_range = ['2015-12-31 00:00:00', '2016-01-01 12:00:00']
+    pyspedas.load_data('themis', time_range, ['tha'], 'state', 'l1')
     # Get data into python variables
     alldata = pytplot.get_data("tha_pos")
     time = alldata[0]

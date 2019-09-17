@@ -31,7 +31,7 @@ def ex_gmag():
     # Plot
     sites_loaded = pyspedas.tplot_names()
     pytplot.tplot_options('title', 'EPO GMAG 2015-12-31')
-    pytplot.tplot(sites_loaded)
+    pytplot.tplot(sites_loaded, bokeh=True)
 
 # Run the example code
 # ex_gmag()

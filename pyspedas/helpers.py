@@ -37,7 +37,6 @@ def download_files(url, locafile):
         os.makedirs(dirPath)
 
     # Download file
-    print("ok")
     try:
         if not os.path.exists(locafile):
             httpreq = urllib.request.urlretrieve(url, locafile)
