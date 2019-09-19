@@ -18,7 +18,7 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
 
         telescopes = tnames(prefix + datatype + '_' + species + '_*' + data_units + '_t?' + suffix)
 
-        for scope in range(0, 5):
+        for scope in range(0, 6):
             this_scope = telescopes[scope]
             flux_times, flux_data, energies = get_data(this_scope)
 
