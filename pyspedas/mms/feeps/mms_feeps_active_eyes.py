@@ -55,8 +55,13 @@ def mms_feeps_active_eyes(trange, probe, data_rate, species, level):
     else:
         sensors = {'top': [6, 7, 8], 'bottom': [6, 7, 8]}
 
+    if isinstance(trange[0], str): 
+        start_time = time_double(trange[0])
+    else:
+        start_time = trange[0]
+
     # srvy mode, after 16 August 2017
-    if time_double(trange[0]) >= time_double('2017-08-16') and data_rate.lower() == 'srvy':
+    if start_time >= time_double('2017-08-16') and data_rate.lower() == 'srvy':
         active_table = {'1-electron': {'top': [3, 5, 9, 10, 12], 'bottom': [2, 4, 5, 9, 10]}}
         active_table = {'1-ion': {'top': [6, 7, 8], 'bottom': [6, 7, 8]}}
         active_table = {'2-electron': {'top': [1, 2, 3, 5, 10, 11], 'bottom': [1, 4, 5, 9, 11]}}
