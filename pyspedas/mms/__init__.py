@@ -473,7 +473,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     return tvars
 
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof',
-        varformat=None, get_support_data=False, prefix='', suffix='', time_clip=False, no_update=False,
+        varformat=None, get_support_data=True, prefix='', suffix='', time_clip=False, no_update=False,
         available=False, notplot=False):
     """
     This function loads EIS data into tplot variables
