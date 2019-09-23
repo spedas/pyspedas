@@ -66,7 +66,7 @@ def themis_filename(dates, probes, instruments, level):
     if 'data_dir' in prefs:
         data_dir = prefs['data_dir'] + 'themis'
         if ('data_dir_unix' in prefs) and (os.name != 'nt'):
-            data_dir = prefs['data_dir_unix'] + 'themis'
+            data_dir = os.path.expanduser(prefs['data_dir_unix'] + 'themis')
     else:
         raise NameError('data_dir is not found in spd_prefs_txt.py')
 
