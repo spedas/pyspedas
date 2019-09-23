@@ -2,6 +2,19 @@
 ## Magnetospheric Multiscale (MMS) Mission
 The routines in this folder can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
+### Instruments
+- Fluxgate Magnetometer (FGM)
+- Search-coil Magnetometer (SCM)
+- Electric field Double Probe (EDP)
+- Electron Drift Instrument (EDI)
+- Fast Plasma Investigation (FPI)
+- Hot Plasma Composition Analyzer (HPCA)
+- Energetic Ion Spectrometer (EIS)
+- Fly's Eye Energetic Particle Sensor (FEEPS)
+- Active Spacecraft Potential Control (ASPOC)
+- MMS Ephemeris and Coordinates (MEC)
+- Digital Signal Processor (DSP)
+
 ### What's included:
 - Access to team-only data (QL, L1, L2pre, L3pre), as well as all L2 data
 - Access to support data via the `get_support_data` keyword
@@ -20,7 +33,7 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - HPCA omni-directional spectrograms can be calculated using the routines `mms_hpca_calc_anodes` and `mms_hpca_spin_sum`
 - FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the `center_measurement` keyword
 - Limit the CDF variables loaded with the `varformat` keyword
-- Data can be returned in numpy arrays instead of tplot variables using the `notplot` keyword
+- CDF data can be returned in numpy arrays instead of tplot variables using the `notplot` keyword
 - Suffixes can be appended to the variable names using the `suffix` keyword
 - Keywords for specifying instrument details (`level`, `data_rate`, `datatype`) accept strings as well as arrays of strings
 - The `probe` keyword accepts strings, arrays of strings, ints and arrays of ints
@@ -28,19 +41,6 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - The load routines correctly handle access to all burst-mode data, even when small time ranges are requested
 - Crib sheets can be found in the `examples` folder
 - Cross platform: tested on Windows, macOS and Linux
-
-### Instruments
-- Fluxgate Magnetometer (FGM)
-- Search-coil Magnetometer (SCM)
-- Electric field Double Probe (EDP)
-- Electron Drift Instrument (EDI)
-- Fast Plasma Investigation (FPI)
-- Hot Plasma Composition Analyzer (HPCA)
-- Energetic Ion Spectrometer (EIS)
-- Fly's Eye Energetic Particle Sensor (FEEPS)
-- Active Spacecraft Potential Control (ASPOC)
-- MMS Ephemeris and Coordinates (MEC)
-- Digital Signal Processor (DSP)
 
 ### Examples
 Get started by importing tplot; this is required to plot the data:
