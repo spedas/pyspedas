@@ -4,7 +4,7 @@ This crib sheet shows how to load and plot EIS data
 
 '''
 
-from pyspedas import mms_load_hpca, tnames
+from pyspedas import mms_load_eis, tnames
 from pytplot import tplot
 
 # load ExTOF data
