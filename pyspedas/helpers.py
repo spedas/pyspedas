@@ -17,7 +17,7 @@ def download_files(url, locafile):
     """Get a file from internet and save it localy."""
 
     warnings.simplefilter("ignore", ResourceWarning)
-    
+
     exists = False
     httpreq = None
     err = None

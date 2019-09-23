@@ -62,12 +62,13 @@ def themis_filename(dates, probes, instruments, level):
     if 'themis_remote' in prefs:
         remote_path = prefs['themis_remote']
     else:
-        raise NameError('remote_path is not found in spd_prefs.txt')
+        raise NameError('remote_path is not found in spd_prefs_txt.py')
     if 'data_dir' in prefs:
         data_dir = prefs['data_dir'] + 'themis'
-
+        if ('data_dir_unix' in prefs) and (os.name != 'nt'):
+            data_dir = prefs['data_dir_unix'] + 'themis'
     else:
-        raise NameError('data_dir is not found in spd_prefs.txt')
+        raise NameError('data_dir is not found in spd_prefs_txt.py')
 
     if level != 'l1':
         level = 'l2'
