@@ -12,7 +12,7 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - Energetic Ion Spectrometer (EIS)
 - Fly's Eye Energetic Particle Sensor (FEEPS)
 - Active Spacecraft Potential Control (ASPOC)
-- MMS Ephemeris and Coordinates (MEC)
+- Ephemeris and Coordinates (MEC)
 - Digital Signal Processor (DSP)
 
 ### What's included:
