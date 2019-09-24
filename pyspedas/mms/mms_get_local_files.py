@@ -1,5 +1,3 @@
-
-
 import os
 import re
 from .mms_config import CONFIG
@@ -11,14 +9,37 @@ from dateutil.parser import parse
 from datetime import timedelta
 
 def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
-# directory and file name search patterns
-#   -assume directories are of the form:
-#      (srvy, SITL): spacecraft/instrument/rate/level[/datatype]/year/month/
-#      (brst): spacecraft/instrument/rate/level[/datatype]/year/month/day/
-#   -assume file names are of the form:
-#      spacecraft_instrument_rate_level[_datatype]_YYYYMMDD[hhmmss]_version.cdf
+
+    """
+    Search for local MMS files in case a list cannot be retrieved from the
+    remote server.  
+    
+    Parameters:
+        probe: str
+            probe #, e.g., '4' for MMS4
+        instrument: str
+            instrument name, e.g., 'fpi' or 'fgm'
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+        level: str
+            data level, e.g., 'l2'
+        datatype: str
+            'electron' or 'ion'
+        trange: list of str
+            two-element array containing the start and end date/times
+
+    Returns:
+        List of file paths.
+    """
 
     files_out = []
+
+    # directory and file name search patterns
+    #   -assume directories are of the form:
+    #      (srvy, SITL): spacecraft/instrument/rate/level[/datatype]/year/month/
+    #      (brst): spacecraft/instrument/rate/level[/datatype]/year/month/day/
+    #   -assume file names are of the form:
+    #      spacecraft_instrument_rate_level[_datatype]_YYYYMMDD[hhmmss]_version.cdf
 
     file_name = 'mms'+probe+'_'+instrument+'_'+data_rate+'_'+level+'(_)?.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
 
