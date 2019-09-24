@@ -4,7 +4,14 @@ from dateutil.parser import parse
 from bisect import bisect_left
 
 def mms_files_in_interval(in_files, trange):
+    '''
+    This function filters the file list returned by the SDC to the requested time range. This filter is purposefully 
+    liberal, it regularly grabs an extra file due to special cases
 
+    Returns:
+        List of hash tables containing file names, sizes and their time tags
+
+    '''
     file_name = 'mms.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
 
     file_times = []
