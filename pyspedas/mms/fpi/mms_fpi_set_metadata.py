@@ -1,4 +1,5 @@
-from pytplot import options, tplot_names
+from pytplot import options
+from pyspedas import tnames
 
 def mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=''):
     """
@@ -27,7 +28,7 @@ def mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=''):
 
     probe = [str(p) for p in probe]
 
-    tvars = set(tplot_names())
+    tvars = set(tnames())
     
     for this_probe in probe:
         for this_dr in data_rate:
