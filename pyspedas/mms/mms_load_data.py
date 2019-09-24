@@ -4,6 +4,7 @@
 import os
 import requests
 import logging
+import warnings
 import numpy as np
 from ..spdtplot.cdf_to_tplot import cdf_to_tplot
 from ..analysis.time_clip import time_clip as tclip
@@ -114,7 +115,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                                 logging.info('Downloading ' + file['file_name'] + ' to ' + out_dir)
 
-                                fsrc = sdc_session.get(download_url, stream=True, verify=True)
+                                with warnings.catch_warnings():
+                                    warnings.simplefilter("ignore", category=RuntimeWarning)
+                                    fsrc = sdc_session.get(download_url, stream=True, verify=True)
                                 ftmp = NamedTemporaryFile(delete=False)
 
                                 with open(ftmp.name, 'wb') as f:
