@@ -1,5 +1,6 @@
 import numpy as np 
-from pytplot import get_data, store_data, tplot_names
+from pytplot import get_data, store_data
+from pyspedas import tnames
 
 def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     """
@@ -26,7 +27,7 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(level, list): level = [level]
 
-    tplot_vars = set(tplot_names())
+    tplot_vars = set(tnames())
 
     for this_probe in probe:
         for this_dr in data_rate:

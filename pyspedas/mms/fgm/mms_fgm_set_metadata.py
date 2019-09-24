@@ -1,4 +1,5 @@
-from pytplot import options, tplot_names
+from pytplot import options
+from pyspedas import tnames
 
 def mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=''):
     """
@@ -24,7 +25,7 @@ def mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=''):
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(level, list): level = [level]
 
-    tvars = set(tplot_names())
+    tvars = set(tnames())
 
     for this_probe in probe:
         for this_dr in data_rate:
