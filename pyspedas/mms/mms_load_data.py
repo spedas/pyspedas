@@ -77,7 +77,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                     if no_download == False:
                         # query list of available files
                         try:
-                            http_json = sdc_session.get(url, verify=True).json()
+                            with warnings.catch_warnings():
+                                warnings.simplefilter("ignore", category=ResourceWarning)
+                                http_json = sdc_session.get(url, verify=True).json()
 
                             if CONFIG['debug_mode']: logging.info('Filtering the results down to your trange')
 
@@ -116,7 +118,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 logging.info('Downloading ' + file['file_name'] + ' to ' + out_dir)
 
                                 with warnings.catch_warnings():
-                                    warnings.simplefilter("ignore", category=RuntimeWarning)
+                                    warnings.simplefilter("ignore", category=ResourceWarning)
                                     fsrc = sdc_session.get(download_url, stream=True, verify=True)
                                 ftmp = NamedTemporaryFile(delete=False)
 
