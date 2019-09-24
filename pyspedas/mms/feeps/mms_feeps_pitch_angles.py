@@ -261,5 +261,5 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
 
     outvar = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pa'+suffix
-    store_data(outvar, data={'x': btimes, 'y': pas})
+    store_data(outvar, data={'x': btimes, 'y': new_pas})
     return (outvar, idx_maps)
