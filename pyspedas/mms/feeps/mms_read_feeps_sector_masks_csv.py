@@ -32,7 +32,6 @@ def mms_read_feeps_sector_masks_csv(trange):
 
     for mms_sc in [1, 2, 3, 4]:
         csv_file = os.sep.join([os.path.dirname(os.path.abspath(__file__)), 'sun', 'MMS'+str(mms_sc)+'_FEEPS_ContaminatedSectors_'+time_string(nearest_date, fmt='%Y%m%d')+'.csv'])
-        print('file: ' + csv_file)
 
         csv_file = open(csv_file, 'r')
         csv_reader = csv.reader(csv_file)
