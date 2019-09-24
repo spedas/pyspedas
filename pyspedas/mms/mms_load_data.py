@@ -160,11 +160,8 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             logging.warning('No data loaded.')
             return
 
-        logging.info('Loaded variables:')
-        for new_var in new_variables:
-            print(new_var)
-
-            if time_clip:
+        if time_clip:
+            for new_var in new_variables:
                 tclip(new_var, trange[0], trange[1], suffix='')
 
         return new_variables

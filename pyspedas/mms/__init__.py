@@ -21,6 +21,16 @@ from .feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
 import re
 from pytplot import del_data
 
+# the following decorator prints the loaded tplot variables after each load routine call
+def print_vars(func):
+    def wrapper(*args, **kwargs):
+        variables = func(*args, **kwargs)
+        print('Loaded variables:')
+        for var in variables:
+            print(var)
+    return wrapper
+
+@print_vars
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy',
     level='l2', instrument='fgm', datatype='', varformat=None, prefix='', suffix='',
     keep_flagged=False, get_support_data=True, time_clip=False, no_update=False,
@@ -109,6 +119,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     return tvars
 
+@print_vars
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='moments', get_support_data=None, time_clip=False, no_update=False,
     varformat=None, prefix='', suffix='', center_measurement=False, available=False, notplot=False):
@@ -183,7 +194,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     mms_hpca_set_metadata(probe=probe, suffix=suffix)
     return tvars
 
-
+@print_vars
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',
     level='l2', datatype=['des-moms', 'dis-moms'], varformat=None, prefix='', suffix='',
     get_support_data=False, time_clip=False, no_update=False, center_measurement=False,
@@ -259,6 +270,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=suffix)
     return tvars
 
+@print_vars
 def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='', varformat=None, prefix='', suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False):
@@ -320,6 +332,7 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
+@print_vars
 def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='ephts04d', varformat=None, prefix='', suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False):
@@ -380,6 +393,7 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             time_clip=time_clip, no_update=no_update, available=available, notplot=notplot)
     return tvars
 
+@print_vars
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='electron', varformat=None, get_support_data=True, prefix='', suffix='', time_clip=False,
     no_update=False, available=False, notplot=False, no_flatfield_corrections=False, data_units=['count_rate', 'intensity']):
@@ -472,6 +486,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
     return tvars
 
+@print_vars
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof',
         varformat=None, get_support_data=True, prefix='', suffix='', time_clip=False, no_update=False,
         available=False, notplot=False):
@@ -545,6 +560,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                 omni_spectra = mms_eis_omni(probe_id, data_rate=data_rate_id, datatype=datatype_id)
     return tvars
 
+@print_vars
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield',
         varformat=None, get_support_data=False, prefix='', suffix='', time_clip=False, no_update=False,
         available=False, notplot=False):
@@ -603,6 +619,7 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix=prefix, suffix=suffix, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
+@print_vars
 def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce',
         varformat=None, get_support_data=False, prefix='', suffix='', time_clip=False, no_update=False,
         available=False, notplot=False):
@@ -662,6 +679,7 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
+@print_vars
 def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='bpsd', varformat=None, prefix='', suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False):
@@ -720,6 +738,7 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             datatype=datatype, varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
+@print_vars
 def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='', varformat=None, get_support_data=False, prefix='', suffix='', time_clip=False, no_update=False,
     available=False, notplot=False):
@@ -779,6 +798,7 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
+@print_vars
 def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst', 
     level='l3', datatype='8khz', get_support_data=False, time_clip=False, no_update=False, 
     available=False, varformat=None, notplot=False):
