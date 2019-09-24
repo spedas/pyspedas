@@ -28,6 +28,7 @@ def print_vars(func):
         print('Loaded variables:')
         for var in variables:
             print(var)
+        return variables
     return wrapper
 
 @print_vars
