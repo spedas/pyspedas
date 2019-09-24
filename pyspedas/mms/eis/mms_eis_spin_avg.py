@@ -1,4 +1,3 @@
-
 import warnings
 import numpy as np
 from pytplot import get_data, store_data, options
@@ -18,6 +17,8 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
 
         telescopes = tnames(prefix + datatype + '_' + species + '_*' + data_units + '_t?' + suffix)
 
+        out_vars = []
+
         for scope in range(0, 6):
             this_scope = telescopes[scope]
             flux_times, flux_data, energies = get_data(this_scope)
@@ -32,8 +33,13 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
                     spin_avg_flux[spin_idx-1, :] = np.nanmean(flux_data[current_start:spin_starts[spin_idx]+1, :], axis=0)
                 current_start = spin_starts[spin_idx] + 1
 
-            store_data(this_scope+'_spin'+suffix, data={'x': flux_times[spin_starts], 'y': spin_avg_flux, 'v': energies})
-            options(this_scope+'_spin'+suffix, 'spec', True)
-            options(this_scope+'_spin'+suffix, 'ylog', True)
-            options(this_scope+'_spin'+suffix, 'zlog', True)
-            options(this_scope+'_spin'+suffix, 'Colormap', 'jet')
+            store_data(this_scope + '_spin' + suffix, data={'x': flux_times[spin_starts], 'y': spin_avg_flux, 'v': energies})
+            options(this_scope + '_spin' + suffix, 'spec', True)
+            options(this_scope + '_spin' + suffix, 'ylog', True)
+            options(this_scope + '_spin' + suffix, 'zlog', True)
+            options(this_scope + '_spin' + suffix, 'Colormap', 'jet')
+            out_vars.append(this_scope + '_spin' + suffix)
+        return out_vars
+    else:
+        print('Error, problem finding EIS spin variable to calculate spin-averages')
+        return None
