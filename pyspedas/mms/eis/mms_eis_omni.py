@@ -3,7 +3,25 @@ from pytplot import get_data, store_data, options
 from ...utilities.tnames import tnames
 
 def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_units='flux', data_rate='srvy'):
+    """
+    This function will calculate the omni-directional EIS spectrograms, and is automatically called from mms_load_eis
+    
+    Parameters:
+        probe: str
+            probe #, e.g., '4' for MMS4
+        data_units: str
+            'flux' 
+        datatype: str
+            'extof' or 'phxtof'
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+        suffix: str
+            suffix of the loaded data
 
+    Returns:
+        Name of tplot variable created.
+    """
+    
     probe = str(probe)
     species_str = datatype + '_' + species
     if data_rate == 'brst':

@@ -4,7 +4,24 @@ from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
 def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='extof', data_rate='srvy', suffix=''):
+    """
+    This function will spin-average the EIS spectrograms, and is automatically called from mms_load_eis
+    
+    Parameters:
+        probe: str
+            probe #, e.g., '4' for MMS4
+        data_units: str
+            'flux' 
+        datatype: str
+            'extof' or 'phxtof'
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+        suffix: str
+            suffix of the loaded data
 
+    Returns:
+        List of tplot variables created.
+    """
     if data_rate == 'brst':
         prefix = 'mms' + probe + '_epd_eis_brst_'
     else:
