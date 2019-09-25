@@ -57,4 +57,4 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
     options(var_name + '_spin' + suffix, 'zlog', True)
     options(var_name + '_spin' + suffix, 'Colormap', 'jet')
 
-    return var_name
+    return var_name + '_spin' + suffix
