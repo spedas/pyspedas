@@ -25,6 +25,12 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
         Name of tplot variable created.
     """
 
+    units_label = ''
+    if data_units == 'intensity':
+        units_label = '1/(cm^2-sr-s-keV)'
+    elif data_units == 'counts':
+        units_label = '[counts/s]'
+
     if datatype == 'electron':
         lower_en = 71
     else:
@@ -56,5 +62,7 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
     options(var_name + '_spin' + suffix, 'ylog', True)
     options(var_name + '_spin' + suffix, 'zlog', True)
     options(var_name + '_spin' + suffix, 'Colormap', 'jet')
+    options(var_name + '_spin' + suffix, 'ztitle', units_label)
+    options(var_name + '_spin' + suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' (keV)')
 
     return var_name + '_spin' + suffix

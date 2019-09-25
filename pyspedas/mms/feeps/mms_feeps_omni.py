@@ -6,6 +6,12 @@ from pytplot import get_data, store_data, options
 def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity', data_rate='srvy', level='l2', suffix=''):
 
 
+    units_label = ''
+    if data_units == 'intensity':
+        units_label = '1/(cm^2-sr-s-keV)'
+    elif data_units == 'counts':
+        units_label = '[counts/s]'
+
     prefix = 'mms'+probe+'_epd_feeps_'
     if datatype == 'electron':
         energies = np.array([33.2, 51.90, 70.6, 89.4, 107.1, 125.2, 146.5, 171.3,
@@ -112,6 +118,8 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
         options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'ylog', True)
         options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'zlog', True)
         options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'Colormap', 'jet')
+        options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'ztitle', units_label)
+        options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' (keV)')
 
 
 

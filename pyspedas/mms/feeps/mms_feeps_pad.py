@@ -18,6 +18,12 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
         print('Please select a starting energy of 32 keV or above')
         return
 
+    units_label = ''
+    if data_units == 'intensity':
+        units_label = '1/(cm^2-sr-s-keV)'
+    elif data_units == 'counts':
+        units_label = '[counts/s]'
+        
     prefix = 'mms' + probe
     n_pabins = 180/bin_size
     pa_bins = [180.*pa_bin/n_pabins for pa_bin in range(0, int(n_pabins)+1)]
@@ -108,6 +114,8 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     options(new_name, 'zlog', True)
     options(new_name, 'spec', True)
     options(new_name, 'Colormap', 'jet')
+    options(new_name, 'ztitle', units_label)
+    options(new_name, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' PA (deg)')
 
     # create the spin-averaged PAD
     spin_avg_var = mms_feeps_pad_spinavg(probe=probe, data_units=data_units, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix, energy=energy)
