@@ -26,10 +26,11 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - Local data paths match those at the SDC, as well as those used by IDL SPEDAS
 - Data can be clipped to the requested time range after loading via the `time_clip` keyword
 - FGM data are automatically deflagged 
-- EIS omni-directional spectrograms are calculated from the individual telescope data by default
-- FEEPS omni-directional spectrograms are calculated from the individual telescope data by default
+- FEEPS and EIS omni-directional spectrograms are calculated from the individual telescope data by default
+- FEEPS and EIS spin-averaged spectrograms are calculated by default
 - Sun contamination is removed from FEEPS omni-directional spectrograms
 - FEEPS integral channels are removed from the telescope spectrogram data and included in their own tplot variables
+- FEEPS pitch angle distributions can be calculated using the routine `mms_feeps_pad`
 - HPCA omni-directional spectrograms can be calculated using the routines `mms_hpca_calc_anodes` and `mms_hpca_spin_sum`
 - FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the `center_measurement` keyword
 - Limit the CDF variables loaded with the `varformat` keyword
