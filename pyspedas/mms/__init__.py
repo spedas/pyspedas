@@ -1019,3 +1019,40 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
     """
     tvars = mms_load_data(trange=trange, notplot=notplot, varformat=varformat, probe=probe, data_rate=data_rate, level=level, instrument='fsm', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
+
+'''
+    the following wrappers allow users to import the load routines using 
+    the syntax: 
+    
+            >>> from pyspedas.mms import fgm
+            >>> fgm_data = fgm(...)
+
+        and/or
+
+            >>> import pyspedas
+            >>> fgm_data = pyspedas.mms.fgm(...)
+'''
+
+def fgm(*args, **kwargs):
+    return mms_load_fgm(*args, **kwargs)
+def scm(*args, **kwargs):
+    return mms_load_scm(*args, **kwargs)
+def edp(*args, **kwargs):
+    return mms_load_edp(*args, **kwargs)
+def edi(*args, **kwargs):
+    return mms_load_edi(*args, **kwargs)
+def fpi(*args, **kwargs):
+    return mms_load_fpi(*args, **kwargs)
+def hpca(*args, **kwargs):
+    return mms_load_hpca(*args, **kwargs)
+def eis(*args, **kwargs):
+    return mms_load_eis(*args, **kwargs)
+def feeps(*args, **kwargs):
+    return mms_load_feeps(*args, **kwargs)
+def aspoc(*args, **kwargs):
+    return mms_load_aspoc(*args, **kwargs)
+def mec(*args, **kwargs):
+    return mms_load_mec(*args, **kwargs)
+def dsp(*args, **kwargs):
+    return mms_load_dsp(*args, **kwargs)
+
