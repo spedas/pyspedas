@@ -62,14 +62,14 @@ def mms_feeps_active_eyes(trange, probe, data_rate, species, level):
 
     # srvy mode, after 16 August 2017
     if start_time >= time_double('2017-08-16') and data_rate.lower() == 'srvy':
-        active_table = {'1-electron': {'top': [3, 5, 9, 10, 12], 'bottom': [2, 4, 5, 9, 10]}}
-        active_table = {'1-ion': {'top': [6, 7, 8], 'bottom': [6, 7, 8]}}
-        active_table = {'2-electron': {'top': [1, 2, 3, 5, 10, 11], 'bottom': [1, 4, 5, 9, 11]}}
-        active_table = {'2-ion': {'top': [6, 8], 'bottom': [6, 7, 8]}}
-        active_table = {'3-electron': {'top': [3, 5, 9, 10, 12], 'bottom': [1, 2, 3, 9, 10]}}
-        active_table = {'3-ion': {'top': [6, 7, 8], 'bottom': [6, 7, 8]}}
-        active_table = {'4-electron': {'top': [3, 4, 5, 9, 10, 11], 'bottom': [3, 5, 9, 10, 12]}}
-        active_table = {'4-ion': {'top': [6, 8], 'bottom': [6, 7, 8]}}
+        active_table = {'1-electron': {'top': [3, 5, 9, 10, 12], 'bottom': [2, 4, 5, 9, 10]}, 
+        '1-ion': {'top': [6, 7, 8], 'bottom': [6, 7, 8]},
+        '2-electron': {'top': [1, 2, 3, 5, 10, 11], 'bottom': [1, 4, 5, 9, 11]},
+        '2-ion': {'top': [6, 8], 'bottom': [6, 7, 8]},
+        '3-electron': {'top': [3, 5, 9, 10, 12], 'bottom': [1, 2, 3, 9, 10]},
+        '3-ion': {'top': [6, 7, 8], 'bottom': [6, 7, 8]},
+        '4-electron': {'top': [3, 4, 5, 9, 10, 11], 'bottom': [3, 5, 9, 10, 12]},
+        '4-ion': {'top': [6, 8], 'bottom': [6, 7, 8]}}
         sensors = active_table[probe.lower()+'-'+species.lower()]
         if level.lower() == 'sitl':
             return {'top': list(set(sensors['top']) & set([5, 11, 12])), 'bottom': []}
