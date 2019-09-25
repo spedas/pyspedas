@@ -81,7 +81,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     # for this datatype/data_rate
     dpa[dpa == 0] = 'nan'
 
-    pa_flux = np.empty([len(pa_times), int(n_pabins)])
+    pa_flux = np.zeros([len(pa_times), int(n_pabins)])
     delta_pa = (pa_bins[1]-pa_bins[0])/2.0
 
     # Now loop through PA bins and time, find the telescopes where there is data in those bins and average it up!
@@ -89,7 +89,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
         for ipa in range(0, int(n_pabins)):
             if not np.isnan(dpa[pa_idx, :][0]):
                 ind = np.where((dpa[pa_idx, :] + dangresp >= pa_label[ipa]-delta_pa) & (dpa[pa_idx, :]-dangresp < pa_label[ipa]+delta_pa))
-                if ind[0].any():
+                if ind[0].size != 0:
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore", category=RuntimeWarning)
                         if len(ind[0]) > 1:
