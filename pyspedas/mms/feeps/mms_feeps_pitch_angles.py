@@ -23,7 +23,7 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
 
     # need the B-field data
-    mms_load_fgm(trange=trange, probe=probe, data_rate=data_rate)
+    mms_load_fgm(trange=trange, probe=probe, data_rate=data_rate, varformat='*_b_bcs_*')
 
     btimes, Bbcs = get_data('mms'+probe+'_fgm_b_bcs_'+data_rate+'_l2')
 
@@ -262,4 +262,11 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
     outvar = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pa'+suffix
     store_data(outvar, data={'x': btimes, 'y': new_pas})
+
+    # interpolate to the PA time stamps
+    outdata = get_data(outvar, xarray=True)
+    outdata_interpolated = outdata.interp({'time': times})
+
+    store_data(outvar, data={'x': times, 'y': outdata_interpolated.values})
+
     return (outvar, idx_maps)
