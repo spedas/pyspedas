@@ -85,6 +85,17 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
 
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
+
+        keep_flagged: bool
+            If True, don't remove flagged data (flagged data are set to NaNs by
+            default, this keyword turns this off)
             
     Returns:
         List of tplot variables created.
@@ -178,6 +189,13 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
 
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
             
     Returns:
         List of tplot variables created.
@@ -256,7 +274,13 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
 
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
 
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
             
     Returns:
         List of tplot variables created.
@@ -325,7 +349,14 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
 
-            
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
+
     Returns:
         List of tplot variables created.
 
@@ -386,6 +417,13 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
 
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
             
     Returns:
         List of tplot variables created.
@@ -448,6 +486,14 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
+
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
 
     Returns:
         List of tplot variables created.
@@ -539,7 +585,15 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
-            
+
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
+
     Returns:
         List of tplot variables created.
 
@@ -685,7 +739,15 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
-            
+
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
+
     Returns:
         List of tplot variables created.
 
@@ -744,7 +806,15 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
-            
+
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
+
     Returns:
         List of tplot variables created.
 
@@ -804,7 +874,15 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
-            
+
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
+
     Returns:
         List of tplot variables created.
 
@@ -864,6 +942,14 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
 
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
+
     Returns:
         List of tplot variables created.
 
@@ -918,7 +1004,15 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
-            
+
+        available: bool
+            If True, simply return the available data files (without downloading)
+            for the requested paramters
+
+        no_update: bool
+            Set this flag to preserve the original data. if not set and newer 
+            data is found the existing data will be overwritten
+
     Returns:
         List of tplot variables created.
 
