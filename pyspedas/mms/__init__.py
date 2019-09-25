@@ -18,6 +18,8 @@ from .feeps.mms_feeps_remove_sun import mms_feeps_remove_sun
 from .feeps.mms_feeps_omni import mms_feeps_omni
 from .feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
 
+from pyspedas import tnames
+
 import re
 from pytplot import del_data
 
@@ -544,6 +546,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     """
 
     from .eis.mms_eis_omni import mms_eis_omni
+    from .eis.mms_eis_spin_avg import mms_eis_spin_avg
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis',
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix='', suffix='',
             time_clip=time_clip, no_update=no_update, available=available)
@@ -558,8 +561,79 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     for probe_id in probe:
         for datatype_id in datatype:
             for data_rate_id in data_rate:
-                omni_spectra = mms_eis_omni(probe_id, data_rate=data_rate_id, datatype=datatype_id)
-    return tvars
+                if datatype_id == 'electronenergy':
+                    e_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='electron', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    # create non-spin averaged omni-directional spectra
+                    e_omni_spectra = mms_eis_omni(probe_id, species='electron', data_rate=data_rate_id, datatype=datatype_id)
+                    # create spin averaged omni-directional spectra
+                    e_omni_spectra_spin = mms_eis_omni(probe_id, species='electron', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
+                    # add the vars to the output
+                    if e_spin_avg_var is not None:
+                        for tvar in e_spin_avg_var:
+                            tvars.append(tvar)
+                    if e_omni_spectra is not None:
+                        tvars.append(e_omni_spectra)
+                    if e_omni_spectra_spin is not None:
+                        tvars.append(e_omni_spectra_spin)
+                elif datatype_id == 'extof':
+                    p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    a_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='alpha', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    # create non-spin averaged omni-directional spectra
+                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id)
+                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id)
+                    a_omni_spectra = mms_eis_omni(probe_id, species='alpha', data_rate=data_rate_id, datatype=datatype_id)
+                    # create spin averaged omni-directional spectra
+                    p_omni_spectra_spin = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
+                    o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
+                    a_omni_spectra_spin = mms_eis_omni(probe_id, species='alpha', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
+                    # add the vars to the output
+                    if p_spin_avg_var is not None:
+                        for tvar in p_spin_avg_var:
+                            tvars.append(tvar)
+                    if o_spin_avg_var is not None:
+                        for tvar in o_spin_avg_var:
+                            tvars.append(tvar)
+                    if a_spin_avg_var is not None:
+                        for tvar in a_spin_avg_var:
+                            tvars.append(tvar)
+                    if p_omni_spectra is not None:
+                        tvars.append(p_omni_spectra)
+                    if o_omni_spectra is not None:
+                        tvars.append(o_omni_spectra)
+                    if a_omni_spectra is not None:
+                        tvars.append(a_omni_spectra)
+                    if p_omni_spectra_spin is not None:
+                        tvars.append(p_omni_spectra_spin)
+                    if o_omni_spectra_spin is not None:
+                        tvars.append(o_omni_spectra_spin)
+                    if a_omni_spectra_spin is not None:
+                        tvars.append(a_omni_spectra_spin)
+                elif datatype_id == 'phxtof':
+                    p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    # create non-spin averaged omni-directional spectra
+                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id)
+                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id)
+                    # create spin averaged omni-directional spectra
+                    p_omni_spectra_spin = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
+                    o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
+                    # add the vars to the output
+                    if p_spin_avg_var is not None:
+                        for tvar in p_spin_avg_var:
+                            tvars.append(tvar)
+                    if o_spin_avg_var is not None:
+                        for tvar in o_spin_avg_var:
+                            tvars.append(tvar)
+                    if p_omni_spectra is not None:
+                        tvars.append(p_omni_spectra)
+                    if o_omni_spectra is not None:
+                        tvars.append(o_omni_spectra)
+                    if p_omni_spectra_spin is not None:
+                        tvars.append(p_omni_spectra_spin)
+                    if o_omni_spectra_spin is not None:
+                        tvars.append(o_omni_spectra_spin)
+    return tnames(tvars)
 
 @print_vars
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield',
