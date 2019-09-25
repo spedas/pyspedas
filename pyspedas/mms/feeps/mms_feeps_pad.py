@@ -3,6 +3,7 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas.mms.feeps.mms_feeps_pitch_angles import mms_feeps_pitch_angles
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
+from pyspedas.mms.feeps.mms_feeps_pad_spinavg import mms_feeps_pad_spinavg
 
 def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suffix='', datatype='electron', data_units='intensity', data_rate='srvy', angles_from_bfield=False):
 
@@ -107,4 +108,8 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     options(new_name, 'zlog', True)
     options(new_name, 'spec', True)
     options(new_name, 'Colormap', 'jet')
-    return new_name
+
+    # create the spin-averaged PAD
+    spin_avg_var = mms_feeps_pad_spinavg(probe=probe, data_units=data_units, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix, energy=energy)
+    
+    return [new_name, spin_avg_var]

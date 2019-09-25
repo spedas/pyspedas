@@ -54,7 +54,7 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
 
     store_data(var_name + '_spin' + suffix, data={'x': times[spin_starts], 'y': spin_avg_flux, 'v': angles})
     options(var_name + '_spin' + suffix, 'spec', True)
-    options(var_name + '_spin' + suffix, 'ylog', True)
+    options(var_name + '_spin' + suffix, 'ylog', Flse)
     options(var_name + '_spin' + suffix, 'zlog', True)
     options(var_name + '_spin' + suffix, 'Colormap', 'jet')
 
