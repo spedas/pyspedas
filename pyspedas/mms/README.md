@@ -18,11 +18,12 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 ### What's included:
 - Access to team-only data (QL, L1, L2pre, L3pre), as well as all L2 data
 - Access to support data via the `get_support_data` keyword
-- Data can be loaded from disk without contacting the SDC via the `no_update` keyword, or by setting the `no_download` option to `True` in the configuration table found in mms_config.py
+- Data can be loaded from disk without contacting the SDC via the `no_update` keyword, or by setting the `no_download` option to `True` in the configuration table found in `mms_config.py`
+- Data files can be downloaded without loading into tplot variables by setting the `download_only` option in `mms_config.py`
 - List available data files (without downloading) with the `available` keyword
 - Data can be loaded from disk without internet connectivity 
 - Data files are stored in temporary directories until each download completes, to avoid partial downloads of files due to internet connectivity issues
-- Local data directory can be specified by the MMS_DATA_DIR environment variable, or by the 'local_data_dir' value in mms_config.py
+- Local data directory can be specified by the MMS_DATA_DIR environment variable, or by the `local_data_dir'` option in `mms_config.py`
 - Local data paths match those at the SDC, as well as those used by IDL SPEDAS
 - Data can be clipped to the requested time range after loading via the `time_clip` keyword
 - FGM data are automatically deflagged 
