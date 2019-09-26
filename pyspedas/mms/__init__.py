@@ -22,6 +22,7 @@ from pyspedas import tnames
 
 import re
 from pytplot import del_data
+from functools import wraps
 
 # the following decorator prints the loaded tplot variables after each load routine call
 def print_vars(func):
@@ -1035,81 +1036,46 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
             >>> fgm_data = pyspedas.mms.fgm(...)
 '''
 
+@wraps(mms_load_fgm)
 def fgm(*args, **kwargs):
-    '''
-
-    See mms_load_fgm for documentation.
-    
-    '''
     return mms_load_fgm(*args, **kwargs)
+
+@wraps(mms_load_scm)
 def scm(*args, **kwargs):
-    '''
-
-    See mms_load_scm for documentation.
-    
-    '''
     return mms_load_scm(*args, **kwargs)
+
+@wraps(mms_load_edp)
 def edp(*args, **kwargs):
-    '''
-
-    See mms_load_edp for documentation.
-    
-    '''
     return mms_load_edp(*args, **kwargs)
+
+@wraps(mms_load_edi)
 def edi(*args, **kwargs):
-    '''
-
-    See mms_load_edi for documentation.
-    
-    '''
     return mms_load_edi(*args, **kwargs)
+
+@wraps(mms_load_fpi)
 def fpi(*args, **kwargs):
-    '''
-
-    See mms_load_fpi for documentation.
-    
-    '''
     return mms_load_fpi(*args, **kwargs)
+
+@wraps(mms_load_hpca)
 def hpca(*args, **kwargs):
-    '''
-
-    See mms_load_hpca for documentation.
-    
-    '''
     return mms_load_hpca(*args, **kwargs)
+
+@wraps(mms_load_eis)
 def eis(*args, **kwargs):
-    '''
-
-    See mms_load_eis for documentation.
-    
-    '''
     return mms_load_eis(*args, **kwargs)
+
+@wraps(mms_load_feeps)
 def feeps(*args, **kwargs):
-    '''
-
-    See mms_load_feeps for documentation.
-    
-    '''
     return mms_load_feeps(*args, **kwargs)
+
+@wraps(mms_load_aspoc)
 def aspoc(*args, **kwargs):
-    '''
-
-    See mms_load_aspoc for documentation.
-    
-    '''
     return mms_load_aspoc(*args, **kwargs)
+
+@wraps(mms_load_mec)
 def mec(*args, **kwargs):
-    '''
-
-    See mms_load_mec for documentation.
-    
-    '''
     return mms_load_mec(*args, **kwargs)
+
+@wraps(mms_load_dsp)
 def dsp(*args, **kwargs):
-    '''
-
-    See mms_load_dsp for documentation.
-    
-    '''
     return mms_load_dsp(*args, **kwargs)
-
