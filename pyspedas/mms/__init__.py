@@ -31,6 +31,8 @@ def print_vars(func):
         for var in variables:
             print(var)
         return variables
+    wrapper.__name__ = func.__name__
+    wrapper.__doc__ = func.__doc__
     return wrapper
 
 @print_vars
@@ -1034,25 +1036,80 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
 '''
 
 def fgm(*args, **kwargs):
+    '''
+
+    See mms_load_fgm for documentation.
+    
+    '''
     return mms_load_fgm(*args, **kwargs)
 def scm(*args, **kwargs):
+    '''
+
+    See mms_load_scm for documentation.
+    
+    '''
     return mms_load_scm(*args, **kwargs)
 def edp(*args, **kwargs):
+    '''
+
+    See mms_load_edp for documentation.
+    
+    '''
     return mms_load_edp(*args, **kwargs)
 def edi(*args, **kwargs):
+    '''
+
+    See mms_load_edi for documentation.
+    
+    '''
     return mms_load_edi(*args, **kwargs)
 def fpi(*args, **kwargs):
+    '''
+
+    See mms_load_fpi for documentation.
+    
+    '''
     return mms_load_fpi(*args, **kwargs)
 def hpca(*args, **kwargs):
+    '''
+
+    See mms_load_hpca for documentation.
+    
+    '''
     return mms_load_hpca(*args, **kwargs)
 def eis(*args, **kwargs):
+    '''
+
+    See mms_load_eis for documentation.
+    
+    '''
     return mms_load_eis(*args, **kwargs)
 def feeps(*args, **kwargs):
+    '''
+
+    See mms_load_feeps for documentation.
+    
+    '''
     return mms_load_feeps(*args, **kwargs)
 def aspoc(*args, **kwargs):
+    '''
+
+    See mms_load_aspoc for documentation.
+    
+    '''
     return mms_load_aspoc(*args, **kwargs)
 def mec(*args, **kwargs):
+    '''
+
+    See mms_load_mec for documentation.
+    
+    '''
     return mms_load_mec(*args, **kwargs)
 def dsp(*args, **kwargs):
+    '''
+
+    See mms_load_dsp for documentation.
+    
+    '''
     return mms_load_dsp(*args, **kwargs)
 
