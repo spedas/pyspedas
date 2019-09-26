@@ -32,12 +32,12 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     for this_probe in probe:
         for this_dr in data_rate:
             for this_lvl in level:
-                flag_var = 'mms'+this_probe+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix
-                times, flags = get_data('mms'+this_probe+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix)
+                flag_var = 'mms'+str(this_probe)+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix
+                times, flags = get_data('mms'+str(this_probe)+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix)
                 flagged_data = np.where(flags != 0.0)[0]
 
                 for var_specifier in ['_b_gse_', '_b_gsm_', '_b_dmpa_', '_b_bcs_']:
-                    var_name = 'mms'+this_probe+'_'+instrument+var_specifier+this_dr+'_'+this_lvl+suffix
+                    var_name = 'mms'+str(this_probe)+'_'+instrument+var_specifier+this_dr+'_'+this_lvl+suffix
                     if var_name in tplot_vars:
                         times, var_data = get_data(var_name)
                         var_data[flagged_data] = np.nan

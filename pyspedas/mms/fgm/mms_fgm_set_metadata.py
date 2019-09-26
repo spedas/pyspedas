@@ -30,19 +30,19 @@ def mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=''):
     for this_probe in probe:
         for this_dr in data_rate:
             for this_lvl in level:
-                if 'mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix in tvars:
-                    options('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
-                    options('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
-                    options('mms'+this_probe+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSE', 'By GSE', 'Bz GSE', 'B total'])
-                if 'mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix in tvars:
-                    options('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
-                    options('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
-                    options('mms'+this_probe+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSM', 'By GSM', 'Bz GSM', 'B total'])
-                if 'mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix in tvars:
-                    options('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
-                    options('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
-                    options('mms'+this_probe+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx DMPA', 'By DMPA', 'Bz DMPA', 'B total'])
-                if 'mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix in tvars:
-                    options('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+this_probe+' FGM')
-                    options('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
-                    options('mms'+this_probe+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx BCS', 'By BCS', 'Bz BCS', 'B total'])
+                if 'mms'+str(this_probe)+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix in tvars:
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' FGM')
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_gse_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSE', 'By GSE', 'Bz GSE', 'B total'])
+                if 'mms'+str(this_probe)+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix in tvars:
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' FGM')
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_gsm_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx GSM', 'By GSM', 'Bz GSM', 'B total'])
+                if 'mms'+str(this_probe)+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix in tvars:
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' FGM')
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_dmpa_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx DMPA', 'By DMPA', 'Bz DMPA', 'B total'])
+                if 'mms'+str(this_probe)+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix in tvars:
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' FGM')
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r', '#000000'])
+                    options('mms'+str(this_probe)+'_'+instrument+'_b_bcs_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Bx BCS', 'By BCS', 'Bz BCS', 'B total'])
