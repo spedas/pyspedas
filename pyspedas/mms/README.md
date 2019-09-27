@@ -32,6 +32,7 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - Sun contamination is removed from FEEPS omni-directional spectrograms
 - FEEPS integral channels are removed from the telescope spectrogram data and included in their own tplot variables
 - FEEPS pitch angle distributions can be calculated using the routine `mms_feeps_pad`
+- EIS pitch angle distributions can be calculated using the routine `mms_eis_pad`
 - HPCA omni-directional spectrograms can be calculated using the routines `mms_hpca_calc_anodes` and `mms_hpca_spin_sum`
 - FPI and HPCA measurements can be adjusted to the center of the accumulation interval with the `center_measurement` keyword
 - Limit the CDF variables loaded with the `varformat` keyword
@@ -132,21 +133,35 @@ tplot(['mms1_hpca_hplus_flux_elev_0-360_spin',
 #### Energetic Ion Spectrometer (EIS)
 
 ```python
-from pyspedas import mms_load_eis
+from pyspedas import mms_load_eis, mms_eis_pad
 
 mms_load_eis(trange=['2015-10-16', '2015-10-17'], datatype=['phxtof', 'extof'])
 
+# plot the non-spin averaged flux
 tplot(['mms1_epd_eis_extof_proton_flux_omni', 'mms1_epd_eis_phxtof_proton_flux_omni'])
+
+# plot the spin averaged flux
+tplot(['mms1_epd_eis_extof_proton_flux_omni_spin', 'mms1_epd_eis_phxtof_proton_flux_omni_spin'])
+
+# calculate the ExTOF pitch angle distribution
+mms_eis_pad(datatype='extof')
+
+tplot(['mms1_epd_eis_extof_56-535keV_proton_flux_omni_pad_spin', 'mms1_epd_eis_extof_56-535keV_proton_flux_omni_pad'])
 ```
 
 #### Fly's Eye Energetic Particle Sensor (FEEPS)
 
 ```python
-from pyspedas import mms_load_feeps
+from pyspedas import mms_load_feeps, mms_feeps_pad
 
 mms_load_feeps(trange=['2015-10-16', '2015-10-17'], datatype='electron')
 
-tplot('mms1_epd_feeps_srvy_l2_electron_intensity_omni')
+tplot(['mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin', 'mms1_epd_feeps_srvy_l2_electron_intensity_omni'])
+
+# calculate the electron pitch angle distribution
+mms_feeps_pad(datatype='electron')
+
+tplot(['mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin', 'mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad'])
 ```
 
 #### Active Spacecraft Potential Control (ASPOC)
