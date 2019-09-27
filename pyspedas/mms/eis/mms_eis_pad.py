@@ -2,6 +2,7 @@ import warnings
 import numpy as np
 from pyspedas import tnames
 from pytplot import get_data, store_data, options
+from pyspedas.mms.eis.mms_eis_pad_spinavg import mms_eis_pad_spinavg
 
 def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', data_rate='srvy', datatype='extof', species='proton', data_units='flux', energy=[55, 800], size_pabin=15, suffix=''):
 
@@ -94,7 +95,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                             if ind.size != 0:
                                 pa_flux[i, j, ee] = np.nanmean(flux_file[i, ind, ee], axis=0)
 
-                for ee, energy in enumerate(these_energies):
+                for ee in range(0, len(these_energies)):
                     energy_string = str(int(flux_energies[these_energies[ee]])) + 'keV'
                     new_name = prefix + datatype_id + '_' + energy_string + '_' + species_id + '_' + data_units + scope_suffix + '_pad'
                     store_data(new_name, data={'x': flux_times, 'y': pa_flux[:, :, ee], 'v': pa_label})
@@ -130,5 +131,10 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                 options(new_name, 'ztitle', units_label)
                 options(new_name, 'ytitle', 'MMS' + str(probe_id) + ' ' + datatype_id + ' PA (deg)')
                 out_vars.append(new_name)
-                
+
+                spin_avg_pads = mms_eis_pad_spinavg(scopes=scopes, probe=probe_id, data_rate=data_rate, datatype=datatype_id, data_units=data_units, species=species_id, energy=energy, size_pabin=size_pabin, suffix=suffix)
+
+                for spin_avg_pad in spin_avg_pads:
+                    out_vars.append(spin_avg_pad)
+
     return out_vars
