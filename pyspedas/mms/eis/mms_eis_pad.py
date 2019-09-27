@@ -14,7 +14,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
     if data_units == 'cps':
         units_label = '1/s'
     else:
-        units_label = '1/(cm!U2!N-sr-s-keV)'
+        units_label = '1/(cm^2-sr-s-keV)'
 
     if len(scopes) == 1:
         scope_suffix = '_t' + scopes + suffix
