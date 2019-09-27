@@ -114,8 +114,8 @@ tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity'])
 # load the ion data
 mms_load_hpca(trange=['2016-10-16', '2016-10-17'], datatype='ion')
 
-from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
-from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from pyspedas import mms_hpca_calc_anodes
+from pyspedas import mms_hpca_spin_sum
 
 # average the flux over the full field of view (0-360)
 mms_hpca_calc_anodes(fov=[0, 360], probe='1')
