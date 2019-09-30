@@ -4,13 +4,13 @@ File:
     tinterpol.py
 
 Description:
-    Interpolates data.
+    Interpolates data specified in 'names' to time values found in 'interp_to'.
 
 Parameters:
     names: str/list of str
-        List of pytplot names.
-    interp_names: str/list of str
-        List of pytplot names. This should contain the new times array.
+        List of variables to interpolate.
+    interp_to: str
+        String containing the variable containing the time stamps to interpolate to
     method: str
         Interpolation method. Default is ‘linear’.
         Specifies the kind of interpolation as a string (‘linear’, ‘nearest’,
@@ -19,7 +19,7 @@ Parameters:
         interpolation of zeroth, first, second or third order; ‘previous’ and
         ‘next’ simply return the previous or next value of the point) or
         as an integer specifying the order of the spline interpolator to use.
-    new_names: str/list of str
+    newname: str/list of str
         List of new_names for pytplot variables.
         If '', then pytplot variables are replaced.
         If not given, then a suffix is applied.
@@ -31,16 +31,15 @@ Notes:
     Similar to tinterpol in IDL SPEDAS.
 """
 
-import pyspedas
-import pytplot
 import numpy
-from scipy.interpolate import interp1d
+from pyspedas import tnames
+from pytplot import get_data, store_data
 
+def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
-def tinterpol(names, interp_names=None, method=None, new_names=None,
-              suffix=None):
+    if not isinstance(names, list): names = [names]
 
-    old_names = pyspedas.tnames(names)
+    old_names = tnames(names)
 
     if len(old_names) < 1:
         print('tinterpol error: No pytplot names were provided.')
@@ -52,25 +51,29 @@ def tinterpol(names, interp_names=None, method=None, new_names=None,
     if method is None:
         method = 'linear'
 
-    if new_names is None:
+    if newname is None:
         n_names = [s + suffix for s in old_names]
-    elif new_names == '':
+    elif newname == '':
         n_names = old_names
     else:
-        n_names = new_names
+        n_names = newname
 
-    if len(n_names) != len(old_names):
-        n_names = [s + suffix for s in old_names]
+    interp_to_data = get_data(interp_to)
 
-    for i in range(len(old_names)):
-        alldata = pytplot.get_data(old_names[i])
-        time = alldata[0]
-        data = alldata[1]
-        alldata1 = pytplot.get_data(interp_names[i])        
-        new_time = alldata1[0]
-        new_data = alldata1[1]
-        data = numpy.asarray(data).squeeze()
-        f2 = interp1d(time, data, kind=method)
-        new_data = f2(new_time)
-        pytplot.store_data(n_names[i], data={'x': new_time, 'y': new_data})
-        print('tinterpol (' + method + ') was applied to: ' + n_names[i])
+    if interp_to_data is None:
+        print('Error, tplot variable: ' + interp_to + ' not found.')
+        return
+
+    interp_to_times = interp_to_data[0]
+
+    for name_idx, name in enumerate(old_names):
+        xdata = get_data(name, xarray=True)
+        xdata_interpolated = xdata.interp({'time': interp_to_times}, method=method)
+
+        if 'spec_bins' in xdata.coords:
+            store_data(n_names[name_idx], data={'x': interp_to_times, 'y': xdata_interpolated.values, 'v':  xdata_interpolated.coords['spec_bins'].values})
+        else:
+            store_data(n_names[name_idx], data={'x': interp_to_times, 'y': xdata_interpolated.values})
+
+        print('tinterpol (' + method + ') was applied to: ' + n_names[name_idx])
+
