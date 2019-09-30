@@ -15,3 +15,4 @@ install:
 script: 
   - python -m pyspedas.mms.tests.load_routine_tests
   - python -m pyspedas.mms.tests.feeps
+  - python -m pyspedas.mms.tests.eis
