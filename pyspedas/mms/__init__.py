@@ -28,7 +28,10 @@ from functools import wraps
 def print_vars(func):
     def wrapper(*args, **kwargs):
         variables = func(*args, **kwargs)
-        print('Loaded variables:')
+        if kwargs.get('available'):
+            print('Available files:')
+        else:
+            print('Loaded variables:')
         for var in variables:
             print(var)
         return variables
