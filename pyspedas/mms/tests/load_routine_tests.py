@@ -42,7 +42,7 @@ class FEEPSLoadTestCases(unittest.TestCase):
 
 class EISLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
-        data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'])
+        data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='phxtof')
         self.assertTrue(data_exists('mms1_epd_eis_phxtof_proton_flux_omni'))
 
 class FPILoadTestCases(unittest.TestCase):
