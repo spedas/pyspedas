@@ -542,7 +542,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     return tvars
 
 @print_vars
-def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='phxtof',
+def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='extof',
         varformat=None, get_support_data=True, prefix='', suffix='', time_clip=False, no_update=False,
         available=False, notplot=False):
     """
@@ -621,7 +621,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     # the probes will need to be strings beyond this point
     if isinstance(probe, list):
         probe = [str(p) for p in probe]
-        
+
     for probe_id in probe:
         for datatype_id in datatype:
             for data_rate_id in data_rate:
