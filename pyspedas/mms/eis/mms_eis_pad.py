@@ -32,6 +32,9 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
 
     out_vars = []
 
+    # the probes will need to be strings beyond this point
+    probe = [str(p) for p in probe]
+
     for probe_id in probe:
         if data_rate == 'brst':
             prefix = 'mms' + probe_id + '_epd_eis_brst_'
