@@ -1,8 +1,22 @@
 import unittest
 import numpy as np
 from ..feeps.mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
+from pyspedas import mms_load_feeps, mms_feeps_pad
+from ...utilities.data_exists import data_exists
 
 class FEEPSTestCases(unittest.TestCase):
+    def test_pad_electrons_srvy(self):
+        mms_load_feeps()
+        mms_feeps_pad()
+        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin'))
+        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad'))
+
+    def test_pad_electrons_srvy_probe(self):
+        mms_load_feeps(probe=4)
+        mms_feeps_pad(probe=4)
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin'))
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad'))
+
     def test_sector_masks(self):
         d = mms_read_feeps_sector_masks_csv(['2015-08-01', '2015-08-02'])
         self.assertTrue(d['mms4imaskt2'] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 58, 59, 60, 61, 62, 63])
