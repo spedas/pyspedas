@@ -618,6 +618,10 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(datatype, list): datatype = [datatype]
 
+    # the probes will need to be strings beyond this point
+    if isinstance(probe, list):
+        probe = [str(p) for p in probe]
+        
     for probe_id in probe:
         for datatype_id in datatype:
             for data_rate_id in data_rate:
