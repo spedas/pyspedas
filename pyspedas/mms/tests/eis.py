@@ -13,8 +13,8 @@ class EISTestCases(unittest.TestCase):
     def test_pad_extof_srvy_probe(self):
         mms_load_eis(probe=4)
         mms_eis_pad(probe=4)
-        self.assertTrue(data_exists('mms4_epd_eis_extof_56-535keV_proton_flux_omni_pad_spin'))
-        self.assertTrue(data_exists('mms4_epd_eis_extof_56-535keV_proton_flux_omni_pad'))
+        self.assertTrue(data_exists('mms4_epd_eis_extof_80-524keV_proton_flux_omni_pad_spin'))
+        self.assertTrue(data_exists('mms4_epd_eis_extof_80-524keV_proton_flux_omni_pad'))
 
 if __name__ == '__main__':
     unittest.main()
