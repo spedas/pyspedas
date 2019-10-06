@@ -29,6 +29,10 @@ def ex_basic():
     pytplot.ylim('tha_pos', -23000.0, 81000.0)
     pytplot.ylim('tha_position', -23000.0, 81000.0)
     pytplot.ylim('tha_vel', -8.0, 12.0)
+    # Give a title to the plot and labels for the y-axis panels.
+    pytplot.tplot_options('title', 'tha position and velocity, 2015-12-31')
+    pytplot.options('tha_pos', 'ytitle', 'Position')
+    pytplot.options('tha_new_vel', 'ytitle', 'Velocity')
     # Plot position and velocity using the pyqtgraph library (default)
     pytplot.tplot(["tha_pos", "tha_position", "tha_vel"])
     # Plot position and velocity using the bokeh library
