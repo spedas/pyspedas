@@ -41,7 +41,7 @@ def print_vars(func):
 
 @print_vars
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy',
-    level='l2', instrument='fgm', datatype='', varformat=None, prefix='', suffix='',
+    level='l2', instrument='fgm', datatype='', varformat=None, suffix='',
     keep_flagged=False, get_support_data=True, time_clip=False, no_update=False,
     available=False, notplot=False):
     """
@@ -78,10 +78,6 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -114,7 +110,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         varformat_fetch = varformat
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument=instrument,
-            datatype=datatype, varformat=varformat_fetch, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+            datatype=datatype, varformat=varformat_fetch, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, available=available)
     
     if tvars == None or available or notplot:
@@ -142,7 +138,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 @print_vars
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='moments', get_support_data=None, time_clip=False, no_update=False,
-    varformat=None, prefix='', suffix='', center_measurement=False, available=False, notplot=False):
+    varformat=None, suffix='', center_measurement=False, available=False, notplot=False):
     """
     This function loads HPCA data into tplot variables
     
@@ -176,10 +172,6 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
         time_clip: bool
             Data will be clipped to the exact trange specified by the trange keyword.
-            
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -212,7 +204,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         get_support_data = True
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='hpca',
-            datatype=datatype, varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+            datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available)
     
     if tvars == None or available or notplot:
@@ -223,7 +215,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
 @print_vars
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',
-    level='l2', datatype=['des-moms', 'dis-moms'], varformat=None, prefix='', suffix='',
+    level='l2', datatype=['des-moms', 'dis-moms'], varformat=None, suffix='',
     get_support_data=False, time_clip=False, no_update=False, center_measurement=False,
     available=False, notplot=False):
     """
@@ -262,10 +254,6 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -294,7 +282,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     """
 
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi',
-            datatype=datatype, varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+            datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available, notplot=notplot)
     
     if tvars == None or available or notplot:
@@ -305,7 +293,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
 @print_vars
 def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='', varformat=None, prefix='', suffix='', get_support_data=False,
+    level='l2', datatype='', varformat=None, suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False):
     """
     This function loads SCM data into tplot variables
@@ -342,10 +330,6 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -368,13 +352,13 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     """
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='scm',
-            datatype=datatype, varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+            datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 @print_vars
 def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='ephts04d', varformat=None, prefix='', suffix='', get_support_data=False,
+    level='l2', datatype='ephts04d', varformat=None, suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False):
     """
     This function loads MEC data into tplot variables
@@ -410,10 +394,6 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -436,13 +416,13 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     """
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='mec',
-            datatype=datatype, get_support_data=get_support_data, varformat=varformat, prefix=prefix, suffix=suffix,
+            datatype=datatype, get_support_data=get_support_data, varformat=varformat, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, notplot=notplot)
     return tvars
 
 @print_vars
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='electron', varformat=None, get_support_data=True, prefix='', suffix='', time_clip=False,
+    level='l2', datatype='electron', varformat=None, get_support_data=True, suffix='', time_clip=False,
     no_update=False, available=False, notplot=False, no_flatfield_corrections=False, data_units=['count_rate', 'intensity']):
     """
     This function loads FEEPS data into tplot variables
@@ -480,10 +460,6 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -506,7 +482,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
     """
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='feeps',
-            datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix=prefix, suffix=suffix,
+            datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available)
 
     if tvars == [] or available or notplot:
@@ -701,7 +677,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
 @print_vars
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield',
-        varformat=None, get_support_data=False, prefix='', suffix='', time_clip=False, no_update=False,
+        varformat=None, get_support_data=False, suffix='', time_clip=False, no_update=False,
         available=False, notplot=False):
     """
     This function loads EDI data into tplot variables
@@ -737,10 +713,6 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -763,12 +735,12 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
 
     """
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='edi',
-            datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix=prefix, suffix=suffix, time_clip=time_clip, no_update=no_update, available=available)
+            datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 @print_vars
 def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce',
-        varformat=None, get_support_data=False, prefix='', suffix='', time_clip=False, no_update=False,
+        varformat=None, get_support_data=False, suffix='', time_clip=False, no_update=False,
         available=False, notplot=False):
     """
     This function loads EDP data into tplot variables
@@ -804,10 +776,6 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -830,13 +798,13 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
     """
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='edp',
-            datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix=prefix, suffix=suffix,
+            datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 @print_vars
 def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='bpsd', varformat=None, prefix='', suffix='', get_support_data=False,
+    level='l2', datatype='bpsd', varformat=None, suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False):
     """
     This function loads DSP data into tplot variables
@@ -872,10 +840,6 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -898,12 +862,12 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     """
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='dsp',
-            datatype=datatype, varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
+            datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 @print_vars
 def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='', varformat=None, get_support_data=False, prefix='', suffix='', time_clip=False, no_update=False,
+    level='l2', datatype='', varformat=None, get_support_data=False, suffix='', time_clip=False, no_update=False,
     available=False, notplot=False):
     """
     This function loads ASPOC data into tplot variables
@@ -939,10 +903,6 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -965,14 +925,14 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
     """
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='aspoc',
-            datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix=prefix, suffix=suffix,
+            datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available)
     return tvars
 
 @print_vars
 def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst', 
     level='l3', datatype='8khz', get_support_data=False, time_clip=False, no_update=False, 
-    available=False, varformat=None, notplot=False):
+    available=False, varformat=None, notplot=False, suffix=''):
     """
     This function loads FSM data into tplot variables
     
@@ -1001,10 +961,6 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
 
         time_clip: bool
             Data will be clipped to the exact trange specified by the trange keyword.
-            
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
