@@ -22,6 +22,7 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - Data files can be downloaded without loading into tplot variables by setting the `download_only` option in `mms_config.py`
 - List available data files (without downloading) with the `available` keyword
 - Data can be loaded from disk without internet connectivity 
+- Data can be loaded from a network mirror by setting the `mirror_data_dir` option in `mms_config.py` (and using the `no_update` keyword, or by setting the `no_download` option to `True` in `mms_config.py`)
 - Data files are stored in temporary directories until each download completes, to avoid partial downloads of files due to internet connectivity issues
 - Local data directory can be specified by the MMS_DATA_DIR environment variable, or by the `local_data_dir` option in `mms_config.py`
 - Local data paths match those at the SDC, as well as those used by IDL SPEDAS
