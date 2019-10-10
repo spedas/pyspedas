@@ -142,6 +142,11 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                         if not download_only: logging.info('Searching for local files...')
                         out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
 
+                        if out_files == [] and CONFIG['mirror_data_dir'] != None:
+                            # check for network mirror
+                            logging.info('No local files found; checking network mirror...')
+                            out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange, mirror=True)
+
     if not no_download:
         sdc_session.close()
 

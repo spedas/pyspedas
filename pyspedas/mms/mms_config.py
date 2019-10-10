@@ -6,6 +6,7 @@ import os
 CONFIG = {'local_data_dir': 'pydata',
          #'local_data_dir': '/Users/eric/data/mms', # example of setting your local data directory on macOS
          #'local_data_dir': 'c:\users\eric\data\mms', # and Windows
+          'mirror_data_dir': None, # e.g., '/Volumes/data_network/data/mms'
           'debug_mode': False,
           'download_only': False,
           'no_download': False}

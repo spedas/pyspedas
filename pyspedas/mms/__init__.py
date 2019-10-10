@@ -28,6 +28,8 @@ from functools import wraps
 def print_vars(func):
     def wrapper(*args, **kwargs):
         variables = func(*args, **kwargs)
+        if variables is None:
+            return None
         if kwargs.get('available'):
             print('Available files:')
         else:

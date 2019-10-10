@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 from .mms_config import CONFIG
 from .mms_files_in_interval import mms_files_in_interval
 
@@ -8,7 +9,7 @@ from dateutil.parser import parse
 
 from datetime import timedelta
 
-def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
+def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, mirror=False):
 
     """
     Search for local MMS files in case a list cannot be retrieved from the
@@ -34,6 +35,15 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
 
     files_out = []
 
+    if mirror:
+        if CONFIG.get('mirror_data_dir') is not None:
+            data_dir = CONFIG['mirror_data_dir']
+        else:
+            return []
+    else:
+        data_dir = CONFIG['local_data_dir']
+
+
     # directory and file name search patterns
     #   -assume directories are of the form:
     #      (srvy, SITL): spacecraft/instrument/rate/level[/datatype]/year/month/
@@ -52,9 +62,9 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
 
     for date in days:
         if data_rate == 'brst':
-            local_dir = os.sep.join([CONFIG['local_data_dir'], 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m'), date.strftime('%d')])
+            local_dir = os.sep.join([data_dir, 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m'), date.strftime('%d')])
         else:
-            local_dir = os.sep.join([CONFIG['local_data_dir'], 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m')])
+            local_dir = os.sep.join([data_dir, 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m')])
 
         if os.name == 'nt':
             full_path = os.sep.join([re.escape(local_dir)+os.sep, file_name])
@@ -62,11 +72,12 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
             full_path = os.sep.join([re.escape(local_dir), file_name])
 
         regex = re.compile(full_path)
-        for root, dirs, files in os.walk(CONFIG['local_data_dir']):
+        for root, dirs, files in os.walk(data_dir):
             for file in files:
                 this_file = os.sep.join([root, file])
+                if CONFIG['debug_mode']: print('Checking ' + this_file)
+                if CONFIG['debug_mode']: print('against: ' + full_path)
                 
-                #print('--- ' + this_file)
                 matches = regex.match(this_file)
                 if matches:
                     this_time = parse(matches.groups()[1])
@@ -83,5 +94,20 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange):
     for file in files_out:
         if file['file_name'] in file_names:
             local_files.append(file['full_name'])
+
+    if mirror:
+        mirror_dir = CONFIG['mirror_data_dir']
+        local_dir = CONFIG['local_data_dir']
+        local_files_copied = []
+        # need to copy files from network mirror to local data directory
+        for file in local_files:
+            local_file = file.replace(mirror_dir, local_dir)
+            if CONFIG['debug_mode']: print('Copying ' + file + ' to ' + local_file)
+            shutil.copyfile(file, local_file)
+            local_files_copied.append(local_file)
+        local_files = local_files_copied
+
+    for file in local_files:
+        print('Loading: ' + file)
 
     return local_files
