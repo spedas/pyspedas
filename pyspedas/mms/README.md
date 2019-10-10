@@ -43,7 +43,7 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - The `probe` keyword accepts strings, arrays of strings, ints and arrays of ints
 - The load routines accept a wide range of time range formats via the `trange` keyword
 - The load routines correctly handle access to all burst-mode data, even when small time ranges are requested
-- The load routines can be imported from `pyspedas.mms` using the instrument names (e.g., from pyspedas.mms import fgm)
+- The load routines can be imported from `pyspedas.mms` using the instrument names (e.g., `from pyspedas.mms import fgm`)
 - Crib sheets can be found in the `examples` folder
 - Cross platform: tested on Windows, macOS and Linux
 
