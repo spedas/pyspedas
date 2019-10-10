@@ -143,7 +143,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                         out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
 
                         if out_files == [] and CONFIG['mirror_data_dir'] != None:
-                            # check for network mirror
+                            # check for network mirror; note: network mirrors are assumed to be read-only
+                            # and we always copy the files from the mirror to the local data directory
+                            # before trying to load into tplot variables 
                             logging.info('No local files found; checking network mirror...')
                             out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange, mirror=True)
 
