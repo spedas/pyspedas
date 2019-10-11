@@ -17,6 +17,7 @@ from .feeps.mms_feeps_remove_bad_data import mms_feeps_remove_bad_data
 from .feeps.mms_feeps_remove_sun import mms_feeps_remove_sun
 from .feeps.mms_feeps_omni import mms_feeps_omni
 from .feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
+from .mms_config import CONFIG
 
 from pyspedas import tnames
 
@@ -30,7 +31,7 @@ def print_vars(func):
         variables = func(*args, **kwargs)
         if variables is None:
             return None
-        if kwargs.get('available'):
+        if kwargs.get('available') or CONFIG['download_only']:
             print('Available files:')
         else:
             print('Loaded variables:')
@@ -115,7 +116,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             datatype=datatype, varformat=varformat_fetch, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, available=available)
     
-    if tvars == None or available or notplot:
+    if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
 
     # the probes will need to be strings beyond this point
@@ -209,7 +210,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available)
     
-    if tvars == None or available or notplot:
+    if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
 
     mms_hpca_set_metadata(probe=probe, suffix=suffix)
@@ -287,7 +288,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available, notplot=notplot)
     
-    if tvars == None or available or notplot:
+    if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
 
     mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=suffix)
@@ -487,7 +488,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available)
 
-    if tvars == [] or available or notplot:
+    if tvars == [] or available or notplot or CONFIG['download_only']:
         return tvars
 
     probes = probe if isinstance(probe, list) else [probe]
@@ -589,7 +590,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix='', suffix='',
             time_clip=time_clip, no_update=no_update, available=available)
 
-    if tvars == [] or available or notplot:
+    if tvars == [] or available or notplot or CONFIG['download_only']:
         return tvars
 
     if not isinstance(probe, list): probe = [probe]
