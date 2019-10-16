@@ -58,5 +58,7 @@ def mms_file_filter(files, latest_version=False, major_version=False, min_versio
         elif major_version is not False: # LATEST MAJOR version, i.e., latest X in vX.Y.Z
             if file_ver[0] >= max_major_version:
                 out_files.append(file_ver[3])
+        else:
+            out_files.append(file_ver[3])
 
     return out_files
