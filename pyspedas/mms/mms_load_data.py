@@ -17,13 +17,15 @@ from .mms_config import CONFIG
 from .mms_get_local_files import mms_get_local_files
 from .mms_files_in_interval import mms_files_in_interval
 from .mms_login_lasp import mms_login_lasp
+from .mms_file_filter import mms_file_filter
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
     instrument='fgm', datatype='', varformat=None, prefix='', suffix='', get_support_data=False, time_clip=False, 
-    no_update=False, center_measurement=False, available=False, notplot=False):
+    no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
+    major_version=False, min_version=None, cdf_version=None):
     """
     This function loads MMS data into pyTplot variables
     """
@@ -158,7 +160,12 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if not download_only:
         out_files = sorted(out_files)
 
-        new_variables = cdf_to_tplot(out_files, varformat=varformat, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+        filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
+        if filtered_out_files == []:
+            logging.info('No matching CDF versions found.')
+            return
+
+        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
 
         if notplot:
             return new_variables
