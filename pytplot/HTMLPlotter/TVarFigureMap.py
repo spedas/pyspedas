@@ -36,8 +36,17 @@ class TVarFigureMap(object):
         self.fig = Figure(tools="pan,crosshair,reset,box_zoom",
                           y_axis_type=self._getyaxistype())
         self._format()
-        
-    def getaxistype(self):
+
+    @staticmethod
+    def get_axis_label_color():
+        if pytplot.tplot_opt_glob['black_background']:
+            text_color = '#000000'
+        else:
+            text_color = '#FFFFFF'
+        return text_color
+
+    @staticmethod
+    def getaxistype():
         axis_type = 'map'
         link_y_axis = True
         return axis_type, link_y_axis
@@ -60,7 +69,8 @@ class TVarFigureMap(object):
             if pytplot.tplot_opt_glob['title_text'] != '':
                 title1 = Title(text=pytplot.tplot_opt_glob['title_text'],
                                align=pytplot.tplot_opt_glob['title_align'],
-                               text_font_size=pytplot.tplot_opt_glob['title_size'])  
+                               text_font_size=pytplot.tplot_opt_glob['title_size'],
+                               text_color=self.get_axis_label_color())
                 self.fig.title = title1
                 self.fig.plot_height += 22
     
@@ -191,10 +201,12 @@ class TVarFigureMap(object):
     def _setxaxislabel(self):
         self.fig.xaxis.axis_label = 'Longitude'
         self.fig.xaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
+        self.fig.xaxis.axis_label_text_color = self.get_axis_label_color()
     
     def _setyaxislabel(self):
         self.fig.yaxis.axis_label = 'Latitude'
         self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
+        self.fig.yaxis.axis_label_text_color = self.get_axis_label_color()
 
     def _visdata(self):
         self._setcolors()

@@ -131,6 +131,9 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'min_border_bottom':
         new_tplot_opt_glob['min_border_bottom'] = value
 
+    elif option == 'black_background':
+        new_tplot_opt_glob['black_background'] = value
+
     else:
         print("Unknown option supplied: " + str(option))
 
@@ -548,13 +551,14 @@ def convert_tplotxarray_to_pandas_dataframe_lineplots(name):
     return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
     return return_data
 
+
 def convert_tplotxarray_to_pandas_dataframe(name):
     import pandas as pd
     # This function is not final, and will presumably change in the future
     # For 2D data, turn it into a Pandas dataframe
     # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
     # For 4D data, ignore the last dimension
-    if not 'spec_bins' in pytplot.data_quants[name].coords:
+    if 'spec_bins' not in pytplot.data_quants[name].coords:
         return_data = pd.DataFrame(pytplot.data_quants[name].values)
         return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
         return return_data

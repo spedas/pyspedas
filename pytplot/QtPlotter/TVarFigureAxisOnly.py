@@ -19,7 +19,14 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
         self.layout.setHorizontalSpacing(50)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.labelStyle = {'font-size': str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'}
+        if pytplot.tplot_opt_glob['black_background']:
+            self.labelStyle = {'font-size':
+                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               + 'pt', 'color': '#FFF'}
+        else:
+            self.labelStyle = {'font-size':
+                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               + 'pt', 'color': '#000'}
         
         vb = CustomVB(enableMouse=False)
         yaxis = pg.AxisItem("left")

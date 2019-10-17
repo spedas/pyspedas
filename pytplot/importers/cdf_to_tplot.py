@@ -75,6 +75,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
     output_table = {}
     metadata = {}
 
+    data_quants = {}
     if isinstance(filenames, str):
         filenames = [filenames]
     elif isinstance(filenames, list):
@@ -255,7 +256,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
     for var_name in output_table.keys():
         to_merge = False
-        if (var_name in data_quants.keys()) and (merge is True):
+        if var_name in data_quants.keys() and merge:
             prev_data_quant = data_quants[var_name]
             to_merge = True
 
