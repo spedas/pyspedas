@@ -9,6 +9,17 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
 
     mec_vars = mms_load_mec(trange=trange, data_rate=data_rate, probe=probes, varformat='*_r_' + coord, time_clip=True)
 
+    plane = plane.lower()
+    coord = coord.lower()
+
+    if plane not in ['xy', 'yz', 'xz']:
+        print('Error, invalid plane specified; valid options are: xy, yz, xz')
+        return
+
+    if coord not in ['eci', 'gsm', 'geo', 'sm', 'gse', 'gse2000']:
+        print('Error, invalid coordinate system specified; valid options are: eci, gsm, geo, sm, gse, gse2000')
+        return
+
     if plane == 'xy':
         plt.xlabel('X Position, Re')
         plt.ylabel('Y Position, Re')
@@ -25,9 +36,17 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
 
     im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/earth_polar1.png')
     plt.imshow(im, extent=(-1, 1, -1, 1))
+    plot_count = 0
 
     for probe in probes:
-        t, d = get_data('mms' + str(probe) + '_mec_r_' + coord)
+        position_data = get_data('mms' + str(probe) + '_mec_r_' + coord)
+        if position_data is None:
+            print('No ' + data_rate + ' MEC data found for ' + 'MMS' + str(probe))
+            continue
+        else:
+            t, d = position_data
+            plot_count += 1
+
         if plane == 'xy':
             plt.plot(d[:, 0]/km_in_re, d[:, 1]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
         if plane == 'yz':
@@ -35,9 +54,10 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
         if plane == 'xz':
             plt.plot(d[:, 0]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
 
-    plt.legend()
-    plt.title(trange[0] + ' to ' + trange[1])
-    plt.annotate(coord.upper() + ' coordinates', xy=(0.6, 0.05), xycoords='axes fraction')
+    if plot_count > 0: # at least one plot created
+        plt.legend()
+        plt.title(trange[0] + ' to ' + trange[1])
+        plt.annotate(coord.upper() + ' coordinates', xy=(0.6, 0.05), xycoords='axes fraction')
 
-    plt.show()
+        plt.show()
 
