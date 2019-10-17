@@ -1,4 +1,12 @@
-1.4.4
+1.4.6
+
+1.4.6 Changes:
+
+* Occasionally logged spec plots would not be properly displayed, this is a hopefully a quick fix for that
+
+1.4.5 Changes:
+
+* Fixing typescript errors with bokeh
 
 1.4.4 Changes:
 

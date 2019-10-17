@@ -161,8 +161,8 @@ def store_data(name, data=None, delete=False, newname=None):
 
     # Set up xarray dimension and coordinates
     data_key_list = list(data.keys())
-    temp = xr.DataArray(values, dims=['time']+data_key_list)
-    temp.coords['time'] = ('time', times)
+    temp = xr.DataArray(values, dims=['time']+data_key_list,
+                        coords={'time': ('time', times)})
     if spec_bins_exist:
         if spec_bins_time_varying:
             temp.coords['spec_bins'] = (('time', spec_bins_dimension), spec_bins.values)
