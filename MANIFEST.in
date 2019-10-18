@@ -3,3 +3,9 @@ include *.md
 
 # Include the license file
 include LICENSE.txt
+
+# include the MMS FEEPS sun contamination CSV files
+include pyspedas/mms/feeps/sun/*.csv
+
+# include the image of Earth for MMS orbit plots
+include pyspedas/mms/mec/*.png
