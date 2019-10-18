@@ -38,6 +38,7 @@ from pytplot import get_data, store_data
 def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     if not isinstance(names, list): names = [names]
+    if not isinstance(newname, list): newname = [newname]
 
     old_names = tnames(names)
 
