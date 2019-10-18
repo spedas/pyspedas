@@ -32,4 +32,5 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['requests', 'pytplot', 'cdflib'],
     python_requires='>=3.5',
+    include_package_data=True,
 )
