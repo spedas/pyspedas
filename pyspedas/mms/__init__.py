@@ -17,6 +17,8 @@ from .feeps.mms_feeps_remove_bad_data import mms_feeps_remove_bad_data
 from .feeps.mms_feeps_remove_sun import mms_feeps_remove_sun
 from .feeps.mms_feeps_omni import mms_feeps_omni
 from .feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
+from .eis.mms_eis_omni import mms_eis_omni
+from .eis.mms_eis_spin_avg import mms_eis_spin_avg
 from .mms_config import CONFIG
 
 from pyspedas import tnames
@@ -680,8 +682,6 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     """
 
-    from .eis.mms_eis_omni import mms_eis_omni
-    from .eis.mms_eis_spin_avg import mms_eis_spin_avg
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis',
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix='', suffix='',
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
