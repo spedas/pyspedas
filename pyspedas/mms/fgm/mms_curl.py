@@ -6,6 +6,14 @@ from pyspedas import tinterpol
 
 def mms_curl(trange=None, fields=None, positions=None, suffix=''):
 
+    if fields == None or positions == None:
+        print('Error: B-field and spacecraft position keywords required.')
+        return
+
+    if len(fields) != 4 or len(positions) != 4:
+        print('Error, fields and positions keywords should be specified as 4-element arrays containing the tplot variable name for the field and position variables')
+        return
+        
     # *********************************************************
     # Magnetic Field
     # *********************************************************
@@ -101,7 +109,6 @@ def mms_curl(trange=None, fields=None, positions=None, suffix=''):
         divb[i, 4] = curlmag[2]
 
         # the cross product of the calculated curl and the sample field times 1e-21 (SI), divided by m0
-        # use the crossp2 IDL routine
 
         # curl is in nT/km, nT/km*1e-12 = T/m
         # field is in nT, nT*1e-9 = T
