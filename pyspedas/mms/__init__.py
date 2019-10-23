@@ -5,6 +5,7 @@ This module contains routines for loading MMS data
 """
 
 from .mms_load_data import mms_load_data
+from .fgm.mms_curl import mms_curl
 from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 from .fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
@@ -1213,3 +1214,7 @@ def mec(*args, **kwargs):
 @wraps(mms_load_dsp)
 def dsp(*args, **kwargs):
     return mms_load_dsp(*args, **kwargs)
+
+@wraps(mms_curl)
+def curlometer(*args, **kwargs):
+    return mms_curl(*args, **kwargs)
