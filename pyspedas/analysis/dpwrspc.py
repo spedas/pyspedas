@@ -59,6 +59,7 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3, nohanni
                 x = x - line
 
 
+            if nohanning is False:
                 x = x*window
 
             bign = nboxpnts
