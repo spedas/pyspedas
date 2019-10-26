@@ -47,6 +47,7 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3, nohanni
         if nend <= totalpoints-1:
             t = times2process[nbegin:nend]
             t0 = t[0]
+            t = t - t0
             x = quantity2process[nbegin:nend]
 
             # Use center time
