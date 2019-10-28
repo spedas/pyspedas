@@ -4,8 +4,38 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas import tinterpol
 
-def mms_curl(trange=None, fields=None, positions=None, suffix=''):
+def mms_curl(fields=None, positions=None, suffix=''):
+    """
+    This function applies the curlometer technique to MMS FGM data
+    
+    Parameters:
+        fields : list of str
+            List of tplot variables containing the B-field for each spacecraft 
+            (in GSE coordinates)
 
+        positions : list of str
+            List of tplot variables containing the S/C position vectors for 
+            each spacecraft (also GSE coordinates) 
+
+        suffix: str
+            The tplot variable names will be given this suffix.  By default, 
+            no suffix is added.
+
+    Notes:
+        The input B-field data and position data are required to be in 
+        GSE coordinates
+ 
+        Based on the original mms_curl, written in IDL, by Jonathan Eastwood 
+
+        For more info on this method, see:
+          Chanteur, G., Spatial Interpolation for Four Spacecraft: Theory, 
+          Chapter 14 of Analysis methods for multi-spacecraft data, G. 
+          Paschmann and P. W. Daly (Eds.) ISSI Scientific Report SR-001. 
+
+    Returns:
+        List of tplot variables created
+
+    """
     if fields == None or positions == None:
         print('Error: B-field and spacecraft position keywords required.')
         return
