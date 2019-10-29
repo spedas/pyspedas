@@ -10,6 +10,7 @@ from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 from .edp.mms_edp_set_metadata import mms_edp_set_metadata
 from .dsp.mms_dsp_set_metadata import mms_dsp_set_metadata
+from .edi.mms_edi_set_metadata import mms_edi_set_metadata
 from .fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
 from .hpca.mms_hpca_set_metadata import mms_hpca_set_metadata
 from .feeps.mms_feeps_correct_energies import mms_feeps_correct_energies
@@ -853,6 +854,12 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix, time_clip=time_clip, 
             no_update=no_update, available=available, latest_version=latest_version, major_version=major_version, 
             min_version=min_version, cdf_version=cdf_version)
+
+    if tvars == None or available or notplot or CONFIG['download_only']:
+        return tvars
+
+    mms_edi_set_metadata(probe, data_rate, level, suffix=suffix)
+
     return tvars
 
 @print_vars
