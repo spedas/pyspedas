@@ -2,7 +2,7 @@
 import os
 import matplotlib.pyplot as plt
 from pytplot import get_data
-from pyspedas import mms_load_mec
+from . import mms_load_mec
 
 def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], data_rate='srvy', xrange=None, yrange=None, plane='xy', coord='gse'):
     spacecraft_colors = [(0,0,0), (213/255,94/255,0), (0,158/255,115/255), (86/255,180/255,233/255)]
@@ -34,7 +34,7 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
 
     plt.axes().set_aspect('equal')
 
-    im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/earth_polar1.png')
+    im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec/earth_polar1.png')
     plt.imshow(im, extent=(-1, 1, -1, 1))
     plot_count = 0
 
