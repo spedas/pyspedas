@@ -6,7 +6,7 @@ import requests
 import logging
 import warnings
 import numpy as np
-from ..spdtplot.cdf_to_tplot import cdf_to_tplot
+from pytplot import cdf_to_tplot
 from ..analysis.time_clip import time_clip as tclip
 from pyspedas import time_double, time_string
 from dateutil.parser import parse
