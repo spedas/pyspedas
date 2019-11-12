@@ -27,8 +27,8 @@ from .analysis.tinterpol import tinterpol
 from .analysis.subtract_average import subtract_average
 from .analysis.subtract_median import subtract_median
 from .analysis.time_clip import time_clip
-from .spdtplot.cdf_to_tplot import cdf_to_tplot
-from .spdtplot.tplot_names import tplot_names
+from pytplot import cdf_to_tplot
+from pytplot import tplot_names
 
 from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, mms_load_edp, mms_load_eis, mms_load_feeps, \
     mms_load_hpca, mms_load_fpi, mms_load_aspoc, mms_load_dsp, mms_load_fsm
