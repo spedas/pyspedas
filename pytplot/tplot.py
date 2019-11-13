@@ -19,6 +19,8 @@ if pytplot.using_graphics:
     import pyqtgraph as pg
     from . import QtPlotter
     from pytplot.AncillaryPlots import spec_slicer
+    from pytplot.AncillaryPlots import position_2d
+    from pytplot.AncillaryPlots import position_3d
 
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
@@ -40,7 +42,9 @@ def tplot(name,
           testing=False,
           extra_functions=[],
           extra_function_args=[],
-          vert_spacing=None):
+          vert_spacing=None,
+          pos_2d=False,
+          pos_3d=False):
     """
     This is the function used to display the tplot variables stored in memory.
     The default output is to show the plots stacked on top of one another inside of a qt window
@@ -233,7 +237,7 @@ def tplot(name,
 
             # This function is responsible for calling all of the extra plotting routines that a user might like with
             # their data plots
-            extra_function_handler(extra_functions, extra_function_args, name, interactive)
+            extra_function_handler(extra_functions, extra_function_args, name, interactive, pos_2d, pos_3d)
 
             # plots the plots!
             if testing:
@@ -246,13 +250,20 @@ def tplot(name,
         return
 
 
-def extra_function_handler(extra_functions, extra_functions_args, names, interactive):
+def extra_function_handler(extra_functions, extra_functions_args, names, interactive, pos_2d, pos_3d):
 
     # Handles the old way of calling the spec slicing plots, (if anyone still uses that way)
     if interactive:
         # Call 2D interactive window; This will only plot something when spectrograms are involved.
         extra_functions.append(spec_slicer.spec_slicer)
         extra_functions_args.append([None, None, True])
+
+    if pos_2d:
+        extra_functions.append(position_2d.position_2d)
+        extra_functions_args.append([None])
+    if pos_3d:
+        extra_functions.append(position_3d.position_3d)
+        extra_functions_args.append([None])
 
     static_list = [i for i in names if 'static' in pytplot.data_quants[i].attrs['plot_options']['extras']]
     for tplot_var in static_list:
