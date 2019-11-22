@@ -41,6 +41,7 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
     sum_anodes = [a+suffix for a in ['*_count_rate', '*_RF_corrected', '*_bkgd_corrected', '*_norm_counts']]
     avg_anodes = ['*_flux'+suffix]
     output_vars = []
+    species_map = {'hplus': 'H+', 'oplus': 'O+', 'heplus': 'He+', 'heplusplus': 'He++'}
 
     fov_str = '_elev_'+str(fov[0])+'-'+str(fov[1])
 
@@ -48,6 +49,7 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
         vars_to_sum = tnames(sum_anode)
 
         for var in vars_to_sum:
+            var_species = var.split('_')[2]
             times, data, angles, energies = get_data(var)
 
             updated_spectra = mms_hpca_sum_fov(times, data, angles, energies, fov=fov)
@@ -56,6 +58,8 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
             options(var+fov_str, 'spec', True)
             options(var+fov_str, 'ylog', True)
             options(var+fov_str, 'zlog', True)
+            options(var+fov_str, 'ztitle', species_map[var_species] + ' ' + var.split('_')[3] + ' (cm^2-s-sr-eV)^-1')
+            options(var+fov_str, 'ytitle', species_map[var_species] + ' Energy (eV)')
             options(var+fov_str, 'Colormap', 'jet')
             output_vars.append(var+fov_str)
 
@@ -63,6 +67,7 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
         vars_to_avg = tnames(avg_anode)
 
         for var in vars_to_avg:
+            var_species = var.split('_')[2]
             times, data, angles, energies = get_data(var)
 
             updated_spectra = mms_hpca_avg_fov(times, data, angles, energies, fov=fov)
@@ -71,6 +76,8 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
             options(var+fov_str, 'spec', True)
             options(var+fov_str, 'ylog', True)
             options(var+fov_str, 'zlog', True)
+            options(var+fov_str, 'ztitle', species_map[var_species] + ' ' + var.split('_')[3] + ' (cm^2-s-sr-eV)^-1')
+            options(var+fov_str, 'ytitle', species_map[var_species] + ' Energy (eV)')
             options(var+fov_str, 'Colormap', 'jet')
             output_vars.append(var+fov_str)
     return output_vars

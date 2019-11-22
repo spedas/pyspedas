@@ -78,6 +78,8 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
             var_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+s_type+'_'+data_units+'_sensorid_'+str(sensor_num+1)+'_clean_sun_removed'+suffix
             times, data, energies = get_data(var_name)
             data[data == 0] = 'nan' # remove any 0s before averaging
+            if np.isnan(energies[0]): # assumes all energies are NaNs if the first is
+                continue
             # energy indices to use:
             indx = np.where((energies >= energy[0]) & (energies <= energy[1]))
             with warnings.catch_warnings():
@@ -97,10 +99,10 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     for pa_idx, pa_time in enumerate(pa_times):
         for ipa in range(0, int(n_pabins)):
             if not np.isnan(dpa[pa_idx, :][0]):
-                ind = np.where((dpa[pa_idx, :] + dangresp >= pa_label[ipa]-delta_pa) & (dpa[pa_idx, :]-dangresp < pa_label[ipa]+delta_pa))
-                if ind[0].size != 0:
-                    with warnings.catch_warnings():
-                        warnings.simplefilter("ignore", category=RuntimeWarning)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore", category=RuntimeWarning)
+                    ind = np.where((dpa[pa_idx, :] + dangresp >= pa_label[ipa]-delta_pa) & (dpa[pa_idx, :]-dangresp < pa_label[ipa]+delta_pa))
+                    if ind[0].size != 0:
                         if len(ind[0]) > 1:
                             pa_flux[pa_idx, ipa] = np.nanmean(dflux[pa_idx, ind[0]], axis=0)
                         else:

@@ -93,6 +93,24 @@ def maven_filenames(filenames=None,
 
         maven_files[instrument] = [s, data_dir, public]
 
+    # Grab KP data too, there is a lot of good ancillary info in here
+    if instruments != 'kp':
+        # Build the query to the website
+        query_args = []
+        query_args.append("instrument=kp")
+        query_args.append("level=insitu")
+        query_args.append("start_date=" + start_date)
+        query_args.append("end_date=" + end_date)
+        data_dir = os.path.join(mvn_root_data_dir, 'maven', 'data', 'sci', instrument, level)
+        query = '&'.join(query_args)
+        s = get_filenames(query, public)
+        if not s:
+            print("No files found for {}.".format(instrument))
+            maven_files[instrument] = []
+        else:
+            s = s.split(',')
+            maven_files[instrument] = [s, data_dir, public]
+
     return maven_files
 
 
@@ -107,7 +125,7 @@ def load_data(filenames=None,
               only_update_prefs=False,
               local_dir=None,
               list_files=False,
-              new_files=False,
+              new_files=True,
               exclude_orbit_file=False,
               download_only=False,
               varformat=None,
@@ -124,11 +142,16 @@ def load_data(filenames=None,
                                   only_update_prefs, local_dir)
 
     # Keep track of what files are downloaded
-    downloaded_files = []
+    files_to_load = []
 
     for instr in maven_files.keys():
         if maven_files[instr]:
             s = maven_files[instr][0]
+            #Add to list of files to load
+            for f in s:
+                full_path = create_dir_if_needed(f, data_dir, level)
+                files_to_load.append(os.path.join(full_path, f))
+
             data_dir = maven_files[instr][1]
             public = maven_files[instr][2]
             if list_files:
@@ -171,21 +194,30 @@ def load_data(filenames=None,
                 get_file_from_site(f, public, full_path)
                 display_progress(i, len(s))
 
-                downloaded_files.append(os.path.join(full_path, f))
+
 
     # 2. Load files into tplot
 
-    if downloaded_files:
+    if files_to_load:
         # Flatten out downloaded files from list of lists of filenames
-        if isinstance(downloaded_files[0], list):
-            downloaded_files = [item for sublist in downloaded_files for item in sublist]
+        if isinstance(files_to_load[0], list):
+            files_to_load = [item for sublist in files_to_load for item in sublist]
 
         # Only load in files into tplot if we actually downloaded CDF files
-        cdf_files = [f for f in downloaded_files if '.cdf' in f]
+        cdf_files = [f for f in files_to_load if '.cdf' in f]
+        sts_files = [f for f in files_to_load if '.sts' in f]
+        kp_files = [f for f in files_to_load if '.tab' in f]
 
+        downloaded_tplot_vars = []
         if not download_only:
             # Create tplot variables
-            downloaded_tplot_vars = pytplot.cdf_to_tplot(cdf_files, varformat=varformat,
+            downloaded_tplot_vars.append(pytplot.cdf_to_tplot(cdf_files, varformat=varformat,
                                                          get_support_data=get_support_data, prefix=prefix,
-                                                         suffix=suffix, merge=True)
+                                                         suffix=suffix, merge=True))
+            downloaded_tplot_vars.append(pytplot.sts_to_tplot(cdf_files, prefix=prefix,
+                                                              suffix=suffix, merge=True))
+
+            downloaded_tplot_vars.append(pytplot.sts_to_tplot(cdf_files, prefix=prefix,
+                                                              suffix=suffix, merge=True))
+
             return downloaded_tplot_vars
