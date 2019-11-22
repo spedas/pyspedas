@@ -367,12 +367,16 @@ class TVarFigure1D(pg.GraphicsLayout):
         dict_length = len(pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'])
         # for each time
         for i in range(dict_length):
-            # pull date, color, thickness
+            # pull date, color, thickness, and dimensions
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["dimension"] == 'height':
+                angle = 90
+            else:
+                angle = 0
             date_to_highlight = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
             color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
             thick = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
             # make infinite line w/ parameters
-            infline = pg.InfiniteLine(pos=date_to_highlight, pen=pg.mkPen(color, width=thick))
+            infline = pg.InfiniteLine(pos=date_to_highlight, pen=pg.mkPen(color, width=thick), angle=angle)
             # add to plot window
             self.plotwindow.addItem(infline)
 

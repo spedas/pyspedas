@@ -75,7 +75,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
     output_table = {}
     metadata = {}
 
-    data_quants = {}
+    #data_quants = {}
     if isinstance(filenames, str):
         filenames = [filenames]
     elif isinstance(filenames, list):

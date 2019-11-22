@@ -215,6 +215,15 @@ def options(name, option, value):
         if option == 'ztitle':
             data_quants[i].attrs['plot_options']['zaxis_opt']['axis_label'] = value
 
+        if option == 'ybar':
+            data_quants[i].attrs['plot_options']['extras']['ybar'] = value
+
+        if option == 'ybar_color':
+            data_quants[i].attrs['plot_options']['extras']['ybar'] = value
+
+        if option == 'ybar_size':
+            data_quants[i].attrs['plot_options']['extras']['ysize'] = value
+
         if option == 'plotter':
             _reset_plots(i)
             data_quants[i].attrs['plot_options']['extras']['plotter'] = value

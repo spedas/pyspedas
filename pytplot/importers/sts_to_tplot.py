@@ -6,11 +6,11 @@
 import os
 import datetime
 import numpy as np
-
+import xarray as xr
 import pytplot
+import copy
 
-
-def read_sts_file(sts_file=None, read_only=False, prefix='', suffix=''):
+def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=True, notplot=False):
     """
     Read in a given filename in situ file into a dictionary object
     Optional keywords maybe used to downselect instruments returned
@@ -54,7 +54,7 @@ def read_sts_file(sts_file=None, read_only=False, prefix='', suffix=''):
 
     for s_file in sts_file:
         with open(s_file, 'r') as f:
-                lines = f.readlines()
+            lines = f.readlines()
 
         # In STS files, the beginning of the data starts after the last time 'END_OBJECT' is found
         end_objects = [l for l, line in enumerate(lines) if 'END_OBJECT' in line]
@@ -97,20 +97,33 @@ def read_sts_file(sts_file=None, read_only=False, prefix='', suffix=''):
     if read_only:
         return sts_dict
 
-    for key in sts_dict.keys():
+    for var_name in sts_dict.keys():
+        to_merge = False
+        if var_name in pytplot.data_quants.keys() and merge:
+            prev_data_quant = pytplot.data_quants[var_name]
+            to_merge = True
         # create variable name
-        obs_specific = prefix + key + suffix
+        obs_specific = prefix + var_name + suffix
         # if all values are NaN, continue
-        if all(v is None for v in sts_dict[key]):
+        if all(v is None for v in sts_dict[var_name]):
             continue
         # store data in tplot variable
-        if key != 'time_unix':
+        if var_name != 'time_unix':
             try:
                 pytplot.store_data(
-                    obs_specific, data={'x': sts_dict['time_unix'], 'y': [np.float(val) for val in sts_dict[key]]})
+                    obs_specific, data={'x': sts_dict['time_unix'], 'y': [np.float(val) for val in sts_dict[var_name]]})
             except ValueError:
                 continue
         if obs_specific not in stored_variables:
             stored_variables.append(obs_specific)
+
+        if to_merge is True:
+            cur_data_quant = pytplot.data_quants[var_name]
+            plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs['plot_options'])
+            pytplot.data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time')
+            pytplot.data_quants[var_name].attrs['plot_options'] = plot_options
+
+    if notplot:
+        return sts_dict
 
     return stored_variables

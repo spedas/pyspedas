@@ -125,6 +125,7 @@ from .options import options
 from .timestamp import timestamp
 from pytplot.importers.cdf_to_tplot import cdf_to_tplot
 from pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
+from pytplot.importers.sts_to_tplot import sts_to_tplot
 from .tplot_utilities import compare_versions
 from .link import link
 from pytplot.tplot_math import *

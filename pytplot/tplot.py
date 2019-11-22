@@ -19,8 +19,8 @@ if pytplot.using_graphics:
     import pyqtgraph as pg
     from . import QtPlotter
     from pytplot.AncillaryPlots import spec_slicer
-    from pytplot.AncillaryPlots import position_2d
-    from pytplot.AncillaryPlots import position_3d
+    from pytplot.AncillaryPlots import position_mars_2d
+    from pytplot.AncillaryPlots import position_mars_3d
 
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
@@ -259,10 +259,10 @@ def extra_function_handler(extra_functions, extra_functions_args, names, interac
         extra_functions_args.append([None, None, True])
 
     if pos_2d:
-        extra_functions.append(position_2d.position_2d)
+        extra_functions.append(position_mars_2d.position_mars_2d)
         extra_functions_args.append([None])
     if pos_3d:
-        extra_functions.append(position_3d.position_3d)
+        extra_functions.append(position_mars_3d.position_mars_3d)
         extra_functions_args.append([None])
 
     static_list = [i for i in names if 'static' in pytplot.data_quants[i].attrs['plot_options']['extras']]
