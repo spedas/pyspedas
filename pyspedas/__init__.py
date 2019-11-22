@@ -27,6 +27,7 @@ from .analysis.tinterpol import tinterpol
 from .analysis.subtract_average import subtract_average
 from .analysis.subtract_median import subtract_median
 from .analysis.time_clip import time_clip
+from .analysis.tdpwrspc import tdpwrspc
 from pytplot import cdf_to_tplot
 from .spdtplot.tplot_names import tplot_names
 
