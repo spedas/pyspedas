@@ -8,7 +8,7 @@ import pytplot
 
 from .download_files_utilities import *
 from .orbit_time import orbit_time
-
+from .maven_kp_to_tplot import maven_kp_to_tplot
 
 def maven_filenames(filenames=None,
                     instruments=None,
@@ -95,13 +95,14 @@ def maven_filenames(filenames=None,
 
     # Grab KP data too, there is a lot of good ancillary info in here
     if instruments != 'kp':
+        instrument='kp'
         # Build the query to the website
         query_args = []
         query_args.append("instrument=kp")
         query_args.append("level=insitu")
         query_args.append("start_date=" + start_date)
         query_args.append("end_date=" + end_date)
-        data_dir = os.path.join(mvn_root_data_dir, 'maven', 'data', 'sci', instrument, level)
+        data_dir = os.path.join(mvn_root_data_dir, 'maven', 'data', 'sci', 'kp', 'insitu')
         query = '&'.join(query_args)
         s = get_filenames(query, public)
         if not s:
@@ -147,21 +148,29 @@ def load_data(filenames=None,
     for instr in maven_files.keys():
         if maven_files[instr]:
             s = maven_files[instr][0]
-            #Add to list of files to load
-            for f in s:
-                full_path = create_dir_if_needed(f, data_dir, level)
-                files_to_load.append(os.path.join(full_path, f))
-
             data_dir = maven_files[instr][1]
             public = maven_files[instr][2]
+
+            # Add to list of files to load
+            for f in s:
+                if instr == 'kp':
+                    full_path = create_dir_if_needed(f, data_dir, 'insitu')
+                else:
+                    full_path = create_dir_if_needed(f, data_dir, level)
+                files_to_load.append(os.path.join(full_path, f))
+
             if list_files:
                 for f in s:
                     print(f)
                 return
 
             if new_files:
-                s = get_new_files(s, data_dir, instr, level)
-
+                if instr == 'kp':
+                    s = get_new_files(s, data_dir, instr, 'insitu')
+                else:
+                    s = get_new_files(s, data_dir, instr, level)
+            if len(s) == 0:
+                continue
             print("Your request will download a total of: "+str(len(s))+" files for instrument "+str(instr))
             print('Would you like to proceed with the download? ')
             valid_response = False
@@ -208,16 +217,23 @@ def load_data(filenames=None,
         sts_files = [f for f in files_to_load if '.sts' in f]
         kp_files = [f for f in files_to_load if '.tab' in f]
 
-        downloaded_tplot_vars = []
+        loaded_tplot_vars = []
         if not download_only:
             # Create tplot variables
-            downloaded_tplot_vars.append(pytplot.cdf_to_tplot(cdf_files, varformat=varformat,
-                                                         get_support_data=get_support_data, prefix=prefix,
-                                                         suffix=suffix, merge=True))
-            downloaded_tplot_vars.append(pytplot.sts_to_tplot(cdf_files, prefix=prefix,
-                                                              suffix=suffix, merge=True))
+            for f in cdf_files:
+                desc = l2_regex.match(f).group("description")
+                if desc is not '' and suffix == None:
+                    suffix = "_"+desc
+                loaded_tplot_vars.append(pytplot.cdf_to_tplot(f, varformat=varformat,
+                                                             get_support_data=get_support_data, prefix=prefix,
+                                                             suffix=suffix, merge=True))
+            for f in sts_files:
+                desc = l2_regex.match(f).group("description")
+                if desc is not '' and suffix == None:
+                    suffix = "_" + desc
+                loaded_tplot_vars.append(pytplot.sts_to_tplot(f, prefix=prefix,
+                                                                  suffix=suffix, merge=True))
 
-            downloaded_tplot_vars.append(pytplot.sts_to_tplot(cdf_files, prefix=prefix,
-                                                              suffix=suffix, merge=True))
+            loaded_tplot_vars.append(maven_kp_to_tplot(filename=kp_files))
 
-            return downloaded_tplot_vars
+            return loaded_tplot_vars
