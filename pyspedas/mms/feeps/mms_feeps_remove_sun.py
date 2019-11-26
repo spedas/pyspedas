@@ -58,3 +58,5 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
                 out_vars.append(var_name+'_sun_removed'+suffix)
             except Warning:
                 continue
+
+    return out_vars

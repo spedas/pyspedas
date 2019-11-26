@@ -608,13 +608,15 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
            for data_unit in data_units:
                eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
 
-               mms_feeps_split_integral_ch(data_unit, datatype, probe, suffix=suffix, data_rate=data_rate, level=level, sensor_eyes=eyes)
+               split_vars = mms_feeps_split_integral_ch(data_unit, datatype, probe, suffix=suffix, data_rate=data_rate, level=level, sensor_eyes=eyes)
 
-               mms_feeps_remove_sun(eyes, trange, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
+               sun_removed_vars = mms_feeps_remove_sun(eyes, trange, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
 
-               mms_feeps_omni(eyes, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
+               omni_vars = mms_feeps_omni(eyes, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
 
-               mms_feeps_spin_avg(probe=probe, data_units=data_unit, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix)
+               tvars = tvars + split_vars + sun_removed_vars + omni_vars
+               
+               tvars.append(mms_feeps_spin_avg(probe=probe, data_units=data_unit, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix))
 
     return tvars
 

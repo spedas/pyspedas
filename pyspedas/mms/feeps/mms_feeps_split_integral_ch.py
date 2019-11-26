@@ -5,6 +5,8 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
         print('Error: sensor_eyes not defined')
         return
 
+    out_vars = []
+
     top_sensors = sensor_eyes['top']
     bot_sensors = sensor_eyes['bottom']
 
@@ -17,6 +19,8 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
         try:
             pytplot.store_data(top_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
             pytplot.store_data(top_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
+            out_vars.append(top_name_out)
+            out_vars.append(top_name+'_500keV_int'+suffix)
         except Warning:
             continue
 
@@ -34,7 +38,11 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
         try:
             pytplot.store_data(bot_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
             pytplot.store_data(bot_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
+            out_vars.append(bot_name_out)
+            out_vars.append(bot_name+'_500keV_int'+suffix)
         except Warning:
             continue
 
         pytplot.del_data(bot_name)
+
+    return out_vars
