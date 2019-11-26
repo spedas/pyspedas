@@ -6,6 +6,32 @@ from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas.mms.feeps.mms_feeps_pad_spinavg import mms_feeps_pad_spinavg
 
 def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suffix='', datatype='electron', data_units='intensity', data_rate='srvy', angles_from_bfield=False):
+    """
+    This function will calculate pitch angle distributions using data from the MMS Fly's Eye Energetic Particle Sensor (FEEPS)
+    
+    Parameters:
+        probe: str
+            probe #, e.g., '4' for MMS4
+        data_units: str
+            'intensity' 
+        datatype: str
+            'electron' or 'ion'
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+        level: str
+            data level
+        suffix: str
+            suffix of the loaded data
+        energy: list of float
+            energy range to include in the calculation
+        bin_size: float
+            size of the pitch angle bins
+        angles_from_bfield: bool
+            calculate the pitch angles from the B-field data instead of reading from the CDFs
+
+    Returns:
+        List of tplot variables created.
+    """
 
     # account for angular response (finite field of view) of instruments
     # electrons can use +/- 21.4 deg on each pitch angle as average response angle; ions can start with +/-10 deg, but both need to be further refined
