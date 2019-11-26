@@ -1,63 +1,70 @@
-'''
- PURPOSE:
-       Apply flat field correction factors to FEEPS ion/electron data;
-       correct factors are from the gain factor found in:
-       
-           FlatFieldResults_V3.xlsx
-           
-       from Drew Turner, 1/19/2017
-
- NOTES:
-    
-   From Drew Turner, 1/18/17:
-       Here are the correction factors that we need to apply to the current 
-       ION counts/rates/fluxes in the CDF files.  
-       NOTE, THIS IS A DIFFERENT TYPE OF CORRECTION THAN THAT FOR THE ELECTRONS!  
-       These shifts should be applied to the counts/rates/fluxes data EYE-BY-EYE on each spacecraft.  
-       These are multiplication factors (i.e., Jnew = Jold * Gcorr). 
-       For those equations, Jold is the original count/rate/flux array and
-       Jnew is the corrected version of the arrays using the factors listed below.
-       
-        MMS1:
-        Top6: Gcorr = 0.7
-        Top7: Gcorr = 2.5
-        Top8: Gcorr = 1.5
-        Bot6: Gcorr = 0.9
-        Bot7: Gcorr = 1.2
-        Bot8: Gcorr = 1.0
-
-        MMS2:
-        Top6: Gcorr = 1.3
-        Top7: BAD EYE
-        Top8: Gcorr = 0.8
-        Bot6: Gcorr = 1.4
-        Bot7: BAD EYE
-        Bot8: Gcorr = 1.5
-
-        MMS3:
-        Top6: Gcorr = 0.7
-        Top7: Gcorr = 0.8
-        Top8: Gcorr = 1.0
-        Bot6: Gcorr = 0.9
-        Bot7: Gcorr = 0.9
-        Bot8: Gcorr = 1.3
-
-        MMS4:
-        Top6: Gcorr = 0.8
-        Top7: BAD EYE
-        Top8: Gcorr = 1.0
-        Bot6: Gcorr = 0.8
-        Bot7: Gcorr = 0.6
-        Bot8: Gcorr = 0.9
-
-'''
-
 import numpy as np
 import pytplot
 from pytplot import get_data, store_data
 from pyspedas import tnames
 
 def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 'brst', suffix = ''):
+    """
+       Apply flat field correction factors to FEEPS ion/electron data;
+       correct factors are from the gain factor found in:
+       
+           FlatFieldResults_V3.xlsx
+           
+       from Drew Turner, 1/19/2017
+    
+    Parameters:
+        probes: list of str
+            list of probes #, e.g., '4' for MMS4
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+
+        suffix: str
+            suffix of the loaded data
+
+    Notes:
+        From Drew Turner, 1/18/17:
+           Here are the correction factors that we need to apply to the current 
+           ION counts/rates/fluxes in the CDF files.  
+           NOTE, THIS IS A DIFFERENT TYPE OF CORRECTION THAN THAT FOR THE ELECTRONS!  
+           These shifts should be applied to the counts/rates/fluxes data EYE-BY-EYE on each spacecraft.  
+           These are multiplication factors (i.e., Jnew = Jold * Gcorr). 
+           For those equations, Jold is the original count/rate/flux array and
+           Jnew is the corrected version of the arrays using the factors listed below.
+           
+            MMS1:
+            Top6: Gcorr = 0.7
+            Top7: Gcorr = 2.5
+            Top8: Gcorr = 1.5
+            Bot6: Gcorr = 0.9
+            Bot7: Gcorr = 1.2
+            Bot8: Gcorr = 1.0
+
+            MMS2:
+            Top6: Gcorr = 1.3
+            Top7: BAD EYE
+            Top8: Gcorr = 0.8
+            Bot6: Gcorr = 1.4
+            Bot7: BAD EYE
+            Bot8: Gcorr = 1.5
+
+            MMS3:
+            Top6: Gcorr = 0.7
+            Top7: Gcorr = 0.8
+            Top8: Gcorr = 1.0
+            Bot6: Gcorr = 0.9
+            Bot7: Gcorr = 0.9
+            Bot8: Gcorr = 1.3
+
+            MMS4:
+            Top6: Gcorr = 0.8
+            Top7: BAD EYE
+            Top8: Gcorr = 1.0
+            Bot6: Gcorr = 0.8
+            Bot7: Gcorr = 0.6
+            Bot8: Gcorr = 0.9
+    """
+    
     G_corr = {}
     G_corr['mms1-top6'] = 0.7
     G_corr['mms1-top7'] = 2.5
