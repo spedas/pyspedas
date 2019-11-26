@@ -110,8 +110,11 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                     options(new_name, 'ytitle', 'MMS' + str(probe_id) + ' ' + datatype_id + ' PA (deg)')
                     out_vars.append(new_name)
 
-                store_data(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads', data={'x': flux_times, 'y': pa_flux, 'v1': pa_label, 'v2': omni_energies[these_energies]})
-                out_vars.append(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
+                try:
+                    store_data(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads', data={'x': flux_times, 'y': pa_flux, 'v1': pa_label, 'v2': omni_energies[these_energies]})
+                    out_vars.append(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
+                except ValueError: # kludge to avoid crash in case of single energy
+                    print('Problem creating: ' + prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
 
                 # CREATE PAD VARIABLE INTEGRATED OVER USER-DEFINED ENERGY RANGE
                 energy_range_string = str(int(flux_energies[these_energies[0]])) + '-' + str(int(flux_energies[these_energies[-1]])) + 'keV'
