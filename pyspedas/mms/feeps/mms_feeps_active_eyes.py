@@ -21,7 +21,7 @@ def mms_feeps_active_eyes(trange, probe, data_rate, species, level):
             data level
 
     Returns:
-        Hash table containing 2 hash tables:
+        Hash table containing 2 keys:
             output['top'] -> maps to the active top eyes
             output['bottom'] -> maps to the active bottom eyes
 
