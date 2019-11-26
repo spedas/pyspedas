@@ -5,6 +5,43 @@ from pytplot import get_data, store_data, options
 from pyspedas.mms.eis.mms_eis_pad_spinavg import mms_eis_pad_spinavg
 
 def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', data_rate='srvy', datatype='extof', species='proton', data_units='flux', energy=[55, 800], size_pabin=15, suffix=''):
+    """
+    Calculate pitch angle distributions using data from the MMS Energetic Ion Spectrometer (EIS)
+    
+    Parameters:
+        scopes: list of str
+            telescope #s to include in the calculation
+
+        probe: str
+            probe #, e.g., '4' for MMS4
+
+        level: str
+            data level for calculation (default: 'l2')
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
+
+        datatype: str
+            'extof' or 'phxtof' (default: 'extof')
+
+        species: str
+            species for calculation (default: 'proton')
+
+        data_units: str
+            'flux' or 'cps' (default: 'flux')
+
+        energy: list of float
+            energy range to include in the calculation (default: [55, 800])
+
+        size_pabin: int
+            size of the pitch angle bins, in degrees (default: 15)
+
+        suffix: str
+            suffix of the loaded data
+
+    Returns:
+        Name of tplot variable created.
+    """
 
     # allow for the user to input probe, datatype and species as a string or a list of strings
     if not isinstance(probe, list): probe = [probe]

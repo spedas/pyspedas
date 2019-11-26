@@ -9,14 +9,22 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     Parameters:
         probe: str
             probe #, e.g., '4' for MMS4
-        data_units: str
-            'flux' 
+
+        species: str
+            species for calculation (default: 'proton')
+
         datatype: str
-            'extof' or 'phxtof'
-        data_rate: str
-            instrument data rate, e.g., 'srvy' or 'brst'
+            'extof' or 'phxtof' (default: 'extof')
+
         suffix: str
             suffix of the loaded data
+
+        data_units: str
+            'flux' or 'cps' (default: 'flux')
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
+
 
     Returns:
         Name of tplot variable created.
