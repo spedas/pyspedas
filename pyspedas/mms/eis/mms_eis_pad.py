@@ -40,7 +40,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
             suffix of the loaded data
 
     Returns:
-        Name of tplot variable created.
+        Name of tplot variables created.
     """
 
     # allow for the user to input probe, datatype and species as a string or a list of strings
