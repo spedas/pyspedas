@@ -1,24 +1,35 @@
-'''
+import numpy as np
 
+def mms_feeps_energy_table(probe, eye, sensor_id):
+    """
     This function returns the energy table based on
     each spacecraft and eye; based on the table from:
 
        FlatFieldResults_V3.xlsx
        
     from Drew Turner, 1/19/2017
+    
+    Parameters:
+        probe: str
+            probe #, e.g., '4' for MMS4
 
-    NOTES:
+        eye: str
+            sensor eye #
+
+        sensor_id: int
+            sensor ID
+
+    Returns:
+        Energy table 
+
+    Notes:
         BAD EYES are replaced by NaNs
 
         - different original energy tables are used depending on if the sensor head is 6-8 (ions) or not (electrons)
 
         Electron Eyes: 1, 2, 3, 4, 5, 9, 10, 11, 12
         Ion Eyes: 6, 7, 8
-'''
-
-import numpy as np
-
-def mms_feeps_energy_table(probe, eye, sensor_id):
+    """
 
     table = {}
     table['mms1-top'] = [14.0, 7.0, 16.0, 14.0, 14.0, 0.0, 0.0, 0.0, 14.0, 14.0, 17.0, 15.0]
