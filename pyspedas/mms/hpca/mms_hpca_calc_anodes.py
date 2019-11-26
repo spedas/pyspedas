@@ -13,7 +13,6 @@ def mms_hpca_anodes(fov=[0, 360]):
     anodes = mms_hpca_elevations()
     return [i for i, anode in enumerate(anodes) if anode >= float(fov[0]) and anode <= float(fov[1])]
 
-
 def mms_hpca_sum_fov(times, data, angles, energies, fov=[0, 360], anodes=None):
     anodes_in_fov = mms_hpca_anodes(fov=fov)
     data_within_fov = data[:,anodes_in_fov,:]
@@ -27,11 +26,14 @@ def mms_hpca_avg_fov(times, data, angles, energies, fov=[0, 360], anodes=None):
 def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
     """
     This function will sum (or average, for flux) the HPCA data over the requested field-of-view (fov)
+    
     Parameters:
         fov : list of int
             field of view, in angles, from 0-360
+
         probe : str
             probe #, e.g., '4' for MMS4
+
         suffix: str
             suffix of the loaded data
 
