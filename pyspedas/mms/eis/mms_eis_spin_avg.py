@@ -27,6 +27,13 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
     else:
         prefix = 'mms' + probe + '_epd_eis_'
 
+    if data_units == 'flux':
+        units_label = '1/(cm^2-sr-s-keV)'
+    elif data_units == 'cps':
+        units_label = '1/s'
+    elif data_units == 'counts':
+        units_label = 'counts'
+
     spin_times, spin_nums = get_data(prefix + datatype + '_spin' + suffix)
 
     if spin_nums is not None:
@@ -51,6 +58,8 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
                 current_start = spin_starts[spin_idx] + 1
 
             store_data(this_scope + '_spin' + suffix, data={'x': flux_times[spin_starts], 'y': spin_avg_flux, 'v': energies})
+            options(this_scope + '_spin' + suffix, 'ztitle', units_label)
+            options(this_scope + '_spin' + suffix, 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species + ' (spin) Energy [keV]')
             options(this_scope + '_spin' + suffix, 'spec', True)
             options(this_scope + '_spin' + suffix, 'ylog', True)
             options(this_scope + '_spin' + suffix, 'zlog', True)
