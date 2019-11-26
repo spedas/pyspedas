@@ -10,12 +10,19 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
     Parameters:
         probe: str
             probe #, e.g., '4' for MMS4
+
+        species: str
+            species for calculation (default: 'proton')
+            
         data_units: str
-            'flux' 
+            'flux' or 'cps' (default: 'flux')
+
         datatype: str
-            'extof' or 'phxtof'
+            'extof' or 'phxtof' (default: 'extof')
+
         data_rate: str
-            instrument data rate, e.g., 'srvy' or 'brst'
+            instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
+
         suffix: str
             suffix of the loaded data
 
