@@ -1,10 +1,31 @@
-
 import numpy as np
 import datetime as dt
 from pyspedas import time_string, time_double, tnames
 import pytplot
 
 def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'electron', level = 'l2', suffix = ''):
+    """
+    This function removes bad eyes, bad lowest energy channels based on data from Drew Turner
+    
+    Parameters:
+        probe: str
+            probe #, e.g., '4' for MMS4
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+
+        datatype: str
+            'electron' or 'ion'
+
+        level: str
+            data level
+
+        suffix: str
+            suffix of the loaded data
+
+    Returns:
+        None
+    """
     data_rate_level = data_rate + '_' + level
 
     # electrons first, remove bad eyes

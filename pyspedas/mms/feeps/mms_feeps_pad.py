@@ -12,20 +12,28 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     Parameters:
         probe: str
             probe #, e.g., '4' for MMS4
+
         data_units: str
             'intensity' 
+
         datatype: str
             'electron' or 'ion'
+
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst'
+
         level: str
             data level
+
         suffix: str
             suffix of the loaded data
+
         energy: list of float
             energy range to include in the calculation
+
         bin_size: float
             size of the pitch angle bins
+            
         angles_from_bfield: bool
             calculate the pitch angles from the B-field data instead of reading from the CDFs
 
