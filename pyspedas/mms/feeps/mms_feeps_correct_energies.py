@@ -1,20 +1,29 @@
-'''
- PURPOSE:
-       This function modifies the energy table in FEEPS spectra (intensity, count_rate, counts) variables
-       using the function: mms_feeps_energy_table (which is s/c, sensor head and sensor ID dependent)
-
- NOTES:
-     BAD EYES are replaced by NaNs
-
-'''
-
 import pytplot
 from pytplot import get_data, store_data
 from .mms_feeps_energy_table import mms_feeps_energy_table
 from pyspedas import tnames
 
 def mms_feeps_correct_energies(probes, data_rate, level='l2', suffix=''):
+    """
+    This function modifies the energy table in FEEPS spectra (intensity, count_rate, counts) variables
+       using the function: mms_feeps_energy_table (which is s/c, sensor head and sensor ID dependent)
+    
+    Parameters:
+        probes: list of str
+            list of probes #, e.g., '4' for MMS4
 
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+
+        level: str
+            data level (default: 'l2')
+
+        suffix: str
+            suffix of the loaded data
+
+    Notes:
+        BAD EYES are replaced by NaNs
+    """
     types = ['top', 'bottom']
     sensors = range(1, 13)
     units_types = ['intensity', 'count_rate']
