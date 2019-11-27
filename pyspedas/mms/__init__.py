@@ -622,7 +622,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
 @print_vars
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='extof',
-        varformat=None, get_support_data=True, prefix='', suffix='', time_clip=False, no_update=False,
+        varformat=None, get_support_data=True, suffix='', time_clip=False, no_update=False,
         available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None):
     """
     This function loads EIS data into tplot variables
@@ -657,10 +657,6 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
-
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -697,7 +693,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     """
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis',
-            datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix='', suffix='',
+            datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix='', suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
             major_version=major_version, min_version=min_version, cdf_version=cdf_version)
 
@@ -734,9 +730,9 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                     o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
                     a_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='alpha', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
-                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id)
-                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id)
-                    a_omni_spectra = mms_eis_omni(probe_id, species='alpha', data_rate=data_rate_id, datatype=datatype_id)
+                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+                    a_omni_spectra = mms_eis_omni(probe_id, species='alpha', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     # create spin averaged omni-directional spectra
                     p_omni_spectra_spin = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
                     o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
@@ -767,8 +763,8 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                     p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
                     o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
-                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id)
-                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id)
+                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     # create spin averaged omni-directional spectra
                     p_omni_spectra_spin = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
                     o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')

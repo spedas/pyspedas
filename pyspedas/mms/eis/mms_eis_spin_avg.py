@@ -64,14 +64,14 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
                     spin_avg_flux[spin_idx-1, :] = np.nanmean(flux_data[current_start:spin_starts[spin_idx]+1, :], axis=0)
                 current_start = spin_starts[spin_idx] + 1
 
-            store_data(this_scope + '_spin' + suffix, data={'x': flux_times[spin_starts], 'y': spin_avg_flux, 'v': energies})
-            options(this_scope + '_spin' + suffix, 'ztitle', units_label)
-            options(this_scope + '_spin' + suffix, 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species + ' (spin) Energy [keV]')
-            options(this_scope + '_spin' + suffix, 'spec', True)
-            options(this_scope + '_spin' + suffix, 'ylog', True)
-            options(this_scope + '_spin' + suffix, 'zlog', True)
-            options(this_scope + '_spin' + suffix, 'Colormap', 'jet')
-            out_vars.append(this_scope + '_spin' + suffix)
+            store_data(this_scope + '_spin', data={'x': flux_times[spin_starts], 'y': spin_avg_flux, 'v': energies})
+            options(this_scope + '_spin', 'ztitle', units_label)
+            options(this_scope + '_spin', 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species + ' (spin) Energy [keV]')
+            options(this_scope + '_spin', 'spec', True)
+            options(this_scope + '_spin', 'ylog', True)
+            options(this_scope + '_spin', 'zlog', True)
+            options(this_scope + '_spin', 'Colormap', 'jet')
+            out_vars.append(this_scope + '_spin')
         return out_vars
     else:
         print('Error, problem finding EIS spin variable to calculate spin-averages')
