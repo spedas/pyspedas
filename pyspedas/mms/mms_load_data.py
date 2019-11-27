@@ -28,6 +28,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     major_version=False, min_version=None, cdf_version=None):
     """
     This function loads MMS data into pyTplot variables
+
+    This function is not meant to be called directly. Please see the individual load routines for documentation and use. 
+
     """
 
     if not isinstance(probe, list): probe = [probe]

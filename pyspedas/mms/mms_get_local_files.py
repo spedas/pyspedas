@@ -18,16 +18,24 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
     Parameters:
         probe: str
             probe #, e.g., '4' for MMS4
+
         instrument: str
             instrument name, e.g., 'fpi' or 'fgm'
+
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst'
+
         level: str
             data level, e.g., 'l2'
+
         datatype: str
             'electron' or 'ion'
+
         trange: list of str
             two-element array containing the start and end date/times
+
+        mirror: bool
+            if True, copy files from network mirror to local data directory
 
     Returns:
         List of file paths.

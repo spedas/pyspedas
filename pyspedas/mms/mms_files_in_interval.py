@@ -8,6 +8,15 @@ def mms_files_in_interval(in_files, trange):
     This function filters the file list returned by the SDC to the requested time range. This filter is purposefully 
     liberal, it regularly grabs an extra file due to special cases
 
+    Parameters:
+        in_files: list of dict
+            List of hash tables containing files returned by the SDC
+
+        trange : list of str
+            time range of interest [starttime, endtime] with the format 
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
     Returns:
         List of hash tables containing file names, sizes and their time tags
 
