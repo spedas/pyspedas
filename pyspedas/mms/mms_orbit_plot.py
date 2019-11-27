@@ -5,6 +5,28 @@ from pytplot import get_data
 from . import mms_load_mec
 
 def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], data_rate='srvy', xrange=None, yrange=None, plane='xy', coord='gse'):
+    """
+    This function creates MMS orbit plots
+    
+    Parameters:
+        trange : list of str
+            time range of interest [starttime, endtime] with the format 
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
+        probe: list of str
+            probe #, e.g., '4' for MMS4
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+
+        plane: str
+            coordinate plane to plot (options: 'xy', 'yz', 'xz')
+
+        coord: str
+            coordinate system
+
+    """
     spacecraft_colors = [(0,0,0), (213/255,94/255,0), (0,158/255,115/255), (86/255,180/255,233/255)]
 
     mec_vars = mms_load_mec(trange=trange, data_rate=data_rate, probe=probes, varformat='*_r_' + coord, time_clip=True)
