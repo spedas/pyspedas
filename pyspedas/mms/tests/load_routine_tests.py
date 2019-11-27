@@ -16,11 +16,21 @@ class DSPLoadTestCases(unittest.TestCase):
         data = mms_load_dsp(trange=['2015-08-01','2015-09-01'], datatype='swd', level='l2', data_rate='fast')
         self.assertTrue(data_exists('mms1_dsp_swd_E12_Counts'))
 
+    def test_load_epsd_bpsd_data(self):
+        data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype=['epsd', 'bpsd'], level='l2', data_rate='fast')
+        self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
+        self.assertTrue(data_exists('mms1_dsp_bpsd_omni'))
+
 class FEEPSLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
+
+    def test_load_suffix(self):
+        data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
+        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_test'))
+        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin_test'))
 
     def test_load_brst_data(self):
         del_data('*')
@@ -41,9 +51,13 @@ class FEEPSLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni_spin'))
 
 class EISLoadTestCases(unittest.TestCase):
-    def test_load_default_data(self):
+    def test_load_phxtof_data(self):
         data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='phxtof')
         self.assertTrue(data_exists('mms1_epd_eis_phxtof_proton_flux_omni'))
+
+    def test_load_extof_data(self):
+        data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='extof')
+        self.assertTrue(data_exists('mms1_epd_eis_extof_proton_flux_omni'))
 
 class FPILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
