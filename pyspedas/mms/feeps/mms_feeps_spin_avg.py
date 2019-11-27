@@ -1,4 +1,3 @@
-
 import warnings
 import numpy as np
 from pytplot import get_data, store_data, options
@@ -10,14 +9,19 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
     Parameters:
         probe: str
             probe #, e.g., '4' for MMS4
+
         data_units: str
             'intensity' or 'count_rate'
+
         datatype: str
             'electron' or 'ion'
+
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst'
+
         level: str
             data level, e.g., 'l2'
+            
         suffix: str
             suffix of the loaded data
 
