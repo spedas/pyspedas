@@ -2,21 +2,33 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
-def mms_hpca_spin_sum(probe = '1', datatypes=None, species=['hplus', 'oplus', 'oplusplus', 'heplus', 'heplusplus'], fov=['0', '360'], avg=False):
+def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'oplusplus', 'heplus', 'heplusplus'], fov=['0', '360'], avg=False):
     """
     This function will sum (or average, when the avg keyword is set to True) the HPCA data over each spin
     
     Parameters:
         fov : list of str
             field of view, in angles, from 0-360
+
         probe : str
             probe #, e.g., '4' for MMS4
+
+        datatypes: list of str
+            datatypes to spin-sum; defaults to all datatypes
+
+        species: list of str
+            HPCA species; defaults to all species
+
         suffix: str
             suffix of the loaded data
+
+        avg: bool
+            spin-average the data instead of spin-summing the data
 
     Returns:
         List of tplot variables created.
     """
+
     if datatypes is None:
         datatypes = ['*_count_rate', '*_RF_corrected', '*_bkgd_corrected', '*_norm_counts', '*_flux']
     else:

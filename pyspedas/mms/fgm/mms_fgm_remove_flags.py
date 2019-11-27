@@ -18,6 +18,9 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
         level : str
             indicates level of data processing. the default if no level is specified is 'l2'
 
+        instrument : str
+            instrument; probably 'fgm'
+            
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
