@@ -46,7 +46,7 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
 
     var_name = prefix + data_rate + '_' + level + '_' + datatype + '_' + data_units + '_omni'
 
-    times, data, energies = get_data(var_name)
+    times, data, energies = get_data(var_name + suffix)
 
     spin_avg_flux = np.zeros([len(spin_starts), len(energies)])
 

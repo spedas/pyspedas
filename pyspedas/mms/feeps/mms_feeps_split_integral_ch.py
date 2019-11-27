@@ -57,7 +57,7 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
         except Warning:
             continue
 
-        pytplot.del_data(top_name)
+        pytplot.del_data(top_name+suffix)
 
     if level == 'sitl': # SITL only has top sensors
         return
@@ -76,6 +76,6 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
         except Warning:
             continue
 
-        pytplot.del_data(bot_name)
+        pytplot.del_data(bot_name+suffix)
 
     return out_vars

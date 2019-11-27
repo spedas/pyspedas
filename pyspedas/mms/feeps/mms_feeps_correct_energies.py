@@ -37,14 +37,14 @@ def mms_feeps_correct_energies(probes, data_rate, level='l2', suffix=''):
                     species = 'electron'
 
                 for units in units_types:
-                    var_name = tnames('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species+'_'+sensor_type+'_'+units+'_sensorid_'+str(sensor))
+                    var_name = tnames('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species+'_'+sensor_type+'_'+units+'_sensorid_'+str(sensor)+suffix)
 
                     if var_name == []:
                         continue
                     else:
                         var_name = var_name[0]
 
-                    var_data = get_data(var_name+suffix)
+                    var_data = get_data(var_name)
                     if var_data is not None:
                         times, data, energies = var_data
                     else:
@@ -53,6 +53,6 @@ def mms_feeps_correct_energies(probes, data_rate, level='l2', suffix=''):
                     energy_map = mms_feeps_energy_table(probe, sensor_type[0:3], sensor)
 
                     try:
-                        store_data(var_name+suffix, data={'x': times, 'y': data, 'v': energy_map})
+                        store_data(var_name, data={'x': times, 'y': data, 'v': energy_map})
                     except:
                         continue

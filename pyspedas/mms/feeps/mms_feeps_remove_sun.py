@@ -46,7 +46,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
     for sensor in top_sensors:
         var_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_top_'+data_units+'_sensorid_'+sensor+'_clean'
 
-        top_data_tuple = get_data(var_name)
+        top_data_tuple = get_data(var_name+suffix)
         if top_data_tuple is None:
             print('skipping variable: ' + var_name)
             continue
@@ -70,7 +70,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
         for sensor in bot_sensors:
             var_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_bottom_'+data_units+'_sensorid_'+sensor+'_clean'
 
-            bot_data_tuple = get_data(var_name)
+            bot_data_tuple = get_data(var_name+suffix)
             if bot_data_tuple is None:
                 print('skipping: ' + var_name)
                 continue
