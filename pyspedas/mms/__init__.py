@@ -417,6 +417,26 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         List of tplot variables created.
 
     """
+    if not isinstance(data_rate, list):
+        data_rate = list([data_rate])
+
+    if isinstance(datatype, str) and datatype == '':
+        # guess from data_rate
+        datatype = list()
+        for dr in data_rate:
+            if dr == 'srvy':
+                datatype.append('scsrvy')
+            if dr == 'brst':
+                datatype.extend(['scb', 'schb'])
+        datatype = list(set(datatype)) # make it unique
+    else:
+        if not isinstance(datatype, list):
+            datatype = list([datatype])
+        # ensure datatype does not contain empty string
+        datatype = list(set([dt.strip() for dt in datatype]))
+        if '' in datatype:
+            datatype.remove('')
+
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='scm',
             datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
