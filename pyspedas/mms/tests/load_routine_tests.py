@@ -239,7 +239,7 @@ class SCMLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms4_scm_acb_gse_scsrvy_srvy_l2'))
 
     def test_load_brst_data(self):
-        data = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
+        data = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], datatype='scb')
         self.assertTrue(data_exists('mms1_scm_acb_gse_scb_brst_l2'))
 
 if __name__ == '__main__':
