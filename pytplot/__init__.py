@@ -91,6 +91,7 @@ lim_info = {}
 extra_layouts = {}
 
 if using_graphics:
+    pytplotWindow_names = []
     pytplotWindows = []  # This is a list that will hold future qt windows
     from . import QtPlotter
 

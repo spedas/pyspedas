@@ -86,6 +86,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         self._setyaxislabel()
         self._addlegend()
         self._addtimebars()
+        self._addtimelistener()
         if self.crosshair:
             self._set_crosshairs()
             self._addmouseevents()
@@ -201,17 +202,18 @@ class TVarFigureMap(pg.GraphicsLayout):
 
             # get latitude and longitude arrays
             time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time'].values
-            latitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
+            latitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
             longitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
             # find closest time point to cursor
             radius = np.sqrt((latitude - index_y) ** 2 + (longitude - index_x) ** 2).argmin()
+
             time_point = time[radius]
             # get date and time
             date = (pytplot.tplot_utilities.int_to_str(time_point))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(time_point))[11:19]
 
             # add crosshairs
-            pytplot.hover_time.change_hover_time(int(mousepoint.x()), name=self.tvar_name)
+            pytplot.hover_time.change_hover_time(time_point, name=self.tvar_name)
             self.vLine.setVisible(True)
             self.hLine.setVisible(True)
             self.vLine.setPos(mousepoint.x())
@@ -349,3 +351,22 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
         self.vLine.setVisible(False)
         self.hLine.setVisible(False)
+
+    def _addtimelistener(self):
+        self.spacecraft_position = self.plotwindow.scatterPlot([], [], size=14, pen=pg.mkPen(None), brush='b')
+        pytplot.hover_time.register_listener(self._time_mover)
+
+    def _time_mover(self, time, name):
+        if name != self.tvar_name:
+            hover_time = time
+            time = \
+            pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords[
+                'time']
+            latitude = pytplot.data_quants[
+                pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
+            longitude = pytplot.data_quants[
+                pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
+            nearest_time_index = np.abs(time - hover_time).argmin()
+            lat_point = latitude[nearest_time_index]
+            lon_point = longitude[nearest_time_index]
+            self.spacecraft_position.setData([lon_point], [lat_point])

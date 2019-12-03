@@ -44,7 +44,9 @@ def tplot(name,
           extra_function_args=[],
           vert_spacing=None,
           pos_2d=False,
-          pos_3d=False):
+          pos_3d=False,
+          exec_qt=True,
+          window_name='Plot'):
     """
     This is the function used to display the tplot variables stored in memory.
     The default output is to show the plots stacked on top of one another inside of a qt window
@@ -221,7 +223,7 @@ def tplot(name,
                 exporter = None
 
             # Set up displayed plot window and grab plots to plot on it
-            available_qt_window = tplot_utilities.get_available_qt_window()
+            available_qt_window = tplot_utilities.get_available_qt_window(name=window_name)
             layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes, vert_spacing=vert_spacing)
 
             available_qt_window.newlayout(layout)
@@ -244,32 +246,33 @@ def tplot(name,
                 return
 
             # (hasattr(sys, 'ps1')) checks to see if we're in ipython
-            if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
+            if (not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION')) and exec_qt:
                 QtGui.QApplication.instance().exec_()
-
+                pass
         return
 
 
 def extra_function_handler(extra_functions, extra_functions_args, names, interactive, pos_2d, pos_3d):
-
+    functions_to_call = extra_functions
+    function_args_to_call = extra_functions_args
     # Handles the old way of calling the spec slicing plots, (if anyone still uses that way)
     if interactive:
         # Call 2D interactive window; This will only plot something when spectrograms are involved.
-        extra_functions.append(spec_slicer.spec_slicer)
-        extra_functions_args.append([None, None, True])
+        functions_to_call.append(spec_slicer.spec_slicer)
+        function_args_to_call.append([None, None, True])
 
     if pos_2d:
-        extra_functions.append(position_mars_2d.position_mars_2d)
-        extra_functions_args.append([None])
+        functions_to_call.append(position_mars_2d.position_mars_2d)
+        function_args_to_call.append([None])
     if pos_3d:
-        extra_functions.append(position_mars_3d.position_mars_3d)
-        extra_functions_args.append([None])
+        functions_to_call.append(position_mars_3d.position_mars_3d)
+        function_args_to_call.append([None])
 
     static_list = [i for i in names if 'static' in pytplot.data_quants[i].attrs['plot_options']['extras']]
     for tplot_var in static_list:
         # Call 2D static window; This will only plot something when spectrograms are involved.
-        extra_functions.append(spec_slicer.spec_slicer)
-        extra_functions_args.append(
+        functions_to_call.append(spec_slicer.spec_slicer)
+        function_args_to_call.append(
             [tplot_var, pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static'],
              False])
 
@@ -277,9 +280,9 @@ def extra_function_handler(extra_functions, extra_functions_args, names, interac
     for tplot_var in static_tavg_list:
         # Call 2D static window for time-averaged values; This will only plot something when spectrograms
         # are involved
-        extra_functions.append(spec_slicer.spec_slicer)
-        extra_functions_args.append([tplot_var,pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static_tavg'],
+        functions_to_call.append(spec_slicer.spec_slicer)
+        function_args_to_call.append([tplot_var,pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static_tavg'],
                              False])
 
-    for f, args in zip(extra_functions, extra_functions_args):
+    for f, args in zip(functions_to_call, function_args_to_call):
         f(*args)

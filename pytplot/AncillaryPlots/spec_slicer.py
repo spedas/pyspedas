@@ -25,10 +25,11 @@ def spec_slicer(var=None, time=None, interactive=False):
         labels = tplot_utilities.get_spec_slicer_axis_types(names)
 
         # Set up the 2D interactive plot
-        pytplot.pytplotWindows.append(pg.GraphicsWindow())
-        pytplot.pytplotWindows[-1].resize(1000, 600)
-        pytplot.pytplotWindows[-1].setWindowTitle('Interactive Window')
-        plot = pytplot.pytplotWindows[-1].addPlot(title='Spectrogram Slicing Plot', row=0, col=0)
+        window = pytplot.tplot_utilities.get_available_qt_window(name='Spec_Slice')
+        window.newlayout(pg.GraphicsWindow())
+        window.resize(1000, 600)
+        window.setWindowTitle('Interactive Window')
+        plot = window.centralWidget().addPlot(title='Spectrogram Slicing Plot', row=0, col=0)
         # Make it so that whenever this first starts up, you just have an empty plot
         plot_data = plot.plot([], [])
 
