@@ -8,6 +8,7 @@ from .mms_load_data import mms_load_data
 from .fgm.mms_curl import mms_curl
 from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
+from .scm.mms_scm_set_metadata import mms_scm_set_metadata
 from .edp.mms_edp_set_metadata import mms_edp_set_metadata
 from .dsp.mms_dsp_set_metadata import mms_dsp_set_metadata
 from .edi.mms_edi_set_metadata import mms_edi_set_metadata
@@ -441,6 +442,30 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
             major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+
+    if tvars == None or available or notplot or CONFIG['download_only']:
+        return tvars
+
+    coord = ''
+    if level == 'l1a':
+        coord = '123'
+    elif level == 'l1b':
+        coord = 'scm123'
+    elif level == 'l2':
+        coord = 'gse'
+
+    if not isinstance(probe, list):
+        probe = [probe]
+
+    if not isinstance(datatype, list):
+        datatype = [datatype]
+
+    probe = [str(p) for p in probe]
+
+    for p in probe:
+        for dtype in datatype:
+            mms_scm_set_metadata(tvars, p, dtype, coord, suffix=suffix)
+
     return tvars
 
 @print_vars
