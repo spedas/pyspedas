@@ -28,6 +28,7 @@ def position_mars_3d(temp=None):
         spacecraft_x = 0
         spacecraft_y = 0
         spacecraft_z = 0
+        tvar_name = 'temp' # Store the name of the tplot variable stored, so we know if we need to redraw the orbit
         def paintGL(self, region=None, viewport=None, useItemNames=False):
             glLightfv(GL_LIGHT0, GL_POSITION, [-100000,0,0,0])
             super().paintGL(region=region, viewport=viewport, useItemNames=useItemNames)
@@ -47,14 +48,17 @@ def position_mars_3d(temp=None):
 
     # Create Mars and spacecraft icons (assuming spherical spacecraft)
     md = gl.MeshData.sphere(rows=100, cols=220)
-    mars = gl.GLMeshItem(meshdata=md, smooth=True, color=(.5, 0, 0, 1))
+    mars = gl.GLMeshItem(meshdata=md, smooth=True, color=(.5, 0, 0, 1), glOptions='opaque')
     mars.translate(0, 0, 0)
     mars.scale(3390, 3390, 3390)
     spacecraft = gl.GLMeshItem(meshdata=md, smooth=True, color=(1, 1, 1, 1))
     spacecraft.translate(plot1.spacecraft_x, plot1.spacecraft_y, plot1.spacecraft_z)
-    spacecraft.scale(100, 100, 100)
+
+    spacecraft.scale(200, 200, 200)
+    orbit_path = gl.GLLinePlotItem()
     plot1.addItem(mars)
     plot1.addItem(spacecraft)
+    plot1.addItem(orbit_path)
     glMaterial(GL_FRONT_AND_BACK, GL_SPECULAR, [.5,.5,.5,1])
     glEnable(GL_COLOR_MATERIAL)
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
@@ -77,6 +81,8 @@ def position_mars_3d(temp=None):
         previous_x = plot1.spacecraft_x
         previous_y = plot1.spacecraft_y
         previous_z = plot1.spacecraft_z
+        previous_tvar = plot1.tvar_name
+
         spacecraft.translate(-1*previous_x, -1*previous_y, -1*previous_z)
 
         # Get the xarray for x/y/z positions of the spacecraft
@@ -91,6 +97,12 @@ def position_mars_3d(temp=None):
         else:
             return
 
+        if name != previous_tvar:
+            import numpy as np
+            pathasdf = np.array((x_tvar.data, y_tvar.data, z_tvar.data), dtype=float).T
+            orbit_path.setData(pos = pathasdf)
+
+
         # Get the nearest x/y/z of the hover time
         new_x = x_tvar.sel(time=t, method='nearest').values
         new_y = y_tvar.sel(time=t, method='nearest').values
@@ -99,6 +111,7 @@ def position_mars_3d(temp=None):
         # Move the spacecraft
         spacecraft.translate(new_x,new_y,new_z)
         plot1.spacecraft_x, plot1.spacecraft_y, plot1.spacecraft_z = new_x, new_y, new_z
+        plot1.tvar_name = name
         plot1.paintGL()
 
     # Register the above update function to the called functions
