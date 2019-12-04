@@ -300,15 +300,17 @@ def return_lut(name):
         return map
 
 
-def get_available_qt_window():
+def get_available_qt_window(name='Plot'):
     # Delete old windows
-    for w in pytplot.pytplotWindows:
+    for n, w in zip(pytplot.pytplotWindow_names, pytplot.pytplotWindows):
         if not w.isVisible():
             del w
-            
+            del n
+
     # Add a new one to the list
     pytplot.pytplotWindows.append(pytplot.PlotWindow())
-    
+    pytplot.pytplotWindow_names.append(name)
+
     # Return the latest window
     return pytplot.pytplotWindows[-1]
 

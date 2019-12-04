@@ -19,9 +19,9 @@ def position_mars_3d(temp=None):
         raise("In order to use the 3D position viewing tool you must pip install PyOpenGL")
 
     # Tell Pytplot about new window
-    pytplot.pytplotWindows.append(QtGui.QMainWindow())
-    pytplot.pytplotWindows[-1].resize(1000, 600)
-    pytplot.pytplotWindows[-1].setWindowTitle('3D Mars Window')
+    window = pytplot.tplot_utilities.get_available_qt_window(name='3D_MARS')
+    window.resize(1000, 600)
+    window.setWindowTitle('3D Mars Window')
 
     # Defining a new class that keeps track of spacecraft position and moves the
     class PlanetView(gl.GLViewWidget):
@@ -60,7 +60,7 @@ def position_mars_3d(temp=None):
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
 
     # Put the planetview plot into the pytplot window
-    pytplot.pytplotWindows[-1].setCentralWidget(plot1)
+    window.setCentralWidget(plot1)
 
     # Move around the camera
     glMatrixMode(GL_PROJECTION)
@@ -69,7 +69,7 @@ def position_mars_3d(temp=None):
     plot1.setCameraPosition(distance=30000, azimuth=0, elevation=0)
 
     # Turn on the window!
-    pytplot.pytplotWindows[-1].show()
+    window.show()
 
     # Define the function that is called on new hover_time updates
     def update(t,name):

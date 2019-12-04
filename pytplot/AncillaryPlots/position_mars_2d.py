@@ -11,18 +11,19 @@ def position_mars_2d(temp=None):
     MARS_DIAMETER = 3389.5 * 2
 
     # Set up the 2D interactive plot
-    pytplot.pytplotWindows.append(pg.GraphicsWindow())
-    pytplot.pytplotWindows[-1].resize(900, 300)
-    pytplot.pytplotWindows[-1].setWindowTitle('Mars Position 2D Window')
+    window = pytplot.tplot_utilities.get_available_qt_window(name='2D_MARS')
+    window.newlayout(pg.GraphicsWindow())
+    window.resize(900, 300)
+    window.setWindowTitle('Mars Position 2D Window')
 
     # Add the 3 plots for 3 different views
-    plot1 = pytplot.pytplotWindows[-1].addPlot(title='Position MSO x-y', row=0, col=0)
+    plot1 = window.centralWidget().addPlot(title='Position MSO x-y', row=0, col=0)
     plot1.setLabel('left', text = 'MSO Y', units = 'km')
     plot1.setLabel('bottom', text='MSO X', units='km')
-    plot2 = pytplot.pytplotWindows[-1].addPlot(title='Position MSO y-z', row=0, col=1)
+    plot2 = window.centralWidget().addPlot(title='Position MSO y-z', row=0, col=1)
     plot2.setLabel('left', text='MSO Z', units='km')
     plot2.setLabel('bottom', text='MSO Y', units='km')
-    plot3 = pytplot.pytplotWindows[-1].addPlot(title='Position MSO x-z', row=0, col=2)
+    plot3 = window.centralWidget().addPlot(title='Position MSO x-z', row=0, col=2)
     plot3.setLabel('left', text='MSO Z', units='km')
     plot3.setLabel('bottom', text='MSO X', units='km')
 
