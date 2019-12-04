@@ -92,7 +92,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
     varformat = varformat.replace("*", ".*")
     var_regex = re.compile(varformat)
-
+    filenames.sort()
     for filename in filenames:
         cdf_file = cdflib.CDF(filename)
         cdf_info = cdf_file.cdf_info()
@@ -277,7 +277,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         if to_merge is True:
             cur_data_quant = data_quants[var_name]
             plot_options = copy.deepcopy(data_quants[var_name].attrs['plot_options'])
-            data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time')
+            data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
             data_quants[var_name].attrs['plot_options'] = plot_options
 
     if notplot:

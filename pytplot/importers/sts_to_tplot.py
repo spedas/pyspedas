@@ -9,6 +9,7 @@ import numpy as np
 import xarray as xr
 import pytplot
 import copy
+import time
 
 def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=True, notplot=False):
     """
@@ -33,13 +34,8 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
         in a STS data file, or tplot variable names.
     """
 
-    # List of headers present in MAG STS file
-    headers = ['year', 'doy', 'hour', 'min', 'sec', 'msec', 'dday', 'outboard_b_j2000_x',
-               'outboard_b_j2000_y', 'outboard_b_j2000_z', 'outboard_b_j2000_range', 'sc_posn_x', 'sc_posn_y',
-               'sc_posn_z', 'outboard_bd_payload_x', 'outboard_bd_payload_y', 'outboard_bd_payload_z',
-               'outboard_bd_payload_range']
-
     # Create a dictionary and list in which we'll store STS variable data and variable names, respectively
+    start_t = time.time()
     sts_dict = {}
     stored_variables = []
 
@@ -51,42 +47,38 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
     else:
         print("Invalid filenames input.")
         return stored_variables
-
+    sts_file.sort()
     for s_file in sts_file:
+        column_names, vec_names = read_column_names(s_file)
+        headers = [item for sublist in column_names for item in sublist]
         with open(s_file, 'r') as f:
             lines = f.readlines()
-
         # In STS files, the beginning of the data starts after the last time 'END_OBJECT' is found
         end_objects = [l for l, line in enumerate(lines) if 'END_OBJECT' in line]
         end_headers = end_objects[-1]
         data = lines[end_headers+1:]
         data = [d.strip().split() for d in data]  # Remove extra spaces, then split on whitespaces
-
         # Create the STS dictionary
         for h, head in enumerate(headers):
-            data_column = [d[h] for d in data[:10]]
+            data_column = [d[h] for d in data]
             if head not in sts_dict:
                 sts_dict[head] = data_column
             else:
                 sts_dict[head].extend(data_column)
 
     # We need to create datetime objects from the sts_dict's year, doy, hour, min, sec, and msec data
-    year = sts_dict['year']
-    doy = sts_dict['doy']
-    hour = sts_dict['hour']
-    min = sts_dict['min']
-    sec = sts_dict['sec']
-    msec = sts_dict['msec']
+    year = sts_dict['TIME_YEAR']
+    doy = sts_dict['TIME_DOY']
+    hour = sts_dict['TIME_HOUR']
+    min = sts_dict['TIME_MIN']
+    sec = sts_dict['TIME_SEC']
+    msec = sts_dict['TIME_MSEC']
 
-    # First get year, month, and day
-    dates = [datetime.datetime.strptime('{}+{}'.format(yr, dy), '%Y+%j') for yr, dy in zip(year, doy)]
-    # Then add in the sts_dict's hour, min, sec, and msec data
-    dtimes = [d.replace(hour=int(hr), minute=int(mn), second=int(s), microsecond=int(ms), tzinfo=datetime.timezone.utc)
-              for d, hr, mn, s, ms in zip(dates, hour, min, sec, msec)]
+    dtimes = [datetime.datetime(int(yr),1,1,int(hr),int(mn),int(s),int(ms), tzinfo=datetime.timezone.utc) + datetime.timedelta(int(dy)-1)
+              for yr, dy, hr, mn, s, ms in zip(year, doy, hour, min, sec, msec)]
     sts_dict['time_unix'] = dtimes
-
     # These keys are no longer necessary, nix them
-    remove_time_keys = ['year', 'doy', 'hour', 'min', 'sec', 'msec']
+    remove_time_keys = ['TIME_YEAR', 'TIME_DOY', 'TIME_HOUR', 'TIME_MIN', 'TIME_SEC', 'TIME_MSEC']
     for key in remove_time_keys:
         try:
             sts_dict.pop(key)
@@ -114,16 +106,76 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
                     obs_specific, data={'x': sts_dict['time_unix'], 'y': [np.float(val) for val in sts_dict[var_name]]})
             except ValueError:
                 continue
-        if obs_specific not in stored_variables:
-            stored_variables.append(obs_specific)
 
         if to_merge is True:
             cur_data_quant = pytplot.data_quants[var_name]
             plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs['plot_options'])
-            pytplot.data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time')
+            pytplot.data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
             pytplot.data_quants[var_name].attrs['plot_options'] = plot_options
+
+    # Now merge vectors
+    for cn,vn in zip(column_names, vec_names):
+        if vn == 'TIME':
+            continue
+        if vn is not None:
+            names_to_join = []
+            for c in cn:
+                names_to_join.append(prefix+c+suffix)
+            pytplot.join_vec(names_to_join, vn)
+            stored_variables.append(vn)
+            pytplot.del_data(names_to_join)
+        else:
+            stored_variables.append(prefix+cn[0]+suffix)
 
     if notplot:
         return sts_dict
 
     return stored_variables
+
+
+def read_column_names(sts_file):
+    column_names = []
+    vec_names = []
+    record_object = False
+    in_scalar_and_vector_object = False
+    in_vector_object = False
+    in_scalar_object = False
+
+    with open(sts_file, 'r') as f:
+        for line in f:
+            line = line.split()
+            if line == ["OBJECT","=","RECORD"]:
+                record_object = True
+            if record_object:
+                if line == ["OBJECT", "=", "VECTOR"]:
+                    in_vector_object = True
+                    vec_column_names = []
+                if line == ["OBJECT", "=", "SCALAR"]:
+                    if in_vector_object:
+                        in_scalar_and_vector_object = True
+                    else:
+                        in_scalar_object = True
+                if line == ["END_OBJECT"]:
+                    if in_scalar_and_vector_object:
+                        in_scalar_and_vector_object = False
+                    elif in_vector_object:
+                        in_vector_object = False
+                        column_names.append(vec_column_names)
+                    elif in_scalar_object:
+                        in_scalar_object = False
+                    else:
+                        # This is where we exit
+                        return column_names, vec_names
+                if line[0] == "NAME":
+                    if in_vector_object and not in_scalar_and_vector_object:
+                        vec_name = line[-1]
+                        vec_names.append(vec_name)
+                    if in_scalar_and_vector_object:
+                        column_name = vec_name+"_"+line[-1]
+                        vec_column_names.append(column_name)
+                    if in_scalar_object:
+                        column_name = line[-1]
+                        column_names.append([column_name])
+                        vec_names.append(None)
+
+
