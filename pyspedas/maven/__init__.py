@@ -8,6 +8,7 @@ from .maven_load import load_data
 def maven_load(filenames=None,
                instruments=None,
                level='l2',
+               type=None,
                insitu=True,
                iuvs=False,
                start_date='2014-01-01',
@@ -70,7 +71,7 @@ def maven_load(filenames=None,
             will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
     """
-    tvars = load_data(filenames=filenames, instruments=instruments, level=level, insitu=insitu, iuvs=iuvs,
+    tvars = load_data(filenames=filenames, instruments=instruments, level=level, type=type, insitu=insitu, iuvs=iuvs,
                       start_date=start_date, end_date=end_date, update_prefs=update_prefs,
                       only_update_prefs=only_update_prefs, local_dir=local_dir, list_files=list_files,
                       new_files=new_files, exclude_orbit_file=exclude_orbit_file, download_only=download_only,

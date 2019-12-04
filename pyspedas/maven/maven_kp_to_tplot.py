@@ -17,7 +17,7 @@ import builtins
 import os
 
 
-def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_only=False, specified_files_only=False):
+def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_only=False, specified_files_only=False, ancillary_only=False):
     '''
     Read in a given filename in situ file into a dictionary object
     Optional keywords maybe used to downselect instruments returned
@@ -41,6 +41,8 @@ def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_o
             Optional keyword that allows you to specify you only want filenames
             given in 'filename' to be read in, not other files close in date/time
             as well.
+        ancillary_only:
+            Will only load in the spacecraft and APP info
     Output:
         A dictionary (data structure) containing up to all of the columns
             included in a MAVEN in-situ Key parameter data file.
@@ -61,6 +63,9 @@ def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_o
         print('You must specify either a set of filenames to read in, or a time frame in which '
               'you want to search for downloaded files.')
 
+    if ancillary_only:
+        instruments=['SPACECRAFT']
+
     if filename is not None:
         if not isinstance(filename, builtins.list):
             filename = [filename]
@@ -73,6 +78,7 @@ def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_o
                 iuvs_filenames.append(file)
             else:
                 filenames.append(file)
+        dates.sort()
 
         # To keep the rest of the code consistent, if someone gave a files, or files, to load, but no input_time,
         # go ahead and create an 'input_time'
@@ -98,7 +104,7 @@ def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_o
         if len(input_time[0]) <= 10:
             input_time[0] = input_time[0] + ' 00:00:00'
         if len(input_time[1]) <= 10:
-            input_time[1] = input_time[1] + ' 00:00:00'
+            input_time[1] = input_time[1] + ' 23:59:59'
         date1 = parse(input_time[0])
         date2 = parse(input_time[1])
     else:
@@ -212,6 +218,7 @@ def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_o
 
         # Read in all relavent data into a pandas dataframe called "temp"
         temp_data = []
+        filenames.sort()
         for filename in filenames:
             # Determine number of header lines
             nheader = 0
@@ -228,7 +235,7 @@ def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_o
                 for i in delete_groups:
                     del temp_data[-1][i]
 
-        temp_unconverted = pd.concat(temp_data, axis=1)
+        temp_unconverted = pd.concat(temp_data, axis=0, sort=True)
 
         # Need to convert columns
         # This is kind of a hack, but I can't figure out a better way for now
@@ -395,32 +402,80 @@ def tplot_varcreate(insitu):
     """Creates tplot variables from the insitu variable
     """
     # initialize each instrument
-
+    created_vars = []
     for obs in insitu["SPACECRAFT"]:
         obs_specific = "mvn_kp::spacecraft::" + obs.lower()
         try:
             pytplot.store_data(obs_specific, data={'x': insitu['Time'], 'y': insitu["SPACECRAFT"][obs]})
+            created_vars.append(obs_specific)
         except:
             pass
+
+    # Join together the matricies and remove the individual points
+    pytplot.join_vec(['mvn_kp::spacecraft::t11','mvn_kp::spacecraft::t12','mvn_kp::spacecraft::t13',
+                      'mvn_kp::spacecraft::t21','mvn_kp::spacecraft::t22','mvn_kp::spacecraft::t23',
+                      'mvn_kp::spacecraft::t31','mvn_kp::spacecraft::t32','mvn_kp::spacecraft::t33'],
+                     'mvn_kp::geo_to_mso_matrix')
+
+    pytplot.del_data(['mvn_kp::spacecraft::t11','mvn_kp::spacecraft::t12','mvn_kp::spacecraft::t13',
+                      'mvn_kp::spacecraft::t21','mvn_kp::spacecraft::t22','mvn_kp::spacecraft::t23',
+                      'mvn_kp::spacecraft::t31','mvn_kp::spacecraft::t32','mvn_kp::spacecraft::t33'])
+
+    pytplot.join_vec(['mvn_kp::spacecraft::spacecraft_t11', 'mvn_kp::spacecraft::spacecraft_t12',
+                      'mvn_kp::spacecraft::spacecraft_t13',
+                      'mvn_kp::spacecraft::spacecraft_t21', 'mvn_kp::spacecraft::spacecraft_t22',
+                      'mvn_kp::spacecraft::spacecraft_t23',
+                      'mvn_kp::spacecraft::spacecraft_t31', 'mvn_kp::spacecraft::spacecraft_t32',
+                      'mvn_kp::spacecraft::spacecraft_t33'],
+                     'mvn_kp::spacecraft_to_mso_matrix')
+
+    pytplot.del_data(['mvn_kp::spacecraft::spacecraft_t11', 'mvn_kp::spacecraft::spacecraft_t12',
+                      'mvn_kp::spacecraft::spacecraft_t13',
+                      'mvn_kp::spacecraft::spacecraft_t21', 'mvn_kp::spacecraft::spacecraft_t22',
+                      'mvn_kp::spacecraft::spacecraft_t23',
+                      'mvn_kp::spacecraft::spacecraft_t31', 'mvn_kp::spacecraft::spacecraft_t32',
+                      'mvn_kp::spacecraft::spacecraft_t33'])
+
+    created_vars.remove('mvn_kp::spacecraft::t11')
+    created_vars.remove('mvn_kp::spacecraft::t12')
+    created_vars.remove('mvn_kp::spacecraft::t13')
+    created_vars.remove('mvn_kp::spacecraft::t21')
+    created_vars.remove('mvn_kp::spacecraft::t22')
+    created_vars.remove('mvn_kp::spacecraft::t23')
+    created_vars.remove('mvn_kp::spacecraft::t31')
+    created_vars.remove('mvn_kp::spacecraft::t32')
+    created_vars.remove('mvn_kp::spacecraft::t33')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t11')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t12')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t13')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t21')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t22')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t23')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t31')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t32')
+    created_vars.remove('mvn_kp::spacecraft::spacecraft_t33')
 
     inst_list = ["EUV", "LPW", "STATIC", "SWEA", "SWIA", "MAG", "SEP", "NGIMS"]
     for instrument in inst_list:
         # for each observation for each instrument
         if instrument in insitu:
-            for obs in insitu[instrument]:
-                # create variable name
-                obs_specific = "mvn_kp::" + instrument.lower() + "::" + obs.lower()
-                try:
-                    # store data in tplot variable
-                    pytplot.store_data(obs_specific, data={'x': insitu['Time'], 'y': insitu[instrument][obs]})
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::altitude", link_type='alt')
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_x", link_type='x')
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_y", link_type='y')
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_z", link_type='z')
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
-                    pytplot.link(obs_specific, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
-                except:
-                    pass
+            if insitu[instrument] is not None:
+                for obs in insitu[instrument]:
+                    # create variable name
+                    obs_specific = "mvn_kp::" + instrument.lower() + "::" + obs.lower()
+                    try:
+                        # store data in tplot variable
+                        pytplot.store_data(obs_specific, data={'x': insitu['Time'], 'y': insitu[instrument][obs]})
+                        created_vars.append(obs_specific)
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::altitude", link_type='alt')
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_x", link_type='x')
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_y", link_type='y')
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_z", link_type='z')
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
+                        pytplot.link(obs_specific, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
+                    except:
+                        pass
+    return created_vars

@@ -118,6 +118,7 @@ def maven_filenames(filenames=None,
 def load_data(filenames=None,
               instruments=None,
               level='l2',
+              type=None,
               insitu=True,
               iuvs=False,
               start_date='2014-01-01',
@@ -141,6 +142,13 @@ def load_data(filenames=None,
 
     maven_files = maven_filenames(filenames, instruments, level, insitu, iuvs, start_date, end_date, update_prefs,
                                   only_update_prefs, local_dir)
+    if instruments != 'kp':
+        ancillary_only=True
+    else:
+        ancillary_only = False
+
+    if not isinstance(type, list):
+        type = [type]
 
     # Keep track of what files are downloaded
     files_to_load = []
@@ -153,10 +161,22 @@ def load_data(filenames=None,
 
             # Add to list of files to load
             for f in s:
+                # Filter by type
+                if type is not None and instr != 'kp':
+                    file_type_match = False
+                    desc = l2_regex.match(f).group("description")
+                    for t in type:
+                        if t in desc:
+                            file_type_match = True
+                    if not file_type_match:
+                        continue
+
+                # Check if the files are KP data
                 if instr == 'kp':
                     full_path = create_dir_if_needed(f, data_dir, 'insitu')
                 else:
                     full_path = create_dir_if_needed(f, data_dir, level)
+
                 files_to_load.append(os.path.join(full_path, f))
 
             if list_files:
@@ -199,7 +219,10 @@ def load_data(filenames=None,
             display_progress(i, len(s))
             for f in s:
                 i = i+1
-                full_path = create_dir_if_needed(f, data_dir, level)
+                if instr == 'kp':
+                    full_path = create_dir_if_needed(f, data_dir, 'insitu')
+                else:
+                    full_path = create_dir_if_needed(f, data_dir, level)
                 get_file_from_site(f, public, full_path)
                 display_progress(i, len(s))
 
@@ -221,19 +244,36 @@ def load_data(filenames=None,
         if not download_only:
             # Create tplot variables
             for f in cdf_files:
-                desc = l2_regex.match(f).group("description")
-                if desc is not '' and suffix == None:
-                    suffix = "_"+desc
-                loaded_tplot_vars.append(pytplot.cdf_to_tplot(f, varformat=varformat,
-                                                             get_support_data=get_support_data, prefix=prefix,
-                                                             suffix=suffix, merge=True))
+                desc = l2_regex.match(os.path.basename(f)).group("description")
+                if desc is not '' and suffix == '':
+                    loaded_tplot_vars.append(pytplot.cdf_to_tplot(f, varformat=varformat,
+                                                                 get_support_data=get_support_data, prefix=prefix,
+                                                                 suffix=desc, merge=True))
+                else:
+                    loaded_tplot_vars.append(pytplot.cdf_to_tplot(f, varformat=varformat,
+                                                                  get_support_data=get_support_data, prefix=prefix,
+                                                                  suffix=suffix, merge=True))
             for f in sts_files:
-                desc = l2_regex.match(f).group("description")
-                if desc is not '' and suffix == None:
-                    suffix = "_" + desc
-                loaded_tplot_vars.append(pytplot.sts_to_tplot(f, prefix=prefix,
+                desc = l2_regex.match(os.path.basename(f)).group("description")
+                if desc is not '' and suffix == '':
+                    loaded_tplot_vars.append(pytplot.sts_to_tplot(f, prefix=prefix,
+                                                                      suffix=desc, merge=True))
+                else:
+                    loaded_tplot_vars.append(pytplot.sts_to_tplot(f, prefix=prefix,
                                                                   suffix=suffix, merge=True))
 
-            loaded_tplot_vars.append(maven_kp_to_tplot(filename=kp_files))
+            loaded_tplot_vars.append(maven_kp_to_tplot(filename=kp_files, ancillary_only=True))
+            flat_list = [item for sublist in loaded_tplot_vars for item in sublist]
 
-            return loaded_tplot_vars
+            for tvar in flat_list:
+                pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type='alt')
+                pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type='x')
+                pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type='y')
+                pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type='z')
+                pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
+                pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
+                pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
+                pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
+                pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
+
+            return list(set(flat_list))
