@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from pytplot import get_data
 from . import mms_load_mec
 
-def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], data_rate='srvy', xrange=None, yrange=None, plane='xy', coord='gse'):
+def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], data_rate='srvy', xr=None, yr=None, plane='xy', coord='gse'):
     """
     This function creates MMS orbit plots
     
@@ -22,6 +22,12 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
 
         plane: str
             coordinate plane to plot (options: 'xy', 'yz', 'xz')
+
+        xr: list of float
+            two element list specifying x-axis range
+
+        yr: list of float
+            two element list specifying y-axis range
 
         coord: str
             coordinate system
@@ -80,6 +86,10 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
         plt.legend()
         plt.title(trange[0] + ' to ' + trange[1])
         plt.annotate(coord.upper() + ' coordinates', xy=(0.6, 0.05), xycoords='axes fraction')
+        if xr is not None:
+            plt.xlim(xr)
+        if yr is not None:
+            plt.ylim(yr)
 
         plt.show()
 
