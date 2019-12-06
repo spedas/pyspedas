@@ -36,9 +36,9 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
         units_label = '[counts/s]'
 
     if datatype == 'electron':
-        lower_en = 71
+        lower_en = 71.0
     else:
-        lower_en = 78
+        lower_en = 78.0
 
     prefix = 'mms'+str(probe)+'_epd_feeps_'
 
@@ -65,6 +65,7 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
     options(var_name + '_spin' + suffix, 'spec', True)
     options(var_name + '_spin' + suffix, 'ylog', True)
     options(var_name + '_spin' + suffix, 'zlog', True)
+    options(var_name + '_spin' + suffix, 'yrange', [lower_en, 600.0])
     options(var_name + '_spin' + suffix, 'Colormap', 'jet')
     options(var_name + '_spin' + suffix, 'ztitle', units_label)
     options(var_name + '_spin' + suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' (keV)')
