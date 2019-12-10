@@ -30,6 +30,9 @@ def link_to_tvar(name, type, link, method='linear'):
     from scipy.interpolate import interp1d
     from .store_data import store_data
 
+    if name == 'data_bands':
+        x=2
+
     # pull saved variables from data_quants
     link_timeorig = np.asarray(data_quants[link].coords['time'].values)
     link_dataorig = np.asarray(data_quants[link].values)
@@ -42,10 +45,8 @@ def link_to_tvar(name, type, link, method='linear'):
         return
 
     # shorten tvar array to be within link array
-    while tvar_timeorig[-1] > link_timeorig[-1]:
-        tvar_timeorig = np.delete(tvar_timeorig, -1)
-    while tvar_timeorig[0] < link_timeorig[0]:
-        tvar_timeorig = np.delete(tvar_timeorig, 0)
+    tvar_timeorig = np.delete(tvar_timeorig, np.argwhere(tvar_timeorig > link_timeorig[-1]))
+    tvar_timeorig = np.delete(tvar_timeorig, np.argwhere(tvar_timeorig < link_timeorig[0]))
 
     x = link_timeorig
     y = link_dataorig
