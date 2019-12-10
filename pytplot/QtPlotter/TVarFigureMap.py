@@ -143,7 +143,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                 for color in colors:
                     brushes.append(pg.mkBrush(color))
                 self.curves.append(self.plotwindow.scatterPlot(lon.tolist(), lat.tolist(),
-                                                               pen=pg.mkPen(None), brush=brushes))
+                                                               pen=pg.mkPen(None), brush=brushes, size=4))
                 cm_index += 1
 
     def _setyaxistype(self):
