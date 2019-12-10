@@ -22,7 +22,10 @@ class HoverTime(object):
     def change_hover_time(self, new_time, name=None):
         self.hover_time = new_time
         for f in self.functions_to_call:
-            f(self.hover_time, name)
+            try:
+                f(self.hover_time, name)
+            except Exception as e:
+                print(e)
         return
 
 
