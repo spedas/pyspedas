@@ -31,7 +31,7 @@ def spec_slicer(var=None, time=None, interactive=False):
         window.setWindowTitle('Interactive Window')
         plot = window.centralWidget().addPlot(title='Spectrogram Slicing Plot', row=0, col=0)
         # Make it so that whenever this first starts up, you just have an empty plot
-        plot_data = plot.plot([], [])
+        plot_data = plot.plot([], [], pen=pg.mkPen(width=6, color='k'))
 
         # The following update function is passed to change_hover_time in the HoverTime class
         # defined in __init__.py. For reference, "t" essentially originates inside of
@@ -50,6 +50,7 @@ def spec_slicer(var=None, time=None, interactive=False):
         # TODO: At some point, the indexing stuff can all be simplified with xarray functionality
         def update(t, name):
             if name in valid_variables:
+                plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(t))
                 # Get the time closest to the x position the mouse is over.
                 time_array = pytplot.data_quants[name].coords['time'].values
                 array = np.asarray(time_array)
