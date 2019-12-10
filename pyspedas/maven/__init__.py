@@ -25,7 +25,8 @@ def maven_load(filenames=None,
                suffix='',
                get_support_data=False):
     """
-    Main function for downloading MAVEN data and loading it into tplot variables (if applicable).
+    Main function for downloading MAVEN data and loading it into tplot variables (if CDF or STS data type).
+    This function will also load in MAVEN KP data for position information, and read those into tplot as well
 
     Parameters:
         filenames: str/list of str ['yyyy-mm-dd']
