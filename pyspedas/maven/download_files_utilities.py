@@ -9,7 +9,7 @@ Description:
 
 uname = ''
 pword = ''
-
+from .utilities import l2_regex, kp_regex
 
 def get_filenames(query, public):
     import urllib
@@ -239,10 +239,11 @@ def get_year_month_day_from_kp_file(f):
 
 
 def get_year_month_day_from_sci_file(f):
-    date_string = f.split('_')[4]
-    year = date_string[0:4]
-    month = date_string[4:6]
-    day = date_string[6:8]
+
+    m = l2_regex.match(f)
+    year = m.group('year')
+    month = m.group('month')
+    day = m.group('day')
 
     return year, month, day
 

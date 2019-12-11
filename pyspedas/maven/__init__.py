@@ -8,6 +8,7 @@ from .maven_load import load_data
 def maven_load(filenames=None,
                instruments=None,
                level='l2',
+               type=None,
                insitu=True,
                iuvs=False,
                start_date='2014-01-01',
@@ -16,7 +17,7 @@ def maven_load(filenames=None,
                only_update_prefs=False,
                local_dir=None,
                list_files=False,
-               new_files=False,
+               new_files=True,
                exclude_orbit_file=False,
                download_only=False,
                varformat=None,
@@ -24,13 +25,33 @@ def maven_load(filenames=None,
                suffix='',
                get_support_data=False):
     """
-    Main function for downloading MAVEN data and loading it into tplot variables (if applicable).
+    Main function for downloading MAVEN data and loading it into tplot variables (if CDF or STS data type).
+    This function will also load in MAVEN KP data for position information, and read those into tplot as well
 
     Parameters:
         filenames: str/list of str ['yyyy-mm-dd']
-            List of dates to be downloaded (eg. ['2015-12-31']).
+            List of files to load
         instruments: str/list of str
             Instruments from which you want to download data.
+            Accepted values are any combination of: sta, swi, swe, lpw, euv, ngi, iuv, mag, sep, rse
+        type: str/list of str
+            The observation/file type of the instruments to load.  If None, all file types are loaded.
+            Otherwise, a file will only be loaded into tplot if its descriptor matches one of the strings in this field.
+            See the instrument SIS for more detail on types.
+            Accepted values are:
+            =================== ====================================
+            Instrument           Level 2 Observation Type/File Type
+            =================== ====================================
+            EUV                 bands
+            LPW                 lpiv, lpnt, mrgscpot, we12, we12burstlf, we12bursthf, we12burstmf, wn, wspecact, wspecpas
+            STATIC              2a, c0, c2, c4, c6, c8, ca, cc, cd, ce, cf, d0, d1, d4, d6, d7, d8, d9, da, db
+            SEP                 s1-raw-svy-full, s1-cal-svy-full, s2-raw-svy-full, s2-cal-svy-full
+            SWEA                coarsearc3d, coarsesvy3d, finearc3d, finesvy3d, onboardsvymom, onboardsvyspec
+            SWIA                arc3d, arcpad, svy3d, svypad, svyspec
+            MAG                 ss, pc, pl, ss1s, pc1s, pl1s
+            =================== =====================================
+        level: str
+            Currently unused, defaults to using Level 2 data
         list_files: bool (True/False0
             If true, lists the files instead of downloading them.
         level: str
@@ -42,9 +63,9 @@ def maven_load(filenames=None,
         new_files: bool (True/False)
             Checks downloaded files and only downloads those that haven't already been downloaded.
         start_date: str
-            String that is the start date for downloading data (YYYY-MM-DD)
+            String that is the start date for downloading data (YYYY-MM-DD), or the orbit number
         end_date: str
-            String that is the end date for downloading data (YYYY-MM-DD)
+            String that is the end date for downloading data (YYYY-MM-DD), or the orbit number
         update_prefs: bool (True/False)
             If true, updates where you want to store data locally
         only_update_prefs: bool (True/False)
@@ -70,7 +91,7 @@ def maven_load(filenames=None,
             will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
     """
-    tvars = load_data(filenames=filenames, instruments=instruments, level=level, insitu=insitu, iuvs=iuvs,
+    tvars = load_data(filenames=filenames, instruments=instruments, level=level, type=type, insitu=insitu, iuvs=iuvs,
                       start_date=start_date, end_date=end_date, update_prefs=update_prefs,
                       only_update_prefs=only_update_prefs, local_dir=local_dir, list_files=list_files,
                       new_files=new_files, exclude_orbit_file=exclude_orbit_file, download_only=download_only,
