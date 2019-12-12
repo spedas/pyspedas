@@ -31,7 +31,11 @@ def spec_slicer(var=None, time=None, interactive=False):
         window.setWindowTitle('Interactive Window')
         plot = window.centralWidget().addPlot(title='Spectrogram Slicing Plot', row=0, col=0)
         # Make it so that whenever this first starts up, you just have an empty plot
-        plot_data = plot.plot([], [], pen=pg.mkPen(width=6, color='k'))
+        if pytplot.tplot_opt_glob['black_background']:
+            pen_color = 'w'
+        else:
+            pen_color = 'k'
+        plot_data = plot.plot([], [], pen=pg.mkPen(width=6, color=pen_color))
 
         # The following update function is passed to change_hover_time in the HoverTime class
         # defined in __init__.py. For reference, "t" essentially originates inside of

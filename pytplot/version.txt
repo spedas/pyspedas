@@ -1,4 +1,8 @@
-1.4.6
+1.4.7
+
+1.4.7 Changes:
+
+* Added two more ancillary plots, Mars 2D Map and Mars 3D Map
 
 1.4.6 Changes:
 
