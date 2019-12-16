@@ -5,7 +5,15 @@
 
 from _collections import OrderedDict
 from . import HTMLPlotter
+import os
 import sys
+
+# runs without Qt
+if not 'PYTPLOT_NO_GRAPHICS' in os.environ:
+    using_graphics = True
+else:
+    using_graphics = False
+
 
 # This variable will be constantly changed depending on what x value the user is hovering over
 class HoverTime(object):
@@ -28,8 +36,6 @@ class HoverTime(object):
                 print(e)
         return
 
-
-using_graphics = True
 
 try:
     import pyqtgraph as pg
@@ -137,8 +143,9 @@ from pytplot.tplot_math import *
 # If we are in an ipython environment, set the gui to be qt5
 # This allows the user to interact with the window in real time
 try:
-    magic = get_ipython().magic
-    magic(u'%gui qt5')
+    if using_graphics:
+        magic = get_ipython().magic
+        magic(u'%gui qt5')
 except:
     pass
 
