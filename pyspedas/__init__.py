@@ -39,3 +39,5 @@ from .mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from .maven import maven_load
+
+from . import dscovr
