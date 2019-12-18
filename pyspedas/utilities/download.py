@@ -1,15 +1,12 @@
 import os
-import re
 import warnings
 import requests
 import logging
-import urllib
 import fnmatch
 import datetime
 
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
-from urllib.parse import urlparse, urljoin
 from html.parser import HTMLParser
 
 # the following is used to parse the links from an HTML index file
