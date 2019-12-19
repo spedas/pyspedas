@@ -101,7 +101,6 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         session.auth = (username, password)
 
     out = []
-    resp_data = None
 
     if not isinstance(remote_file, list):
         remote_file = [remote_file]
@@ -109,6 +108,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
     urls = [remote_path+rfile for rfile in remote_file]
 
     for url in urls:
+        resp_data = None
         url_file = url[url.rfind("/")+1:]
         url_base = url.replace(url_file, '')
 
@@ -180,6 +180,5 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                 matching_files = fnmatch.filter(filenames, local_file[local_file.rfind("/")+1:])
                 for file in matching_files:
                     out.append(os.path.join(dirpath, file))
-
 
     return out
