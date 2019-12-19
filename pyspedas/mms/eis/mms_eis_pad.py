@@ -5,6 +5,43 @@ from pytplot import get_data, store_data, options
 from pyspedas.mms.eis.mms_eis_pad_spinavg import mms_eis_pad_spinavg
 
 def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', data_rate='srvy', datatype='extof', species='proton', data_units='flux', energy=[55, 800], size_pabin=15, suffix=''):
+    """
+    Calculate pitch angle distributions using data from the MMS Energetic Ion Spectrometer (EIS)
+    
+    Parameters:
+        scopes: list of str
+            telescope #s to include in the calculation
+
+        probe: str
+            probe #, e.g., '4' for MMS4
+
+        level: str
+            data level for calculation (default: 'l2')
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
+
+        datatype: str
+            'extof' or 'phxtof' (default: 'extof')
+
+        species: str
+            species for calculation (default: 'proton')
+
+        data_units: str
+            'flux' or 'cps' (default: 'flux')
+
+        energy: list of float
+            energy range to include in the calculation (default: [55, 800])
+
+        size_pabin: int
+            size of the pitch angle bins, in degrees (default: 15)
+
+        suffix: str
+            suffix of the loaded data
+
+    Returns:
+        Name of tplot variables created.
+    """
 
     # allow for the user to input probe, datatype and species as a string or a list of strings
     if not isinstance(probe, list): probe = [probe]
@@ -110,8 +147,11 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                     options(new_name, 'ytitle', 'MMS' + str(probe_id) + ' ' + datatype_id + ' PA (deg)')
                     out_vars.append(new_name)
 
-                store_data(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads', data={'x': flux_times, 'y': pa_flux, 'v1': pa_label, 'v2': omni_energies[these_energies]})
-                out_vars.append(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
+                try:
+                    store_data(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads', data={'x': flux_times, 'y': pa_flux, 'v1': pa_label, 'v2': omni_energies[these_energies]})
+                    out_vars.append(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
+                except ValueError: # kludge to avoid crash in case of single energy
+                    print('Problem creating: ' + prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
 
                 # CREATE PAD VARIABLE INTEGRATED OVER USER-DEFINED ENERGY RANGE
                 energy_range_string = str(int(flux_energies[these_energies[0]])) + '-' + str(int(flux_energies[these_energies[-1]])) + 'keV'

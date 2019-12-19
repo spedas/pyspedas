@@ -9,14 +9,22 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     Parameters:
         probe: str
             probe #, e.g., '4' for MMS4
-        data_units: str
-            'flux' 
+
+        species: str
+            species for calculation (default: 'proton')
+
         datatype: str
-            'extof' or 'phxtof'
-        data_rate: str
-            instrument data rate, e.g., 'srvy' or 'brst'
+            'extof' or 'phxtof' (default: 'extof')
+
         suffix: str
             suffix of the loaded data
+
+        data_units: str
+            'flux' or 'cps' (default: 'flux')
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
+
 
     Returns:
         Name of tplot variable created.
@@ -28,6 +36,13 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         prefix = 'mms' + probe + '_epd_eis_brst_'
     else: 
         prefix = 'mms' + probe + '_epd_eis_'
+
+    if data_units == 'flux':
+        units_label = '1/(cm^2-sr-s-keV)'
+    elif data_units == 'cps':
+        units_label = '1/s'
+    elif data_units == 'counts':
+        units_label = 'counts'
 
     telescopes = tnames(pattern=prefix + species_str + '_*' + data_units + '_t?'+suffix)
 
@@ -42,6 +57,8 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'spec', 1)
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ylog', 1)
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'zlog', 1)
+        options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ztitle', units_label)
+        options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species + ' Energy [keV]')
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'yrange', [14, 45])
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'Colormap', 'jet')
         return prefix + species_str + '_' + data_units + '_omni' + suffix

@@ -10,8 +10,10 @@ def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):
     Parameters:
         fov : list of int
             field of view, in angles, from 0-360
+
         probe : str
             probe #, e.g., '4' for MMS4
+            
         suffix: str
             suffix of the loaded data
 

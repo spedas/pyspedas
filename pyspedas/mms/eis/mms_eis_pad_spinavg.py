@@ -4,7 +4,40 @@ from pyspedas import tnames
 from pytplot import get_data, store_data, options
 
 def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='srvy', datatype='extof', data_units='flux', species='proton', energy=[55, 800], size_pabin=15, suffix=''):
+    """
+    Calculate spin-averaged pitch angle distributions using data from the MMS Energetic Ion Spectrometer (EIS)
+    
+    Parameters:
+        scopes: list of str
+            telescope #s to include in the calculation
 
+        probe: str
+            probe #, e.g., '4' for MMS4
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
+
+        datatype: str
+            'extof' or 'phxtof' (default: 'extof')
+
+        data_units: str
+            'flux' or 'cps' (default: 'flux')
+
+        species: str
+            species for calculation (default: 'proton')
+
+        energy: list of float
+            energy range to include in the calculation (default: [55, 800])
+
+        size_pabin: int
+            size of the pitch angle bins, in degrees (default: 15)
+
+        suffix: str
+            suffix of the loaded data
+
+    Returns:
+        Name of tplot variables created.
+    """
     en_range_string = str(int(energy[0])) + '-' + str(int(energy[1])) + 'keV'
 
     if data_units == 'cps':

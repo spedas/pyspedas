@@ -4,6 +4,37 @@ from pytplot import get_data, store_data
 import numpy as np
 
 def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', data_units='intensity', data_rate='srvy', level='l2', suffix=''):
+    """
+    Removes the sunlight contamination from FEEPS data
+    
+    Parameters:
+        sensor_eyes: dict
+            Hash table containing the active sensor eyes
+
+        trange: list of str
+            time range
+
+        probe: str
+            probe #, e.g., '4' for MMS4
+
+        datatype: str
+            'electron' or 'ion'
+
+        data_units: str
+            'intensity'
+
+        data_rate: str
+            instrument data rate, e.g., 'srvy' or 'brst'
+
+        level: str
+            data level
+
+        suffix: str
+            suffix of the loaded data
+
+    Returns:
+        List of tplot variables created.
+    """
     
     sector_times, spin_sectors = get_data('mms'+probe+'_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_spinsectnum'+suffix)
     mask_sectors = mms_read_feeps_sector_masks_csv(trange=trange)
@@ -15,7 +46,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
     for sensor in top_sensors:
         var_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_top_'+data_units+'_sensorid_'+sensor+'_clean'
 
-        top_data_tuple = get_data(var_name)
+        top_data_tuple = get_data(var_name+suffix)
         if top_data_tuple is None:
             print('skipping variable: ' + var_name)
             continue
@@ -39,7 +70,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
         for sensor in bot_sensors:
             var_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_bottom_'+data_units+'_sensorid_'+sensor+'_clean'
 
-            bot_data_tuple = get_data(var_name)
+            bot_data_tuple = get_data(var_name+suffix)
             if bot_data_tuple is None:
                 print('skipping: ' + var_name)
                 continue
@@ -58,3 +89,5 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
                 out_vars.append(var_name+'_sun_removed'+suffix)
             except Warning:
                 continue
+
+    return out_vars

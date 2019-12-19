@@ -8,6 +8,7 @@ from .mms_load_data import mms_load_data
 from .fgm.mms_curl import mms_curl
 from .fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from .fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
+from .scm.mms_scm_set_metadata import mms_scm_set_metadata
 from .edp.mms_edp_set_metadata import mms_edp_set_metadata
 from .dsp.mms_dsp_set_metadata import mms_dsp_set_metadata
 from .edi.mms_edi_set_metadata import mms_edi_set_metadata
@@ -54,7 +55,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     level='l2', instrument='fgm', datatype='', varformat=None, suffix='',
     keep_flagged=False, get_support_data=True, time_clip=False, no_update=False,
     available=False, notplot=False, latest_version=False, major_version=False, 
-    min_version=None, cdf_version=None):
+    min_version=None, cdf_version=None, spdf=False):
     """
     This function loads FGM data into tplot variables
     
@@ -121,6 +122,9 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         keep_flagged: bool
             If True, don't remove flagged data (flagged data are set to NaNs by
             default, this keyword turns this off)
+
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
             
     Returns:
         List of tplot variables created.
@@ -135,7 +139,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument=instrument,
             datatype=datatype, varformat=varformat_fetch, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, major_version=major_version, 
-            min_version=min_version, cdf_version=cdf_version)
+            min_version=min_version, cdf_version=cdf_version, spdf=spdf)
     
     if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
@@ -163,7 +167,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='moments', get_support_data=None, time_clip=False, no_update=False,
     varformat=None, suffix='', center_measurement=False, available=False, notplot=False, 
-    latest_version=False, major_version=False, min_version=None, cdf_version=None):
+    latest_version=False, major_version=False, min_version=None, cdf_version=None, spdf=False):
     """
     This function loads HPCA data into tplot variables
     
@@ -231,6 +235,9 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
+
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
             
     Returns:
         List of tplot variables created.
@@ -243,7 +250,8 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='hpca',
             datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available, 
-            latest_version=latest_version, major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+            latest_version=latest_version, major_version=major_version, min_version=min_version, cdf_version=cdf_version,
+            spdf=spdf)
     
     if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
@@ -256,7 +264,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     level='l2', datatype=['des-moms', 'dis-moms'], varformat=None, suffix='',
     get_support_data=False, time_clip=False, no_update=False, center_measurement=False,
     available=False, notplot=False, latest_version=False, major_version=False, 
-    min_version=None, cdf_version=None):
+    min_version=None, cdf_version=None, spdf=False):
     """
     This function loads FPI data into tplot variables
     
@@ -326,6 +334,9 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
+
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
             
     Returns:
         List of tplot variables created.
@@ -335,7 +346,8 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi',
             datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available, 
-            notplot=notplot, latest_version=latest_version, major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+            notplot=notplot, latest_version=latest_version, major_version=major_version, min_version=min_version, 
+            cdf_version=cdf_version, spdf=spdf)
     
     if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
@@ -348,7 +360,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='', varformat=None, suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False, latest_version=False, 
-    major_version=False, min_version=None, cdf_version=None):
+    major_version=False, min_version=None, cdf_version=None, spdf=False):
     """
     This function loads SCM data into tplot variables
     
@@ -413,21 +425,68 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
+
     Returns:
         List of tplot variables created.
 
     """
+    if not isinstance(data_rate, list):
+        data_rate = list([data_rate])
+
+    if isinstance(datatype, str) and datatype == '':
+        # guess from data_rate
+        datatype = list()
+        for dr in data_rate:
+            if dr == 'srvy':
+                datatype.append('scsrvy')
+            if dr == 'brst':
+                datatype.extend(['scb', 'schb'])
+        datatype = list(set(datatype)) # make it unique
+    else:
+        if not isinstance(datatype, list):
+            datatype = list([datatype])
+        # ensure datatype does not contain empty string
+        datatype = list(set([dt.strip() for dt in datatype]))
+        if '' in datatype:
+            datatype.remove('')
+
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='scm',
             datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
-            major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+            major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf)
+
+    if tvars == None or available or notplot or CONFIG['download_only']:
+        return tvars
+
+    coord = ''
+    if level == 'l1a':
+        coord = '123'
+    elif level == 'l1b':
+        coord = 'scm123'
+    elif level == 'l2':
+        coord = 'gse'
+
+    if not isinstance(probe, list):
+        probe = [probe]
+
+    if not isinstance(datatype, list):
+        datatype = [datatype]
+
+    probe = [str(p) for p in probe]
+
+    for p in probe:
+        for dtype in datatype:
+            mms_scm_set_metadata(tvars, p, dtype, coord, suffix=suffix)
+
     return tvars
 
 @print_vars
 def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='ephts04d', varformat=None, suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False, latest_version=False, 
-    major_version=False, min_version=None, cdf_version=None):
+    major_version=False, min_version=None, cdf_version=None, spdf=False):
     """
     This function loads MEC data into tplot variables
     
@@ -490,6 +549,9 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
+
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
             
     Returns:
         List of tplot variables created.
@@ -498,7 +560,8 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='mec',
             datatype=datatype, get_support_data=get_support_data, varformat=varformat, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, notplot=notplot, 
-            latest_version=latest_version, major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+            latest_version=latest_version, major_version=major_version, min_version=min_version, 
+            cdf_version=cdf_version, spdf=spdf)
 
     if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
@@ -511,7 +574,7 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='electron', varformat=None, get_support_data=True, suffix='', time_clip=False,
     no_update=False, available=False, notplot=False, no_flatfield_corrections=False, data_units=['count_rate', 'intensity'], 
-    latest_version=False, major_version=False, min_version=None, cdf_version=None):
+    latest_version=False, major_version=False, min_version=None, cdf_version=None, spdf=False):
     """
     This function loads FEEPS data into tplot variables
     
@@ -577,6 +640,9 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
+
     Returns:
         List of tplot variables created.
 
@@ -584,7 +650,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='feeps',
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
-            major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+            major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf)
 
     if tvars == [] or available or notplot or CONFIG['download_only']:
         return tvars
@@ -608,20 +674,22 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
            for data_unit in data_units:
                eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
 
-               mms_feeps_split_integral_ch(data_unit, datatype, probe, suffix=suffix, data_rate=data_rate, level=level, sensor_eyes=eyes)
+               split_vars = mms_feeps_split_integral_ch(data_unit, datatype, probe, suffix=suffix, data_rate=data_rate, level=level, sensor_eyes=eyes)
 
-               mms_feeps_remove_sun(eyes, trange, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
+               sun_removed_vars = mms_feeps_remove_sun(eyes, trange, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
 
-               mms_feeps_omni(eyes, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
+               omni_vars = mms_feeps_omni(eyes, probe=probe, datatype=datatype, data_units=data_unit, data_rate=data_rate, level=level, suffix=suffix)
 
-               mms_feeps_spin_avg(probe=probe, data_units=data_unit, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix)
+               tvars = tvars + split_vars + sun_removed_vars + omni_vars
+               
+               tvars.append(mms_feeps_spin_avg(probe=probe, data_units=data_unit, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix))
 
     return tvars
 
 @print_vars
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='extof',
-        varformat=None, get_support_data=True, prefix='', suffix='', time_clip=False, no_update=False,
-        available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None):
+        varformat=None, get_support_data=True, suffix='', time_clip=False, no_update=False,
+        available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, spdf=False):
     """
     This function loads EIS data into tplot variables
     
@@ -656,10 +724,6 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        prefix: str
-            The tplot variable names will be given this prefix.  By default, 
-            no prefix is added.
-
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
@@ -689,15 +753,18 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
+
     Returns:
         List of tplot variables created.
 
     """
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='epd-eis',
-            datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix='', suffix='',
+            datatype=datatype, varformat=varformat, get_support_data=get_support_data, prefix='', suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
-            major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+            major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf)
 
     if tvars == [] or available or notplot or CONFIG['download_only']:
         return tvars
@@ -732,9 +799,9 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                     o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
                     a_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='alpha', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
-                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id)
-                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id)
-                    a_omni_spectra = mms_eis_omni(probe_id, species='alpha', data_rate=data_rate_id, datatype=datatype_id)
+                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+                    a_omni_spectra = mms_eis_omni(probe_id, species='alpha', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     # create spin averaged omni-directional spectra
                     p_omni_spectra_spin = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
                     o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
@@ -765,8 +832,8 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                     p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
                     o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
-                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id)
-                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id)
+                    p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     # create spin averaged omni-directional spectra
                     p_omni_spectra_spin = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
                     o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
@@ -790,7 +857,8 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 @print_vars
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield',
         varformat=None, get_support_data=False, suffix='', time_clip=False, no_update=False,
-        available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None):
+        available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
+        spdf=False):
     """
     This function loads EDI data into tplot variables
     
@@ -854,6 +922,9 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
+
     Returns:
         List of tplot variables created.
 
@@ -861,7 +932,7 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='edi',
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix, time_clip=time_clip, 
             no_update=no_update, available=available, latest_version=latest_version, major_version=major_version, 
-            min_version=min_version, cdf_version=cdf_version)
+            min_version=min_version, cdf_version=cdf_version, spdf=spdf)
 
     if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
@@ -873,7 +944,8 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
 @print_vars
 def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce',
         varformat=None, get_support_data=False, suffix='', time_clip=False, no_update=False,
-        available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None):
+        available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
+        spdf=False):
     """
     This function loads EDP data into tplot variables
     
@@ -937,6 +1009,9 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
+
     Returns:
         List of tplot variables created.
 
@@ -944,7 +1019,7 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='edp',
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
-            major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+            major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf)
     
     if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
@@ -957,7 +1032,7 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='bpsd', varformat=None, suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False, latest_version=False, 
-    major_version=False, min_version=None, cdf_version=None):
+    major_version=False, min_version=None, cdf_version=None, spdf=False):
     """
     This function loads DSP data into tplot variables
     
@@ -1021,6 +1096,9 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
+
     Returns:
         List of tplot variables created.
 
@@ -1028,7 +1106,7 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='dsp',
             datatype=datatype, varformat=varformat, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, 
             no_update=no_update, available=available, latest_version=latest_version, major_version=major_version, 
-            min_version=min_version, cdf_version=cdf_version)
+            min_version=min_version, cdf_version=cdf_version, spdf=spdf)
     
     if tvars == None or available or notplot or CONFIG['download_only']:
         return tvars
@@ -1040,7 +1118,8 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 @print_vars
 def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='', varformat=None, get_support_data=False, suffix='', time_clip=False, no_update=False,
-    available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None):
+    available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
+    spdf=False):
     """
     This function loads ASPOC data into tplot variables
     
@@ -1104,6 +1183,9 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
+
     Returns:
         List of tplot variables created.
 
@@ -1111,14 +1193,14 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='aspoc',
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
-            major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+            major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf)
     return tvars
 
 @print_vars
 def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst', 
     level='l3', datatype='8khz', get_support_data=False, time_clip=False, no_update=False, 
     available=False, varformat=None, notplot=False, suffix='', latest_version=False, 
-    major_version=False, min_version=None, cdf_version=None):
+    major_version=False, min_version=None, cdf_version=None, spdf=False):
     """
     This function loads FSM data into tplot variables
     
@@ -1177,6 +1259,9 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        spdf: bool
+            If True, download the data from the SPDF instead of the SDC
+
     Returns:
         List of tplot variables created.
 
@@ -1184,7 +1269,7 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
     tvars = mms_load_data(trange=trange, notplot=notplot, varformat=varformat, probe=probe, data_rate=data_rate, 
         level=level, instrument='fsm', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip, 
         no_update=no_update, available=available, suffix=suffix, latest_version=latest_version, 
-        major_version=major_version, min_version=min_version, cdf_version=cdf_version)
+        major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf)
     return tvars
 
 '''

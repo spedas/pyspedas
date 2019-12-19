@@ -18,6 +18,7 @@ from .mms_get_local_files import mms_get_local_files
 from .mms_files_in_interval import mms_files_in_interval
 from .mms_login_lasp import mms_login_lasp
 from .mms_file_filter import mms_file_filter
+from .mms_load_data_spdf import mms_load_data_spdf
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
@@ -25,9 +26,12 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
     instrument='fgm', datatype='', varformat=None, prefix='', suffix='', get_support_data=False, time_clip=False, 
     no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
-    major_version=False, min_version=None, cdf_version=None):
+    major_version=False, min_version=None, cdf_version=None, spdf=False):
     """
     This function loads MMS data into pyTplot variables
+
+    This function is not meant to be called directly. Please see the individual load routines for documentation and use. 
+
     """
 
     if not isinstance(probe, list): probe = [probe]
@@ -54,6 +58,14 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     no_download = False
     if no_update or CONFIG['no_download']: no_download = True
+
+    if spdf:
+        return mms_load_data_spdf(trange=trange, probe=probe, data_rate=data_rate, level=level, 
+                                  instrument=instrument, datatype=datatype, varformat=varformat, 
+                                  suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, 
+                                  no_update=no_update, center_measurement=center_measurement, notplot=notplot, 
+                                  latest_version=latest_version, major_version=major_version, 
+                                  min_version=min_version, cdf_version=cdf_version)
 
     user = None
     if not no_download:

@@ -10,16 +10,27 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
     Parameters:
         probe: str
             probe #, e.g., '4' for MMS4
+
         data_units: str
             'intensity' or 'count_rate'
+
         datatype: str
             'electron' or 'ion'
+
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst'
+
         level: str
             data level, e.g., 'l2'
+
         suffix: str
             suffix of the loaded data
+
+        energy: list of float
+            energy range to include in the calculation
+            
+        bin_size: float
+            size of the pitch angle bins
 
     Returns:
         Name of tplot variable created.

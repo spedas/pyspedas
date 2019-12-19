@@ -1,4 +1,3 @@
-
 import warnings
 import numpy as np
 from pytplot import get_data, store_data, options
@@ -10,14 +9,19 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
     Parameters:
         probe: str
             probe #, e.g., '4' for MMS4
+
         data_units: str
             'intensity' or 'count_rate'
+
         datatype: str
             'electron' or 'ion'
+
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst'
+
         level: str
             data level, e.g., 'l2'
+            
         suffix: str
             suffix of the loaded data
 
@@ -32,9 +36,9 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
         units_label = '[counts/s]'
 
     if datatype == 'electron':
-        lower_en = 71
+        lower_en = 71.0
     else:
-        lower_en = 78
+        lower_en = 78.0
 
     prefix = 'mms'+str(probe)+'_epd_feeps_'
 
@@ -46,7 +50,7 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
 
     var_name = prefix + data_rate + '_' + level + '_' + datatype + '_' + data_units + '_omni'
 
-    times, data, energies = get_data(var_name)
+    times, data, energies = get_data(var_name + suffix)
 
     spin_avg_flux = np.zeros([len(spin_starts), len(energies)])
 
@@ -61,6 +65,7 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
     options(var_name + '_spin' + suffix, 'spec', True)
     options(var_name + '_spin' + suffix, 'ylog', True)
     options(var_name + '_spin' + suffix, 'zlog', True)
+    options(var_name + '_spin' + suffix, 'yrange', [lower_en, 600.0])
     options(var_name + '_spin' + suffix, 'Colormap', 'jet')
     options(var_name + '_spin' + suffix, 'ztitle', units_label)
     options(var_name + '_spin' + suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' (keV)')
