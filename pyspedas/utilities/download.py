@@ -181,4 +181,6 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                 for file in matching_files:
                     out.append(os.path.join(dirpath, file))
 
+            out = sorted(out)
+
     return out
