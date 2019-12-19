@@ -5,6 +5,7 @@ import logging
 import fnmatch
 import datetime
 
+from pathlib import Path
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
 from html.parser import HTMLParser
@@ -57,7 +58,7 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
         logging.info('Downloading ' + url + ' to ' + filename)
     else:
         logging.error(fsrc.reason)
-        return
+        return None
 
     ftmp = NamedTemporaryFile(delete=False)
 
@@ -76,7 +77,7 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
 
     return filename
 
-def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None):
+def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False):
 
     if isinstance(remote_path, list):
         logging.error('Remote path must be a string')
@@ -85,6 +86,9 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
     if isinstance(local_path, list):
         logging.error('Local path must be a string')
         return
+
+    if local_path == '':
+        local_path = str(Path('').resolve())
 
     if username is not None and password is None:
         logging.error('Username provided without password')
@@ -97,6 +101,8 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         session.auth = (username, password)
 
     out = []
+    resp_data = None
+
     if not isinstance(remote_file, list):
         remote_file = [remote_file]
 
@@ -117,48 +123,64 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         filename = os.path.join(local_path, local_file)
 
         short_path = local_file[:1+local_file.rfind("/")]
+        short_filename = local_file[local_file.rfind("/")+1:]
 
-        # expand the wildcards in the url
-        if '?' in url or '*' in url:
-            # we'll need to parse the HTML index file for the file list
-            if username is not None:
-                html_index = session.get(url_base, verify=verify, headers=headers)
-            else:
-                html_index = session.get(url_base, verify=verify, headers=headers)
+        if no_download is False:
+            # expand the wildcards in the url
+            if '?' in url or '*' in url and no_download is False:
+                # we'll need to parse the HTML index file for the file list
+                if username is not None:
+                    html_index = session.get(url_base, verify=verify, headers=headers)
+                else:
+                    html_index = session.get(url_base, verify=verify, headers=headers)
 
-            if html_index.status_code == 404:
-                logging.error('Remote index not found: ' + url_base)
-                continue
+                if html_index.status_code == 404:
+                    logging.error('Remote index not found: ' + url_base)
+                    continue
 
-            if html_index.status_code == 401 or html_index.status_code == 403:
-                logging.error('Unauthorized: ' + url_base)
-                continue
+                if html_index.status_code == 401 or html_index.status_code == 403:
+                    logging.error('Unauthorized: ' + url_base)
+                    continue
 
-            # grab the links
-            link_parser = LinkParser()
-            link_parser.feed(html_index.text)
+                # grab the links
+                link_parser = LinkParser()
+                link_parser.feed(html_index.text)
 
-            try:
-                links = link_parser.links
-            except AttributeError:
-                links = []
+                try:
+                    links = link_parser.links
+                except AttributeError:
+                    links = []
 
-            # find the file names that match our string
-            # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
-            new_links = fnmatch.filter(links, url_file)
+                # find the file names that match our string
+                # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
+                new_links = fnmatch.filter(links, url_file)
 
-            # download the files
-            for new_link in new_links:
-                resp_data = download(remote_path=remote_path, remote_file=short_path+new_link, local_path=local_path, username=username, password=password, verify=verify, headers=headers, session=session)
-                if resp_data is not None:
-                    for file in resp_data:
-                        out.append(file)
-            return out
+                # download the files
+                for new_link in new_links:
+                    resp_data = download(remote_path=remote_path, remote_file=short_path+new_link, local_path=local_path, username=username, password=password, verify=verify, headers=headers, session=session)
+                    if resp_data is not None:
+                        for file in resp_data:
+                            out.append(file)
+                return out
 
-        resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify, headers=headers, session=session)
+            resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify, headers=headers, session=session)
+        
         if resp_data is not None:
             if not isinstance(resp_data, list):
                 resp_data = [resp_data]
             for file in resp_data:
                 out.append(file)
+        else:
+            # download wasn't successful, search for local files
+            if local_path == '':
+                local_path_to_search = str(Path('.').resolve())
+            else:
+                local_path_to_search = local_path
+
+            for dirpath, dirnames, filenames in os.walk(local_path_to_search):
+                matching_files = fnmatch.filter(filenames, local_file[local_file.rfind("/")+1:])
+                for file in matching_files:
+                    out.append(os.path.join(dirpath, file))
+
+
     return out
