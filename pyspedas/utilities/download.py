@@ -55,6 +55,9 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
 
     if fsrc.status_code == 200:
         logging.info('Downloading ' + url + ' to ' + filename)
+    else:
+        logging.error(fsrc.reason)
+        return
 
     ftmp = NamedTemporaryFile(delete=False)
 
@@ -74,6 +77,14 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
     return filename
 
 def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None):
+
+    if isinstance(remote_path, list):
+        logging.error('Remote path must be a string')
+        return
+
+    if isinstance(local_path, list):
+        logging.error('Local path must be a string')
+        return
 
     if username is not None and password is None:
         logging.error('Username provided without password')
