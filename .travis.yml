@@ -17,3 +17,4 @@ script:
   - python -m pyspedas.mms.tests.feeps
   - python -m pyspedas.mms.tests.eis
   - python -m pyspedas.mms.tests.file_filter
+  - python -m pyspedas.dscovr.tests.tests
