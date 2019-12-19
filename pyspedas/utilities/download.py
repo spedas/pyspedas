@@ -123,7 +123,6 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         filename = os.path.join(local_path, local_file)
 
         short_path = local_file[:1+local_file.rfind("/")]
-        short_filename = local_file[local_file.rfind("/")+1:]
 
         if no_download is False:
             # expand the wildcards in the url
