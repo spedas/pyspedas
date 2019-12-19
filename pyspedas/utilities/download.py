@@ -21,12 +21,14 @@ class LinkParser(HTMLParser):
                     self.links = [(attrs['href'])]
     
 
-def download_file(url=None, filename=None):
+def download_file(url=None, filename=None, headers = {}, username=None, password=None, verify=False, session=None):
     '''
         
     '''
-    headers = {}
 
+    if session is None:
+        session = requests.Session()
+    
     # check if the file exists, and if so, set the last modification time in the header
     # this allows you to avoid re-downloading files that haven't changed
     if os.path.exists(filename):
@@ -34,8 +36,8 @@ def download_file(url=None, filename=None):
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=ResourceWarning)
-        fsrc = requests.get(url, stream=True, verify=True, headers=headers)
-    
+        fsrc = session.get(url, stream=True, verify=verify, headers=headers)
+
     # the file hasn't changed
     if fsrc.status_code == 304:
         logging.info('File is current: ' + filename)
@@ -60,7 +62,7 @@ def download_file(url=None, filename=None):
         copyfileobj(fsrc.raw, f)
 
     # make sure the directory exists
-    if not os.path.exists(os.path.dirname(filename)):
+    if not os.path.exists(os.path.dirname(filename)) and os.path.dirname(filename) != '':
         os.makedirs(os.path.dirname(filename))
 
     # if the download was successful, copy to data directory
@@ -71,7 +73,17 @@ def download_file(url=None, filename=None):
 
     return filename
 
-def download(remote_path='', remote_file='', local_path='', local_file=''):
+def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None):
+
+    if username is not None and password is None:
+        logging.error('Username provided without password')
+        return
+
+    if session == None:
+        session = requests.Session()
+
+    if username != None:
+        session.auth = (username, password)
 
     out = []
     if not isinstance(remote_file, list):
@@ -98,7 +110,10 @@ def download(remote_path='', remote_file='', local_path='', local_file=''):
         # expand the wildcards in the url
         if '?' in url or '*' in url:
             # we'll need to parse the HTML index file for the file list
-            html_index = requests.get(url_base)
+            if username is not None:
+                html_index = session.get(url_base, verify=verify, headers=headers)
+            else:
+                html_index = session.get(url_base, verify=verify, headers=headers)
 
             if html_index.status_code == 404:
                 logging.error('Remote index not found: ' + url_base)
@@ -123,13 +138,13 @@ def download(remote_path='', remote_file='', local_path='', local_file=''):
 
             # download the files
             for new_link in new_links:
-                resp_data = download(remote_path=remote_path, remote_file=short_path+new_link, local_path=local_path)
+                resp_data = download(remote_path=remote_path, remote_file=short_path+new_link, local_path=local_path, username=username, password=password, verify=verify, headers=headers, session=session)
                 if resp_data is not None:
                     for file in resp_data:
                         out.append(file)
             return out
 
-        resp_data = download_file(url=url, filename=filename)
+        resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify, headers=headers, session=session)
         if resp_data is not None:
             if not isinstance(resp_data, list):
                 resp_data = [resp_data]
