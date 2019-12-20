@@ -40,3 +40,6 @@ class DownloadTestCases(unittest.TestCase):
         self.assertTrue(len(files) == 0)
         files = download(remote_file='https://postman-echo.com/basic-auth', local_file='test_auth_works', username='postman', password='password')
         self.assertTrue(len(files) == 1)
+        
+if __name__ == '__main__':
+    unittest.main()
