@@ -185,4 +185,5 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
 
             out = sorted(out)
 
+    session.close()
     return out
