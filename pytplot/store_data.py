@@ -140,15 +140,16 @@ def store_data(name, data=None, delete=False, newname=None):
 
         if type(spec_bins) is not pd.DataFrame:
             spec_bins = pd.DataFrame(spec_bins)
-            if len(spec_bins.columns) != 1:
-                # The spec_bins are time varying
-                spec_bins_time_varying = True
-                if len(spec_bins) != len(times):
-                    print("Length of v and x do not match.  Cannot create tplot variable.")
-                    return
-            else:
-                spec_bins = spec_bins.transpose()
-                spec_bins_time_varying = False
+
+        if len(spec_bins.columns) != 1:
+            # The spec_bins are time varying
+            spec_bins_time_varying = True
+            if len(spec_bins) != len(times):
+                print("Length of v and x do not match.  Cannot create tplot variable.")
+                return
+        else:
+            spec_bins = spec_bins.transpose()
+            spec_bins_time_varying = False
     else:
         spec_bins = None
         # Provide another dimension if values are more than 1 dimension
@@ -160,19 +161,31 @@ def store_data(name, data=None, delete=False, newname=None):
             data['v3'] = None
 
     # Set up xarray dimension and coordinates
-    data_key_list = list(data.keys())
-    temp = xr.DataArray(values, dims=['time']+data_key_list,
+    coordinate_list = list(data.keys())
+    dimension_list = [d + '_dim' for d in list(data.keys())]
+    temp = xr.DataArray(values, dims=['time']+dimension_list,
                         coords={'time': ('time', times)})
     if spec_bins_exist:
         if spec_bins_time_varying:
-            temp.coords['spec_bins'] = (('time', spec_bins_dimension), spec_bins.values)
+            temp.coords['spec_bins'] = (('time', spec_bins_dimension+'_dim'), spec_bins.values)
         else:
-            temp.coords['spec_bins'] = (spec_bins_dimension, np.squeeze(spec_bins.values))
-        for d in data_key_list:
-            try:
-                temp.coords[d] = (d, data[d])
-            except:
-                pass
+            temp.coords['spec_bins'] = (spec_bins_dimension+'_dim', np.squeeze(spec_bins.values))
+
+    for d in coordinate_list:
+        if data[d] is None:
+            continue
+        try:
+            d_dimension = pd.DataFrame(data[d])
+            if len(d_dimension.columns) != 1:
+                if len(d_dimension) != len(times):
+                    print("Length of",d,"and time do not match.  Cannot create coordinate for it.")
+                    continue
+                temp.coords[d] = (('time', d+'_dim'), d_dimension.values)
+            else:
+                d_dimension = d_dimension.transpose()
+                temp.coords[d] = (d+'_dim', np.squeeze(d_dimension.values))
+        except:
+            print("Could not create coordinate", d+'_dim', "for variable", name)
 
     # Set up Attributes Dictionaries
     xaxis_opt = dict(axis_label='Time')

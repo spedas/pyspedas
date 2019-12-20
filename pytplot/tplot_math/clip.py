@@ -33,7 +33,7 @@ def clip(tvar1,ymin,ymax,newtvar=None):
     if newtvar is None:
         newtvar=tvar1+'_clipped'
 
-    if 'spec_bins' in pytplot.data_quants.coords:
+    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
         d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
     else:
         d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
@@ -44,7 +44,7 @@ def clip(tvar1,ymin,ymax,newtvar=None):
     tvar_orig = d
     #for each column of dataframe
     for i in df_index:
-        tv2_col = [item[i] for item in tvar_orig.data.values]
+        tv2_col = [item[i] for item in tvar_orig.values]
         for j,valj in enumerate(tv2_col):
             #if value in column out of specified range, substitute NaN
             if (valj < ymin) or (valj > ymax):
@@ -53,7 +53,7 @@ def clip(tvar1,ymin,ymax,newtvar=None):
     new_df = np.transpose((list(new_df)))
     #store clipped tvar
     if pytplot.data_quants[tvar1].spec_bins is not None:
-        pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df,'v':s.values})
+        pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df,'v':s.values})
     else:
-        pytplot.store_data(newtvar, data={'x':tvar_orig.data.index,'y':new_df})
+        pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df})
     return

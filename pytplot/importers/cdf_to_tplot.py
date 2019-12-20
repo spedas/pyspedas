@@ -28,13 +28,15 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                  center_measurement=False, notplot=False):
     """
     This function will automatically create tplot variables from CDF files.
+
     .. note::
-    Variables must have an attribute named "VAR_TYPE". If the attribute entry
-    is "data" (or "support_data"), then they will be added as tplot variables.
-    Additionally, data variables should have attributes named "DEPEND_TIME" or
-    "DEPEND_0" that describes which variable is x axis.  If the data is 2D,
-    then an attribute "DEPEND_1" must describe which variable contains the
-    secondary axis.
+        Variables must have an attribute named "VAR_TYPE". If the attribute entry
+        is "data" (or "support_data"), then they will be added as tplot variables.
+        Additionally, data variables should have attributes named "DEPEND_TIME" or
+        "DEPEND_0" that describes which variable is x axis.  If the data is 2D,
+        then an attribute "DEPEND_1" must describe which variable contains the
+        secondary axis.
+
     Parameters:
         filenames : str/list of str
             The file names and full paths of CDF files.

@@ -46,8 +46,7 @@ def generate_stack(name,
         xaxis_thickness = 0
         title_thickness = 0
     p_to_use = \
-        (pytplot.tplot_opt_glob['window_size'][
-             1] - xaxis_thickness - title_thickness - varlabel_correction) / total_psize
+        (pytplot.tplot_opt_glob['window_size'][1] - xaxis_thickness - title_thickness - varlabel_correction) / total_psize
 
     # Whether or not there is a title row in pyqtgraph
     titlerow = 0
