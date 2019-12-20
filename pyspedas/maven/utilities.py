@@ -803,7 +803,7 @@ l2_pattern = (r'^mvn_(?P<{0}>[a-zA-Z0-9]+)_'
               '(?P<{6}>|T[0-9]{{6}}|t[0-9]{{6}})_'
               'v(?P<{7}>[0-9]+)_'
               'r(?P<{8}>[0-9]+)\.'
-              '(?P<{9}>cdf|xml|sts)'
+              '(?P<{9}>cdf|xml|sts|md5)'
               '(?P<{10}>\.gz)*').format('instrument',
                                         'level',
                                         'description',

@@ -54,8 +54,6 @@ def maven_load(filenames=None,
             Currently unused, defaults to using Level 2 data
         list_files: bool (True/False0
             If true, lists the files instead of downloading them.
-        level: str
-            Data level to download.
         insitu: bool (True/False)
             If true, specifies only insitu files.
         iuvs: bool (True/False)
