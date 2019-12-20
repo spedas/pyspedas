@@ -43,10 +43,13 @@ def maven_filenames(filenames=None,
             return
 
     # Check for public vs private access
+    # Hard code in access as public for now
+    public=True
+    '''
     public = get_access()
     if not public:
         get_uname_and_password()
-
+    '''
     # If no instruments are specified, default to the KP data set
     if instruments is None:
         instruments = ['kp']
