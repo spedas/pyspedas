@@ -1,4 +1,8 @@
-1.4.7
+1.4.8
+
+1.4.8 Changes:
+
+* The coordinates for 3+ dimensional objects should now be read in correctly.
 
 1.4.7 Changes:
 
