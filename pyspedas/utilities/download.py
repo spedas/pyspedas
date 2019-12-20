@@ -120,6 +120,9 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
             else:
                 local_file = url.replace(remote_path, '')
 
+                if local_file == '': # remote_path was the full file name
+                    local_file = remote_path[remote_path.rfind("/")+1:]
+
         filename = os.path.join(local_path, local_file)
 
         short_path = local_file[:1+local_file.rfind("/")]
