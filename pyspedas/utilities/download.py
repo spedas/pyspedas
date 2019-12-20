@@ -131,9 +131,8 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
             # expand the wildcards in the url
             if '?' in url or '*' in url and no_download is False:
                 # we'll need to parse the HTML index file for the file list
-                if username is not None:
-                    html_index = session.get(url_base, verify=verify, headers=headers)
-                else:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore", category=ResourceWarning)
                     html_index = session.get(url_base, verify=verify, headers=headers)
 
                 if html_index.status_code == 404:
