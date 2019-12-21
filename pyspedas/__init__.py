@@ -48,3 +48,4 @@ from . import ace
 from . import wind
 from . import csswe
 from . import cluster
+from . import geotail
