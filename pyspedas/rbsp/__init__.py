@@ -269,7 +269,7 @@ def rps(trange=['2015-11-5', '2015-11-6'],
         datatype='rps-1min', 
         level='l2',
         suffix='',  
-        get_support_data=False, 
+        get_support_data=True, 
         varformat=None,
         downloadonly=False):
     """
