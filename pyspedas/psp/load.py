@@ -56,24 +56,26 @@ def load(trange=['2018-11-5', '2018-11-6'],
     """
 
     tvars_created = []
+    file_resolution = 24*3600.
 
     if instrument == 'fields':
-        pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d??_v??.cdf'
-    if instrument == 'spc':
+        pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+        file_resolution = 6*3600.
+    elif instrument == 'spc':
         pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
-    if instrument == 'spe':
+    elif instrument == 'spe':
         pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_v??.cdf'
-    if instrument == 'spi':
+    elif instrument == 'spi':
         pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/psp_swp_spi_*_%Y%m%d_v??.cdf'
-    if instrument == 'epihi':
+    elif instrument == 'epihi':
         pathformat = 'isois/epihi/' + level + '/' + datatype + '/%Y/psp_isois-epihi_' + level + '*_%Y%m%d_v??.cdf'
-    if instrument == 'epilo':
+    elif instrument == 'epilo':
         pathformat = 'isois/epilo/' + level + '/' + datatype + '/%Y/psp_isois-epilo_' + level + '*_%Y%m%d_v??.cdf'
-    if instrument == 'epi':
+    elif instrument == 'epi':
         pathformat = 'isois/merged/' + level + '/' + datatype + '/%Y/psp_isois_' + level + '-' + datatype + '_%Y%m%d_v??.cdf'
 
     # find the full remote path names using the trange
-    remote_names = dailynames(file_format=pathformat, trange=trange)
+    remote_names = dailynames(file_format=pathformat, trange=trange, res=file_resolution)
 
     out_files = []
 
