@@ -42,22 +42,26 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
     # the file hasn't changed
     if fsrc.status_code == 304:
         logging.info('File is current: ' + filename)
+        fsrc.close()
         return filename
 
     # file not found 
     if fsrc.status_code == 404:
         logging.error('Remote file not found: ' + url)
+        fsrc.close()
         return None
 
     # authentication issues
     if fsrc.status_code == 401 or fsrc.status_code == 403:
         logging.error('Unauthorized: ' + url)
+        fsrc.close()
         return None
 
     if fsrc.status_code == 200:
         logging.info('Downloading ' + url + ' to ' + filename)
     else:
         logging.error(fsrc.reason)
+        fsrc.close()
         return None
 
     ftmp = NamedTemporaryFile(delete=False)
