@@ -62,6 +62,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
     if not isinstance(probe, list):
         probe = [probe]
 
+    probe = [str(prb) for prb in probe] # these will need to be strings from now on
+
     tvars_created = []
 
     for prb in probe:
