@@ -90,7 +90,7 @@ def epam(trange=['2018-11-5', '2018-11-6'],
         varformat=None,
         downloadonly=False):
     """
-    This function loads data from the Solar Wind Electron, Proton and Alpha Monitor (SWEPAM)
+    This function loads data from the Electron Proton Alpha Monitor (EPAM)
     
     Parameters:
         trange : list of str
