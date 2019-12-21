@@ -1,7 +1,7 @@
 
 from .load import load
 
-def fgm(trange=['2018-11-5', '2018-11-6'],
+def mfi(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
