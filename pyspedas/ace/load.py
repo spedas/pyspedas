@@ -18,8 +18,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
          time_clip=False):
     """
     This function loads data from the ACE mission; this function is not meant 
-    to be called directly; instead, see the wrapper:
-        pyspedas.ace.fgm
+    to be called directly; instead, see the wrappers:
+        pyspedas.ace.mfi
         pyspedas.ace.swe
         pyspedas.ace.epam
         pyspedas.ace.cris
@@ -27,35 +27,6 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.ace.uleis
         pyspedas.ace.sepica
         pyspedas.ace.swics
-    
-    Parameters:
-        trange : list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
-            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-
-        get_support_data: bool
-            Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
-            "VAR_TYPE" attribute of "data".
-
-        time_clip: bool
-            Data will be clipped to the exact trange specified by the trange keyword.
-            
-        varformat: str
-            The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
-
-        suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
-
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into 
-            tplot variables
-
-    Returns:
-        List of tplot variables created.
 
     """
 
