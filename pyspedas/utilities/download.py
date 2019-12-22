@@ -78,6 +78,8 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
 
     fsrc.close()
     ftmp.close()
+    
+    logging.info('Download complete: ' + filename)
 
     return filename
 
