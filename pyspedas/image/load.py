@@ -67,6 +67,11 @@ def load(trange=['2004-11-5', '2004-11-6'],
         pathformat = instrument+'/'+instrument+'_'+datatype+'/%Y/im_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
     elif instrument == 'fuv':
         pathformat = instrument+'/wic_'+datatype+'/%Y/im_'+datatype+'_wic_%Y%m%d_v??.cdf'
+    elif instrument == 'orbit':
+        if datatype == 'def_or':
+            pathformat = instrument+'/def_or/%Y/im_or_def_%Y%m%d_v??.cdf'
+        elif datatype == 'pre_or':
+            pathformat = instrument+'/pre_or/%Y/im_or_pre_%Y%m%d_v??.cdf'
 
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange)
