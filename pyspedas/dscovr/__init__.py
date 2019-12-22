@@ -6,7 +6,10 @@ def mag(trange=['2018-10-16', '2018-10-17'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads DSCOVR Fluxgate Magnetometer data
     
@@ -41,14 +44,17 @@ def mag(trange=['2018-10-16', '2018-10-17'],
         List of tplot variables created.
 
     """
-    return load(instrument='mag', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='mag', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def fc(trange=['2018-10-16', '2018-10-17'], 
        datatype='h1', 
        suffix='',  
        get_support_data=False, 
        varformat=None,
-       downloadonly=False):
+       downloadonly=False,
+       notplot=False,
+       no_update=False,
+       time_clip=False):
     """
     This function loads DSCOVR Faraday Cup data
     
@@ -83,14 +89,17 @@ def fc(trange=['2018-10-16', '2018-10-17'],
         List of tplot variables created.
 
     """
-    return load(instrument='faraday_cup', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='faraday_cup', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def orb(trange=['2018-10-16', '2018-10-17'], 
        datatype='orbit', 
        suffix='',  
        get_support_data=False, 
        varformat=None,
-       downloadonly=False):
+       downloadonly=False,
+       notplot=False,
+       no_update=False,
+       time_clip=False):
     """
     This function loads DSCOVR Ephemeris data
     
@@ -121,14 +130,17 @@ def orb(trange=['2018-10-16', '2018-10-17'],
         List of tplot variables created.
 
     """
-    return load(instrument='pre_or', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='pre_or', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def att(trange=['2018-10-16', '2018-10-17'], 
        datatype='orbit', 
        suffix='',  
        get_support_data=False, 
        varformat=None,
-       downloadonly=False):
+       downloadonly=False,
+       notplot=False,
+       no_update=False,
+       time_clip=False):
     """
     This function loads DSCOVR Attitude data
     
@@ -159,9 +171,9 @@ def att(trange=['2018-10-16', '2018-10-17'],
         List of tplot variables created.
 
     """
-    return load(instrument='def_at', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='def_at', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False):
+def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False, suffix='', no_update=False, time_clip=False):
     """
     This function loads all DSCOVR data
     
@@ -179,8 +191,8 @@ def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False):
         List of tplot variables created.
 
     """
-    att_vars = att(trange=trange, downloadonly=downloadonly)
-    orb_vars = orb(trange=trange, downloadonly=downloadonly)
-    mag_vars = mag(trange=trange, downloadonly=downloadonly)
-    fc_vars = fc(trange=trange, downloadonly=downloadonly)
+    att_vars = att(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    orb_vars = orb(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    mag_vars = mag(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    fc_vars = fc(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
     return att_vars + orb_vars + mag_vars + fc_vars
