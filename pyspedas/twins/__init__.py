@@ -7,7 +7,10 @@ def ephemeris(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads TWINS ephemeris data
     
@@ -41,7 +44,7 @@ def ephemeris(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='ephemeris', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='ephemeris', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def lad(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -49,7 +52,10 @@ def lad(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the LAD instrument
     
@@ -83,7 +89,7 @@ def lad(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='lad', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='lad', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def imager(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -91,7 +97,10 @@ def imager(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads TWINS imager data
     
@@ -125,4 +134,4 @@ def imager(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='imager', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='imager', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
