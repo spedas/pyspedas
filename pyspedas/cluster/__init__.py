@@ -7,7 +7,10 @@ def fgm(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Fluxgate Magnetometer
     
@@ -41,7 +44,7 @@ def fgm(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def aspoc(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -49,7 +52,10 @@ def aspoc(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Active Spacecraft Potential Control experiment
     
@@ -83,7 +89,7 @@ def aspoc(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='aspoc', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='aspoc', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def cis(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -91,7 +97,10 @@ def cis(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Cluster Ion Spectroscopy experiment
     
@@ -125,7 +134,7 @@ def cis(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def dwp(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -133,7 +142,10 @@ def dwp(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Digital Wave Processing instrument
     
@@ -167,7 +179,7 @@ def dwp(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='dwp', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='dwp', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def edi(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -175,7 +187,10 @@ def edi(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Electron Drift Instrument
     
@@ -209,7 +224,7 @@ def edi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def efw(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -217,7 +232,10 @@ def efw(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Electric Field and Wave experiment
     
@@ -251,7 +269,7 @@ def efw(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def peace(trange=['2016-11-5', '2016-11-6'], 
         probe='1',
@@ -259,7 +277,10 @@ def peace(trange=['2016-11-5', '2016-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Plasma Electron and Current Experiment
     
@@ -293,7 +314,7 @@ def peace(trange=['2016-11-5', '2016-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='peace', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='peace', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def rapid(trange=['2016-11-5', '2016-11-6'], 
         probe='1',
@@ -301,7 +322,10 @@ def rapid(trange=['2016-11-5', '2016-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Research with Adaptive Particle Imaging Detectors
     
@@ -335,7 +359,7 @@ def rapid(trange=['2016-11-5', '2016-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def staff(trange=['2012-11-5', '2012-11-6'], 
         probe='1',
@@ -343,7 +367,10 @@ def staff(trange=['2012-11-5', '2012-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Spatio-Temporal Analysis of Field Fluctuation experiment
     
@@ -377,7 +404,7 @@ def staff(trange=['2012-11-5', '2012-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='staff', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='staff', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def wbd(trange=['2012-11-6', '2012-11-7'], 
         probe='1',
@@ -385,7 +412,10 @@ def wbd(trange=['2012-11-6', '2012-11-7'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Wide Band Data receiver
     
@@ -419,7 +449,7 @@ def wbd(trange=['2012-11-6', '2012-11-7'],
         List of tplot variables created.
 
     """
-    return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def whi(trange=['2012-11-5', '2012-11-6'], 
         probe='1',
@@ -427,7 +457,10 @@ def whi(trange=['2012-11-5', '2012-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Waves of High Frequency and Sounder for Probing of Density by Relaxation instrument
     
@@ -461,4 +494,4 @@ def whi(trange=['2012-11-5', '2012-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='whi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='whi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
