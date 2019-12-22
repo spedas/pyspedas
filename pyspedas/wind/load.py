@@ -26,7 +26,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     if instrument == 'fgm':
         pathformat = 'mfi/mfi_'+datatype+'/%Y/wi_'+datatype+'_mfi_%Y%m%d_v??.cdf'
-    if instrument == 'swe':
+    elif instrument == 'swe':
         pathformat = 'swe/swe_'+datatype+'/%Y/wi_'+datatype+'_swe_%Y%m%d_v??.cdf'
 
     # find the full remote path names using the trange
