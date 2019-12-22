@@ -47,30 +47,29 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 pathformat = 'c'+prb+'/cp/%Y/c'+prb+'_cp_fgm_spin_%Y%m%d_v??.cdf'
             else:
                 pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
-        if instrument == 'aspoc':
+        elif instrument == 'aspoc':
             pathformat = 'c'+prb+'/'+datatype+'/asp/%Y/c'+prb+'_'+datatype+'_asp_%Y%m%d_v??.cdf'
-        if instrument == 'cis':
+        elif instrument == 'cis':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
-        if instrument == 'dwp':
+        elif instrument == 'dwp':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
-        if instrument == 'edi':
+        elif instrument == 'edi':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
-        if instrument == 'efw':
+        elif instrument == 'efw':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
-        if instrument == 'peace':
+        elif instrument == 'peace':
             pathformat = 'c'+prb+'/'+datatype+'/pea/%Y/c'+prb+'_'+datatype+'_pea_%Y%m%d_v??.cdf'
-        if instrument == 'rapid':
+        elif instrument == 'rapid':
             pathformat = 'c'+prb+'/'+datatype+'/rap/%Y/c'+prb+'_'+datatype+'_rap_%Y%m%d_v??.cdf'
-        if instrument == 'staff':
+        elif instrument == 'staff':
             pathformat = 'c'+prb+'/'+datatype+'/sta/%Y/c'+prb+'_'+datatype+'_sta_%Y%m%d_v??.cdf'
-        if instrument == 'whi':
+        elif instrument == 'whi':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
-        if instrument == 'wbd':
+        elif instrument == 'wbd':
             pathformat = 'c'+prb+'/'+instrument+'/%Y/%m/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d????_v??.cdf'
 
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)
-
 
         for remote_file in remote_names:
             files = download(remote_file=remote_file, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
