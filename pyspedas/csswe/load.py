@@ -24,8 +24,6 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     """
 
-    tvars_created = []
-
     if instrument == 'reptile':
         pathformat = level+'/'+instrument+'/'+datatype+'/%Y/csswe_'+instrument+'_6sec-'+datatype+'-'+level+'_%Y%m%d_v??.cdf'
 
