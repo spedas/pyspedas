@@ -61,19 +61,19 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     if instrument == 'fgm':
         pathformat = 'mag/level_2_cdaweb/mfi_'+datatype+'/%Y/ac_'+datatype+'_mfi_%Y%m%d_v??.cdf'
-    if instrument == 'swe':
+    elif instrument == 'swe':
         pathformat = 'swepam/level_2_cdaweb/swe_'+datatype+'/%Y/ac_'+datatype+'_swe_%Y%m%d_v??.cdf'
-    if instrument == 'epm':
+    elif instrument == 'epm':
         pathformat = 'epam/level_2_cdaweb/epm_'+datatype+'/%Y/ac_'+datatype+'_epm_%Y%m%d_v??.cdf'
-    if instrument == 'cris':
+    elif instrument == 'cris':
         pathformat = 'cris/level_2_cdaweb/cris_'+datatype+'/%Y/ac_'+datatype+'_cris_%Y%m%d_v??.cdf'
-    if instrument == 'sis':
+    elif instrument == 'sis':
         pathformat = 'sis/level_2_cdaweb/sis_'+datatype+'/%Y/ac_'+datatype+'_sis_%Y%m%d_v??.cdf'
-    if instrument == 'ule':
+    elif instrument == 'ule':
         pathformat = 'uleis/level_2_cdaweb/ule_'+datatype+'/%Y/ac_'+datatype+'_ule_%Y%m%d_v??.cdf'
-    if instrument == 'sep':
+    elif instrument == 'sep':
         pathformat = 'sepica/level_2_cdaweb/sep_'+datatype+'/%Y/ac_'+datatype+'_sep_%Y%m%d_v??.cdf'
-    if instrument == 'swics':
+    elif instrument == 'swics':
         filename_dtype = datatype.split('_')[1] + '_' + datatype.split('_')[0]
         pathformat = 'swics/level_2_cdaweb/'+datatype+'/%Y/ac_'+filename_dtype+'_%Y%m%d_v??.cdf'
 
