@@ -6,7 +6,10 @@ def mgf(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the MGF instrument
     
@@ -40,14 +43,17 @@ def mgf(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='mgf', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='mgf', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def efd(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the EFD instrument
     
@@ -81,14 +87,17 @@ def efd(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='efd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='efd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def lep(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the LEP instrument
     
@@ -122,14 +131,17 @@ def lep(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='lep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='lep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def cpi(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the CPI instrument
     
@@ -163,14 +175,17 @@ def cpi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='cpi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='cpi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epic(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the EPIC instrument
     
@@ -204,14 +219,17 @@ def epic(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def pwi(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the PWI instrument
     
@@ -245,4 +263,4 @@ def pwi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='pwi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='pwi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
