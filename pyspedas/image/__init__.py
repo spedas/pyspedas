@@ -6,7 +6,10 @@ def lena(trange=['2004-11-5', '2004-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads IMAGE LENA data
     
@@ -40,14 +43,17 @@ def lena(trange=['2004-11-5', '2004-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='lena', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='lena', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def mena(trange=['2004-11-5', '2004-11-6'], 
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads IMAGE MENA data
     
@@ -81,14 +87,17 @@ def mena(trange=['2004-11-5', '2004-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='mena', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='mena', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def hena(trange=['2004-11-5', '2004-11-6'], 
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads IMAGE HENA data
     
@@ -122,14 +131,17 @@ def hena(trange=['2004-11-5', '2004-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='hena', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='hena', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def rpi(trange=['2004-11-5', '2004-11-6'], 
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads IMAGE RPI data
     
@@ -163,14 +175,17 @@ def rpi(trange=['2004-11-5', '2004-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='rpi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='rpi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def euv(trange=['2004-11-5', '2004-11-6'], 
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads IMAGE EUV data
     
@@ -204,14 +219,17 @@ def euv(trange=['2004-11-5', '2004-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='euv', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='euv', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def fuv(trange=['2004-11-5', '2004-11-6'], 
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads IMAGE FUV data
     
@@ -245,14 +263,17 @@ def fuv(trange=['2004-11-5', '2004-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='fuv', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='fuv', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def orbit(trange=['2004-11-5', '2004-11-6'], 
         datatype='def_or',
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads IMAGE orbit data
     
@@ -286,4 +307,4 @@ def orbit(trange=['2004-11-5', '2004-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='orbit', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='orbit', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
