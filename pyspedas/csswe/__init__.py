@@ -7,7 +7,10 @@ def reptile(trange=['2013-11-5', '2013-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
-        downloadonly=False):
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False):
     """
     This function loads data from the Relativistic Electron and Proton Telescope integrated little experiment (REPTile)
     
@@ -41,4 +44,4 @@ def reptile(trange=['2013-11-5', '2013-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='reptile', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly)
+    return load(instrument='reptile', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
