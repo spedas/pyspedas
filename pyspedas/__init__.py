@@ -51,3 +51,4 @@ from . import cluster
 from . import geotail
 from . import twins
 from . import stereo
+from . import image
