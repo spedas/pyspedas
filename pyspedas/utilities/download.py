@@ -168,6 +168,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                     if resp_data is not None:
                         for file in resp_data:
                             out.append(file)
+                session.close()
                 return out
 
             resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify, headers=headers, session=session)
