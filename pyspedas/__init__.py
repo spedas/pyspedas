@@ -53,3 +53,4 @@ from . import twins
 from . import stereo
 from . import image
 from . import polar
+from . import fast
