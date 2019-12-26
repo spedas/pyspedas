@@ -8,6 +8,13 @@ from pyqtgraph.Point import Point
 from collections.abc import Callable
 
 class ColorbarImage(pg.ImageItem):
+    '''
+    For the most part, this class is exactly the same as pg.ImageItem.
+
+    This exist literally only because collections.Callable became collections.abc.Callable
+    and it was causing errors.
+    '''
+
     def render(self):
         # Convert data to QImage for display.
 

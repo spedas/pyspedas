@@ -6,13 +6,24 @@ from pyqtgraph.Point import Point
 from pyqtgraph import debug as debug
 from collections.abc import Callable
 from pytplot import tplot_opt_glob
+import pandas as pd
 
 class UpdatingImage(pg.ImageItem):
-    
+    '''
+    This is the class used to plot images of spectrogram data.
+
+    It automatically updates to higher and higher resolutions when you zoom in, thus the name
+    "updating image".
+
+    '''
+
+
     _MAX_IMAGE_WIDTH = 10000
     _MAX_IMAGE_HEIGHT = 200
     
     def __init__(self, data, spec_bins, ascending_descending, ytype, ztype, lut, zmin, zmax):
+
+
         pg.ImageItem.__init__(self)
         
         if ztype=='log':
@@ -24,16 +35,43 @@ class UpdatingImage(pg.ImageItem):
             self.data = data
             self.zmin = zmin
             self.zmax = zmax
+
         self.lut = lut
         self.bin_sizes = spec_bins
         self.bins_inc = ascending_descending
         self.w = 100
         self.h = 100
         self.x = self.data.index.tolist()
-        if ytype=='log':
-            self.y = np.log10(self.bin_sizes.iloc[0])
+
+        # If time varying spec bins, we need to reformat the data once
+        minbin = self.bin_sizes.min().min()
+        maxbin = self.bin_sizes.max().max()
+
+        if ytype == 'log':
+            yp = np.logspace(minbin, maxbin, 100)
         else:
-            self.y = self.bin_sizes.iloc[0]
+            yp = np.linspace(minbin, maxbin, 100)
+
+
+        data_reformatted = []
+        for i in range(len(self.data)):
+            y_sort = np.argsort(self.bin_sizes.iloc[i])
+            closest_ys = np.searchsorted(self.bin_sizes.iloc[i], yp, sorter=y_sort)
+            closest_ys[closest_ys > (len(self.bin_sizes.iloc[0])-1)] = len(self.bin_sizes.iloc[0]) - 1
+            temp_data = self.data.iloc[i][closest_ys].values
+            temp_data[closest_ys == 0] = np.NaN
+            temp_data[closest_ys == (len(self.bin_sizes.iloc[0])-1)] = np.NaN
+            data_reformatted.append(temp_data)
+        data_reformatted = pd.DataFrame(data_reformatted)
+        data_reformatted.index = self.data.index
+
+        self.y = yp
+        self.data = data_reformatted
+
+        #if ytype == 'log':
+        #    self.y = np.log10(self.bin_sizes.iloc[0])
+        #else:
+        #    self.y = self.bin_sizes.iloc[0]
         self.picturenotgened=True
         self.generatePicture()
         
@@ -82,9 +120,9 @@ class UpdatingImage(pg.ImageItem):
             yp = np.linspace(ymin, ymax, self.h)
 
             closest_xs = np.searchsorted(self.x, xp)
-            y_sort = np.argsort(self.y.values)
-            #if len(self.bin_sizes) == 1:
-            closest_ys = np.searchsorted(self.y.values, yp, sorter=y_sort)
+            y_sort = np.argsort(self.y)
+
+            closest_ys = np.searchsorted(self.y, yp, sorter=y_sort)
             if not self.bins_inc:
                 closest_ys = np.flipud(closest_ys)
             data = self.data.iloc[closest_xs][closest_ys].values
@@ -110,8 +148,7 @@ class UpdatingImage(pg.ImageItem):
             self.picturenotgened = False
         pg.ImageItem.paint(self, p, *args)
         self.generatePicture(self.getBoundingParents()[0].rect())
-        
-        
+
     def render(self):
         #The same as pyqtgraph's ImageItem.render, with the exception that the makeARGB function is slightly different
         
