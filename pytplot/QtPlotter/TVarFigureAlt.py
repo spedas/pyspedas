@@ -100,7 +100,12 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.xaxis.setLabel("Altitude", **self.labelStyle)
 
     def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
+        if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label']
+            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle']
+            self.yaxis.setLabel(f"<center>{label} <br> {sublabel} <\center>", **self.labelStyle)
+        else:
+            self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':

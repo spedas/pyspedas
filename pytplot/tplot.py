@@ -30,7 +30,7 @@ if pytplot.using_graphics:
 
 def tplot(name,
           var_label=None,
-          interactive=False,
+          slice=False,
           combine_axes=True,
           nb=False,
           save_file=None,
@@ -46,7 +46,8 @@ def tplot(name,
           pos_2d=False,
           pos_3d=False,
           exec_qt=True,
-          window_name='Plot'):
+          window_name='Plot',
+          interactive=False):
     """
     This is the function used to display the tplot variables stored in memory.
     The default output is to show the plots stacked on top of one another inside of a qt window
@@ -57,7 +58,7 @@ def tplot(name,
         var_label : str, optional
             The name of the tplot variable you would like as
             a second x axis.
-        interactive : bool, optional
+        slice : bool, optional
             If True, a secondary interactive plot will be generated next to spectrogram plots.
             Mousing over the spectrogram will display a slice of data from that time on the
             interactive chart.
@@ -129,6 +130,9 @@ def tplot(name,
         >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
 
+    if interactive:
+        slice=True
+
     if not pytplot.using_graphics and save_file is None:
         print("Qt was not successfully imported.  Specify save_file to save the file as a .html file.")
         return
@@ -157,7 +161,7 @@ def tplot(name,
 
     if bokeh:
         layout = HTMLPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes,
-                                            interactive=interactive)
+                                            slice=slice)
         # Output types
         if gui:
             script, div = components(layout)
@@ -239,7 +243,7 @@ def tplot(name,
 
             # This function is responsible for calling all of the extra plotting routines that a user might like with
             # their data plots
-            extra_function_handler(extra_functions, extra_function_args, name, interactive, pos_2d, pos_3d)
+            extra_function_handler(extra_functions, extra_function_args, name, slice, pos_2d, pos_3d)
 
             # plots the plots!
             if testing:
@@ -252,12 +256,12 @@ def tplot(name,
         return
 
 
-def extra_function_handler(extra_functions, extra_functions_args, names, interactive, pos_2d, pos_3d):
+def extra_function_handler(extra_functions, extra_functions_args, names, slice, pos_2d, pos_3d):
     functions_to_call = extra_functions
     function_args_to_call = extra_functions_args
     # Handles the old way of calling the spec slicing plots, (if anyone still uses that way)
-    if interactive:
-        # Call 2D interactive window; This will only plot something when spectrograms are involved.
+    if slice:
+        # Call 2D spice slicing window; This will only plot something when spectrograms are involved.
         functions_to_call.append(spec_slicer.spec_slicer)
         function_args_to_call.append([None, None, True])
 

@@ -16,7 +16,7 @@ def generate_stack(name,
                    var_label=None,
                    auto_color=True, 
                    combine_axes=True,
-                   interactive=True,
+                   slice=True,
                    vert_spacing=25):
     
     doc.curdoc().clear()
@@ -50,7 +50,7 @@ def generate_stack(name,
         p_width = pytplot.tplot_opt_glob['window_size'][0]
         
         # Check plot type
-        new_fig = _get_figure_class(name[i], auto_color=auto_color, interactive=interactive, show_xaxis=last_plot)
+        new_fig = _get_figure_class(name[i], auto_color=auto_color, slice=slice, show_xaxis=last_plot)
         
         new_fig.setsize(height=p_height, width=p_width)
 
@@ -124,7 +124,7 @@ def generate_stack(name,
     return gridplot(all_plots)
 
 
-def _get_figure_class(tvar_name, auto_color=True, interactive=False, show_xaxis=True):
+def _get_figure_class(tvar_name, auto_color=True, slice=False, show_xaxis=True):
     if 'plotter' in pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] \
             and pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in pytplot.bokeh_plotters:
         cls = pytplot.bokeh_plotters[pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter']]
@@ -140,4 +140,4 @@ def _get_figure_class(tvar_name, auto_color=True, interactive=False, show_xaxis=
             cls = pytplot.bokeh_plotters['bkTVarFigureMap']
         else:
             cls = pytplot.bokeh_plotters['bkTVarFigure1D']
-    return cls(tvar_name, auto_color=auto_color, interactive=interactive, show_xaxis=show_xaxis)
+    return cls(tvar_name, auto_color=auto_color, slice=slice, show_xaxis=show_xaxis)

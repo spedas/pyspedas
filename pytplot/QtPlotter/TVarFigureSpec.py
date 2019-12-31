@@ -127,7 +127,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._set_roi_lines()
 
     def _setyaxislabel(self):
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
+        if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label']
+            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle']
+            self.yaxis.setLabel(f"<center>{label} <br> {sublabel} <\center>", **self.labelStyle)
+        else:
+            self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
 
     def _setxaxislabel(self):
         if self.show_xaxis:
@@ -161,7 +166,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
-        zaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'], **self.labelStyle)
+        if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label']
+            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle']
+            zaxis.setLabel(f"<center>{label} <br> {sublabel} <\center>", **self.labelStyle)
+        else:
+            zaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'], **self.labelStyle)
 
         if self.show_xaxis:
             emptyAxis = BlankAxis('bottom')

@@ -47,7 +47,9 @@ class UpdatingImage(pg.ImageItem):
         self.xmax = np.nanmax(self.x)
 
         if len(spec_bins) != 1:
+
             # If time varying spec bins, we need to reformat the data once.  Turn it into a 1000x100 grid.
+
             xp = np.linspace(self.xmin, self.xmax, 1000)
             closest_xs = np.searchsorted(self.x, xp)
             minbin = ymin
@@ -86,6 +88,7 @@ class UpdatingImage(pg.ImageItem):
             else:
                 self.y = self.bin_sizes.iloc[0]
 
+        # Get the ymin/ymax
         if ytype == 'log':
             self.ymin = np.log10(ymin)
             self.ymax = np.log10(ymax)
@@ -128,7 +131,8 @@ class UpdatingImage(pg.ImageItem):
                 self.h = 1
 
             data = np.zeros((self.h,self.w))
-            
+
+            # Create an appropriate grid based on the window size, and interpolate the spectrogram to that
             xp = np.linspace(self.xmin, self.xmax, self.w)
             yp = np.linspace(self.ymin, self.ymax, self.h)
 

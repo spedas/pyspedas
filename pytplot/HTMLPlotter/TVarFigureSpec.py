@@ -34,13 +34,13 @@ dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],
 
 class TVarFigureSpec(object):
     
-    def __init__(self, tvar_name, auto_color=False, show_xaxis=False, interactive=False, y_axis_type='log'):
+    def __init__(self, tvar_name, auto_color=False, show_xaxis=False, slice=False, y_axis_type='log'):
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
         if 'show_all_axes' in pytplot.tplot_opt_glob:
             if pytplot.tplot_opt_glob['show_all_axes']:
                 self.show_xaxis = True
-        self.interactive = interactive
+        self.slice = slice
 
         # Variables needed across functions
         self.fig = None
@@ -51,7 +51,7 @@ class TVarFigureSpec(object):
         self.zmin = 0
         self.zmax = 1
         self.callback = None
-        self.interactive_plot = None
+        self.slice_plot = None
         self.fig = Figure(x_axis_type='datetime', 
                           tools=pytplot.tplot_opt_glob['tools'],
                           y_axis_type=self._getyaxistype())
@@ -73,8 +73,8 @@ class TVarFigureSpec(object):
         return axis_type, link_y_axis
     
     def getfig(self):
-        if self.interactive:
-            return [self.fig, self.interactive_plot]
+        if self.slice:
+            return [self.fig, self.slice_plot]
         else:
             return [self.fig]
     
@@ -325,23 +325,23 @@ class TVarFigureSpec(object):
         
         self.fig.quad(bottom='y', left='x', right='right', top='top', color='z', source=cds)
             
-        if self.interactive:
+        if self.slice:
             if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-                y_interactive_log = 'log'
+                y_slice_log = 'log'
             else:
-                y_interactive_log = 'linear'
-            self.interactive_plot = Figure(plot_height=self.fig.plot_height,
+                y_slice_log = 'linear'
+            self.slice_plot = Figure(plot_height=self.fig.plot_height,
                                            plot_width=self.fig.plot_width,
                                            y_range=(self.zmin, self.zmax),
                                            x_range=(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
                                                     pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]),
-                                           y_axis_type=y_interactive_log)
-            self.interactive_plot.min_border_left = 100
+                                           y_axis_type=y_slice_log)
+            self.slice_plot.min_border_left = 100
             spec_bins = bins
             flux = [0]*len(spec_bins)
-            interactive_line_source = ColumnDataSource(data=dict(x=spec_bins, y=flux))
-            self.interactive_plot.line('x', 'y', source=interactive_line_source)
-            self.callback = CustomJS(args=dict(cds=cds, source=interactive_line_source), code="""
+            slice_line_source = ColumnDataSource(data=dict(x=spec_bins, y=flux))
+            self.slice_plot.line('x', 'y', source=slice_line_source)
+            self.callback = CustomJS(args=dict(cds=cds, source=slice_line_source), code="""
                     var geometry = cb_data['geometry'];
                     var x_data = geometry.x; // current mouse x position in plot coordinates
                     var y_data = geometry.y; // current mouse y position in plot coordinates

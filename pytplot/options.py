@@ -33,9 +33,9 @@ def options(name, option, value):
         ylog                int          1 sets the y axis to log scale, 0 reverts.
         zlog                int          1 sets the z axis to log scale, 0 reverts (spectrograms only).
         legend_names        list         A list of strings that will be used to identify the lines.
-        xlog_interactive    bool         Sets x axis on interactive plot to log scale if True.
+        xlog_slice          bool         Sets x axis on slice plot to log scale if True.
         ylog                bool         Set y axis on main plot window to log scale if True.
-        ylog_interactive    bool         Sets y axis on interactive plot to log scale if True.
+        ylog_slice          bool         Sets y axis on slice plot to log scale if True.
         zlog                bool         Sets z axis on main plot window to log scale if True.
         line_style          str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
         char_size           int          Defines character size for plot labels, etc.
@@ -46,10 +46,12 @@ def options(name, option, value):
         thick               flt          Sets plot line width.
         yrange              flt list     Two numbers that give the y axis range of the plot.
         zrange              flt list     Two numbers that give the z axis range of the plot.
-        xrange_interactive  flt list     Two numberes that give the x axis range of interactive plots.
-        yrange_interactive  flt list     Two numberes that give the y axis range of interactive plots.
+        xrange_slice        flt list     Two numbers that give the x axis range of spectrogram slicing plots.
+        yrange_slice        flt list     Two numbers that give the y axis range of spectrogram slicing plots.
         ytitle              str          Title shown on the y axis.
         ztitle              str          Title shown on the z axis.  Spec plots only.
+        ysubtitle           str          Subtitle shown on the y axis.
+        zsubtitle           str          Subtitle shown on the z axis.  Spec plots only.
         plotter             str          Allows a user to implement their own plotting script in place of the ones
                                          herein.
         crosshair_x         str          Title for x-axis crosshair.
@@ -119,11 +121,11 @@ def options(name, option, value):
         if option == 'legend_names':
             data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
 
-        if option == 'xlog_interactive':
+        if option == 'xlog_slice':
             if value:
-                data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type'] = 'log'
+                data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'log'
             else:
-                data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type'] = 'linear'
+                data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'linear'
 
         if option == 'ylog':
             negflag = 0 # _ylog_check(data_quants, value, i)
@@ -132,11 +134,11 @@ def options(name, option, value):
             else:
                 data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'linear'
 
-        if option == 'ylog_interactive':
+        if option == 'ylog_slice':
             if value:
-                data_quants[i].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type'] = 'log'
+                data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'log'
             else:
-                data_quants[i].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type'] = 'linear'
+                data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'linear'
 
         if option == 'zlog':
             negflag = _zlog_check(data_quants, value, i)
@@ -200,11 +202,11 @@ def options(name, option, value):
         if option == ('zrange' or 'z_range'):
             data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
 
-        if option == 'xrange_interactive':
-            data_quants[i].attrs['plot_options']['interactive_xaxis_opt']['xi_range'] = [value[0], value[1]]
+        if option == 'xrange_slice':
+            data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_range'] = [value[0], value[1]]
 
-        if option == 'yrange_interactive':
-            data_quants[i].attrs['plot_options']['interactive_yaxis_opt']['yi_range'] = [value[0], value[1]]
+        if option == 'yrange_slice':
+            data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_range'] = [value[0], value[1]]
 
         if option == 'xtitle':
             data_quants[i].attrs['plot_options']['xaxis_opt']['axis_label'] = value
@@ -214,6 +216,15 @@ def options(name, option, value):
 
         if option == 'ztitle':
             data_quants[i].attrs['plot_options']['zaxis_opt']['axis_label'] = value
+
+        if option == 'xsubtitle':
+            data_quants[i].attrs['plot_options']['xaxis_opt']['axis_subtitle'] = value
+
+        if option == 'ysubtitle':
+            data_quants[i].attrs['plot_options']['yaxis_opt']['axis_subtitle'] = value
+
+        if option == 'zsubtitle':
+            data_quants[i].attrs['plot_options']['zaxis_opt']['axis_subtitle'] = value
 
         if option == 'ybar':
             data_quants[i].attrs['plot_options']['extras']['ybar'] = value
