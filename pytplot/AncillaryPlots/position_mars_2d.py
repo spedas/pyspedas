@@ -124,3 +124,6 @@ def position_mars_2d(temp=None):
     # Register the update function to pytplot
     pytplot.hover_time.register_listener(update)
 
+    # Turn on the window!
+    window.show()
+

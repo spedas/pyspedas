@@ -177,3 +177,6 @@ def spec_slicer(var=None, time=None, interactive=False):
         if interactive:
             pytplot.hover_time.register_listener(update)
 
+        # Turn on the window!
+        window.show()
+

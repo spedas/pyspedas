@@ -50,8 +50,8 @@ class UpdatingImage(pg.ImageItem):
             # If time varying spec bins, we need to reformat the data once.  Turn it into a 1000x100 grid.
             xp = np.linspace(self.xmin, self.xmax, 1000)
             closest_xs = np.searchsorted(self.x, xp)
-            minbin = self.bin_sizes.min().min()
-            maxbin = self.bin_sizes.max().max()
+            minbin = ymin
+            maxbin = ymax
 
             if ytype == 'log':
                 yp = np.logspace(minbin, maxbin, 100)
@@ -72,8 +72,8 @@ class UpdatingImage(pg.ImageItem):
                     closest_ys[closest_ys > (len(self.bin_sizes.iloc[i])-1)] = len(self.bin_sizes.iloc[i]) - 1
                     prev_closest_ys = closest_ys
                 temp_data = self.data.iloc[i][closest_ys].values
-                temp_data[closest_ys == 0] = np.NaN
-                temp_data[closest_ys == (len(self.bin_sizes.iloc[i])-1)] = np.NaN
+                temp_data[yp < np.min(self.bin_sizes.iloc[i])] = np.NaN
+                temp_data[yp > np.max(self.bin_sizes.iloc[i])] = np.NaN
                 data_reformatted.append(temp_data)
             data_reformatted = pd.DataFrame(data_reformatted)
 
@@ -86,12 +86,12 @@ class UpdatingImage(pg.ImageItem):
             else:
                 self.y = self.bin_sizes.iloc[0]
 
-        try:
-            self.ymin = self.y.min().min()
-            self.ymax= self.y.max().max()
-        except AttributeError as e:
-            self.ymin = self.y.min()
-            self.ymax = self.y.max()
+        if ytype == 'log':
+            self.ymin = np.log10(ymin)
+            self.ymax = np.log10(ymax)
+        else:
+            self.ymin = ymin
+            self.ymax = ymax
 
         self.picturenotgened=True
         self.generatePicture()
