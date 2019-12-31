@@ -19,9 +19,9 @@ class UpdatingImage(pg.ImageItem):
 
 
     _MAX_IMAGE_WIDTH = 10000
-    _MAX_IMAGE_HEIGHT = 200
+    _MAX_IMAGE_HEIGHT = 2000
     
-    def __init__(self, data, spec_bins, ascending_descending, ytype, ztype, lut, zmin, zmax):
+    def __init__(self, data, spec_bins, ascending_descending, ytype, ztype, lut, ymin, ymax, zmin, zmax):
 
 
         pg.ImageItem.__init__(self)
@@ -36,56 +36,69 @@ class UpdatingImage(pg.ImageItem):
             self.zmin = zmin
             self.zmax = zmax
 
+        self.ytype = ytype
         self.lut = lut
         self.bin_sizes = spec_bins
         self.bins_inc = ascending_descending
         self.w = 100
         self.h = 100
         self.x = self.data.index.tolist()
+        self.xmin = np.nanmin(self.x)
+        self.xmax = np.nanmax(self.x)
 
-        # If time varying spec bins, we need to reformat the data once
-        minbin = self.bin_sizes.min().min()
-        maxbin = self.bin_sizes.max().max()
+        if len(spec_bins) != 1:
+            # If time varying spec bins, we need to reformat the data once.  Turn it into a 1000x100 grid.
+            xp = np.linspace(self.xmin, self.xmax, 1000)
+            closest_xs = np.searchsorted(self.x, xp)
+            minbin = self.bin_sizes.min().min()
+            maxbin = self.bin_sizes.max().max()
 
-        if ytype == 'log':
-            yp = np.logspace(minbin, maxbin, 100)
+            if ytype == 'log':
+                yp = np.logspace(minbin, maxbin, 100)
+            else:
+                yp = np.linspace(minbin, maxbin, 100)
+
+            data_reformatted = []
+            y_sort = np.argsort(self.bin_sizes.iloc[0])
+            prev_bins = self.bin_sizes.iloc[0]
+            prev_closest_ys = np.searchsorted(self.bin_sizes.iloc[0], yp, sorter=y_sort)
+            prev_closest_ys[prev_closest_ys > (len(self.bin_sizes.iloc[0]) - 1)] = len(self.bin_sizes.iloc[0]) - 1
+            for i in closest_xs:
+                if (self.bin_sizes.iloc[i] == prev_bins).all():
+                    closest_ys = prev_closest_ys
+                else:
+                    prev_bins = self.bin_sizes.iloc[i]
+                    closest_ys = np.searchsorted(self.bin_sizes.iloc[i], yp, sorter=y_sort)
+                    closest_ys[closest_ys > (len(self.bin_sizes.iloc[i])-1)] = len(self.bin_sizes.iloc[i]) - 1
+                    prev_closest_ys = closest_ys
+                temp_data = self.data.iloc[i][closest_ys].values
+                temp_data[closest_ys == 0] = np.NaN
+                temp_data[closest_ys == (len(self.bin_sizes.iloc[i])-1)] = np.NaN
+                data_reformatted.append(temp_data)
+            data_reformatted = pd.DataFrame(data_reformatted)
+
+            self.x = xp
+            self.y = yp
+            self.data = data_reformatted
         else:
-            yp = np.linspace(minbin, maxbin, 100)
+            if ytype == 'log':
+                self.y = np.log10(self.bin_sizes.iloc[0])
+            else:
+                self.y = self.bin_sizes.iloc[0]
 
+        try:
+            self.ymin = self.y.min().min()
+            self.ymax= self.y.max().max()
+        except AttributeError as e:
+            self.ymin = self.y.min()
+            self.ymax = self.y.max()
 
-        data_reformatted = []
-        for i in range(len(self.data)):
-            y_sort = np.argsort(self.bin_sizes.iloc[i])
-            closest_ys = np.searchsorted(self.bin_sizes.iloc[i], yp, sorter=y_sort)
-            closest_ys[closest_ys > (len(self.bin_sizes.iloc[0])-1)] = len(self.bin_sizes.iloc[0]) - 1
-            temp_data = self.data.iloc[i][closest_ys].values
-            temp_data[closest_ys == 0] = np.NaN
-            temp_data[closest_ys == (len(self.bin_sizes.iloc[0])-1)] = np.NaN
-            data_reformatted.append(temp_data)
-        data_reformatted = pd.DataFrame(data_reformatted)
-        data_reformatted.index = self.data.index
-
-        self.y = yp
-        self.data = data_reformatted
-
-        #if ytype == 'log':
-        #    self.y = np.log10(self.bin_sizes.iloc[0])
-        #else:
-        #    self.y = self.bin_sizes.iloc[0]
         self.picturenotgened=True
         self.generatePicture()
         
 
     def generatePicture(self, pixel_size=None):
-        
-        xmin = np.nanmin(self.x)
-        xmax = np.nanmax(self.x)
-        try:
-            ymin = self.y.min().min()
-            ymax= self.y.max().max()
-        except AttributeError as e:
-            ymin = self.y.min()
-            ymax = self.y.max()
+        # Get the dimensions in pixels and in plot coordiantes
         if pixel_size is None:
             width_in_pixels = tplot_opt_glob['window_size'][0]
             height_in_pixels = tplot_opt_glob['window_size'][1]
@@ -97,8 +110,8 @@ class UpdatingImage(pg.ImageItem):
             width_in_plot_coords = self.getViewBox().viewRect().width()
             height_in_plot_coords = self.getViewBox().viewRect().height()
         
-        image_width_in_plot_coords = xmax - xmin
-        image_height_in_plot_coords = ymax - ymin
+        image_width_in_plot_coords = self.xmax - self.xmin
+        image_height_in_plot_coords = self.ymax - self.ymin
         
         image_width_in_pixels = int(image_width_in_plot_coords/width_in_plot_coords * width_in_pixels)
         image_height_in_pixels = int(image_height_in_plot_coords/height_in_plot_coords * height_in_pixels)
@@ -116,8 +129,8 @@ class UpdatingImage(pg.ImageItem):
 
             data = np.zeros((self.h,self.w))
             
-            xp = np.linspace(xmin, xmax, self.w)
-            yp = np.linspace(ymin, ymax, self.h)
+            xp = np.linspace(self.xmin, self.xmax, self.w)
+            yp = np.linspace(self.ymin, self.ymax, self.h)
 
             closest_xs = np.searchsorted(self.x, xp)
             y_sort = np.argsort(self.y)
@@ -126,16 +139,12 @@ class UpdatingImage(pg.ImageItem):
             if not self.bins_inc:
                 closest_ys = np.flipud(closest_ys)
             data = self.data.iloc[closest_xs][closest_ys].values
-            #else:
-            #    for j in range(0,self.w):
-            #        closest_ys = np.searchsorted(self.y.iloc[closest_xs[j]], yp, sorter=y_sort)
-            #        data[:,j] = self.data.iloc[closest_xs[j]].iloc[closest_ys].values
             
             self.setImage(data.T, levels=(self.zmin, self.zmax))
 
             #Image can't handle NaNs, but you can set nan to the minimum and make the minimum transparent.  
             self.setLookupTable(self.lut, update=False)
-            self.setRect(QtCore.QRectF(xmin,ymin,xmax-xmin,ymax-ymin))
+            self.setRect(QtCore.QRectF(self.xmin,self.ymin,self.xmax-self.xmin,self.ymax-self.ymin))
             return
         
     def paint(self, p, *args):

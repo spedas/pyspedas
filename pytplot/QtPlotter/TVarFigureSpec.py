@@ -146,6 +146,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
                                  self._getyaxistype(),
                                  self._getzaxistype(),
                                  self.colormap,
+                                 self.ymin,
+                                 self.ymax,
                                  self.zmin,
                                  self.zmax)
         self.plotwindow.addItem(specplot)
@@ -293,6 +295,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.plotwindow.setXRange(pytplot.tplot_opt_glob['x_range'][0], pytplot.tplot_opt_glob['x_range'][1])
 
     def _setyrange(self):
+        self.ymin = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]
+        self.ymax = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]
         if self._getyaxistype() == 'log':
             if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 or \
                     pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
