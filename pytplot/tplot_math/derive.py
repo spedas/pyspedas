@@ -25,14 +25,17 @@ def derive(tvar,new_tvar=None):
         >>> pytplot.derive('b','dbdt')
         >>> print(pytplot.data_quants['dbdt'].values)
     """
+
     a = pytplot.data_quants[tvar].differentiate('time')
     if new_tvar is None:
         a.name = tvar
-        a.attrs['plot_options'] = copy.deepcopy(pytplot.data_quants[tvar].attrs['plot_options'])
+        a.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
         pytplot.data_quants[tvar] = a
     else:
         if 'spec_bins' in a.coords:
             pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values, 'v':a.coords['spec_bins'].values})
+            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
         else:
             pytplot.store_data(new_tvar, data={'x':a.coords['time'], 'y':a.values})
+            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     return

@@ -5,8 +5,9 @@
 
 import pytplot
 import numpy as np
+import copy
 
-def clip(tvar1,ymin,ymax,newtvar=None):
+def clip(tvar,ymin,ymax,new_tvar=None):
     """
     Change out-of-bounds data to NaN.
 
@@ -18,7 +19,7 @@ def clip(tvar1,ymin,ymax,newtvar=None):
         ymax : int/float
             Maximum value to keep (inclusive)
         newtvar : str
-            Name of new tvar for clipped data storage.  If not specified, a name will be made up.
+            Name of new tvar for clipped data storage.  If not specified, tvar will be replaced
 
     Returns:
         None
@@ -29,31 +30,18 @@ def clip(tvar1,ymin,ymax,newtvar=None):
         >>> pytplot.clip('d',2,6,'e')
     """
 
+    a = copy.deepcopy(pytplot.data_quants[tvar].where(pytplot.data_quants[tvar] >= ymin))
+    a = copy.deepcopy(a.where(a <= ymax))
 
-    if newtvar is None:
-        newtvar=tvar1+'_clipped'
-
-    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
-        d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+    if new_tvar is None:
+        a.name = tvar
+        pytplot.data_quants[tvar] = a
     else:
-        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+        if 'spec_bins' in a.coords:
+            pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        else:
+            pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values})
+            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
-    #grab column indices
-    df_index = d.columns.copy()
-    new_df = []
-    tvar_orig = d
-    #for each column of dataframe
-    for i in df_index:
-        tv2_col = [item[i] for item in tvar_orig.values]
-        for j,valj in enumerate(tv2_col):
-            #if value in column out of specified range, substitute NaN
-            if (valj < ymin) or (valj > ymax):
-                tv2_col[j] = np.NaN
-        new_df = new_df + [tv2_col]
-    new_df = np.transpose((list(new_df)))
-    #store clipped tvar
-    if pytplot.data_quants[tvar1].spec_bins is not None:
-        pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df,'v':s.values})
-    else:
-        pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df})
     return

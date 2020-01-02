@@ -1,10 +1,10 @@
-# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Copyright 2020 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
-
+import copy
 
 def multiply(tvar1,tvar2,new_tvar=None):
     """
@@ -41,6 +41,8 @@ def multiply(tvar1,tvar2,new_tvar=None):
 
     if 'spec_bins' in pytplot.data_quants[tvar1].coords:
         pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data, 'v':pytplot.data_quants[tvar1].coords['spec_bins'].values})
+        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
     else:
         pytplot.store_data(new_tvar,data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
+        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
     return

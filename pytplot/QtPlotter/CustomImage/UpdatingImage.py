@@ -74,8 +74,12 @@ class UpdatingImage(pg.ImageItem):
                     closest_ys[closest_ys > (len(self.bin_sizes.iloc[i])-1)] = len(self.bin_sizes.iloc[i]) - 1
                     prev_closest_ys = closest_ys
                 temp_data = self.data.iloc[i][closest_ys].values
-                temp_data[yp < np.min(self.bin_sizes.iloc[i])] = np.NaN
-                temp_data[yp > np.max(self.bin_sizes.iloc[i])] = np.NaN
+                try:
+                    temp_data[yp < np.nanmin(self.bin_sizes.iloc[i])] = np.NaN
+                    temp_data[yp > np.nanmax(self.bin_sizes.iloc[i])] = np.NaN
+                except RuntimeWarning:
+                    # If the entire bin is NaN the above stuff fails, so just continue on
+                    pass
                 data_reformatted.append(temp_data)
             data_reformatted = pd.DataFrame(data_reformatted)
 

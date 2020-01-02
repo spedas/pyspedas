@@ -4,10 +4,11 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
+import copy
 
-def interp_nan(tvar, new_tvar='tvar_interp_nan', s_limit=0):
+def interp_nan(tvar, new_tvar=None, s_limit=None):
     """
-    Interpolates the tplot variable through NaNs in the data.
+    Interpolates the tplot variable through NaNs in the data.  This is basically just a wrapper for xarray's interpolate_na function.
 
     .. note::
         This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
@@ -18,7 +19,7 @@ def interp_nan(tvar, new_tvar='tvar_interp_nan', s_limit=0):
         s_limit : int or float, optional
             The maximum size of the gap in seconds to not interpolate over.  I.e. if there are too many NaNs in a row, leave them there.
         new_tvar : str
-            Name of new tvar for added data.  If not set, then a name is made up.
+            Name of new tvar for added data.  If not set, then the original tvar is replaced.
 
     Returns:
         None
@@ -30,26 +31,13 @@ def interp_nan(tvar, new_tvar='tvar_interp_nan', s_limit=0):
         >>> print(pytplot.data_quants['e_nonan'].values)
     """
 
-    if new_tvar=='tvar_interp_nan':
-        newtvar = tvar +"_interp_nan"
+    x = pytplot.data_quants[tvar].interpolate_na(dim='time', limit=s_limit)
+    x.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
-    if 'spec_bins' in pytplot.data_quants[tvar].coords:
-        d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+    if new_tvar is None:
+        pytplot.data_quants[tvar] = x
+        x.name = tvar
     else:
-        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
-        s = None
-    tv1 = d.values.copy()
-    tv1 = tv1.astype(float)
-    cadence = tv1.index[1] - tv1.index[0]
-    n_nans = int(round(s_limit/cadence))
-    if s_limit == 0:
-        tv1 = tv1.interpolate(method='linear')
-    else:
-        tv1 = tv1.interpolate(method='linear',limit=n_nans,limit_direction='both') 
-    tv1 = tv1.astype(object)
+        pytplot.data_quants[new_tvar] = x
+        pytplot.data_quants[new_tvar].name = new_tvar
 
-    if s is not None:
-        pytplot.store_data(newtvar,data = {'x':tv1.index,'y':tv1, 'v': pytplot.data_quants[tvar].coords['spec_bins'].values})
-    else:
-        pytplot.store_data(newtvar, data={'x': tv1.index, 'y': tv1})
-    return

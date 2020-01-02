@@ -1,9 +1,10 @@
-# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Copyright 2020 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
+import copy
 
 def flatten(tvar,range=None,new_tvar=None):
     """
@@ -65,6 +66,8 @@ def flatten(tvar,range=None,new_tvar=None):
 
     if s is not None:
         pytplot.store_data(new_tvar,data = {'x':df.index,'y':df.values, 'v': s.values})
+        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     else:
         pytplot.store_data(new_tvar, data={'x': df.index, 'y': df.values})
+        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     return

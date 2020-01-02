@@ -1,6 +1,6 @@
 import pytplot
 
-def split_vec(tvar,newtvars=None,columns='all'):
+def split_vec(tvar, newtvars=None, columns='all'):
     """
     Splits up 2D data into many 1D tplot variables.
 

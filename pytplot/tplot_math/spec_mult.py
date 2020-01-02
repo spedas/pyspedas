@@ -1,5 +1,6 @@
 import pytplot
 import pandas as pd
+import copy
 
 def spec_mult(tvar,new_tvar=None):
     """
@@ -35,4 +36,5 @@ def spec_mult(tvar,new_tvar=None):
     specframe = s.values
     new_df = pd.DataFrame(dataframe*specframe, columns=d.columns, index=d.index)
     pytplot.store_data(new_tvar,data={'x': new_df.index,'y': new_df.values})
+    pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     return

@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
+import copy
 
 def add(tvar1,tvar2,new_tvar=None):
     """
@@ -25,14 +26,16 @@ def add(tvar1,tvar2,new_tvar=None):
         >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
         >>> pytplot.add('a','c','a+c')
     """
-    #interpolate tvars
+
+    # interpolate tvars
     tv2 = pytplot.tplot_math.tinterp(tvar1, tvar2)
+
     # separate and subtract data
     data1 = pytplot.data_quants[tvar1].values
     data2 = tv2.values
-    data = data1 + data2
+    data = data1 - data2
 
-    # store added data
+    # store subtracted data
     if new_tvar is None:
         pytplot.data_quants[tvar1].values = data
         return
@@ -40,7 +43,9 @@ def add(tvar1,tvar2,new_tvar=None):
     if 'spec_bins' in pytplot.data_quants[tvar1].coords:
         pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data,
                                            'v': pytplot.data_quants[tvar1].coords['spec_bins'].values})
+        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
     else:
         pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
+        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
 
-    return
+    return new_tvar

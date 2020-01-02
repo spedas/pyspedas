@@ -7,7 +7,7 @@ import pytplot
 import copy
 
                               
-def deflag(tvar1,flag,new_tvar=None):
+def deflag(tvar,flag,new_tvar=None):
     """
     Change specified 'flagged' data to NaN.
 
@@ -28,41 +28,18 @@ def deflag(tvar1,flag,new_tvar=None):
         >>> pytplot.deflag('d',[100,90,7,2,57],'e')
     """
 
-    a = copy.deepcopy(pytplot.data_quants[tvar1].where(pytplot.data_quants[tvar1]!=flag))
+    a = copy.deepcopy(pytplot.data_quants[tvar].where(pytplot.data_quants[tvar]!=flag))
+
+
     if new_tvar is None:
-        a.name = tvar1
-        pytplot.data_quants[tvar1] = a
+        a.name = tvar
+        pytplot.data_quants[tvar] = a
     else:
         if 'spec_bins' in a.coords:
             pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
         else:
             pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values})
+            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
-'''
-    if newtvar == 'tvar_deflag':
-        new_tvar = tvar1 + "_deflag"
-
-
-    #if int input, make list
-    if not isinstance(flags,list):
-        flags = [flags]
-    #grab column indices
-    df_index = pytplot.data_quants[tvar1].data.columns
-    new_df = []
-    tvar_orig = pytplot.data_quants[tvar1].data.copy()
-    #for each column of dataframe
-    for i in df_index:
-        tv2_col = [item[i] for item in tvar_orig.values]
-        for j,valj in enumerate(tv2_col):
-            #if one of flagged values, convert to NaN
-            if valj in flags:
-                tv2_col[j] = np.NaN
-        new_df = new_df + [tv2_col]
-    new_df = np.transpose((list(new_df)))
-    #store deflagged tvar
-    if (pytplot.data_quants[tvar1].spec_bins is not None):
-        pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df,'v':pytplot.data_quants[tvar1].spec_bins})
-    else:
-        pytplot.store_data(newtvar, data={'x':tvar_orig.index,'y':new_df})
     return
-'''

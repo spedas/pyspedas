@@ -5,8 +5,9 @@
 
 import pytplot
 import numpy as np
+import copy
 
-def add_across(tvar1,column_range=None,new_tvar=None):
+def add_across(tvar,column_range=None,new_tvar=None):
     """
     Adds across columns in the tplot variable
 
@@ -14,13 +15,13 @@ def add_across(tvar1,column_range=None,new_tvar=None):
         This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
 
     Parameters:
-        tvar1 : str
+        tvar : str
             Name of tplot variable.
         column_range: list of ints
             The columns to add together.  For example, if [1,4] is given here, columns 1, 2, 3, and 4 will be added together.
             If not set, then every column is added.
         new_tvar : str
-            Name of new tvar for averaged data.  If not set, then a name is made up.
+            Name of new tvar for averaged data.  If not set, then the variable is replaced
 
     Returns:
         None
@@ -37,12 +38,11 @@ def add_across(tvar1,column_range=None,new_tvar=None):
         >>> print(pytplot.data_quants['b_aap'].data)
     """
     # separate and add data
-    if new_tvar is None:
-        new_tvar = tvar1 + "_summed"
-    if 'spec_bins' in pytplot.data_quants[tvar1].coords:
-        d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+
+    if 'spec_bins' in pytplot.data_quants[tvar].coords:
+        d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
     else:
-        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar1)
+        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
         s = None
 
     time = d.index.copy()
@@ -102,4 +102,8 @@ def add_across(tvar1,column_range=None,new_tvar=None):
         pytplot.store_data(new_tvar,data={'x':time, 'y':np.transpose(data)})
     else:
         pytplot.store_data(new_tvar, data={'x': time, 'y':np.transpose(data), 'v': np.transpose(spec_data)})
+
+    pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+
     return
+

@@ -1,4 +1,4 @@
-# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Copyright 2020 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
@@ -32,9 +32,11 @@ def tinterp(tvar1,tvar2,replace=False):
 
     if replace:
         pytplot.data_quants[tvar2] = new_tvar2
+        pytplot.data_quants[tvar2].name = new_tvar2
         return
     else:
         pytplot.data_quants[tvar1 + '_tinterp'] = copy.deepcopy(new_tvar2)
         pytplot.data_quants[tvar1 + '_tinterp'].attrs = copy.deepcopy(new_tvar2.attrs)
+        pytplot.data_quants[tvar1 + '_tinterp'].name = new_tvar2
 
     return new_tvar2
