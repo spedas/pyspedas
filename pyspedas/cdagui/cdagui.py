@@ -13,6 +13,11 @@ Notes:
     Currently, cdasws is not on the main pypi server.
     pip install -i https://test.pypi.org/simple/ cdasws
 
+    To start the gui from the command line:
+        python pyspedas/cdagui/cdagui.py
+    To start the gui inside the python environment:
+        exec(open('cdagui.py').read())
+
 @author: nikos
 """
 
@@ -564,6 +569,9 @@ class GUIWidget(QWidget):
             self.local_dir = file
             dir1.setText(self.local_dir)
 
+        def exit_all():
+            self.parent.close()
+
         self.dirGroupBox = QGroupBox("Remote Files and Download")
 
         listf = QListWidget(self)
@@ -580,20 +588,24 @@ class GUIWidget(QWidget):
         button1 = QPushButton("Change Directory")
         buttonclear = QPushButton("Clear")
         buttonclear.setStyleSheet(self.clear_css)
+        buttonexit = QPushButton("Exit")
+        buttonexit.setStyleSheet(self.clear_css)
 
         layout = QGridLayout()
         layout.addWidget(listf, 0, 0, 1, 6)
         layout.addWidget(label1, 1, 0, 1, 1)
         layout.addWidget(dir1, 1, 1, 1, 4)
         layout.addWidget(button1, 1, 5, 1, 1)
-        layout.addWidget(check1, 2, 0, 1, 3)
-        layout.addWidget(buttondown, 2, 3, 1, 2)
-        layout.addWidget(buttonclear, 2, 5, 1, 1)
+        layout.addWidget(check1, 2, 0, 1, 2)
+        layout.addWidget(buttondown, 2, 2, 1, 2)
+        layout.addWidget(buttonclear, 2, 4, 1, 1)
+        layout.addWidget(buttonexit, 2, 5, 1, 1)
 
         # Button1 action
         button1.clicked.connect(select_dir)
         buttondown.clicked.connect(get_data)
         buttonclear.clicked.connect(clear_all)
+        buttonexit.clicked.connect(exit_all)
 
         self.dirGroupBox.setLayout(layout)
 
@@ -632,5 +644,5 @@ class GUIWidget(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = cdagui()
+    cdagui = cdagui()
     sys.exit(app.exec_())
