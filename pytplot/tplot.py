@@ -147,7 +147,7 @@ def tplot(name,
         if isinstance(name[i], int):
             name[i] = list(pytplot.data_quants.keys())[name[i]]
         if name[i] not in pytplot.data_quants.keys():
-            print(str(i) + " is currently not in pytplot")
+            print(str(name[i]) + " is currently not in pytplot")
             return
 
     if isinstance(var_label, int):

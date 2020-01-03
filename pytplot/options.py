@@ -8,17 +8,20 @@ import pytplot
 import numpy as np
 
 
-def options(name, option, value):
+def options(name, option=None, value=None, opt_dict=None):
     """
     This function allows the user to set a large variety of options for individual plots.
 
     Parameters:
         name : str
-            Name of the tplot variable
+            Name or number of the tplot variable
         option : str
-            The name of the option.  See section below
+            The name of the option.  See section below.
         value : str/int/float/list
             The value of the option.  See section below.
+        dict : dict
+            This can be a dictionary of option:value pairs.  Option and value
+            will not be needed if this dictionary item is supplied.
 
     Options:
         =================== ==========   =====
@@ -80,182 +83,200 @@ def options(name, option, value):
 
     """
 
+    if isinstance(name, int):
+        name = list(pytplot.data_quants.keys())[name]
+    if name not in pytplot.data_quants.keys():
+        print(str(name) + " is currently not in pytplot")
+        return
+
+    if opt_dict is None:
+        opt_dict = {option: value}
+    else:
+        if not isinstance(opt_dict,dict):
+            print("dict must be a dictionary object.  Returning.")
+            return
+
     if not isinstance(name, list):
         name = [name]
 
-    option = option.lower()
-
     for i in name:
-        if i not in data_quants.keys():
-            print(str(i) + " is currently not in pytplot.")
-            return
 
-        if option == 'color':
-            if isinstance(value, list):
-                data_quants[i].attrs['plot_options']['extras']['line_color'] = value
-            else:
-                data_quants[i].attrs['plot_options']['extras']['line_color'] = [value]
+        for option, value in opt_dict.items():
 
-        if option == 'link':
-            if isinstance(value, list):
-                pytplot.link(i, value[1], value[0])
+            # Lower case option for consistency
+            option = option.lower()
 
-        if option == 'colormap':
-            if isinstance(value, list):
-                data_quants[i].attrs['plot_options']['extras']['colormap'] = value
-            else:
-                data_quants[i].attrs['plot_options']['extras']['colormap'] = [value]
+            if i not in data_quants.keys():
+                print(str(i) + " is currently not in pytplot.")
+                return
 
-        if option == 'spec':
-            _reset_plots(i)
-            data_quants[i].attrs['plot_options']['extras']['spec'] = value
+            if option == 'color':
+                if isinstance(value, list):
+                    data_quants[i].attrs['plot_options']['extras']['line_color'] = value
+                else:
+                    data_quants[i].attrs['plot_options']['extras']['line_color'] = [value]
 
-        if option == 'alt':
-            _reset_plots(i)
-            data_quants[i].attrs['plot_options']['extras']['alt'] = value
+            if option == 'link':
+                if isinstance(value, list):
+                    pytplot.link(i, value[1], value[0])
 
-        if option == 'map':
-            _reset_plots(i)
-            data_quants[i].attrs['plot_options']['extras']['map'] = value
+            if option == 'colormap':
+                if isinstance(value, list):
+                    data_quants[i].attrs['plot_options']['extras']['colormap'] = value
+                else:
+                    data_quants[i].attrs['plot_options']['extras']['colormap'] = [value]
 
-        if option == 'legend_names':
-            data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
+            if option == 'spec':
+                _reset_plots(i)
+                data_quants[i].attrs['plot_options']['extras']['spec'] = value
 
-        if option == 'xlog_slice':
-            if value:
-                data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'log'
-            else:
-                data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'linear'
+            if option == 'alt':
+                _reset_plots(i)
+                data_quants[i].attrs['plot_options']['extras']['alt'] = value
 
-        if option == 'ylog':
-            negflag = 0 # _ylog_check(data_quants, value, i)
-            if negflag == 0 and value:
-                data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'log'
-            else:
-                data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'linear'
+            if option == 'map':
+                _reset_plots(i)
+                data_quants[i].attrs['plot_options']['extras']['map'] = value
 
-        if option == 'ylog_slice':
-            if value:
-                data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'log'
-            else:
-                data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'linear'
+            if option == 'legend_names':
+                data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
 
-        if option == 'zlog':
-            negflag = _zlog_check(data_quants, value, i)
-            if negflag == 0:
-                data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'log'
-            else:
-                data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
+            if option == 'xlog_slice':
+                if value:
+                    data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'log'
+                else:
+                    data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'linear'
 
-        if option == 'nodata':
-            data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
+            if option == 'ylog':
+                negflag = 0 # _ylog_check(data_quants, value, i)
+                if negflag == 0 and value:
+                    data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'log'
+                else:
+                    data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'linear'
 
-        if option == 'line_style':
-            to_be = []
-            if value == 0 or value == 'solid_line':
+            if option == 'ylog_slice':
+                if value:
+                    data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'log'
+                else:
+                    data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'linear'
+
+            if option == 'zlog':
+                negflag = _zlog_check(data_quants, value, i)
+                if negflag == 0:
+                    data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'log'
+                else:
+                    data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
+
+            if option == 'nodata':
+                data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
+
+            if option == 'line_style':
                 to_be = []
-            elif value == 1 or value == 'dot':
-                to_be = [2, 4]
-            elif value == 2 or value == 'dash':
-                to_be = [6]
-            elif value == 3 or value == 'dash_dot':
-                to_be = [6, 4, 2, 4]
-            elif value == 4 or value == 'dash_dot_dot_dot':
-                to_be = [6, 4, 2, 4, 2, 4, 2, 4]
-            elif value == 5 or value == 'long_dash':
-                to_be = [10]
-            else:
-                to_be=value
+                if value == 0 or value == 'solid_line':
+                    to_be = []
+                elif value == 1 or value == 'dot':
+                    to_be = [2, 4]
+                elif value == 2 or value == 'dash':
+                    to_be = [6]
+                elif value == 3 or value == 'dash_dot':
+                    to_be = [6, 4, 2, 4]
+                elif value == 4 or value == 'dash_dot_dot_dot':
+                    to_be = [6, 4, 2, 4, 2, 4, 2, 4]
+                elif value == 5 or value == 'long_dash':
+                    to_be = [10]
+                else:
+                    to_be=value
 
-            data_quants[i].attrs['plot_options']['line_opt']['line_style'] = to_be
+                data_quants[i].attrs['plot_options']['line_opt']['line_style'] = to_be
 
-            if(value == 6 or value == 'none'):
-                data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
+                if(value == 6 or value == 'none'):
+                    data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
 
-        if option == 'char_size':
-            data_quants[i].attrs['plot_options']['extras']['char_size'] = value
+            if option == 'char_size':
+                data_quants[i].attrs['plot_options']['extras']['char_size'] = value
 
-        if option == 'name':
-            data_quants[i].attrs['plot_options']['line_opt']['name'] = value
+            if option == 'name':
+                data_quants[i].attrs['plot_options']['line_opt']['name'] = value
 
-        if option == "panel_size":
-            if value > 1 or value <= 0:
-                print("Invalid value. Should be (0, 1]")
-                return
-            data_quants[i].attrs['plot_options']['extras']['panel_size'] = value
+            if option == "panel_size":
+                if value > 1 or value <= 0:
+                    print("Invalid value. Should be (0, 1]")
+                    return
+                data_quants[i].attrs['plot_options']['extras']['panel_size'] = value
 
-        if option == 'basemap':
-            data_quants[i].attrs['plot_options']['extras']['basemap'] = value
+            if option == 'basemap':
+                data_quants[i].attrs['plot_options']['extras']['basemap'] = value
 
-        if option == 'alpha':
-            if value > 1 or value < 0:
-                print("Invalid value. Should be [0, 1]")
-                return
-            data_quants[i].attrs['plot_options']['extras']['alpha'] = value
+            if option == 'alpha':
+                if value > 1 or value < 0:
+                    print("Invalid value. Should be [0, 1]")
+                    return
+                data_quants[i].attrs['plot_options']['extras']['alpha'] = value
 
-        if option == 'thick':
-            data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
+            if option == 'thick':
+                data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
 
-        if option == ('yrange' or 'y_range'):
-            data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
+            if option == 'yrange' or option == 'y_range':
+                data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
 
-        if option == ('zrange' or 'z_range'):
-            data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
+            if option == 'zrange' or option == 'z_range':
+                data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
 
-        if option == 'xrange_slice':
-            data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_range'] = [value[0], value[1]]
+            if option == 'xrange_slice':
+                data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_range'] = [value[0], value[1]]
 
-        if option == 'yrange_slice':
-            data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_range'] = [value[0], value[1]]
+            if option == 'yrange_slice':
+                data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_range'] = [value[0], value[1]]
 
-        if option == 'xtitle':
-            data_quants[i].attrs['plot_options']['xaxis_opt']['axis_label'] = value
+            if option == 'xtitle':
+                data_quants[i].attrs['plot_options']['xaxis_opt']['axis_label'] = value
 
-        if option == 'ytitle':
-            data_quants[i].attrs['plot_options']['yaxis_opt']['axis_label'] = value
+            if option == 'ytitle':
+                data_quants[i].attrs['plot_options']['yaxis_opt']['axis_label'] = value
 
-        if option == 'ztitle':
-            data_quants[i].attrs['plot_options']['zaxis_opt']['axis_label'] = value
+            if option == 'ztitle':
+                data_quants[i].attrs['plot_options']['zaxis_opt']['axis_label'] = value
 
-        if option == 'xsubtitle':
-            data_quants[i].attrs['plot_options']['xaxis_opt']['axis_subtitle'] = value
+            if option == 'xsubtitle':
+                data_quants[i].attrs['plot_options']['xaxis_opt']['axis_subtitle'] = value
 
-        if option == 'ysubtitle':
-            data_quants[i].attrs['plot_options']['yaxis_opt']['axis_subtitle'] = value
+            if option == 'ysubtitle':
+                data_quants[i].attrs['plot_options']['yaxis_opt']['axis_subtitle'] = value
 
-        if option == 'zsubtitle':
-            data_quants[i].attrs['plot_options']['zaxis_opt']['axis_subtitle'] = value
+            if option == 'zsubtitle':
+                data_quants[i].attrs['plot_options']['zaxis_opt']['axis_subtitle'] = value
 
-        if option == 'ybar':
-            data_quants[i].attrs['plot_options']['extras']['ybar'] = value
+            if option == 'ybar':
+                data_quants[i].attrs['plot_options']['extras']['ybar'] = value
 
-        if option == 'ybar_color':
-            data_quants[i].attrs['plot_options']['extras']['ybar'] = value
+            if option == 'ybar_color':
+                data_quants[i].attrs['plot_options']['extras']['ybar'] = value
 
-        if option == 'ybar_size':
-            data_quants[i].attrs['plot_options']['extras']['ysize'] = value
+            if option == 'ybar_size':
+                data_quants[i].attrs['plot_options']['extras']['ysize'] = value
 
-        if option == 'plotter':
-            _reset_plots(i)
-            data_quants[i].attrs['plot_options']['extras']['plotter'] = value
+            if option == 'plotter':
+                _reset_plots(i)
+                data_quants[i].attrs['plot_options']['extras']['plotter'] = value
 
-        if option == 'crosshair_x':
-            data_quants[i].attrs['plot_options']['xaxis_opt']['crosshair'] = value
+            if option == 'crosshair_x':
+                data_quants[i].attrs['plot_options']['xaxis_opt']['crosshair'] = value
 
-        if option == 'crosshair_y':
-            data_quants[i].attrs['plot_options']['yaxis_opt']['crosshair'] = value
+            if option == 'crosshair_y':
+                data_quants[i].attrs['plot_options']['yaxis_opt']['crosshair'] = value
 
-        if option == 'crosshair_z':
-            data_quants[i].attrs['plot_options']['zaxis_opt']['crosshair'] = value
+            if option == 'crosshair_z':
+                data_quants[i].attrs['plot_options']['zaxis_opt']['crosshair'] = value
 
-        if option == 'static':
-            data_quants[i].attrs['plot_options']['extras']['static'] = value
+            if option == 'static':
+                data_quants[i].attrs['plot_options']['extras']['static'] = value
 
-        if option == 'static_tavg':
-            data_quants[i].attrs['plot_options']['extras']['static_tavg'] = [value[0], value[1]]
+            if option == 'static_tavg':
+                data_quants[i].attrs['plot_options']['extras']['static_tavg'] = [value[0], value[1]]
 
-        if option == 't_average':
-            data_quants[i].attrs['plot_options']['extras']['t_average'] = value
+            if option == 't_average':
+                data_quants[i].attrs['plot_options']['extras']['t_average'] = value
+
     return
 
 

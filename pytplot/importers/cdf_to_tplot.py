@@ -126,7 +126,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     = cdf_file.varinq(x_axis_var)['Data_Type_Description']
 
                 # Find data name and if it is already in stored variables
-                var_name = prefix + var + suffix
+                if 'TPLOT_NAME' in var_atts:
+                    var_name = prefix + var_atts['TPLOT_NAME'] + suffix
+                else:
+                    var_name = prefix + var + suffix
 
                 if epoch_cache.get(filename+x_axis_var) is None:
                     delta_plus_var = 0.0
@@ -243,7 +246,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                         nontime_varying_depends.append('v')
 
                 metadata[var_name] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
-                                        'scale_type': var_atts.get("SCALE_TYP", "linear")}
+                                      'scale_type': var_atts.get("SCALE_TYP", "linear"),
+                                      'options': var_atts}
 
                 if var_name not in output_table:
                     output_table[var_name] = tplot_data
@@ -275,6 +279,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 options(var_name, 'spec', 1)
             if metadata[var_name]['scale_type'] == 'log':
                 options(var_name, 'ylog', 1)
+            # Gather up all options in the variable attribute section, toss them into options and see what sticks
+            options(var_name, opt_dict=metadata[var_name]['options'])
 
         if to_merge is True:
             cur_data_quant = data_quants[var_name]
