@@ -85,9 +85,6 @@ def options(name, option=None, value=None, opt_dict=None):
 
     if isinstance(name, int):
         name = list(pytplot.data_quants.keys())[name]
-    if name not in pytplot.data_quants.keys():
-        print(str(name) + " is currently not in pytplot")
-        return
 
     if opt_dict is None:
         opt_dict = {option: value}

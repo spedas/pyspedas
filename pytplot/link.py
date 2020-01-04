@@ -7,7 +7,20 @@ from pytplot import data_quants
 import numpy as np
 
 def link(names, link_name, link_type='alt'):
-    
+    '''
+    Simply adds metadata to the tplot variables, specifying which other tplot variables
+    contain other coordinates, typically positional information.
+
+    Parameters:
+        names: str or list of str
+            The names to link
+        link_name: str
+            The tplot variable to link to the names
+        link_type: str
+            The relationship that link_name has to the names.  Values can be
+            lat, lon, alt, x, y, z, mso_x, mso_y, mso_z
+    '''
+
     link_type = link_type.lower()
     if not isinstance(names, list):
         names = [names]
@@ -19,57 +32,10 @@ def link(names, link_name, link_type='alt'):
         
         if isinstance(i,int):
             i = list(data_quants.keys())[i-1]
-    
-        link_to_tvar(data_quants[i].name, link_type, link_name)
+
+        data_quants[data_quants[i].name].attrs['plot_options']['links'][link_type] = link_name
                 
     return
 
 
-def link_to_tvar(name, type, link, method='linear'):
-    from scipy import interpolate
-    from scipy.interpolate import interp1d
-    from .store_data import store_data
 
-    if name == 'data_bands':
-        x=2
-
-    # pull saved variables from data_quants
-    link_timeorig = np.asarray(data_quants[link].coords['time'].values)
-    link_dataorig = np.asarray(data_quants[link].values)
-    tvar_timeorig = np.asarray(data_quants[name].coords['time'].values)
-
-    # If the two tplot variables have the same time cadence, we
-    # don't need to do anything
-    if np.array_equal(link_timeorig, tvar_timeorig):
-        data_quants[name].attrs['plot_options']['links'][type] = link
-        return
-
-    # shorten tvar array to be within link array
-    tvar_timeorig = np.delete(tvar_timeorig, np.argwhere(tvar_timeorig > link_timeorig[-1]))
-    tvar_timeorig = np.delete(tvar_timeorig, np.argwhere(tvar_timeorig < link_timeorig[0]))
-
-    x = link_timeorig
-    y = link_dataorig
-    xnew = tvar_timeorig
-
-    # choose method, interpolate, plot, and store
-    if method == 'linear':
-        f = interp1d(x, y)
-        newvarname = link + "_" + name + "_link"
-        store_data(newvarname, data={'x': xnew, 'y': f(xnew)})
-    elif method == 'cubic':
-        f2 = interp1d(x, y, kind='cubic')
-        newvarname = link + "_" + name + "_link"
-        store_data(newvarname, data={'x': xnew, 'y': f2(xnew)})
-    elif method == 'quad_spline':
-        tck = interpolate.splrep(x, y, s=0, k=2)
-        ynew = interpolate.splev(xnew, tck, der=0)
-        newvarname = link + "_" + name + "_link"
-        store_data(newvarname, data={'x': xnew, 'y': ynew})
-
-    else:
-        print('Error: choose interpolation method.')
-        print('linear, cubic, quad_spline')
-        return
-
-    data_quants[name].attrs['plot_options']['links'][type] = newvarname

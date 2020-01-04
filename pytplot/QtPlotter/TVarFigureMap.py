@@ -115,9 +115,9 @@ class TVarFigureMap(pg.GraphicsLayout):
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
             dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
-
-            t_link = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['lat']].coords['time'].values
-            lat = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['lat']].values
+            coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset_xr, ['lat', 'lon'])
+            t_link = coords['lat'].coords['time'].values
+            lat = coords['lat'].values
             # Need to trim down the data points to fit within the link
             t_tvar = dataset.index.values
             data = dataset[0].values
@@ -128,8 +128,8 @@ class TVarFigureMap(pg.GraphicsLayout):
                 t_tvar = np.delete(t_tvar, 0)
                 data = np.delete(data, 0)
 
-            t_link = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['lon']].coords['time'].values
-            lon = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['lon']].values
+            t_link = coords['lon'].coords['time'].values
+            lon = coords['lon'].values
             # Need to trim down the data points to fit within the link
             while t_tvar[-1] > t_link[-1]:
                 t_tvar = np.delete(t_tvar, -1)

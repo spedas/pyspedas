@@ -204,8 +204,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
 
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 or \
-                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] <= 0 or \
+                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] <= 0:
                 return
             self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]),
                                          np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]),
@@ -259,9 +259,10 @@ class TVarFigureAlt(pg.GraphicsLayout):
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
             dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
+            coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset, ['alt'])
             for i in range(0, len(dataset.columns)):
-                t_link = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['alt']].coords['time'].values
-                x = pytplot.data_quants[dataset_xr.attrs['plot_options']['links']['alt']].values
+                t_link = coords['alt'].coords['time'].values
+                x = coords['alt'].values
                 # Need to trim down the data points to fit within the link
                 t_tvar = dataset.index.values
                 data = dataset[i].values

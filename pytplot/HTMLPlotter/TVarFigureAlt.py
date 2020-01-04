@@ -17,11 +17,11 @@ import pytplot
 
 class TVarFigureAlt(object):
     
-    def __init__(self, tvar_name, auto_color, show_xaxis=False, interactive=False):
+    def __init__(self, tvar_name, auto_color, show_xaxis=False, slice=False):
         self.tvar_name = tvar_name
         self.auto_color = auto_color
         self.show_xaxis = show_xaxis
-        self.interactive = interactive
+        self.slice = slice
        
         # Variables needed across functions
         self.colors = ['black', 'red', 'green', 'navy', 'orange', 'firebrick', 'pink', 'blue', 'olive']
@@ -48,7 +48,7 @@ class TVarFigureAlt(object):
         return axis_type, link_y_axis
     
     def getfig(self):
-        if self.interactive:
+        if self.slice:
             return [self.fig, self.interactive_plot]
         else:
             return [self.fig]
@@ -92,7 +92,7 @@ class TVarFigureAlt(object):
         if not self.show_xaxis:
             self.fig.xaxis.major_label_text_font_size = '0pt'
             self.fig.xaxis.visible = False
-            
+
     def _setxrange(self):
         # Check if x range is not set, if not, set good ones
         if 'alt_range' not in pytplot.tplot_opt_glob:
@@ -102,7 +102,8 @@ class TVarFigureAlt(object):
             for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
                 datasets.append(pytplot.data_quants[oplot_name])
             for dataset in datasets:
-                alt = pytplot.data_quants[dataset.attrs['plot_options']['links']['alt']].values
+                coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset, ['alt'])
+                alt = coords['alt'].values
                 x_min_list.append(np.nanmin(alt.tolist()))
                 x_max_list.append(np.nanmax(alt.tolist()))
             pytplot.tplot_opt_glob['alt_range'] = [np.nanmin(x_min_list), np.nanmax(x_max_list)]
@@ -117,8 +118,8 @@ class TVarFigureAlt(object):
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 \
-                    or pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] <= 0 \
+                    or pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] <= 0:
                 return
         y_range = Range1d(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
                           pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1])
@@ -200,9 +201,10 @@ class TVarFigureAlt(object):
             line_style = None
             if 'line_style' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']:
                 line_style = pytplot.data_quants[self.tvar_name].attrs['plot_options']['line_opt']['line_style']
-                
-            t_link = pytplot.data_quants[dataset.attrs['plot_options']['links']['alt']].coords['time'].values
-            x = pytplot.data_quants[dataset.attrs['plot_options']['links']['alt']].values
+
+            coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset, ['alt'])
+            t_link = coords['alt'].coords['time'].values
+            x = coords['alt'].values
             df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             # Create lines from each column in the dataframe
             for column_name in df.columns:

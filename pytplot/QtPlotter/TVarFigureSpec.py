@@ -308,15 +308,19 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.ymin = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]
         self.ymax = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 or \
-                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
-                return
-            self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]),
-                                         np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]),
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] <= 0 or \
+                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] <= 0:
+                self.ymin = np.nanmin(pytplot.data_quants[self.tvar_name].coords['spec_bins'].values)
+                self.ymax = np.nanmax(pytplot.data_quants[self.tvar_name].coords['spec_bins'].values)
+            self.plotwindow.vb.setYRange(np.log10(self.ymin),
+                                         np.log10(self.ymax),
                                          padding=0)
         else:
-            self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
-                                         pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1], padding=0)
+            self.plotwindow.vb.setYRange(self.ymin,
+                                         self.ymax,
+                                         padding=0)
+
+
 
     def _setzrange(self):
         # Get Z Range

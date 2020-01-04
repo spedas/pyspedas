@@ -18,10 +18,10 @@ from .CustomModels.colorbarsidetitle import ColorBarSideTitle
 
 class TVarFigureMap(object):
     
-    def __init__(self, tvar_name, auto_color=False, show_xaxis=False, interactive=False):
+    def __init__(self, tvar_name, auto_color=False, show_xaxis=False, slice=False):
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
-        self.interactive = interactive
+        self.slice = slice
 
         # Variables needed across functions
         self.fig = None
@@ -52,7 +52,7 @@ class TVarFigureMap(object):
         return axis_type, link_y_axis
     
     def getfig(self):
-        if self.interactive:
+        if self.slice:
             return [self.fig, self.interactive_plot]
         else:
             return [self.fig]
@@ -208,6 +208,14 @@ class TVarFigureMap(object):
         self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
         self.fig.yaxis.axis_label_text_color = self.get_axis_label_color()
 
+    def return_interpolated_link_dict(self, dataset, types):
+        ret_dict = {}
+        for t in types:
+            name = pytplot.data_quants[dataset.attrs['plot_options']['links'][t]]
+            data  = pytplot.data_quants[name].interp_like(dataset)
+            ret_dict[name] = data
+        return ret_dict
+
     def _visdata(self):
         self._setcolors()
         datasets = [pytplot.data_quants[self.tvar_name]]
@@ -217,10 +225,11 @@ class TVarFigureMap(object):
         cm_index = 0
         for dataset in datasets:   
             # TODO: Add a check that lon and lat are only 1D
-            t_link_lon = pytplot.data_quants[dataset.attrs['plot_options']['links']['lon']].coords['time'].values
-            x = pytplot.data_quants[dataset.attrs['plot_options']['links']['lon']].values
-            t_link_lat = pytplot.data_quants[dataset.attrs['plot_options']['links']['lat']].coords['time'].values
-            y = pytplot.data_quants[dataset.attrs['plot_options']['links']['lat']].values
+            coords = self.return_interpolated_link_dict(dataset, ['lon', 'lat'])
+            t_link_lon = coords['lon'].coords['time'].values
+            x = coords['lon'].values
+            t_link_lat = coords['lat'].coords['time'].values
+            y = coords['lon'].values
 
             df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
             for column_name in df.columns:

@@ -567,9 +567,9 @@ def convert_tplotxarray_to_pandas_dataframe(name):
     else:
         matrix = pytplot.data_quants[name].values
         if len(matrix.shape) > 2:
+            data = np.nansum(matrix, 0)
+        while len(matrix.shape) > 2:
             matrix = np.nansum(matrix, 1)
-        if len(matrix.shape) > 2:
-            matrix = matrix[:, :, 0]
         return_data = pd.DataFrame(matrix)
         return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
         spec_bins = pd.DataFrame(pytplot.data_quants[name].coords['spec_bins'].values)
@@ -578,3 +578,16 @@ def convert_tplotxarray_to_pandas_dataframe(name):
         else:
             spec_bins = spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
     return return_data, spec_bins
+
+def return_interpolated_link_dict(dataset, types):
+    ret_dict = {}
+    for t in types:
+        if t not in dataset.attrs['plot_options']['links']:
+            print(f"ERROR: {t} is not linked to {dataset.name}")
+            raise Exception("Not a valid link")
+
+        link = pytplot.data_quants[dataset.attrs['plot_options']['links'][t]]
+        new_link = link.interp_like(dataset)
+        ret_dict[t] = new_link
+
+    return ret_dict

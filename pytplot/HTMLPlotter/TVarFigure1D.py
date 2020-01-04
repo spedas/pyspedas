@@ -31,14 +31,14 @@ dttf = DatetimeTickFormatter(microseconds=["%H:%M:%S"],
 
 class TVarFigure1D(object):
     
-    def __init__(self, tvar_name, auto_color, show_xaxis=False, interactive=False):
+    def __init__(self, tvar_name, auto_color, show_xaxis=False, slice=False):
         self.tvar_name = tvar_name
         self.auto_color = auto_color
         self.show_xaxis = show_xaxis
         if 'show_all_axes' in pytplot.tplot_opt_glob:
             if pytplot.tplot_opt_glob['show_all_axes']:
                 self.show_xaxis = True
-        self.interactive = interactive
+        self.slice = slice
        
         # Variables needed across functions
         self.colors = ['black', 'red', 'green', 'navy', 'orange', 'firebrick', 'pink', 'blue', 'olive']
@@ -67,7 +67,7 @@ class TVarFigure1D(object):
         return axis_type, link_y_axis
 
     def getfig(self):
-        if self.interactive:
+        if self.slice:
             return [self.fig, self.interactive_plot]
         else:
             return [self.fig]
@@ -137,8 +137,8 @@ class TVarFigure1D(object):
     
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] < 0 or \
-                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] < 0:
+            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] <= 0 or \
+                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] <= 0:
                 return
         y_range = Range1d(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
                           pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1])

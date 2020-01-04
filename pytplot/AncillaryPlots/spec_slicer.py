@@ -156,7 +156,12 @@ def spec_slicer(var=None, time=None, interactive=False):
                     # If the user just wants a plain jane interactive plot...
                     # Plot data based on time we're hovering over'
                     try:
-                        plot_data.setData(bins, list(pytplot.data_quants[name].isel(time=idx)))
+                        data = pytplot.data_quants[name].isel(time=idx)
+                        if len(data.shape) >= 2:
+                            data = np.nansum(data, 0)
+                        while len(data.shape) > 1:
+                            data = np.nansum(data, 1)
+                        plot_data.setData(bins, list(data))
                     except ZeroDivisionError:
                         pass
 
