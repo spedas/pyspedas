@@ -29,7 +29,7 @@ import datetime
 import pyspedas
 import pytplot
 from cdasws import CdasWs
-from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtCore import Qt, QDate, QCoreApplication
 from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow,
                              QGridLayout, QPushButton, QListWidget,
                              QGroupBox, QCheckBox, QMessageBox,
@@ -644,6 +644,9 @@ class GUIWidget(QWidget):
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    app = QCoreApplication.instance()
+    if app is None:
+        app = QApplication(sys.argv)
+
     cdagui = cdagui()
     app.exec_()
