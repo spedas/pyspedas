@@ -138,24 +138,9 @@ def get_root_data_dir():
     # Get preferred data download location for pyspedas project
     prefs = pyspedas.get_spedas_prefs()
     if 'data_dir' in prefs:
-        download_path = prefs['data_dir']
+        return prefs['data_dir']
     else:
         raise NameError('data_dir is not found in spd_prefs.txt')
-
-    import os
-    # Get the "toolkit path" (where MAVEN download code is)
-    full_path = os.path.realpath(__file__)
-    toolkit_path = os.path.dirname(full_path)
-    if not os.path.exists(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt')):
-        create_pref_file(toolkit_path, download_path)
-
-    with open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'r') as f:
-        f.readline()
-        s = f.readline().rstrip()
-        # Get rid of first space
-        s = s.split(' ')
-        nothing = ' '
-    return nothing.join(s[1:])
 
 
 def create_pref_file(toolkit_path, download_path):

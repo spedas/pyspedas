@@ -10,67 +10,6 @@ import numpy as np
 import collections
 
 
-def compare_versions():
-    # import libraries
-    import requests
-
-    # access complete list of revision numbers on PyPI
-    pydivide_url = "https://pypi.python.org/pypi/pydivide/json"
-    try:
-        pd_pypi_vn = sorted(requests.get(pydivide_url).json()['releases'])
-    except:
-        return
-
-    # find PyPI version number
-    pd_pypi_vn = pd_pypi_vn[-1]
-    pr1 = pd_pypi_vn
-    pd_pypi_vn = pd_pypi_vn.split(".")
-    # convert to integer array for comparison
-    pd_pypi_vn = [int(i) for i in pd_pypi_vn]
-
-    # find current directory out of which code is executing
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    version_path = dir_path + '/version.txt'
-    # open version.txt in current directory and read
-    with open(version_path) as f:
-        cur_vn = f.readline()
-    cur_vn = "".join(cur_vn)
-    pr2 = cur_vn
-    cur_vn = cur_vn.split(".")
-    # convert to integer array for comparison
-    cur_vn = [int(i) for i in cur_vn]
-
-    # for each item in version number array [X.Y.Z]
-    for i in range(len(cur_vn)):
-        # if current item > PyPI item (hypothetical), break, latest version is running
-        if cur_vn[i] > pd_pypi_vn[i]:
-            old_flag = 0
-            break
-        # if current item = PyPI item, continue to check next item
-        elif cur_vn[i] == pd_pypi_vn[i]:
-            old_flag = 0
-            continue
-        # if current item < PyPI item, indicative of old version, throw flag to initiate warning
-        else:
-            old_flag = 1
-            break
-
-    # if not running latest version, throw warning
-    if old_flag == 1:
-        print("PyPI PyDivide Version")
-        print(pr1)
-        print("Your PyDivide Version in " + dir_path)
-        print(pr2)
-        print("")
-        print('****************************** WARNING! ******************************')
-        print('*                                                                    *')
-        print('*          You are running an outdated version of PyDivide.          *')
-        print('*              Sync your module for the latest updates.              *')
-        print('*                                                                    *')
-        print('****************************** WARNING! ******************************')
-    return
-
-
 def param_list(kp):
     '''
     Return a listing of all parameters present in the given
@@ -1642,14 +1581,10 @@ param_dict = {'Electron Density': 'ELECTRON_DENSITY',
               'Solar Wind Dynamic Pressure': 'SOLAR_WIND_DYNAMIC_PRESSURE',
               'Solar Wind Pressure Quality': 'SOLAR_WIND_DYNAMIC_PRESSURE_QUAL',
               'STATIC Quality Flag': 'STATIC_QUALITY_FLAG',
-              'H+ Density': 'HPLUS_DENSITY',
-              'H+ Density Quality': 'HPLUS_DENSITY_QUAL',
               'O+ Density': 'OPLUS_DENSITY',
               'O+ Density Quality': 'OPLUS_DENSITY_QUAL',
               'O2+ Density': 'O2PLUS_DENSITY',
               'O2+ Density Quality': 'O2PLUS_DENSITY_QUAL',
-              'H+ Temperature': 'HPLUS_TEMPERATURE',
-              'H+ Temperature Quality': 'HPLUS_TEMPERATURE_QUAL',
               'O+ Temperature': 'OPLUS_TEMPERATURE',
               'O+ Temperature Quality': 'OPLUS_TEMPERATURE_QUAL',
               'O2+ Temperature': 'O2PLUS_TEMPERATURE',
