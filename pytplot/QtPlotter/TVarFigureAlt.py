@@ -259,7 +259,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
             dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
-            coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset, ['alt'])
+            coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset_xr, ['alt'])
             for i in range(0, len(dataset.columns)):
                 t_link = coords['alt'].coords['time'].values
                 x = coords['alt'].values

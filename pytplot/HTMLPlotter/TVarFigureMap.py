@@ -208,14 +208,6 @@ class TVarFigureMap(object):
         self.fig.yaxis.axis_label_text_font_size = str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])+'pt'
         self.fig.yaxis.axis_label_text_color = self.get_axis_label_color()
 
-    def return_interpolated_link_dict(self, dataset, types):
-        ret_dict = {}
-        for t in types:
-            name = pytplot.data_quants[dataset.attrs['plot_options']['links'][t]]
-            data  = pytplot.data_quants[name].interp_like(dataset)
-            ret_dict[name] = data
-        return ret_dict
-
     def _visdata(self):
         self._setcolors()
         datasets = [pytplot.data_quants[self.tvar_name]]
@@ -225,7 +217,7 @@ class TVarFigureMap(object):
         cm_index = 0
         for dataset in datasets:   
             # TODO: Add a check that lon and lat are only 1D
-            coords = self.return_interpolated_link_dict(dataset, ['lon', 'lat'])
+            coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset, ['lon', 'lat'])
             t_link_lon = coords['lon'].coords['time'].values
             x = coords['lon'].values
             t_link_lat = coords['lat'].coords['time'].values
