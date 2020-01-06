@@ -116,8 +116,8 @@ def files_to_download(dataset_list, t0, t1):
             if (fcount > max_files):
                 msg = "Found " + str(fcount) + " files.      "
                 remote_url = remote_url[0:max_files]
-                msg += ("\nOnly a max of " + str(max_files) +
-                        " files can be downloaded.")
+                msg += ("\nOnly a max of " + str(max_files)
+                        + " files can be downloaded.")
 
     if (msg != ""):
         show_my_message(title, msg)
@@ -470,8 +470,8 @@ class GUIWidget(QWidget):
 
         label1 = QLabel("Start Time:")
         # By default show date 7 days behind to ensure that there is data
-        t0 = datetime.datetime.strftime(datetime.datetime.now() -
-                                        datetime.timedelta(7), '%Y-%m-%d')
+        t0 = datetime.datetime.strftime(datetime.datetime.now()
+                                        - datetime.timedelta(7), '%Y-%m-%d')
         time1 = QLineEdit(str(t0) + " 00:00:01")
         self.time_start_box = time1
         label2 = QLabel("End Time:")
@@ -571,6 +571,7 @@ class GUIWidget(QWidget):
 
         def exit_all():
             self.parent.close()
+            app.exit()
 
         self.dirGroupBox = QGroupBox("Remote Files and Download")
 
@@ -645,4 +646,4 @@ class GUIWidget(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     cdagui = cdagui()
-    sys.exit(app.exec_())
+    app.exec_()
