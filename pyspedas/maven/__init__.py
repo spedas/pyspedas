@@ -23,7 +23,8 @@ def maven_load(filenames=None,
                varformat=None,
                prefix='',
                suffix='',
-               get_support_data=False):
+               get_support_data=False,
+               auto_yes=False):
     """
     Main function for downloading MAVEN data and loading it into tplot variables (if CDF or STS data type).
     This function will also load in MAVEN KP data for position information, and read those into tplot as well
@@ -46,8 +47,8 @@ def maven_load(filenames=None,
             LPW                 lpiv, lpnt, mrgscpot, we12, we12burstlf, we12bursthf, we12burstmf, wn, wspecact, wspecpas
             STATIC              2a, c0, c2, c4, c6, c8, ca, cc, cd, ce, cf, d0, d1, d4, d6, d7, d8, d9, da, db
             SEP                 s1-raw-svy-full, s1-cal-svy-full, s2-raw-svy-full, s2-cal-svy-full
-            SWEA                coarsearc3d, coarsesvy3d, finearc3d, finesvy3d, onboardsvymom, onboardsvyspec
-            SWIA                arc3d, arcpad, svy3d, svypad, svyspec
+            SWEA                arc3d, arcpad, svy3d, svypad, svyspec
+            SWIA                coarsearc3d, coarsesvy3d, finearc3d, finesvy3d, onboardsvymom, onboardsvyspec
             MAG                 ss, pc, pl, ss1s, pc1s, pl1s
             =================== =====================================
         level: str
@@ -88,10 +89,13 @@ def maven_load(filenames=None,
             Data with an attribute "VAR_TYPE" with a value of "support_data"
             will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
+        auto_yes : bool
+            If this is True, there will be no prompt asking if you'd like to download files.
     """
     tvars = load_data(filenames=filenames, instruments=instruments, level=level, type=type, insitu=insitu, iuvs=iuvs,
                       start_date=start_date, end_date=end_date, update_prefs=update_prefs,
                       only_update_prefs=only_update_prefs, local_dir=local_dir, list_files=list_files,
                       new_files=new_files, exclude_orbit_file=exclude_orbit_file, download_only=download_only,
-                      varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data)
+                      varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+                      auto_yes=auto_yes)
     return tvars

@@ -58,6 +58,13 @@ def maven_filenames(filenames=None,
         if iuvs:
             level = 'iuvs'
 
+    if level == 'kp':
+        instruments = ['kp']
+        if insitu:
+            level = 'insitu'
+        if iuvs:
+            level = 'iuvs'
+
     # Set data download location
     if local_dir is None:
         mvn_root_data_dir = get_root_data_dir()
@@ -133,17 +140,27 @@ def load_data(filenames=None,
               varformat=None,
               prefix='',
               suffix='',
-              get_support_data=False):
+              get_support_data=False,
+              auto_yes=False):
     """
     This function downloads MAVEN data loads it into tplot variables, if applicable.
     """
+
+    if not isinstance(instruments, list) and instruments is not None:
+        instruments = [instruments]
+
+    if not isinstance(type, list) and type is not None:
+        type = [type]
+
+    if not isinstance(filenames, list) and filenames is not None:
+        filenames = [filenames]
 
     # 1. Get a list of MAVEN files queries from the above seach parameters
     maven_files = maven_filenames(filenames, instruments, level, insitu, iuvs, start_date, end_date, update_prefs,
                                   only_update_prefs, local_dir)
 
     # If we are not asking for KP data, this flag ensures only ancillary data is loaded in from the KP files
-    if instruments != 'kp':
+    if level != 'kp':
         ancillary_only = True
     else:
         ancillary_only = False
@@ -199,6 +216,8 @@ def load_data(filenames=None,
             print('Would you like to proceed with the download? ')
             valid_response = False
             cancel = False
+            if auto_yes:
+                valid_response = True
             while not valid_response:
                 response = (input('(y/n) >  '))
                 if response == 'y' or response == 'Y':
@@ -257,8 +276,6 @@ def load_data(filenames=None,
                 # Specifically for SWIA and SWEA data, make sure the plots have log axes and are spectrograms
                 instr = l2_regex.match(os.path.basename(f)).group("instrument")
                 if instr in ["swi", "swe"]:
-                    pytplot.options(created_vars, 'ylog', 1)
-                    pytplot.options(created_vars, 'zlog', 1)
                     pytplot.options(created_vars, 'spec', 1)
                 loaded_tplot_vars.append(created_vars)
 
@@ -282,12 +299,10 @@ def load_data(filenames=None,
             flat_list = list(set([item for sublist in loaded_tplot_vars for item in sublist]))
 
             # Load in KP data specifically for all of the Ancillary data (position, attitude, Ls, etc)
-            kp_data_loaded = maven_kp_to_tplot(filename=kp_files, ancillary_only=True)
+            kp_data_loaded = maven_kp_to_tplot(filename=kp_files, ancillary_only=ancillary_only, instruments=instruments)
 
             # Link all created tplot variables to the corresponding KP data
             for tvar in flat_list:
-                if tvar=='data_lpnt':
-                    x=2
                 pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type='alt')
                 pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type='x')
                 pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type='y')
