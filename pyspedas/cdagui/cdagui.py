@@ -571,7 +571,8 @@ class GUIWidget(QWidget):
 
         def exit_all():
             self.parent.close()
-            app.exit()
+            # The following works on windows but not on linux...
+            # app.exit()
 
         self.dirGroupBox = QGroupBox("Remote Files and Download")
 
