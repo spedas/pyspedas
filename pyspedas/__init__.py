@@ -15,6 +15,8 @@ from .examples.basic.ex_spectra import ex_spectra
 from .examples.basic.ex_line_spectra import ex_line_spectra
 from .examples.basic.ex_create import ex_create
 from .examples.basic.ex_omni import ex_omni
+from .examples.basic.ex_cdasws import ex_cdasws
+from .examples.basic.ex_cdagui import ex_cdagui
 from .utilities.data_exists import data_exists
 from .utilities.tnames import tnames
 from .utilities.time_string import time_string
@@ -28,6 +30,7 @@ from .analysis.subtract_average import subtract_average
 from .analysis.subtract_median import subtract_median
 from .analysis.time_clip import time_clip
 from .analysis.tdpwrspc import tdpwrspc
+from .cdagui import cdagui
 from pytplot import cdf_to_tplot
 from .spdtplot.tplot_names import tplot_names
 
