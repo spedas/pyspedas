@@ -30,7 +30,7 @@ setup(
     project_urls={'Information': 'http://spedas.org/wiki/',
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    install_requires=['requests', 'pytplot', 'cdflib', 'cdasws', 'pyqt5'],
+    install_requires=['requests', 'pytplot', 'cdflib', 'cdasws', 'PyQt5'],
     python_requires='>=3.5',
     include_package_data=True,
 )
