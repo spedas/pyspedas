@@ -2,4 +2,3 @@ requests
 cdflib
 pytplot
 cdasws
-PyQt5
