@@ -14,17 +14,17 @@ Description:
 
 def ex_cdagui():
     # Import pyspedas
-    # Run the following command in a python command line:
-    #     import pyspedas
-    print("--- In a command line, type the following:")
-    print("import pyspedas")
+    # Run the following import command in a python command line:
+    #     from pyspedas.cdagui.cdagui import cdagui
+    print("--- In a command line, type the following import command:")
+    print("from pyspedas.cdagui.cdagui import cdagui")
     # Open the cdagui by typing
-    #     x = pyspedas.cdagui.cdagui()
-    print("x = pyspedas.cdagui.cdagui()")
-    # In the GUI, do the following:
+    #     x = cdagui()
+    print("x = cdagui()")
+    # In the GUI window, do the following:
     # Select 'ARTEMIS', select 'Electric Fields (space)'
     # Click the button '1. Find Datasets' and a list of datasets shoulw appear.
-    print("--- The GUI should open.")
+    print("--- The cda GUI window should open.")
     print("--- Select 'ARTEMIS', 'Electric Fields (space)'\
  and click '1. Find Datasets'.")
     # Select 'THB_L2_FIT' and click the button '2. Get File List'
