@@ -5,6 +5,10 @@ CDA GUI
 Downloads data files from CDAWeb and loads them into pytplot variables.
 Requires cdasws, PyQt5.
 
+To open the GUI window, do this:
+    from pyspedas.cdagui.cdagui import cdagui
+    x = cdagui()
+
 For cdasws documentation, see:
     https://test.pypi.org/project/cdasws/
     https://cdaweb.sci.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
