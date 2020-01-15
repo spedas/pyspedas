@@ -48,6 +48,10 @@ def ex_cdagui():
     #   pytplot.tplot('thb_fgs_dsl')
     print("--- Type the following to create a plot:")
     print("pytplot.tplot('thb_fgs_dsl')")
+    # Remind the user about needing PyQt5
+    print()
+    print("--- If you encounter problems, try to install the latest PyQt5:")
+    print("pip install PyQt5 --upgrade")
 
 # Run the example code
 # ex_cdagui()
