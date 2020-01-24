@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-CDA GUI
+GUI for CDAWeb
 
-Downloads data files from CDAWeb and loads them into pytplot variables.
+A GUI that can download data files from CDAWeb
+and load them into pytplot variables.
 Requires cdasws, PyQt5.
 
-To open the GUI window, do this:
+To open the GUI window:
     from pyspedas.cdagui.cdagui import cdagui
     x = cdagui()
 
@@ -24,21 +25,16 @@ Notes:
 
 @author: nikos
 """
-
-
 import sys
-import os
-import re
 import datetime
-import pyspedas
-import pytplot
-from cdasws import CdasWs
 from PyQt5.QtCore import Qt, QDate, QCoreApplication
 from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow,
                              QGridLayout, QPushButton, QListWidget,
                              QGroupBox, QCheckBox, QMessageBox,
-                             QVBoxLayout, QLabel, QLineEdit, QListWidgetItem,
+                             QVBoxLayout, QLabel, QLineEdit,
                              QFileDialog, QCalendarWidget, QDialog)
+from cdaweb import CDAWeb
+import pyspedas
 
 
 def get_default_data_dir():
@@ -50,150 +46,6 @@ def get_default_data_dir():
         data_dir = prefs['data_dir'] + 'cdaweb'
 
     return data_dir
-
-
-def get_instr():
-    """ Returns a list of instrument types.
-    """
-    cdas = CdasWs()
-    instr = cdas.get_instrument_types()
-    return instr
-
-
-def get_observatories():
-    """ Returns a list of missions.
-    """
-    cdas = CdasWs()
-    observ = cdas.get_observatory_groups()
-    return observ
-
-
-def get_datasets(mission_list, instrument_list):
-    """ Returns a list of datasets given the missions and instruments.
-    """
-    thisdict = {
-        "observatoryGroup": mission_list,
-        "instrumentType": instrument_list
-    }
-    cdas = CdasWs()
-    dataset = cdas.get_datasets(**thisdict)
-
-    return dataset
-
-
-def files_to_download(dataset_list, t0, t1):
-    """ Find the list of files for a dataset between dates t0 and t1.
-        Return a list of url.
-    """
-    remote_url = []
-    max_files = 50
-    cdas = CdasWs()
-    title = "Server response"
-
-    # Set times to cdas format
-    t0 = t0.strip().replace(' ', 'T', 1) + 'Z'
-    t1 = t1.strip().replace(' ', 'T', 1) + 'Z'
-
-    # Find dataset list
-    for d in dataset_list:
-        d0 = d.split(' ')
-        if (len(d0) > 1):
-            status, result = cdas.get_data_file(d0[0], [], t0, t1)
-            if (status == 200 and (result is not None)):
-                r = result.get('FileDescription')
-                for f in r:
-                    remote_url.append(f.get('Name'))
-
-    # Show a message with the result
-    msg = ""
-    if (status != 200):
-        msg = "There was a problem communicating with the SPDF server.\n"
-        msg += "Status code:" + str(status)
-    else:
-        fcount = len(remote_url)
-        if (fcount < 1):
-            msg = "No files were found with the selected parameters."
-        elif (fcount == 1):
-            # msg = "Found 1 file.          "
-            msg = ""
-        else:
-            if (fcount > max_files):
-                msg = "Found " + str(fcount) + " files.      "
-                remote_url = remote_url[0:max_files]
-                msg += ("\nOnly a max of " + str(max_files)
-                        + " files can be downloaded.")
-
-    if (msg != ""):
-        show_my_message(title, msg)
-
-    ''' # For debugging only
-    title = 'Debug'
-    msg = (t0 + ' --- ' + t1 + ' --- ' + ' = '.join(dlist) +
-            ' = '.join(remote_url))
-    show_my_message(title, msg)
-    '''
-
-    return remote_url
-
-
-def download_and_load(remote_files, local_dir, download_only=False,
-                      varformat=None, get_support_data=False, prefix='',
-                      suffix=''):
-    """ Download cdf files.
-        Load cdf files into pytplot variables.
-        TODO: Loading files into pytplot has problems.
-    """
-
-    result = []
-
-    """ # For debug only
-    msg = local_dir + str(download_only) + " ... " + '==='.join(remote_files)
-    title = 'Download Files'
-    show_my_message(title, msg)
-    print(msg)
-    """
-
-    remotehttp = "https://cdaweb.sci.gsfc.nasa.gov/sp_phys/data"
-    count = 0
-    dcount = 0
-    for remotef in remote_files:
-        f = remotef.strip().replace(remotehttp, '', 1)
-        localf = local_dir + os.path.sep + f
-
-        resp, err, locafile = pyspedas.download_files(remotef, localf)
-        count += 1
-        if resp:
-            print(str(count) + '. File was downloaded. Location: ' + locafile)
-            dcount += 1
-            result.append(localf)
-            if not download_only:
-                try:
-                    pytplot.cdf_to_tplot(locafile, varformat, get_support_data,
-                                         prefix, suffix, False, True)
-                except ValueError as err:
-                    msg = "cdf_to_tplot could not load " + locafile
-                    msg += "\n\n"
-                    msg += "Error from pytplot: " + str(err)
-                    print(msg)
-                    show_my_message("Error!", msg)
-
-        else:
-            print(str(count) + '. There was a problem. Could not download \
-                  file: ' + remotef)
-            print(err)
-
-    print('Downloaded ' + str(dcount) + ' files.')
-    print('tplot variables:')
-    print(pyspedas.tplot_names())
-
-    return result
-
-
-def clean_time_str(t):
-    """ Removes the time part from datetime variable.
-    """
-    t0 = re.sub('T.+Z', '', t)
-    return t0
 
 
 def show_my_message(title, msg):
@@ -216,9 +68,9 @@ class cdagui(QMainWindow):
         self.init_UI()
 
     def init_UI(self):
+        self.setWindowTitle('CDAWeb Data Downloader')
         self.statusbar = self.statusBar()
         self.statusbar.showMessage('Status: Ready')
-        self.setWindowTitle('CDAWeb Data Downloader')
         self.showMaximized()
 
 
@@ -226,113 +78,72 @@ class GUIWidget(QWidget):
     """ Main GUI class.
     """
 
-    # Define mission and instrument variables
-    mission_list = None
-    instrument_list = None
-    mission_box1 = None
-    instrument_box1 = None
-    dataset_box1 = None
-    file_box1 = None
-    mission_selected = None
-    instrument_selected = None
-    time_start_box = None
-    time_end_box = None
-    dir_box = None
-    local_dir = None
-    button_css = "background-color:#AFEEAF;font-family:Verdana;"
-    clear_css = "background-color:#E9967A;font-family:Verdana;"
-    title_css = "background-color:#AFEEEE;font-family:Verdana;font-size:14px;"
-
     def __init__(self, parent):
         super(GUIWidget, self).__init__(parent)
         self.parent = parent
+        self.cda = CDAWeb()
+        self.title_css = "background-color:#AFEEEE;\
+            font-family:Verdana;font-size:14px;"
+        self.button_css = "background-color:#AFEEAF;font-family:Verdana;"
+        self.clear_css = "background-color:#E9967A;font-family:Verdana;"
         self.initUI()
 
     def createMissionGroupBox(self):
         # 1. Missions and instruments group of GUI
 
-        def find_datasets():
-            # Fill the dataset list
-            # Reads the selections for missions and instruments
-            self.dataset_box1.clear()
-            self.file_box1.clear()
-            self.mission_list = []
-            for m in self.mission_box1.selectedIndexes():
-                self.mission_list.append(m.data())
-            self.mission_selected.setText(str(self.mission_list))
-            self.instrument_list = []
-            for m in self.instrument_box1.selectedIndexes():
-                self.instrument_list.append(m.data())
-            self.instrument_selected.setText(str(self.instrument_list))
-            allsets = get_datasets(self.mission_list, self.instrument_list)
-
-            allsetslen = len(allsets)
-
-            # Limit dataset results to 100
-            datasetmaxshown = 100
-            msg = ""
-            if allsetslen < 1:
-                title = 'Datasets Search'
-                msg = ("No datasets found with these parameters: "
-                       + str(self.mission_list) + ", "
-                       + str(self.instrument_list))
+        def button1_find_datasets():
+            title = "Find Datasets"
+            self.dataset_box.clear()
+            self.file_box.clear()
+            mission_list = [item.text() for item in
+                            self.mission_box.selectedItems()]
+            instrument_list = [item.text() for item in
+                               self.instrument_box.selectedItems()]
+            if len(mission_list) < 1 or len(instrument_list) < 1:
+                msg = "Please select at least one mission and one instrument."
                 show_my_message(title, msg)
-            elif allsetslen > datasetmaxshown:
-                allsets = allsets[0:datasetmaxshown]
-                title = 'Datasets Search'
-                msg = ("Found " + str(allsetslen) + " datasets with these "
-                       + "parameters: "
-                       + str(self.mission_list) + ", "
-                       + str(self.instrument_list)
-                       + ". Only 100 will be shown.")
+                return 0
+            datasets = self.cda.get_datasets(mission_list, instrument_list)
+            datalen = len(datasets)
+            if datalen < 1:
+                msg = "No datasets were found with these parameters."
                 show_my_message(title, msg)
+                return 0
+            elif datalen > 50:
+                msg = "Number of datasets found: " + str(datalen)
+                msg += "\nOnly 50 will be shown."
+                show_my_message(title, msg)
+            self.mission_selected.setText(str(mission_list))
+            self.instrument_selected.setText(str(instrument_list))
+            self.dataset_box.addItems(datasets[:50])
 
-            count = 0
-            for dataItem in allsets:
-                dataSet = dataItem["Id"].strip()
-                if len(dataSet) > 1 and dataSet != "(null)":
-                    tnow = dataItem["TimeInterval"]
-                    t1 = tnow["Start"].strip()
-                    t2 = tnow["End"].strip()
-                    t1 = clean_time_str(t1)
-                    t2 = clean_time_str(t2)
-
-                    dataSet += " (" + t1 + ' to ' + t2 + ")"
-                    item = QListWidgetItem(dataSet)
-                    self.dataset_box1.addItem(item)
-                    count += 1
-
-            # Clear previous selections
-            self.instrument_box1.clearSelection()
-            self.mission_box1.clearSelection()
-
-            if (msg == ""):
-                if (count == 1):
-                    msg = "Found 1 dataset."
-                else:
-                    msg = "Found " + str(count) + " datasets."
-            self.parent.statusbar.showMessage('Status: ' + msg)
-
-        # Begin construction of the GUI
+        # Missions group GUI elements
         self.missionGroupBox = QGroupBox("Missions and Instruments")
+
         label1 = QLabel("Mission Groups:")
-        label2 = QLabel("Instrument Types:")
         list1 = QListWidget(self)
         list1.setSelectionMode(QListWidget.MultiSelection)
         list1.setMinimumHeight(50)
         list1.setMinimumWidth(400)
-        self.mission_box1 = list1
+        list1.addItems(self.cda.get_observatories())
+        self.mission_box = list1
+
+        label2 = QLabel("Instrument Types:")
         list2 = QListWidget(self)
         list2.setSelectionMode(QListWidget.MultiSelection)
         list2.setMinimumHeight(50)
         list2.setMinimumWidth(400)
-        self.instrument_box1 = list2
+        list2.addItems(self.cda.get_instruments())
+        self.instrument_box = list2
+
         label3 = QLabel("Select one or more Mission Group(s) and one"
                         + " or more Instrument Type(s) and press:")
         button1 = QPushButton("1. Find Datasets")
         button1.setStyleSheet(self.button_css)
+        button1.clicked.connect(button1_find_datasets)
 
         # Create the layout and add GUI elements
+        # row, column, rowSpan, columnSpan
         layout = QGridLayout()
         layout.addWidget(label1, 0, 0)
         layout.addWidget(label2, 0, 1)
@@ -341,96 +152,67 @@ class GUIWidget(QWidget):
         layout.addWidget(label3, 2, 0, 1, 1)
         layout.addWidget(button1, 2, 1, 1, 1)
 
-        # Fill the mission list
-        for dataItem in get_observatories():
-            # Contains Name, ShortDescription, LongDescription
-            # mission = dataItem["ShortDescription"].strip()
-            # mission = dataItem["LongDescription"].strip()
-            mission = dataItem["Name"].strip()
-            if len(mission) > 1 and mission != "(null)":
-                item = QListWidgetItem(mission)
-                list1.addItem(item)
-
-        # Fill the instruments list
-        for dataItem in get_instr():
-            instr = dataItem["Name"].strip()
-            if len(instr) > 1 and instr != "(null)":
-                item = QListWidgetItem(instr)
-                list2.addItem(item)
-
-        # Button1 action
-        button1.clicked.connect(find_datasets)
-
         self.missionGroupBox.setLayout(layout)
 
     def createDatasetBox(self):
         # 2. Dataset group of GUI
 
+        # Datasets group GUI elements
         self.datasetGroupBox = QGroupBox("Datasets")
 
         label1 = QLabel("Selected Mission Groups:")
         ans1 = QLabel("   ")
         self.mission_selected = ans1
         ans1.setWordWrap(True)
+
         label2 = QLabel("Selected Instruments:")
         ans2 = QLabel("   ")
         self.instrument_selected = ans2
         ans2.setWordWrap(True)
 
-        listds = QListWidget(self)
-        self.dataset_box1 = listds
-        listds.setMinimumHeight(50)
-        listds.setMinimumWidth(400)
-        listds.setSelectionMode(QListWidget.MultiSelection)
+        list1 = QListWidget(self)
+        self.dataset_box = list1
+        list1.setMinimumHeight(50)
+        list1.setMinimumWidth(400)
+        list1.setSelectionMode(QListWidget.MultiSelection)
+
         layout = QGridLayout()
-        # row, column, rowSpan, columnSpan
         layout.addWidget(label1, 0, 0, 1, 1)
-        layout.addWidget(ans1, 0, 1, 1, 5)
+        layout.addWidget(ans1, 0, 1, 1, 15)
         layout.addWidget(label2, 1, 0, 1, 1)
-        layout.addWidget(ans2, 1, 1, 1, 5)
-        layout.addWidget(listds, 2, 0, 1, 6)
+        layout.addWidget(ans2, 1, 1, 1, 15)
+        layout.addWidget(list1, 2, 0, 1, 16)
 
         self.datasetGroupBox.setLayout(layout)
 
     def createTimeGroupBox(self):
         # 3. Date and time group of GUI
 
-        def get_file_list():
-            # Find remote files
-
-            self.file_box1.clear()
-
-            # Find the selected datasets
-            dataset_list = []
-            msg = ""
-            for m in self.dataset_box1.selectedIndexes():
-                dataset_list.append(m.data())
-            if len(dataset_list) < 1:
-                msg = "Please select a dataset."
-                title = "No Datasets"
-                show_my_message(title, msg)
-                self.parent.statusbar.showMessage('Status: ' + msg)
-                return
-
-            # Find the the files
+        def button2_get_file_list():
+            title = "Get File List"
+            self.file_box.clear()
+            dataset_list = [item.text() for item in
+                            self.dataset_box.selectedItems()]
             t0 = self.time_start_box.text()
             t1 = self.time_end_box.text()
-            remote_file_list = files_to_download(dataset_list, t0, t1)
-
-            count = 0
-            for f in remote_file_list:
-                item = QListWidgetItem(f)
-                self.file_box1.addItem(item)
-                count += 1
-
-            if (msg == ""):
-                if (count == 1):
-                    msg = "Found 1 file."
-                else:
-                    msg = "Found " + str(count) + " files."
-            self.parent.statusbar.showMessage('Status: ' + msg)
+            if len(dataset_list) < 1 or len(t0) < 9 or len(t1) < 9:
+                msg = "Please select at least one dataset and start-end times."
+                show_my_message(title, msg)
+                return 0
+            file_list = self.cda.get_filenames(dataset_list, t0, t1)
+            filelen = len(file_list)
+            if filelen < 1:
+                msg = "No datasets were found with these parameters."
+                show_my_message(title, msg)
+                return 0
+            elif filelen > 50:
+                msg = "Number of files found: " + str(filelen)
+                msg += "\nOnly 50 will be shown."
+                show_my_message(title, msg)
+            self.file_box.addItems(file_list[:50])
 
         def pick_time(start_or_end):
+            # Date picker
             dlg = QDialog(self)
             gridc = QVBoxLayout()
             dlg.setLayout(gridc)
@@ -470,22 +252,28 @@ class GUIWidget(QWidget):
             dlg.setWindowTitle("Calendar")
             dlg.exec_()
 
+        # Date and Time group GUI elements
         self.timeGroupBox = QGroupBox("Date and Time")
 
+        # By default show 7 days behind to ensure that there is data
         label1 = QLabel("Start Time:")
-        # By default show date 7 days behind to ensure that there is data
         t0 = datetime.datetime.strftime(datetime.datetime.now()
                                         - datetime.timedelta(7), '%Y-%m-%d')
         time1 = QLineEdit(str(t0) + " 00:00:01")
         self.time_start_box = time1
+        button1 = QPushButton("Select")
+        button1.clicked.connect(lambda: pick_time("start"))
+
         label2 = QLabel("End Time:")
         time2 = QLineEdit(str(t0) + " 23:59:59")
         self.time_end_box = time2
-        label3 = QLabel("Date and time format: YYYY-MM-DD[ HH:MM:SS]")
-        button1 = QPushButton("Select")
         button2 = QPushButton("Select")
+        button2.clicked.connect(lambda: pick_time("end"))
+
+        label3 = QLabel("Date and time format: YYYY-MM-DD[ HH:MM:SS]")
         button3 = QPushButton("2. Get File List")
         button3.setStyleSheet(self.button_css)
+        button3.clicked.connect(button2_get_file_list)
 
         layout = QGridLayout()
         layout.addWidget(label1, 0, 0)
@@ -497,17 +285,100 @@ class GUIWidget(QWidget):
         layout.addWidget(label3, 1, 0, 1, 3)
         layout.addWidget(button3, 1, 3, 1, 3)
 
-        # Calendar pick
-        button1.clicked.connect(lambda: pick_time("start"))
-        button2.clicked.connect(lambda: pick_time("end"))
-
-        # Button3 action
-        button3.clicked.connect(get_file_list)
-
         self.timeGroupBox.setLayout(layout)
 
     def createDownloadGroupBox(self):
         # 4. Download group of GUI
+
+        def button3_get_data():
+            title = "Download Files"
+            file_list = [item.text() for item in self.file_box.selectedItems()]
+            if len(file_list) < 1:
+                msg = "Please select at least one file to download."
+                show_my_message(title, msg)
+                return 0
+            local_dir = self.dir_box.text()
+            if len(local_dir) < 1:
+                msg = "Please select a local directory."
+                show_my_message(title, msg)
+                return 0
+            download_only = False
+            if check1.isChecked():
+                download_only = True
+
+            # The following can be slow, especially if there are multiple files
+            self.parent.statusbar.showMessage('Status: Downloading, \
+                                              please wait...')
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.processEvents()
+            result = self.cda.download(file_list, local_dir, download_only)
+            QApplication.restoreOverrideCursor()
+            self.parent.statusbar.showMessage('Status: Ready')
+
+            filelen = len(result)
+            if filelen < 1:
+                msg = "No files were downloaded."
+                show_my_message(title, msg)
+                return 0
+            else:
+                count_no_downloads = 0
+                count_tplot_problem = 0
+                count_tplot = 0
+                for item in result:
+                    if item[2] == -1:
+                        count_no_downloads += 1
+                    elif item[2] == 0 and not download_only:
+                        count_tplot_problem += 1
+                    elif item[2] == 1:
+                        count_tplot += 1
+                msg = "Results:"
+                msg += "\n"
+                msg += "\nFiles to download: " + str(filelen)
+                msg += ("\nFiles that could not be downloaded: "
+                        + str(count_no_downloads))
+                if not download_only:
+                    msg += "\n"
+                    msg += ("\nFiles loaded to pytplot: " + str(count_tplot))
+                    msg += ("\nFiles that could not be loaded to pytplot: "
+                            + str(count_tplot_problem))
+                show_my_message(title, msg)
+
+        def select_dir():
+            file = str(QFileDialog.getExistingDirectory(self,
+                                                        "Select Directory"))
+            if file:
+                self.local_dir = file
+                self.dir_box.setText(self.local_dir)
+
+        def clear_all():
+            # Clear all boxes
+            self.mission_box.clearSelection()
+            self.instrument_box.clearSelection()
+            self.instrument_selected.setText('')
+            self.mission_selected.setText('')
+            self.dataset_box.clear()
+            self.file_box.clear()
+            self.parent.statusbar.showMessage('Status: Ready')
+
+        def exit_all():
+            self.parent.close()
+
+        # Download Files GUI elements
+        self.dirGroupBox = QGroupBox("Remote Files and Download")
+
+        list1 = QListWidget(self)
+        list1.setMinimumHeight(50)
+        list1.setMinimumWidth(400)
+        list1.setSelectionMode(QListWidget.MultiSelection)
+        self.file_box = list1
+
+        label1 = QLabel("Download Directory:")
+        dir1 = QLineEdit()
+        self.local_dir = get_default_data_dir()
+        dir1.setText(self.local_dir)
+        self.dir_box = dir1
+        button1 = QPushButton("Change Directory")
+        button1.clicked.connect(select_dir)
 
         msg2 = ("If checked, then the files will"
                 + " only be downloaded. If unchecked, then they will also"
@@ -517,88 +388,18 @@ class GUIWidget(QWidget):
         check1.setChecked(True)
         buttondown = QPushButton("3. Get Data")
         buttondown.setStyleSheet(self.button_css)
+        buttondown.clicked.connect(button3_get_data)
 
-        def clear_all():
-            # Clear all boxes
-            self.file_box1.clear()
-            self.dataset_box1.clear()
-            self.instrument_box1.clearSelection()
-            self.mission_box1.clearSelection()
-            self.instrument_selected.setText('')
-            self.mission_selected.setText('')
-            self.parent.statusbar.showMessage('Status: Ready')
-
-        def get_data():
-            # Download files
-            download_only = False
-            if check1.isChecked():
-                download_only = True
-
-            # Find the selected files
-            remote_file_list = []
-            for m in self.file_box1.selectedIndexes():
-                remote_file_list.append(m.data())
-            if len(remote_file_list) < 1:
-                title = "No files"
-                msg = "Please select some files to download."
-                show_my_message(title, msg)
-                return
-            # Load downloaded files into pytplot
-            result = []
-            if len(remote_file_list) < 1:
-                msg = "No files to download."
-                show_my_message(title, msg)
-                return
-
-            self.local_dir = self.dir_box.text()
-
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            result = download_and_load(remote_file_list, self.local_dir,
-                                       download_only)
-            QApplication.restoreOverrideCursor()
-
-            reslen = len(result)
-            if reslen > 0:
-                msg = "Donwload complete. Number of files: " + str(reslen)
-            else:
-                msg = "No files were downloaded."
-
-            title = 'Download Files'
-            show_my_message(title, msg)
-            self.parent.statusbar.showMessage('Status: ' + msg)
-
-        def select_dir():
-            file = str(QFileDialog.getExistingDirectory(self,
-                                                        "Select Directory"))
-            self.local_dir = file
-            dir1.setText(self.local_dir)
-
-        def exit_all():
-            self.parent.close()
-            # The following works on windows but not on linux...
-            # app.exit()
-
-        self.dirGroupBox = QGroupBox("Remote Files and Download")
-
-        listf = QListWidget(self)
-        self.file_box1 = listf
-        listf.setMinimumHeight(50)
-        listf.setMinimumWidth(400)
-        listf.setSelectionMode(QListWidget.MultiSelection)
-
-        label1 = QLabel("Download Directory:")
-        dir1 = QLineEdit()
-        self.local_dir = get_default_data_dir()
-        dir1.setText(self.local_dir)
-        self.dir_box = dir1
-        button1 = QPushButton("Change Directory")
         buttonclear = QPushButton("Clear")
         buttonclear.setStyleSheet(self.clear_css)
+        buttonclear.clicked.connect(clear_all)
+
         buttonexit = QPushButton("Exit")
         buttonexit.setStyleSheet(self.clear_css)
+        buttonexit.clicked.connect(exit_all)
 
         layout = QGridLayout()
-        layout.addWidget(listf, 0, 0, 1, 6)
+        layout.addWidget(list1, 0, 0, 1, 6)
         layout.addWidget(label1, 1, 0, 1, 1)
         layout.addWidget(dir1, 1, 1, 1, 4)
         layout.addWidget(button1, 1, 5, 1, 1)
@@ -608,10 +409,6 @@ class GUIWidget(QWidget):
         layout.addWidget(buttonexit, 2, 5, 1, 1)
 
         # Button1 action
-        button1.clicked.connect(select_dir)
-        buttondown.clicked.connect(get_data)
-        buttonclear.clicked.connect(clear_all)
-        buttonexit.clicked.connect(exit_all)
 
         self.dirGroupBox.setLayout(layout)
 
@@ -627,6 +424,7 @@ class GUIWidget(QWidget):
         label1 = QLabel("Download Data from CDAWeb")
         label1.setStyleSheet(self.title_css)
         label1.setAlignment(Qt.AlignCenter)
+        label1.setMaximumHeight(20)
         grid.addWidget(label1)
 
         # 1. Create missions and instruments group
@@ -654,4 +452,4 @@ if __name__ == '__main__':
         app = QApplication(sys.argv)
 
     cdagui = cdagui()
-    app.exec_()
+    sys.exit(app.exec_())

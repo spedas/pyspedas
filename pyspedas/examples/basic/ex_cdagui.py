@@ -43,7 +43,7 @@ def ex_cdagui():
  and press Shift+Enter.")
     print("import pytplot")
     print("pytplot.tplot_names()")
-    print("--- You should get a list of loaded tplot variables.")
+    print("--- You should get the list of loaded tplot variables.")
     # Type the following to create a plot:
     #   pytplot.tplot('thb_fgs_dsl')
     print("--- Type the following to create a plot:")
