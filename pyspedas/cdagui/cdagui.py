@@ -33,7 +33,7 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow,
                              QGroupBox, QCheckBox, QMessageBox,
                              QVBoxLayout, QLabel, QLineEdit,
                              QFileDialog, QCalendarWidget, QDialog)
-from cdaweb import CDAWeb
+from .cdaweb import CDAWeb
 import pyspedas
 
 
