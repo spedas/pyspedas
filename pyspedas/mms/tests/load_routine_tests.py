@@ -22,6 +22,11 @@ class DSPLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
         self.assertTrue(data_exists('mms1_dsp_bpsd_omni'))
 
+    def test_load_epsd_bpsd_spdf(self):
+        data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype=['epsd', 'bpsd'], level='l2', data_rate='fast', spdf=True)
+        self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
+        self.assertTrue(data_exists('mms1_dsp_bpsd_omni'))
+
     def test_load_epsd_suffix(self):
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype='epsd', level='l2', data_rate='fast', suffix='_test')
         self.assertTrue(data_exists('mms1_dsp_epsd_omni_test'))
@@ -30,6 +35,11 @@ class DSPLoadTestCases(unittest.TestCase):
 class FEEPSLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'])
+        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
+        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
+
+    def test_load_spdf_data(self):
+        data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
 
@@ -62,6 +72,10 @@ class EISLoadTestCases(unittest.TestCase):
         data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='phxtof')
         self.assertTrue(data_exists('mms1_epd_eis_phxtof_proton_flux_omni'))
 
+    def test_load_phxtof_spdf(self):
+        data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='phxtof', spdf=True)
+        self.assertTrue(data_exists('mms1_epd_eis_phxtof_proton_flux_omni'))
+
     def test_load_extof_data(self):
         data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='extof')
         self.assertTrue(data_exists('mms1_epd_eis_extof_proton_flux_omni'))
@@ -75,6 +89,10 @@ class EISLoadTestCases(unittest.TestCase):
 class FPILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
+        self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
+
+    def test_load_spdf_data(self):
+        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], spdf=True)
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
 
     def test_load_small_brst_interval(self):
@@ -125,6 +143,10 @@ class HPCALoadTestCases(unittest.TestCase):
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
 
+    def test_load_spdf_data(self):
+        data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
+        self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
+
     def test_load_ion_data(self):
         data = mms_load_hpca(trange=['2015-10-16/5:00', '2015-10-16/6:00'], datatype='ion')
         self.assertTrue(data_exists('mms1_hpca_hplus_flux'))
@@ -161,6 +183,10 @@ class EDILoadTestCases(unittest.TestCase):
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'])
         self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2'))
 
+    def test_load_spdf_data(self):
+        data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'], spdf=True)
+        self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2'))
+
     def test_load_suffix(self):
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2_test'))
@@ -171,6 +197,10 @@ class ASPOCLoadTestCases(unittest.TestCase):
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_aspoc_ionc'))
 
+    def test_load_spdf_data(self):
+        data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
+        self.assertTrue(data_exists('mms1_aspoc_ionc'))
+
     def test_load_suffix(self):
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_aspoc_ionc_test'))
@@ -179,6 +209,10 @@ class ASPOCLoadTestCases(unittest.TestCase):
 class EDPLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'])
+        self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
+
+    def test_load_spdf_data(self):
+        data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
 
     def test_load_suffix(self):
@@ -200,6 +234,10 @@ class EDPLoadTestCases(unittest.TestCase):
 class FGMLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'])
+        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
+
+    def test_load_spdf_data(self):
+        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
 
     def test_load_suffix(self):
