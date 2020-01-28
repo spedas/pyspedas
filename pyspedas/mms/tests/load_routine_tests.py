@@ -22,10 +22,9 @@ class DSPLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
         self.assertTrue(data_exists('mms1_dsp_bpsd_omni'))
 
-    def test_load_epsd_bpsd_spdf(self):
-        data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype=['epsd', 'bpsd'], level='l2', data_rate='fast', spdf=True)
+    def test_load_epsd_spdf(self):
+        data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype='epsd', level='l2', data_rate='fast', spdf=True)
         self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
-        self.assertTrue(data_exists('mms1_dsp_bpsd_omni'))
 
     def test_load_epsd_suffix(self):
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype='epsd', level='l2', data_rate='fast', suffix='_test')
@@ -39,6 +38,7 @@ class FEEPSLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
 
     def test_load_spdf_data(self):
+        del_data('*')
         data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
