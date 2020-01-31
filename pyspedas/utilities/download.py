@@ -83,7 +83,7 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
 
     return filename
 
-def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False):
+def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False, last_version=False):
 
     if isinstance(remote_path, list):
         logging.error('Remote path must be a string')
@@ -162,6 +162,10 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                 # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
                 new_links = fnmatch.filter(links, url_file)
 
+                if last_version:
+                    new_links = sorted(new_links)
+                    new_links = [new_links[-1]]
+
                 # download the files
                 for new_link in new_links:
                     resp_data = download(remote_path=remote_path, remote_file=short_path+new_link, local_path=local_path, username=username, password=password, verify=verify, headers=headers, session=session)
@@ -191,6 +195,10 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                     out.append(os.path.join(dirpath, file))
 
             out = sorted(out)
+
+            if last_version:
+                if len(out) > 1:
+                    out = [out[-1]]
 
     session.close()
     return out
