@@ -25,7 +25,7 @@ import copy
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                  prefix='', suffix='', plot=False, merge=False,
-                 center_measurement=False, notplot=False):
+                 center_measurement=False, notplot=False, varnames=[]):
     """
     This function will automatically create tplot variables from CDF files.
 
@@ -67,6 +67,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             If True, then data are returned in a hash table instead of
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
+        varnames: list
+            Load these variables only. If [] or ['*'], then load everything.
 
     Returns:
         List of tplot variables created (unless notplot keyword is used).
@@ -76,8 +78,12 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
     epoch_cache = {}
     output_table = {}
     metadata = {}
+    
+    if len(varnames) > 0:
+        if '*' in varnames:
+            varnames = []
 
-    #data_quants = {}
+    # data_quants = {}
     if isinstance(filenames, str):
         filenames = [filenames]
     elif isinstance(filenames, list):
@@ -99,8 +105,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         cdf_file = cdflib.CDF(filename)
         cdf_info = cdf_file.cdf_info()
         all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
+        # User defined variables.
+        if len(varnames) > 0:
+            all_cdf_variables = [value for value in varnames if value in all_cdf_variables]
 
-        # Find the data variables
         for var in all_cdf_variables:
             if not re.match(var_regex, var):
                 continue
@@ -136,8 +144,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                     delta_minus_var = 0.0
                     delta_time = 0.0
 
-                    xdata = cdf_file.varget(x_axis_var)
-                    epoch_var_atts = cdf_file.varattsget(x_axis_var)
+                    # Skip variables with ValueErrors. 
+                    try:
+                        xdata = cdf_file.varget(x_axis_var)
+                        epoch_var_atts = cdf_file.varattsget(x_axis_var)
+                    except ValueError:
+                        print("Value error for variable: " + var_name)
+                        continue
 
                     # check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
                     if center_measurement:
