@@ -10,6 +10,7 @@ addons:
 
 install:
   - pip install -r .travisreqs.txt
+  - pip install python-coveralls
   - python -m pyspedas.mms.tests.setup_tests
 
 script: 
@@ -19,3 +20,6 @@ script:
   - python -m pyspedas.mms.tests.file_filter
   - python -m pyspedas.dscovr.tests.tests
   - python -m pyspedas.utilities.tests.download_tests
+
+after_success:
+  - coveralls
