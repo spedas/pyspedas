@@ -10,16 +10,16 @@ addons:
 
 install:
   - pip install -r .travisreqs.txt
-  - pip install python-coveralls
+  - pip install coveralls
   - python -m pyspedas.mms.tests.setup_tests
-
+i
 script: 
-  - python -m pyspedas.mms.tests.load_routine_tests
-  - python -m pyspedas.mms.tests.feeps
-  - python -m pyspedas.mms.tests.eis
-  - python -m pyspedas.mms.tests.file_filter
-  - python -m pyspedas.dscovr.tests.tests
-  - python -m pyspedas.utilities.tests.download_tests
+  - coverage run -m pyspedas.mms.tests.load_routine_tests
+  - coverage run -m pyspedas.mms.tests.feeps
+  - coverage run -m pyspedas.mms.tests.eis
+  - coverage run -m pyspedas.mms.tests.file_filter
+  - coverage run -m pyspedas.dscovr.tests.tests
+  - coverage run -m pyspedas.utilities.tests.download_tests
 
 after_success:
   - coveralls
