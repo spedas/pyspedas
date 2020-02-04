@@ -41,6 +41,12 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     out_files = []
 
+    if instrument != 'wbd':
+        # note: can't use last_version with WBD data due to using wild cards for the times (and not just in the version)
+        last_version = True
+    else:
+        last_version = False
+
     for prb in probe:
         if instrument == 'fgm':
             if datatype == 'spin':
@@ -72,7 +78,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
         remote_names = dailynames(file_format=pathformat, trange=trange)
 
         for remote_file in remote_names:
-            files = download(remote_file=remote_file, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+            files = download(remote_file=remote_file, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version)
             if files is not None:
                 for file in files:
                     out_files.append(file)
