@@ -1,6 +1,6 @@
 
 ## Colorado Student Space Weather Experiment (CSSWE) Mission
-The routines in this folder can be used to load data from the Colorado Student Space Weather Experiment (CSSWE) mission. 
+The routines in this module can be used to load data from the Colorado Student Space Weather Experiment (CSSWE) mission. 
 
 ### Instruments
 - Relativistic Electron and Proton Telescope integrated little experiment (REPTile)

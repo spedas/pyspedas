@@ -1,6 +1,6 @@
 
 ## Deep Space Climate Observatory (DSCOVR) Mission
-The routines in this folder can be used to load data from the Deep Space Climate Observatory (DSCOVR) mission. 
+The routines in this module can be used to load data from the Deep Space Climate Observatory (DSCOVR) mission. 
 
 ### Instruments
 - Magnetometer

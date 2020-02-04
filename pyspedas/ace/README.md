@@ -1,6 +1,6 @@
 
 ## Advanced Composition Explorer (ACE) Mission
-The routines in this folder can be used to load data from the Advanced Composition Explorer (ACE) mission. 
+The routines in this module can be used to load data from the Advanced Composition Explorer (ACE) mission. 
 
 ### Instruments
 - Magnetometer (MFI)

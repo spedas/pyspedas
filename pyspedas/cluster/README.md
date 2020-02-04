@@ -1,6 +1,6 @@
 
 ## Cluster Mission
-The routines in this folder can be used to load data from the Cluster mission. 
+The routines in this module can be used to load data from the Cluster mission. 
 
 ### Instruments
 - Fluxgate Magnetometer (FGM)
