@@ -12,7 +12,7 @@ install:
   - pip install -r .travisreqs.txt
   - pip install coveralls
   - python -m pyspedas.mms.tests.setup_tests
-i
+
 script: 
   - coverage run -m pyspedas.mms.tests.load_routine_tests
   - coverage run -m pyspedas.mms.tests.feeps
