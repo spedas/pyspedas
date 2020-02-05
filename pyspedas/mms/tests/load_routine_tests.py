@@ -259,6 +259,20 @@ class FGMLoadTestCases(unittest.TestCase):
         data = mms_load_fgm(probe=[1, 2, 3, 4], trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
 
+############### MEC ############### 
+class MECLoadTestCases(unittest.TestCase):
+    def test_load_default_data(self):
+        data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'])
+        self.assertTrue(data_exists('mms1_mec_r_sm'))
+
+    def test_load_spdf_data(self):
+        data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
+        self.assertTrue(data_exists('mms1_mec_r_sm'))
+
+    def test_load_suffix(self):
+        data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
+        self.assertTrue(data_exists('mms1_mec_r_sm_test'))
+        
 ############### SCM ############### 
 # class SCMLoadTestCases(unittest.TestCase):
 #     def test_load_default_data(self):
