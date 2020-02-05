@@ -21,6 +21,7 @@ script:
   - coverage run -a -m pyspedas.dscovr.tests.tests
   - coverage run -a -m pyspedas.utilities.tests.download_tests
   - coverage run -a -m pyspedas.cluster.tests.tests
+  - coverage run -a -m pyspedas.csswe.tests.tests
 
 after_success:
   - coveralls
