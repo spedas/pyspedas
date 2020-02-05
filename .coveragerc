@@ -1,4 +1,5 @@
 [run]
 omit =
-    # omit everything in /home
-    /home/*
+  /home/travis/virtualenv/*
+  */site-packages/*
+  */bin/*
