@@ -259,6 +259,12 @@ class FGMLoadTestCases(unittest.TestCase):
         data = mms_load_fgm(probe=[1, 2, 3, 4], trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
 
+    def test_load_data_no_update(self):
+        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00']) # make sure the files exist locally
+        del_data('*') 
+        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], no_update=True) # load the file from the local cache
+        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
+
 ############### MEC ############### 
 class MECLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
