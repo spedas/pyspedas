@@ -6,7 +6,7 @@ testmodules = [
     'pyspedas.mms.tests.feeps',
     'pyspedas.mms.tests.eis',
     'pyspedas.mms.tests.file_filter',
-    'ppyspedas.dscovr.tests.tests',
+    'pyspedas.dscovr.tests.tests',
     'pyspedas.utilities.tests.download_tests',
     ]
 
