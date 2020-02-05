@@ -4,7 +4,7 @@
 import unittest
 import numpy as np
 
-from ...mms import mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
+from ...mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
 from ...utilities.data_exists import data_exists
 from ..hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from ..hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
@@ -272,7 +272,7 @@ class MECLoadTestCases(unittest.TestCase):
     def test_load_suffix(self):
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_mec_r_sm_test'))
-        
+
 ############### SCM ############### 
 # class SCMLoadTestCases(unittest.TestCase):
 #     def test_load_default_data(self):
