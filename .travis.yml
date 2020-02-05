@@ -17,4 +17,4 @@ script:
   - coverage run -a -m pyspedas.utilities.tests.run_all_tests
 
 after_success:
-  - coveralls
+  - coveralls --base_dir pyspedas
