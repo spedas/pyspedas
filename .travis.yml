@@ -14,12 +14,12 @@ install:
   - python -m pyspedas.mms.tests.setup_tests
 
 script: 
-  - coverage run -m pyspedas.mms.tests.load_routine_tests
-  - coverage run -m pyspedas.mms.tests.feeps
-  - coverage run -m pyspedas.mms.tests.eis
-  - coverage run -m pyspedas.mms.tests.file_filter
-  - coverage run -m pyspedas.dscovr.tests.tests
-  - coverage run -m pyspedas.utilities.tests.download_tests
+  - coverage run -a -m pyspedas.mms.tests.load_routine_tests
+  - coverage run -a -m pyspedas.mms.tests.feeps
+  - coverage run -a -m pyspedas.mms.tests.eis
+  - coverage run -a -m pyspedas.mms.tests.file_filter
+  - coverage run -a -m pyspedas.dscovr.tests.tests
+  - coverage run -a -m pyspedas.utilities.tests.download_tests
 
 after_success:
   - coveralls
