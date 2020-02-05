@@ -1,0 +1,4 @@
+[run]
+omit =
+    # omit everything in /home
+    /home/*
