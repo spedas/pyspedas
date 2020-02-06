@@ -7,6 +7,7 @@ from .themis.themis_load import themis_filename, themis_load
 from .themis.gmag_load import gmag_load, gmag_filename, check_gmag, check_greenland, gmag_groups, gmag_list, get_group,\
     query_gmags
 from .themis.themis_helpers import get_probes, get_instruments
+from .themis.dsl2gse import dsl2gse
 from .omni.omni_load import omni_filename, omni_load
 from .examples.basic.ex_basic import ex_basic
 from .examples.basic.ex_analysis import ex_analysis
@@ -17,6 +18,7 @@ from .examples.basic.ex_create import ex_create
 from .examples.basic.ex_omni import ex_omni
 from .examples.basic.ex_cdasws import ex_cdasws
 from .examples.basic.ex_cdagui import ex_cdagui
+from .examples.basic.ex_dsl2gse import ex_dsl2gse
 from .utilities.data_exists import data_exists
 from .utilities.tnames import tnames
 from .utilities.time_string import time_string

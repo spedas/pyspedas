@@ -36,6 +36,8 @@ Parameters:
     suffix: str
         The tplot variable names will be given this suffix.
         By default, no suffix is added.
+    varnames: list
+        List of variable names to be loaded to pytplot.
 
 Notes:
     List of possible values for "probes" variable:
@@ -54,6 +56,7 @@ Notes:
 import os
 import pyspedas
 from .themis_helpers import get_instruments, get_probes
+from pytplot import cdf_to_tplot
 
 
 def themis_filename(dates, probes, instruments, level):
@@ -104,9 +107,9 @@ def themis_filename(dates, probes, instruments, level):
 
 
 def themis_load(dates, probes, instruments, level, downloadonly=False,
-                varformat=None, get_support_data=False, prefix='', suffix=''):
+                varformat=None, get_support_data=False, prefix='', suffix='',
+                varnames=[]):
     """Loads themis data into pytplot variables"""
-
     file_list = themis_filename(dates, probes, instruments, level)
     # print(file_list)
     count = 0
@@ -120,9 +123,16 @@ def themis_load(dates, probes, instruments, level, downloadonly=False,
             dcount += 1
             if not downloadonly:
                 try:
-                    cdfvars = pyspedas.cdf_to_tplot(localfile, varformat,
-                                                    get_support_data, prefix,
-                                                    suffix, False, True)
+                    cdfvars = cdf_to_tplot(localfile,
+                                           varformat=varformat,
+                                           get_support_data=get_support_data,
+                                           prefix=prefix,
+                                           suffix=suffix,
+                                           plot=False,
+                                           merge=True,
+                                           center_measurement=False,
+                                           notplot=False,
+                                           varnames=varnames)
 
                 except TypeError as e:
                     msg = "cdf_to_tplot could not load " + localfile
