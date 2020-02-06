@@ -39,29 +39,34 @@ Parameters:
     suffix: str
         The tplot variable names will be given this suffix.
         By default, no suffix is added.
+    varnames: list
+        List of variable names to be loaded to pytplot.
 """
 
 
 def load_data(mission, dates, probes, instruments, level, other=None,
               downloadonly=False, varformat=None, get_support_data=False,
-              prefix='', suffix=''):
+              prefix='', suffix='', varnames=[]):
     """Loads data from mission cdf files into pytplot"""
-
     if mission == 'themis':
         from pyspedas import themis_load
-        themis_load(dates, probes, instruments, level, downloadonly, varformat,
-                    get_support_data, prefix, suffix)
+        themis_load(dates, probes, instruments, level,
+                    downloadonly=downloadonly, varformat=varformat,
+                    get_support_data=get_support_data,
+                    prefix=prefix, suffix=suffix, varnames=varnames)
     elif mission == 'gmag':
         stations = probes
         group = other
         from pyspedas import gmag_load
-        gmag_load(dates, stations, group, downloadonly, varformat,
-                  get_support_data, prefix, suffix)
+        gmag_load(dates, stations, group, downloadonly=downloadonly,
+                  varformat=varformat, get_support_data=get_support_data,
+                  prefix=prefix, suffix=suffix, varnames=varnames)
     elif mission == 'omni':
         from pyspedas import omni_load
         # level = 1min, 5min
-        omni_load(dates, level, downloadonly, varformat, get_support_data,
-                  prefix, suffix)
+        omni_load(dates, level, downloadonly, varformat,
+                  get_support_data=get_support_data,
+                  prefix=prefix, suffix=suffix, varnames=varnames)
     else:
         print("Currently, only the THEMIS and OMNI missions are implemented.")
 
