@@ -22,6 +22,10 @@ script:
   - coverage run -a -m pyspedas.utilities.tests.download_tests
   - coverage run -a -m pyspedas.cluster.tests.tests
   - coverage run -a -m pyspedas.csswe.tests.tests
+  - coverage run -a -m pyspedas.ace.tests.tests
+  - coverage run -a -m pyspedas.equator_s.tests.tests
+  - coverage run -a -m pyspedas.geotail.tests.tests
+  - coverage run -a -m pyspedas.image.tests.tests
 
 after_success:
   - coveralls
