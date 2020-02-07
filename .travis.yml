@@ -32,6 +32,7 @@ script:
   - coverage run -a -m pyspedas.wind.tests.tests
   - coverage run -a -m pyspedas.mms.tests.curlometer
   - coverage run -a -m pyspedas.poes.tests.tests
+  - coverage run -a -m pyspedas.polar.tests.tests
 
 after_success:
   - coveralls
