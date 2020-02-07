@@ -5,6 +5,7 @@ File:
 
 Description:
     Transform DSL data to GSE data.
+    Also, GSE to DSL.
 
 Parameters:
     name_in: str
@@ -71,27 +72,34 @@ def dsl2gse(name_in, spinras, spindec, name_out, isgsetodsl=0):
     zscs2 = np.cos(spla)
     zscs = np.column_stack((zscs0, zscs1, zscs2))
 
-    if isgsetodsl == 0:
-        # unit vector that points along the spin axis in GSE
-        zgse = subgei2gse(data_in[0], zscs)
-        sun = [1.0, 0.0, 0.0]
-        yscs = [zgse[1] * sun[2] - zgse[2] * sun[1],
-                zgse[2] * sun[0] - zgse[0] * sun[2],
-                zgse[0] * sun[1] - zgse[1] * sun[0]]
-        yscsNorm = np.sqrt(yscs[0]**2.0 + yscs[1]**2.0 + yscs[2]**2.0)
-        yscs = yscs/yscsNorm
-        xscs = [yscs[1] * zgse[2] - yscs[2] * zgse[1],
-                yscs[2] * zgse[0] - yscs[0] * zgse[2],
-                yscs[0] * zgse[1] - yscs[1] * zgse[0]]
+    # unit vector that points along the spin axis in GSE
+    zgse = subgei2gse(data_in[0], zscs)
+    sun = [1.0, 0.0, 0.0]
+    yscs = [zgse[1] * sun[2] - zgse[2] * sun[1],
+            zgse[2] * sun[0] - zgse[0] * sun[2],
+            zgse[0] * sun[1] - zgse[1] * sun[0]]
+    yscsNorm = np.sqrt(yscs[0]**2.0 + yscs[1]**2.0 + yscs[2]**2.0)
+    yscs = yscs/yscsNorm
+    xscs = [yscs[1] * zgse[2] - yscs[2] * zgse[1],
+            yscs[2] * zgse[0] - yscs[0] * zgse[2],
+            yscs[0] * zgse[1] - yscs[1] * zgse[0]]
 
+    if isgsetodsl == 0:
+        # DSL -> GSE
         dd = data_in[1]
         d0 = dd[:, 0] * xscs[0] + dd[:, 1] * yscs[0] + dd[:, 2] * zgse[0]
         d1 = dd[:, 0] * xscs[1] + dd[:, 1] * yscs[1] + dd[:, 2] * zgse[1]
         d2 = dd[:, 0] * xscs[2] + dd[:, 1] * yscs[2] + dd[:, 2] * zgse[2]
-        dd_out = [d0, d1, d2]
-        data_out = np.column_stack(dd_out)
+
     else:
-        pass
+        # GSE -> DSL
+        dd = data_in[1]
+        d0 = dd[:, 0] * xscs[0] + dd[:, 1] * xscs[1] + dd[:, 2] * xscs[2]
+        d1 = dd[:, 0] * yscs[0] + dd[:, 1] * yscs[1] + dd[:, 2] * yscs[2]
+        d2 = dd[:, 0] * zgse[0] + dd[:, 1] * zgse[1] + dd[:, 2] * zgse[2]
+
+    dd_out = [d0, d1, d2]
+    data_out = np.column_stack(dd_out)
 
     pytplot.store_data(name_out, data={'x': data_in[0], 'y': data_out})
 

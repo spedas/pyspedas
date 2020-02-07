@@ -28,6 +28,8 @@ def get_time_parts(time_in):
 
 def csundir_vect(time_in):
     """
+    Calculates the direction of the sun
+
     input  : iyear : year (1901-2099)
             idoy : day of the year (1 for january 1)
             ih,im,isec : hours, minutes, seconds U.T.
@@ -78,6 +80,8 @@ def csundir_vect(time_in):
 
 def tgeigse_vect(time_in, data_in):
     """
+        GEI to GSE transformation
+
         input : xgei, ygei, zgei cartesian gei coordinates
         output: xgse, ygse, zgse cartesian gse coordinates
     """
@@ -107,10 +111,17 @@ def tgeigse_vect(time_in, data_in):
 
 
 def subgei2gse(time_in, data_in):
+    """
+    transforms data from GEI to GSE
 
-    # iyear, idoy, ih, im, isec = get_time_parts(time_in)
+    Note:
+    The corresponding IDL function works with:
+    iyear, idoy, ih, im, isec = get_time_parts(time_in)
+    """
 
     xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
     # gse = np.column_stack((xgse, ygse, zgse))
 
     return [xgse, ygse, zgse]
