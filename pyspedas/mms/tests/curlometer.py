@@ -1,6 +1,7 @@
 
 import unittest
 import pyspedas
+from pyspedas.utilities.data_exists import data_exists
 
 class CurlTestCases(unittest.TestCase):
     def test_default(self):
@@ -11,3 +12,6 @@ class CurlTestCases(unittest.TestCase):
         self.assertTrue(data_exists('divB'))
         self.assertTrue(data_exists('jpar'))
         self.assertTrue(data_exists('jperp'))
+
+if __name__ == '__main__':
+    unittest.main()
