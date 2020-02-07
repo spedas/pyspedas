@@ -25,9 +25,9 @@ class LoadTestCases(unittest.TestCase):
         hope_vars = pyspedas.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='moments', level='l3', rel='rel04')
         self.assertTrue(data_exists('Ion_density'))
 
-    def test_load_rep_data(self):
-        rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
-        self.assertTrue(data_exists('Tperp_e_200'))
+    # def test_load_rep_data(self):
+    #     rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
+    #     self.assertTrue(data_exists('Tperp_e_200'))
 
 if __name__ == '__main__':
     unittest.main()
