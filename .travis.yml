@@ -30,6 +30,7 @@ script:
   - coverage run -a -m pyspedas.stereo.tests.tests
   - coverage run -a -m pyspedas.twins.tests.tests
   - coverage run -a -m pyspedas.wind.tests.tests
+  - coverage run -a -m pyspedas.mms.tests.curlometer
 
 after_success:
   - coveralls
