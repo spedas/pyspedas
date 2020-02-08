@@ -1,17 +1,22 @@
 
+import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
 
 import pyspedas
 
 class LoadTestCases(unittest.TestCase):
-    # def test_load_mfe_data(self):
-    #     mfe_vars = pyspedas.polar.mfe(trange=['2003-10-28', '2003-10-29'], get_support_data=True)
-    #     self.assertTrue(data_exists('B_GSE'))
-    #     self.assertTrue(data_exists('B_GSM'))
+    def test_downloadonly(self):
+        files = pyspedas.polar.efi(downloadonly=True)
+        self.assertTrue(os.path.exists(files[0]))
+
+    def test_load_mfe_data(self):
+        mfe_vars = pyspedas.polar.mfe(trange=['2003-10-28', '2003-10-29'], get_support_data=True)
+        self.assertTrue(data_exists('B_GSE'))
+        self.assertTrue(data_exists('B_GSM'))
 
     def test_load_efi_data(self):
-        efi_vars = pyspedas.polar.efi()
+        efi_vars = pyspedas.polar.efi(time_clip=True)
         self.assertTrue(data_exists('ESPIN'))
 
     def test_load_pwi_data(self):
@@ -22,15 +27,15 @@ class LoadTestCases(unittest.TestCase):
         hydra_vars = pyspedas.polar.hydra()
         self.assertTrue(data_exists('ELE_DENSITY'))
 
-    # def test_load_tide_data(self):
-    #     tide_vars = pyspedas.polar.tide()
-    #     self.assertTrue(data_exists('total_den'))
-    #     self.assertTrue(data_exists('total_v'))
-    #     self.assertTrue(data_exists('total_t'))
+    def test_load_tide_data(self):
+        tide_vars = pyspedas.polar.tide()
+        self.assertTrue(data_exists('total_den'))
+        self.assertTrue(data_exists('total_v'))
+        self.assertTrue(data_exists('total_t'))
 
-    # def test_load_timas_data(self):
-    #     timas_vars = pyspedas.polar.timas()
-    #     self.assertTrue(data_exists('Density_H'))
+    def test_load_timas_data(self):
+        timas_vars = pyspedas.polar.timas()
+        self.assertTrue(data_exists('Density_H'))
 
     def test_load_cammice_data(self):
         cammice_vars = pyspedas.polar.cammice()
