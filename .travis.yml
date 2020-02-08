@@ -33,6 +33,7 @@ script:
   - coverage run -a -m pyspedas.mms.tests.curlometer
   - coverage run -a -m pyspedas.poes.tests.tests
   - coverage run -a -m pyspedas.polar.tests.tests
+  - coverage run -a -m pyspedas.geotail.tests.tests
 
 after_success:
   - coveralls
