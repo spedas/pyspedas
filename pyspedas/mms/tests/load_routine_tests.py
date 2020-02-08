@@ -211,6 +211,10 @@ class EDPLoadTestCases(unittest.TestCase):
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
 
+    def test_load_hfesp_data(self):
+        data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], datatype='hfesp', data_rate='srvy')
+        self.assertTrue(data_exists('mms1_edp_hfesp_srvy_l2'))
+
     def test_load_spdf_data(self):
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
