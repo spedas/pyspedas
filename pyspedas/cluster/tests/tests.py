@@ -1,4 +1,5 @@
 
+import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
 
@@ -8,6 +9,10 @@ class LoadTestCases(unittest.TestCase):
     def test_load_fgm_data(self):
         mag_vars = pyspedas.cluster.fgm()
         self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
+
+    def test_load_fgm_cp_data(self):
+        files = pyspedas.cluster.fgm(datatype='cp', trange=['2003-12-15', '2003-12-16'], downloadonly=True)
+        self.assertTrue(os.path.exists(files[0]))
 
     def test_load_asp_data(self):
         asp_vars = pyspedas.cluster.aspoc(trange=['2004-04-05', '2004-04-06'])
