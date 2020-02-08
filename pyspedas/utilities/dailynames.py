@@ -4,7 +4,7 @@ import numpy as np
 from pyspedas import time_string, time_double
 import os
 
-def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%f', dir_format='', YYYY_MM_DIR=False, prefix='', suffix=''):
+def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%f', prefix='', suffix=''):
     if trange == None:
         print('No trange specified')
         return
@@ -12,10 +12,6 @@ def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_for
     if hour_res == True:
         res = 3600.
         file_format = '%Y%m%d%H'
-
-    if YYYY_MM_DIR:
-        dir_format = '%Y/%m/'
-
 
     tr = [time_double(trange[0]), time_double(trange[1])]
 
