@@ -24,7 +24,6 @@ from .utilities.tnames import tnames
 from .utilities.time_string import time_string
 from .utilities.time_double import time_float, time_double
 from .utilities.tcopy import tcopy
-from .utilities.tplot2ascii import tplot2ascii
 from .analysis.tclip import tclip
 from .analysis.tdeflag import tdeflag
 from .analysis.tinterpol import tinterpol
