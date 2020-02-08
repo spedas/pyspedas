@@ -30,18 +30,18 @@ class LoadTestCases(unittest.TestCase):
         rpi_vars = pyspedas.image.rpi()
         self.assertTrue(data_exists('Amplitude'))
 
-    # def test_load_euv_data(self):
-    #     euv_vars = pyspedas.image.euv()
-    #     self.assertTrue(data_exists('IMAGE'))
+    def test_load_euv_data(self):
+        euv_vars = pyspedas.image.euv()
+        self.assertTrue(data_exists('IMAGE'))
 
     def test_load_fuv_data(self):
         fuv_vars = pyspedas.image.fuv()
         self.assertTrue(data_exists('WIC_PIXELS'))
 
-    # def test_load_orb_data(self):
-    #     orb_vars = pyspedas.image.orbit()
-    #     self.assertTrue(data_exists('GSM_POS'))
-    #     self.assertTrue(data_exists('GSM_VEL'))
+    def test_load_orb_data(self):
+        orb_vars = pyspedas.image.orbit()
+        self.assertTrue(data_exists('GSM_POS'))
+        self.assertTrue(data_exists('GSM_VEL'))
 
 if __name__ == '__main__':
     unittest.main()
