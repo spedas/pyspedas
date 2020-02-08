@@ -108,7 +108,7 @@ class FPILoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
 
     def test_load_small_brst_interval(self):
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-moms')
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-moms', 'dis-dist'], time_clip=True)
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_brst'))
 
     def test_center_fast_ion_data_notplot(self):
