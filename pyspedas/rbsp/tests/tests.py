@@ -1,4 +1,5 @@
 
+import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
 
@@ -8,6 +9,19 @@ from pytplot import del_data
 class LoadTestCases(unittest.TestCase):
     def tearDown(self):
         del_data('*')
+
+    def test_downloadonly(self):
+        files = pyspedas.rbsp.efw(trange=['2015-11-3', '2015-11-4'], level='l3', downloadonly=True)
+        self.assertTrue(os.path.exists(files[0]))
+
+    def test_notplot(self):
+        data = pyspedas.rbsp.efw(trange=['2015-11-6', '2015-11-7'], level='l3', notplot=True)
+        self.assertTrue('density' in data.keys())
+        self.assertTrue('Vavg' in data.keys())
+        self.assertTrue('vel_gse' in data.keys())
+        self.assertTrue('efield_inertial_frame_mgse' in data.keys())
+        self.assertTrue('x' in data['density'].keys())
+        self.assertTrue('y' in data['density'].keys())
 
     def test_load_emfisis_data(self):
         emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='magnetometer', level='l3', time_clip=True)
