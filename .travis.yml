@@ -36,6 +36,7 @@ script:
   - coverage run -a -m pyspedas.polar.tests.tests
   - coverage run -a -m pyspedas.geotail.tests.tests
   - coverage run -a -m pyspedas.analysis.tests.tests
+  - coverage run -a -m pyspedas.fast.tests.tests
 
 after_success:
   - coveralls
