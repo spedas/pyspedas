@@ -1,4 +1,5 @@
 
+import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
 
@@ -6,7 +7,7 @@ import pyspedas
 
 class LoadTestCases(unittest.TestCase):
     def test_load_fld_data(self):
-        fields_vars = pyspedas.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='mag_rtn', level='l2')
+        fields_vars = pyspedas.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='mag_rtn', level='l2', time_clip=True)
         self.assertTrue(data_exists('psp_fld_l2_mag_RTN'))
 
     def test_load_spc_data(self):
@@ -24,6 +25,14 @@ class LoadTestCases(unittest.TestCase):
     def test_load_epihi_data(self):
         epihi_vars = pyspedas.psp.epihi(trange=['2018-11-5', '2018-11-5/06:00'], datatype='let1_rates1h', level='l2')
         self.assertTrue(data_exists('B_He_Rate'))
+
+    def test_load_epi_data(self):
+        epilo_vars = pyspedas.psp.epi()
+        self.assertTrue(data_exists('HET_A_Electrons_Rate_TS'))
+
+    def test_downloadonly(self):
+        files = pyspedas.psp.epilo(downloadonly=True)
+        self.assertTrue(os.path.exists(files[0]))
 
 if __name__ == '__main__':
     unittest.main()
