@@ -49,7 +49,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     for prb in probe:
         if instrument == 'fgm':
-            if datatype == 'spin':
+            if datatype == 'cp':
                 pathformat = 'c'+prb+'/cp/%Y/c'+prb+'_cp_fgm_spin_%Y%m%d_v??.cdf'
             else:
                 pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
