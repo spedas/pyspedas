@@ -11,6 +11,8 @@ from ..hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from pytplot import get_data, del_data
 
+from pyspedas import tdpwrspc
+
 ############### DSP ############### 
 class DSPLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
@@ -282,6 +284,15 @@ class MECLoadTestCases(unittest.TestCase):
     def test_load_suffix(self):
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_mec_r_sm_test'))
+
+class SCMLoadTestCases(unittest.TestCase):
+    def test_brst_dpwrspc_data(self):
+        data = mms_load_scm(probe=4, data_rate='brst', datatype='scb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
+        tdpwrspc('mms4_scm_acb_gse_scb_brst_l2')
+        self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2'))
+        self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_0_dpwrspc'))
+        self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_1_dpwrspc'))
+        self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_2_dpwrspc'))
 
 ############### SCM ############### 
 # class SCMLoadTestCases(unittest.TestCase):
