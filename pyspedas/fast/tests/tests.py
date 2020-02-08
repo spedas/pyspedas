@@ -11,6 +11,11 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('BY'))
         self.assertTrue(data_exists('BZ'))
 
+    def test_load_acb_data(self):
+        dcb_vars = pyspedas.fast.acb(trange=['1999-09-22', '1999-09-23'], time_clip=True, level='k0')
+        self.assertTrue(data_exists('HF_PWR'))
+        self.assertTrue(data_exists('HF_E_SPEC'))
+
     # as of 8 Feb 2020, these data fail to load in IDL and Python
     # def test_load_esa_data(self):
     #     esa_vars = pyspedas.fast.esa()
