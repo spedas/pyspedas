@@ -20,6 +20,7 @@ script:
   - coverage run -a -m pyspedas.mms.tests.file_filter
   - coverage run -a -m pyspedas.dscovr.tests.tests
   - coverage run -a -m pyspedas.utilities.tests.download_tests
+  - coverage run -a -m pyspedas.utilities.tests.misc_tests
   - coverage run -a -m pyspedas.cluster.tests.tests
   - coverage run -a -m pyspedas.csswe.tests.tests
   - coverage run -a -m pyspedas.ace.tests.tests
