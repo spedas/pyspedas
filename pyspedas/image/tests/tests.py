@@ -43,5 +43,10 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('GSM_POS'))
         self.assertTrue(data_exists('GSM_VEL'))
 
+    def test_load_preorb_data(self):
+        orb_vars = pyspedas.image.orbit(datatype='pre_or')
+        self.assertTrue(data_exists('GSM_POS'))
+        self.assertTrue(data_exists('GSM_VEL'))
+
 if __name__ == '__main__':
     unittest.main()
