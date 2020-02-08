@@ -6,7 +6,7 @@ import pyspedas
 
 class LoadTestCases(unittest.TestCase):
     def test_load_emfisis_data(self):
-        emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='magnetometer', level='l3')
+        emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='magnetometer', level='l3', time_clip=True)
         self.assertTrue(data_exists('Mag'))
 
     def test_load_efw_data(self):
@@ -25,9 +25,13 @@ class LoadTestCases(unittest.TestCase):
         hope_vars = pyspedas.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='moments', level='l3', rel='rel04')
         self.assertTrue(data_exists('Ion_density'))
 
-    # def test_load_rep_data(self):
-    #     rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
-    #     self.assertTrue(data_exists('Tperp_e_200'))
+    def test_load_rep_data(self):
+        rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
+        self.assertTrue(data_exists('Tperp_e_200'))
+
+    def test_load_rps1min_data(self):
+        rps_vars = pyspedas.rbsp.rps()
+        self.assertTrue(data_exists('DOSE2_RATE'))
 
 if __name__ == '__main__':
     unittest.main()
