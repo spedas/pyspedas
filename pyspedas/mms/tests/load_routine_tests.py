@@ -24,6 +24,10 @@ class DSPLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
         self.assertTrue(data_exists('mms1_dsp_bpsd_omni'))
 
+    def test_load_bpsd_data(self):
+        data = mms_load_dsp(trange=['2015-10-16','2015-10-17'], datatype='bpsd', level='l2', data_rate='fast')
+        self.assertTrue(data_exists('mms1_dsp_bpsd_omni_fast_l2'))
+
     def test_load_epsd_spdf(self):
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype='epsd', level='l2', data_rate='fast', spdf=True)
         self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
