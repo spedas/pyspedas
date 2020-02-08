@@ -1,10 +1,15 @@
 
+import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
 
 import pyspedas
 
 class LoadTestCases(unittest.TestCase):
+    def test_downloadonly(self):
+        files = pyspedas.fast.acb(trange=['1999-09-22', '1999-09-23'], time_clip=True, level='k0', downloadonly=True)
+        self.assertTrue(os.path.exists(files[0]))
+
     def test_load_dcb_data(self):
         dcb_vars = pyspedas.fast.dcb(trange=['1999-09-22', '1999-09-23'], time_clip=True, level='k0')
         self.assertTrue(data_exists('BX'))
