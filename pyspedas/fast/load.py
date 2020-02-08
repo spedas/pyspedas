@@ -29,8 +29,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
     file_resolution = 24*3600.
 
     if instrument == 'dcb':
-        pathformat = 'dcf/'+level+'/'+instrument+'/%Y/%m/fast_hr_'+instrument+'_%Y%m%d%H????_v??.cdf'
-        file_resolution = 3600.
+        if level == 'k0':
+            pathformat = 'dcf/'+level+'/%Y/fa_k0_dcf_%Y%m%d_v??.cdf'
+        else:
+            pathformat = 'dcf/'+level+'/'+instrument+'/%Y/%m/fast_hr_'+instrument+'_%Y%m%d%H????_v??.cdf'
+            file_resolution = 3600.
     if instrument == 'acb':
         pathformat = 'acf/'+level+'/%Y/fa_'+level+'_acf_%Y%m%d_v??.cdf'
     elif instrument == 'esa':
