@@ -69,7 +69,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
         # v5.5+ = mms1_epd_feeps_srvy_l2_electron_pitch_angle
         pa_times, pa_data = get_data(prefix+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix)
     else:
-        pa_var, idx_maps = mms_feeps_pitch_angles(probe=probe, level=level, data_rate=data_rate, suffix=suffix)
+        pa_var, idx_maps = mms_feeps_pitch_angles(probe=probe, level=level, data_rate=data_rate, datatype=datatype, suffix=suffix)
         pa_times, pa_data = get_data(pa_var)
 
     if pa_data is None:
