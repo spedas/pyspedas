@@ -12,6 +12,11 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(dailynames(trange=['2015-12-1', '2015-12-3']) == ['20151201', '20151202'])
         self.assertTrue(dailynames(trange=['2015-12-3', '2015-12-2']) == ['20151203'])
         self.assertTrue(dailynames() == None)
+        self.assertTrue(dailynames(trange=['2015-12-3', '2019-12-2'], file_format='%Y') == ['2015', '2016', '2017', '2018', '2019'])
+        self.assertTrue(dailynames(trange=['2015-1-1', '2015-3-2'], file_format='%Y%m') == ['201501', '201502', '201503'])
+        self.assertTrue(dailynames(trange=['2015-1-1', '2015-3-2'], file_format='/%Y/%m/') == ['/2015/01/', '/2015/02/', '/2015/03/'])
+        self.assertTrue(dailynames(trange=['2015-1-1', '2015-1-1/3:00'], file_format='%H', res=60.0) == ['00', '01', '02'])
+        self.assertTrue(dailynames(trange=['2015-1-1/2:00', '2015-1-1/3:00'], file_format='%M', res=600.) == ['00', '10', '20', '30', '40', '50'])
 
     def test_time_string(self):
         self.assertTrue(time_string(1450181243.767) == '2015-12-15 12:07:23.767000')
