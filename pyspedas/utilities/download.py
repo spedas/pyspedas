@@ -83,7 +83,7 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
 
     return filename
 
-def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False, last_version=False, debug=False):
+def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False, last_version=False):
 
     if isinstance(remote_path, list):
         logging.error('Remote path must be a string')
@@ -136,8 +136,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         if no_download is False:
             # expand the wildcards in the url
             if '?' in url or '*' in url and no_download is False:
-                if debug:
-                    print('Downloading remote index: ' + url_base)
+                logging.info('Downloading remote index: ' + url_base)
 
                 # we'll need to parse the HTML index file for the file list
                 with warnings.catch_warnings():
@@ -191,9 +190,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                 out.append(file)
         else:
             # download wasn't successful, search for local files
-
-            if debug:
-                print('Searching for local files...')
+            logging.info('Searching for local files...')
                 
             if local_path == '':
                 local_path_to_search = str(Path('.').resolve())
