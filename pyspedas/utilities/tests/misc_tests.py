@@ -22,6 +22,10 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(time_string(1450181243.767) == '2015-12-15 12:07:23.767000')
         self.assertTrue(time_string([1450181243.767, 1450181263.767]) == ['2015-12-15 12:07:23.767000', '2015-12-15 12:07:43.767000'])
 
+    def test_time_double(self):
+        self.assertTrue(time_double('2015-12-15 12:07:23.767000') == 1450181243.767)
+        self.assertTrue(time_double(['2015-12-15 12:07:23.767000', '2015-12-15 12:07:43.767000']) == [1450181243.767, 1450181263.767])
+
     def test_tcopy(self):
         store_data('test', data={'x': [1, 2, 3], 'y': [5, 5, 5]})
         tcopy('test')
