@@ -17,9 +17,16 @@ class UtilTestCases(unittest.TestCase):
     def test_tcopy(self):
         store_data('test', data={'x': [1, 2, 3], 'y': [5, 5, 5]})
         tcopy('test')
+        tcopy('test', 'another-copy')
         t, d = get_data('test-copy')
         self.assertTrue(t.tolist() == [1, 2, 3])
         self.assertTrue(d.tolist() == [5, 5, 5])
+        t, d = get_data('another-copy')
+        self.assertTrue(t.tolist() == [1, 2, 3])
+        self.assertTrue(d.tolist() == [5, 5, 5])
+        # the following should gracefully error
+        tcopy('doesnt exist', 'another-copy') 
+        tcopy(['another-copy','test'], 'another-copy') 
 
 
 if __name__ == '__main__':
