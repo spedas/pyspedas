@@ -166,9 +166,13 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                     new_links = sorted(new_links)
                     new_links = [new_links[-1]]
 
+                if '?' in url or '*' in remote_path:
+                    # the user specified a wild card in the remote_path
+                    remote_path = url_base
+
                 # download the files
                 for new_link in new_links:
-                    resp_data = download(remote_path=url_base, remote_file=short_path+new_link, local_path=local_path, username=username, password=password, verify=verify, headers=headers, session=session)
+                    resp_data = download(remote_path=remote_path, remote_file=short_path+new_link, local_path=local_path, username=username, password=password, verify=verify, headers=headers, session=session)
                     if resp_data is not None:
                         for file in resp_data:
                             out.append(file)
