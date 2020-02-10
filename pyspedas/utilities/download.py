@@ -168,7 +168,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
 
                 # download the files
                 for new_link in new_links:
-                    resp_data = download(remote_path=remote_path, remote_file=short_path+new_link, local_path=local_path, username=username, password=password, verify=verify, headers=headers, session=session)
+                    resp_data = download(remote_path=url_base, remote_file=short_path+new_link, local_path=local_path, username=username, password=password, verify=verify, headers=headers, session=session)
                     if resp_data is not None:
                         for file in resp_data:
                             out.append(file)
