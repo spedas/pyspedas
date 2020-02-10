@@ -9,6 +9,8 @@ from pytplot import get_data, store_data
 class UtilTestCases(unittest.TestCase):
     def test_dailynames(self):
         self.assertTrue(dailynames(trange=['2015-12-1', '2015-12-1/2:00'], hour_res=True) == ['2015120100', '2015120101'])
+        self.assertTrue(dailynames(trange=['2015-12-1', '2015-12-3']) == ['20151201', '20151202'])
+        self.assertTrue(dailynames(trange=['2015-12-3', '2015-12-2']) == ['20151203'])
 
     def test_time_string(self):
         self.assertTrue(time_string(1450181243.767) == '2015-12-15 12:07:23.767000')
