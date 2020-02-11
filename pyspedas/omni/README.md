@@ -1,9 +1,6 @@
 
-## Colorado Student Space Weather Experiment (CSSWE) Mission
-The routines in this module can be used to load data from the Colorado Student Space Weather Experiment (CSSWE) mission. 
-
-### Instruments
-- Relativistic Electron and Proton Telescope integrated little experiment (REPTile)
+## OMNI data
+The routines in this module can be used to load OMNI (Combined 1AU IP Data; Magnetic and Solar Indices) data.
 
 ### Examples
 Get started by importing pyspedas and tplot; these are required to load and plot the data:
@@ -13,11 +10,9 @@ import pyspedas
 from pytplot import tplot
 ```
 
-#### Relativistic Electron and Proton Telescope integrated little experiment (REPTile)
-
 ```python
-reptile_vars = pyspedas.csswe.reptile(trange=['2013-11-5', '2013-11-6'])
+omni_vars = pyspedas.omni.data(trange=['2013-11-5', '2013-11-6'])
 
-tplot(['E1flux', 'E2flux', 'E3flux', 'P1flux', 'P2flux', 'P3flux'])
+tplot(['BX_GSE', 'BY_GSE', 'BZ_GSE', 'flow_speed', 'Vx', 'Vy', 'Vz', 'SYM_H'])
 ```
 
