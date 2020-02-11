@@ -1,0 +1,41 @@
+
+import os
+import unittest
+from pyspedas.utilities.data_exists import data_exists
+
+import pyspedas
+
+class LoadTestCases(unittest.TestCase):
+    def test_load_hro2_data(self):
+        omni_vars = pyspedas.omni.data()
+        self.assertTrue(data_exists('BX_GSE'))
+        self.assertTrue(data_exists('BY_GSE'))
+        self.assertTrue(data_exists('BZ_GSE'))
+        self.assertTrue(data_exists('BY_GSM'))
+        self.assertTrue(data_exists('BZ_GSM'))
+        self.assertTrue(data_exists('proton_density'))
+
+    def test_load_hro_data(self):
+        omni_vars = pyspedas.omni.data(level='hro')
+        self.assertTrue(data_exists('BX_GSE'))
+        self.assertTrue(data_exists('BY_GSE'))
+        self.assertTrue(data_exists('BZ_GSE'))
+        self.assertTrue(data_exists('BY_GSM'))
+        self.assertTrue(data_exists('BZ_GSM'))
+        self.assertTrue(data_exists('proton_density'))
+
+    def test_load_hro_5min_data(self):
+        omni_vars = pyspedas.omni.data(level='hro', datatype='5min')
+        self.assertTrue(data_exists('BX_GSE'))
+        self.assertTrue(data_exists('BY_GSE'))
+        self.assertTrue(data_exists('BZ_GSE'))
+        self.assertTrue(data_exists('BY_GSM'))
+        self.assertTrue(data_exists('BZ_GSM'))
+        self.assertTrue(data_exists('proton_density'))
+
+    def test_downloadonly(self):
+        files = pyspedas.omni.data(downloadonly=True, trange=['2014-2-15', '2014-2-16'])
+        self.assertTrue(os.path.exists(files[0]))
+
+if __name__ == '__main__':
+    unittest.main()

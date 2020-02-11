@@ -8,7 +8,6 @@ from .themis.gmag_load import gmag_load, gmag_filename, check_gmag, check_greenl
     query_gmags
 from .themis.themis_helpers import get_probes, get_instruments
 from .themis.dsl2gse import dsl2gse
-from .omni.omni_load import omni_filename, omni_load
 from .examples.basic.ex_basic import ex_basic
 from .examples.basic.ex_analysis import ex_analysis
 from .examples.basic.ex_gmag import ex_gmag
@@ -43,6 +42,7 @@ from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from .maven import maven_load
 
+from . import omni
 from . import dscovr
 from . import psp
 from . import poes
