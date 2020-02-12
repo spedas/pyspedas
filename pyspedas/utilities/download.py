@@ -164,7 +164,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                 # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
                 new_links = fnmatch.filter(links, url_file)
 
-                if last_version:
+                if last_version and len(new_links) > 1:
                     new_links = sorted(new_links)
                     new_links = [new_links[-1]]
 
