@@ -215,18 +215,29 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                 tplot_data = {'x': xdata, 'y': ydata}
 
+
+                # Data may depend on other data in the CDF.
                 depend_1 = None
                 depend_2 = None
                 depend_3 = None
                 if "DEPEND_1" in var_atts:
                     if var_atts["DEPEND_1"] in all_cdf_variables:
                         depend_1 = np.array(cdf_file.varget(var_atts["DEPEND_1"]))
+                        # Ignore the depend types if they are strings
+                        if depend_1.dtype.type is np.str_:
+                            depend_1 = None
                 if "DEPEND_2" in var_atts:
                     if var_atts["DEPEND_2"] in all_cdf_variables:
                         depend_2 = np.array(cdf_file.varget(var_atts["DEPEND_2"]))
+                        # Ignore the depend types if they are strings
+                        if depend_2.dtype.type is np.str_:
+                            depend_2 = None
                 if "DEPEND_3" in var_atts:
                     if var_atts["DEPEND_3"] in all_cdf_variables:
                         depend_3 = np.array(cdf_file.varget(var_atts["DEPEND_3"]))
+                        # Ignore the depend types if they are strings
+                        if depend_3.dtype.type is np.str_:
+                            depend_3 = None
 
                 nontime_varying_depends = []
 

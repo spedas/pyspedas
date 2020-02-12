@@ -1,4 +1,12 @@
-1.4.8
+1.5.2
+
+1.5.2 Changes:
+
+* Fixed an issue with cdf_to_tplot when DEPEND_1/2/3 were string values instead of numbers.  They are now ignored if string.
+
+1.5.1 Changes:
+
+* Added ability to read in specific variable names in cdf_to_tplot
 
 1.4.8 Changes:
 
