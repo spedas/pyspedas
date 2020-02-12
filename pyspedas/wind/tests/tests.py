@@ -20,5 +20,11 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('T_elec'))
         self.assertTrue(data_exists('W_elec'))
 
+    def test_load_waves_data(self):
+        swe_vars = pyspedas.wind.waves(trange=['2013-11-5', '2013-11-6'])
+        self.assertTrue(data_exists('E_VOLTAGE_RAD1'))
+        self.assertTrue(data_exists('E_VOLTAGE_RAD2'))
+        self.assertTrue(data_exists('E_VOLTAGE_TNR'))
+
 if __name__ == '__main__':
     unittest.main()

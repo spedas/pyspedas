@@ -21,6 +21,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     to be called directly; instead, see the wrapper:
         pyspedas.wind.mfi
         pyspedas.wind.swe
+        pyspedas.wind.waves
 
     """
 
@@ -28,6 +29,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pathformat = 'mfi/mfi_'+datatype+'/%Y/wi_'+datatype+'_mfi_%Y%m%d_v??.cdf'
     elif instrument == 'swe':
         pathformat = 'swe/swe_'+datatype+'/%Y/wi_'+datatype+'_swe_%Y%m%d_v??.cdf'
+    elif instrument == 'waves':
+        pathformat = 'waves/wav_'+datatype+'/%Y/wi_'+datatype+'_wav_%Y%m%d_v??.cdf'
 
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange)
