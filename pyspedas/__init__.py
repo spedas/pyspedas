@@ -1,7 +1,6 @@
 from .load_data import load_data
 from .version import version
 from .prefs import get_spedas_prefs
-from .helpers import download_files, url_exists, find_latest_url_version
 #from .themis.dsl2gse import dsl2gse
 from .examples.basic.ex_basic import ex_basic
 from .examples.basic.ex_analysis import ex_analysis
