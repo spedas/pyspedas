@@ -1,6 +1,6 @@
 
-## Van Allen Probes (RBSP) Mission
-The routines in this folder can be used to load data from the Van Allen Probes (RBSP) mission. 
+## Van Allen Probes (RBSP)
+The routines in this module can be used to load data from the Van Allen Probes (RBSP) mission. 
 
 ### Instruments
 - Electric and Magnetic Field Instrument Suite and Integrated Science (EMFISIS)
