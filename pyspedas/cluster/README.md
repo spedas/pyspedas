@@ -99,6 +99,8 @@ tplot('B_par_f1__C1_PP_STA')
 
 ```python
 wbd_vars = pyspedas.cluster.wbd(trange=['2012-11-06/02:10', '2012-11-06/02:20'])
+
+tplot('WBD_Elec')
 ```
 
 #### Waves of High Frequency and Sounder for Probing of Density by Relaxation (WHISPER)
