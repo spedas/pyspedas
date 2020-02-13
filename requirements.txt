@@ -1,4 +1,4 @@
 requests
 cdflib
-pytplot>=1.5.1
+pytplot>=1.5.2
 cdasws
