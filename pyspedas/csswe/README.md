@@ -1,5 +1,5 @@
 
-## Colorado Student Space Weather Experiment (CSSWE) Mission
+## Colorado Student Space Weather Experiment (CSSWE)
 The routines in this module can be used to load data from the Colorado Student Space Weather Experiment (CSSWE) mission. 
 
 ### Instruments
