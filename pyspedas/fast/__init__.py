@@ -1,9 +1,9 @@
 
 from .load import load
 
-def dcb(trange=['1998-09-05', '1998-09-06'],
+def dcb(trange=['2001-09-05', '2001-09-06'],
         datatype='', 
-        level='l2', 
+        level='k0', 
         suffix='',  
         get_support_data=False, 
         varformat=None,
