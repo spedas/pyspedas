@@ -1,5 +1,5 @@
 
-## Parker Solar Probe (PSP) Mission
+## Parker Solar Probe (PSP)
 The routines in this module can be used to load data from the Parker Solar Probe (PSP) mission. 
 
 ### Instruments
