@@ -1,5 +1,5 @@
 
-## Geotail Mission
+## Geotail
 The routines in this module can be used to load data from the Geotail mission. 
 
 ### Instruments
