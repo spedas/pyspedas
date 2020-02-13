@@ -1,5 +1,0 @@
-requests
-cdflib==0.3.14
-pytplot
-cdasws
-astropy
