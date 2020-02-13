@@ -3,11 +3,7 @@ from .version import version
 from .prefs import get_spedas_prefs
 from .helpers import download_files, url_exists, find_latest_url_version
 from .dates import validate_date, get_date_list, get_dates
-from .themis.themis_load import themis_filename, themis_load
-from .themis.gmag_load import gmag_load, gmag_filename, check_gmag, check_greenland, gmag_groups, gmag_list, get_group,\
-    query_gmags
-from .themis.themis_helpers import get_probes, get_instruments
-from .themis.dsl2gse import dsl2gse
+#from .themis.dsl2gse import dsl2gse
 from .examples.basic.ex_basic import ex_basic
 from .examples.basic.ex_analysis import ex_analysis
 from .examples.basic.ex_gmag import ex_gmag
@@ -42,6 +38,7 @@ from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from .maven import maven_load
 
+from . import themis
 from . import omni
 from . import dscovr
 from . import psp
