@@ -1,5 +1,5 @@
 
-## Cluster Mission
+## Cluster
 The routines in this module can be used to load data from the Cluster mission. 
 
 ### Instruments
