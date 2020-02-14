@@ -20,8 +20,74 @@ from pytplot import tplot
 #### Fluxgate magnetometer (FGM)
 
 ```python
-fgm_vars = pyspedas.themis.fgm(probe='a', trange=['2013-11-5', '2013-11-6'])
+fgm_vars = pyspedas.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
 
-tplot(['tha_fgs_btotal', 'tha_fgs_gse'])
+tplot(['thd_fgs_btotal', 'thd_fgs_gse'])
 ```
+
+#### Search-coil magnetometer (SCM)
+
+```python
+scm_vars = pyspedas.themis.scm(probe='d', trange=['2013-11-5', '2013-11-6'])
+
+tplot(['thd_scf_btotal', 'thd_scf_gse'])
+```
+
+#### Electric Field Instrument (EFI)
+
+```python
+efi_vars = pyspedas.themis.efi(probe='d', trange=['2013-11-5', '2013-11-6'])
+
+tplot('thd_efs_dot0_gse')
+```
+
+#### Electrostatic Analyzer (ESA)
+
+```python
+esa_vars = pyspedas.themis.esa(probe='d', trange=['2013-11-5', '2013-11-6'])
+
+tplot(['thd_peif_density', 'thd_peif_vthermal'])
+```
+
+#### Solid State Telescope (SST)
+
+```python
+sst_vars = pyspedas.themis.sst(probe='d', trange=['2013-11-5', '2013-11-6'])
+
+tplot('thd_psif_density')
+```
+
+#### Moments data
+
+```python
+mom_vars = pyspedas.themis.mom(probe='d', trange=['2013-11-5', '2013-11-6'])
+
+tplot(['thd_peim_velocity_gsm', 'thd_peim_density'])
+```
+
+#### Ground computed moments data
+
+```python
+gmom_vars = pyspedas.themis.gmom(probe='d', trange=['2013-11-5', '2013-11-6'])
+
+tplot()
+```
+
+#### State data
+
+```python
+state_vars = pyspedas.themis.state(probe='d', trange=['2013-11-5', '2013-11-6'])
+
+tplot(['thd_pos', 'thd_vel'])
+```
+
+#### Ground magnetometer data
+
+```python
+gmag_vars = pyspedas.themis.gmag(sites='ccnv', trange=['2013-11-5', '2013-11-6'])
+
+tplot('thg_mag_ccnv')
+```
+
+
 
