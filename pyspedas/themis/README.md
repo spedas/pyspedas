@@ -70,7 +70,7 @@ tplot(['thd_peim_velocity_gsm', 'thd_peim_density'])
 ```python
 gmom_vars = pyspedas.themis.gmom(probe='d', trange=['2013-11-5', '2013-11-6'])
 
-tplot()
+tplot(['thd_ptiff_velocity_gse', 'thd_pteff_density', 'thd_pteff_avgtemp'])
 ```
 
 #### State data
