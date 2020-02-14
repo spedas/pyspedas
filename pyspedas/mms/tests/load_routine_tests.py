@@ -159,10 +159,6 @@ class HPCALoadTestCases(unittest.TestCase):
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
 
-    def test_load_ion_data(self):
-        data = mms_load_hpca(trange=['2015-10-16/5:00', '2015-10-16/6:00'], datatype='ion')
-        self.assertTrue(data_exists('mms1_hpca_hplus_flux'))
-
     def test_load_ion_omni(self):
         del_data('*')
         data = mms_load_hpca(trange=['2016-10-16/5:00', '2016-10-16/6:00'], datatype='ion')
