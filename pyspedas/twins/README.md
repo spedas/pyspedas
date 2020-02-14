@@ -21,3 +21,19 @@ from pytplot import tplot
 img_vars = pyspedas.twins.imager(trange=['2018-11-5', '2018-11-6'])
 ```
 
+#### Lyman-alpha Detector (LAD)
+
+```python
+lad_vars = pyspedas.twins.lad(trange=['2018-11-5', '2018-11-6'])
+
+tplot(['lad1_data', 'lad2_data'])
+```
+
+#### Ephemeris
+
+```python
+ephem_vars = pyspedas.twins.ephemeris(trange=['2018-11-5', '2018-11-6'])
+
+tplot('FSCGSM')
+```
+
