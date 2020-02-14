@@ -19,7 +19,7 @@ We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a 
 
 ## Installation
 
-pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package from PyPI or conda:
+pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI or Anaconda:
 
 ### PyPI
 
@@ -53,18 +53,21 @@ You can load data into tplot variables by calling `pyspedas.mission.instrument()
 To load and plot 1 minute of MMS burst mode FGM data:
 ```python
 mms_fgm = pyspedas.mms.fgm(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', time_clip=True)
+
 tplot(['mms1_fgm_b_gse_brst_l2', 'mms1_fgm_b_gsm_brst_l2'])
 ```
 
 To load and plot 1 day of THEMIS FGM data for probe 'd':
 ```python
 thm_fgm = pyspedas.themis.fgm(trange=['2015-10-16', '2015-10-17'], probe='d')
+
 tplot(['thd_fgs_gse', 'thd_fgs_gsm'])
 ```
 
 To load and plot 6 hours of PSP SWEAP/SPAN-i data:
 ```python
 spi_vars = pyspedas.psp.spi(trange=['2018-11-5', '2018-11-5/06:00'], time_clip=True)
+
 tplot(['DENS', 'VEL', 'T_TENSOR', 'TEMP'])
 ```
 
