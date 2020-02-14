@@ -44,7 +44,7 @@ tplot(['E_VOLTAGE_RAD2', 'E_VOLTAGE_RAD1', 'E_VOLTAGE_TNR'])
 #### 3D Plasma Analyzer (3DP)
 
 ```python
-threedp_vars = pyspedas.wind.threedp(trange=['2013-11-5', '2013-11-6'])
+threedp_vars = pyspedas.wind.threedp()
 
 tplot(['V_e_xyz_gse_wi_3dp', 'N_e_dens_wi_3dp', 'T_e_par_wi_3dp'])
 ```
