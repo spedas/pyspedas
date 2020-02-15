@@ -44,11 +44,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)
 
-        for remote_file in remote_names:
-            files = download(remote_file=remote_file, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
-            if files is not None:
-                for file in files:
-                    out_files.append(file)
+        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+        if files is not None:
+            for file in files:
+                out_files.append(file)
 
     out_files = sorted(out_files)
 
