@@ -107,6 +107,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         session.auth = (username, password)
 
     out = []
+    index_table={}
 
     if not isinstance(remote_file, list):
         remote_file = [remote_file]
@@ -136,29 +137,33 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         if no_download is False:
             # expand the wildcards in the url
             if '?' in url or '*' in url and no_download is False:
-                logging.info('Downloading remote index: ' + url_base)
+                if index_table.get(url_base) != None:
+                    links = index_table[url_base]
+                else:
+                    logging.info('Downloading remote index: ' + url_base)
 
-                # we'll need to parse the HTML index file for the file list
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore", category=ResourceWarning)
-                    html_index = session.get(url_base, verify=verify, headers=headers)
+                    # we'll need to parse the HTML index file for the file list
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore", category=ResourceWarning)
+                        html_index = session.get(url_base, verify=verify, headers=headers)
 
-                if html_index.status_code == 404:
-                    logging.error('Remote index not found: ' + url_base)
-                    continue
+                    if html_index.status_code == 404:
+                        logging.error('Remote index not found: ' + url_base)
+                        continue
 
-                if html_index.status_code == 401 or html_index.status_code == 403:
-                    logging.error('Unauthorized: ' + url_base)
-                    continue
+                    if html_index.status_code == 401 or html_index.status_code == 403:
+                        logging.error('Unauthorized: ' + url_base)
+                        continue
 
-                # grab the links
-                link_parser = LinkParser()
-                link_parser.feed(html_index.text)
+                    # grab the links
+                    link_parser = LinkParser()
+                    link_parser.feed(html_index.text)
 
-                try:
-                    links = link_parser.links
-                except AttributeError:
-                    links = []
+                    try:
+                        links = link_parser.links
+                        index_table[url_base] = links
+                    except AttributeError:
+                        links = []
 
                 # find the file names that match our string
                 # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
@@ -179,7 +184,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                         for file in resp_data:
                             out.append(file)
                 session.close()
-                return out
+                continue
 
             resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify, headers=headers, session=session)
         
