@@ -64,7 +64,7 @@ mms_fgm = pyspedas.mms.fgm(trange=['2015-10-16/13:05:30', '2015-10-16/13:07:30']
 tplot(['mms1_fgm_b_gse_brst_l2', 'mms1_fgm_b_gsm_brst_l2'])
 ```
 
-Note: by default, pySPEDAS loads all data contained in CDFs found within the requested time range. To remove the data outside of your requested trange, set the `time_clip` keyword to `True`
+Note: by default, pySPEDAS loads all data contained in CDFs found within the requested time range; this can potentially load data outside of your requested trange. To remove the data outside of your requested trange, set the `time_clip` keyword to `True`
 
 To load and plot 6 hours of PSP SWEAP/SPAN-i data:
 ```python
