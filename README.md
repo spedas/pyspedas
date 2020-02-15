@@ -11,6 +11,27 @@ pySPEDAS is an implementation of the SPEDAS framework in python.
 
 The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org/wiki)) framework is written in IDL and contains data loading, data analysis and data plotting tools for various scientific missions (NASA, NOAA, etc.) and ground magnetometers.   
 
+## Projects Supported
+- [Advanced Composition Explorer (ACE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/ace/README.md)
+- [Cluster](https://github.com/spedas/pyspedas/blob/master/pyspedas/cluster/README.md)
+- [Colorado Student Space Weather Experiment (CSSWE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/csswe/README.md)
+- [Deep Space Climate Observatory (DSCOVR)](https://github.com/spedas/pyspedas/blob/master/pyspedas/dscovr/README.md)
+- [Equator-S](https://github.com/spedas/pyspedas/blob/master/pyspedas/equator_s/README.md)
+- [Fast Auroral Snapshot Explorer (FAST)](https://github.com/spedas/pyspedas/blob/master/pyspedas/fast/README.md)
+- [Geotail](https://github.com/spedas/pyspedas/blob/master/pyspedas/geotail/README.md)
+- [Imager for Magnetopause-to-Aurora Global Exploration (IMAGE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/image/README.md)
+- Mars Atmosphere and Volatile Evolution (MAVEN)
+- [Magnetospheric Multiscale (MMS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/mms/README.md)
+- [OMNI](https://github.com/spedas/pyspedas/blob/master/pyspedas/omni/README.md)
+- [Polar Orbiting Environmental Satellites (POES)](https://github.com/spedas/pyspedas/blob/master/pyspedas/poes/README.md)
+- [Polar](https://github.com/spedas/pyspedas/blob/master/pyspedas/polar/README.md)
+- [Parker Solar Probe (PSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/psp/README.md)
+- [Van Allen Probes (RBSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/rbsp/README.md)
+- [Solar Terrestrial Relations Observatory (STEREO)](https://github.com/spedas/pyspedas/blob/master/pyspedas/stereo/README.md)
+- [Time History of Events and Macroscale Interactions during Substorms (THEMIS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/themis/README.md)
+- [Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/twins/README.md)
+- [Wind](https://github.com/spedas/pyspedas/blob/master/pyspedas/wind/README.md)
+
 ## Requirements
 
 Python 3.5+ is required.  
@@ -73,26 +94,10 @@ spi_vars = pyspedas.psp.spi(trange=['2018-11-5', '2018-11-5/06:00'], time_clip=T
 tplot(['DENS', 'VEL', 'T_TENSOR', 'TEMP'])
 ```
 
-### Projects Supported
-- [Advanced Composition Explorer (ACE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/ace/README.md)
-- [Cluster](https://github.com/spedas/pyspedas/blob/master/pyspedas/cluster/README.md)
-- [Colorado Student Space Weather Experiment (CSSWE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/csswe/README.md)
-- [Deep Space Climate Observatory (DSCOVR)](https://github.com/spedas/pyspedas/blob/master/pyspedas/dscovr/README.md)
-- [Equator-S](https://github.com/spedas/pyspedas/blob/master/pyspedas/equator_s/README.md)
-- [Fast Auroral Snapshot Explorer (FAST)](https://github.com/spedas/pyspedas/blob/master/pyspedas/fast/README.md)
-- [Geotail](https://github.com/spedas/pyspedas/blob/master/pyspedas/geotail/README.md)
-- [Imager for Magnetopause-to-Aurora Global Exploration (IMAGE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/image/README.md)
-- Mars Atmosphere and Volatile Evolution (MAVEN)
-- [Magnetospheric Multiscale (MMS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/mms/README.md)
-- [OMNI](https://github.com/spedas/pyspedas/blob/master/pyspedas/omni/README.md)
-- [Polar Orbiting Environmental Satellites (POES)](https://github.com/spedas/pyspedas/blob/master/pyspedas/poes/README.md)
-- [Polar](https://github.com/spedas/pyspedas/blob/master/pyspedas/polar/README.md)
-- [Parker Solar Probe (PSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/psp/README.md)
-- [Van Allen Probes (RBSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/rbsp/README.md)
-- [Solar Terrestrial Relations Observatory (STEREO)](https://github.com/spedas/pyspedas/blob/master/pyspedas/stereo/README.md)
-- [Time History of Events and Macroscale Interactions during Substorms (THEMIS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/themis/README.md)
-- [Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/twins/README.md)
-- [Wind](https://github.com/spedas/pyspedas/blob/master/pyspedas/wind/README.md)
+To download 5 days of STEREO magnetometer data (but not load them into tplot variables):
+```python
+stereo_files = pyspedas.stereo.mag(trange=['2013-11-1', '2013-11-6'], downloadonly=True)
+```
 
 ### Standard Options
 - `trange`: two-element list specifying the time range of interest. This keyword accepts a wide range of formats
