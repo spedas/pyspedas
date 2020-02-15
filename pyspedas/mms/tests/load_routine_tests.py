@@ -231,12 +231,12 @@ class EDPLoadTestCases(unittest.TestCase):
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
 
-    def test_load_multiple_sc(self):
-        data = mms_load_edp(probe=['1', '2', '3', '4'], trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
-        self.assertTrue(data_exists('mms2_edp_dce_gse_fast_l2'))
-        self.assertTrue(data_exists('mms3_edp_dce_gse_fast_l2'))
-        self.assertTrue(data_exists('mms4_edp_dce_gse_fast_l2'))
+    # def test_load_multiple_sc(self):
+    #     data = mms_load_edp(probe=['1', '2', '3', '4'], trange=['2015-10-16', '2015-10-16/01:00'])
+    #     self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
+    #     self.assertTrue(data_exists('mms2_edp_dce_gse_fast_l2'))
+    #     self.assertTrue(data_exists('mms3_edp_dce_gse_fast_l2'))
+    #     self.assertTrue(data_exists('mms4_edp_dce_gse_fast_l2'))
 
     def test_load_brst_data(self):
         data = mms_load_edp(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
