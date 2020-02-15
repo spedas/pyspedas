@@ -94,6 +94,16 @@ tplot(['DENS', 'VEL', 'T_TENSOR', 'TEMP'])
 - [Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/twins/README.md)
 - [Wind](https://github.com/spedas/pyspedas/blob/master/pyspedas/wind/README.md)
 
+### Standard Options
+- `trange`: two-element list specifying the time range of interest [starttime, endtime]. This keyword accepts a wide range of formats.
+- `time_clip`: if set, clip the variables to the exact time range specified by the `trange` keyword 
+- `suffix`: string specifying a suffix to append to the loaded variables
+- `varformat`: string specifying which CDF variables to load; accepts the wild cards * (match multiple characters) and ? (match a single character)
+- `get_support_data`: if set, load the support variables from the CDFs
+- `downloadonly`: if set, download the files but do not load them into tplot
+- `no_update`: if set, only load the data from your local cache
+- `notplot`: if set, load the variables into dictionaries containing numpy arrays (instead of creating the tplot variables)
+
 ## Getting Help
 To find the options supported, call `help` on the instrument function you're interested in:
 ```python
