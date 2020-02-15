@@ -50,19 +50,21 @@ import pytplot
 
 You can load data into tplot variables by calling `pyspedas.mission.instrument()`, e.g., 
 
-To load and plot 1 minute of MMS burst mode FGM data:
-```python
-mms_fgm = pyspedas.mms.fgm(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', time_clip=True)
-
-tplot(['mms1_fgm_b_gse_brst_l2', 'mms1_fgm_b_gsm_brst_l2'])
-```
-
 To load and plot 1 day of THEMIS FGM data for probe 'd':
 ```python
 thm_fgm = pyspedas.themis.fgm(trange=['2015-10-16', '2015-10-17'], probe='d')
 
 tplot(['thd_fgs_gse', 'thd_fgs_gsm'])
 ```
+
+To load and plot 2 minutes of MMS burst mode FGM data:
+```python
+mms_fgm = pyspedas.mms.fgm(trange=['2015-10-16/13:05:30', '2015-10-16/13:07:30'], data_rate='brst')
+
+tplot(['mms1_fgm_b_gse_brst_l2', 'mms1_fgm_b_gsm_brst_l2'])
+```
+
+Note: by default, pySPEDAS loads all data contained in CDFs found within the requested time range. To remove the data outside of your requested trange, set the `time_clip` keyword to `True`
 
 To load and plot 6 hours of PSP SWEAP/SPAN-i data:
 ```python
