@@ -41,7 +41,12 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
     elif data_units == 'counts':
         units_label = 'counts'
 
-    spin_times, spin_nums = get_data(prefix + datatype + '_spin' + suffix)
+    spin_data = get_data(prefix + datatype + '_spin' + suffix)
+    if spin_data == None:
+        print('Error, problem finding EIS spin variable to calculate spin-averages')
+        return
+
+    spin_times, spin_nums = spin_data
 
     if spin_nums is not None:
         spin_starts = [spin_start for spin_start in np.where(spin_nums[1:] > spin_nums[:-1])[0]]
