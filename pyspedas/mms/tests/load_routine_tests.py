@@ -79,7 +79,7 @@ class EISLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_epd_eis_phxtof_proton_flux_omni'))
 
     def test_load_phxtof_spdf(self):
-        data = mms_load_eis(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', spdf=True)
+        data = mms_load_eis(trange=['2015-10-16/13:06', '2015-10-16/13:07'], datatype='phxtof', data_rate='brst', spdf=True)
         self.assertTrue(data_exists('mms1_epd_eis_brst_phxtof_proton_flux_omni'))
 
     def test_load_extof_data(self):
