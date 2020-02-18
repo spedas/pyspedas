@@ -20,14 +20,14 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
     if not isinstance(level, list): level = [level]
     if not isinstance(datatype, list): datatype = [datatype]
 
-    if data_rate == 'brst':
-        time_format = '%Y%m%d??????'
-    else:
-        time_format = '%Y%m%d'
 
     for prb in probe:
         for lvl in level:
             for drate in data_rate:
+                if drate == 'brst':
+                    time_format = '%Y%m%d??????'
+                else:
+                    time_format = '%Y%m%d'
                 for dtype in datatype:
                     remote_path = 'mms' + prb + '/' + instrument + '/' + drate + '/' + lvl + '/'
 
