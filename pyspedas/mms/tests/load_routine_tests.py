@@ -4,10 +4,10 @@
 import unittest
 import numpy as np
 
-from ...mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
-from ...utilities.data_exists import data_exists
-from ..hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
-from ..hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from pyspedas.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
+from pyspedas.utilities.data_exists import data_exists
+from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from pytplot import get_data, del_data
 
@@ -249,27 +249,23 @@ class FGMLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
 
     def test_load_spdf_data(self):
-        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
-        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
+        data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], spdf=True)
+        self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
 
     def test_load_suffix(self):
-        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
-        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2_test'))
+        data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], suffix='_test')
+        self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2_test'))
 
     def test_load_multiple_sc(self):
-        data = mms_load_fgm(probe=['1', '2', '3', '4'], trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
-        self.assertTrue(data_exists('mms2_fgm_b_gse_srvy_l2'))
-        self.assertTrue(data_exists('mms3_fgm_b_gse_srvy_l2'))
-        self.assertTrue(data_exists('mms4_fgm_b_gse_srvy_l2'))
+        data = mms_load_fgm(probe=[1, 2, 3, 4], data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
+        self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
+        self.assertTrue(data_exists('mms2_fgm_b_gse_brst_l2'))
+        self.assertTrue(data_exists('mms3_fgm_b_gse_brst_l2'))
+        self.assertTrue(data_exists('mms4_fgm_b_gse_brst_l2'))
 
     def test_load_brst_data(self):
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
-
-    def test_load_int_probes(self):
-        data = mms_load_fgm(probe=[1, 2, 3, 4], trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
 
     def test_load_data_no_update(self):
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00']) # make sure the files exist locally
