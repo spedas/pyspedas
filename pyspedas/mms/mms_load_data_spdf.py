@@ -1,4 +1,5 @@
 import os
+from pyspedas import time_double
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from .mms_file_filter import mms_file_filter
@@ -25,9 +26,11 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
         for lvl in level:
             for drate in data_rate:
                 if drate == 'brst':
-                    time_format = '%Y%m%d??????'
+                    time_format = '%Y%m%d%H%M??'
+                    file_res = 60.
                 else:
                     time_format = '%Y%m%d'
+                    file_res = 24*3600.
                 for dtype in datatype:
                     remote_path = 'mms' + prb + '/' + instrument + '/' + drate + '/' + lvl + '/'
 
@@ -59,8 +62,13 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
                     elif instrument == 'edp':
                         pathformat = remote_path + dtype + '/%Y/%m/mms' + prb + '_edp_' + drate + '_' + lvl + '_' + dtype + '_' + time_format + '_v*.cdf'
 
+                    if drate == 'brst':
+                        if isinstance(trange[0], float):
+                            trange = [trange[0]-300., trange[1]]
+                        else:
+                            trange = [time_double(trange[0])-600., trange[1]]
                     # find the full remote path names using the trange
-                    remote_names = dailynames(file_format=pathformat, trange=trange)
+                    remote_names = dailynames(file_format=pathformat, trange=trange, res=file_res)
 
                     out_files = []
 
