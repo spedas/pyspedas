@@ -66,7 +66,7 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
                         if isinstance(trange[0], float):
                             trange = [trange[0]-300., trange[1]]
                         else:
-                            trange = [time_double(trange[0])-600., trange[1]]
+                            trange = [time_double(trange[0])-300., trange[1]]
                     # find the full remote path names using the trange
                     remote_names = dailynames(file_format=pathformat, trange=trange, res=file_res)
 
