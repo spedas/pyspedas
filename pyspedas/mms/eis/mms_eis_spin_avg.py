@@ -52,7 +52,13 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
 
         for scope in range(0, 6):
             this_scope = telescopes[scope]
-            flux_times, flux_data, energies = get_data(this_scope)
+            scope_data = get_data(this_scope)
+            
+            if len(scope_data) <= 2:
+                print("Error, couldn't find energy table for the variable: " + this_scope)
+                continue
+
+            flux_times, flux_data, energies = scope_data
 
             spin_avg_flux = np.zeros([len(spin_starts), len(energies)])
 
