@@ -3,6 +3,7 @@
 import numpy as np
 from pyspedas import time_string, time_double
 import os
+from datetime import datetime
 
 def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%d', prefix='', suffix=''):
     if trange == None:
@@ -12,6 +13,10 @@ def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_for
     if hour_res == True:
         res = 3600.
         file_format = '%Y%m%d%H'
+
+    # allows the user to pass in trange as list of datetime objects
+    if type(trange[0]) == datetime and type(trange[1]) == datetime:
+        trange = [time_string(trange[0].timestamp()), time_string(trange[1].timestamp())]
 
     tr = [trange[0], trange[1]]
     
