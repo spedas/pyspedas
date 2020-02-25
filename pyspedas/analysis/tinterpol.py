@@ -10,7 +10,8 @@ Parameters:
     names: str/list of str
         List of variables to interpolate.
     interp_to: str
-        String containing the variable containing the time stamps to interpolate to
+        String containing the variable
+            containing the time stamps to interpolate to
     method: str
         Interpolation method. Default is ‘linear’.
         Specifies the kind of interpolation as a string (‘linear’, ‘nearest’,
@@ -31,14 +32,16 @@ Notes:
     Similar to tinterpol in IDL SPEDAS.
 """
 
-import numpy
 from pyspedas import tnames
 from pytplot import get_data, store_data
 
+
 def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
-    if not isinstance(names, list): names = [names]
-    if not isinstance(newname, list): newname = [newname]
+    if not isinstance(names, list):
+        names = [names]
+    if not isinstance(newname, list):
+        newname = [newname]
 
     old_names = tnames(names)
 
@@ -52,7 +55,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
     if method is None:
         method = 'linear'
 
-    if newname is None:
+    if (newname is None) or (len(newname) == 1 and newname[0] is None):
         n_names = [s + suffix for s in old_names]
     elif newname == '':
         n_names = old_names
@@ -69,12 +72,19 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     for name_idx, name in enumerate(old_names):
         xdata = get_data(name, xarray=True)
-        xdata_interpolated = xdata.interp({'time': interp_to_times}, method=method)
+        xdata_interpolated = xdata.interp({'time': interp_to_times},
+                                          method=method)
 
         if 'spec_bins' in xdata.coords:
-            store_data(n_names[name_idx], data={'x': interp_to_times, 'y': xdata_interpolated.values, 'v':  xdata_interpolated.coords['spec_bins'].values})
+            store_data(n_names[name_idx],
+                       data={
+                        'x': interp_to_times,
+                        'y': xdata_interpolated.values,
+                        'v': xdata_interpolated.coords['spec_bins'].values
+                        })
         else:
-            store_data(n_names[name_idx], data={'x': interp_to_times, 'y': xdata_interpolated.values})
+            store_data(n_names[name_idx], data={'x': interp_to_times,
+                       'y': xdata_interpolated.values})
 
-        print('tinterpol (' + method + ') was applied to: ' + n_names[name_idx])
-
+        print('tinterpol (' + method + ') was applied to: '
+              + n_names[name_idx])
