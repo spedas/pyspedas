@@ -40,6 +40,7 @@ script:
   - coverage run -a -m pyspedas.omni.tests.tests
   - coverage run -a -m pyspedas.themis.tests.tests
   - coverage run -a -m pyspedas.maven.tests.tests
-
+  - coverage run -a -m pyspedas.examples.tests.tests
+  
 after_success:
   - coveralls
