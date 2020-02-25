@@ -16,22 +16,33 @@ import pytplot
 def ex_gmag():
     # Delete any existing pytplot variables
     pytplot.del_data()
-    # Define list of dates
-    time_list = ['2015-12-31']
+
+    # Define a time rage as a list
+    trange = ['2015-12-31', '2015-12-31']
+
     # Get a list of EPO gmag stations
-    sites = pyspedas.gmag_list(group='epo')
+    sites = pyspedas.themis.ground.gmag.gmag_list('epo')
+
     # Download gmag files and load data into pytplot variables
-    pyspedas.load_data('gmag', time_list, sites, '', '')
+    pyspedas.themis.gmag(sites=sites, trange=trange)
+
     # Get a list of loaded sites
-    sites_loaded = pyspedas.tplot_names()
+    sites_loaded = pyspedas.tnames()
+
     # Subtract mean values
     pyspedas.subtract_average(sites_loaded, '')
+
     # Download AE index data
-    pyspedas.load_data('gmag', time_list, ['idx'], '', '')
+    # pyspedas.load_data('gmag', time_list, ['idx'], '', '')
+    pyspedas.themis.gmag(sites='idx', trange=trange)
+
     # Plot
     sites_loaded = pyspedas.tplot_names()
     pytplot.tplot_options('title', 'EPO GMAG 2015-12-31')
-    pytplot.tplot(sites_loaded, bokeh=True)
+    pytplot.tplot(sites_loaded)
+
+    # Return 1 as indication that the example finished without problems.
+    return 1
 
 # Run the example code
 # ex_gmag()

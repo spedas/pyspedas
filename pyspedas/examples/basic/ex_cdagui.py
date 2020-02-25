@@ -4,7 +4,7 @@ File:
     ex_cdagui.py
 
 Description:
-    This is an example of how to use cdagui.
+    Example of how to use cdagui.
     Since this is a GUI, we only print the instructions here.
     You have to follow these instructions on a python command line,
         for example the Spyder console in Anaconda.
@@ -52,6 +52,9 @@ def ex_cdagui():
     print()
     print("--- If you encounter problems, try to install the latest PyQt5:")
     print("pip install PyQt5 --upgrade")
+
+    # Return 1 as indication that the example finished without problems.
+    return 1
 
 # Run the example code
 # ex_cdagui()
