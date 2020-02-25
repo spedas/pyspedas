@@ -40,12 +40,11 @@ class LoadTestCases(unittest.TestCase):
         from pyspedas.examples.basic.ex_cdasws import ex_cdasws
         ex = ex_cdasws()
         self.assertEqual(ex, 1)
-    '''
+
     def test_load_ex_omni(self):
         from pyspedas.examples.basic.ex_omni import ex_omni
         ex = ex_omni()
         self.assertEqual(ex, 1)
-    '''
 
 
 if __name__ == '__main__':
