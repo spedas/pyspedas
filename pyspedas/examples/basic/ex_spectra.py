@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 File:
-    ex_line_spectra.py
+    ex_spectra.py
 
 Description:
     Basic example of plotting both a line and a spectrogram with THEMIS data.
@@ -13,7 +13,7 @@ import pyspedas
 import pytplot
 
 
-def ex_line_spectra():
+def ex_spectra():
     # Delete any existing pytplot variables
     pytplot.del_data()
 
@@ -38,4 +38,4 @@ def ex_line_spectra():
     return 1
 
 # Run the example code
-# ex_line_spectra()
+# ex_spectra()
