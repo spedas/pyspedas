@@ -13,8 +13,6 @@ import pytplot
 
 
 def ex_omni():
-    # Print the installed version of pyspedas
-    pyspedas.version()
     # Delete any existing pytplot variables
     pytplot.del_data()
 
