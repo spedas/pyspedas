@@ -15,9 +15,6 @@ import pytplot
 
 def ex_analysis():
 
-    # Print the installed version of pyspedas
-    pyspedas.version()
-
     # Delete any existing pytplot variables
     pytplot.del_data()
 

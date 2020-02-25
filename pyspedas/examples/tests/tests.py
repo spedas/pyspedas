@@ -14,7 +14,6 @@ import unittest
 class LoadTestCases(unittest.TestCase):
     """ Run tests on examples. """
 
-    '''
     def test_load_ex_analysis(self):
         from pyspedas.examples.basic.ex_analysis import ex_analysis
         ex = ex_analysis()
@@ -39,7 +38,7 @@ class LoadTestCases(unittest.TestCase):
         from pyspedas.examples.basic.ex_cdasws import ex_cdasws
         ex = ex_cdasws()
         self.assertEqual(ex, 1)
-    '''
+
     def test_load_ex_omni(self):
         from pyspedas.examples.basic.ex_omni import ex_omni
         ex = ex_omni()
