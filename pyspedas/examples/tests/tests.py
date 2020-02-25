@@ -23,7 +23,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_ex_basic(self):
         from pyspedas.examples.basic.ex_basic import ex_basic
-        ex = ex_basic(create_plot=0)
+        ex = ex_basic()
         self.assertEqual(ex, 1)
 
     def test_load_ex_cdagui(self):
