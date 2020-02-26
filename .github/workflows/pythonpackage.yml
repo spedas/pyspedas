@@ -32,7 +32,6 @@ jobs:
    #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with unittest
       run: |
-   #     coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coverage run -a -m pyspedas.mms.tests.feeps
         coverage run -a -m pyspedas.mms.tests.eis
         coverage run -a -m pyspedas.mms.tests.file_filter
@@ -59,4 +58,5 @@ jobs:
         coverage run -a -m pyspedas.themis.tests.tests
         coverage run -a -m pyspedas.maven.tests.tests
         coverage run -a -m pyspedas.examples.tests.tests
+   #     coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coveralls
