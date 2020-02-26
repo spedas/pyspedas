@@ -107,9 +107,11 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
         # User defined variables.
         if len(varnames) > 0:
-            all_cdf_variables = [value for value in varnames if value in all_cdf_variables]
-
-        for var in all_cdf_variables:
+            load_cdf_variables = [value for value in varnames if value in all_cdf_variables]
+        else:
+            load_cdf_variables = all_cdf_variables
+            
+        for var in load_cdf_variables:
             if not re.match(var_regex, var):
                 continue
             var_atts = cdf_file.varattsget(var)
