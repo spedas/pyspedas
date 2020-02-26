@@ -14,8 +14,7 @@ import os
 import re
 from cdasws import CdasWs
 import pytplot
-import pyspedas
-
+from pyspedas.utilities.download import download
 
 class CDAWeb():
     """ Class for loading data from CDA web
@@ -112,6 +111,7 @@ class CDAWeb():
         """
 
         result = []
+        loaded_vars = []
         remotehttp = "https://cdaweb.sci.gsfc.nasa.gov/sp_phys/data"
         count = 0
         dcount = 0
@@ -119,17 +119,20 @@ class CDAWeb():
             tplot_loaded = 0
             f = remotef.strip().replace(remotehttp, '', 1)
             localf = local_dir + os.path.sep + f
-            resp, err, localfile = pyspedas.download_files(remotef, localf)
+            localfile = download(remote_file=remotef, local_file=localf)
+            if localfile == None:
+                continue
+            localfile = localfile[0] # download returns an array
             count += 1
-            if resp:
-                print(str(count) + '. File was downloaded. Location: '
-                      + localfile)
+            if localfile != '':
                 dcount += 1
                 if not download_only:
                     try:
-                        pytplot.cdf_to_tplot(localfile, varformat,
+                        cdf_vars = pytplot.cdf_to_tplot(localfile, varformat,
                                              get_support_data, prefix,
                                              suffix, False, True)
+                        if cdf_vars != [] and cdf_vars != None:
+                            loaded_vars.extend(cdf_vars)
                         tplot_loaded = 1
                     except ValueError as err:
                         msg = "cdf_to_tplot could not load " + localfile
@@ -146,7 +149,10 @@ class CDAWeb():
             result.append([remotef, localfile, tplot_loaded])
 
         print('Downloaded ' + str(dcount) + ' files.')
-        print('tplot variables:')
-        print(pyspedas.tplot_names())
+        if not download_only:
+            loaded_vars = list(set(loaded_vars))
+            print('tplot variables:')
+            for var in loaded_vars:
+                print(var)
 
         return result

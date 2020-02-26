@@ -107,6 +107,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         session.auth = (username, password)
 
     out = []
+    index_table={}
 
     if not isinstance(remote_file, list):
         remote_file = [remote_file]
@@ -136,35 +137,45 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         if no_download is False:
             # expand the wildcards in the url
             if '?' in url or '*' in url and no_download is False:
-                # we'll need to parse the HTML index file for the file list
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore", category=ResourceWarning)
-                    html_index = session.get(url_base, verify=verify, headers=headers)
+                if index_table.get(url_base) != None:
+                    links = index_table[url_base]
+                else:
+                    logging.info('Downloading remote index: ' + url_base)
 
-                if html_index.status_code == 404:
-                    logging.error('Remote index not found: ' + url_base)
-                    continue
+                    # we'll need to parse the HTML index file for the file list
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore", category=ResourceWarning)
+                        html_index = session.get(url_base, verify=verify, headers=headers)
 
-                if html_index.status_code == 401 or html_index.status_code == 403:
-                    logging.error('Unauthorized: ' + url_base)
-                    continue
+                    if html_index.status_code == 404:
+                        logging.error('Remote index not found: ' + url_base)
+                        continue
 
-                # grab the links
-                link_parser = LinkParser()
-                link_parser.feed(html_index.text)
+                    if html_index.status_code == 401 or html_index.status_code == 403:
+                        logging.error('Unauthorized: ' + url_base)
+                        continue
 
-                try:
-                    links = link_parser.links
-                except AttributeError:
-                    links = []
+                    # grab the links
+                    link_parser = LinkParser()
+                    link_parser.feed(html_index.text)
+
+                    try:
+                        links = link_parser.links
+                        index_table[url_base] = links
+                    except AttributeError:
+                        links = []
 
                 # find the file names that match our string
                 # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
                 new_links = fnmatch.filter(links, url_file)
 
-                if last_version:
+                if last_version and len(new_links) > 1:
                     new_links = sorted(new_links)
                     new_links = [new_links[-1]]
+
+                if '?' in remote_path or '*' in remote_path:
+                    # the user specified a wild card in the remote_path
+                    remote_path = url_base
 
                 # download the files
                 for new_link in new_links:
@@ -173,7 +184,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                         for file in resp_data:
                             out.append(file)
                 session.close()
-                return out
+                continue
 
             resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify, headers=headers, session=session)
         
@@ -184,6 +195,8 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                 out.append(file)
         else:
             # download wasn't successful, search for local files
+            logging.info('Searching for local files...')
+                
             if local_path == '':
                 local_path_to_search = str(Path('.').resolve())
             else:

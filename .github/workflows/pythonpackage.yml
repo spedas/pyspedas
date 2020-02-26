@@ -1,0 +1,61 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        #python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install coveralls
+        python -m pyspedas.mms.tests.setup_tests
+   # - name: Lint with flake8
+   #   run: |
+   #     pip install flake8
+   #     # stop the build if there are Python syntax errors or undefined names
+   #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+   #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+   #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with unittest
+      run: |
+        coverage run -a -m pyspedas.mms.tests.feeps
+        coverage run -a -m pyspedas.mms.tests.eis
+        coverage run -a -m pyspedas.mms.tests.file_filter
+        coverage run -a -m pyspedas.dscovr.tests.tests
+        coverage run -a -m pyspedas.utilities.tests.download_tests
+        coverage run -a -m pyspedas.utilities.tests.misc_tests
+        coverage run -a -m pyspedas.cluster.tests.tests
+        coverage run -a -m pyspedas.csswe.tests.tests
+        coverage run -a -m pyspedas.ace.tests.tests
+        coverage run -a -m pyspedas.equator_s.tests.tests
+        coverage run -a -m pyspedas.image.tests.tests
+        coverage run -a -m pyspedas.psp.tests.tests
+        coverage run -a -m pyspedas.rbsp.tests.tests
+        coverage run -a -m pyspedas.stereo.tests.tests
+        coverage run -a -m pyspedas.twins.tests.tests
+        coverage run -a -m pyspedas.wind.tests.tests
+        coverage run -a -m pyspedas.mms.tests.curlometer
+        coverage run -a -m pyspedas.poes.tests.tests
+        coverage run -a -m pyspedas.polar.tests.tests
+        coverage run -a -m pyspedas.geotail.tests.tests
+        coverage run -a -m pyspedas.analysis.tests.tests
+        coverage run -a -m pyspedas.fast.tests.tests
+        coverage run -a -m pyspedas.omni.tests.tests
+        coverage run -a -m pyspedas.themis.tests.tests
+        coverage run -a -m pyspedas.maven.tests.tests
+        coverage run -a -m pyspedas.examples.tests.tests
+        coveralls

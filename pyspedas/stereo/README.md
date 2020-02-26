@@ -1,5 +1,5 @@
 
-## Solar Terrestrial Relations Observatory (STEREO) Mission
+## Solar Terrestrial Relations Observatory (STEREO)
 The routines in this module can be used to load data from the STEREO mission. 
 
 ### Instruments
@@ -22,3 +22,11 @@ mag_vars = pyspedas.stereo.mag(trange=['2013-11-5', '2013-11-6'])
 tplot('BFIELD')
 ```
 
+
+#### PLAsma and SupraThermal Ion Composition (PLASTIC) 
+
+```python
+plastic_vars = pyspedas.stereo.plastic(trange=['2013-11-5', '2013-11-6'])
+
+tplot(['proton_number_density', 'proton_bulk_speed', 'proton_temperature', 'proton_thermal_speed'])
+```

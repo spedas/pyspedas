@@ -4,12 +4,14 @@
 import unittest
 import numpy as np
 
-from ...mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
-from ...utilities.data_exists import data_exists
-from ..hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
-from ..hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from pyspedas.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
+from pyspedas.utilities.data_exists import data_exists
+from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from pytplot import get_data, del_data
+
+from pyspedas import tdpwrspc
 
 ############### DSP ############### 
 class DSPLoadTestCases(unittest.TestCase):
@@ -21,6 +23,10 @@ class DSPLoadTestCases(unittest.TestCase):
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype=['epsd', 'bpsd'], level='l2', data_rate='fast')
         self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
         self.assertTrue(data_exists('mms1_dsp_bpsd_omni'))
+
+    def test_load_bpsd_data(self):
+        data = mms_load_dsp(trange=['2015-10-16','2015-10-17'], datatype='bpsd', level='l2', data_rate='fast')
+        self.assertTrue(data_exists('mms1_dsp_bpsd_omni_fast_l2'))
 
     def test_load_epsd_spdf(self):
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype='epsd', level='l2', data_rate='fast', spdf=True)
@@ -39,20 +45,20 @@ class FEEPSLoadTestCases(unittest.TestCase):
 
     def test_load_spdf_data(self):
         del_data('*')
-        data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
-        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
-        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
-
-    def test_load_suffix(self):
-        data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
-        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_test'))
-        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin_test'))
-
-    def test_load_brst_data(self):
-        del_data('*')
-        data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
+        data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', spdf=True)
         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin'))
+
+    def test_load_suffix(self):
+        data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', suffix='_test')
+        self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_test'))
+        self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin_test'))
+
+    def test_load_brst_ion_data(self):
+        del_data('*')
+        data = mms_load_feeps(probe=4, data_rate='brst', datatype='ion', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
+        self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_omni'))
+        self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_omni_spin'))
 
     def test_load_brst_multi_probe(self):
         del_data('*')
@@ -73,17 +79,16 @@ class EISLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_epd_eis_phxtof_proton_flux_omni'))
 
     def test_load_phxtof_spdf(self):
-        data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='phxtof', spdf=True)
-        self.assertTrue(data_exists('mms1_epd_eis_phxtof_proton_flux_omni'))
+        data = mms_load_eis(trange=['2015-10-16/13:06', '2015-10-16/13:07'], datatype='phxtof', data_rate='brst', spdf=True)
+        self.assertTrue(data_exists('mms1_epd_eis_brst_phxtof_proton_flux_omni'))
 
     def test_load_extof_data(self):
-        data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='extof')
-        self.assertTrue(data_exists('mms1_epd_eis_extof_proton_flux_omni'))
+        data = mms_load_eis(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='extof')
+        self.assertTrue(data_exists('mms1_epd_eis_brst_extof_proton_flux_omni'))
 
     def test_load_extof_suffix(self):
-        data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='extof', suffix='_test')
-        self.assertTrue(data_exists('mms1_epd_eis_extof_proton_flux_omni_test'))
-        self.assertTrue(data_exists('mms1_epd_eis_extof_proton_flux_omni_test_spin'))
+        data = mms_load_eis(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='extof', suffix='_test')
+        self.assertTrue(data_exists('mms1_epd_eis_brst_extof_proton_flux_omni_test'))
 
 ############### FPI ############### 
 class FPILoadTestCases(unittest.TestCase):
@@ -96,7 +101,7 @@ class FPILoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
 
     def test_load_small_brst_interval(self):
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-moms')
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-moms', 'dis-dist'], time_clip=True)
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_brst'))
 
     def test_center_fast_ion_data_notplot(self):
@@ -146,10 +151,6 @@ class HPCALoadTestCases(unittest.TestCase):
     def test_load_spdf_data(self):
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
-
-    def test_load_ion_data(self):
-        data = mms_load_hpca(trange=['2015-10-16/5:00', '2015-10-16/6:00'], datatype='ion')
-        self.assertTrue(data_exists('mms1_hpca_hplus_flux'))
 
     def test_load_ion_omni(self):
         del_data('*')
@@ -211,6 +212,10 @@ class EDPLoadTestCases(unittest.TestCase):
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
 
+    def test_load_hfesp_data(self):
+        data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], datatype='hfesp', data_rate='srvy')
+        self.assertTrue(data_exists('mms1_edp_hfesp_srvy_l2'))
+
     def test_load_spdf_data(self):
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
@@ -219,12 +224,12 @@ class EDPLoadTestCases(unittest.TestCase):
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
 
-    def test_load_multiple_sc(self):
-        data = mms_load_edp(probe=['1', '2', '3', '4'], trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
-        self.assertTrue(data_exists('mms2_edp_dce_gse_fast_l2'))
-        self.assertTrue(data_exists('mms3_edp_dce_gse_fast_l2'))
-        self.assertTrue(data_exists('mms4_edp_dce_gse_fast_l2'))
+    # def test_load_multiple_sc(self):
+    #     data = mms_load_edp(probe=['1', '2', '3', '4'], trange=['2015-10-16', '2015-10-16/01:00'])
+    #     self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
+    #     self.assertTrue(data_exists('mms2_edp_dce_gse_fast_l2'))
+    #     self.assertTrue(data_exists('mms3_edp_dce_gse_fast_l2'))
+    #     self.assertTrue(data_exists('mms4_edp_dce_gse_fast_l2'))
 
     def test_load_brst_data(self):
         data = mms_load_edp(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
@@ -237,27 +242,23 @@ class FGMLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
 
     def test_load_spdf_data(self):
-        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
-        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
+        data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], spdf=True)
+        self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
 
     def test_load_suffix(self):
-        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
-        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2_test'))
+        data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], suffix='_test')
+        self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2_test'))
 
     def test_load_multiple_sc(self):
-        data = mms_load_fgm(probe=['1', '2', '3', '4'], trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
-        self.assertTrue(data_exists('mms2_fgm_b_gse_srvy_l2'))
-        self.assertTrue(data_exists('mms3_fgm_b_gse_srvy_l2'))
-        self.assertTrue(data_exists('mms4_fgm_b_gse_srvy_l2'))
+        data = mms_load_fgm(probe=[1, 2, 3, 4], data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
+        self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
+        self.assertTrue(data_exists('mms2_fgm_b_gse_brst_l2'))
+        self.assertTrue(data_exists('mms3_fgm_b_gse_brst_l2'))
+        self.assertTrue(data_exists('mms4_fgm_b_gse_brst_l2'))
 
     def test_load_brst_data(self):
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
-
-    def test_load_int_probes(self):
-        data = mms_load_fgm(probe=[1, 2, 3, 4], trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
 
     def test_load_data_no_update(self):
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00']) # make sure the files exist locally
@@ -278,6 +279,15 @@ class MECLoadTestCases(unittest.TestCase):
     def test_load_suffix(self):
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_mec_r_sm_test'))
+
+class SCMLoadTestCases(unittest.TestCase):
+    def test_brst_dpwrspc_data(self):
+        data = mms_load_scm(probe=4, data_rate='brst', datatype='scb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
+        tdpwrspc('mms4_scm_acb_gse_scb_brst_l2')
+        self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2'))
+        self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_0_dpwrspc'))
+        self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_1_dpwrspc'))
+        self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_2_dpwrspc'))
 
 ############### SCM ############### 
 # class SCMLoadTestCases(unittest.TestCase):

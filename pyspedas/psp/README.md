@@ -1,6 +1,6 @@
 
-## Parker Solar Probe (PSP) Mission
-The routines in this folder can be used to load data from the Parker Solar Probe (PSP) mission. 
+## Parker Solar Probe (PSP)
+The routines in this module can be used to load data from the Parker Solar Probe (PSP) mission. 
 
 ### Instruments
 - Electromagnetic Fields Investigation (FIELDS)

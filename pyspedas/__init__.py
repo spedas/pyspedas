@@ -1,30 +1,11 @@
 from .load_data import load_data
 from .version import version
 from .prefs import get_spedas_prefs
-from .helpers import download_files, url_exists, find_latest_url_version
-from .dates import validate_date, get_date_list, get_dates
-from .themis.themis_load import themis_filename, themis_load
-from .themis.gmag_load import gmag_load, gmag_filename, check_gmag, check_greenland, gmag_groups, gmag_list, get_group,\
-    query_gmags
-from .themis.themis_helpers import get_probes, get_instruments
-from .themis.dsl2gse import dsl2gse
-from .omni.omni_load import omni_filename, omni_load
-from .examples.basic.ex_basic import ex_basic
-from .examples.basic.ex_analysis import ex_analysis
-from .examples.basic.ex_gmag import ex_gmag
-from .examples.basic.ex_spectra import ex_spectra
-from .examples.basic.ex_line_spectra import ex_line_spectra
-from .examples.basic.ex_create import ex_create
-from .examples.basic.ex_omni import ex_omni
-from .examples.basic.ex_cdasws import ex_cdasws
-from .examples.basic.ex_cdagui import ex_cdagui
-from .examples.basic.ex_dsl2gse import ex_dsl2gse
 from .utilities.data_exists import data_exists
 from .utilities.tnames import tnames
 from .utilities.time_string import time_string
 from .utilities.time_double import time_float, time_double
 from .utilities.tcopy import tcopy
-from .utilities.tplot2ascii import tplot2ascii
 from .analysis.tclip import tclip
 from .analysis.tdeflag import tdeflag
 from .analysis.tinterpol import tinterpol
@@ -44,6 +25,8 @@ from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from .maven import maven_load
 
+from . import themis
+from . import omni
 from . import dscovr
 from . import psp
 from . import poes

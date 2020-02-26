@@ -57,7 +57,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
 
             for bad_sector in bad_sectors:
                 this_bad_sector = np.where(spin_sectors == bad_sector)[0]
-                if len(this_bad_sector) is not 0:
+                if len(this_bad_sector) != 0:
                     top_data[this_bad_sector] = np.nan
 
         try:
@@ -66,12 +66,12 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
         except Warning:
             continue
 
-    if level is not 'sitl':
+    if level != 'sitl':
         for sensor in bot_sensors:
             var_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_bottom_'+data_units+'_sensorid_'+sensor+'_clean'
 
             bot_data_tuple = get_data(var_name+suffix)
-            if bot_data_tuple is None:
+            if bot_data_tuple == None:
                 print('skipping: ' + var_name)
                 continue
             times, bot_data, bot_energies = bot_data_tuple
@@ -81,7 +81,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
 
                 for bad_sector in bad_sectors:
                     this_bad_sector = np.where(spin_sectors == bad_sector)[0]
-                    if len(this_bad_sector) is not 0:
+                    if len(this_bad_sector) != 0:
                         bot_data[this_bad_sector] = np.nan
 
             try:

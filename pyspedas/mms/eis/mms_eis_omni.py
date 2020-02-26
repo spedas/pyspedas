@@ -47,7 +47,14 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     telescopes = tnames(pattern=prefix + species_str + '_*' + data_units + '_t?'+suffix)
 
     if len(telescopes) == 6:
-        time, data, energies = get_data(telescopes[0])
+        scope_data = get_data(telescopes[0])
+            
+        if len(scope_data) <= 2:
+            print("Error, couldn't find energy table for the variable: " + telescopes[0])
+            return None
+
+        time, data, energies = scope_data
+
         flux_omni = np.zeros((len(time), len(energies)))
         for t in telescopes:
             time, data, energies = get_data(t)

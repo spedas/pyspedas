@@ -53,11 +53,10 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     out_files = []
 
-    for remote_file in remote_names:
-        files = download(remote_file=remote_file, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
-        if files is not None:
-            for file in files:
-                out_files.append(file)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    if files is not None:
+        for file in files:
+            out_files.append(file)
 
     out_files = sorted(out_files)
 

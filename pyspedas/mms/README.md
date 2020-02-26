@@ -1,6 +1,6 @@
 
 ## Magnetospheric Multiscale (MMS) Mission
-The routines in this folder can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
+The routines in this module can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
 ### Instruments
 - Fluxgate Magnetometer (FGM)
@@ -44,23 +44,22 @@ The routines in this folder can be used to load data from the Magnetospheric Mul
 - The `probe` keyword accepts strings, arrays of strings, ints and arrays of ints
 - The load routines accept a wide range of time range formats via the `trange` keyword
 - The load routines correctly handle access to all burst-mode data, even when small time ranges are requested
-- The load routines can be imported from `pyspedas.mms` using the instrument names (e.g., `from pyspedas.mms import fgm`)
+- The load routines can be imported from `pyspedas` using the IDL procedure names (e.g., `from pyspedas import mms_load_fgm`)
 - Crib sheets can be found in the `examples` folder
 - Cross platform: tested on Windows, macOS and Linux
 
 ### Examples
-Get started by importing tplot; this is required to plot the data:
+Get started by importing pyspedas and tplot; this is required to plot the data:
 
 ```python
+import pyspedas
 from pytplot import tplot
 ```
 
 #### Fluxgate Magnetometer (FGM)
 
 ```python
-from pyspedas import mms_load_fgm
-
-mms_load_fgm(trange=['2015-10-16', '2015-10-17'])
+fgm_vars = pyspedas.mms.fgm(trange=['2015-10-16', '2015-10-17'])
 
 tplot('mms1_fgm_b_gsm_srvy_l2')
 ```
@@ -68,9 +67,7 @@ tplot('mms1_fgm_b_gsm_srvy_l2')
 #### Search-coil Magnetometer (SCM)
 
 ```python
-from pyspedas import mms_load_scm
-
-mms_load_scm(trange=['2015-10-16', '2015-10-17'])
+scm_vars = pyspedas.mms.scm(trange=['2015-10-16', '2015-10-17'])
 
 tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
 ```
@@ -78,9 +75,7 @@ tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
 #### Electric field Double Probe (EDP)
 
 ```python
-from pyspedas import mms_load_edp
-
-mms_load_edp(trange=['2015-10-16', '2015-10-17'])
+edp_vars = pyspedas.mms.edp(trange=['2015-10-16', '2015-10-17'])
 
 tplot('mms1_edp_dce_gse_fast_l2')
 ```
@@ -88,9 +83,7 @@ tplot('mms1_edp_dce_gse_fast_l2')
 #### Electron Drift Instrument (EDI)
 
 ```python
-from pyspedas import mms_load_edi
-
-mms_load_edi(trange=['2016-10-16', '2016-10-17'])
+edi_vars = pyspedas.mms.edi(trange=['2016-10-16', '2016-10-17'])
 
 tplot('mms1_edi_e_gse_srvy_l2')
 ```
@@ -98,9 +91,7 @@ tplot('mms1_edi_e_gse_srvy_l2')
 #### Fast Plasma Investigation (FPI)
 
 ```python
-from pyspedas import mms_load_fpi
-
-mms_load_fpi(trange=['2015-10-16', '2015-10-17'], datatype='dis-moms')
+fpi_vars = pyspedas.mms.fpi(trange=['2015-10-16', '2015-10-17'], datatype='dis-moms')
 
 tplot(['mms1_dis_bulkv_gse_fast', 'mms1_dis_numberdensity_fast'])
 ```
@@ -108,14 +99,12 @@ tplot(['mms1_dis_bulkv_gse_fast', 'mms1_dis_numberdensity_fast'])
 #### Hot Plasma Composition Analyzer (HPCA)
 
 ```python
-from pyspedas import mms_load_hpca
-
-mms_load_hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')
+mom_vars = pyspedas.mms.hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')
 
 tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity'])
 
 # load the ion data
-mms_load_hpca(trange=['2016-10-16', '2016-10-17'], datatype='ion')
+ion_vars = pyspedas.mms.hpca(trange=['2016-10-16', '2016-10-17'], datatype='ion')
 
 from pyspedas import mms_hpca_calc_anodes
 from pyspedas import mms_hpca_spin_sum
@@ -136,9 +125,9 @@ tplot(['mms1_hpca_hplus_flux_elev_0-360_spin',
 #### Energetic Ion Spectrometer (EIS)
 
 ```python
-from pyspedas import mms_load_eis, mms_eis_pad
+from pyspedas import mms_eis_pad
 
-mms_load_eis(trange=['2015-10-16', '2015-10-17'], datatype=['phxtof', 'extof'])
+eis_vars = pyspedas.mms.eis(trange=['2015-10-16', '2015-10-17'], datatype=['phxtof', 'extof'])
 
 # plot the non-spin averaged flux
 tplot(['mms1_epd_eis_extof_proton_flux_omni', 'mms1_epd_eis_phxtof_proton_flux_omni'])
@@ -155,9 +144,9 @@ tplot(['mms1_epd_eis_extof_56-535keV_proton_flux_omni_pad_spin', 'mms1_epd_eis_e
 #### Fly's Eye Energetic Particle Sensor (FEEPS)
 
 ```python
-from pyspedas import mms_load_feeps, mms_feeps_pad
+from pyspedas import mms_feeps_pad
 
-mms_load_feeps(trange=['2015-10-16', '2015-10-17'], datatype='electron')
+feeps_data = pyspedas.mms.feeps(trange=['2015-10-16', '2015-10-17'], datatype='electron')
 
 tplot(['mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin', 'mms1_epd_feeps_srvy_l2_electron_intensity_omni'])
 
@@ -170,9 +159,7 @@ tplot(['mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin', 'mms1_epd
 #### Active Spacecraft Potential Control (ASPOC)
 
 ```python
-from pyspedas import mms_load_aspoc
-
-mms_load_aspoc(trange=['2015-10-16', '2015-10-17'])
+asp_data = pyspedas.mms.aspoc(trange=['2015-10-16', '2015-10-17'])
 
 tplot('mms1_aspoc_ionc')
 ```
@@ -180,9 +167,7 @@ tplot('mms1_aspoc_ionc')
 #### MMS Ephemeris and Coordinates (MEC)
 
 ```python
-from pyspedas import mms_load_mec
-
-mms_load_mec(trange=['2015-10-16', '2015-10-17'])
+mec_data = pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
 tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 ```
@@ -190,9 +175,7 @@ tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 #### Digital Signal Processor (DSP)
 
 ```python
-from pyspedas import mms_load_dsp
-
-mms_load_dsp(trange=['2015-10-16', '2015-10-17'], data_rate='fast', datatype='bpsd')
+dsp_data = pyspedas.mms.dsp(trange=['2015-10-16', '2015-10-17'], data_rate='fast', datatype='bpsd')
 
 tplot('mms1_dsp_bpsd_omni_fast_l2')
 ```

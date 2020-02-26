@@ -8,7 +8,7 @@ Description:
 
 Returns:
     The version number for the current installation.
-    Also prints the location of the preferences file. 
+    Also prints the location of the preferences file.
 """
 
 

@@ -88,5 +88,8 @@ def ex_cdasws():
     print()
     del cdaw
 
+    # Return 1 as indication that the example finished without problems.
+    return 1
+
 # Run the example code
 # ex_cdasws()

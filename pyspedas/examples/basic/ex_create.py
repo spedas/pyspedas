@@ -11,15 +11,18 @@ Description:
 import pyspedas
 import pytplot
 import numpy
+from pyspedas.utilities.time_double import time_float
 
 
 def ex_create():
+
     # Delete any existing pytplot variables
     pytplot.del_data()
+
     # Create a sin wave plot
     a = list(range(0, 101))
     b = [2.0 / 100.0 * numpy.pi * s for s in a]
-    c = pyspedas.time_float('2017-01-01')
+    c = time_float('2017-01-01')
     x = list()
     y = list()
     for i in range(len(b)):
@@ -28,12 +31,16 @@ def ex_create():
 
     # Store data
     pytplot.store_data('sinx', data={'x': x, 'y': y})
+
     # Apply tclip
     pyspedas.tclip('sinx', -800.0, 800.0)
+
     # Remove NaN values
     pyspedas.tdeflag('sinx-clip')
+
     # Interpolate
-    pyspedas.tinterpol(['sinx-clip-deflag'], ['sinx'], 'quadratic')
+    pyspedas.tinterpol(['sinx-clip-deflag'], 'sinx', 'quadratic')
+
     # Plot
     pytplot.ylim('sinx', -1100.0, 1100.0)
     pytplot.ylim('sinx-clip', -1100.0, 1100.0)
@@ -42,6 +49,9 @@ def ex_create():
     pytplot.tplot_options('title', 'Interpolation example')
     pytplot.tplot(['sinx', 'sinx-clip', 'sinx-clip-deflag',
                    'sinx-clip-deflag-itrp'])
+
+    # Return 1 as indication that the example finished without problems.
+    return 1
 
 # Run the example code
 # ex_create()

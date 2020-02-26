@@ -49,7 +49,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     for prb in probe:
         if instrument == 'fgm':
-            if datatype == 'spin':
+            if datatype == 'cp':
                 pathformat = 'c'+prb+'/cp/%Y/c'+prb+'_cp_fgm_spin_%Y%m%d_v??.cdf'
             else:
                 pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
@@ -77,11 +77,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)
 
-        for remote_file in remote_names:
-            files = download(remote_file=remote_file, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version)
-            if files is not None:
-                for file in files:
-                    out_files.append(file)
+        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version)
+        if files is not None:
+            for file in files:
+                out_files.append(file)
 
     out_files = sorted(out_files)
 

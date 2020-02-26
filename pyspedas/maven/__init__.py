@@ -99,3 +99,56 @@ def maven_load(filenames=None,
                       varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                       auto_yes=auto_yes)
     return tvars
+
+def mag(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='ss', varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='mag', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def sta(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='2a', varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='sta', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def swea(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='svyspec', varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='swe', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def swia(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='onboardsvyspec', varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='swi', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def sep(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='s2-cal-svy-full', varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='sep', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def rse(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='rse', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def lpw(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='lpiv', varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='lpw', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def euv(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='bands', varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='euv', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def iuv(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='iuv', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+def ngi(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False):
+    return maven_load(instruments='ngi', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly)
+
+
+

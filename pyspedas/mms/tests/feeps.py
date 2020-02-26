@@ -5,6 +5,12 @@ from pyspedas import mms_load_feeps, mms_feeps_pad
 from ...utilities.data_exists import data_exists
 
 class FEEPSTestCases(unittest.TestCase):
+    def test_pad_ions_srvy(self):
+        mms_load_feeps(probe=4, data_rate='brst', datatype='ion', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
+        mms_feeps_pad(probe=4, data_rate='brst', datatype='ion', angles_from_bfield=True)
+        self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_70-600keV_pad'))
+        self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_70-600keV_pad_spin'))
+
     def test_pad_electrons_srvy(self):
         mms_load_feeps()
         mms_feeps_pad()

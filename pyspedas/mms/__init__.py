@@ -1,7 +1,6 @@
 """
 This module contains routines for loading MMS data
 
-
 """
 
 from .mms_load_data import mms_load_data
@@ -781,7 +780,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         for datatype_id in datatype:
             for data_rate_id in data_rate:
                 if datatype_id == 'electronenergy':
-                    e_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='electron', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    e_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='electron', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
                     e_omni_spectra = mms_eis_omni(probe_id, species='electron', data_rate=data_rate_id, datatype=datatype_id)
                     # create spin averaged omni-directional spectra
@@ -795,9 +794,9 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                     if e_omni_spectra_spin is not None:
                         tvars.append(e_omni_spectra_spin)
                 elif datatype_id == 'extof':
-                    p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
-                    o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
-                    a_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='alpha', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
+                    o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
+                    a_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='alpha', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
                     p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
@@ -829,8 +828,8 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                     if a_omni_spectra_spin is not None:
                         tvars.append(a_omni_spectra_spin)
                 elif datatype_id == 'phxtof':
-                    p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
-                    o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate, suffix=suffix)
+                    p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
+                    o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
                     p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)

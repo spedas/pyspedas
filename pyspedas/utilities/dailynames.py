@@ -3,8 +3,9 @@
 import numpy as np
 from pyspedas import time_string, time_double
 import os
+from datetime import datetime
 
-def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%f', dir_format='', YYYY_MM_DIR=False, prefix='', suffix=''):
+def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%d', prefix='', suffix=''):
     if trange == None:
         print('No trange specified')
         return
@@ -13,11 +14,16 @@ def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_for
         res = 3600.
         file_format = '%Y%m%d%H'
 
-    if YYYY_MM_DIR:
-        dir_format = '%Y/%m/'
+    # allows the user to pass in trange as list of datetime objects
+    if type(trange[0]) == datetime and type(trange[1]) == datetime:
+        trange = [time_string(trange[0].timestamp()), time_string(trange[1].timestamp())]
 
-
-    tr = [time_double(trange[0]), time_double(trange[1])]
+    tr = [trange[0], trange[1]]
+    
+    if isinstance(trange[0], str):
+        tr[0] = time_double(trange[0])
+    if isinstance(trange[1], str):
+        tr[1] = time_double(trange[1])
 
     # Davin's magic heisted from file_dailynames in IDL
     mmtr = [np.floor(tr[0]/res), np.ceil(tr[1]/res)]
@@ -28,6 +34,7 @@ def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_for
         n = int(mmtr[1]-mmtr[0])
 
     times = [(float(num)+mmtr[0])*res for num in range(n)]
+
     dates = []
     files = []
         
