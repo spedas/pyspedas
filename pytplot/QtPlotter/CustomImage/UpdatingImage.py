@@ -61,7 +61,7 @@ class UpdatingImage(pg.ImageItem):
                 yp = np.linspace(minbin, maxbin, 100)
 
             data_reformatted = []
-            y_sort = np.argsort(self.bin_sizes.iloc[0])
+            y_sort = np.argsort(self.bin_sizes.iloc[0].tolist())
             prev_bins = self.bin_sizes.iloc[0]
             prev_closest_ys = np.searchsorted(self.bin_sizes.iloc[0], yp, sorter=y_sort)
             prev_closest_ys[prev_closest_ys > (len(self.bin_sizes.iloc[0]) - 1)] = len(self.bin_sizes.iloc[0]) - 1
@@ -141,7 +141,7 @@ class UpdatingImage(pg.ImageItem):
             yp = np.linspace(self.ymin, self.ymax, self.h)
 
             closest_xs = np.searchsorted(self.x, xp)
-            y_sort = np.argsort(self.y)
+            y_sort = np.argsort(self.y.tolist())
 
             closest_ys = np.searchsorted(self.y, yp, sorter=y_sort)
             if not self.bins_inc:
