@@ -71,7 +71,7 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     V11fcs = [0.347, 0.837, 0.423]
     V12fcs = [0.347, 0.837, -0.423]
 
-    if datatype is 'electron':
+    if datatype == 'electron':
         pas = np.empty([len(btimes), 18]) # pitch angles for each eye at eaceh time
 
         # Telescope vectors in Body Coordinate System:
