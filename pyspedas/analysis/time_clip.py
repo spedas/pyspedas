@@ -91,31 +91,31 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None):
         tmp_dquant = data_quants[n_names[j]]
 
         if 'v1' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['v1'].values.shape) is 2:
+            if len(tmp_dquant.coords['v1'].values.shape) == 2:
                 v1_data = tmp_dquant.coords['v1'].values[index_start:index_end, :]
             else:
                 v1_data = tmp_dquant.coords['v1'].values
 
         if 'v2' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['v2'].values.shape) is 2:
+            if len(tmp_dquant.coords['v2'].values.shape) == 2:
                 v2_data = tmp_dquant.coords['v2'].values[index_start:index_end, :]
             else:
                 v2_data = tmp_dquant.coords['v2'].values
             
         if 'v3' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['v3'].values.shape) is 2:
+            if len(tmp_dquant.coords['v3'].values.shape) == 2:
                 v3_data = tmp_dquant.coords['v3'].values[index_start:index_end, :]
             else:
                 v3_data = tmp_dquant.coords['v3'].values
             
         if 'v' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['v'].values.shape) is 2:
+            if len(tmp_dquant.coords['v'].values.shape) == 2:
                 v_data = tmp_dquant.coords['v'].values[index_start:index_end, :]
             else:
                 v_data = tmp_dquant.coords['v'].values
             
         if 'spec_bins' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['spec_bins'].values.shape) is 2:
+            if len(tmp_dquant.coords['spec_bins'].values.shape) == 2:
                 v_data = tmp_dquant.coords['spec_bins'].values[index_start:index_end, :]
             else:
                 v_data = tmp_dquant.coords['spec_bins'].values

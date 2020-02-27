@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from pyspedas import mms_load_eis, mms_eis_pad
-from ...utilities.data_exists import data_exists
+from pyspedas.utilities.data_exists import data_exists
 
 class EISTestCases(unittest.TestCase):
     def test_pad_extof_srvy(self):
