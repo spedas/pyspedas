@@ -1,6 +1,6 @@
 
 # pySPEDAS
-[![Build Status](https://travis-ci.com/spedas/pyspedas.svg?branch=master)](https://travis-ci.com/spedas/pyspedas)
+[![build](https://github.com/spedas/pyspedas/workflows/build/badge.svg)](https://github.com/spedas/pyspedas/actions)
 [![Coverage Status](https://coveralls.io/repos/github/spedas/pyspedas/badge.svg)](https://coveralls.io/github/spedas/pyspedas)
 ![Version](https://img.shields.io/pypi/v/pyspedas.svg)
 ![License](https://img.shields.io/pypi/l/pyspedas.svg)
