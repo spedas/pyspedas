@@ -31,6 +31,8 @@ jobs:
    #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
    #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with unittest
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coverage run -a -m pyspedas.mms.tests.feeps
@@ -58,3 +60,4 @@ jobs:
         coverage run -a -m pyspedas.omni.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests
         coverage run -a -m pyspedas.maven.tests.tests
+        coveralls
