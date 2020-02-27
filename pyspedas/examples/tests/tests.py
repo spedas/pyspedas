@@ -44,6 +44,11 @@ class LoadTestCases(unittest.TestCase):
         ex = ex_omni()
         self.assertEqual(ex, 1)
 
+    def test_load_ex_spectra(self):
+        from pyspedas.examples.basic.ex_spectra import ex_spectra
+        ex = ex_spectra()
+        self.assertEqual(ex, 1)
+
 
 if __name__ == '__main__':
     unittest.main()

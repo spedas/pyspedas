@@ -42,3 +42,4 @@ from . import image
 from . import polar
 from . import fast
 from . import equator_s
+from . import examples
