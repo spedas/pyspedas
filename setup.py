@@ -31,7 +31,7 @@ setup(
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['requests', 'pytplot>=1.5.3', 'cdflib>=0.3.17',
-                      'cdasws'],
+                      'cdasws', 'netCDF4'],
     python_requires='>=3.5',
     include_package_data=True,
 )
