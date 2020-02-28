@@ -93,7 +93,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
         elif instrument == 'gmom':
             pathformat = 'th'+prb+'/'+level+'/'+instrument+'/%Y/th'+prb+'_'+level+'_'+instrument+'_%Y%m%d_v??.cdf'
         elif instrument == 'state':
-            pathformat = 'th'+prb+'/'+level+'/'+instrument+'/%Y/th'+prb+'_'+level+'_'+instrument+'_%Y%m%d_v??.cdf'
+            pathformat = 'th'+prb+'/'+level+'/'+instrument+'/%Y/th'+prb+'_'+level+'_'+instrument+'_%Y%m%d.cdf'
         elif instrument == 'gmag':
             if stations == None:
                 logging.error('No stations specified')
