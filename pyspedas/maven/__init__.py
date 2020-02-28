@@ -100,6 +100,11 @@ def maven_load(filenames=None,
                       auto_yes=auto_yes)
     return tvars
 
+def kp(trange=['2016-01-01', '2016-01-02'], datatype=None, varformat=None, get_support_data=False, 
+        auto_yes=True, downloadonly=False, insitu=True, iuvs=False):
+    return maven_load(start_date=trange[0], end_date=trange[1], type=datatype, level='kp', varformat=varformat, 
+        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, insitu=insitu, iuvs=iuvs)
+
 def mag(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='ss', varformat=None, get_support_data=False, 
         auto_yes=True, downloadonly=False):
     return maven_load(instruments='mag', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
