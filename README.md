@@ -1,6 +1,6 @@
 
 # pySPEDAS
-[![Build Status](https://travis-ci.com/spedas/pyspedas.svg?branch=master)](https://travis-ci.com/spedas/pyspedas)
+[![build](https://github.com/spedas/pyspedas/workflows/build/badge.svg)](https://github.com/spedas/pyspedas/actions)
 [![Coverage Status](https://coveralls.io/repos/github/spedas/pyspedas/badge.svg)](https://coveralls.io/github/spedas/pyspedas)
 ![Version](https://img.shields.io/pypi/v/pyspedas.svg)
 ![License](https://img.shields.io/pypi/l/pyspedas.svg)
@@ -19,8 +19,9 @@ The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org
 - [Equator-S](https://github.com/spedas/pyspedas/blob/master/pyspedas/equator_s/README.md)
 - [Fast Auroral Snapshot Explorer (FAST)](https://github.com/spedas/pyspedas/blob/master/pyspedas/fast/README.md)
 - [Geotail](https://github.com/spedas/pyspedas/blob/master/pyspedas/geotail/README.md)
+- [Geostationary Operational Environmental Satellite (GOES)](https://github.com/spedas/pyspedas/blob/master/pyspedas/goes/README.md)
 - [Imager for Magnetopause-to-Aurora Global Exploration (IMAGE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/image/README.md)
-- Mars Atmosphere and Volatile Evolution (MAVEN)
+- [Mars Atmosphere and Volatile Evolution (MAVEN)](https://github.com/spedas/pyspedas/blob/master/pyspedas/maven/README.md)
 - [Magnetospheric Multiscale (MMS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/mms/README.md)
 - [OMNI](https://github.com/spedas/pyspedas/blob/master/pyspedas/omni/README.md)
 - [Polar Orbiting Environmental Satellites (POES)](https://github.com/spedas/pyspedas/blob/master/pyspedas/poes/README.md)

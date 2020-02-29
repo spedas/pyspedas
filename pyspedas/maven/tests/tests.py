@@ -4,9 +4,13 @@ from pyspedas.utilities.data_exists import data_exists
 from pyspedas import maven
 
 class LoadTestCases(unittest.TestCase):
-    # def test_load_mag_data(self):
-    #     data = maven.mag()
-    #     self.assertTrue(data_exists('OB_B'))
+    def test_load_kp_data(self):
+        data = maven.kp()
+        self.assertTrue(data_exists('mvn_kp::spacecraft::geo_x'))
+
+    def test_load_mag_data(self):
+        data = maven.mag()
+        self.assertTrue(data_exists('OB_B'))
 
     def test_load_sta_data(self):
         data = maven.sta()

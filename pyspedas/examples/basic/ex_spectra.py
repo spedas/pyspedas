@@ -22,11 +22,12 @@ def ex_spectra():
     # pyspedas.load_data('themis', ['2015-12-31'], ['tha'], 'sst', 'l2')
     time_range = ['2015-12-31 00:00:00', '2015-12-31 23:59:59']
     pyspedas.themis.state(probe='a', trange=time_range)
-    pyspedas.themis.sst(probe='a', trange=time_range)
+    pyspedas.themis.sst(probe='a', trange=time_range,
+                        varnames=['tha_psif_en_eflux'])
 
     # Specify options
     pytplot.ylim('tha_pos', -23000.0, 81000.0)
-    pytplot.ylim('tha_psif_en_eflux', 10000.0, 10000000.0)
+    pytplot.ylim('tha_psif_en_eflux', 10000.0, 4000000.0)
     pytplot.options('tha_psif_en_eflux', 'colormap', 'viridis')
     pytplot.tplot_options('title', 'tha 2015-12-31')
 

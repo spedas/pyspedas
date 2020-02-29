@@ -24,6 +24,7 @@ from .feeps.mms_feeps_omni import mms_feeps_omni
 from .feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
 from .eis.mms_eis_omni import mms_eis_omni
 from .eis.mms_eis_spin_avg import mms_eis_spin_avg
+from .eis.mms_eis_set_metadata import mms_eis_set_metadata
 from .mms_config import CONFIG
 
 from pyspedas import tnames
@@ -851,6 +852,9 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                         tvars.append(p_omni_spectra_spin)
                     if o_omni_spectra_spin is not None:
                         tvars.append(o_omni_spectra_spin)
+
+                mms_eis_set_metadata(tnames(tvars), data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+
     return tnames(tvars)
 
 @print_vars

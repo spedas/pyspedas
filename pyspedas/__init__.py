@@ -25,6 +25,7 @@ from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from .maven import maven_load
 
+from . import goes
 from . import themis
 from . import omni
 from . import dscovr
@@ -42,3 +43,4 @@ from . import image
 from . import polar
 from . import fast
 from . import equator_s
+from . import examples
