@@ -5,7 +5,8 @@ CONFIG = {'local_data_dir': 'themis_data/',
 
 # override local data directory with environment variables
 if os.environ.get('ROOT_DATA_DIR'):
-    CONFIG['local_data_dir'] = os.sep.join([os.environ['ROOT_DATA_DIR'], 'themis'])
+    CONFIG['local_data_dir'] = os.sep.join([os.environ['ROOT_DATA_DIR'],
+                                           'themis'])
 
 if os.environ.get('THM_DATA_DIR'):
     CONFIG['local_data_dir'] = os.environ['THM_DATA_DIR']
