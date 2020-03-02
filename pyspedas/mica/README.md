@@ -11,7 +11,7 @@ from pytplot import tplot
 ```
 
 ```python
-induction_vars = pyspedas.mica.induction(site='NAL', trange=['2019-02-01','2019-02-02'])
+nal_vars = pyspedas.mica.induction(site='NAL', trange=['2019-02-01','2019-02-02'])
 
 tplot('spectra_x_1Hz_NAL')
 ```
