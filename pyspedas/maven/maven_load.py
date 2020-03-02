@@ -264,7 +264,7 @@ def load_data(filenames=None,
             for f in cdf_files:
                 # Loop through CDF files
                 desc = l2_regex.match(os.path.basename(f)).group("description")
-                if desc is not '' and suffix == '':
+                if desc != '' and suffix == '':
                     created_vars = pytplot.cdf_to_tplot(f, varformat=varformat,
                                                                  get_support_data=get_support_data, prefix=prefix,
                                                                  suffix=desc, merge=True)
@@ -282,7 +282,7 @@ def load_data(filenames=None,
             for f in sts_files:
                 # Loop through STS (Mag) files
                 desc = l2_regex.match(os.path.basename(f)).group("description")
-                if desc is not '' and suffix == '':
+                if desc != '' and suffix == '':
                     loaded_tplot_vars.append(pytplot.sts_to_tplot(f, prefix=prefix,
                                                                       suffix=desc, merge=True))
                 else:

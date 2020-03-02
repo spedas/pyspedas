@@ -927,7 +927,7 @@ def read_iuvs_file(file):
     occ_num = 0
     with open(file) as f:
         line = f.readline()
-        while line is not '':
+        while line != '':
             if line.startswith('*'):
                 # Read the header
                 line = f.readline()
