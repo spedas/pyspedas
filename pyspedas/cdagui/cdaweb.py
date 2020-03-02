@@ -143,7 +143,6 @@ class CDAWeb():
             else:
                 print(str(count) + '. There was a problem. Could not download \
                       file: ' + remotef)
-                print(err)
                 tplot_loaded = -1
                 localfile = ''
             result.append([remotef, localfile, tplot_loaded])
