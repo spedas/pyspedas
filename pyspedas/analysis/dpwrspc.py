@@ -1,7 +1,7 @@
 
 import numpy as np
 
-def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3, nohanning=False, noline=False, notperhz=False, notmvariance=False):
+def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3, nohanning=False, noline=False, notperhz=False, notmvariance=False, tm_sensitivity=None):
 
     if nohanning is False:
         window = np.hanning(nboxpoints)
@@ -75,7 +75,7 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3, nohanni
 
             # time variance can break power spectrum, this keyword skips over those gaps
             if notmvariance and n_tm > 1:
-                if tm_sensitivity:
+                if tm_sensitivity != None:
                     tmsn = tm_sensitivity
                 else:
                     tmsn = 100.0
