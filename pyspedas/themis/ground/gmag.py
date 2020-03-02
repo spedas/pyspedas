@@ -1,40 +1,40 @@
 
 import requests
-import os
 
 from pyspedas.themis.load import load
 
+
 def gmag(trange=['2007-03-23', '2007-03-24'],
-        sites=None,
-        group=None,
-        level='l2', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+         sites=None,
+         group=None,
+         level='l2',
+         suffix='',
+         get_support_data=False,
+         varformat=None,
+         varnames=[],
+         downloadonly=False,
+         notplot=False,
+         no_update=False,
+         time_clip=False):
     """
     This function loads ground magnetometer data
-    
+
     Parameters:
         trange: list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         level: str
             Data type; Valid options: 'l1', 'l2'
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            The tplot variable names will be given this suffix.
+            By default, no suffix is added.
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
+            will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
         varformat: str
@@ -42,10 +42,11 @@ def gmag(trange=['2007-03-23', '2007-03-24'],
             "*" is accepted.  By default, all variables are loaded in.
 
         varnames: list of str
-            List of variable names to load (if not specified, all data variables are loaded)
+            List of variable names to load
+            (if not specified, all data variables are loaded)
 
         downloadonly: bool
-            Set this flag to download the CDF files, but not load them into 
+            Set this flag to download the CDF files, but not load them into
             tplot variables
 
         notplot: bool
@@ -55,11 +56,12 @@ def gmag(trange=['2007-03-23', '2007-03-24'],
             If set, only load data from your local cache
 
         time_clip: bool
-            Time clip the variables to exactly the range specified in the trange keyword
+            Time clip the variables to exactly the range specified
+            in the trange keyword
 
         sites: str/list of str
             GMAG station names to load (e.g. 'bmls').
-    
+
         group: str
             GMAG group of stations (eg. 'epo').
             If specified, stations is ignored.
@@ -69,30 +71,48 @@ def gmag(trange=['2007-03-23', '2007-03-24'],
 
     """
 
-    if sites == None:
-        thm_sites = 'atha chbg ekat fsim fsmi fykn gbay glyn gill inuv kapu kian kuuj mcgr nrsq pgeo pina rank snap snkq tpas whit yknf'.split(' ')
-        tgo_sites = ['nal','lyr','hop','bjn','nor','sor','tro','and','don','rvk','sol','kar', 'jan', 'jck', 'dob']
-        dtu_sites = ['atu','dmh','svs','tdc','bfe','roe','thl','kuv','upn','umq','gdh','stf','skt','ghb','fhb','naq','amk','sco', 'tab', 'sum', 'hov']
-        ua_sites = ['arct','bett','cigo','eagl','fykn','gako','hlms','homr','kako','pokr','trap']
-        maccs_sites = ['cdrt','chbr','crvr','gjoa','iglo','nain','pang','rbay']
-        usgs_sites = ['bou','brw','bsl','cmo','ded','frd','frn','gua','hon','new','shu','sit','sjg','tuc']
-        atha_sites = ['roth', 'leth', 'redr', 'larg', 'vldr', 'salu', 'akul', 'puvr', 'inuk', 'kjpk', 'radi', 'stfl', 'sept', 'schf']
-        epo_sites = ['bmls','ccnv','drby','fyts','hots','loys','pgeo','pine','ptrs','rmus','swno','ukia']
+    if sites is None:
+        thm_sites = 'atha chbg ekat fsim fsmi fykn gbay glyn gill inuv kapu '\
+                     'kian kuuj mcgr nrsq pgeo pina rank snap snkq tpas whit '\
+                     'yknf'.split(' ')
+        tgo_sites = ['nal', 'lyr', 'hop', 'bjn', 'nor', 'sor', 'tro', 'and',
+                     'don', 'rvk', 'sol', 'kar', 'jan', 'jck', 'dob']
+        dtu_sites = ['atu', 'dmh', 'svs', 'tdc', 'bfe', 'roe', 'thl', 'kuv',
+                     'upn', 'umq', 'gdh', 'stf', 'skt', 'ghb', 'fhb', 'naq',
+                     'amk', 'sco', 'tab', 'sum', 'hov']
+        ua_sites = ['arct', 'bett', 'cigo', 'eagl', 'fykn', 'gako', 'hlms',
+                    'homr', 'kako', 'pokr', 'trap']
+        maccs_sites = ['cdrt', 'chbr', 'crvr', 'gjoa', 'iglo', 'nain',
+                       'pang', 'rbay']
+        usgs_sites = ['bou', 'brw', 'bsl', 'cmo', 'ded', 'frd', 'frn',
+                      'gua', 'hon', 'new', 'shu', 'sit', 'sjg', 'tuc']
+        atha_sites = ['roth', 'leth', 'redr', 'larg', 'vldr', 'salu', 'akul',
+                      'puvr', 'inuk', 'kjpk', 'radi', 'stfl', 'sept', 'schf']
+        epo_sites = ['bmls', 'ccnv', 'drby', 'fyts', 'hots', 'loys',
+                     'pgeo', 'pine', 'ptrs', 'rmus', 'swno', 'ukia']
         falcon_sites = ['hris', 'kodk', 'lrel', 'pblo', 'stfd', 'wlps']
-        mcmac_sites = ['amer', 'benn', 'glyn', 'lyfd', 'pcel', 'rich', 'satx', 'wrth']
+        mcmac_sites = ['amer', 'benn', 'glyn', 'lyfd', 'pcel', 'rich',
+                       'satx', 'wrth']
         nrcan_sites = ['blc', 'cbb', 'iqa', 'mea', 'ott', 'stj', 'vic']
         step_sites = ['fsj', 'ftn', 'hrp', 'lcl', 'lrg', 'pks', 'whs']
-        fmi_sites = ['han', 'iva', 'kev', 'kil', 'mas', 'mek', 'muo', 'nur', 'ouj', 'pel', 'ran', 'tar']
-        aair_sites = ['amd','bbg','brn','dik','loz','pbk','tik','viz']
-        carisma_sites = ['anna', 'back', 'cont', 'daws', 'eski', 'fchp', 'fchu', 'gull', 'isll', 'lgrr', 'mcmu', 'mstk', 'norm', 'osak', 'oxfo', 'pols', 'rabb', 'sach', 'talo', 'thrf', 'vulc', 'weyb', 'wgry']
-        sites = thm_sites + tgo_sites + dtu_sites + ua_sites + maccs_sites + usgs_sites + atha_sites + epo_sites + falcon_sites + mcmac_sites + nrcan_sites + step_sites + fmi_sites + aair_sites + carisma_sites
+        fmi_sites = ['han', 'iva', 'kev', 'kil', 'mas', 'mek', 'muo', 'nur',
+                     'ouj', 'pel', 'ran', 'tar']
+        aair_sites = ['amd', 'bbg', 'brn', 'dik', 'loz', 'pbk', 'tik', 'viz']
+        carisma_sites = ['anna', 'back', 'cont', 'daws', 'eski', 'fchp',
+                         'fchu', 'gull', 'isll', 'lgrr', 'mcmu', 'mstk',
+                         'norm', 'osak', 'oxfo', 'pols', 'rabb', 'sach',
+                         'talo', 'thrf', 'vulc', 'weyb', 'wgry']
+        sites = (thm_sites + tgo_sites + dtu_sites + ua_sites + maccs_sites
+                 + usgs_sites + atha_sites + epo_sites + falcon_sites
+                 + mcmac_sites + nrcan_sites + step_sites + fmi_sites
+                 + aair_sites + carisma_sites)
 
-    if group != None:
+    if group is not None:
         sites = eval(group+'_sites')
 
     if not isinstance(sites, list):
         sites = [sites]
-                    
+
     # check for sites in Greenland
     greenland = []
     for site in sites:
@@ -101,11 +121,11 @@ def gmag(trange=['2007-03-23', '2007-03-24'],
         else:
             greenland.append(False)
 
-    return load(instrument='gmag', trange=trange, level=level, 
-        suffix=suffix, get_support_data=get_support_data, varformat=varformat, 
-        varnames=varnames, downloadonly=downloadonly, notplot=notplot, 
-        stations=sites, greenland=greenland, time_clip=time_clip, no_update=no_update)
-
+    return load(instrument='gmag', trange=trange, level=level,
+                suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, varnames=varnames,
+                downloadonly=downloadonly, notplot=notplot, stations=sites,
+                greenland=greenland, time_clip=time_clip, no_update=no_update)
 
 
 gmag_dict = {}
