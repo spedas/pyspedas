@@ -11,7 +11,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('spectra_x_1Hz_NAL'))
 
     def test_downloadonly(self):
-        files = pyspedas.mica.induction(downloadonly=True, trange=['2014-2-15', '2014-2-16'])
+        files = pyspedas.mica.induction(site='nal', downloadonly=True, trange=['2014-2-15', '2014-2-16'])
         self.assertTrue(os.path.exists(files[0]))
 
 if __name__ == '__main__':
