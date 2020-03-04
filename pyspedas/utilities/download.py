@@ -85,6 +85,8 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
 
 def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False, last_version=False):
 
+    local_file_in = local_file
+
     if isinstance(remote_path, list):
         logging.error('Remote path must be a string')
         return
@@ -120,7 +122,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         url_base = url.replace(url_file, '')
 
         # automatically use remote_file locally if local_file is not specified
-        if local_file == '':
+        if local_file_in == '':
             # if remote_file is the entire url then only use the filename
             if remote_path == '':
                 local_file = url_file
