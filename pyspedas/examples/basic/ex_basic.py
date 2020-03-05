@@ -20,12 +20,13 @@ def ex_basic():
 
     # Download THEMIS state data for 2015-12-31
     time_range = ['2015-12-31 00:00:00', '2016-01-01 12:00:00']
-    pyspedas.themis.state(probe='a', trange=time_range)
+    pyspedas.themis.state(probe='a', trange=time_range, time_clip=True)
 
     # Get data into python variables
     alldata = pytplot.get_data("tha_pos")
     time = alldata[0]
     data = alldata[1]
+    # Here we could work on the data before saving a new tplot variable.
 
     # Store a new pytplot variable
     pytplot.store_data("tha_position", data={'x': time, 'y': data})
