@@ -2,7 +2,7 @@
 import unittest
 from pyspedas.utilities.data_exists import data_exists
 
-from pyspedas import subtract_average, subtract_median, tclip, tdeflag, time_clip, tinterpol, tdpwrspc, time_double, time_string
+from pyspedas import subtract_average, subtract_median, yclip, tdeflag, time_clip, tinterpol, tdpwrspc, time_double, time_string
 from pytplot import get_data, store_data
 
 import numpy as np

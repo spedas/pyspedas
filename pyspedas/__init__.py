@@ -6,7 +6,7 @@ from .utilities.tnames import tnames
 from .utilities.time_string import time_string
 from .utilities.time_double import time_float, time_double
 from .utilities.tcopy import tcopy
-from .analysis.tclip import tclip
+from .analysis.yclip import yclip
 from .analysis.tdeflag import tdeflag
 from .analysis.tinterpol import tinterpol
 from .analysis.subtract_average import subtract_average

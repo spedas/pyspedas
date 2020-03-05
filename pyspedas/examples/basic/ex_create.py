@@ -32,8 +32,8 @@ def ex_create():
     # Store data
     pytplot.store_data('sinx', data={'x': x, 'y': y})
 
-    # Apply tclip
-    pyspedas.tclip('sinx', -800.0, 800.0)
+    # Apply yclip
+    pyspedas.yclip('sinx', -800.0, 800.0)
 
     # Remove NaN values
     pyspedas.tdeflag('sinx-clip')

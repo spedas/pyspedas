@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 File:
-    tclip.py
+    yclip.py
 
 Description:
     Clip data and replace values with flag.
@@ -35,13 +35,13 @@ import pytplot
 import numpy as np
 
 
-def tclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
+def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
           overwrite=None):
 
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('tclip error: No pytplot names were provided.')
+        print('yclip error: No pytplot names were provided.')
         return
 
     if suffix is None:
@@ -85,4 +85,4 @@ def tclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
         except TypeError:  # data Not itterable
             print("Cannot clip data.")
 
-        print('tclip was applied to: ' + new)
+        print('yclip was applied to: ' + new)
