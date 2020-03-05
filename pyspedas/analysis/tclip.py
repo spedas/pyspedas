@@ -18,10 +18,11 @@ Parameters:
         Default is float('nan').
     new_names: str/list of str
         List of new_names for pytplot variables.
-        If '', then pytplot variables are replaced.
         If not given, then a suffix is applied.
     suffix:
         A suffix to apply. Default is '-clip'.
+    overwrite:
+        Replace the existing tplot name.
 
 Notes:
     Allowed wildcards are ? for a single character, * from multiple characters.
@@ -31,10 +32,11 @@ Notes:
 
 import pyspedas
 import pytplot
-import numpy
+import numpy as np
 
 
-def tclip(names, ymin, ymax, flag=None, new_names=None, suffix=None):
+def tclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
+          overwrite=None):
 
     old_names = pyspedas.tnames(names)
 
@@ -46,24 +48,41 @@ def tclip(names, ymin, ymax, flag=None, new_names=None, suffix=None):
         suffix = '-clip'
 
     if flag is None:
-        flag = float('nan')
+        flag = np.nan
 
-    if new_names is None:
-        n_names = [s + suffix for s in old_names]
-    elif new_names == '':
+    if overwrite is not None:
         n_names = old_names
+    elif new_names is None:
+        n_names = [s + suffix for s in old_names]
     else:
         n_names = new_names
+
+    if isinstance(n_names, str):
+        n_names = [n_names]
 
     if len(n_names) != len(old_names):
         n_names = [s + suffix for s in old_names]
 
-    for i in range(len(old_names)):
-        alldata = pytplot.get_data(old_names[i])
-        time = alldata[0]
-        data = alldata[1]
-        new_data = numpy.array(data)
-        new_data[new_data <= ymin] = flag
-        new_data[new_data >= ymax] = flag
-        pytplot.store_data(n_names[i], data={'x': time, 'y': new_data})
-        print('tclip was applied to: ' + n_names[i])
+    for i, old in enumerate(old_names):
+        new = n_names[i]
+
+        if new != old:
+            pyspedas.tcopy(old, new)
+
+        data = pytplot.data_quants[new].values
+        try:
+            for j, v in enumerate(data):
+                try:
+                    iterator = enumerate(v)
+                except TypeError:
+                    if not np.isnan(v) and (v <= ymin or v >= ymax):
+                        data[j] = flag
+                else:
+                    for k, s in iterator:
+                        if not np.isnan(s) and (s <= ymin or s >= ymax):
+                            data[j][k] = flag
+
+        except TypeError:  # data Not itterable
+            print("Cannot clip data.")
+
+        print('tclip was applied to: ' + new)
