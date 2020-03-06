@@ -13,14 +13,14 @@ Parameters:
     new_names: str/list of str
         List of new_names for pytplot variables.
         If not given, then a suffix is applied.
-    suffix:
-        A suffix to apply. Default is '-smooth'.
-    overwrite:
+    suffix: str
+        A suffix to apply. Default is '-s'.
+    overwrite: bool
         Replace the existing tplot name.
-    preserve_nans:
+    preserve_nans: bool
         If it is None, then replace NaNs.
+
 Notes:
-    Allowed wildcards are ? for a single character, * from multiple characters.
     Similar to tsmooth2 in IDL SPEDAS.
     Also, see: https://www.harrisgeospatial.com/docs/SMOOTH.html
 """
@@ -68,7 +68,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         return
 
     if suffix is None:
-        suffix = '-smooth'
+        suffix = '-s'
 
     if overwrite is not None:
         n_names = old_names
@@ -92,7 +92,6 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         data = pytplot.data_quants[new].values
 
         dim = len(data.shape)
-        print("dim=", dim)
         if dim == 1:
             data = smooth(data, width=width, preserve_nans=preserve_nans)
         else:
