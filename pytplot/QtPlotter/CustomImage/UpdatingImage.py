@@ -84,7 +84,7 @@ class UpdatingImage(pg.ImageItem):
             data_reformatted = pd.DataFrame(data_reformatted)
 
             self.x = xp
-            self.y = yp
+            self.y = np.linspace(np.log10(minbin), np.log10(maxbin), 100)
             self.data = data_reformatted
         else:
             if ytype == 'log':
