@@ -56,7 +56,7 @@ class UpdatingImage(pg.ImageItem):
             maxbin = ymax
 
             if ytype == 'log':
-                yp = np.logspace(minbin, maxbin, 100)
+                yp = np.logspace(np.log10(minbin), np.log10(maxbin), 100)
             else:
                 yp = np.linspace(minbin, maxbin, 100)
 
