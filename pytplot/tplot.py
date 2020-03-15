@@ -13,6 +13,25 @@ from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
 
+
+def webengine_hack():
+    """ This function is a hack to resolve an import error. 
+    Without this, we sometimes get:
+    ImportError: QtWebEngineWidgets must be imported before a QCoreApplication instance is created
+    """
+    from PyQt5 import QtWidgets
+    app = QtWidgets.QApplication.instance()
+    if app is not None:
+        import sip
+        app.quit()
+        sip.delete(app)
+    import sys
+    from PyQt5 import QtCore, QtWebEngineWidgets
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
+    app = QtWidgets.qApp = QtWidgets.QApplication(sys.argv)
+    return app
+
+
 if pytplot.using_graphics:
     from .QtPlotter import PyTPlot_Exporter
     from pyqtgraph.Qt import QtCore, QtGui, QtCore
@@ -24,7 +43,8 @@ if pytplot.using_graphics:
 
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
-    except:
+    except ImportError:
+        app = webengine_hack()
         from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
 
 
