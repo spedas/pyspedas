@@ -146,7 +146,10 @@ def spec_slicer(var=None, time=None, interactive=False):
                     else:
                         y_values_slice = pytplot.data_quants[name].isel(time=slice(idx_left,None))
                     y_values_avgd = np.sum(y_values_slice, axis=0)/np.float(time_diff)
-
+                    if len(y_values_avgd.shape) >= 2:
+                        y_values_avgd = np.nansum(y_values_avgd, 0)
+                    while len(y_values_avgd.shape) > 1:
+                        y_values_avgd = np.nansum(y_values_avgd, 1)
                     try:
                         # Plot data based on time we're hovering over
                         plot_data.setData(bins, y_values_avgd)
@@ -161,6 +164,8 @@ def spec_slicer(var=None, time=None, interactive=False):
                             data = np.nansum(data, 0)
                         while len(data.shape) > 1:
                             data = np.nansum(data, 1)
+                        if y_axis_log:
+                            data[data<=0] = np.NaN
                         plot_data.setData(bins, list(data))
                     except ZeroDivisionError:
                         pass

@@ -74,6 +74,8 @@ def generate_stack(name,
         # Set plot backgrounds to black if that tplot_option is set
         if pytplot.tplot_opt_glob['black_background']:
             pg.setConfigOptions(background='k')
+        else:
+            pg.setConfigOptions(background='w')
 
         # Add plot to GridPlot layout
         all_plots.append(new_fig.getfig())
