@@ -44,8 +44,11 @@ if pytplot.using_graphics:
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
     except ImportError:
-        app = webengine_hack()
-        from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
+        try:
+            from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
+        except:
+            app = webengine_hack()
+            from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
 
 
 def tplot(name,
