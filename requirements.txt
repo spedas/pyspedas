@@ -3,5 +3,5 @@ cdflib>=0.3.18
 pytplot>=1.5.4
 cdasws>=1.7.17
 netCDF4
-pyqt5==5.12
+pyqt5==5.11.2
 pyqtwebengine==5.12
