@@ -58,6 +58,9 @@ def induction(site=None,
 
     out_vars = load(site=site, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
     
+    if downloadonly == True or notplot == True:
+        return out_vars
+
     # remove values > 1000; taken from IDL SPEDAS version
     for out_var in out_vars:
         if out_var[0:7] == 'spectra':
@@ -68,4 +71,5 @@ def induction(site=None,
             options(out_var, 'spec', True)
             options(out_var, 'Colormap', 'jet')
             options(out_var, 'zlog', True)
+            
     return out_vars
