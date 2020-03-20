@@ -1,5 +1,7 @@
 
 from .load import load
+from pytplot import get_data, store_data, options
+import numpy as np
 
 def induction(site=None, 
               trange=['2019-02-01','2019-02-02'],
@@ -53,4 +55,17 @@ def induction(site=None,
         List of tplot variables created.
 
     """
-    return load(site=site, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+    out_vars = load(site=site, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    
+    # remove values > 1000; taken from IDL SPEDAS version
+    for out_var in out_vars:
+        if out_var[0:7] == 'spectra':
+            times, data, freq = get_data(out_var)
+            w_fill = np.where(data > 1000.)
+            data[w_fill] = np.nan
+            store_data(out_var, data={'x': times, 'y': data, 'v': freq})
+            options(out_var, 'spec', True)
+            options(out_var, 'Colormap', 'jet')
+            options(out_var, 'zlog', True)
+    return out_vars
