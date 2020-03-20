@@ -31,7 +31,7 @@ setup(
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['requests', 'pytplot>=1.5.4', 'cdflib>=0.3.18',
-                      'cdasws>=1.7.17', 'netCDF4'],
+                      'cdasws>=1.7.17', 'netCDF4', 'pyqt5', 'pyqtwebengine'],
     python_requires='>=3.5',
     include_package_data=True,
 )
