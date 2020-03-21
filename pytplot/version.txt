@@ -1,4 +1,9 @@
-1.5.5
+1.5.6
+
+1.5.6 Changes
+
+* Fixed qtwebengine import to only apply previous fix if the initial import fails
+* Set version of pyqt to be <=5.12.1 for now, apparently higher versions can cause issues
 
 1.5.5 Changes:
 
