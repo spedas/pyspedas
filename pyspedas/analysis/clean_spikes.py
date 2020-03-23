@@ -86,8 +86,7 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
             # print("j = ", j)
             for i in range(dim[0]):
                 # compare smoothed out values to original values
-                diff = abs((d0[i, j] - ds[i, j]) / ds[i, j])
-                if diff > thresh:
+                if abs(d0[i, j] - ds[i, j]) > thresh * abs(ds[i, j]):
                     d[i, j] = np.NaN  # for spikes, set to NaN
 
         pytplot.data_quants[new] = d

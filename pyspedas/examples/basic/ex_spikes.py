@@ -38,7 +38,7 @@ def ex_spikes():
     pytplot.data_quants[var].values = data
 
     # Clean spikes
-    clean_spikes(var)
+    clean_spikes(var, sub_avg=True)
 
     pytplot.tplot(pytplot.tplot_names())
 
@@ -47,4 +47,4 @@ def ex_spikes():
 
 
 # Run the example code
-# ex_spikes()
+ex_spikes()

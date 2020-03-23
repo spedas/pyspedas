@@ -66,13 +66,22 @@ def subtract_average(names, new_names=None, suffix=None, overwrite=None,
             pyspedas.tcopy(old, new)
 
         data = pytplot.data_quants[new].values
+        dim = data.shape
         if median:
-            data_new = data - numpy.median(data, axis=0)
+            if len(dim) == 1:
+                data -= numpy.median(data, axis=0)
+            else:
+                for i in range(dim[1]):
+                    data[:, i] -= numpy.median(data[:, i], axis=0)
             ptype = 'Median'
         else:
-            data_new = data - numpy.mean(data, axis=0)
+            if len(dim) == 1:
+                data -= numpy.mean(data, axis=0)
+            else:
+                for i in range(dim[1]):
+                    data[:, i] -= numpy.mean(data[:, i], axis=0)
             ptype = 'Mean'
 
-        pytplot.data_quants[new].values = data_new
+        pytplot.data_quants[new].values = data
 
         print('Subtract ' + ptype + ' was applied to: ' + new)
