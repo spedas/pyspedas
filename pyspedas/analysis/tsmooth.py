@@ -19,6 +19,8 @@ Parameters:
         Replace the existing tplot name.
     preserve_nans: bool
         If it is None, then replace NaNs.
+    width: 
+        Smoothing window.
 
 Notes:
     Similar to tsmooth2 in IDL SPEDAS.
@@ -91,11 +93,11 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
 
         data = pytplot.data_quants[new].values
 
-        dim = len(data.shape)
-        if dim == 1:
+        dim = data.shape
+        if len(dim) == 1:
             data = smooth(data, width=width, preserve_nans=preserve_nans)
         else:
-            for k in range(dim):
+            for k in range(dim[1]):
                 data[:, k] = smooth(data[:, k], width=width,
                                     preserve_nans=preserve_nans)
 
