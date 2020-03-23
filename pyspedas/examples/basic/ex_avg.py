@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-File:
-    ex_avg.py
+Example of avg_data.
 
-Description:
-    Example of avg_data.
+This module demonstrates how to use the function avg_data.
 
 """
 import random
@@ -14,7 +12,7 @@ from pyspedas.analysis.avg_data import avg_data
 
 
 def ex_avg():
-    # Data averaged, 5 min intervals.
+    """Load GMAG data and average over 5 min intervals."""
     # Delete any existing pytplot variables
     pytplot.del_data()
 
@@ -38,10 +36,13 @@ def ex_avg():
 
 
 def ex_avg2():
-    cy = [1009.4735, 1003.3744, 1001.9741, 1007.9487, 1008.4765, 1009.7213,
-          1001.8322, 1003.8020, 1001.1117, 1008.7127, 1004.5268, 1005.7181,
-          1005.2646, 1009.9537, 1007.4683, 1005.1428, 1001.3784, 1002.4366,
-          1007.3653, 1006.0064, 1006.9906]
+    """Load some data and find time averages.
+
+    The same example can be run on IDL to compare results.
+    """
+    cy = [1059.45, 1083.30, 1011.95, 1027.95, 1038.45, 1059.72, 1091.83,
+          1053.80, 1021.11, 1088.71, 1044.52, 1015.71, 1005.26, 1029.95,
+          1077.46, 1035.14, 1051.37, 1062.43, 1077.36, 1046.00, 1026.90]
 
     t = []
     y = []
@@ -62,11 +63,12 @@ def ex_avg2():
     d = pytplot.get_data('test-avg')
     print('time end: ', d[0])
     print('data end: ', d[1])
+    print('first 4 results:', d[1][0:4])
 
     # Return data for testing
-    # 1006.299      1003.99708    1006.7095     1004.83546
-    return d[1][0:4] 
+    # 1044.274 1059.994 1032.704 1052.812
+    return d[1][0:4]
 
 
 # Run the example code
-print( '{0:.3g}'.format(ex_avg2()) ==  '{.3g}'.format([1006.299, 1003.99708, 1006.7095, 1004.83546]))
+# ex_avg()
