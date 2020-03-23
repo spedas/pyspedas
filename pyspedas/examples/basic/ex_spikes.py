@@ -13,19 +13,19 @@ from pyspedas.analysis.clean_spikes import clean_spikes
 
 def ex_spikes():
     """Load GMAG data and average over 5 min intervals."""
-    # Delete any existing pytplot variables
+    # Delete any existing pytplot variables.
     pytplot.del_data()
 
     # Define a time rage as a list
     trange = ['2007-03-23', '2007-03-23']
 
-    # Download gmag files and load data into pytplot variables
+    # Download gmag files and load data into pytplot variables.
     sites = ['ccnv']
     var = 'thg_mag_ccnv'
     pyspedas.themis.gmag(sites=sites, trange=trange, varnames=[var])
     pytplot.tplot_options('title', 'GMAG data, thg_mag_ccnv 2007-03-23')
 
-    # Add spikes
+    # Add spikes to data.
     data = pytplot.data_quants[var].values
     dlen = len(data)
     for i in range(1, 16):
@@ -37,14 +37,15 @@ def ex_spikes():
 
     pytplot.data_quants[var].values = data
 
-    # Clean spikes
+    # Clean spikes.
     clean_spikes(var, sub_avg=True)
 
+    # Plot all variables.
     pytplot.tplot(pytplot.tplot_names())
 
     # Return 1 as indication that the example finished without problems.
     return 1
 
 
-# Run the example code
-ex_spikes()
+# Run the example code:
+# ex_spikes()
