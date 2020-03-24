@@ -153,6 +153,10 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                 except ValueError: # kludge to avoid crash in case of single energy
                     print('Problem creating: ' + prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
 
+                # only create the integral PAD variable if the user defined energy range covers more than 1 EIS energy channel
+                if these_energies.size == 1:
+                    continue
+
                 # CREATE PAD VARIABLE INTEGRATED OVER USER-DEFINED ENERGY RANGE
                 energy_range_string = str(int(flux_energies[these_energies[0]])) + '-' + str(int(flux_energies[these_energies[-1]])) + 'keV'
                 new_name = prefix + datatype_id + '_' + energy_range_string + '_' + species_id + '_' + data_units + scope_suffix + '_pad'
