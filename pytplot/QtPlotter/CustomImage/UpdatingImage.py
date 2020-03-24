@@ -140,14 +140,20 @@ class UpdatingImage(pg.ImageItem):
             xp = np.linspace(self.xmin, self.xmax, self.w)
             yp = np.linspace(self.ymin, self.ymax, self.h)
 
+            # Find the closest x values in the data for each pixel on the screen
             closest_xs = np.searchsorted(self.x, xp)
-            y_sort = np.argsort(self.y.tolist())
 
+            # Find the closest y values in the dat afor each pixel on the screen
+            y_sort = np.argsort(self.y.tolist())
             closest_ys = np.searchsorted(self.y, yp, sorter=y_sort)
+            closest_ys[closest_ys == len(self.y)] = len(self.y) - 1
             if not self.bins_inc:
                 closest_ys = np.flipud(closest_ys)
+
+            # Get the data at those x and y values
             data = self.data.iloc[closest_xs][closest_ys].values
-            
+
+            # Set the image with that data
             self.setImage(data.T, levels=(self.zmin, self.zmax))
 
             #Image can't handle NaNs, but you can set nan to the minimum and make the minimum transparent.  
