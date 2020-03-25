@@ -43,7 +43,7 @@ if pytplot.using_graphics:
 
     try:
         from PyQt5.QtWebKitWidgets import QWebView as WebView
-    except ImportError:
+    except:
         try:
             from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
         except:
