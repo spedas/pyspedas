@@ -5,7 +5,8 @@ on: [push]
 jobs:
   build:
 
-    runs-on: macos-latest
+    # runs-on: macos-latest
+    runs-on: [ubuntu-latest, macos-latest, windows-latest]
     strategy:
       matrix:
         #python-version: [3.5, 3.6, 3.7, 3.8]
@@ -62,5 +63,5 @@ jobs:
         coverage run -a -m pyspedas.maven.tests.tests
         coverage run -a -m pyspedas.goes.tests.tests
         coverage run -a -m pyspedas.mica.tests.tests
-        # coverage run -a -m pyspedas.examples.tests.tests
+        coverage run -a -m pyspedas.examples.tests.tests
         coveralls
