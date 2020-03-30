@@ -42,7 +42,7 @@ We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a 
 
 ## Installation
 
-pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI or Anaconda:
+pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
 
 ### PyPI
 
