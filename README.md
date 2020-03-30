@@ -56,7 +56,7 @@ To get started, import pyspedas and pytplot:
 
 ```python
 import pyspedas
-import pytplot
+from pytplot import tplot
 ```
 
 You can load data into tplot variables by calling `pyspedas.mission.instrument()`, e.g., 
