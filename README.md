@@ -50,18 +50,6 @@ pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspeda
 pip install pyspedas --upgrade
 ```
 
-### Anaconda
-
-```bash
-conda install -c spedas pyspedas
-```
-
-You can upgrade to the latest version using:
-
-```bash
-conda update -c spedas pyspedas
-```
-
 ## Usage
 
 To get started, import pyspedas and pytplot:
