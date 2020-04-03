@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 """
 Example of avg_data.
 

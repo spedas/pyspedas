@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 File:
     time_string.py

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 """
 Example of clean_spikes.
 

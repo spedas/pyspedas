@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 File:
     time_double.py

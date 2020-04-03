@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 """
 File:
     download_file_utilities.py

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 """
 File:
     clean_spikes.py

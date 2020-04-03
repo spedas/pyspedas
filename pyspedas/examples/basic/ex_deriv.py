@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 """
 Examples of deriv_data.
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from pytplot import get_data
 

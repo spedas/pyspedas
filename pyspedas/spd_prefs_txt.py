@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 # Locations of remote files and local directory for cdf files
 # You can change data_dir to a directory of your choice
 # If you use Linux, Mac or other unix-like system, use data_dir_unix

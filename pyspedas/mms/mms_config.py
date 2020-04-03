@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import os
 
 CONFIG = {'local_data_dir': 'pydata',
