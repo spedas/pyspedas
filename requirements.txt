@@ -1,5 +1,5 @@
 requests
 cdflib>=0.3.18
-pytplot>=1.5.4
+pytplot>=1.5.19
 cdasws>=1.7.17
 netCDF4
