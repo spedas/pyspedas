@@ -19,20 +19,28 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install dependencies (Linux)
       run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
           python -m pip install --upgrade pip
           sudo apt-get -y install xvfb
           pip install -r requirements.txt
           pip install coveralls
           python -m pyspedas.mms.tests.setup_tests
-        else
+      if: matrix.os == 'ubuntu-latest'
+    - name: Install dependencies (Windows)
+      run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
           python -m pyspedas.mms.tests.setup_tests
-        fi
+      if: matrix.os == 'windows-latest'
+    - name: Install dependencies (macOS)
+      run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install coveralls
+          python -m pyspedas.mms.tests.setup_tests
+      if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |
         pip install flake8
