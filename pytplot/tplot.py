@@ -41,16 +41,6 @@ if pytplot.using_graphics:
     from pytplot.AncillaryPlots import position_mars_2d
     from pytplot.AncillaryPlots import position_mars_3d
 
-    try:
-        from PyQt5.QtWebKitWidgets import QWebView as WebView
-    except:
-        try:
-            from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
-        except:
-            app = webengine_hack()
-            from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
-
-
 def tplot(name,
           var_label=None,
           slice=False,
@@ -198,6 +188,14 @@ def tplot(name,
             save(layout)
             return
         elif qt:
+            try:
+                from PyQt5.QtWebKitWidgets import QWebView as WebView
+            except:
+                try:
+                    from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
+                except:
+                    app = webengine_hack()
+                    from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
             available_qt_window = tplot_utilities.get_available_qt_window()
             dir_path = tempfile.gettempdir()  # send to user's temp directory
             output_file(os.path.join(dir_path, "temp.html"), mode='inline')
