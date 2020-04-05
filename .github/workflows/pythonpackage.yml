@@ -35,6 +35,7 @@ jobs:
           $HOME/miniconda/bin/conda install -c anaconda netcdf4 --yes
           $HOME/miniconda/bin/conda install -c mavensdc cdflib --yes
           $HOME/miniconda/bin/conda install keyring --yes
+      if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Linux 2)
       run: |
           python -m pip install --upgrade pip
