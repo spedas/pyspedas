@@ -39,13 +39,13 @@ def tdeflag(names, method=None, flag=None, new_names=None, suffix=None):
         print('tdeflag error: No pytplot names were provided.')
         return
 
-    if suffix is None:
+    if suffix == None:
         suffix = '-deflag'
 
-    if flag is None:
+    if flag == None:
         flag = float('nan')
 
-    if new_names is None:
+    if new_names == None:
         n_names = [s + suffix for s in old_names]
     elif new_names == '':
         n_names = old_names
