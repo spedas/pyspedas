@@ -49,13 +49,13 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
         print('tinterpol error: No pytplot names were provided.')
         return
 
-    if suffix is None:
+    if suffix == None:
         suffix = '-itrp'
 
-    if method is None:
+    if method == None:
         method = 'linear'
 
-    if (newname is None) or (len(newname) == 1 and newname[0] is None):
+    if (newname == None) or (len(newname) == 1 and newname[0] == None):
         n_names = [s + suffix for s in old_names]
     elif newname == '':
         n_names = old_names
@@ -64,7 +64,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     interp_to_data = get_data(interp_to)
 
-    if interp_to_data is None:
+    if interp_to_data == None:
         print('Error, tplot variable: ' + interp_to + ' not found.')
         return
 
