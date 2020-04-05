@@ -21,7 +21,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies (Linux)
       run: |
-          pwd
           cd $HOME
           wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
           chmod +x miniconda.sh
@@ -36,8 +35,10 @@ jobs:
           $HOME/miniconda/bin/conda install -c anaconda netcdf4 --yes
           $HOME/miniconda/bin/conda install -c mavensdc cdflib --yes
           $HOME/miniconda/bin/conda install keyring --yes
+    - name: Install dependencies (Linux 2)
+      run: |
           python -m pip install --upgrade pip
-          # pip install -r requirements.txt
+          pip install -r requirements.txt
           pip install coveralls
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest'
