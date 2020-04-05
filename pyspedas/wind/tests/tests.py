@@ -26,5 +26,20 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('E_VOLTAGE_RAD2'))
         self.assertTrue(data_exists('E_VOLTAGE_TNR'))
 
+    def test_load_orbit_data(self):
+        orb_vars = pyspedas.wind.orbit(trange=['2013-11-5', '2013-11-6'])
+        self.assertTrue(data_exists('GSM_POS'))
+        self.assertTrue(data_exists('GSM_VEL'))
+        self.assertTrue(data_exists('SUN_VECTOR'))
+        self.assertTrue(data_exists('GCI_POS'))
+        self.assertTrue(data_exists('GCI_VEL'))
+
+    def test_load_sms_data(self):
+        sms_vars = pyspedas.wind.sms()
+        self.assertTrue(data_exists('Alpha_vel'))
+        self.assertTrue(data_exists('C/O_ratio'))
+        self.assertTrue(data_exists('C_ion_temp'))
+        self.assertTrue(data_exists('O_ion_temp'))
+
 if __name__ == '__main__':
     unittest.main()
