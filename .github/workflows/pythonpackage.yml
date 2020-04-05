@@ -41,7 +41,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
-          xvfb-run python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       run: |
