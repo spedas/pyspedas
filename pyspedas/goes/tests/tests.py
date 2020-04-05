@@ -13,10 +13,10 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('BZ_1'))
 
     def test_load_mag_data(self):
-        mag_vars = pyspedas.goes.fgm(datatype='512ms')
-        self.assertTrue(data_exists('BX_1'))
-        self.assertTrue(data_exists('BY_1'))
-        self.assertTrue(data_exists('BZ_1'))
+        mag_vars = pyspedas.goes.fgm(datatype='512ms', suffix='_512')
+        self.assertTrue(data_exists('BX_1_512'))
+        self.assertTrue(data_exists('BY_1_512'))
+        self.assertTrue(data_exists('BZ_1_512'))
 
 if __name__ == '__main__':
     unittest.main()
