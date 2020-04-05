@@ -5,6 +5,25 @@ from pyspedas.utilities.data_exists import data_exists
 
 import pyspedas
 
+class GmagTestCases(unittest.TestCase):
+    def test_get_group(self):
+        from pyspedas.themis.ground.gmag import get_group
+        self.assertTrue(get_group('ccnv') == ['epo'])
+
+    def test_gmag_list(self):
+        from pyspedas.themis.ground.gmag import gmag_list
+        self.assertTrue(gmag_list()[0:5] == ['abk', 'akul', 'amd', 'amer', 'amk'])
+
+    def test_gmag_groups(self):
+        from pyspedas.themis.ground.gmag import gmag_groups
+        gmag_table = gmag_groups()
+        self.assertTrue(list(gmag_table.keys())[0:5] == ['kyoto', 'sgu', 'autx', 'ae', 'aari'])
+
+    def test_check_gmag(self):
+        from pyspedas.themis.ground.gmag import check_gmag
+        self.assertTrue(check_gmag('ccnv') == 1)
+        self.assertTrue(check_gmag('abcd') == 0)
+
 class LoadTestCases(unittest.TestCase):
     def test_load_state_data(self):
         data = pyspedas.themis.state()
