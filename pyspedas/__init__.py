@@ -1,5 +1,4 @@
 from .version import version
-from .prefs import get_spedas_prefs
 from .utilities.data_exists import data_exists
 from .utilities.tnames import tnames
 from .utilities.time_string import time_string
