@@ -134,13 +134,12 @@ def get_access():
 
 
 def get_root_data_dir():
-    import pyspedas
+    from .config import CONFIG
     # Get preferred data download location for pyspedas project
-    prefs = pyspedas.get_spedas_prefs()
-    if 'data_dir' in prefs:
-        return prefs['data_dir']
+    if 'local_data_dir' in CONFIG:
+        return CONFIG['local_data_dir']
     else:
-        raise NameError('data_dir is not found in spd_prefs.txt')
+        raise NameError('local_data_dir is not found in config.py')
 
 
 def create_pref_file(toolkit_path, download_path):
@@ -162,17 +161,7 @@ def set_new_data_root_dir():
     while not os.path.exists(valid_path):
         valid_path = input("Specified path does not exist. Enter new path: ")
     download_path = valid_path
-    print("root_data_dir set to " + download_path)
-
-    # Edit the pyspedas pref file to reflect the new data download location
-    pref_file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'spd_prefs_txt.py'))
-    with open(pref_file, 'r') as f:
-        content = f.readlines()
-    content[3] = 'data_dir = \'{}\'\n'.format(download_path)
-
-    with open(pref_file, 'w') as f:
-        for line in content:
-            f.write(line)
+    print("Location of the mvn_toolkit_prefs file set to " + download_path)
 
     # Also edit the mvn_toolkit_prefs file to reflect the new data download location
     full_path = os.path.realpath(__file__)
