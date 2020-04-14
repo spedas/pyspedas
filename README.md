@@ -108,6 +108,7 @@ help(pyspedas.themis.fgm)
 You can ask questions by creating an issue or by joining the [SPEDAS mailing list](http://spedas.org/mailman/listinfo/spedas-list_spedas.org).
 
 ## Contributing
+We welcome contributions to pySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
 
 ## Code of Conduct
 In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation. To learn more, please see our [Code of Conduct](https://github.com/spedas/pyspedas/blob/master/CODE_OF_CONDUCT.md).
