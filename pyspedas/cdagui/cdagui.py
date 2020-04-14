@@ -34,19 +34,7 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow,
                              QVBoxLayout, QLabel, QLineEdit,
                              QFileDialog, QCalendarWidget, QDialog)
 from .cdaweb import CDAWeb
-import pyspedas
-
-
-def get_default_data_dir():
-    """ Returns the default dowload directory for pyspedas.
-    """
-    data_dir = ''
-    prefs = pyspedas.get_spedas_prefs()
-    if 'data_dir' in prefs:
-        data_dir = prefs['data_dir'] + 'cdaweb'
-
-    return data_dir
-
+from .config import CONFIG
 
 def show_my_message(title, msg):
     """ Shows a message.
@@ -374,7 +362,7 @@ class GUIWidget(QWidget):
 
         label1 = QLabel("Download Directory:")
         dir1 = QLineEdit()
-        self.local_dir = get_default_data_dir()
+        self.local_dir = CONFIG['local_data_dir']
         dir1.setText(self.local_dir)
         self.dir_box = dir1
         button1 = QPushButton("Change Directory")
