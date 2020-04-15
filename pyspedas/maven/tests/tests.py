@@ -1,7 +1,15 @@
 
+import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
 from pyspedas import maven
+
+class OrbitTestCases(unittest.TestCase):
+    def test_get_merge_orbit_files(self):
+        from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files
+        get_orbit_files()
+        merge_orbit_files()
+        self.assertTrue(os.path.join(os.path.join(os.path.dirname(__file__), '..'), 'maven_orb_rec.orb'))
 
 class LoadTestCases(unittest.TestCase):
     def test_load_kp_data(self):
