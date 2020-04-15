@@ -1,4 +1,5 @@
 
+import unittest
 import pyspedas
 from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 from pytplot import get_data
@@ -20,3 +21,6 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(d[50000].tolist()[0]-16.079111468932435 <= 1e-6)
         self.assertTrue(d[50000].tolist()[1]--18.858874541698583 <= 1e-6)
         self.assertTrue(d[50000].tolist()[2]-14.75796300561617 <= 1e-6)
+
+if __name__ == '__main__':
+    unittest.main()
