@@ -32,6 +32,7 @@ The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org
 - [Solar Terrestrial Relations Observatory (STEREO)](https://github.com/spedas/pyspedas/blob/master/pyspedas/stereo/README.md)
 - [Time History of Events and Macroscale Interactions during Substorms (THEMIS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/themis/README.md)
 - [Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/twins/README.md)
+- [Ulysses](https://github.com/spedas/pyspedas/blob/master/pyspedas/ulysses/README.md)
 - [Wind](https://github.com/spedas/pyspedas/blob/master/pyspedas/wind/README.md)
 
 ## Requirements
