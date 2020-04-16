@@ -1296,6 +1296,10 @@ def fgm(*args, **kwargs):
 def scm(*args, **kwargs):
     return mms_load_scm(*args, **kwargs)
 
+@wraps(mms_load_fsm)
+def fsm(*args, **kwargs):
+    return mms_load_fsm(*args, **kwargs)
+
 @wraps(mms_load_edp)
 def edp(*args, **kwargs):
     return mms_load_edp(*args, **kwargs)
