@@ -12,9 +12,9 @@ from pyspedas import tdpwrspc
 
 ############### DSP ############### 
 class DSPLoadTestCases(unittest.TestCase):
-    def test_load_default_data(self):
-        data = mms_load_dsp(trange=['2015-08-01','2015-09-01'], datatype='swd', level='l2', data_rate='fast')
-        self.assertTrue(data_exists('mms1_dsp_swd_E12_Counts'))
+    # def test_load_default_data(self):
+    #     data = mms_load_dsp(trange=['2015-08-01','2015-09-01'], datatype='swd', level='l2', data_rate='fast')
+    #     self.assertTrue(data_exists('mms1_dsp_swd_E12_Counts'))
 
     def test_load_epsd_bpsd_data(self):
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype=['epsd', 'bpsd'], level='l2', data_rate='fast')
