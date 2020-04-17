@@ -1,14 +1,15 @@
-
 """
-File:
-    avg_data.py
+    Creates a new pytplot variable as the time average of original.
 
-Description:
-    Creates a new tplot variable that is the time average of original.
-
-Parameters:
+Parameters
+----------
     names: str/list of str
         List of pytplot names.
+    width: int
+        Number of values for the averaging window.
+        Default is 60 points (usually this means 60 seconds).
+    noremainder: boolean
+        If True, the remainter (last part of data) will not be included.
     new_names: str/list of str
         List of new_names for pytplot variables.
         If not given, then a suffix is applied.
@@ -16,11 +17,9 @@ Parameters:
         A suffix to apply. Default is '-avg'.
     overwrite: bool
         Replace the existing tplot name.
-    width: int
-        Number of values for the averaging window.
-        Default is 60 points (usually seconds).
 
-Notes:
+Notes
+-----
     Similar to avg_data.pro in IDL SPEDAS.
 """
 
@@ -30,9 +29,9 @@ import pytplot
 from pytplot import store_data
 
 
-def avg_data(names, width=60, median=None,
+def avg_data(names, width=60, noremainder=True,
              new_names=None, suffix=None, overwrite=None):
-
+    """Get a new tplot variable with averaged data."""
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
@@ -57,24 +56,38 @@ def avg_data(names, width=60, median=None,
 
     for i, old in enumerate(old_names):
         new = n_names[i]
-        tmp = new + '_tmp_avg_data'
 
-        # make sure that the end time is included
-        time = pytplot.data_quants[old].time.values
-        nt = time[::width]
-        np.append(nt, time[-1] + 1.0)
+        d = pytplot.data_quants[old].copy()
+        data = d.values
+        time = d.time.values
 
-        # group values
-        g = pytplot.data_quants[old].groupby_bins('time', nt).mean()
-        # new times are midpoints
-        nts = nt[:len(g.values)] + (width/2)
-        store_data(tmp, data={'x': nts, 'y': g.values})
+        dim = data.shape
+        dim0 = dim[0]
+        if len(dim) < 2:
+            dim1 = 1
+        else:
+            dim1 = dim[1]
+
+        new_data = []
+        new_time = []
+        for i in range(0, dim0, width):
+            last = (i + width) if (i + width) < dim0 else dim0
+            idx = int(i + width/2)
+            if idx > dim0-1:
+                if noremainder:  # Skip the last part of data
+                    continue
+                idx = dim0 - 1  # Include the last part of data
+            new_time.append(time[idx])
+            if dim1 < 2:
+                nd0 = np.average(data[i:last])
+            else:
+                nd0 = []
+                for j in range(dim1):
+                    nd0.append(np.average(data[i:last, j]))
+            new_data.append(nd0)
+
+        store_data(new, data={'x': new_time, 'y': new_data})
         # copy attributes
-        pytplot.data_quants[tmp].attrs = pytplot.data_quants[old].attrs.copy()
-        pytplot.data_quants[tmp].name = tmp
-        pytplot.data_quants[new] = pytplot.data_quants[tmp].copy()
-        pytplot.data_quants[new].name = new
-        # remove temp data
-        del pytplot.data_quants[tmp]
+        pytplot.data_quants[new].attrs = d.attrs.copy()
 
         print('avg_data was applied to: ' + new)

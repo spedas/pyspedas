@@ -1,4 +1,3 @@
-
 """
 Example of avg_data.
 
@@ -36,7 +35,7 @@ def ex_avg():
 
 
 def ex_avg2():
-    """Load some data and find time averages.
+    """Load some data and find time average.
 
     The same example can be run on IDL to compare results.
     """
@@ -56,17 +55,18 @@ def ex_avg2():
     print("y: ", str(y[0:4]))
     pytplot.store_data('test', data={'x': t, 'y': y})
     d0 = pytplot.get_data('test')
-    print('time start: ', d0[0])
-    print('data start: ', d0[1])
+    print('time before: ', d0[0])
+    print('data before: ', d0[1])
 
     avg_data('test', 5)
     d = pytplot.get_data('test-avg')
-    print('time end: ', d[0])
-    print('data end: ', d[1])
+    print('time after: ', d[0])
+    print('data after: ', d[1])
     print('first 4 results:', d[1][0:4])
 
     # Return data for testing
-    # 1044.274 1059.994 1032.704 1052.812
+    # 1044.22 1063.034 1034.58 1054.46
+
     return d[1][0:4]
 
 
