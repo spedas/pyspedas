@@ -44,35 +44,6 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
-        coverage run -a -m pyspedas.mms.tests.load_routine_tests
-        coverage run -a -m pyspedas.mms.tests.feeps
-        coverage run -a -m pyspedas.mms.tests.eis
-        coverage run -a -m pyspedas.mms.tests.file_filter
-        coverage run -a -m pyspedas.dscovr.tests.tests
-        coverage run -a -m pyspedas.utilities.tests.download_tests
-        coverage run -a -m pyspedas.utilities.tests.misc_tests
-        coverage run -a -m pyspedas.cluster.tests.tests
-        coverage run -a -m pyspedas.csswe.tests.tests
-        coverage run -a -m pyspedas.ace.tests.tests
-        coverage run -a -m pyspedas.equator_s.tests.tests
-        coverage run -a -m pyspedas.image.tests.tests
-        coverage run -a -m pyspedas.psp.tests.tests
-        coverage run -a -m pyspedas.rbsp.tests.tests
-        coverage run -a -m pyspedas.stereo.tests.tests
-        coverage run -a -m pyspedas.twins.tests.tests
-        coverage run -a -m pyspedas.wind.tests.tests
-        coverage run -a -m pyspedas.mms.tests.curlometer
-        coverage run -a -m pyspedas.poes.tests.tests
-        coverage run -a -m pyspedas.polar.tests.tests
-        coverage run -a -m pyspedas.geotail.tests.tests
-        coverage run -a -m pyspedas.analysis.tests.tests
-        coverage run -a -m pyspedas.fast.tests.tests
-        coverage run -a -m pyspedas.omni.tests.tests
-        coverage run -a -m pyspedas.themis.tests.tests
-        coverage run -a -m pyspedas.maven.tests.tests
-        coverage run -a -m pyspedas.goes.tests.tests
-        coverage run -a -m pyspedas.mica.tests.tests
-        coverage run -a -m pyspedas.utilities.tests.cotrans
-        # coverage run -a -m pyspedas.ulysses.tests.tests
+        coverage run -a -m pyspedas.ulysses.tests.tests
         # coverage run -a -m pyspedas.examples.tests.tests
         coveralls
