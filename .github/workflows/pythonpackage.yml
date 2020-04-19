@@ -73,6 +73,6 @@ jobs:
         coverage run -a -m pyspedas.goes.tests.tests
         coverage run -a -m pyspedas.mica.tests.tests
         coverage run -a -m pyspedas.utilities.tests.cotrans
-        coverage run -a -m pyspedas.ulysses.tests.tests
+        # coverage run -a -m pyspedas.ulysses.tests.tests
         # coverage run -a -m pyspedas.examples.tests.tests
         coveralls
