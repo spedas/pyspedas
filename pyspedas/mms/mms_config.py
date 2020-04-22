@@ -10,7 +10,11 @@ CONFIG = {'local_data_dir': 'pydata',
 
 # override local data directory with environment variables
 if os.environ.get('SPEDAS_DATA_DIR'):
-	CONFIG['local_data_dir'] = os.sep.join([os.environ['SPEDAS_DATA_DIR'], 'mms'])
+    CONFIG['local_data_dir'] = os.sep.join([os.environ['SPEDAS_DATA_DIR'], 'mms'])
 
 if os.environ.get('MMS_DATA_DIR'):
-	CONFIG['local_data_dir'] = os.environ['MMS_DATA_DIR']
+    CONFIG['local_data_dir'] = os.environ['MMS_DATA_DIR']
+
+
+if os.environ.get('MMS_MIRROR_DATA_DIR'):
+    CONFIG['mirror_data_dir'] = os.environ['MMS_MIRROR_DATA_DIR']
