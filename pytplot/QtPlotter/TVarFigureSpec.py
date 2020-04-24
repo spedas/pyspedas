@@ -234,13 +234,20 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
             #TODO: This currently grabs only the first row of the specframe,
             # if it is time varying this will probably give incorrect Y values in the crosshair
-            speclength = len(specframe.iloc[0])
-            y = np.asarray((specframe.iloc[0, 0:speclength - 1]))
+            if len(specframe) > 1:
+                try:
+                    speclength = len(specframe.iloc[x_argmin])
+                    y = np.asarray((specframe.iloc[x_argmin, 0:speclength - 1]))
+                except:
+                    speclength = len(specframe.iloc[0])
+                    y = np.asarray((specframe.iloc[0, 0:speclength - 1]))
+            else:
+                speclength = len(specframe.iloc[0])
+                y = np.asarray((specframe.iloc[0, 0:speclength - 1]))
             y_sub = abs(y - index_y * np.ones(y.size))
             y_argmin = np.nanargmin(y_sub)
             y_closest = y[y_argmin]
-            index = int((np.nonzero(y == y_closest))[0])
-            dp = dataframe[index][x_closest]
+            data_point = dataframe[y_argmin][x_closest]
 
             # add crosshairs
             # Associate mouse position with current plot you're mousing over.
@@ -261,7 +268,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
                 # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
                 self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', time)
                 self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', str(y_closest))
-                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', str(dp))
+                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', str(data_point))
 
         else:
             self.hoverlegend.setVisible(False)

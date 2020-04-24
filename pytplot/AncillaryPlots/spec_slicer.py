@@ -166,7 +166,15 @@ def spec_slicer(var=None, time=None, interactive=False):
                             data = np.nansum(data, 1)
                         if y_axis_log:
                             data[data<=0] = np.NaN
-                        plot_data.setData(bins, list(data))
+                        #Create a Mask for Nan Values
+                        locations_where_nan = np.argwhere(np.isnan(data.values))
+                        if len(locations_where_nan) > 0:
+                            nanmask = np.ones(data.values.shape,dtype=bool)
+                            nanmask[locations_where_nan] = False
+                            nanmask[~locations_where_nan] = True
+                            plot_data.setData(bins[nanmask], list(data.values[nanmask]))
+                        else:
+                            plot_data.setData(bins, list(data.values))
                     except ZeroDivisionError:
                         pass
 

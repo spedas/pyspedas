@@ -1,4 +1,8 @@
-1.6.0
+1.6.1
+
+1.6.1 Changes
+* Fixed some issues with the cursor movement not displaying correctly
+* Fixed issues with nan data values in the spec slicing code causing the slices to not display
 
 1.5.6 Changes
 
