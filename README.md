@@ -13,6 +13,7 @@ The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org
 
 ## Projects Supported
 - [Advanced Composition Explorer (ACE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/ace/README.md)
+- [Arase (ERG)](https://github.com/spedas/pyspedas/blob/master/pyspedas/erg/README.md)
 - [Cluster](https://github.com/spedas/pyspedas/blob/master/pyspedas/cluster/README.md)
 - [Colorado Student Space Weather Experiment (CSSWE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/csswe/README.md)
 - [Deep Space Climate Observatory (DSCOVR)](https://github.com/spedas/pyspedas/blob/master/pyspedas/dscovr/README.md)
