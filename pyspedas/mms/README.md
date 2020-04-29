@@ -5,6 +5,7 @@ The routines in this module can be used to load data from the Magnetospheric Mul
 ### Instruments
 - Fluxgate Magnetometer (FGM)
 - Search-coil Magnetometer (SCM)
+- Level 3 FGM+SCM Data (FSM)
 - Electric field Double Probe (EDP)
 - Electron Drift Instrument (EDI)
 - Fast Plasma Investigation (FPI)
@@ -22,7 +23,8 @@ The routines in this module can be used to load data from the Magnetospheric Mul
 - Data files can be downloaded without loading into tplot variables by setting the `download_only` option in `mms_config.py`
 - List available data files (without downloading) with the `available` keyword
 - Data can be loaded from disk without internet connectivity 
-- Data can be loaded from a network mirror by setting the `mirror_data_dir` option in `mms_config.py` (and using the `no_update` keyword, or by setting the `no_download` option to `True` in `mms_config.py`)
+- Data can be loaded from a network mirror by setting the `MMS_MIRROR_DATA_DIR` environment variable, or the `mirror_data_dir` option in `mms_config.py` (and using the `no_update` keyword, or by setting the `no_download` option to `True` in `mms_config.py`)
+- The data can be loaded from the Space Physics Data Facility (SPDF) instead of the Science Data Center (SDC) by setting the `spdf` keyword to `True`
 - Data files are stored in temporary directories until each download completes, to avoid partial downloads of files due to internet connectivity issues
 - Local data directory can be specified by the MMS_DATA_DIR environment variable, or by the `local_data_dir` option in `mms_config.py`
 - Local data paths match those at the SDC, as well as those used by IDL SPEDAS
@@ -45,7 +47,8 @@ The routines in this module can be used to load data from the Magnetospheric Mul
 - The load routines accept a wide range of time range formats via the `trange` keyword
 - The load routines correctly handle access to all burst-mode data, even when small time ranges are requested
 - The load routines can be imported from `pyspedas` using the IDL procedure names (e.g., `from pyspedas import mms_load_fgm`)
-- Crib sheets can be found in the `examples` folder
+- MMS orbits can be plotted using the `pyspedas.mms_orbit_plot` function
+- div(B), curl(B), total current, perpendicular and parallel currents can be calculated using the curlometer technique using `pyspedas.mms.curlometer`
 - Cross platform: tested on Windows, macOS and Linux
 
 ### Examples
