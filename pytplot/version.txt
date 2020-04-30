@@ -1,4 +1,7 @@
-1.6.1
+1.6.4
+
+1.6.4 Changes
+* Fixed an issue where sts_to_tplot wasn't merging with previous calls
 
 1.6.1 Changes
 * Fixed some issues with the cursor movement not displaying correctly

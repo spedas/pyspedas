@@ -5,10 +5,12 @@
 
 import pytplot
 import pandas as pd
+import copy
+import xarray as xr
 
 #JOIN TVARS
 #join TVars into single TVar with multiple columns
-def join_vec(tvars,new_tvar=None):
+def join_vec(tvars,new_tvar=None, merge=False):
     """
     Joins 1D tplot variables into one tplot variable.
 
@@ -20,6 +22,8 @@ def join_vec(tvars,new_tvar=None):
             Name of tplot variables to join together
         new_tvar : str, optional
             The name of the new tplot variable. If not specified, a name will be assigned.
+        merge : bool, optional
+            Whether or not to merge the created variable into an older variable
 
     Returns:
         None
@@ -37,6 +41,10 @@ def join_vec(tvars,new_tvar=None):
     if new_tvar is None:
         new_tvar = '-'.join(tvars)+'_joined'
 
+    to_merge=False
+    if new_tvar in pytplot.data_quants.keys() and merge:
+        prev_data_quant = pytplot.data_quants[new_tvar]
+        to_merge = True
 
     for i,val in enumerate(tvars):
         if i == 0:
@@ -56,4 +64,11 @@ def join_vec(tvars,new_tvar=None):
         pytplot.store_data(new_tvar,data={'x': df.index,'y': df.values})
     else:
         pytplot.store_data(new_tvar, data={'x': df.index, 'y': df.values, 'v': s.values})
+
+    if to_merge is True:
+        cur_data_quant = pytplot.data_quants[new_tvar]
+        plot_options = copy.deepcopy(pytplot.data_quants[new_tvar].attrs['plot_options'])
+        pytplot.data_quants[new_tvar] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
+        pytplot.data_quants[new_tvar].attrs['plot_options'] = plot_options
+
     return
