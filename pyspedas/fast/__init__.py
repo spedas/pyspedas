@@ -40,6 +40,15 @@ def dcb(trange=['2001-09-05', '2001-09-06'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -84,6 +93,15 @@ def acb(trange=['1998-01-05', '1998-01-06'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -130,6 +148,15 @@ def esa(trange=['1998-09-05', '1998-09-06'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -174,6 +201,15 @@ def teams(trange=['1998-09-05', '1998-09-06'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.

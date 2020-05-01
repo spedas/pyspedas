@@ -40,6 +40,15 @@ def mag(trange=['2013-11-5', '2013-11-6'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -85,6 +94,15 @@ def plastic(trange=['2013-11-5', '2013-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
