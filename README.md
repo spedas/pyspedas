@@ -117,6 +117,8 @@ In the interest of fostering an open and welcoming environment, we as contributo
 
 ## Additional Information
 
+For examples of pyspedas, see: https://github.com/spedas/pyspedas_examples
+
 For pytplot, see: https://github.com/MAVENSDC/PyTplot
 
 For cdflib, see: https://github.com/MAVENSDC/cdflib
