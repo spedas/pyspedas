@@ -40,6 +40,15 @@ def mag(trange=['2018-10-16', '2018-10-17'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -85,6 +94,15 @@ def fc(trange=['2018-10-16', '2018-10-17'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -125,6 +143,15 @@ def orb(trange=['2018-10-16', '2018-10-17'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -167,6 +194,15 @@ def att(trange=['2018-10-16', '2018-10-17'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -186,6 +222,12 @@ def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False, suffix='', no_u
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+            
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.

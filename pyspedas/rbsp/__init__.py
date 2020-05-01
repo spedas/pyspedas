@@ -23,6 +23,15 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
+        probe: str or list of str
+            Spacecraft probe name ('a' or 'b'); default: a
+
+        cadence: str
+            Data cadence (default: 4sec)
+
+        coord: str
+            Data coordinate system (default: sm)
+
         datatype: str
             Data type; Valid options:
 
@@ -42,6 +51,15 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -69,8 +87,11 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
+        probe: str or list of str
+            Spacecraft probe name ('a' or 'b'); default: a
+
         datatype: str
-            Data type; Valid options:
+            Data type (default: tofxeh); Valid options:
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -88,6 +109,15 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -115,6 +145,9 @@ def efw(trange=['2015-11-5', '2015-11-6'],
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
+        probe: str or list of str
+            Spacecraft probe name ('a' or 'b'); default: a
+
         datatype: str
             Data type; Valid options:
 
@@ -134,6 +167,15 @@ def efw(trange=['2015-11-5', '2015-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -162,6 +204,9 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
+        probe: str or list of str
+            Spacecraft probe name ('a' or 'b'); default: a
+
         datatype: str
             Data type; Valid options:
 
@@ -181,6 +226,15 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -209,6 +263,9 @@ def hope(trange=['2015-11-5', '2015-11-6'],
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
+        probe: str or list of str
+            Spacecraft probe name ('a' or 'b'); default: a
+
         datatype: str
             Data type; Valid options:
 
@@ -228,6 +285,15 @@ def hope(trange=['2015-11-5', '2015-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -256,6 +322,9 @@ def rept(trange=['2015-11-5', '2015-11-6'],
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
+        probe: str or list of str
+            Spacecraft probe name ('a' or 'b'); default: a
+
         datatype: str
             Data type; Valid options:
 
@@ -275,6 +344,15 @@ def rept(trange=['2015-11-5', '2015-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -302,6 +380,9 @@ def rps(trange=['2015-11-5', '2015-11-6'],
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
+        probe: str or list of str
+            Spacecraft probe name ('a' or 'b'); default: a
+
         datatype: str
             Data type; Valid options:
 
@@ -321,6 +402,15 @@ def rps(trange=['2015-11-5', '2015-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
