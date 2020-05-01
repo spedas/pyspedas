@@ -39,6 +39,15 @@ def mam(trange=['1998-04-06', '1998-04-07'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -82,6 +91,15 @@ def edi(trange=['1998-04-06', '1998-04-07'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -129,6 +147,15 @@ def esa(trange=['1998-04-06', '1998-04-07'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -172,6 +199,15 @@ def epi(trange=['1998-04-06', '1998-04-07'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
@@ -217,6 +253,15 @@ def ici(trange=['1998-04-06', '1998-04-07'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -261,6 +306,15 @@ def pcd(trange=['1998-04-06', '1998-04-07'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
     Returns:
         List of tplot variables created.
 
@@ -304,6 +358,15 @@ def sfd(trange=['1998-01-26', '1998-01-27'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
 
     Returns:
         List of tplot variables created.
