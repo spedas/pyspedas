@@ -37,6 +37,9 @@ def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'opl
         else:
             datatypes = ['*_'+datatypes]
 
+    if not isinstance(probe, str):
+        probe = str(probe)
+
     az_times, start_az = get_data('mms'+probe+'_hpca_start_azimuth')
 
     spin_starts = np.argwhere(start_az == 0)
