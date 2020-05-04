@@ -1,8 +1,4 @@
-"""A setuptools based setup module.
-See:
-https://packaging.python.org/en/latest/distributing.html
-https://github.com/pypa/sampleproject
-"""
+"""A setuptools based setup module."""
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
@@ -11,13 +7,14 @@ from codecs import open
 
 setup(
     name='pyspedas',
-    version='0.9.27',
-    description='Python Space Physics Environment Data Analysis Software (SPEDAS)',
+    version='0.9.28',
+    description='Python Space Physics Environment Data Analysis\
+        Software (SPEDAS)',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/spedas/pyspedas',
     author='Nick Hatzigeorgiu, Eric Grimes',
-    author_email='nikos@berkeley.edu',
+    author_email='nikos@berkeley.edu, egrimes@igpp.ucla.edu',
     license='MIT',
     classifiers=['Development Status :: 4 - Beta',
                  'Intended Audience :: Science/Research',
@@ -29,8 +26,8 @@ setup(
     project_urls={'Information': 'http://spedas.org/wiki/',
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    install_requires=['requests', 'pytplot>=1.6.3', 'cdflib>=0.3.18',
-                      'cdasws>=1.7.17', 'netCDF4'],
+    install_requires=['requests', 'pytplot>=1.6.4', 'cdflib>=0.3.18',
+                      'cdasws>=1.7.17', 'netCDF4', 'pywavelets'],
     python_requires='>=3.5',
     include_package_data=True,
 )
