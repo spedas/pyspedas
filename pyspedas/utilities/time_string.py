@@ -1,32 +1,38 @@
 """
-File:
-    time_string.py
+Transform datetimes from decimal to string.
 
-Description:
-    Transforms datetimes from decimal to string.
+Examples
+--------
+time_string()
+time_string([1498780799.1234, 1512087321.1234])
 
-Parameters:
-    float_time: float/list of floats
-    If None, then uses Now.
+Notes
+-----
+Compare to https://www.epochconverter.com/
 
-Returns:
-    str/list of str
-    A time string ('YYYY-MM-DD HH:MM:SS.NNN') .
-
-Examples:
-    time_string()
-    time_string(None, '%Y-%m-%d')
-    time_string([1498780799.1234, 1512087321.1234])
-
-Notes:
-    Test with https://www.epochconverter.com/
 """
-
 from datetime import datetime
 
 
 def time_string_one(float_time=None, fmt=None):
+    """
+    Transform a single float daytime value to string.
 
+    Parameters
+    ----------
+    float_time : float, optional
+        Input time.
+        The default is None, which returns the time now.
+    fmt : float, optional
+        Time format.
+        The default is None, which uses '%Y-%m-%d %H:%M:%S.%f'.
+
+    Returns
+    -------
+    str
+        Datetime as string.
+
+    """
     if fmt is None:
         fmt = '%Y-%m-%d %H:%M:%S.%f'
 
@@ -39,7 +45,24 @@ def time_string_one(float_time=None, fmt=None):
 
 
 def time_string(float_time=None, fmt=None):
+    """
+    Transform a list of float daytime values to a list of strings.
 
+    Parameters
+    ----------
+    float_time: float/list of floats, optional
+        Input time.
+        The default is None, which returns the time now.
+    fmt: str, optional
+        Time format.
+        The default is None, which uses '%Y-%m-%d %H:%M:%S.%f'.
+
+    Returns
+    -------
+    list of str
+        Datetimes as string.
+
+    """
     if float_time is None:
         return time_string_one(None, fmt)
     else:
