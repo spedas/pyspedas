@@ -1,14 +1,9 @@
-"""
-Compute power spectra for data.
 
-Notes
------
-Similar to dpwrspc.pro in IDL SPEDAS.
-
-"""
 import numpy as np
 
+def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3, nohanning=False, noline=False, notperhz=False, notmvariance=False, tm_sensitivity=None):
 
+<<<<<<< HEAD
 def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
             nohanning=False, noline=False, notperhz=False, notmvariance=False,
             tm_sensitivity=None):
@@ -59,16 +54,19 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
         The power spectrum, (units of quantity)^2/frequency_units.
 
     """
+=======
+>>>>>>> parent of 0b7e959... Changed comments, style and documentation.
     if nohanning is False:
         window = np.hanning(nboxpoints)
 
     # remove NaNs from the data
-    where_finite = np.where(np.isnan(quantity) is False)
+    where_finite = np.where(np.isnan(quantity)==False)
 
     quantity2process = quantity[where_finite[0]]
     times2process = time[where_finite[0]]
     nboxpnts = nboxpoints
     nshiftpnts = nshiftpoints
+
 
     totalpoints = len(times2process)
     nspectra = int((totalpoints-nboxpnts/2.)/nshiftpnts)
@@ -114,24 +112,23 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
                 line = poly1d_fn(t)
                 x = x - line
 
+
             if nohanning is False:
                 x = x*window
 
             bign = nboxpnts
 
             if bign % 2 != 0:
-                print('needs an even number of data points, \
-                      dropping last point...')
+                print('needs an even number of data points, dropping last point...')
                 t = t[0:bign-1]
                 x = x[0:bign-1]
                 bign = bign - 1
 
             n_tm = len(t)
 
-            # time variance can break power spectrum,
-            # this keyword skips over those gaps
+            # time variance can break power spectrum, this keyword skips over those gaps
             if notmvariance and n_tm > 1:
-                if tm_sensitivity is not None:
+                if tm_sensitivity != None:
                     tmsn = tm_sensitivity
                 else:
                     tmsn = 100.0
@@ -147,8 +144,7 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
 
                     continue
 
-            # following Numerical recipes in Fortran, p. 421, sort of...
-            # (actually following the IDL implementation)
+            # following Numerical recipes in Fortran, p. 421, sort of... (actually following the IDL implementation)
             k = np.array(range(int(bign/2)+1))
             tres = np.median(t[1:len(t)] - t[0:len(t)-1])
             fk = k/(bign*tres)
@@ -178,9 +174,10 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
                 power = power+pwr[iarray*binsize+i+1]
 
             if notperhz is False:
-                power = power/dfreq
+                power=power/dfreq
 
             dps[nthspectrum, :] = power
             fdps[nthspectrum, :] = freqcenter
 
     return (tdps, fdps, dps)
+
