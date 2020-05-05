@@ -123,6 +123,10 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             If True, don't remove flagged data (flagged data are set to NaNs by
             default, this keyword turns this off)
 
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
+
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
             
@@ -237,6 +241,10 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
+
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
             
@@ -336,6 +344,10 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
+
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
             
@@ -425,6 +437,10 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
+
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
@@ -552,6 +568,10 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
+
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
             
@@ -641,6 +661,10 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
+
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
@@ -755,6 +779,10 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
+
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
@@ -928,6 +956,10 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
+
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
@@ -1014,6 +1046,10 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
+
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
@@ -1103,6 +1139,10 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
+
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
@@ -1190,6 +1230,10 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
+
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
@@ -1267,6 +1311,10 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
+        always_prompt: bool
+            Set this keyword to always prompt for the user's username and password;
+            useful if you accidently save an incorrect password, or if your SDC password has changed
+            
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
