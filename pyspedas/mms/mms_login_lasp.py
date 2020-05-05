@@ -10,7 +10,7 @@ import warnings
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_login_lasp():
+def mms_login_lasp(always_prompt=False):
     '''
     This function logs the user into the SDC and returns a tuple with: (requests.Session object, username)
     '''
@@ -35,7 +35,7 @@ def mms_login_lasp():
     except:
         pass
 
-    if saved_auth is None:
+    if saved_auth is None or always_prompt == True:
         user = input('SDC username (blank for public access): ')
         if user != '': 
             passwd = getpass() 

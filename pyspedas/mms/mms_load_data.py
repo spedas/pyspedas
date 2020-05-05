@@ -23,7 +23,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
     instrument='fgm', datatype='', varformat=None, prefix='', suffix='', get_support_data=False, time_clip=False, 
     no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
-    major_version=False, min_version=None, cdf_version=None, spdf=False):
+    major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False):
     """
     This function loads MMS data into pyTplot variables
 
@@ -66,7 +66,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     user = None
     if not no_download:
-        sdc_session, user = mms_login_lasp()
+        sdc_session, user = mms_login_lasp(always_prompt=always_prompt)
 
     out_files = []
     available_files = []
