@@ -1,29 +1,30 @@
 """
-File:
-    tnames.py
+Find all pytplot names that follow a pattern that may contain a wildcard.
 
-Description:
-    Finds all pytplot names that follow a pattern that may contain a wildcard.
+Notes
+-----
+Allowed wildcards are ? for a single character, * from multiple characters.
 
-Returns:
-    list of str
-    A list of tplot names.
-
-Parameters:
-    pattern: str/list of str
-        List of strings with names and/or patterns.
-        If not given, it returns all pytplot names.
-
-Notes:
-    Allowed wildcards are ? for a single character, * from multiple characters.
 """
-
 import fnmatch
 import pyspedas
 
 
 def tnames(pattern=None):
+    """
+    Find pytplot names.
 
+    Parameters
+    ----------
+    pattern : str, optional
+        Patern to search for. The default is None, which returns all names.
+
+    Returns
+    -------
+    name_list : list of str
+        List of pytplot variables.
+
+    """
     name_list = list()
     all_names = pyspedas.tplot_names()
 
