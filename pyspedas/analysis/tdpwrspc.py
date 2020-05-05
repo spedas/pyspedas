@@ -31,10 +31,10 @@ def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128,
         The number of points to shift for each spectrum.
         The default is 128.
     binsize: int, optional
-        Size for binning of the data along the frequency domain. 
+        Size for binning of the data along the frequency domain.
         The default is 3.
     nohanning: bool, optional
-        If True, no hanning window is applied to the input. 
+        If True, no hanning window is applied to the input.
         The default is False.
     noline: bool, optional
         If True, no straight line is subtracted.
@@ -43,7 +43,7 @@ def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128,
         If True, the output units are the square of the input units.
         The default is False.
     notmvariance: bool, optional
-        If True, replace output spectrum for any windows that have variable 
+        If True, replace output spectrum for any windows that have variable.
         cadence with NaNs.
         The default is False.
 

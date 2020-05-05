@@ -12,9 +12,9 @@ import numpy as np
 def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
             nohanning=False, noline=False, notperhz=False, notmvariance=False,
             tm_sensitivity=None):
-    """    
+    """
     Compute power spectra.
-        
+
     Parameters
     ----------
     time: list of float
@@ -28,10 +28,10 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
         The number of points to shift for each spectrum.
         The default is 128.
     binsize: int, optional
-        Size for binning of the data along the frequency domain. 
+        Size for binning of the data along the frequency domain.
         The default is 3.
     nohanning: bool, optional
-        If True, no hanning window is applied to the input. 
+        If True, no hanning window is applied to the input.
         The default is False.
     noline: bool, optional
         If True, no straight line is subtracted.
@@ -40,12 +40,12 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
         If True, the output units are the square of the input units.
         The default is False.
     notmvariance: bool, optional
-        If True, replace output spectrum for any windows that have variable 
+        If True, replace output spectrum for any windows that have variable
         cadence with NaNs.
         The default is False.
     tm_sensitivity: float, optional
         If noTmVariance is set, this number controls how much of a dt anomaly
-        is accepted. 
+        is accepted.
         The default is None.
 
     Returns
@@ -157,9 +157,7 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
 
             pwr = np.zeros(int(bign/2+1))
             pwr[0] = xs2[0]/bign**2
-            pwr[1:int(bign/2)] = (xs2[1:int(bign/2)] +
-                                  xs2[bign-(1+np.array(range(
-                                      int(bign/2-1))))])/bign**2
+            pwr[1:int(bign/2)] = (xs2[1:int(bign/2)] + xs2[bign-(1+np.array(range(int(bign/2-1))))])/bign**2
             pwr[int(bign/2)] = xs2[int(bign/2)]/bign**2
 
             if nohanning is False:
