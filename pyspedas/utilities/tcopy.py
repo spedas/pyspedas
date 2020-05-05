@@ -1,32 +1,29 @@
 """
-Creates a deep copy of a pytplot variable, with a new name.
+File:
+    tcopy.py
 
-Notes
------
-Allowed wildcards are ? for a single character, * from multiple characters.
+Description:
+    Creates a deep copy of a tplot_variable, with a new name.
 
+Parameters:
+    names_in: str/list of str
+        List of pytplot names.
+    names_out: str/list of str
+        List of pytplot names.
+        If it is not provided, then suffix '-copy' is used.
+    suffix:
+        A suffix to apply. Default is '-copy'.
+
+Notes:
+    Allowed wildcards are ? for a single character, * from multiple characters.
 """
+
 import pytplot
 import pyspedas
 import copy
 
 
 def tcopy_one(name_in, name_out):
-    """
-    Copy a single pytplot variable.
-
-    Parameters
-    ----------
-    name_in : str
-        Pytplot name in.
-    name_out : str
-        Pytplot name out.
-
-    Returns
-    -------
-    None.
-
-    """
     # Copies one pytplot variable
     tvar_old = pytplot.data_quants[name_in]
     tvar_new = copy.deepcopy(tvar_old)
@@ -36,23 +33,7 @@ def tcopy_one(name_in, name_out):
 
 
 def tcopy(names_in, names_out=None, suffix=None):
-    """
-    Copy a list of pytplot variables.
 
-    Parameters
-    ----------
-    names_in : str/list of str
-        List of pytplot names.
-    names_out : str/list of str, optional
-        List of pytplot names. The default is None.
-    suffix : str, optional
-        Suffix to apply to names_in. The default is '-copy'.
-
-    Returns
-    -------
-    None.
-
-    """
     names_in = pyspedas.tnames(names_in)
     if len(names_in) < 1:
         print('tcopy error: No pytplot variables found.')

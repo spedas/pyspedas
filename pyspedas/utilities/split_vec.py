@@ -3,8 +3,8 @@ Take a stored vector like 'Vp' and create stored vectors 'Vp_x','Vp_y','Vp_z'.
 
 Notes
 -----
-Similar to SPEDAS split_vec function.
-Pytplot contains a similar function but currently it fails for THEMIS gmag
+    Similar to SPEDAS split_vec function.
+    Pytplot contains a similar function but currently it fails for THEMIS gmag
     data.
 
 """
@@ -18,18 +18,17 @@ def split_vec(names, new_names=None, suffix=None):
 
     Parameters
     ----------
-    names: str/list of str
-        List of pytplot names.
-    new_names: str/list of str
-        List of new_names for pytplot variables.
-        If not given, then a suffix is applied.
-    suffix: str
-        A suffix to apply. Default is ['_x', '_y', '_z'].
+        names: str/list of str
+            List of pytplot names.
+        new_names: str/list of str
+            List of new_names for pytplot variables.
+            If not given, then a suffix is applied.
+        suffix: str
+            A suffix to apply. Default is ['_x', '_y', '_z'].
 
     Returns
     -------
-    A list of pytplot variables.
-
+        A list of pytplot variables.
     """
     old_names = pyspedas.tnames(names)
     allnewnames = []
@@ -88,5 +87,4 @@ def split_vec(names, new_names=None, suffix=None):
                 allnewnames.append(newname)
 
             print('split_vec was applied to: ' + old)
-
     return(allnewnames)
