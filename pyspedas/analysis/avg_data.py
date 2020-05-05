@@ -1,28 +1,11 @@
 """
-    Creates a new pytplot variable as the time average of original.
-
-Parameters
-----------
-    names: str/list of str
-        List of pytplot names.
-    width: int
-        Number of values for the averaging window.
-        Default is 60 points (usually this means 60 seconds).
-    noremainder: boolean
-        If True, the remainter (last part of data) will not be included.
-    new_names: str/list of str
-        List of new_names for pytplot variables.
-        If not given, then a suffix is applied.
-    suffix: str
-        A suffix to apply. Default is '-avg'.
-    overwrite: bool
-        Replace the existing tplot name.
+Creates a new pytplot variable as the time average of original.
 
 Notes
 -----
-    Similar to avg_data.pro in IDL SPEDAS.
-"""
+Similar to avg_data.pro in IDL SPEDAS.
 
+"""
 import numpy as np
 import pyspedas
 import pytplot
@@ -31,7 +14,31 @@ from pytplot import store_data
 
 def avg_data(names, width=60, noremainder=True,
              new_names=None, suffix=None, overwrite=None):
-    """Get a new tplot variable with averaged data."""
+    """
+    Get a new tplot variable with averaged data.
+
+    Parameters
+    ----------
+    names: str/list of str
+        List of pytplot names.
+    width: int, optional
+        Number of values for the averaging window.
+        Default is 60 points (usually this means 60 seconds).
+    noremainder: boolean, optional
+        If True, the remainter (last part of data) will not be included.
+    new_names: str/list of str, optional
+        List of new_names for pytplot variables.
+        If not given, then a suffix is applied.
+    suffix: str, optional
+        A suffix to apply. Default is '-avg'.
+    overwrite: bool, optional
+        Replace the existing tplot name.
+
+    Returns
+    -------
+    None.
+
+    """
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:

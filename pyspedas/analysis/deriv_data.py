@@ -1,32 +1,37 @@
+"""
+Creates a new tplot variable which is the derivative of the data.
+
+Notes
+-----
+Similar to deriv_data.pro in IDL SPEDAS.
 
 """
-File:
-    deriv_data.py
-
-Description:
-    Creates a tplot variable that is the derivative of a tplot variable.
-
-Parameters:
-    names: str/list of str
-        List of pytplot names.
-    new_names: str/list of str
-        List of new_names for pytplot variables.
-        If not given, then a suffix is applied.
-    suffix: str
-        A suffix to apply. Default is '-avg'.
-    overwrite: bool
-        Replace the existing tplot name.
-
-Notes:
-    Similar to deriv_data.pro in IDL SPEDAS.
-"""
-
 import pyspedas
 import pytplot
 
 
 def deriv_data(names, new_names=None, suffix=None, overwrite=None):
+    """
+    Compute the derivative.
 
+    Parameters
+    ----------
+    names: str/list of str
+        List of pytplot names.
+    new_names: str/list of str, optional
+        List of new_names for pytplot variables.
+        If not given, then a suffix is applied.
+    suffix: str, optional
+        A suffix to apply. Default is '-avg'.
+    overwrite: bool, optional
+        Replace the existing tplot name.
+
+
+    Returns
+    -------
+    None.
+
+    """
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:

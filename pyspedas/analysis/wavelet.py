@@ -3,11 +3,11 @@ Apply a wavelet transformation to every component of a tplot variable.
 
 Notes
 -----
-    Similar to SPEDAS wav_data function.
-    For pywavelets library, see:
-        https://pywavelets.readthedocs.io/en/latest/ref/cwt.html
-    For an example, see:
-        http://spedas.org/wiki/index.php?title=Wavelet
+Similar to wav_data.pro in IDL SPEDAS.
+For pywavelets library, see:
+    https://pywavelets.readthedocs.io/en/latest/ref/cwt.html
+For an example, see:
+    http://spedas.org/wiki/index.php?title=Wavelet
 
 """
 import numpy as np
@@ -18,31 +18,32 @@ from pyspedas.utilities.split_vec import split_vec
 
 def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
             method='fft', sampling_period=1.0):
-    """Find the wavelet transofrmation of a tplot variable.
+    """
+    Find the wavelet transofrmation of a tplot variable.
 
     Parameters
     ----------
-        names: str/list of str
-            List of pytplot names.
-        new_names: str/list of str
-            List of new_names for pytplot variables.
-            If not given, then a suffix is applied.
-        suffix: str
-            A suffix to apply. Default is '_pow'.
-        wavename: str
-            The name of the continous wavelet function to apply.
-            Examples: 'gaus1', 'morl', 'cmorlB-C'.
-        scales: list
-            The wavelet scales to use.
-        method: string
-            Either ‘fft’ for  frequency domain convolution,
-            or 'conv' for numpy.convolve.
-        sampling_period: float
-            The sampling period for the frequencies output.
+    names: str/list of str
+        List of pytplot names.
+    new_names: str/list of str, optional
+        List of new_names for pytplot variables.
+        If not given, then a suffix is applied.
+    suffix: str, optional
+        A suffix to apply. Default is '_pow'.
+    wavename: str, optional
+        The name of the continous wavelet function to apply.
+        Examples: 'gaus1', 'morl', 'cmorlB-C'.
+    scales: list of float, optional
+        The wavelet scales to use.
+    method: str, optional
+        Either ‘fft’ for  frequency domain convolution,
+        or 'conv' for numpy.convolve.
+    sampling_period: float, optional
+        The sampling period for the frequencies output.
 
     Returns
     -------
-        A list of pytplot variables that contain the wavelet power.
+    A list of pytplot variables that contain the wavelet power.
 
     """
     varnames = split_vec(names)
@@ -82,4 +83,5 @@ def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
         powervar.append(new)
 
         print('wavelet was applied to: ' + new)
+
     return powervar

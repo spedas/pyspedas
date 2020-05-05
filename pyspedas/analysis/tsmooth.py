@@ -1,32 +1,14 @@
+"""
+Smooths a tplot variable.
+
+Uses a boxcar average of the specified width.
+
+Notes
+-----
+Similar to tsmooth2.pro in IDL SPEDAS.
+Also, see: https://www.harrisgeospatial.com/docs/SMOOTH.html
 
 """
-File:
-    tsmooth.py
-
-Description:
-    Smooths a tplot variable.
-    Uses a boxcar average of the specified width.
-
-Parameters:
-    names: str/list of str
-        List of pytplot names.
-    new_names: str/list of str
-        List of new_names for pytplot variables.
-        If not given, then a suffix is applied.
-    suffix: str
-        A suffix to apply. Default is '-s'.
-    overwrite: bool
-        Replace the existing tplot name.
-    preserve_nans: bool
-        If it is None, then replace NaNs.
-    width: 
-        Smoothing window.
-
-Notes:
-    Similar to tsmooth2 in IDL SPEDAS.
-    Also, see: https://www.harrisgeospatial.com/docs/SMOOTH.html
-"""
-
 import math
 import numpy as np
 import pyspedas
@@ -34,8 +16,23 @@ import pytplot
 
 
 def smooth(data, width=10, preserve_nans=None):
-    """ Boxcar average.
-        Data should be one-dimensional array.
+    """
+    Boxcar average.
+
+    Parameters
+    ----------
+    data : list of floats
+        The data should be a one-dim array.
+    width : float, optional
+        Data window to use for smoothing. The default is 10.
+    preserve_nans : bool, optional
+        If None, then replace NaNs.
+
+    Returns
+    -------
+    result : list of floats
+        Smoothed data.
+
     """
     result = data.copy()
     N = len(data)
@@ -62,7 +59,32 @@ def smooth(data, width=10, preserve_nans=None):
 
 def tsmooth(names, width=10, median=None, preserve_nans=None,
             new_names=None, suffix=None, overwrite=None):
+    """
+    Smooths data.
 
+    Parameters
+    ----------
+    names: str/list of str
+        List of pytplot names.
+    width: int, optional
+        Data window to use for smoothing. The default is 10.
+    median: bool, optional
+        Apply the median as well.
+    preserve_nans: bool, optional
+        If None, then replace NaNs.
+    new_names: str/list of str, optional
+        List of new_names for pytplot variables.
+        If not given, then a suffix is applied.
+    suffix: str, optional
+        A suffix to apply. Default is '-s'.
+    overwrite: bool, optional
+        Replace the existing tplot name.
+
+    Returns
+    -------
+    None.
+
+    """
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:

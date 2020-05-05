@@ -1,29 +1,11 @@
+"""
+Subtracts the average (mean) or the median from the data.
+
+Notes
+-----
+Similar to tsub_average.pro in IDL SPEDAS.
 
 """
-File:
-    subtract_average.py
-
-Description:
-    Subtracts the average (mean) or the median from the data.
-
-Parameters:
-    names: str/list of str
-        List of pytplot names.
-    new_names: str/list of str
-        List of new_names for pytplot variables.
-        If not given, then a suffix is applied.
-    suffix:
-        A suffix to apply. Default is '-d'.
-    overwrite:
-        If set, then pytplot variables are replaced.
-    median:
-        If it is 0 or not set, then it computes the mean.
-        Otherwise, it computes the median.
-
-Notes:
-    Allowed wildcards are ? for a single character, * from multiple characters.
-"""
-
 import pyspedas
 import pytplot
 import numpy
@@ -31,7 +13,29 @@ import numpy
 
 def subtract_average(names, new_names=None, suffix=None, overwrite=None,
                      median=None):
+    """
+    Subtracts the average or the median from data.
 
+    Parameters
+    ----------
+    names: str/list of str
+        List of pytplot names.
+    new_names: str/list of str, optional
+        List of new_names for pytplot variables.
+        If not given, then a suffix is applied.
+    suffix: str, optional
+        A suffix to apply. Default is '-d'.
+    overwrite: bool, optional
+        If set, then pytplot variables are replaced.
+    median: float, optional
+        If it is 0 or not set, then it computes the mean.
+        Otherwise, it computes the median.
+
+    Returns
+    -------
+    None.
+
+    """
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:

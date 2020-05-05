@@ -1,23 +1,10 @@
-
 """
-File:
-    time_clip.py
+Time clip of data.
 
-Description:
-    Time clip of data.
+Notes
+-----
+Similar to tclip.pro in IDL SPEDAS.
 
-Parameters:
-    names: str/list of str
-        List of pytplot names.
-    new_names: str/list of str
-        List of new_names for pytplot variables.
-        If '', then pytplot variables are replaced.
-        If not given, then a suffix is applied.
-    suffix:
-        A suffix to apply. Default is '-m'.
-
-Notes:
-    Allowed wildcards are ? for a single character, * from multiple characters.
 """
 
 import pyspedas
@@ -26,7 +13,28 @@ from pytplot import data_quants
 
 
 def time_clip(names, time_start, time_end, new_names=None, suffix=None):
+    """
+    Clip data from time_start to time_end.
 
+    Parameters:
+    names: str/list of str
+        List of pytplot names.
+    time_start : float
+        Start time.
+    time_end : float
+        End time.
+    new_names: str/list of str, optional
+        List of new_names for pytplot variables.
+        If '', then pytplot variables are replaced.
+        If not given, then a suffix is applied.
+    suffix: str, optional
+        A suffix to apply. Default is '-m'.
+
+    Returns
+    -------
+    None.
+
+    """
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
@@ -88,53 +96,76 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None):
                 break
         index_end = found_end
 
-        tmp_dquant = data_quants[n_names[j]]
+        tmp_q = data_quants[n_names[j]]
 
-        if 'v1' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['v1'].values.shape) == 2:
-                v1_data = tmp_dquant.coords['v1'].values[index_start:index_end, :]
+        if 'v1' in tmp_q.coords.keys():
+            if len(tmp_q.coords['v1'].values.shape) == 2:
+                v1_data = tmp_q.coords['v1'].values[index_start:index_end, :]
             else:
-                v1_data = tmp_dquant.coords['v1'].values
+                v1_data = tmp_q.coords['v1'].values
 
-        if 'v2' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['v2'].values.shape) == 2:
-                v2_data = tmp_dquant.coords['v2'].values[index_start:index_end, :]
+        if 'v2' in tmp_q.coords.keys():
+            if len(tmp_q.coords['v2'].values.shape) == 2:
+                v2_data = tmp_q.coords['v2'].values[index_start:index_end, :]
             else:
-                v2_data = tmp_dquant.coords['v2'].values
-            
-        if 'v3' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['v3'].values.shape) == 2:
-                v3_data = tmp_dquant.coords['v3'].values[index_start:index_end, :]
+                v2_data = tmp_q.coords['v2'].values
+
+        if 'v3' in tmp_q.coords.keys():
+            if len(tmp_q.coords['v3'].values.shape) == 2:
+                v3_data = tmp_q.coords['v3'].values[index_start:index_end, :]
             else:
-                v3_data = tmp_dquant.coords['v3'].values
-            
-        if 'v' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['v'].values.shape) == 2:
-                v_data = tmp_dquant.coords['v'].values[index_start:index_end, :]
+                v3_data = tmp_q.coords['v3'].values
+
+        if 'v' in tmp_q.coords.keys():
+            if len(tmp_q.coords['v'].values.shape) == 2:
+                v_data = tmp_q.coords['v'].values[index_start:index_end, :]
             else:
-                v_data = tmp_dquant.coords['v'].values
-            
-        if 'spec_bins' in tmp_dquant.coords.keys():
-            if len(tmp_dquant.coords['spec_bins'].values.shape) == 2:
-                v_data = tmp_dquant.coords['spec_bins'].values[index_start:index_end, :]
+                v_data = tmp_q.coords['v'].values
+
+        if 'spec_bins' in tmp_q.coords.keys():
+            if len(tmp_q.coords['spec_bins'].values.shape) == 2:
+                v_data = tmp_q.coords['spec_bins']\
+                    .values[index_start:index_end, :]
             else:
-                v_data = tmp_dquant.coords['spec_bins'].values
+                v_data = tmp_q.coords['spec_bins'].values
 
         try:
-            if 'v1' in tmp_dquant.coords.keys() and 'v2' in tmp_dquant.coords.keys() and 'v3' in tmp_dquant.coords.keys():
-                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end, :, :, :], 'v1': v1_data, 'v2': v2_data, 'v3': v3_data})
-            elif 'v1' in tmp_dquant.coords.keys() and 'v2' in tmp_dquant.coords.keys():
-                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end, :, :], 'v1': v1_data, 'v2': v2_data})
-            elif 'v1' in tmp_dquant.coords.keys():
-                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end, :], 'v1': v1_data})
-            elif 'spec_bins' in tmp_dquant.coords.keys():
-                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end, :], 'v': v_data})
-            elif 'v' in tmp_dquant.coords.keys():
-                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end, :], 'v': v_data})
+            if 'v1' in tmp_q.coords.keys() and\
+                'v2' in tmp_q.coords.keys() and\
+                    'v3' in tmp_q.coords.keys():
+                pytplot.store_data(n_names[j], data={
+                    'x': time[index_start:index_end],
+                    'y': data[index_start:index_end, :, :, :],
+                    'v1': v1_data, 'v2': v2_data, 'v3': v3_data})
+            elif 'v1' in tmp_q.coords.keys() and\
+                    'v2' in tmp_q.coords.keys():
+                pytplot.store_data(n_names[j], data={
+                    'x': time[index_start:index_end],
+                    'y': data[index_start:index_end, :, :],
+                    'v1': v1_data, 'v2': v2_data})
+            elif 'v1' in tmp_q.coords.keys():
+                pytplot.store_data(n_names[j], data={
+                    'x': time[index_start:index_end],
+                    'y': data[index_start:index_end, :],
+                    'v1': v1_data})
+            elif 'spec_bins' in tmp_q.coords.keys():
+                pytplot.store_data(n_names[j], data={
+                    'x': time[index_start:index_end],
+                    'y': data[index_start:index_end, :],
+                    'v': v_data})
+            elif 'v' in tmp_q.coords.keys():
+                pytplot.store_data(n_names[j], data={
+                    'x': time[index_start:index_end],
+                    'y': data[index_start:index_end, :],
+                    'v': v_data})
             elif data.ndim == 1:
-                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end]})
+                pytplot.store_data(n_names[j], data={
+                    'x': time[index_start:index_end],
+                    'y': data[index_start:index_end]})
             else:
-                pytplot.store_data(n_names[j], data={'x': time[index_start:index_end], 'y': data[index_start:index_end,...]})
+                pytplot.store_data(n_names[j], data={
+                    'x': time[index_start:index_end],
+                    'y': data[index_start:index_end]})
         except:
             print('Problem time clipping: ' + n_names[j])
             continue
