@@ -1,9 +1,9 @@
 """
-File:
-    cotrans_lib.py
+Functions for coordinate transformations.
 
-Description:
-    Functions for coordinate transformations.
+Notes
+-----
+These functions are in cotrans_lib.pro of IDL SPEDAS.
 
 """
 import numpy as np
@@ -12,9 +12,27 @@ from datetime import datetime
 
 def get_time_parts(time_in):
     """
-        Splits time into year, doy, hours, minutes, seconds.fsec
-    """
+    Split time into year, doy, hours, minutes, seconds.fsec.
 
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+
+    Returns
+    -------
+    iyear: array of int
+        Year.
+    idoy: array of int
+        Day of year.
+    ih: array of int
+        Hours.
+    im: array of int
+        Minutes.
+    isec: array of float
+        Seconds and milliseconds.
+
+    """
     tnp = np.vectorize(datetime.utcfromtimestamp)(time_in[:])
     iyear = np.array([tt.year for tt in tnp])
     idoy = np.array([tt.timetuple().tm_yday for tt in tnp])
@@ -27,17 +45,26 @@ def get_time_parts(time_in):
 
 def csundir_vect(time_in):
     """
-    Calculates the direction of the sun
+    Calculate the direction of the sun.
 
-    input  : iyear : year (1901-2099)
-            idoy : day of the year (1 for january 1)
-            ih,im,isec : hours, minutes, seconds U.T.
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
 
-    output : gst      greenwich mean sideral time (radians)
-              slong    longitude along ecliptic (radians)
-              sra      right ascension (radians)
-              sdec     declination of the sun (radians)
-              obliq    inclination of Earth's axis (radians)
+    Returns
+    -------
+    gst: list of float
+        Greenwich mean sideral time (radians).
+    slong: list of float
+        Longitude along ecliptic (radians).
+    sra: list of float
+        Right ascension (radians).
+    sdec: list of float
+        Declination of the sun (radians).
+    obliq: list of float
+        Inclination of Earth's axis (radians).
+
     """
     iyear, idoy, ih, im, isec = get_time_parts(time_in)
 
@@ -79,10 +106,24 @@ def csundir_vect(time_in):
 
 def tgeigse_vect(time_in, data_in):
     """
-        GEI to GSE transformation
+    GEI to GSE transformation.
 
-        input : xgei, ygei, zgei cartesian gei coordinates
-        output: xgse, ygse, zgse cartesian gse coordinates
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgei, ygei, zgei cartesian GEI coordinates.
+
+    Returns
+    -------
+    xgse: list of float
+         Cartesian GSE coordinates.
+    ygse: list of float
+        Cartesian GSE coordinates.
+    zgse: list of float
+        Cartesian GSE coordinates.
+
     """
     xgse, ygse, zgse = 0, 0, 0
     d = np.array(data_in)
@@ -111,13 +152,21 @@ def tgeigse_vect(time_in, data_in):
 
 def subgei2gse(time_in, data_in):
     """
-    transforms data from GEI to GSE
+    Transform data from GEI to GSE.
 
-    Note:
-    The corresponding IDL function works with:
-    iyear, idoy, ih, im, isec = get_time_parts(time_in)
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GEI.
+
+    Returns
+    -------
+    list
+        Coordinates in GSE.
+
     """
-
     xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
 
     # If we need a vector, we can use:
