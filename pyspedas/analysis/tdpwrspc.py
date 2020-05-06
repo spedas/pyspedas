@@ -1,8 +1,58 @@
+"""
+Compute power spectra for a tplot variable.
 
+Calls dpwrspc for the actual computation.
+
+Notes
+-----
+Similar to tdpwrspc.pro in IDL SPEDAS.
+
+"""
 from .dpwrspc import dpwrspc
 from pytplot import get_data, store_data, options, split_vec
 
-def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128, binsize=3, nohanning=False, noline=False, notperhz=False, notmvariance=False):
+
+def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128,
+             binsize=3, nohanning=False, noline=False, notperhz=False,
+             notmvariance=False):
+    """
+    Compute power spectra for a tplot variable.
+
+    Parameters
+    ----------
+    varname: str
+        Name of pytplot variable.
+    newname: str, optional
+        Name of new pytplot variable to save data to.
+    nboxpoints: int, optional
+        The number of points to use for the hanning window.
+        The default is 256.
+    nshiftpoints: int, optional
+        The number of points to shift for each spectrum.
+        The default is 128.
+    binsize: int, optional
+        Size for binning of the data along the frequency domain.
+        The default is 3.
+    nohanning: bool, optional
+        If True, no hanning window is applied to the input.
+        The default is False.
+    noline: bool, optional
+        If True, no straight line is subtracted.
+        The default is False.
+    notperhz: bool, optional
+        If True, the output units are the square of the input units.
+        The default is False.
+    notmvariance: bool, optional
+        If True, replace output spectrum for any windows that have variable.
+        cadence with NaNs.
+        The default is False.
+
+    Returns
+    -------
+    str
+        Name of new pytplot variable.
+
+    """
     if newname is None:
         newname = varname + '_dpwrspc'
 

@@ -1,8 +1,64 @@
+"""
+Compute power spectra for data.
 
+Notes
+-----
+Similar to dpwrspc.pro in IDL SPEDAS.
+
+"""
 import numpy as np
 
-def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3, nohanning=False, noline=False, notperhz=False, notmvariance=False, tm_sensitivity=None):
 
+def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
+            nohanning=False, noline=False, notperhz=False, notmvariance=False,
+            tm_sensitivity=None):
+    """
+    Compute power spectra.
+
+    Parameters
+    ----------
+    time: list of float
+        Time array.
+    quantity: list of float
+        Data array.
+    nboxpoints: int, optional
+        The number of points to use for the hanning window.
+        The default is 256.
+    nshiftpoints: int, optional
+        The number of points to shift for each spectrum.
+        The default is 128.
+    binsize: int, optional
+        Size for binning of the data along the frequency domain.
+        The default is 3.
+    nohanning: bool, optional
+        If True, no hanning window is applied to the input.
+        The default is False.
+    noline: bool, optional
+        If True, no straight line is subtracted.
+        The default is False.
+    notperhz: bool, optional
+        If True, the output units are the square of the input units.
+        The default is False.
+    notmvariance: bool, optional
+        If True, replace output spectrum for any windows that have variable
+        cadence with NaNs.
+        The default is False.
+    tm_sensitivity: float, optional
+        If noTmVariance is set, this number controls how much of a dt anomaly
+        is accepted.
+        The default is None.
+
+    Returns
+    -------
+    tdps: array of float
+        The time array for the dynamic power spectrum, the center time of the
+        interval used for the spectrum.
+    fdps: array of float
+        The frequency array (units =1/time units).
+    dps: array of float
+        The power spectrum, (units of quantity)^2/frequency_units.
+
+    """
     if nohanning is False:
         window = np.hanning(nboxpoints)
 
@@ -127,4 +183,3 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3, nohanni
             fdps[nthspectrum, :] = freqcenter
 
     return (tdps, fdps, dps)
-
