@@ -7,7 +7,7 @@ from codecs import open
 
 setup(
     name='pyspedas',
-    version='0.9.28',
+    version='0.9.29',
     description='Python Space Physics Environment Data Analysis\
         Software (SPEDAS)',
     long_description=open('README.md').read(),
