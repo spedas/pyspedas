@@ -6,7 +6,7 @@
 from pytplot import data_quants
 import pytplot
 import numpy as np
-
+from pytplot import tplot_utilities as utilities
 
 def options(name, option=None, value=None, opt_dict=None):
     """
@@ -126,6 +126,7 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'spec':
                 _reset_plots(i)
                 data_quants[i].attrs['plot_options']['extras']['spec'] = value
+                data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
 
             if option == 'alt':
                 _reset_plots(i)

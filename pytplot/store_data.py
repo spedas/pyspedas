@@ -7,11 +7,11 @@ from __future__ import division
 import pandas as pd
 import numpy as np
 import datetime
-
 from pytplot import data_quants
 from .del_data import del_data
 import pytplot
 import xarray as xr
+from pytplot import tplot_utilities as utilities
 import copy
 tplot_num = 1
 
@@ -84,16 +84,16 @@ def store_data(name, data=None, delete=False, newname=None):
     # If delete is specified, we are just deleting the variable
     if delete is True:
         del_data(name)
-        return
+        return False
 
     if data is None and newname is None:
         print('Please provide data.')
-        return
+        return False
 
     # If newname is specified, we are just renaming the variable
     if newname is not None:
         pytplot.tplot_rename(name, newname)
-        return
+        return True
 
     # If the data is a list instead of a dictionary, user is looking to overplot
     if isinstance(data, list):
@@ -104,7 +104,7 @@ def store_data(name, data=None, delete=False, newname=None):
         data_quants[name].attrs = copy.deepcopy(data_quants[base_data[0]].attrs)
         data_quants[name].name = name
         data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
-        return
+        return True
 
     times = data.pop('x')
     values = np.array(data.pop('y'))
@@ -120,7 +120,7 @@ def store_data(name, data=None, delete=False, newname=None):
 
     if len(times) != len(values):
         print("The lengths of x and y do not match!")
-        return
+        return False
 
     times = np.array(times)
     trange = [np.nanmin(times), np.nanmax(times)]
@@ -221,9 +221,9 @@ def store_data(name, data=None, delete=False, newname=None):
 
     data_quants[name] = temp
 
-    data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = _get_y_range(temp)
+    data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(temp)
 
-    return
+    return True
 
 
 def _get_base_tplot_vars(data):
@@ -236,34 +236,6 @@ def _get_base_tplot_vars(data):
         else:
             base_vars += [var]
     return base_vars
-
-
-def _get_y_range(dataset):
-    # This is for the numpy RuntimeWarning: All-NaN axis encountered
-    # with np.nanmin below
-    import warnings
-    warnings.filterwarnings("error")
-
-    if 'spec_bins' in dataset.coords:
-        ymin = np.nanmin(dataset.coords['spec_bins'].values)
-        ymax = np.nanmax(dataset.coords['spec_bins'].values)
-        return [ymin, ymax]
-    else:
-        dataset_temp = dataset.where(dataset != np.inf)
-        dataset_temp = dataset_temp.where(dataset != -np.inf)
-        try:
-            y_min = np.nanmin(dataset_temp.values)
-            y_max = np.nanmax(dataset_temp.values)
-        except RuntimeWarning:
-            y_min = np.nan
-            y_max = np.nan
-        
-        if y_min == y_max:
-            # Show 10% and 10% below the straight line
-            y_min = y_min-(.1*np.abs(y_min))
-            y_max = y_max+(.1*np.abs(y_max))
-        warnings.resetwarnings()
-        return [y_min, y_max]
 
 
 def _check_spec_bins_ordering(times, spec_bins):

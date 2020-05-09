@@ -1,6 +1,7 @@
 import pytplot
+import numpy as np
 
-def split_vec(tvar, newtvars=None, columns='all'):
+def split_vec(tvar, new_name=None, columns='all', suffix=None):
     """
     Splits up 2D data into many 1D tplot variables.
 
@@ -24,40 +25,63 @@ def split_vec(tvar, newtvars=None, columns='all'):
         >>> print(pytplot.data_quants['b2'].values)
     """
 
-    if not 'spec_bins' in pytplot.data_quants[tvar].coords:
-        dataframe = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
-        spec_bins = None
-    else:
-        dataframe, spec_bins = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+    # Make sure the tvar is found
+    if tvar not in pytplot.data_quants:
+        print(f"Error: {tvar} not found in memory.")
+        return
 
-    #separate and add data
-    time = dataframe.index
-    data = dataframe
-    defaultlist = []
+    # Give a default to the new name
+    if new_name is None:
+        new_name = tvar
+
+    # Gather data from the tvar
+    alldata = pytplot.get_data(tvar)
+    time = alldata[0]
+    data = alldata[1]
+    dim = data.shape
+
+    # If already size one, simply return
+    if len(dim) == 1:
+        return [tvar]
+
+    vec_length = dim[1]
+
+    # Determine what the suffix list will be
+    if suffix is not None:
+        if vec_length > len(suffix):
+            print(f"split_vec error: number of columns ({vec_length}) is greater than the number of suffix entered")
+    else:
+        if vec_length == 3:
+            suffix = ["_x", "_y", "_z"]
+        else:
+            suffix = []
+            for i in range(vec_length):
+                suffix.append("_"+str(i))
+
+
+    created_variables = []
+
     #grab column data
     if columns == 'all':
-        columns = dataframe.columns.values
-    for i,val in enumerate(columns):
-        #if not a list
-        if isinstance(val,list):
-            range_start = val[0]
-            range_end = val[1]
-        else:
-            range_start = val
-            range_end = val
-        split_col = list(range(range_start,range_end+1))
-        #store split data
-        defaultname = tvar+ '_' + str(i)
-        defaultlist = defaultlist + [defaultname]
-        data_for_tplot = {'x':time, 'y':data[split_col].squeeze()}
-        if spec_bins is not None:
-            data_for_tplot['v'] = spec_bins.values
-        if newtvars is None:
-            pytplot.store_data(defaultname,data=data_for_tplot)
-        else:
-            pytplot.store_data(newtvars[i],data=data_for_tplot)
+        columns = range(vec_length)
 
-    if newtvars is None:
-        return defaultlist
-    else:
-        return newtvars
+    for i in columns:
+
+        #if not a list
+        if isinstance(i,list):
+            range_start = i[0]
+            range_end = i[1]
+        else:
+            range_start = i
+            range_end = i
+        split_col = list(range(range_start,range_end+1))
+        split_name = new_name + suffix[i]
+        created_variables = created_variables + [split_name]
+
+        data_for_tplot = {'x':time, 'y':data[:,split_col].squeeze()}
+
+        if not pytplot.store_data(split_name,data=data_for_tplot):
+            raise Exception(f"Failed to store {split_name} in pytplot.")
+
+
+    return created_variables
