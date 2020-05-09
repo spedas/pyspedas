@@ -1,4 +1,7 @@
-1.6.4
+1.6.5
+
+1.6.5 Changes
+* Changes issues with split_vec giving errors when "v" values are given to line plots.  Thanks to Nick Hatzigeorgiu for finding / solving the bug
 
 1.6.4 Changes
 * Fixed an issue where sts_to_tplot wasn't merging with previous calls
