@@ -1,4 +1,7 @@
-1.6.5
+1.6.7
+
+1.6.7 Changes:
+* Fixed bug introduced in previous version
 
 1.6.5 Changes
 * Changes issues with split_vec giving errors when "v" values are given to line plots.  Thanks to Nick Hatzigeorgiu for finding / solving the bug
