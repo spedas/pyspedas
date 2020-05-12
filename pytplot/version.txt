@@ -1,4 +1,7 @@
-1.6.7
+1.6.8
+
+1.6.8 Changes:
+* Fixing a small issue with the add_across rotuine, the attributes from the input and output should not be copied
 
 1.6.7 Changes:
 * Fixed bug introduced in previous version
