@@ -103,7 +103,7 @@ def add_across(tvar,column_range=None,new_tvar=None):
     else:
         pytplot.store_data(new_tvar, data={'x': time, 'y':np.transpose(data), 'v': np.transpose(spec_data)})
 
-    pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+    #pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
     return
 
