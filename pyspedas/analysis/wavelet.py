@@ -13,7 +13,6 @@ For an example, see:
 import numpy as np
 import pywt
 import pytplot
-from pytplot import split_vec
 
 
 def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
@@ -46,7 +45,7 @@ def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
     A list of pytplot variables that contain the wavelet power.
 
     """
-    varnames = split_vec(names)
+    varnames = pytplot.split_vec(names)
     powervar = []
 
     if len(varnames) < 1:
