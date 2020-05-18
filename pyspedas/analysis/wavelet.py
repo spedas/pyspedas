@@ -13,7 +13,7 @@ For an example, see:
 import numpy as np
 import pywt
 import pytplot
-from pyspedas.utilities.split_vec import split_vec
+from pytplot import split_vec
 
 
 def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
