@@ -125,8 +125,15 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'spec':
                 _reset_plots(i)
-                data_quants[i].attrs['plot_options']['extras']['spec'] = value
-                data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
+                if value:
+                    if 'spec_bins' not in data_quants[i].coords:
+                        print(f"{i} does not contain coordinates for spectrogram plotting.  Continuing...")
+                    else:
+                        data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
+                        data_quants[i].attrs['plot_options']['extras']['spec'] = value
+                else:
+                    data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
+                    data_quants[i].attrs['plot_options']['extras']['spec'] = value
 
             if option == 'alt':
                 _reset_plots(i)

@@ -1,4 +1,7 @@
-1.6.8
+1.6.9
+
+1.6.9 Changes:
+* Fixed a small bug where the spectrogram plot type is set without having spec bins data.
 
 1.6.8 Changes:
 * Fixing a small issue with the add_across rotuine, the attributes from the input and output should not be copied

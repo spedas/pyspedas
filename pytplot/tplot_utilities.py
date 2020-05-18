@@ -605,9 +605,13 @@ def get_y_range(dataset):
     # Special rule if 'spec' is True
     if 'spec' in dataset.attrs['plot_options']['extras']:
         if dataset.attrs['plot_options']['extras']['spec']:
-            ymin = np.nanmin(dataset.coords['spec_bins'].values)
-            ymax = np.nanmax(dataset.coords['spec_bins'].values)
-            return [ymin, ymax]
+            try:
+                ymin = np.nanmin(dataset.coords['spec_bins'].values)
+                ymax = np.nanmax(dataset.coords['spec_bins'].values)
+                return [ymin, ymax]
+            except Exception as e:
+                #continue on to the code below
+                pass
 
     dataset_temp = dataset.where(dataset != np.inf)
     dataset_temp = dataset_temp.where(dataset != -np.inf)
