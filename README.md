@@ -3,6 +3,7 @@
 [![build](https://github.com/spedas/pyspedas/workflows/build/badge.svg)](https://github.com/spedas/pyspedas/actions)
 [![Coverage Status](https://coveralls.io/repos/github/spedas/pyspedas/badge.svg)](https://coveralls.io/github/spedas/pyspedas)
 ![Version](https://img.shields.io/pypi/v/pyspedas.svg)
+![Conda](https://img.shields.io/conda/v/spedas/pyspedas)
 ![License](https://img.shields.io/pypi/l/pyspedas.svg)
 ![Status](https://img.shields.io/pypi/status/pyspedas.svg)
 ![Downloads](https://img.shields.io/pypi/dm/pyspedas.svg)
