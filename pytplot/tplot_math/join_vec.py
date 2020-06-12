@@ -71,4 +71,4 @@ def join_vec(tvars,new_tvar=None, merge=False):
         pytplot.data_quants[new_tvar] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
         pytplot.data_quants[new_tvar].attrs['plot_options'] = plot_options
 
-    return
+    return new_tvar

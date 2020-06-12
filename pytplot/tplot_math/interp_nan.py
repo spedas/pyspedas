@@ -41,3 +41,4 @@ def interp_nan(tvar, new_tvar=None, s_limit=None):
         pytplot.data_quants[new_tvar] = x
         pytplot.data_quants[new_tvar].name = new_tvar
 
+

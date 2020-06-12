@@ -32,13 +32,13 @@ def subtract(tvar1,tvar2,new_tvar=None):
 
     #separate and subtract data
     data1 = pytplot.data_quants[tvar1].values
-    data2 = tv2.values
+    data2 = pytplot.data_quants[tv2].values
     data = data1 - data2
 
     #store subtracted data
     if new_tvar is None:
         pytplot.data_quants[tvar1].values = data
-        return
+        return tvar1
 
     if 'spec_bins' in pytplot.data_quants[tvar1].coords:
         pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data, 'v':pytplot.data_quants[tvar1].coords['spec_bins'].values})

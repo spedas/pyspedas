@@ -58,4 +58,4 @@ def crop(tvar1,tvar2, replace=True):
         pytplot.data_quants[tvar2 + '_cropped'] = copy.deepcopy(tv2)
         pytplot.data_quants[tvar2 + '_cropped'].attrs = copy.deepcopy(tv2.attrs)
         pytplot.data_quants[tvar2 + '_cropped'].name = tvar2 + '_cropped'
-    return
+    return tvar2 + '_cropped'
