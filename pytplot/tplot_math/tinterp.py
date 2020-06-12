@@ -32,11 +32,10 @@ def tinterp(tvar1,tvar2,replace=False):
 
     if replace:
         pytplot.data_quants[tvar2] = new_tvar2
-        pytplot.data_quants[tvar2].name = new_tvar2
         return
     else:
         pytplot.data_quants[tvar1 + '_tinterp'] = copy.deepcopy(new_tvar2)
         pytplot.data_quants[tvar1 + '_tinterp'].attrs = copy.deepcopy(new_tvar2.attrs)
-        pytplot.data_quants[tvar1 + '_tinterp'].name = new_tvar2
+        pytplot.data_quants[tvar1 + '_tinterp'].name = copy.deepcopy(new_tvar2.name)
 
-    return new_tvar2
+    return new_tvar2.name
