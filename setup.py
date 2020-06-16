@@ -16,7 +16,7 @@ setup(
     author='Nick Hatzigeorgiu, Eric Grimes',
     author_email='nikos@berkeley.edu, egrimes@igpp.ucla.edu',
     license='MIT',
-    classifiers=['Development Status :: 4 - Beta',
+    classifiers=['Development Status :: 5 - Production/Stable',
                  'Intended Audience :: Science/Research',
                  'Topic :: Scientific/Engineering',
                  'License :: OSI Approved :: MIT License',
