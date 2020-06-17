@@ -89,8 +89,8 @@ def maven_kp_to_tplot(filename=None, input_time=None, instruments=None, insitu_o
             else:
                 beg_date = min(dates)
                 end_date = max(dates)
-                input_time = [str(dates[0][:4]) + '-' + str(dates[0][4:6]) + '-' + str(dates[0][6:]),
-                              str(dates[1][:4]) + '-' + str(dates[1][4:6]) + '-' + str(dates[1][6:])]
+                input_time = [str(beg_date[:4]) + '-' + str(beg_date[4:6]) + '-' + str(beg_date[6:]),
+                              str(end_date[:4]) + '-' + str(end_date[4:6]) + '-' + str(end_date[6:])]
 
     # Check for orbit num rather than time string
     if isinstance(input_time, builtins.list):
