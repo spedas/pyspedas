@@ -280,8 +280,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 else:
                     var_data = output_table[var_name]
                     for output_var in var_data:
-                        if output_var not in nontime_varying_depends:
-                            var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
+                        if output_var not in nontime_varying_depends:                        
+                            if np.asarray(tplot_data[output_var]).ndim == 0 and np.equal(tplot_data[output_var], None):
+                                pass
+                            elif np.asarray(var_data[output_var]).ndim == 0 and np.equal(var_data[output_var], None):
+                                var_data[output_var] = tplot_data[output_var]
+                            else:                                
+                                var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
 
     if notplot:
         return output_table
