@@ -4,3 +4,4 @@ pytplot>=1.6.9
 cdasws>=1.7.17
 netCDF4
 pywavelets
+pyqtgraph==0.10.0
