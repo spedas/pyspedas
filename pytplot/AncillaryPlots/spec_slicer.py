@@ -54,7 +54,6 @@ def spec_slicer(var=None, time=None, interactive=False):
         # TODO: At some point, the indexing stuff can all be simplified with xarray functionality
         def update(t, name):
             if name in valid_variables:
-                plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(t))
                 # Get the time closest to the x position the mouse is over.
                 time_array = pytplot.data_quants[name].coords['time'].values
                 array = np.asarray(time_array)
@@ -66,10 +65,13 @@ def spec_slicer(var=None, time=None, interactive=False):
                         tavg = (t[0]+t[1]) / 2.0
                         using_avg = True
                         idx = (np.abs(array - tavg)).argmin()
+                        plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(tavg))
                     else:
                         idx = (np.abs(array - t)).argmin()
+                        plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(t[0]))
                 else:
                     idx = (np.abs(array - t)).argmin()
+                    plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(t))
                 # Grabbing the bins to display on the x axis
                 if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 2:
                     bins = pytplot.data_quants[name].coords['spec_bins'][idx, :]
