@@ -14,6 +14,9 @@ class LoadTestCases(unittest.TestCase):
         mgf_vars = pyspedas.geotail.mgf(time_clip=True)
         self.assertTrue(data_exists('IB_vector'))
 
+        mgf_vars = pyspedas.geotail.mgf(datatype='edb3sec', trange=['1998-11-3/09:18:00', '1998-11-3/09:28:00'])
+        self.assertTrue(data_exists('BGSE'))
+
     def test_load_efd_data(self):
         efd_vars = pyspedas.geotail.efd()
         self.assertTrue(data_exists('Es'))
