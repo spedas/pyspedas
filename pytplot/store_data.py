@@ -138,12 +138,15 @@ def store_data(name, data=None, delete=False, newname=None):
             spec_bins_dimension = 'v2'
 
         if type(spec_bins) is not pd.DataFrame:
-            if spec_bins == None: # For some data files, 'v' is None.  In this case, create spec_bins.
+            try:
+                spec_bins = pd.DataFrame(spec_bins)
+            except:
                 if spec_bins_dimension=='v':
                     spec_bins = np.arange(1, len(values[0])+1)
                 else:
                     spec_bins = np.arange(1, len(values[0][0]) + 1)
-            spec_bins = pd.DataFrame(spec_bins)
+                spec_bins = pd.DataFrame(spec_bins)
+
 
         if len(spec_bins.columns) != 1:
             # The spec_bins are time varying
