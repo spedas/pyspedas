@@ -33,6 +33,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if instrument == 'mgf':
         if datatype == 'k0':
             pathformat = 'mgf/mgf_k0/%Y/ge_'+datatype+'_mgf_%Y%m%d_v??.cdf'
+        elif datatype == 'eda3sec' or datatype == 'edb3sec':
+            pathformat = 'mgf/'+datatype+'_mgf/%Y/ge_'+datatype+'_mgf_%Y%m%d_v??.cdf'
     elif instrument == 'efd':
         pathformat = instrument+'/'+instrument+'_'+datatype+'/%Y/ge_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
     elif instrument == 'lep':
