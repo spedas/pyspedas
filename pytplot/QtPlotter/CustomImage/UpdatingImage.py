@@ -7,6 +7,8 @@ from pyqtgraph import debug as debug
 from collections.abc import Callable
 from pytplot import tplot_opt_glob
 import pandas as pd
+from ..CustomViewBox.NoPaddingPlot import NoPaddingPlot
+
 
 class UpdatingImage(pg.ImageItem):
     '''
@@ -166,11 +168,15 @@ class UpdatingImage(pg.ImageItem):
         I have no idea why, but we need to generate the picture after painting otherwise 
         it draws incorrectly.  
         '''
+        parents = self.getBoundingParents()
+        for x in parents:
+            if type(x) is NoPaddingPlot:
+                parent_viewbox = x
         if self.picturenotgened:
-            self.generatePicture(self.getBoundingParents()[0].rect())
+            self.generatePicture(parent_viewbox.rect())
             self.picturenotgened = False
         pg.ImageItem.paint(self, p, *args)
-        self.generatePicture(self.getBoundingParents()[0].rect())
+        self.generatePicture(parent_viewbox.rect())
 
     def render(self):
         #The same as pyqtgraph's ImageItem.render, with the exception that the makeARGB function is slightly different
