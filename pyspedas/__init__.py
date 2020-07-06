@@ -1,7 +1,7 @@
 from .version import version
 from .utilities.data_exists import data_exists
 from .utilities.tnames import tnames
-from .utilities.time_string import time_string
+from .utilities.time_string import time_string, time_datetime
 from .utilities.time_double import time_float, time_double
 from .utilities.tcopy import tcopy
 from .analysis.yclip import yclip
