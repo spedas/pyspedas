@@ -73,3 +73,28 @@ def time_string(float_time=None, fmt=None):
             for t in float_time:
                 time_list.append(time_string_one(t, fmt))
             return time_list
+
+
+def time_datetime(float_time=None):
+    """
+    Transform a list of float daytime values to a list of pythonic
+    `datetime.datetime` values
+
+    Parameters
+    ----------
+    float_time: float/list of floats, optional
+        Input time.
+        The default is None, which returns the time now.
+
+    Returns
+    -------
+    list of datetime.datetime
+        Datetimes as `datetime.datetime`.
+
+    """
+    if float_time is None:
+        return datetime.now()
+    if isinstance(float_time, (int, float)):
+        return datetime.fromtimestamp(float_time)
+    time_list = [time_datetime(_time) for _time in float_time]
+    return time_list
