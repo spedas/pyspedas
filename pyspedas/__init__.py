@@ -4,14 +4,19 @@ from .utilities.tnames import tnames
 from .utilities.time_string import time_string
 from .utilities.time_double import time_float, time_double
 from .utilities.tcopy import tcopy
-from .analysis.yclip import yclip
-from .analysis.tdeflag import tdeflag
-from .analysis.tinterpol import tinterpol
+
+from .analysis.avg_data import avg_data
+from .analysis.clean_spikes import clean_spikes
+from .analysis.deriv_data import deriv_data
+from .analysis.dpwrspc import dpwrspc
 from .analysis.subtract_average import subtract_average
 from .analysis.subtract_median import subtract_median
 from .analysis.time_clip import time_clip
+from .analysis.tdeflag import tdeflag
 from .analysis.tdpwrspc import tdpwrspc
+from .analysis.tinterpol import tinterpol
 from .analysis.tsmooth import tsmooth
+from .analysis.yclip import yclip
 from pytplot import cdf_to_tplot
 from .spdtplot.tplot_names import tplot_names
 
