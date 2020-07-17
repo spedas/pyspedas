@@ -180,7 +180,7 @@ def load_data(filenames=None,
             # Add to list of files to load
             for f in s:
                 # Filter by type
-                if type is not None and instr != 'kp':
+                if type != [None] and instr != 'kp':
                     file_type_match = False
                     desc = l2_regex.match(f).group("description")
                     for t in type:
