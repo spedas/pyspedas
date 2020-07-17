@@ -302,9 +302,9 @@ def options(name, option=None, value=None, opt_dict=None):
                     v2_values = data_quants[i].coords["v2"].values
                     data_dict['v2'] = data_dict['v'+str(value)]
                     data_dict['v' + str(value)] = v2_values
-                pytplot.store_data(i, data=data_dict)
-                data_quants[i].attrs = attr_dict
-                data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
+                    pytplot.store_data(i, data=data_dict)
+                    data_quants[i].attrs = attr_dict
+                    data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
 
 
     return

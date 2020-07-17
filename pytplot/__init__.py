@@ -127,6 +127,7 @@ from pytplot.importers.tplot_restore import tplot_restore
 from .get_timespan import get_timespan
 from .tplot_options import tplot_options
 from .tplot_rename import tplot_rename
+from .tplot_copy import tplot_copy
 from .get_ylimits import get_ylimits
 from .timebar import timebar
 from .del_data import del_data

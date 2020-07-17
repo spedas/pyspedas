@@ -25,15 +25,16 @@ def tplot_rename(old_name, new_name):
         >>> pytplot.tplot_rename("Variable1", "Variable2")
 
     """
-    
-    #check if old name is in current dictionary
-    if old_name not in pytplot.data_quants.keys():
-        print("That name is currently not in pytplot")
-        return
+
     #if old name input is a number, convert to corresponding name
     if isinstance(old_name, int):
         old_name = pytplot.data_quants[old_name].name
-         
+
+    # check if old name is in current dictionary
+    if old_name not in pytplot.data_quants.keys():
+        print("That name is currently not in pytplot")
+        return
+
     #remake dictionary with new name in old name's slot
     d = pytplot.data_quants
     d2 = OrderedDict([(new_name, v) if k == old_name else (k, v) for k, v in d.items()])
