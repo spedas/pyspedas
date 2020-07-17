@@ -1,4 +1,12 @@
-1.6.9
+1.7.1
+
+1.7.1 Changes:
+* Fixing bugs where the crosshairs give inaccurate values
+* Adding a "tplot_copy" method to copy tplot variables
+* Adding an option to specify which axis to plot on the spectrogram
+
+1.7.0 Changes:
+* Updating to pyqtgraph 0.11.0
 
 1.6.9 Changes:
 * Fixed a small bug where the spectrogram plot type is set without having spec bins data.
