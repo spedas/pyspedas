@@ -161,7 +161,7 @@ class TVarFigureSpec(object):
 
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
-                df, _ = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
+                df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name, no_spec_bins=True)
                 zmin_list = []
                 for column in df.columns:
                     series = df[column]
@@ -253,7 +253,7 @@ class TVarFigureSpec(object):
             bins_vary = len(pytplot.data_quants[self.tvar_name].coords['spec_bins'].shape) > 1
             bins_increasing = pytplot.data_quants[self.tvar_name].attrs['plot_options']['spec_bins_ascending']
         else:
-            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
+            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name, no_spec_bins=True)
             bins = pd.DataFrame(np.arange(len(pytplot.data_quants[self.tvar_name][0]))).transpose()
             bins_vary = False
             bins_increasing = True

@@ -7,6 +7,7 @@ from pytplot import data_quants
 import pytplot
 import numpy as np
 from pytplot import tplot_utilities as utilities
+from copy import deepcopy
 
 def options(name, option=None, value=None, opt_dict=None):
     """
@@ -66,6 +67,8 @@ def options(name, option=None, value=None, opt_dict=None):
                                          from a spec plot.
         t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
                                          plots.
+        'spec_plot_dim'     int          If variable two dimensions, this sets which dimension the variable will have on
+                                         on the y axis.  All other dimensions are summed into this one.
         =================== ==========   =====
     Returns:
         None
@@ -129,11 +132,12 @@ def options(name, option=None, value=None, opt_dict=None):
                     if 'spec_bins' not in data_quants[i].coords:
                         print(f"{i} does not contain coordinates for spectrogram plotting.  Continuing...")
                     else:
-                        data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
                         data_quants[i].attrs['plot_options']['extras']['spec'] = value
+                        data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
+
                 else:
-                    data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
                     data_quants[i].attrs['plot_options']['extras']['spec'] = value
+                    data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
 
             if option == 'alt':
                 _reset_plots(i)
@@ -281,6 +285,27 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 't_average':
                 data_quants[i].attrs['plot_options']['extras']['t_average'] = value
+
+            if option == 'spec_plot_dim':
+                attr_dict = deepcopy(data_quants[i].attrs)
+                data_dict = {}
+                data_dict['x'] = data_quants[i].coords['time'].values
+                data_values = data_quants[i].values
+                if len(data_values.shape) <= 2:
+                    pass
+                else:
+                    data_dict['y'] = np.swapaxes(data_values, 2, value)
+                    for c in data_quants[i].coords:
+                        if c=='time' or c=='spec_bins':
+                            continue
+                        data_dict[c] = data_quants[i].coords[c].values
+                    v2_values = data_quants[i].coords["v2"].values
+                    data_dict['v2'] = data_dict['v'+str(value)]
+                    data_dict['v' + str(value)] = v2_values
+                pytplot.store_data(i, data=data_dict)
+                data_quants[i].attrs = attr_dict
+                data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
+
 
     return
 

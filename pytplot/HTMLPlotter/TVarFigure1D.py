@@ -226,7 +226,7 @@ class TVarFigure1D(object):
                 self._set_roi_lines(dataset)
 
             plot_options = dataset.attrs['plot_options']
-            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name, no_spec_bins=True)
 
             # Create lines from each column in the dataframe
             for column_name in df.columns:

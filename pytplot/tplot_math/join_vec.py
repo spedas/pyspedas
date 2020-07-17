@@ -51,13 +51,13 @@ def join_vec(tvars,new_tvar=None, merge=False):
             if 'spec_bins' in pytplot.data_quants[tvars[i]].coords:
                 df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
             else:
-                df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
+                df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i], no_spec_bins=True)
                 s = None
         else:
             if 'spec_bins' in pytplot.data_quants[tvars[i]].coords:
-                d, _ = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
+                d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i], no_spec_bins=True)
             else:
-                d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i])
+                d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvars[i], no_spec_bins=True)
             df = pd.concat([df,d],axis=1)
 
     if s is None:

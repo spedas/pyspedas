@@ -36,7 +36,10 @@ def store_data(name, data=None, delete=False, newname=None):
             
             'v' is optional, and is only used for spectrogram plots.  This will be a list of bins to be used.  If this
             is provided, then 'y' should have dimensions of x by z.
-            
+
+            'v1/v2/v3/etc' are also optional, and are only used for to spectrogram plots.  These will act as the coordinates
+            for 'y' if 'y' has numerous dimensions.  By default, 'v2' is plotted in spectrogram plots.
+
             'x' and 'y' can be any data format that can be read in by the pandas module.  Python lists, numpy arrays,
             or any pandas data type will all work.
         delete : bool, optional
@@ -168,8 +171,8 @@ def store_data(name, data=None, delete=False, newname=None):
             data['v3'] = None
 
     # Set up xarray dimension and coordinates
-    coordinate_list = list(data.keys())
-    dimension_list = [d + '_dim' for d in list(data.keys())]
+    coordinate_list = sorted(list(data.keys()))
+    dimension_list = [d + '_dim' for d in coordinate_list]
     temp = xr.DataArray(values, dims=['time']+dimension_list,
                         coords={'time': ('time', times)})
     if spec_bins_exist:

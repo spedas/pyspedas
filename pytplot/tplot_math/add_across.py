@@ -42,7 +42,7 @@ def add_across(tvar,column_range=None,new_tvar=None):
     if 'spec_bins' in pytplot.data_quants[tvar].coords:
         d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
     else:
-        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar, no_spec_bins=True)
         s = None
 
     time = d.index.copy()

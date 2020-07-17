@@ -57,8 +57,9 @@ class UpdatingImage(pg.ImageItem):
             minbin = ymin
             maxbin = ymax
 
+            # This will be the values of the 100 y axis pixels
             if ytype == 'log':
-                yp = np.logspace(np.log10(minbin), np.log10(maxbin), 100)
+                yp = np.linspace(np.log10(minbin), np.log10(maxbin), 100)
             else:
                 yp = np.linspace(minbin, maxbin, 100)
 
@@ -67,6 +68,8 @@ class UpdatingImage(pg.ImageItem):
             prev_bins = self.bin_sizes.iloc[0]
             prev_closest_ys = np.searchsorted(self.bin_sizes.iloc[0], yp, sorter=y_sort)
             prev_closest_ys[prev_closest_ys > (len(self.bin_sizes.iloc[0]) - 1)] = len(self.bin_sizes.iloc[0]) - 1
+
+            # Loop through every X value and inspect the spec_bins.
             for i in closest_xs:
                 if (self.bin_sizes.iloc[i] == prev_bins).all():
                     closest_ys = prev_closest_ys
@@ -86,7 +89,10 @@ class UpdatingImage(pg.ImageItem):
             data_reformatted = pd.DataFrame(data_reformatted)
 
             self.x = xp
-            self.y = np.linspace(np.log10(minbin), np.log10(maxbin), 100)
+            if ytype == 'log':
+                self.y = np.linspace(np.log10(minbin), np.log10(maxbin), 100)
+            else:
+                self.y = np.linspace(minbin, maxbin, 100)
             self.data = data_reformatted
         else:
             if ytype == 'log':

@@ -38,7 +38,7 @@ def flatten(tvar,range=None,new_tvar=None):
     if 'spec_bins' in pytplot.data_quants[tvar].coords:
         df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
     else:
-        df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+        df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar, no_spec_bins=True)
         s=None
 
     if range is None:

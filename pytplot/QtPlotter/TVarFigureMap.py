@@ -114,7 +114,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         for dataset_xr in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name, no_spec_bins=True)
             coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset_xr, ['lat', 'lon'])
             t_link = coords['lat'].coords['time'].values
             lat = coords['lat'].values
@@ -310,30 +310,21 @@ class TVarFigureMap(pg.GraphicsLayout):
         # grab tbardict
         tbardict = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
         ltbar = len(tbardict)
-        # make sure data is in list format
 
-        datasets = [pytplot.data_quants[self.tvar_name]]
-        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
-            datasets.append(pytplot.data_quants[oplot_name])
-
-        for dataset in datasets:
-            # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
-            # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
-            for i in range(ltbar):
-                # get times, color, point size
-                test_time = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
-                color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
-                pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
-                # correlate given time with corresponding lat/lon points
-                time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time']
-                latitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
-                longitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
-                nearest_time_index = np.abs(time - test_time).argmin()
-                lat_point = latitude[nearest_time_index]
-                lon_point = longitude[nearest_time_index]
-                # color = pytplot.tplot_utilities.rgb_color(color)
-                self.plotwindow.scatterPlot([lon_point], [lat_point], size=pointsize, pen=pg.mkPen(None), brush=color)
+        for i in range(ltbar):
+            # get times, color, point size
+            test_time = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
+            color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
+            pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
+            # correlate given time with corresponding lat/lon points
+            time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time']
+            latitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
+            longitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
+            nearest_time_index = np.abs(time - test_time).argmin()
+            lat_point = latitude[nearest_time_index]
+            lon_point = longitude[nearest_time_index]
+            # color = pytplot.tplot_utilities.rgb_color(color)
+            self.plotwindow.scatterPlot([lon_point], [lat_point], size=pointsize, pen=pg.mkPen(None), brush=color)
 
         return
 

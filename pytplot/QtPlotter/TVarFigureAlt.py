@@ -9,7 +9,7 @@ import pytplot
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
-
+from math import log10, floor
 
 class TVarFigureAlt(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False, mouse_function=None):
@@ -136,6 +136,9 @@ class TVarFigureAlt(pg.GraphicsLayout):
         if self.plotwindow.scene() is not None:
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
 
+    def round_sig(self, x, sig=4):
+        return round(x, sig - int(floor(log10(abs(x)))) - 1)
+
     def _mousemoved(self, evt):
         # get current position
         pos = evt
@@ -144,7 +147,11 @@ class TVarFigureAlt(pg.GraphicsLayout):
             mousepoint = self.plotwindow.vb.mapSceneToView(pos)
             # grab x and y mouse locations
             index_x = int(mousepoint.x())
-            index_y = int(mousepoint.y())
+            # set log magnitude if log plot
+            if self._getyaxistype() == 'log':
+                index_y = self.round_sig(10 ** (float(mousepoint.y())), 4)
+            else:
+                index_y = round(float(mousepoint.y()), 4)
             # add crosshairs
             if self._mouseMovedFunction is not None:
                 self._mouseMovedFunction(int(mousepoint.x()))
@@ -232,7 +239,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         for dataset in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name, no_spec_bins=True)
             # for location in tbar dict
             for i in range(ltbar):
                 # get times, color, point size
@@ -258,7 +265,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         for dataset_xr in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name)
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name, no_spec_bins=True)
             coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset_xr, ['alt'])
             for i in range(0, len(dataset.columns)):
                 t_link = coords['alt'].coords['time'].values

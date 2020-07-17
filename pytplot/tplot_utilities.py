@@ -546,38 +546,33 @@ def set_y_range(var, y_axis_log, plot):
                            pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1], padding=0)
 
 
-def convert_tplotxarray_to_pandas_dataframe_lineplots(name):
-    import pandas as pd
-    # copy of the function below, specifically for line plots
-    return_data = pd.DataFrame(pytplot.data_quants[name].values)
-    return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
-    return return_data
-
-
-def convert_tplotxarray_to_pandas_dataframe(name):
+def convert_tplotxarray_to_pandas_dataframe(name, no_spec_bins=False):
     import pandas as pd
     # This function is not final, and will presumably change in the future
-    # For 2D data, turn it into a Pandas dataframe
-    # For 3D data, Sum over the second dimension, then turn into a Pandas dataframe
-    # For 4D data, ignore the last dimension
-    if 'spec_bins' not in pytplot.data_quants[name].coords:
-        return_data = pd.DataFrame(pytplot.data_quants[name].values)
-        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+    # This function sums over all dimensions except for the second non-time one.
+    # This collapses many dimensions into just a single "energy bin" dimensions
+
+    matrix = pytplot.data_quants[name].values
+    while len(matrix.shape) > 3:
+        matrix = np.nansum(matrix, 3)
+    if len(matrix.shape) == 3:
+        matrix = np.nansum(matrix, 1)
+    return_data = pd.DataFrame(matrix)
+    return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+
+    if no_spec_bins:
         return return_data
-    else:
-        matrix = pytplot.data_quants[name].values
-        if len(matrix.shape) > 2:
-            data = np.nansum(matrix, 0)
-        while len(matrix.shape) > 2:
-            matrix = np.nansum(matrix, 1)
-        return_data = pd.DataFrame(matrix)
-        return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+
+    if 'spec_bins' in pytplot.data_quants[name].coords:
         spec_bins = pd.DataFrame(pytplot.data_quants[name].coords['spec_bins'].values)
         if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 1:
             spec_bins = spec_bins.transpose()
         else:
             spec_bins = spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
-    return return_data, spec_bins
+
+        return return_data, spec_bins
+
+    return return_data
 
 def return_interpolated_link_dict(dataset, types):
     ret_dict = {}

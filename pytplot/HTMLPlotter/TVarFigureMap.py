@@ -135,7 +135,7 @@ class TVarFigureMap(object):
             
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
-                df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
+                df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name, no_spec_bins=True)
                 zmin_list = []
                 for column in df.columns:
                     series = df[column]
@@ -223,7 +223,7 @@ class TVarFigureMap(object):
             t_link_lat = coords['lat'].coords['time'].values
             y = coords['lon'].values
 
-            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name, no_spec_bins=True)
             for column_name in df.columns:
                 data = df[column_name].values
 

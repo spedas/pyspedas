@@ -16,7 +16,7 @@ from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionItem
-
+from math import log10, floor
 
 class TVarFigureSpec(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False):
@@ -78,6 +78,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
+
+        # Just perform this operation once, so we don't need to keep doing it
+        self.dataframe, self.specframe = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
 
     @staticmethod
     def getaxistype():
@@ -144,9 +147,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
     def _visdata(self):
         # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
         # This needs to be rewritten to use xarray
-        dataset, spec_bins = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
-        specplot = UpdatingImage(dataset,
-                                 spec_bins,
+        specplot = UpdatingImage(self.dataframe,
+                                 self.specframe,
                                  pytplot.data_quants[self.tvar_name].attrs['plot_options']['spec_bins_ascending'],
                                  self._getyaxistype(),
                                  self._getzaxistype(),
@@ -209,6 +211,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
         if self.plotwindow.scene() is not None:
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
 
+    def round_sig(self, x, sig=4):
+        return round(x, sig - int(floor(log10(abs(x)))) - 1)
+
     def _mousemoved(self, evt):
         # get current position
         pos = evt
@@ -220,34 +225,32 @@ class TVarFigureSpec(pg.GraphicsLayout):
             index_x = int(mousePoint.x())
             # set log magnitude if log plot
             if self._getyaxistype() == 'log':
-                index_y = 10 ** (round(float(mousePoint.y()), 4))
+                index_y = self.round_sig(10 ** (float(mousePoint.y())), 4)
             else:
-                index_y = round(float(mousePoint.y()), 4)
-
-            dataframe, specframe = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
+                index_y = self.round_sig(float(mousePoint.y()), 4)
 
             # find closest time/data to cursor location
-            x = np.asarray(dataframe.index.tolist())
+            x = np.asarray(self.dataframe.index.tolist())
             x_sub = abs(x - index_x * np.ones(len(x)))
             x_argmin = np.nanargmin(x_sub)
             x_closest = x[x_argmin]
 
             #TODO: This currently grabs only the first row of the specframe,
             # if it is time varying this will probably give incorrect Y values in the crosshair
-            if len(specframe) > 1:
+            if len(self.specframe) > 1:
                 try:
-                    speclength = len(specframe.iloc[x_argmin])
-                    y = np.asarray((specframe.iloc[x_argmin, 0:speclength - 1]))
+                    speclength = len(self.specframe.iloc[x_argmin])
+                    y = np.asarray((self.specframe.iloc[x_argmin, 0:speclength - 1]))
                 except:
-                    speclength = len(specframe.iloc[0])
-                    y = np.asarray((specframe.iloc[0, 0:speclength - 1]))
+                    speclength = len(self.specframe.iloc[0])
+                    y = np.asarray((self.specframe.iloc[0, 0:speclength - 1]))
             else:
-                speclength = len(specframe.iloc[0])
-                y = np.asarray((specframe.iloc[0, 0:speclength - 1]))
+                speclength = len(self.specframe.iloc[0])
+                y = np.asarray((self.specframe.iloc[0, 0:speclength - 1]))
             y_sub = abs(y - index_y * np.ones(y.size))
             y_argmin = np.nanargmin(y_sub)
             y_closest = y[y_argmin]
-            data_point = dataframe[y_argmin][x_closest]
+            data_point = self.dataframe[y_argmin][x_closest]
 
             # add crosshairs
             # Associate mouse position with current plot you're mousing over.

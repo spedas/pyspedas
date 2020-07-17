@@ -12,7 +12,7 @@ from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionItem
-
+from math import log10, floor
 
 class TVarFigure1D(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False):
@@ -145,7 +145,7 @@ class TVarFigure1D(pg.GraphicsLayout):
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
             plot_options = dataset.attrs['plot_options']
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe_lineplots(dataset.name)
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name, no_spec_bins=True)
 
             for i in range(len(dataset.columns)):
                 if 'line_style' in plot_options['line_opt']:
@@ -286,6 +286,9 @@ class TVarFigure1D(pg.GraphicsLayout):
         if self.plotwindow.scene() is not None:
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
 
+    def round_sig(self, x, sig=4):
+        return round(x, sig - int(floor(log10(abs(x)))) - 1)
+
     def _mousemoved(self, evt):
         # get current position
         pos = evt
@@ -294,7 +297,12 @@ class TVarFigure1D(pg.GraphicsLayout):
             mousepoint = self.plotwindow.vb.mapSceneToView(pos)
             # grab x and y mouse locations
             index_x = int(mousepoint.x())
-            index_y = round(float(mousepoint.y()), 4)
+            # set log magnitude if log plot
+            if self._getyaxistype() == 'log':
+                index_y = self.round_sig(10 ** (float(mousepoint.y())), 4)
+            else:
+                index_y = round(float(mousepoint.y()), 4)
+
             date = (pytplot.tplot_utilities.int_to_str(index_x))[0:10]
             time = (pytplot.tplot_utilities.int_to_str(index_x))[11:19]
             # add crosshairs

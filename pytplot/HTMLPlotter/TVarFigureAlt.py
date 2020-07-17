@@ -146,7 +146,7 @@ class TVarFigureAlt(object):
         for dataset in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name, no_spec_bins=True)
             # for location in tbar dict
             for i in range(ltbar):
                 # get times, color, point size
@@ -205,7 +205,7 @@ class TVarFigureAlt(object):
             coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset, ['alt'])
             t_link = coords['alt'].coords['time'].values
             x = coords['alt'].values
-            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name)
+            df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name, no_spec_bins=True)
             # Create lines from each column in the dataframe
             for column_name in df.columns:
                 y = df[column_name]
