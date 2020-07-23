@@ -1,4 +1,7 @@
-1.7.1
+1.7.2
+
+1.7.2 Changes:
+* Fixing some issues with the import order of various graphic tools.  Should be easier to import where graphics are disabled.
 
 1.7.1 Changes:
 * Fixing bugs where the crosshairs give inaccurate values
