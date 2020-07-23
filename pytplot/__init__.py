@@ -12,6 +12,7 @@ import sys
 if not 'PYTPLOT_NO_GRAPHICS' in os.environ:
     using_graphics = True
 else:
+    print("Turning off qt graphics.  Bokeh plotting is still enabled.")
     using_graphics = False
 
 
@@ -80,7 +81,23 @@ try:
         def newlayout(self, layout):
             # Needed for displaying plots
             self.setCentralWidget(layout)
-except:
+
+
+    # If we are in an ipython environment, set the gui to be qt5
+    # This allows the user to interact with the window in real time
+    try:
+        magic = get_ipython().magic
+        magic(u'%gui qt5')
+    except:
+        pass
+
+    # Start the App
+    pg.mkQApp()
+
+
+except Exception as e:
+    print("Qt graphics import failed with error " + str(e))
+    print("Turning off qt graphics.  Bokeh plotting is still enabled.")
     using_graphics = False
 
 # Global Variables
@@ -141,18 +158,6 @@ from .tplot_utilities import compare_versions
 from .link import link
 from pytplot.tplot_math import *
 
-# If we are in an ipython environment, set the gui to be qt5
-# This allows the user to interact with the window in real time
-try:
-    if using_graphics:
-        magic = get_ipython().magic
-        magic(u'%gui qt5')
-except:
-    pass
-
-# from module import all files
-if using_graphics:
-    pg.mkQApp()
 
 # Ok.  In possibly the weirdest turn of events, I get a warning that interrupts Qt specplots
 # if I DO NOT import this library.  There is an error about collections.abc in the ImageItem.render()
