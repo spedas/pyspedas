@@ -213,6 +213,12 @@ def tplot(name,
                 return
             if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
+            else:
+                try:
+                    magic = get_ipython().magic
+                    magic(u'%gui qt5')
+                except:
+                    pass
             return
         else:
             dir_path = tempfile.gettempdir()  # send to user's temp directory
@@ -266,7 +272,6 @@ def tplot(name,
             # their data plots
             extra_function_handler(extra_functions, extra_function_args, name, slice, pos_2d, pos_3d)
 
-            # plots the plots!
             if testing:
                 return
 
@@ -274,6 +279,12 @@ def tplot(name,
             if (not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION')) and exec_qt:
                 QtGui.QApplication.instance().exec_()
                 pass
+            else:
+                try:
+                    magic = get_ipython().magic
+                    magic(u'%gui qt5')
+                except:
+                    pass
         return
 
 

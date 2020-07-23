@@ -15,6 +15,11 @@ else:
     print("Turning off qt graphics.  Bokeh plotting is still enabled.")
     using_graphics = False
 
+try:
+    import google.colab
+    using_graphics = False
+except:
+    pass
 
 # This variable will be constantly changed depending on what x value the user is hovering over
 class HoverTime(object):
@@ -37,68 +42,55 @@ class HoverTime(object):
                 print(e)
         return
 
-
-try:
-    import pyqtgraph as pg
-    from pyqtgraph.Qt import QtWidgets
-
-    #Note: This is absolutely required for windows systems to work currently
-    #But presumably it will be fixed at some point in the future
-    if sys.platform.startswith('win'):
-        pg.ptime.time = lambda: 0
-
-    pg.setConfigOptions(imageAxisOrder='row-major')
-    pg.setConfigOptions(background='w')
-
-
-    class PlotWindow(QtWidgets.QMainWindow):
-        def __init__(self):
-            super().__init__()
-
-        def init_savepng(self, exporter):
-            if exporter is None:
-                return
-            # Set up the save PNG button/call exportpng function that activates when user presses button
-            exportdatapngaction = QtWidgets.QAction("Save PNG", self)
-            exportdatapngaction.triggered.connect(lambda: self.exportpng(exporter))
-
-            # Set up menu bar to display and call creation of save PNG button
-            menubar = self.menuBar()
-            menubar.setNativeMenuBar(False)
-            menubar.addAction(exportdatapngaction)
-            self.setWindowTitle('PyTplot Window')
-
-        def exportpng(self, exporter):
-            if exporter is None:
-                print("Cannot save the image.  Try installing h5py to get around this issue.")
-                return
-            # Function called by save PNG button to grab the image from the plot window and save it
-            fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
-            exporter.parameters()['width'] = tplot_opt_glob['window_size'][0]
-            exporter.parameters()['height'] = tplot_opt_glob['window_size'][1]
-            exporter.export(fname[0])
-
-        def newlayout(self, layout):
-            # Needed for displaying plots
-            self.setCentralWidget(layout)
-
-
-    # If we are in an ipython environment, set the gui to be qt5
-    # This allows the user to interact with the window in real time
+if using_graphics:
     try:
-        magic = get_ipython().magic
-        magic(u'%gui qt5')
-    except:
-        pass
+        import pyqtgraph as pg
+        from pyqtgraph.Qt import QtWidgets
 
-    # Start the App
-    pg.mkQApp()
+        #Note: This is absolutely required for windows systems to work currently
+        #But presumably it will be fixed at some point in the future
+        if sys.platform.startswith('win'):
+            pg.ptime.time = lambda: 0
+
+        pg.setConfigOptions(imageAxisOrder='row-major')
+        pg.setConfigOptions(background='w')
 
 
-except Exception as e:
-    print("Qt graphics import failed with error " + str(e))
-    print("Turning off qt graphics.  Bokeh plotting is still enabled.")
-    using_graphics = False
+        class PlotWindow(QtWidgets.QMainWindow):
+            def __init__(self):
+                super().__init__()
+
+            def init_savepng(self, exporter):
+                if exporter is None:
+                    return
+                # Set up the save PNG button/call exportpng function that activates when user presses button
+                exportdatapngaction = QtWidgets.QAction("Save PNG", self)
+                exportdatapngaction.triggered.connect(lambda: self.exportpng(exporter))
+
+                # Set up menu bar to display and call creation of save PNG button
+                menubar = self.menuBar()
+                menubar.setNativeMenuBar(False)
+                menubar.addAction(exportdatapngaction)
+                self.setWindowTitle('PyTplot Window')
+
+            def exportpng(self, exporter):
+                if exporter is None:
+                    print("Cannot save the image.  Try installing h5py to get around this issue.")
+                    return
+                # Function called by save PNG button to grab the image from the plot window and save it
+                fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
+                exporter.parameters()['width'] = tplot_opt_glob['window_size'][0]
+                exporter.parameters()['height'] = tplot_opt_glob['window_size'][1]
+                exporter.export(fname[0])
+
+            def newlayout(self, layout):
+                # Needed for displaying plots
+                self.setCentralWidget(layout)
+
+    except Exception as e:
+        print("Qt graphics import failed with error " + str(e))
+        print("Turning off qt graphics.  Bokeh plotting is still enabled.")
+        using_graphics = False
 
 # Global Variables
 hover_time = HoverTime()
@@ -158,6 +150,14 @@ from .tplot_utilities import compare_versions
 from .link import link
 from pytplot.tplot_math import *
 
+# Start the App
+if using_graphics:
+    try:
+        pg.mkQApp()
+    except Exception as e:
+        print("Qt graphics import failed with error " + str(e))
+        print("Turning off qt graphics.  Bokeh plotting is still enabled.")
+        using_graphics = False
 
 # Ok.  In possibly the weirdest turn of events, I get a warning that interrupts Qt specplots
 # if I DO NOT import this library.  There is an error about collections.abc in the ImageItem.render()
