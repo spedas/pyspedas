@@ -196,6 +196,10 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     For time out of interval, computation is made for nearest boundary.
     Same as SPEDAS cdipdir.
     """
+    if (time_in is None) and (iyear is None) and (idoy is None):
+        print("Error: No time was provided.")
+        return
+
     if (iyear is None) or (idoy is None):
         iyear, idoy, ih, im, isec = get_time_parts(time_in)
 
@@ -253,12 +257,14 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     f3 = iyear + (idoy-1)/365.25 - maxind
     nloop = len(g0)
     if year1 <= maxind:
+        # years 1970-2020
         g1 = ga[year1]
         h1 = ha[year1]
         for i in range(nloop):
             g[i] = g0[i]*f1 + g1[i]*f2
             h[i] = h0[i]*f1 + h1[i]*f2
     else:
+        # years 2020-2025
         for i in range(nloop):
             g[i] = g0[i] + dg[i]*f3
             h[i] = h0[i] + dh[i]*f3
@@ -302,7 +308,55 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     d2 = sts1
     d3 = ct0
 
-    return [d1, d2, d3]
+    return d1, d2, d3
+
+
+def cdipdir_vec(time_in=None, iyear=None, idoy=None):
+    """
+    Compute dipole direction in GEO coordinates.
+
+    Similar to cdipdir but for arrays.
+
+    Parameters
+    ----------
+    time_in: list of floats
+    iyear: list of int
+    idoy: list of int
+
+    Returns
+    -------
+    list of float
+
+    Notes
+    -----
+    Same as SPEDAS cdipdir_vec.
+    """
+    if ((time_in is None or not isinstance(time_in, list))
+        and (iyear is None or not isinstance(iyear, list))
+            and (idoy is None or not isinstance(idoy, list))):
+        return cdipdir(time_in, iyear, idoy)
+
+    if (iyear is None) or (idoy is None):
+        if len(time_in) == 1:
+            iyear, idoy, ih, im, isec = get_time_parts(time_in)
+        else:
+            iyear = []
+            idoy = []
+            for i in range(len(time_in)):
+                _iyear, _idoy, ih, im, isec = get_time_parts(time_in[i])
+                iyear.append(_iyear)
+                idoy.append(_idoy)
+
+    d1 = []
+    d2 = []
+    d3 = []
+    for i in range(len(idoy)):
+        _d1, _d2, _d3 = cdipdir(None, iyear[i], idoy[i])
+        d1.append(_d1)
+        d2.append(_d2)
+        d3.append(_d3)
+
+    return d1, d2, d3
 
 
 def tgsegsm_vect(time_in, data_in):
