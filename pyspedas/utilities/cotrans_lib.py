@@ -241,7 +241,6 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
         y = minyear
     elif y > maxyear:
         y = maxyear
-    print(y)
 
     year0 = y
     year1 = y + 5
@@ -311,7 +310,7 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     return d1, d2, d3
 
 
-def cdipdir_vec(time_in=None, iyear=None, idoy=None):
+def cdipdir_vect(time_in=None, iyear=None, idoy=None):
     """
     Compute dipole direction in GEO coordinates.
 
@@ -337,6 +336,8 @@ def cdipdir_vec(time_in=None, iyear=None, idoy=None):
         return cdipdir(time_in, iyear, idoy)
 
     if (iyear is None) or (idoy is None):
+        iyear, idoy, ih, im, isec = get_time_parts(time_in)
+        """
         if len(time_in) == 1:
             iyear, idoy, ih, im, isec = get_time_parts(time_in)
         else:
@@ -346,17 +347,17 @@ def cdipdir_vec(time_in=None, iyear=None, idoy=None):
                 _iyear, _idoy, ih, im, isec = get_time_parts(time_in[i])
                 iyear.append(_iyear)
                 idoy.append(_idoy)
-
+        """
     d1 = []
     d2 = []
-    d3 = []
+    d3 = []    
     for i in range(len(idoy)):
         _d1, _d2, _d3 = cdipdir(None, iyear[i], idoy[i])
         d1.append(_d1)
         d2.append(_d2)
         d3.append(_d3)
-
-    return d1, d2, d3
+       
+    return np.array(d1), np.array(d2), np.array(d3)
 
 
 def tgsegsm_vect(time_in, data_in):
@@ -368,16 +369,79 @@ def tgsegsm_vect(time_in, data_in):
     time_in: list of float
         Time array.
     data_in: list of float
-        xgei, ygei, zgei cartesian GSE coordinates.
+        xgse, ygse, zgse cartesian GSE coordinates.
 
     Returns
     -------
-    xgse: list of float
+    xgsm: list of float
          Cartesian GSM coordinates.
-    ygse: list of float
+    ygsm: list of float
         Cartesian GSM coordinates.
-    zgse: list of float
+    zgsm: list of float
         Cartesian GSM coordinates.
 
     """
-    pass
+    xgsm, ygsm, zgsm = 0, 0, 0
+    d = np.array(data_in)
+    xgse, ygse, zgse = d[:, 0], d[:, 1], d[:, 2]
+    
+    gd1, gd2, gd3 = cdipdir_vect(time_in)
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+    
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+    
+    sgst = np.sin(gst)
+    cgst = np.cos(gst)
+    
+    ge1 = 0.0
+    ge2 = -np.sin(obliq)
+    ge3 = np.cos(obliq)
+    
+    gm1 = gd1 * cgst - gd2 * sgst
+    gm2 = gd1 * sgst + gd2 * cgst
+    gm3 = gd3
+    
+    
+    gmgs1 = gm2 * gs3 - gm3 * gs2
+    gmgs2 = gm3 * gs1 - gm1 * gs3
+    gmgs3 = gm1 * gs2 - gm2 * gs1
+    
+    rgmgs = np.sqrt(gmgs1**2 + gmgs2**2 + gmgs3**2)
+    
+    cdze = (ge1 * gm1 + ge2 * gm2 + ge3 * gm3)/rgmgs
+    sdze = (ge1 * gmgs1 + ge2 * gmgs2 + ge3 * gmgs3)/rgmgs
+    epsi = 1.0*np.exp(-6.0)
+    
+    xgsm = xgse
+    ygsm = cdze * ygse + sdze * zgse
+    zgsm = -sdze * ygse + cdze * zgse
+    
+    return xgsm, ygsm, zgsm
+
+
+def subgse2gsm(time_in, data_in):
+    """
+    Transform data from GSE to GSM.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GSE.
+
+    Returns
+    -------
+    list
+        Coordinates in GSM.
+
+    """
+    xgsm, ygsm, zgsm = tgsegsm_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gse = np.column_stack((xgsm, ygsm, zgsm))
+
+    return [xgsm, ygsm, zgsm]
+
