@@ -1,4 +1,7 @@
-1.7.3
+1.7.4
+
+1.7.4 Changes:
+* Reverting a change from 1.7.1 back
 
 1.7.3 Changes:
 *fixing tplot math add routine to actually add
