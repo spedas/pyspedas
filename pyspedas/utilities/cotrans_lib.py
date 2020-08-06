@@ -8,7 +8,7 @@ These functions are in cotrans_lib.pro of IDL SPEDAS.
 """
 import numpy as np
 from datetime import datetime
-from igrf import set_igrf_params
+from pyspedas import set_igrf_params
 
 
 def get_time_parts(time_in):
