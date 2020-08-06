@@ -8,6 +8,7 @@ These functions are in cotrans_lib.pro of IDL SPEDAS.
 """
 import numpy as np
 from datetime import datetime
+from igrf import set_igrf_params
 
 
 def get_time_parts(time_in):
@@ -173,3 +174,232 @@ def subgei2gse(time_in, data_in):
     # gse = np.column_stack((xgse, ygse, zgse))
 
     return [xgse, ygse, zgse]
+
+
+def cdipdir(time_in=None, iyear=None, idoy=None):
+    """
+    Compute dipole direction in GEO coordinates.
+
+    Parameters
+    ----------
+    time_in: float
+    iyear: int
+    idoy: int
+
+    Returns
+    -------
+    list of float
+
+    Notes
+    -----
+    Compute geodipole axis direction from International Geomagnetic Reference
+    Field (IGRF-13) model for time interval 1970 to 2020.
+    For time out of interval, computation is made for nearest boundary.
+    Same as SPEDAS cdipdir.
+    """
+    if (time_in is None) and (iyear is None) and (idoy is None):
+        print("Error: No time was provided.")
+        return
+
+    if (iyear is None) or (idoy is None):
+        iyear, idoy, ih, im, isec = get_time_parts(time_in)
+
+    # IGRF-13 parameters, 1965-2020.
+    minyear, maxyear, ga, ha, dg, dh = set_igrf_params()
+
+    y = iyear - (iyear % 5)
+    if y < minyear:
+        y = minyear
+    elif y > maxyear:
+        y = maxyear
+
+    year0 = y
+    year1 = y + 5
+    g0 = ga[year0]
+    h0 = ha[year0]
+    maxind = max(ga.keys())
+    g = g0
+    h = h0
+
+    # Interpolate for dates.
+    f2 = (iyear + (idoy-1)/365.25 - year0)/5.
+    f1 = 1.0 - f2
+    f3 = iyear + (idoy-1)/365.25 - maxind
+    nloop = len(g0)
+    if year1 <= maxind:
+        # years 1970-2020
+        g1 = ga[year1]
+        h1 = ha[year1]
+        for i in range(nloop):
+            g[i] = g0[i]*f1 + g1[i]*f2
+            h[i] = h0[i]*f1 + h1[i]*f2
+    else:
+        # years 2020-2025
+        for i in range(nloop):
+            g[i] = g0[i] + dg[i]*f3
+            h[i] = h0[i] + dh[i]*f3
+
+    s = 1.0
+    for i in range(2, 15):
+        mn = int(i*(i-1.0)/2.0 + 1.0)
+        s = int(s*(2.0*i-3.0)/(i-1.0))
+        g[mn] *= s
+        h[mn] *= s
+        g[mn-1] *= s
+        h[mn-1] *= s
+        p = s
+        for j in range(2, i):
+            aa = 1.0
+            if j == 2:
+                aa = 2.0
+            p = p * np.sqrt(aa*(i-j+1)/(i+j-2))
+            mnn = int(mn + j - 1)
+            g[mnn] *= p
+            h[mnn] *= p
+            g[mnn-1] *= p
+            h[mnn-1] *= p
+
+    g10 = -g[1]
+    g11 = g[2]
+    h11 = h[2]
+
+    sq = g11**2 + h11**2
+    sqq = np.sqrt(sq)
+    sqr = np.sqrt(g10**2 + sq)
+    s10 = -h11/sqq
+    c10 = -g11/sqq
+    st0 = sqq/sqr
+    ct0 = g10/sqr
+
+    stc1 = st0*c10
+    sts1 = st0*s10
+
+    d1 = stc1
+    d2 = sts1
+    d3 = ct0
+
+    return d1, d2, d3
+
+
+def cdipdir_vect(time_in=None, iyear=None, idoy=None):
+    """
+    Compute dipole direction in GEO coordinates.
+
+    Similar to cdipdir but for arrays.
+
+    Parameters
+    ----------
+    time_in: list of floats
+    iyear: list of int
+    idoy: list of int
+
+    Returns
+    -------
+    list of float
+
+    Notes
+    -----
+    Same as SPEDAS cdipdir_vec.
+    """
+    if ((time_in is None or not isinstance(time_in, list))
+        and (iyear is None or not isinstance(iyear, list))
+            and (idoy is None or not isinstance(idoy, list))):
+        return cdipdir(time_in, iyear, idoy)
+
+    if (iyear is None) or (idoy is None):
+        iyear, idoy, ih, im, isec = get_time_parts(time_in)
+
+    d1 = []
+    d2 = []
+    d3 = []
+    for i in range(len(idoy)):
+        _d1, _d2, _d3 = cdipdir(None, iyear[i], idoy[i])
+        d1.append(_d1)
+        d2.append(_d2)
+        d3.append(_d3)
+
+    return np.array(d1), np.array(d2), np.array(d3)
+
+
+def tgsegsm_vect(time_in, data_in):
+    """
+    Transform data from GSE to GSM.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgse, ygse, zgse cartesian GSE coordinates.
+
+    Returns
+    -------
+    xgsm: list of float
+         Cartesian GSM coordinates.
+    ygsm: list of float
+        Cartesian GSM coordinates.
+    zgsm: list of float
+        Cartesian GSM coordinates.
+
+    """
+    xgsm, ygsm, zgsm = 0, 0, 0
+    d = np.array(data_in)
+    xgse, ygse, zgse = d[:, 0], d[:, 1], d[:, 2]
+
+    gd1, gd2, gd3 = cdipdir_vect(time_in)
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+
+    sgst = np.sin(gst)
+    cgst = np.cos(gst)
+
+    ge1 = 0.0
+    ge2 = -np.sin(obliq)
+    ge3 = np.cos(obliq)
+
+    gm1 = gd1 * cgst - gd2 * sgst
+    gm2 = gd1 * sgst + gd2 * cgst
+    gm3 = gd3
+
+    gmgs1 = gm2 * gs3 - gm3 * gs2
+    gmgs2 = gm3 * gs1 - gm1 * gs3
+    gmgs3 = gm1 * gs2 - gm2 * gs1
+
+    rgmgs = np.sqrt(gmgs1**2 + gmgs2**2 + gmgs3**2)
+
+    cdze = (ge1 * gm1 + ge2 * gm2 + ge3 * gm3)/rgmgs
+    sdze = (ge1 * gmgs1 + ge2 * gmgs2 + ge3 * gmgs3)/rgmgs
+
+    xgsm = xgse
+    ygsm = cdze * ygse + sdze * zgse
+    zgsm = -sdze * ygse + cdze * zgse
+
+    return xgsm, ygsm, zgsm
+
+
+def subgse2gsm(time_in, data_in):
+    """
+    Transform data from GSE to GSM.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GSE.
+
+    Returns
+    -------
+    list
+        Coordinates in GSM.
+
+    """
+    xgsm, ygsm, zgsm = tgsegsm_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gse = np.column_stack((xgsm, ygsm, zgsm))
+
+    return [xgsm, ygsm, zgsm]
