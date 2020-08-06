@@ -59,7 +59,7 @@ class UpdatingImage(pg.ImageItem):
 
             # This will be the values of the 100 y axis pixels
             if ytype == 'log':
-                yp = np.linspace(np.log10(minbin), np.log10(maxbin), 100)
+                yp = np.logspace(np.log10(minbin), np.log10(maxbin), 100)
             else:
                 yp = np.linspace(minbin, maxbin, 100)
 
