@@ -1,7 +1,7 @@
 requests
 cdflib>=0.3.18
-pytplot>=1.7.0
+pytplot>=1.7.3
 cdasws>=1.7.17
 netCDF4
 pywavelets
-pyqtgraph==0.10.0
+pyqtgraph
