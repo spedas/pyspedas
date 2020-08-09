@@ -400,6 +400,91 @@ def subgse2gsm(time_in, data_in):
     xgsm, ygsm, zgsm = tgsegsm_vect(time_in, data_in)
 
     # If we need a vector, we can use:
-    # gse = np.column_stack((xgsm, ygsm, zgsm))
+    # gvector = np.column_stack((xgsm, ygsm, zgsm))
 
     return [xgsm, ygsm, zgsm]
+
+
+def tgsmgse_vect(time_in, data_in):
+    """
+    Transform data from GSM to GSE.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgsm, ygsm, zgsm GSM coordinates.
+
+    Returns
+    -------
+    xgse: list of float
+         Cartesian GSE coordinates.
+    ygse: list of float
+        Cartesian GSE coordinates.
+    zgse: list of float
+        Cartesian GSE coordinates.
+
+    """
+    xgse, ygse, zgse = 0, 0, 0
+    d = np.array(data_in)
+    xgsm, ygsm, zgsm = d[:, 0], d[:, 1], d[:, 2]
+
+    gd1, gd2, gd3 = cdipdir_vect(time_in)
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+
+    sgst = np.sin(gst)
+    cgst = np.cos(gst)
+
+    ge1 = 0.0
+    ge2 = -np.sin(obliq)
+    ge3 = np.cos(obliq)
+
+    # Dipole direction in GEI system
+    gm1 = gd1 * cgst - gd2 * sgst
+    gm2 = gd1 * sgst + gd2 * cgst
+    gm3 = gd3
+
+    gmgs1 = gm2 * gs3 - gm3 * gs2
+    gmgs2 = gm3 * gs1 - gm1 * gs3
+    gmgs3 = gm1 * gs2 - gm2 * gs1
+
+    rgmgs = np.sqrt(gmgs1**2 + gmgs2**2 + gmgs3**2)
+
+    cdze = (ge1 * gm1 + ge2 * gm2 + ge3 * gm3)/rgmgs
+    sdze = (ge1 * gmgs1 + ge2 * gmgs2 + ge3 * gmgs3)/rgmgs
+
+    xgse = xgsm
+    ygse = cdze * ygsm - sdze * zgsm
+    zgse = sdze * ygsm + cdze * zgsm
+
+    return xgse, ygse, zgse
+
+
+def subgsm2gse(time_in, data_in):
+    """
+    Transform data from GSM to GSE.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GSE.
+
+    Returns
+    -------
+    list
+        Coordinates in GSE.
+
+    """
+    xgse, ygse, zgse = tgsmgse_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gvector = np.column_stack((xgse, ygse, zgse))
+
+    return [xgse, ygse, zgse]
