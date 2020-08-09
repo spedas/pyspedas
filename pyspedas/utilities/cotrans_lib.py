@@ -105,77 +105,6 @@ def csundir_vect(time_in):
     return gst, slong, sra, sdec, obliq
 
 
-def tgeigse_vect(time_in, data_in):
-    """
-    GEI to GSE transformation.
-
-    Parameters
-    ----------
-    time_in: list of float
-        Time array.
-    data_in: list of float
-        xgei, ygei, zgei cartesian GEI coordinates.
-
-    Returns
-    -------
-    xgse: list of float
-         Cartesian GSE coordinates.
-    ygse: list of float
-        Cartesian GSE coordinates.
-    zgse: list of float
-        Cartesian GSE coordinates.
-
-    """
-    xgse, ygse, zgse = 0, 0, 0
-    d = np.array(data_in)
-    xgei, ygei, zgei = d[:, 0], d[:, 1], d[:, 2]
-
-    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
-
-    gs1 = np.cos(sra) * np.cos(sdec)
-    gs2 = np.sin(sra) * np.cos(sdec)
-    gs3 = np.sin(sdec)
-
-    ge1 = 0.0
-    ge2 = -np.sin(obliq)
-    ge3 = np.cos(obliq)
-
-    gegs1 = ge2 * gs3 - ge3 * gs2
-    gegs2 = ge3 * gs1 - ge1 * gs3
-    gegs3 = ge1 * gs2 - ge2 * gs1
-
-    xgse = gs1 * xgei + gs2 * ygei + gs3 * zgei
-    ygse = gegs1 * xgei + gegs2 * ygei + gegs3 * zgei
-    zgse = ge1 * xgei + ge2 * ygei + ge3 * zgei
-
-    return xgse, ygse, zgse
-
-
-def subgei2gse(time_in, data_in):
-    """
-    Transform data from GEI to GSE.
-
-    Parameters
-    ----------
-    time_in: list of float
-        Time array.
-    data_in: list of float
-        Coordinates in GEI.
-
-    Returns
-    -------
-    list
-        Coordinates in GSE.
-
-    """
-    xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
-
-    # If we need a vector, we can use:
-    # gse = np.column_stack((xgse, ygse, zgse))
-
-    return [xgse, ygse, zgse]
-
-
 def cdipdir(time_in=None, iyear=None, idoy=None):
     """
     Compute dipole direction in GEO coordinates.
@@ -321,6 +250,148 @@ def cdipdir_vect(time_in=None, iyear=None, idoy=None):
     return np.array(d1), np.array(d2), np.array(d3)
 
 
+def tgeigse_vect(time_in, data_in):
+    """
+    GEI to GSE transformation.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgei, ygei, zgei cartesian GEI coordinates.
+
+    Returns
+    -------
+    xgse: list of float
+         Cartesian GSE coordinates.
+    ygse: list of float
+        Cartesian GSE coordinates.
+    zgse: list of float
+        Cartesian GSE coordinates.
+
+    """
+    xgse, ygse, zgse = 0, 0, 0
+    d = np.array(data_in)
+    xgei, ygei, zgei = d[:, 0], d[:, 1], d[:, 2]
+
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+
+    ge1 = 0.0
+    ge2 = -np.sin(obliq)
+    ge3 = np.cos(obliq)
+
+    gegs1 = ge2 * gs3 - ge3 * gs2
+    gegs2 = ge3 * gs1 - ge1 * gs3
+    gegs3 = ge1 * gs2 - ge2 * gs1
+
+    xgse = gs1 * xgei + gs2 * ygei + gs3 * zgei
+    ygse = gegs1 * xgei + gegs2 * ygei + gegs3 * zgei
+    zgse = ge1 * xgei + ge2 * ygei + ge3 * zgei
+
+    return xgse, ygse, zgse
+
+
+def subgei2gse(time_in, data_in):
+    """
+    Transform data from GEI to GSE.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GEI.
+
+    Returns
+    -------
+    list
+        Coordinates in GSE.
+
+    """
+    xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gvector = np.column_stack((xgse, ygse, zgse))
+
+    return [xgse, ygse, zgse]
+
+
+def tgsegei_vect(time_in, data_in):
+    """
+    GSE to GEI transformation.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgei, ygei, zgei cartesian GEI coordinates.
+
+    Returns
+    -------
+    xgei: list of float
+         Cartesian GEI coordinates.
+    ygei: list of float
+        Cartesian GEI coordinates.
+    zgei: list of float
+        Cartesian GEI coordinates.
+
+    """
+    xgei, ygei, zgei = 0, 0, 0
+    d = np.array(data_in)
+    xgse, ygse, zgse = d[:, 0], d[:, 1], d[:, 2]
+
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+
+    ge1 = 0.0
+    ge2 = -np.sin(obliq)
+    ge3 = np.cos(obliq)
+
+    gegs1 = ge2 * gs3 - ge3 * gs2
+    gegs2 = ge3 * gs1 - ge1 * gs3
+    gegs3 = ge1 * gs2 - ge2 * gs1
+
+    xgei = gs1 * xgse + gegs1 * ygse + ge1 * zgse
+    ygei = gs2 * xgse + gegs2 * ygse + ge2 * zgse
+    zgei = gs3 * xgse + gegs3 * ygse + ge3 * zgse
+
+    return xgei, ygei, zgei
+
+
+def subgse2gei(time_in, data_in):
+    """
+    Transform data from GSE to GEI.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GSE.
+
+    Returns
+    -------
+    list
+        Coordinates in GEI.
+
+    """
+    xgei, ygei, zgei = tgeigse_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gvector = np.column_stack((xgei, ygei, zgei))
+
+    return [xgei, ygei, zgei]
+
+
 def tgsegsm_vect(time_in, data_in):
     """
     Transform data from GSE to GSM.
@@ -400,6 +471,91 @@ def subgse2gsm(time_in, data_in):
     xgsm, ygsm, zgsm = tgsegsm_vect(time_in, data_in)
 
     # If we need a vector, we can use:
-    # gse = np.column_stack((xgsm, ygsm, zgsm))
+    # gvector = np.column_stack((xgsm, ygsm, zgsm))
 
     return [xgsm, ygsm, zgsm]
+
+
+def tgsmgse_vect(time_in, data_in):
+    """
+    Transform data from GSM to GSE.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgsm, ygsm, zgsm GSM coordinates.
+
+    Returns
+    -------
+    xgse: list of float
+         Cartesian GSE coordinates.
+    ygse: list of float
+        Cartesian GSE coordinates.
+    zgse: list of float
+        Cartesian GSE coordinates.
+
+    """
+    xgse, ygse, zgse = 0, 0, 0
+    d = np.array(data_in)
+    xgsm, ygsm, zgsm = d[:, 0], d[:, 1], d[:, 2]
+
+    gd1, gd2, gd3 = cdipdir_vect(time_in)
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+
+    sgst = np.sin(gst)
+    cgst = np.cos(gst)
+
+    ge1 = 0.0
+    ge2 = -np.sin(obliq)
+    ge3 = np.cos(obliq)
+
+    # Dipole direction in GEI system
+    gm1 = gd1 * cgst - gd2 * sgst
+    gm2 = gd1 * sgst + gd2 * cgst
+    gm3 = gd3
+
+    gmgs1 = gm2 * gs3 - gm3 * gs2
+    gmgs2 = gm3 * gs1 - gm1 * gs3
+    gmgs3 = gm1 * gs2 - gm2 * gs1
+
+    rgmgs = np.sqrt(gmgs1**2 + gmgs2**2 + gmgs3**2)
+
+    cdze = (ge1 * gm1 + ge2 * gm2 + ge3 * gm3)/rgmgs
+    sdze = (ge1 * gmgs1 + ge2 * gmgs2 + ge3 * gmgs3)/rgmgs
+
+    xgse = xgsm
+    ygse = cdze * ygsm - sdze * zgsm
+    zgse = sdze * ygsm + cdze * zgsm
+
+    return xgse, ygse, zgse
+
+
+def subgsm2gse(time_in, data_in):
+    """
+    Transform data from GSM to GSE.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GSE.
+
+    Returns
+    -------
+    list
+        Coordinates in GSE.
+
+    """
+    xgse, ygse, zgse = tgsmgse_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gvector = np.column_stack((xgse, ygse, zgse))
+
+    return [xgse, ygse, zgse]
