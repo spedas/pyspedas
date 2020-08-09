@@ -1,7 +1,7 @@
 import os
 
 CONFIG = {'local_data_dir': 'fast_data/',
-          'remote_data_dir': 'https://spdf.sci.gsfc.nasa.gov/pub/data/fast/'}
+          'remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/fast/'}
 
 # override local data directory with environment variables
 if os.environ.get('SPEDAS_DATA_DIR'):

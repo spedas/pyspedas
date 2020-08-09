@@ -12,7 +12,7 @@ To open the GUI window:
 
 For cdasws documentation, see:
     https://test.pypi.org/project/cdasws/
-    https://cdaweb.sci.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
+    https://cdaweb.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
 
 Notes:
     Currently, cdasws is not on the main pypi server.

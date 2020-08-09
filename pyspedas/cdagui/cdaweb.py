@@ -6,7 +6,7 @@ Gets information from CDAWeb using cdasws.
 
 For cdasws documentation, see:
     https://test.pypi.org/project/cdasws/
-    https://cdaweb.sci.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
+    https://cdaweb.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
 
 @author: nikos
 """
@@ -112,7 +112,7 @@ class CDAWeb():
 
         result = []
         loaded_vars = []
-        remotehttp = "https://cdaweb.sci.gsfc.nasa.gov/sp_phys/data"
+        remotehttp = "https://cdaweb.gsfc.nasa.gov/sp_phys/data"
         count = 0
         dcount = 0
         for remotef in remote_files:
