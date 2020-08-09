@@ -321,7 +321,7 @@ def subgei2gse(time_in, data_in):
     return [xgse, ygse, zgse]
 
 
-def tgse2gei_vect(time_in, data_in):
+def tgsegei_vect(time_in, data_in):
     """
     GSE to GEI transformation.
 
@@ -360,9 +360,9 @@ def tgse2gei_vect(time_in, data_in):
     gegs2 = ge3 * gs1 - ge1 * gs3
     gegs3 = ge1 * gs2 - ge2 * gs1
 
-    xgei = gs1 * xgse + gs2 * ygse + gs3 * zgse
-    ygei = gegs1 * xgse + gegs2 * ygse + gegs3 * zgse
-    zgei = ge1 * xgse + ge2 * ygse + ge3 * zgse
+    xgei = gs1 * xgse + gegs1 * ygse + ge1 * zgse
+    ygei = gs2 * xgse + gegs2 * ygse + ge2 * zgse
+    zgei = gs3 * xgse + gegs3 * ygse + ge3 * zgse
 
     return xgei, ygei, zgei
 
