@@ -316,9 +316,80 @@ def subgei2gse(time_in, data_in):
     xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
 
     # If we need a vector, we can use:
-    # gse = np.column_stack((xgse, ygse, zgse))
+    # gvector = np.column_stack((xgse, ygse, zgse))
 
     return [xgse, ygse, zgse]
+
+
+def tgse2gei_vect(time_in, data_in):
+    """
+    GSE to GEI transformation.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgei, ygei, zgei cartesian GEI coordinates.
+
+    Returns
+    -------
+    xgei: list of float
+         Cartesian GEI coordinates.
+    ygei: list of float
+        Cartesian GEI coordinates.
+    zgei: list of float
+        Cartesian GEI coordinates.
+
+    """
+    xgei, ygei, zgei = 0, 0, 0
+    d = np.array(data_in)
+    xgse, ygse, zgse = d[:, 0], d[:, 1], d[:, 2]
+
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+
+    ge1 = 0.0
+    ge2 = -np.sin(obliq)
+    ge3 = np.cos(obliq)
+
+    gegs1 = ge2 * gs3 - ge3 * gs2
+    gegs2 = ge3 * gs1 - ge1 * gs3
+    gegs3 = ge1 * gs2 - ge2 * gs1
+
+    xgei = gs1 * xgse + gs2 * ygse + gs3 * zgse
+    ygei = gegs1 * xgse + gegs2 * ygse + gegs3 * zgse
+    zgei = ge1 * xgse + ge2 * ygse + ge3 * zgse
+
+    return xgei, ygei, zgei
+
+
+def subgse2gei(time_in, data_in):
+    """
+    Transform data from GSE to GEI.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GSE.
+
+    Returns
+    -------
+    list
+        Coordinates in GEI.
+
+    """
+    xgei, ygei, zgei = tgeigse_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gvector = np.column_stack((xgei, ygei, zgei))
+
+    return [xgei, ygei, zgei]
 
 
 def tgsegsm_vect(time_in, data_in):
