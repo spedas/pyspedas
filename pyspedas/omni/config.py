@@ -1,7 +1,7 @@
 import os
 
 CONFIG = {'local_data_dir': 'omni_data/',
-          'remote_data_dir': 'https://spdf.sci.gsfc.nasa.gov/pub/data/omni/omni_cdaweb/'}
+          'remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/omni/omni_cdaweb/'}
 
 # override local data directory with environment variables
 if os.environ.get('SPEDAS_DATA_DIR'):

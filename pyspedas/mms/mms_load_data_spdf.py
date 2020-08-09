@@ -8,7 +8,7 @@ from pyspedas.analysis.time_clip import time_clip as tclip
 
 from .mms_config import CONFIG
 
-CONFIG['remote_data_dir'] = 'https://spdf.sci.gsfc.nasa.gov/pub/data/mms/'
+CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/mms/'
 
 def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
     instrument='fgm', datatype='', varformat=None, suffix='', get_support_data=False, time_clip=False, 
