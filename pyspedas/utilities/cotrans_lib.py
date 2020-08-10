@@ -559,3 +559,155 @@ def subgsm2gse(time_in, data_in):
     # gvector = np.column_stack((xgse, ygse, zgse))
 
     return [xgse, ygse, zgse]
+
+
+def tgsmsm_vect(time_in, data_in):
+    """
+    Transform data from GSM to SM.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgsm, ygsm, zgsm GSM coordinates.
+
+    Returns
+    -------
+    xsm: list of float
+         Cartesian SM coordinates.
+    ysm: list of float
+        Cartesian SM coordinates.
+    zsm: list of float
+        Cartesian SM coordinates.
+
+    """
+    xsm, ysm, zsm = 0, 0, 0
+    d = np.array(data_in)
+    xgsm, ygsm, zgsm = d[:, 0], d[:, 1], d[:, 2]
+
+    gd1, gd2, gd3 = cdipdir_vect(time_in)
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+
+    sgst = np.sin(gst)
+    cgst = np.cos(gst)
+
+    # Direction of the sun in GEO system
+    ps1 = gs1 * cgst + gs2 * sgst
+    ps2 = -gs1 * sgst + gs2 * cgst
+    ps3 = gs3
+
+    # Computation of mu angle
+    smu = ps1 * gd1 + ps2 * gd2 + ps3 * gd3
+    cmu = np.sqrt(1.0 - smu * smu)
+
+    xsm = cmu * xgsm - smu * zgsm
+    ysm = ygsm
+    zsm = smu * xgsm + cmu * zgsm
+
+    return xsm, ysm, zsm
+
+
+def subgsm2sm(time_in, data_in):
+    """
+    Transform data from GSM to SM.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GSM.
+
+    Returns
+    -------
+    list
+        Coordinates in SM.
+
+    """
+    xsm, ysm, zsm = tgsmgse_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gvector = np.column_stack((xsm, ysm, zsm))
+
+    return [xsm, ysm, zsm]
+
+
+def tsmgsm_vect(time_in, data_in):
+    """
+    Transform data from SM to GSM.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        xgsm, ygsm, zgsm GSM coordinates.
+
+    Returns
+    -------
+    xsm: list of float
+         GSM coordinates.
+    ysm: list of float
+         GSM coordinates.
+    zsm: list of float
+         GSM coordinates.
+
+    """
+    xgsm, ygsm, zgsm = 0, 0, 0
+    d = np.array(data_in)
+    xsm, ysm, zsm = d[:, 0], d[:, 1], d[:, 2]
+
+    gd1, gd2, gd3 = cdipdir_vect(time_in)
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    gs1 = np.cos(sra) * np.cos(sdec)
+    gs2 = np.sin(sra) * np.cos(sdec)
+    gs3 = np.sin(sdec)
+
+    sgst = np.sin(gst)
+    cgst = np.cos(gst)
+
+    # Direction of the sun in GEO system
+    ps1 = gs1 * cgst + gs2 * sgst
+    ps2 = -gs1 * sgst + gs2 * cgst
+    ps3 = gs3
+
+    # Computation of mu angle
+    smu = ps1 * gd1 + ps2 * gd2 + ps3 * gd3
+    cmu = np.sqrt(1.0 - smu * smu)
+
+    xgsm = cmu * xsm + smu * zsm
+    ygsm = ysm
+    zgsm = -smu * xsm + cmu * zsm
+
+    return xgsm, ygsm, zgsm
+
+
+def subsm2gsm(time_in, data_in):
+    """
+    Transform data from SM to GSM.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in SM.
+
+    Returns
+    -------
+    list
+        Coordinates in GSM.
+
+    """
+    xgsm, ygsm, zgsm = tsmgsm_vect(time_in, data_in)
+
+    # If we need a vector, we can use:
+    # gvector = np.column_stack((xgsm, ygsm, zgsm))
+
+    return [xgsm, ygsm, zgsm]
