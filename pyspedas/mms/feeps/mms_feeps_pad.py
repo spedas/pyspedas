@@ -85,7 +85,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
             pa_data_map['top-electron'] = idx_maps['electron-top']
             pa_data_map['bottom-electron'] = idx_maps['electron-bottom']
         if datatype == 'ion':
-            pa_data_map['top-ion'] = idx_maps['electron-top']
+            pa_data_map['top-ion'] = idx_maps['ion-top']
             pa_data_map['bottom-ion'] = idx_maps['ion-bottom']
     elif data_rate == 'brst':
         # note: the following are indices of the top/bottom sensors in pa_data
