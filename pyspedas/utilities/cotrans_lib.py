@@ -711,3 +711,67 @@ def subsm2gsm(time_in, data_in):
     # gvector = np.column_stack((xgsm, ygsm, zgsm))
 
     return [xgsm, ygsm, zgsm]
+
+
+def subgei2geo(time_in, data_in):
+    """
+    Transform data from GEI to GEO.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GEI.
+
+    Returns
+    -------
+    list
+        Coordinates in GEO.
+
+    """
+    xgeo, ygeo, zgeo = 0, 0, 0
+    d = np.array(data_in)
+    xgei, ygei, zgei = d[:, 0], d[:, 1], d[:, 2]
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    sgst = np.sin(gst)
+    cgst = np.cos(gst)
+
+    xgeo = cgst * xgei + sgst * ygei
+    ygeo = -sgst * xgei + cgst * ygei
+    zgeo = zgei
+
+    return [xgeo, ygeo, zgeo]
+
+
+def subgeo2gei(time_in, data_in):
+    """
+    Transform data from GEO to GEI.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GEI.
+
+    Returns
+    -------
+    list
+        Coordinates in GEI.
+
+    """
+    xgei, ygei, zgei = 0, 0, 0
+    d = np.array(data_in)
+    xgeo, ygeo, zgeo = d[:, 0], d[:, 1], d[:, 2]
+    gst, slong, sra, sdec, obliq = csundir_vect(time_in)
+
+    sgst = np.sin(gst)
+    cgst = np.cos(gst)
+
+    xgei = cgst * xgeo - sgst * ygeo
+    ygei = sgst * xgeo + cgst * ygeo
+    zgei = zgeo
+
+    return [xgei, ygei, zgei]
