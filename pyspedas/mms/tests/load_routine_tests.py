@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from pyspedas.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
+from pyspedas.mms import mms_load_state, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
 from pyspedas.utilities.data_exists import data_exists
 from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
@@ -9,6 +9,17 @@ from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 from pytplot import get_data, del_data
 
 from pyspedas import tdpwrspc
+
+class StateLoadTestCases(unittest.TestCase):
+    def test_load_eph_data(self):
+        data = mms_load_state(datatypes=['pos', 'vel'])
+        self.assertTrue(data_exists('mms1_defeph_pos'))
+        self.assertTrue(data_exists('mms1_defeph_vel'))
+
+    def test_load_att_data(self):
+        data = mms_load_state(trange=['2015-10-16', '2015-10-16/06:00'], datatypes=['spinras', 'spindec'])
+        self.assertTrue(data_exists('mms1_defatt_spinras'))
+        self.assertTrue(data_exists('mms1_defatt_spindec'))
 
 ############### DSP ############### 
 class DSPLoadTestCases(unittest.TestCase):
