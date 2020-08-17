@@ -25,6 +25,7 @@ from .feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
 from .eis.mms_eis_omni import mms_eis_omni
 from .eis.mms_eis_spin_avg import mms_eis_spin_avg
 from .eis.mms_eis_set_metadata import mms_eis_set_metadata
+from pyspedas.mms.mec_ascii.mms_get_state_data import mms_get_state_data
 from .mms_config import CONFIG
 
 from pyspedas import tnames
@@ -49,6 +50,12 @@ def print_vars(func):
     wrapper.__name__ = func.__name__
     wrapper.__doc__ = func.__doc__
     return wrapper
+
+@print_vars
+def mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', level='def',
+    datatypes=['pos', 'vel'], no_download=False, pred_or_def=True, suffix=''):
+    return mms_get_state_data(trange=trange, probe=probe, level=level, datatypes=datatypes,
+        no_download=no_download, pred_or_def=pred_or_def, suffix=suffix)
 
 @print_vars
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy',
@@ -1340,6 +1347,10 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
             >>> import pyspedas
             >>> fgm_data = pyspedas.mms.fgm(...)
 '''
+
+@wraps(mms_load_state)
+def state(*args, **kwargs):
+    return mms_load_state(*args, **kwargs)
 
 @wraps(mms_load_fgm)
 def fgm(*args, **kwargs):
