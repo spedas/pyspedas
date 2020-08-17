@@ -2,7 +2,7 @@
 from pyspedas import mms_load_edi
 from pytplot import get_data
 
-mms_load_edi()
+mms_load_edi(trange=['2016-10-16','2016-10-17'])
 
 t, d = get_data('mms1_edi_e_gse_srvy_l2')
 
