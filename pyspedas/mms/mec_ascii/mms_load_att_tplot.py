@@ -19,6 +19,7 @@ def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 
     tvalues = {}
 
     for file in filenames:
+        logging.info('Loading attitude files can take some time; please be patient...')
         rows = pd.read_csv(file, delim_whitespace=True, header=None, skiprows=49)
 
         times = rows.shape[0]-1
