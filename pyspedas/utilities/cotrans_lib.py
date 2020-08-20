@@ -817,3 +817,62 @@ def subgeo2mag(time_in, data_in):
         mag[i] = mlat @ out
 
     return mag
+
+
+def submag2geo(time_in, data_in):
+    """
+    Transform data from MAG to GEO.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in MAG.
+
+    Returns
+    -------
+    Array of float
+        Coordinates in GEO.
+
+    Notes
+    -----
+    Adapted from spedas IDL file mag2geo.pro.
+
+    """
+    d = np.array(data_in)
+
+    # Step 1. Transform SM to GEO: SM -> GSM -> GSE -> GEI -> GEO
+    n = len(time_in)
+    sm = np.zeros((n, 3), float)
+    sm[:, 2] = 1.0
+    gsm = subsm2gsm(time_in, sm)
+    gse = subgsm2gse(time_in, gsm)
+    gei = subgse2gei(time_in, gse)
+    geo = subgei2geo(time_in, gei)
+
+    # Step 2. Transform cartesian to spherical.
+    x2y2 = geo[:, 0]**2 + geo[:, 1]**2
+    # r = np.sqrt(x2y2 + geo[:, 2]**2)
+    theta = np.arctan2(geo[:, 2], np.sqrt(x2y2))  # lat
+    phi = np.arctan2(geo[:, 1], geo[:, 0])  # long
+
+    for i in range(n):
+        # Step 3. Apply rotations.
+        glat = np.zeros((3, 3), float)
+        glat[0, 0] = np.cos(np.pi/2.0 - theta[i])
+        glat[0, 2] = np.sin(np.pi/2.0 - theta[i])
+        glat[2, 0] = -np.sin(np.pi/2.0 - theta[i])
+        glat[2, 2] = np.cos(np.pi/2.0 - theta[i])
+        glat[1, 1] = 1.0
+        out = glat @ d[i]
+
+        glong = np.zeros((3, 3), float)
+        glong[0, 0] = np.cos(phi[i])
+        glong[0, 1] = -np.sin(phi[i])
+        glong[1, 0] = np.sin(phi[i])
+        glong[1, 1] = np.cos(phi[i])
+        glong[2, 2] = 1.0
+        geo[i] = glong @ out
+
+    return geo
