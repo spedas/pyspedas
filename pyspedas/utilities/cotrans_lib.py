@@ -309,16 +309,13 @@ def subgei2gse(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in GSE.
 
     """
     xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
 
-    # If we need a vector, we can use:
-    # gvector = np.column_stack((xgse, ygse, zgse))
-
-    return [xgse, ygse, zgse]
+    return np.column_stack([xgse, ygse, zgse])
 
 
 def tgsegei_vect(time_in, data_in):
@@ -380,16 +377,13 @@ def subgse2gei(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in GEI.
 
     """
     xgei, ygei, zgei = tgsegei_vect(time_in, data_in)
 
-    # If we need a vector, we can use:
-    # gvector = np.column_stack((xgei, ygei, zgei))
-
-    return [xgei, ygei, zgei]
+    return np.column_stack([xgei, ygei, zgei])
 
 
 def tgsegsm_vect(time_in, data_in):
@@ -464,16 +458,13 @@ def subgse2gsm(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in GSM.
 
     """
     xgsm, ygsm, zgsm = tgsegsm_vect(time_in, data_in)
 
-    # If we need a vector, we can use:
-    # gvector = np.column_stack((xgsm, ygsm, zgsm))
-
-    return [xgsm, ygsm, zgsm]
+    return np.column_stack([xgsm, ygsm, zgsm])
 
 
 def tgsmgse_vect(time_in, data_in):
@@ -549,16 +540,13 @@ def subgsm2gse(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in GSE.
 
     """
     xgse, ygse, zgse = tgsmgse_vect(time_in, data_in)
 
-    # If we need a vector, we can use:
-    # gvector = np.column_stack((xgse, ygse, zgse))
-
-    return [xgse, ygse, zgse]
+    return np.column_stack([xgse, ygse, zgse])
 
 
 def tgsmsm_vect(time_in, data_in):
@@ -625,16 +613,13 @@ def subgsm2sm(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in SM.
 
     """
     xsm, ysm, zsm = tgsmgse_vect(time_in, data_in)
 
-    # If we need a vector, we can use:
-    # gvector = np.column_stack((xsm, ysm, zsm))
-
-    return [xsm, ysm, zsm]
+    return np.column_stack([xsm, ysm, zsm])
 
 
 def tsmgsm_vect(time_in, data_in):
@@ -701,16 +686,13 @@ def subsm2gsm(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in GSM.
 
     """
     xgsm, ygsm, zgsm = tsmgsm_vect(time_in, data_in)
 
-    # If we need a vector, we can use:
-    # gvector = np.column_stack((xgsm, ygsm, zgsm))
-
-    return [xgsm, ygsm, zgsm]
+    return np.column_stack([xgsm, ygsm, zgsm])
 
 
 def subgei2geo(time_in, data_in):
@@ -726,7 +708,7 @@ def subgei2geo(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in GEO.
 
     """
@@ -742,7 +724,7 @@ def subgei2geo(time_in, data_in):
     ygeo = -sgst * xgei + cgst * ygei
     zgeo = zgei
 
-    return [xgeo, ygeo, zgeo]
+    return np.column_stack([xgeo, ygeo, zgeo])
 
 
 def subgeo2gei(time_in, data_in):
@@ -758,7 +740,7 @@ def subgeo2gei(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in GEI.
 
     """
@@ -790,7 +772,7 @@ def subgeo2mag(time_in, data_in):
 
     Returns
     -------
-    list
+    Array of float
         Coordinates in MAG.
 
     Notes
@@ -805,16 +787,16 @@ def subgeo2mag(time_in, data_in):
     sm = np.zeros((n, 3), float)
     sm[:, 2] = 1.0
     gsm = subsm2gsm(time_in, sm)
-    gse = subgsm2gse(time_in, np.column_stack(gsm))
-    gei = subgse2gei(time_in, np.column_stack(gse))
-    geo = subgei2geo(time_in, np.column_stack(gei))
-    vmag = np.column_stack(geo)
+    gse = subgsm2gse(time_in, gsm)
+    gei = subgse2gei(time_in, gse)
+    geo = subgei2geo(time_in, gei)
+    mag = geo  # the output
 
     # Step 2. Transform cartesian to spherical.
-    x2y2 = geo[0]**2 + geo[1]**2
-    # r = np.sqrt(x2y2 + geo[2]**2)
-    theta = np.arctan2(geo[2], np.sqrt(x2y2))  # lat
-    phi = np.arctan2(geo[1], geo[0])  # long
+    x2y2 = geo[:, 0]**2 + geo[:, 1]**2
+    # r = np.sqrt(x2y2 + geo[:, 2]**2)
+    theta = np.arctan2(geo[:, 2], np.sqrt(x2y2))  # lat
+    phi = np.arctan2(geo[:, 1], geo[:, 0])  # long
 
     for i in range(n):
         # Step 3. Apply rotations.
@@ -832,6 +814,6 @@ def subgeo2mag(time_in, data_in):
         mlat[2, 0] = np.sin(np.pi/2.0 - theta[i])
         mlat[2, 2] = np.cos(np.pi/2.0 - theta[i])
         mlat[1, 1] = 1.0
-        vmag[i] = mlat @ out
+        mag[i] = mlat @ out
 
-    return vmag
+    return mag
