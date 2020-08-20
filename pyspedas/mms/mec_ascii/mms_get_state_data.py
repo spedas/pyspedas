@@ -27,7 +27,7 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
     probe = str(probe)
 
     start_time = time_double(trange[0])-60*60*24.
-    end_time = time_double(trange[1])-1
+    end_time = time_double(trange[1])
 
     # check if end date is anything other than 00:00:00, if so
     # add a day to the end time to ensure that all data is downloaded
