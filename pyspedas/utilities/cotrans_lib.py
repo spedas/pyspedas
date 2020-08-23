@@ -1036,6 +1036,7 @@ def j2000_matrix_vec(time_in):
 
     return cmatrix
 
+
 def ctv_mx_vec_rot(m, v):
     """
     Vectorized multiplication of n matrices by n vectors.
@@ -1095,5 +1096,34 @@ def subgei2j2000(time_in, data_in):
 
     cmatrix = j2000_matrix_vec(time_in)
     d_out = ctv_mx_vec_rot(cmatrix, d)
+
+    return d_out
+
+
+def subj20002gei(time_in, data_in):
+    """
+    Transform data from J2000 to GEI.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in J2000.
+
+    Returns
+    -------
+    Array of float
+        Coordinates in GEI.
+
+    """
+    n = len(time_in)
+    d_out = np.zeros((3, n), float)
+    d = np.array(data_in)
+
+    cmatrix = j2000_matrix_vec(time_in)
+    # Get the inverse of the 3x3 matrices.
+    icmatrix = np.transpose(cmatrix, (1, 0, 2))
+    d_out = ctv_mx_vec_rot(icmatrix, d)
 
     return d_out
