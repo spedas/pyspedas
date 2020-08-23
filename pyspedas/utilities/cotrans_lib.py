@@ -1,14 +1,20 @@
 """
 Functions for coordinate transformations.
 
+Contains trasformations from/to the following coordinate systems:
+GSE, GSM, SM, GEI, GEO, MAG, J2000
+
+Times are in Unix seconds for consistency.
+
 Notes
 -----
 These functions are in cotrans_lib.pro of IDL SPEDAS.
-
+For a comparison to IDL, see: http://spedas.org/wiki/index.php?title=Cotrans
 """
 import numpy as np
 from datetime import datetime
 from pyspedas import set_igrf_params
+from pyspedas import set_j2000_params
 
 
 def get_time_parts(time_in):
@@ -876,3 +882,218 @@ def submag2geo(time_in, data_in):
         geo[i] = glong @ out
 
     return geo
+
+
+def ctv_mm_mult(m1, m2):
+    """
+    Vectorized multiplication of two lists of 3x3 matrices.
+
+    Parameters
+    ----------
+    m1: array of float
+        Array (3, 3, n). List of n 3x3 matrices.
+
+    m2: array of float
+        Array (3, 3, n). List of n 3x3 matrices.
+
+    Returns
+    -------
+    Array of float
+        Array (3, 3, n). List of n 3x3 matrices.
+
+    Notes
+    -----
+    Adapted from spedas IDL file matrix_array_lib.pro.
+
+    """
+    n = m1.shape[2]
+    out = np.zeros((3, 3, n), float)
+
+    out[0, 0, :] = np.sum(m1[0, :, :] * m2[:, 0, :], 0)
+    out[1, 0, :] = np.sum(m1[1, :, :] * m2[:, 0, :], 0)
+    out[2, 0, :] = np.sum(m1[2, :, :] * m2[:, 0, :], 0)
+
+    out[0, 1, :] = np.sum(m1[0, :, :] * m2[:, 1, :], 0)
+    out[1, 1, :] = np.sum(m1[1, :, :] * m2[:, 1, :], 0)
+    out[2, 1, :] = np.sum(m1[2, :, :] * m2[:, 1, :], 0)
+
+    out[0, 2, :] = np.sum(m1[0, :, :] * m2[:, 2, :], 0)
+    out[1, 2, :] = np.sum(m1[1, :, :] * m2[:, 2, :], 0)
+    out[2, 2, :] = np.sum(m1[2, :, :] * m2[:, 2, :], 0)
+
+    return out
+
+
+def j2000_matrix_vec(time_in):
+    """
+    Get the conversion matrix for J2000 coordinates.
+
+    Gives a matrix that transforms from mean earth equator and equinox
+    of J2000 into the true earth equator and equinox for the dates and times.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+
+    Returns
+    -------
+    Matrix of float
+        Transformation matrix.
+
+    Notes
+    -----
+    Adapted from spedas IDL file spd_make_j2000_matrix_vec.pro.
+
+    """
+    iyear, idoy, ih, im, isec = get_time_parts(time_in)
+
+    n = len(time_in)
+    cmatrix = np.zeros((3, 3, n), float)
+    nutmat = np.zeros((3, 3, n), float)
+    premat = np.zeros((3, 3, n), float)
+
+    # Julian time 2440587.5 = Unix time 0
+    # Julian time = Unix time/(60*60*24.0) + 2440587.5
+    # J2000 is January 1, 2000 12:00:00
+    #   = 2451545.0 Julian days
+    # One Julian year = 365.25 days
+    # One Julian century is 36525 days
+    # J2000 time array in Julian centuries:
+    time = (np.array(time_in)/(60.0*60.0*24) + 2440587.5 - 2451545.0)/36525.0
+    t2 = time**2
+    t3 = time**3
+
+    zeta = (0.11180860865024398e-01 * time
+            + 0.14635555405334670e-05 * t2
+            + 0.87256766326094274e-07 * t3)
+    theta = (0.97171734551696701e-02 * time
+             - 0.20684575704538352e-05 * t2
+             - 0.20281210721855218e-06 * t3)
+    zee = (0.11180860865024398e-01 * time
+           + 0.53071584043698687e-05 * t2
+           + 0.88250634372368822e-07 * t3)
+
+    sinzet = np.sin(zeta)
+    coszet = np.cos(zeta)
+    sinzee = np.sin(zee)
+    coszee = np.cos(zee)
+    sinthe = np.sin(theta)
+    costhe = np.cos(theta)
+
+    premat[0, 0, :] = -sinzet * sinzee + coszet * coszee * costhe
+    premat[1, 0, :] = coszee * sinzet + sinzee * costhe * coszet
+    premat[2, 0, :] = sinthe * coszet
+    premat[0, 1, :] = -sinzee * coszet - coszee * costhe * sinzet
+    premat[1, 1, :] = coszee * coszet - sinzee * costhe * sinzet
+    premat[2, 1, :] = -sinthe * sinzet
+    premat[0, 2, :] = -coszee * sinthe
+    premat[1, 2, :] = -sinzee * sinthe
+    premat[2, 2, :] = costhe
+
+    r = 1296000.0
+    dtr = np.pi/(180.0)
+    st = dtr/(3600.0)
+    epso = st*(1.813e-3*t3-5.9e-4*t2-4.6815e+1*time + 8.4381448e+4)
+
+    # Start: Calculations inside spd_get_nut_angles_vec.pro
+    funar, sinco, cosco = set_j2000_params()
+    fund = [0, 0, 0, 0, 0]
+    fund[0] = st*(335778.877+(1342.0*r+295263.137)*time-13.257*t2+1.1e-2*t3)
+    fund[1] = st*(450160.28-(5.0*r+482890.539)*time+7.455*t2+8.0e-3*t3)
+    fund[2] = st*(1287099.804+(99.0*r+1292581.224)*time-5.77e-1*t2-1.2e-2*t3)
+    fund[3] = st*(485866.733+(1325.0*r+715922.633)*time+31.31*t2+6.4e-2*t3)
+    fund[4] = st*(1072261.307+(1236.0*r+1105601.328)*time-6.891*t2+1.9e-2*t3)
+
+    arg = funar @ fund
+    t = [np.ones(n), time]
+    sumpsi = np.sum(0.0001 * (sinco @ t) * np.sin(arg), 0)
+    sumeps = np.sum(0.0001 * (cosco @ t) * np.cos(arg), 0)
+    delpsi = st*sumpsi
+    deleps = st*sumeps
+    eps = epso + deleps
+
+    # End: Calculations inside spd_get_nut_angles_vec.pro
+
+    cosep = np.cos(eps)
+    cosepO = np.cos(epso)
+    cospsi = np.cos(delpsi)
+    sinep = np.sin(eps)
+    sinepO = np.sin(epso)
+    sinpsi = np.sin(delpsi)
+
+    nutmat[0, 0, :] = cospsi
+    nutmat[0, 1, :] = -sinpsi*cosepO
+    nutmat[0, 2, :] = -sinpsi*sinepO
+    nutmat[1, 0, :] = sinpsi*cosep
+    nutmat[1, 1, :] = cospsi*cosep*cosepO + sinep*sinepO
+    nutmat[1, 2, :] = cospsi*cosep*sinepO - sinep*cosepO
+    nutmat[2, 0, :] = sinpsi*sinep
+    nutmat[2, 1, :] = cospsi*sinep*cosepO - cosep*sinepO
+    nutmat[2, 2, :] = cospsi*sinep*sinepO + cosep*cosepO
+    # ctv_mm_mult
+    cmatrix = ctv_mm_mult(premat, nutmat)
+
+    return cmatrix
+
+def ctv_mx_vec_rot(m, v):
+    """
+    Vectorized multiplication of n matrices by n vectors.
+
+    Parameters
+    ----------
+    m: array of float
+        Array (k, k, n). List of n kxk matrices.
+        Unually, it is 3x3 matrices, ie. k=3.
+
+    v: array of float
+        Array (n, k). List of n vectors.
+
+    Returns
+    -------
+    Array of float
+        Array (n, k). List of n vectors.
+
+    Notes
+    -----
+    Adapted from spedas IDL file matrix_array_lib.pro.
+
+    """
+    n = m.shape[2]
+    k = m.shape[1]  # This should be 3 for 3x3 matrices.
+    out = np.zeros((n, k), float)
+    a = np.zeros((k, k, n), float)
+
+    for i in range(k):
+        a[i] = v[:, i]
+
+    out = np.sum(m * a, 0)
+
+    return out
+
+
+def subgei2j2000(time_in, data_in):
+    """
+    Transform data from GEI to J2000.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in GEI.
+
+    Returns
+    -------
+    Array of float
+        Coordinates in J2000.
+
+    """
+    n = len(time_in)
+    d_out = np.zeros((3, n), float)
+    d = np.array(data_in)
+
+    cmatrix = j2000_matrix_vec(time_in)
+    d_out = ctv_mx_vec_rot(cmatrix, d)
+
+    return d_out

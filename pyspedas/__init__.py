@@ -5,6 +5,7 @@ from .utilities.time_string import time_string, time_datetime
 from .utilities.time_double import time_float, time_double
 from .utilities.tcopy import tcopy
 from .utilities.igrf import set_igrf_params
+from .utilities.j2000 import set_j2000_params
 
 from .analysis.avg_data import avg_data
 from .analysis.clean_spikes import clean_spikes
