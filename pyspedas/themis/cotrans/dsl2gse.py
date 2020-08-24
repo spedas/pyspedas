@@ -73,7 +73,8 @@ def dsl2gse(name_in, spinras, spindec, name_out, isgsetodsl=0):
     zscs = np.column_stack((zscs0, zscs1, zscs2))
 
     # unit vector that points along the spin axis in GSE
-    zgse = subgei2gse(data_in[0], zscs)
+    trgse = subgei2gse(data_in[0], zscs)
+    zgse = [trgse[:,0], trgse[:,1], trgse[:,2]]
     sun = [1.0, 0.0, 0.0]
     yscs = [zgse[1] * sun[2] - zgse[2] * sun[1],
             zgse[2] * sun[0] - zgse[0] * sun[2],
