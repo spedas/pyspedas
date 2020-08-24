@@ -13,8 +13,8 @@ For a comparison to IDL, see: http://spedas.org/wiki/index.php?title=Cotrans
 """
 import numpy as np
 from datetime import datetime
-from pyspedas import set_igrf_params
-from pyspedas import set_j2000_params
+from pyspedas.utilities.igrf import set_igrf_params
+from pyspedas.utilities.j2000 import set_j2000_params
 
 
 def get_time_parts(time_in):
@@ -1279,3 +1279,11 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
         data_out = globals()[subname](time_in, data_out)
 
     return data_out
+
+d = [[245.0, -102.0, 251.0], [775.0, 10.0, -10], [121.0, 545.0, -1.0],
+     [304.65, -205.3, 856.1], [464.34, -561.55, -356.22],
+     [264.14, 61.55, -56.32]]
+t = [1577112800, 1577308800, 1577598800, 1577608800, 1577798800, 1577998800]
+# mag = subcotrans(t, d, 'j2000', 'mag')
+mag = subcotrans(t, d, 'j2000', 'gei')
+print(mag)
