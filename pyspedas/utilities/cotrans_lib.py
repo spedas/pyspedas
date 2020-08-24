@@ -1265,14 +1265,17 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
         print("Warning: coord_in equal to coord_out.")
         return data_out
 
+    # Construct a list of transformations.
     p = find_path_t1_t2(coord_in, coord_out)
     p = shorten_path_t1_t2(p)
-    print(p)
+    p = shorten_path_t1_t2(p)
+
+    # Daisy chain the list of transformations.
     for i in range(len(p)-1):
         c1 = p[i]
         c2 = p[i+1]
-        fname = "sub" + c1 + "2" + c2
-        print("Running transformation: " + fname)
-        data_out = globals()[fname](time_in, data_out)
+        subname = "sub" + c1 + "2" + c2
+        print("Running transformation: " + subname)
+        data_out = globals()[subname](time_in, data_out)
 
     return data_out
