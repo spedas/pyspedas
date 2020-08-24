@@ -1,29 +1,5 @@
+"""Transform DSL data to GSE data."""
 
-"""
-File:
-    dsl2gse.py
-
-Description:
-    Transform DSL data to GSE data.
-    Also, GSE to DSL.
-
-Parameters:
-    name_in: str
-        Name of input pytplot variable (eg. 'tha_fgl_dsl')
-    spinras: str
-        Name of pytplot variable for spin (eg.'tha_spinras').
-    spindec: str
-        Name of pytplot variable for spin (eg.'tha_spinras').
-    name_out: str
-        Name of output pytplot variable (eg. 'tha_fgl_gse')
-    isgsetodsl: bool
-        If 0 (default) then DSL to GSE.
-        If 1, then GSE to DSL.
-
-Notes:
-    Works in a similar way to IDL spedas dsl2gse
-
-"""
 import pytplot
 import pyspedas
 from pyspedas.utilities.cotrans_lib import subgei2gse
@@ -31,7 +7,25 @@ import numpy as np
 
 
 def dsl2gse(name_in, spinras, spindec, name_out, isgsetodsl=0):
-    """ Transforms dsl to gse
+    """Transform dsl to gse.
+
+    Parameters
+    ----------
+        name_in: str
+            Name of input pytplot variable (eg. 'tha_fgl_dsl')
+        spinras: str
+            Name of pytplot variable for spin (eg.'tha_spinras').
+        spindec: str
+            Name of pytplot variable for spin (eg.'tha_spinras').
+        name_out: str
+            Name of output pytplot variable (eg. 'tha_fgl_gse')
+        isgsetodsl: bool
+            If 0 (default) then DSL to GSE.
+            If 1, then GSE to DSL.
+
+    Notes
+    -----
+        Works in a similar way to IDL spedas dsl2gse
     """
     all_names = pytplot.tplot_names()
     needed_vars = [name_in, spinras, spindec]
@@ -74,7 +68,7 @@ def dsl2gse(name_in, spinras, spindec, name_out, isgsetodsl=0):
 
     # unit vector that points along the spin axis in GSE
     trgse = subgei2gse(data_in[0], zscs)
-    zgse = [trgse[:,0], trgse[:,1], trgse[:,2]]
+    zgse = [trgse[:, 0], trgse[:, 1], trgse[:, 2]]
     sun = [1.0, 0.0, 0.0]
     yscs = [zgse[1] * sun[2] - zgse[2] * sun[1],
             zgse[2] * sun[0] - zgse[0] * sun[2],
