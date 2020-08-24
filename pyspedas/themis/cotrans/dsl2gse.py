@@ -1,4 +1,8 @@
-"""Transform DSL data to GSE data."""
+"""Transform DSL data to GSE data.
+
+Notes:
+    Works in a similar way to IDL spedas dsl2gse.pro
+"""
 
 import pytplot
 import pyspedas
@@ -23,9 +27,10 @@ def dsl2gse(name_in, spinras, spindec, name_out, isgsetodsl=0):
             If 0 (default) then DSL to GSE.
             If 1, then GSE to DSL.
 
-    Notes
-    -----
-        Works in a similar way to IDL spedas dsl2gse
+    Returns
+    -------
+        1 for sucessful completion.
+
     """
     all_names = pytplot.tplot_names()
     needed_vars = [name_in, spinras, spindec]
