@@ -1097,7 +1097,7 @@ def subgei2j2000(time_in, data_in):
     cmatrix = j2000_matrix_vec(time_in)
     d_out = ctv_mx_vec_rot(cmatrix, d)
 
-    return d_out
+    return np.transpose(d_out)
 
 
 def subj20002gei(time_in, data_in):
@@ -1126,4 +1126,153 @@ def subj20002gei(time_in, data_in):
     icmatrix = np.transpose(cmatrix, (1, 0, 2))
     d_out = ctv_mx_vec_rot(icmatrix, d)
 
-    return d_out
+    return np.transpose(d_out)
+
+
+def get_all_paths_t1_t2():
+    """
+    Give a dictionary of existing sub functions in this file.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    Dictionary of strings.
+    """
+    p = {'gei': {'gse': 'subgei2gse',
+                 'geo': 'subgei2geo',
+                 'j2000': 'subgei2j2000'},
+         'gse': {'gei': 'subgse2gei',
+                 'gsm': 'subgse2gsm'},
+         'gsm': {'gse': 'subgsm2gse',
+                 'sm': 'subgsm2sm'},
+         'geo': {'gei': 'subgeo2gei',
+                 'mag': 'subgeo2mag'},
+         'sm': {'gsm': 'subsm2gsm'},
+         'mag': {'geo': 'submag2geo'},
+         'j2000': {'gei': 'subj20002gei'}}
+    return p
+
+
+def find_path_t1_t2(c1, c2, cpath=None):
+    """
+    Find path from c1 to c2.
+
+    Parameters
+    ----------
+    c1: string
+        Coordinate system.
+    c2: string
+        Coordinate system.
+
+    Returns
+    -------
+    List of strings.
+        Path from c1 to c2.
+    """
+    if cpath is None:
+        cpath = [c1]
+    elif c1 in cpath:
+        return
+    elif c2 in cpath:
+        return
+    else:
+        cpath.append(c1)
+
+    # Existing transformations.
+    c_tr = get_all_paths_t1_t2()
+    cn = c_tr[c1].keys()
+    if len(cn) == 0:
+        return
+    if c2 in cn:
+        cpath.append(c2)
+        return cpath
+    else:
+        for c in cn:
+            find_path_t1_t2(c, c2, cpath)
+
+    return cpath
+
+
+def shorten_path_t1_t2(cpath):
+    """
+    Find a shorter.
+
+    Parameters
+    ----------
+    cpath: list of string
+        Coordinate system.
+
+    Returns
+    -------
+    List of strings.
+        Path from c1 to c2.
+    """
+    p = get_all_paths_t1_t2()
+    out = []
+    newx = cpath.copy()
+    tobreak = False
+    for i in cpath:
+        out.append(i)
+        newx.remove(i)
+        for j in reversed(range(len(newx))):
+            if j > 0 and newx[j] in p[i]:
+                out = out + newx[j:]
+                tobreak = True
+                break
+        if tobreak:
+            break
+
+    return out
+
+
+def subcotrans(time_in, data_in, coord_in, coord_out):
+    """
+    Transform data from coord_in to coord_out.
+
+    Calls the other sub functions in this file.
+
+    Parameters
+    ----------
+    time_in: list of float
+        Time array.
+    data_in: list of float
+        Coordinates in coord_in.
+    coord_in: string
+        One of GSE, GSM, SM, GEI, GEO, MAG, J2000.
+    coord_out: string
+        One of GSE, GSM, SM, GEI, GEO, MAG, J2000.
+
+    Returns
+    -------
+    Array of float
+        Coordinates in coord_out.
+
+    """
+    data_out = data_in
+    coord_systems = ['GSE', 'GSM', 'SM', 'GEI', 'GEO', 'MAG', 'J2000']
+    coord_all = [a.lower() for a in coord_systems]
+    coord_in = coord_in.lower()
+    coord_out = coord_out.lower()
+
+    if (coord_in not in coord_all) or (coord_out not in coord_all):
+        print("Error: coordinate system cannot be found.")
+        return None
+
+    if coord_in == coord_out:
+        print("Warning: coord_in equal to coord_out.")
+        return data_out
+
+    p = find_path_t1_t2(coord_in, coord_out)
+    p = shorten_path_t1_t2(p)
+    print(p)
+    for i in range(len(p)-1):
+        c1 = p[i]
+        c2 = p[i+1]
+        fname = "sub" + c1 + "2" + c2
+        print("Running transformation: " + fname)
+        data_out = globals()[fname](time_in, data_out)
+
+    return data_out
