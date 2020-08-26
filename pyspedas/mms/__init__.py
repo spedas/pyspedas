@@ -86,7 +86,7 @@ def mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', level='def',
 
     """
     return mms_get_state_data(trange=trange, probe=probe, level=level, datatypes=datatypes,
-        no_download=no_download, pred_or_def=pred_or_def, suffix=suffix)
+        no_download=no_update, pred_or_def=pred_or_def, suffix=suffix)
 
 @print_vars
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy',
