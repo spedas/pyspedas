@@ -4,15 +4,14 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pytplot
-import numpy as np
 
-def tplot_ascii(tvar,filename=None):
+def tplot_ascii(tvar, filename=None, extension='.csv'):
     # grab data, prepend index column
-    if filename is None:
-        filename=tvar
-    df = pytplot.data_quants[tvar].values
-    sbf = pytplot.data_quants[tvar].coords['spec_bins'].values
-    # save data and spec_bins
-    sb_name = filename + '_v'
-    np.savetxt(filename, df, fmt="%-14s", delimiter='   ')
-    np.savetxt(sb_name, sbf, fmt="%-14s", delimiter='   ')
+    if filename == None:
+        filename = tvar
+    # save data
+    pytplot.data_quants[tvar].to_pandas().to_csv(filename + extension)
+    # only try to save spec_bins (y-values in spectrograms) if we're sure they exist
+    if 'spec_bins' in pytplot.data_quants[tvar].coords.keys():
+        pytplot.data_quants[tvar].coords['spec_bins'].to_pandas().to_csv(filename + '_v' + extension)
+
