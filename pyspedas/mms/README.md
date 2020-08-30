@@ -17,7 +17,7 @@ The routines in this module can be used to load data from the Magnetospheric Mul
 - Digital Signal Processor (DSP)
 
 ### What's included:
-- Access to team-only data (QL, L1, L2pre, L3pre), as well as all L2 data
+- Access to team-only data (SITL, QL, L1, L2pre, L3pre), as well as all L2 data
 - Access to support data via the `get_support_data` keyword
 - Data can be loaded from disk without contacting the SDC via the `no_update` keyword, or by setting the `no_download` option to `True` in the configuration table found in `mms_config.py`
 - Data files can be downloaded without loading into tplot variables by setting the `download_only` option in `mms_config.py`
@@ -181,6 +181,16 @@ tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 dsp_data = pyspedas.mms.dsp(trange=['2015-10-16', '2015-10-17'], data_rate='fast', datatype='bpsd')
 
 tplot('mms1_dsp_bpsd_omni_fast_l2')
+```
+
+#### State data (definitive/predicted ASCII files)
+
+To load the state data from the definitive/predicted ASCII files, use `pyspedas.mms.state`, e.g.,
+
+```python
+pos_data = pyspedas.mms.state(trange=['2015-10-16', '2015-10-17'], datatypes='pos', level='def')
+
+tplot('mms1_defeph_pos')
 ```
 
 
