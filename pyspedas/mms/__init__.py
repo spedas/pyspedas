@@ -1019,7 +1019,7 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
 
 @print_vars
 def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce',
-        varformat=None, get_support_data=False, suffix='', time_clip=False, no_update=False,
+        varformat=None, get_support_data=False, suffix='', time_clip=True, no_update=False,
         available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
         spdf=False, always_prompt=False):
     """
