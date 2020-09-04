@@ -7,7 +7,7 @@ t, d, e = get_data('mms1_des_energyspectr_omni_brst')
 
 print(t[0:10].round(6).tolist())
 
-print(d[0, :].round(6).tolist())
+print(d[0, :].tolist())
 
 print(d[1000, :].tolist())
 
