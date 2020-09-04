@@ -320,7 +320,7 @@ def subgei2gse(time_in, data_in):
 
     """
     xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
-
+    print("Running transformation: subgei2gse")
     return np.column_stack([xgse, ygse, zgse])
 
 
@@ -388,7 +388,7 @@ def subgse2gei(time_in, data_in):
 
     """
     xgei, ygei, zgei = tgsegei_vect(time_in, data_in)
-
+    print("Running transformation: subgse2gei")
     return np.column_stack([xgei, ygei, zgei])
 
 
@@ -469,7 +469,7 @@ def subgse2gsm(time_in, data_in):
 
     """
     xgsm, ygsm, zgsm = tgsegsm_vect(time_in, data_in)
-
+    print("Running transformation: subgse2gsm")
     return np.column_stack([xgsm, ygsm, zgsm])
 
 
@@ -551,7 +551,7 @@ def subgsm2gse(time_in, data_in):
 
     """
     xgse, ygse, zgse = tgsmgse_vect(time_in, data_in)
-
+    print("Running transformation: subgsm2gse")
     return np.column_stack([xgse, ygse, zgse])
 
 
@@ -624,7 +624,7 @@ def subgsm2sm(time_in, data_in):
 
     """
     xsm, ysm, zsm = tgsmgse_vect(time_in, data_in)
-
+    print("Running transformation: subgsm2sm")
     return np.column_stack([xsm, ysm, zsm])
 
 
@@ -697,7 +697,7 @@ def subsm2gsm(time_in, data_in):
 
     """
     xgsm, ygsm, zgsm = tsmgsm_vect(time_in, data_in)
-
+    print("Running transformation: subsm2gsm")
     return np.column_stack([xgsm, ygsm, zgsm])
 
 
@@ -730,6 +730,7 @@ def subgei2geo(time_in, data_in):
     ygeo = -sgst * xgei + cgst * ygei
     zgeo = zgei
 
+    print("Running transformation: subgei2geo")
     return np.column_stack([xgeo, ygeo, zgeo])
 
 
@@ -762,6 +763,7 @@ def subgeo2gei(time_in, data_in):
     ygei = sgst * xgeo + cgst * ygeo
     zgei = zgeo
 
+    print("Running transformation: subgeo2gei")
     return [xgei, ygei, zgei]
 
 
@@ -822,6 +824,7 @@ def subgeo2mag(time_in, data_in):
         mlat[1, 1] = 1.0
         mag[i] = mlat @ out
 
+    print("Running transformation: subgeo2mag")
     return mag
 
 
@@ -881,6 +884,7 @@ def submag2geo(time_in, data_in):
         glong[2, 2] = 1.0
         geo[i] = glong @ out
 
+    print("Running transformation: submag2geo")
     return geo
 
 
@@ -1097,6 +1101,7 @@ def subgei2j2000(time_in, data_in):
     cmatrix = j2000_matrix_vec(time_in)
     d_out = ctv_mx_vec_rot(cmatrix, d)
 
+    print("Running transformation: subgei2j2000")
     return np.transpose(d_out)
 
 
@@ -1126,6 +1131,7 @@ def subj20002gei(time_in, data_in):
     icmatrix = np.transpose(cmatrix, (1, 0, 2))
     d_out = ctv_mx_vec_rot(icmatrix, d)
 
+    print("Running transformation: subj20002gei")
     return np.transpose(d_out)
 
 
@@ -1269,13 +1275,13 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
     p = find_path_t1_t2(coord_in, coord_out)
     p = shorten_path_t1_t2(p)
     p = shorten_path_t1_t2(p)
+    print(p)
 
     # Daisy chain the list of transformations.
     for i in range(len(p)-1):
         c1 = p[i]
         c2 = p[i+1]
         subname = "sub" + c1 + "2" + c2
-        print("Running transformation: " + subname)
         data_out = globals()[subname](time_in, data_out)
 
     return data_out
