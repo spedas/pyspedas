@@ -9,6 +9,29 @@ from pyspedas import time_double
 from pyspedas.mms.mms_config import CONFIG
 
 def mms_get_local_state_files(probe='1', level='def', filetype='eph', trange=None):
+    """
+    Search for local state MMS files in case a list cannot be retrieved from the
+    remote server.  Returns a sorted list of file paths.
+    
+    Parameters:
+        trange : list of str
+            time range of interest [starttime, endtime] with the format 
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
+        probe: str
+            probe #, e.g., '4' for MMS4
+    
+        level: str
+            state data level; either 'def' (for definitive) or 'pred' (for predicted)
+
+        filetype: str
+            state file type, e.g. 'eph' (for ephemeris) or 'att' (for attitude)
+
+    Returns:
+        List of local files found matching the input parameters.
+
+    """
     if trange == None:
         logging.info('No trange specified in mms_get_local_state_files')
         return
