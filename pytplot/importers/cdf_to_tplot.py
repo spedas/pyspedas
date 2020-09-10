@@ -27,7 +27,9 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                  prefix='', suffix='', plot=False, merge=False,
                  center_measurement=False, notplot=False, varnames=[]):
     """
-    This function will automatically create tplot variables from CDF files.
+    This function will automatically create tplot variables from CDF files.  In general, the files should be
+    ISTP compliant for this importer to work.  Each variable is read into a new tplot variable (a.k.a an xarray DataArray),
+    and all associated file/variable metadata is read into the attrs dictionary.
 
     .. note::
         Variables must have an attribute named "VAR_TYPE". If the attribute entry
