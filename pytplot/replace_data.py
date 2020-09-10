@@ -32,11 +32,11 @@ def replace_data(tplot_name, new_data):
 
     # if old name input is a number, convert to corresponding name
     if isinstance(tplot_name, int):
-        old_name = pytplot.data_quants[tplot_name].name
+        tplot_name = pytplot.data_quants[tplot_name].name
 
     # check if old name is in current dictionary
-    if old_name not in pytplot.data_quants.keys():
-        print(f"{old_name} is currently not in pytplot")
+    if tplot_name not in pytplot.data_quants.keys():
+        print(f"{tplot_name} is currently not in pytplot")
         return
 
     new_data_np = np.asarray(new_data)
@@ -48,6 +48,6 @@ def replace_data(tplot_name, new_data):
 
     pytplot.data_quants[tplot_name].values = new_data_np
 
-    pytplot.data_quants[tplot_name].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(tplot_name)
+    pytplot.data_quants[tplot_name].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pytplot.data_quants[tplot_name])
 
     return
