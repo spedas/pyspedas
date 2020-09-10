@@ -32,10 +32,10 @@ def tplot_copy(old_name, new_name):
     if isinstance(old_name, int):
         old_name = pytplot.data_quants[old_name].name
 
-        # check if old name is in current dictionary
-        if old_name not in pytplot.data_quants.keys():
-            print("That name is currently not in pytplot")
-            return
+    # check if old name is in current dictionary
+    if old_name not in pytplot.data_quants.keys():
+        print("That name is currently not in pytplot")
+        return
 
     # Add a new data quantity with the copied data
     attr_dict = deepcopy(pytplot.data_quants[old_name].attrs)
