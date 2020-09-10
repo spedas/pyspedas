@@ -6,7 +6,7 @@
 import pyqtgraph as pg
 import numpy as np
 from .. import tplot_utilities
-from pyqtgraph.Qt import QtCore
+from pyqtgraph.Qt import QtCore, QtGui
 import pytplot
 from .CustomAxis.DateAxis import DateAxis
 from .CustomImage.UpdatingImage import UpdatingImage
@@ -60,6 +60,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
+
+
+
         if pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
                                str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
@@ -68,6 +71,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.labelStyle = {'font-size':
                                str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000'}
+
+        # Set the font size of the axes
+        font = QtGui.QFont()
+        font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
+        self.xaxis.tickFont = font
+        self.yaxis.tickFont = font
 
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
@@ -89,8 +98,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
         return axis_type, link_y_axis
 
     def _set_crosshairs(self):
-        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
-        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        if pytplot.tplot_opt_glob['black_background']:
+            self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('w'))
+            self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('w'))
+        else:
+            self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+            self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
 

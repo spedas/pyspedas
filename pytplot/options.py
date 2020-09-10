@@ -28,7 +28,7 @@ def options(name, option=None, value=None, opt_dict=None):
         =================== ==========   =====
         Options             Value type   Notes
         =================== ==========   =====
-        Color               str/list     Red, Orange, Yellow, Green, Blue, etc.
+        Color               str/list     red, green, blue, etc.  Also takes in RGB tuples, i.e. (0,255,0) for green
         Colormap            str/list     https://matplotlib.org/examples/color/colormaps_reference.html.
         Spec                int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
         Alt                 int          1 sets the Tplot Variable to altitude plot mode, 0 reverts.

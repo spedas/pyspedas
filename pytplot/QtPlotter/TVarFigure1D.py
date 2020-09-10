@@ -6,7 +6,7 @@
 import pyqtgraph as pg
 import numpy as np
 import pytplot
-from collections import OrderedDict
+from pyqtgraph.Qt import QtGui
 from .CustomAxis.DateAxis import DateAxis
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
@@ -65,6 +65,13 @@ class TVarFigure1D(pg.GraphicsLayout):
                                str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000'}
 
+        # Set the font size of the axes
+        font = QtGui.QFont()
+        font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
+        self.xaxis.tickFont = font
+        self.yaxis.tickFont = font
+
+
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date:", "0")
@@ -77,8 +84,13 @@ class TVarFigure1D(pg.GraphicsLayout):
         self.hoverlegend.setParentItem(self.plotwindow.vb)
 
     def _set_crosshairs(self):
-        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
-        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        if pytplot.tplot_opt_glob["black_background"]:
+            self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('w'))
+            self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('w'))
+        else:
+            self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+            self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
         self.vLine.setVisible(False)
@@ -343,7 +355,10 @@ class TVarFigure1D(pg.GraphicsLayout):
         if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
             return pytplot.tplot_utilities.rgb_color(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color'])
         else:
-            return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+            if pytplot.tplot_opt_glob["black_background"]:
+                return pytplot.tplot_utilities.rgb_color(['w', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+            else:
+                return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 
     def _setcolormap(self):
         return

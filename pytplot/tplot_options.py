@@ -35,6 +35,7 @@ def tplot_options(option, value):
         vertical_spacing  int          The space in pixels between two plots
         show_all_axes     bool         Whether or not to just use one axis at the bottom of the plot
         black_background  bool         Whether or not to make plot backgrounds black w/ white text
+        axis_font_size    int          The font size of the axis ticks.  Default is 10.
         ================  ==========   =====
     
     Returns:

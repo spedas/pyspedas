@@ -6,6 +6,7 @@
 import pyqtgraph as pg
 import numpy as np
 import pytplot
+from pyqtgraph.Qt import QtGui
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
@@ -53,6 +54,12 @@ class TVarFigureAlt(pg.GraphicsLayout):
                                str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000'}
 
+        # Set the font size of the axes
+        font = QtGui.QFont()
+        font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
+        self.xaxis.tickFont = font
+        self.yaxis.tickFont = font
+
         if show_xaxis:
             self.plotwindow.showAxis('bottom')
         else:
@@ -60,8 +67,13 @@ class TVarFigureAlt(pg.GraphicsLayout):
 
         self._mouseMovedFunction = mouse_function
 
-        self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
-        self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+        if pytplot.tplot_opt_glob["black_background"]:
+            self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('w'))
+            self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('w'))
+        else:
+            self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('k'))
+            self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('k'))
+
         self.plotwindow.addItem(self.vLine, ignoreBounds=True)
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
         self.vLine.setVisible(False)
@@ -204,7 +216,10 @@ class TVarFigureAlt(pg.GraphicsLayout):
         if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
             return pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
         else:
-            return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+            if pytplot.tplot_opt_glob['black_background']:
+                return pytplot.tplot_utilities.rgb_color(['w', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+            else:
+                return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 
     def _setcolormap(self):
         return

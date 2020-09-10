@@ -134,6 +134,9 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'black_background':
         new_tplot_opt_glob['black_background'] = value
 
+    elif option == 'axis_font_size':
+        new_tplot_opt_glob['axis_font_size'] = value
+
     else:
         print("Unknown option supplied: " + str(option))
 
