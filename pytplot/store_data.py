@@ -16,7 +16,7 @@ import copy
 tplot_num = 1
 
 
-def store_data(name, data=None, delete=False, newname=None):
+def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     
     """
     This function creates a "Tplot Variable" based on the inputs, and
@@ -46,6 +46,8 @@ def store_data(name, data=None, delete=False, newname=None):
             Deletes the tplot variable matching the "name" parameter
         newname: str
             Renames TVar to new name
+        attr_dict: dict
+            A dictionary object of attributes (these do not affect routines in pytplot, this is merely to keep metadata alongside the file)
         
     .. note::
         If you want to combine multiple tplot variables into one, simply supply the list of tplot variables to the
@@ -214,6 +216,7 @@ def store_data(name, data=None, delete=False, newname=None):
 
     # Add dicts to the xarray attrs
     temp.name = name
+    temp.attrs = attr_dict
     temp.attrs['plot_options'] = {}
     temp.attrs['plot_options']['xaxis_opt'] = xaxis_opt
     temp.attrs['plot_options']['yaxis_opt'] = yaxis_opt

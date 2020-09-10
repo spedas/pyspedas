@@ -5,15 +5,20 @@
 
 from pytplot import data_quants
 
-def get_data(name, xarray=False):
+def get_data(name, xarray=False, metadata=False):
     """
     This function extracts the data from the tplot Variables stored in memory.
     
     Parameters:
         name : str 
             Name of the tplot variable
+        xarray : bool
+            Keep the variable as an xarray object
+        metadata : bool
+            Return the metadata of the object (the attr dictionary) instead of the actual data
+
          
-    Returns: tuple of data/dimensions stored in pytplot
+    Returns: tuple of data/dimensions/metadata stored in pytplot
         time_val : numpy array of seconds since 1970
         data_val : n-dimensional array of data
         spec_bins_val (if exists) : spectral bins if the plot is a spectrogram
@@ -41,6 +46,9 @@ def get_data(name, xarray=False):
 
     if xarray:
         return temp_data_quant
+
+    if metadata:
+        return temp_data_quant.attrs
 
     if 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys() and 'v3' in temp_data_quant.coords.keys():
         return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values, temp_data_quant.coords['v3'].values)

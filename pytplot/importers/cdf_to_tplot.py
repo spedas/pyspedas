@@ -110,7 +110,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             load_cdf_variables = [value for value in varnames if value in all_cdf_variables]
         else:
             load_cdf_variables = all_cdf_variables
-            
+        gatt = cdf_file.globalattsget()
         for var in load_cdf_variables:
             if not re.match(var_regex, var):
                 continue
@@ -273,19 +273,23 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                 metadata[var_name] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
                                       'scale_type': var_atts.get("SCALE_TYP", "linear"),
-                                      'options': var_atts}
+                                      'var_attrs': var_atts, 'file_name': filename, 'global_attrs': gatt}
 
+                # Check if the variable already exists in the for loop output
                 if var_name not in output_table:
                     output_table[var_name] = tplot_data
                 else:
+                    # If it does, loop though the existing variable's x,y,v,v2,v3,etc
                     var_data = output_table[var_name]
                     for output_var in var_data:
-                        if output_var not in nontime_varying_depends:                        
+                        if output_var not in nontime_varying_depends:
                             if np.asarray(tplot_data[output_var]).ndim == 0 and np.equal(tplot_data[output_var], None):
+                                # If there is nothing in the new variable, then pass
                                 pass
                             elif np.asarray(var_data[output_var]).ndim == 0 and np.equal(var_data[output_var], None):
+                                # If there is nothing in the old variable, then replace
                                 var_data[output_var] = tplot_data[output_var]
-                            else:                                
+                            else:  # If they both have something, then concatenate
                                 var_data[output_var] = np.concatenate((var_data[output_var], tplot_data[output_var]))
 
     if notplot:
@@ -298,7 +302,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             to_merge = True
 
         try:
-            store_data(var_name, data=output_table[var_name])
+            attr_dict = {}
+            if metadata.get(var_name) is not None:
+                attr_dict["CDF"] = {}
+                attr_dict["CDF"]["VATT"] = metadata[var_name]['var_attrs']
+                attr_dict["CDF"]["GATT"] = metadata[var_name]['global_attrs']
+                attr_dict["CDF"]["FILENAME"] = metadata[var_name]['file_name']
+            store_data(var_name, data=output_table[var_name], attr_dict=attr_dict)
         except ValueError:
             continue
 
@@ -311,13 +321,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             if metadata[var_name]['scale_type'] == 'log':
                 options(var_name, 'ylog', 1)
             # Gather up all options in the variable attribute section, toss them into options and see what sticks
-            options(var_name, opt_dict=metadata[var_name]['options'])
+            options(var_name, opt_dict=metadata[var_name]['var_attrs'])
 
         if to_merge is True:
             cur_data_quant = data_quants[var_name]
-            plot_options = copy.deepcopy(data_quants[var_name].attrs['plot_options'])
+            plot_options = copy.deepcopy(data_quants[var_name].attrs)
             data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
-            data_quants[var_name].attrs['plot_options'] = plot_options
+            data_quants[var_name].attrs = plot_options
 
     if notplot:
         return output_table

@@ -67,8 +67,8 @@ def join_vec(tvars,new_tvar=None, merge=False):
 
     if to_merge is True:
         cur_data_quant = pytplot.data_quants[new_tvar]
-        plot_options = copy.deepcopy(pytplot.data_quants[new_tvar].attrs['plot_options'])
+        plot_options = copy.deepcopy(pytplot.data_quants[new_tvar].attrs)
         pytplot.data_quants[new_tvar] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
-        pytplot.data_quants[new_tvar].attrs['plot_options'] = plot_options
+        pytplot.data_quants[new_tvar].attrs = plot_options
 
     return new_tvar

@@ -109,9 +109,9 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
 
         if to_merge is True:
             cur_data_quant = pytplot.data_quants[var_name]
-            plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs['plot_options'])
+            plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs)
             pytplot.data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
-            pytplot.data_quants[var_name].attrs['plot_options'] = plot_options
+            pytplot.data_quants[var_name].attrs = plot_options
 
     # Now merge vectors
     for cn,vn in zip(column_names, vec_names):
