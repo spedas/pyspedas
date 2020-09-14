@@ -37,7 +37,7 @@ The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org
 
 ## Requirements
 
-Python 3.5+ is required.  
+Python 3.6+ is required.  
 
 We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a suite of packages useful for scientific data analysis. 
 
