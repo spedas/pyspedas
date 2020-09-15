@@ -112,7 +112,12 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             load_cdf_variables = [value for value in varnames if value in all_cdf_variables]
         else:
             load_cdf_variables = all_cdf_variables
-        gatt = cdf_file.globalattsget()
+
+        try:
+            gatt = cdf_file.globalattsget()
+        except:
+            gatt={}
+
         for var in load_cdf_variables:
             if not re.match(var_regex, var):
                 continue
