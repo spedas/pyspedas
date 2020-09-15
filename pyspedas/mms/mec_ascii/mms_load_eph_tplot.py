@@ -1,4 +1,5 @@
 
+import logging
 import pandas as pd
 import numpy as np
 
@@ -22,6 +23,7 @@ def mms_load_eph_tplot(filenames, level='def', probe='1', datatypes=['pos', 'vel
     vz_values = []
 
     for file in filenames:
+        logging.info('Loading ' + file)
         rows = pd.read_csv(file, delim_whitespace=True, header=None, skiprows=14)
         times = rows.shape[0]-1
         for time_idx in range(0, times):
