@@ -723,6 +723,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     data_rates = data_rate if isinstance(data_rate, list) else [data_rate]
     levels = level if isinstance(level, list) else [level]
     datatypes = datatype if isinstance(datatype, list) else [datatype]
+    data_units = data_units if isinstance(data_units, list) else [data_units]
 
     probes = [str(p) for p in probes]
 
@@ -734,7 +735,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     for probe in probes:
         for datatype in datatypes:
            mms_feeps_remove_bad_data(probe=probe, data_rate=data_rate, datatype =datatype, level=level, suffix=suffix)
-           
+
            for data_unit in data_units:
                eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
 
