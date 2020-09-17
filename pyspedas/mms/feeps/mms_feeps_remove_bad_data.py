@@ -85,12 +85,9 @@ def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'elect
     for bad_var in bad_vars:
         if bad_var == []: continue
         bad_var_data = pytplot.get_data(bad_var[0])
+
         if bad_var_data is not None:
             times, data, energies = bad_var_data
-
-            # check if the energy table contains all nans
-            if np.isnan(np.sum(energies)): continue
-
             data[:] = np.nan
             pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
