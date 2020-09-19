@@ -5,3 +5,4 @@ cdasws>=1.7.21
 netCDF4
 pywavelets
 pyqtgraph
+astropy
