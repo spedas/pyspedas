@@ -6,6 +6,21 @@ from pytplot import options
 
 def mms_eis_set_metadata(tplotnames, data_rate='srvy', datatype='extof', suffix=''):
     """
+    This function updates the metadata for the EIS data products
+    
+    Parameters:
+        tplotnames : list of str
+            list of tplot variables loaded by the load routine
+
+        data_rate : str 
+            Data rate
+
+        datatype : str 
+            EIS datatype loaded (extof or phxtof)
+            
+        suffix: str
+            The tplot variable names will be given this suffix.  By default, 
+            no suffix is added.
 
     """
     if datatype == 'extof':
