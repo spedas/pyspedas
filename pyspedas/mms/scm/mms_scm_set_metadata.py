@@ -14,7 +14,7 @@ def mms_scm_set_metadata(tnames, probe, datatype, coord, suffix=''):
         datatype : str 
             SCM datatype loaded
 
-        coorrd : str or list of str
+        coord : str or list of str
             SCM coordinate system; depends on data level
             
         suffix: str
