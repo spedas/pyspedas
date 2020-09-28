@@ -598,7 +598,7 @@ def get_y_range(dataset):
     # This takes the data and sets the minimum and maximum range of the data values.
     # If the data type later gets set to 'spec', then we'll change the ymin and ymax
     import warnings
-    warnings.filterwarnings("error")
+    warnings.filterwarnings("ignore")
 
     # Special rule if 'spec' is True
     if 'spec' in dataset.attrs['plot_options']['extras']:
