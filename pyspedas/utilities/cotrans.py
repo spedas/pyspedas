@@ -56,6 +56,10 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         tplot_data = pytplot.get_data(name_in)
         time_in = tplot_data[0]
         data_in = tplot_data[1]
+    else:
+        name_in = "cotranstemp"
+        pytplot.store_data(name_in, data={'x': list(time_in),
+                                          'y': list(data_in)})
 
     if len(data_in[:]) < 1:
         print("cotrans error: Data is empty.")
