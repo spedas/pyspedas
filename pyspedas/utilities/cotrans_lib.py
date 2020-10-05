@@ -764,7 +764,7 @@ def subgeo2gei(time_in, data_in):
     zgei = zgeo
 
     print("Running transformation: subgeo2gei")
-    return [xgei, ygei, zgei]
+    return np.column_stack([xgei, ygei, zgei])
 
 
 def subgeo2mag(time_in, data_in):
