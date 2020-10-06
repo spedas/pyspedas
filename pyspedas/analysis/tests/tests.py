@@ -1,41 +1,62 @@
-
-"""
-File:
-    test.py
-
-Description:
-    Automated tests for the analysis functions.
-
-"""
+"""Automated tests for the analysis functions."""
 
 import unittest
 from pyspedas.analysis.tsmooth import smooth
-from pyspedas import subtract_average, subtract_median, tsmooth
+from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
+                      yclip, deriv_data)
 from pytplot import get_data, store_data
 
 import numpy as np
 
 
 class BaseTestCase(unittest.TestCase):
+    """Data to be used in tests."""
+
     def setUp(self):
+        """Create a tplot variable to be used in tests."""
         store_data('test', data={'x': [1., 2., 3., 4., 5., 6.],
                                  'y': [3., 5., 8., 15., 20., 1.]})
 
 
 class AnalysisTestCases(BaseTestCase):
+    """Test functions under analysis folder."""
 
     def test_subtract_median(self):
+        """Test subtract_median."""
         subtract_median('test')
         d = get_data('test-m')
         self.assertTrue(d[1].tolist() == [-3.5, -1.5,  1.5,  8.5, 13.5, -5.5])
 
     def test_subtract_average(self):
+        """Test subtract_average."""
         subtract_average('test')
         d = get_data('test-d')
         self.assertTrue((np.round(d[1].tolist()) == [-6., -4., -1.,
                          6., 11., -8.]).all())
 
+    def test_yclip(self):
+        """Test yclip."""
+        yclip('test', 0.0, 12.0)
+        d = get_data('test-clip')
+        # Replace nan with -99.0
+        dd = np.nan_to_num(d[1], nan=-99.)
+        self.assertTrue((dd == [3., 5., 8., -99., -99., 1.]).all())
+
+    def test_avg_data(self):
+        """Test avg_data."""
+        avg_data('test', width=2)
+        d = get_data('test-avg')
+        self.assertTrue((d[1] == [4.0, 11.5, 10.5]).all())
+
+    def test_deriv_data(self):
+        """Test deriv_data."""
+        deriv_data('test')
+        d = get_data('test-der')
+        print(d)
+        self.assertTrue((d[1] == [2., 2.5, 5.,   6., -7., -19.]).all())
+
     def test_tsmooth(self):
+        """Test smooth."""
         a = [1.0, 1.0, 2.0, 3.0, 4.0, 1.0, 4.0, 3.0, 2.0, 1.0, 1.0]
         x = smooth(a, 3)
         r = [1.0, 1.3333333333333333, 2.0, 3.0, 2.6666666666666665,
