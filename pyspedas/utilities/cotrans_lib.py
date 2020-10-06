@@ -623,7 +623,7 @@ def subgsm2sm(time_in, data_in):
         Coordinates in SM.
 
     """
-    xsm, ysm, zsm = tgsmgse_vect(time_in, data_in)
+    xsm, ysm, zsm = tgsmsm_vect(time_in, data_in)
     print("Running transformation: subgsm2sm")
     return np.column_stack([xsm, ysm, zsm])
 

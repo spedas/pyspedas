@@ -118,6 +118,44 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(abs(gsm[1]-res[1]) <= 1e-6)
         self.assertTrue(abs(gsm[2]-res[2]) <= 1e-6)
 
+    def test_all_cotrans(self):
+        """Test all cotrans pairs.
+
+        Apply transformation, then inverse transformation and compare.
+        """
+        all_cotrans = ['gei', 'geo', 'j2000', 'gsm', 'mag', 'gse', 'sm']
+        d = [[245.0, -102.0, 251.0], [775.0, 10.0, -10],
+             [121.0, 545.0, -1.0], [304.65, -205.3, 856.1],
+             [464.34, -561.55, -356.22]]
+        dd1 = d[1]
+        t = [1577112800, 1577308800, 1577598800, 1577608800, 1577998800]
+        in_len = len(t)
+        name1 = "name1"
+        name2 = "name2"
+        count = 0
+        for coord_in in all_cotrans:
+            for coord_out in all_cotrans:
+                count += 1
+                del_data()
+                cotrans(name_out=name1, time_in=t, data_in=d,
+                        coord_in=coord_in, coord_out=coord_out)
+                dout = get_data(name1)
+                out_len1 = len(dout[0])
+                self.assertTrue(out_len1 == in_len)
+                # Now perform inverse transformation.
+                cotrans(name_in=name1, name_out=name2,
+                        coord_in=coord_out, coord_out=coord_in)
+                dout2 = get_data(name2)
+                out_len2 = len(dout2[0])
+                dd2 = dout2[1][1]
+                print(count, "--- in:", coord_in, "out:", coord_out)
+                # print(dout[1][1])
+                # print(dd2)
+                self.assertTrue(out_len2 == in_len)
+                self.assertTrue(abs(dd1[0]-dd2[0]) <= 1e-6)
+                self.assertTrue(abs(dd1[1]-dd2[1]) <= 1e-6)
+                self.assertTrue(abs(dd1[2]-dd2[2]) <= 1e-6)
+
 
 if __name__ == '__main__':
     unittest.main()
