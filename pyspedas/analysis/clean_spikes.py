@@ -81,19 +81,30 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
         # Find spikes
         tmps = tmp + '-s'
         tsmooth(tmp, new_names=tmps, width=nsmooth)
-        ds = pytplot.data_quants[tmps].values  # smoothed out values
-        d0 = pytplot.data_quants[tmp].values  # original values
-        d = pytplot.data_quants[new]  # final values
+        ds0 = pytplot.get_data(tmps)  # smoothed out values
+        ds = ds0[1]
+        dor0 = pytplot.get_data(tmp)  # original values
+        d0 = dor0[1]
+        dn = d0.copy()  # final values
 
-        dim = d.shape
-        for j in range(dim[1]):
-            # print("j = ", j)
+        dim = dn.shape
+        if len(dim) == 1:
+            # One dim data.
             for i in range(dim[0]):
                 # compare smoothed out values to original values
-                if abs(d0[i, j] - ds[i, j]) > thresh * abs(ds[i, j]):
-                    d[i, j] = np.NaN  # for spikes, set to NaN
+                if abs(d0[i] - ds[i]) > thresh * abs(ds[i]):
+                    dn[i] = np.NaN  # for spikes, set to NaN
+        else:
+            # More than one dim data.
+            for j in range(dim[1]):
+                # print("j = ", j)
+                for i in range(dim[0]):
+                    # compare smoothed out values to original values
+                    if abs(d0[i, j] - ds[i, j]) > thresh * abs(ds[i, j]):
+                        dn[i, j] = np.NaN  # for spikes, set to NaN
 
-        pytplot.data_quants[new] = d
+        #pytplot.data_quants[new] = d
+        pytplot.replace_data(new, dn)
 
         # remove temp data
         del pytplot.data_quants[tmp]

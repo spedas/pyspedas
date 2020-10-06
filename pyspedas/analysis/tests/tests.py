@@ -3,8 +3,9 @@
 import unittest
 from pyspedas.analysis.tsmooth import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
-                      yclip, deriv_data)
-from pytplot import get_data, store_data
+                      yclip, deriv_data, version, tdeflag, clean_spikes,
+                      tcopy)
+from pytplot import get_data, store_data, replace_data
 
 import numpy as np
 
@@ -20,6 +21,11 @@ class BaseTestCase(unittest.TestCase):
 
 class AnalysisTestCases(BaseTestCase):
     """Test functions under analysis folder."""
+
+    def test_version(self):
+        """Test pyspedas.version()."""
+        version()
+        self.assertTrue(1. == 1.)
 
     def test_subtract_median(self):
         """Test subtract_median."""
@@ -48,11 +54,36 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test-avg')
         self.assertTrue((d[1] == [4.0, 11.5, 10.5]).all())
 
+    def test_clean_spikes(self):
+        """Test clean_spikes."""
+        clean_spikes('test', nsmooth=3)
+        d = get_data('test-despike')
+        self.assertTrue(len(d[1]) == 6)
+        # Now test 3 dim data.
+        dn = [[3., 5., 8.],[ 15., 20., 1.], [3., 5., 8.], [15., 20., 1.],
+              [23., 15., 28.], [15., 20., 1.]]
+        store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.],
+                                 'y': dn})
+        replace_data('test1', dn)
+        clean_spikes('test1', nsmooth=3)
+        d2 = get_data('test1-despike')
+        self.assertTrue(len(d2[1]) == 6)
+
+    def test_tdeflag(self):
+        """Test tdeflag."""
+        dn = [3., float('NaN'), 8., float('NaN'), 20., 1.]
+        len_dn = len(dn)
+        replace_data('test', dn)
+        tdeflag('test')
+        d = get_data('test-deflag')
+        # Length should be two less, because NaNs were removed.
+        self.assertTrue(len(d[1]) == len_dn - 2)
+
     def test_deriv_data(self):
         """Test deriv_data."""
         deriv_data('test')
         d = get_data('test-der')
-        print(d)
+        version()
         self.assertTrue((d[1] == [2., 2.5, 5.,   6., -7., -19.]).all())
 
     def test_tsmooth(self):
