@@ -1280,6 +1280,11 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         List of tplot variables created.
 
     """
+
+    if suffix == '':
+        suffix = '_' + level
+    else:
+        suffix = '_' + level + suffix
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='aspoc',
             datatype=datatype, varformat=varformat, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
