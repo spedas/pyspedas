@@ -204,15 +204,15 @@ class EDILoadTestCases(unittest.TestCase):
 class ASPOCLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_aspoc_ionc'))
+        self.assertTrue(data_exists('mms1_aspoc_ionc_l2'))
 
     def test_load_spdf_data(self):
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
-        self.assertTrue(data_exists('mms1_aspoc_ionc'))
+        self.assertTrue(data_exists('mms1_aspoc_ionc_l2'))
 
     def test_load_suffix(self):
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
-        self.assertTrue(data_exists('mms1_aspoc_ionc_test'))
+        self.assertTrue(data_exists('mms1_aspoc_ionc_l2_test'))
 
 ############### EDP ############### 
 class EDPLoadTestCases(unittest.TestCase):
