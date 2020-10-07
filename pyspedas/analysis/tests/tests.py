@@ -3,7 +3,7 @@
 import unittest
 from pyspedas.analysis.tsmooth import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
-                      yclip, deriv_data, version, tdeflag, clean_spikes)
+                      yclip, deriv_data, tdeflag, clean_spikes)
 from pytplot import get_data, store_data, replace_data
 
 import numpy as np
@@ -20,12 +20,7 @@ class BaseTestCase(unittest.TestCase):
 
 class AnalysisTestCases(BaseTestCase):
     """Test functions under analysis folder."""
-    '''
-    def test_version(self):
-        """Test pyspedas.version()."""
-        version()
-        self.assertTrue(1. == 1.)
-    '''
+
     def test_subtract_median(self):
         """Test subtract_median."""
         subtract_median('test')
@@ -80,7 +75,6 @@ class AnalysisTestCases(BaseTestCase):
         """Test deriv_data."""
         deriv_data('test')
         d = get_data('test-der')
-        version()
         self.assertTrue((d[1] == [2., 2.5, 5.,   6., -7., -19.]).all())
 
     def test_tsmooth(self):
