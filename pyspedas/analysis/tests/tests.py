@@ -44,9 +44,15 @@ class AnalysisTestCases(BaseTestCase):
 
     def test_avg_data(self):
         """Test avg_data."""
+        avg_data('aaabbbccc', width=2)  # Test non-existent name
         avg_data('test', width=2)
         d = get_data('test-avg')
         self.assertTrue((d[1] == [4.0, 11.5, 10.5]).all())
+        avg_data('test', width=2, overwrite=True)  # Test overwrite
+        avg_data('test', width=2, new_names='aaabbb')  # Test new_names
+        avg_data('test', dt=4.0, noremainder=True)  # Test dt option
+        d = get_data('test-avg')
+        self.assertTrue(len(d) > 0)
 
     def test_clean_spikes(self):
         """Test clean_spikes."""

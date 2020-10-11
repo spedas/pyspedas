@@ -1,9 +1,9 @@
 """
 Creates a new pytplot variable as the time average of original.
 
-Notes
------
-Similar to avg_data.pro in IDL SPEDAS.
+    Notes
+    -----
+    Similar to avg_data.pro in IDL SPEDAS.
 
 """
 import numpy as np
@@ -29,7 +29,7 @@ def avg_data(names, dt=None, width=60, noremainder=True,
         If dt is set, then width is ignored.
     noremainder: boolean, optional
         If True, the remainter (last part of data) will not be included.
-        If True, all time intervals will be of equal width. 
+        If True, all time intervals will be of equal width.
     new_names: str/list of str, optional
         List of new_names for pytplot variables.
         If not given, then a suffix is applied.
@@ -84,7 +84,7 @@ def avg_data(names, dt=None, width=60, noremainder=True,
         if dt is None:
             # Use width
             width = int(width)
-            print(dim0, width)
+            # print(dim0, width)
             for i in range(0, dim0, width):
                 last = (i + width) if (i + width) < dim0 else dim0
                 idx = int(i + width/2)
@@ -93,7 +93,7 @@ def avg_data(names, dt=None, width=60, noremainder=True,
                 else:
                     idx = int((i + last - 1)/2)  # Include the last part.
                 new_time.append(time[idx])
-                
+
                 if dim1 < 2:
                     nd0 = np.average(data[i:last])
                 else:
@@ -113,9 +113,9 @@ def avg_data(names, dt=None, width=60, noremainder=True,
                 print("avg_data: Time interval dt is too small. Exiting.")
                 return
 
-            # Find bins for time: equal bins of length dt. 
+            # Find bins for time: equal bins of length dt.
             bincount = int(alldt/dt)
-            if alldt%dt > 0.0 and not noremainder:  # residual bin
+            if alldt % dt > 0.0 and not noremainder:  # residual bin
                 # Include the last bin which might not be the same size.
                 bincount += 1
 
@@ -129,14 +129,14 @@ def avg_data(names, dt=None, width=60, noremainder=True,
                 new_time.append(bintime)
                 # Find all indexes between time0 and time1.
                 idx = np.where((timedbl >= time0) & (timedbl < time1))
-                
+
                 # Check if idx is empty, ie. there is a gap in data.
                 idx_is_empty = False
                 if not idx:
                     idx_is_empty = True
                 elif len(idx) == 1:
-                        if len(idx[0]) == 0:
-                            idx_is_empty = True
+                    if len(idx[0]) == 0:
+                        idx_is_empty = True
 
                 if dim1 < 2:
                     if idx_is_empty:  # Empty list.
