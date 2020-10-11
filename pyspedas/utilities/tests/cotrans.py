@@ -123,6 +123,7 @@ class CotransTestCases(unittest.TestCase):
 
         Apply transformation, then inverse transformation and compare.
         """
+        cotrans()
         all_cotrans = ['gei', 'geo', 'j2000', 'gsm', 'mag', 'gse', 'sm']
         d = [[245.0, -102.0, 251.0], [775.0, 10.0, -10],
              [121.0, 545.0, -1.0], [304.65, -205.3, 856.1],
@@ -133,6 +134,13 @@ class CotransTestCases(unittest.TestCase):
         name1 = "name1"
         name2 = "name2"
         count = 0
+        # Test non-existent system.
+        cotrans(name_out=name1, time_in=t, data_in=d,
+                coord_in="coord_in", coord_out="coord_out")
+        # Test empty data.
+        cotrans(name_out=name1, time_in=t, data_in=[],
+                coord_in="gei", coord_out="geo")
+        # Test all combinations.
         for coord_in in all_cotrans:
             for coord_out in all_cotrans:
                 count += 1

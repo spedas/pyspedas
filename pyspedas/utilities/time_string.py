@@ -76,9 +76,10 @@ def time_string(float_time=None, fmt=None):
 
 
 def time_datetime(float_time=None):
-    """
+    """Find python datetime.
+
     Transform a list of float daytime values to a list of pythonic
-    `datetime.datetime` values
+        'datetime.datetime' values.
 
     Parameters
     ----------
