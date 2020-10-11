@@ -26,6 +26,14 @@ class AnalysisTestCases(BaseTestCase):
         subtract_median('test')
         d = get_data('test-m')
         self.assertTrue(d[1].tolist() == [-3.5, -1.5,  1.5,  8.5, 13.5, -5.5])
+        dn = [[3., 5., 8.], [15., 20., 1.], [3., 5., 8.], [15., 20., 1.],
+              [23., 15., 28.], [15., 20., float('nan')]]
+        store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
+        subtract_median('aaabbbcc')
+        subtract_median('test1', new_names='aabb')
+        d = get_data('aabb')
+        subtract_median(['test', 'aabb'], new_names='aaabbb')
+        self.assertTrue(len(d[1]) == 6)
 
     def test_subtract_average(self):
         """Test subtract_average."""
@@ -33,6 +41,14 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test-d')
         self.assertTrue((np.round(d[1].tolist()) == [-6., -4., -1.,
                          6., 11., -8.]).all())
+        dn = [[3., 5., 8.], [15., 20., 1.], [3., 5., 8.], [15., 20., 1.],
+              [23., 15., 28.], [15., 20., float('nan')]]
+        store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
+        subtract_average('aaabbbcc')
+        subtract_average('test1', new_names='aabb')
+        d = get_data('aabb')
+        subtract_average(['test', 'aabb'], new_names='aaabbb')
+        self.assertTrue(len(d[1]) == 6)
 
     def test_yclip(self):
         """Test yclip."""
@@ -49,9 +65,14 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test-avg')
         self.assertTrue((d[1] == [4.0, 11.5, 10.5]).all())
         avg_data('test', width=2, overwrite=True)  # Test overwrite
-        avg_data('test', width=2, new_names='aaabbb')  # Test new_names
         avg_data('test', dt=4.0, noremainder=True)  # Test dt option
-        d = get_data('test-avg')
+        store_data('test', data={'x': [1., 2., 3., 4., 5., 6.],
+                                 'y': [3., 5., 8., -4., 20., 1.]})
+        avg_data('test', width=2, new_names='aabb')  # Test new_names
+        d = get_data('aabb')
+        # avg_data('test', width=2, new_names='aaabbb')  # Test new_names
+        # Test multiple names
+        avg_data(['test', 'aabb'], new_names='aaabbb', width=2)
         self.assertTrue(len(d) > 0)
 
     def test_clean_spikes(self):
