@@ -103,7 +103,7 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
                     if abs(d0[i, j] - ds[i, j]) > thresh * abs(ds[i, j]):
                         dn[i, j] = np.NaN  # for spikes, set to NaN
 
-        #pytplot.data_quants[new] = d
+        # pytplot.data_quants[new] = d
         pytplot.replace_data(new, dn)
 
         # remove temp data
