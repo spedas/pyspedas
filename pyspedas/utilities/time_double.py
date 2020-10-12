@@ -15,6 +15,8 @@ Similar to time_double.pro in IDL SPEDAS.
 
 from dateutil import parser
 from datetime import datetime, timezone
+import numpy as np
+from collections.abc import Iterable
 
 
 def time_float_one(s_time=None):
@@ -36,7 +38,7 @@ def time_float_one(s_time=None):
     if s_time is None:
         s_time = str(datetime.now())
 
-    if isinstance(s_time, (int, float)):
+    if isinstance(s_time, (int, float, np.integer, np.float)):
         return float(s_time)
 
     in_datetime = parser.parse(s_time)
@@ -67,9 +69,12 @@ def time_float(str_time=None):
             return time_float_one(str_time)
         else:
             time_list = list()
-            for t in str_time:
-                time_list.append(time_float_one(t))
-            return time_list
+            if isinstance(str_time, Iterable):
+                for t in str_time:
+                    time_list.append(time_float_one(t))
+                return time_list
+            else:
+                return time_float_one(str_time)
 
 
 def time_double(str_time=None):
