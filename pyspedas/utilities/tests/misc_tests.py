@@ -2,9 +2,11 @@
 import unittest
 
 from pyspedas.utilities.dailynames import dailynames
-from pyspedas import tcopy, time_double
+from pyspedas import tcopy
 from pyspedas.utilities.time_string import (time_string, time_datetime,
                                             time_string_one)
+from pyspedas.utilities.time_double import (time_float_one, time_float,
+                                            time_double)
 from pytplot import get_data, store_data
 
 
@@ -43,7 +45,7 @@ class UtilTestCases(unittest.TestCase):
         t1 = time_datetime(None)
         t2 = time_datetime(1000000000.0)
         t3 = time_string_one(None)
-        print("Times functions test:", t0, t1, t2, t3)
+        print("Time_string functions test:", t0, t1, t2, t3)
         self.assertTrue(time_string(1450181243.767) ==
                         '2015-12-15 12:07:23.767000')
         self.assertTrue(time_string([1450181243.767, 1450181263.767])
@@ -52,6 +54,10 @@ class UtilTestCases(unittest.TestCase):
 
     def test_time_double(self):
         """Test time_double function."""
+        t0 = time_float()
+        t1 = time_float_one()
+        t2 = time_float(1450181243)
+        print("Time_double functions test:", t0, t1, t2)
         self.assertTrue(time_double('2015-12-15 12:07:23.767000')
                         == 1450181243.767)
         self.assertTrue(time_double(['2015-12-15 12:07:23.767000',
