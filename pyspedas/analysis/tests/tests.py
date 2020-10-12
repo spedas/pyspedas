@@ -3,7 +3,7 @@
 import unittest
 from pyspedas.analysis.tsmooth import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
-                      yclip, deriv_data, tdeflag, clean_spikes)
+                      yclip, time_clip, deriv_data, tdeflag, clean_spikes)
 from pytplot import get_data, store_data, replace_data
 
 import numpy as np
@@ -33,6 +33,7 @@ class AnalysisTestCases(BaseTestCase):
         subtract_median('test1', new_names='aabb')
         d = get_data('aabb')
         subtract_median(['test', 'aabb'], new_names='aaabbb')
+        subtract_median('test1', overwrite=1)
         self.assertTrue(len(d[1]) == 6)
 
     def test_subtract_average(self):
@@ -48,15 +49,35 @@ class AnalysisTestCases(BaseTestCase):
         subtract_average('test1', new_names='aabb')
         d = get_data('aabb')
         subtract_average(['test', 'aabb'], new_names='aaabbb')
+        subtract_average('test1', overwrite=1)
         self.assertTrue(len(d[1]) == 6)
 
     def test_yclip(self):
         """Test yclip."""
+        yclip('aabb', 0.0, 12.0)
         yclip('test', 0.0, 12.0)
         d = get_data('test-clip')
         # Replace nan with -99.0
         dd = np.nan_to_num(d[1], nan=-99.)
+        yclip('test', 0.0, 12.0, new_names='name-clip')
+        yclip(['test', 'name-clip'], 0.0, 12.0, new_names='name1-clip')
+        yclip('test', 0.0, 12.0, overwrite=1)
         self.assertTrue((dd == [3., 5., 8., -99., -99., 1.]).all())
+
+    def test_timeclip(self):
+        """Test time_clip."""
+        t = [1577112800, 1577308800, 1577598800, 1577608800, 1577998800,
+             1587998800]
+        d = [3., 5., 8., 15., 20., 1.]
+        store_data('test1', data={'x': t, 'y': d})
+        time_clip('aaabbb', 1577308800, 1577598800)
+        time_clip('test1', 1577112800, 1577608800)
+        d = get_data('test1-tclip')
+        dd = d[1]
+        time_clip('test', 1577308800, 1577598800, new_names='name-clip')
+        time_clip(['test', 'name-clip'], 1577308800, 1577598800,
+                  new_names='name1-ci')
+        self.assertTrue((dd == [3., 5., 8., 15.]).all())
 
     def test_avg_data(self):
         """Test avg_data."""
@@ -77,6 +98,7 @@ class AnalysisTestCases(BaseTestCase):
 
     def test_clean_spikes(self):
         """Test clean_spikes."""
+        clean_spikes('aaabbbccc')  # Test non-existent name
         clean_spikes('test', nsmooth=3)
         d = get_data('test-despike')
         self.assertTrue(len(d[1]) == 6)
@@ -86,6 +108,9 @@ class AnalysisTestCases(BaseTestCase):
         store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
         clean_spikes('test1', nsmooth=3)
         d2 = get_data('test1-despike')
+        clean_spikes('test', new_names='test_desp', nsmooth=3, sub_avg=True)
+        clean_spikes(['test', 'test1'], new_names='test1-desp')
+        clean_spikes('test1', overwrite=1)
         self.assertTrue(len(d2[1]) == 6)
 
     def test_tdeflag(self):
