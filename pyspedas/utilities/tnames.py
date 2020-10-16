@@ -7,7 +7,7 @@ Allowed wildcards are ? for a single character, * from multiple characters.
 
 """
 import fnmatch
-import pyspedas
+from pytplot import tplot_names
 
 
 def tnames(pattern=None):
@@ -26,7 +26,7 @@ def tnames(pattern=None):
 
     """
     name_list = list()
-    all_names = pyspedas.tplot_names()
+    all_names = tplot_names()
 
     if pattern is None:
         name_list.extend(all_names)
