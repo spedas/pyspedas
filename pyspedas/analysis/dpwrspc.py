@@ -63,7 +63,7 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
         window = np.hanning(nboxpoints)
 
     # remove NaNs from the data
-    where_finite = np.where(np.isnan(quantity) is False)
+    where_finite = np.where(np.isnan(quantity) == False)
 
     quantity2process = quantity[where_finite[0]]
     times2process = time[where_finite[0]]
@@ -157,9 +157,8 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
 
             pwr = np.zeros(int(bign/2+1))
             pwr[0] = xs2[0]/bign**2
-            pwr[1:int(bign/2)] = (xs2[1:int(bign/2)]
-                                  + xs2[bign-(1+np.array(
-                                      range(int(bign/2-1))))])/bign**2
+            ptmp = (1+np.array(range(int(bign/2-1))))
+            pwr[1:int(bign/2)] = (xs2[1:int(bign/2)] + xs2[bign-ptmp])/bign**2
             pwr[int(bign/2)] = xs2[int(bign/2)]/bign**2
 
             if nohanning is False:
