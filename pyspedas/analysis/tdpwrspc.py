@@ -63,16 +63,26 @@ def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128,
             split_vars = split_vec(varname)
             out_vars = []
             for var in split_vars:
-                out_vars.append(tdpwrspc(var, newname=var + '_dpwrspc', nboxpoints=nboxpoints, nshiftpoints=nshiftpoints))
+                out_vars.append(tdpwrspc(var, newname=var + '_dpwrspc',
+                                         nboxpoints=nboxpoints,
+                                         nshiftpoints=nshiftpoints))
             return out_vars
         else:
-            pwrspc = dpwrspc(data_tuple[0], data_tuple[1], nboxpoints=nboxpoints, nshiftpoints=nshiftpoints, binsize=binsize, nohanning=nohanning, noline=noline, notperhz=notperhz, notmvariance=notmvariance)
+            pwrspc = dpwrspc(data_tuple[0], data_tuple[1],
+                             nboxpoints=nboxpoints,
+                             nshiftpoints=nshiftpoints,
+                             binsize=binsize,
+                             nohanning=nohanning,
+                             noline=noline, notperhz=notperhz,
+                             notmvariance=notmvariance)
 
-            if pwrspc != None:
-                store_data(newname, data={'x': pwrspc[0], 'y': pwrspc[2], 'v': pwrspc[1]})
+            if pwrspc is not None:
+                store_data(newname, data={'x': pwrspc[0],
+                                          'y': pwrspc[2],
+                                          'v': pwrspc[1]})
                 options(newname, 'spec', True)
                 options(newname, 'ylog', True)
                 options(newname, 'zlog', True)
                 options(newname, 'Colormap', 'jet')
-               # options(newname, 'yrange', [0.01, 16])
+                # options(newname, 'yrange', [0.01, 16])
         return newname

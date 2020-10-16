@@ -12,7 +12,8 @@ import pytplot
 from pytplot import data_quants
 
 
-def time_clip(names, time_start, time_end, new_names=None, suffix=None):
+def time_clip(names, time_start, time_end, new_names=None, suffix=None,
+              overwrite=None):
     """
     Clip data from time_start to time_end.
 
@@ -29,6 +30,8 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None):
         If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply. Default is '-m'.
+    overwrite: bool, optional
+        Replace the existing tplot name.
 
     Returns
     -------
@@ -44,12 +47,15 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None):
     if suffix is None:
         suffix = '-tclip'
 
-    if new_names is None:
-        n_names = [s + suffix for s in old_names]
-    elif new_names == '':
+    if overwrite is not None:
         n_names = old_names
+    elif new_names is None:
+        n_names = [s + suffix for s in old_names]
     else:
         n_names = new_names
+
+    if isinstance(n_names, str):
+        n_names = [n_names]
 
     if len(n_names) != len(old_names):
         n_names = [s + suffix for s in old_names]

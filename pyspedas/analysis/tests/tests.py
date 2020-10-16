@@ -23,6 +23,7 @@ class AnalysisTestCases(BaseTestCase):
 
     def test_subtract_median(self):
         """Test subtract_median."""
+        subtract_median('aaabbbccc')  # Test non-existent name
         subtract_median('test')
         d = get_data('test-m')
         self.assertTrue(d[1].tolist() == [-3.5, -1.5,  1.5,  8.5, 13.5, -5.5])
@@ -34,10 +35,13 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('aabb')
         subtract_median(['test', 'aabb'], new_names='aaabbb')
         subtract_median('test1', overwrite=1)
+        subtract_average('test', new_names="testtest")
+        subtract_average(['test-m', 'test'], new_names="testtest2")
         self.assertTrue(len(d[1]) == 6)
 
     def test_subtract_average(self):
         """Test subtract_average."""
+        subtract_average('aaabbbccc')  # Test non-existent name
         subtract_average('test')
         d = get_data('test-d')
         self.assertTrue((np.round(d[1].tolist()) == [-6., -4., -1.,
@@ -50,10 +54,13 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('aabb')
         subtract_average(['test', 'aabb'], new_names='aaabbb')
         subtract_average('test1', overwrite=1)
+        subtract_average('test1', new_names="testtest")
+        subtract_average(['test1', 'test'], new_names="testtest2")
         self.assertTrue(len(d[1]) == 6)
 
     def test_yclip(self):
         """Test yclip."""
+        yclip('aaabbbccc', 0.0, 12.0)  # Test non-existent name
         yclip('aabb', 0.0, 12.0)
         yclip('test', 0.0, 12.0)
         d = get_data('test-clip')
@@ -62,10 +69,13 @@ class AnalysisTestCases(BaseTestCase):
         yclip('test', 0.0, 12.0, new_names='name-clip')
         yclip(['test', 'name-clip'], 0.0, 12.0, new_names='name1-clip')
         yclip('test', 0.0, 12.0, overwrite=1)
+        yclip('test', 0.0, 12.0, new_names="testtest")
+        yclip(['test', 'test-clip'], 0.0, 12.0, new_names="testtest2")
         self.assertTrue((dd == [3., 5., 8., -99., -99., 1.]).all())
 
     def test_timeclip(self):
         """Test time_clip."""
+        time_clip('aaabbbccc', 1577308800, 1577598800)  # Test non-existent
         t = [1577112800, 1577308800, 1577598800, 1577608800, 1577998800,
              1587998800]
         d = [3., 5., 8., 15., 20., 1.]
@@ -77,6 +87,10 @@ class AnalysisTestCases(BaseTestCase):
         time_clip('test', 1577308800, 1577598800, new_names='name-clip')
         time_clip(['test', 'name-clip'], 1577308800, 1577598800,
                   new_names='name1-ci')
+        time_clip('test', 1577308800, 1577598800, overwrite=1)
+        time_clip('test', 1577308800, 1577598800, new_names="testtest")
+        time_clip(['test', 'test1'], 1577308800, 1577598800,
+                  new_names="testtest2")
         self.assertTrue((dd == [3., 5., 8., 15.]).all())
 
     def test_avg_data(self):
@@ -91,14 +105,13 @@ class AnalysisTestCases(BaseTestCase):
                                  'y': [3., 5., 8., -4., 20., 1.]})
         avg_data('test', width=2, new_names='aabb')  # Test new_names
         d = get_data('aabb')
-        # avg_data('test', width=2, new_names='aaabbb')  # Test new_names
         # Test multiple names
         avg_data(['test', 'aabb'], new_names='aaabbb', width=2)
         self.assertTrue(len(d) > 0)
 
     def test_clean_spikes(self):
         """Test clean_spikes."""
-        clean_spikes('aaabbbccc')  # Test non-existent name
+        clean_spikes('aaabbbccc', nsmooth=3)  # Test non-existent name
         clean_spikes('test', nsmooth=3)
         d = get_data('test-despike')
         self.assertTrue(len(d[1]) == 6)
@@ -115,22 +128,31 @@ class AnalysisTestCases(BaseTestCase):
 
     def test_tdeflag(self):
         """Test tdeflag."""
+        tdeflag('aaabbbccc')  # Test non-existent name
         dn = [3., float('NaN'), 8., float('NaN'), 20., 1.]
         len_dn = len(dn)
         replace_data('test', dn)
         tdeflag('test')
         d = get_data('test-deflag')
+        tdeflag('test', overwrite=1)
+        tdeflag('test', new_names="testtest")
+        tdeflag(['test', 'test-deflag'], new_names="testtest2")
         # Length should be two less, because NaNs were removed.
         self.assertTrue(len(d[1]) == len_dn - 2)
 
     def test_deriv_data(self):
         """Test deriv_data."""
+        deriv_data('aaabbbccc')  # Test non-existent name
         deriv_data('test')
         d = get_data('test-der')
+        deriv_data('test', overwrite=1)
+        deriv_data('test', new_names="testtest")
+        deriv_data(['test', 'test-der'], new_names="testtest2")
         self.assertTrue((d[1] == [2., 2.5, 5.,   6., -7., -19.]).all())
 
     def test_tsmooth(self):
         """Test smooth."""
+        tsmooth('aaabbbccc')  # Test non-existent name
         a = [1.0, 1.0, 2.0, 3.0, 4.0, 1.0, 4.0, 3.0, 2.0, 1.0, 1.0]
         x = smooth(a, 3)
         r = [1.0, 1.3333333333333333, 2.0, 3.0, 2.6666666666666665,
@@ -143,6 +165,9 @@ class AnalysisTestCases(BaseTestCase):
         self.assertTrue(y == ry)
         tsmooth('test')
         d = get_data('test-s')
+        tsmooth('test', overwrite=1)
+        tsmooth('test', new_names="testtest")
+        tsmooth(['test', 'test-s'], new_names="testtest2")
         self.assertTrue(d[1].tolist() == [3.,  5.,  8., 15., 20.,  1.])
 
 

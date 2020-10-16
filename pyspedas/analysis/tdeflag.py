@@ -12,7 +12,8 @@ import pytplot
 import numpy
 
 
-def tdeflag(names, method=None, flag=None, new_names=None, suffix=None):
+def tdeflag(names, method=None, flag=None, new_names=None, suffix=None,
+            overwrite=None):
     """
     Remove flag from data.
 
@@ -31,6 +32,8 @@ def tdeflag(names, method=None, flag=None, new_names=None, suffix=None):
         If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply. Default is '-clip'.
+    overwrite: bool, optional
+        Replace the existing tplot name.
 
     Returns
     -------
@@ -49,12 +52,15 @@ def tdeflag(names, method=None, flag=None, new_names=None, suffix=None):
     if flag is None:
         flag = float('nan')
 
-    if new_names is None:
-        n_names = [s + suffix for s in old_names]
-    elif new_names == '':
+    if overwrite is not None:
         n_names = old_names
+    elif new_names is None:
+        n_names = [s + suffix for s in old_names]
     else:
         n_names = new_names
+
+    if isinstance(n_names, str):
+        n_names = [n_names]
 
     if len(n_names) != len(old_names):
         n_names = [s + suffix for s in old_names]
