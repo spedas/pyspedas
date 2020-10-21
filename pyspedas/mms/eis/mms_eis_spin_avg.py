@@ -72,7 +72,7 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
             for spin_idx in range(0, len(spin_starts)):
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore", category=RuntimeWarning)
-                    spin_avg_flux[spin_idx-1, :] = np.nanmean(flux_data[current_start:spin_starts[spin_idx]+1, :], axis=0)
+                    spin_avg_flux[spin_idx, :] = np.nanmean(flux_data[current_start:spin_starts[spin_idx]+1, :], axis=0)
                 current_start = spin_starts[spin_idx] + 1
 
             store_data(this_scope + '_spin', data={'x': flux_times[spin_starts], 'y': spin_avg_flux, 'v': energies})
