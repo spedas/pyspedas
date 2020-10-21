@@ -5,12 +5,13 @@
 
 from pytplot import data_quants
 
-def tplot_names():
+def tplot_names(quiet=False):
     """
     This function will print out and return a list of all current Tplot Variables stored in the memory.  
     
     Parameters:
-        None
+        quiet : bool
+            If True, does not print out the variables (only returns the list variables)
          
     Returns:
         list : list of str
@@ -36,13 +37,14 @@ def tplot_names():
             names_to_print = data_quants[key].name + "  data from: "
             for oplot_name in data_quants[key].attrs['plot_options']['overplots']:
                 names_to_print = names_to_print + " " + oplot_name
-            print(index, ":", names_to_print)
             index+=1
         else:
             if isinstance(key, str):
                 names_to_print = data_quants[key].name
 
-        print(index, ":", names_to_print)
+        if quiet != True:
+            print(index, ":", names_to_print)
+            
         index += 1
 
         return_names.append(names_to_print)
