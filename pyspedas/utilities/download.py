@@ -40,6 +40,8 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
         warnings.simplefilter("ignore", category=ResourceWarning)
         fsrc = session.get(url, stream=True, verify=verify, headers=headers)
 
+
+    # need to delete the If-Modified-Since header so it's not set in the dictionary in subsequent calls
     if headers.get('If-Modified-Since') != None:
         del headers['If-Modified-Since']
 
