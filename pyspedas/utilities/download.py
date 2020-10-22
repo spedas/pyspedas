@@ -4,6 +4,7 @@ import requests
 import logging
 import fnmatch
 import datetime
+import pkg_resources
 
 from pathlib import Path
 from shutil import copyfileobj, copy
@@ -33,7 +34,8 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
     # check if the file exists, and if so, set the last modification time in the header
     # this allows you to avoid re-downloading files that haven't changed
     if os.path.exists(filename):
-        headers = {'If-Modified-Since': (datetime.datetime.utcfromtimestamp(os.path.getmtime(filename))).strftime('%a, %d %b %Y %H:%M:%S GMT')}
+        headers = {'If-Modified-Since': (datetime.datetime.utcfromtimestamp(os.path.getmtime(filename))).strftime('%a, %d %b %Y %H:%M:%S GMT'),
+                   'User-Agent': 'pySPEDAS ' + pkg_resources.get_distribution("pyspedas").version}
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=ResourceWarning)
