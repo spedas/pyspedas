@@ -110,7 +110,11 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         session.auth = (username, password)
 
     if headers.get('User-Agent') == None:
-        headers['User-Agent'] = 'pySPEDAS ' + pkg_resources.get_distribution("pyspedas").version
+        try:
+            release_version = pkg_resources.get_distribution("pyspedas").version
+        except pkg_resources.DistributionNotFound:
+            release_version = 'bleeding edge'
+        headers['User-Agent'] = 'pySPEDAS ' + release_version
 
     out = []
     index_table={}
