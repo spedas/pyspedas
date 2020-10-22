@@ -10,7 +10,7 @@ import warnings
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_login_lasp(always_prompt=False):
+def mms_login_lasp(always_prompt=False, headers={}):
     '''
     This function logs the user into the SDC and returns a tuple with: (requests.Session object, username)
     '''
@@ -54,8 +54,8 @@ def mms_login_lasp(always_prompt=False):
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", category=ResourceWarning)
-                auth = session.post('https://lasp.colorado.edu', verify=True, timeout=5)
-                testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science', verify=True, timeout=5)
+                auth = session.post('https://lasp.colorado.edu', verify=True, timeout=5, headers=headers)
+                testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science', verify=True, timeout=5, headers=headers)
         except:
             return (session, None)
 

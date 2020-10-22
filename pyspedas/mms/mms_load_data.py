@@ -64,9 +64,16 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                   latest_version=latest_version, major_version=major_version, 
                                   min_version=min_version, cdf_version=cdf_version)
 
+    headers = {}
+    try:
+        release_version = pkg_resources.get_distribution("pyspedas").version
+    except pkg_resources.DistributionNotFound:
+        release_version = 'bleeding edge'
+    headers['User-Agent'] = 'pySPEDAS ' + release_version
+
     user = None
     if not no_download:
-        sdc_session, user = mms_login_lasp(always_prompt=always_prompt)
+        sdc_session, user = mms_login_lasp(always_prompt=always_prompt, headers=headers)
 
     out_files = []
     available_files = []
@@ -90,7 +97,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                         try:
                             with warnings.catch_warnings():
                                 warnings.simplefilter("ignore", category=ResourceWarning)
-                                http_json = sdc_session.get(url, verify=True).json()
+                                http_json = sdc_session.get(url, verify=True, headers=headers).json()
 
                             if CONFIG['debug_mode']: logging.info('Filtering the results down to your trange')
 
@@ -130,7 +137,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                                 with warnings.catch_warnings():
                                     warnings.simplefilter("ignore", category=ResourceWarning)
-                                    fsrc = sdc_session.get(download_url, stream=True, verify=True)
+                                    fsrc = sdc_session.get(download_url, stream=True, verify=True, headers=headers)
                                 ftmp = NamedTemporaryFile(delete=False)
 
                                 with open(ftmp.name, 'wb') as f:
