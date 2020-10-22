@@ -110,6 +110,9 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
     if username != None:
         session.auth = (username, password)
 
+    if headers.get('User-Agent') == None:
+        headers['User-Agent'] = 'pySPEDAS ' + pkg_resources.get_distribution("pyspedas").version
+
     out = []
     index_table={}
 
