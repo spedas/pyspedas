@@ -40,8 +40,9 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
         warnings.simplefilter("ignore", category=ResourceWarning)
         fsrc = session.get(url, stream=True, verify=verify, headers=headers)
 
-    del headers['If-Modified-Since']
-    
+    if headers.get('If-Modified-Since') != None:
+        del headers['If-Modified-Since']
+
     # the file hasn't changed
     if fsrc.status_code == 304:
         logging.info('File is current: ' + filename)
