@@ -2,6 +2,7 @@ import os
 import requests
 import logging
 import warnings
+import pkg_resources
 import numpy as np
 from pytplot import cdf_to_tplot
 from ..analysis.time_clip import time_clip as tclip
