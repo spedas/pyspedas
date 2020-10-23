@@ -110,7 +110,7 @@ def avg_data(names, dt=None, width=60, noremainder=True,
                 print("avg_data: Time interval dt<=0.0. Exiting.")
                 return
             if dt > alldt:
-                print("avg_data: Time interval dt is too small. Exiting.")
+                print("avg_data: Time interval dt is too large. Exiting.")
                 return
 
             # Find bins for time: equal bins of length dt.

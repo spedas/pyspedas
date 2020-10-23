@@ -100,13 +100,19 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test-avg')
         self.assertTrue((d[1] == [4.0, 11.5, 10.5]).all())
         avg_data('test', width=2, overwrite=True)  # Test overwrite
-        avg_data('test', dt=4.0, noremainder=True)  # Test dt option
+        avg_data('test', dt=4.0, noremainder=False)  # Test dt option
         store_data('test', data={'x': [1., 2., 3., 4., 5., 6.],
                                  'y': [3., 5., 8., -4., 20., 1.]})
         avg_data('test', width=2, new_names='aabb')  # Test new_names
         d = get_data('aabb')
         # Test multiple names
         avg_data(['test', 'aabb'], new_names='aaabbb', width=2)
+        dn = [[3., 5., 8.], [15., 20., 1.], [3., 5., 8.], [15., 20., 1.],
+              [23., 15., 28.], [15., 20., 1.]]
+        store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
+        avg_data('test1', width=2)  # Test 3-d data
+        avg_data('test1', dt=-1.)  # Test dt error
+        avg_data('test1', dt=1.e8)  # Test dt error
         self.assertTrue(len(d) > 0)
 
     def test_clean_spikes(self):
