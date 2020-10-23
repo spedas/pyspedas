@@ -1,7 +1,7 @@
 
 import os
 import unittest
-from ...utilities.data_exists import data_exists
+from pyspedas.utilities.data_exists import data_exists
 
 import pyspedas
 
@@ -31,6 +31,10 @@ class LoadTestCases(unittest.TestCase):
         files = pyspedas.dscovr.mag(downloadonly=True, trange=['2018-12-15', '2018-12-16'])
         self.assertTrue(os.path.exists(files[0]))
 
+    def test_load_all(self):
+        t_all = pyspedas.dscovr.all()
+        self.assertTrue(len(t_all) > 0)
+        
         
 if __name__ == '__main__':
     unittest.main()
