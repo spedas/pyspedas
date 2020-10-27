@@ -26,7 +26,7 @@ def tnames(pattern=None):
 
     """
     name_list = list()
-    all_names = tplot_names()
+    all_names = tplot_names(quiet=True)
 
     if pattern is None:
         name_list.extend(all_names)
