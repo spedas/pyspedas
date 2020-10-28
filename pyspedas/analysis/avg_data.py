@@ -12,7 +12,7 @@ import pytplot
 from pytplot import store_data
 
 
-def avg_data(names, dt=None, width=60, noremainder=True,
+def avg_data(names, dt=None, width=60, noremainder=False,
              new_names=None, suffix=None, overwrite=None):
     """
     Get a new tplot variable with averaged data.
@@ -29,7 +29,7 @@ def avg_data(names, dt=None, width=60, noremainder=True,
         If dt is set, then width is ignored.
     noremainder: boolean, optional
         If True, the remainter (last part of data) will not be included.
-        If True, all time intervals will be of equal width.
+        If False. the remainter will be included.
     new_names: str/list of str, optional
         List of new_names for pytplot variables.
         If not given, then a suffix is applied.

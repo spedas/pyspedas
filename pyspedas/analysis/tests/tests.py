@@ -109,12 +109,14 @@ class AnalysisTestCases(BaseTestCase):
         avg_data(['test', 'aabb'], new_names='aaabbb', width=2)
         dn = [[3., 5., 8.], [15., 20., 1.], [3., 5., 8.], [15., 20., 1.],
               [23., 15., 28.], [15., 20., 1.]]
-        store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
+        store_data('test1', data={'x': [1., 12., 13., 14., 15., 16.], 'y': dn})
         avg_data('test1', width=2)  # Test 3-d data
-        avg_data('test1', dt=2.)  # Test a reasonable dt
+        avg_data('test1', new_names='test2', dt=2.)  # Test a reasonable dt
         avg_data('test1', dt=-1.)  # Test dt error
         avg_data('test1', dt=1.e8)  # Test dt error
+        d2 = get_data('test2')
         self.assertTrue(len(d) > 0)
+        self.assertTrue(d2[1][-1][0] == 19.0)
 
     def test_clean_spikes(self):
         """Test clean_spikes."""

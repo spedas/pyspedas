@@ -35,7 +35,7 @@ def deriv_data(names, new_names=None, suffix=None, overwrite=None):
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('avg_data error: No pytplot names were provided.')
+        print('deriv_data error: No pytplot names were provided.')
         return
 
     if suffix is None:
