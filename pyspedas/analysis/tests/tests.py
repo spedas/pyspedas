@@ -111,6 +111,7 @@ class AnalysisTestCases(BaseTestCase):
               [23., 15., 28.], [15., 20., 1.]]
         store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
         avg_data('test1', width=2)  # Test 3-d data
+        avg_data('test1', dt=2.)  # Test a reasonable dt
         avg_data('test1', dt=-1.)  # Test dt error
         avg_data('test1', dt=1.e8)  # Test dt error
         self.assertTrue(len(d) > 0)
