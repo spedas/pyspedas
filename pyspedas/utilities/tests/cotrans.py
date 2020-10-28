@@ -22,6 +22,9 @@ class CotransTestCases(unittest.TestCase):
     def test_dsl2gse(self):
         """Test themis.cotrans.dsl2gse."""
         del_data()
+        # Try with missing variables. It should exit without problems.
+        dsl2gse('tha_fgl_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgl_gse')
+        # Now load the needed variables.
         time_range = ['2017-03-23 00:00:00', '2017-03-23 23:59:59']
         pyspedas.themis.state(probe='a', trange=time_range,
                               get_support_data=True,
@@ -32,6 +35,9 @@ class CotransTestCases(unittest.TestCase):
         dsl2gse('tha_fgl_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgl_gse')
 
         t, d = get_data('tha_fgl_gse')
+        # Now test the inverse.
+        dsl2gse('tha_fgl_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgl_gse',
+                isgsetodsl=1)
 
         self.assertTrue(abs(d[0].tolist()[0]-15.905078404701147) <= 1e-6)
         self.assertTrue(abs(d[0].tolist()[1]--13.962618931740064) <= 1e-6)
