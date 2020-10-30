@@ -3,7 +3,8 @@
 import unittest
 from pyspedas.analysis.tsmooth import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
-                      yclip, time_clip, deriv_data, tdeflag, clean_spikes)
+                      yclip, time_clip, deriv_data, tdeflag, clean_spikes,
+                      tinterpol)
 from pytplot import get_data, store_data, replace_data
 
 import numpy as np
@@ -76,10 +77,10 @@ class AnalysisTestCases(BaseTestCase):
     def test_timeclip(self):
         """Test time_clip."""
         time_clip('aaabbbccc', 1577308800, 1577598800)  # Test non-existent
-        t = [1577112800, 1577308800, 1577598800, 1577608800, 1577998800,
-             1587998800]
-        d = [3., 5., 8., 15., 20., 1.]
-        store_data('test1', data={'x': t, 'y': d})
+        tn = [1577112800, 1577308800, 1577598800, 1577608800, 1577998800,
+              1587998800]
+        dn = [3., 5., 8., 15., 20., 1.]
+        store_data('test1', data={'x': tn, 'y': dn})
         time_clip('aaabbb', 1577308800, 1577598800)
         time_clip('test1', 1577112800, 1577608800)
         d = get_data('test1-tclip')
@@ -91,6 +92,7 @@ class AnalysisTestCases(BaseTestCase):
         time_clip('test', 1577308800, 1577598800, new_names="testtest")
         time_clip(['test', 'test1'], 1577308800, 1577598800,
                   new_names="testtest2")
+        time_clip('test1', 1677112800, 1577608800)
         self.assertTrue((dd == [3., 5., 8., 15.]).all())
 
     def test_avg_data(self):
@@ -178,6 +180,16 @@ class AnalysisTestCases(BaseTestCase):
         tsmooth('test', new_names="testtest")
         tsmooth(['test', 'test-s'], new_names="testtest2")
         self.assertTrue(d[1].tolist() == [3.,  5.,  8., 15., 20.,  1.])
+
+    def test_tinterpol(self):
+        """Test tinterpol."""
+        tinterpol('aaabbbccc', 'test')  # Test non-existent name
+        tn = [1., 1.5, 4.6, 5.8, 6.]
+        dn = [10., 15., 46., 58., 60.]
+        store_data('test1', data={'x': tn, 'y': dn})
+        tinterpol('test1', 'test')
+        d = get_data('test1-itrp')
+        self.assertTrue(d[1][1] == 20.)
 
 
 if __name__ == '__main__':
