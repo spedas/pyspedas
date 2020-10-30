@@ -62,6 +62,7 @@ class CotransTestCases(unittest.TestCase):
         in_len = len(din[0])
         dout = get_data(name_out)
         out_len = len(dout[0])
+        cotrans(name_in=name_in, coord_in="gei", coord_out="geo")
         self.assertTrue(out_len == in_len)
 
     def test_cotrans_igrf(self):
@@ -146,6 +147,7 @@ class CotransTestCases(unittest.TestCase):
         # Test empty data.
         cotrans(name_out=name1, time_in=t, data_in=[],
                 coord_in="gei", coord_out="geo")
+        cotrans(time_in=t, data_in=d, coord_in="gse", coord_out="gsm")
         # Test all combinations.
         for coord_in in all_cotrans:
             for coord_out in all_cotrans:
