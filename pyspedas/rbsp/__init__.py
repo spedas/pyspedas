@@ -10,6 +10,7 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -65,7 +66,7 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='emfisis', trange=trange, probe=probe, datatype=datatype, level=level, cadence=cadence, coord=coord, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='emfisis', trange=trange, probe=probe, datatype=datatype, level=level, cadence=cadence, coord=coord, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def rbspice(trange=['2018-11-5', '2018-11-6'], 
         probe='a',
@@ -74,6 +75,7 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -123,7 +125,7 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='rbspice', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='rbspice', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def efw(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
@@ -132,6 +134,7 @@ def efw(trange=['2015-11-5', '2015-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -181,7 +184,7 @@ def efw(trange=['2015-11-5', '2015-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def mageis(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
@@ -191,6 +194,7 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -240,7 +244,7 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='mageis', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='mageis', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def hope(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
@@ -250,6 +254,7 @@ def hope(trange=['2015-11-5', '2015-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -299,7 +304,7 @@ def hope(trange=['2015-11-5', '2015-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='hope', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='hope', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def rept(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
@@ -309,6 +314,7 @@ def rept(trange=['2015-11-5', '2015-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -358,7 +364,7 @@ def rept(trange=['2015-11-5', '2015-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='rept', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='rept', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def rps(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
@@ -367,6 +373,7 @@ def rps(trange=['2015-11-5', '2015-11-6'],
         suffix='',  
         get_support_data=True, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -416,4 +423,4 @@ def rps(trange=['2015-11-5', '2015-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='rps', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='rps', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

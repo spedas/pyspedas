@@ -7,6 +7,7 @@ def fgm(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -53,7 +54,7 @@ def fgm(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def aspoc(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -61,6 +62,7 @@ def aspoc(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -107,7 +109,7 @@ def aspoc(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='aspoc', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='aspoc', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def cis(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -115,6 +117,7 @@ def cis(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -161,7 +164,7 @@ def cis(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def dwp(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -169,6 +172,7 @@ def dwp(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -215,7 +219,7 @@ def dwp(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='dwp', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='dwp', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def edi(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -223,6 +227,7 @@ def edi(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -269,7 +274,7 @@ def edi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def efw(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -277,6 +282,7 @@ def efw(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -323,7 +329,7 @@ def efw(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def peace(trange=['2016-11-5', '2016-11-6'], 
         probe='1',
@@ -331,6 +337,7 @@ def peace(trange=['2016-11-5', '2016-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -377,7 +384,7 @@ def peace(trange=['2016-11-5', '2016-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='peace', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='peace', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def rapid(trange=['2016-11-5', '2016-11-6'], 
         probe='1',
@@ -385,6 +392,7 @@ def rapid(trange=['2016-11-5', '2016-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -431,7 +439,7 @@ def rapid(trange=['2016-11-5', '2016-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def staff(trange=['2012-11-5', '2012-11-6'], 
         probe='1',
@@ -439,6 +447,7 @@ def staff(trange=['2012-11-5', '2012-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -485,7 +494,7 @@ def staff(trange=['2012-11-5', '2012-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='staff', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='staff', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def wbd(trange=['2012-11-6', '2012-11-7'], 
         probe='1',
@@ -493,6 +502,7 @@ def wbd(trange=['2012-11-6', '2012-11-7'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -539,7 +549,7 @@ def wbd(trange=['2012-11-6', '2012-11-7'],
         List of tplot variables created.
 
     """
-    return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 def whi(trange=['2012-11-5', '2012-11-6'], 
         probe='1',
@@ -547,6 +557,7 @@ def whi(trange=['2012-11-5', '2012-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -593,4 +604,4 @@ def whi(trange=['2012-11-5', '2012-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='whi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='whi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)

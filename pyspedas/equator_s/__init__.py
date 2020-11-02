@@ -6,6 +6,7 @@ def mam(trange=['1998-04-06', '1998-04-07'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -52,13 +53,14 @@ def mam(trange=['1998-04-06', '1998-04-07'],
         List of tplot variables created.
 
     """
-    return load(instrument='mam', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='mam', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def edi(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -105,13 +107,14 @@ def edi(trange=['1998-04-06', '1998-04-07'],
         List of tplot variables created.
 
     """
-    return load(instrument='edi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='edi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def esa(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -160,13 +163,14 @@ def esa(trange=['1998-04-06', '1998-04-07'],
         List of tplot variables created.
 
     """
-    return load(instrument='3da', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='3da', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epi(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -213,13 +217,14 @@ def epi(trange=['1998-04-06', '1998-04-07'],
         List of tplot variables created.
 
     """
-    return load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def ici(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -266,13 +271,14 @@ def ici(trange=['1998-04-06', '1998-04-07'],
         List of tplot variables created.
 
     """
-    return load(instrument='ici', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='ici', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def pcd(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -319,13 +325,14 @@ def pcd(trange=['1998-04-06', '1998-04-07'],
         List of tplot variables created.
 
     """
-    return load(instrument='pcd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='pcd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def sfd(trange=['1998-01-26', '1998-01-27'],
         datatype='sp',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -372,4 +379,4 @@ def sfd(trange=['1998-01-26', '1998-01-27'],
         List of tplot variables created.
 
     """
-    return load(instrument='sfd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='sfd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

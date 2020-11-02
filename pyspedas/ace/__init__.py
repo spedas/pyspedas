@@ -6,6 +6,7 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -52,13 +53,14 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='fgm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='fgm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def swe(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -105,13 +107,14 @@ def swe(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epam(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -158,13 +161,14 @@ def epam(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='epm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='epm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def cris(trange=['2018-11-5', '2018-11-6'],
         datatype='h2',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -211,13 +215,14 @@ def cris(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='cris', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='cris', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def sis(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -264,7 +269,7 @@ def sis(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='sis', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='sis', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 
 def uleis(trange=['2018-11-5', '2018-11-6'],
@@ -272,6 +277,7 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -318,7 +324,7 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='ule', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='ule', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 
 def sepica(trange=['2004-11-5', '2004-11-6'],
@@ -326,6 +332,7 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -372,13 +379,14 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='sep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='sep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def swics(trange=['2018-11-5', '2018-11-6'],
         datatype='sw2_h3',
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -425,4 +433,4 @@ def swics(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='swics', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='swics', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

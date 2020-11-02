@@ -7,6 +7,7 @@ def mag(trange=['2013-11-5', '2013-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -53,7 +54,7 @@ def mag(trange=['2013-11-5', '2013-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='mag', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='mag', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def plastic(trange=['2013-11-5', '2013-11-6'],
         probe='a',
@@ -62,6 +63,7 @@ def plastic(trange=['2013-11-5', '2013-11-6'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -108,4 +110,4 @@ def plastic(trange=['2013-11-5', '2013-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='plastic', trange=trange, probe=probe, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='plastic', trange=trange, probe=probe, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

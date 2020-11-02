@@ -7,6 +7,7 @@ def dcb(trange=['2001-09-05', '2001-09-06'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -53,7 +54,7 @@ def dcb(trange=['2001-09-05', '2001-09-06'],
         List of tplot variables created.
 
     """
-    return load(instrument='dcb', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='dcb', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def acb(trange=['1998-01-05', '1998-01-06'],
         datatype='', 
@@ -61,6 +62,7 @@ def acb(trange=['1998-01-05', '1998-01-06'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -107,7 +109,7 @@ def acb(trange=['1998-01-05', '1998-01-06'],
         List of tplot variables created.
 
     """
-    return load(instrument='acb', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='acb', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def esa(trange=['1998-09-05', '1998-09-06'],
         datatype='ies', 
@@ -115,6 +117,7 @@ def esa(trange=['1998-09-05', '1998-09-06'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -161,7 +164,7 @@ def esa(trange=['1998-09-05', '1998-09-06'],
         List of tplot variables created.
 
     """
-    return load(instrument='esa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='esa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def teams(trange=['1998-09-05', '1998-09-06'],
         datatype='', 
@@ -169,6 +172,7 @@ def teams(trange=['1998-09-05', '1998-09-06'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -215,4 +219,4 @@ def teams(trange=['1998-09-05', '1998-09-06'],
         List of tplot variables created.
 
     """
-    return load(instrument='teams', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='teams', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

@@ -8,6 +8,7 @@ def induction(site=None,
               suffix='',  
               get_support_data=False, 
               varformat=None,
+              varnames=[],
               downloadonly=False,
               notplot=False,
               no_update=False,
@@ -56,7 +57,7 @@ def induction(site=None,
 
     """
 
-    out_vars = load(site=site, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    out_vars = load(site=site, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
     
     if downloadonly == True or notplot == True or out_vars == None:
         return out_vars

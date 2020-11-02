@@ -7,6 +7,7 @@ def pwe_ofa(trange=['2017-04-01', '2017-04-02'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -58,7 +59,7 @@ def pwe_ofa(trange=['2017-04-01', '2017-04-02'],
         List of tplot variables created.
 
     """
-    return load(instrument='pwe_ofa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+    return load(instrument='pwe_ofa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
 
 def pwe_efd(trange=['2017-04-01', '2017-04-02'],
         datatype='E_spin', 
@@ -66,6 +67,7 @@ def pwe_efd(trange=['2017-04-01', '2017-04-02'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -117,7 +119,7 @@ def pwe_efd(trange=['2017-04-01', '2017-04-02'],
         List of tplot variables created.
 
     """
-    return load(instrument='pwe_efd', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+    return load(instrument='pwe_efd', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
 
 def pwe_hfa(trange=['2017-04-01', '2017-04-02'],
         datatype='spec', 
@@ -126,6 +128,7 @@ def pwe_hfa(trange=['2017-04-01', '2017-04-02'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -177,4 +180,4 @@ def pwe_hfa(trange=['2017-04-01', '2017-04-02'],
         List of tplot variables created.
 
     """
-    return load(instrument='pwe_hfa', mode=mode, trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+    return load(instrument='pwe_hfa', mode=mode, trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)

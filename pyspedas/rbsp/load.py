@@ -17,6 +17,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
          rel='rel04', # for ECT data
          get_support_data=False, 
          varformat=None,
+         varnames=[],
          downloadonly=False,
          notplot=False,
          no_update=False,
@@ -75,7 +76,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, merge=True, get_support_data=get_support_data, varformat=varformat, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, merge=True, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars

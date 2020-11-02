@@ -6,6 +6,7 @@ def mag(trange=['2018-10-16', '2018-10-17'],
         suffix='',  
         get_support_data=False, 
         varformat=None,
+        varnames=[],
         downloadonly=False,
         notplot=False,
         no_update=False,
@@ -53,13 +54,14 @@ def mag(trange=['2018-10-16', '2018-10-17'],
         List of tplot variables created.
 
     """
-    return load(instrument='mag', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='mag', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def fc(trange=['2018-10-16', '2018-10-17'], 
        datatype='h1', 
        suffix='',  
        get_support_data=False, 
        varformat=None,
+       varnames=[],
        downloadonly=False,
        notplot=False,
        no_update=False,
@@ -107,13 +109,14 @@ def fc(trange=['2018-10-16', '2018-10-17'],
         List of tplot variables created.
 
     """
-    return load(instrument='faraday_cup', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='faraday_cup', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def orb(trange=['2018-10-16', '2018-10-17'], 
        datatype='orbit', 
        suffix='',  
        get_support_data=False, 
        varformat=None,
+       varnames=[],
        downloadonly=False,
        notplot=False,
        no_update=False,
@@ -157,13 +160,14 @@ def orb(trange=['2018-10-16', '2018-10-17'],
         List of tplot variables created.
 
     """
-    return load(instrument='pre_or', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='pre_or', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def att(trange=['2018-10-16', '2018-10-17'], 
        datatype='orbit', 
        suffix='',  
        get_support_data=False, 
        varformat=None,
+       varnames=[],
        downloadonly=False,
        notplot=False,
        no_update=False,
@@ -207,7 +211,7 @@ def att(trange=['2018-10-16', '2018-10-17'],
         List of tplot variables created.
 
     """
-    return load(instrument='def_at', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='def_at', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False, suffix='', no_update=False, time_clip=False):
     """
