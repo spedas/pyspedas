@@ -13,7 +13,7 @@ CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/mms/'
 def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
     instrument='fgm', datatype='', varformat=None, suffix='', get_support_data=False, time_clip=False, 
     no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
-    major_version=False, min_version=None, cdf_version=None):
+    major_version=False, min_version=None, cdf_version=None, varnames=[]):
     """
     This function loads MMS data from NASA SPDF into pyTplot variables
 
@@ -88,7 +88,7 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
 
                     filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
         
-                    tvars = cdf_to_tplot(filtered_out_files, merge=True, varformat=varformat, get_support_data=get_support_data, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+                    tvars = cdf_to_tplot(filtered_out_files, merge=True, varformat=varformat, varnames=varnames, get_support_data=get_support_data, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
                     if tvars is not None:
                         tvars_created.extend(tvars)
 

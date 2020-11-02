@@ -24,7 +24,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
     instrument='fgm', datatype='', varformat=None, prefix='', suffix='', get_support_data=False, time_clip=False, 
     no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
-    major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False):
+    major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False, varnames=[]):
     """
     This function loads MMS data into pyTplot variables
 
@@ -63,7 +63,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                   suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, 
                                   no_update=no_update, center_measurement=center_measurement, notplot=notplot, 
                                   latest_version=latest_version, major_version=major_version, 
-                                  min_version=min_version, cdf_version=cdf_version)
+                                  min_version=min_version, cdf_version=cdf_version, varnames=varnames)
 
     headers = {}
     try:
@@ -182,7 +182,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             logging.info('No matching CDF versions found.')
             return
 
-        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat, varnames=varnames, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
 
         if notplot:
             return new_variables
