@@ -135,6 +135,7 @@ def load_data(filenames=None,
               exclude_orbit_file=False,
               download_only=False,
               varformat=None,
+              varnames=[],
               prefix='',
               suffix='',
               get_support_data=False,
@@ -262,11 +263,11 @@ def load_data(filenames=None,
                 # Loop through CDF files
                 desc = l2_regex.match(os.path.basename(f)).group("description")
                 if desc != '' and suffix == '':
-                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat,
+                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames,
                                                                  get_support_data=get_support_data, prefix=prefix,
                                                                  suffix=desc, merge=True)
                 else:
-                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat,
+                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames,
                                                                   get_support_data=get_support_data, prefix=prefix,
                                                                   suffix=suffix, merge=True)
 
