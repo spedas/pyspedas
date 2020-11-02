@@ -39,6 +39,10 @@ def vhm(trange=['2009-01-01', '2009-01-02'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -95,6 +99,10 @@ def swoops(trange=['2009-01-01', '2009-01-02'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
@@ -153,6 +161,10 @@ def swics(trange=['2009-01-01', '2009-01-02'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -209,6 +221,10 @@ def urap(trange=['2003-01-01', '2003-01-02'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
@@ -267,6 +283,10 @@ def epac(trange=['1996-01-01', '1996-01-02'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -323,6 +343,10 @@ def hiscale(trange=['2003-01-01', '2003-01-02'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
@@ -381,6 +405,10 @@ def cospin(trange=['2003-01-01', '2003-01-02'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -437,6 +465,10 @@ def grb(trange=['2003-01-01', '2003-01-02'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 

@@ -42,6 +42,10 @@ def lepe(trange=['2017-04-04', '2017-04-05'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables

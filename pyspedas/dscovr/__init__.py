@@ -37,6 +37,10 @@ def mag(trange=['2018-10-16', '2018-10-17'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -92,6 +96,10 @@ def fc(trange=['2018-10-16', '2018-10-17'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -143,6 +151,10 @@ def orb(trange=['2018-10-16', '2018-10-17'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -193,6 +205,10 @@ def att(trange=['2018-10-16', '2018-10-17'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 

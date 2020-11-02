@@ -42,6 +42,10 @@ def pwe_ofa(trange=['2017-04-01', '2017-04-02'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -101,6 +105,10 @@ def pwe_efd(trange=['2017-04-01', '2017-04-02'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
@@ -162,6 +170,10 @@ def pwe_hfa(trange=['2017-04-01', '2017-04-02'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 

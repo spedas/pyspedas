@@ -36,6 +36,10 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -89,6 +93,10 @@ def swe(trange=['2018-11-5', '2018-11-6'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
@@ -144,6 +152,10 @@ def epam(trange=['2018-11-5', '2018-11-6'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -198,6 +210,10 @@ def cris(trange=['2018-11-5', '2018-11-6'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -251,6 +267,10 @@ def sis(trange=['2018-11-5', '2018-11-6'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
@@ -307,6 +327,10 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -362,6 +386,10 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
+
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
@@ -415,6 +443,10 @@ def swics(trange=['2018-11-5', '2018-11-6'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load (if not specified,
+            all data variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
