@@ -182,7 +182,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             logging.info('No matching CDF versions found.')
             return
 
-        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat, varnames=varnames, merge=True, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat, varnames=varnames, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
 
         if notplot:
             return new_variables
