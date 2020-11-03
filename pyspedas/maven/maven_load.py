@@ -297,8 +297,21 @@ def load_data(filenames=None,
             flat_list = list(set([item for sublist in loaded_tplot_vars for item in sublist]))
 
             # Load in KP data specifically for all of the Ancillary data (position, attitude, Ls, etc)
-            kp_data_loaded = maven_kp_to_tplot(filename=kp_files, ancillary_only=ancillary_only, instruments=instruments)
+            if kp_files != []:
+                kp_data_loaded = maven_kp_to_tplot(filename=kp_files, ancillary_only=ancillary_only, instruments=instruments)
 
+                # Link all created KP data to the ancillary KP data
+                for tvar in kp_data_loaded:
+                    pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type='alt')
+                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type='x')
+                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type='y')
+                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type='z')
+                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
+                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
+                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
+                    pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
+                    pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
+                
             # Link all created tplot variables to the corresponding KP data
             for tvar in flat_list:
                 pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type='alt')
@@ -311,17 +324,6 @@ def load_data(filenames=None,
                 pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
                 pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
 
-            # Link all created KP data to the ancillary KP data
-            for tvar in kp_data_loaded:
-                pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type='alt')
-                pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type='x')
-                pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type='y')
-                pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type='z')
-                pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
-                pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
-                pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
-                pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
-                pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
 
             # Return list of unique KP data
             return flat_list
