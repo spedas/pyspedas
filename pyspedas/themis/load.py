@@ -177,7 +177,6 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     tvars = cdf_to_tplot(out_files,
                          suffix=suffix,
-                         merge=True,
                          get_support_data=get_support_data,
                          varformat=varformat,
                          varnames=varnames,

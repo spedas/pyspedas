@@ -78,7 +78,7 @@ def load(trange=['2017-03-27', '2017-03-28'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, merge=True, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars
