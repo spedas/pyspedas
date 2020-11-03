@@ -245,6 +245,14 @@ class EDPLoadTestCases(unittest.TestCase):
 
 ############### FGM ############### 
 class FGMLoadTestCases(unittest.TestCase):
+    def test_regression_multi_imports_spdf(self):
+        data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], spdf=True)
+        t1, d1 = get_data('mms1_fgm_b_gse_brst_l2')
+        data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], spdf=True)
+        t2, d2 = get_data('mms1_fgm_b_gse_brst_l2')
+        self.assertTrue(t1.shape == t2.shape)
+        self.assertTrue(d1.shape == d2.shape)
+
     def test_load_default_data(self):
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
