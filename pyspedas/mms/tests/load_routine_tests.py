@@ -11,6 +11,13 @@ from pytplot import get_data, del_data
 from pyspedas import tdpwrspc
 
 class StateLoadTestCases(unittest.TestCase):
+    def test_load_eph_no_update(self):
+        data = mms_load_state(datatypes=['pos', 'vel']) # ensure the files are stored locally
+        del_data('*') # remove the current tplot vars
+        data = mms_load_state(datatypes=['pos', 'vel'], no_update=True) # ensure the files are stored locally
+        self.assertTrue(data_exists('mms1_defeph_pos'))
+        self.assertTrue(data_exists('mms1_defeph_vel'))
+
     def test_load_eph_data(self):
         data = mms_load_state(datatypes=['pos', 'vel'])
         self.assertTrue(data_exists('mms1_defeph_pos'))
