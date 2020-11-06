@@ -65,7 +65,11 @@ def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128,
             for var in split_vars:
                 out_vars.append(tdpwrspc(var, newname=var + '_dpwrspc',
                                          nboxpoints=nboxpoints,
-                                         nshiftpoints=nshiftpoints))
+                                         nshiftpoints=nshiftpoints,
+                                         binsize=binsize,
+                                         nohanning=nohanning,
+                                         noline=noline, notperhz=notperhz,
+                                         notmvariance=notmvariance))
             return out_vars
         else:
             pwrspc = dpwrspc(data_tuple[0], data_tuple[1],
