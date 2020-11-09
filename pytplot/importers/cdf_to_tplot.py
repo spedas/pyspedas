@@ -69,7 +69,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             If True, then data are returned in a hash table instead of
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
-        varnames: list
+        varnames: str or list of str
             Load these variables only. If [] or ['*'], then load everything.
 
     Returns:
@@ -80,6 +80,9 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
     epoch_cache = {}
     output_table = {}
     metadata = {}
+
+    if not isinstance(varnames, list):
+        varnames = [varnames]
     
     if len(varnames) > 0:
         if '*' in varnames:
