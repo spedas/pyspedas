@@ -40,7 +40,11 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.yaxis2.setWidth(0)
 
         vb = NoPaddingPlot()
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis,
+                                                                'left': self.yaxis,
+                                                                "right": self.yaxis2,
+                                                                "top": self.xaxis2}, viewBox=vb)
+
         self.plotwindow.vb.setLimits(xMin=0, xMax=360, yMin=-90, yMax=90)
 
         if pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
