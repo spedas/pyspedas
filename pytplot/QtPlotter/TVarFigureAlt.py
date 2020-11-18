@@ -32,7 +32,21 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.yaxis.setWidth(100)
 
         vb = NoPaddingPlot()
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
+
+        # Creating axes to bound the plots with lines
+        self.xaxis2 = pg.AxisItem(orientation='top')
+        self.xaxis2.setHeight(0)
+        self.yaxis2 = AxisItem("right")
+        self.yaxis2.setWidth(0)
+
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis,
+                                                                'left': self.yaxis,
+                                                                'right': self.yaxis2,
+                                                                'top': self.xaxis2}, viewBox=vb)
+
+        if pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
+            self.plotwindow.showAxis("top")
+            self.plotwindow.showAxis("right")
 
         # Set up the view box needed for the legends
         self.legendvb = pg.ViewBox(enableMouse=False)

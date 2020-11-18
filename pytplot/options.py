@@ -67,8 +67,9 @@ def options(name, option=None, value=None, opt_dict=None):
                                          from a spec plot.
         t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
                                          plots.
-        'spec_plot_dim'     int          If variable two dimensions, this sets which dimension the variable will have on
+        spec_plot_dim       int          If variable two dimensions, this sets which dimension the variable will have on
                                          on the y axis.  All other dimensions are summed into this one.
+        border              bool         Turns on or off the top/right axes that would create a box around the plot
         =================== ==========   =====
     Returns:
         None
@@ -305,6 +306,9 @@ def options(name, option=None, value=None, opt_dict=None):
                     pytplot.store_data(i, data=data_dict)
                     data_quants[i].attrs = attr_dict
                     data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(data_quants[i])
+
+            if option == 'border':
+                data_quants[i].attrs['plot_options']['extras']['border'] = value
 
 
     return

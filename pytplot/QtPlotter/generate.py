@@ -15,11 +15,14 @@ def generate_stack(name,
                    var_label=None,
                    combine_axes=True,
                    vert_spacing=25):
+
     new_stack = pg.GraphicsLayoutWidget()
+
     # Variables needed for pyqtgraph plots
     xaxis_thickness = 35
     varlabel_xaxis_thickness = 20
     title_thickness = 50
+
     # Setting up the pyqtgraph window
     new_stack.setWindowTitle(pytplot.tplot_opt_glob['title_text'])
     new_stack.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
@@ -52,6 +55,7 @@ def generate_stack(name,
     titlerow = 0
     spacing_in_pixels = vert_spacing
     new_stack.ci.layout.setSpacing(spacing_in_pixels)
+
     # Create all plots
     while i < num_plots:
         last_plot = (i == num_plots - 1)

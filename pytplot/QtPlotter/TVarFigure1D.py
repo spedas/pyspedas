@@ -33,19 +33,35 @@ class TVarFigure1D(pg.GraphicsLayout):
         if self.show_xaxis:
             self.xaxis = DateAxis(orientation='bottom')
             self.xaxis.setHeight(35)
-            self.xaxis.enableAutoSIPrefix(enable=False)
         else:
             self.xaxis = DateAxis(orientation='bottom', showValues=False)
             self.xaxis.setHeight(0)
-            self.xaxis.enableAutoSIPrefix(enable=False)
+        self.xaxis.enableAutoSIPrefix(enable=False)
 
         # Set up the y axis
         self.yaxis = AxisItem("left")
         self.yaxis.setWidth(100)
+
+        # Creating axes to bound the plots with lines
+        self.xaxis2 = DateAxis(orientation='top', showValues=False)
+        self.xaxis2.setHeight(0)
+        self.yaxis2 = AxisItem("right", showValues=False)
+        self.yaxis2.setWidth(0)
+
         vb = NoPaddingPlot()
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis, 'left': self.yaxis}, viewBox=vb)
+
+        # Generate our plot in the graphics layout
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': self.xaxis,
+                                                                'left': self.yaxis,
+                                                                'right': self.yaxis2,
+                                                                'top': self.xaxis2}, viewBox=vb)
+
+        if pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
+            self.plotwindow.showAxis("top")
+            self.plotwindow.showAxis("right")
 
         # Set up the view box needed for the legends
+
         self.legendvb = pg.ViewBox(enableMouse=False)
         self.legendvb.setMaximumWidth(100)
         self.legendvb.setXRange(0, 1, padding=0)
