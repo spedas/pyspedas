@@ -25,9 +25,9 @@ setup(
     project_urls={'Information': 'http://spedas.org/wiki/',
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    install_requires=['requests', 'pytplot>=1.7.10', 'cdflib>=0.3.18',
+    install_requires=['numpy<=1.19.3', 'requests', 'pytplot>=1.7.10', 'cdflib>=0.3.18',
                       'cdasws>=1.7.21', 'netCDF4', 'pywavelets', 'pyqtgraph',
                       'astropy'],
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     include_package_data=True,
 )

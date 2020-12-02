@@ -1,3 +1,4 @@
+numpy<=1.19.3
 requests
 cdflib>=0.3.18
 pytplot>=1.7.10
