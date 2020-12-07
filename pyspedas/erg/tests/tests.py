@@ -19,7 +19,7 @@ class LoadTestCases(unittest.TestCase):
     #     self.assertTrue(data_exists('erg_xep_l2_FEDO_GSO'))
 
     def test_load_orb_data(self):
-        mgf_vars = pyspedas.erg.orb()
+        orb_vars = pyspedas.erg.orb()
         self.assertTrue(data_exists('erg_orb_l3_pos_eq_op'))
         self.assertTrue(data_exists('erg_orb_l3_pos_iono_north_op'))
         self.assertTrue(data_exists('erg_orb_l3_pos_iono_south_op'))
