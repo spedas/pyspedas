@@ -41,11 +41,24 @@ def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 
         file_lras.append(lra_values)
         file_ldecs.append(ldec_values)
 
+    file_times_array = np.concatenate(file_times)
+    file_lras_array = np.concatenate(file_lras)
+    file_ldecs_array = np.concatenate(file_ldecs)
+
+    file_times_sorted_idx = np.argsort(file_times_array)
+    file_times_sorted = file_times_array[file_times_sorted_idx]
+    file_lras_sorted = file_lras_array[file_times_sorted_idx]
+    file_ldecs_sorted = file_ldecs_array[file_times_sorted_idx]
+
+    file_times_uniq = np.unique(file_times_sorted, return_index=True)
+    file_lras_out = file_lras_sorted[file_times_uniq[1]]
+    file_ldecs_out = file_ldecs_sorted[file_times_uniq[1]]
+
     if 'spinras' in datatypes:
-        store_data(prefix + '_' + level + 'att_spinras' + suffix, data={'x': np.concatenate(file_times), 'y': np.concatenate(file_lras)})
+        store_data(prefix + '_' + level + 'att_spinras' + suffix, data={'x': file_times_uniq[0], 'y': file_lras_out})
         tclip(prefix + '_' + level + 'att_spinras' + suffix, trange[0], trange[1], suffix='')
 
     if 'spindec' in datatypes:
-        store_data(prefix + '_' + level + 'att_spindec' + suffix, data={'x': np.concatenate(file_times), 'y': np.concatenate(file_ldecs)})
+        store_data(prefix + '_' + level + 'att_spindec' + suffix, data={'x': file_times_uniq[0], 'y': file_ldecs_out})
         tclip(prefix + '_' + level + 'att_spindec' + suffix, trange[0], trange[1], suffix='')
 
