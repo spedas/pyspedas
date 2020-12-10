@@ -29,6 +29,7 @@ The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org
 - [Polar](https://github.com/spedas/pyspedas/blob/master/pyspedas/polar/README.md)
 - [Parker Solar Probe (PSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/psp/README.md)
 - [Van Allen Probes (RBSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/rbsp/README.md)
+- [Solar Orbiter (SOLO)](https://github.com/spedas/pyspedas/blob/master/pyspedas/solo/README.md)
 - [Solar Terrestrial Relations Observatory (STEREO)](https://github.com/spedas/pyspedas/blob/master/pyspedas/stereo/README.md)
 - [Time History of Events and Macroscale Interactions during Substorms (THEMIS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/themis/README.md)
 - [Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/twins/README.md)
