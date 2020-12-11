@@ -34,7 +34,7 @@ def mms_load_brst_segments(trange=None):
     tr = time_double(trange)
 
     save_file = os.path.join(CONFIG['local_data_dir'], 'mms_brst_intervals.sav')
-    fast_file = download(remote_file='http://www.spedas.org/mms/mms_brst_intervals.sav',
+    brst_file = download(remote_file='http://www.spedas.org/mms/mms_brst_intervals.sav',
         local_file=save_file)
 
     try:
