@@ -12,7 +12,7 @@ from pyspedas.mms.mms_config import CONFIG
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_load_brst_segments(trange=None):
+def mms_load_brst_segments(trange=None, suffix=''):
     '''
     This function loads the burst segment intervals
     
@@ -66,5 +66,14 @@ def mms_load_brst_segments(trange=None):
         if end_time >= tr[0] and start_time <= tr[1]:
             bar_x.extend([start_time, start_time, end_time, end_time])
             bar_y.extend([np.nan, 0., 0., np.nan])
+
+    vars_created = store_data('mms_bss_burst'+suffix, data={'x': bar_x, 'y': bar_y})
+    options('mms_bss_burst'+suffix, 'panel_size', 0.09)
+    options('mms_bss_burst'+suffix, 'thick', 20)
+    options('mms_bss_burst'+suffix, 'Color', 'green')
+    options('mms_bss_burst'+suffix, 'border', False)
+    options('mms_bss_burst'+suffix, 'yrange', [-0.001,0.001])
+    options('mms_bss_burst'+suffix, 'legend_names', ['Burst'])
+    options('mms_bss_burst'+suffix, 'ytitle', '')
 
     return (unix_start, unix_end)

@@ -12,7 +12,7 @@ from pyspedas.mms.mms_config import CONFIG
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_load_fast_segments(trange=None):
+def mms_load_fast_segments(trange=None, suffix=''):
     '''
     This function loads the fast segment intervals
     
@@ -58,5 +58,14 @@ def mms_load_fast_segments(trange=None):
         if end_time >= tr[0] and start_time <= tr[1]:
             bar_x.extend([start_time, start_time, end_time, end_time])
             bar_y.extend([np.nan, 0., 0., np.nan])
+
+    vars_created = store_data('mms_bss_fast'+suffix, data={'x': bar_x, 'y': bar_y})
+    options('mms_bss_fast'+suffix, 'panel_size', 0.09)
+    options('mms_bss_fast'+suffix, 'thick', 20)
+    options('mms_bss_fast'+suffix, 'Color', 'green')
+    options('mms_bss_fast'+suffix, 'border', False)
+    options('mms_bss_fast'+suffix, 'yrange', [-0.001,0.001])
+    options('mms_bss_fast'+suffix, 'legend_names', ['Fast'])
+    options('mms_bss_fast'+suffix, 'ytitle', '')
 
     return (unix_start, unix_end)
