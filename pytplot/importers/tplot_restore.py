@@ -46,17 +46,77 @@ def tplot_restore(filename):
     if filename.endswith('.tplot'):
         temp_tplot = readsav(filename)
         for i in range(len(temp_tplot['dq'])):
+            if isinstance(temp_tplot['dq'][i][0], str):
+                print("Error reading variable; this error occurs when the variable wasn't loaded in IDL when the SAV file was created.")
+                continue
+
             data_name = temp_tplot['dq'][i][0].decode("utf-8")
             temp_x_data = temp_tplot['dq'][i][1][0][0].squeeze()
+
             #Pandas reads in data the other way I guess
-            if len(temp_tplot['dq'][i][1][0][2].shape) == 2:
+            if len(temp_tplot['dq'][i][1][0][2].shape) == 4:
+                temp_y_data = np.transpose(temp_tplot['dq'][i][1][0][2], axes=(3, 2, 1, 0))
+            elif len(temp_tplot['dq'][i][1][0][2].shape) == 3:
+                temp_y_data = np.transpose(temp_tplot['dq'][i][1][0][2], axes=(2, 1, 0))
+            elif len(temp_tplot['dq'][i][1][0][2].shape) == 2:
                 temp_y_data = np.transpose(temp_tplot['dq'][i][1][0][2])
             else:
                 temp_y_data = temp_tplot['dq'][i][1][0][2]
             
-            
-            #If there are more than 4 fields, that means it is a spectrogram 
-            if len(temp_tplot['dq'][i][1][0]) > 4:
+            # variable contains V1, V2 and V3 (e.g., DF as a function of energy, theta, phi)
+            if len(temp_tplot['dq'][i][1][0]) == 10:
+                temp_v1_data = temp_tplot['dq'][i][1][0][4]
+                temp_v2_data = temp_tplot['dq'][i][1][0][6]
+                temp_v3_data = temp_tplot['dq'][i][1][0][8]
+
+                #Change from little endian to big endian, since pandas apparently hates little endian
+                #We might want to move this into the store_data procedure eventually
+                if (temp_x_data.dtype.byteorder == '>'):
+                    temp_x_data = temp_x_data.byteswap().newbyteorder()
+                if (temp_y_data.dtype.byteorder == '>'):
+                    temp_y_data = temp_y_data.byteswap().newbyteorder()
+                if (temp_v1_data.dtype.byteorder == '>'):
+                    temp_v1_data = temp_v1_data.byteswap().newbyteorder()
+                if (temp_v2_data.dtype.byteorder == '>'):
+                    temp_v2_data = temp_v2_data.byteswap().newbyteorder()
+                if (temp_v3_data.dtype.byteorder == '>'):
+                    temp_v3_data = temp_v3_data.byteswap().newbyteorder()
+
+                # support time-varying depends
+                if len(temp_v1_data.shape) == 2:
+                    temp_v1_data = np.transpose(temp_v1_data)
+                if len(temp_v2_data.shape) == 2:
+                    temp_v2_data = np.transpose(temp_v2_data)
+                if len(temp_v3_data.shape) == 2:
+                    temp_v3_data = np.transpose(temp_v3_data)
+
+                store_data(data_name, data={'x': temp_x_data, 'y': temp_y_data, 'v1': temp_v1_data, 'v2': temp_v2_data, 'v3': temp_v3_data})
+            # variable contains V1, V2 (e.g., DF as a function of energy, angle)
+            elif len(temp_tplot['dq'][i][1][0]) == 8:
+                temp_v1_data = temp_tplot['dq'][i][1][0][4]
+                temp_v2_data = temp_tplot['dq'][i][1][0][6]
+
+                #Change from little endian to big endian, since pandas apparently hates little endian
+                #We might want to move this into the store_data procedure eventually
+                if (temp_x_data.dtype.byteorder == '>'):
+                    temp_x_data = temp_x_data.byteswap().newbyteorder()
+                if (temp_y_data.dtype.byteorder == '>'):
+                    temp_y_data = temp_y_data.byteswap().newbyteorder()
+                if (temp_v1_data.dtype.byteorder == '>'):
+                    temp_v1_data = temp_v1_data.byteswap().newbyteorder()
+                if (temp_v2_data.dtype.byteorder == '>'):
+                    temp_v2_data = temp_v2_data.byteswap().newbyteorder()
+
+                # support time-varying depends
+                if len(temp_v1_data.shape) == 2:
+                    temp_v1_data = np.transpose(temp_v1_data)
+                if len(temp_v2_data.shape) == 2:
+                    temp_v2_data = np.transpose(temp_v2_data)
+
+                store_data(data_name, data={'x': temp_x_data, 'y': temp_y_data, 'v1': temp_v1_data, 'v2': temp_v2_data})
+            #If there are 4 fields, that means it is a spectrogram 
+            # 6 fields is a spectrogram with a time varying Y axis
+            elif len(temp_tplot['dq'][i][1][0]) == 4 or len(temp_tplot['dq'][i][1][0]) == 6:
                 temp_v_data = temp_tplot['dq'][i][1][0][4]
                 
                 #Change from little endian to big endian, since pandas apparently hates little endian
@@ -68,6 +128,10 @@ def tplot_restore(filename):
                 if (temp_v_data.dtype.byteorder == '>'):
                     temp_v_data = temp_v_data.byteswap().newbyteorder()
                 
+                # support time-varying depends
+                if len(temp_v_data.shape) == 2:
+                    temp_v_data = np.transpose(temp_v_data)
+
                 store_data(data_name, data={'x':temp_x_data, 'y':temp_y_data, 'v':temp_v_data})
             else:
                 #Change from little endian to big endian, since pandas apparently hates little endian
@@ -81,7 +145,7 @@ def tplot_restore(filename):
             if temp_tplot['dq'][i][3].dtype.names is not None:
                 for option_name in temp_tplot['dq'][i][3].dtype.names:
                     options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0])
-            
+
             data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
             data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
         
