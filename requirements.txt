@@ -1,9 +1,9 @@
 numpy<=1.19.3
 requests
 cdflib>=0.3.19
-pytplot>=1.7.14
+pytplot>=1.7.15
 cdasws>=1.7.24
 netCDF4
 pywavelets
-pyqtgraph
+pyqtgraph>=0.11.1
 astropy
