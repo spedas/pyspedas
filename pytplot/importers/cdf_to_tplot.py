@@ -24,6 +24,7 @@ import copy
 
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
+                 get_ignore_data=False,
                  prefix='', suffix='', plot=False, merge=False,
                  center_measurement=False, notplot=False, varnames=[]):
     """
@@ -102,7 +103,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         varformat = ".*"
     if get_support_data:
         var_type.append('support_data')
+    if get_ignore_data:
+        var_type.append('ignore_data')
 
+        
     varformat = varformat.replace("*", ".*")
     var_regex = re.compile(varformat)
     filenames.sort()
