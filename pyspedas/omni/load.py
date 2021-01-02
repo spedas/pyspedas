@@ -10,7 +10,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
          datatype='1min',
          level='hro2',
          suffix='', 
-         get_support_data=False, 
+         get_support_data=False,
+         get_ignore_data=False,         
          varformat=None,
          varnames=[],
          downloadonly=False,
@@ -24,7 +25,12 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     """
 
-    pathformat = level+'_'+datatype+'/%Y/omni_'+level+'_'+datatype+'_%Y%m01_v??.cdf'
+    if 'min' in datatype:
+        pathformat = level + '_' + datatype + '/%Y/omni_' + level + '_' + datatype + '_%Y%m01_v??.cdf'
+    elif 'hour' in datatype:
+        pathformat = 'hourly/%Y/omni2_h0_mrg1hr_%Y%m01_v??.cdf'
+    else:
+        raise TypeError("%r are invalid keyword arguments" % datatype)
 
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange)
@@ -41,7 +47,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, get_ignore_data=get_ignore_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars

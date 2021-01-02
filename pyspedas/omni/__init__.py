@@ -6,6 +6,7 @@ def data(trange=['2013-11-5', '2013-11-6'],
         level='hro2',
         suffix='',  
         get_support_data=False, 
+        get_ignore_data=False,
         varformat=None,
         varnames=[],
         downloadonly=False,
@@ -25,7 +26,7 @@ def data(trange=['2013-11-5', '2013-11-6'],
             Data level; valid options: hro, hro2
 
         datatype: str
-            Data type; valid options: 1min, 5min
+            Data type; valid options: 1min, 5min, hourly (1 hour)
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -62,6 +63,6 @@ def data(trange=['2013-11-5', '2013-11-6'],
 
     """
     return load(trange=trange, level=level, datatype=datatype, suffix=suffix, 
-                get_support_data=get_support_data, varformat=varformat, 
+                get_support_data=get_support_data, get_ignore_data=get_ignore_data,varformat=varformat, 
                 varnames=varnames, downloadonly=downloadonly, notplot=notplot, 
                 time_clip=time_clip, no_update=no_update)
