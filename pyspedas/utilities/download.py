@@ -25,12 +25,41 @@ class LinkParser(HTMLParser):
 
 def download_file(url=None, filename=None, headers = {}, username=None, password=None, verify=False, session=None):
     '''
-        
+    Download a file and return its local path; this function is primarily meant to be called by the download function below
+    
+    Parameters:
+        url: str
+            Remote URL to download
+
+        filename: str
+            Local file name
+
+        headers: dict
+            Dictionary containing the headers to be passed to the requests get call
+
+        username: str
+            user name to be used in HTTP authentication
+
+        password: str
+            password to be used in HTTP authentication
+
+        verify: bool
+            Flag indicating whether or not to verify the SSL/TLS certificate
+
+        session: requests.Session object
+            Requests session object that allows you to persist things like HTTP authentication through multiple calls
+
+    Returns:
+        String containing the local file name
+
     '''
 
     if session is None:
         session = requests.Session()
     
+    if username != None:
+        session.auth = (username, password)
+
     # check if the file exists, and if so, set the last modification time in the header
     # this allows you to avoid re-downloading files that haven't changed
     if os.path.exists(filename):
@@ -90,7 +119,48 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
     return filename
 
 def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False, last_version=False):
+    '''
+    Download one or more remote files and return their local paths.
 
+    Parameters:
+        remote_path: str
+            String consisting of a common URL base for all remote files
+
+        remote_file: str or list of str
+            String or string array of URLs to remote files
+
+        local_path: str
+            String consisting of a common local path for all local files
+
+        local_file: str or list of str
+            String or string array of local destination file names
+
+        headers: dict
+            Dictionary containing the headers to be passed to the requests get call
+
+        username: str
+            user name to be used in HTTP authentication
+
+        password: str
+            password to be used in HTTP authentication
+
+        verify: bool
+            Flag indicating whether or not to verify the SSL/TLS certificate
+
+        session: requests.Session object
+            Requests session object that allows you to persist things like HTTP authentication through multiple calls
+
+        no_download: bool
+            Flag to not download remote files
+
+        last_version: bool
+            Flag to only download the last in file in a lexically sorted 
+            list when multiple matches are found using wildcards
+
+    Returns:
+        String list specifying the full local path to all requested files
+
+    '''
     local_file_in = local_file
 
     if isinstance(remote_path, list):
