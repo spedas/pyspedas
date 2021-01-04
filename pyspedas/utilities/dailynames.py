@@ -6,6 +6,34 @@ import os
 from datetime import datetime
 
 def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%d', prefix='', suffix=''):
+    '''
+    Creates a list of file names using a time range, resoution and file format
+    Based on Davin Larson's file_dailynames in IDL SPEDAS
+
+    Parameters:
+        directory: str
+            String containing the directory for the generated file names
+
+        trange: list of str, list of datetime or list of floats
+            Two-element list containing the start and end times for the file names
+
+        res: float
+            File name resolution in seconds (default: 24*3600., i.e., daily)
+
+        file_format: str
+            Format of the file names using strftime directives; for reference: https://strftime.org
+            (default: %Y%m%d, i.e., daily)
+
+        prefix: str
+            file name prefix
+
+        suffix: str
+            file name suffix
+
+    Returns:
+        List containing filenames
+
+    '''
     if trange == None:
         print('No trange specified')
         return
