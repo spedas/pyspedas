@@ -24,7 +24,7 @@ import copy
 
 
 def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
-                 get_ignore_data=False,
+                 get_ignore_data=False, string_encoding='ascii',
                  prefix='', suffix='', plot=False, merge=False,
                  center_measurement=False, notplot=False, varnames=[]):
     """
@@ -112,6 +112,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
     filenames.sort()
     for filename in filenames:
         cdf_file = cdflib.CDF(filename)
+        cdf_file.string_encoding = string_encoding
         cdf_info = cdf_file.cdf_info()
         all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
         # User defined variables.
