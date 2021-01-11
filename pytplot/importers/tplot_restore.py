@@ -116,7 +116,7 @@ def tplot_restore(filename):
                 store_data(data_name, data={'x': temp_x_data, 'y': temp_y_data, 'v1': temp_v1_data, 'v2': temp_v2_data})
             #If there are 4 fields, that means it is a spectrogram 
             # 6 fields is a spectrogram with a time varying Y axis
-            elif len(temp_tplot['dq'][i][1][0]) == 4 or len(temp_tplot['dq'][i][1][0]) == 6:
+            elif len(temp_tplot['dq'][i][1][0]) == 5 or len(temp_tplot['dq'][i][1][0]) == 6:
                 temp_v_data = temp_tplot['dq'][i][1][0][4]
                 
                 #Change from little endian to big endian, since pandas apparently hates little endian
@@ -151,7 +151,9 @@ def tplot_restore(filename):
         
             for option_name in temp_tplot['tv'][0][0].dtype.names:
                 if option_name == 'TRANGE':
-                    tplot_options('x_range', temp_tplot['tv'][0][0][option_name][0])
+                    # x_range of [0, 0] causes tplot to create an empty figure
+                    if temp_tplot['tv'][0][0][option_name][0][0] != 0 or temp_tplot['tv'][0][0][option_name][0][1] != 0:
+                        tplot_options('x_range', temp_tplot['tv'][0][0][option_name][0])
                 if option_name == 'WSIZE':
                     tplot_options('wsize', temp_tplot['tv'][0][0][option_name][0])
                 if option_name == 'VAR_LABEL':
