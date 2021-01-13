@@ -44,6 +44,10 @@ def get_data(name, xarray=False, metadata=False):
     
     temp_data_quant = data_quants[name]
 
+    if isinstance(temp_data_quant, dict):
+        # non-record varying variables are stored as dicts
+        return temp_data_quant['data']
+
     if xarray:
         return temp_data_quant
 
