@@ -71,7 +71,7 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
     # the following is for rebinning and interpolating to new_bins
     srx = [float(len(angles))/(int(n_pabins)+1)*(x + 0.5) - 0.5 for x in range(int(n_pabins)+1)]
 
-    current_start = spin_starts[0]
+    current_start = 0
     for spin_idx in range(0, len(spin_starts)):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=RuntimeWarning)
