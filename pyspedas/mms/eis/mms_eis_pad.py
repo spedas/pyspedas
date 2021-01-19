@@ -90,11 +90,16 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                 pa_file = np.zeros([len(pa_times), len(scopes)])
 
                 omni_times, omni_data, omni_energies = get_data(prefix + datatype_id + '_' + species_id + '_' + data_units + '_omni' + suffix)
-                these_energies = np.where((omni_energies >= energy[0]) & (omni_energies <= energy[1]))[0]
+                erange = get_data(prefix + datatype_id + '_' + species_id + '_energy_range' + suffix)
+                inchan_check_low = np.zeros(len(omni_energies))
+                inchan_check_hi = np.zeros(len(omni_energies))
+                inchan_check_low[np.where((erange[:, 0] >= energy[0]) & (erange[:, 0] <= energy[1]))[0]] = 1
+                inchan_check_hi[np.where((erange[:, 1] >= energy[0]) & (erange[:, 1] <= energy[1]))[0]] = 1
+                these_energies = np.where((inchan_check_low > 0) | (inchan_check_hi > 0))[0]
 
-                if these_energies.size == 0:
-                    print('Energy range selected is not covered by the detector for ' + datatype_id + '_' + species_id + ' ' + data_units)
-                    return
+                if sum(inchan_check_low) == 0 or sum(inchan_check_hi) == 0:
+                    print( 'Energy range selected is not covered by the detector for ' + datatype_id + ' ' + species_id + ' ' + data_units)
+                    continue
 
                 flux_file = np.zeros([len(pa_times), len(scopes), len(these_energies)])
                 flux_file[:] = 'nan'
@@ -136,7 +141,8 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                                 pa_flux[i, j, ee] = np.nanmean(flux_file[i, ind, ee], axis=0)
 
                 for ee in range(0, len(these_energies)):
-                    energy_string = str(int(flux_energies[these_energies[ee]])) + 'keV'
+                    # energy_string = str(int(flux_energies[these_energies[ee]])) + 'keV'
+                    energy_string = str(int(erange[these_energies[ee], 0])) + '_' + str(int(erange[these_energies[ee], 1])) + 'keV'
                     new_name = prefix + datatype_id + '_' + energy_string + '_' + species_id + '_' + data_units + scope_suffix + '_pad'
                     store_data(new_name, data={'x': flux_times, 'y': pa_flux[:, :, ee], 'v': pa_label})
                     options(new_name, 'ylog', False)
@@ -158,7 +164,8 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                     continue
 
                 # CREATE PAD VARIABLE INTEGRATED OVER USER-DEFINED ENERGY RANGE
-                energy_range_string = str(int(flux_energies[these_energies[0]])) + '-' + str(int(flux_energies[these_energies[-1]])) + 'keV'
+                # energy_range_string = str(int(flux_energies[these_energies[0]])) + '-' + str(int(flux_energies[these_energies[-1]])) + 'keV'
+                energy_range_string = str(int(erange[these_energies[0], 0])) + '-' + str(int(erange[these_energies[-1], 1])) + 'keV'
                 new_name = prefix + datatype_id + '_' + energy_range_string + '_' + species_id + '_' + data_units + scope_suffix + '_pad'
 
                 avg_pa_flux = np.zeros([len(flux_times), int(n_pabins)])

@@ -68,6 +68,16 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species + ' Energy [keV]')
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'yrange', [14, 45])
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'Colormap', 'jet')
+
+        # create new variable with omni energy limits
+        energy_minus = get_data(prefix + species_str + '_t0_energy_dminus' + suffix)
+        energy_gm = get_data(prefix + species_str + '_t0_energy' + suffix)
+        energy_plus = get_data(prefix + species_str + '_t0_energy_dplus' + suffix)
+
+        if isinstance(energy_minus, np.ndarray) and isinstance(energy_plus, np.ndarray):
+            # transpose is used here to make the variable match the variable in IDL
+            store_data(prefix + species_str + '_energy_range' + suffix, data={'y': np.array([energy_gm-energy_minus,energy_gm+energy_plus]).transpose()})
+
         return prefix + species_str + '_' + data_units + '_omni' + suffix
     else:
         print('Error, problem finding the telescopes to calculate omni-directional spectrograms')
