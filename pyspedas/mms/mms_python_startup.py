@@ -6,4 +6,4 @@ from pyspedas.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi,
 
 from pytplot import options, ylim, zlim, tplot, tplot_names, get_data, store_data, del_data
 
-from pyspedas import time_string, time_double
+from pyspedas import time_string, time_double, mms_eis_pad, mms_feeps_pad
