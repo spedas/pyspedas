@@ -149,7 +149,10 @@ def options(name, option=None, value=None, opt_dict=None):
                 data_quants[i].attrs['plot_options']['extras']['map'] = value
 
             if option == 'legend_names':
-                data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
+                if isinstance(value, list):
+                    data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
+                else:
+                    data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = [value]
 
             if option == 'xlog_slice':
                 if value:
