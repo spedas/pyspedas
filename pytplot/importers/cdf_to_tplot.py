@@ -137,24 +137,36 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             if var_atts['VAR_TYPE'] in var_type:
                 var_atts = cdf_file.varattsget(var)
                 var_properties = cdf_file.varinq(var)
-                if "DEPEND_TIME" in var_atts:
-                    x_axis_var = var_atts["DEPEND_TIME"]
-                elif "DEPEND_0" in var_atts:
-                    x_axis_var = var_atts["DEPEND_0"]
-                else:
-                    if var_atts['VAR_TYPE'].lower() == 'data':
-                        print("Cannot find x axis.")
-                        print("No attribute named DEPEND_TIME or DEPEND_0 in \
-                          variable " + var)
-                    continue
-                data_type_description \
-                    = cdf_file.varinq(x_axis_var)['Data_Type_Description']
 
                 # Find data name and if it is already in stored variables
                 if 'TPLOT_NAME' in var_atts:
                     var_name = prefix + var_atts['TPLOT_NAME'] + suffix
                 else:
                     var_name = prefix + var + suffix
+
+                if "DEPEND_TIME" in var_atts:
+                    x_axis_var = var_atts["DEPEND_TIME"]
+                elif "DEPEND_0" in var_atts:
+                    x_axis_var = var_atts["DEPEND_0"]
+                else:
+                    # non-record varying variables (NRVs)
+                    # added by egrimes, 13Jan2021
+                    # here we assume if there isn't a DEPEND_TIME or DEPEND_0, there are no other depends
+                    try:
+                        ydata = cdf_file.varget(var)
+                    except:
+                        continue
+
+                    if ydata is None:
+                        continue
+
+                    # since NRVs don't vary with time, they shouldn't vary across files
+                    output_table[var_name] = {'y': ydata}
+
+                    continue
+
+                data_type_description \
+                    = cdf_file.varinq(x_axis_var)['Data_Type_Description']
 
                 if epoch_cache.get(filename+x_axis_var) is None:
                     delta_plus_var = 0.0

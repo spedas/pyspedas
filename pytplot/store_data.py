@@ -110,6 +110,13 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
         return True
 
+    # if the data table doesn't contain an 'x', assume this is a non-record varying variable
+    if 'x' not in data.keys():
+        values = np.array(data.pop('y'))
+        data_quants[name] = {'data': values}
+        data_quants[name]['name'] = name
+        return True
+
     times = data.pop('x')
     values = np.array(data.pop('y'))
 
@@ -178,10 +185,13 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     temp = xr.DataArray(values, dims=['time']+dimension_list,
                         coords={'time': ('time', times)})
     if spec_bins_exist:
-        if spec_bins_time_varying:
-            temp.coords['spec_bins'] = (('time', spec_bins_dimension+'_dim'), spec_bins.values)
-        else:
-            temp.coords['spec_bins'] = (spec_bins_dimension+'_dim', np.squeeze(spec_bins.values))
+        try:
+            if spec_bins_time_varying:
+                temp.coords['spec_bins'] = (('time', spec_bins_dimension+'_dim'), spec_bins.values)
+            else:
+                temp.coords['spec_bins'] = (spec_bins_dimension+'_dim', np.squeeze(spec_bins.values))
+        except ValueError:
+            print('Conflicting size for at least one dimension')
 
     for d in coordinate_list:
         if data[d] is None:
