@@ -263,11 +263,11 @@ def load_data(filenames=None,
                 # Loop through CDF files
                 desc = l2_regex.match(os.path.basename(f)).group("description")
                 if desc != '' and suffix == '':
-                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames,
+                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames, string_encoding='utf-8',
                                                                  get_support_data=get_support_data, prefix=prefix,
                                                                  suffix=desc, merge=True)
                 else:
-                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames,
+                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames, string_encoding='utf-8',
                                                                   get_support_data=get_support_data, prefix=prefix,
                                                                   suffix=suffix, merge=True)
 
