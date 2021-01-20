@@ -65,6 +65,10 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
             pyspedas.tcopy(old_names[j], n_names[j])
 
         alldata = pytplot.get_data(n_names[j])
+
+        if not isinstance(alldata, tuple): # NRV variable
+            continue
+            
         time = alldata[0]
         data = alldata[1]
 
