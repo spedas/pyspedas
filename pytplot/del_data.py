@@ -37,11 +37,19 @@ def del_data(name=None):
     for i in name:
         if ('?' in i) or ('*' in i):
             for j in data_quants.keys():
-                var_verif = fnmatch.fnmatch(data_quants[j].name, i)
-                if var_verif == 1:
-                    entries.append(data_quants[j].name)
+                if isinstance(data_quants[j], dict):
+                    # NRV variable
+                    var_verif = fnmatch.fnmatch(data_quants[j]['name'], i)
+                    if var_verif == 1:
+                        entries.append(data_quants[j]['name'])
+                    else:
+                        continue
                 else:
-                    continue
+                    var_verif = fnmatch.fnmatch(data_quants[j].name, i)
+                    if var_verif == 1:
+                        entries.append(data_quants[j].name)
+                    else:
+                        continue
             for key in entries:
                 if key in data_quants:
                     del data_quants[key]
@@ -50,8 +58,12 @@ def del_data(name=None):
             return
         
         else:
-            temp_data_quants = data_quants[i]
-            str_name = temp_data_quants.name
+            if isinstance(data_quants[i], dict):
+                temp_data_quants = data_quants[i]
+                str_name = temp_data_quants['name']
+            else:
+                temp_data_quants = data_quants[i]
+                str_name = temp_data_quants.name
             
             del data_quants[str_name]
         
