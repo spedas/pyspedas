@@ -170,10 +170,16 @@ def tplot_restore(filename):
             #temp_tplot['tv'][0][1]['Y'][0] is y axis options
         ####################################################################
     else:
-        temp = pickle.load(open(filename,"rb"))
+        in_file = open(filename,"rb")
+        temp = pickle.load(in_file)
         num_data_quants = temp[0]
         for i in range(0, num_data_quants):
-            data_quants[temp[i+1].name] = temp[i+1]
+            if isinstance(temp[i+1], dict):
+                # NRV variable
+                data_quants[temp[i+1]['name']] = temp[i+1]
+            else:
+                data_quants[temp[i+1].name] = temp[i+1]
         tplot_opt_glob = temp[num_data_quants+1]
+        in_file.close()
     
     return

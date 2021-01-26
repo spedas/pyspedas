@@ -39,9 +39,11 @@ def tplot_save(names, filename=None):
     
     #Check that we have all available data
     for name in names:
-        for oplot_name in data_quants[name].attrs['plot_options']['overplots']:
-            if oplot_name not in names:
-                names.append(oplot_name)
+        if not isinstance(data_quants[name], dict): # not a NRV variable
+            # variable is a time series
+            for oplot_name in data_quants[name].attrs['plot_options']['overplots']:
+                if oplot_name not in names:
+                    names.append(oplot_name)
     
     #Pickle it up
     to_pickle =[]
@@ -59,6 +61,8 @@ def tplot_save(names, filename=None):
     if filename==None:
         filename='var_'+'-'.join(names)+'.pytplot'
     
-    pickle.dump(to_pickle, open(filename, "wb"))
+    out_file = open(filename, "wb")
+    pickle.dump(to_pickle, out_file)
+    out_file.close()
     
     return
