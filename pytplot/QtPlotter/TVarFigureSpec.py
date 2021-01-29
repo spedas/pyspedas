@@ -80,11 +80,13 @@ class TVarFigureSpec(pg.GraphicsLayout):
         if pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
                                str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
-                               + 'pt', 'color': '#FFF'}
+                               + 'pt', 'color': '#FFF',
+                               'white-space': 'pre-wrap'}
         else:
             self.labelStyle = {'font-size':
                                str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
-                               + 'pt', 'color': '#000'}
+                               + 'pt', 'color': '#000',
+                               'white-space': 'pre-wrap'}
 
         # Set the font size of the axes
         font = QtGui.QFont()
@@ -157,12 +159,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._set_roi_lines()
 
     def _setyaxislabel(self):
+        ylabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
         if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label']
-            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle']
-            self.yaxis.setLabel(f"<center>{label} <br> {sublabel} <\center>", **self.labelStyle)
+            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+            self.yaxis.setLabel(f"{ylabel} <br> {sublabel}", **self.labelStyle)
         else:
-            self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
+            self.yaxis.setLabel(ylabel, **self.labelStyle)
 
     def _setxaxislabel(self):
         if self.show_xaxis:
@@ -195,12 +197,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
+        zlabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'].replace(" \ ", " <br> ")
         if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label']
-            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle']
-            zaxis.setLabel(f"<center>{label} <br> {sublabel} <\center>", **self.labelStyle)
+            zsublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+            zaxis.setLabel(f"{zlabel} <br> {zsublabel}", **self.labelStyle)
         else:
-            zaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'], **self.labelStyle)
+            zaxis.setLabel(zlabel, **self.labelStyle)
 
         if self.show_xaxis:
             emptyAxis = BlankAxis('bottom')

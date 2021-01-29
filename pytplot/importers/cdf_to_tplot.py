@@ -62,6 +62,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         merge: bool
             If True, then data from different cdf files will be merged into
             a single pytplot variable.
+        get_ignore_data: bool
+            Data with an attribute "VAR_TYPE" with a value of "ignore_data"
+            will be loaded into tplot.  By default, only loads in data with a
+            "VAR_TYPE" attribute of "data".
         center_measurement: bool
             If True, the CDF epoch variables are time-shifted to the middle
             of the accumulation interval by their DELTA_PLUS_VAR and

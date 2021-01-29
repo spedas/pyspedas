@@ -75,11 +75,13 @@ class TVarFigure1D(pg.GraphicsLayout):
         if pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
                                str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
-                               + 'pt', 'color': '#FFF'}
+                               + 'pt', 'color': '#FFF',
+                               'white-space': 'pre-wrap'}
         else:
             self.labelStyle = {'font-size':
                                str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
-                               + 'pt', 'color': '#000'}
+                               + 'pt', 'color': '#000',
+                               'white-space': 'pre-wrap'}
 
         # Set the font size of the axes
         font = QtGui.QFont()
@@ -153,12 +155,12 @@ class TVarFigure1D(pg.GraphicsLayout):
             self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
 
     def _setyaxislabel(self):
+        ylabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
         if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            label = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label']
-            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle']
-            self.yaxis.setLabel(f"<center>{label} <br> {sublabel} <\center>", **self.labelStyle)
+            ysublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+            self.yaxis.setLabel(f"{ylabel} <br> {ysublabel}", **self.labelStyle)
         else:
-            self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
+            self.yaxis.setLabel(ylabel, **self.labelStyle)
 
     def getfig(self):
         return self
