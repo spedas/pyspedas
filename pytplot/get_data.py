@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from pytplot import data_quants
+from collections import namedtuple
 
 def get_data(name, xarray=False, metadata=False):
     """
@@ -55,13 +56,19 @@ def get_data(name, xarray=False, metadata=False):
         return temp_data_quant.attrs
 
     if 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys() and 'v3' in temp_data_quant.coords.keys():
-        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values, temp_data_quant.coords['v3'].values)
+        variable = namedtuple('variable', ['times', 'y', 'v1', 'v2', 'v3'])
+        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values, temp_data_quant.coords['v3'].values)
     elif 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys():
-        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values)
+        variable = namedtuple('variable', ['times', 'y', 'v1', 'v2'])
+        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values)
     elif 'v1' in temp_data_quant.coords.keys():
-        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values)
+        variable = namedtuple('variable', ['times', 'y', 'v1'])
+        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values)
     elif 'v' in temp_data_quant.coords.keys():
-        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v'].values)
+        variable = namedtuple('variable', ['times', 'y', 'v'])
+        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v'].values)
     elif 'spec_bins' in temp_data_quant.coords.keys():
-        return (temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['spec_bins'].values)
-    return (temp_data_quant.time.values, temp_data_quant.data)
+        variable = namedtuple('variable', ['times', 'y', 'v'])
+        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['spec_bins'].values)
+    variable = namedtuple('variable', ['times', 'y'])
+    return variable(temp_data_quant.time.values, temp_data_quant.data)
