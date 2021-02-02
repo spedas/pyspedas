@@ -104,7 +104,7 @@ tplot_opt_glob = dict(tools="xpan,crosshair,reset",
                       min_border_top=12, min_border_bottom=12,
                       title_align='center', window_size=[800, 800],
                       title_size='12pt', title_text='', crosshair=True,
-                      data_gap=0, black_background=False, axis_font_size=12)
+                      data_gap=0, black_background=False, axis_font_size=12, axis_tick_num=[(0, 1000000000), (3, 1)])
 lim_info = {}
 extra_layouts = {}
 

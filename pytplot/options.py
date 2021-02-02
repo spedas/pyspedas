@@ -52,8 +52,8 @@ def options(name, option=None, value=None, opt_dict=None):
         zrange              flt list     Two numbers that give the z axis range of the plot.
         xrange_slice        flt list     Two numbers that give the x axis range of spectrogram slicing plots.
         yrange_slice        flt list     Two numbers that give the y axis range of spectrogram slicing plots.
-        ytitle              str          Title shown on the y axis.
-        ztitle              str          Title shown on the z axis.  Spec plots only.
+        ytitle              str          Title shown on the y axis.  Use backslash for new lines.
+        ztitle              str          Title shown on the z axis.  Spec plots only.  Use backslash for new lines.
         ysubtitle           str          Subtitle shown on the y axis.
         zsubtitle           str          Subtitle shown on the z axis.  Spec plots only.
         plotter             str          Allows a user to implement their own plotting script in place of the ones
