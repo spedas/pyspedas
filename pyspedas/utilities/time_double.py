@@ -41,7 +41,7 @@ def time_float_one(s_time=None):
     if isinstance(s_time, (int, float, np.integer, np.float)):
         return float(s_time)
 
-    in_datetime = parser.parse(s_time)
+    in_datetime = parser.isoparse(s_time)
     float_time = in_datetime.replace(tzinfo=timezone.utc).timestamp()
 
     return float_time
