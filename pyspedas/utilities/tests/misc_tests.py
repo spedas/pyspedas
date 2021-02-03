@@ -39,30 +39,6 @@ class UtilTestCases(unittest.TestCase):
                                    file_format='%M', res=600.) ==
                         ['00', '10', '20', '30', '40', '50'])
 
-    def test_time_string(self):
-        """Test time_string function."""
-        t0 = time_string(None)
-        t1 = time_datetime(None)
-        t2 = time_datetime(1000000000.0)
-        t3 = time_string_one(None)
-        print("Time_string functions test:", t0, t1, t2, t3)
-        self.assertTrue(time_string(1450181243.767) ==
-                        '2015-12-15 12:07:23.767000')
-        self.assertTrue(time_string([1450181243.767, 1450181263.767])
-                        == ['2015-12-15 12:07:23.767000',
-                            '2015-12-15 12:07:43.767000'])
-
-    def test_time_double(self):
-        """Test time_double function."""
-        t0 = time_float()
-        t1 = time_float_one()
-        t2 = time_float(1450181243)
-        print("Time_double functions test:", t0, t1, t2)
-        self.assertTrue(time_double('2015-12-15 12:07:23.767000')
-                        == 1450181243.767)
-        self.assertTrue(time_double(['2015-12-15 12:07:23.767000',
-                                     '2015-12-15 12:07:43.767000'])
-                        == [1450181243.767, 1450181263.767])
 
     def test_tcopy(self):
         """Test tcopy function."""
