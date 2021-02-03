@@ -11,7 +11,7 @@ Notes
 Compare to https://www.epochconverter.com/
 
 """
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def time_string_one(float_time=None, fmt=None):
@@ -75,7 +75,7 @@ def time_string(float_time=None, fmt=None):
             return time_list
 
 
-def time_datetime(float_time=None):
+def time_datetime(float_time=None, tz=None):
     """Find python datetime.
 
     Transform a list of float daytime values to a list of pythonic
@@ -93,9 +93,11 @@ def time_datetime(float_time=None):
         Datetimes as `datetime.datetime`.
 
     """
+    if tz == None:
+        tz = timezone.utc
     if float_time is None:
         return datetime.now()
     if isinstance(float_time, (int, float)):
-        return datetime.fromtimestamp(float_time)
+        return datetime.fromtimestamp(float_time, tz=tz)
     time_list = [time_datetime(_time) for _time in float_time]
     return time_list
