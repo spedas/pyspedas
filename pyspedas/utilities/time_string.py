@@ -12,7 +12,7 @@ Compare to https://www.epochconverter.com/
 
 """
 from datetime import datetime, timezone
-
+from pyspedas.utilities.time_double import time_float
 
 def time_string_one(float_time=None, fmt=None):
     """
@@ -75,7 +75,7 @@ def time_string(float_time=None, fmt=None):
             return time_list
 
 
-def time_datetime(float_time=None, tz=None):
+def time_datetime(time=None, tz=None):
     """Find python datetime.
 
     Transform a list of float daytime values to a list of pythonic
@@ -83,7 +83,7 @@ def time_datetime(float_time=None, tz=None):
 
     Parameters
     ----------
-    float_time: float/list of floats, optional
+    time: float/list of floats or str/list of str, optional
         Input time.
         The default is None, which returns the time now.
 
@@ -95,9 +95,14 @@ def time_datetime(float_time=None, tz=None):
     """
     if tz == None:
         tz = timezone.utc
-    if float_time is None:
+
+    if time is None:
         return datetime.now()
-    if isinstance(float_time, (int, float)):
-        return datetime.fromtimestamp(float_time, tz=tz)
-    time_list = [time_datetime(_time) for _time in float_time]
-    return time_list
+
+    if isinstance(time, str):
+        return time_datetime(time_float(time))
+
+    if isinstance(time, (int, float)):
+        return datetime.fromtimestamp(time, tz=tz)
+
+    return [time_datetime(_time) for _time in time]
