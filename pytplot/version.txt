@@ -1,4 +1,32 @@
-1.7.6
+1.7.21
+
+1.7.21 Changes:
+* Brought the yaxis labels closer to the axis ticks
+* Fixed a bug with saving black background plots
+* Added new tplot_options: yaxis_width and axis_tick_num
+
+1.7.20 Changes:
+* Increased the number of ticks that are always shown on the yaxis by default
+* get_data now returns a named tuple
+* new lines are allowed within axis labels by using a backslash character
+
+1.7.19 Changes:
+* Added some support for non-record varying variables
+* Set default CDF string encoding to ASCII
+* Fixed a handful of bugs within the IDL restore
+
+1.7.16 Changes:
+* Added keyword for get_ignore_data in cdf_to_tplot
+
+1.7.15 Changes:
+* Added support in tplot_restore for higher dimensional variables
+
+1.7.14 Changes:
+* Added visible right and upper axes so that the plots are always boxed in like in IDL tplot
+
+1.7.10 Changes:
+* Added a metadata dictionary from CDF files to the tplot variables
+* Added the replace_data function
 
 1.7.6 Changes:
 * Added the ability to call pytplot.tplot_options("axis_font_size", x) to alter the axis font label size for all plots.
