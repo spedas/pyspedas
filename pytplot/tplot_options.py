@@ -37,6 +37,7 @@ def tplot_options(option, value):
         black_background  bool         Whether or not to make plot backgrounds black w/ white text
         axis_font_size    int          The font size of the axis ticks.  Default is 10.
         axis_tick_num     [tuples]     A list of tuples that determines how many ticks appear.  See pyqtgraph textFillLimits
+        yaxis_width       int          The number of pixels wide of the y axis
         ================  ==========   =====
     
     Returns:

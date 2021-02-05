@@ -137,6 +137,13 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'axis_font_size':
         new_tplot_opt_glob['axis_font_size'] = value
 
+    elif option == 'axis_tick_num':
+        new_tplot_opt_glob['axis_tick_num'] = value
+
+    elif option == 'yaxis_width':
+        new_tplot_opt_glob['yaxis_width'] = value
+
+
     else:
         print("Unknown option supplied: " + str(option))
 

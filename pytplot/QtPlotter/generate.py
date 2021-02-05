@@ -16,6 +16,12 @@ def generate_stack(name,
                    combine_axes=True,
                    vert_spacing=25):
 
+    # Set plot backgrounds to black if that tplot_option is set
+    if pytplot.tplot_opt_glob['black_background']:
+        pg.setConfigOptions(background='k')
+    else:
+        pg.setConfigOptions(background='w')
+
     new_stack = pg.GraphicsLayoutWidget()
 
     # Variables needed for pyqtgraph plots
@@ -74,14 +80,9 @@ def generate_stack(name,
         axis_types.append(new_fig.getaxistype())
         new_fig.buildfigure()
 
-        # Set plot backgrounds to black if that tplot_option is set
-        if pytplot.tplot_opt_glob['black_background']:
-            pg.setConfigOptions(background='k')
-        else:
-            pg.setConfigOptions(background='w')
-
         # Add plot to GridPlot layout
         all_plots.append(new_fig.getfig())
+
         i = i + 1
 
     # Add extra x axes if applicable
@@ -93,6 +94,18 @@ def generate_stack(name,
             x_axes_index += 1
             axis_types.append(('time', False))
             all_plots.append(new_axis)
+
+    # Ensure all plots in the stack have the same y axis width
+    maximum_y_axis_width = 0
+    for plot in all_plots:
+        if maximum_y_axis_width < plot.yaxis.getWidth():
+            maximum_y_axis_width = plot.yaxis.getWidth()
+
+    for plot in all_plots:
+        if 'yaxis_width' in pytplot.tplot_opt_glob:
+            plot.yaxis.setWidth(pytplot.tplot_opt_glob['yaxis_width'])
+        else:
+            plot.yaxis.setWidth(maximum_y_axis_width)
 
     # Set all plots' x_range and plot_width to that of the bottom plot
     #     so all plots will pan and be resized together.

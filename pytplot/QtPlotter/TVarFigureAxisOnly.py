@@ -7,6 +7,7 @@ import pyqtgraph as pg
 from scipy import interpolate
 from .CustomAxis.NonLinearAxis import NonLinearAxis
 from .CustomViewBox.CustomVB import CustomVB
+from .CustomAxis.AxisItem import AxisItem
 import pytplot
 
 
@@ -29,14 +30,13 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
                                + 'pt', 'color': '#000'}
         
         vb = CustomVB(enableMouse=False)
-        yaxis = pg.AxisItem("left")
-        yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
-        yaxis.setWidth(100)
-        yaxis.label.rotate(90)
-        yaxis.label.translate(0, -40)
+        self.yaxis = AxisItem("left")
+        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
+        self.yaxis.label.rotate(90)
+        self.yaxis.label.translate(0, -40)
         mapping_function = interpolate.interp1d(pytplot.data_quants[self.tvar_name].coords['time'].values, pytplot.data_quants[self.tvar_name].values)
         xaxis = NonLinearAxis(orientation='bottom', mapping_function=mapping_function)
-        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': xaxis, 'left': yaxis}, viewBox=vb, colspan=1)
+        self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': xaxis, 'left': self.yaxis}, viewBox=vb, colspan=1)
         self.plotwindow.buttonsHidden = True
         self.plotwindow.setMaximumHeight(20)
         

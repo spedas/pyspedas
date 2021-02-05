@@ -40,7 +40,6 @@ class TVarFigure1D(pg.GraphicsLayout):
 
         # Set up the y axis
         self.yaxis = AxisItem("left")
-        self.yaxis.setWidth(100)
 
         # Creating axes to bound the plots with lines
         self.xaxis2 = DateAxis(orientation='top', showValues=False)

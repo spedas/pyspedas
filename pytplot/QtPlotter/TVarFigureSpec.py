@@ -44,7 +44,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
         self.yaxis = AxisItem('left')
-        self.yaxis.setWidth(100)
         self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"])  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
         # Creating axes to bound the plots with lines
         self.xaxis2 = DateAxis(orientation='top', showValues=False)

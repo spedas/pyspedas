@@ -31,7 +31,6 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
         self.yaxis = AxisItem("left")
-        self.yaxis.setWidth(100)
 
         # Creating axes to bound the plots with lines
         self.xaxis2 = pg.AxisItem(orientation='top')
