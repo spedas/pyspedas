@@ -38,9 +38,9 @@ def tplot_rename(old_name, new_name):
     #remake dictionary with new name in old name's slot
     d = pytplot.data_quants
     d2 = OrderedDict([(new_name, v) if k == old_name else (k, v) for k, v in d.items()])
-    data_quants = d2
+    new_data_quants = d2
     for key in d2:
-        data_quants[key].name = key
+        new_data_quants[key].name = key
     
-    pytplot.data_quants = data_quants
+    pytplot.data_quants = new_data_quants
     return

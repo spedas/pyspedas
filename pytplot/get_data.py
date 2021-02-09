@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from pytplot import data_quants
+import pytplot
 from collections import namedtuple
 
 def get_data(name, xarray=False, metadata=False):
@@ -37,13 +37,12 @@ def get_data(name, xarray=False, metadata=False):
         >>> time, data = pytplot.get_data("Variable1")
 
     """
-    
-    global data_quants
-    if name not in data_quants.keys():
+
+    if name not in pytplot.data_quants.keys():
         print("That name is currently not in pytplot")
         return
     
-    temp_data_quant = data_quants[name]
+    temp_data_quant = pytplot.data_quants[name]
 
     if isinstance(temp_data_quant, dict):
         # non-record varying variables are stored as dicts
@@ -71,4 +70,5 @@ def get_data(name, xarray=False, metadata=False):
         variable = namedtuple('variable', ['times', 'y', 'v'])
         return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['spec_bins'].values)
     variable = namedtuple('variable', ['times', 'y'])
+
     return variable(temp_data_quant.time.values, temp_data_quant.data)

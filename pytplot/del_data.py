@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from pytplot import data_quants
+import pytplot
 import fnmatch
 
 def del_data(name=None):
@@ -25,9 +25,9 @@ def del_data(name=None):
 
     """
     if name is None:
-        tplot_names = list(data_quants.keys())
+        tplot_names = list(pytplot.data_quants.keys())
         for i in tplot_names:
-            del data_quants[i]
+            del pytplot.data_quants[i]
         return
     
     if not isinstance(name, list):
@@ -36,35 +36,35 @@ def del_data(name=None):
     entries = []
     for i in name:
         if ('?' in i) or ('*' in i):
-            for j in data_quants.keys():
-                if isinstance(data_quants[j], dict):
+            for j in pytplot.data_quants.keys():
+                if isinstance(pytplot.data_quants[j], dict):
                     # NRV variable
-                    var_verif = fnmatch.fnmatch(data_quants[j]['name'], i)
+                    var_verif = fnmatch.fnmatch(pytplot.data_quants[j]['name'], i)
                     if var_verif == 1:
-                        entries.append(data_quants[j]['name'])
+                        entries.append(pytplot.data_quants[j]['name'])
                     else:
                         continue
                 else:
-                    var_verif = fnmatch.fnmatch(data_quants[j].name, i)
+                    var_verif = fnmatch.fnmatch(pytplot.data_quants[j].name, i)
                     if var_verif == 1:
-                        entries.append(data_quants[j].name)
+                        entries.append(pytplot.data_quants[j].name)
                     else:
                         continue
             for key in entries:
-                if key in data_quants:
-                    del data_quants[key]
-        elif i not in data_quants.keys():
+                if key in pytplot.data_quants:
+                    del pytplot.data_quants[key]
+        elif i not in pytplot.data_quants.keys():
             print(str(i) + " is currently not in pytplot.")
             return
         
         else:
-            if isinstance(data_quants[i], dict):
-                temp_data_quants = data_quants[i]
+            if isinstance(pytplot.data_quants[i], dict):
+                temp_data_quants = pytplot.data_quants[i]
                 str_name = temp_data_quants['name']
             else:
-                temp_data_quants = data_quants[i]
+                temp_data_quants = pytplot.data_quants[i]
                 str_name = temp_data_quants.name
             
-            del data_quants[str_name]
+            del pytplot.data_quants[str_name]
         
     return

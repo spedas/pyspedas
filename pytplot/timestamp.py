@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from pytplot import extra_layouts
+import pytplot
 import datetime
 
 def timestamp(val):  
@@ -27,9 +27,9 @@ def timestamp(val):
     
     if val is 'on':
         todaystring = datetime.datetime.now().strftime('%Y-%m-%d %H%M%S')
-        extra_layouts['time_stamp'] = todaystring
+        pytplot.extra_layouts['time_stamp'] = todaystring
     else:
-        if 'time_stamp' in extra_layouts:
-            del extra_layouts['time_stamp']
+        if 'time_stamp' in pytplot.extra_layouts:
+            del pytplot.extra_layouts['time_stamp']
     
     return

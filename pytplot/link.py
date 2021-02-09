@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from pytplot import data_quants
+import pytplot
 import numpy as np
 
 def link(names, link_name, link_type='alt'):
@@ -26,14 +26,14 @@ def link(names, link_name, link_type='alt'):
         names = [names]
         
     for i in names:
-        if i not in data_quants.keys():
+        if i not in pytplot.data_quants.keys():
             print(str(i) + " is not currently in pytplot.")
             return
         
         if isinstance(i,int):
-            i = list(data_quants.keys())[i-1]
+            i = list(pytplot.data_quants.keys())[i-1]
 
-        data_quants[data_quants[i].name].attrs['plot_options']['links'][link_type] = link_name
+            pytplot.data_quants[pytplot.data_quants[i].name].attrs['plot_options']['links'][link_type] = link_name
                 
     return
 

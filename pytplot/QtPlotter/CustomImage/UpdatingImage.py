@@ -5,10 +5,9 @@ from pyqtgraph import functions as fn
 from pyqtgraph.Point import Point
 from pyqtgraph import debug as debug
 from collections.abc import Callable
-from pytplot import tplot_opt_glob
 import pandas as pd
 from ..CustomViewBox.NoPaddingPlot import NoPaddingPlot
-
+import pytplot
 
 class UpdatingImage(pg.ImageItem):
     '''
@@ -115,10 +114,10 @@ class UpdatingImage(pg.ImageItem):
     def generatePicture(self, pixel_size=None):
         # Get the dimensions in pixels and in plot coordiantes
         if pixel_size is None:
-            width_in_pixels = tplot_opt_glob['window_size'][0]
-            height_in_pixels = tplot_opt_glob['window_size'][1]
-            width_in_plot_coords = tplot_opt_glob['window_size'][0]
-            height_in_plot_coords = tplot_opt_glob['window_size'][1]
+            width_in_pixels = pytplot.tplot_opt_glob['window_size'][0]
+            height_in_pixels = pytplot.tplot_opt_glob['window_size'][1]
+            width_in_plot_coords = pytplot.tplot_opt_glob['window_size'][0]
+            height_in_plot_coords = pytplot.tplot_opt_glob['window_size'][1]
         else:
             width_in_pixels = pixel_size.width()
             height_in_pixels = pixel_size.height()

@@ -6,7 +6,7 @@
 import os
 import pickle
 import numpy as np
-from pytplot import data_quants, tplot_opt_glob
+import pytplot
 from pytplot.options import options
 from pytplot.store_data import store_data
 from pytplot.tplot_options import tplot_options
@@ -146,8 +146,8 @@ def tplot_restore(filename):
                 for option_name in temp_tplot['dq'][i][3].dtype.names:
                     options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0])
 
-            data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
-            data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
+            pytplot.data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
+            pytplot.data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
         
             for option_name in temp_tplot['tv'][0][0].dtype.names:
                 if option_name == 'TRANGE':
@@ -176,10 +176,10 @@ def tplot_restore(filename):
         for i in range(0, num_data_quants):
             if isinstance(temp[i+1], dict):
                 # NRV variable
-                data_quants[temp[i+1]['name']] = temp[i+1]
+                pytplot.data_quants[temp[i+1]['name']] = temp[i+1]
             else:
-                data_quants[temp[i+1].name] = temp[i+1]
-        tplot_opt_glob = temp[num_data_quants+1]
+                pytplot.data_quants[temp[i+1].name] = temp[i+1]
+        pytplot.tplot_opt_glob = temp[num_data_quants+1]
         in_file.close()
     
     return

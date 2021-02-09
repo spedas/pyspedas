@@ -7,7 +7,6 @@ from __future__ import division
 import pandas as pd
 import numpy as np
 import datetime
-from pytplot import data_quants
 from .del_data import del_data
 import pytplot
 import xarray as xr
@@ -104,17 +103,17 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         base_data = _get_base_tplot_vars(data)
         # Copying the first variable to use all of its plot options
         # However, we probably want each overplot to retain its original plot option
-        data_quants[name] = copy.deepcopy(data_quants[base_data[0]])
-        data_quants[name].attrs = copy.deepcopy(data_quants[base_data[0]].attrs)
-        data_quants[name].name = name
-        data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
+        pytplot.data_quants[name] = copy.deepcopy(pytplot.data_quants[base_data[0]])
+        pytplot.data_quants[name].attrs = copy.deepcopy(pytplot.data_quants[base_data[0]].attrs)
+        pytplot.data_quants[name].name = name
+        pytplot.data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
         return True
 
     # if the data table doesn't contain an 'x', assume this is a non-record varying variable
     if 'x' not in data.keys():
         values = np.array(data.pop('y'))
-        data_quants[name] = {'data': values}
-        data_quants[name]['name'] = name
+        pytplot.data_quants[name] = {'data': values}
+        pytplot.data_quants[name]['name'] = name
         return True
 
     times = data.pop('x')
@@ -242,9 +241,9 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     temp.attrs['plot_options']['interactive_xaxis_opt'] = {}
     temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
 
-    data_quants[name] = temp
+    pytplot.data_quants[name] = temp
 
-    data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(temp)
+    pytplot.data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(temp)
 
     return True
 
@@ -254,8 +253,8 @@ def _get_base_tplot_vars(data):
     if not isinstance(data, list):
         data = [data]
     for var in data:
-        if isinstance(data_quants[var].data, list):
-            base_vars += _get_base_tplot_vars(data_quants[var].data)
+        if isinstance(pytplot.data_quants[var].data, list):
+            base_vars += _get_base_tplot_vars(pytplot.data_quants[var].data)
         else:
             base_vars += [var]
     return base_vars

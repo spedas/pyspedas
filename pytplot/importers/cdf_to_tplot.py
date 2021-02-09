@@ -19,7 +19,7 @@ import xarray as xr
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
 from pytplot.options import options
-from pytplot import data_quants
+import pytplot
 import copy
 
 
@@ -93,7 +93,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         if '*' in varnames:
             varnames = []
 
-    # data_quants = {}
+    # pytplot.data_quants = {}
     if isinstance(filenames, str):
         filenames = [filenames]
     elif isinstance(filenames, list):
@@ -328,8 +328,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
     for var_name in output_table.keys():
         to_merge = False
-        if var_name in data_quants.keys() and merge:
-            prev_data_quant = data_quants[var_name]
+        if var_name in pytplot.data_quants.keys() and merge:
+            prev_data_quant = pytplot.data_quants[var_name]
             to_merge = True
 
         try:
@@ -355,10 +355,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             options(var_name, opt_dict=metadata[var_name]['var_attrs'])
 
         if to_merge is True:
-            cur_data_quant = data_quants[var_name]
-            plot_options = copy.deepcopy(data_quants[var_name].attrs)
-            data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
-            data_quants[var_name].attrs = plot_options
+            cur_data_quant = pytplot.data_quants[var_name]
+            plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs)
+            pytplot.data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
+            pytplot.data_quants[var_name].attrs = plot_options
 
     if notplot:
         return output_table

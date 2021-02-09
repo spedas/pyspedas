@@ -1,6 +1,7 @@
 import numpy as np
 import xarray as xr
-from pytplot import tplot, data_quants, store_data
+from pytplot import tplot, store_data
+import pytplot
 import calendar
 
 
@@ -59,7 +60,6 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
     from netCDF4 import Dataset
 
     stored_variables = []
-    global data_quants
 
     if isinstance(filenames, str):
         filenames = [filenames]
@@ -125,8 +125,8 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
                 # Store the data now, as well as merge variables if that's desired
                 var_name = prefix + var + suffix
                 to_merge = False
-                if (var_name in data_quants.keys() and (merge == True)):
-                    prev_data_quant = data_quants[var_name].values
+                if (var_name in pytplot.data_quants.keys() and (merge == True)):
+                    prev_data_quant = pytplot.data_quants[var_name].values
                     to_merge = True
 
                 tplot_data = {'x': unix_times, 'y': masked_vars[var]}
@@ -135,9 +135,9 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
                     stored_variables.append(var_name)
 
                 if to_merge == True:
-                    cur_data_quant = data_quants[var_name].values
+                    cur_data_quant = pytplot.data_quants[var_name].values
                     merged_data = [prev_data_quant, cur_data_quant]
-                    data_quants[var_name].values = xr.concat(merged_data).values
+                    pytplot.data_quants[var_name].values = xr.concat(merged_data).values
 
                 # If we are interested in seeing a quick plot of the variables, do it
                 if plot:

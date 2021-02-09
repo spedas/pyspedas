@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from pytplot import data_quants
+import pytplot
 from . import tplot_utilities
 
 
@@ -31,8 +31,8 @@ def get_timespan(name):
 
     """
     
-    if name not in data_quants.keys():
+    if name not in pytplot.data_quants.keys():
         print("That name is currently not in pytplot") 
         return
 
-    return data_quants[name].attrs['plot_options']['trange'][0], data_quants[name].attrs['plot_options']['trange'][1]
+    return pytplot.data_quants[name].attrs['plot_options']['trange'][0], pytplot.data_quants[name].attrs['plot_options']['trange'][1]

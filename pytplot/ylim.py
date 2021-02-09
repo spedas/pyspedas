@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from pytplot import data_quants
+import pytplot
 
 def ylim(name, min, max):
     """
@@ -29,10 +29,10 @@ def ylim(name, min, max):
         >>> pytplot.ylim('Variable1', 2, 4)
 
     """
-    if name not in data_quants.keys():
+    if name not in pytplot.data_quants.keys():
         print("That name is currently not in pytplot.")
         return
 
-    data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = [min, max]
+    pytplot.data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = [min, max]
     
     return

@@ -4,7 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import pickle
-from pytplot import data_quants, tplot_opt_glob
+import pytplot
 
 def tplot_save(names, filename=None):
     """
@@ -33,29 +33,29 @@ def tplot_save(names, filename=None):
 
     """
     if isinstance(names,int):
-        names = list(data_quants.keys())[names-1]
+        names = list(pytplot.data_quants.keys())[names-1]
     if not isinstance(names, list):
         names = [names]
     
     #Check that we have all available data
     for name in names:
-        if not isinstance(data_quants[name], dict): # not a NRV variable
+        if not isinstance(pytplot.data_quants[name], dict): # not a NRV variable
             # variable is a time series
-            for oplot_name in data_quants[name].attrs['plot_options']['overplots']:
+            for oplot_name in pytplot.data_quants[name].attrs['plot_options']['overplots']:
                 if oplot_name not in names:
                     names.append(oplot_name)
     
     #Pickle it up
     to_pickle =[]
     for name in names:    
-        if name not in data_quants.keys():
+        if name not in pytplot.data_quants.keys():
             print("That name is currently not in pytplot") 
             return
-        to_pickle.append(data_quants[name])
+        to_pickle.append(pytplot.data_quants[name])
     
     num_quants = len(to_pickle)
     to_pickle = [num_quants] + to_pickle
-    temp_tplot_opt_glob = tplot_opt_glob
+    temp_tplot_opt_glob = pytplot.tplot_opt_glob
     to_pickle.append(temp_tplot_opt_glob)
     
     if filename==None:
