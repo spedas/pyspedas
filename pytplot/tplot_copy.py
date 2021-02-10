@@ -30,7 +30,10 @@ def tplot_copy(old_name, new_name):
 
     # if old name input is a number, convert to corresponding name
     if isinstance(old_name, int):
-        old_name = pytplot.data_quants[old_name].name
+        if isinstance(pytplot.data_quants[old_name], dict):
+            old_name = pytplot.data_quants[old_name]['name']
+        else:
+            old_name = pytplot.data_quants[old_name].name
 
     # check if old name is in current dictionary
     if old_name not in pytplot.data_quants.keys():
@@ -38,18 +41,22 @@ def tplot_copy(old_name, new_name):
         return
 
     # Add a new data quantity with the copied data
-    attr_dict = deepcopy(pytplot.data_quants[old_name].attrs)
-    data_dict = {}
-    data_dict['x'] = pytplot.data_quants[old_name].coords['time'].values
-    data_dict['y'] = pytplot.data_quants[old_name].values
-    if len(data_dict['y'].shape) <= 2:
-        pass
+    if isinstance(pytplot.data_quants[old_name], dict):
+        # old variable is a non-record varying variable
+        pytplot.store_data(new_name, data={'y': pytplot.data_quants[old_name]['data']})
     else:
-        for c in pytplot.data_quants[old_name].coords:
-            if c == 'time' or c == 'spec_bins':
-                continue
-            data_dict[c] = pytplot.data_quants[old_name].coords[c].values
-    pytplot.store_data(new_name, data=data_dict)
-    pytplot.data_quants[new_name].attrs = attr_dict
+        attr_dict = deepcopy(pytplot.data_quants[old_name].attrs)
+        data_dict = {}
+        data_dict['x'] = pytplot.data_quants[old_name].coords['time'].values
+        data_dict['y'] = pytplot.data_quants[old_name].values
+        if len(data_dict['y'].shape) <= 2:
+            pass
+        else:
+            for c in pytplot.data_quants[old_name].coords:
+                if c == 'time' or c == 'spec_bins':
+                    continue
+                data_dict[c] = pytplot.data_quants[old_name].coords[c].values
+        pytplot.store_data(new_name, data=data_dict)
+        pytplot.data_quants[new_name].attrs = attr_dict
 
     return
