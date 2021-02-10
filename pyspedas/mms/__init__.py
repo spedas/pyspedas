@@ -893,17 +893,21 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                     if e_omni_spectra_spin is not None:
                         tvars.append(e_omni_spectra_spin)
                 elif datatype_id == 'extof':
+                    # 9Feb2021, egrimes added 'helium' species for updates coming soon to the CDFs
                     p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
                     o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
                     a_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='alpha', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
+                    h_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='helium', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
                     p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     a_omni_spectra = mms_eis_omni(probe_id, species='alpha', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+                    h_omni_spectra = mms_eis_omni(probe_id, species='helium', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     # create spin averaged omni-directional spectra
                     p_omni_spectra_spin = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
                     o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
                     a_omni_spectra_spin = mms_eis_omni(probe_id, species='alpha', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
+                    h_omni_spectra_spin = mms_eis_omni(probe_id, species='helium', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
                     # add the vars to the output
                     if p_spin_avg_var is not None:
                         for tvar in p_spin_avg_var:
@@ -914,42 +918,50 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                     if a_spin_avg_var is not None:
                         for tvar in a_spin_avg_var:
                             tvars.append(tvar)
+                    if h_spin_avg_var is not None:
+                        for tvar in h_spin_avg_var:
+                            tvars.append(tvar)
                     if p_omni_spectra is not None:
                         tvars.append(p_omni_spectra)
                     if o_omni_spectra is not None:
                         tvars.append(o_omni_spectra)
                     if a_omni_spectra is not None:
                         tvars.append(a_omni_spectra)
+                    if h_omni_spectra is not None:
+                        tvars.append(h_omni_spectra)
                     if p_omni_spectra_spin is not None:
                         tvars.append(p_omni_spectra_spin)
                     if o_omni_spectra_spin is not None:
                         tvars.append(o_omni_spectra_spin)
                     if a_omni_spectra_spin is not None:
                         tvars.append(a_omni_spectra_spin)
+                    if h_omni_spectra_spin is not None:
+                        tvars.append(h_omni_spectra_spin)
                 elif datatype_id == 'phxtof':
+                    # 9Feb2021, egrimes commented out oxygen calculations to match IDL updates
                     p_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='proton', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
-                    o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
+                    # o_spin_avg_var = mms_eis_spin_avg(probe=probe_id, species='oxygen', datatype=datatype_id, data_rate=data_rate_id, suffix=suffix)
                     # create non-spin averaged omni-directional spectra
                     p_omni_spectra = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
-                    o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
+                    # o_omni_spectra = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
                     # create spin averaged omni-directional spectra
                     p_omni_spectra_spin = mms_eis_omni(probe_id, species='proton', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
-                    o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
+                    # o_omni_spectra_spin = mms_eis_omni(probe_id, species='oxygen', data_rate=data_rate_id, datatype=datatype_id, suffix=suffix+'_spin')
                     # add the vars to the output
                     if p_spin_avg_var is not None:
                         for tvar in p_spin_avg_var:
                             tvars.append(tvar)
-                    if o_spin_avg_var is not None:
-                        for tvar in o_spin_avg_var:
-                            tvars.append(tvar)
+                    # if o_spin_avg_var is not None:
+                    #     for tvar in o_spin_avg_var:
+                    #         tvars.append(tvar)
                     if p_omni_spectra is not None:
                         tvars.append(p_omni_spectra)
-                    if o_omni_spectra is not None:
-                        tvars.append(o_omni_spectra)
+                    # if o_omni_spectra is not None:
+                    #     tvars.append(o_omni_spectra)
                     if p_omni_spectra_spin is not None:
                         tvars.append(p_omni_spectra_spin)
-                    if o_omni_spectra_spin is not None:
-                        tvars.append(o_omni_spectra_spin)
+                    # if o_omni_spectra_spin is not None:
+                    #     tvars.append(o_omni_spectra_spin)
 
                 mms_eis_set_metadata(tnames(tvars), data_rate=data_rate_id, datatype=datatype_id, suffix=suffix)
 
