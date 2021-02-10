@@ -53,6 +53,10 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
 
         telescopes = tnames(prefix + datatype + '_' + species + '_*' + data_units + '_t?' + suffix)
 
+        if len(telescopes) != 6:
+            print('Problem calculating the spin-average for species: ' + species + ' (' + datatype + ')')
+            return None
+
         out_vars = []
 
         for scope in range(0, 6):
