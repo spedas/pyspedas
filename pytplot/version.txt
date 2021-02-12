@@ -1,4 +1,11 @@
-1.7.21
+1.7.22
+
+1.7.22 Changes:
+* Fixed some issues with the data_quants giving inconsistant dictionary keys throughout the code
+* Fixed a bug where the var_label axis would not extend all the way to line up with the other plots
+* Added "var_label_ticks" as a variable option to alter the number of ticks if the variable is displayed as a secondary x axis
+* Changed default behavior of plots to not zoom in on the y axis with the mouse wheel
+* Added the "y_axis_zoom" global option to toggle on/off the above change
 
 1.7.21 Changes:
 * Brought the yaxis labels closer to the axis ticks

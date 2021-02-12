@@ -43,6 +43,9 @@ class TVarFigureAlt(pg.GraphicsLayout):
                                                                 'right': self.yaxis2,
                                                                 'top': self.xaxis2}, viewBox=vb)
 
+        # Turn off zooming in on the y-axis, altitude resolution is much more important
+        self.plotwindow.setMouseEnabled(y=pytplot.tplot_opt_glob['y_axis_zoom'])
+
         if pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
             self.plotwindow.showAxis("top")
             self.plotwindow.showAxis("right")

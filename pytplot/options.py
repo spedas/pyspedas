@@ -69,6 +69,7 @@ def options(name, option=None, value=None, opt_dict=None):
         spec_plot_dim       int          If variable two dimensions, this sets which dimension the variable will have on
                                          on the y axis.  All other dimensions are summed into this one.
         border              bool         Turns on or off the top/right axes that would create a box around the plot
+        var_label_ticks     int          Sets the number of ticks if this variable is displayed as an alternative x axis
         =================== ==========   =====
     Returns:
         None
@@ -311,6 +312,9 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'border':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['border'] = value
+
+            if option == 'var_label_ticks':
+                pytplot.data_quants[i].attrs['plot_options']['var_label_ticks'] = value
 
 
     return

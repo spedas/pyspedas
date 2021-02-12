@@ -17,7 +17,7 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
         
         # Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
-        self.layout.setHorizontalSpacing(50)
+        self.layout.setHorizontalSpacing(10)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
         if pytplot.tplot_opt_glob['black_background']:
@@ -35,7 +35,11 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
         self.yaxis.label.rotate(90)
         self.yaxis.label.translate(0, -40)
         mapping_function = interpolate.interp1d(pytplot.data_quants[self.tvar_name].coords['time'].values, pytplot.data_quants[self.tvar_name].values)
-        xaxis = NonLinearAxis(orientation='bottom', mapping_function=mapping_function)
+        if 'var_label_ticks' in pytplot.data_quants[self.tvar_name].attrs['plot_options']:
+            num_ticks = pytplot.data_quants[self.tvar_name].attrs['plot_options']['var_label_ticks']
+        else:
+            num_ticks=5
+        xaxis = NonLinearAxis(orientation='bottom', mapping_function=mapping_function, num_ticks=num_ticks)
         self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': xaxis, 'left': self.yaxis}, viewBox=vb, colspan=1)
         self.plotwindow.buttonsHidden = True
         self.plotwindow.setMaximumHeight(20)

@@ -143,6 +143,8 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'yaxis_width':
         new_tplot_opt_glob['yaxis_width'] = value
 
+    elif option == 'y_axis_zoom':
+        new_tplot_opt_glob['y_axis_zoom'] = value
 
     else:
         print("Unknown option supplied: " + str(option))
