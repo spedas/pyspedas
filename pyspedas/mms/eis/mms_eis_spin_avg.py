@@ -1,7 +1,12 @@
+
+import logging
 import warnings
 import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='extof', data_rate='srvy', suffix=''):
     """
@@ -43,7 +48,7 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
 
     spin_data = get_data(prefix + datatype + '_spin' + suffix)
     if spin_data == None:
-        print('Error, problem finding EIS spin variable to calculate spin-averages')
+        logging.error('Error, problem finding EIS spin variable to calculate spin-averages')
         return
 
     spin_times, spin_nums = spin_data
@@ -54,7 +59,7 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
         telescopes = tnames(prefix + datatype + '_' + species + '_*' + data_units + '_t?' + suffix)
 
         if len(telescopes) != 6:
-            print('Problem calculating the spin-average for species: ' + species + ' (' + datatype + ')')
+            logging.error('Problem calculating the spin-average for species: ' + species + ' (' + datatype + ')')
             return None
 
         out_vars = []
@@ -64,7 +69,7 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
             scope_data = get_data(this_scope)
             
             if len(scope_data) <= 2:
-                print("Error, couldn't find energy table for the variable: " + this_scope)
+                logging.error("Error, couldn't find energy table for the variable: " + this_scope)
                 continue
 
             flux_times, flux_data, energies = scope_data
@@ -89,5 +94,5 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
             out_vars.append(this_scope + '_spin')
         return out_vars
     else:
-        print('Error, problem finding EIS spin variable to calculate spin-averages')
+        logging.error('Error, problem finding EIS spin variable to calculate spin-averages')
         return None
