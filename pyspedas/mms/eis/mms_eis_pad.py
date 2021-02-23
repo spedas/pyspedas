@@ -1,8 +1,12 @@
 import warnings
+import logging
 import numpy as np
 from pyspedas import tnames
 from pytplot import get_data, store_data, options
 from pyspedas.mms.eis.mms_eis_pad_spinavg import mms_eis_pad_spinavg
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', data_rate='srvy', datatype='extof', species='proton', data_units='flux', energy=[55, 800], size_pabin=15, suffix=''):
     """
@@ -71,6 +75,9 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
 
     # the probes will need to be strings beyond this point
     probe = [str(p) for p in probe]
+
+
+    logging.info('Calculating the EIS pitch angle distribution; this may take several minutes')
 
     for probe_id in probe:
         if data_rate == 'brst':
