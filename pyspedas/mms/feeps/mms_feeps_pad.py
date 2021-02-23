@@ -1,9 +1,14 @@
+
+import logging
 import warnings
 import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas.mms.feeps.mms_feeps_pitch_angles import mms_feeps_pitch_angles
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas.mms.feeps.mms_feeps_pad_spinavg import mms_feeps_pad_spinavg
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suffix='', datatype='electron', data_units='intensity', data_rate='srvy', angles_from_bfield=False):
     """
@@ -49,7 +54,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
         dangresp = 10.0 # deg
 
     if energy[0] < 32.0:
-        print('Please select a starting energy of 32 keV or above')
+        logging.error('Please select a starting energy of 32 keV or above')
         return
 
     units_label = ''
@@ -73,7 +78,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
         pa_times, pa_data = get_data(pa_var)
 
     if pa_data is None:
-        print("Error, couldn't find the PA variable")
+        logging.error("Error, couldn't find the PA variable")
         return
 
     eyes = mms_feeps_active_eyes([pa_times.min(), pa_times.max()], probe, data_rate, datatype, level)

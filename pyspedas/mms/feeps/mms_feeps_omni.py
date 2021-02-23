@@ -1,6 +1,11 @@
+
+import logging
 import warnings
 import numpy as np
 from pytplot import get_data, store_data, options
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity', data_rate='srvy', level='l2', suffix=''):
     """
@@ -95,7 +100,7 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
                     if iE[0].size != 0:
                         dalleyes[:, iE[0], idx] = np.nan
                 except Warning:
-                    print('NaN in energy table encountered; sensor T' + str(sensor))
+                    logging.warning('NaN in energy table encountered; sensor T' + str(sensor))
             for idx, sensor in enumerate(bot_sensors):
                 var_name = prefix+data_rate+'_'+level+'_'+datatype+'_bottom_'+data_units+'_sensorid_'+str(sensor)+'_clean_sun_removed'+suffix
                 data = get_data(var_name)
@@ -105,7 +110,7 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
                     if iE[0].size != 0:
                         dalleyes[:, iE[0], idx+len(top_sensors)] = np.nan
                 except Warning:
-                    print('NaN in energy table encountered; sensor B' + str(sensor))
+                    logging.warning('NaN in energy table encountered; sensor B' + str(sensor))
         else: # sitl data
             dalleyes = np.empty((len(tmpdata[0]), len(tmpdata[2]), len(top_sensors)))
             dalleyes[:] = np.nan

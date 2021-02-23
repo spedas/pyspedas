@@ -1,7 +1,11 @@
 
+import logging
 from .mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
 from pytplot import get_data, store_data
 import numpy as np
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', data_units='intensity', data_rate='srvy', level='l2', suffix=''):
     """
@@ -48,7 +52,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
 
         top_data_tuple = get_data(var_name+suffix)
         if top_data_tuple is None:
-            print('skipping variable: ' + var_name)
+            logging.error('skipping variable: ' + var_name)
             continue
         times, top_data, top_energies = top_data_tuple
 
@@ -72,7 +76,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
 
             bot_data_tuple = get_data(var_name+suffix)
             if bot_data_tuple == None:
-                print('skipping: ' + var_name)
+                logging.error('skipping: ' + var_name)
                 continue
             times, bot_data, bot_energies = bot_data_tuple
 

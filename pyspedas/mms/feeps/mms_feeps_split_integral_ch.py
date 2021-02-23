@@ -1,4 +1,9 @@
+
+import logging
 import pytplot
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate='srvy', level='l2', sensor_eyes=None):
     """
@@ -35,7 +40,7 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
     """
 
     if sensor_eyes is None:
-        print('Error: sensor_eyes not defined')
+        logging.error('Error: sensor_eyes not defined')
         return
 
     out_vars = []
