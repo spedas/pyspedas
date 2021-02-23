@@ -1,6 +1,11 @@
+
+import logging
 import numpy as np
 from pytplot import get_data, store_data, options
 from ...utilities.tnames import tnames
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_units='flux', data_rate='srvy'):
     """
@@ -50,7 +55,7 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         scope_data = get_data(telescopes[0])
             
         if len(scope_data) <= 2:
-            print("Error, couldn't find energy table for the variable: " + telescopes[0])
+            logging.error("Error, couldn't find energy table for the variable: " + telescopes[0])
             return None
 
         time, data, energies = scope_data
@@ -80,5 +85,5 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
 
         return prefix + species_str + '_' + data_units + '_omni' + suffix
     else:
-        print('Error, problem finding the telescopes to calculate omni-directional spectrograms')
+        logging.error('Error, problem finding the telescopes to calculate omni-directional spectrograms')
         return None

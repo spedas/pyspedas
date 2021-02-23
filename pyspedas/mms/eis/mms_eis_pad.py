@@ -88,7 +88,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
         for datatype_id in datatype:
             pa_data = get_data(prefix + datatype_id + '_pitch_angle_t0' + suffix)
             if pa_data is None:
-                print('No ' + data_rate + ' ' + datatype_id + ' data is currently loaded for MMS' + probe_id + ' for the selected time period')
+                logging.error('No ' + data_rate + ' ' + datatype_id + ' data is currently loaded for MMS' + probe_id + ' for the selected time period')
                 return
 
             for species_id in species:
@@ -105,7 +105,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                 these_energies = np.where((inchan_check_low > 0) | (inchan_check_hi > 0))[0]
 
                 if sum(inchan_check_low) == 0 or sum(inchan_check_hi) == 0:
-                    print( 'Energy range selected is not covered by the detector for ' + datatype_id + ' ' + species_id + ' ' + data_units)
+                    logging.error( 'Energy range selected is not covered by the detector for ' + datatype_id + ' ' + species_id + ' ' + data_units)
                     continue
 
                 flux_file = np.zeros([len(pa_times), len(scopes), len(these_energies)])
@@ -164,7 +164,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                     store_data(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads', data={'x': flux_times, 'y': pa_flux, 'v1': pa_label, 'v2': omni_energies[these_energies]})
                     out_vars.append(prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
                 except ValueError: # kludge to avoid crash in case of single energy
-                    print('Problem creating: ' + prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
+                    logging.error('Problem creating: ' + prefix + datatype_id + '_' + species_id + '_' + data_units + scope_suffix + '_pads')
 
                 # only create the integral PAD variable if the user defined energy range covers more than 1 EIS energy channel
                 if these_energies.size == 1:

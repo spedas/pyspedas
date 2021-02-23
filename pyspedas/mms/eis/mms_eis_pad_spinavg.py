@@ -1,7 +1,12 @@
+
+import logging
 import warnings
 import numpy as np
 from pyspedas import tnames
 from pytplot import get_data, store_data, options
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='srvy', datatype='extof', data_units='flux', species='proton', energy=[55, 800], size_pabin=15, suffix=''):
     """
@@ -69,7 +74,7 @@ def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='
         pad_times, pad_data, pad_angles = get_data(pad_var)
 
         if pad_data is None:
-            print('Error, variable containing valid PAD data missing: ' + pad_var)
+            logging.error('Error, variable containing valid PAD data missing: ' + pad_var)
             continue
 
         spin_avg_flux = np.zeros([len(spin_starts), len(pad_angles)])
