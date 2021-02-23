@@ -87,24 +87,6 @@ class FEEPSLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni_spin'))
 
-############### EIS ############### 
-class EISLoadTestCases(unittest.TestCase):
-    def test_load_phxtof_data(self):
-        data = mms_load_eis(trange=['2015-10-16', '2015-10-16/01:00'], datatype='phxtof')
-        self.assertTrue(data_exists('mms1_epd_eis_phxtof_proton_flux_omni'))
-
-    def test_load_phxtof_spdf(self):
-        data = mms_load_eis(trange=['2015-10-16/13:06', '2015-10-16/13:07'], datatype='phxtof', data_rate='brst', spdf=True)
-        self.assertTrue(data_exists('mms1_epd_eis_brst_phxtof_proton_flux_omni'))
-
-    def test_load_extof_data(self):
-        data = mms_load_eis(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='extof')
-        self.assertTrue(data_exists('mms1_epd_eis_brst_extof_proton_flux_omni'))
-
-    def test_load_extof_suffix(self):
-        data = mms_load_eis(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='extof', suffix='_test')
-        self.assertTrue(data_exists('mms1_epd_eis_brst_extof_proton_flux_omni_test'))
-
 ############### FPI ############### 
 class FPILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
