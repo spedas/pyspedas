@@ -5,6 +5,14 @@ import numpy as np
 from pyspedas import tnames
 from pytplot import get_data, store_data, options
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except:
+    nanmean = np.nanmean
+
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
@@ -88,7 +96,7 @@ def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='
             if ind is not None:
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore", category=RuntimeWarning)
-                    spin_avg_flux[spin_idx, :] = np.nanmean(pad_data[ind], axis=0)
+                    spin_avg_flux[spin_idx, :] = nanmean(pad_data[ind], axis=0)
             spin_times[spin_idx] = pad_times[current_start]
             current_start = spin_starts[spin_idx]+1
 

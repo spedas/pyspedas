@@ -5,6 +5,14 @@ from pyspedas import tnames
 from pytplot import get_data, store_data, options
 from pyspedas.mms.eis.mms_eis_pad_spinavg import mms_eis_pad_spinavg
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except:
+    nanmean = np.nanmean
+
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
@@ -145,7 +153,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                         for ee in range(0, len(these_energies)):
                             ind = np.where((pa_file[i, :] + pa_halfang_width >= pa_label[j] - delta_pa) & (pa_file[i, :] - pa_halfang_width < pa_label[j] + delta_pa))[0]
                             if ind.size != 0:
-                                pa_flux[i, j, ee] = np.nanmean(flux_file[i, ind, ee], axis=0)
+                                pa_flux[i, j, ee] = nanmean(flux_file[i, ind, ee], axis=0)
 
                 for ee in range(0, len(these_energies)):
                     # energy_string = str(int(flux_energies[these_energies[ee]])) + 'keV'
@@ -182,7 +190,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                     for bb in range(0, int(n_pabins)):
                         with warnings.catch_warnings():
                             warnings.simplefilter("ignore", category=RuntimeWarning)
-                            avg_pa_flux[tt, bb] = np.nanmean(pa_flux[tt, bb, :])
+                            avg_pa_flux[tt, bb] = nanmean(pa_flux[tt, bb, :])
 
                 store_data(new_name, data={'x': flux_times, 'y': avg_pa_flux, 'v': pa_label})
                 options(new_name, 'ylog', False)
