@@ -4,6 +4,14 @@ import warnings
 import numpy as np
 from pytplot import get_data, store_data, options
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except:
+    nanmean = np.nanmean
+
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
@@ -125,7 +133,7 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=RuntimeWarning)
-            flux_omni = np.nanmean(dalleyes, axis=2)
+            flux_omni = nanmean(dalleyes, axis=2)
 
         if probe == '1' and datatype == 'electron':
             flux_omni = flux_omni*eGfact[0]

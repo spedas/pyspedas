@@ -2,6 +2,14 @@ import warnings
 import numpy as np
 from pytplot import get_data, store_data, options
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except:
+    nanmean = np.nanmean
+
 def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', data_rate='srvy', level='l2', suffix=''):
     """
     This function will spin-average the omni-directional FEEPS energy spectra
@@ -58,7 +66,7 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
     for spin_idx in range(1, len(spin_starts)-1):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=RuntimeWarning)
-            spin_avg_flux[spin_idx-1, :] = np.nanmean(data[current_start:spin_starts[spin_idx]+1, :], axis=0)
+            spin_avg_flux[spin_idx-1, :] = nanmean(data[current_start:spin_starts[spin_idx]+1, :], axis=0)
         current_start = spin_starts[spin_idx] + 1
 
     store_data(var_name + '_spin' + suffix, data={'x': times[spin_starts], 'y': spin_avg_flux, 'v': energies})

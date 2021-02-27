@@ -4,6 +4,14 @@ import numpy as np
 import scipy 
 from pytplot import get_data, store_data, options
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except:
+    nanmean = np.nanmean
+
 def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron', data_rate='srvy', level='l2', suffix='', energy=[70, 600], bin_size=16.3636):
     """
     This function will spin-average the FEEPS pitch angle distributions
@@ -75,7 +83,7 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
     for spin_idx in range(0, len(spin_starts)):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=RuntimeWarning)
-            spin_avg_flux[spin_idx, :] = np.nanmean(data[current_start:spin_starts[spin_idx]+1, :], axis=0)
+            spin_avg_flux[spin_idx, :] = nanmean(data[current_start:spin_starts[spin_idx]+1, :], axis=0)
             spin_times[spin_idx] = times[current_start]
 
             # rebin and interpolate to new_bins

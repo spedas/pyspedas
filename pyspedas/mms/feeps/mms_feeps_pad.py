@@ -7,6 +7,14 @@ from pyspedas.mms.feeps.mms_feeps_pitch_angles import mms_feeps_pitch_angles
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas.mms.feeps.mms_feeps_pad_spinavg import mms_feeps_pad_spinavg
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except:
+    nanmean = np.nanmean
+
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
@@ -123,7 +131,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
             indx = np.where((energies >= energy[0]) & (energies <= energy[1]))
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", category=RuntimeWarning)
-                dflux[:, pa_map[isen]] = np.nanmean(data[:, indx[0]], axis=1)
+                dflux[:, pa_map[isen]] = nanmean(data[:, indx[0]], axis=1)
             dpa[:, pa_map[isen]] = pa_data[:, pa_map[isen]]
 
     # we need to replace the 0.0s left in after populating dpa with NaNs; these 
@@ -143,7 +151,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
                     ind = np.where((dpa[pa_idx, :] + dangresp >= pa_label[ipa]-delta_pa) & (dpa[pa_idx, :]-dangresp < pa_label[ipa]+delta_pa))
                     if ind[0].size != 0:
                         if len(ind[0]) > 1:
-                            pa_flux[pa_idx, ipa] = np.nanmean(dflux[pa_idx, ind[0]], axis=0)
+                            pa_flux[pa_idx, ipa] = nanmean(dflux[pa_idx, ind[0]], axis=0)
                         else:
                             pa_flux[pa_idx, ipa] = dflux[pa_idx, ind[0]]
 
