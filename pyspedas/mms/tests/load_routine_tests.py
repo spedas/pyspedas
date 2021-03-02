@@ -149,6 +149,13 @@ class HPCALoadTestCases(unittest.TestCase):
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
 
+    def test_load_ion_omni_suffix(self):
+        del_data('*')
+        data = mms_load_hpca(probe=2, trange=['2016-08-09/09:10', '2016-08-09/10:10:00'], datatype='ion', data_rate='brst', suffix='_brst')
+        mms_hpca_calc_anodes(fov=[0, 360], probe=2, suffix='_brst')
+        mms_hpca_spin_sum(probe=2, suffix='_brst', avg=True)
+        self.assertTrue(data_exists('mms2_hpca_hplus_flux_brst_elev_0-360_spin'))
+
     def test_load_ion_omni(self):
         del_data('*')
         data = mms_load_hpca(trange=['2016-10-16/5:00', '2016-10-16/6:00'], datatype='ion')

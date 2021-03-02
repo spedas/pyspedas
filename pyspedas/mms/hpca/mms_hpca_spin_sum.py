@@ -2,7 +2,7 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
-def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'oplusplus', 'heplus', 'heplusplus'], fov=['0', '360'], avg=False):
+def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'oplusplus', 'heplus', 'heplusplus'], fov=['0', '360'], avg=False, suffix=''):
     """
     This function will sum (or average, when the avg keyword is set to True) the HPCA data over each spin
     
@@ -40,14 +40,14 @@ def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'opl
     if not isinstance(probe, str):
         probe = str(probe)
 
-    az_times, start_az = get_data('mms'+probe+'_hpca_start_azimuth')
+    az_times, start_az = get_data('mms'+probe+'_hpca_start_azimuth'+suffix)
 
     spin_starts = np.argwhere(start_az == 0)
     output_vars = []
     species_map = {'hplus': 'H+', 'oplus': 'O+', 'heplus': 'He+', 'heplusplus': 'He++'}
 
     for datatype in datatypes:
-        vars_to_sum = tnames(datatype+'_elev_'+fov[0]+'-'+fov[1])
+        vars_to_sum = tnames(datatype+suffix+'_elev_'+fov[0]+'-'+fov[1])
         for var in vars_to_sum:
             var_species = var.split('_')[2]
             data = get_data(var, xarray=True)
