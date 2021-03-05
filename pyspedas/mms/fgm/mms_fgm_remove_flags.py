@@ -35,7 +35,10 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     for this_probe in probe:
         for this_dr in data_rate:
             for this_lvl in level:
-                flag_var = 'mms'+str(this_probe)+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix
+                if level == 'ql':
+                    flag_var = 'mms'+str(this_probe)+'_'+instrument+'_'+this_dr+'_'+this_lvl+'_flag'+suffix
+                else:
+                    flag_var = 'mms'+str(this_probe)+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix
                 flagged = get_data(flag_var)
                 if flagged == None:
                     continue
