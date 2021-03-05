@@ -36,7 +36,10 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
         for this_dr in data_rate:
             for this_lvl in level:
                 flag_var = 'mms'+str(this_probe)+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix
-                times, flags = get_data('mms'+str(this_probe)+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix)
+                flagged = get_data(flag_var)
+                if flagged == None:
+                    continue
+                times, flags = flagged
                 flagged_data = np.where(flags != 0.0)[0]
 
                 for var_specifier in ['_b_gse_', '_b_gsm_', '_b_dmpa_', '_b_bcs_']:
