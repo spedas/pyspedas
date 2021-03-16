@@ -43,7 +43,7 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
     sum_anodes = [a+suffix for a in ['*_count_rate', '*_RF_corrected', '*_bkgd_corrected', '*_norm_counts']]
     avg_anodes = ['*_flux'+suffix]
     output_vars = []
-    species_map = {'hplus': 'H+', 'oplus': 'O+', 'heplus': 'He+', 'heplusplus': 'He++'}
+    species_map = {'hplus': 'H+', 'oplus': 'O+', 'heplus': 'He+', 'heplusplus': 'He++', 'oplusplus': 'O++'}
 
     fov_str = '_elev_'+str(fov[0])+'-'+str(fov[1])
 
