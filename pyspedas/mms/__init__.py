@@ -316,7 +316,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
 @print_vars
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',
-    level='l2', datatype=['des-moms', 'dis-moms'], varformat=None, varnames=[], suffix='',
+    level='l2', datatype='*', varformat=None, varnames=[], suffix='',
     get_support_data=False, time_clip=False, no_update=False, center_measurement=False,
     available=False, notplot=False, latest_version=False, major_version=False, 
     min_version=None, cdf_version=None, spdf=False, always_prompt=False):
@@ -405,6 +405,22 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         List of tplot variables created.
 
     """
+
+    # different datatypes for burst mode files
+    if data_rate.lower() == 'brst':
+        if isinstance(datatype, str):
+            if (datatype == '*' or datatype == '') and level.lower() != 'ql':
+                datatype = ['des-dist', 'dis-dist', 'dis-moms', 'des-moms']
+    else:
+        if isinstance(datatype, str):
+            if (datatype == '*' or datatype == '') and level.lower() == 'ql':
+                datatype = ['des', 'dis']
+            if (datatype == '*' or datatype == '') and level.lower() != 'ql':
+                datatype = ['des-dist', 'dis-dist', 'dis-moms', 'des-moms']
+
+    # kludge for level = 'sitl' -> datatype shouldn't be defined for sitl data.
+    if level.lower() == 'sitl' or level.lower() == 'trig':
+        datatype = ''
 
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi',
             datatype=datatype, varformat=varformat, varnames=varnames, suffix=suffix, get_support_data=get_support_data,
