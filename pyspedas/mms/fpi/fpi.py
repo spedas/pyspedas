@@ -1,6 +1,7 @@
 
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
+from pyspedas.mms.fpi.mms_load_fpi_calc_pad import mms_load_fpi_calc_pad
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
@@ -122,5 +123,18 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         return tvars
 
     mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=suffix)
+
+    if not isinstance(probe, list): probe = [probe]
+    if not isinstance(data_rate, list): data_rate = [data_rate]
+    if not isinstance(datatype, list): datatype = [datatype]
+    if not isinstance(level, list): level = [level]
+
+    for prb in probe:
+        for drate in data_rate:
+            for dtype in datatype:
+                for lvl in level:
+                    out_var = mms_load_fpi_calc_pad(probe=prb, level=lvl, datatype=dtype, data_rate=drate, suffix=suffix, autoscale=True)
+                    if out_var:
+                        tvars.extend(out_var)
 
     return tvars
