@@ -1,4 +1,4 @@
-
+from pyspedas import tnames
 from pytplot import get_data, store_data, options
 
 def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', suffix='', autoscale=True):
@@ -64,17 +64,26 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
         else:
             pad_vars = [obsstr+spec_str_format+'_'+erange+'En'+suffix for erange in ['low', 'mid', 'high']]
 
+        pad_avg_name = obsstr+'PitchAngDist_avg'+suffix
+
         low_en = get_data(pad_vars[0])
         mid_en = get_data(pad_vars[1])
         high_en = get_data(pad_vars[2])
 
         if low_en == None or mid_en == None or high_en == None:
-            continue
+            v3_low_pad = tnames(pad_vars[0].lower()+'_'+data_rate)
+            v3_mid_pad = tnames(pad_vars[1].lower()+'_'+data_rate)
+            v3_high_pad = tnames(pad_vars[2].lower()+'_'+data_rate)
+            if v3_low_pad == [] or v3_mid_pad == [] or v3_high_pad == []:
+                continue
+
+            low_en = get_data(v3_low_pad[0])
+            mid_en = get_data(v3_mid_pad[0])
+            high_en = get_data(v3_high_pad[0])
+            pad_avg_name = pad_avg_name.lower()
 
         e_pad_sum = low_en.y+mid_en.y+high_en.y
         e_pad_avg = e_pad_sum/3.0
-
-        pad_avg_name = obsstr+'PitchAngDist_avg'+suffix
 
         if level == 'l2':
             pad_avg_name = pad_avg_name.lower()
