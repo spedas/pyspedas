@@ -1,8 +1,12 @@
 
+import logging
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.hpca.mms_hpca_set_metadata import mms_hpca_set_metadata
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 @print_vars
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
@@ -94,8 +98,40 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     """
 
-    if get_support_data is None:
-        get_support_data = True
+    if level.lower() != 'l2':
+        if varformat == None:
+            if level.lower() != 'l1a':
+                if datatype.lower() == 'ion':
+                    varformat = '*'
+                elif datatype.lower() == 'combined':
+                    varformat = '*'
+                elif datatype.lower() == 'rf_corr':
+                    varformat = '*_RF_corrected'
+                elif datatype.lower() == 'count_rate':
+                    varformat = '*_count_rate'
+                elif datatype.lower() == 'flux':
+                    varformat = '*_flux'
+                elif datatype.lower() == 'vel_dist':
+                    varformat = '*_vel_dist_fn'
+                elif datatype.lower() == 'bkgd_corr':
+                    varformat = '*_bkgd_corrected'
+                elif datatype.lower() == 'moments':
+                    varformat = '*'
+                else:
+                    varformat = '*_RF_corrected'
+                if varformat != None and varformat != '*':
+                    datatype = 'ion'
+                if level.lower() == 'sitl':
+                    varformat = '*'
+    else:
+        if get_support_data is None:
+            get_support_data = True
+
+        if isinstance(datatype, str):
+            if datatype not in ['ion', 'moments']:
+                logging.warning("Unknown datatype: " + datatype + "for L2 HPCA data; expected 'ion' or 'moments', loading 'ion'")
+                datatype = 'ion'
+
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='hpca',
             datatype=datatype, varformat=varformat, varnames=varnames, suffix=suffix, get_support_data=get_support_data,
