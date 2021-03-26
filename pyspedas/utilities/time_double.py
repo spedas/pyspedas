@@ -38,7 +38,7 @@ def time_float_one(s_time=None):
     if s_time is None:
         s_time = str(datetime.now())
 
-    if isinstance(s_time, (int, float, np.integer, np.float)):
+    if isinstance(s_time, (int, float, np.integer, np.float64)):
         return float(s_time)
 
     try:
