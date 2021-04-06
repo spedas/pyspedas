@@ -64,8 +64,49 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
         List of tplot variables created.
 
     """
+
+    varformat = check_args(varformat)
+
     return load(instrument='fgm', trange=trange, level=level,
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
                 probe=probe, time_clip=time_clip, no_update=no_update)
+
+
+def check_args(varformat=None, level='l2'):
+    '''
+    Return varformat for fgm data
+
+    Args:
+        varformat: If is not empty return as is
+        level: 'l1', 'l2'
+
+    Returns:
+        varformat for themis.load
+    '''
+    # DEV COMMENTS:
+    # If varformat is set to None then assign default value
+    # We construct regular expression that covers the fgm variable format
+    # IDL thm_load_xxx function has the following input:
+    #   vsnames = 'a b c d e', $
+    #   type_sname = 'probe', $
+    #   vdatatypes = 'fgl fgh fge', $
+    #   vlevels = 'l1 l2', $ - This input is inherited
+    #   vL2datatypes = 'fgs fgl fgh fge fgs_btotal fgl_btotal fgh_btotal fge_btotal', $
+    #   vL2coord = 'ssl dsl gse gsm none', $
+    # Resulted "varformat" for 'l2' and default coodr ('dsl')
+    #  th?_fgs_dsl th?_fgl_dsl th?_fgh_dsl th?_fge_dsl
+    #  th?_fgs_btotal_dsl th?_fgl_btotal_dsl th?_fgh_btotal_dsl th?_fge_btotal_dsl
+    #  th?_fgs th?_fgl th?_fgh th?_fge
+    #  th?_fgs_btotal th?_fgl_btotal th?_fgh_btotal th?_fge_btotal
+    # Resulted "varformat" for 'l1'
+    #  *fgl* *fgh* *fge*
+
+    if varformat is None:
+        if level == 'l2':
+            varformat = '^th[a-e]{1}_(fgs|fgl|fgh|fge){1}(_btotal)?(_{1}(ssl|dsl|gse|gsm){1})?$'
+        else:  # This case must be 'l1'
+            varformat = '^th[a-e]{1}_(fgl|fgh|fge){1}*'  # keep right end open with '*' (wildcard)
+
+    return varformat
