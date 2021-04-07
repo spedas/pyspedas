@@ -11,7 +11,7 @@ Notes
 This function is similar to cotrans.pro of IDL SPEDAS.
 """
 import pytplot
-from pyspedas.utilities.cotrans_lib import subcotrans
+from pyspedas.cotrans.cotrans_lib import subcotrans
 
 
 def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,

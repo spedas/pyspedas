@@ -13,8 +13,8 @@ For a comparison to IDL, see: http://spedas.org/wiki/index.php?title=Cotrans
 """
 import numpy as np
 from datetime import datetime
-from pyspedas.utilities.igrf import set_igrf_params
-from pyspedas.utilities.j2000 import set_j2000_params
+from pyspedas.cotrans.igrf import set_igrf_params
+from pyspedas.cotrans.j2000 import set_j2000_params
 
 
 def get_time_parts(time_in):
