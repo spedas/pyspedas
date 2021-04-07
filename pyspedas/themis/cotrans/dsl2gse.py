@@ -6,7 +6,7 @@ Notes:
 
 import pytplot
 import pyspedas
-from pyspedas.utilities.cotrans_lib import subgei2gse
+from pyspedas.cotrans.cotrans_lib import subgei2gse
 import numpy as np
 
 
