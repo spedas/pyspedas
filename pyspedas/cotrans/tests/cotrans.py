@@ -12,7 +12,7 @@ These tests include the function in the following files:
 import unittest
 import pyspedas
 from pyspedas.themis.cotrans.dsl2gse import dsl2gse
-from pyspedas.utilities.cotrans import cotrans
+from pyspedas.cotrans.cotrans import cotrans
 from pytplot import get_data, del_data
 
 
