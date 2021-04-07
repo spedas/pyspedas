@@ -10,9 +10,9 @@ jobs:
       matrix:
         #python-version: [3.5, 3.6, 3.7, 3.8]
         #os: [ubuntu-latest, macos-latest, windows-latest]
-        os: [macos-latest]
+        #os: [macos-latest]
         #os: [ubuntu-latest]
-        #os: [windows-latest]
+        os: [windows-latest]
         python-version: [3.9]
 
     steps:
@@ -61,7 +61,7 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.download_tests
         coverage run -a -m pyspedas.utilities.tests.misc_tests
         coverage run -a -m pyspedas.utilities.tests.time_tests
-        coverage run -a -m pyspedas.utilities.tests.cotrans
+        coverage run -a -m pyspedas.cotrans.tests.cotrans
         coverage run -a -m pyspedas.cluster.tests.tests
         coverage run -a -m pyspedas.csswe.tests.tests
         coverage run -a -m pyspedas.ace.tests.tests
