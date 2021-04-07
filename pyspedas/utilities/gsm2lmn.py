@@ -21,7 +21,7 @@ def gsm2lmn(times, Rxyz, Bxyz, swdata=None):
         bzarr = swdata[:, 2]
         # replace NaNs with a standard value
         for nanval in np.argwhere(np.isnan(dparr)):
-            dparrp[nanval[0]] = 2.088 # nPa
+            dparr[nanval[0]] = 2.088 # nPa
         for nanval in np.argwhere(np.isnan(bzarr)):
             bzarr[nanval[0]] = 0 # nT
 
