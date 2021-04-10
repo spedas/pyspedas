@@ -49,5 +49,6 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
                     var_name = 'mms'+str(this_probe)+'_'+instrument+var_specifier+this_dr+'_'+this_lvl+suffix
                     if var_name in tplot_vars:
                         times, var_data = get_data(var_name)
+                        metadata = get_data(var_name, metadata=True)
                         var_data[flagged_data] = np.nan
-                        store_data(var_name, data={'x': times, 'y': var_data})
+                        store_data(var_name, data={'x': times, 'y': var_data}, attr_dict=metadata)
