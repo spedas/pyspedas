@@ -65,7 +65,7 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
 
     """
 
-    varformat = check_args(varformat)
+    varformat = check_args(varformat, level=level)
 
     return load(instrument='fgm', trange=trange, level=level,
                 suffix=suffix, get_support_data=get_support_data,
@@ -74,17 +74,18 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
                 probe=probe, time_clip=time_clip, no_update=no_update)
 
 
-def check_args(varformat=None, level='l2'):
-    '''
+def check_args(varformat=None, level='l2', coord=None):
+    """
     Return varformat for fgm data
 
     Args:
         varformat: If is not empty return as is
         level: 'l1', 'l2'
+        coord: 'ssl', 'dsl', 'gse', 'gsm' or None (for all possible). coord is applicable for level='l2'
 
     Returns:
         varformat for themis.load
-    '''
+    """
     # DEV COMMENTS:
     # If varformat is set to None then assign default value
     # We construct regular expression that covers the fgm variable format
@@ -95,17 +96,27 @@ def check_args(varformat=None, level='l2'):
     #   vlevels = 'l1 l2', $ - This input is inherited
     #   vL2datatypes = 'fgs fgl fgh fge fgs_btotal fgl_btotal fgh_btotal fge_btotal', $
     #   vL2coord = 'ssl dsl gse gsm none', $
-    # Resulted "varformat" for 'l2' and default coodr ('dsl')
+    # Resulted "varformat" for 'l2' and default coodr ('dsl') is:
     #  th?_fgs_dsl th?_fgl_dsl th?_fgh_dsl th?_fge_dsl
     #  th?_fgs_btotal_dsl th?_fgl_btotal_dsl th?_fgh_btotal_dsl th?_fge_btotal_dsl
     #  th?_fgs th?_fgl th?_fgh th?_fge
     #  th?_fgs_btotal th?_fgl_btotal th?_fgh_btotal th?_fge_btotal
-    # Resulted "varformat" for 'l1'
+    # Resulted "varformat" for 'l1' is:
     #  *fgl* *fgh* *fge*
+
+    import re
 
     if varformat is None:
         if level == 'l2':
-            varformat = '^th[a-e]{1}_(fgs|fgl|fgh|fge){1}(_btotal)?(_{1}(ssl|dsl|gse|gsm){1})?$'
+            # Prepare coordinates, we reuse the same regex to check the coord variable
+            coord_regexp = '(ssl|dsl|gse|gsm){1}'
+            coord_str = coord_regexp
+
+            # If coord is set and it matches the pattern, then include it into varformat
+            if coord is not None and re.search(coord_regexp, coord):
+                coord_str = '(' + coord + '){1}'
+
+            varformat = '^th[a-e]{1}_(fgs|fgl|fgh|fge){1}(_btotal)?(_{1}' + coord_str + ')?$'
         else:  # This case must be 'l1'
             varformat = '^th[a-e]{1}_(fgl|fgh|fge){1}*'  # keep right end open with '*' (wildcard)
 
