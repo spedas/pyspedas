@@ -13,11 +13,30 @@ import unittest
 import pyspedas
 from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans.cotrans import cotrans
-from pytplot import get_data, del_data
+from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
+from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
+from pytplot import get_data, store_data, del_data
 
 
 class CotransTestCases(unittest.TestCase):
     """Tests for cotrans."""
+
+    def test_get_set_coord(self):
+        """ Test for cotrans_set_coord/cotrans_get_coord """
+        doesntexist = cotrans_get_coord('test_coord')
+        self.assertTrue(doesntexist == None)
+        store_data('test_coord', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
+        before = cotrans_get_coord('test_coord')
+        self.assertTrue(before == None)
+        setcoord = cotrans_set_coord('test_coord', 'GSE')
+        self.assertTrue(setcoord)
+        after = cotrans_get_coord('test_coord')
+        self.assertTrue(after == 'GSE')
+        setcoord = cotrans_set_coord('test_coord', 'GSM')
+        self.assertTrue(setcoord)
+        after = cotrans_get_coord('test_coord')
+        self.assertTrue(after == 'GSM')
+
 
     def test_dsl2gse(self):
         """Test themis.cotrans.dsl2gse."""
