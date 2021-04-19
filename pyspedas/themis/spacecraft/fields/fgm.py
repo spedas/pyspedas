@@ -8,6 +8,7 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
         suffix='',
         get_support_data=False,
         varformat=None,
+        coord=None,
         varnames=[],
         downloadonly=False,
         notplot=False,
@@ -41,6 +42,9 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
+        coord: str
+             Coordinate system
+
         varnames: list of str
             List of variable names to load
             (if not specified, all data variables are loaded)
@@ -65,7 +69,7 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
 
     """
 
-    varformat = check_args(varformat=varformat, level=level)
+    varformat = check_args(varformat=varformat, level=level, coord=coord)
 
     return load(instrument='fgm', trange=trange, level=level,
                 suffix=suffix, get_support_data=get_support_data,
@@ -117,8 +121,8 @@ def check_args(varformat=None, level='l2', coord=None):
             coord_str = coord_regexp
 
             # If coord is set and it matches the pattern, then include it into varformat
-            if coord is not None and re.search(coord_regexp, coord):
-                coord_str = '(' + coord + '){1}'
+            if coord is not None and re.search(coord_regexp, coord, re.IGNORECASE):
+                coord_str = '(' + coord.lower() + '){1}'
 
             varformat = '^th[a-e]{1}_(fgs|fgl|fgh|fge){1}(_btotal)?(_{1}' + coord_str + ')?$'
         else:  # This case must be 'l1'
