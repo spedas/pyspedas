@@ -65,7 +65,7 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
 
     """
 
-    varformat = check_args(varformat, level=level)
+    varformat = check_args(varformat=varformat, level=level)
 
     return load(instrument='fgm', trange=trange, level=level,
                 suffix=suffix, get_support_data=get_support_data,
@@ -78,14 +78,18 @@ def check_args(varformat=None, level='l2', coord=None):
     """
     Return varformat for fgm data
 
-    Args:
-        varformat: If is not empty return as is
-        level: 'l1', 'l2'
-        coord: 'ssl', 'dsl', 'gse', 'gsm' or None (for all possible). coord is applicable for level='l2'
+    Parameters:
+        varformat: str, optional
+            If is not empty return as is
+        level: {'l1', 'l2'}, optional
+            Data level
+        coord: {'ssl', 'dsl', 'gse', 'gsm'}, optional
+             Coordinate system. If set to None all possible values are used. coord is applicable for level='l2'
 
-    Returns:
+    Returns: str
         varformat for themis.load
     """
+
     # DEV COMMENTS:
     # If varformat is set to None then assign default value
     # We construct regular expression that covers the fgm variable format
