@@ -235,3 +235,5 @@ dmypy.json
 # Visual Studio Code dir
 .vscode
 
+# PyCharm
+.idea
