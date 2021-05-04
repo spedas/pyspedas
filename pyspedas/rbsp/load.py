@@ -42,7 +42,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     for prb in probe:
         if instrument == 'emfisis':
-            pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/'+cadence+'/'+coord+'/%Y/rbsp-'+prb+'_'+datatype+'_'+cadence+'-'+coord+'_'+instrument+'-'+level+'_%Y%m%d_v*.cdf'
+            if datatype == 'density':
+                pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/%Y/rbsp-'+prb+'_'+datatype+'_'+instrument+'-'+level+'_%Y%m%d_v*.cdf'
+            else:
+                pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/'+cadence+'/'+coord+'/%Y/rbsp-'+prb+'_'+datatype+'_'+cadence+'-'+coord+'_'+instrument+'-'+level+'_%Y%m%d_v*.cdf'
         elif instrument == 'rbspice':
             pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/%Y/rbsp-'+prb+'-'+instrument+'_lev-'+str(level[-1])+'_'+datatype+'_%Y%m%d_v*.cdf'
         elif instrument == 'efw':
