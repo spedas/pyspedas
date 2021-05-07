@@ -159,6 +159,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._addmouseevents()
         self._set_crosshairs()
         self._set_roi_lines()
+        self._setxrange() # Need to change the x range again one last time, visualizing the data resets it
+
 
     def _setyaxislabel(self):
         ylabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
