@@ -37,6 +37,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.themis.gmom
         pyspedas.themis.gmag
         pyspedas.themis.state
+        pyspedas.themis.slp
 
     """
 
@@ -138,6 +139,9 @@ def load(trange=['2013-11-5', '2013-11-6'],
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
                           + '_%Y%m%d.cdf')
+        elif instrument == 'slp':
+            # note: v01 hard-coded in IDL version as well
+            pathformat = 'slp/' + level + '/eph/%Y/slp_l1_eph_%Y%m%d_v01.cdf'
         elif instrument == 'gmag':
             if stations is None:
                 logging.error('No stations specified')
