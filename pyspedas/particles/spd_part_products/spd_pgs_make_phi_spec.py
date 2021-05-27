@@ -16,7 +16,6 @@ def spd_pgs_make_phi_spec(data_in, resolution=None):
     """
 
     dr = math.pi/180.
-    rd = 1.0/dr
 
     data = data_in.copy()
 
