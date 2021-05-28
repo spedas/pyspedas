@@ -1092,7 +1092,6 @@ def subgei2j2000(time_in, data_in):
         Coordinates in J2000.
 
     """
-    n = len(time_in)
     d = np.array(data_in)
 
     cmatrix = j2000_matrix_vec(time_in)
@@ -1119,7 +1118,6 @@ def subj20002gei(time_in, data_in):
         Coordinates in GEI.
 
     """
-    n = len(time_in)
     d = np.array(data_in)
 
     cmatrix = j2000_matrix_vec(time_in)
