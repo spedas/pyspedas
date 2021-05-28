@@ -63,8 +63,6 @@ def param_range(kp, iuvs=None):
         None: prints information to screen
     '''
 
-    import numpy as np
-
     # First, the case where insitu data are provided
     print("The loaded insitu KP data set contains data between")
     print("   %s and %s" % (np.array(kp['TimeString'])[0], np.array(kp['TimeString'])[-1]))
@@ -130,7 +128,6 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
     ToDo: compartmentalize the filtering and/or argument checks.
     '''
     from datetime import datetime
-    import numpy as np
 
     #  Initialize the filter_list
     filter_list = []
@@ -377,8 +374,6 @@ def find_param_from_index(kp, index):
         A string of form <instrument>.<observation>
         (e.g., LPW.EWAVE_LOW_FREQ)
     '''
-
-    import re
 
     index = '#%3d' % int(index)
     plist = param_list(kp)
