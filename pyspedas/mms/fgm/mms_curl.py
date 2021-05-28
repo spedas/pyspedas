@@ -150,19 +150,19 @@ def mms_curl(fields=None, positions=None, suffix=''):
         jtotal[i, 3] = np.sqrt(jtotal[i, 0]**2+jtotal[i, 1]**2+jtotal[i, 2]**2)
 
         # compute the parallel and perpendicular components of the current
-        btotal = np.sqrt(np.dot(baryb[i, 0:3], baryb[i, 0:3]))
+        btotal[i] = np.sqrt(np.dot(baryb[i, 0:3], baryb[i, 0:3]))
 
         # parallel is J.B/|B|
-        jparallel[i] = np.dot(jtotal[i, 0:3], baryb[i, 0:3])/btotal
+        jparallel[i] = np.dot(jtotal[i, 0:3], baryb[i, 0:3])/btotal[i]
         jparallel[i] = jparallel[i][0]
 
         # perp is J - J// B/|B| (components and total perpendicular current)
-        jperpvec[i, 0:3] = jtotal[i, 0:3] - (jparallel[i]*baryb[i, 0:3])/btotal
+        jperpvec[i, 0:3] = jtotal[i, 0:3] - (jparallel[i]*baryb[i, 0:3])/btotal[i]
         jperpvec[i, 3] = np.sqrt(jperpvec[i, 0]**2 + jperpvec[i, 1]**2 + jperpvec[i, 2]**2)
 
         # alpha parameter
-        alphaparallel[i] = np.abs(jparallel[i])/(1e-9*btotal)
-        alpha[i] = np.abs(jtotal[i, 3])/(1e-9*btotal)
+        alphaparallel[i] = np.abs(jparallel[i])/(1e-9*btotal[i])
+        alpha[i] = np.abs(jtotal[i, 3])/(1e-9*btotal[i])
 
     # create the output variables
     store_data('baryb' + suffix, data={'x': timesb1, 'y': baryb})
