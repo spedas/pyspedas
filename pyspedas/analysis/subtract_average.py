@@ -63,8 +63,8 @@ def subtract_average(names, new_names=None, suffix=None, overwrite=None,
 
     old_names = pyspedas.tnames(names)
 
-    for i, old in enumerate(old_names):
-        new = n_names[i]
+    for old_idx, old in enumerate(old_names):
+        new = n_names[old_idx]
 
         if new != old:
             pyspedas.tcopy(old, new)

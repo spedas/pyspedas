@@ -64,8 +64,8 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     if len(n_names) != len(old_names):
         n_names = [s + suffix for s in old_names]
 
-    for i, old in enumerate(old_names):
-        new = n_names[i]
+    for old_idx, old in enumerate(old_names):
+        new = n_names[old_idx]
         tmp = new + '_tmp_data'
 
         # Create new

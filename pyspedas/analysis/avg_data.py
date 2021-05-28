@@ -65,8 +65,8 @@ def avg_data(names, dt=None, width=60, noremainder=False,
     if len(n_names) != len(old_names):
         n_names = [s + suffix for s in old_names]
 
-    for i, old in enumerate(old_names):
-        new = n_names[i]
+    for old_idx, old in enumerate(old_names):
+        new = n_names[old_idx]
 
         d = pytplot.data_quants[old].copy()
         data = d.values
