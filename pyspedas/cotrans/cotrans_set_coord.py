@@ -1,5 +1,5 @@
 
-from pytplot import get_data, store_data
+from pytplot import get_data
 
 def cotrans_set_coord(name, coord):
     '''

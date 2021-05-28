@@ -1,6 +1,5 @@
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.print_vars import print_vars
-from pyspedas.mms.mms_config import CONFIG
 
 @print_vars
 def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
