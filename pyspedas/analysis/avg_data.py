@@ -87,7 +87,7 @@ def avg_data(names, dt=None, width=60, noremainder=False,
             # print(dim0, width)
             for i in range(0, dim0, width):
                 last = (i + width) if (i + width) < dim0 else dim0
-                idx = int(i + width/2)
+                # idx = int(i + width/2) # redefined below before it's ever used?
                 if (i + width > dim0) and noremainder:
                     continue  # Skip the last part of data.
                 else:
