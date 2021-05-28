@@ -282,7 +282,7 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
                 else:
                     nparam = len(parameter)
                     for param in parameter:
-                        a, b = get_inst_obs_labels(kp, parameter)
+                        a, b = get_inst_obs_labels(kp, param)
                         inst.append(a)
                         obs.append(b)
 
