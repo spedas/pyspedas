@@ -76,7 +76,7 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                 else:
                     dates_for_query = ''
 
-                if user == None:
+                if user is None:
                     url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/file_info/ancillary?sc_id=mms'+probe_id+'&product='+product+dates_for_query
                 else:
                     url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/file_info/ancillary?sc_id=mms'+probe_id+'&product='+product+dates_for_query
@@ -108,7 +108,7 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                         http_request.close()
                         continue
 
-                    if user == None:
+                    if user is None:
                         download_url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/download/ancillary?file=' + file['file_name']
                     else:
                         download_url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/ancillary?file=' + file['file_name']

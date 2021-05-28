@@ -63,7 +63,7 @@ def induction(site=None,
 
     out_vars = load(site=site, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
     
-    if downloadonly == True or notplot == True or out_vars == None:
+    if downloadonly == True or notplot == True or out_vars is None:
         return out_vars
 
     # remove values > 1000; taken from IDL SPEDAS version

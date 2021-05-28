@@ -9,7 +9,7 @@ def mms_convert_flux_units(data_in, units=None):
 
     """
 
-    if units == None:
+    if units is None:
         logging.error('Error, no units specified')
         return None
 

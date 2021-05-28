@@ -93,7 +93,7 @@ def time_datetime(time=None, tz=None):
         Datetimes as `datetime.datetime`.
 
     """
-    if tz == None:
+    if tz is None:
         tz = timezone.utc
 
     if time is None:

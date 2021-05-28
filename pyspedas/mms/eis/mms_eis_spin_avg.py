@@ -55,7 +55,7 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
         units_label = 'counts'
 
     spin_data = get_data(prefix + datatype + '_spin' + suffix)
-    if spin_data == None:
+    if spin_data is None:
         logging.error('Error, problem finding EIS spin variable to calculate spin-averages')
         return
 

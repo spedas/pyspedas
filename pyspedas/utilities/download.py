@@ -178,13 +178,13 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         logging.error('Username provided without password')
         return
 
-    if session == None:
+    if session is None:
         session = requests.Session()
 
-    if username != None:
+    if username is not None:
         session.auth = (username, password)
 
-    if headers.get('User-Agent') == None:
+    if headers.get('User-Agent') is None:
         try:
             release_version = pkg_resources.get_distribution("pyspedas").version
         except pkg_resources.DistributionNotFound:

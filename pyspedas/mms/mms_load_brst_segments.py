@@ -27,7 +27,7 @@ def mms_load_brst_segments(trange=None, suffix=''):
 
     '''
 
-    if trange == None:
+    if trange is None:
         logging.error('Error; no trange specified.')
         return None
 

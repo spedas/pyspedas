@@ -92,7 +92,7 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             latest_version=latest_version, major_version=major_version, min_version=min_version, 
             cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
 
-    if tvars == None or available or notplot or CONFIG['download_only']:
+    if tvars is None or available or notplot or CONFIG['download_only']:
         return tvars
 
     mms_mec_set_metadata(probe, data_rate, level, suffix=suffix)

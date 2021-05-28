@@ -22,7 +22,7 @@ def cotrans_get_coord(name):
     '''
 
     metadata = get_data(name, metadata=True)
-    if metadata == None:
+    if metadata is None:
         return None
 
     if metadata.get('data_att'):

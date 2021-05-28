@@ -23,7 +23,7 @@ def load(trange=['2019-02-01','2019-02-02'],
 
     """
 
-    if site == None:
+    if site is None:
         print('A valid MICA site code name must be entered.')
         print('Current site codes include: ')
         print('NAL, LYR, LOR, ISR, SDY, IQA, SNK, MCM, SPA, JBS, NEV, HAL, PG2[3,4,5]')

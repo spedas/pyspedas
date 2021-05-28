@@ -27,7 +27,7 @@ def spd_pgs_make_theta_spec(data_in, resolution=None, colatitude=False):
             data['data'][item[0], item[1]] = 0.0
 
     # get number of theta values
-    if resolution == None:
+    if resolution is None:
         n_theta = len(np.unique(data['theta']))
     else:
         n_theta = resolution

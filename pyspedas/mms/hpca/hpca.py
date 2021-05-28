@@ -99,7 +99,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     """
 
     if level.lower() != 'l2':
-        if varformat == None:
+        if varformat is None:
             if level.lower() != 'l1a':
                 if datatype.lower() == 'ion':
                     varformat = '*'
@@ -139,7 +139,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             latest_version=latest_version, major_version=major_version, min_version=min_version, cdf_version=cdf_version,
             spdf=spdf, always_prompt=always_prompt)
     
-    if tvars == None or available or notplot or CONFIG['download_only']:
+    if tvars is None or available or notplot or CONFIG['download_only']:
         return tvars
 
     mms_hpca_set_metadata(probe=probe, suffix=suffix)

@@ -10,7 +10,7 @@ def gsm2lmn(times, Rxyz, Bxyz, swdata=None):
 
     '''
 
-    if swdata == None:
+    if swdata is None:
         # swdata is an array containing: [SW times, SW dynamic pressure, SW B-field]
         swdata = np.zeros((len(times), 3))
         swdata[:, 0] = times

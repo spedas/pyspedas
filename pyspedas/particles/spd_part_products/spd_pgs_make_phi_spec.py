@@ -26,7 +26,7 @@ def spd_pgs_make_phi_spec(data_in, resolution=None):
             data['data'][item[0], item[1]] = 0.0
 
     # get number of phi values
-    if resolution == None:
+    if resolution is None:
         # method taken from the IDL code
         idx = np.nanargmin(np.abs((data['theta'][0, :])))
         n_phi = len(np.argwhere(data['theta'][0, :] == np.abs((data['theta'][0, :]))[idx]))

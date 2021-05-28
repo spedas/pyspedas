@@ -33,7 +33,7 @@ def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_for
         List containing filenames
 
     '''
-    if trange == None:
+    if trange is None:
         print('No trange specified')
         return
 

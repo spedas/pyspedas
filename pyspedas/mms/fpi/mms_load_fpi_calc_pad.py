@@ -70,7 +70,7 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
         mid_en = get_data(pad_vars[1])
         high_en = get_data(pad_vars[2])
 
-        if low_en == None or mid_en == None or high_en == None:
+        if low_en is None or mid_en is None or high_en is None:
             v3_low_pad = tnames(pad_vars[0].lower()+'_'+data_rate)
             v3_mid_pad = tnames(pad_vars[1].lower()+'_'+data_rate)
             v3_high_pad = tnames(pad_vars[2].lower()+'_'+data_rate)

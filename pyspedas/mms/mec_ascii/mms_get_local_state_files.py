@@ -32,7 +32,7 @@ def mms_get_local_state_files(probe='1', level='def', filetype='eph', trange=Non
         List of local files found matching the input parameters.
 
     """
-    if trange == None:
+    if trange is None:
         logging.info('No trange specified in mms_get_local_state_files')
         return
 

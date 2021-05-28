@@ -21,12 +21,12 @@ def cotrans_set_coord(name, coord):
 
     # check that the variable exists
     data = get_data(name)
-    if data == None:
+    if data is None:
         return False
 
     metadata = get_data(name, metadata=True)
 
-    if metadata.get('data_att') == None:
+    if metadata.get('data_att') is None:
         metadata['data_att'] = {}
 
     # note: updating the metadata dict directly updates

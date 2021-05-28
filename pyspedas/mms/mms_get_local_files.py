@@ -63,7 +63,7 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
 
     days = rrule(DAILY, dtstart=parse(parse(trange[0]).strftime('%Y-%m-%d')), until=parse(trange[1])-timedelta(seconds=1))
 
-    if datatype == '' or datatype == None:
+    if datatype == '' or datatype is None:
         level_and_dtype = level
     else:
         level_and_dtype = os.sep.join([level, datatype])

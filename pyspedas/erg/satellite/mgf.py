@@ -72,7 +72,7 @@ def mgf(trange=['2017-03-27', '2017-03-28'],
 
     loaded_data = load(instrument='mgf', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
     
-    if loaded_data == None or loaded_data == [] or notplot or downloadonly:
+    if loaded_data is None or loaded_data == [] or notplot or downloadonly:
         return loaded_data
 
     clip('erg_mgf_'+level+'_mag_'+datatype+'_dsi'+suffix, -1e+6, 1e6)

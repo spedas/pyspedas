@@ -120,7 +120,7 @@ class CDAWeb():
             f = remotef.strip().replace(remotehttp, '', 1)
             localf = local_dir + os.path.sep + f
             localfile = download(remote_file=remotef, local_file=localf)
-            if localfile == None:
+            if localfile is None:
                 continue
             localfile = localfile[0] # download returns an array
             count += 1
