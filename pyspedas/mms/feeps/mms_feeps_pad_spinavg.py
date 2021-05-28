@@ -9,7 +9,7 @@ from pytplot import get_data, store_data, options
 try:
     import bottleneck as bn
     nanmean = bn.nanmean
-except:
+except ImportError:
     nanmean = np.nanmean
 
 def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron', data_rate='srvy', level='l2', suffix='', energy=[70, 600], bin_size=16.3636):
@@ -50,11 +50,6 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
         units_label = '1/(cm^2-sr-s-keV)'
     elif data_units == 'counts':
         units_label = '[counts/s]'
-
-    if datatype == 'electron':
-        lower_en = 71
-    else:
-        lower_en = 78
 
     prefix = 'mms'+str(probe)+'_epd_feeps_'
 

@@ -7,7 +7,7 @@ from pytplot import get_data, store_data, options
 try:
     import bottleneck as bn
     nanmean = bn.nanmean
-except:
+except ImportError:
     nanmean = np.nanmean
 
 def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', data_rate='srvy', level='l2', suffix=''):

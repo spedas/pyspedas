@@ -1,5 +1,5 @@
 import numpy as np
-import pytplot
+
 from pytplot import get_data, store_data
 from pyspedas import tnames
 

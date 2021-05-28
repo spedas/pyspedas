@@ -9,7 +9,7 @@ from pytplot import get_data, store_data, options
 try:
     import bottleneck as bn
     nanmean = bn.nanmean
-except:
+except ImportError:
     nanmean = np.nanmean
 
 logging.captureWarnings(True)

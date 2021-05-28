@@ -1,4 +1,3 @@
-import pytplot
 from pytplot import get_data, store_data
 from .mms_feeps_energy_table import mms_feeps_energy_table
 from pyspedas import tnames

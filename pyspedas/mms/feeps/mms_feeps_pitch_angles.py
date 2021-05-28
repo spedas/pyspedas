@@ -51,7 +51,6 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
     idx_maps = None
     nbins = 13 # number of pitch angle bins; 10 deg = 17 bins, 15 deg = 13 bins
-    dpa = 180.0/nbins # delta-pitch angle for each bin
 
     # Rotation matrices for FEEPS coord system (FCS) into body coordinate system (BCS):
     Ttop = [[1./np.sqrt(2.), -1./np.sqrt(2.), 0], [1./np.sqrt(2.), 1./np.sqrt(2.), 0], [0, 0, 1]]

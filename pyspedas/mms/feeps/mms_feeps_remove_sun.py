@@ -75,7 +75,7 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
             var_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_bottom_'+data_units+'_sensorid_'+sensor+'_clean'
 
             bot_data_tuple = get_data(var_name+suffix)
-            if bot_data_tuple == None:
+            if bot_data_tuple is None:
                 logging.error('skipping: ' + var_name)
                 continue
             times, bot_data, bot_energies = bot_data_tuple
