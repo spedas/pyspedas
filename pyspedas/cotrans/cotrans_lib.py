@@ -287,7 +287,6 @@ def tgeigse_vect(time_in, data_in):
         Cartesian GSE coordinates.
 
     """
-    xgse, ygse, zgse = 0, 0, 0
     d = np.array(data_in)
     xgei, ygei, zgei = d[:, 0], d[:, 1], d[:, 2]
 
@@ -355,7 +354,6 @@ def tgsegei_vect(time_in, data_in):
         Cartesian GEI coordinates.
 
     """
-    xgei, ygei, zgei = 0, 0, 0
     d = np.array(data_in)
     xgse, ygse, zgse = d[:, 0], d[:, 1], d[:, 2]
 
@@ -423,7 +421,6 @@ def tgsegsm_vect(time_in, data_in):
         Cartesian GSM coordinates.
 
     """
-    xgsm, ygsm, zgsm = 0, 0, 0
     d = np.array(data_in)
     xgse, ygse, zgse = d[:, 0], d[:, 1], d[:, 2]
 
@@ -504,7 +501,6 @@ def tgsmgse_vect(time_in, data_in):
         Cartesian GSE coordinates.
 
     """
-    xgse, ygse, zgse = 0, 0, 0
     d = np.array(data_in)
     xgsm, ygsm, zgsm = d[:, 0], d[:, 1], d[:, 2]
 
@@ -586,7 +582,6 @@ def tgsmsm_vect(time_in, data_in):
         Cartesian SM coordinates.
 
     """
-    xsm, ysm, zsm = 0, 0, 0
     d = np.array(data_in)
     xgsm, ygsm, zgsm = d[:, 0], d[:, 1], d[:, 2]
 
@@ -659,7 +654,6 @@ def tsmgsm_vect(time_in, data_in):
          GSM coordinates.
 
     """
-    xgsm, ygsm, zgsm = 0, 0, 0
     d = np.array(data_in)
     xsm, ysm, zsm = d[:, 0], d[:, 1], d[:, 2]
 
@@ -728,7 +722,6 @@ def subgei2geo(time_in, data_in):
         Coordinates in GEO.
 
     """
-    xgeo, ygeo, zgeo = 0, 0, 0
     d = np.array(data_in)
     xgei, ygei, zgei = d[:, 0], d[:, 1], d[:, 2]
     gst, slong, sra, sdec, obliq = csundir_vect(time_in)
@@ -761,7 +754,6 @@ def subgeo2gei(time_in, data_in):
         Coordinates in GEI.
 
     """
-    xgei, ygei, zgei = 0, 0, 0
     d = np.array(data_in)
     xgeo, ygeo, zgeo = d[:, 0], d[:, 1], d[:, 2]
     gst, slong, sra, sdec, obliq = csundir_vect(time_in)
@@ -960,10 +952,7 @@ def j2000_matrix_vec(time_in):
     Adapted from spedas IDL file spd_make_j2000_matrix_vec.pro.
 
     """
-    iyear, idoy, ih, im, isec = get_time_parts(time_in)
-
     n = len(time_in)
-    cmatrix = np.zeros((3, 3, n), float)
     nutmat = np.zeros((3, 3, n), float)
     premat = np.zeros((3, 3, n), float)
 
@@ -1076,7 +1065,6 @@ def ctv_mx_vec_rot(m, v):
     """
     n = m.shape[2]
     k = m.shape[1]  # This should be 3 for 3x3 matrices.
-    out = np.zeros((n, k), float)
     a = np.zeros((k, k, n), float)
 
     for i in range(k):
@@ -1105,7 +1093,6 @@ def subgei2j2000(time_in, data_in):
 
     """
     n = len(time_in)
-    d_out = np.zeros((3, n), float)
     d = np.array(data_in)
 
     cmatrix = j2000_matrix_vec(time_in)
@@ -1133,7 +1120,6 @@ def subj20002gei(time_in, data_in):
 
     """
     n = len(time_in)
-    d_out = np.zeros((3, n), float)
     d = np.array(data_in)
 
     cmatrix = j2000_matrix_vec(time_in)
