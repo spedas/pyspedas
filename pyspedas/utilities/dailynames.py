@@ -2,7 +2,6 @@
 
 import numpy as np
 from pyspedas import time_string, time_double
-import os
 from datetime import datetime
 
 def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%d', prefix='', suffix=''):

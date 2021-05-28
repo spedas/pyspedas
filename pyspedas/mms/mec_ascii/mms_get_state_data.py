@@ -1,6 +1,3 @@
-
-
-import requests
 import os
 import logging
 import warnings

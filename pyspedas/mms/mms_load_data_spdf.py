@@ -1,4 +1,3 @@
-import os
 from pyspedas import time_double
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
