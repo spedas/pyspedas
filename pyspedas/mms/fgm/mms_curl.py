@@ -36,7 +36,7 @@ def mms_curl(fields=None, positions=None, suffix=''):
         List of tplot variables created
 
     """
-    if fields == None or positions == None:
+    if fields is None or positions is None:
         print('Error: B-field and spacecraft position keywords required.')
         return
 
@@ -83,13 +83,11 @@ def mms_curl(fields=None, positions=None, suffix=''):
     baryb2 = np.zeros([len(timesb1), 3])
     baryb3 = np.zeros([len(timesb1), 3])
     baryb4 = np.zeros([len(timesb1), 3])
-    sampleb = np.zeros([len(timesb1), 3])
 
     jtotal = np.zeros([len(timesb1), 4])
     btotal = np.zeros([len(timesb1), 1])
     jparallel = np.zeros([len(timesb1), 1])
     jperpvec = np.zeros([len(timesb1), 4])
-    jperp = np.zeros([len(timesb1), 1])
     alphaparallel = np.zeros([len(timesb1), 1])
     alpha = np.zeros([len(timesb1), 1])
 

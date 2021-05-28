@@ -40,7 +40,7 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
                 else:
                     flag_var = 'mms'+str(this_probe)+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix
                 flagged = get_data(flag_var)
-                if flagged == None:
+                if flagged is None:
                     continue
                 times, flags = flagged
                 flagged_data = np.where(flags != 0.0)[0]
