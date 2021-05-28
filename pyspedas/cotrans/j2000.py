@@ -27,10 +27,6 @@ def set_j2000_params():
     cosco: array(106, 2) of float
 
     """
-    funar = np.zeros((106, 5), float)
-    sinco = np.zeros((106, 2), float)
-    cosco = np.zeros((106, 2), float)
-
     funar = np.array([[0.0, 1.0, 0.0, 0.0, 0.0],
                       [0.0, 2.0, 0.0, 0.0, 0.0],
                       [2.0, 1.0, 0.0, -2.0, 0.0],
