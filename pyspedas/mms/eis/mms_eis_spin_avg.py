@@ -10,7 +10,7 @@ from pyspedas import tnames
 try:
     import bottleneck as bn
     nanmean = bn.nanmean
-except:
+except ImportError:
     nanmean = np.nanmean
 
 logging.captureWarnings(True)

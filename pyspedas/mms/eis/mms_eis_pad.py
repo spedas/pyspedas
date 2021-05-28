@@ -10,7 +10,7 @@ from pyspedas.mms.eis.mms_eis_pad_spinavg import mms_eis_pad_spinavg
 try:
     import bottleneck as bn
     nanmean = bn.nanmean
-except:
+except ImportError:
     nanmean = np.nanmean
 
 logging.captureWarnings(True)
