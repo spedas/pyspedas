@@ -9,7 +9,7 @@ Description:
 
 uname = ''
 pword = ''
-from .utilities import l2_regex, kp_regex
+from .file_regex import kp_regex, l2_regex
 
 def get_filenames(query, public):
     import urllib
