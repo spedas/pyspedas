@@ -61,7 +61,6 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
         probe_id = str(probe_id)
 
         for filetype in filetypes:
-            file_dir = local_data_dir + 'ancillary/' + 'mms' + probe_id + '/' + level + filetype + '/'
             product = level + filetype
 
             files_in_interval = []

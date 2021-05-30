@@ -12,10 +12,10 @@ import pytplot
 import numpy
 
 
-def tdeflag(names, method=None, flag=None, new_names=None, suffix=None,
+def tdeflag(names, method=None, new_names=None, suffix=None,
             overwrite=None):
     """
-    Remove flag from data.
+    Remove NaNs from tplot variables.
 
     Parameters
     ----------
@@ -24,8 +24,6 @@ def tdeflag(names, method=None, flag=None, new_names=None, suffix=None,
     method: str, optional
         Method to apply. Default is 'remove_nan.
         Other options 'repeat' (repeat last good value).
-    flag: float, optional
-        Value to be replaced. Default is NaN.
     new_names: str/list of str, optional
         List of new_names for pytplot variables.
         If '', then pytplot variables are replaced.
@@ -48,9 +46,6 @@ def tdeflag(names, method=None, flag=None, new_names=None, suffix=None,
 
     if suffix is None:
         suffix = '-deflag'
-
-    if flag is None:
-        flag = float('nan')
 
     if overwrite is not None:
         n_names = old_names

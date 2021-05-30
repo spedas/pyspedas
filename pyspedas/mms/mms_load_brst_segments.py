@@ -37,6 +37,10 @@ def mms_load_brst_segments(trange=None, suffix=''):
     brst_file = download(remote_file='http://www.spedas.org/mms/mms_brst_intervals.sav',
         local_file=save_file)
 
+    if len(brst_file) == 0:
+        logging.error('Error downloading burst intervals sav file')
+        return None
+
     try:
         intervals = readsav(save_file)
     except FileNotFoundError:
@@ -68,6 +72,11 @@ def mms_load_brst_segments(trange=None, suffix=''):
             bar_y.extend([np.nan, 0., 0., np.nan])
 
     vars_created = store_data('mms_bss_burst'+suffix, data={'x': bar_x, 'y': bar_y})
+
+    if vars_created == False:
+        logging.error('Error creating burst segment intervals tplot variable')
+        return None
+
     options('mms_bss_burst'+suffix, 'panel_size', 0.09)
     options('mms_bss_burst'+suffix, 'thick', 20)
     options('mms_bss_burst'+suffix, 'Color', 'green')

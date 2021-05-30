@@ -51,7 +51,6 @@ def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='
     Returns:
         Name of tplot variables created.
     """
-    en_range_string = str(int(energy[0])) + '-' + str(int(energy[1])) + 'keV'
 
     if data_units == 'cps':
         units_label = '1/s'
@@ -103,7 +102,6 @@ def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='
         newname = pad_var + '_spin'
 
         n_pabins = 180./size_pabin
-        new_bins = [180.*n_pabin/n_pabins for n_pabin in range(0, int(n_pabins)+1)]
         new_pa_label = [180.*n_pabin/n_pabins+size_pabin/2. for n_pabin in range(0, int(n_pabins))]
 
         store_data(newname, data={'x': spin_times, 'y': spin_avg_flux, 'v': new_pa_label})

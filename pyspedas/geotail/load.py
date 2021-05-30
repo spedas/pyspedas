@@ -28,8 +28,6 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     """
 
-    tvars_created = []
-
     if instrument == 'mgf':
         if datatype == 'k0':
             pathformat = 'mgf/mgf_k0/%Y/ge_'+datatype+'_mgf_%Y%m%d_v??.cdf'

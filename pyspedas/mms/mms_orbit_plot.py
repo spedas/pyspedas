@@ -37,6 +37,10 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
 
     mec_vars = mms_load_mec(trange=trange, data_rate=data_rate, probe=probes, varformat='*_r_' + coord, time_clip=True)
 
+    if len(mec_vars) == 0:
+        print('Problem loading MEC data')
+        return
+
     plane = plane.lower()
     coord = coord.lower()
 

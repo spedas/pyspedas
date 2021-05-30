@@ -72,7 +72,6 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
 
     # set up the number of pa bins to create
     n_pabins = 180./size_pabin
-    pa_bins = [180.*n_pabin/n_pabins for n_pabin in range(0, int(n_pabins)+1)]
     pa_label = [180.*n_pabin/n_pabins+size_pabin/2. for n_pabin in range(0, int(n_pabins))]
 
     # Account for angular response (finite field of view) of instruments

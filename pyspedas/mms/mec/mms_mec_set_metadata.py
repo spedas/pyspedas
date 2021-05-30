@@ -14,6 +14,7 @@ def mms_mec_set_metadata(probe, data_rate, level, suffix=''):
 
         level : str
             indicates level of data processing. the default if no level is specified is 'l2'
+            Not used (as of 29May2021)
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -21,7 +22,6 @@ def mms_mec_set_metadata(probe, data_rate, level, suffix=''):
 
     """
     if not isinstance(probe, list): probe = [probe]
-    if not isinstance(level, list): level = [level]
 
     instrument = 'mec'
 

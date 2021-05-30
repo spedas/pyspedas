@@ -37,6 +37,10 @@ def mms_load_fast_segments(trange=None, suffix=''):
     fast_file = download(remote_file='http://www.spedas.org/mms/mms_fast_intervals.sav',
         local_file=save_file)
 
+    if len(fast_file) == 0:
+        logging.error('Error downloading fast intervals sav file')
+        return None
+
     try:
         intervals = readsav(save_file)
     except FileNotFoundError:
@@ -60,6 +64,11 @@ def mms_load_fast_segments(trange=None, suffix=''):
             bar_y.extend([np.nan, 0., 0., np.nan])
 
     vars_created = store_data('mms_bss_fast'+suffix, data={'x': bar_x, 'y': bar_y})
+
+    if vars_created == False:
+        logging.error('Error creating fast segment intervals tplot variable')
+        return None
+
     options('mms_bss_fast'+suffix, 'panel_size', 0.09)
     options('mms_bss_fast'+suffix, 'thick', 20)
     options('mms_bss_fast'+suffix, 'Color', 'green')
