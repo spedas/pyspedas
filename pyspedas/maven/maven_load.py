@@ -2,8 +2,10 @@ from dateutil.parser import parse
 import os
 
 import pytplot
-
-from .download_files_utilities import *
+from .download_files_utilities import set_new_data_root_dir, get_root_data_dir, create_dir_if_needed
+from .download_files_utilities import get_orbit_files, get_filenames, get_new_files, get_file_from_site
+from .download_files_utilities import display_progress
+from .file_regex import kp_regex, l2_regex
 from .orbit_time import orbit_time
 from .maven_kp_to_tplot import maven_kp_to_tplot
 
