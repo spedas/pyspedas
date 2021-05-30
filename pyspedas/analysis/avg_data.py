@@ -9,7 +9,6 @@ Creates a new pytplot variable as the time average of original.
 import numpy as np
 import pyspedas
 import pytplot
-from pytplot import store_data
 
 
 def avg_data(names, dt=None, width=60, noremainder=False,
@@ -153,7 +152,7 @@ def avg_data(names, dt=None, width=60, noremainder=False,
                 new_data.append(nd0)
                 time0 = time1
 
-        store_data(new, data={'x': new_time, 'y': new_data})
+        pytplot.store_data(new, data={'x': new_time, 'y': new_data})
         # copy attributes
         pytplot.data_quants[new].attrs = d.attrs.copy()
 

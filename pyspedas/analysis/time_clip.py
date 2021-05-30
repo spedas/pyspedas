@@ -9,7 +9,6 @@ Similar to tclip.pro in IDL SPEDAS.
 
 import pyspedas
 import pytplot
-from pytplot import data_quants
 
 
 def time_clip(names, time_start, time_end, new_names=None, suffix=None,
@@ -106,7 +105,7 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
                 break
         index_end = found_end
 
-        tmp_q = data_quants[n_names[j]]
+        tmp_q = pytplot.data_quants[n_names[j]]
 
         if 'v1' in tmp_q.coords.keys():
             if len(tmp_q.coords['v1'].values.shape) == 2:
