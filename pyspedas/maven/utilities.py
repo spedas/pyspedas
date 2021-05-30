@@ -411,14 +411,13 @@ def remove_inst_tag(df):
 
 def get_latest_files_from_date_range(date1, date2):
     from datetime import timedelta
-    import datetime
 
     mvn_root_data_dir = utils.get_root_data_dir()
     maven_data_dir = os.path.join(mvn_root_data_dir, 'maven', 'data', 'sci', 'kp', 'insitu')
 
     # Each file starts at midnight, so lets cut off the hours and just pay attention to the days
     date1 = date1.replace(hour=0, minute=0, second=0)
-    date2 = date2.replace(hour=0, minute=0, second=0) + datetime.timedelta(days=1)
+    date2 = date2.replace(hour=0, minute=0, second=0) + timedelta(days=1)
 
     time_spanned = date2 - date1
     num_days = time_spanned.days
@@ -473,14 +472,13 @@ def get_latest_files_from_date_range(date1, date2):
 
 def get_latest_iuvs_files_from_date_range(date1, date2):
     from datetime import timedelta
-    import datetime
 
     mvn_root_data_dir = utils.get_root_data_dir()
     maven_data_dir = os.path.join(mvn_root_data_dir, 'maven', 'data', 'sci', 'kp', 'iuvs')
 
     # Each file starts at midnight, so lets cut off the hours and just pay attention to the days
     date1 = date1.replace(hour=0, minute=0, second=0)
-    date2 = date2.replace(day=date2.day, hour=0, minute=0, second=0) + datetime.timedelta(days=1)
+    date2 = date2.replace(day=date2.day, hour=0, minute=0, second=0) + timedelta(days=1)
 
     time_spanned = date2 - date1
     num_days = time_spanned.days
