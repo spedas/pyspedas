@@ -7,7 +7,7 @@ from scipy.ndimage.interpolation import shift
 try:
     import bottleneck as bn
     nansum = bn.nansum
-except:
+except ImportError:
     nansum = np.nansum
 
 def spd_pgs_make_theta_spec(data_in, resolution=None, colatitude=False):
