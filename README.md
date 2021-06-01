@@ -4,10 +4,10 @@
 [![Coverage Status](https://coveralls.io/repos/github/spedas/pyspedas/badge.svg)](https://coveralls.io/github/spedas/pyspedas)
 [![Version](https://img.shields.io/pypi/v/pyspedas.svg)](https://pypi.org/project/pyspedas/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/spedas/pyspedas.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/spedas/pyspedas/context:python)
-![License](https://img.shields.io/pypi/l/pyspedas.svg)
 ![Status](https://img.shields.io/pypi/status/pyspedas.svg)
+![License](https://img.shields.io/pypi/l/pyspedas.svg)
 
-pySPEDAS is an implementation of the SPEDAS framework in python. 
+pySPEDAS is an implementation of the SPEDAS framework for Python. 
 
 The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org/wiki)) framework is written in IDL and contains data loading, data analysis and data plotting tools for various scientific missions (NASA, NOAA, etc.) and ground magnetometers.   
 
@@ -41,17 +41,52 @@ The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org
 
 Python 3.7+ is required.  
 
-We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a suite of packages useful for scientific data analysis. 
+We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a suite of packages useful for scientific data analysis. Step-by-step instructions for installing Anaconda can be found at: [Windows](https://docs.anaconda.com/anaconda/install/windows/), [macOS](https://docs.anaconda.com/anaconda/install/mac-os/), [Linux](https://docs.anaconda.com/anaconda/install/linux/)
+
+## Virtual Environments
+To avoid potential dependency issues with other Python packages, we suggest creating a virtual environment for pySPEDAS; you can create a virtual environment in your terminal with:
+
+```bash
+python -m venv pyspedas
+```
+
+To enter your virtual environment, run the 'activate' script:
+
+### Windows
+
+```bash
+.\pyspedas\Scripts\activate
+```
+
+### macOS and Linux
+
+```bash
+source pyspedas/bin/activate
+```
 
 ## Installation
 
 pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
 
-### PyPI
+### Install
+
+```bash
+pip install pyspedas
+```
+
+### Upgrade
+
+To upgrade to the latest version of pySPEDAS:
 
 ```bash
 pip install pyspedas --upgrade
 ```
+
+## Local Data Directories
+
+The recommended way of setting your local data directory is to set the `SPEDAS_DATA_DIR` environment variable. `SPEDAS_DATA_DIR` acts as a root data directory for all missions, and will also be used by IDL (if you’re running a recent copy of the bleeding edge).
+
+Mission specific data directories (e.g., `MMS_DATA_DIR` for MMS, `THM_DATA_DIR` for THEMIS) can also be set, and these will override `SPEDAS_DATA_DIR`
 
 ## Usage
 
@@ -110,6 +145,19 @@ help(pyspedas.themis.fgm)
 ```
 
 You can ask questions by creating an issue or by joining the [SPEDAS mailing list](http://spedas.org/mailman/listinfo/spedas-list_spedas.org).
+
+## Using Jupyter notebooks with your virtual environment
+
+To get virtual environments working with Jupyter, in the virtual environment, type:
+
+```bash
+pip install ipykernel
+python -m ipykernel install --user --name pyspedas --display-name "Python (pySPEDAS)"
+```
+
+(note: "pyspedas" is the name of your virtual environment)
+
+Then once you open the notebook, go to "Kernel" then "Change kernel" and select the one named "Python (pySPEDAS)"
 
 ## Contributing
 We welcome contributions to pySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
