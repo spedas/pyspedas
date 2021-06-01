@@ -5,7 +5,7 @@ import numpy as np
 try:
     import bottleneck as bn
     nanmean = bn.nanmean
-except:
+except ImportError:
     nanmean = np.nanmean
 
 def spd_pgs_make_e_spec(data_in):
