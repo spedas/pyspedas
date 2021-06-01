@@ -64,6 +64,19 @@ To enter your virtual environment, run the 'activate' script:
 source pyspedas/bin/activate
 ```
 
+### Using Jupyter notebooks with your virtual environment
+
+To get virtual environments working with Jupyter, in the virtual environment, type:
+
+```bash
+pip install ipykernel
+python -m ipykernel install --user --name pyspedas --display-name "Python (pySPEDAS)"
+```
+
+(note: "pyspedas" is the name of your virtual environment)
+
+Then once you open the notebook, go to "Kernel" then "Change kernel" and select the one named "Python (pySPEDAS)"
+
 ## Installation
 
 pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
@@ -145,19 +158,6 @@ help(pyspedas.themis.fgm)
 ```
 
 You can ask questions by creating an issue or by joining the [SPEDAS mailing list](http://spedas.org/mailman/listinfo/spedas-list_spedas.org).
-
-## Using Jupyter notebooks with your virtual environment
-
-To get virtual environments working with Jupyter, in the virtual environment, type:
-
-```bash
-pip install ipykernel
-python -m ipykernel install --user --name pyspedas --display-name "Python (pySPEDAS)"
-```
-
-(note: "pyspedas" is the name of your virtual environment)
-
-Then once you open the notebook, go to "Kernel" then "Change kernel" and select the one named "Python (pySPEDAS)"
 
 ## Contributing
 We welcome contributions to pySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
