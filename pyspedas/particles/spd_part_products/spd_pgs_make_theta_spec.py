@@ -16,7 +16,6 @@ def spd_pgs_make_theta_spec(data_in, resolution=None, colatitude=False):
     """
 
     dr = math.pi/180.
-    rd = 1.0/dr
 
     data = data_in.copy()
 
@@ -41,7 +40,6 @@ def spd_pgs_make_theta_spec(data_in, resolution=None, colatitude=False):
 
     # init this sample's piece of the spectrogram
     ave = np.zeros(n_theta)
-    ave_s = np.zeros(n_theta)
 
     theta_min = data['theta'] - 0.5*data['dtheta']
     theta_max = data['theta'] + 0.5*data['dtheta']

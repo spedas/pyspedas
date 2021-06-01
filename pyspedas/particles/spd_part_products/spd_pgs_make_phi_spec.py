@@ -35,7 +35,6 @@ def spd_pgs_make_phi_spec(data_in, resolution=None):
 
     # init this sample's piece of the spectrogram
     ave = np.zeros(n_phi)
-    ave_s = np.zeros(n_phi)
 
     # form grid specifying the spectrogram's phi bins
     phi_grid = np.linspace(0, 360.0, n_phi+1)
