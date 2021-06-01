@@ -2,7 +2,7 @@ import logging
 import numpy as np
 from time import time
 
-from pytplot import get_data, store_data, options
+from pytplot import get_data
 
 from pyspedas.particles.spd_part_products.spd_pgs_make_theta_spec import spd_pgs_make_theta_spec
 from pyspedas.particles.spd_part_products.spd_pgs_make_phi_spec import spd_pgs_make_phi_spec
