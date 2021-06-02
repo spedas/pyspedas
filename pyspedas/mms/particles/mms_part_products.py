@@ -1,6 +1,5 @@
 import logging
 import numpy as np
-from time import time
 
 from pytplot import get_data
 
