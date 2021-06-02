@@ -19,7 +19,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
 
     if trange is None:
         # test data for development
-        # trange = ['2015-10-16/13:06', '2015-10-16/13:07']
+        trange = ['2015-10-16/13:06', '2015-10-16/13:07']
         # data_rate = 'brst'
     
     data_vars = pyspedas.mms.fpi(datatype='d'+species+'s-dist', probe=probe, data_rate=data_rate, trange=trange, time_clip=True)
