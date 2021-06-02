@@ -8,7 +8,7 @@ def spd_pgs_limit_range(data, phi=None, theta=None, energy=None):
     """
 
     # if no limits are set, return the input data
-    if energy == None and theta == None and phi == None:
+    if energy is None and theta is None and phi is None:
         return data
 
     # apply the phi limits
