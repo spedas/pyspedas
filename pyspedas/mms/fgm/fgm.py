@@ -2,6 +2,7 @@
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from pyspedas.mms.fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
+from pyspedas.mms.fgm.mms_split_fgm_data import mms_split_fgm_data
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
@@ -14,7 +15,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     level='l2', instrument='fgm', datatype='', varformat=None, varnames=[], suffix='',
     keep_flagged=False, get_support_data=True, time_clip=False, no_update=False,
     available=False, notplot=False, latest_version=False, major_version=False, 
-    min_version=None, cdf_version=None, spdf=False, always_prompt=False):
+    min_version=None, cdf_version=None, spdf=False, always_prompt=False, no_split_vars=False):
     """
     This function loads FGM data into tplot variables
     
@@ -111,6 +112,10 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     if tvars is None or available or notplot or CONFIG['download_only']:
         return tvars
 
+    if not isinstance(probe, list): probe = [probe]
+    if not isinstance(data_rate, list): data_rate = [data_rate]
+    if not isinstance(level, list): level = [level]
+
     # the probes will need to be strings beyond this point
     if isinstance(probe, list):
         probe = [str(p) for p in probe]
@@ -125,6 +130,13 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             for tvar in tvars_to_delete:
                 del_data(tvar)
                 tvars.remove(tvar)
+
+    if not no_split_vars:
+        for prb in probe:
+            for drate in data_rate:
+                for lvl in level:
+                    out = mms_split_fgm_data(prb, drate, lvl, instrument, suffix=suffix)
+                    tvars.extend(out)
 
     mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=suffix)
 
