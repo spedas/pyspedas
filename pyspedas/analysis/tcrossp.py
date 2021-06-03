@@ -1,6 +1,6 @@
 
 import numpy as np
-from pytplot import get_data
+from pytplot import get_data, store_data
 
 def tcrossp(v1, v2, newname=None, return_data=False):
     """
