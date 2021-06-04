@@ -7,6 +7,9 @@ def tcrossp(v1, v2, newname=None, return_data=False):
 
     """
 
+    v1_data = None
+    v2_data = None
+
     if not isinstance(v1, np.ndarray) and isinstance(v1, str):
         v1_data = get_data(v1)
         v1_name = v1
@@ -33,10 +36,18 @@ def tcrossp(v1, v2, newname=None, return_data=False):
     if newname is None:
         newname = v1_name + '_cross_' + v2_name
 
-    cp = np.cross(v1_data, v2_data)
+    cp = np.cross(data1, data2)
 
     if return_data:
         return cp
     else:
-        store_data(newname, data={'x': v2_data[0], 'y': cp})
+        out = cp
+        if v2_data is None:
+            if len(cp.shape) == 1:
+                out = np.atleast_2d(cp)
+            times = np.zeros(out.shape[0])
+        else:
+            times = v2_data[0]
+        store_data(newname, data={'x': times, 'y': out})
+        return newname
 
