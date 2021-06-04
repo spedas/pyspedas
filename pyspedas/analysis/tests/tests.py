@@ -5,6 +5,8 @@ from pyspedas.analysis.tsmooth import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
                       yclip, time_clip, deriv_data, tdeflag, clean_spikes,
                       tinterpol)
+from pyspedas.analysis.tcrossp import tcrossp
+from pyspedas.analysis.tnormalize import tnormalize
 from pytplot import get_data, store_data, replace_data
 
 import numpy as np
@@ -21,6 +23,31 @@ class BaseTestCase(unittest.TestCase):
 
 class AnalysisTestCases(BaseTestCase):
     """Test functions under analysis folder."""
+    def test_tcrossp(self):
+        """ cross product tests"""
+        cp = tcrossp([3, -3, 1], [4, 9, 2], return_data=True)
+        self.assertTrue(cp.tolist() == [-15, -2, 39])
+        cp = tcrossp([3, -3, 1], [4, 9, 2])
+        cp = get_data(cp)
+        self.assertTrue(cp.y[0, :].tolist() == [-15, -2, 39])
+        store_data('var1', data={'x': [0], 'y': [[3, -3, 1]]})
+        store_data('var2', data={'x': [0], 'y': [[4, 9, 2]]})
+        cp = tcrossp('var1', 'var2', return_data=True)
+        self.assertTrue(cp[0].tolist() == [-15, -2, 39])
+        cp = tcrossp('var1', 'var2', newname='test_crossp')
+        cp = get_data('test_crossp')
+        self.assertTrue(cp.y[0, :].tolist() == [-15, -2, 39])
+
+    def test_tnormalize(self):
+        """ tests for normalizing tplot variables"""
+        store_data('test_tnormalize', data={'x': [1, 2, 3, 4, 5], 'y': [[3, 2, 1], [1, 2, 3], [10, 5, 1], [8, 10, 14], [70, 20, 10]]})
+        norm = tnormalize('test_tnormalize')
+        normalized_data = get_data(norm)
+        self.assertTrue(np.round(normalized_data.y[0, :], 4).tolist() == [0.8018, 0.5345, 0.2673])
+        self.assertTrue(np.round(normalized_data.y[1, :], 4).tolist() == [0.2673, 0.5345, 0.8018])
+        self.assertTrue(np.round(normalized_data.y[2, :], 4).tolist() == [0.8909, 0.4454, 0.0891])
+        self.assertTrue(np.round(normalized_data.y[3, :], 4).tolist() == [0.4216, 0.527, 0.7379])
+        self.assertTrue(np.round(normalized_data.y[4, :], 4).tolist() == [0.9526, 0.2722, 0.1361])
 
     def test_subtract_median(self):
         """Test subtract_median."""
