@@ -12,6 +12,22 @@ except ImportError:
 
 def spd_pgs_make_theta_spec(data_in, resolution=None, colatitude=False):
     """
+    Builds theta (latitudinal) spectrogram from simplified particle data structure.
+
+    Input:
+        data_in: dict
+            Particle data structure
+
+    Parameters:
+        resolution: int
+            Number of theta points to include in the output
+
+        colatitude: bool
+            Flag to specify that data is in co-latitude (0, 180); if this is 
+            set to False (default), the data are assumed to be (-90, 90)
+
+    Returns:
+        Tuple containing: (theta values for y-axis, spectrogram values)
 
     """
 

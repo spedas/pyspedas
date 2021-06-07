@@ -6,6 +6,23 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def spd_pgs_progress_update(last_update_time=None, current_sample=None, total_samples=None, type_string=None):
     """
+    Helper routine prints status message indicating completion percent
+
+    Parameters:
+        last_update_time: float
+            Last time the status message was printed (unix time)
+    
+        current_sample: int
+            Current sample #
+
+        total_samples: int
+            Total number of samples
+
+        type_string: str
+            Usually the variable name (defaults to 'Data')
+
+    Returns:
+        float containing the last update time
 
     """
 

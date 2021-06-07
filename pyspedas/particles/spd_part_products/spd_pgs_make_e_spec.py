@@ -10,6 +10,14 @@ except ImportError:
 
 def spd_pgs_make_e_spec(data_in):
     """
+    Builds energy spectrogram from the particle data structure
+    
+    Input:
+        data_in: dict
+            Particle data structure
+
+    Returns:
+        Tuple containing: (energy values for the y-axis, spectrogram values)
 
     """
 
