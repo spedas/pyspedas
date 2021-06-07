@@ -28,9 +28,9 @@ def moments_3d_omega_weights(theta, phi, dtheta, dphi):
     ict = sth2 - sth1
     icp = sph2 - sph1
     isp = -cph2 + cph1
-    is2p = dph/2.0*np.pi/180.0 - sph2*cph2/2.0 + sph1*cph1/2.0
-    ic2p = dph/2.0*np.pi/180.0 + sph2*cph2/2.0 - sph1*cph1/2.0
-    ic2t = dth/2.0*np.pi/180.0 + sth2*cth2/2.0 - sth1*cth1/2.0
+    is2p = dphi/2.0*np.pi/180.0 - sph2*cph2/2.0 + sph1*cph1/2.0
+    ic2p = dphi/2.0*np.pi/180.0 + sph2*cph2/2.0 - sph1*cph1/2.0
+    ic2t = dtheta/2.0*np.pi/180.0 + sth2*cth2/2.0 - sth1*cth1/2.0
     ic3t = sth2 - sth1 - (sth2**3 - sth1**3)/3.0
     ictst = (sth2**2 - sth1**2)/2.0
     icts2t = (sth2**3 - sth1**3)/3.0
