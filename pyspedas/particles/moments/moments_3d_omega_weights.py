@@ -38,7 +38,6 @@ def moments_3d_omega_weights(theta, phi, dtheta, dphi):
     icpsp = (sph2**2 - sph1**2)/2.0
 
     omega[0, :, :, :] = ict*ip
-    omega[1, :, :, :] = 
     omega[1, :, :, :] = ic2t*icp
     omega[2, :, :, :] = ic2t*isp
     omega[3, :, :, :] = ictst*ip
