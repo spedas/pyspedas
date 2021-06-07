@@ -47,13 +47,14 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     out_vars = []
 
     for prb in probe:
-        mag_name = 'mms'+prb+'_fgm_b_gse_'+mag_data_rate+'_l2_bvec'
-        pos_name = 'mms'+prb+'_mec_r_gse'
+        prb_str = str(prb)
+        mag_name = 'mms'+prb_str+'_fgm_b_gse_'+mag_data_rate+'_l2_bvec'
+        pos_name = 'mms'+prb_str+'_mec_r_gse'
 
         if instrument == 'fpi':
-            tname = 'mms'+str(prb)+'_d'+species+'s_dist_'+data_rate
+            tname = 'mms'+prb_str+'_d'+species+'s_dist_'+data_rate
 
-        new_vars = mms_part_products(tname, species=species, instrument=instrument, probe=probe, data_rate=data_rate,
+        new_vars = mms_part_products(tname, species=species, instrument=instrument, probe=prb, data_rate=data_rate,
                           output=output, units=units, energy=energy, phi=phi, theta=theta, pitch=pitch, gyro=gyro,
                           mag_name=mag_name, pos_name=pos_name, fac_type=fac_type)
         out_vars = out_vars + new_vars
