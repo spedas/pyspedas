@@ -10,6 +10,8 @@ from pyspedas.particles.spd_part_products.spd_pgs_make_tplot import spd_pgs_make
 from pyspedas.particles.spd_part_products.spd_pgs_limit_range import spd_pgs_limit_range
 from pyspedas.particles.spd_part_products.spd_pgs_progress_update import spd_pgs_progress_update
 from pyspedas.particles.spd_part_products.spd_pgs_do_fac import spd_pgs_do_fac
+from pyspedas.particles.moments.spd_pgs_moments import spd_pgs_moments
+from pyspedas.particles.moments.spd_pgs_moments_tplot import spd_pgs_moments_tplot
 
 from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
 from pyspedas.mms.particles.mms_convert_flux_units import mms_convert_flux_units
@@ -39,18 +41,6 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
     if isinstance(output, str):
         output = output.split(' ')
 
-    dist_in = mms_get_fpi_dist(in_tvarname, species=species, probe=probe, data_rate=data_rate)
-    out_energy = np.zeros((dist_in['n_times'], dist_in['n_energy']))
-    out_energy_y = np.zeros((dist_in['n_times'], dist_in['n_energy']))
-    out_theta = np.zeros((dist_in['n_times'], dist_in['n_theta']))
-    out_phi = np.zeros((dist_in['n_times'], dist_in['n_phi']))
-    out_theta_y = np.zeros((dist_in['n_times'], dist_in['n_theta']))
-    out_phi_y = np.zeros((dist_in['n_times'], dist_in['n_phi']))
-    out_pad = np.zeros((dist_in['n_times'], dist_in['n_theta']))
-    out_pad_y = np.zeros((dist_in['n_times'], dist_in['n_theta']))
-    out_gyro = np.zeros((dist_in['n_times'], dist_in['n_phi']))
-    out_gyro_y = np.zeros((dist_in['n_times'], dist_in['n_phi']))
-
     # create rotation matrix to field aligned coordinates if needed
     fac_outputs = ['pa', 'gyro', 'fac_energy', 'fac_moments']
     fac_requested = len(set(output).intersection(fac_outputs)) > 0
@@ -60,6 +50,30 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         if fac_matrix is None:
             # problem creating the FAC matrices
             fac_requested = False
+
+    dist_in = mms_get_fpi_dist(in_tvarname, species=species, probe=probe, data_rate=data_rate)
+    out_energy = np.zeros((dist_in['n_times'], dist_in['n_energy']))
+    out_energy_y = np.zeros((dist_in['n_times'], dist_in['n_energy']))
+    out_theta = np.zeros((dist_in['n_times'], dist_in['n_theta']))
+    out_phi = np.zeros((dist_in['n_times'], dist_in['n_phi']))
+    out_theta_y = np.zeros((dist_in['n_times'], dist_in['n_theta']))
+    out_phi_y = np.zeros((dist_in['n_times'], dist_in['n_phi']))
+    if fac_requested:
+        out_pad = np.zeros((dist_in['n_times'], dist_in['n_theta']))
+        out_pad_y = np.zeros((dist_in['n_times'], dist_in['n_theta']))
+        out_gyro = np.zeros((dist_in['n_times'], dist_in['n_phi']))
+        out_gyro_y = np.zeros((dist_in['n_times'], dist_in['n_phi']))
+
+    # moments
+    if 'moments' in output:
+        out_density = np.zeros(dist_in['n_times'])
+        out_avgtemp = np.zeros(dist_in['n_times'])
+        out_vthermal = np.zeros(dist_in['n_times'])
+        out_flux = np.zeros([dist_in['n_times'], 3])
+        out_velocity = np.zeros([dist_in['n_times'], 3])
+        out_mftens = np.zeros([dist_in['n_times'], 6])
+        out_ptens = np.zeros([dist_in['n_times'], 6])
+        #out_ttens = np.zeros([dist_in['n_times'], 3, 3])
 
     out_vars = []
     last_update_time = None
@@ -90,6 +104,17 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         if 'phi' in output:
             out_phi_y[i, :], out_phi[i, :] = spd_pgs_make_phi_spec(clean_data)
 
+        # Calculate the moments
+        if 'moments' in output:
+            moments = spd_pgs_moments(clean_data, sc_pot=0)
+            out_density[i] = moments['density']
+            out_avgtemp[i] = moments['avgtemp']
+            out_vthermal[i] = moments['vthermal']
+            out_flux[i, :] = moments['flux']
+            out_velocity[i, :] = moments['velocity']
+            out_mftens[i, :] = moments['mftens']
+            out_ptens[i, :] = moments['ptens']
+
         # Perform transformation to FAC, regrid data, and apply limits in new coords
         if fac_requested:
             fac_data = spd_pgs_do_fac(clean_data, fac_matrix[i, :, :])
@@ -103,6 +128,18 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         if 'gyro' in output:
             out_gyro_y[i, :], out_gyro[i, :] = spd_pgs_make_phi_spec(fac_data, resolution=dist_in['n_phi'])
 
+
+    if 'moments' in output:
+        # put all of the moments arrays into a hash table prior to passing to the tplot routine
+        moments = {'density': out_density, 
+              'flux': out_flux, 
+              'mftens': out_mftens, 
+              'velocity': out_velocity, 
+              'ptens': out_ptens,
+              'vthermal': out_vthermal,
+              'avgtemp': out_avgtemp}
+        moments_vars = spd_pgs_moments_tplot(moments, x=data_in.times, prefix=in_tvarname)
+        out_vars.extend(moments_vars)
 
     if 'energy' in output:
         spd_pgs_make_tplot(in_tvarname+'_energy', x=data_in.times, y=out_energy_y, z=out_energy, units=units, ylog=True)

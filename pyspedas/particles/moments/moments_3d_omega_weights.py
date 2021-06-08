@@ -6,7 +6,7 @@ def moments_3d_omega_weights(theta, phi, dtheta, dphi):
 
     """
 
-    omega = np.zeros([13, theta.shape[1], theta.shape[0]])
+    omega = np.zeros([13, theta.shape[0], theta.shape[1]])
 
     # Angular moment integrals
     ph2 = phi + dphi/2.0
@@ -37,18 +37,18 @@ def moments_3d_omega_weights(theta, phi, dtheta, dphi):
     ic2tst = (-cth2**3 + cth1**3)/3.0
     icpsp = (sph2**2 - sph1**2)/2.0
 
-    omega[0, :, :, :] = ict*ip
-    omega[1, :, :, :] = ic2t*icp
-    omega[2, :, :, :] = ic2t*isp
-    omega[3, :, :, :] = ictst*ip
-    omega[4, :, :, :] = ic3t*ic2p
-    omega[5, :, :, :] = ic3t*is2p
-    omega[6, :, :, :] = icts2t*ip
-    omega[7, :, :, :] = ic3t*icpsp
-    omega[8, :, :, :] = ic2tst*icp
-    omega[9, :, :, :] = ic2tst*isp
-    omega[10, :, :, :] = omega[1, :, :, :]
-    omega[11, :, :, :] = omega[2, :, :, :]
-    omega[12, :, :, :] = omega[3, :, :, :]
+    omega[0, :, :] = ict*ip
+    omega[1, :, :] = ic2t*icp
+    omega[2, :, :] = ic2t*isp
+    omega[3, :, :] = ictst*ip
+    omega[4, :, :] = ic3t*ic2p
+    omega[5, :, :] = ic3t*is2p
+    omega[6, :, :] = icts2t*ip
+    omega[7, :, :] = ic3t*icpsp
+    omega[8, :, :] = ic2tst*icp
+    omega[9, :, :] = ic2tst*isp
+    omega[10, :, :] = omega[1, :, :]
+    omega[11, :, :] = omega[2, :, :]
+    omega[12, :, :] = omega[3, :, :]
 
     return omega
