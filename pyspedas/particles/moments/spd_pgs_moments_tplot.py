@@ -1,5 +1,9 @@
 
+import logging
 from pytplot import store_data, options
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def spd_pgs_moments_tplot(moments, x=None, prefix='', suffix=''):
     """
