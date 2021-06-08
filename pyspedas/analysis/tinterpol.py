@@ -8,8 +8,6 @@ Similar to tinterpol.pro in IDL SPEDAS.
 
 """
 
-import numpy as np
-
 from pyspedas import tnames
 from pytplot import get_data, store_data
 

@@ -1,6 +1,4 @@
 
-import numpy as np
-
 def spd_pgs_limit_range(data, phi=None, theta=None, energy=None):
     """
     Applies phi, theta, and energy limits to data structure(s) by
@@ -11,13 +9,13 @@ def spd_pgs_limit_range(data, phi=None, theta=None, energy=None):
             Particle data structure
 
     Parameters:
-        phi: list
+        phi: np.ndarray
             Minimum and maximum values for phi
 
-        theta: list
+        theta: np.ndarray
             Minimum and maximum values for theta
 
-        energy: list
+        energy: np.ndarray
             Minimum and maximum values for energy
 
     Returns:
