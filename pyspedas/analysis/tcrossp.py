@@ -15,7 +15,6 @@ def tcrossp(v1, v2, newname=None, return_data=False):
         v1_name = v1
 
         if v1_data is not None:
-            time1 = v1_data[0]
             data1 = v1_data[1]
     else:
         v1_name = 'var1'
@@ -27,7 +26,6 @@ def tcrossp(v1, v2, newname=None, return_data=False):
         v2_name = v2
 
         if v2_data is not None:
-            time2 = v2_data[0]
             data2 = v2_data[1]
     else:
         v2_name = 'var2'
