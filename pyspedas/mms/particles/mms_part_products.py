@@ -14,6 +14,7 @@ from pyspedas.particles.moments.spd_pgs_moments import spd_pgs_moments
 from pyspedas.particles.moments.spd_pgs_moments_tplot import spd_pgs_moments_tplot
 
 from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
+from pyspedas.mms.hpca.mms_get_hpca_dist import mms_get_hpca_dist
 from pyspedas.mms.particles.mms_convert_flux_units import mms_convert_flux_units
 from pyspedas.mms.particles.mms_pgs_clean_data import mms_pgs_clean_data
 from pyspedas.mms.particles.mms_pgs_make_fac import mms_pgs_make_fac
@@ -51,7 +52,14 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
             # problem creating the FAC matrices
             fac_requested = False
 
-    dist_in = mms_get_fpi_dist(in_tvarname, species=species, probe=probe, data_rate=data_rate)
+    if instrument == 'fpi':
+        dist_in = mms_get_fpi_dist(in_tvarname, species=species, probe=probe, data_rate=data_rate)
+    elif instrument == 'hpca':
+        dist_in = mms_get_hpca_dist(in_tvarname, species=species, probe=probe, data_rate=data_rate)
+    else:
+        logging.error('Error, unknown instrument: ' + instrument + '; valid options: fpi, hpca')
+        return
+
     out_energy = np.zeros((dist_in['n_times'], dist_in['n_energy']))
     out_energy_y = np.zeros((dist_in['n_times'], dist_in['n_energy']))
     out_theta = np.zeros((dist_in['n_times'], dist_in['n_theta']))
@@ -82,7 +90,10 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
     for i in range(0, ntimes):
         last_update_time = spd_pgs_progress_update(last_update_time=last_update_time, current_sample=i, total_samples=ntimes, type_string=in_tvarname)
 
-        dist_in = mms_get_fpi_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
+        if instrument == 'fpi':
+            dist_in = mms_get_fpi_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
+        elif instrument == 'hpca':
+            dist_in = mms_get_hpca_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
 
         data = mms_convert_flux_units(dist_in, units=units)
 

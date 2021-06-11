@@ -1,9 +1,13 @@
 
 import logging
+import re
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.hpca.mms_hpca_set_metadata import mms_hpca_set_metadata
+from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
+
+from pytplot import get_data, store_data
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
@@ -132,7 +136,6 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                 logging.warning("Unknown datatype: " + datatype + "for L2 HPCA data; expected 'ion' or 'moments', loading 'ion'")
                 datatype = 'ion'
 
-
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='hpca',
             datatype=datatype, varformat=varformat, varnames=varnames, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, center_measurement=center_measurement, available=available, 
@@ -143,4 +146,34 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         return tvars
 
     mms_hpca_set_metadata(probe=probe, suffix=suffix)
+
+    if not isinstance(datatype, list):
+        datatype = [datatype]
+    if not isinstance(probe, list):
+        probe = [probe]
+
+    # Replace supplementary fields in 3D distribution variables with actual
+    # values from supplementary tplot variables (theta).
+    for dtype in datatype:
+        if dtype == 'moments':
+            continue
+
+        for prb in probe:
+            prb = str(prb)
+            for tvar in tvars:
+                df_var = re.search('^mms'+prb+'_hpca_[^_]+plus(_(phase_space_density|count_rate|flux)| ?)'+suffix+'$', tvar)
+                if df_var:
+                    df_data = get_data(tvar)
+                    df_metadata = get_data(tvar, metadata=True)
+                    theta_data = get_data('mms' + prb + '_hpca_centroid_elevation_angle' + suffix)
+
+                    if theta_data is None:
+                        info = mms_get_hpca_info()
+                        theta = info['elevation']
+                    else:
+                        theta = theta_data
+
+                    store_data(tvar, data={'x': df_data.times, 'y': df_data.y, 'v1': theta, 'v2': df_data.v2}, attr_dict=df_metadata)
+
+
     return tvars

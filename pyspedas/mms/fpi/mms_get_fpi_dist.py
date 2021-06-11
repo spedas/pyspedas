@@ -9,6 +9,11 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
     """
 
     data_in = get_data(tname)
+
+    if data_in is None:
+        logging.error('Problem extracting the FPI distribution data.')
+        return
+        
     data = [0, 0, 0, 0, 0]
 
     if index != None:
