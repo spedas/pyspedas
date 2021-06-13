@@ -85,7 +85,13 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
 
     out_vars = []
     last_update_time = None
-    ntimes = len(data_in.times)
+
+    if instrument == 'hpca':
+        data_times = mms_get_hpca_dist(in_tvarname, species=species, probe=probe, data_rate=data_rate, times=True)
+    else:
+        data_times = data_in.times
+
+    ntimes = len(data_times)
 
     for i in range(0, ntimes):
         last_update_time = spd_pgs_progress_update(last_update_time=last_update_time, current_sample=i, total_samples=ntimes, type_string=in_tvarname)
@@ -109,11 +115,11 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
 
         # Build theta spectrogram
         if 'theta' in output:
-            out_theta_y[i, :], out_theta[i, :] = spd_pgs_make_theta_spec(clean_data)
+            out_theta_y[i, :], out_theta[i, :] = spd_pgs_make_theta_spec(clean_data, resolution=dist_in['n_theta'])
 
         # Build phi spectrogram
         if 'phi' in output:
-            out_phi_y[i, :], out_phi[i, :] = spd_pgs_make_phi_spec(clean_data)
+            out_phi_y[i, :], out_phi[i, :] = spd_pgs_make_phi_spec(clean_data, resolution=dist_in['n_phi'])
 
         # Calculate the moments
         if 'moments' in output:
@@ -149,27 +155,27 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
               'ptens': out_ptens,
               'vthermal': out_vthermal,
               'avgtemp': out_avgtemp}
-        moments_vars = spd_pgs_moments_tplot(moments, x=data_in.times, prefix=in_tvarname)
+        moments_vars = spd_pgs_moments_tplot(moments, x=data_times, prefix=in_tvarname)
         out_vars.extend(moments_vars)
 
     if 'energy' in output:
-        spd_pgs_make_tplot(in_tvarname+'_energy', x=data_in.times, y=out_energy_y, z=out_energy, units=units, ylog=True)
+        spd_pgs_make_tplot(in_tvarname+'_energy', x=data_times, y=out_energy_y, z=out_energy, units=units, ylog=True)
         out_vars.append(in_tvarname+'_energy')
 
     if 'theta' in output:
-        spd_pgs_make_tplot(in_tvarname+'_theta', x=data_in.times, y=out_theta_y, z=out_theta, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_theta', x=data_times, y=out_theta_y, z=out_theta, units=units)
         out_vars.append(in_tvarname+'_theta')
 
     if 'phi' in output:
-        spd_pgs_make_tplot(in_tvarname+'_phi', x=data_in.times, y=out_phi_y, z=out_phi, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_phi', x=data_times, y=out_phi_y, z=out_phi, units=units)
         out_vars.append(in_tvarname+'_phi')
 
     if 'pa' in output:
-        spd_pgs_make_tplot(in_tvarname+'_pa', x=data_in.times, y=out_pad_y, z=out_pad, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_pa', x=data_times, y=out_pad_y, z=out_pad, units=units)
         out_vars.append(in_tvarname+'_pa')
 
     if 'gyro' in output:
-        spd_pgs_make_tplot(in_tvarname+'_gyro', x=data_in.times, y=out_gyro_y, z=out_gyro, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_gyro', x=data_times, y=out_gyro_y, z=out_gyro, units=units)
         out_vars.append(in_tvarname+'_gyro')
 
     return out_vars

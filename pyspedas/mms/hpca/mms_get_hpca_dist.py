@@ -7,7 +7,7 @@ from pytplot import get_data
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=None, units=None):
+def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=None, units=None, times=False):
     """
 
     """
@@ -43,7 +43,6 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
         logging.error('Azimuth data does not cover current data\'s time range')
         return
 
-    data_idx = data_idx[full].flatten()
 
     # filter times when azimuth data is all zero
     #   -just check the first energy & elevation
@@ -55,10 +54,17 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
         # should check to see if all azimuths are 0 (and if not, use the valid ones)
 
     if index is not None:
+        if index >= full.size:
+            logging.error('Error, index greater than data size')
+            return
         full = full[index]
-        n_full = len(full)
 
     full = full.squeeze()
+
+    data_idx = data_idx[full].flatten()
+
+    if times:
+        return time_data[full]
 
     # Initialize energies, angles, and support data
     # ------------------------
@@ -90,6 +96,7 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
            'spacecraft': probe, 
            'species': species,
            'charge': charge,
+           'units_name': 'df_cm',
            'mass': mass}
 
     out_bins = np.zeros(dim) + 1
@@ -114,29 +121,38 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
     
     # get azimuth 
     #  -shift from time-azimuth-elevation-energy to time-energy-azimuth-elevation
-    try:
-        out_phi = azimuth.y[full, :, :, :].transpose([0, 3, 2, 1])
-    except ValueError:
-        out_phi = azimuth.y[full, :, :, :].transpose([2, 1, 0])
+    out_phi = azimuth.y[full, :, :, :]
+
+    if len(out_phi.shape) == 4:
+        out_phi = out_phi.transpose([0, 3, 1, 2])
+    elif len(out_phi.shape) == 3:
+        out_phi = out_phi.transpose([2, 0, 1])
+    
     phi_len = azimuth_dim[1]
 
     # get dphi
     #  -use median distance between subsequent phi measurements within each distribution
     #   (median is used to discard large differences across 0=360)
     #  -preserve dimensionality in case differences arise across energy or elevation
-    out_dphi = np.median(azimuth.y[full, 1:, :, :] - azimuth.y[full, :-1, :, :], axis=1)
-    try:
+    
+    if len(out_phi.shape) == 4:
+        out_dphi = np.median(azimuth.y[full, 1:, :, :] - azimuth.y[full, :-1, :, :], axis=1)
         out_dphi = out_dphi.transpose([0, 2, 1])
-    except ValueError:
-        breakpoint()
+    elif len(out_phi.shape) == 3:
+        out_dphi = np.median(azimuth.y[full, 1:, :, :] - azimuth.y[full, :-1, :, :], axis=0)
+        out_dphi = out_dphi.transpose([1, 0])
 
-    dphi_reform = np.reshape(out_dphi, [len(full), energy_len, theta_len, 1])
-    out_dphi = np.repeat(dphi_reform, phi_len, axis=3)
+    if len(out_phi.shape) == 4:
+        dphi_reform = np.reshape(out_dphi, [full.size, energy_len, theta_len, 1])
+        out_dphi = np.repeat(dphi_reform, phi_len, axis=3)
+    elif len(out_phi.shape) == 3:
+        dphi_reform = np.reshape(out_dphi, [energy_len, theta_len, 1])
+        out_dphi = np.repeat(dphi_reform, phi_len, axis=2)
 
-    out_data = np.zeros((len(full), dim[0], dim[1], dim[2]))
+    out_data = np.zeros((full.size, dim[0], dim[1], dim[2]))
 
     # copy particle data
-    for i in range(len(full)):
+    for i in range(full.size):
         # need to extract the data from the center of the half-spin
         if data_idx[i]-n_times/2.0 < 0:
             start_idx = 0
@@ -148,8 +164,7 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
         else:
             end_idx = int(data_idx[i]+n_times/2.)
 
-        out_data[i, :, :, :] = data_in.y[start_idx:end_idx, :, :].transpose([2, 1, 0])
-
+        out_data[i, :, :, :] = data_in.y[start_idx:end_idx, :, :].transpose([2, 0, 1])
 
     out['data'] = out_data
     out['bins'] = out_bins
@@ -162,7 +177,7 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
     out['n_energy'] = energy_len
     out['n_theta'] = theta_len
     out['n_phi'] = phi_len
-    out['n_times'] = len(full)
+    out['n_times'] = full.size
 
     return out
 
