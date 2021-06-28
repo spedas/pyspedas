@@ -1,31 +1,27 @@
-
 """
-cdaweb.py
-
-Gets information from CDAWeb using cdasws.
+Get information and download files from CDAWeb using cdasws.
 
 For cdasws documentation, see:
-    https://test.pypi.org/project/cdasws/
+    https://pypi.org/project/cdasws/
     https://cdaweb.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
 
-@author: nikos
 """
 import os
 import re
 from cdasws import CdasWs
-import pytplot
+from pytplot import cdf_to_tplot
 from pyspedas.utilities.download import download
 
+
 class CDAWeb():
-    """ Class for loading data from CDA web
-    """
+    """Class for loading data from CDA web."""
 
     def __init__(self):
+        """Initialize."""
         self.cdas = CdasWs()
 
     def get_observatories(self):
-        """ Returns a list of missions.
-        """
+        """Return a list of missions."""
         observatories = self.cdas.get_observatory_groups()
         onames = []
         for mission in observatories:
@@ -35,8 +31,7 @@ class CDAWeb():
         return onames
 
     def get_instruments(self):
-        """ Returns a list of instrument types.
-        """
+        """Return a list of instrument types."""
         instruments = self.cdas.get_instrument_types()
         inames = []
         for instrument in instruments:
@@ -46,14 +41,14 @@ class CDAWeb():
         return inames
 
     def clean_time_str(self, t):
-        """ Removes the time part from datetime variable.
-        """
+        """Remove the time part from datetime variable."""
         t0 = re.sub('T.+Z', '', t)
         return t0
 
     def get_datasets(self, mission_list, instrument_list):
-        """ Returns a list of datasets given the missions and instruments.
-            Example: get_datasets(['ARTEMIS'],['Electric Fields (space)'])
+        """Return a list of datasets given the missions and instruments.
+
+        Example: get_datasets(['ARTEMIS'],['Electric Fields (space)'])
         """
         thisdict = {
             "observatoryGroup": mission_list,
@@ -74,8 +69,9 @@ class CDAWeb():
         return dnames
 
     def get_filenames(self, dataset_list, t0, t1):
-        """ Returns a list of urls for a dataset between dates t0 and t1.
-            Example: get_files(['THB_L2_FIT (2007-02-26 to 2020-01-17)'],
+        """Return a list of urls for a dataset between dates t0 and t1.
+
+        Example: get_files(['THB_L2_FIT (2007-02-26 to 2020-01-17)'],
             '2010-01-01 00:00:00', '2010-01-10 00:00:00')
         """
         remote_url = []
@@ -104,12 +100,12 @@ class CDAWeb():
         return remote_url
 
     def download(self, remote_files, local_dir, download_only=False,
-                 varformat=None, get_support_data=False, prefix='', suffix=''):
-        """ Download cdf files.
-            Load cdf files into pytplot variables.
-            TODO: Loading files into pytplot sometimes does not work.
-        """
+                 varformat=None, get_support_data=False, prefix='', suffix='',
+                 varnames=[], notplot=False):
+        """Download cdf files.
 
+        Load cdf files into pytplot variables (optional).
+        """
         result = []
         loaded_vars = []
         remotehttp = "https://cdaweb.gsfc.nasa.gov/sp_phys/data"
@@ -122,16 +118,19 @@ class CDAWeb():
             localfile = download(remote_file=remotef, local_file=localf)
             if localfile is None:
                 continue
-            localfile = localfile[0] # download returns an array
+            localfile = localfile[0]  # download returns an array
             count += 1
             if localfile != '':
                 dcount += 1
                 if not download_only:
                     try:
-                        cdf_vars = pytplot.cdf_to_tplot(localfile, varformat,
-                                             get_support_data, prefix,
-                                             suffix, False, True)
-                        if cdf_vars != [] and cdf_vars != None:
+                        cdf_vars = cdf_to_tplot(localfile,
+                                                suffix=suffix,
+                                                get_support_data=get_support_data,
+                                                varformat=varformat,
+                                                varnames=varnames,
+                                                notplot=notplot)
+                        if cdf_vars != [] and cdf_vars is not None:
                             loaded_vars.extend(cdf_vars)
                         tplot_loaded = 1
                     except ValueError as err:
