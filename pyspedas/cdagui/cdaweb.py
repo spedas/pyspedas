@@ -124,14 +124,14 @@ class CDAWeb():
                 dcount += 1
                 if not download_only:
                     try:
-                        cdf_vars = cdf_to_tplot(localfile,
-                                                suffix=suffix,
-                                                get_support_data=get_support_data,
-                                                varformat=varformat,
-                                                varnames=varnames,
-                                                notplot=notplot)
-                        if cdf_vars != [] and cdf_vars is not None:
-                            loaded_vars.extend(cdf_vars)
+                        cvars = cdf_to_tplot(localfile,
+                                             suffix=suffix,
+                                             get_support_data=get_support_data,
+                                             varformat=varformat,
+                                             varnames=varnames,
+                                             notplot=notplot)
+                        if cvars != [] and cvars is not None:
+                            loaded_vars.extend(cvars)
                         tplot_loaded = 1
                     except ValueError as err:
                         msg = "cdf_to_tplot could not load " + localfile

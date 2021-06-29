@@ -1,5 +1,5 @@
 """
-GUI for CDAWeb
+GUI for CDAWeb.
 
 A GUI that can download data files from CDAWeb
 and load them into pytplot variables.
@@ -10,19 +10,15 @@ To open the GUI window:
     x = cdagui()
 
 For cdasws documentation, see:
-    https://test.pypi.org/project/cdasws/
+    https://pypi.org/project/cdasws/
     https://cdaweb.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
 
 Notes:
-    Currently, cdasws is not on the main pypi server.
-    pip install -i https://test.pypi.org/simple/ cdasws
-
     To start the gui from the command line:
         python pyspedas/cdagui/cdagui.py
     To start the gui inside the python environment:
         exec(open('cdagui.py').read())
 
-@author: nikos
 """
 import sys
 import datetime
@@ -32,12 +28,12 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow,
                              QGroupBox, QCheckBox, QMessageBox,
                              QVBoxLayout, QLabel, QLineEdit,
                              QFileDialog, QCalendarWidget, QDialog)
-from .cdaweb import CDAWeb
-from .config import CONFIG
+from cdaweb import CDAWeb
+from config import CONFIG
+
 
 def show_my_message(title, msg):
-    """ Shows a message.
-    """
+    """Show a message."""
     alert = QMessageBox()
     alert.setWindowTitle(title)
     alert.setText(msg)
@@ -45,16 +41,17 @@ def show_my_message(title, msg):
 
 
 class cdagui(QMainWindow):
-    """ Main CDAWeb Window.
-    """
+    """Main CDAWeb Window."""
 
     def __init__(self, parent=None):
+        """Inilitalize."""
         super().__init__()
         self.main_widget = GUIWidget(self)
         self.setCentralWidget(self.main_widget)
         self.init_UI()
 
     def init_UI(self):
+        """Start GUI."""
         self.setWindowTitle('CDAWeb Data Downloader')
         self.statusbar = self.statusBar()
         self.statusbar.showMessage('Status: Ready')
@@ -62,10 +59,10 @@ class cdagui(QMainWindow):
 
 
 class GUIWidget(QWidget):
-    """ Main GUI class.
-    """
+    """Main GUI class."""
 
     def __init__(self, parent):
+        """Initialize widget."""
         super(GUIWidget, self).__init__(parent)
         self.parent = parent
         self.cda = CDAWeb()
@@ -76,7 +73,7 @@ class GUIWidget(QWidget):
         self.initUI()
 
     def createMissionGroupBox(self):
-        # 1. Missions and instruments group of GUI
+        """1. Missions and instruments group of GUI."""
 
         def button1_find_datasets():
             title = "Find Datasets"
@@ -142,8 +139,7 @@ class GUIWidget(QWidget):
         self.missionGroupBox.setLayout(layout)
 
     def createDatasetBox(self):
-        # 2. Dataset group of GUI
-
+        """2. Dataset group of GUI."""
         # Datasets group GUI elements
         self.datasetGroupBox = QGroupBox("Datasets")
 
@@ -173,7 +169,7 @@ class GUIWidget(QWidget):
         self.datasetGroupBox.setLayout(layout)
 
     def createTimeGroupBox(self):
-        # 3. Date and time group of GUI
+        """3. Date and time group of GUI."""
 
         def button2_get_file_list():
             title = "Get File List"
@@ -199,7 +195,7 @@ class GUIWidget(QWidget):
             self.file_box.addItems(file_list[:50])
 
         def pick_time(start_or_end):
-            # Date picker
+            """Date picker."""
             dlg = QDialog(self)
             gridc = QVBoxLayout()
             dlg.setLayout(gridc)
@@ -275,9 +271,10 @@ class GUIWidget(QWidget):
         self.timeGroupBox.setLayout(layout)
 
     def createDownloadGroupBox(self):
-        # 4. Download group of GUI
+        """4. Download group of GUI."""
 
         def button3_get_data():
+            """Get data button."""
             title = "Download Files"
             file_list = [item.text() for item in self.file_box.selectedItems()]
             if len(file_list) < 1:
@@ -331,6 +328,7 @@ class GUIWidget(QWidget):
                 show_my_message(title, msg)
 
         def select_dir():
+            """Select directory."""
             file = str(QFileDialog.getExistingDirectory(self,
                                                         "Select Directory"))
             if file:
@@ -338,7 +336,7 @@ class GUIWidget(QWidget):
                 self.dir_box.setText(self.local_dir)
 
         def clear_all():
-            # Clear all boxes
+            """Clear all boxes."""
             self.mission_box.clearSelection()
             self.instrument_box.clearSelection()
             self.instrument_selected.setText('')
@@ -400,9 +398,7 @@ class GUIWidget(QWidget):
         self.dirGroupBox.setLayout(layout)
 
     def initUI(self):
-        """ Create GUI
-        """
-
+        """Create GUI."""
         # Main layout is vertical
         grid = QVBoxLayout()
         self.setLayout(grid)
