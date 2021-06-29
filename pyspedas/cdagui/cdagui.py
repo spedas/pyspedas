@@ -1,4 +1,3 @@
-
 """
 GUI for CDAWeb
 
@@ -299,7 +298,7 @@ class GUIWidget(QWidget):
                                               please wait...')
             QApplication.setOverrideCursor(Qt.WaitCursor)
             QApplication.processEvents()
-            result = self.cda.download(file_list, local_dir, download_only)
+            result = self.cda.cda_download(file_list, local_dir, download_only)
             QApplication.restoreOverrideCursor()
             self.parent.statusbar.showMessage('Status: Ready')
 

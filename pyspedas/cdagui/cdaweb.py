@@ -99,9 +99,9 @@ class CDAWeb():
                         remote_url.append(f.get('Name'))
         return remote_url
 
-    def download(self, remote_files, local_dir, download_only=False,
-                 varformat=None, get_support_data=False, prefix='', suffix='',
-                 varnames=[], notplot=False):
+    def cda_download(self, remote_files, local_dir, download_only=False,
+                     varformat=None, get_support_data=False, prefix='',
+                     suffix='', varnames=[], notplot=False):
         """Download cdf files.
 
         Load cdf files into pytplot variables (optional).
