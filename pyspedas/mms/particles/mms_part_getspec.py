@@ -80,7 +80,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         if instrument == 'fpi':
             tname = 'mms'+prb_str+'_d'+species+'s_dist_'+data_rate
         elif instrument == 'hpca':
-            tname = 'mms'+prb_str+'_hpca_hplus_phase_space_density'
+            tname = 'mms'+prb_str+'_hpca_'+species+'_phase_space_density'
 
         new_vars = mms_part_products(tname, species=species, instrument=instrument, probe=prb, data_rate=data_rate,
                           output=output, units=units, energy=energy, phi=phi, theta=theta, pitch=pitch, gyro=gyro,
