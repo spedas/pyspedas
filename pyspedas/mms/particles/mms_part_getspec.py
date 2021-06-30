@@ -10,7 +10,8 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast', 
     trange=None, output=['energy', 'theta', 'phi'], units='eflux', energy=None,
-    phi=None, theta=None, pitch=None, gyro=None, mag_data_rate='srvy', fac_type='mphigeo'):
+    phi=None, theta=None, pitch=None, gyro=None, mag_data_rate=None, fac_type='mphigeo',
+    center_measurement=False):
     """
 
     """
@@ -22,10 +23,21 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         trange = ['2015-10-16/13:06', '2015-10-16/13:07']
         # data_rate = 'brst'
 
+    if mag_data_rate is None:
+        if data_rate == 'brst':
+            mag_data_rate = 'brst'
+        else:
+            mag_data_rate = 'srvy'
+
     instrument = instrument.lower()
+
+    # HPCA is required to be at the center of the accumulation interval
+    # due to assumptions made in mms_get_hpca_dist
+    if instrument == 'hpca' and center_measurement == False:
+        center_measurement = True
     
     if instrument == 'fpi':
-        data_vars = pyspedas.mms.fpi(datatype='d'+species+'s-dist', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=True)
+        data_vars = pyspedas.mms.fpi(datatype='d'+species+'s-dist', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement)
     elif instrument == 'hpca':
         # for HPCA, 'fast' should be 'srvy'
         if data_rate == 'fast':
@@ -33,7 +45,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         # 'i' and 'e' are only valid for FPI
         if species in ['i', 'e']:
             species = 'hplus'
-        data_vars = pyspedas.mms.hpca(datatype='ion', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=True, get_support_data=True)
+        data_vars = pyspedas.mms.hpca(datatype='ion', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, get_support_data=True)
     else:
         logging.error('Error, unknown instrument: ' + instrument + '; valid options: fpi, hpca')
         return
@@ -52,7 +64,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         logging.error('Error, no state data loaded.')
         return
 
-    mag_vars = pyspedas.mms.fgm(probe=probe, trange=trange, time_clip=True)
+    mag_vars = pyspedas.mms.fgm(probe=probe, trange=trange, data_rate=mag_data_rate, time_clip=True)
 
     if len(mag_vars) == 0:
         logging.error('Error, no magnetic field data loaded.')
