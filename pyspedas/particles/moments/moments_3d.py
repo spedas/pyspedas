@@ -13,7 +13,25 @@ except ImportError:
 
 def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     """
+    Calculates plasma moments from 3D data structure
 
+    Input:
+        data_in: dict
+            Particle data structure 
+
+    Parameters:
+        sc_pot: float
+            Spacecraft potential
+
+        no_unit_conversion: bool
+            Flag indicating that datta is already in eflux and no unit
+            conversion is required
+
+    Notes:
+        The calculations were mostly heisted from Davin Larson's IDL version
+
+    Returns:
+        Dictionary containing moments
 
     """
 

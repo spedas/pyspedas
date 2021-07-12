@@ -3,6 +3,26 @@ import numpy as np
 
 def moments_3d_omega_weights(theta, phi, dtheta, dphi):
     """
+    Helper function used by moments_3d
+
+    Input:
+        theta: numpy.ndarray
+            theta bin values
+
+        phi: numpy.ndarray
+            phi bin values
+
+        dtheta: numpy.ndarray
+            Widths of the theta bins
+            
+        dphi: numpy.ndarray
+            Widths of the phi bins
+
+    Notes:
+        The calculations were heisted from Davin Larson's IDL version
+
+    Returns:
+        Omega weights to be used in moments_3d
 
     """
 

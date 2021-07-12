@@ -7,6 +7,24 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def spd_pgs_moments_tplot(moments, x=None, prefix='', suffix=''):
     """
+    Creates tplot variables from moments dictionaries
+
+    Input:
+        moments: dict
+            Dictionary containing moments values returned by moments_3d
+
+    Parameters:
+        x: numpy.ndarray
+            The x-axis (time) values
+
+        prefix: str
+            Name prefix for the output variables
+
+        suffix: str
+            Name suffix for the output variables
+
+    Returns:
+        List of tplot variables created.
     """
 
     if x is None:
