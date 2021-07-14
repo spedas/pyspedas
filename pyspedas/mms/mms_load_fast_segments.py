@@ -22,6 +22,9 @@ def mms_load_fast_segments(trange=None, suffix=''):
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
+        suffix: str
+            Suffix to append to the end of the tplot variables
+            
     Returns:
         Tuple containing (start_times, end_times)
 
