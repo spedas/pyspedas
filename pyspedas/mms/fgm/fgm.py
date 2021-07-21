@@ -5,6 +5,7 @@ from pyspedas.mms.fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 from pyspedas.mms.fgm.mms_split_fgm_data import mms_split_fgm_data
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
+from pyspedas.utilities.data_exists import data_exists
 
 from pytplot import del_data
 
@@ -15,7 +16,8 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     level='l2', instrument='fgm', datatype='', varformat=None, varnames=[], suffix='',
     keep_flagged=False, get_support_data=True, time_clip=False, no_update=False,
     available=False, notplot=False, latest_version=False, major_version=False, 
-    min_version=None, cdf_version=None, spdf=False, always_prompt=False, no_split_vars=False):
+    min_version=None, cdf_version=None, spdf=False, always_prompt=False, no_split_vars=False,
+    get_fgm_ephemeris=False):
     """
     This function loads FGM data into tplot variables
     
@@ -131,12 +133,28 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
                 del_data(tvar)
                 tvars.remove(tvar)
 
-    if not no_split_vars:
-        for prb in probe:
-            for drate in data_rate:
-                for lvl in level:
+    for prb in probe:
+        for drate in data_rate:
+            for lvl in level:
+                if not no_split_vars:
                     out = mms_split_fgm_data(prb, drate, lvl, instrument, suffix=suffix)
                     tvars.extend(out)
+
+                if lvl.lower() != 'ql':
+                    # delete the ephemeris variables if not requested
+                    if not get_fgm_ephemeris:
+                        if data_exists('mms'+prb+'_'+instrument+'_r_gse_'+drate+'_'+lvl+suffix):
+                            del_data('mms'+prb+'_'+instrument+'_r_gse_'+drate+'_'+lvl+suffix)
+                            tvars.remove('mms'+prb+'_'+instrument+'_r_gse_'+drate+'_'+lvl+suffix)
+                        if data_exists('mms'+prb+'_'+instrument+'_r_gsm_'+drate+'_'+lvl+suffix):
+                            del_data('mms'+prb+'_'+instrument+'_r_gsm_'+drate+'_'+lvl+suffix)
+                            tvars.remove('mms'+prb+'_'+instrument+'_r_gsm_'+drate+'_'+lvl+suffix)
+                        if data_exists('mms'+prb+'_pos_gse'+suffix):
+                            del_data('mms'+prb+'_pos_gse'+suffix)
+                            tvars.remove('mms'+prb+'_pos_gse'+suffix)
+                        if data_exists('mms'+prb+'_pos_gsm'+suffix):
+                            del_data('mms'+prb+'_pos_gsm'+suffix)
+                            tvars.remove('mms'+prb+'_pos_gsm'+suffix)
 
     mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=suffix)
 
