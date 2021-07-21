@@ -95,6 +95,9 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
+
+        get_fgm_ephemeris: bool
+            Keep the ephemeris variables in the FGM files
             
     Returns:
         List of tplot variables created.
