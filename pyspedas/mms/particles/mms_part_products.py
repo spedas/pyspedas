@@ -17,6 +17,7 @@ from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
 from pyspedas.mms.hpca.mms_get_hpca_dist import mms_get_hpca_dist
 from pyspedas.mms.particles.mms_convert_flux_units import mms_convert_flux_units
 from pyspedas.mms.particles.mms_pgs_clean_data import mms_pgs_clean_data
+from pyspedas.mms.particles.mms_pgs_clean_support import mms_pgs_clean_support
 from pyspedas.mms.particles.mms_pgs_make_fac import mms_pgs_make_fac
 
 logging.captureWarnings(True)
@@ -24,7 +25,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast', instrument='fpi', probe='1',
     output=['energy', 'theta', 'phi'], energy=None, phi=None, theta=None, pitch=None, gyro=None, mag_name=None,
-    pos_name=None, fac_type='mphigeo'):
+    pos_name=None, fac_type='mphigeo', sc_pot_name=None):
     """
 
     """
@@ -91,6 +92,11 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
     else:
         data_times = data_in.times
 
+    if 'moments' in output:
+        support_data = mms_pgs_clean_support(data_times, mag_name=mag_name, vel_name=None, sc_pot_name=sc_pot_name)
+        mag_data = support_data[0]
+        scpot_data = support_data[2]
+
     ntimes = len(data_times)
 
     for i in range(0, ntimes):
@@ -123,7 +129,12 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
 
         # Calculate the moments
         if 'moments' in output:
-            moments = spd_pgs_moments(clean_data, sc_pot=0)
+            if scpot_data is not None:
+                scpot_val = scpot_data[i]
+            else:
+                scpot_val = 0.0
+                
+            moments = spd_pgs_moments(clean_data, sc_pot=scpot_val)
             out_density[i] = moments['density']
             out_avgtemp[i] = moments['avgtemp']
             out_vthermal[i] = moments['vthermal']
