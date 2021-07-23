@@ -19,6 +19,7 @@ from pyspedas.mms.particles.mms_convert_flux_units import mms_convert_flux_units
 from pyspedas.mms.particles.mms_pgs_clean_data import mms_pgs_clean_data
 from pyspedas.mms.particles.mms_pgs_clean_support import mms_pgs_clean_support
 from pyspedas.mms.particles.mms_pgs_make_fac import mms_pgs_make_fac
+from pyspedas.mms.particles.mms_pgs_split_hpca import mms_pgs_split_hpca
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
@@ -111,6 +112,11 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
 
         clean_data = mms_pgs_clean_data(data)
 
+        # split hpca angle bins to be equal width in phi/theta
+        # this is needed when skipping the regrid step
+        if instrument == 'hpca':
+            clean_data = mms_pgs_split_hpca(clean_data)
+
         # Apply phi, theta, & energy limits
         if energy is not None or theta is not None or phi is not None:
             clean_data = spd_pgs_limit_range(clean_data, energy=energy, theta=theta, phi=phi)
@@ -133,7 +139,7 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
                 scpot_val = scpot_data[i]
             else:
                 scpot_val = 0.0
-                
+
             moments = spd_pgs_moments(clean_data, sc_pot=scpot_val)
             out_density[i] = moments['density']
             out_avgtemp[i] = moments['avgtemp']
