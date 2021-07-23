@@ -161,7 +161,7 @@ class UpdatingImage(pg.ImageItem):
             data = self.data.iloc[closest_xs][closest_ys].values
 
             # Set the image with that data
-            self.setImage(data.T, levels=(self.zmin, self.zmax))
+            self.setImage(data.T, levels=[self.zmin, self.zmax])
 
             #Image can't handle NaNs, but you can set nan to the minimum and make the minimum transparent.  
             self.setLookupTable(self.lut, update=False)
@@ -185,7 +185,7 @@ class UpdatingImage(pg.ImageItem):
 
     def render(self):
         #The same as pyqtgraph's ImageItem.render, with the exception that the makeARGB function is slightly different
-        
+
         profile = debug.Profiler()
         if self.image is None or self.image.size == 0:
             return
@@ -216,33 +216,14 @@ class UpdatingImage(pg.ImageItem):
         # if the image data is a small int, then we can combine levels + lut
         # into a single lut for better performance
         levels = self.levels
-        if levels is not None and levels.ndim == 1 and image.dtype in (np.ubyte, np.uint16):
-            if self._effectiveLut is None:
-                eflsize = 2**(image.itemsize*8)
-                ind = np.arange(eflsize)
-                minlev, maxlev = levels
-                levdiff = maxlev - minlev
-                levdiff = 1 if levdiff == 0 else levdiff  # don't allow division by 0
-                if lut is None:
-                    efflut = fn.rescaleData(ind, scale=255./levdiff, 
-                                            offset=minlev, dtype=np.ubyte)
-                else:
-                    lutdtype = np.min_scalar_type(lut.shape[0]-1)
-                    efflut = fn.rescaleData(ind, scale=(lut.shape[0]-1)/levdiff,
-                                            offset=minlev, dtype=lutdtype, clip=(0, lut.shape[0]-1))
-                    efflut = lut[efflut]
-                
-                self._effectiveLut = efflut
-            lut = self._effectiveLut
-            levels = None
-        
+
         # Assume images are in column-major order for backward compatibility
         # (most images are in row-major order)
-        
+
         if self.axisOrder == 'col-major':
             image = image.transpose((1, 0, 2)[:image.ndim])
-        
-        argb, alpha = makeARGBwithNaNs(image, lut=lut, levels=levels)
+
+        argb, alpha = makeARGBwithNaNs(image, lut=lut, levels=self.levels)
         self.qimage = fn.makeQImage(argb, alpha, transpose=False)
 
     def setImage(self, image=None, autoLevels=None, **kargs):
