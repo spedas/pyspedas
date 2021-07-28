@@ -26,7 +26,7 @@ def spec_slicer(var=None, time=None, interactive=False):
 
         # Set up the 2D interactive plot
         window = pytplot.tplot_utilities.get_available_qt_window(name='Spec_Slice')
-        window.newlayout(pg.GraphicsWindow())
+        window.newlayout(pg.GraphicsLayoutWidget())
         window.resize(1000, 600)
         window.setWindowTitle('Interactive Window')
         plot = window.centralWidget().addPlot(title='Spectrogram Slicing Plot', row=0, col=0)
@@ -161,7 +161,7 @@ def spec_slicer(var=None, time=None, interactive=False):
                     # If the user just wants a plain jane interactive plot...
                     # Plot data based on time we're hovering over'
                     try:
-                        data = pytplot.data_quants[name].isel(time=idx)
+                        data = pytplot.data_quants[name].isel(time=idx).values
                         if len(data.shape) >= 2:
                             data = np.nansum(data, 0)
                         while len(data.shape) > 1:
@@ -169,14 +169,14 @@ def spec_slicer(var=None, time=None, interactive=False):
                         if y_axis_log:
                             data[data<=0] = np.NaN
                         #Create a Mask for Nan Values
-                        locations_where_nan = np.argwhere(np.isnan(data.values))
+                        locations_where_nan = np.argwhere(np.isnan(data))
                         if len(locations_where_nan) > 0:
-                            nanmask = np.ones(data.values.shape,dtype=bool)
+                            nanmask = np.ones(data.shape,dtype=bool)
                             nanmask[locations_where_nan] = False
                             nanmask[~locations_where_nan] = True
-                            plot_data.setData(bins[nanmask], list(data.values[nanmask]))
+                            plot_data.setData(bins[nanmask], list(data[nanmask]))
                         else:
-                            plot_data.setData(bins, list(data.values))
+                            plot_data.setData(bins, list(data))
                     except ZeroDivisionError:
                         pass
 

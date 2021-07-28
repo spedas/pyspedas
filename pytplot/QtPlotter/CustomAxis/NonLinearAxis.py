@@ -1,6 +1,8 @@
 import pyqtgraph as pg
 
+
 class NonLinearAxis(pg.AxisItem):
+
     def __init__(self, orientation, pen=None, linkView=None, parent=None, maxTickLength=-5, showValues=True, mapping_function=None, num_ticks=4):
         pg.AxisItem.__init__(self, orientation=orientation, pen=pen, linkView=linkView, parent=parent, maxTickLength=maxTickLength, showValues=showValues)
         self.f = mapping_function

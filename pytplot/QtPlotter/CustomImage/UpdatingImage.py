@@ -9,6 +9,7 @@ import pandas as pd
 from ..CustomViewBox.NoPaddingPlot import NoPaddingPlot
 import pytplot
 
+
 class UpdatingImage(pg.ImageItem):
     '''
     This is the class used to plot images of spectrogram data.
@@ -18,100 +19,31 @@ class UpdatingImage(pg.ImageItem):
 
     '''
 
-
     _MAX_IMAGE_WIDTH = 10000
     _MAX_IMAGE_HEIGHT = 2000
     
-    def __init__(self, data, spec_bins, ascending_descending, ytype, ztype, lut, ymin, ymax, zmin, zmax):
-
+    def __init__(self, x, y, data, ascending_descending, lut, ymin, ymax, zmin, zmax):
 
         pg.ImageItem.__init__(self)
-        
-        if ztype=='log':
-            data[data <= 0] = np.NaN
-            self.data = np.log10(data)
-            self.zmin = np.log10(zmin)
-            self.zmax = np.log10(zmax)
-        else:
-            self.data = data
-            self.zmin = zmin
-            self.zmax = zmax
 
-        self.ytype = ytype
         self.lut = lut
-        self.bin_sizes = spec_bins
         self.bins_inc = ascending_descending
-        self.w = 100
-        self.h = 100
-        self.x = self.data.index.tolist()
+        self.w = 100 # This is just an initial value for the width
+        self.h = 100 # This is just an initial value for the height
+        self.x = x
+        self.y = y
+        self.data = data
         self.xmin = np.nanmin(self.x)
         self.xmax = np.nanmax(self.x)
-
-        if len(spec_bins) != 1:
-
-            # If time varying spec bins, we need to reformat the data once.  Turn it into a 1000x100 grid.
-
-            xp = np.linspace(self.xmin, self.xmax, 1000)
-            closest_xs = np.searchsorted(self.x, xp)
-            minbin = ymin
-            maxbin = ymax
-
-            # This will be the values of the 100 y axis pixels
-            if ytype == 'log':
-                yp = np.logspace(np.log10(minbin), np.log10(maxbin), 100)
-            else:
-                yp = np.linspace(minbin, maxbin, 100)
-
-            data_reformatted = []
-            y_sort = np.argsort(self.bin_sizes.iloc[0].tolist())
-            prev_bins = self.bin_sizes.iloc[0]
-            prev_closest_ys = np.searchsorted(self.bin_sizes.iloc[0], yp, sorter=y_sort)
-            prev_closest_ys[prev_closest_ys > (len(self.bin_sizes.iloc[0]) - 1)] = len(self.bin_sizes.iloc[0]) - 1
-
-            # Loop through every X value and inspect the spec_bins.
-            for i in closest_xs:
-                if (self.bin_sizes.iloc[i] == prev_bins).all():
-                    closest_ys = prev_closest_ys
-                else:
-                    prev_bins = self.bin_sizes.iloc[i]
-                    closest_ys = np.searchsorted(self.bin_sizes.iloc[i], yp, sorter=y_sort)
-                    closest_ys[closest_ys > (len(self.bin_sizes.iloc[i])-1)] = len(self.bin_sizes.iloc[i]) - 1
-                    prev_closest_ys = closest_ys
-                temp_data = self.data.iloc[i][closest_ys].values
-                try:
-                    temp_data[yp < np.nanmin(self.bin_sizes.iloc[i])] = np.NaN
-                    temp_data[yp > np.nanmax(self.bin_sizes.iloc[i])] = np.NaN
-                except RuntimeWarning:
-                    # If the entire bin is NaN the above stuff fails, so just continue on
-                    pass
-                data_reformatted.append(temp_data)
-            data_reformatted = pd.DataFrame(data_reformatted)
-
-            self.x = xp
-            if ytype == 'log':
-                self.y = np.linspace(np.log10(minbin), np.log10(maxbin), 100)
-            else:
-                self.y = np.linspace(minbin, maxbin, 100)
-            self.data = data_reformatted
-        else:
-            if ytype == 'log':
-                self.y = np.log10(self.bin_sizes.iloc[0])
-            else:
-                self.y = self.bin_sizes.iloc[0]
-
-        # Get the ymin/ymax
-        if ytype == 'log':
-            self.ymin = np.log10(ymin)
-            self.ymax = np.log10(ymax)
-        else:
-            self.ymin = ymin
-            self.ymax = ymax
-
+        self.ymin = ymin
+        self.ymax = ymax
+        self.zmin = zmin
+        self.zmax = zmax
         self.picturenotgened=True
-        self.generatePicture()
+        self.updatePicture()
         
 
-    def generatePicture(self, pixel_size=None):
+    def updatePicture(self, pixel_size=None):
         # Get the dimensions in pixels and in plot coordiantes
         if pixel_size is None:
             width_in_pixels = pytplot.tplot_opt_glob['window_size'][0]
@@ -141,8 +73,6 @@ class UpdatingImage(pg.ImageItem):
             if self.h == 0:
                 self.h = 1
 
-            data = np.zeros((self.h,self.w))
-
             # Create an appropriate grid based on the window size, and interpolate the spectrogram to that
             xp = np.linspace(self.xmin, self.xmax, self.w)
             yp = np.linspace(self.ymin, self.ymax, self.h)
@@ -151,7 +81,7 @@ class UpdatingImage(pg.ImageItem):
             closest_xs = np.searchsorted(self.x, xp)
 
             # Find the closest y values in the dat afor each pixel on the screen
-            y_sort = np.argsort(self.y.tolist())
+            y_sort = np.argsort(self.y)
             closest_ys = np.searchsorted(self.y, yp, sorter=y_sort)
             closest_ys[closest_ys == len(self.y)] = len(self.y) - 1
             if not self.bins_inc:
@@ -178,10 +108,10 @@ class UpdatingImage(pg.ImageItem):
             if type(x) is NoPaddingPlot:
                 parent_viewbox = x
         if self.picturenotgened:
-            self.generatePicture(parent_viewbox.rect())
+            self.updatePicture(parent_viewbox.rect())
             self.picturenotgened = False
         pg.ImageItem.paint(self, p, *args)
-        self.generatePicture(parent_viewbox.rect())
+        self.updatePicture(parent_viewbox.rect())
 
     def render(self):
         #The same as pyqtgraph's ImageItem.render, with the exception that the makeARGB function is slightly different
@@ -281,8 +211,7 @@ class UpdatingImage(pg.ImageItem):
 
         if gotNewData:
             self.sigImageChanged.emit()
-            
-    
+
 def makeARGBwithNaNs(data, lut=None, levels=None, scale=None, useRGBA=False): 
     """ 
     This is the same as pyqtgraph.makeARGB, except that all NaN's in the data are set to transparent pixels

@@ -32,8 +32,11 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
         vb = CustomVB(enableMouse=False)
         self.yaxis = AxisItem("left")
         self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
-        self.yaxis.label.rotate(90)
-        self.yaxis.label.translate(0, -40)
+        self.yaxis.label.setRotation(0)
+        qt_transform = pg.QtGui.QTransform()
+        qt_transform.translate(0,-40)
+        self.yaxis.label.setTransform(qt_transform)
+        #self.yaxis.label.translate(0, -40)
         mapping_function = interpolate.interp1d(pytplot.data_quants[self.tvar_name].coords['time'].values, pytplot.data_quants[self.tvar_name].values)
         if 'var_label_ticks' in pytplot.data_quants[self.tvar_name].attrs['plot_options']:
             num_ticks = pytplot.data_quants[self.tvar_name].attrs['plot_options']['var_label_ticks']

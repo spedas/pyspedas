@@ -17,9 +17,14 @@ from .CustomAxis.AxisItem import AxisItem
 from .CustomViewBox.NoPaddingPlot import NoPaddingPlot
 from .CustomLinearRegionItem.CustomLinearRegionItem import CustomLinearRegionItem
 from math import log10, floor
+import pandas as pd
 
 class TVarFigureSpec(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False):
+
+        # This sets the default number of points to use when creating a spectrogram image
+        self.X_PIXEL_LENGTH = 1000
+        self.Y_PIXEL_HEIGHT = 100
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
@@ -75,9 +80,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.curves = []
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
-
-
-
 
         if pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
@@ -161,7 +163,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._set_roi_lines()
         self._setxrange() # Need to change the x range again one last time, visualizing the data resets it
 
-
     def _setyaxislabel(self):
         ylabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
         if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
@@ -180,17 +181,102 @@ class TVarFigureSpec(pg.GraphicsLayout):
     def _visdata(self):
         # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
         # This needs to be rewritten to use xarray
-        specplot = UpdatingImage(self.dataframe,
-                                 self.specframe,
+
+        # Determine if the data needs to be reformatted into a standard sized image
+        if len(self.specframe) != 1:
+            x, y, data = self._format_spec_data_as_image(x_pixel_length = self.X_PIXEL_LENGTH,
+                                                         y_pixel_height = self.Y_PIXEL_HEIGHT)
+        else:
+            x = self.dataframe.index.tolist()
+            y = self.specframe.iloc[0].tolist()
+            data = self.dataframe
+
+        # Take the log of the y values if we are using a logarithmic y axis
+        if self._getyaxistype() == 'log':
+            y = np.log10(y)
+            ymin = np.log10(self.ymin)
+            ymax = np.log10(self.ymax)
+        else:
+            y = self.specframe.iloc[0].tolist()
+            ymin = self.ymin
+            ymax = self.ymax
+
+        # The the log of the z values if we are using a logarithmic x axis
+        if self._getzaxistype() == 'log':
+            data[data <= 0] = np.NaN
+            data = np.log10(data)
+            zmin = np.log10(self.zmin)
+            zmax = np.log10(self.zmax)
+        else:
+            zmin = self.zmin
+            zmax = self.zmax
+
+        specplot = UpdatingImage(x,
+                                 y,
+                                 data,
                                  pytplot.data_quants[self.tvar_name].attrs['plot_options']['spec_bins_ascending'],
-                                 self._getyaxistype(),
-                                 self._getzaxistype(),
                                  self.colormap,
-                                 self.ymin,
-                                 self.ymax,
-                                 self.zmin,
-                                 self.zmax)
+                                 ymin,
+                                 ymax,
+                                 zmin,
+                                 zmax)
+
         self.plotwindow.addItem(specplot)
+
+    def _format_spec_data_as_image(self, x_pixel_length=1000, y_pixel_height=100):
+        '''
+        This function is used to format data where the coordinates of the y axis are time varying.  For instance, data
+        collected at t=0 could be collected for energy bins at 100GHz, 200Ghz, and 300Ghz, but at t=1 the data was
+        collected at 1GHz, 50GHz, and 100 Ghz.  This smooths things out over the image, and creates NaNs where data
+        is missing.  These NaN's are displayed completely transparently in the UpdatingImage class.
+        :return: x, y, data
+        '''
+
+        x = self.dataframe.index.tolist()
+
+        # Get a list of 1000 x values
+        xp = np.linspace(np.nanmin(x), np.nanmax(x), x_pixel_length)
+        closest_xs = np.searchsorted(x, xp)
+
+        # Get a list of 100 y values between the min and the max y values
+        if self._getyaxistype() == 'log':
+            yp = np.logspace(np.log10(self.ymin), np.log10(self.ymax), y_pixel_height)
+        else:
+            yp = np.linspace(self.ymin, self.ymax, y_pixel_height)
+
+        # Determine the closest y values for which we have data at each x value
+        data_reformatted = [] # This will store the 1000x100 data array, ultimately forming the picture
+        y_sort = np.argsort(self.specframe.iloc[0].tolist())
+        prev_bins = self.specframe.iloc[0]
+        prev_closest_ys = np.searchsorted(self.specframe.iloc[0], yp, sorter=y_sort)
+        prev_closest_ys[prev_closest_ys > (len(self.specframe.iloc[0]) - 1)] = len(self.specframe.iloc[0]) - 1
+
+        # For each xp, determine the closest value of x we have available. Then, determine the closest values of y at
+        # each x, and determine the value at those points
+        for i in closest_xs:
+            if (self.bin_sizes.iloc[i] == prev_bins).all():
+                closest_ys = prev_closest_ys
+            else:
+                prev_bins = self.specframe.iloc[i]
+                closest_ys = np.searchsorted(self.specframe.iloc[i], yp, sorter=y_sort)
+                closest_ys[closest_ys > (len(self.specframe.iloc[i]) - 1)] = len(self.specframe.iloc[i]) - 1
+                prev_closest_ys = closest_ys
+
+            # temp_data holds the values for those closest points for a particular point in time
+            temp_data = self.dataframe.iloc[i][closest_ys].values
+
+            # Try cutting the data off that is outside the bounds
+            try:
+                temp_data[yp < np.nanmin(self.specframe.iloc[i])] = np.NaN
+                temp_data[yp > np.nanmax(self.specframe.iloc[i])] = np.NaN
+            except RuntimeWarning:
+                # If the entire bin is NaN the above stuff fails, so just continue on
+                pass
+            data_reformatted.append(temp_data)
+
+        data_reformatted = pd.DataFrame(data_reformatted)
+
+        return xp, yp, data_reformatted
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
@@ -239,7 +325,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
             p2.setYRange(self.zmin, self.zmax, padding=0)
         colorbar.setLookupTable(self.colormap)
 
-
     def _addmouseevents(self):
         if self.plotwindow.scene() is not None:
             self.plotwindow.scene().sigMouseMoved.connect(self._mousemoved)
@@ -268,8 +353,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
             x_argmin = np.nanargmin(x_sub)
             x_closest = x[x_argmin]
 
-            #TODO: This currently grabs only the first row of the specframe,
-            # if it is time varying this will probably give incorrect Y values in the crosshair
             if len(self.specframe) > 1:
                 try:
                     speclength = len(self.specframe.iloc[x_argmin])
@@ -362,8 +445,6 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.plotwindow.vb.setYRange(self.ymin,
                                          self.ymax,
                                          padding=0)
-
-
 
     def _setzrange(self):
         # Get Z Range
