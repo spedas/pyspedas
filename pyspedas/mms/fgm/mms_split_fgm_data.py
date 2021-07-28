@@ -1,5 +1,6 @@
 import logging
 
+from pyspedas.utilities.data_exists import data_exists
 from pytplot import get_data, store_data, options
 
 logging.captureWarnings(True)
@@ -31,12 +32,15 @@ def mms_split_fgm_data(probe, data_rate, level, instrument, suffix=''):
         else:
             tplot_name = 'mms' + probe + '_' + instrument + '_' + data_rate_mod + '_' + coord + suffix
 
+        if data_exists(tplot_name) == False:
+            continue
+
         fgm_data = get_data(tplot_name)
-        metadata = get_data(tplot_name, metadata=True)
 
         if fgm_data is None:
-            logging.error('Problem splitting variable: ' + tplot_name)
             continue
+
+        metadata = get_data(tplot_name, metadata=True)
 
         if suffix != '':
             tplot_name = tplot_name[0:-len(suffix)]

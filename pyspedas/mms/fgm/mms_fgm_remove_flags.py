@@ -1,6 +1,7 @@
 import numpy as np 
 from pytplot import get_data, store_data
 from pyspedas import tnames
+from pyspedas.utilities.data_exists import data_exists
 
 def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     """
@@ -39,9 +40,15 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
                     flag_var = 'mms'+str(this_probe)+'_'+instrument+'_'+this_dr+'_'+this_lvl+'_flag'+suffix
                 else:
                     flag_var = 'mms'+str(this_probe)+'_'+instrument+'_flag_'+this_dr+'_'+this_lvl+suffix
+
+                if not data_exists(flag_var):
+                    continue
+                    
                 flagged = get_data(flag_var)
+
                 if flagged is None:
                     continue
+
                 times, flags = flagged
                 flagged_data = np.where(flags != 0.0)[0]
 
