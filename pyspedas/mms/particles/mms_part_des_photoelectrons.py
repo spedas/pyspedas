@@ -44,8 +44,6 @@ def mms_part_des_photoelectrons(dist_var):
     data_rate = dist_var.split('_')[-1]
 
     # download the model file from the SDC
-
-
     pe_model = download(
         last_version=True,
         remote_path='https://lasp.colorado.edu/mms/sdc/public/data/models/fpi/',

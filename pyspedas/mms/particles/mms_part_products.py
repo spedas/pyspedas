@@ -3,6 +3,7 @@ import numpy as np
 
 from pytplot import get_data
 
+from pyspedas.utilities.interpol import interpol
 from pyspedas.particles.spd_part_products.spd_pgs_make_theta_spec import spd_pgs_make_theta_spec
 from pyspedas.particles.spd_part_products.spd_pgs_make_phi_spec import spd_pgs_make_phi_spec
 from pyspedas.particles.spd_part_products.spd_pgs_make_e_spec import spd_pgs_make_e_spec
@@ -20,13 +21,15 @@ from pyspedas.mms.particles.mms_pgs_clean_data import mms_pgs_clean_data
 from pyspedas.mms.particles.mms_pgs_clean_support import mms_pgs_clean_support
 from pyspedas.mms.particles.mms_pgs_make_fac import mms_pgs_make_fac
 from pyspedas.mms.particles.mms_pgs_split_hpca import mms_pgs_split_hpca
+from pyspedas.mms.particles.mms_part_des_photoelectrons import mms_part_des_photoelectrons
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast', instrument='fpi', probe='1',
     output=['energy', 'theta', 'phi'], energy=None, phi=None, theta=None, pitch=None, gyro=None, mag_name=None,
-    pos_name=None, fac_type='mphigeo', sc_pot_name=None):
+    pos_name=None, fac_type='mphigeo', sc_pot_name=None, correct_photoelectrons=False, 
+    internal_photoelectron_corrections=False):
     """
 
     """
@@ -93,10 +96,29 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
     else:
         data_times = data_in.times
 
-    if 'moments' in output:
+    if 'moments' in output or correct_photoelectrons or internal_photoelectron_corrections:
         support_data = mms_pgs_clean_support(data_times, mag_name=mag_name, vel_name=None, sc_pot_name=sc_pot_name)
         mag_data = support_data[0]
         scpot_data = support_data[2]
+
+    # grab the DES photoelectron model if needed
+    if (instrument != 'fpi' or species != 'e') and (correct_photoelectrons or internal_photoelectron_corrections):
+        logging.error('Photoelectron corrections only valid for DES; no corrections will be applied.')
+        correct_photoelectrons = False
+        internal_photoelectron_corrections = False
+
+    if correct_photoelectrons or internal_photoelectron_corrections:
+        fpi_photoelectrons = mms_part_des_photoelectrons(in_tvarname)
+
+        if fpi_photoelectrons is None:
+            logging.error('Photoelectron model missing for this date; re-run without photoelectron corrections')
+            return
+
+        # will need stepper parities for burst mode data
+        if data_rate == 'brst':
+            parity = get_data('mms'+probe+'_des_steptable_parity_brst')
+
+        startdelphi = get_data('mms'+probe+'_des_startdelphi_count_'+data_rate)
 
     ntimes = len(data_times)
 
@@ -107,6 +129,42 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
             dist_in = mms_get_fpi_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
         elif instrument == 'hpca':
             dist_in = mms_get_hpca_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
+
+        # apply the DES photoelectron corrections
+        if correct_photoelectrons or internal_photoelectron_corrections:
+            # From Dan Gershman's release notes on the FPI photoelectron model:
+            # Find the index I in the startdelphi_counts_brst or startdelphi_counts_fast array
+            # [360 possibilities] whose corresponding value is closest to th = e measured
+            # startdelphi_count_brst or startdelphi_count_fast for the skymap of interest. The
+            # closest index can be approximated by I = floor(startdelphi_count_brst/16) or I =
+            # floor(startdelphi_count_fast/16)
+            startdelphi_I = int(np.floor(startdelphi.y[i]/16.0))
+
+            if data_rate == 'brst':
+                parity_num = str(np.fix(parity.y[i]))
+
+                bg_dist = fpi_photoelectrons['bgdist_p'+parity_num]
+                n_value = fpi_photoelectrons['n_'+parity_num]
+
+                fphoto = bg_dist.y[startdelphi_I, :, :, :]
+
+                # need to interpolate using SC potential data to get Nphoto value
+                nphoto_scpot_dependent = n_value.y[startdelphi_I, :]
+                nphoto = interpol(nphoto_scpot_dependent, n_value.v, scpot_data[i])
+            else:
+                fphoto = fpi_photoelectrons['bg_dist'].y[startdelphi_I, :, :, :]
+
+                # need to interpolate using SC potential data to get Nphoto value
+                nphoto_scpot_dependent = fpi_photoelectrons['n'].y[startdelphi_I, :]
+                nphoto = interpol(nphoto_scpot_dependent, fpi_photoelectrons['n'].v, scpot_data[i])
+
+            # now, the corrected distribution function is simply f_corrected = f-fphoto*nphoto
+            # note: transpose is to shuffle fphoto*nphoto to energy-azimuth-elevation, to match dist.data
+            correction = fphoto*nphoto
+            corrected_df = dist_in['data']-correction.transpose([2, 0, 1])
+            corrected_df[corrected_df < 0] = 0.0
+
+            dist_in['data'] = corrected_df
 
         data = mms_convert_flux_units(dist_in, units=units)
 
