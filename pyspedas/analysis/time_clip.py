@@ -64,6 +64,7 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
             pyspedas.tcopy(old_names[j], n_names[j])
 
         alldata = pytplot.get_data(n_names[j])
+        metadata = pytplot.get_data(n_names[j], metadata=True)
 
         if not isinstance(alldata, tuple): # NRV variable
             continue
@@ -145,36 +146,40 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
                 pytplot.store_data(n_names[j], data={
                     'x': time[index_start:index_end],
                     'y': data[index_start:index_end, :, :, :],
-                    'v1': v1_data, 'v2': v2_data, 'v3': v3_data})
+                    'v1': v1_data, 'v2': v2_data, 'v3': v3_data},
+                    attr_dict=metadata)
             elif 'v1' in tmp_q.coords.keys() and\
                     'v2' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
                     'x': time[index_start:index_end],
                     'y': data[index_start:index_end, :, :],
-                    'v1': v1_data, 'v2': v2_data})
+                    'v1': v1_data, 'v2': v2_data},
+                    attr_dict=metadata)
             elif 'v1' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
                     'x': time[index_start:index_end],
                     'y': data[index_start:index_end, :],
-                    'v1': v1_data})
+                    'v1': v1_data}, attr_dict=metadata)
             elif 'spec_bins' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
                     'x': time[index_start:index_end],
                     'y': data[index_start:index_end, :],
-                    'v': v_data})
+                    'v': v_data}, attr_dict=metadata)
             elif 'v' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
                     'x': time[index_start:index_end],
                     'y': data[index_start:index_end, :],
-                    'v': v_data})
+                    'v': v_data}, attr_dict=metadata)
             elif data.ndim == 1:
                 pytplot.store_data(n_names[j], data={
                     'x': time[index_start:index_end],
-                    'y': data[index_start:index_end]})
+                    'y': data[index_start:index_end]},
+                    attr_dict=metadata)
             else:
                 pytplot.store_data(n_names[j], data={
                     'x': time[index_start:index_end],
-                    'y': data[index_start:index_end]})
+                    'y': data[index_start:index_end]},
+                    attr_dict=metadata)
         except:
             print('Problem time clipping: ' + n_names[j])
             continue
