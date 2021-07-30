@@ -29,7 +29,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast', instrument='fpi', probe='1',
     output=['energy', 'theta', 'phi'], energy=None, phi=None, theta=None, pitch=None, gyro=None, mag_name=None,
     pos_name=None, fac_type='mphigeo', sc_pot_name=None, correct_photoelectrons=False, 
-    internal_photoelectron_corrections=False):
+    internal_photoelectron_corrections=False, disable_photoelectron_corrections=False):
     """
 
     """
@@ -101,6 +101,10 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         mag_data = support_data[0]
         scpot_data = support_data[2]
 
+    if disable_photoelectron_corrections:
+        correct_photoelectrons = False
+        internal_photoelectron_corrections = False
+
     # grab the DES photoelectron model if needed
     if (instrument != 'fpi' or species != 'e') and (correct_photoelectrons or internal_photoelectron_corrections):
         logging.error('Photoelectron corrections only valid for DES; no corrections will be applied.')
@@ -141,7 +145,7 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
             startdelphi_I = int(np.floor(startdelphi.y[i]/16.0))
 
             if data_rate == 'brst':
-                parity_num = str(np.fix(parity.y[i]))
+                parity_num = str(int(np.fix(parity.y[i])))
 
                 bg_dist = fpi_photoelectrons['bgdist_p'+parity_num]
                 n_value = fpi_photoelectrons['n_'+parity_num]

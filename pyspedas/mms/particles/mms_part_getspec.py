@@ -14,7 +14,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     trange=None, output=['energy', 'theta', 'phi'], units='eflux', energy=None,
     phi=None, theta=None, pitch=None, gyro=None, mag_data_rate=None, fac_type='mphigeo',
     center_measurement=False, spdf=False, correct_photoelectrons=False, 
-    internal_photoelectron_corrections=False):
+    internal_photoelectron_corrections=False, disable_photoelectron_corrections=False):
     """
 
     """
@@ -62,7 +62,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     if not isinstance(probe, list):
         probe = [probe]
 
-    if instrument == 'fpi' and species == 'e':
+    if instrument == 'fpi' and species == 'e' and not disable_photoelectron_corrections:
         correct_photoelectrons = True
 
     support_trange = [time_double(trange[0])-60.0, time_double(trange[1])+60.0]
@@ -99,11 +99,13 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         new_vars = mms_part_products(tname, species=species, instrument=instrument, probe=prb, data_rate=data_rate,
                           output=output, units=units, energy=energy, phi=phi, theta=theta, pitch=pitch, gyro=gyro,
                           mag_name=mag_name, pos_name=pos_name, fac_type=fac_type, sc_pot_name=scpot_variable,
-                          correct_photoelectrons=correct_photoelectrons, internal_photoelectron_corrections=internal_photoelectron_corrections)
+                          correct_photoelectrons=correct_photoelectrons, 
+                          internal_photoelectron_corrections=internal_photoelectron_corrections,
+                          disable_photoelectron_corrections=disable_photoelectron_corrections)
         
         if new_vars is None:
             continue
-            
+
         out_vars = out_vars + new_vars
 
     logging.info('Finished; time to run: ' + str(round(time()-start_time, 1)) + ' seconds.')
