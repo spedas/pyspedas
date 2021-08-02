@@ -13,6 +13,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
          suffix='', 
          cadence='4sec', # for EMFISIS mag data
          coord='sm', # for EMFISIS mag data
+         wavetype='waveform', # for EMFISIS waveform data
          rel='rel04', # for ECT data
          get_support_data=False, 
          varformat=None,
@@ -41,8 +42,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     for prb in probe:
         if instrument == 'emfisis':
-            if datatype == 'density':
+            if datatype == 'density' or datatype == 'housekeeping':
                 pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/%Y/rbsp-'+prb+'_'+datatype+'_'+instrument+'-'+level+'_%Y%m%d_v*.cdf'
+            elif datatype == 'wfr' or datatype == 'hfr':
+                pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/'+wavetype+'/%Y/rbsp-'+prb+'_'+datatype+'-'+wavetype+'_'+instrument+'-'+level+'_%Y%m%d*_v*.cdf'
             else:
                 pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/'+cadence+'/'+coord+'/%Y/rbsp-'+prb+'_'+datatype+'_'+cadence+'-'+coord+'_'+instrument+'-'+level+'_%Y%m%d_v*.cdf'
         elif instrument == 'rbspice':

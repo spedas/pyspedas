@@ -6,7 +6,8 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
         datatype='magnetometer', 
         level='l3',
         cadence='4sec', # for EMFISIS mag data
-        coord='sm', # for EMFISIS mag data
+        coord='sm', # for EMFISIS mag 
+        wavetype='waveform', # for EMFISIS waveform data
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -17,6 +18,9 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
         time_clip=False):
     """
     This function loads data from the Electric and Magnetic Field Instrument Suite and Integrated Science (EMFISIS) instrument
+
+    For information on the EMFISIS data products, see:
+        https://emfisis.physics.uiowa.edu/data/level_descriptions
     
     Parameters:
         trange : list of str
@@ -34,7 +38,29 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
             Data coordinate system (default: sm)
 
         datatype: str
-            Data type; Valid options:
+            Data type; valid options:
+                'magnetometer'
+                'wfr'
+                'hfr'
+                'housekeeping'
+
+        wavetype: str
+            Type of level 2 waveform data; valid options:
+                For WFR data:
+                'waveform' (default)
+                'waveform-continuous-burst'
+                'spectral-matrix'
+                'spectral-matrix-diagonal'
+                'spectral-matrix-diagonal-merged'
+
+                For HFR data:
+                'waveform'
+                'spectra'
+                'spectra-burst'
+                'spectra-merged'
+
+            For descriptions of these data, see:
+                https://emfisis.physics.uiowa.edu/data/L2_products
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -70,7 +96,7 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='emfisis', trange=trange, probe=probe, datatype=datatype, level=level, cadence=cadence, coord=coord, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='emfisis', wavetype=wavetype, trange=trange, probe=probe, datatype=datatype, level=level, cadence=cadence, coord=coord, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def rbspice(trange=['2018-11-5', '2018-11-6'], 
         probe='a',
