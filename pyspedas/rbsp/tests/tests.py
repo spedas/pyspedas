@@ -25,7 +25,18 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_emfisis_data(self):
         emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='magnetometer', level='l3', time_clip=True)
+        wfr_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], level='l2', datatype='wfr')
+        hfr_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], level='l2', datatype='hfr')
         self.assertTrue(data_exists('Mag'))
+        # WFR waveform data
+        self.assertTrue(data_exists('BuSamples'))
+        self.assertTrue(data_exists('BvSamples'))
+        self.assertTrue(data_exists('BwSamples'))
+        self.assertTrue(data_exists('EuSamples'))
+        self.assertTrue(data_exists('EvSamples'))
+        self.assertTrue(data_exists('EwSamples'))
+        # HFR waveform data
+        self.assertTrue(data_exists('HFRsamples'))
 
     def test_load_efw_data(self):
         efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
