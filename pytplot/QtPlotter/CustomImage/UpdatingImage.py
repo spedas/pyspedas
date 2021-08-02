@@ -80,9 +80,12 @@ class UpdatingImage(pg.ImageItem):
             # Find the closest x values in the data for each pixel on the screen
             closest_xs = np.searchsorted(self.x, xp)
 
-            # Find the closest y values in the dat afor each pixel on the screen
+            # Find the closest y values in the data for each pixel on the screen
             y_sort = np.argsort(self.y)
             closest_ys = np.searchsorted(self.y, yp, sorter=y_sort)
+            closest_ys = []
+            for yi in yp:
+                closest_ys.append((np.abs(self.y-yi)).argmin())
             closest_ys[closest_ys == len(self.y)] = len(self.y) - 1
             if not self.bins_inc:
                 closest_ys = np.flipud(closest_ys)

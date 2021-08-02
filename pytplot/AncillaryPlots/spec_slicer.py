@@ -94,8 +94,8 @@ def spec_slicer(var=None, time=None, interactive=False):
                 plot.setLabel('left', '{}'.format(labels[name][1]))
                 plot.setLogMode(x=x_axis_log, y=y_axis_log)
                 # Update x and y range if user modified it
-                tplot_utilities.set_x_range(name, x_axis_log, plot)
-                tplot_utilities.set_y_range(name, y_axis_log, plot)
+                tplot_utilities.set_spec_slice_x_range(name, x_axis_log, plot)
+                tplot_utilities.set_spec_slice_y_range(name, y_axis_log, plot)
 
                 if ('t_average' in pytplot.data_quants[name].attrs['plot_options']['extras']) or using_avg:
                     # If the user indicated that they wanted to average the interactive plot's y values based on a
@@ -147,36 +147,34 @@ def spec_slicer(var=None, time=None, interactive=False):
                         y_values_slice = pytplot.data_quants[name].isel(time=slice(idx_left,idx_right + 1))
                     else:
                         y_values_slice = pytplot.data_quants[name].isel(time=slice(idx_left,None))
-                    y_values_avgd = np.sum(y_values_slice, axis=0)/np.float(time_diff)
-                    if len(y_values_avgd.shape) >= 2:
-                        y_values_avgd = np.nansum(y_values_avgd, 0)
-                    while len(y_values_avgd.shape) > 1:
-                        y_values_avgd = np.nansum(y_values_avgd, 1)
+                    y_values_avgd = y_values_slice.sum(dim='time', keep_attrs=True)/np.float(time_diff)
+
+                    data_at_slice = tplot_utilities.reduce_spec_dataset(tplot_dataset=y_values_avgd)
+
                     try:
                         # Plot data based on time we're hovering over
-                        plot_data.setData(bins, y_values_avgd)
+                        plot_data.setData(bins, data_at_slice)
                     except ZeroDivisionError:
                         pass
                 else:
                     # If the user just wants a plain jane interactive plot...
                     # Plot data based on time we're hovering over'
                     try:
-                        data = pytplot.data_quants[name].isel(time=idx).values
-                        if len(data.shape) >= 2:
-                            data = np.nansum(data, 0)
-                        while len(data.shape) > 1:
-                            data = np.nansum(data, 1)
+                        data_at_slice = pytplot.data_quants[name].isel(time=idx)
+                        data_at_slice = tplot_utilities.reduce_spec_dataset(tplot_dataset=data_at_slice)
+
+                        data_values_at_slice = data_at_slice.values
                         if y_axis_log:
-                            data[data<=0] = np.NaN
+                            data_values_at_slice[data_values_at_slice<=0] = np.NaN
                         #Create a Mask for Nan Values
-                        locations_where_nan = np.argwhere(np.isnan(data))
+                        locations_where_nan = np.argwhere(np.isnan(data_values_at_slice))
                         if len(locations_where_nan) > 0:
-                            nanmask = np.ones(data.shape,dtype=bool)
+                            nanmask = np.ones(data_values_at_slice.shape,dtype=bool)
                             nanmask[locations_where_nan] = False
                             nanmask[~locations_where_nan] = True
-                            plot_data.setData(bins[nanmask], list(data[nanmask]))
+                            plot_data.setData(bins[nanmask], list(data_values_at_slice[nanmask]))
                         else:
-                            plot_data.setData(bins, list(data))
+                            plot_data.setData(bins, list(data_values_at_slice))
                     except ZeroDivisionError:
                         pass
 

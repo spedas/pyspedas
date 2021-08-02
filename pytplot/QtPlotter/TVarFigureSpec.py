@@ -109,7 +109,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.hoverlegend.setParentItem(self.plotwindow.vb)
 
         # Just perform this operation once, so we don't need to keep doing it
-        self.dataframe, self.specframe = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
+        self.dataframe, self.specframe = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe2(self.tvar_name)
 
     @staticmethod
     def getaxistype():
@@ -201,6 +201,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
             ymin = self.ymin
             ymax = self.ymax
 
+        #y = self._reformat_y_axis_to_middle_values(y)
+
         # The the log of the z values if we are using a logarithmic x axis
         if self._getzaxistype() == 'log':
             data[data <= 0] = np.NaN
@@ -222,6 +224,18 @@ class TVarFigureSpec(pg.GraphicsLayout):
                                  zmax)
 
         self.plotwindow.addItem(specplot)
+
+    def _reformat_y_axis_to_middle_values(self, old_y):
+        new_y = []
+        if pytplot.data_quants[self.tvar_name].attrs['plot_options']['spec_bins_ascending']:
+            new_y.append(self.ymin)
+            for i in range(0, len(old_y)-1):
+                new_y.append(abs(old_y[i+1] - old_y[i]) + old_y[i])
+        else:
+            new_y.append(self.ymax)
+            for i in range(0, len(old_y)-1):
+                new_y.append(old_y[i] - abs(old_y[i+1] - old_y[i]))
+        return new_y
 
     def _format_spec_data_as_image(self, x_pixel_length=1000, y_pixel_height=100):
         '''
