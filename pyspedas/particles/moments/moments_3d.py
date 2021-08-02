@@ -98,7 +98,7 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
 
     vthermal = np.sqrt(2.0*avgtemp/mass)
 
-    t3 = sp.linalg.svdvals(t3x3)
+    # t3 = sp.linalg.svdvals(t3x3)
     
     output = {'density': density, 
               'flux': flux, 
