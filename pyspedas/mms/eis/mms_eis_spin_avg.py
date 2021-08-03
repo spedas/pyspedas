@@ -16,7 +16,7 @@ except ImportError:
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='extof', data_rate='srvy', suffix=''):
+def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='extof', data_rate='srvy', level='l2', suffix=''):
     """
     This function will spin-average the EIS spectrograms, and is automatically called from mms_load_eis
     
@@ -36,16 +36,16 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
 
+        level: str
+            data level ['l1a','l1b','l2pre','l2' (default)]
+
         suffix: str
             suffix of the loaded data
 
     Returns:
         List of tplot variables created.
     """
-    if data_rate == 'brst':
-        prefix = 'mms' + probe + '_epd_eis_brst_'
-    else:
-        prefix = 'mms' + probe + '_epd_eis_'
+    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' + level + '_'
 
     if data_units == 'flux':
         units_label = '1/(cm^2-sr-s-keV)'

@@ -4,14 +4,14 @@ import numpy as np
 try:
     import bottleneck as bn
     nanmean = bn.nanmean
-except:
+except ImportError:
     nanmean = np.nanmean
 from pytplot import get_data, store_data, options
 from ...utilities.tnames import tnames
 
 def mms_eis_spec_combine_sc(
         species='proton', data_units='flux', datatype='extof', data_rate='srvy',
-        suffix='',
+        level='l2', suffix='',
     ):
     '''
     Combines omni-directional energy spectrogram variable from EIS on multiple
@@ -23,6 +23,9 @@ def mms_eis_spec_combine_sc(
 
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
+
+        level: str
+            data level ['l1a','l1b','l2pre','l2' (default)]
 
         data_units: str
             desired units for data, e.g., 'flux' or 'cps' (default: 'flux')
@@ -59,7 +62,7 @@ def mms_eis_spec_combine_sc(
             _species = species_id
             if dtype == 'electronenergy':
                 _species = 'electron'
-            eis_sc_check = tnames('mms*eis*'+dtype+'_'+_species+'*flux*omni')
+            eis_sc_check = tnames('mms*eis*' + data_rate + '*' + dtype+'*' + _species + '*' + data_units + '*omni'+ suffix)
 
             # process multiple probes
             probes = []
@@ -76,17 +79,11 @@ def mms_eis_spec_combine_sc(
                     print('No probes found from eis_sc_check tnames.')
                     return
 
-            if data_rate == 'brst':
-                allmms_prefix = 'mms'+probe_string+'_epd_eis_brst_'+dtype+'_'
-            else:
-                allmms_prefix = 'mms'+probe_string+'_epd_eis_'+dtype+'_'
+            allmms_prefix = 'mmsx_epd_eis_' + data_rate + '_' + level + '_' + dtype + '_'
 
             # DETERMINE SPACECRAFT WITH SMALLEST NUMBER OF TIME STEPS TO USE
             # AS A REFERENCE SPACECRAFT
-            if data_rate == 'brst':
-                omni_vars = tnames('mms?_epd_eis_brst_'+dtype+'_'+_species+'_'+data_units+'_omni')
-            elif data_rate == 'srvy':
-                omni_vars = tnames('mms?_epd_eis_'+dtype+'_'+_species+'_'+data_units+'_omni')
+            omni_vars = tnames('mms?_epd_eis_'+data_rate+'_'+level+'_'+dtype+'_'+_species+'_'+data_units+'_omni'+suffix)
 
             if not omni_vars:
                 print('No EIS '+dtype+'data loaded!')
@@ -111,10 +108,7 @@ def mms_eis_spec_combine_sc(
             refenergy_sc_loc = np.argmin(energy_size)
             ref_sc_energy_size = int(min(energy_size))
 
-            if data_rate == 'brst':
-                prefix = 'mms'+probes[reftime_sc_loc]+'_epd_eis_brst_'+dtype+'_'
-            else:
-                prefix = 'mms'+probes[reftime_sc_loc]+'_epd_eis_'+dtype+'_'
+            prefix = 'mms'+probes[reftime_sc_loc]+'_epd_eis_'+data_rate+'_'+level+'_'+dtype+'_'
 
             # Retrieve specific probe's data based on minimum time/energy
             # Note: I did not split these tuples as the namespace is reused, i.e., "_refprobe"

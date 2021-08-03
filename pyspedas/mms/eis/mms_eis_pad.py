@@ -16,7 +16,9 @@ except ImportError:
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', data_rate='srvy', datatype='extof', species='proton', data_units='flux', energy=[55, 800], size_pabin=15, suffix=''):
+def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', 
+    data_rate='srvy', datatype='extof', species='proton', data_units='flux', 
+    energy=[55, 800], size_pabin=15, suffix=''):
     """
     Calculate pitch angle distributions using data from the MMS Energetic Ion Spectrometer (EIS)
     
@@ -87,10 +89,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
     logging.info('Calculating the EIS pitch angle distribution; this may take several minutes')
 
     for probe_id in probe:
-        if data_rate == 'brst':
-            prefix = 'mms' + probe_id + '_epd_eis_brst_'
-        else:
-            prefix = 'mms' + probe_id + '_epd_eis_'
+        prefix = 'mms' + probe_id + '_epd_eis_' + data_rate + '_' + level + '_'
 
         for datatype_id in datatype:
             pa_data = get_data(prefix + datatype_id + '_pitch_angle_t0' + suffix)
@@ -130,11 +129,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                     this_variable = tnames(prefix + datatype_id + '_' + species_id + '*_' + data_units + '_t0' + suffix)
 
                     if level == 'l2' or level == 'l1b':
-                        if data_rate == 'brst':
-                            pval_num_in_name = 6
-                        else:
-                            pval_num_in_name = 5
-                        pvalue = this_variable[0].split('_')[pval_num_in_name]
+                        pvalue = this_variable[0].split('_')[7]
                     else:
                         pvalue = ''
 
@@ -200,7 +195,7 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', da
                 options(new_name, 'ytitle', 'MMS' + str(probe_id) + ' ' + datatype_id + ' PA (deg)')
                 out_vars.append(new_name)
 
-                spin_avg_pads = mms_eis_pad_spinavg(scopes=scopes, probe=probe_id, data_rate=data_rate, datatype=datatype_id, data_units=data_units, species=species_id, energy=energy, size_pabin=size_pabin, suffix=suffix)
+                spin_avg_pads = mms_eis_pad_spinavg(scopes=scopes, probe=probe_id, data_rate=data_rate, level=level, datatype=datatype_id, data_units=data_units, species=species_id, energy=energy, size_pabin=size_pabin, suffix=suffix)
 
                 for spin_avg_pad in spin_avg_pads:
                     out_vars.append(spin_avg_pad)

@@ -7,7 +7,7 @@ from ...utilities.tnames import tnames
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_units='flux', data_rate='srvy'):
+def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_units='flux', data_rate='srvy', level='l2'):
     """
     This function will calculate the omni-directional EIS spectrograms, and is automatically called from mms_load_eis
     
@@ -30,6 +30,9 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
 
+        level: str
+            data level ['l1a','l1b','l2pre','l2' (default)]
+
 
     Returns:
         Name of tplot variable created.
@@ -37,10 +40,7 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     
     probe = str(probe)
     species_str = datatype + '_' + species
-    if data_rate == 'brst':
-        prefix = 'mms' + probe + '_epd_eis_brst_'
-    else: 
-        prefix = 'mms' + probe + '_epd_eis_'
+    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' + level + '_'
 
     if data_units == 'flux':
         units_label = '1/(cm^2-sr-s-keV)'

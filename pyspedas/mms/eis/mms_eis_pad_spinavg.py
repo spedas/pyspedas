@@ -16,7 +16,9 @@ except ImportError:
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='srvy', datatype='extof', data_units='flux', species='proton', energy=[55, 800], size_pabin=15, suffix=''):
+def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', 
+    data_rate='srvy', level='l2', datatype='extof', data_units='flux', 
+    species='proton', energy=[55, 800], size_pabin=15, suffix=''):
     """
     Calculate spin-averaged pitch angle distributions using data from the MMS Energetic Ion Spectrometer (EIS)
     
@@ -29,6 +31,9 @@ def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='
 
         data_rate: str
             instrument data rate, e.g., 'srvy' or 'brst' (default: 'srvy')
+
+        level: str
+            data level ['l1a','l1b','l2pre','l2' (default)]
 
         datatype: str
             'extof' or 'phxtof' (default: 'extof')
@@ -62,10 +67,7 @@ def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', data_rate='
     elif len(scopes) == 6:
         scope_suffix = '_omni' + suffix
 
-    if data_rate == 'brst':
-        prefix = 'mms' + probe + '_epd_eis_brst_'
-    else:
-        prefix = 'mms' + probe + '_epd_eis_'
+    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' + level + '_'
 
     # get the spin #s associated with each measurement
     spin_times, spin_nums = get_data(prefix + datatype + '_spin' + suffix)
