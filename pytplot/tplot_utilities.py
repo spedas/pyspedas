@@ -675,9 +675,11 @@ def reduce_spec_dataset(tplot_dataset=None, name=None):
     # This function will reduce the data in a 3+ dimensional DataSet object into something that can be plotted with a
     # spectrogram, either by taking slices of the data or by summing the dimensions into this one.
     if tplot_dataset is not None:
-        da = tplot_dataset
+        da = copy.deepcopy(tplot_dataset)
     elif name is not None:
         da = copy.deepcopy(pytplot.data_quants[name])
+    else:
+        return
 
     coordinate_to_plot = da.attrs['plot_options']['extras']['spec_dim_to_plot']
 
