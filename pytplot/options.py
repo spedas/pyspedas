@@ -66,10 +66,14 @@ def options(name, option=None, value=None, opt_dict=None):
                                          from a spec plot.
         t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
                                          plots.
-        spec_plot_dim       int          If variable two dimensions, this sets which dimension the variable will have on
-                                         on the y axis.  All other dimensions are summed into this one.
-        spec_slice_to_plot  str          Must be a dictionary of coordinate:values.  The specplots will plot values at
-                                         that particular slice.
+        spec_plot_dim       int/str      If variable has more than two dimensions, this sets which dimension the v
+                                         variable will display on the y axis in spectrogram plots.
+                                         All other dimensions are summed into this one, unless "spec_slices_to_use"
+                                         is also set for this variable.
+        spec_dim_to_plot    int/str      Same as spec_plot_dim, just with a slightly more descriptive name
+        spec_slices_to_use  str          Must be a dictionary of coordinate:values.  If a variable has more than two
+                                         dimensions, spectrogram plots will plot values at that particular slice of
+                                         that dimension.  See examples for how it works.
         border              bool         Turns on or off the top/right axes that would create a box around the plot
         var_label_ticks     int          Sets the number of ticks if this variable is displayed as an alternative x axis
         =================== ==========   =====
@@ -86,6 +90,10 @@ def options(name, option=None, value=None, opt_dict=None):
 
         >>> # Change Variable1 to use a log scale
         >>> pytplot.options('Variable1', 'ylog', 1)
+
+        >>> # Set the spectrogram plots to show dimension 'v2' at slice 'v1' = 0
+        >>> pytplot.options("Variable2", "spec_dim_to_plot", 'v2')
+        >>> pytplot.options("Variable2", "spec_slices_to_use", {'v1': 0})
 
     """
 

@@ -593,33 +593,6 @@ def convert_tplotxarray_to_pandas_dataframe(name, no_spec_bins=False):
     return return_data
 
 
-def convert_tplotxarray_to_pandas_dataframe2(name, no_spec_bins=False):
-    import pandas as pd
-    # This function is not final, and will presumably change in the future
-    # This function sums over all dimensions except for the second non-time one.
-    # This collapses many dimensions into just a single "energy bin" dimensions
-
-    da = copy.deepcopy(pytplot.data_quants[name])
-    coordinate_to_plot = pytplot.data_quants[name].attrs['plot_options']['extras']['spec_dim_to_plot']
-
-
-    da = reduce_spec_dataset(tplot_dataset=da)
-
-    matrix = da.values
-    return_data = pd.DataFrame(matrix)
-    return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
-
-    if no_spec_bins:
-        return return_data
-
-    spec_bins = pd.DataFrame(pytplot.data_quants[name].coords[coordinate_to_plot].values)
-    if len(pytplot.data_quants[name].coords[coordinate_to_plot].shape) == 1:
-        spec_bins = spec_bins.transpose()
-    else:
-        spec_bins = spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
-
-    return return_data, spec_bins
-
 def return_interpolated_link_dict(dataset, types):
     ret_dict = {}
     for t in types:

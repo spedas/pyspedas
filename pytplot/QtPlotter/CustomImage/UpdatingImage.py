@@ -1,3 +1,4 @@
+import pytplot
 import pyqtgraph as pg
 import numpy as np
 from pyqtgraph.Qt import QtCore
@@ -5,9 +6,8 @@ from pyqtgraph import functions as fn
 from pyqtgraph.Point import Point
 from pyqtgraph import debug as debug
 from collections.abc import Callable
-import pandas as pd
 from ..CustomViewBox.NoPaddingPlot import NoPaddingPlot
-import pytplot
+
 
 
 class UpdatingImage(pg.ImageItem):
@@ -85,7 +85,7 @@ class UpdatingImage(pg.ImageItem):
                 closest_ys.append((np.abs(self.y-yi)).argmin())
 
             # Get the data at those x and y values
-            data = self.data[closest_xs][closest_ys]
+            data = self.data[closest_xs][:, closest_ys]
 
             # Set the image with that data
             self.setImage(data.T, levels=[self.zmin, self.zmax])

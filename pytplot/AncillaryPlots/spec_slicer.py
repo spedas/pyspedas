@@ -74,7 +74,7 @@ def spec_slicer(var=None, time=None, interactive=False):
                     plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(t))
                 # Grabbing the bins to display on the x axis
                 if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 2:
-                    bins = pytplot.data_quants[name].coords['spec_bins'][idx, :]
+                    bins = pytplot.data_quants[name].coords['spec_bins'][idx, :].values
                 else:
                     bins = pytplot.data_quants[name].coords['spec_bins'].values
 
@@ -150,10 +150,12 @@ def spec_slicer(var=None, time=None, interactive=False):
                     y_values_avgd = y_values_slice.sum(dim='time', keep_attrs=True)/np.float(time_diff)
 
                     data_at_slice = tplot_utilities.reduce_spec_dataset(tplot_dataset=y_values_avgd)
+                    data_values_at_slice = data_at_slice.values
+                    if y_axis_log:
+                        data_values_at_slice[data_values_at_slice <= 0] = np.NaN
 
                     try:
-                        # Plot data based on time we're hovering over
-                        plot_data.setData(bins, data_at_slice)
+                        plot_data.setData(bins, data_values_at_slice)
                     except ZeroDivisionError:
                         pass
                 else:

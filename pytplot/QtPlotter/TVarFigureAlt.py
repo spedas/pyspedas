@@ -75,8 +75,10 @@ class TVarFigureAlt(pg.GraphicsLayout):
         # Set the font size of the axes
         font = QtGui.QFont()
         font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
-        self.xaxis.tickFont = font
-        self.yaxis.tickFont = font
+        self.xaxis.setTickFont(font)
+        self.yaxis.setTickFont(font)
+        self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"],
+                            tickFont=font)  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
 
         if show_xaxis:
             self.plotwindow.showAxis('bottom')

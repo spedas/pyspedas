@@ -95,8 +95,10 @@ class TVarFigureSpec(pg.GraphicsLayout):
         # Set the font size of the axes
         font = QtGui.QFont()
         font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
-        self.xaxis.tickFont = font
-        self.yaxis.tickFont = font
+        self.xaxis.setTickFont(font)
+        self.yaxis.setTickFont(font)
+        self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"],
+                            tickFont=font)  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
 
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
@@ -180,12 +182,17 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _visdata(self):
         # Determine if the data needs to be reformatted into a standard sized image
-        if len(self.data_2d.coords['spec_bins'][0]) > 1:
-            x, y, data = self._format_spec_data_as_image(x_pixel_length = self.X_PIXEL_LENGTH,
-                                                         y_pixel_height = self.Y_PIXEL_HEIGHT)
-        else:
-            x = self.data_2d.coords['time'].tolist()
-            y = self.data_2d.coords['spec_bins'][0].tolist()
+        try:
+            if len(self.data_2d.coords['spec_bins'][0]) > 1:
+                x, y, data = self._format_spec_data_as_image(x_pixel_length = self.X_PIXEL_LENGTH,
+                                                             y_pixel_height = self.Y_PIXEL_HEIGHT)
+            else:
+                x = self.data_2d.coords['time'].values
+                y = self.data_2d.coords['spec_bins'].values
+                data = self.data_2d.values
+        except TypeError:
+            x = self.data_2d.coords['time'].values
+            y = self.data_2d.coords['spec_bins'].values
             data = self.data_2d.values
 
         # Take the log of the y values if we are using a logarithmic y axis
@@ -344,14 +351,13 @@ class TVarFigureSpec(pg.GraphicsLayout):
             x_sub = abs(x - index_x * np.ones(len(x)))
             x_argmin = np.nanargmin(x_sub)
             x_closest = x[x_argmin]
-
-            if len(self.data_2d.coords['spec_bins'][0]) > 1:
-                try:
+            try:
+                if len(self.data_2d.coords['spec_bins'][0]) > 1:
                     y = np.asarray((self.data_2d.coords['spec_bins'][x_argmin]))
-                except:
-                    y = np.asarray((self.data_2d.coords['spec_bins'][0]))
-            else:
-                y = np.asarray((self.data_2d.coords['spec_bins'][x_argmin]))
+                else:
+                    y = np.asarray((self.data_2d.coords['spec_bins']))
+            except:
+                y = np.asarray((self.data_2d.coords['spec_bins']))
 
             y_sub = abs(y - index_y * np.ones(y.size))
             y_argmin = np.nanargmin(y_sub)
