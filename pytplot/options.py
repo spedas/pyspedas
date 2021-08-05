@@ -45,7 +45,7 @@ def options(name, option=None, value=None, opt_dict=None):
         name                str          The title of the plot.
         panel_size          flt          Number between (0,1], representing the percent size of the plot.
         basemap             str          Full path and name of a background image for "Map" plots.
-        alpha               flt          Number between [0,1], gives the transparancy of the plot lines.
+        alpha               flt          Number between [0,1], gives the transparency of the plot lines.
         thick               flt          Sets plot line width.
         yrange              flt list     Two numbers that give the y axis range of the plot.
         zrange              flt list     Two numbers that give the z axis range of the plot.
@@ -66,8 +66,14 @@ def options(name, option=None, value=None, opt_dict=None):
                                          from a spec plot.
         t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
                                          plots.
-        spec_plot_dim       int          If variable two dimensions, this sets which dimension the variable will have on
-                                         on the y axis.  All other dimensions are summed into this one.
+        spec_plot_dim       int/str      If variable has more than two dimensions, this sets which dimension the v
+                                         variable will display on the y axis in spectrogram plots.
+                                         All other dimensions are summed into this one, unless "spec_slices_to_use"
+                                         is also set for this variable.
+        spec_dim_to_plot    int/str      Same as spec_plot_dim, just with a slightly more descriptive name
+        spec_slices_to_use  str          Must be a dictionary of coordinate:values.  If a variable has more than two
+                                         dimensions, spectrogram plots will plot values at that particular slice of
+                                         that dimension.  See examples for how it works.
         border              bool         Turns on or off the top/right axes that would create a box around the plot
         var_label_ticks     int          Sets the number of ticks if this variable is displayed as an alternative x axis
         =================== ==========   =====
@@ -84,6 +90,10 @@ def options(name, option=None, value=None, opt_dict=None):
 
         >>> # Change Variable1 to use a log scale
         >>> pytplot.options('Variable1', 'ylog', 1)
+
+        >>> # Set the spectrogram plots to show dimension 'v2' at slice 'v1' = 0
+        >>> pytplot.options("Variable2", "spec_dim_to_plot", 'v2')
+        >>> pytplot.options("Variable2", "spec_slices_to_use", {'v1': 0})
 
     """
 
@@ -132,6 +142,7 @@ def options(name, option=None, value=None, opt_dict=None):
                 if value:
                     if 'spec_bins' not in pytplot.data_quants[i].coords:
                         print(f"{i} does not contain coordinates for spectrogram plotting.  Continuing...")
+                        continue
                     else:
                         pytplot.data_quants[i].attrs['plot_options']['extras']['spec'] = value
                         pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pytplot.data_quants[i])
@@ -139,6 +150,15 @@ def options(name, option=None, value=None, opt_dict=None):
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['extras']['spec'] = value
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pytplot.data_quants[i])
+
+                # Set the default dimension to plot by.  All others will be summed over.
+                if 'spec_dim_to_plot' not in pytplot.data_quants[i].attrs['plot_options']['extras']:
+                    if 'v' in pytplot.data_quants[i].coords:
+                        pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v'
+                    elif 'v2' in pytplot.data_quants[i].coords:
+                        pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v2'
+                    else:
+                        pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v1'
 
             if option == 'alt':
                 _reset_plots(i)
@@ -184,7 +204,6 @@ def options(name, option=None, value=None, opt_dict=None):
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
 
             if option == 'line_style':
-                to_be = []
                 if value == 0 or value == 'solid_line':
                     to_be = []
                 elif value == 1 or value == 'dot':
@@ -290,25 +309,47 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 't_average':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['t_average'] = value
 
-            if option == 'spec_plot_dim':
-                attr_dict = deepcopy(pytplot.data_quants[i].attrs)
-                data_dict = {}
-                data_dict['x'] = pytplot.data_quants[i].coords['time'].values
-                data_values = pytplot.data_quants[i].values
-                if len(data_values.shape) <= 2:
-                    pass
-                else:
-                    data_dict['y'] = np.swapaxes(data_values, 2, value)
-                    for c in pytplot.data_quants[i].coords:
-                        if c=='time' or c=='spec_bins':
+            if option == 'spec_dim_to_plot' or option == 'spec_plot_dim':
+                if len(pytplot.data_quants[i].values.shape) <= 2:
+                    print(f"Must have more than 2 coordinate dimensions to set spec_coord_to_plot for {pytplot.data_quants[i].name}")
+                    continue
+
+                # Set the 'spec_dim_to_plot' value to either 'v' or 'v1', 'v2', 'v3', etc.
+                if isinstance(value, int):
+                    coord_to_plot = "v" + str(value)
+                    if coord_to_plot not in pytplot.data_quants[i].coords:
+                        if value == 1:
+                            coord_to_plot = "v"
+                            if coord_to_plot not in pytplot.data_quants[i].coords:
+                                print(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
+                                continue
+                        else:
+                            print(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
                             continue
-                        data_dict[c] = pytplot.data_quants[i].coords[c].values
-                    v2_values = pytplot.data_quants[i].coords["v2"].values
-                    data_dict['v2'] = data_dict['v'+str(value)]
-                    data_dict['v' + str(value)] = v2_values
-                    pytplot.store_data(i, data=data_dict)
-                    pytplot.data_quants[i].attrs = attr_dict
-                    pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pytplot.data_quants[i])
+                    pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = coord_to_plot
+                elif isinstance(value, str):
+                    coord_to_plot = value
+                    if coord_to_plot not in pytplot.data_quants[i].coords:
+                        print(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
+                        continue
+                    else:
+                        pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = value
+
+                # If we're plotting against different coordinates, we need to change what we consider the "spec_bins"
+                pytplot.data_quants[i].coords['spec_bins'] = pytplot.data_quants[i].coords[coord_to_plot]
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pytplot.data_quants[i])
+
+            if option == 'spec_slices_to_use':
+                if not isinstance(value, dict):
+                    print("Must be a dictionary object in the format {'v2':15, 'v3':7}")
+                    return
+                else:
+                    for coord in value:
+                        if coord not in pytplot.data_quants[i].coords:
+                            print(f"Dimension {coord} not found in {pytplot.data_quants[i].name}")
+                            continue
+
+                pytplot.data_quants[i].attrs['plot_options']['extras']['spec_slices_to_use'] = value
 
             if option == 'border':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['border'] = value

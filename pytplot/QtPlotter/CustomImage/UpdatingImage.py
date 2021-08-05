@@ -1,3 +1,4 @@
+import pytplot
 import pyqtgraph as pg
 import numpy as np
 from pyqtgraph.Qt import QtCore
@@ -5,9 +6,8 @@ from pyqtgraph import functions as fn
 from pyqtgraph.Point import Point
 from pyqtgraph import debug as debug
 from collections.abc import Callable
-import pandas as pd
 from ..CustomViewBox.NoPaddingPlot import NoPaddingPlot
-import pytplot
+
 
 
 class UpdatingImage(pg.ImageItem):
@@ -22,12 +22,11 @@ class UpdatingImage(pg.ImageItem):
     _MAX_IMAGE_WIDTH = 10000
     _MAX_IMAGE_HEIGHT = 2000
     
-    def __init__(self, x, y, data, ascending_descending, lut, ymin, ymax, zmin, zmax):
+    def __init__(self, x, y, data, lut, zmin, zmax):
 
         pg.ImageItem.__init__(self)
 
         self.lut = lut
-        self.bins_inc = ascending_descending
         self.w = 100 # This is just an initial value for the width
         self.h = 100 # This is just an initial value for the height
         self.x = x
@@ -35,8 +34,8 @@ class UpdatingImage(pg.ImageItem):
         self.data = data
         self.xmin = np.nanmin(self.x)
         self.xmax = np.nanmax(self.x)
-        self.ymin = ymin
-        self.ymax = ymax
+        self.ymin = np.nanmin(self.y)
+        self.ymax = np.nanmax(self.y)
         self.zmin = zmin
         self.zmax = zmax
         self.picturenotgened=True
@@ -80,15 +79,13 @@ class UpdatingImage(pg.ImageItem):
             # Find the closest x values in the data for each pixel on the screen
             closest_xs = np.searchsorted(self.x, xp)
 
-            # Find the closest y values in the dat afor each pixel on the screen
-            y_sort = np.argsort(self.y)
-            closest_ys = np.searchsorted(self.y, yp, sorter=y_sort)
-            closest_ys[closest_ys == len(self.y)] = len(self.y) - 1
-            if not self.bins_inc:
-                closest_ys = np.flipud(closest_ys)
+            # Find the closest y values in the data for each pixel on the screen
+            closest_ys = []
+            for yi in yp:
+                closest_ys.append((np.abs(self.y-yi)).argmin())
 
             # Get the data at those x and y values
-            data = self.data.iloc[closest_xs][closest_ys].values
+            data = self.data[closest_xs][:, closest_ys]
 
             # Set the image with that data
             self.setImage(data.T, levels=[self.zmin, self.zmax])
@@ -142,10 +139,6 @@ class UpdatingImage(pg.ImageItem):
             self._lastDownsample = (xds, yds)
         else:
             image = self.image
-
-        # if the image data is a small int, then we can combine levels + lut
-        # into a single lut for better performance
-        levels = self.levels
 
         # Assume images are in column-major order for backward compatibility
         # (most images are in row-major order)

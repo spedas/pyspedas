@@ -95,8 +95,10 @@ class TVarFigureSpec(pg.GraphicsLayout):
         # Set the font size of the axes
         font = QtGui.QFont()
         font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
-        self.xaxis.tickFont = font
-        self.yaxis.tickFont = font
+        self.xaxis.setTickFont(font)
+        self.yaxis.setTickFont(font)
+        self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"],
+                            tickFont=font)  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
 
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
@@ -109,7 +111,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.hoverlegend.setParentItem(self.plotwindow.vb)
 
         # Just perform this operation once, so we don't need to keep doing it
-        self.dataframe, self.specframe = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(self.tvar_name)
+        self.data_2d = pytplot.tplot_utilities.reduce_spec_dataset(name=self.tvar_name)
 
     @staticmethod
     def getaxistype():
@@ -179,27 +181,23 @@ class TVarFigureSpec(pg.GraphicsLayout):
         return self
 
     def _visdata(self):
-        # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
-        # This needs to be rewritten to use xarray
-
         # Determine if the data needs to be reformatted into a standard sized image
-        if len(self.specframe) != 1:
-            x, y, data = self._format_spec_data_as_image(x_pixel_length = self.X_PIXEL_LENGTH,
-                                                         y_pixel_height = self.Y_PIXEL_HEIGHT)
-        else:
-            x = self.dataframe.index.tolist()
-            y = self.specframe.iloc[0].tolist()
-            data = self.dataframe
+        try:
+            if len(self.data_2d.coords['spec_bins'][0]) > 1:
+                x, y, data = self._format_spec_data_as_image(x_pixel_length = self.X_PIXEL_LENGTH,
+                                                             y_pixel_height = self.Y_PIXEL_HEIGHT)
+            else:
+                x = self.data_2d.coords['time'].values
+                y = self.data_2d.coords['spec_bins'].values
+                data = self.data_2d.values
+        except TypeError:
+            x = self.data_2d.coords['time'].values
+            y = self.data_2d.coords['spec_bins'].values
+            data = self.data_2d.values
 
         # Take the log of the y values if we are using a logarithmic y axis
         if self._getyaxistype() == 'log':
             y = np.log10(y)
-            ymin = np.log10(self.ymin)
-            ymax = np.log10(self.ymax)
-        else:
-            y = self.specframe.iloc[0].tolist()
-            ymin = self.ymin
-            ymax = self.ymax
 
         # The the log of the z values if we are using a logarithmic x axis
         if self._getzaxistype() == 'log':
@@ -211,17 +209,11 @@ class TVarFigureSpec(pg.GraphicsLayout):
             zmin = self.zmin
             zmax = self.zmax
 
-        specplot = UpdatingImage(x,
-                                 y,
-                                 data,
-                                 pytplot.data_quants[self.tvar_name].attrs['plot_options']['spec_bins_ascending'],
-                                 self.colormap,
-                                 ymin,
-                                 ymax,
-                                 zmin,
-                                 zmax)
+        # Pass in the data to actually create the spectrogram image
+        specplot = UpdatingImage(x, y, data, self.colormap, zmin, zmax)
 
         self.plotwindow.addItem(specplot)
+
 
     def _format_spec_data_as_image(self, x_pixel_length=1000, y_pixel_height=100):
         '''
@@ -232,11 +224,13 @@ class TVarFigureSpec(pg.GraphicsLayout):
         :return: x, y, data
         '''
 
-        x = self.dataframe.index.tolist()
+        x = self.data_2d.coords['time'].values
 
         # Get a list of 1000 x values
         xp = np.linspace(np.nanmin(x), np.nanmax(x), x_pixel_length)
-        closest_xs = np.searchsorted(x, xp)
+
+        # Grab data from only those values
+        resampled_data_2d = self.data_2d.sel(time=xp, method='nearest')
 
         # Get a list of 100 y values between the min and the max y values
         if self._getyaxistype() == 'log':
@@ -244,39 +238,44 @@ class TVarFigureSpec(pg.GraphicsLayout):
         else:
             yp = np.linspace(self.ymin, self.ymax, y_pixel_height)
 
+
         # Determine the closest y values for which we have data at each x value
         data_reformatted = [] # This will store the 1000x100 data array, ultimately forming the picture
-        y_sort = np.argsort(self.specframe.iloc[0].tolist())
-        prev_bins = self.specframe.iloc[0]
-        prev_closest_ys = np.searchsorted(self.specframe.iloc[0], yp, sorter=y_sort)
-        prev_closest_ys[prev_closest_ys > (len(self.specframe.iloc[0]) - 1)] = len(self.specframe.iloc[0]) - 1
+
+        y_values_at_x0 = resampled_data_2d.coords['spec_bins'][0]
+        closest_y_index_to_yp = []
+        for yi in yp:
+            closest_y_index_to_yp.append((np.abs(y_values_at_x0 - yi)).argmin())
+
 
         # For each xp, determine the closest value of x we have available. Then, determine the closest values of y at
         # each x, and determine the value at those points
-        for i in closest_xs:
-            if (self.bin_sizes.iloc[i] == prev_bins).all():
-                closest_ys = prev_closest_ys
+        prev_bins = y_values_at_x0
+        prev_closest_ys = closest_y_index_to_yp
+        for i in range(0, x_pixel_length):
+            y_values_at_xi = resampled_data_2d.coords['spec_bins'][i]
+            if (y_values_at_xi == prev_bins).all():
+                closest_y_index_to_yp = prev_closest_ys
             else:
-                prev_bins = self.specframe.iloc[i]
-                closest_ys = np.searchsorted(self.specframe.iloc[i], yp, sorter=y_sort)
-                closest_ys[closest_ys > (len(self.specframe.iloc[i]) - 1)] = len(self.specframe.iloc[i]) - 1
-                prev_closest_ys = closest_ys
+                closest_y_index_to_yp = []
+                for yi in yp:
+                    closest_y_index_to_yp.append((np.abs(y_values_at_xi - yi)).argmin())
+                prev_closest_ys = closest_y_index_to_yp
+                prev_bins = y_values_at_xi
 
             # temp_data holds the values for those closest points for a particular point in time
-            temp_data = self.dataframe.iloc[i][closest_ys].values
+            temp_data = resampled_data_2d[i][closest_y_index_to_yp].values
 
             # Try cutting the data off that is outside the bounds
             try:
-                temp_data[yp < np.nanmin(self.specframe.iloc[i])] = np.NaN
-                temp_data[yp > np.nanmax(self.specframe.iloc[i])] = np.NaN
+                temp_data[yp < np.nanmin(y_values_at_xi)] = np.NaN
+                temp_data[yp > np.nanmax(y_values_at_xi)] = np.NaN
             except RuntimeWarning:
                 # If the entire bin is NaN the above stuff fails, so just continue on
                 pass
             data_reformatted.append(temp_data)
 
-        data_reformatted = pd.DataFrame(data_reformatted)
-
-        return xp, yp, data_reformatted
+        return xp, yp, np.array(data_reformatted)
 
     def _setyaxistype(self):
         if self._getyaxistype() == 'log':
@@ -335,7 +334,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
     def _mousemoved(self, evt):
         # get current position
         pos = evt
-        flag = 0
+
         # if plot window contains position
         if self.plotwindow.sceneBoundingRect().contains(pos):
             mousePoint = self.plotwindow.vb.mapSceneToView(pos)
@@ -348,51 +347,54 @@ class TVarFigureSpec(pg.GraphicsLayout):
                 index_y = self.round_sig(float(mousePoint.y()), 4)
 
             # find closest time/data to cursor location
-            x = np.asarray(self.dataframe.index.tolist())
+            x = np.asarray(self.data_2d.coords['time'].values)
             x_sub = abs(x - index_x * np.ones(len(x)))
             x_argmin = np.nanargmin(x_sub)
             x_closest = x[x_argmin]
+            try:
+                if len(self.data_2d.coords['spec_bins'][0]) > 1:
+                    y = np.asarray((self.data_2d.coords['spec_bins'][x_argmin]))
+                else:
+                    y = np.asarray((self.data_2d.coords['spec_bins']))
+            except:
+                y = np.asarray((self.data_2d.coords['spec_bins']))
 
-            if len(self.specframe) > 1:
-                try:
-                    speclength = len(self.specframe.iloc[x_argmin])
-                    y = np.asarray((self.specframe.iloc[x_argmin, 0:speclength - 1]))
-                except:
-                    speclength = len(self.specframe.iloc[0])
-                    y = np.asarray((self.specframe.iloc[0, 0:speclength - 1]))
-            else:
-                speclength = len(self.specframe.iloc[0])
-                y = np.asarray((self.specframe.iloc[0, 0:speclength - 1]))
             y_sub = abs(y - index_y * np.ones(y.size))
             y_argmin = np.nanargmin(y_sub)
             y_closest = y[y_argmin]
-            data_point = self.dataframe[y_argmin][x_closest]
 
-            # add crosshairs
+            data_point = self.data_2d[x_argmin][y_argmin].values
+
             # Associate mouse position with current plot you're mousing over.
             pytplot.hover_time.change_hover_time(int(mousePoint.x()), name=self.tvar_name)
-            if self.crosshair:
-                self.vLine.setPos(mousePoint.x())
-                self.hLine.setPos(mousePoint.y())
-                self.vLine.setVisible(True)
-                self.hLine.setVisible(True)
 
-            date = (pytplot.tplot_utilities.int_to_str(x_closest))[0:10]
-            time = (pytplot.tplot_utilities.int_to_str(x_closest))[11:19]
-
-            # Set legend options
+            # add crosshairs
             if self.crosshair:
-                self.hoverlegend.setVisible(True)
-                self.hoverlegend.setItem("Date:", date)
-                # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
-                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', time)
-                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', str(y_closest))
-                self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', str(data_point))
+                self._update_crosshair_locations(mousePoint.x(), mousePoint.y(), x_closest, y_closest, data_point)
 
         else:
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
             self.hLine.setVisible(False)
+
+    def _update_crosshair_locations(self, mouse_x, mouse_y, x_val, y_val, data_point):
+        self.vLine.setPos(mouse_x)
+        self.hLine.setPos(mouse_y)
+        self.vLine.setVisible(True)
+        self.hLine.setVisible(True)
+
+        date = (pytplot.tplot_utilities.int_to_str(x_val))[0:10]
+        time = (pytplot.tplot_utilities.int_to_str(x_val))[11:19]
+
+        self.hoverlegend.setVisible(True)
+        self.hoverlegend.setItem("Date:", date)
+        # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
+        self.hoverlegend.setItem(
+            pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', time)
+        self.hoverlegend.setItem(
+            pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', str(y_val))
+        self.hoverlegend.setItem(
+            pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', str(data_point))
 
     def _getyaxistype(self):
         if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:

@@ -11,6 +11,7 @@ import numpy as np
 import pytz
 import pytplot
 from platform import system
+import copy
 
 
 def compare_versions():
@@ -521,12 +522,18 @@ def get_spec_slicer_axis_types(names):
         if 'spec_bins' in pytplot.data_quants[n].coords:
             zlabel = pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['axis_label']
             ylabel = pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['axis_label']
+
             if 'xi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt'].keys():
                 xtype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type']
+            elif 'y_axis_type' in pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']:
+                xtype_interactive = pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['y_axis_type']
             else:
                 xtype_interactive = 'log'
+
             if 'yi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt'].keys():
                 ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type']
+            elif 'z_axis_type' in pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']:
+                ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['z_axis_type']
             else:
                 ytype_interactive = 'log'
 
@@ -534,7 +541,7 @@ def get_spec_slicer_axis_types(names):
     return plot_labels
 
 
-def set_x_range(var, x_axis_log, plot):
+def set_spec_slice_x_range(var, x_axis_log, plot):
     # Check if plot's x range has been set by user. If not, range is automatically set.
     if 'xi_range' in pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']:
         if x_axis_log:
@@ -545,8 +552,7 @@ def set_x_range(var, x_axis_log, plot):
             plot.setXRange(pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][0],
                            pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][1], padding=0)
 
-
-def set_y_range(var, y_axis_log, plot):
+def set_spec_slice_y_range(var, y_axis_log, plot):
     # Check if plot's y range has been set by user. If not, range is automatically set.
     if 'yi_range' in pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']:
         if y_axis_log:
@@ -585,6 +591,7 @@ def convert_tplotxarray_to_pandas_dataframe(name, no_spec_bins=False):
         return return_data, spec_bins
 
     return return_data
+
 
 def return_interpolated_link_dict(dataset, types):
     ret_dict = {}
@@ -635,3 +642,36 @@ def get_y_range(dataset):
         y_max = y_max + (.1 * np.abs(y_max))
     warnings.resetwarnings()
     return [y_min, y_max]
+
+
+def reduce_spec_dataset(tplot_dataset=None, name=None):
+    # This function will reduce the data in a 3+ dimensional DataSet object into something that can be plotted with a
+    # spectrogram, either by taking slices of the data or by summing the dimensions into this one.
+    if tplot_dataset is not None:
+        da = copy.deepcopy(tplot_dataset)
+    elif name is not None:
+        da = copy.deepcopy(pytplot.data_quants[name])
+    else:
+        return
+
+    coordinate_to_plot = da.attrs['plot_options']['extras']['spec_dim_to_plot']
+
+    dim_to_plot = coordinate_to_plot + '_dim'
+
+    for d in da.dims:
+        if d == dim_to_plot:
+            pass
+        elif d == 'time':
+            pass
+        else:
+            if 'spec_slices_to_use' in da.attrs['plot_options']['extras']:
+                for key, value in da.attrs['plot_options']['extras']['spec_slices_to_use'].items():
+                    dim = key+"_dim"
+                    if dim == d:
+                        da=da.isel({dim:value})
+                        break
+                else:
+                    da = da.sum(dim=d, skipna=True, keep_attrs=True)
+            else:
+                da = da.sum(dim=d, skipna=True, keep_attrs=True)
+    return da
