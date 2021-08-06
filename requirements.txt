@@ -5,5 +5,5 @@ pytplot>=1.7.24
 cdasws>=1.7.24
 netCDF4
 pywavelets
-pyqtgraph==0.11.1
+pyqtgraph>=0.11.1
 astropy
