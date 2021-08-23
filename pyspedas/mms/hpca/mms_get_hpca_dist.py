@@ -95,6 +95,7 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
     out = {'project_name': 'MMS',
            'spacecraft': probe, 
            'species': species,
+           'data_name': 'HPCA ' + species
            'charge': charge,
            'units_name': 'df_cm',
            'mass': mass}

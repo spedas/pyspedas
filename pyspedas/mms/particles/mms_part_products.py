@@ -238,23 +238,23 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         out_vars.extend(moments_vars)
 
     if 'energy' in output:
-        spd_pgs_make_tplot(in_tvarname+'_energy', x=data_times, y=out_energy_y, z=out_energy, units=units, ylog=True)
+        spd_pgs_make_tplot(in_tvarname+'_energy', x=data_times, y=out_energy_y, z=out_energy, units=units, ylog=True, ytitle=dist_in['data_name'] + ' \\ energy (eV)')
         out_vars.append(in_tvarname+'_energy')
 
     if 'theta' in output:
-        spd_pgs_make_tplot(in_tvarname+'_theta', x=data_times, y=out_theta_y, z=out_theta, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_theta', x=data_times, y=out_theta_y, z=out_theta, units=units, ytitle=dist_in['data_name'] + ' \\ theta (deg)')
         out_vars.append(in_tvarname+'_theta')
 
     if 'phi' in output:
-        spd_pgs_make_tplot(in_tvarname+'_phi', x=data_times, y=out_phi_y, z=out_phi, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_phi', x=data_times, y=out_phi_y, z=out_phi, units=units, ytitle=dist_in['data_name'] + ' \\ phi (deg)')
         out_vars.append(in_tvarname+'_phi')
 
     if 'pa' in output:
-        spd_pgs_make_tplot(in_tvarname+'_pa', x=data_times, y=out_pad_y, z=out_pad, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_pa', x=data_times, y=out_pad_y, z=out_pad, units=units, ytitle=dist_in['data_name'] + ' \\ PA (deg)')
         out_vars.append(in_tvarname+'_pa')
 
     if 'gyro' in output:
-        spd_pgs_make_tplot(in_tvarname+'_gyro', x=data_times, y=out_gyro_y, z=out_gyro, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_gyro', x=data_times, y=out_gyro_y, z=out_gyro, units=units, ytitle=dist_in['data_name'] + ' \\ gyro (deg)')
         out_vars.append(in_tvarname+'_gyro')
 
     return out_vars
