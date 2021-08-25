@@ -4,7 +4,20 @@ from pytplot import get_data
 
 def mms_pgs_clean_support(times, mag_name=None, vel_name=None, sc_pot_name=None):
 	"""
+	Transform and/or interpolate support data to match the particle data
 
+	Parameters:
+		mag_name: str
+			Tplot variable containing magnetic field data
+
+		vel_name: str
+			Tplot variable containing bulk velocity data
+
+		sc_pot_name: str
+			Tplot variable containing spacecraft potential data
+
+	Returns:
+		Tuple containing interpolated (magnetic field, velocity, spacecraft potential)
 	"""
 
 	out_mag = None

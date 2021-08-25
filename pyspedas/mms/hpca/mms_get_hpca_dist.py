@@ -7,9 +7,33 @@ from pytplot import get_data
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=None, units=None, times=False):
+def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=None, times=False):
     """
+    Returns 3D particle data structures containing MMS HPCA
+    data for use with SPEDAS particle routines. 
+    
+    Input:
+        tname: str
+            tplot variable name containing the HPCA distribution data
 
+    Parameters:
+        probe: str
+            Spacecraft probe #
+
+        data_rate: str
+            Instrument data rates for HPCA include 'brst' and 'srvy'
+
+        species: str
+            Species of the data specified by the 'tname' input
+
+        index: int
+            Index of time sample to return
+
+        times: bool
+            Flag to return the distribution times instead of the particle data structure(s)
+
+    Returns:
+        3D particle data structure(s) containing MMS HPCA distribution functions
     """
 
     data_in = get_data(tname)

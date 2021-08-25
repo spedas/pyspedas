@@ -6,7 +6,24 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_convert_flux_units(data_in, units=None):
     """
+    Perform unit conversions for MMS particle data structures
+    
+    Input:
+        data_in: dict
+            Single particle data structure
 
+    Parameters:
+        units: str
+            String specifying output units
+            supported units:
+                flux   -   # / (cm^2 * s * sr * eV)
+                eflux  -  eV / (cm^2 * s * sr * eV)
+                df_cm  -  s^3 / cm^6
+                df_km     -  s^3 / km^6
+
+    Returns:
+        3D particle data structure with the data in the units specified by
+        the 'units' parameter
     """
 
     if units is None:

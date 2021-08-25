@@ -15,10 +15,8 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_pgs_xgse(mag_temp, pos_temp):
     """
-
-
+    Generates the 'xgse' transformation matrix
     """
-
     mag_data = get_data(mag_temp)
 
     # xaxis of this system is X of the gse system. Z is mag field
@@ -35,10 +33,8 @@ def mms_pgs_xgse(mag_temp, pos_temp):
 
 def mms_pgs_phigeo(mag_temp, pos_temp):
     """
-
-
+    Generates the 'phigeo' transformation matrix
     """
-
     pos_data = get_data(pos_temp)
 
     if pos_data is None:
@@ -66,9 +62,8 @@ def mms_pgs_phigeo(mag_temp, pos_temp):
 
 def mms_pgs_mphigeo(mag_temp, pos_temp):
     """
-
+    Generates the 'mphigeo' transformation matrix
     """
-
     pos_data = get_data(pos_temp)
 
     if pos_data is None:
@@ -98,7 +93,7 @@ def mms_pgs_mphigeo(mag_temp, pos_temp):
 
 def mms_pgs_make_fac(times, mag_tvar_in, pos_tvar_in, fac_type='mphigeo'):
     """
-
+    Generate the field aligned coordinate transformation matrix
     """
 
     if not data_exists(mag_tvar_in):

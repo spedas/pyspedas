@@ -4,7 +4,9 @@ from scipy.ndimage.interpolation import shift
 
 def mms_pgs_clean_data(data_in):
     """
-
+    Sanitize MMS FPI/HPCA data structures for use with
+    mms_part_products; reforms energy by theta by phi to energy by angle
+    and calculates delta-energy for each bin
     """
 
     output = {'charge': data_in['charge'], 'mass': data_in['mass'],
