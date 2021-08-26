@@ -18,7 +18,7 @@ import tarfile
 import os
 from pathlib import Path
 
-from config import CONFIG
+from .config import CONFIG
 
 
 def cl_master_datatypes():
