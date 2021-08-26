@@ -31,6 +31,87 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
     pos_name=None, fac_type='mphigeo', sc_pot_name=None, correct_photoelectrons=False, 
     internal_photoelectron_corrections=False, disable_photoelectron_corrections=False):
     """
+    Generate spectra and moments from 3D MMS particle data; note: this routine isn't
+    meant to be called directly - see the wrapper mms_part_getspec instead.
+
+    Input:
+        in_tvarname: str
+            Name of the tplot variable containing MMS 3D particle distribution data
+
+    Parameters:
+        units: str
+            Specify units of output variables; must be 'eflux' to calculate moments
+
+            valid options:
+            'flux'   -  # / (cm^2 * s * sr * eV)
+            'eflux'  -  eV / (cm^2 * s * sr * eV)  <default>
+            'df_cm'  -  s^3 / cm^6
+            'df_km'  -  s^3 / km^6
+
+        species: str
+            Specify the species of the input tplot variable
+
+        data_rate: str
+            Data rate of the input data
+
+        instrument: str
+            Instrument (FPI or HPCA)
+
+        probe: int or str
+            Spacecraft probe #
+
+        output: str or list of str
+            Output variables; options: 
+                'energy': energy spectrograms
+                'theta': theta spectrograms
+                'phi': phi spectrograms
+                'pa': pitch-angle spectrograms
+                'gyro': gyro-phase spectrograms
+                'moments': plasma moments
+
+        energy: list of float
+            Energy range [min, max], in eV
+
+        phi: list of float
+            Phi range [min, max], in degrees
+
+        theta: list of float
+            Theta range [min, max], in degrees
+
+        pitch: list of float
+            Pitch-angle range [min, max], in degrees
+
+        gyro: list of float
+            Gyro-angle range [min, max], in degrees
+
+        mag_name: str
+            Tplot variable containing magnetic field data for
+            moments and FAC transformations
+
+        pos_name: str
+            Tplot variable containing spacecraft position for
+            FAC transformations
+
+        sc_pot_name: str
+            Tplot variable containing spacecraft potential data
+            for moments corrections
+
+        fac_type: str
+            Field aligned coordinate system variant; default: 'mphigeo'
+            options: 'phigeo', 'mphigeo', 'xgse'
+
+        correct_photoelectrons: bool
+            Flag to correct FPI data for photoelectrons 
+            (defaults to True for FPI electron data - disable with the parameter below)
+
+        disable_photoelectron_corrections: bool
+            Flag to disable FPI photoelectron corrections
+
+        internal_photoelectron_corrections: bool
+            Apply internal photoelectron corrections
+
+    Returns:
+        Creates tplot variables containing spectrograms and moments
 
     """
 
@@ -238,23 +319,23 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         out_vars.extend(moments_vars)
 
     if 'energy' in output:
-        spd_pgs_make_tplot(in_tvarname+'_energy', x=data_times, y=out_energy_y, z=out_energy, units=units, ylog=True)
+        spd_pgs_make_tplot(in_tvarname+'_energy', x=data_times, y=out_energy_y, z=out_energy, units=units, ylog=True, ytitle=dist_in['data_name'] + ' \\ energy (eV)')
         out_vars.append(in_tvarname+'_energy')
 
     if 'theta' in output:
-        spd_pgs_make_tplot(in_tvarname+'_theta', x=data_times, y=out_theta_y, z=out_theta, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_theta', x=data_times, y=out_theta_y, z=out_theta, units=units, ytitle=dist_in['data_name'] + ' \\ theta (deg)')
         out_vars.append(in_tvarname+'_theta')
 
     if 'phi' in output:
-        spd_pgs_make_tplot(in_tvarname+'_phi', x=data_times, y=out_phi_y, z=out_phi, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_phi', x=data_times, y=out_phi_y, z=out_phi, units=units, ytitle=dist_in['data_name'] + ' \\ phi (deg)')
         out_vars.append(in_tvarname+'_phi')
 
     if 'pa' in output:
-        spd_pgs_make_tplot(in_tvarname+'_pa', x=data_times, y=out_pad_y, z=out_pad, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_pa', x=data_times, y=out_pad_y, z=out_pad, units=units, ytitle=dist_in['data_name'] + ' \\ PA (deg)')
         out_vars.append(in_tvarname+'_pa')
 
     if 'gyro' in output:
-        spd_pgs_make_tplot(in_tvarname+'_gyro', x=data_times, y=out_gyro_y, z=out_gyro, units=units)
+        spd_pgs_make_tplot(in_tvarname+'_gyro', x=data_times, y=out_gyro_y, z=out_gyro, units=units, ytitle=dist_in['data_name'] + ' \\ gyro (deg)')
         out_vars.append(in_tvarname+'_gyro')
 
     return out_vars

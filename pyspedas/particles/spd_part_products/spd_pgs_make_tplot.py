@@ -2,7 +2,9 @@
 import numpy as np
 from pytplot import store_data, options
 
-def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=True, colorbar='jet'):
+from pyspedas.particles.spd_units_string import spd_units_string
+
+def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=True, colorbar='jet', ytitle=None):
     """
     Create tplot variable with standard spectrogram settings
 
@@ -41,9 +43,14 @@ def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=
         print('Error, must specify x, y and z parameters')
         return
 
+    if ytitle is None:
+        ytitle = name
+
     store_data(name, data={'x': x, 'y': z, 'v': y})
     options(name, 'ylog', ylog)
     options(name, 'zlog', zlog)
     options(name, 'Spec', True)
+    options(name, 'ytitle', ytitle)
+    options(name, 'ztitle', spd_units_string(units, units_only=True))
     options(name, 'Colormap', colorbar)
     return name

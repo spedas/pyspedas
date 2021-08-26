@@ -8,7 +8,29 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None):
     """
+    Returns 3D particle data structures containing MMS FPI
+    data for use with SPEDAS particle routines. 
+    
+    Input:
+        tname: str
+            tplot variable name containing the FPI distribution data
 
+    Parameters:
+        probe: str
+            Spacecraft probe #
+
+        data_rate: str
+            Instrument data rates for FPI include 'brst' and 'fast'
+
+        species: str
+            Species of the data specified by the 'tname' input
+            (valid options: 'i' for ions and 'e' for electrons)
+
+        index: int
+            Index of time sample to return
+
+    Returns:
+        3D particle data structure(s) containing MMS FPI distribution functions
     """
 
     data_in = get_data(tname)

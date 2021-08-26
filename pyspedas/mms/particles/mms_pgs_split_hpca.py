@@ -3,7 +3,8 @@ import numpy as np
 
 def mms_pgs_split_hpca(data_in):
     """
-
+    Split hpca elevation bins so that dphi == dtheta.
+    This should allow the regrid step for FAC spectra to be skipped in mms_part_products.
     """
     clean_data = data_in.copy()
     clean_data['data'] = np.concatenate((clean_data['data'], clean_data['data']), axis=1)

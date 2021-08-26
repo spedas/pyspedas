@@ -16,6 +16,85 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     center_measurement=False, spdf=False, correct_photoelectrons=False, 
     internal_photoelectron_corrections=False, disable_photoelectron_corrections=False):
     """
+    Generate spectra and moments from 3D MMS particle data
+
+    Parameters:
+        trange: list of str
+            Time range
+
+        units: str
+            Specify units of output variables; must be 'eflux' to calculate moments
+
+            valid options:
+            'flux'   -  # / (cm^2 * s * sr * eV)
+            'eflux'  -  eV / (cm^2 * s * sr * eV)  <default>
+            'df_cm'  -  s^3 / cm^6
+            'df_km'  -  s^3 / km^6
+
+        species: str
+            Specify the species of the input tplot variable
+
+        data_rate: str
+            Data rate of the input data
+
+        instrument: str
+            Instrument (FPI or HPCA)
+
+        probe: int or str
+            Spacecraft probe #
+
+        output: str or list of str
+            Output variables; options: 
+                'energy': energy spectrograms
+                'theta': theta spectrograms
+                'phi': phi spectrograms
+                'pa': pitch-angle spectrograms
+                'gyro': gyro-phase spectrograms
+                'moments': plasma moments
+
+        energy: list of float
+            Energy range [min, max], in eV
+
+        phi: list of float
+            Phi range [min, max], in degrees
+
+        theta: list of float
+            Theta range [min, max], in degrees
+
+        pitch: list of float
+            Pitch-angle range [min, max], in degrees
+
+        gyro: list of float
+            Gyro-angle range [min, max], in degrees
+
+        mag_name: str
+            Tplot variable containing magnetic field data for
+            moments and FAC transformations
+
+        pos_name: str
+            Tplot variable containing spacecraft position for
+            FAC transformations
+
+        sc_pot_name: str
+            Tplot variable containing spacecraft potential data
+            for moments corrections
+
+        fac_type: str
+            Field aligned coordinate system variant; default: 'mphigeo'
+            options: 'phigeo', 'mphigeo', 'xgse'
+
+        correct_photoelectrons: bool
+            Flag to correct FPI data for photoelectrons 
+            (defaults to True for FPI electron data - disable with the parameter below)
+
+        disable_photoelectron_corrections: bool
+            Flag to disable FPI photoelectron corrections
+
+        internal_photoelectron_corrections: bool
+            Apply internal photoelectron corrections
+
+    Returns:
+        Creates tplot variables containing spectrograms and moments
 
     """
 
