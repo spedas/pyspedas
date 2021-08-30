@@ -1,5 +1,6 @@
 
 from .load import load
+from pytplot import options
 
 def mfi(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -57,7 +58,21 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='fgm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='fgm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    
+    if tvars is None or notplot or downloadonly:
+        return tvars
+
+    if 'Magnitude'+suffix in tvars:
+        options('Magnitude'+suffix, 'ytitle', 'ACE MFI \\ (nT)')
+        options('Magnitude'+suffix, 'legend_names',  'Magnitude')
+
+    if 'BGSEc'+suffix in tvars:
+        options('BGSEc'+suffix, 'ytitle', 'ACE MFI \\ (nT)')
+        options('BGSEc'+suffix, 'color',  ['b', 'g', 'r'])
+        options('BGSEc'+suffix, 'legend_names',  ['Bx', 'By', 'Bz'])
+
+    return tvars
 
 def swe(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
