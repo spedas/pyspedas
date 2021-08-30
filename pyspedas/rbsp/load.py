@@ -59,6 +59,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 pathformat = 'rbsp'+prb+'/'+level+'/ect/'+instrument+'/'+datatype+'/'+rel+'/%Y/rbsp'+prb+'_'+rel+'_ect-hope-mom-'+level+'_%Y%m%d_v*.cdf'
             elif datatype == 'pitchangle':
                 pathformat = 'rbsp'+prb+'/'+level+'/ect/'+instrument+'/'+datatype+'/'+rel+'/%Y/rbsp'+prb+'_'+rel+'_ect-hope-pa-'+level+'_%Y%m%d_v*.cdf'
+            elif datatype == 'spinaverage':
+                pathformat = 'rbsp'+prb+'/'+level+'/ect/'+instrument+'/'+datatype+'/'+rel+'/%Y/rbsp'+prb+'_'+rel+'_ect-hope-sci-'+level+'sa_%Y%m%d_v*.cdf'
         elif instrument == 'rept':
             pathformat = 'rbsp'+prb+'/'+level+'/ect/'+instrument+'/sectors/'+rel+'/%Y/rbsp'+prb+'_'+rel+'_ect-rept-sci-'+level+'_%Y%m%d_v*.cdf'
         elif instrument == 'rps':
