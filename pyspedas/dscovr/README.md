@@ -19,7 +19,7 @@ from pytplot import tplot
 ```python
 mag_vars = pyspedas.dscovr.mag(trange=['2018-11-5', '2018-11-6'])
 
-tplot('B1GSE')
+tplot('dsc_h0_mag_B1GSE')
 ```
 
 #### Faraday cup (FC)
@@ -27,7 +27,7 @@ tplot('B1GSE')
 ```python
 fc_vars = pyspedas.dscovr.fc(trange=['2018-11-5', '2018-11-6'])
 
-tplot(['V_GSE', 'THERMAL_SPD', 'Np', 'THERMAL_TEMP'])
+tplot(['dsc_h1_fc_V_GSE', 'dsc_h1_fc_THERMAL_SPD', 'dsc_h1_fc_Np', 'dsc_h1_fc_THERMAL_TEMP'])
 ```
 
 #### Orbit data
@@ -35,7 +35,7 @@ tplot(['V_GSE', 'THERMAL_SPD', 'Np', 'THERMAL_TEMP'])
 ```python
 orb_vars = pyspedas.dscovr.orb(trange=['2018-11-5', '2018-11-6'])
 
-tplot(['SUN_R', 'GCI_POS', 'GCI_VEL', 'GSE_POS', 'MOON_GSE_POS'])
+tplot(['dsc_orbit_SUN_R', 'dsc_orbit_GCI_POS', 'dsc_orbit_GCI_VEL', 'dsc_orbit_GSE_POS', 'dsc_orbit_MOON_GSE_POS'])
 ```
 
 #### Attitude data
@@ -43,7 +43,7 @@ tplot(['SUN_R', 'GCI_POS', 'GCI_VEL', 'GSE_POS', 'MOON_GSE_POS'])
 ```python
 att_vars = pyspedas.dscovr.att(trange=['2018-11-5', '2018-11-6'])
 
-tplot(['GSE_Yaw', 'GSE_Pitch', 'GSE_Roll'])
+tplot(['dsc_att_GSE_Yaw', 'dsc_att_GSE_Pitch', 'dsc_att_GSE_Roll'])
 ```
 
 #### Load all data at once
@@ -51,5 +51,5 @@ tplot(['GSE_Yaw', 'GSE_Pitch', 'GSE_Roll'])
 ```python
 all_vars = pyspedas.dscovr.all(trange=['2018-11-5', '2018-11-6'])
 
-tplot(['B1GSE', 'V_GSE', 'THERMAL_SPD', 'Np', 'GSE_POS'])
+tplot(['dsc_h0_mag_B1GSE', 'dsc_h1_fc_V_GSE', 'dsc_h1_fc_THERMAL_SPD', 'dsc_h1_fc_Np', 'dsc_orbit_GSE_POS'])
 ```

@@ -8,7 +8,8 @@ from .config import CONFIG
 def load(trange=['2018-10-16', '2018-10-17'], 
          instrument='mag', 
          datatype='h0', 
-         suffix='', 
+         suffix='',
+         prefix='',
          get_support_data=False, 
          varformat=None,
          varnames=[],
@@ -57,7 +58,9 @@ def load(trange=['2018-10-16', '2018-10-17'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, 
+        get_support_data=get_support_data, varformat=varformat, 
+        varnames=varnames, notplot=notplot)
 
     if notplot:
         return tvars
