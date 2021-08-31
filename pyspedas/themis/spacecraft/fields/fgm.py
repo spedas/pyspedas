@@ -1,6 +1,6 @@
 
 from pyspedas.themis.load import load
-
+from pytplot import options
 
 def fgm(trange=['2007-03-23', '2007-03-24'],
         probe='c',
@@ -26,7 +26,7 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
         probe: str or list of str
             Spacecraft probe letter(s) ('a', 'b', 'c', 'd' and/or 'e')
 
-        level: str
+        level: str or list of str
             Data type; Valid options: 'l1', 'l2'
 
         suffix: str
@@ -71,11 +71,39 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
 
     varformat = check_args(varformat=varformat, level=level, coord=coord)
 
-    return load(instrument='fgm', trange=trange, level=level,
+    loaded_vars = load(instrument='fgm', trange=trange, level=level,
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
                 probe=probe, time_clip=time_clip, no_update=no_update)
+
+    if loaded_vars is None or loaded_vars == []:
+        return []
+
+    if not isinstance(level, list):
+        level = [level]
+
+    if not isinstance(probe, list):
+        probe = [probe]
+
+    fgm_types = ['fgs', 'fgl', 'fgh', 'fge']
+    possible_coords = ['gse', 'gsm', 'dsl', 'ssl']
+
+    # set some plot metadata
+    for prb in probe:
+        for lvl in level:
+            if lvl == 'l2':
+                for fgm_type in fgm_types:
+                    for coord_sys in possible_coords:
+                        if 'th'+prb+'_'+fgm_type+'_'+coord_sys+suffix in loaded_vars:
+                            options('th'+prb+'_'+fgm_type+'_'+coord_sys+suffix, 'ytitle', 'TH'+prb.upper()+' '+fgm_type.upper()+' \\ [nT]')
+                            options('th'+prb+'_'+fgm_type+'_'+coord_sys+suffix, 'color', ['b', 'g', 'r'])
+                            options('th'+prb+'_'+fgm_type+'_'+coord_sys+suffix, 'legend_names', ['Bx '+coord_sys.upper(), 'By '+coord_sys.upper(), 'Bz '+coord_sys.upper()])
+                    if 'th'+prb+'_'+fgm_type+'_btotal'+suffix in loaded_vars:
+                        options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'ytitle', 'TH'+prb.upper()+' '+fgm_type.upper()+' \\ [nT]')
+                        options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'legend_names', 'Bmag')
+
+    return loaded_vars
 
 
 def check_args(varformat=None, level='l2', coord=None):
