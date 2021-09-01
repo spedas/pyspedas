@@ -1,4 +1,5 @@
 
+from pytplot import options
 from .load import load
 
 def mag(trange=['2020-06-01', '2020-06-02'],
@@ -23,6 +24,11 @@ def mag(trange=['2020-06-01', '2020-06-02'],
 
         datatype: str
             Data type; Valid options:
+              'rtn-normal': RTN Coordinates in Normal Mode
+              'rtn-normal-1-minute': Same as above, but at 1-min resolution
+              'rtn-burst': RTN Coordinates in Burst Mode
+              'srf-normal': Spacecraft Reference Frame in Normal Mode
+              'srf-burst': Spacecraft Reference Frame in Burst Mode 
 
         level: str
             Data level (default: l2)
@@ -61,8 +67,20 @@ def mag(trange=['2020-06-01', '2020-06-02'],
         List of tplot variables created.
 
     """
-    return load(instrument='mag', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+    mag_vars = load(instrument='mag', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+    if 'B_SRF'+suffix in mag_vars:
+        options('B_SRF'+suffix, 'legend_names', ['Bx', 'By', 'Bz'])
+        options('B_SRF'+suffix, 'ytitle', 'B SRF \\ (nT)')
+        options('B_SRF'+suffix, 'color', ['b', 'g', 'r'])
+
+    if 'B_RTN'+suffix in mag_vars:
+        options('B_RTN'+suffix, 'legend_names', ['Br', 'Bt', 'Bn'])
+        options('B_RTN'+suffix, 'ytitle', 'B RTN \\ (nT)')
+        options('B_RTN'+suffix, 'color', ['b', 'g', 'r'])
+
+    return mag_vars
 
 def rpw(trange=['2020-06-15', '2020-06-16'],
         datatype='hfr-surv', 
