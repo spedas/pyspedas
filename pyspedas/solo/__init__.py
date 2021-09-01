@@ -70,14 +70,21 @@ def mag(trange=['2020-06-01', '2020-06-02'],
 
     mag_vars = load(instrument='mag', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+    if datatype[-5:] == 'burst':
+        ytitle = 'SOLO MAG \\ burst (nT)'
+    elif datatype[-6:] == 'minute':
+        ytitle = 'SOLO MAG \\ 1-min (nT)'
+    else:
+        ytitle = 'SOLO MAG (nT)'
+
     if 'B_SRF'+suffix in mag_vars:
-        options('B_SRF'+suffix, 'legend_names', ['Bx', 'By', 'Bz'])
-        options('B_SRF'+suffix, 'ytitle', 'B SRF \\ (nT)')
+        options('B_SRF'+suffix, 'legend_names', ['Bx (SRF)', 'By (SRF)', 'Bz (SRF)'])
+        options('B_SRF'+suffix, 'ytitle', ytitle)
         options('B_SRF'+suffix, 'color', ['b', 'g', 'r'])
 
     if 'B_RTN'+suffix in mag_vars:
-        options('B_RTN'+suffix, 'legend_names', ['Br', 'Bt', 'Bn'])
-        options('B_RTN'+suffix, 'ytitle', 'B RTN \\ (nT)')
+        options('B_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+        options('B_RTN'+suffix, 'ytitle', ytitle)
         options('B_RTN'+suffix, 'color', ['b', 'g', 'r'])
 
     return mag_vars
