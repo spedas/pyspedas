@@ -44,6 +44,7 @@ jobs:
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'macos-latest' && github.ref == 'refs/heads/master'
     - name: Lint with flake8
+      if: github.ref == 'refs/heads/master'
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
