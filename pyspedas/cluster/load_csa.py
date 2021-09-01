@@ -161,11 +161,11 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
     try:
         r = requests.get(url, allow_redirects=True)
         r.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        print("Download error: ", e)
-        return tvars
     except requests.exceptions.HTTPError as err:
         print("Download HTTP error: ", err)
+        return tvars
+    except requests.exceptions.RequestException as e:
+        print("Download error: ", e)
         return tvars
     print("Download complete.")
 
