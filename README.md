@@ -79,9 +79,8 @@ python -m ipykernel install --user --name pyspedas --display-name "Python (pySPE
 
 Then once you open the notebook, go to "Kernel" then "Change kernel" and select the one named "Python (pySPEDAS)"
 
-pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
-
 ### Install
+pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
 
 ```bash
 pip install pyspedas
