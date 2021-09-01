@@ -16,7 +16,6 @@ jobs:
         python-version: [3.9]
 
     steps:
-    if: github.ref == 'refs/heads/master'
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
@@ -51,6 +50,7 @@ jobs:
         # exit-zero treats all errors as warnings. 
         flake8 . --count --exit-zero --max-complexity=10 --statistics # --max-line-length=127
     - name: Test with unittest
+      if: github.ref == 'refs/heads/master'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
