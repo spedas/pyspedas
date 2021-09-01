@@ -43,7 +43,9 @@ Python 3.7+ is required.
 
 We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a suite of packages useful for scientific data analysis. Step-by-step instructions for installing Anaconda can be found at: [Windows](https://docs.anaconda.com/anaconda/install/windows/), [macOS](https://docs.anaconda.com/anaconda/install/mac-os/), [Linux](https://docs.anaconda.com/anaconda/install/linux/)
 
-## Virtual Environments
+## Installation
+
+### Setup your Virtual Environment
 To avoid potential dependency issues with other Python packages, we suggest creating a virtual environment for pySPEDAS; you can create a virtual environment in your terminal with:
 
 ```bash
@@ -52,19 +54,19 @@ python -m venv pyspedas
 
 To enter your virtual environment, run the 'activate' script:
 
-### Windows
+#### Windows
 
 ```bash
 .\pyspedas\Scripts\activate
 ```
 
-### macOS and Linux
+#### macOS and Linux
 
 ```bash
 source pyspedas/bin/activate
 ```
 
-### Using Jupyter notebooks with your virtual environment
+#### Using Jupyter notebooks with your virtual environment
 
 To get virtual environments working with Jupyter, in the virtual environment, type:
 
@@ -76,8 +78,6 @@ python -m ipykernel install --user --name pyspedas --display-name "Python (pySPE
 (note: "pyspedas" is the name of your virtual environment)
 
 Then once you open the notebook, go to "Kernel" then "Change kernel" and select the one named "Python (pySPEDAS)"
-
-## Installation
 
 pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
 
