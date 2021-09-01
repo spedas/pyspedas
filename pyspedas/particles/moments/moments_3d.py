@@ -1,6 +1,5 @@
 
 import numpy as np
-import scipy as sp
 
 from pyspedas.particles.moments.moments_3d_omega_weights import moments_3d_omega_weights
 

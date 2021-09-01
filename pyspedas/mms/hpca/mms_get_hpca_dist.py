@@ -1,6 +1,5 @@
 
 import logging
-from bisect import bisect_left
 import numpy as np
 from pytplot import get_data
 
