@@ -23,9 +23,11 @@ def reptile(trange=['2013-11-5', '2013-11-6'],
 
         datatype: str
             Data type; Valid options:
+                'counts' for L1 data
+                'flux' for L2 data
 
         level: str
-            Data level (default: l2)
+            Data level; options: 'l1', 'l2' (default: l2)
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
