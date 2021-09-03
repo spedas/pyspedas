@@ -52,7 +52,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 else:
                     pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/'+cadence+'/'+coord+'/%Y/rbsp-'+prb+'_'+datatype+'_'+cadence+'-'+coord+'_'+instrument+'-'+level+'_%Y%m%d_v*.cdf'
         elif instrument == 'rbspice':
-            pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/%Y/rbsp-'+prb+'-'+instrument+'_lev-'+str(level[-1])+'_'+datatype+'_%Y%m%d_v*.cdf'
+            pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/%Y/rbsp-'+prb+'-'+instrument+'_lev-'+str(level[-1])+'?'+datatype+'_%Y%m%d_v*.cdf'
         elif instrument == 'efw':
             pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/%Y/rbsp'+prb+'_'+instrument+'-'+level+'_%Y%m%d_v??.cdf'
         elif instrument == 'mageis':
