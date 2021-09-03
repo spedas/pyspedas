@@ -183,7 +183,7 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
 
 def efw(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
-        datatype='', 
+        datatype='spec', 
         level='l3',
         suffix='',  
         get_support_data=False, 
