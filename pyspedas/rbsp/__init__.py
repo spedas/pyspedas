@@ -32,17 +32,37 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
             Spacecraft probe name ('a' or 'b'); default: a
 
         cadence: str
-            Data cadence (default: 4sec)
+            Data cadence (default: 4sec); other options: '1sec', 'hires'
 
         coord: str
             Data coordinate system (default: sm)
 
+        level: str
+            Data level; options: 'l1', 'l2', 'l3', l4'
+
         datatype: str
             Data type; valid options:
+            Level 1:
+                'magnetometer'
+                'hfr'
+                'housekeeping'
+                'sc-hk'
+                'spaceweather'
+                'wfr'
+                'wna'
+
+            Level 2:
                 'magnetometer'
                 'wfr'
                 'hfr'
                 'housekeeping'
+
+            Level 3:
+                'magnetometer'
+
+            Level 4:
+                'density'
+                'wna-survey'
 
         wavetype: str
             Type of level 2 waveform data; valid options:
@@ -163,7 +183,7 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
 
 def efw(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
-        datatype='', 
+        datatype='spec', 
         level='l3',
         suffix='',  
         get_support_data=False, 

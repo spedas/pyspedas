@@ -1,4 +1,5 @@
 
+from pytplot import options
 from .load import load
 
 def mag(trange=['2020-06-01', '2020-06-02'],
@@ -23,6 +24,11 @@ def mag(trange=['2020-06-01', '2020-06-02'],
 
         datatype: str
             Data type; Valid options:
+              'rtn-normal': RTN Coordinates in Normal Mode
+              'rtn-normal-1-minute': Same as above, but at 1-min resolution
+              'rtn-burst': RTN Coordinates in Burst Mode
+              'srf-normal': Spacecraft Reference Frame in Normal Mode
+              'srf-burst': Spacecraft Reference Frame in Burst Mode 
 
         level: str
             Data level (default: l2)
@@ -61,8 +67,27 @@ def mag(trange=['2020-06-01', '2020-06-02'],
         List of tplot variables created.
 
     """
-    return load(instrument='mag', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+    mag_vars = load(instrument='mag', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+    if datatype[-5:] == 'burst':
+        ytitle = 'SOLO MAG \\ burst (nT)'
+    elif datatype[-6:] == 'minute':
+        ytitle = 'SOLO MAG \\ 1-min (nT)'
+    else:
+        ytitle = 'SOLO MAG (nT)'
+
+    if 'B_SRF'+suffix in mag_vars:
+        options('B_SRF'+suffix, 'legend_names', ['Bx (SRF)', 'By (SRF)', 'Bz (SRF)'])
+        options('B_SRF'+suffix, 'ytitle', ytitle)
+        options('B_SRF'+suffix, 'color', ['b', 'g', 'r'])
+
+    if 'B_RTN'+suffix in mag_vars:
+        options('B_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+        options('B_RTN'+suffix, 'ytitle', ytitle)
+        options('B_RTN'+suffix, 'color', ['b', 'g', 'r'])
+
+    return mag_vars
 
 def rpw(trange=['2020-06-15', '2020-06-16'],
         datatype='hfr-surv', 
@@ -86,6 +111,42 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
 
         datatype: str
             Data type; Valid options:
+            Level 1:
+                'hfr-surv', 'lfr-surv-asm', 'lfr-surv-bp1', 'lfr-surv-bp2',
+                'lfr-surv-cwf', 'lfr-surv-swf', 'tds-surv-hist1d', 'tds-surv-hist2d',
+                'tds-surv-mamp', 'tds-surv-rswf', 'tds-surv-stat', 'tds-surv-tswf',
+                'tnr-surv'
+                (see below for definitions)
+
+            Level 2:
+              High Frequency Receiver (HFR):
+                'hfr-surv': High Frequency Receiver (HFR) Data in Survey Mode 
+
+              Low Frequency Receiver (LFR):
+                'lfr-surv-asm': Averaged Spectral Matrix (ASM) Data in Survey Mode
+                'lfr-surv-bp1': Basic Parameters Set 1 (BP1) Data in Survey Mode
+                'lfr-surv-bp2': Basic Parameter Set 2 (BP2) Data in Survey Mode 
+                'lfr-surv-cwf-b': Continuous Magnetic Waveform (CWF-B) in Survey Mode
+                'lfr-surv-cwf-e': Continuous Electric Waveform (CWF-E) in Survey Mode
+                'lfr-surv-swf-b': Snapshot Magnetic Waveform (SWF-B) in Survey Mode
+                'lfr-surv-swf-e': Snapshot Electric Waveform (SWF-E) in Survey Mode
+
+              Time Domain Sampler (TDS):
+                'tds-surv-hist1d': Histogram Set 1 (HIST1D) Data in Survey Mode
+                'tds-surv-hist2d': Histogram Set 2 (HIST2D) Data in Survey Mode
+                'tds-surv-mamp': Maximum Amplitude (MAMP) Data in Survey Mode
+                'tds-surv-rswf-b': Regular Snapshot Waveform (RSWF) Magnetic Field Data in Survey Mode
+                'tds-surv-rswf-e': Regular Snapshot Waveform (RSWF) Electric Field Data in Survey Mode
+                'tds-surv-stat': Statistical (STAT) Data in Survey Mode 
+                'tds-surv-tswf-b': Triggered Snapshot Magnetic Waveform (TSWF-B) in Survey Mode
+                'tds-surv-tswf-e': Triggered Snapshot Electric Waveform (TSWF-E) in Survey Mode
+
+            Level 3:                
+                'bia-density': Plasma density derived from probe-to-spacecraft potential and electron plasma frequency
+                'bia-density-10-seconds': same as above, but median value over 10 s interval
+                'bia-efield-10-seconds': Electric field vector in SRF. Median value over 10 s interval
+                'bia-scpot-10-seconds': Spacecraft potential with respect to plasma. Median value over 10 s interval
+                'tnr-fp': Plasma frequency value derived by the plasma peak tracking (Thermal Noise Receiver (TNR))
 
         level: str
             Data level (default: l2)
