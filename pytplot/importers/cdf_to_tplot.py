@@ -245,6 +245,11 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
 
                         if ydata[ydata == var_atts["FILLVAL"]].size != 0:
                             ydata[ydata == var_atts["FILLVAL"]] = np.nan
+                    elif var_properties['Data_Type_Description'][:7] == 'CDF_INT':
+                        # NaN is only valid for floating point data
+                        # but we still need to handle FILLVAL's for
+                        # integer data, so we'll just set those to 0
+                        ydata[ydata == var_atts["FILLVAL"]] = 0
 
                 tplot_data = {'x': xdata, 'y': ydata}
 
@@ -357,6 +362,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 options(var_name, 'spec', 1)
             if metadata[var_name]['scale_type'] == 'log':
                 options(var_name, 'ylog', 1)
+            if metadata[var_name].get('var_attrs') is not None:
+                if metadata[var_name]['var_attrs'].get('LABLAXIS') is not None:
+                    options(var_name, 'ytitle', metadata[var_name]['var_attrs']['LABLAXIS'])
+                if metadata[var_name]['var_attrs'].get('UNITS') is not None:
+                    options(var_name, 'ysubtitle', '[' + metadata[var_name]['var_attrs']['UNITS'] + ']')
+
+
             # Gather up all options in the variable attribute section, toss them into options and see what sticks
             options(var_name, opt_dict=metadata[var_name]['var_attrs'])
 
