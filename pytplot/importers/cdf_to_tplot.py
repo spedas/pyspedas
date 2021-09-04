@@ -366,8 +366,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 if metadata[var_name]['var_attrs'].get('LABLAXIS') is not None:
                     options(var_name, 'ytitle', metadata[var_name]['var_attrs']['LABLAXIS'])
                 if metadata[var_name]['var_attrs'].get('UNITS') is not None:
-                    options(var_name, 'ysubtitle', '[' + metadata[var_name]['var_attrs']['UNITS'] + ']')
-
+                    if metadata[var_name]['display_type'] == 'spectrogram':
+                        options(var_name, 'ztitle', '[' + metadata[var_name]['var_attrs']['UNITS'] + ']')
+                    else:
+                        options(var_name, 'ysubtitle', '[' + metadata[var_name]['var_attrs']['UNITS'] + ']')
 
             # Gather up all options in the variable attribute section, toss them into options and see what sticks
             options(var_name, opt_dict=metadata[var_name]['var_attrs'])
