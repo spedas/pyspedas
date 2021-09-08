@@ -376,6 +376,9 @@ class TVarFigure1D(pg.GraphicsLayout):
         if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
             return pytplot.tplot_utilities.rgb_color(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color'])
         else:
+            if len(pytplot.data_quants[self.tvar_name].data.shape) > 1:
+                if pytplot.data_quants[self.tvar_name].data.shape[1] == 3:
+                    return pytplot.tplot_utilities.rgb_color(['b', 'g', 'r'])
             if pytplot.tplot_opt_glob["black_background"]:
                 return pytplot.tplot_utilities.rgb_color(['w', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
             else:
