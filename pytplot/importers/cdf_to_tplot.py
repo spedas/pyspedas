@@ -135,10 +135,15 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 continue
             var_atts = cdf_file.varattsget(var)
 
-            if 'VAR_TYPE' not in var_atts:
+            if 'VAR_TYPE' in var_atts:
+                this_var_type = var_atts['VAR_TYPE'].lower()
+            elif 'PARAMETER_TYPE' in var_atts:
+                this_var_type = var_atts['PARAMETER_TYPE'].lower()
+            else:
+                # 'VAR_TYPE' and 'PARAMETER_TYPE' not found in the variable attributes
                 continue
 
-            if var_atts['VAR_TYPE'] in var_type:
+            if this_var_type in var_type:
                 var_atts = cdf_file.varattsget(var)
                 var_properties = cdf_file.varinq(var)
 
