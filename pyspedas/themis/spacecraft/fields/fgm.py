@@ -96,11 +96,11 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
                 for fgm_type in fgm_types:
                     for coord_sys in possible_coords:
                         if 'th'+prb+'_'+fgm_type+'_'+coord_sys+suffix in loaded_vars:
-                            options('th'+prb+'_'+fgm_type+'_'+coord_sys+suffix, 'ytitle', 'TH'+prb.upper()+' '+fgm_type.upper()+' \\ [nT]')
+                            options('th'+prb+'_'+fgm_type+'_'+coord_sys+suffix, 'ytitle', 'TH'+prb.upper()+' '+fgm_type.upper())
                             options('th'+prb+'_'+fgm_type+'_'+coord_sys+suffix, 'color', ['b', 'g', 'r'])
                             options('th'+prb+'_'+fgm_type+'_'+coord_sys+suffix, 'legend_names', ['Bx '+coord_sys.upper(), 'By '+coord_sys.upper(), 'Bz '+coord_sys.upper()])
                     if 'th'+prb+'_'+fgm_type+'_btotal'+suffix in loaded_vars:
-                        options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'ytitle', 'TH'+prb.upper()+' '+fgm_type.upper()+' \\ [nT]')
+                        options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'ytitle', 'TH'+prb.upper()+' '+fgm_type.upper())
                         options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'legend_names', 'Bmag')
 
     return loaded_vars
