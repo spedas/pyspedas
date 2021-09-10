@@ -225,21 +225,23 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     # Add dicts to the xarray attrs
     temp.name = name
-    temp.attrs = attr_dict
-    temp.attrs['plot_options'] = {}
-    temp.attrs['plot_options']['xaxis_opt'] = xaxis_opt
-    temp.attrs['plot_options']['yaxis_opt'] = yaxis_opt
-    temp.attrs['plot_options']['zaxis_opt'] = zaxis_opt
-    temp.attrs['plot_options']['line_opt'] = line_opt
-    temp.attrs['plot_options']['trange'] = trange
-    temp.attrs['plot_options']['time_bar'] = time_bar
-    temp.attrs['plot_options']['extras'] = extras
-    temp.attrs['plot_options']['create_time'] = create_time
-    temp.attrs['plot_options']['links'] = links
-    temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
-    temp.attrs['plot_options']['overplots'] = []
-    temp.attrs['plot_options']['interactive_xaxis_opt'] = {}
-    temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
+    temp.attrs = copy.deepcopy(attr_dict)
+
+    if 'plot_options' not in temp.attrs.keys():
+        temp.attrs['plot_options'] = {}
+        temp.attrs['plot_options']['xaxis_opt'] = xaxis_opt
+        temp.attrs['plot_options']['yaxis_opt'] = yaxis_opt
+        temp.attrs['plot_options']['zaxis_opt'] = zaxis_opt
+        temp.attrs['plot_options']['line_opt'] = line_opt
+        temp.attrs['plot_options']['trange'] = trange
+        temp.attrs['plot_options']['time_bar'] = time_bar
+        temp.attrs['plot_options']['extras'] = extras
+        temp.attrs['plot_options']['create_time'] = create_time
+        temp.attrs['plot_options']['links'] = links
+        temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
+        temp.attrs['plot_options']['overplots'] = []
+        temp.attrs['plot_options']['interactive_xaxis_opt'] = {}
+        temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
 
     pytplot.data_quants[name] = temp
 
