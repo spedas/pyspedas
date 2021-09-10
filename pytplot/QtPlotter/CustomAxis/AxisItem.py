@@ -177,7 +177,7 @@ class AxisItem(pg.AxisItem):
                     p2[axis] += tickLength * tickDir
                 tickPen = self.pen()
                 color = tickPen.color()
-                color.setAlpha(lineAlpha)
+                color.setAlpha(int(lineAlpha))
                 tickPen.setColor(color)
                 tickSpecs.append((tickPen, Point(p1), Point(p2)))
         profiler('compute ticks')
