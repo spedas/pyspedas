@@ -33,12 +33,12 @@ def mms_scm_set_metadata(tnames, probe, datatype, coord, suffix=''):
         elif tvar == 'mms'+probe+'_scm_acb_'+coord+'_scsrvy_srvy_l2'+suffix:
             options(tvar, 'color', ['b', 'g', 'r'])
             options(tvar, 'legend_names', ['Bx', 'By', 'Bz'])
-            options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype+' [nT]')
+            options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype)
         elif tvar == 'mms'+probe+'_scm_acb_'+coord+'_scb_brst_l2'+suffix:
             options(tvar, 'color', ['b', 'g', 'r'])
             options(tvar, 'legend_names', ['Bx', 'By', 'Bz'])
-            options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype+' [nT]')
+            options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype)
         elif tvar == 'mms'+probe+'_scm_acb_'+coord+'_schb_brst_l2'+suffix:
             options(tvar, 'color', ['b', 'g', 'r'])
             options(tvar, 'legend_names', ['Bx', 'By', 'Bz'])
-            options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype+' [nT]')
+            options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype)
