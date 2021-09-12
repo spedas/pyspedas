@@ -64,12 +64,11 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         return tvars
 
     if 'Magnitude'+suffix in tvars:
-        options('Magnitude'+suffix, 'ytitle', 'ACE MFI \\ (nT)')
+        options('Magnitude'+suffix, 'ytitle', 'ACE MFI')
         options('Magnitude'+suffix, 'legend_names',  'Magnitude')
 
     if 'BGSEc'+suffix in tvars:
-        options('BGSEc'+suffix, 'ytitle', 'ACE MFI \\ (nT)')
-        options('BGSEc'+suffix, 'color',  ['b', 'g', 'r'])
+        options('BGSEc'+suffix, 'ytitle', 'ACE MFI')
         options('BGSEc'+suffix, 'legend_names',  ['Bx', 'By', 'Bz'])
 
     return tvars

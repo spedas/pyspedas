@@ -69,13 +69,16 @@ def mag(trange=['2020-06-01', '2020-06-02'],
     """
 
     mag_vars = load(instrument='mag', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    
+    if mag_vars is None or notplot or downloadonly:
+        return mag_vars
 
     if datatype[-5:] == 'burst':
-        ytitle = 'SOLO MAG \\ burst (nT)'
+        ytitle = 'SOLO MAG \\ burst'
     elif datatype[-6:] == 'minute':
-        ytitle = 'SOLO MAG \\ 1-min (nT)'
+        ytitle = 'SOLO MAG \\ 1-min'
     else:
-        ytitle = 'SOLO MAG (nT)'
+        ytitle = 'SOLO MAG'
 
     if 'B_SRF'+suffix in mag_vars:
         options('B_SRF'+suffix, 'legend_names', ['Bx (SRF)', 'By (SRF)', 'Bz (SRF)'])
@@ -247,7 +250,17 @@ def swa(trange=['2020-07-22', '2020-07-23'],
         List of tplot variables created.
 
     """
-    return load(instrument='swa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    loaded_vars = load(instrument='swa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    
+    if loaded_vars is None or notplot or downloadonly:
+        return loaded_vars
+
+    if 'eflux'+suffix in loaded_vars:
+        options('eflux'+suffix, 'spec', True)
+        options('eflux'+suffix, 'ylog', True)
+        options('eflux'+suffix, 'zlog', True)
+
+    return loaded_vars
 
 def epd(trange=['2020-06-14', '2020-06-15'],
         datatype='step', 
