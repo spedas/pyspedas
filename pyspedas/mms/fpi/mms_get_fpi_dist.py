@@ -11,11 +11,13 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
     Returns 3D particle data structures containing MMS FPI
     data for use with SPEDAS particle routines. 
     
-    Input:
+    Input
+    ----------
         tname: str
             tplot variable name containing the FPI distribution data
 
-    Parameters:
+    Parameters
+    ----------
         probe: str
             Spacecraft probe #
 
@@ -29,7 +31,8 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
         index: int
             Index of time sample to return
 
-    Returns:
+    Returns
+    ----------
         3D particle data structure(s) containing MMS FPI distribution functions
     """
 

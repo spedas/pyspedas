@@ -6,7 +6,8 @@ def mms_pgs_clean_support(times, mag_name=None, vel_name=None, sc_pot_name=None)
 	"""
 	Transform and/or interpolate support data to match the particle data
 
-	Parameters:
+	Parameters
+    ----------
 		mag_name: str
 			Tplot variable containing magnetic field data
 
@@ -16,7 +17,8 @@ def mms_pgs_clean_support(times, mag_name=None, vel_name=None, sc_pot_name=None)
 		sc_pot_name: str
 			Tplot variable containing spacecraft potential data
 
-	Returns:
+	Returns
+    ----------
 		Tuple containing interpolated (magnetic field, velocity, spacecraft potential)
 	"""
 

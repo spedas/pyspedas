@@ -22,7 +22,8 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     """
     This function will calculate pitch angle distributions using data from the MMS Fly's Eye Energetic Particle Sensor (FEEPS)
     
-    Parameters:
+    Parameters
+    ----------
         probe: str
             probe #, e.g., '4' for MMS4
 

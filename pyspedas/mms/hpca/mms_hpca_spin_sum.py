@@ -6,7 +6,8 @@ def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'opl
     """
     This function will sum (or average, when the avg keyword is set to True) the HPCA data over each spin
     
-    Parameters:
+    Parameters
+    ----------
         fov : list of str
             field of view, in angles, from 0-360
 
@@ -25,7 +26,8 @@ def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'opl
         avg: bool
             spin-average the data instead of spin-summing the data
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
     """
 

@@ -12,15 +12,18 @@ def mms_part_des_photoelectrons(dist_var):
     """
     Loads and returns the FPI/DES photoelectron model based on stepper ID
 
-    Input:
+    Input
+    ----------
         dist_var: str
             tplot variable containing DES distribution data
 
-    Notes:
+    Notes
+    ----------
         For more information on the model, see:
         https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2017JA024518
 
-    Returns:
+    Returns
+    ----------
         Dictionary containing the photoelectron model
     """
     data = get_data(dist_var)

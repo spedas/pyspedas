@@ -34,11 +34,13 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
     Generate spectra and moments from 3D MMS particle data; note: this routine isn't
     meant to be called directly - see the wrapper mms_part_getspec instead.
 
-    Input:
+    Input
+    ----------
         in_tvarname: str
             Name of the tplot variable containing MMS 3D particle distribution data
 
-    Parameters:
+    Parameters
+    ----------
         units: str
             Specify units of output variables; must be 'eflux' to calculate moments
 
@@ -110,7 +112,8 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         internal_photoelectron_corrections: bool
             Apply internal photoelectron corrections
 
-    Returns:
+    Returns
+    ----------
         Creates tplot variables containing spectrograms and moments
 
     """

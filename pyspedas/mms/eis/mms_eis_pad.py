@@ -22,7 +22,8 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2',
     """
     Calculate pitch angle distributions using data from the MMS Energetic Ion Spectrometer (EIS)
     
-    Parameters:
+    Parameters
+    ----------
         scopes: list of str
             telescope #s to include in the calculation
 

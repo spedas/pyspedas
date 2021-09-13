@@ -11,7 +11,8 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     """
     This function will calculate the omni-directional EIS spectrograms, and is automatically called from mms_load_eis
     
-    Parameters:
+    Parameters
+    ----------
         probe: str
             probe #, e.g., '4' for MMS4
 

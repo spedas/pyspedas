@@ -8,7 +8,8 @@ def mms_eis_set_metadata(tplotnames, data_rate='srvy', datatype='extof', suffix=
     """
     This function updates the metadata for the EIS data products
     
-    Parameters:
+    Parameters
+    ----------
         tplotnames : list of str
             list of tplot variables loaded by the load routine
 
