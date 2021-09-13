@@ -4,7 +4,8 @@ def mms_scm_set_metadata(tnames, probe, datatype, coord, suffix=''):
     """
     This function updates the metadata for the SCM data products
     
-    Parameters:
+    Parameters
+    ----------
         tnames : list of str
             list of tplot variables loaded by the load routine
 
