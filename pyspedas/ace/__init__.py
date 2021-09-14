@@ -24,13 +24,13 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
-                h0: 16-Second Level 2 Data
-                h1: 4-Minute Level 2 Data
-                h2: 1-Hour Level 2 Data
-                h3: (default) 1-Second Level 2 Data
-                k0: 5-Minute Key Parameters [PRELIM]
-                k1: 16-Second Key Parameters [PRELIM]
-                k2: 1-Hour Key Parameters [PRELIM] 
+            - h0: 16-Second Level 2 Data
+            - h1: 4-Minute Level 2 Data
+            - h2: 1-Hour Level 2 Data
+            - h3: (default) 1-Second Level 2 Data
+            - k0: 5-Minute Key Parameters [PRELIM]
+            - k1: 16-Second Key Parameters [PRELIM]
+            - k2: 1-Hour Key Parameters [PRELIM] 
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
