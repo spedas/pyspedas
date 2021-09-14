@@ -30,6 +30,9 @@ def load(trange=['2018-11-5', '2018-11-6'],
     
     """
 
+    # remote path formats are going to be all lowercase
+    datatype = datatype.lower()
+
     file_resolution = 24*3600.
 
     if instrument == 'fields':
