@@ -6,7 +6,8 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
     Calculates the omni-directional pitch angle distribution (summed and averaged)
     from the individual tplot variables
     
-    Parameters:
+    Parameters
+    ----------
         probe: str 
             probe, valid values for MMS probes are ['1','2','3','4']. 
 

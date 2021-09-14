@@ -8,7 +8,8 @@ def mms_curl(fields=None, positions=None, suffix=''):
     """
     This function applies the curlometer technique to MMS FGM data
     
-    Parameters:
+    Parameters
+    ----------
         fields : list of str
             List of tplot variables containing the B-field for each spacecraft 
             (in GSE coordinates)
@@ -21,7 +22,8 @@ def mms_curl(fields=None, positions=None, suffix=''):
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
-    Notes:
+    Notes
+    ----------
         The input B-field data and position data are required to be in 
         GSE coordinates
  
@@ -32,7 +34,8 @@ def mms_curl(fields=None, positions=None, suffix=''):
           Chapter 14 of Analysis methods for multi-spacecraft data, G. 
           Paschmann and P. W. Daly (Eds.) ISSI Scientific Report SR-001. 
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created
 
     """

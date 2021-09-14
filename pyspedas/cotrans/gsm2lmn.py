@@ -4,7 +4,7 @@ from pyspedas.utilities.interpol import interpol
 
 def gsm2lmn(times, Rxyz, Bxyz, swdata=None):
     '''
-    Transforms vector field from GSM to LMN (boundary-normal) coordimnate
+    Transforms vector field from GSM to LMN (boundary-normal) coordinate
     system for the magnetopause using the Shue et al. (1998) magnetopause model
 
 

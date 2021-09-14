@@ -1,7 +1,7 @@
 """
 Coordinate transformations.
 
-Trasform from/to the following coordinate systems:
+Transform from/to the following coordinate systems:
 GSE, GSM, SM, GEI, GEO, MAG, J2000
 
 Times are in Unix seconds for consistency.

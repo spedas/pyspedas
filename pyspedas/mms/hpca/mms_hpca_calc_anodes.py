@@ -27,7 +27,8 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
     """
     This function will sum (or average, for flux) the HPCA data over the requested field-of-view (fov)
     
-    Parameters:
+    Parameters
+    ----------
         fov : list of int
             field of view, in angles, from 0-360
 
@@ -37,7 +38,8 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
     """
     sum_anodes = [a+suffix for a in ['*_count_rate', '*_RF_corrected', '*_bkgd_corrected', '*_norm_counts']]

@@ -3,7 +3,7 @@ from .load import load
 from pytplot import options
 
 def mfi(trange=['2018-11-5', '2018-11-6'],
-        datatype='k0',
+        datatype='h3',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -15,7 +15,8 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Fluxgate Magnetometer
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -23,6 +24,13 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+                h0: 16-Second Level 2 Data
+                h1: 4-Minute Level 2 Data
+                h2: 1-Hour Level 2 Data
+                h3: (default) 1-Second Level 2 Data
+                k0: 5-Minute Key Parameters [PRELIM]
+                k1: 16-Second Key Parameters [PRELIM]
+                k2: 1-Hour Key Parameters [PRELIM] 
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -54,7 +62,8 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -74,7 +83,7 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
     return tvars
 
 def swe(trange=['2018-11-5', '2018-11-6'],
-        datatype='k0',
+        datatype='h0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -86,7 +95,8 @@ def swe(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Solar Wind Electron, Proton and Alpha Monitor (SWEPAM)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -94,6 +104,10 @@ def swe(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+                h0: (default) 64-Second Level 2 Data
+                h2: 1-Hour Level 2 Data
+                k0: 5-Minute Key Parameters [PRELIM] 
+                k1: 1-Hour Key Parameters [PRELIM]
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -125,14 +139,15 @@ def swe(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
     return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epam(trange=['2018-11-5', '2018-11-6'],
-        datatype='k0',
+        datatype='h0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -144,7 +159,8 @@ def epam(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Electron Proton Alpha Monitor (EPAM)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -152,6 +168,11 @@ def epam(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+                h1: (default) 5-Minute Level 2 Data
+                h2: 1-Hour Level 2 Data
+                h3: 12-second Level 2 Data
+                k0: 5-Minute Key Parameters
+                k1: 1-Hour Key Parameters
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -183,7 +204,8 @@ def epam(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -202,7 +224,8 @@ def cris(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Cosmic Ray Isotope Spectrometer (CRIS)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -210,6 +233,8 @@ def cris(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+                h2: (default) 1-Hour Level 2 Data
+                h3: Daily-averaged Level 2 Data
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -241,7 +266,8 @@ def cris(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -260,7 +286,8 @@ def sis(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Solar Isotope Spectrometer (SIS)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -268,6 +295,9 @@ def sis(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+                h1: (default) 256-sec Level 2 Data
+                h2: 1-Hour Level 2 Data
+                k0: 1-Hour Key Parameters
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -299,7 +329,8 @@ def sis(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -319,7 +350,8 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Ultra Low Energy Isotope Spectrometer (ULEIS)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -327,6 +359,7 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+                h2: 1-Hour Level 2 Data
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -358,7 +391,8 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -378,7 +412,8 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
     """
     This function loads data from the Solar Energetic Particle Ionic Charge Analyzer (SEPICA)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -386,6 +421,7 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
 
         datatype: str
             Data type; Valid options:
+                h2: 1-Hour Level 2 Data
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -417,7 +453,8 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -436,7 +473,8 @@ def swics(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Solar Wind Ion Composition Spectrometer (SWICS)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -444,6 +482,12 @@ def swics(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+                sw2_h3: (default) SWICS 2.0 Solar Wind 2-Hour Level 2 Data
+                swi_h2: SWICS 1.1 Solar Wind 1-Hour Level 2 Data
+                swi_h3: SWICS 1.1 Solar Wind 2-Hour Level 2 Data
+                swi_h4: SWICS 1.1 Solar Wind 1-Day Level 2 Data 
+                swi_h5: SWICS 1.1 Solar Wind 2-Hour Level 2 Q-state distributions 
+                swi_h6: Solar Wind Protons 12-min Level 2 Data
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -475,7 +519,8 @@ def swics(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

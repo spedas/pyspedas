@@ -17,7 +17,8 @@ def mms_eis_spec_combine_sc(
     Combines omni-directional energy spectrogram variable from EIS on multiple
         MMS spacecraft.
 
-    Parameters:
+    Parameters
+    ----------
         datatype: str
             'extof', 'electroenergy', or 'phxtof' (default: 'extof')
 

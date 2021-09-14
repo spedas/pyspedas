@@ -11,11 +11,13 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
     Returns 3D particle data structures containing MMS HPCA
     data for use with SPEDAS particle routines. 
     
-    Input:
+    Input
+    ----------
         tname: str
             tplot variable name containing the HPCA distribution data
 
-    Parameters:
+    Parameters
+    ----------
         probe: str
             Spacecraft probe #
 

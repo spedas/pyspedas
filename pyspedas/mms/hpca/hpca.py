@@ -21,7 +21,8 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     """
     This function loads HPCA data into tplot variables
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 

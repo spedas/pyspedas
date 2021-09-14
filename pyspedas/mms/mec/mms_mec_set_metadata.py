@@ -5,7 +5,8 @@ def mms_mec_set_metadata(probe, data_rate, level, suffix=''):
     """
     This function updates the metadata for MEC data products
     
-    Parameters:
+    Parameters
+    ----------
         probe : str or list of str
             probe or list of probes, valid values for MMS probes are ['1','2','3','4']. 
 

@@ -18,7 +18,8 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     """
     Generate spectra and moments from 3D MMS particle data
 
-    Parameters:
+    Parameters
+    ----------
         trange: list of str
             Time range
 
@@ -93,7 +94,8 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         internal_photoelectron_corrections: bool
             Apply internal photoelectron corrections
 
-    Returns:
+    Returns
+    ----------
         Creates tplot variables containing spectrograms and moments
 
     """
