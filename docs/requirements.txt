@@ -1,3 +1,4 @@
+sphinx>=1.7.5
 numpy>=1.20.0
 requests
 cdflib>=0.3.20
