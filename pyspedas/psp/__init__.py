@@ -58,6 +58,24 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
+
+    # SCaM data is Level 3
+    if datatype == 'merged_scam_wf':
+        level = 'l3'
+
+    if datatype == 'dfb_dc_spec' or datatype == 'dfb_ac_spec' or datatype == 'dfb_dc_xspec' or datatype == 'dfb_ac_xspec':
+        if datatype == 'dfb_dc_spec' or datatype == 'dfb_ac_spec':
+            spec_types = ['dV12hg','dV34hg','dV12lg','dV34lg',
+                'SCMulfhg','SCMvlfhg','SCMwlfhg',
+                'SCMulflg','SCMvlflg','SCMwlflg',
+                'SCMdlfhg','SCMelfhg','SCMflfhg',
+                'SCMdlflg','SCMelflg','SCMflflg',
+                'SCMmf', 'V5hg']
+        else:
+            spec_types = ['SCMdlfhg_SCMelfhg','SCMdlfhg_SCMflfhg','SCMelfhg_SCMflfhg',
+                'SCMulfhg_SCMvlfhg','SCMulfhg_SCMwlfhg','SCMvlfhg_SCMwlfhg',
+                'dV12hg_dV34hg']
+
     return load(instrument='fields', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def spc(trange=['2018-11-5', '2018-11-6'], 
