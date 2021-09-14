@@ -13,7 +13,7 @@ def sem(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False):
     """
-    This function loads Parker Solar Probe FIELDS data
+    This function loads POES Space Environment Monitor (SEM) data
     
     Parameters:
         trange : list of str
