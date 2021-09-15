@@ -28,10 +28,11 @@ pySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
 
    tplot(['B_RTN', 'psp_fld_l2_mag_RTN', 'mms2_fgm_b_gsm_srvy_l2_bvec', 'thd_fgs_gsm'])
 
-.. image:: _static/solo-psp-mms-themis.png
-   :scale: 75 %
+.. figure:: _static/solo-psp-mms-themis.png
+   :scale: 80 %
    :align: center
-   
+   :class: imgborder
+
 .. toctree::
    :caption: First Steps
    :maxdepth: 1
