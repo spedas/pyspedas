@@ -1,6 +1,8 @@
 
 from .load import load
 
+from pytplot import options
+
 def fields(trange=['2018-11-5', '2018-11-6'], 
         datatype='mag_rtn', 
         level='l2',
@@ -78,7 +80,15 @@ def fields(trange=['2018-11-5', '2018-11-6'],
                 'SCMulfhg_SCMvlfhg','SCMulfhg_SCMwlfhg','SCMvlfhg_SCMwlfhg',
                 'dV12hg_dV34hg']
 
-    return load(instrument='fields', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    loaded_vars = load(instrument='fields', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    
+    if loaded_vars is None or notplot or downloadonly:
+        return loaded_vars
+
+    if 'psp_fld_l2_mag_RTN'+suffix in loaded_vars:
+        options('psp_fld_l2_mag_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+
+    return loaded_vars
 
 def spc(trange=['2018-11-5', '2018-11-6'], 
         datatype='l3i', 
