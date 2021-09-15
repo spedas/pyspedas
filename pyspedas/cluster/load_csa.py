@@ -18,7 +18,7 @@ import tarfile
 import os
 from pathlib import Path
 
-from .config import CONFIG
+from config import CONFIG
 
 
 def cl_master_datatypes():
@@ -201,7 +201,12 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
     except IndexError as e:
         print("cdf_to_tplot cannot load Cluster cdf file.")
         print("File: ", out_files[0])
-        print("Loading error:", e)
+        print("IndexError:", e)
+        return tvars
+    except TypeError as e:
+        print("cdf_to_tplot cannot load Cluster cdf file.")
+        print("File: ", out_files[0])
+        print("TypeError:", e)
         return tvars
 
     if notplot:
