@@ -33,6 +33,7 @@ pySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
    :align: center
    :class: imgborder
 
+
 .. toctree::
    :caption: First Steps
    :maxdepth: 1
