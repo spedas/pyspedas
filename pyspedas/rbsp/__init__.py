@@ -22,7 +22,8 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
     For information on the EMFISIS data products, see:
         https://emfisis.physics.uiowa.edu/data/level_descriptions
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -112,7 +113,8 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -133,7 +135,8 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Radiation Belt Storm Probes Ion Composition Experiment (RBSPICE) instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -175,7 +178,8 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -196,7 +200,8 @@ def efw(trange=['2015-11-5', '2015-11-6'],
     """
     This function loads data from the Electric Field and Waves Suite (EFW)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -238,7 +243,8 @@ def efw(trange=['2015-11-5', '2015-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -260,7 +266,8 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
     """
     This function loads data from the Energetic Particle, Composition, and Thermal Plasma Suite (ECT)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -302,7 +309,8 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -324,7 +332,8 @@ def hope(trange=['2015-11-5', '2015-11-6'],
     """
     This function loads data from the Energetic Particle, Composition, and Thermal Plasma Suite (ECT)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -366,7 +375,8 @@ def hope(trange=['2015-11-5', '2015-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -388,7 +398,8 @@ def rept(trange=['2015-11-5', '2015-11-6'],
     """
     This function loads data from the Energetic Particle, Composition, and Thermal Plasma Suite (ECT)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -430,7 +441,8 @@ def rept(trange=['2015-11-5', '2015-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -451,7 +463,8 @@ def rps(trange=['2015-11-5', '2015-11-6'],
     """
     This function loads data from the Relativistic Proton Spectrometer (RPS)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -493,7 +506,8 @@ def rps(trange=['2015-11-5', '2015-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
