@@ -1,3 +1,5 @@
 .imgborder {
   border: 1px solid #ddd;
+  max-width: 100%;
+  height: auto;
 }
