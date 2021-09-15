@@ -17,7 +17,8 @@ def pwe_ofa(trange=['2017-04-01', '2017-04-02'],
     """
     This function loads data from the PWE experiment from the Arase mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -59,7 +60,8 @@ def pwe_ofa(trange=['2017-04-01', '2017-04-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -81,7 +83,8 @@ def pwe_efd(trange=['2017-04-01', '2017-04-02'],
     """
     This function loads data from the PWE experiment from the Arase mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -123,7 +126,8 @@ def pwe_efd(trange=['2017-04-01', '2017-04-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -146,7 +150,8 @@ def pwe_hfa(trange=['2017-04-01', '2017-04-02'],
     """
     This function loads data from the PWE experiment from the Arase mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -188,7 +193,8 @@ def pwe_hfa(trange=['2017-04-01', '2017-04-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

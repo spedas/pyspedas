@@ -14,7 +14,8 @@ def mgf(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the MGF instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -53,7 +54,8 @@ def mgf(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -72,7 +74,8 @@ def efd(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the EFD instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -111,7 +114,8 @@ def efd(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -130,7 +134,8 @@ def lep(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the LEP instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -169,7 +174,8 @@ def lep(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -188,7 +194,8 @@ def cpi(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the CPI instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -227,7 +234,8 @@ def cpi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -246,7 +254,8 @@ def epic(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the EPIC instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -285,7 +294,8 @@ def epic(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -304,7 +314,8 @@ def pwi(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the PWI instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -343,7 +354,8 @@ def pwi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

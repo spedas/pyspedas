@@ -17,7 +17,8 @@ def xep(trange=['2017-06-01', '2017-06-02'],
     """
     This function loads data from the XEP-e experiment from the Arase mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -59,7 +60,8 @@ def xep(trange=['2017-06-01', '2017-06-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

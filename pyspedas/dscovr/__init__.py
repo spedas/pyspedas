@@ -14,7 +14,8 @@ def mag(trange=['2018-10-16', '2018-10-17'],
     """
     This function loads DSCOVR Fluxgate Magnetometer data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -54,7 +55,8 @@ def mag(trange=['2018-10-16', '2018-10-17'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -73,7 +75,8 @@ def fc(trange=['2018-10-16', '2018-10-17'],
     """
     This function loads DSCOVR Faraday Cup data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -113,7 +116,8 @@ def fc(trange=['2018-10-16', '2018-10-17'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -132,7 +136,8 @@ def orb(trange=['2018-10-16', '2018-10-17'],
     """
     This function loads DSCOVR Ephemeris data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -168,7 +173,8 @@ def orb(trange=['2018-10-16', '2018-10-17'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -187,7 +193,8 @@ def att(trange=['2018-10-16', '2018-10-17'],
     """
     This function loads DSCOVR Attitude data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -223,7 +230,8 @@ def att(trange=['2018-10-16', '2018-10-17'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -233,7 +241,8 @@ def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False, suffix='', no_u
     """
     This function loads all DSCOVR data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -249,7 +258,8 @@ def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False, suffix='', no_u
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

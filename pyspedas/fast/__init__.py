@@ -15,7 +15,8 @@ def dcb(trange=['2001-09-05', '2001-09-06'],
     """
     This function loads data from the Fluxgate Magnetometer
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -54,7 +55,8 @@ def dcb(trange=['2001-09-05', '2001-09-06'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -74,7 +76,8 @@ def acb(trange=['1998-01-05', '1998-01-06'],
     """
     This function loads data from the Search-coil Magnetometer
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -113,7 +116,8 @@ def acb(trange=['1998-01-05', '1998-01-06'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -133,7 +137,8 @@ def esa(trange=['1998-09-05', '1998-09-06'],
     """
     This function loads data from the Electrostatic Analyzers (ESA)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -172,7 +177,8 @@ def esa(trange=['1998-09-05', '1998-09-06'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -192,7 +198,8 @@ def teams(trange=['1998-09-05', '1998-09-06'],
     """
     This function loads data from the Time-of-flight Energy Angle Mass Spectrograph (TEAMS)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -231,7 +238,8 @@ def teams(trange=['1998-09-05', '1998-09-06'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
