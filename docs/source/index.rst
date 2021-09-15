@@ -17,17 +17,21 @@ pySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
 .. code-block:: python
    
    import pyspedas
+   from pytplot import tplot
 
    time_range = ['2020-04-20/06:00', '2020-04-20/08:00']
+
    pyspedas.solo.mag(trange=time_range, time_clip=True)
    pyspedas.psp.fields(trange=time_range, time_clip=True)
    pyspedas.mms.fgm(trange=time_range, time_clip=True, probe=2)
    pyspedas.themis.fgm(trange=time_range, time_clip=True, probe='d')
 
-   from pytplot import tplot
    tplot(['B_RTN', 'psp_fld_l2_mag_RTN', 'mms2_fgm_b_gsm_srvy_l2_bvec', 'thd_fgs_gsm'])
 
-
+.. image:: _static/solo-psp-mms-themis.png
+   :scale: 75 %
+   :align: center
+   
 .. toctree::
    :caption: First Steps
    :maxdepth: 1
