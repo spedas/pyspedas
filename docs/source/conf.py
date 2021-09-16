@@ -33,7 +33,7 @@ release = '1.2'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.intersphinx']
 
 # Napoleon settings
 napoleon_numpy_docstring = True
@@ -47,7 +47,6 @@ napoleon_use_ivar = True
 napoleon_use_param = False
 napoleon_use_rtype = True
 napoleon_preprocess_types = True
-
 napoleon_attr_annotations = True
 
 # Add any paths that contain templates here, relative to this directory.
@@ -74,3 +73,26 @@ html_static_path = ['_static']
 html_css_files = ['css/custom.css']
 
 autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.QtWidgets']
+
+# Intersphinx generates automatic links to the documentation of objects
+# in other packages. When mappings are removed or added, please update
+# the section in docs/doc_guide.rst on references to other packages.
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "pytplot": ("https://pytplot.readthedocs.io/", None),
+    "SPEDAS": ("http://spedas.org/", None),
+    "plasmapy": ("https://docs.plasmapy.org/", None),
+    "Solar Orbiter": ("https://pyspedas.readthedocs.io/en/latest/solo.html", None),
+    "MMS": ("https://pyspedas.readthedocs.io/en/latest/mms.html", None),
+    "THEMIS": ("https://pyspedas.readthedocs.io/en/latest/themis.html", None),
+    "Parker Solar Probe": ("https://pyspedas.readthedocs.io/en/latest/psp.html", None),
+    "sphinx_automodapi": (
+        "https://sphinx-automodapi.readthedocs.io/en/latest/",
+        None,
+    ),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+}
