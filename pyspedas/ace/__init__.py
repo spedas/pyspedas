@@ -147,7 +147,7 @@ def swe(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epam(trange=['2018-11-5', '2018-11-6'],
-        datatype='h0',
+        datatype='h1',
         suffix='',  
         get_support_data=False, 
         varformat=None,
