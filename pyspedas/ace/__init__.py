@@ -147,7 +147,7 @@ def swe(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epam(trange=['2018-11-5', '2018-11-6'],
-        datatype='h1',
+        datatype='k0',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -168,10 +168,10 @@ def epam(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
-                h1: (default) 5-Minute Level 2 Data
+                h1: 5-Minute Level 2 Data
                 h2: 1-Hour Level 2 Data
                 h3: 12-second Level 2 Data
-                k0: 5-Minute Key Parameters
+                k0: (default) 5-Minute Key Parameters
                 k1: 1-Hour Key Parameters
 
         suffix: str
