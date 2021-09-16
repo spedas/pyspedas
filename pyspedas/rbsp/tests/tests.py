@@ -61,9 +61,10 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('FPSA'))
         self.assertTrue(data_exists('FPDU'))
 
-    def test_load_rps1min_data(self):
-        rps_vars = pyspedas.rbsp.rps()
-        self.assertTrue(data_exists('DOSE2_RATE'))
+    # disabled, 16Sep2021 due to a problem with the data
+    # def test_load_rps1min_data(self):
+    #   rps_vars = pyspedas.rbsp.rps()
+    #   self.assertTrue(data_exists('DOSE2_RATE'))
 
 if __name__ == '__main__':
     unittest.main()
