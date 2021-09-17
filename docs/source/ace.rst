@@ -19,6 +19,8 @@ Example
 .. image:: _static/ace_mfi.png
    :scale: 75 %
    :align: center
+   :class: imgborder
+
 
 Solar Wind Electron, Proton and Alpha Monitor (SWEPAM)
 --------------------------------------------------------
@@ -37,6 +39,8 @@ Example
 .. image:: _static/ace_swepam.png
    :scale: 75 %
    :align: center
+   :class: imgborder
+
 
 Electron, Proton, and Alpha-particle Monitor (EPAM)
 ----------------------------------------------------
