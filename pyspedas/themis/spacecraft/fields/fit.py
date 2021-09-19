@@ -1,4 +1,3 @@
-
 from pyspedas.themis.load import load
 
 
@@ -84,8 +83,13 @@ def cal_fit(probe='a'):
         th?_fgs tplot variable
     """
     import math
-    import numpy
+    import numpy as np
+
     from pytplot import get_data, store_data
+    from pyspedas.utilities.download import download
+    from pyspedas.themis.config import CONFIG
+    from pyspedas.utilities.time_double import time_float_one
+    from numpy.linalg import inv
 
     # Get data from th?_fit variable
     # TODO: Add check of tvar existence
@@ -113,23 +117,24 @@ def cal_fit(probe='a'):
                     "Zscale": -15000. / (lv56 * 2. ** 15.),
                     "units": 'mV/m'},
             "b": {"cal_par_time": '2002-01-01/00:00:00',
-                    "Ascale": 1.e0,
-                    "Bscale": 1.e0,
-                    "Cscale": 1.e0,
-                    "theta": 0.0,
-                    "sigscale": 1.e0,
-                    "Zscale": 1.e0,
-                    "units": 'nT'}}
+                  "Ascale": 1.e0,
+                  "Bscale": 1.e0,
+                  "Cscale": 1.e0,
+                  "theta": 0.0,
+                  "sigscale": 1.e0,
+                  "Zscale": 1.e0,
+                  "units": 'nT'}}
     # establish probe number in cal tables
     sclist = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': -1}  # for probe 'f' no flatsat FGM cal files
     # TODO: Add processing of probe f
     scn = sclist[probe]
 
     #  Rotation vectors
-    rotBxy_angles = [29.95, 29.95, 29.95, 29.95, 29.95]  # vassilis 6/2/2007: deg to rotate FIT on spin plane to match DSL on 5/4
+    rotBxy_angles = [29.95, 29.95, 29.95, 29.95,
+                     29.95]  # vassilis 6/2/2007: deg to rotate FIT on spin plane to match DSL on 5/4
     rotBxy = rotBxy_angles[scn]  # vassilis 4/28: probably should be part of CAL table as well...
-    cs = math.cos(rotBxy*math.pi/180)  # vassilis
-    sn = math.sin(rotBxy*math.pi/180)  # vassilis
+    cs = math.cos(rotBxy * math.pi / 180)  # vassilis
+    sn = math.sin(rotBxy * math.pi / 180)  # vassilis
 
     adc2nT = 50000. / 2. ** 24  # vassilis 2007 - 04 - 03
 
@@ -142,12 +147,37 @@ def cal_fit(probe='a'):
     d.y[:, i, 3] = cpar['b']['sigscale'] * d.y[:, i, 3] * adc2nT  # vassilis
     d.y[:, i, 4] = cpar['b']['Zscale'] * d.y[:, i, 4] * adc2nT  # vassilis
 
-    # !!! Bzoffset currently disabled !!!
-    # TODO: Bzoffset from thx+'/l1/fgm/0000/'+thx+'_fgmcal.txt'
-    Bzoffset = 0
+    # Calculating Bzoffset using thx+'/l1/fgm/0000/'+thx+'_fgmcal.txt'
+    thx = 'th' + probe
+    remote_name = thx + '/l1/fgm/0000/' + thx + '_fgmcal.txt'
+    calfile = download(remote_file=remote_name,
+                       remote_path=CONFIG['remote_data_dir'],
+                       local_path=CONFIG['local_data_dir'],
+                       no_download=False)
+    # TODO: Add file check
+    caldata = np.loadtxt(calfile[0], converters={0: time_float_one})
+    # TODO: In SPEDAS we checks if data is already calibrated
+    # Limit to the time of interest
+    caltime = caldata[:, 0]
+    t1 = np.nonzero(caltime < d.times.min())[0]  # left time
+    t2 = np.nonzero(caltime <= d.times.max())[0]  # right time
 
-    Bxprime = cs*d.y[:, i, 1]+sn*d.y[:, i, 2]
-    Byprime = -sn*d.y[:, i, 1]+cs*d.y[:, i, 2]
+    Bzoffset = np.zeros(d.times.shape)
+    if t1.size + t2.size > 1:  # Time range exist in the file
+        tidx = np.arange(t1[-1], t2[-1] + 1)
+        caltime = caltime[tidx]
+        offi = caldata[tidx, 1:4]  # col 1-3
+        cali = caldata[tidx, 4:13]  # col 4-13
+        # spinperii = caldata[tidx, 13]  # col 14 not in use
+        flipxz = -1 * np.fliplr(np.identity(3))
+        # SPEDAS: offi2 = invert(transpose([cali[istart, 0:2], cali[istart, 3:5], cali[istart, 6:8]]) ## flipxz)##offi[istart, *]
+        for t in range(0, caltime.size):
+            offi2 = inv(np.c_[cali[t, 0:3], cali[t, 3:6], cali[t, 6:9]].T @ flipxz) @ offi[t, :]
+            tidx = d.times >= caltime[t]
+            Bzoffset[tidx] = offi2[2]  # last element
+
+    Bxprime = cs * d.y[:, i, 1] + sn * d.y[:, i, 2]
+    Byprime = -sn * d.y[:, i, 1] + cs * d.y[:, i, 2]
     Bzprime = -d.y[:, i, 4] - Bzoffset  # vassilis 4/28 (SUBTRACTING offset from spinaxis POSITIVE direction)
 
     dprime = d
@@ -157,12 +187,9 @@ def cal_fit(probe='a'):
 
     # Create fgs variable and remove nans
     fgs = dprime.y[:, i, [1, 2, 4]]
-    idx = ~numpy.isnan(fgs[:, 0])
+    idx = ~np.isnan(fgs[:, 0])
     fgs_data = {'x': d.times[idx], 'y': fgs[idx, :]}
 
     # Save fgs tplot variable
     tvar = 'th' + probe + '_fgs'
     store_data(tvar, fgs_data)
-
-
-
