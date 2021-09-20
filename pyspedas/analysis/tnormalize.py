@@ -4,8 +4,27 @@ from pytplot import get_data, store_data
 
 def tnormalize(variable, newname=None, return_data=False):
     """
+    Normalize all the vectors stored in a tplot variable
 
+    Input
+    ----------
+        variable: str
+            tplot variable containing the vectors to be normalized
 
+    Parameters
+    ----------
+        newname: str
+            name of the output variable; default: variable_normalized
+
+        return_data: bool
+            return the normalized vectors instead of creating a tplot variable
+    
+    Returns
+    ----------
+
+        name of the tplot variable created or normalized vectors if return_data
+        is set
+        
     """
     metadata_in = {}
     if isinstance(variable, str):
