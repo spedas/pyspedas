@@ -8,8 +8,8 @@ def tnormalize(variable, newname=None, return_data=False):
 
     Input
     ----------
-        variable: str
-            tplot variable containing the vectors to be normalized
+        variable: str or np.ndarray
+            tplot variable (or numpy array) containing the vectors to be normalized
 
     Parameters
     ----------
@@ -24,7 +24,7 @@ def tnormalize(variable, newname=None, return_data=False):
 
         name of the tplot variable created or normalized vectors if return_data
         is set
-        
+
     """
     metadata_in = {}
     if isinstance(variable, str):
