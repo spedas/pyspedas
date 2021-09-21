@@ -11,6 +11,11 @@ pySPEDAS is an implementation of the SPEDAS framework for Python.
 
 The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org/wiki)) framework is written in IDL and contains data loading, data analysis and data plotting tools for various scientific missions (NASA, NOAA, etc.) and ground magnetometers.   
 
+Please see our documentation at: 
+
+https://pyspedas.readthedocs.io/
+
+
 ## Projects Supported
 - [Advanced Composition Explorer (ACE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/ace/README.md)
 - [Arase (ERG)](https://github.com/spedas/pyspedas/blob/master/pyspedas/erg/README.md)
