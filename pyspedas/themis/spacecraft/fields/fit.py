@@ -187,9 +187,21 @@ def cal_fit(probe='a'):
 
     # Create fgs variable and remove nans
     fgs = dprime.y[:, i, [1, 2, 4]]
-    idx = ~np.isnan(fgs[:, 0])
+    idx = ~np.isnan(fgs[:, 0])  # TODO: check this criteria. IDL returns less number of points
     fgs_data = {'x': d.times[idx], 'y': fgs[idx, :]}
 
     # Save fgs tplot variable
     tvar = 'th' + probe + '_fgs'
     store_data(tvar, fgs_data)
+
+    # Save fgs_sigma variable
+    fit_sigma_data = {'x': d.times[idx], 'y': d.y[idx, i, 3]}
+    tvar = 'th' + probe + '_fgs_sigma'
+    store_data(tvar, fit_sigma_data)
+
+    # Save bfit variable
+    bfit_data = {'x': d.times[:], 'y': d.y[:, i, :].squeeze()}
+    tvar = 'th' + probe + '_fit_bfit'
+    store_data(tvar, bfit_data)
+
+
