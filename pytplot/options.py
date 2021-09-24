@@ -194,8 +194,12 @@ def options(name, option=None, value=None, opt_dict=None):
                     pytplot.data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'linear'
 
             if option == 'zlog':
+                # check for negative values and warn the user that they will be ignored
                 negflag = _zlog_check(pytplot.data_quants, value, i)
-                if negflag == 0:
+                if negflag != 0 and value:
+                    print(str(i) + ' contains negative values; setting the z-axis to log scale will cause the negative values to be ignored on figures.')
+
+                if value:
                     pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'log'
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
@@ -403,7 +407,6 @@ def _zlog_check(data_quants, value, i):
             if 'spec' in dataset.attrs['plot_options']['extras']:
                 if dataset.attrs['plot_options']['extras']['spec'] == 1:
                     if dataset.min(skipna=True) < 0:
-                        print('Negative data is incompatible with log plotting.')
                         negflag = 1
                         break
         elif value != 1:
