@@ -12,7 +12,7 @@ import pytz
 import pytplot
 from platform import system
 import copy
-
+from . import spedas_colorbar
 
 def compare_versions():
     # import libraries
@@ -306,6 +306,9 @@ def return_lut(name):
         return map
     elif name == 'teal':
         map = [(np.array([0, 1, 1, 1])*255).astype(np.int) for x in range(0, 256)]
+        return map
+    elif name == 'spedas':
+        map = [(np.array([r, g, b, 255])).astype(np.int) for r, g, b in zip(spedas_colorbar.r, spedas_colorbar.g, spedas_colorbar.b)]
         return map
     else:
         cm = mpl.cm.get_cmap(name)
