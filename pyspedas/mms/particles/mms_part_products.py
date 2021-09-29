@@ -149,6 +149,10 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         logging.error('Error, unknown instrument: ' + instrument + '; valid options: fpi, hpca')
         return
 
+    if instrument == 'hpca':
+        logging.error('****  HPCA is currently disabled ****')
+        return
+
     out_energy = np.zeros((dist_in['n_times'], dist_in['n_energy']))
     out_energy_y = np.zeros((dist_in['n_times'], dist_in['n_energy']))
     out_theta = np.zeros((dist_in['n_times'], dist_in['n_theta']))
