@@ -425,7 +425,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
             for cm in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['colormap']:
                 return tplot_utilities.return_lut(cm)
         else:
-            return tplot_utilities.return_lut("jet")
+            return tplot_utilities.return_lut("spedas")
 
     def _setxrange(self):
         # Check if x range is set.  Otherwise, x range is automatic.
