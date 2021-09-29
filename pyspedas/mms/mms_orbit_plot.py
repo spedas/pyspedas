@@ -1,5 +1,6 @@
 
 import os
+import warnings
 import matplotlib.pyplot as plt
 from pytplot import get_data
 from . import mms_load_mec
@@ -64,7 +65,9 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
 
     km_in_re = 6371.2
 
-    plt.axes().set_aspect('equal')
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        plt.axes().set_aspect('equal')
 
     im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec/earth_polar1.png')
     plt.imshow(im, extent=(-1, 1, -1, 1))
