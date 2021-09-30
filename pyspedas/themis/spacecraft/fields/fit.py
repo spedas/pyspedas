@@ -85,16 +85,11 @@ def cal_fit(probe='a'):
     import math
     import numpy as np
 
-    from pytplot import get_data, store_data
+    from pytplot import get_data, store_data, tplot_names
     from pyspedas.utilities.download import download
     from pyspedas.themis.config import CONFIG
     from pyspedas.utilities.time_double import time_float_one
     from numpy.linalg import inv
-
-    # Get data from th?_fit variable
-    # TODO: Add check of tvar existence
-    tvar = 'th' + probe + '_fit'
-    d = get_data(tvar)  # NOTE: Indexes are not the same as in SPEDAS, e.g. 27888x2x5
 
     # calibration parameters
     lv12 = 49.6  # m
@@ -124,6 +119,21 @@ def cal_fit(probe='a'):
                   "sigscale": 1.e0,
                   "Zscale": 1.e0,
                   "units": 'nT'}}
+
+    # Get list of tplot variables
+    tnames = tplot_names(True)  # True for quiet output
+
+    # Get data from th?_fit variable
+    tvar = 'th' + probe + '_fit'
+
+    # B-field fit (FGM) processing
+
+    # TODO: Check tvar existance
+    if not tvar in tnames:
+        return
+
+    d = get_data(tvar)  # NOTE: Indexes are not the same as in SPEDAS, e.g. 27888x2x5
+
     # establish probe number in cal tables
     sclist = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': -1}  # for probe 'f' no flatsat FGM cal files
     # TODO: Add processing of probe f
@@ -204,4 +214,55 @@ def cal_fit(probe='a'):
     tvar = 'th' + probe + '_fit_bfit'
     store_data(tvar, bfit_data)
 
+    # E-field fit (EFI) processing
 
+    # Get data from th?_fit_code variable
+    tvar = 'th' + probe + '_fit_code'
+
+    if tvar in tnames:
+        i = 0
+        d_code = get_data(tvar)
+        e12_ss = (d_code.y[:, i] == int("e1", 16)) | (d_code.y[:, i] == int("e5", 16))
+        e34_ss = (d_code.y[:, i] == int("e3", 16)) | (d_code.y[:, i] == int("e7", 16))
+    else:
+        # Default values (if no code)
+        ne12 = d.times.size
+        e12_ss = np.ones(ne12, dtype=bool)  # create an index arrays
+        e34_ss = np.zeros(ne12, dtype=bool)
+
+    # Save 'efs' datatype before "hard wired" calibrations.
+    # An EFI-style calibration is performed below.
+    i = 0
+    efs = d.y[:, i, [1, 2, 3]]
+    # Locate samples with non-NaN data values.  Save the indices in
+    # efsx_good, then at the end of calibration, pull the "good"
+    # indices out of the calibrated efs[] array to make the thx_efs
+    # tplot variable.
+    efsx_good = ~np.isnan(efs[:, 0])  # TODO: check this criteria.
+
+    if np.any(efsx_good):  # TODO: include processing of 'efs' where efsx_fixed is used
+        efsx_fixed = d.times[efsx_good]
+        if np.any(e34_ss):  # rotate efs 90 degrees if necessary, if e34 was used in spinfit
+            efs[e34_ss, :] = d.y[e34_ss, i, [2, 1, 4]]
+            efs[e34_ss, 0] = -efs[e34_ss, 0]
+
+    efsz = d.y[:, i, 4]  # save Ez separately, for possibility that it's the SC potential
+
+    # Use cpar to calibrate
+    if np.any(e12_ss):
+        d.y[e12_ss, i, 0] = cpar["e12"]["Ascale"] * d.y[e12_ss, i, 0]
+        d.y[e12_ss, i, 1] = cpar["e12"]["Bscale"] * d.y[e12_ss, i, 1]
+        d.y[e12_ss, i, 2] = cpar["e12"]["Cscale"] * d.y[e12_ss, i, 2]
+        d.y[e12_ss, i, 3] = cpar["e12"]["sigscale"] * d.y[e12_ss, i, 3]
+        d.y[e12_ss, i, 4] = cpar["e12"]["Zscale"] * d.y[e12_ss, i, 4]
+    if np.any(e34_ss):
+        d.y[e34_ss, i, 0] = cpar["e34"]["Ascale"] * d.y[e34_ss, i, 0]
+        d.y[e34_ss, i, 1] = cpar["e34"]["Bscale"] * d.y[e34_ss, i, 1]
+        d.y[e34_ss, i, 2] = cpar["e34"]["Cscale"] * d.y[e34_ss, i, 2]
+        d.y[e34_ss, i, 3] = cpar["e34"]["sigscale"] * d.y[e34_ss, i, 3]
+        d.y[e34_ss, i, 4] = cpar["e34"]["Zscale"] * d.y[e34_ss, i, 4]
+
+    # store the spin fit parameters.
+    fit_efit_data = {'x': d.times, 'y': d.y[:, i, :]}
+    tvar = 'th' + probe + '_fit_efit'
+    store_data(tvar, fit_efit_data)
