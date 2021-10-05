@@ -11,7 +11,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
          instrument='fgm',
          probe='c',
          level='l2',
-         stations=None,  # ground mag data
+         datatype=None, # ASK data
+         stations=None,  # ground mag and ASK data
          greenland=None,  # also for ground mag data
          suffix='',
          get_support_data=False,
@@ -36,6 +37,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.themis.mom
         pyspedas.themis.gmom
         pyspedas.themis.gmag
+        pyspedas.themis.ask
         pyspedas.themis.state
         pyspedas.themis.slp
 
@@ -45,9 +47,20 @@ def load(trange=['2013-11-5', '2013-11-6'],
         probe = [probe]
 
     out_files = []
+    file_resolution = 24*3600.0 # default to daily files
 
     for prb in probe:
-        if instrument == 'fgm':
+        if instrument == 'ask':
+            if stations is None:
+                pathformat = ('thg/' + level + '/asi/ask/%Y/thg_' + level + '_ask'
+                              + '_%Y%m%d_v01.cdf')
+            else:
+                # individual station data should have hourly files
+                file_resolution = 3600.0
+                pathformat = ('thg/' + level + '/asi/' + stations + '/%Y/%m/'
+                              + 'thg_' + level + '_' + datatype + '_' + stations
+                              + '_%Y%m%d%H_v01.cdf')
+        elif instrument == 'fgm':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
                           + '_%Y%m%d_v??.cdf')
@@ -163,7 +176,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
         for file_format in pathformat:
             # find the full remote path names using the trange
-            remote_names = dailynames(file_format=file_format, trange=trange)
+            remote_names = dailynames(file_format=file_format, trange=trange, res=file_resolution)
 
             files = download(remote_file=remote_names,
                              remote_path=CONFIG['remote_data_dir'],
