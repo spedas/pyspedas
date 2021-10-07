@@ -18,6 +18,7 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
     fig.set_size_inches(xsize, ysize)
     
     plot_title = pytplot.tplot_opt_glob['title_text']
+    axis_font_size = pytplot.tplot_opt_glob.get('axis_font_size')
     
     for idx, variable in enumerate(variables):
         var_data = pytplot.get_data(variable)
@@ -37,7 +38,12 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
         if idx == 0 and plot_title != '':
             this_axis.set_title(plot_title)
         
-        if len(var_data) == 2:
+        if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('spec') is not None:
+            spec = pytplot.data_quants[variable].attrs['plot_options']['extras']['spec']
+        else:
+            spec = False
+
+        if not spec:
             # line plots
             if pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt'].get('legend_names') is not None:
                 labels = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['legend_names']
@@ -107,6 +113,8 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
             box = this_axis.get_position()
             pad, width = 0.02, 0.02
             cax = fig.add_axes([box.xmax + pad, box.ymin, width, box.height])
+            if axis_font_size is not None:
+                cax.tick_params(labelsize=axis_font_size)
             fig.colorbar(im, cax=cax, label=ztitle + '\n ' + zsubtitle)
         
         ylog = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['y_axis_type']
@@ -126,6 +134,9 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
             
         yrange = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['y_range']
         
+        if axis_font_size is not None:
+            this_axis.tick_params(axis='x', labelsize=axis_font_size)
+            this_axis.tick_params(axis='y', labelsize=axis_font_size)
         this_axis.set_ylim(yrange)
         this_axis.set_ylabel(ytitle + '\n' + ysubtitle)
     
