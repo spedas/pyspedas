@@ -132,13 +132,20 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
         else:
             ysubtitle = ''
             
-        yrange = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['y_range']
-        
+
         if axis_font_size is not None:
             this_axis.tick_params(axis='x', labelsize=axis_font_size)
             this_axis.tick_params(axis='y', labelsize=axis_font_size)
+            
+        if pytplot.tplot_opt_glob.get('x_range') is not None:
+            x_range = pytplot.tplot_opt_glob['x_range']
+            this_axis.set_xlim([datetime.fromtimestamp(x_range[0], tz=timezone.utc), datetime.fromtimestamp(x_range[1], tz=timezone.utc)])
+
+        yrange = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['y_range']
         this_axis.set_ylim(yrange)
         this_axis.set_ylabel(ytitle + '\n' + ysubtitle)
+
+
     
     if return_plot_objects:
         return fig, axes
