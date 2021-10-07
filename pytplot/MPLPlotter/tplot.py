@@ -48,13 +48,17 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
                 this_axis.plot(var_times, var_data.y, linewidth=0.5, color='k')
             else:
                 num_lines = var_data.y.shape[1]
-                if num_lines == 3:
-                    colors = ['b', 'g', 'r']
-                else:
-                    colors = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
 
-                if num_lines >= len(colors):
-                    colors = colors*num_lines
+                if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('line_color') is not None:
+                    colors = pytplot.data_quants[variable].attrs['plot_options']['extras']['line_color']
+                else:
+                    if num_lines == 3:
+                        colors = ['b', 'g', 'r']
+                    else:
+                        colors = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
+
+                    if num_lines >= len(colors):
+                        colors = colors*num_lines
                 
                 for line in range(0, num_lines):
                     this_line, = this_axis.plot(var_times, var_data.y[:, line], linewidth=0.5, color=colors[line])
