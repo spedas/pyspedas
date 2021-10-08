@@ -12,6 +12,7 @@ import xarray as xr
 # xarray options
 xr.set_options(keep_attrs=True)
 
+using_graphics = False
 # runs without Qt
 if not 'PYTPLOT_NO_GRAPHICS' in os.environ:
     using_graphics = True
