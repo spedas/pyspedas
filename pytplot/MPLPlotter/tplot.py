@@ -22,12 +22,12 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
     
     for idx, variable in enumerate(variables):
         var_data = pytplot.get_data(variable)
-        var_metadata = pytplot.get_data(variable, metadata=True)
         
         if var_data is None:
             print('Variable not found: ' + variable)
             continue
 
+        # the data are stored as unix times, but matplotlib wants datatime objects
         var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data.times]
         
         if num_panels == 1:
@@ -35,9 +35,11 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
         else:
             this_axis = axes[idx]
         
+        # set the figure title
         if idx == 0 and plot_title != '':
             this_axis.set_title(plot_title)
         
+        # determine if this is a line plot or a spectrogram
         if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('spec') is not None:
             spec = pytplot.data_quants[variable].attrs['plot_options']['extras']['spec']
         else:
@@ -51,27 +53,34 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
                 labels = None
             
             if len(var_data.y.shape) == 1:
-                this_axis.plot(var_times, var_data.y, linewidth=0.5, color='k')
+                num_lines = 1
             else:
                 num_lines = var_data.y.shape[1]
 
-                if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('line_color') is not None:
-                    colors = pytplot.data_quants[variable].attrs['plot_options']['extras']['line_color']
+            # set up line colors
+            if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('line_color') is not None:
+                colors = pytplot.data_quants[variable].attrs['plot_options']['extras']['line_color']
+            else:
+                if num_lines == 3:
+                    colors = ['b', 'g', 'r']
                 else:
-                    if num_lines == 3:
-                        colors = ['b', 'g', 'r']
-                    else:
-                        colors = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
+                    colors = ['k', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
 
-                    if num_lines >= len(colors):
-                        colors = colors*num_lines
-                
+                if num_lines >= len(colors):
+                    colors = colors*num_lines
+
+            # create the plot
+            if num_lines == 1:
+                this_line, = this_axis.plot(var_times, var_data.y, linewidth=0.5, color=colors[0])
+                if labels is not None:
+                    this_line.set_label(labels[line])
+            else:
                 for line in range(0, num_lines):
                     this_line, = this_axis.plot(var_times, var_data.y[:, line], linewidth=0.5, color=colors[line])
                     if labels is not None:
                         this_line.set_label(labels[line])
-                if labels is not None:
-                    this_axis.legend()
+            if labels is not None:
+                this_axis.legend()
         else:
             # spectrogram plots
             ztitle = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']['axis_label']
@@ -100,6 +109,7 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
             if cmap == 'spedas':
                 cmap = 'turbo'
                 
+            # create the spectrogram
             var_x, var_v = np.meshgrid(var_data.times, var_data.v)
             im = this_axis.pcolormesh(var_times, var_data.v.T, var_data.y.T, 
                                       cmap=cmap, 
@@ -117,6 +127,7 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
                 cax.tick_params(labelsize=axis_font_size)
             fig.colorbar(im, cax=cax, label=ztitle + '\n ' + zsubtitle)
         
+        # set some more plot options
         ylog = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['y_axis_type']
         if ylog == 'log':
             this_axis.set_yscale('log')
@@ -132,7 +143,6 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
         else:
             ysubtitle = ''
             
-
         if axis_font_size is not None:
             this_axis.tick_params(axis='x', labelsize=axis_font_size)
             this_axis.tick_params(axis='y', labelsize=axis_font_size)
@@ -145,6 +155,7 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
         this_axis.set_ylim(yrange)
         this_axis.set_ylabel(ytitle + '\n' + ysubtitle)
 
+        # apply any vertical bars
         if pytplot.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
             time_bars = pytplot.data_quants[variable].attrs['plot_options']['time_bar']
 
