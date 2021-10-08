@@ -163,7 +163,7 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
             time_bars = pytplot.data_quants[variable].attrs['plot_options']['time_bar']
 
             for time_bar in time_bars:
-                plt.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), color=time_bar.get('color'), lw=time_bar.get('line_width'))
+                plt.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
     
     if return_plot_objects:
         return fig, axes
