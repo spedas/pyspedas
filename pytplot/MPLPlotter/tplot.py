@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import pytplot
 
-def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', save_eps='', save_svg='', save_pdf=''):
+def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', save_eps='', save_svg='', save_pdf='', display=True):
     """
     This function creates tplot windows using matplotlib as a backend.
     """
@@ -180,4 +180,5 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
     if save_pdf != '':
         plt.savefig(save_pdf + '.pdf')
 
-    plt.show()
+    if display:
+        plt.show()
