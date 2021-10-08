@@ -109,7 +109,7 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
             # kludge to add support for the 'spedas' color bar
             if cmap == 'spedas':
                 spedas_colors = pytplot.spedas_colorbar
-                spd_map = [(np.array([r, g, b])).astype(np.float64)/255 for r, g, b in zip(spedas_colors.r, spedas_colors.g, spedas_colors.b)]
+                spd_map = [(np.array([r, g, b])).astype(np.float64)/256 for r, g, b in zip(spedas_colors.r, spedas_colors.g, spedas_colors.b)]
                 cmap = LinearSegmentedColormap.from_list('spedas', spd_map)
                 
             # create the spectrogram
