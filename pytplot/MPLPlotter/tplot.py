@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib as mpl
 from datetime import datetime, timezone
 from matplotlib import pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import pytplot
 
 def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
@@ -103,11 +104,13 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10):
             if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('colormap') is not None:
                 cmap = pytplot.data_quants[variable].attrs['plot_options']['extras']['colormap'][0]
             else:
-                cmap = 'turbo'
+                cmap = 'spedas'
             
-            # kludge because the 'spedas' color bar isn't here yet
+            # kludge to add support for the 'spedas' color bar
             if cmap == 'spedas':
-                cmap = 'turbo'
+                spedas_colors = pytplot.spedas_colorbar
+                spd_map = [(np.array([r, g, b])).astype(np.float64)/255 for r, g, b in zip(spedas_colors.r, spedas_colors.g, spedas_colors.b)]
+                cmap = LinearSegmentedColormap.from_list('spedas', spd_map)
                 
             # create the spectrogram
             var_x, var_v = np.meshgrid(var_data.times, var_data.v)
