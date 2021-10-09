@@ -74,7 +74,7 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
             if num_lines == 1:
                 this_line, = this_axis.plot(var_times, var_data.y, linewidth=0.5, color=colors[0])
                 if labels is not None:
-                    this_line.set_label(labels[line])
+                    this_line.set_label(labels[0])
             else:
                 for line in range(0, num_lines):
                     this_line, = this_axis.plot(var_times, var_data.y[:, line], linewidth=0.5, color=colors[line])
