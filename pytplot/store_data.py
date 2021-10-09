@@ -98,6 +98,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         pytplot.tplot_rename(name, newname)
         return True
 
+    if isinstance(data, str):
+        pytplot.data_quants[name] = {'name': name, 'data': data}
+        return True
+
     # If the data is a list instead of a dictionary, user is looking to overplot
     if isinstance(data, list):
         base_data = _get_base_tplot_vars(data)

@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import pytplot
 
-def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', save_eps='', save_svg='', save_pdf='', display=True):
+def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', save_eps='', save_svg='', save_pdf='', display=True, fig=None, axis=None, pseudo_plot_num=None, second_axis_size=0.0):
     """
     This function creates tplot windows using matplotlib as a backend.
     """
@@ -14,9 +14,17 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
         variables = [variables]
         
     num_panels = len(variables)
-    fig, axes = plt.subplots(nrows=num_panels, sharex=True)
-        
-    fig.set_size_inches(xsize, ysize)
+
+    if fig is None and axis is None:
+        fig, axes = plt.subplots(nrows=num_panels, sharex=True)
+        fig.set_size_inches(xsize, ysize)
+    else:
+        if pseudo_plot_num == 0:
+            # setting up first axis
+            axes = axis
+        else:
+            # using previous axis
+            axes = axis.twinx()
     
     plot_title = pytplot.tplot_opt_glob['title_text']
     axis_font_size = pytplot.tplot_opt_glob.get('axis_font_size')
@@ -28,13 +36,26 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
             print('Variable not found: ' + variable)
             continue
 
-        # the data are stored as unix times, but matplotlib wants datatime objects
-        var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data.times]
-        
         if num_panels == 1:
             this_axis = axes
         else:
             this_axis = axes[idx]
+
+        if isinstance(var_data, list) or isinstance(var_data, str):
+            # this is a pseudo variable
+            if not isinstance(var_data, list):
+                var_data = var_data.split(' ')
+
+            for pseudo_idx, var in enumerate(var_data):
+                tplot(var, return_plot_objects=return_plot_objects, 
+                    xsize=xsize, ysize=ysize, save_png=save_png, 
+                    save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf, 
+                    fig=fig, axis=this_axis, display=False, 
+                    pseudo_plot_num=pseudo_idx, second_axis_size=0.1)
+            continue
+
+        # the data are stored as unix times, but matplotlib wants datatime objects
+        var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data.times]
         
         # set the figure title
         if idx == 0 and plot_title != '':
@@ -121,11 +142,15 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
                                       vmin=zrange[0],
                                       vmax=zrange[1])
             
+            if pseudo_plot_num == 0:
+                # there's going to be a second axis, so we need to make sure there's room for it
+                second_axis_size = 0.1
+
             # add the color bar
-            fig.subplots_adjust(left=0.14, right=0.87)
+            fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
             box = this_axis.get_position()
             pad, width = 0.02, 0.02
-            cax = fig.add_axes([box.xmax + pad, box.ymin, width, box.height])
+            cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
             if axis_font_size is not None:
                 cax.tick_params(labelsize=axis_font_size)
             fig.colorbar(im, cax=cax, label=ztitle + '\n ' + zsubtitle)
