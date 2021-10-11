@@ -6,7 +6,10 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import pytplot
 
-def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', save_eps='', save_svg='', save_pdf='', display=True, fig=None, axis=None, pseudo_plot_num=None, second_axis_size=0.0):
+def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, 
+          save_png='', save_eps='', save_svg='', save_pdf='', display=True, 
+          fig=None, axis=None, pseudo_plot_num=None, second_axis_size=0.0,
+          var_label=None):
     """
     This function creates tplot windows using matplotlib as a backend.
     """
@@ -134,7 +137,6 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
                 cmap = LinearSegmentedColormap.from_list('spedas', spd_map)
                 
             # create the spectrogram
-            var_x, var_v = np.meshgrid(var_data.times, var_data.v)
             im = this_axis.pcolormesh(var_times, var_data.v.T, var_data.y.T, 
                                       cmap=cmap, 
                                       norm=norm, 
@@ -142,11 +144,11 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
                                       vmin=zrange[0],
                                       vmax=zrange[1])
             
+            # add the color bar
             if pseudo_plot_num == 0:
                 # there's going to be a second axis, so we need to make sure there's room for it
-                second_axis_size = 0.1
+                second_axis_size = 0.07
 
-            # add the color bar
             fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
             box = this_axis.get_position()
             pad, width = 0.02, 0.02
@@ -190,6 +192,34 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
             for time_bar in time_bars:
                 plt.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
     
+    if var_label is not None:
+        if not isinstance(var_label, list):
+            var_label = [var_label]
+
+        axis_delta = 0.0
+
+        for label in var_label:
+            label_data = pytplot.get_data(label, xarray=True)
+
+            if label_data is None:
+                print('Variable not found: ' + label)
+                continue
+
+            # set up the new x-axis
+            axis_delta = axis_delta - num_panels*0.1
+            new_xaxis = this_axis.secondary_xaxis(axis_delta)
+            xaxis_ticks = this_axis.get_xticks().tolist()
+            xaxis_ticks_dt = [mpl.dates.num2date(tick_val) for tick_val in xaxis_ticks]
+            xaxis_ticks_unix = [tick_val.timestamp() for tick_val in xaxis_ticks_dt]
+            xaxis_labels = get_var_label_ticks(label_data, xaxis_ticks_unix)
+            new_xaxis.set_xticks(xaxis_ticks_dt)
+            new_xaxis.set_xticklabels(xaxis_labels)
+            ytitle = pytplot.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
+            new_xaxis.set_xlabel(ytitle)
+
+        fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
+
+
     if return_plot_objects:
         return fig, axes
     
@@ -207,3 +237,9 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, save_png='', 
 
     if display:
         plt.show()
+
+def get_var_label_ticks(var_xr, times):
+    out_ticks = []
+    for time in times:
+        out_ticks.append('{:.2f}'.format(var_xr.interp({'time': time}).values))
+    return out_ticks
