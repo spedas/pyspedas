@@ -1,10 +1,17 @@
 
 import numpy as np
 import matplotlib as mpl
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import pytplot
+
+import matplotlib.units as munits
+import matplotlib.dates as mdates
+converter = mdates.ConciseDateConverter()
+munits.registry[np.datetime64] = converter
+munits.registry[date] = converter
+munits.registry[datetime] = converter
 
 def tplot(variables, return_plot_objects=False, xsize=8, ysize=10, 
           save_png='', save_eps='', save_svg='', save_pdf='', display=True, 
