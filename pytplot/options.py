@@ -224,6 +224,7 @@ def options(name, option=None, value=None, opt_dict=None):
                     to_be=value
 
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style'] = to_be
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = value
 
                 if(value == 6 or value == 'none'):
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = False

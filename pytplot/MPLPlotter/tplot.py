@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import pytplot
 
+# the following improves the x-axis ticks labels
 import matplotlib.units as munits
 import matplotlib.dates as mdates
 converter = mdates.ConciseDateConverter()
@@ -101,14 +102,37 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10,
                 if num_lines >= len(colors):
                     colors = colors*num_lines
 
+            # line thickness
+            if pytplot.data_quants[variable].attrs['plot_options']['line_opt'].get('line_width') is not None:
+                thick = pytplot.data_quants[variable].attrs['plot_options']['line_opt']['line_width']
+            else:
+                thick = 1
+
+            # line style
+            if pytplot.data_quants[variable].attrs['plot_options']['line_opt'].get('line_style_name') is not None:
+                line_style_user = pytplot.data_quants[variable].attrs['plot_options']['line_opt']['line_style_name']
+                # legacy values
+                if line_style_user == 'solid_line':
+                    line_style = 'solid'
+                elif line_style_user == 'dot':
+                    line_style = 'dotted'
+                elif line_style_user == 'dash':
+                    line_style = 'dashed'
+                elif line_style_user == 'dash_dot':
+                    line_style = 'dashdot'
+                else:
+                    line_style = line_style_user
+            else:
+                line_style = 'solid'
+
             # create the plot
             if num_lines == 1:
-                this_line, = this_axis.plot(var_times, var_data.y, linewidth=0.5, color=colors[0])
+                this_line, = this_axis.plot(var_times, var_data.y, linewidth=thick, color=colors[0], linestyle=line_style)
                 if labels is not None:
                     this_line.set_label(labels[0])
             else:
                 for line in range(0, num_lines):
-                    this_line, = this_axis.plot(var_times, var_data.y[:, line], linewidth=0.5, color=colors[line])
+                    this_line, = this_axis.plot(var_times, var_data.y[:, line], linewidth=thick, color=colors[line], linestyle=line_style)
                     if labels is not None:
                         this_line.set_label(labels[line])
             if labels is not None:
