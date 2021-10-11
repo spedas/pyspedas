@@ -123,6 +123,14 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     times = data.pop('x')
     values = np.array(data.pop('y'))
 
+    if 'dy' in data.keys():
+        err_values = np.array(data.pop('dy'))
+
+        if len(err_values) != len(times):
+            print('Warning: length of error values does not match length of time values')
+    else:
+        err_values = None
+
     # If given a list of datetime objects, convert times to seconds since epoch.
     if any(isinstance(t, datetime.datetime) for t in times):
         for tt, time in enumerate(times):
@@ -185,8 +193,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     # Set up xarray dimension and coordinates
     coordinate_list = sorted(list(data.keys()))
     dimension_list = [d + '_dim' for d in coordinate_list]
+
     temp = xr.DataArray(values, dims=['time']+dimension_list,
-                        coords={'time': ('time', times)})
+                            coords={'time': ('time', times)})
+
     if spec_bins_exist:
         try:
             if spec_bins_time_varying:
@@ -246,6 +256,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         temp.attrs['plot_options']['overplots'] = []
         temp.attrs['plot_options']['interactive_xaxis_opt'] = {}
         temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
+        temp.attrs['plot_options']['error'] = err_values
 
     pytplot.data_quants[name] = temp
 

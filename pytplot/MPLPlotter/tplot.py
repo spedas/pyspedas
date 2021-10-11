@@ -126,15 +126,30 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10,
                 line_style = 'solid'
 
             # create the plot
-            if num_lines == 1:
-                this_line, = this_axis.plot(var_times, var_data.y, linewidth=thick, color=colors[0], linestyle=line_style)
-                if labels is not None:
-                    this_line.set_label(labels[0])
+            # check for error data first
+            if 'dy' in var_data._fields:
+                # error data provided
+                err_data = var_data.dy
+                if num_lines == 1:
+                        this_line = this_axis.errorbar(var_times, var_data.y, yerr=err_data, linewidth=thick, color=colors[0], linestyle=line_style)
+                        if labels is not None:
+                            this_line.set_label(labels[0])
+                else:
+                    for line in range(0, num_lines):
+                        this_line = this_axis.errorbar(var_times, var_data.y[:, line], yerr=err_data, linewidth=thick, color=colors[line], linestyle=line_style)
+                        if labels is not None:
+                            this_line.set_label(labels[line])
             else:
-                for line in range(0, num_lines):
-                    this_line, = this_axis.plot(var_times, var_data.y[:, line], linewidth=thick, color=colors[line], linestyle=line_style)
+                # no error data provided
+                if num_lines == 1:
+                    this_line, = this_axis.plot(var_times, var_data.y, linewidth=thick, color=colors[0], linestyle=line_style)
                     if labels is not None:
-                        this_line.set_label(labels[line])
+                        this_line.set_label(labels[0])
+                else:
+                    for line in range(0, num_lines):
+                        this_line, = this_axis.plot(var_times, var_data.y[:, line], linewidth=thick, color=colors[line], linestyle=line_style)
+                        if labels is not None:
+                            this_line.set_label(labels[line])
             if labels is not None:
                 this_axis.legend()
         else:
@@ -249,7 +264,6 @@ def tplot(variables, return_plot_objects=False, xsize=8, ysize=10,
             new_xaxis.set_xlabel(ytitle)
 
         fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
-
 
     if return_plot_objects:
         return fig, axes

@@ -54,6 +54,9 @@ def get_data(name, xarray=False, metadata=False):
     if metadata:
         return temp_data_quant.attrs
 
+    error = temp_data_quant.attrs['plot_options']['error']
+
+
     if 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys() and 'v3' in temp_data_quant.coords.keys():
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2', 'v3'])
         return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values, temp_data_quant.coords['v3'].values)
@@ -69,6 +72,10 @@ def get_data(name, xarray=False, metadata=False):
     elif 'spec_bins' in temp_data_quant.coords.keys():
         variable = namedtuple('variable', ['times', 'y', 'v'])
         return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['spec_bins'].values)
-    variable = namedtuple('variable', ['times', 'y'])
 
-    return variable(temp_data_quant.time.values, temp_data_quant.data)
+    if error is not None:
+        variable = namedtuple('variable', ['times', 'y', 'dy'])
+        return variable(temp_data_quant.time.values, temp_data_quant.data, error)
+    else:
+        variable = namedtuple('variable', ['times', 'y'])
+        return variable(temp_data_quant.time.values, temp_data_quant.data)
