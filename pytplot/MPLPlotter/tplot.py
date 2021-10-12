@@ -260,7 +260,7 @@ def tplot(variables, var_label=None,
             time_bars = pytplot.data_quants[variable].attrs['plot_options']['time_bar']
 
             for time_bar in time_bars:
-                plt.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), 
+                this_axis.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), 
                     color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
     
     # apply any addition x-axes specified by the var_label keyword
