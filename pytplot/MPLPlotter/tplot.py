@@ -181,7 +181,7 @@ def tplot(variables, var_label=None,
                 line_style = 'solid'
 
             # create the plot
-            line_options = {'linewidth': thick, 'linestyle': line_style}
+            line_options = {'linewidth': thick, 'linestyle': line_style, 'alpha': alpha}
 
             # check for error data first
             if 'dy' in var_data._fields:
@@ -205,7 +205,7 @@ def tplot(variables, var_label=None,
                 this_axis.legend()
         else:
             # create spectrogram plots
-            spec_options = {'shading': 'auto'}
+            spec_options = {'shading': 'auto', 'alpha': alpha}
             ztitle = zaxis_options['axis_label']
             zlog = zaxis_options['z_axis_type']
 
