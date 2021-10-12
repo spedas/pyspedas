@@ -92,18 +92,23 @@ def tplot(variables, var_label=None,
             this_axis.set_xlim([datetime.fromtimestamp(x_range[0], tz=timezone.utc), datetime.fromtimestamp(x_range[1], tz=timezone.utc)])
 
         # set some more plot options
-        ylog = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['y_axis_type']
+        yaxis_options = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']
+        zaxis_options = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']
+        line_opts = pytplot.data_quants[variable].attrs['plot_options']['line_opt']
+        plot_extras = pytplot.data_quants[variable].attrs['plot_options']['extras']
+
+        ylog = yaxis_options['y_axis_type']
         if ylog == 'log':
             this_axis.set_yscale('log')
         else:
             this_axis.set_yscale('linear')
             
-        ytitle = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['axis_label']
+        ytitle = yaxis_options['axis_label']
         if ytitle == '':
             ytitle = variable
         
-        if pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt'].get('axis_subtitle') is not None:
-            ysubtitle = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['axis_subtitle']
+        if yaxis_options.get('axis_subtitle') is not None:
+            ysubtitle = yaxis_options['axis_subtitle']
         else:
             ysubtitle = ''
             
@@ -111,20 +116,25 @@ def tplot(variables, var_label=None,
             this_axis.tick_params(axis='x', labelsize=axis_font_size)
             this_axis.tick_params(axis='y', labelsize=axis_font_size)
 
-        yrange = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['y_range']
+        yrange = yaxis_options['y_range']
         this_axis.set_ylim(yrange)
         this_axis.set_ylabel(ytitle + '\n' + ysubtitle)
 
+        if plot_extras.get('alpha') is not None:
+            alpha = plot_extras['alpha']
+        else:
+            alpha = None
+
         # determine if this is a line plot or a spectrogram
-        if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('spec') is not None:
-            spec = pytplot.data_quants[variable].attrs['plot_options']['extras']['spec']
+        if plot_extras.get('spec') is not None:
+            spec = plot_extras['spec']
         else:
             spec = False
 
         if not spec:
             # create line plots
-            if pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt'].get('legend_names') is not None:
-                labels = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']['legend_names']
+            if yaxis_options.get('legend_names') is not None:
+                labels = yaxis_options['legend_names']
                 if labels[0] is None:
                     labels = None
             else:
@@ -136,8 +146,8 @@ def tplot(variables, var_label=None,
                 num_lines = var_data.y.shape[1]
 
             # set up line colors
-            if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('line_color') is not None:
-                colors = pytplot.data_quants[variable].attrs['plot_options']['extras']['line_color']
+            if plot_extras.get('line_color') is not None:
+                colors = plot_extras['line_color']
             else:
                 if num_lines == 3:
                     colors = ['b', 'g', 'r']
@@ -148,14 +158,14 @@ def tplot(variables, var_label=None,
                     colors = colors*num_lines
 
             # line thickness
-            if pytplot.data_quants[variable].attrs['plot_options']['line_opt'].get('line_width') is not None:
-                thick = pytplot.data_quants[variable].attrs['plot_options']['line_opt']['line_width']
+            if line_opts.get('line_width') is not None:
+                thick = line_opts['line_width']
             else:
                 thick = 1
 
             # line style
-            if pytplot.data_quants[variable].attrs['plot_options']['line_opt'].get('line_style_name') is not None:
-                line_style_user = pytplot.data_quants[variable].attrs['plot_options']['line_opt']['line_style_name']
+            if line_opts.get('line_style_name') is not None:
+                line_style_user = line_opts['line_style_name']
                 # legacy values
                 if line_style_user == 'solid_line':
                     line_style = 'solid'
@@ -195,42 +205,42 @@ def tplot(variables, var_label=None,
                 this_axis.legend()
         else:
             # create spectrogram plots
-            spec_options = {}
-            ztitle = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']['axis_label']
-            zlog = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']['z_axis_type']
-            if pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt'].get('z_range') is not None:
-                zrange = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']['z_range']
+            spec_options = {'shading': 'auto'}
+            ztitle = zaxis_options['axis_label']
+            zlog = zaxis_options['z_axis_type']
+
+            if zaxis_options.get('z_range') is not None:
+                zrange = zaxis_options['z_range']
                 
-            if pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt'].get('axis_subtitle') is not None:
-                zsubtitle = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']['axis_subtitle']
+            if zaxis_options.get('axis_subtitle') is not None:
+                zsubtitle = zaxis_options['axis_subtitle']
             else:
                 zsubtitle = ''
             
             if zlog == 'log':
-                norm = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
+                spec_options['norm'] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
             else:
-                norm = None
-                spec_options = {'vmin': zrange[0], 'vmax': zrange[1]}
+                spec_options['norm'] = None
+                spec_options['vmin'] = zrange[0]
+                spec_options['vmax'] = zrange[1]
             
-            if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('colormap') is not None:
-                cmap = pytplot.data_quants[variable].attrs['plot_options']['extras']['colormap'][0]
+            if plot_extras.get('colormap') is not None:
+                cmap = plot_extras['colormap'][0]
             else:
                 cmap = 'spedas'
             
             # kludge to add support for the 'spedas' color bar
             if cmap == 'spedas':
-                spedas_colors = pytplot.spedas_colorbar
-                spd_map = [(np.array([r, g, b])).astype(np.float64)/256 for r, g, b in zip(spedas_colors.r, spedas_colors.g, spedas_colors.b)]
+                _colors = pytplot.spedas_colorbar
+                spd_map = [(np.array([r, g, b])).astype(np.float64)/256 for r, g, b in zip(_colors.r, _colors.g, _colors.b)]
                 cmap = LinearSegmentedColormap.from_list('spedas', spd_map)
                 
+            spec_options['cmap'] = cmap
+
             # create the spectrogram (ignoring warnings)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                im = this_axis.pcolormesh(var_times, var_data.v.T, var_data.y.T, 
-                                      cmap=cmap, 
-                                      norm=norm, 
-                                      shading='auto', 
-                                      **spec_options)
+                im = this_axis.pcolormesh(var_times, var_data.v.T, var_data.y.T, **spec_options)
             
             # add the color bar
             if pseudo_plot_num == 0:
@@ -250,7 +260,8 @@ def tplot(variables, var_label=None,
             time_bars = pytplot.data_quants[variable].attrs['plot_options']['time_bar']
 
             for time_bar in time_bars:
-                plt.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
+                plt.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), 
+                    color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
     
     # apply any addition x-axes specified by the var_label keyword
     if var_label is not None:
