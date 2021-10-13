@@ -362,6 +362,9 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'var_label_ticks':
                 pytplot.data_quants[i].attrs['plot_options']['var_label_ticks'] = value
 
+            if option == 'y_interp':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_interp'] = value
+
 
     return
 

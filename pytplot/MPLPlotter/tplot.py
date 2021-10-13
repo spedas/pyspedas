@@ -1,5 +1,6 @@
 
 import numpy as np
+from scipy.interpolate import interp1d
 import matplotlib as mpl
 from datetime import date, datetime, timezone
 from matplotlib import pyplot as plt
@@ -237,10 +238,46 @@ def tplot(variables, var_label=None,
                 
             spec_options['cmap'] = cmap
 
+            out_values = var_data.y
+            out_vdata = var_data.v
+
+            # automatic interpolation options
+            if yaxis_options.get('y_interp') is not None:
+                y_interp = yaxis_options['y_interp']
+
+                # interpolate along the y-axis
+                if y_interp:
+                    fig_size = fig.get_size_inches()*fig.dpi
+                    #nx = size[0]
+                    ny = fig_size[1]
+
+                    if zlog:
+                        zdata = np.log10(var_data.y)
+                    else:
+                        zdata = var_data.y
+
+                    if ylog:
+                        vdata = np.log10(var_data.v)
+                        ycrange = np.log10(yrange)
+                    else:
+                        vdata = var_data.v
+                        ycrange = yrange
+
+                    zdata[zdata < 0.0] = 0.0
+                    zdata[zdata == np.nan] = 0.0
+
+                    interp_func = interp1d(vdata, zdata, axis=1, fill_value=np.nan, bounds_error=False)
+                    out_vdata = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
+
+                    out_values = interp_func(out_vdata)
+
+                    out_values = 10**out_values
+                    out_vdata = 10**out_vdata
+
             # create the spectrogram (ignoring warnings)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                im = this_axis.pcolormesh(var_times, var_data.v.T, var_data.y.T, **spec_options)
+                im = this_axis.pcolormesh(var_times, out_vdata.T, out_values.T, **spec_options)
             
             # add the color bar
             if pseudo_plot_num == 0:
