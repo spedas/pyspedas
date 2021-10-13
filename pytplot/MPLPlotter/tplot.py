@@ -247,9 +247,11 @@ def tplot(variables, var_label=None,
 
                 # interpolate along the y-axis
                 if y_interp:
-                    fig_size = fig.get_size_inches()*fig.dpi
-                    #nx = size[0]
-                    ny = fig_size[1]
+                    if yaxis_options.get('y_interp_points') is not None:
+                        ny = yaxis_options['y_interp_points']
+                    else:
+                        fig_size = fig.get_size_inches()*fig.dpi
+                        ny = fig_size[1]
 
                     if zlog:
                         zdata = np.log10(var_data.y)
@@ -263,6 +265,9 @@ def tplot(variables, var_label=None,
                         vdata = var_data.v
                         ycrange = yrange
 
+                    if not np.isfinite(ycrange[0]):
+                        ycrange = [np.min(vdata), yrange[1]]
+
                     zdata[zdata < 0.0] = 0.0
                     zdata[zdata == np.nan] = 0.0
 
@@ -271,8 +276,11 @@ def tplot(variables, var_label=None,
 
                     out_values = interp_func(out_vdata)
 
-                    out_values = 10**out_values
-                    out_vdata = 10**out_vdata
+                    if zlog:
+                        out_values = 10**out_values
+
+                    if ylog:
+                        out_vdata = 10**out_vdata
 
             # create the spectrogram (ignoring warnings)
             with warnings.catch_warnings():
