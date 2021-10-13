@@ -242,6 +242,35 @@ def tplot(variables, var_label=None,
             out_vdata = var_data.v
 
             # automatic interpolation options
+            if yaxis_options.get('x_interp') is not None:
+                x_interp = yaxis_options['x_interp']
+
+                # interpolate along the x-axis
+                if x_interp:
+                    if yaxis_options.get('x_interp_points') is not None:
+                        nx = yaxis_options['x_interp_points']
+                    else:
+                        fig_size = fig.get_size_inches()*fig.dpi
+                        nx = fig_size[0]
+
+                    if zlog:
+                        zdata = np.log10(out_values)
+                    else:
+                        zdata = out_values
+
+                    zdata[zdata < 0.0] = 0.0
+                    zdata[zdata == np.nan] = 0.0
+
+                    interp_func = interp1d(var_data.times, zdata, axis=0, fill_value=np.nan, bounds_error=False)
+                    out_times = np.arange(0, nx, dtype=np.float64)*(var_data.times[-1]-var_data.times[0])/(nx-1) + var_data.times[0]
+
+                    out_values = interp_func(out_times)
+
+                    if zlog:
+                        out_values = 10**out_values
+
+                    var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in out_times]
+
             if yaxis_options.get('y_interp') is not None:
                 y_interp = yaxis_options['y_interp']
 
@@ -254,9 +283,9 @@ def tplot(variables, var_label=None,
                         ny = fig_size[1]
 
                     if zlog:
-                        zdata = np.log10(var_data.y)
+                        zdata = np.log10(out_values)
                     else:
-                        zdata = var_data.y
+                        zdata = out_values
 
                     if ylog:
                         vdata = np.log10(var_data.v)
