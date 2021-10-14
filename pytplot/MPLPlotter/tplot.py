@@ -261,7 +261,7 @@ def tplot(variables, var_label=None,
                     zdata[zdata < 0.0] = 0.0
                     zdata[zdata == np.nan] = 0.0
 
-                    interp_func = interp1d(var_data.times, zdata, axis=0, fill_value=np.nan, bounds_error=False)
+                    interp_func = interp1d(var_data.times, zdata, axis=0, bounds_error=False)
                     out_times = np.arange(0, nx, dtype=np.float64)*(var_data.times[-1]-var_data.times[0])/(nx-1) + var_data.times[0]
 
                     out_values = interp_func(out_times)
@@ -300,7 +300,7 @@ def tplot(variables, var_label=None,
                     zdata[zdata < 0.0] = 0.0
                     zdata[zdata == np.nan] = 0.0
 
-                    interp_func = interp1d(vdata, zdata, axis=1, fill_value=np.nan, bounds_error=False)
+                    interp_func = interp1d(vdata, zdata, axis=1, bounds_error=False)
                     out_vdata = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
 
                     out_values = interp_func(out_vdata)
