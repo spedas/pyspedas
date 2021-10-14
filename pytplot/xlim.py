@@ -36,8 +36,10 @@ def xlim(min, max):
     if not isinstance(max, (int, float, complex)):
         max = tplot_utilities.str_to_int(max)
     if 'x_range' in pytplot.tplot_opt_glob:
+        pytplot.tplot_opt_glob['x_range_last'] = pytplot.tplot_opt_glob['x_range']
         pytplot.lim_info['xlast'] = pytplot.tplot_opt_glob['x_range']
     else:
+        pytplot.tplot_opt_glob['x_range_full'] = [min, max]
         pytplot.lim_info['xfull'] = Range1d(min, max)
         pytplot.lim_info['xlast'] = Range1d(min, max)
     pytplot.tplot_opt_glob['x_range'] = [min, max]
