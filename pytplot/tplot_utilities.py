@@ -147,6 +147,12 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'y_axis_zoom':
         new_tplot_opt_glob['y_axis_zoom'] = value
 
+    elif option == 'xmargin':
+        new_tplot_opt_glob['xmargin'] = value
+
+    elif option == 'ymargin':
+        new_tplot_opt_glob['ymargin'] = value
+
     else:
         print("Unknown option supplied: " + str(option))
 

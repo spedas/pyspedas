@@ -50,7 +50,19 @@ def tplot(variables, var_label=None,
     
     plot_title = pytplot.tplot_opt_glob['title_text']
     axis_font_size = pytplot.tplot_opt_glob.get('axis_font_size')
+    vertical_spacing = pytplot.tplot_opt_glob.get('vertical_spacing')
+    xmargin = pytplot.tplot_opt_glob.get('xmargin')
+    ymargin = pytplot.tplot_opt_glob.get('ymargin')
     zrange = [None, None]
+
+    if xmargin is not None:
+        fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
+
+    if ymargin is not None:
+        fig.subplots_adjust(top=1-ymargin[0], bottom=ymargin[1])
+
+    if vertical_spacing is not None:
+        fig.subplots_adjust(hspace=vertical_spacing)
     
     for idx, variable in enumerate(variables):
         var_data = pytplot.get_data(variable)
@@ -117,9 +129,14 @@ def tplot(variables, var_label=None,
             this_axis.tick_params(axis='x', labelsize=axis_font_size)
             this_axis.tick_params(axis='y', labelsize=axis_font_size)
 
+        if plot_extras.get('char_size') is not None:
+            char_size = plot_extras['char_size']
+        else:
+            char_size = 14
+
         yrange = yaxis_options['y_range']
         this_axis.set_ylim(yrange)
-        this_axis.set_ylabel(ytitle + '\n' + ysubtitle)
+        this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size)
 
         if plot_extras.get('alpha') is not None:
             alpha = plot_extras['alpha']
