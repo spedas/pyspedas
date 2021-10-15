@@ -8,7 +8,7 @@ In this config.py file, the following environment variables need to be defined i
 """
 
 import os
-CONFIG ={'local_data_dir':'/Users/cao/Documents/Data_N_Res/data_local/',
+CONFIG ={'local_data_dir': '',
          'remote_data_dir': 'http://vmo.igpp.ucla.edu/data1/SECS/'}
 
 # override local data directory with environment variables
@@ -18,5 +18,6 @@ if os.environ.get('LOCAL_SECS_DATA_DIR'):
 if os.environ.get('PLOTS_SECS_DIR'):
     CONFIG['plots_dir']  = os.environ['PLOTS_SECS_DIR'] # self-defined, e.g. '/Users/cao/Documents/Data_N_Res/plots'
 
-env_name = os.environ['CONDA_PREFIX']
-os.environ['PROJ_LIB'] = env_name + '/share/proj'
+if os.environ.get('CONDA_PREFIX'):
+    env_name = os.environ['CONDA_PREFIX']
+    os.environ['PROJ_LIB'] = env_name + '/share/proj'
