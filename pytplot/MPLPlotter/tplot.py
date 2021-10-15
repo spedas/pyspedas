@@ -179,7 +179,7 @@ def tplot(variables, var_label=None,
             if line_opts.get('line_width') is not None:
                 thick = line_opts['line_width']
             else:
-                thick = 1
+                thick = 0.5
 
             # line style
             if line_opts.get('line_style_name') is not None:
