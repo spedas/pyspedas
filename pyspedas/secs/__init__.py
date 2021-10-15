@@ -5,6 +5,7 @@ this function is designed to read EICS or SECS data, and return it as a pandas d
 """
 
 from .load import load
+import numpy as np
 import pandas as pd
 import time
 from pyspedas.utilities.time_double import time_double
