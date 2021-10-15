@@ -50,3 +50,4 @@ from . import polar
 from . import fast
 from . import equator_s
 from . import solo
+from . import secs
