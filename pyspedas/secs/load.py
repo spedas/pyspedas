@@ -25,7 +25,7 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
     if dtype == 'EICS' or dtype == 'SECS':
         pathformat_prefix = dtype + '/%Y/%m/'
         pathformat_zip = pathformat_prefix + dtype + '%Y%m%d.zip'
-        pathformat_gz = pathformat_prefix + dtype + '%Y%m%d.zip.gz'
+        pathformat_gz = pathformat_prefix + dtype + '%Y%m%d.zip.gz' # only 2007!
         pathformat_unzipped = pathformat_prefix + '%d/' + dtype + '%Y%m%d_%H%M%S.dat'
 
     else:
@@ -34,10 +34,10 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat_zip, trange=trange)
     remote_names_gz = dailynames(file_format=pathformat_gz, trange=trange)
-    #remote_names = remote_names + remote_names_gz
-    #print('remote_names: ', remote_names)
+    remote_names_gz = [s for s in remote_names_gz if s[-15:-11] == '2007']
 
     out_files = []
+    out_files_zip = []
 
     files_zip = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
                      local_path=CONFIG['local_data_dir'], no_download=no_download)
@@ -45,7 +45,6 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
                          local_path=CONFIG['local_data_dir'], no_download=no_download)
     files_zip = files_zip + files_gz
 
-    print('files_zip: ', files_zip)
     if files_zip is not None:
         for rf_zip_zero in files_zip:
             if rf_zip_zero.endswith('.gz'):
@@ -57,6 +56,7 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
             elif rf_zip_zero.endswith('.zip'):
                 rf_zip = rf_zip_zero
 
+            out_files_zip.append(rf_zip)
             foldername_unzipped = rf_zip[0:-16] + rf_zip[-6:-4]
             if not os.path.isdir(foldername_unzipped):
                 logging.info('Start unzipping: '+ rf_zip + '  ------')
@@ -70,8 +70,9 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
                     sourcepath = rf_zip[0:-16]
                     sourcefiles = os.listdir(sourcepath)
                     destinationpath = foldername_unzipped
+                    logging.info('start to move files: --------------')
                     for file in sourcefiles:
-                        if file.endswith('.dat'):
+                        if rf_zip[-16:-4] in file and file.endswith('.dat'):
                             shutil.move(os.path.join(sourcepath, file), os.path.join(destinationpath, file))
 
             else:
@@ -82,16 +83,29 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
             out_files.append(file)
 
     out_files = sorted(out_files)
-    #print('out_files: ', out_files)
+
+    if out_files_zip is not None:
+        out_files_zip = list(set(out_files_zip))
+        out_files_zip = sorted(out_files_zip)
+
 
     if downloadonly:
-        return out_files
+        return out_files_zip #out_files
 
     remote_names_unzipped = dailynames(file_format=pathformat_unzipped, trange=trange, res=resolution)
-    #print('remote_names_res: ', remote_names_res)
+    """
+    files_unzipped = download(remote_file=remote_names_unzipped, remote_path=CONFIG['remote_data_dir'],
+                         local_path=CONFIG['local_data_dir'], no_download=True)
+    """
+    remote_names_unzipped_existed = [rnud for rnud in remote_names_unzipped for ofz in out_files_zip if ofz[-16:-4] in rnud]
+    remote_names_unzipped = remote_names_unzipped_existed
     out_files_unzipped = [CONFIG['local_data_dir'] + rf_res for rf_res in remote_names_unzipped]
-    #print('out_files_unzipped: ', out_files_unzipped)
-    data_vars = pyspedas.secs.read_data_files(out_files=out_files_unzipped, dtype = dtype, out_type = out_type)
+    out_files_unzipped = sorted(out_files_unzipped)
+
+    if out_files_unzipped == []:
+        data_vars = []
+    else:
+        data_vars = pyspedas.secs.read_data_files(out_files=out_files_unzipped, dtype = dtype, out_type = out_type)
 
 
     return data_vars #tvars
