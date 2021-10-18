@@ -55,10 +55,6 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
 
     km_in_re = 6371.2
 
-    # with warnings.catch_warnings():
-    #     warnings.simplefilter("ignore")
-    #     plt.axes().set_aspect('equal')
-
     fig, axis = plt.subplots(sharey=True, sharex=True)
 
     im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec/earth_polar1.png')
