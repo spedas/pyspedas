@@ -1,7 +1,6 @@
 """
 @Author: Xin Cao, Xiangning Chu, University of Colorado Boulder
-This version: For Machine Learning purpose, unlike store the data as Py-tplot variables,
-this function is designed to read EICS or SECS data, and return it as a pandas dataframe.
+This version: this function is designed to read EICS or SECS data, and return it as a pandas dataframe.
 """
 
 from .load import load

@@ -192,7 +192,7 @@ def noon_midnight_meridian(dtime=None, delta=0.25):
     return noon_midnight
 
 
-def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False):
+def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, quiver_scale=30):
     """
     @Parameter: dtime input as a string
     @Parameter: s_loc input as a bool, which means the locations of the virtual stations.
@@ -266,7 +266,7 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False):
     else:
         Jy_rot, Jx_rot, x, y = m.rotate_vector(Jy, Jx, lon, lat, returnxy=True)
         qv = m.quiver(lon, lat, Jy_rot, Jx_rot, headlength=7, latlon=True, scale_units='dots',
-                      scale=30)  # , transform='lcc')
+                      scale=quiver_scale)  # , transform='lcc')
 
         qk = ax1.quiverkey(qv, 0.3, -0.1, 100, r'$100 \ mA/m$', labelpos='E', coordinates='data')  # figure
 
@@ -445,7 +445,7 @@ def _make_SECS_plots(data=None, dtime=None, contour_den=8, s_loc=False):
     return
 
 
-def make_plots(dtype='EICS', dtime=None, vplot_sized=True, contour_den=100, s_loc=False):  # or SECS
+def make_plots(dtype='EICS', dtime=None, vplot_sized=True, contour_den=100, s_loc=False, quiver_scale=30):  # or SECS
     """
         This wrapper function to plot the vector and contour map for SECS/EICS data
 
@@ -472,7 +472,7 @@ def make_plots(dtype='EICS', dtime=None, vplot_sized=True, contour_den=100, s_lo
             None.
         """
     if dtype == 'EICS':
-        _make_EICS_plots(dtime=dtime, vplot_sized=vplot_sized, contour_den=contour_den, s_loc=s_loc)
+        _make_EICS_plots(dtime=dtime, vplot_sized=vplot_sized, contour_den=contour_den, s_loc=s_loc, quiver_scale=quiver_scale)
         # make a vector map and a contour map.
     if dtype == 'SECS':
         _make_SECS_plots(dtime=dtime, contour_den=contour_den, s_loc=s_loc)
