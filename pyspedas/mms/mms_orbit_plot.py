@@ -53,21 +53,13 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
         print('Error, invalid coordinate system specified; valid options are: eci, gsm, geo, sm, gse, gse2000')
         return
 
-    if plane == 'xy':
-        plt.xlabel('X Position, Re')
-        plt.ylabel('Y Position, Re')
-    elif plane == 'yz':
-        plt.xlabel('Y Position, Re')
-        plt.ylabel('Z Position, Re')
-    elif plane == 'xz':
-        plt.xlabel('X Position, Re')
-        plt.ylabel('Z Position, Re')
-
     km_in_re = 6371.2
 
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        plt.axes().set_aspect('equal')
+    # with warnings.catch_warnings():
+    #     warnings.simplefilter("ignore")
+    #     plt.axes().set_aspect('equal')
+
+    fig, axis = plt.subplots(sharey=True, sharex=True)
 
     im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec/earth_polar1.png')
     plt.imshow(im, extent=(-1, 1, -1, 1))
@@ -83,20 +75,28 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
             plot_count += 1
 
         if plane == 'xy':
-            plt.plot(d[:, 0]/km_in_re, d[:, 1]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.plot(d[:, 0]/km_in_re, d[:, 1]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.set_xlabel('X Position, Re')
+            axis.set_ylabel('Y Position, Re')
         if plane == 'yz':
-            plt.plot(d[:, 1]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.plot(d[:, 1]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.set_xlabel('Y Position, Re')
+            axis.set_ylabel('Z Position, Re')
         if plane == 'xz':
-            plt.plot(d[:, 0]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.plot(d[:, 0]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.set_xlabel('X Position, Re')
+            axis.set_ylabel('Z Position, Re')
+
+        axis.set_aspect('equal')
 
     if plot_count > 0: # at least one plot created
-        plt.legend()
-        plt.title(trange[0] + ' to ' + trange[1])
-        plt.annotate(coord.upper() + ' coordinates', xy=(0.6, 0.05), xycoords='axes fraction')
+        axis.legend()
+        axis.set_title(trange[0] + ' to ' + trange[1])
+        axis.annotate(coord.upper() + ' coordinates', xy=(0.6, 0.05), xycoords='axes fraction')
         if xr is not None:
-            plt.xlim(xr)
+            axis.set_xlim(xr)
         if yr is not None:
-            plt.ylim(yr)
+            axis.set_ylim(yr)
 
         plt.show()
 
