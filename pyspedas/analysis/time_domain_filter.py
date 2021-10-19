@@ -10,11 +10,11 @@ import numpy as np
 
 def time_domain_filter(data,time, freq_low, freq_high,order=5):
     """
-    Modified for python from SPEDAS's funtion of the same name
-    Purpose: filter data in a tplot structure, assuming constant dt between points,
-    returns filtered data in a new tplot structure.
+    Modified for python from SPEDAS's function of the same name
+    Purpose: filter data, assuming constant dt between points, 	and returns filtered data.
     Parameters:
-        data: a structure with elements x and y for time and data, respectively, with time in seconds.
+        data: data to be filtered
+		time: in seconds
         freq_low: low coutoff frequency in Hz
         freq_high: high cutoff frequency in Hz
     """
