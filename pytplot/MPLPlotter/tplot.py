@@ -328,6 +328,21 @@ def tplot(variables, var_label=None,
                     if ylog:
                         out_vdata = 10**out_vdata
 
+            # check for NaNs in the v values
+            nans_in_vdata = np.argwhere(np.isfinite(out_vdata) == False)
+            if len(nans_in_vdata) > 0:
+                # to deal with NaNs in the energy table, we set those energies to 0
+                # then apply a mask to the data values at these locations
+                out_vdata_nonan = out_vdata.copy()
+                times_with_nans = np.unique(nans_in_vdata[:, 0])
+                for nan_idx in np.arange(0, len(times_with_nans)):
+                    this_time_idx = times_with_nans[nan_idx]
+                    out_vdata_nonan[this_time_idx, ~np.isfinite(out_vdata[this_time_idx, :])] = 0
+
+                masked = np.ma.masked_where(~np.isfinite(out_vdata), out_values)
+                out_vdata = out_vdata_nonan
+                out_values = masked
+
             # create the spectrogram (ignoring warnings)
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
