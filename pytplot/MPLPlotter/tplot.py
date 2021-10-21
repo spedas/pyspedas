@@ -229,6 +229,8 @@ def tplot(variables, var_label=None,
 
             if zaxis_options.get('z_range') is not None:
                 zrange = zaxis_options['z_range']
+            else:
+                zrange = [None, None]
                 
             if zaxis_options.get('axis_subtitle') is not None:
                 zsubtitle = zaxis_options['axis_subtitle']
