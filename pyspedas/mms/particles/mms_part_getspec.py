@@ -14,7 +14,8 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     trange=None, output=['energy', 'theta', 'phi'], units='eflux', energy=None,
     phi=None, theta=None, pitch=None, gyro=None, mag_data_rate=None, fac_type='mphigeo',
     center_measurement=False, spdf=False, correct_photoelectrons=False, 
-    internal_photoelectron_corrections=False, disable_photoelectron_corrections=False):
+    internal_photoelectron_corrections=False, disable_photoelectron_corrections=False,
+    regrid=[32, 16], no_regrid=False):
     """
     Generate spectra and moments from 3D MMS particle data
 
@@ -182,7 +183,8 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
                           mag_name=mag_name, pos_name=pos_name, fac_type=fac_type, sc_pot_name=scpot_variable,
                           correct_photoelectrons=correct_photoelectrons, 
                           internal_photoelectron_corrections=internal_photoelectron_corrections,
-                          disable_photoelectron_corrections=disable_photoelectron_corrections)
+                          disable_photoelectron_corrections=disable_photoelectron_corrections, regrid=regrid,
+                          no_regrid=no_regrid)
         
         if new_vars is None:
             continue
