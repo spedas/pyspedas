@@ -6,12 +6,11 @@ import pyspedas
 from pyspedas import time_double
 from pyspedas.mms.particles.mms_part_products import mms_part_products
 
-
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast', 
-    trange=None, output=['energy', 'theta', 'phi'], units='eflux', energy=None,
+    trange=None, output=['energy', 'theta', 'phi', 'pa', 'gyro'], units='eflux', energy=None,
     phi=None, theta=None, pitch=None, gyro=None, mag_data_rate=None, fac_type='mphigeo',
     center_measurement=False, spdf=False, correct_photoelectrons=False, 
     internal_photoelectron_corrections=False, disable_photoelectron_corrections=False,

@@ -4,9 +4,6 @@ import numpy as np
 from pytplot import get_data
 
 from pyspedas.utilities.interpol import interpol
-from pyspedas.particles.spd_part_products.spd_pgs_make_theta_spec import spd_pgs_make_theta_spec
-from pyspedas.particles.spd_part_products.spd_pgs_make_phi_spec import spd_pgs_make_phi_spec
-from pyspedas.particles.spd_part_products.spd_pgs_make_e_spec import spd_pgs_make_e_spec
 from pyspedas.particles.spd_part_products.spd_pgs_make_tplot import spd_pgs_make_tplot
 from pyspedas.particles.spd_part_products.spd_pgs_limit_range import spd_pgs_limit_range
 from pyspedas.particles.spd_part_products.spd_pgs_progress_update import spd_pgs_progress_update
@@ -22,6 +19,9 @@ from pyspedas.mms.particles.mms_pgs_clean_data import mms_pgs_clean_data
 from pyspedas.mms.particles.mms_pgs_clean_support import mms_pgs_clean_support
 from pyspedas.mms.particles.mms_pgs_make_fac import mms_pgs_make_fac
 from pyspedas.mms.particles.mms_pgs_split_hpca import mms_pgs_split_hpca
+from pyspedas.mms.particles.mms_pgs_make_e_spec import mms_pgs_make_e_spec
+from pyspedas.mms.particles.mms_pgs_make_phi_spec import mms_pgs_make_phi_spec
+from pyspedas.mms.particles.mms_pgs_make_theta_spec import mms_pgs_make_theta_spec
 from pyspedas.mms.particles.mms_part_des_photoelectrons import mms_part_des_photoelectrons
 
 logging.captureWarnings(True)
@@ -270,15 +270,15 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
 
         # Build energy spectrogram
         if 'energy' in output:
-            out_energy_y[i, :], out_energy[i, :] = spd_pgs_make_e_spec(clean_data)
+            out_energy_y[i, :], out_energy[i, :] = mms_pgs_make_e_spec(clean_data)
 
         # Build theta spectrogram
         if 'theta' in output:
-            out_theta_y[i, :], out_theta[i, :] = spd_pgs_make_theta_spec(clean_data, resolution=dist_in['n_theta'])
+            out_theta_y[i, :], out_theta[i, :] = mms_pgs_make_theta_spec(clean_data, resolution=dist_in['n_theta'])
 
         # Build phi spectrogram
         if 'phi' in output:
-            out_phi_y[i, :], out_phi[i, :] = spd_pgs_make_phi_spec(clean_data, resolution=dist_in['n_phi'])
+            out_phi_y[i, :], out_phi[i, :] = mms_pgs_make_phi_spec(clean_data, resolution=dist_in['n_phi'])
 
         # Calculate the moments
         if 'moments' in output:
@@ -307,10 +307,10 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
             fac_data = spd_pgs_limit_range(fac_data, theta=pitch, phi=gyro)
 
         if 'pa' in output:
-            out_pad_y[i, :], out_pad[i, :] = spd_pgs_make_theta_spec(fac_data, colatitude=True, resolution=dist_in['n_theta'])
+            out_pad_y[i, :], out_pad[i, :] = mms_pgs_make_theta_spec(fac_data, colatitude=True, resolution=dist_in['n_theta'])
 
         if 'gyro' in output:
-            out_gyro_y[i, :], out_gyro[i, :] = spd_pgs_make_phi_spec(fac_data, resolution=dist_in['n_phi'])
+            out_gyro_y[i, :], out_gyro[i, :] = mms_pgs_make_phi_spec(fac_data, resolution=dist_in['n_phi'])
 
 
     if 'moments' in output:
