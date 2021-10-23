@@ -143,7 +143,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     if not isinstance(probe, list):
         probe = [probe]
 
-    if instrument == 'fpi' and species == 'e' and not disable_photoelectron_corrections:
+    if instrument == 'fpi' and species == 'e' and 'moments' in output and not disable_photoelectron_corrections:
         correct_photoelectrons = True
 
     support_trange = [time_double(trange[0])-60.0, time_double(trange[1])+60.0]
