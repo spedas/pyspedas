@@ -1,6 +1,7 @@
 
 import numpy as np
-from scipy.interpolate import griddata
+from scipy.interpolate import NearestNDInterpolator
+from astropy.coordinates import spherical_to_cartesian
 
 def spd_pgs_regrid(data, regrid_dimen):
     """
@@ -51,10 +52,24 @@ def spd_pgs_regrid(data, regrid_dimen):
         data_temp = data['data'][i, :]
         bins_temp = data['bins'][i, :]
 
-        points = np.stack((phi_temp, theta_temp)).T
-        xi = np.stack((phi_grid[i, :], theta_grid[i, :])).T
+        r_grid = np.ones(len(phi_grid[i, :]))
 
-        output['data'][i, :] = griddata(points, data_temp, xi, method='nearest')
-        output['bins'][i, :] = griddata(points, bins_temp, xi, method='nearest')
+        data_grid_interp = griddata(phi_temp, theta_temp, data_temp)
+        bins_grid_interp = griddata(phi_temp, theta_temp, bins_temp)
+
+        grid_x, grid_y, grid_z = spherical_to_cartesian(r_grid, theta_grid[i, :]*np.pi/180.0, phi_grid[i, :]*np.pi/180.0)
+
+        for j in range(0, len(phi_grid[i, :])):
+            output['data'][i, j] = data_grid_interp(grid_x[j], grid_y[j], grid_z[j])
+            output['bins'][i, j] = bins_grid_interp(grid_x[j], grid_y[j], grid_z[j])
 
     return output
+
+def griddata(phi, theta, data):
+    r = np.ones(len(phi))
+    phi_rad = phi*np.pi/180.0
+    theta_rad = theta*np.pi/180.0
+    cart_temp = spherical_to_cartesian(r, theta_rad, phi_rad)
+
+    points = np.stack(cart_temp).T
+    return NearestNDInterpolator(points, data)
