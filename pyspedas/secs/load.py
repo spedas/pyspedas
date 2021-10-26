@@ -3,6 +3,7 @@
 @University of Colorado Boulder
 """
 import os
+import numpy as np
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pyspedas.analysis.time_clip import time_clip as tclip
@@ -14,7 +15,7 @@ import logging
 import shutil
 import gzip
 
-def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, downloadonly = False, out_type = 'np'):
+def load(trange = None, resolution=10, dtype = None, no_download = False, downloadonly = False, out_type = 'np', save_pickle = False):
     """
     This function loads SECS/EICS data; this function is not meant
     to be called directly; instead, see the wrapper:
@@ -55,9 +56,13 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
                         shutil.copyfileobj(f_in, f_out)
             elif rf_zip_zero.endswith('.zip'):
                 rf_zip = rf_zip_zero
-
+            else:
+                rf_zip = rf_zip_zero
             out_files_zip.append(rf_zip)
-            foldername_unzipped = rf_zip[0:-16] + rf_zip[-6:-4]
+            #print('Start for unzipping process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+            foldername_unzipped = rf_zip[0:-19] + rf_zip[-8:-6] + '/' + rf_zip[-6:-4]
+            #print('foldername_unzipped-------: ', foldername_unzipped)
+            ### add??????
             if not os.path.isdir(foldername_unzipped):
                 logging.info('Start unzipping: '+ rf_zip + '  ------')
                 with zipfile.ZipFile(rf_zip, 'r') as zip_ref:
@@ -81,7 +86,6 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
     if files_zip is not None:
         for file in files_zip:
             out_files.append(file)
-
     out_files = sorted(out_files)
 
     if out_files_zip is not None:
@@ -105,7 +109,8 @@ def load(trange = None, resolution=10, dtype = 'EICS', no_download = False, down
     if out_files_unzipped == []:
         data_vars = []
     else:
-        data_vars = pyspedas.secs.read_data_files(out_files=out_files_unzipped, dtype = dtype, out_type = out_type)
+        data_vars = pyspedas.secs.read_data_files(out_files=out_files_unzipped, dtype = dtype, out_type = out_type, save_pickle = save_pickle)
+        #print('data_vars: ', data_vars, np.shape(data_vars))
 
 
     return data_vars #tvars

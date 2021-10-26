@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 from pyspedas.utilities.dailynames import dailynames
 from mpl_toolkits.basemap.solar import daynight_terminator
 import logging
-#os.environ['PROJ_LIB'] = '/Users/cao/anaconda3/envs/reu2021/share/proj'
+#os.environ['PROJ_LIB'] = '/Users/cao/anaconda3/envs/secs/share/proj'
 #if an error about "dedent" occurs, downgrade the matplotlib version to 3.2.0 by using "pip install -U matplotlib==3.2"
 try:
     from mpl_toolkits.basemap import Basemap
