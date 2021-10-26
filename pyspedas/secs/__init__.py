@@ -2,13 +2,20 @@
 @Author: Xin Cao, Xiangning Chu, University of Colorado Boulder
 This version: this function is designed to read EICS or SECS data, and return it as a pandas dataframe.
 """
-
+import os
 from .load import load
 import numpy as np
+from pyspedas.utilities.dailynames import dailynames
+from pyspedas.utilities.download import download
+from pyspedas.analysis.time_clip import time_clip as tclip
+from pyspedas.utilities.time_double import time_double
 import pandas as pd
 import time
-from pyspedas.utilities.time_double import time_double
+import zipfile
+import pyspedas
 import logging
+import shutil
+import gzip
 import pickle
 import os
 
@@ -115,16 +122,23 @@ def read_data_files(out_files = None, dtype = None, out_type = 'np', save_pickle
         J = []
 
         date_time = []
-        for idx, file in enumerate(file_names_arr_Dir):
-            if os.path.isfile(file):
-                di = np.loadtxt(file)
-            else:
+        flag = 0
+        filename_day1 = file_names_arr_Dir[0]
+
+
+        for idx, file in enumerate(file_names_arr_Dir): # per dat file with 1 min resolution.
+            if not os.path.isfile(file):
+                continue # jump ouf of the current iteration, into the next iteration of the same loop.
+            if os.stat(file).st_size == 0: # check if the file is empty.
                 continue
 
-            if idx == 0:
+            di = np.loadtxt(file)
+            if np.shape(di)[0] > 0 and flag == 0:
                 num_row = np.shape(di)[0] # np array
                 latitude = di[:, 0] # np array
                 longitude = di[:, 1] # np array
+                flag = 1
+
             if dtype == 'EICS':
                 Jx.append(di[:, 2]) # list [np.arrays]
                 Jy.append(di[:, 3]) # list [np.arrays]
@@ -149,7 +163,7 @@ def read_data_files(out_files = None, dtype = None, out_type = 'np', save_pickle
 
     if save_pickle == True:
         if out_type == 'dc':  # too large, not useful.
-            with open('test_dc.pkl', 'wb') as f:
+            with open('data_dc.pkl', 'wb') as f:
                 pickle.dump(output, f)
 
         # f.close()
