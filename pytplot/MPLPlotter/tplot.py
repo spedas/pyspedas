@@ -143,6 +143,14 @@ def tplot(variables, var_label=None,
         else:
             alpha = None
 
+        if plot_extras.get('border') is not None:
+            border = plot_extras['border']
+        else:
+            border = True
+
+        if border == False:
+            this_axis.axis('off')
+
         # determine if this is a line plot or a spectrogram
         if plot_extras.get('spec') is not None:
             spec = plot_extras['spec']
