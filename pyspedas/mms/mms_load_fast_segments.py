@@ -73,7 +73,7 @@ def mms_load_fast_segments(trange=None, suffix=''):
         return None
 
     options('mms_bss_fast'+suffix, 'panel_size', 0.09)
-    options('mms_bss_fast'+suffix, 'thick', 20)
+    options('mms_bss_fast'+suffix, 'thick', 2)
     options('mms_bss_fast'+suffix, 'Color', 'green')
     options('mms_bss_fast'+suffix, 'border', False)
     options('mms_bss_fast'+suffix, 'yrange', [-0.001,0.001])
