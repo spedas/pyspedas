@@ -410,16 +410,16 @@ def tplot(variables, var_label=None,
     if return_plot_objects:
         return fig, axes
     
-    if save_png != '':
+    if save_png is not None and save_png != '':
         plt.savefig(save_png + '.png')
 
-    if save_eps != '':
+    if save_eps is not None and save_eps != '':
         plt.savefig(save_eps + '.eps')
 
-    if save_svg != '':
+    if save_svg is not None and save_svg != '':
         plt.savefig(save_svg + '.svg')
 
-    if save_pdf != '':
+    if save_pdf is not None and save_pdf != '':
         plt.savefig(save_pdf + '.pdf')
 
     if display:

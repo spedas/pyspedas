@@ -12,7 +12,7 @@ from . import HTMLPlotter
 from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
-
+from .MPLPlotter.tplot import tplot as mpl_tplot
 
 def webengine_hack():
     """ This function is a hack to resolve an import error. 
@@ -60,7 +60,18 @@ def tplot(name,
           pos_3d=False,
           exec_qt=True,
           window_name='Plot',
-          interactive=False):
+          interactive=False,
+          # the following are for the matplotlib version
+          xsize=8, 
+          ysize=10, 
+          save_eps='', 
+          save_svg='', 
+          save_pdf='',
+          fig=None, 
+          axis=None, 
+          pseudo_plot_num=None, 
+          second_axis_size=0.0,
+          return_plot_objects=False):
     """
     This is the function used to display the tplot variables stored in memory.
     The default output is to show the plots stacked on top of one another inside of a qt window
@@ -142,6 +153,21 @@ def tplot(name,
         >>> #Plot all 3 tplot variables, sending the HTML output to a pair of strings
         >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
+
+    if qt == False and bokeh == False:
+        return mpl_tplot(name, var_label=var_label,
+                               xsize=xsize, 
+                               ysize=ysize, 
+                               save_png=save_png, 
+                               save_eps=save_eps, 
+                               save_svg=save_svg, 
+                               save_pdf=save_pdf, 
+                               display=display, 
+                               fig=fig, 
+                               axis=axis, 
+                               pseudo_plot_num=pseudo_plot_num, 
+                               second_axis_size=second_axis_size,
+                               return_plot_objects=return_plot_objects)
 
     if interactive:
         slice=True
