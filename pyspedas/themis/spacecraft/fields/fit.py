@@ -89,6 +89,7 @@ def cal_fit(probe='a'):
     from pyspedas.utilities.download import download
     from pyspedas.themis.config import CONFIG
     from pyspedas.utilities.time_double import time_float_one
+    from copy import deepcopy
     from numpy.linalg import inv
 
     # calibration parameters
@@ -190,7 +191,8 @@ def cal_fit(probe='a'):
     Byprime = -sn * d.y[:, i, 1] + cs * d.y[:, i, 2]
     Bzprime = -d.y[:, i, 4] - Bzoffset  # vassilis 4/28 (SUBTRACTING offset from spinaxis POSITIVE direction)
 
-    dprime = d
+    # d is a namedtuple and does not support direct copy by value
+    dprime = deepcopy(d)
     dprime.y[:, i, 1] = Bxprime  # vassilis DSL
     dprime.y[:, i, 2] = Byprime  # vassilis DSL
     dprime.y[:, i, 4] = Bzprime  # vassilis DSL
