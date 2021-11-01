@@ -17,6 +17,7 @@ from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
 from .analysis.tsmooth import tsmooth
 from .analysis.yclip import yclip
+from .analysis.twavpol import twavpol
 from pytplot import cdf_to_tplot
 
 from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, mms_load_edp, mms_load_eis, mms_load_feeps, \
