@@ -29,7 +29,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast', instrument='fpi', probe='1',
     output=['energy', 'theta', 'phi'], energy=None, phi=None, theta=None, pitch=None, gyro=None, mag_name=None,
-    pos_name=None, fac_type='mphigeo', sc_pot_name=None, correct_photoelectrons=False, 
+    pos_name=None, fac_type='mphigeo', sc_pot_name=None, correct_photoelectrons=False, zero_negative_values=False,
     internal_photoelectron_corrections=False, disable_photoelectron_corrections=False, no_regrid=False,
     regrid=[32, 16]):
     """
@@ -114,6 +114,9 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         internal_photoelectron_corrections: bool
             Apply internal photoelectron corrections
 
+        zero_negative_values: bool
+            Turn negative values to 0 after doing the photoelectron corrections (DES)
+            
     Returns
     ----------
         Creates tplot variables containing spectrograms and moments
@@ -251,7 +254,9 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
             # note: transpose is to shuffle fphoto*nphoto to energy-azimuth-elevation, to match dist.data
             correction = fphoto*nphoto
             corrected_df = dist_in['data']-correction.transpose([2, 0, 1])
-            corrected_df[corrected_df < 0] = 0.0
+
+            if zero_negative_values:
+                corrected_df[corrected_df < 0] = 0.0
 
             dist_in['data'] = corrected_df
 

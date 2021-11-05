@@ -13,7 +13,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     trange=None, output=['energy', 'theta', 'phi', 'pa', 'gyro'], units='eflux', energy=None,
     phi=None, theta=None, pitch=None, gyro=None, mag_data_rate=None, fac_type='mphigeo',
     center_measurement=False, spdf=False, correct_photoelectrons=False, 
-    internal_photoelectron_corrections=False, disable_photoelectron_corrections=False,
+    internal_photoelectron_corrections=False, disable_photoelectron_corrections=False, zero_negative_values=False,
     regrid=[32, 16], no_regrid=False):
     """
     Generate spectra and moments from 3D MMS particle data
@@ -93,6 +93,9 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
 
         internal_photoelectron_corrections: bool
             Apply internal photoelectron corrections
+
+        zero_negative_values: bool
+            Turn negative values to 0 after doing the photoelectron corrections (DES)
 
     Returns
     ----------
@@ -180,7 +183,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         new_vars = mms_part_products(tname, species=species, instrument=instrument, probe=prb, data_rate=data_rate,
                           output=output, units=units, energy=energy, phi=phi, theta=theta, pitch=pitch, gyro=gyro,
                           mag_name=mag_name, pos_name=pos_name, fac_type=fac_type, sc_pot_name=scpot_variable,
-                          correct_photoelectrons=correct_photoelectrons, 
+                          correct_photoelectrons=correct_photoelectrons, zero_negative_values=zero_negative_values,
                           internal_photoelectron_corrections=internal_photoelectron_corrections,
                           disable_photoelectron_corrections=disable_photoelectron_corrections, regrid=regrid,
                           no_regrid=no_regrid)
