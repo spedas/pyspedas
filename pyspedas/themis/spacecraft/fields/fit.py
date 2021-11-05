@@ -96,6 +96,12 @@ def cal_fit(probe='a'):
     lv12 = 49.6  # m
     lv34 = 40.4  # m
     lv56 = 5.6  # m
+
+    # This values provide better agreement with IDL
+    lv12 = 49.599997
+    lv34 = 40.400003
+    lv56 = 5.59999981
+
     cpar = {"e12": {"cal_par_time": '2002-01-01/00:00:00',
                     "Ascale": -15000.0 / (lv12 * 2. ** 15.),
                     "Bscale": -15000.0 / (lv12 * 2. ** 15.),
@@ -113,12 +119,12 @@ def cal_fit(probe='a'):
                     "Zscale": -15000. / (lv56 * 2. ** 15.),
                     "units": 'mV/m'},
             "b": {"cal_par_time": '2002-01-01/00:00:00',
-                  "Ascale": 1.e0,
-                  "Bscale": 1.e0,
-                  "Cscale": 1.e0,
+                  "Ascale": 1.,
+                  "Bscale": 1.,
+                  "Cscale": 1.,
                   "theta": 0.0,
-                  "sigscale": 1.e0,
-                  "Zscale": 1.e0,
+                  "sigscale": 1.,
+                  "Zscale": 1.,
                   "units": 'nT'}}
 
     # Get list of tplot variables
