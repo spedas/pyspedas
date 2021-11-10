@@ -671,7 +671,8 @@ def twavpol(tvarname, prefix='', nopfft=-1, steplength=-1, bin_freq=-1):
     # Apply vawpol.
     (timeline, freqline, powspec, degpol, waveangle, elliptict,
      helict, pspec3, err_flag) = wavpol(ct, b1, b2, b3,
-                                        nopfft=256, steplength=-1, bin_freq=3)
+                                        nopfft=nopfft, steplength=steplength,
+                                        bin_freq=bin_freq)
 
     if err_flag == 1:
         print('twavpol error: There were errors while applying wavpol.')
