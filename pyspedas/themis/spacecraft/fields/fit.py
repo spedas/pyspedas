@@ -226,6 +226,7 @@ def cal_fit(probe='a'):
 
     # Get data from th?_fit_code variable
     tvar = 'th' + probe + '_fit_code'
+    d_code = None  # Blank variable, if d_code is not used
 
     if tvar in tnames:
         i = 0
@@ -270,7 +271,59 @@ def cal_fit(probe='a'):
         d.y[e34_ss, i, 3] = cpar["e34"]["sigscale"] * d.y[e34_ss, i, 3]
         d.y[e34_ss, i, 4] = cpar["e34"]["Zscale"] * d.y[e34_ss, i, 4]
 
-    # store the spin fit parameters.
+    # save fit_efit variable
     fit_efit_data = {'x': d.times, 'y': d.y[:, i, :]}
     tvar = 'th' + probe + '_fit_efit'
     store_data(tvar, fit_efit_data)
+
+    # thx_efs and thx_efs_sigma,
+    # Calibrate efs data by applying E12 calibration factors, not despinning, then applying despun (spin-dependent)
+    # calibration factors from E12 (the spin-independent offset is subtracted on-board):
+
+    # Load calibration file, e.g. tha/l1/eff/0000/tha_efi_calib_params.txt
+    remote_name = thx + '/l1/eff/0000/' + thx + '_efi_calib_params.txt'
+    eficalfile = download(remote_file=remote_name,
+                          remote_path=CONFIG['remote_data_dir'],
+                          local_path=CONFIG['local_data_dir'],
+                          no_download=False)
+    # TODO: Add file check
+    colnums = {"time": [0], "edc_offset": [14, 15, 16], "edc_gain": [17, 18, 19],
+               "BOOM_LENGTH": [26, 27, 28], "BOOM_SHORTING_FACTOR": [29, 30, 31],
+               "DSC_OFFSET": [32, 33, 34]} #  List of columns to be loaded
+    collist = list()
+    [collist.extend(cnum) for cnum in colnums.values()]
+    collist.sort()  # ensurer that the list of columns is sorted
+    eficaltxt = np.loadtxt(eficalfile[0], skiprows=1, max_rows=1, converters={0: time_float_one}, usecols=collist)
+    eficaldata = {"time": eficaltxt[0], "gain": eficaltxt[4:7], "offset": eficaltxt[1:4],
+                  "boom_lenght": eficaltxt[7:10], "boom_shorting_factor": eficaltxt[10:13],
+                  "dsc_offset": eficaltxt[13:16]}
+
+    # Using codesfor esf calibration
+    exx = eficaldata["boom_lenght"] * eficaldata["boom_shorting_factor"]  # TODO: add no_cal keyword
+
+    if np.any(e12_ss):
+        efs[e12_ss, :] = -1000. * eficaldata["gain"][0] * efs[e12_ss, :] / exx[0]
+    if np.any(e34_ss):
+        efs[e34_ss, :] = -1000. * eficaldata["gain"][1] * efs[e34_ss, :] / exx[1]
+    # Calibrate Ez spinfit by itself:
+    efs[:, 2] = -1000.*eficaldata["gain"][2] * efs[:, 2] / exx[2]
+
+    # Here, if the fit_code is 'e5'x (229) then efs[*,2] contains the spacecraft potential, so set all of those values
+    # to Nan, jmm, 19-Apr-2010
+    # Or if the fit_code is 'e7'x (231), this will also be including the SC potential, jmm,22-oct-2010
+    if d_code is not None:
+        sc_port = (d_code.y[:, i] == int("e5", 16)) | (d_code.y[:, i] == int("e7", 16))
+        if np.any(sc_port):
+            efs[sc_port, 2] = np.nan
+
+    # save efs variable
+    eft_data = {'x': d.times[efsx_good], 'y': efs[efsx_good, :]}  # efs[efsx_good,*]
+    tvar = 'th' + probe + '_efs'
+    store_data(tvar, eft_data)
+
+    # save efs_sigma variable
+    eft_sigma_data = {'x': d.times[efsx_good], 'y': d.y[efsx_good, i, 3]}  # d.y[efsx_good, 3, idx]
+    tvar = 'th' + probe + '_efs_sigma'
+    store_data(tvar, eft_sigma_data)
+
+   # TODO: tha_efs_0, tha_efs_dot0
