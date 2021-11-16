@@ -70,10 +70,6 @@ def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
     for i, old in enumerate(old_names):
         new = n_names[i]
 
-        if new != old:
-            pyspedas.tcopy(old, new)
-
-        data = pytplot.data_quants[new].values
-        data = np.clip(data, ymin, ymax)
+        data = pytplot.clip(old, ymin, ymax, new)
 
         print('yclip was applied to: ' + new)
