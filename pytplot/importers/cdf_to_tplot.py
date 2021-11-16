@@ -187,7 +187,6 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                         xdata = cdf_file.varget(x_axis_var)
                         epoch_var_atts = cdf_file.varattsget(x_axis_var)
                     except ValueError:
-                        print("Value error for variable: " + var_name)
                         continue
 
                     # check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
