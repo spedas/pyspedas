@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import warnings
 import pytplot
+from fnmatch import filter as tname_filter
 
 # the following improves the x-axis ticks labels
 import matplotlib.units as munits
@@ -32,6 +33,12 @@ def tplot(variables, var_label=None,
     """
     This function creates tplot windows using matplotlib as a backend.
     """
+    if isinstance(variables, str):
+        # check for wild cards * or ?
+        if '*' in variables or '?' in variables:
+            tnames = pytplot.tplot_names(quiet=True)
+            variables = tname_filter(tnames, variables)
+
     if not isinstance(variables, list):
         variables = [variables]
         
