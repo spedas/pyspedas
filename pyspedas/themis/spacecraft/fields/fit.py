@@ -242,7 +242,7 @@ def cal_fit(probe='a'):
     # Save 'efs' datatype before "hard wired" calibrations.
     # An EFI-style calibration is performed below.
     i = 0
-    efs = d.y[:, i, [1, 2, 3]]
+    efs = d.y[:, i, [1, 2, 4]]
     # Locate samples with non-NaN data values.  Save the indices in
     # efsx_good, then at the end of calibration, pull the "good"
     # indices out of the calibrated efs[] array to make the thx_efs
@@ -250,7 +250,6 @@ def cal_fit(probe='a'):
     efsx_good = ~np.isnan(efs[:, 0])  # TODO: check this criteria.
 
     if np.any(efsx_good):  # TODO: include processing of 'efs' where efsx_fixed is used
-        efsx_fixed = d.times[efsx_good]
         if np.any(e34_ss):  # rotate efs 90 degrees if necessary, if e34 was used in spinfit
             efs[e34_ss, :] = d.y[e34_ss, i, [2, 1, 4]]
             efs[e34_ss, 0] = -efs[e34_ss, 0]
@@ -289,24 +288,29 @@ def cal_fit(probe='a'):
     # TODO: Add file check
     colnums = {"time": [0], "edc_offset": [14, 15, 16], "edc_gain": [17, 18, 19],
                "BOOM_LENGTH": [26, 27, 28], "BOOM_SHORTING_FACTOR": [29, 30, 31],
-               "DSC_OFFSET": [32, 33, 34]} #  List of columns to be loaded
+               "DSC_OFFSET": [32, 33, 34]}  # List of columns to be loaded
     collist = list()
     [collist.extend(cnum) for cnum in colnums.values()]
     collist.sort()  # ensurer that the list of columns is sorted
     eficaltxt = np.loadtxt(eficalfile[0], skiprows=1, max_rows=1, converters={0: time_float_one}, usecols=collist)
     eficaldata = {"time": eficaltxt[0], "gain": eficaltxt[4:7], "offset": eficaltxt[1:4],
-                  "boom_lenght": eficaltxt[7:10], "boom_shorting_factor": eficaltxt[10:13],
+                  "boom_length": eficaltxt[7:10], "boom_shorting_factor": eficaltxt[10:13],
                   "dsc_offset": eficaltxt[13:16]}
 
-    # Using codesfor esf calibration
-    exx = eficaldata["boom_lenght"] * eficaldata["boom_shorting_factor"]  # TODO: add no_cal keyword
-
+    # Boom
+    exx = eficaldata["boom_length"] * eficaldata["boom_shorting_factor"]  # TODO: add no_cal keyword
+    
+    # Calibrate E field
+    # Calibrate Ex and Ey spinfits that are derived from E12 only!
     if np.any(e12_ss):
-        efs[e12_ss, :] = -1000. * eficaldata["gain"][0] * efs[e12_ss, :] / exx[0]
+        efs[e12_ss, 0:2] = -1000. * eficaldata["gain"][0] * efs[e12_ss, 0:2] / exx[0]
     if np.any(e34_ss):
-        efs[e34_ss, :] = -1000. * eficaldata["gain"][1] * efs[e34_ss, :] / exx[1]
+        efs[e34_ss, 0:2] = -1000. * eficaldata["gain"][1] * efs[e34_ss, 0:2] / exx[1]
     # Calibrate Ez spinfit by itself:
-    efs[:, 2] = -1000.*eficaldata["gain"][2] * efs[:, 2] / exx[2]
+    efs[:, 2] = -1000. * eficaldata["gain"][2] * efs[:, 2] / exx[2]
+
+    # DC Offset
+    efs -= eficaldata["dsc_offset"]
 
     # Here, if the fit_code is 'e5'x (229) then efs[*,2] contains the spacecraft potential, so set all of those values
     # to Nan, jmm, 19-Apr-2010
