@@ -15,11 +15,11 @@ xr.set_options(keep_attrs=True)
 using_graphics = False
 
 # runs without Qt
-if not 'PYTPLOT_NO_GRAPHICS' in os.environ:
-    using_graphics = True
-else:
-    print("Turning off qt graphics.  Bokeh plotting is still enabled.")
-    using_graphics = False
+# if not 'PYTPLOT_NO_GRAPHICS' in os.environ:
+#     using_graphics = True
+# else:
+#     print("Turning off qt graphics.  Bokeh plotting is still enabled.")
+#     using_graphics = False
 
 try:
     import google.colab
