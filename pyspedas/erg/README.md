@@ -2,7 +2,7 @@
 ## Arase (ERG)
 The routines in this module can be used to load data from the Arase mission.
 
-Please note that the routines in this module are EXPERIMENTAL.
+Please note that the routines in this module are still highly EXPERIMENTAL.
 
 ### Instruments
 - Magnetic Field Experiment (MGF)
