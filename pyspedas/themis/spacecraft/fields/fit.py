@@ -69,7 +69,7 @@ def fit(trange=['2007-03-23', '2007-03-24'],
                 probe=probe, time_clip=time_clip, no_update=no_update)
 
 
-def cal_fit(probe='a'):
+def cal_fit(probe='a', no_cal=False):
     """
     Converts raw FIT parameter data into physical quantities.
     Warning: This function is in debug state
@@ -77,7 +77,10 @@ def cal_fit(probe='a'):
     Currently, it assumes that "th?_fit" variable is already loaded
 
     Parameters:
-        probe: a
+        probe: str
+            Spacecraft probe letter ('a', 'b', 'c', 'd' and/or 'e')
+        no_cal: bool
+            If ture do not apply boom shortening factor or Ex offset defaults
 
     Returns:
         th?_fgs tplot variable
@@ -139,7 +142,8 @@ def cal_fit(probe='a'):
     if not tvar in tnames:
         return
 
-    d = get_data(tvar)  # NOTE: Indexes are not the same as in SPEDAS, e.g. 27888x2x5
+    # Using deep copy to create an independent instance
+    d = deepcopy(get_data(tvar))  # NOTE: Indexes are not the same as in SPEDAS, e.g. 27888x2x5
 
     # establish probe number in cal tables
     sclist = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': -1}  # for probe 'f' no flatsat FGM cal files
@@ -298,8 +302,10 @@ def cal_fit(probe='a'):
                   "dsc_offset": eficaltxt[13:16]}
 
     # Boom
-    exx = eficaldata["boom_length"] * eficaldata["boom_shorting_factor"]  # TODO: add no_cal keyword
-    
+    exx = eficaldata["boom_length"]
+    if not no_cal:
+        exx *= eficaldata["boom_shorting_factor"]
+
     # Calibrate E field
     # Calibrate Ex and Ey spinfits that are derived from E12 only!
     if np.any(e12_ss):
@@ -310,7 +316,8 @@ def cal_fit(probe='a'):
     efs[:, 2] = -1000. * eficaldata["gain"][2] * efs[:, 2] / exx[2]
 
     # DC Offset
-    efs -= eficaldata["dsc_offset"]
+    if not no_cal:
+        efs -= eficaldata["dsc_offset"]
 
     # Here, if the fit_code is 'e5'x (229) then efs[*,2] contains the spacecraft potential, so set all of those values
     # to Nan, jmm, 19-Apr-2010
