@@ -103,7 +103,7 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
         if var_name != 'time_unix':
             try:
                 pytplot.store_data(
-                    obs_specific, data={'x': sts_dict['time_unix'], 'y': [np.float(val) for val in sts_dict[var_name]]})
+                    obs_specific, data={'x': sts_dict['time_unix'], 'y': [float(val) for val in sts_dict[var_name]]})
             except ValueError:
                 continue
 
