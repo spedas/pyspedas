@@ -74,8 +74,9 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
     sec = sts_dict['TIME_SEC']
     msec = sts_dict['TIME_MSEC']
 
-    dtimes = [datetime.datetime(int(yr),1,1,int(hr),int(mn),int(s),int(ms), tzinfo=datetime.timezone.utc) + datetime.timedelta(int(dy)-1)
+    dtimes = [datetime.datetime(int(yr),1,1,int(hr),int(mn),int(s),int(ms)*1000, tzinfo=datetime.timezone.utc) + datetime.timedelta(int(dy)-1)
               for yr, dy, hr, mn, s, ms in zip(year, doy, hour, min, sec, msec)]
+
     sts_dict['time_unix'] = dtimes
     # These keys are no longer necessary, nix them
     remove_time_keys = ['TIME_YEAR', 'TIME_DOY', 'TIME_HOUR', 'TIME_MIN', 'TIME_SEC', 'TIME_MSEC']
