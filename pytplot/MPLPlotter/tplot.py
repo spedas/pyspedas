@@ -467,5 +467,5 @@ def tplot(variables, var_label=None,
 def get_var_label_ticks(var_xr, times):
     out_ticks = []
     for time in times:
-        out_ticks.append('{:.2f}'.format(var_xr.interp({'time': time}).values))
+        out_ticks.append('{:.2f}'.format(var_xr.interp(coords={'time': time}, kwargs={'fill_value': 'extrapolate', 'bounds_error': False}).values))
     return out_ticks
