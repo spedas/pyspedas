@@ -62,14 +62,20 @@ def tplot(variables, var_label=None,
     ymargin = pytplot.tplot_opt_glob.get('ymargin')
     zrange = [None, None]
 
-    if xmargin is not None:
-        fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
+    colorbars = {}
+
+    if xmargin is None:
+        xmargin = [0.2, 0.2]
+
+    fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
 
     if ymargin is not None:
         fig.subplots_adjust(top=1-ymargin[0], bottom=ymargin[1])
 
-    if vertical_spacing is not None:
-        fig.subplots_adjust(hspace=vertical_spacing)
+    if vertical_spacing is None:
+        vertical_spacing = 0.07
+    
+    fig.subplots_adjust(hspace=vertical_spacing)
     
     for idx, variable in enumerate(variables):
         var_data = pytplot.get_data(variable)
@@ -364,20 +370,14 @@ def tplot(variables, var_label=None,
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 im = this_axis.pcolormesh(var_times, out_vdata.T, out_values.T, **spec_options)
+
+            # store everything needed to create the colorbars
+            colorbars[variable] = {}
+            colorbars[variable]['im'] = im
+            colorbars[variable]['axis_font_size'] = axis_font_size
+            colorbars[variable]['ztitle'] = ztitle
+            colorbars[variable]['zsubtitle'] = zsubtitle
             
-            # add the color bar
-            if pseudo_plot_num == 0:
-                # there's going to be a second axis, so we need to make sure there's room for it
-                second_axis_size = 0.07
-
-            fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
-            box = this_axis.get_position()
-            pad, width = 0.02, 0.02
-            cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
-            if axis_font_size is not None:
-                cax.tick_params(labelsize=axis_font_size)
-            fig.colorbar(im, cax=cax, label=ztitle + '\n ' + zsubtitle)
-
         # apply any vertical bars
         if pytplot.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
             time_bars = pytplot.data_quants[variable].attrs['plot_options']['time_bar']
@@ -400,6 +400,10 @@ def tplot(variables, var_label=None,
                 print('Variable not found: ' + label)
                 continue
 
+            if len(label_data.values.shape) != 1:
+                print(label + ' specified as a vector; var_label only supports scalars. Try splitting the vector into seperate tplot variables.')
+                continue
+
             # set up the new x-axis
             axis_delta = axis_delta - num_panels*0.1
             new_xaxis = this_axis.secondary_xaxis(axis_delta)
@@ -413,6 +417,34 @@ def tplot(variables, var_label=None,
             new_xaxis.set_xlabel(ytitle)
 
         fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
+
+    # add the color bars to any spectra
+    for idx, variable in enumerate(variables):
+        plot_extras = pytplot.data_quants[variable].attrs['plot_options']['extras']
+
+        if plot_extras.get('spec') is not None:
+            spec = plot_extras['spec']
+        else:
+            spec = False
+
+        if spec:
+            # add the color bar
+            if pseudo_plot_num == 0:
+                # there's going to be a second axis, so we need to make sure there's room for it
+                second_axis_size = 0.07
+
+            if num_panels == 1:
+                this_axis = axes
+            else:
+                this_axis = axes[idx]
+
+            fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
+            box = this_axis.get_position()
+            pad, width = 0.02, 0.02
+            cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
+            if colorbars[variable]['axis_font_size'] is not None:
+                cax.tick_params(labelsize=colorbars[variable]['axis_font_size'])
+            fig.colorbar(colorbars[variable]['im'], cax=cax, label=colorbars[variable]['ztitle'] + '\n ' + colorbars[variable]['zsubtitle'])
 
     if return_plot_objects:
         return fig, axes
