@@ -19,7 +19,7 @@ from .dsp.dsp import mms_load_dsp
 from .aspoc.aspoc import mms_load_aspoc
 from .fsm.fsm import mms_load_fsm
 from .fgm.mms_curl import mms_curl
-
+from .spd_mms_load_bss import spd_mms_load_bss
 
 '''
     the following wrappers allow users to import the load routines using 
@@ -33,6 +33,10 @@ from .fgm.mms_curl import mms_curl
             >>> import pyspedas
             >>> fgm_data = pyspedas.mms.fgm(...)
 '''
+
+@wraps(spd_mms_load_bss)
+def bss(*args, **kwargs):
+    return spd_mms_load_bss(*args, **kwargs)
 
 @wraps(mms_load_state)
 def state(*args, **kwargs):
