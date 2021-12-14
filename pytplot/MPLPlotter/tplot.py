@@ -293,7 +293,7 @@ def tplot(variables, var_label=None,
                         fig_size = fig.get_size_inches()*fig.dpi
                         nx = fig_size[0]
 
-                    if zlog:
+                    if zlog == 'log':
                         zdata = np.log10(out_values)
                     else:
                         zdata = out_values
@@ -306,7 +306,7 @@ def tplot(variables, var_label=None,
 
                     out_values = interp_func(out_times)
 
-                    if zlog:
+                    if zlog == 'log':
                         out_values = 10**out_values
 
                     var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in out_times]
@@ -322,12 +322,12 @@ def tplot(variables, var_label=None,
                         fig_size = fig.get_size_inches()*fig.dpi
                         ny = fig_size[1]
 
-                    if zlog:
+                    if zlog == 'log':
                         zdata = np.log10(out_values)
                     else:
                         zdata = out_values
 
-                    if ylog:
+                    if ylog =='log':
                         vdata = np.log10(var_data.v)
                         ycrange = np.log10(yrange)
                     else:
@@ -345,10 +345,10 @@ def tplot(variables, var_label=None,
 
                     out_values = interp_func(out_vdata)
 
-                    if zlog:
+                    if zlog == 'log':
                         out_values = 10**out_values
 
-                    if ylog:
+                    if ylog == 'log':
                         out_vdata = 10**out_vdata
 
             # check for NaNs in the v values
@@ -365,6 +365,10 @@ def tplot(variables, var_label=None,
                 masked = np.ma.masked_where(~np.isfinite(out_vdata), out_values)
                 out_vdata = out_vdata_nonan
                 out_values = masked
+
+            # check for negatives if zlog is requested
+            if zlog =='log':
+                out_values[out_values<0.0] = 0.0
 
             # create the spectrogram (ignoring warnings)
             with warnings.catch_warnings():
