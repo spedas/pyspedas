@@ -113,9 +113,13 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     if mag_data_rate is None:
         if data_rate == 'brst':
             mag_data_rate = 'brst'
-            scpot_data_rate = 'brst'
         else:
             mag_data_rate = 'srvy'
+
+    if scpot_data_rate is None:
+        if data_rate == 'brst':
+            scpot_data_rate = 'brst'
+        else:
             scpot_data_rate = 'fast'
 
     instrument = instrument.lower()
