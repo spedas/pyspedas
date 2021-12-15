@@ -1,9 +1,11 @@
 
+import numpy as np
 import logging
 import re
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.hpca.mms_hpca_set_metadata import mms_hpca_set_metadata
 from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
+from pyspedas.mms.hpca.mms_hpca_energies import mms_hpca_energies
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
@@ -176,5 +178,12 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                     store_data(tvar, data={'x': df_data.times, 'y': df_data.y, 'v1': theta, 'v2': df_data.v2}, attr_dict=df_metadata)
 
+                    # check if energy table contains all 0s
+                    zerocheck = np.argwhere(df_data.v2 == 0.0)
+                    if len(zerocheck) == 63:
+                        #  energy table is all 0s, using hard coded table
+                        energy_table = mms_hpca_energies()
+                        logging.warning('Found energy table with all 0s: ' + tvar + '; using hard-coded energy table instead')
+                        store_data(tvar, data={'x': df_data.times, 'y': df_data.y, 'v1': theta, 'v2': energy_table}, attr_dict=df_metadata)
 
     return tvars
