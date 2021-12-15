@@ -11,7 +11,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast', 
     trange=None, output=['energy', 'theta', 'phi', 'pa', 'gyro'], units='eflux', energy=None,
-    phi=None, theta=None, pitch=None, gyro=None, mag_data_rate=None, fac_type='mphigeo',
+    phi=None, theta=None, pitch=None, gyro=None, mag_data_rate=None, scpot_data_rate=None, fac_type='mphigeo',
     center_measurement=False, spdf=False, correct_photoelectrons=False, 
     internal_photoelectron_corrections=False, disable_photoelectron_corrections=False, zero_negative_values=False,
     regrid=[32, 16], no_regrid=False):
