@@ -440,9 +440,14 @@ def wavpol(ct, bx, by, bz,
                 tempy = smooth * ys[0:nopfft]
                 tempz = smooth * zs[0:nopfft]
 
-                specx[KK, :] = np.fft.fft(tempx, norm='forward')
-                specy[KK, :] = np.fft.fft(tempy, norm='forward')
-                specz[KK, :] = np.fft.fft(tempz, norm='forward')
+                # previous version (prior to 15Dec2021)
+                # specx[KK, :] = np.fft.fft(tempx, norm='forward')
+                # specy[KK, :] = np.fft.fft(tempy, norm='forward')
+                # specz[KK, :] = np.fft.fft(tempz, norm='forward')
+                specx[KK, :] = np.fft.fft(tempx, norm='ortho')/len(tempx)
+                specy[KK, :] = np.fft.fft(tempy, norm='ortho')/len(tempy)
+                specz[KK, :] = np.fft.fft(tempz, norm='ortho')/len(tempz)
+
                 halfspecx[KK, :] = specx[KK, 0:int(nopfft/2)]
                 halfspecy[KK, :] = specy[KK, 0:int(nopfft/2)]
                 halfspecz[KK, :] = specz[KK, 0:int(nopfft/2)]
