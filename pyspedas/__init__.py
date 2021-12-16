@@ -15,6 +15,9 @@ from .analysis.time_clip import time_clip
 from .analysis.tdeflag import tdeflag
 from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
+from .analysis.tnormalize import tnormalize
+from .analysis.tdotp import tdotp
+from .analysis.tcrossp import tcrossp
 from .analysis.tsmooth import tsmooth
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol

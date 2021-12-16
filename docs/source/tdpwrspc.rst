@@ -1,4 +1,4 @@
-Dynamic Power Spectra
+Dynamic power spectra
 ====================================
 
 .. autofunction:: pyspedas.tdpwrspc
