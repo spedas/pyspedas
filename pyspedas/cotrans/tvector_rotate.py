@@ -5,7 +5,27 @@ from pytplot import get_data, store_data
 
 def tvector_rotate(mat_var_in, vec_var_in, newname=None):
     """
+    Rotates array data by a set of coordinate
+    transformation matrices and outputs tplot variables.
+    This is designed mainly for use with fac_matrix_make, 
+    but can be used for more general purposes.
 
+    Input
+    ------
+        mat_var_in: str
+            Tplot variable containing the transformation matrices
+
+        vec_var_in: str or list of str
+            Tplot variables to be transformed
+
+    Parameters
+    ----------
+        newname: str or list of str
+            Name of the output tplot variables
+
+    Returns
+    ---------
+        Names of the variables created.
 
     """
 
@@ -14,7 +34,7 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
         return
 
     if tnames(vec_var_in) == []:
-        print('Transformation requires the matrix variable to be set to a valid tplot variable.')
+        print('Transformation requires the vector variables to be set to a valid tplot variable.')
         return
 
     vec_var_in = tnames(vec_var_in)
