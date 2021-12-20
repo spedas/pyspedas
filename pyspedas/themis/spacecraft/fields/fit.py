@@ -328,13 +328,32 @@ def cal_fit(probe='a', no_cal=False):
             efs[sc_port, 2] = np.nan
 
     # save efs variable
-    eft_data = {'x': d.times[efsx_good], 'y': efs[efsx_good, :]}  # efs[efsx_good,*]
+    efs_data = {'x': d.times[efsx_good], 'y': efs[efsx_good, :]}  # efs[efsx_good,*]
     tvar = 'th' + probe + '_efs'
-    store_data(tvar, eft_data)
+    store_data(tvar, efs_data)
 
     # save efs_sigma variable
-    eft_sigma_data = {'x': d.times[efsx_good], 'y': d.y[efsx_good, i, 3]}  # d.y[efsx_good, 3, idx]
+    efs_sigma_data = {'x': d.times[efsx_good], 'y': d.y[efsx_good, i, 3]}  # d.y[efsx_good, 3, idx]
     tvar = 'th' + probe + '_efs_sigma'
-    store_data(tvar, eft_sigma_data)
+    store_data(tvar, efs_sigma_data)
 
-   # TODO: tha_efs_0, tha_efs_dot0
+    # save efs_0
+    efs_0_data = deepcopy(efs)
+    efs_0_data[:, 2] = 0
+    efs_0 = {'x': d.times[efsx_good], 'y': efs_0_data[efsx_good, :]}
+    tvar = 'th' + probe + '_efs_0'
+    store_data(tvar, efs_0)
+
+    # calculate efs_dot0
+    Ez = (efs[:, 0]*fgs[:, 0] + efs[:, 1]*fgs[:, 1])/(-1*fgs[:, 2])
+    angle = np.arccos(fgs[:, 2]/np.sqrt(np.sum(fgs**2, axis=1)))*180/np.pi
+    angle80 = angle > 80
+    if np.any(angle80):
+        Ez[angle80] = np.NaN
+    efx_dot0_data = deepcopy(efs)
+    efx_dot0_data[:, 2] = Ez
+
+    # save efs_dot0
+    efs_dot0 = {'x': d.times[efsx_good], 'y': efx_dot0_data[efsx_good, :]}
+    tvar = 'th' + probe + '_efs_dot0'
+    store_data(tvar, efs_dot0)
