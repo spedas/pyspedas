@@ -106,16 +106,20 @@ def mgf(trange=['2017-03-27', '2017-03-28'],
     loaded_data = load(pathformat=pathformat, file_res=file_res, trange=trange, level=level, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
 
-    if (loaded_data is None) or (loaded_data == []) or notplot or downloadonly:
+    if (loaded_data is None) or (loaded_data == []):
         return loaded_data
 
     if (len(loaded_data) > 0) and ror:
 
-        out_files = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                         varformat=varformat, varnames=varnames, downloadonly=True, notplot=notplot, time_clip=time_clip, no_update=True, uname=uname, passwd=passwd)
-        cdf_file = cdflib.CDF(out_files[0])
         try:
-            gatt = cdf_file.globalattsget()
+            if isinstance(loaded_data, list):
+                if downloadonly:
+                    cdf_file = cdflib.CDF(loaded_data[-1])
+                    gatt = cdf_file.globalattsget()
+                else:
+                    gatt = get_data(loaded_data[-1], metadata=True)['CDF']['GATT']
+            elif isinstance(loaded_data, dict):
+                gatt = loaded_data[list(loaded_data.keys())[-1]]['CDF']['GATT']
 
             # --- print PI info and rules of the road
             print(' ')
