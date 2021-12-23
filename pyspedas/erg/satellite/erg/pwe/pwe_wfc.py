@@ -123,12 +123,18 @@ def pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'],
 
     if (len(loaded_data) > 0) and ror:
 
-        out_files = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                         varformat=varformat, varnames=varnames, downloadonly=True, notplot=notplot, time_clip=time_clip, no_update=True, uname=uname, passwd=passwd)
-        cdf_file = cdflib.CDF(out_files[0])
         try:
+            if isinstance(loaded_data, list):
+                if downloadonly:
+                    cdf_file = cdflib.CDF(loaded_data[-1][-1])
+                    gatt = cdf_file.globalattsget()
+                elif notplot:
+                    gatt = loaded_data[-1][list(loaded_data[-1].keys())[-1]]['CDF']['GATT']
+                else:
+                    gatt = get_data(loaded_data[-1][-1], metadata=True)['CDF']['GATT']
+
+
             # --- print PI info and rules of the road
-            gatt = cdf_file.globalattsget()
             print(' ')
             print(' ')
             print(
