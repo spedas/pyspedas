@@ -6,4 +6,4 @@ cdasws>=1.7.24
 netCDF4
 pywavelets
 astropy
-pytplot
+https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip

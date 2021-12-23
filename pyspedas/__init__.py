@@ -4,6 +4,7 @@ from .utilities.tnames import tnames
 from .utilities.time_string import time_string, time_datetime
 from .utilities.time_double import time_float, time_double
 from .utilities.tcopy import tcopy
+from .utilities.tkm2re import tkm2re
 
 from .analysis.avg_data import avg_data
 from .analysis.clean_spikes import clean_spikes
@@ -15,6 +16,9 @@ from .analysis.time_clip import time_clip
 from .analysis.tdeflag import tdeflag
 from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
+from .analysis.tnormalize import tnormalize
+from .analysis.tdotp import tdotp
+from .analysis.tcrossp import tcrossp
 from .analysis.tsmooth import tsmooth
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
