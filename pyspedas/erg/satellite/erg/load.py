@@ -1,3 +1,5 @@
+import cdflib
+
 from pyspedas.analysis.time_clip import time_clip as tclip
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
@@ -62,6 +64,18 @@ def load(trange=['2017-03-27', '2017-03-28'],
                          varformat=varformat, varnames=varnames, notplot=notplot)
 
     if notplot:
+        if len(out_files) > 0:
+            cdf_file = cdflib.CDF(out_files[-1])
+            cdf_info = cdf_file.cdf_info()
+            all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
+            gatt = cdf_file.globalattsget()
+            for var in all_cdf_variables:
+                t_plot_name = prefix + var + suffix
+                if t_plot_name in tvars:
+                    vatt = cdf_file.varattsget(var)
+                    tvars[t_plot_name]['CDF'] = {'VATT':vatt,
+                                                'GATT':gatt,
+                                                'FILENAME':out_files[-1]}
         return tvars
 
     if time_clip:
