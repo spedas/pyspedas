@@ -27,6 +27,7 @@ https://pyspedas.readthedocs.io/
 - [Geotail](https://github.com/spedas/pyspedas/blob/master/pyspedas/geotail/README.md)
 - [Geostationary Operational Environmental Satellite (GOES)](https://github.com/spedas/pyspedas/blob/master/pyspedas/goes/README.md)
 - [Imager for Magnetopause-to-Aurora Global Exploration (IMAGE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/image/README.md)
+- [Kyoto Dst Index](https://github.com/spedas/pyspedas/blob/master/pyspedas/kyoto/README.md)
 - [Mars Atmosphere and Volatile Evolution (MAVEN)](https://github.com/spedas/pyspedas/blob/master/pyspedas/maven/README.md)
 - [Magnetic Induction Coil Array (MICA)](https://github.com/spedas/pyspedas/blob/master/pyspedas/mica/README.md)
 - [Magnetospheric Multiscale (MMS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/mms/README.md)
