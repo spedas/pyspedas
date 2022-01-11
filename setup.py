@@ -27,7 +27,8 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['numpy>=1.19.5', 'requests', 'pytplot>=1.7.27',
                       'cdflib>=0.3.20', 'cdasws>=1.7.24', 'netCDF4',
-                      'pywavelets', 'pyqtgraph==0.12.2', 'astropy'],
+                      'pywavelets', 'pyqtgraph==0.12.2', 'astropy',
+                      'geopack'],
     python_requires='>=3.7',
     include_package_data=True,
 )
