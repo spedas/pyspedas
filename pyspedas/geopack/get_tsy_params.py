@@ -1,6 +1,6 @@
 
 import numpy as np
-from pyspedas import tinterpol
+from pyspedas import tinterpol, tdeflag
 from pyspedas.geopack.get_w_params import get_w
 from pytplot import get_data, store_data
 
@@ -66,12 +66,17 @@ def get_tsy_params(dst_tvar, imf_tvar, Np_tvar, Vp_tvar, model, pressure_tvar=No
         print('Unknown model: ' + model)
         return
 
+    tdeflag(Np_tvar, method='remove_nan', overwrite=True)
+    tdeflag(dst_tvar, method='remove_nan', overwrite=True)
+    tdeflag(Vp_tvar, method='remove_nan', overwrite=True)
+
     # interpolate the inputs to the Np timestamps
     tinterpol(imf_tvar, Np_tvar, newname=imf_tvar+'_interp')
     tinterpol(dst_tvar, Np_tvar, newname=dst_tvar+'_interp')
     tinterpol(Vp_tvar, Np_tvar, newname=Vp_tvar+'_interp')
 
     if pressure_tvar is not None:
+        tdeflag(pressure_tvar, method='remove_nan', overwrite=True)
         tinterpol(pressure_tvar, Np_tvar, newname=pressure_tvar+'_interp')
 
     Np_data = get_data(Np_tvar)
