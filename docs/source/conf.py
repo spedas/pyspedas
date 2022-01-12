@@ -17,6 +17,10 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 import pyspedas
 import pyspedas.cotrans.cotrans
+import pyspedas.geopack.tt89
+import pyspedas.geopack.tt96
+import pyspedas.geopack.tt01
+import pyspedas.geopack.tts04
 
 # -- Project information -----------------------------------------------------
 
