@@ -4,6 +4,7 @@ The routines in this module can be used to calculate Tsyganenko magnetic field m
 
 T89
 -----------------------------
+
 .. autofunction:: pyspedas.geopack.tt89.tt89
 
 T89 Example
@@ -22,6 +23,7 @@ T89 Example
 
 T96
 -----------------------------
+
 .. autofunction:: pyspedas.geopack.tt96.tt96
 
 T96 Example
@@ -40,6 +42,7 @@ T96 Example
 
 T01
 -----------------------------
+
 .. autofunction:: pyspedas.geopack.tt01.tt01
 
 T01 Example
@@ -58,6 +61,7 @@ T01 Example
 
 TS04
 -----------------------------
+
 .. autofunction:: pyspedas.geopack.tts04.tts04
 
 TS04 Example
