@@ -1,8 +1,8 @@
 Magnetic Field Models
 ====================================
-The routines in this module can be used to calculate Tsyganenko magnetic field models using Sheng Tian's geopack library (https://github.com/tsssss/geopack).
+The routines in this module can be used to calculate Tsyganenko magnetic field models using Sheng Tian's implementation of the `geopack` library (https://github.com/tsssss/geopack).
 
-T89
+Tsyganenko 89 (T89)
 -----------------------------
 
 .. autofunction:: pyspedas.geopack.tt89.tt89
@@ -21,7 +21,7 @@ T89 Example
    tt89('mms1_mec_r_gsm')
    tplot('mms1_mec_r_gsm_bt89')
 
-T96
+Tsyganenko 96 (T96)
 -----------------------------
 
 .. autofunction:: pyspedas.geopack.tt96.tt96
@@ -40,7 +40,7 @@ T96 Example
    tt96('mms1_mec_r_gsm', parmod=params)
    tplot('mms1_mec_r_gsm_bt96')
 
-T01
+Tsyganenko 2001 (T01)
 -----------------------------
 
 .. autofunction:: pyspedas.geopack.tt01.tt01
@@ -59,7 +59,7 @@ T01 Example
    tt01('mms1_mec_r_gsm', parmod=params)
    tplot('mms1_mec_r_gsm_bt01')
 
-TS04
+Tsyganenko-Sitnov 2004 (TS04)
 -----------------------------
 
 .. autofunction:: pyspedas.geopack.tts04.tts04
