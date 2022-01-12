@@ -47,6 +47,7 @@ pySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
 
    projects
    analysis
+   geopack
    coords
    utilities
 
