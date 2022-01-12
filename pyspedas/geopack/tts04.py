@@ -29,7 +29,7 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
 
         suffix: str
             Suffix to append to the tplot output variable
-            
+
     Returns
     --------
         Name of the tplot variable containing the model data
@@ -43,8 +43,6 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
     b0gsm = np.zeros((len(pos_data.times), 3))
     dbgsm = np.zeros((len(pos_data.times), 3))
 
-    tilt = [geopack.recalc(ut) for ut in pos_data.times]
-
     # convert to Re
     pos_re = pos_data.y/6371.2
 
@@ -55,11 +53,13 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
             par = par.y
 
     for idx, time in enumerate(pos_data.times):
+        tilt = geopack.recalc(time)
+
         # dipole B in GSM
         b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.dip(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
 
         # T96 dB in GSM
-        dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t04.t04(par[idx, :], tilt[idx],pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
+        dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t04.t04(par[idx, :], tilt, pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
 
     bgsm = b0gsm + dbgsm
 

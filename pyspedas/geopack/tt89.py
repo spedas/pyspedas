@@ -40,17 +40,17 @@ def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
     b0gsm = np.zeros((len(pos_data.times), 3))
     dbgsm = np.zeros((len(pos_data.times), 3))
 
-    tilt = [geopack.recalc(ut) for ut in pos_data.times]
-
     # convert to Re
     pos_re = pos_data.y/6371.2
 
     for idx, time in enumerate(pos_data.times):
+        tilt = geopack.recalc(time)
+
         # dipole B in GSM
         b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.dip(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
 
         # T89 dB in GSM
-        dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t89.t89(iopt, tilt[idx], pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
+        dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t89.t89(iopt, tilt, pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
 
     if igrf_only:
         bgsm = b0gsm
