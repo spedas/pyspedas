@@ -7,3 +7,4 @@ netCDF4
 pywavelets
 astropy
 https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip
+geopack>=1.0.9
