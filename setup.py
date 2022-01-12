@@ -28,7 +28,7 @@ setup(
     install_requires=['numpy>=1.19.5', 'requests', 'pytplot>=1.7.27',
                       'cdflib>=0.3.20', 'cdasws>=1.7.24', 'netCDF4',
                       'pywavelets', 'pyqtgraph==0.12.2', 'astropy',
-                      'geopack @ git+https://git@github.com/tsssss/geopack@v2.0#egg=geopack'],
+                      'geopack @ git+https://git@github.com/tsssss/geopack@master#egg=geopack'],
     python_requires='>=3.7',
     include_package_data=True,
 )
