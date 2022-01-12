@@ -48,6 +48,9 @@ def tt96(pos_var_gsm, parmod=None, suffix=''):
 
         if par is not None:
             par = par.y
+    else:
+        print('parmod keyword required.')
+        return
 
     for idx, time in enumerate(pos_data.times):
         tilt = geopack.recalc(time)

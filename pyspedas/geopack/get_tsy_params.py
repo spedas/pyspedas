@@ -4,7 +4,7 @@ from pyspedas import tinterpol, tdeflag
 from pyspedas.geopack.get_w_params import get_w
 from pytplot import get_data, store_data
 
-def get_tsy_params(dst_tvar, imf_tvar, Np_tvar, Vp_tvar, model, pressure_tvar=None, newname=None, speed=False):
+def get_tsy_params(dst_tvar, imf_tvar, Np_tvar, Vp_tvar, model, pressure_tvar=None, newname=None, speed=False, g_variables=None):
     """
     This procedure will interpolate inputs, generate
     Tsyganenko model parameters and store them in a tplot 
@@ -98,6 +98,27 @@ def get_tsy_params(dst_tvar, imf_tvar, Np_tvar, Vp_tvar, model, pressure_tvar=No
                         np.zeros(len(dst_data.y)), 
                         np.zeros(len(dst_data.y)), 
                         np.zeros(len(dst_data.y))))
+    elif model == 't01':
+        if g_variables is None:
+            print('G variables required for T01 model; create a tplot variable containing the G variables, and provide the name of that keyword to the g_variables keyword.')
+            return
+        else:
+            g_data = get_data(g_variables)
+
+            if g_variables is None:
+                print('Problem reading G variable: ' + g_variables)
+                return
+
+            out = np.array((P_data.y, 
+                            dst_data.y, 
+                            imf_data.y[:, 1], 
+                            imf_data.y[:, 2], 
+                            g_data.y[:, 0], 
+                            g_data.y[:, 1], 
+                            np.zeros(len(dst_data.y)), 
+                            np.zeros(len(dst_data.y)), 
+                            np.zeros(len(dst_data.y)), 
+                            np.zeros(len(dst_data.y))))
     elif model == 'ts04':
         params = get_w(trange=[np.nanmin(Np_data.times), np.nanmax(Np_data.times)], create_tvar=True)
         # interpolate the inputs to the Np timestamps

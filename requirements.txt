@@ -7,4 +7,4 @@ netCDF4
 pywavelets
 pyqtgraph==0.12.2
 astropy
-https://github.com/tsssss/geopack/archive/master.zip
+geopack>=1.0.9
