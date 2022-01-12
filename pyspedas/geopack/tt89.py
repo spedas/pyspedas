@@ -4,7 +4,7 @@ from pyspedas import time_double
 from pytplot import get_data, store_data, options
 from geopack import geopack, t89
 
-def tt89(pos_var_gsm, iopt=3, suffix=''):
+def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=True):
     """
     tplot wrapper for the functional interface to Sheng Tian's implementation 
     of the Tsyganenko 96 and IGRF model:
@@ -52,7 +52,10 @@ def tt89(pos_var_gsm, iopt=3, suffix=''):
         # T89 dB in GSM
         dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t89.t89(iopt, tilt[idx], pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
 
-    bgsm = b0gsm + dbgsm
+    if igrf_only:
+        bgsm = b0gsm
+    else:
+        bgsm = b0gsm + dbgsm
 
     saved = store_data(pos_var_gsm + '_bt89' + suffix, data={'x': pos_data.times, 'y': bgsm})
 
