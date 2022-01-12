@@ -25,7 +25,7 @@ setup(
     project_urls={'Information': 'http://spedas.org/wiki/',
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    dependency_links=['https://github.com/tsssss/geopack/archive/master.zip'],
+    dependency_links=['https://github.com/tsssss/geopack/tarball/master#egg=geopack-2.0'],
     install_requires=['numpy>=1.19.5', 'requests', 'pytplot>=1.7.27',
                       'cdflib>=0.3.20', 'cdasws>=1.7.24', 'netCDF4',
                       'pywavelets', 'pyqtgraph==0.12.2', 'astropy'],
