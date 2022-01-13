@@ -70,23 +70,6 @@ def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
     for i, old in enumerate(old_names):
         new = n_names[i]
 
-        if new != old:
-            pyspedas.tcopy(old, new)
-
-        data = pytplot.data_quants[new].values
-        try:
-            for j, v in enumerate(data):
-                try:
-                    iterator = enumerate(v)
-                except TypeError:
-                    if not np.isnan(v) and (v <= ymin or v >= ymax):
-                        data[j] = flag
-                else:
-                    for k, s in iterator:
-                        if not np.isnan(s) and (s <= ymin or s >= ymax):
-                            data[j][k] = flag
-
-        except TypeError:  # data Not itterable
-            print("Cannot clip data.")
+        data = pytplot.clip(old, ymin, ymax, new)
 
         print('yclip was applied to: ' + new)

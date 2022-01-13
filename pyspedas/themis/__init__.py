@@ -12,6 +12,7 @@ from pyspedas.themis.spacecraft.particles.mom import mom
 from pyspedas.themis.spacecraft.particles.gmom import gmom
 
 from pyspedas.themis.ground.gmag import gmag
+from pyspedas.themis.ground.ask import ask
 
 from pyspedas.themis.state.state import state
 from pyspedas.themis.state.slp import slp

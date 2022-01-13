@@ -18,7 +18,7 @@ import tarfile
 import os
 from pathlib import Path
 
-from .config import CONFIG
+from pyspedas.cluster.config import CONFIG
 
 
 def cl_master_datatypes():
@@ -59,7 +59,6 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
              datatypes=['CP_CIS-CODIF_HS_H1_MOMENTS'],
              downloadonly=False,
              time_clip=True,
-             use_tap=True,
              suffix='',
              get_support_data=False,
              varformat=None,
@@ -80,8 +79,6 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
             If true, do not use cdf_to_tplot.
         time_clip: bool
             If true, apply time clip to data.
-        use_tap: bool
-            If true, use https remote server.
         suffix: str (for pytplot)
             The tplot variable names will be given this suffix.  By default,
             no suffix is added.
@@ -128,22 +125,12 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
         datatypes = cl_master_datatypes()
 
     # Construct the query string
-    if use_tap:
-        # Newer tap system
-        base_url = 'https://csa.esac.esa.int/csa-sl-tap/data?'
-        query_string = ('retrieval_type=PRODUCT&START_DATE=' + start_date +
-                        '&END_DATE=' + end_date +
-                        '&DELIVERY_FORMAT=' + delivery_format +
-                        '&DELIVERY_INTERVAL=' + delivery_interval +
-                        '&NON_BROWSER')
-    else:
-        # Older CAIO system
-        base_url = 'http://csa.esac.esa.int/csa/aio/product-action?'
-        query_string = ('START_DATE=' + start_date +
-                        '&END_DATE=' + end_date +
-                        '&DELIVERY_FORMAT=' + delivery_format +
-                        '&DELIVERY_INTERVAL=' + delivery_interval +
-                        '&NON_BROWSER')
+    base_url = 'https://csa.esac.esa.int/csa-sl-tap/data?'
+    query_string = ('retrieval_type=PRODUCT&START_DATE=' + start_date +
+                    '&END_DATE=' + end_date +
+                    '&DELIVERY_FORMAT=' + delivery_format +
+                    '&DELIVERY_INTERVAL=' + delivery_interval +
+                    '&NON_BROWSER')
 
     for p in probes:
         for d in datatypes:
