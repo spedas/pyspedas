@@ -5,7 +5,7 @@ The routines in this module can be used to calculate Tsyganenko magnetic field m
 Tsyganenko 89 (T89)
 -----------------------------
 
-.. autofunction:: pyspedas.geopack.tt89.tt89
+.. autofunction:: pyspedas.tt89
 
 T89 Example
 ^^^^^^^^^^^^
@@ -17,14 +17,14 @@ T89 Example
    pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the field using the T89 model
-   from pyspedas.geopack.tt89 import tt89
+   from pyspedas import tt89
    tt89('mms1_mec_r_gsm')
    tplot('mms1_mec_r_gsm_bt89')
 
 Tsyganenko 96 (T96)
 -----------------------------
 
-.. autofunction:: pyspedas.geopack.tt96.tt96
+.. autofunction:: pyspedas.tt96
 
 T96 Example
 ^^^^^^^^^^^^
@@ -36,14 +36,14 @@ T96 Example
    pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the field using the T96 model
-   from pyspedas.geopack.tt96 import tt96
+   from pyspedas import tt96
    tt96('mms1_mec_r_gsm', parmod=params)
    tplot('mms1_mec_r_gsm_bt96')
 
 Tsyganenko 2001 (T01)
 -----------------------------
 
-.. autofunction:: pyspedas.geopack.tt01.tt01
+.. autofunction:: pyspedas.tt01
 
 T01 Example
 ^^^^^^^^^^^^
@@ -55,14 +55,14 @@ T01 Example
    pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the field using the T01 model
-   from pyspedas.geopack.tt01 import tt01
+   from pyspedas import tt01
    tt01('mms1_mec_r_gsm', parmod=params)
    tplot('mms1_mec_r_gsm_bt01')
 
 Tsyganenko-Sitnov 2004 (TS04)
 -----------------------------
 
-.. autofunction:: pyspedas.geopack.tts04.tts04
+.. autofunction:: pyspedas.tts04
 
 TS04 Example
 ^^^^^^^^^^^^
@@ -74,7 +74,7 @@ TS04 Example
    pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the field using the TS04 model
-   from pyspedas.geopack.tts04 import tts04
+   from pyspedas import tts04
    tts04('mms1_mec_r_gsm', parmod=params)
    tplot('mms1_mec_r_gsm_bts04')
 
@@ -82,7 +82,7 @@ Solar Wind Parameters
 -----------------------------
 To generate the "parmod" variable using Dst and solar wind data, use the `get_tsy_params` routine. 
 
-.. autofunction:: pyspedas.geopack.get_tsy_params.get_tsy_params
+.. autofunction:: pyspedas.get_tsy_params
 
 get_tsy_params Example
 ^^^^^^^^^^^^
@@ -99,7 +99,7 @@ get_tsy_params Example
    from pytplot import join_vec
    join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
 
-   from pyspedas.geopack.get_tsy_params import get_tsy_params
+   from pyspedas import get_tsy_params
    params = get_tsy_params('kyoto_dst', 
                         'BX_GSE-BY_GSM-BZ_GSM_joined', 
                         'proton_density', 

@@ -3,7 +3,7 @@ Coordinate Systems
 
 Transformations
 ------------------------------------
-.. autofunction:: pyspedas.cotrans.cotrans.cotrans
+.. autofunction:: pyspedas.cotrans
 
 LMN Coordinates
 ------------------------
@@ -11,8 +11,8 @@ LMN Coordinates
 
 Getting/Setting the Coordinate System
 ----------------------------------------
-.. autofunction:: pyspedas.cotrans.cotrans_get_coord.cotrans_get_coord
-.. autofunction:: pyspedas.cotrans.cotrans_set_coord.cotrans_set_coord
+.. autofunction:: pyspedas.cotrans_get_coord
+.. autofunction:: pyspedas.cotrans_set_coord
 
 Support Routines
 ------------------------
