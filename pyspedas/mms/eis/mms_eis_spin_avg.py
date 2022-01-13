@@ -20,7 +20,8 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
     """
     This function will spin-average the EIS spectrograms, and is automatically called from mms_load_eis
     
-    Parameters:
+    Parameters
+    ----------
         probe: str
             probe #, e.g., '4' for MMS4
 

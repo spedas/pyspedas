@@ -55,10 +55,10 @@ def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):
             options(var, 'ytitle', 'O++ velocity')
 
     for var in tnames(valid_temp):
-        if var == prefix+'_hpca_hplus_scalar_temperature'+suffix: options(var, 'ytitle', 'H+ temp (eV)')
-        if var == prefix+'_hpca_heplus_scalar_temperature'+suffix: options(var, 'ytitle', 'He+ temp (eV)')
-        if var == prefix+'_hpca_heplusplus_scalar_temperature'+suffix: options(var, 'ytitle', 'He++ temp (eV)')
-        if var == prefix+'_hpca_oplus_scalar_temperature'+suffix: options(var, 'ytitle', 'O+ temp (eV)')
-        if var == prefix+'_hpca_oplusplus_scalar_temperature'+suffix: options(var, 'ytitle', 'O++ temp (eV)')
+        if var == prefix+'_hpca_hplus_scalar_temperature'+suffix: options(var, 'ytitle', 'H+ temp')
+        if var == prefix+'_hpca_heplus_scalar_temperature'+suffix: options(var, 'ytitle', 'He+ temp')
+        if var == prefix+'_hpca_heplusplus_scalar_temperature'+suffix: options(var, 'ytitle', 'He++ temp')
+        if var == prefix+'_hpca_oplus_scalar_temperature'+suffix: options(var, 'ytitle', 'O+ temp')
+        if var == prefix+'_hpca_oplusplus_scalar_temperature'+suffix: options(var, 'ytitle', 'O++ temp')
 
 

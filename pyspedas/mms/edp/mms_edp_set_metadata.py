@@ -5,7 +5,8 @@ def mms_edp_set_metadata(probe, data_rate, level, suffix=''):
     """
     This function updates the metadata for EDP data products
     
-    Parameters:
+    Parameters
+    ----------
         probe : str or list of str
             probe or list of probes, valid values for MMS probes are ['1','2','3','4']. 
 
@@ -32,15 +33,15 @@ def mms_edp_set_metadata(probe, data_rate, level, suffix=''):
         for this_dr in data_rate:
             for this_lvl in level:
                 if 'mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix in tvars:
-                    options('mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP DCE [mV/m]')
+                    options('mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP DCE')
                     options('mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r'])
                     options('mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Ex GSE', 'Ey GSE', 'Ez GSE'])
                 if 'mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix in tvars:
-                    options('mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP DCE [mV/m]')
+                    options('mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP DCE')
                     options('mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r'])
                     options('mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Ex DSL', 'Ey DSL', 'Ez DSL'])
                 if 'mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix in tvars:
-                    options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP HFesp [Hz]')
+                    options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP HFesp')
                     options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'ztitle', '(V/m)^2/Hz')
                     options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'zlog', True)

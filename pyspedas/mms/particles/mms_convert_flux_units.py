@@ -8,11 +8,13 @@ def mms_convert_flux_units(data_in, units=None):
     """
     Perform unit conversions for MMS particle data structures
     
-    Input:
+    Input
+    ----------
         data_in: dict
             Single particle data structure
 
-    Parameters:
+    Parameters
+    ----------
         units: str
             String specifying output units
             supported units:
@@ -21,7 +23,8 @@ def mms_convert_flux_units(data_in, units=None):
                 df_cm  -  s^3 / cm^6
                 df_km     -  s^3 / km^6
 
-    Returns:
+    Returns
+    ----------
         3D particle data structure with the data in the units specified by
         the 'units' parameter
     """

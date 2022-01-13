@@ -11,11 +11,13 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
     Returns 3D particle data structures containing MMS FPI
     data for use with SPEDAS particle routines. 
     
-    Input:
+    Input
+    ----------
         tname: str
             tplot variable name containing the FPI distribution data
 
-    Parameters:
+    Parameters
+    ----------
         probe: str
             Spacecraft probe #
 
@@ -29,7 +31,8 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
         index: int
             Index of time sample to return
 
-    Returns:
+    Returns
+    ----------
         3D particle data structure(s) containing MMS FPI distribution functions
     """
 
@@ -59,6 +62,9 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
     else:
         data = data_in
 
+    if species is None:
+        species = tname.split('_')[1][1]
+
     if species.lower() == 'i':
         mass = 1.04535e-2
         charge = 1.
@@ -67,6 +73,9 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
         mass = 5.68566e-06
         charge = -1.
         data_name = 'FPI Electron'
+    else:
+        logging.error('Invalid species: ' + species + '; valid options: "i" for ions and "e" for electrons')
+        return
 
     out = {'project_name': 'MMS', 
            'spacecraft': probe, 

@@ -78,7 +78,7 @@ def mms_load_brst_segments(trange=None, suffix=''):
         return None
 
     options('mms_bss_burst'+suffix, 'panel_size', 0.09)
-    options('mms_bss_burst'+suffix, 'thick', 20)
+    options('mms_bss_burst'+suffix, 'thick', 2)
     options('mms_bss_burst'+suffix, 'Color', 'green')
     options('mms_bss_burst'+suffix, 'border', False)
     options('mms_bss_burst'+suffix, 'yrange', [-0.001,0.001])

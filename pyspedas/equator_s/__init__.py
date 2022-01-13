@@ -14,7 +14,8 @@ def mam(trange=['1998-04-06', '1998-04-07'],
     """
     This function loads data from the Fluxgate magnetometer
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -53,7 +54,8 @@ def mam(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -72,7 +74,8 @@ def edi(trange=['1998-04-06', '1998-04-07'],
     """
     This function loads data from the Electron beam sensing instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -111,7 +114,8 @@ def edi(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -132,7 +136,8 @@ def esa(trange=['1998-04-06', '1998-04-07'],
 
     NOTE: as of Dec 2019, no 3DA data are available via the SPDF archive.
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -171,7 +176,8 @@ def esa(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -190,7 +196,8 @@ def epi(trange=['1998-04-06', '1998-04-07'],
     """
     This function loads data from the Solid state detector
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -229,7 +236,8 @@ def epi(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -248,7 +256,8 @@ def ici(trange=['1998-04-06', '1998-04-07'],
     """
     This function loads data from the Time-of-fight spectrometer
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -287,7 +296,8 @@ def ici(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -306,7 +316,8 @@ def pcd(trange=['1998-04-06', '1998-04-07'],
     """
     This function loads data from the Ion emitter 
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -345,7 +356,8 @@ def pcd(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -364,7 +376,8 @@ def sfd(trange=['1998-01-26', '1998-01-27'],
     """
     This function loads data from the Scintillating fiber detector
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -403,7 +416,8 @@ def sfd(trange=['1998-01-26', '1998-01-27'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

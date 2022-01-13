@@ -16,7 +16,8 @@ def data(trange=['2013-11-5', '2013-11-6'],
     """
     This function loads OMNI (Combined 1AU IP Data; Magnetic and Solar Indices) data
     
-    Parameters:
+    Parameters
+    ----------
         trange: list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -58,7 +59,8 @@ def data(trange=['2013-11-5', '2013-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

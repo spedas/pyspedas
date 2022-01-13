@@ -16,7 +16,8 @@ def induction(site=None,
     """
     This function loads data from the Magnetic Induction Coil Array (MICA)
     
-    Parameters:
+    Parameters
+    ----------
         site: str
             abbreviated name of station. sites include:
             NAL, LYR, LOR, ISR, SDY, IQA, SNK, MCM, SPA, JBS, NEV, HAL, PG2[3,4,5]
@@ -56,7 +57,8 @@ def induction(site=None,
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

@@ -16,7 +16,8 @@ def mag(trange=['2020-06-01', '2020-06-02'],
     """
     This function loads data from the Magnetometer (MAG)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -63,19 +64,23 @@ def mag(trange=['2020-06-01', '2020-06-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
 
     mag_vars = load(instrument='mag', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    
+    if mag_vars is None or notplot or downloadonly:
+        return mag_vars
 
     if datatype[-5:] == 'burst':
-        ytitle = 'SOLO MAG \\ burst (nT)'
+        ytitle = 'SOLO MAG \\ burst'
     elif datatype[-6:] == 'minute':
-        ytitle = 'SOLO MAG \\ 1-min (nT)'
+        ytitle = 'SOLO MAG \\ 1-min'
     else:
-        ytitle = 'SOLO MAG (nT)'
+        ytitle = 'SOLO MAG'
 
     if 'B_SRF'+suffix in mag_vars:
         options('B_SRF'+suffix, 'legend_names', ['Bx (SRF)', 'By (SRF)', 'Bz (SRF)'])
@@ -103,7 +108,8 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
     """
     This function loads data from the Radio and Plasma Waves (RPW) instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -181,7 +187,8 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -201,7 +208,8 @@ def swa(trange=['2020-07-22', '2020-07-23'],
     """
     This function loads data from the Solar Wind Plasma Analyser (SWA)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -243,11 +251,22 @@ def swa(trange=['2020-07-22', '2020-07-23'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
-    return load(instrument='swa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    loaded_vars = load(instrument='swa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    
+    if loaded_vars is None or notplot or downloadonly:
+        return loaded_vars
+
+    if 'eflux'+suffix in loaded_vars:
+        options('eflux'+suffix, 'spec', True)
+        options('eflux'+suffix, 'ylog', True)
+        options('eflux'+suffix, 'zlog', True)
+
+    return loaded_vars
 
 def epd(trange=['2020-06-14', '2020-06-15'],
         datatype='step', 
@@ -264,7 +283,8 @@ def epd(trange=['2020-06-14', '2020-06-15'],
     """
     This function loads data from the Energetic Particle Detector (EPD)
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -309,7 +329,8 @@ def epd(trange=['2020-06-14', '2020-06-15'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

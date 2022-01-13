@@ -123,7 +123,7 @@ def mms_load_sroi_segments(trange=None, probe=1, suffix=''):
         return None
 
     options('mms' + probe + '_bss_sroi'+suffix, 'panel_size', 0.09)
-    options('mms' + probe + '_bss_sroi'+suffix, 'thick', 20)
+    options('mms' + probe + '_bss_sroi'+suffix, 'thick', 2)
     options('mms' + probe + '_bss_sroi'+suffix, 'Color', 'green')
     options('mms' + probe + '_bss_sroi'+suffix, 'border', False)
     options('mms' + probe + '_bss_sroi'+suffix, 'yrange', [-0.001,0.001])

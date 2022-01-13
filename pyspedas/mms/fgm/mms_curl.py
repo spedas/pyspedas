@@ -8,7 +8,8 @@ def mms_curl(fields=None, positions=None, suffix=''):
     """
     This function applies the curlometer technique to MMS FGM data
     
-    Parameters:
+    Parameters
+    ----------
         fields : list of str
             List of tplot variables containing the B-field for each spacecraft 
             (in GSE coordinates)
@@ -21,7 +22,8 @@ def mms_curl(fields=None, positions=None, suffix=''):
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
-    Notes:
+    Notes
+    ----------
         The input B-field data and position data are required to be in 
         GSE coordinates
  
@@ -32,7 +34,8 @@ def mms_curl(fields=None, positions=None, suffix=''):
           Chapter 14 of Analysis methods for multi-spacecraft data, G. 
           Paschmann and P. W. Daly (Eds.) ISSI Scientific Report SR-001. 
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created
 
     """
@@ -62,10 +65,28 @@ def mms_curl(fields=None, positions=None, suffix=''):
 
     m0 = 4.0*math.pi*1e-7
 
-    timesb1, datab1 = get_data(fields[0])
-    timesb2, datab2 = get_data(fields[1] + '_i')
-    timesb3, datab3 = get_data(fields[2] + '_i')
-    timesb4, datab4 = get_data(fields[3] + '_i')
+    mms1_bfield = get_data(fields[0])
+    mms2_bfield = get_data(fields[1] + '_i')
+    mms3_bfield = get_data(fields[2] + '_i')
+    mms4_bfield = get_data(fields[3] + '_i')
+
+    if mms1_bfield is None:
+        print('Error, B-field variable is missing: ' + fields[0])
+        return
+    elif mms2_bfield is None:
+        print('Error, B-field variable is missing: ' + fields[1] + '_i')
+        return
+    elif mms3_bfield is None:
+        print('Error, B-field variable is missing: ' + fields[2] + '_i')
+        return
+    elif mms4_bfield is None:
+        print('Error, B-field variable is missing: ' + fields[3] + '_i')
+        return
+
+    timesb1, datab1 = mms1_bfield
+    timesb2, datab2 = mms2_bfield
+    timesb3, datab3 = mms3_bfield
+    timesb4, datab4 = mms4_bfield
 
     # extract the vector
     b1 = datab1[:, 0:3]
@@ -73,10 +94,28 @@ def mms_curl(fields=None, positions=None, suffix=''):
     b3 = datab3[:, 0:3]
     b4 = datab4[:, 0:3]
 
-    timesp1, p1 = get_data(positions[0] + '_i')
-    timesp2, p2 = get_data(positions[1] + '_i')
-    timesp3, p3 = get_data(positions[2] + '_i')
-    timesp4, p4 = get_data(positions[3] + '_i')
+    mms1_pos = get_data(positions[0] + '_i')
+    mms2_pos = get_data(positions[1] + '_i')
+    mms3_pos = get_data(positions[2] + '_i')
+    mms4_pos = get_data(positions[3] + '_i')
+
+    if mms1_pos is None:
+        print('Error, S/C position variable is missing: ' + positions[0] + '_i')
+        return
+    elif mms2_pos is None:
+        print('Error, S/C position variable is missing: ' + positions[1] + '_i')
+        return
+    elif mms3_pos is None:
+        print('Error, S/C position variable is missing: ' + positions[2] + '_i')
+        return
+    elif mms4_pos is None:
+        print('Error, S/C position variable is missing: ' + positions[3] + '_i')
+        return
+
+    timesp1, p1 = mms1_pos
+    timesp2, p2 = mms2_pos
+    timesp3, p3 = mms3_pos
+    timesp4, p4 = mms4_pos
 
     divb = np.zeros([len(timesb1), 5])
     baryb = np.zeros([len(timesb1), 3])

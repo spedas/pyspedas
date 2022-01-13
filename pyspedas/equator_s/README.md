@@ -32,7 +32,7 @@ tplot('B_xyz_gse%eq_pp_mam')
 ```python
 edi_vars = pyspedas.equator_s.edi(trange=['1998-04-06', '1998-04-07'])
 
-tplot('E_xyz_gse%eq_pp_ed')
+tplot('E_xyz_gse%eq_pp_edi')
 ```
 
 #### Solid state detector (EPI)

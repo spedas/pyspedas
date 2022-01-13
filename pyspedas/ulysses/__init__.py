@@ -14,7 +14,8 @@ def vhm(trange=['2009-01-01', '2009-01-02'],
     """
     This function loads data from the VHM/FGM experiment from the Ulysses mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -56,7 +57,8 @@ def vhm(trange=['2009-01-01', '2009-01-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -75,7 +77,8 @@ def swoops(trange=['2009-01-01', '2009-01-02'],
     """
     This function loads data from the SWOOPS experiment from the Ulysses mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -117,7 +120,8 @@ def swoops(trange=['2009-01-01', '2009-01-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -136,7 +140,8 @@ def swics(trange=['2009-01-01', '2009-01-02'],
     """
     This function loads data from the SWICS experiment from the Ulysses mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -178,7 +183,8 @@ def swics(trange=['2009-01-01', '2009-01-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -197,7 +203,8 @@ def urap(trange=['2003-01-01', '2003-01-02'],
     """
     This function loads data from the URAP experiment from the Ulysses mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -239,7 +246,8 @@ def urap(trange=['2003-01-01', '2003-01-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -258,7 +266,8 @@ def epac(trange=['1996-01-01', '1996-01-02'],
     """
     This function loads data from the EPAC experiment from the Ulysses mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -300,7 +309,8 @@ def epac(trange=['1996-01-01', '1996-01-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -319,7 +329,8 @@ def hiscale(trange=['2003-01-01', '2003-01-02'],
     """
     This function loads data from the HI-SCALE experiment from the Ulysses mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -361,7 +372,8 @@ def hiscale(trange=['2003-01-01', '2003-01-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -380,7 +392,8 @@ def cospin(trange=['2003-01-01', '2003-01-02'],
     """
     This function loads data from the COSPIN experiment from the Ulysses mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -422,7 +435,8 @@ def cospin(trange=['2003-01-01', '2003-01-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -441,7 +455,8 @@ def grb(trange=['2003-01-01', '2003-01-02'],
     """
     This function loads data from the GRB experiment from the Ulysses mission
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -483,7 +498,8 @@ def grb(trange=['2003-01-01', '2003-01-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

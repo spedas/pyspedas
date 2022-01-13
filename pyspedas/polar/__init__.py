@@ -14,7 +14,8 @@ def mfe(trange=['2003-10-28', '2003-10-29'],
     """
     This function loads data from the Magnetic Field Experiment
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -53,7 +54,8 @@ def mfe(trange=['2003-10-28', '2003-10-29'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -72,7 +74,8 @@ def efi(trange=['2003-10-28', '2003-10-29'],
     """
     This function loads data from the Electric Fields Instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -111,7 +114,8 @@ def efi(trange=['2003-10-28', '2003-10-29'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -130,7 +134,8 @@ def pwi(trange=['1997-01-03', '1997-01-04'],
     """
     This function loads data from the Plasma Wave Instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -169,7 +174,8 @@ def pwi(trange=['1997-01-03', '1997-01-04'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -188,7 +194,8 @@ def hydra(trange=['2003-10-28', '2003-10-29'],
     """
     This function loads data from the Hot Plasma Analyzer Experiment
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -227,7 +234,8 @@ def hydra(trange=['2003-10-28', '2003-10-29'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -246,7 +254,8 @@ def tide(trange=['1997-01-03', '1997-01-04'],
     """
     This function loads data from the Thermal Ion Dynamics Experiment / Plasma Source Investigation
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -285,7 +294,8 @@ def tide(trange=['1997-01-03', '1997-01-04'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -304,7 +314,8 @@ def timas(trange=['1997-01-03', '1997-01-04'],
     """
     This function loads data from the Toroidal Imaging Mass Angle Spectrograph
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -343,7 +354,8 @@ def timas(trange=['1997-01-03', '1997-01-04'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -362,7 +374,8 @@ def cammice(trange=['2003-10-28', '2003-10-29'],
     """
     This function loads data from the Charge and Mass Magnetospheric Ion Composition Experiment
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -401,7 +414,8 @@ def cammice(trange=['2003-10-28', '2003-10-29'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -420,7 +434,8 @@ def ceppad(trange=['2003-10-28', '2003-10-29'],
     """
     This function loads data from the Comprehensive Energetic Particle-Pitch Angle Distribution
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -459,7 +474,8 @@ def ceppad(trange=['2003-10-28', '2003-10-29'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -478,7 +494,8 @@ def uvi(trange=['2003-10-28', '2003-10-29'],
     """
     This function loads data from the Ultraviolet Imager
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -517,7 +534,8 @@ def uvi(trange=['2003-10-28', '2003-10-29'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -536,7 +554,8 @@ def vis(trange=['2003-10-28', '2003-10-29'],
     """
     This function loads data from the Visible Imaging System
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -575,7 +594,8 @@ def vis(trange=['2003-10-28', '2003-10-29'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -594,7 +614,8 @@ def pixie(trange=['1997-01-03', '1997-01-04'],
     """
     This function loads data from the Polar Ionospheric X-ray Imaging Experiment
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -633,7 +654,8 @@ def pixie(trange=['1997-01-03', '1997-01-04'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -652,7 +674,8 @@ def orbit(trange=['2003-10-28', '2003-10-29'],
     """
     This function loads Polar orbit data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -691,7 +714,8 @@ def orbit(trange=['2003-10-28', '2003-10-29'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

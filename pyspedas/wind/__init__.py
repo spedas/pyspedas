@@ -14,7 +14,8 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
     """
     This function loads 3DP data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -53,7 +54,8 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -72,7 +74,8 @@ def orbit(trange=['1999-11-5', '1999-11-6'],
     """
     This function loads orbit data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -111,7 +114,8 @@ def orbit(trange=['1999-11-5', '1999-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -130,7 +134,8 @@ def sms(trange=['1999-11-5', '1999-11-6'],
     """
     This function loads data from the Solar Wind and Suprathermal Ion Composition Instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -169,7 +174,8 @@ def sms(trange=['1999-11-5', '1999-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -188,7 +194,8 @@ def waves(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads Radio/Plasma Wave (WAVES) data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -227,7 +234,8 @@ def waves(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -246,7 +254,8 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the Fluxgate Magnetometer
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -285,7 +294,8 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -304,7 +314,8 @@ def swe(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads data from the SWE instrument
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -343,7 +354,8 @@ def swe(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

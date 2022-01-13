@@ -14,7 +14,8 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     """
     This function loads FPI data into tplot variables
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -112,6 +113,9 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     # kludge for level = 'sitl' -> datatype shouldn't be defined for sitl data.
     if level.lower() == 'sitl' or level.lower() == 'trig':
         datatype = ''
+
+    if varformat is None and varnames == []:
+        get_support_data = True
 
     tvars = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi',
             datatype=datatype, varformat=varformat, varnames=varnames, suffix=suffix, get_support_data=get_support_data,

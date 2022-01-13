@@ -1,0 +1,10 @@
+sphinx>=1.7.5
+numpy>=1.20.0
+requests
+cdflib>=0.3.20
+cdasws>=1.7.24
+netCDF4
+pywavelets
+astropy
+https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip
+geopack>=1.0.9

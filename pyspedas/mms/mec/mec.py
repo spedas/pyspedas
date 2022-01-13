@@ -5,13 +5,14 @@ from pyspedas.mms.mms_config import CONFIG
 
 @print_vars
 def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
-    level='l2', datatype='ephts04d', varformat=None, varnames=[], suffix='', get_support_data=False,
+    level='l2', datatype='epht89q', varformat=None, varnames=[], suffix='', get_support_data=False,
     time_clip=False, no_update=False, available=False, notplot=False, latest_version=False, 
     major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False):
     """
     This function loads MEC data into tplot variables
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -28,7 +29,7 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             indicates level of data processing. the default if no level is specified is 'l2'
 
         datatype : str or list of str
-            Valid datatypes for MEC are: ['ephts04d', 'epht89q', 'epht89d']; default is 'ephts04d'
+            Valid datatypes for MEC are: ['ephts04d', 'epht89q', 'epht89d']; default is 'epht89q'
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -81,7 +82,13 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
-            
+    
+    Notes:
+        The default datatype was changed to 'epht89q' on 15Nov2021. There are sometimes issues with 
+        creating the Tsyganenko 04 data products, which leads to the 'epht04d' files not being available. 
+        The 'epht89d' files contain the same ephemeris data - the only difference are the data products
+        that rely on the field model. 
+        
     Returns:
         List of tplot variables created.
 

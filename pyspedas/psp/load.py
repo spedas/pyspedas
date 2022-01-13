@@ -30,11 +30,22 @@ def load(trange=['2018-11-5', '2018-11-6'],
     
     """
 
+    # remote path formats are going to be all lowercase
+    datatype = datatype.lower()
+
     file_resolution = 24*3600.
 
     if instrument == 'fields':
-        pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
-        file_resolution = 6*3600.
+        # 4_per_cycle and 1min are daily, not 6h like the full resolution 'mag_(rtn|sc)'
+        if datatype == 'mag_rtn_1min' or datatype == 'mag_sc_1min':
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+        elif datatype == 'mag_rtn_4_per_cycle' or datatype == 'mag_rtn_4_sa_per_cyc':
+            pathformat = instrument + '/' + level + '/mag_rtn_4_per_cycle/%Y/psp_fld_' + level + '_mag_rtn_4_sa_per_cyc_%Y%m%d_v??.cdf'
+        elif datatype == 'mag_sc_4_per_cycle' or datatype == 'mag_sc_4_sa_per_cyc':
+            pathformat = instrument + '/' + level + '/mag_sc_4_per_cycle/%Y/psp_fld_' + level + '_mag_sc_4_sa_per_cyc_%Y%m%d_v??.cdf'
+        else:
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+            file_resolution = 6*3600.
     elif instrument == 'spc':
         pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
     elif instrument == 'spe':

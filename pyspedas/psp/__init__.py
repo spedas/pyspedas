@@ -15,7 +15,8 @@ def fields(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads Parker Solar Probe FIELDS data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -54,10 +55,29 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
+
+    # SCaM data is Level 3
+    if datatype == 'merged_scam_wf':
+        level = 'l3'
+
+    if datatype == 'dfb_dc_spec' or datatype == 'dfb_ac_spec' or datatype == 'dfb_dc_xspec' or datatype == 'dfb_ac_xspec':
+        if datatype == 'dfb_dc_spec' or datatype == 'dfb_ac_spec':
+            spec_types = ['dV12hg','dV34hg','dV12lg','dV34lg',
+                'SCMulfhg','SCMvlfhg','SCMwlfhg',
+                'SCMulflg','SCMvlflg','SCMwlflg',
+                'SCMdlfhg','SCMelfhg','SCMflfhg',
+                'SCMdlflg','SCMelflg','SCMflflg',
+                'SCMmf', 'V5hg']
+        else:
+            spec_types = ['SCMdlfhg_SCMelfhg','SCMdlfhg_SCMflfhg','SCMelfhg_SCMflfhg',
+                'SCMulfhg_SCMvlfhg','SCMulfhg_SCMwlfhg','SCMvlfhg_SCMwlfhg',
+                'dV12hg_dV34hg']
+
     return load(instrument='fields', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def spc(trange=['2018-11-5', '2018-11-6'], 
@@ -74,7 +94,8 @@ def spc(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads Parker Solar Probe Solar Probe Cup data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -113,7 +134,8 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -133,7 +155,8 @@ def spe(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads Parker Solar Probe SWEAP/SPAN-e data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -172,7 +195,8 @@ def spe(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -192,7 +216,8 @@ def spi(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads Parker Solar Probe SWEAP/SPAN-i data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -231,7 +256,8 @@ def spi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -251,7 +277,8 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads Parker Solar Probe ISoIS/EPI-Hi data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -290,7 +317,8 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -310,7 +338,8 @@ def epilo(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads Parker Solar Probe ISoIS/EPI-Lo data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -349,7 +378,8 @@ def epilo(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -369,7 +399,8 @@ def epi(trange=['2018-11-5', '2018-11-6'],
     """
     This function loads Parker Solar Probe ISoIS/EPI (merged summary) data
     
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -408,7 +439,8 @@ def epi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

@@ -11,6 +11,11 @@ pySPEDAS is an implementation of the SPEDAS framework for Python.
 
 The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org/wiki)) framework is written in IDL and contains data loading, data analysis and data plotting tools for various scientific missions (NASA, NOAA, etc.) and ground magnetometers.   
 
+Please see our documentation at: 
+
+https://pyspedas.readthedocs.io/
+
+
 ## Projects Supported
 - [Advanced Composition Explorer (ACE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/ace/README.md)
 - [Arase (ERG)](https://github.com/spedas/pyspedas/blob/master/pyspedas/erg/README.md)
@@ -22,6 +27,7 @@ The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org
 - [Geotail](https://github.com/spedas/pyspedas/blob/master/pyspedas/geotail/README.md)
 - [Geostationary Operational Environmental Satellite (GOES)](https://github.com/spedas/pyspedas/blob/master/pyspedas/goes/README.md)
 - [Imager for Magnetopause-to-Aurora Global Exploration (IMAGE)](https://github.com/spedas/pyspedas/blob/master/pyspedas/image/README.md)
+- [Kyoto Dst Index](https://github.com/spedas/pyspedas/blob/master/pyspedas/kyoto/README.md)
 - [Mars Atmosphere and Volatile Evolution (MAVEN)](https://github.com/spedas/pyspedas/blob/master/pyspedas/maven/README.md)
 - [Magnetic Induction Coil Array (MICA)](https://github.com/spedas/pyspedas/blob/master/pyspedas/mica/README.md)
 - [Magnetospheric Multiscale (MMS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/mms/README.md)
@@ -29,12 +35,13 @@ The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org
 - [Polar Orbiting Environmental Satellites (POES)](https://github.com/spedas/pyspedas/blob/master/pyspedas/poes/README.md)
 - [Polar](https://github.com/spedas/pyspedas/blob/master/pyspedas/polar/README.md)
 - [Parker Solar Probe (PSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/psp/README.md)
-- [Van Allen Probes (RBSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/rbsp/README.md)
 - [Solar Orbiter (SOLO)](https://github.com/spedas/pyspedas/blob/master/pyspedas/solo/README.md)
 - [Solar Terrestrial Relations Observatory (STEREO)](https://github.com/spedas/pyspedas/blob/master/pyspedas/stereo/README.md)
+- [Spherical Elementary Currents (SECS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/secs/README.md)
 - [Time History of Events and Macroscale Interactions during Substorms (THEMIS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/themis/README.md)
 - [Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/twins/README.md)
 - [Ulysses](https://github.com/spedas/pyspedas/blob/master/pyspedas/ulysses/README.md)
+- [Van Allen Probes (RBSP)](https://github.com/spedas/pyspedas/blob/master/pyspedas/rbsp/README.md)
 - [Wind](https://github.com/spedas/pyspedas/blob/master/pyspedas/wind/README.md)
 
 ## Requirements
