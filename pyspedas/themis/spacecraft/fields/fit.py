@@ -88,7 +88,7 @@ def cal_fit(probe='a', no_cal=False):
     import math
     import numpy as np
 
-    from pytplot import get_data, store_data, tplot_names
+    from pytplot import get_data, store_data, tplot_names, options
     from pyspedas.utilities.download import download
     from pyspedas.themis.config import CONFIG
     from pyspedas.utilities.time_double import time_float_one
@@ -105,6 +105,7 @@ def cal_fit(probe='a', no_cal=False):
     lv34 = 40.400003
     lv56 = 5.59999981
 
+    # calibration table
     cpar = {"e12": {"cal_par_time": '2002-01-01/00:00:00',
                     "Ascale": -15000.0 / (lv12 * 2. ** 15.),
                     "Bscale": -15000.0 / (lv12 * 2. ** 15.),
@@ -129,6 +130,29 @@ def cal_fit(probe='a', no_cal=False):
                   "sigscale": 1.,
                   "Zscale": 1.,
                   "units": 'nT'}}
+
+    # tplot options
+    color_str = ['blue', 'green', 'red']
+    color_str2 = ['magenta', 'blue', 'cyan', 'green', 'orange']
+    b_str = ['Bx', 'By', 'Bz']
+    e_str = ['Ex', 'Ey', 'Ez']
+    b_units = cpar['b']['units']
+    e_units = cpar['e12']['units']
+    b_units_str = f'[{b_units}]'
+    e_units_str = f'[{e_units}]'
+    b_data_att = {'units': b_units, 'cal_par_time': cpar['b']['cal_par_time'], 'data_type': 'calibrated',
+                  'coord_sys': 'dsl'}
+    b_data_att_sigma = {'units': b_units}
+    e_data_att = {'units': e_units, 'cal_par_time': cpar['e12']['cal_par_time'], 'data_type': 'calibrated',
+                  'coord_sys': 'dsl'}
+    e_data_att_sigma = {'units': e_units}
+
+    b_opt_dict = {'legend_names': b_str, 'ysubtitle': b_units_str, 'color': color_str, 'alpha': 1}
+    e_opt_dict = {'legend_names': e_str, 'ysubtitle': e_units_str, 'color': color_str, 'alpha': 1}
+
+    # TODO: tplot does not show 5th legend name
+    b_opt_dict2 = {'legend_names': ['A', 'B', 'C', 'Sig', '<Bz>'], 'ysubtitle': b_units_str, 'color': color_str2, 'alpha': 1}
+    e_opt_dict2 = {'legend_names': ['A', 'B', 'C', 'Sig', '<Ez>'], 'ysubtitle': e_units_str, 'color': color_str2, 'alpha': 1}
 
     # Get list of tplot variables
     tnames = tplot_names(True)  # True for quiet output
@@ -214,17 +238,20 @@ def cal_fit(probe='a', no_cal=False):
 
     # Save fgs tplot variable
     tvar = 'th' + probe + '_fgs'
-    store_data(tvar, fgs_data)
+    store_data(tvar, fgs_data, attr_dict=b_data_att)
+    options(tvar, opt_dict=b_opt_dict)
 
     # Save fgs_sigma variable
     fit_sigma_data = {'x': d.times[idx], 'y': d.y[idx, i, 3]}
     tvar = 'th' + probe + '_fgs_sigma'
-    store_data(tvar, fit_sigma_data)
+    store_data(tvar, fit_sigma_data, attr_dict=b_data_att_sigma)
+    options(tvar, opt_dict=b_opt_dict)
 
     # Save bfit variable
     bfit_data = {'x': d.times[:], 'y': d.y[:, i, :].squeeze()}
     tvar = 'th' + probe + '_fit_bfit'
-    store_data(tvar, bfit_data)
+    store_data(tvar, bfit_data, attr_dict=b_data_att)
+    options(tvar, opt_dict=b_opt_dict2)
 
     # E-field fit (EFI) processing
 
@@ -277,7 +304,8 @@ def cal_fit(probe='a', no_cal=False):
     # save fit_efit variable
     fit_efit_data = {'x': d.times, 'y': d.y[:, i, :]}
     tvar = 'th' + probe + '_fit_efit'
-    store_data(tvar, fit_efit_data)
+    store_data(tvar, fit_efit_data, attr_dict=e_data_att)
+    options(tvar, opt_dict=e_opt_dict2)
 
     # thx_efs and thx_efs_sigma,
     # Calibrate efs data by applying E12 calibration factors, not despinning, then applying despun (spin-dependent)
@@ -330,19 +358,22 @@ def cal_fit(probe='a', no_cal=False):
     # save efs variable
     efs_data = {'x': d.times[efsx_good], 'y': efs[efsx_good, :]}  # efs[efsx_good,*]
     tvar = 'th' + probe + '_efs'
-    store_data(tvar, efs_data)
+    store_data(tvar, efs_data, attr_dict=e_data_att)
+    options(tvar, opt_dict=e_opt_dict)
 
     # save efs_sigma variable
     efs_sigma_data = {'x': d.times[efsx_good], 'y': d.y[efsx_good, i, 3]}  # d.y[efsx_good, 3, idx]
     tvar = 'th' + probe + '_efs_sigma'
-    store_data(tvar, efs_sigma_data)
+    store_data(tvar, efs_sigma_data, attr_dict=e_data_att_sigma)
+    options(tvar, opt_dict=e_opt_dict)
 
     # save efs_0
     efs_0_data = deepcopy(efs)
     efs_0_data[:, 2] = 0
     efs_0 = {'x': d.times[efsx_good], 'y': efs_0_data[efsx_good, :]}
     tvar = 'th' + probe + '_efs_0'
-    store_data(tvar, efs_0)
+    store_data(tvar, efs_0, attr_dict=e_data_att_sigma)
+    options(tvar, opt_dict=e_opt_dict)
 
     # calculate efs_dot0
     Ez = (efs[:, 0]*fgs[:, 0] + efs[:, 1]*fgs[:, 1])/(-1*fgs[:, 2])
@@ -356,4 +387,5 @@ def cal_fit(probe='a', no_cal=False):
     # save efs_dot0
     efs_dot0 = {'x': d.times[efsx_good], 'y': efx_dot0_data[efsx_good, :]}
     tvar = 'th' + probe + '_efs_dot0'
-    store_data(tvar, efs_dot0)
+    store_data(tvar, efs_dot0, attr_dict=e_data_att_sigma)
+    options(tvar, opt_dict=e_opt_dict)
