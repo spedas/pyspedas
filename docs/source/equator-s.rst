@@ -41,7 +41,7 @@ Example
    :align: center
    :class: imgborder
 
- |br| 
+
 
 Solid state detector (EPI)
 ----------------------------------------------------------
