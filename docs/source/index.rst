@@ -56,3 +56,7 @@ pySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
 .. |quality| image:: https://img.shields.io/lgtm/grade/python/g/spedas/pyspedas.svg?logo=lgtm&logoWidth=18
 .. |status| image:: https://img.shields.io/pypi/status/pyspedas.svg
 .. |license| image:: https://img.shields.io/pypi/l/pyspedas.svg
+
+.. |br| raw:: html
+
+   <br />
