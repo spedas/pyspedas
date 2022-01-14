@@ -65,7 +65,7 @@ def tplot(variables, var_label=None,
     colorbars = {}
 
     if xmargin is None:
-        xmargin = [0.2, 0.2]
+        xmargin = [0.25, 0.15]
 
     fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
 
