@@ -1,6 +1,6 @@
-Wind Mission
+Wind
 ========================================================================
-The routines in this module can be used to load data from the Wind Mission mission.
+The routines in this module can be used to load data from the Wind mission.
 
 
 Magnetic Field Investigation (MFI)
