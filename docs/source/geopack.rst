@@ -21,6 +21,11 @@ T89 Example
    tt89('mms1_mec_r_gsm')
    tplot('mms1_mec_r_gsm_bt89')
 
+.. image:: _static/bt89.png
+   :align: center
+   :class: imgborder
+
+
 Tsyganenko 96 (T96)
 -----------------------------
 
