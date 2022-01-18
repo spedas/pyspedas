@@ -24,12 +24,6 @@ from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
 from pytplot import cdf_to_tplot
 
-from .geopack.tt89 import tt89
-from .geopack.tt96 import tt96
-from .geopack.tt01 import tt01
-from .geopack.tts04 import tts04
-from .geopack.get_tsy_params import get_tsy_params
-
 from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
 from .cotrans.cotrans_set_coord import cotrans_set_coord
