@@ -1,4 +1,5 @@
 
+import copy
 import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib as mpl
@@ -65,7 +66,7 @@ def tplot(variables, var_label=None,
     colorbars = {}
 
     if xmargin is None:
-        xmargin = [0.25, 0.15]
+        xmargin = [0.21, 0.15]
 
     fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
 
@@ -78,11 +79,13 @@ def tplot(variables, var_label=None,
     fig.subplots_adjust(hspace=vertical_spacing)
     
     for idx, variable in enumerate(variables):
-        var_data = pytplot.get_data(variable)
+        var_data_org = pytplot.get_data(variable)
         
-        if var_data is None:
+        if var_data_org is None:
             print('Variable not found: ' + variable)
             continue
+
+        var_data = copy.deepcopy(var_data_org)
 
         # plt.subplots returns a list of axes for multiple panels 
         # but only a single axis for a single panel
