@@ -193,6 +193,8 @@ def tplot(variables, var_label=None,
             else:
                 if num_lines == 3:
                     colors = ['b', 'g', 'r']
+                elif num_lines == 4:
+                    colors = ['b', 'g', 'r', 'k']
                 else:
                     colors = ['k', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
 
