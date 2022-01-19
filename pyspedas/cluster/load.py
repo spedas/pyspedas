@@ -41,6 +41,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     out_files = []
 
+    res=24*3600
+
     if instrument != 'wbd':
         # note: can't use last_version with WBD data due to using wild cards for the times (and not just in the version)
         last_version = True
@@ -72,10 +74,11 @@ def load(trange=['2018-11-5', '2018-11-6'],
         elif instrument == 'whi':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
         elif instrument == 'wbd':
-            pathformat = 'c'+prb+'/'+instrument+'/%Y/%m/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d????_v??.cdf'
+            pathformat = 'c'+prb+'/'+instrument+'/%Y/%m/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d%H%M_v??.cdf'
+            res = 600.0
 
         # find the full remote path names using the trange
-        remote_names = dailynames(file_format=pathformat, trange=trange)
+        remote_names = dailynames(file_format=pathformat, trange=trange, res=res)
 
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version)
         if files is not None:
