@@ -45,6 +45,27 @@ Example
 
 
 
+Energetic Particle Detector (EPD)
+----------------------------------------------------------
+.. autofunction:: pyspedas.solo.epd
+
+Example
+^^^^^^^^^
+
+.. code-block:: python
+   
+   import pyspedas
+   from pytplot import tplot
+   epd_vars = pyspedas.solo.epd(trange=['2020-06-01', '2020-06-02'], datatype='step', mode='rates')
+   tplot(['Magnet_Flux', 'Integral_Flux'])
+
+.. image:: _static/solo_epd.png
+   :align: center
+   :class: imgborder
+
+
+
+
 Radio and Plasma Waves (RPW)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.solo.rpw
