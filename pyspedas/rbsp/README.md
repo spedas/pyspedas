@@ -30,7 +30,7 @@ tplot(['Mag', 'Magnitude'])
 ```python
 efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
 
-tplot(['density', 'Vavg', 'vel_gse', 'pos_gse'])
+tplot(['efield_in_inertial_frame_spinfit_mgse', 'spacecraft_potential'])
 ```
 
 #### Radiation Belt Storm Probes Ion Composition Experiment (RBSPICE)
@@ -62,5 +62,5 @@ tplot('Tperp_e_200')
 ```python
 rps_vars = pyspedas.rbsp.rps(trange=['2018-11-5', '2018-11-6'], datatype='rps', level='l2')
 
-tplot('Alpha')
+tplot('DOSE1')
 ```
