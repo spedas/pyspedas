@@ -1,6 +1,6 @@
 Kyoto Dst
 ========================================================================
-The routines in this module can be used to load data from the Kyoto Dst mission.
+The routines in this module can be used to load Kyoto Dst data from the World Data Center for Geomagnetism, Kyoto.
 
 
 Load the data

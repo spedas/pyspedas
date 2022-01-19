@@ -35,7 +35,9 @@ tplot('eflux')
 #### Energetic Particle Detector (EPD)
 
 ```python
-epd_vars = pyspedas.solo.epd(trange=['2020-06-01', '2020-06-02'], datatype='step', mode='hcad')
+epd_vars = pyspedas.solo.epd(trange=['2020-06-01', '2020-06-02'], datatype='step', mode='rates')
+
+tplot(['Magnet_Flux', 'Integral_Flux'])
 ```
 
 #### Radio and Plasma Waves (RPW)
