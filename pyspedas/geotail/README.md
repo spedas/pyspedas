@@ -45,7 +45,7 @@ tplot(['N0', 'V0'])
 #### Comprehensive Plasma Instrumentation (CPI)
 
 ```python
-cpi_vars = pyspedas.geotail.cpi(trange=['2018-11-5', '2018-11-6'])
+cpi_vars = pyspedas.geotail.cpi(trange=['2018-11-5/15:00', '2018-11-5/18:00'], time_clip=True)
 
 tplot(['SW_P_Den', 'SW_P_AVGE', 'SW_V', 'HP_P_Den'])
 ```
