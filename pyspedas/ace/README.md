@@ -33,7 +33,7 @@ tplot(['BGSEc', 'Magnitude'])
 ```python
 swe_vars = pyspedas.ace.swe(trange=['2018-11-5', '2018-11-6'])
 
-tplot(['Np', 'Vp', 'He_ratio', 'Tpr'])
+tplot(['Vp', 'Tpr'])
 ```
 
 #### Electron, Proton, and Alpha-particle Monitor (EPAM)

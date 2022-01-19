@@ -20,7 +20,7 @@ from pytplot import tplot
 #### Electric and Magnetic Field Instrument Suite and Integrated Science (EMFISIS)
 
 ```python
-emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='magnetometer', level='l3')
+emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5/10:00', '2018-11-5/15:00'], datatype='magnetometer', level='l3', time_clip=True)
 
 tplot(['Mag', 'Magnitude'])
 ```
