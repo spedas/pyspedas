@@ -151,6 +151,11 @@ def tplot(variables, var_label=None,
             char_size = 14
 
         yrange = yaxis_options['y_range']
+        if not np.isfinite(yrange[0]):
+            yrange[0] = None
+        if not np.isfinite(yrange[1]):
+            yrange[1] = None
+
         this_axis.set_ylim(yrange)
         this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size)
 
@@ -284,7 +289,12 @@ def tplot(variables, var_label=None,
             spec_options['cmap'] = cmap
 
             out_values = var_data.y
-            out_vdata = var_data.v
+
+            if len(var_data) == 3:
+                out_vdata = var_data.v
+            else:
+                print('Too many dimensions on the variable: ' + variable)
+                continue
 
             # automatic interpolation options
             if yaxis_options.get('x_interp') is not None:
