@@ -17,11 +17,11 @@ T89 Example
    pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the field using the T89 model
-   from pyspedas import tt89
+   from pyspedas.geopack import tt89
    tt89('mms1_mec_r_gsm')
    tplot('mms1_mec_r_gsm_bt89')
 
-.. image:: _static/bt89.png
+.. image:: _static/tt89.png
    :align: center
    :class: imgborder
 
@@ -40,10 +40,23 @@ T96 Example
    import pyspedas
    pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
-   # calculate the field using the T96 model
-   from pyspedas import tt96
-   tt96('mms1_mec_r_gsm', parmod=params)
-   tplot('mms1_mec_r_gsm_bt96')
+   # calculate the params using the solar wind data; see the "Solar Wind Parameters" section below for an example
+
+   # interpolate the MEC timestamps to the solar wind timestamps
+   from pyspedas import tinterpol
+   tinterpol('mms1_mec_r_gsm', 'proton_density')
+
+   # calculate the field using the T96 model 
+   from pyspedas.geopack import tt96
+   tt96('mms1_mec_r_gsm-itrp', parmod=params)
+
+   from pytplot import tplot
+   tplot('mms1_mec_r_gsm-itrp_bt96')
+
+.. image:: _static/tt96.png
+   :align: center
+   :class: imgborder
+
 
 Tsyganenko 2001 (T01)
 -----------------------------
@@ -59,10 +72,23 @@ T01 Example
    import pyspedas
    pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
+   # calculate the params using the solar wind data; see the "Solar Wind Parameters" section below for an example
+
+   # interpolate the MEC timestamps to the solar wind timestamps
+   from pyspedas import tinterpol
+   tinterpol('mms1_mec_r_gsm', 'proton_density')
+
    # calculate the field using the T01 model
-   from pyspedas import tt01
-   tt01('mms1_mec_r_gsm', parmod=params)
-   tplot('mms1_mec_r_gsm_bt01')
+   from pyspedas.geopack import tt01
+   tt01('mms1_mec_r_gsm-itrp', parmod=params)
+
+   from pytplot import tplot
+   tplot('mms1_mec_r_gsm-itrp_bt01')
+
+.. image:: _static/tt01.png
+   :align: center
+   :class: imgborder
+
 
 Tsyganenko-Sitnov 2004 (TS04)
 -----------------------------
@@ -73,15 +99,28 @@ TS04 Example
 ^^^^^^^^^^^^
 
 .. code-block:: python
-   
+
    # load some spacecraft position data
    import pyspedas
    pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
+   # calculate the params using the solar wind data; see the "Solar Wind Parameters" section below for an example
+
+   # interpolate the MEC timestamps to the solar wind timestamps
+   from pyspedas import tinterpol
+   tinterpol('mms1_mec_r_gsm', 'proton_density')
+
    # calculate the field using the TS04 model
-   from pyspedas import tts04
-   tts04('mms1_mec_r_gsm', parmod=params)
-   tplot('mms1_mec_r_gsm_bts04')
+   from pyspedas.geopack import tts04
+   tts04('mms1_mec_r_gsm-itrp', parmod=params)
+
+   from pytplot import tplot
+   tplot('mms1_mec_r_gsm-itrp_bts04')
+
+.. image:: _static/tts04.png
+   :align: center
+   :class: imgborder
+
 
 Solar Wind Parameters
 -----------------------------
@@ -104,7 +143,7 @@ get_tsy_params Example
    from pytplot import join_vec
    join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
 
-   from pyspedas import get_tsy_params
+   from pyspedas.geopack.get_tsy_params import get_tsy_params
    params = get_tsy_params('kyoto_dst', 
                         'BX_GSE-BY_GSM-BZ_GSM_joined', 
                         'proton_density', 
