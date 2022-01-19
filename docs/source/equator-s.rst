@@ -23,6 +23,7 @@ Example
 
 
 
+
 Electron beam sensing instrument (EDI)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.equator_s.edi
@@ -43,6 +44,7 @@ Example
 
 
 
+
 Solid state detector (EPI)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.equator_s.epi
@@ -54,12 +56,13 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   epi_vars = pyspedas.equator_s.epi(trange=['1998-04-06', '1998-04-07'])
+   epi_vars = pyspedas.equator_s.epi(trange=['1998-04-06', '1998-04-30'])
    tplot(['J_e_1%eq_pp_epi', 'J_e_2%eq_pp_epi', 'J_e_3%eq_pp_epi'])
 
 .. image:: _static/equator_s_epi.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -83,6 +86,7 @@ Example
 
 
 
+
 Ion emitter (PCD)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.equator_s.pcd
@@ -103,6 +107,7 @@ Example
 
 
 
+
 Scintillating fiber detector (SFD)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.equator_s.sfd
@@ -120,5 +125,6 @@ Example
 .. image:: _static/equator_s_sfd.png
    :align: center
    :class: imgborder
+
 
 

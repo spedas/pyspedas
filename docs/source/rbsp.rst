@@ -14,12 +14,13 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='magnetometer', level='l3')
+   emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5/10:00', '2018-11-5/15:00'], datatype='magnetometer', level='l3', time_clip=True)
    tplot(['Mag', 'Magnitude'])
 
 .. image:: _static/rbsp_emfisis.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -43,6 +44,7 @@ Example
 
 
 
+
 Radiation Belt Storm Probes Ion Composition Experiment (RBSPICE)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.rbspice
@@ -60,6 +62,7 @@ Example
 .. image:: _static/rbsp_rbspice.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -84,6 +87,7 @@ Example
 
 
 
+
 ----------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.hope
 
@@ -100,6 +104,7 @@ Example
 .. image:: _static/rbsp_hope.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -123,6 +128,7 @@ Example
 
 
 
+
 Relativistic Proton Spectrometer (RPS)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.rps
@@ -140,5 +146,6 @@ Example
 .. image:: _static/rbsp_rps.png
    :align: center
    :class: imgborder
+
 
 

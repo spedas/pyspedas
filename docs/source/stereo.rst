@@ -23,6 +23,7 @@ Example
 
 
 
+
 PLAsma and SupraThermal Ion Composition (PLASTIC)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.stereo.plastic
@@ -40,5 +41,6 @@ Example
 .. image:: _static/stereo_plastic.png
    :align: center
    :class: imgborder
+
 
 

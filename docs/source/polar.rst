@@ -23,6 +23,7 @@ Example
 
 
 
+
 Electric Fields Instrument (EFI)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.polar.efi
@@ -40,6 +41,7 @@ Example
 .. image:: _static/polar_efi.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -63,6 +65,7 @@ Example
 
 
 
+
 Hot Plasma Analyzer Experiment (HYDRA)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.polar.hydra
@@ -80,6 +83,7 @@ Example
 .. image:: _static/polar_hydra.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -103,6 +107,7 @@ Example
 
 
 
+
 Toroidal Imaging Mass Angle Spectrograph (TIMAS)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.polar.timas
@@ -114,12 +119,13 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   timas_vars = pyspedas.polar.timas()
+   timas_vars = pyspedas.polar.timas(trange=['1997-01-03/6:00', '1997-01-03/7:00'], time_clip=True)
    tplot(['Density_H', 'Density_O'])
 
 .. image:: _static/polar_timas.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -143,6 +149,7 @@ Example
 
 
 
+
 Comprehensive Energetic Particle-Pitch Angle Distribution (CEPPAD)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.polar.ceppad
@@ -163,6 +170,7 @@ Example
 
 
 
+
 Orbit data
 ----------------------------------------------------------
 .. autofunction:: pyspedas.polar.orbit
@@ -180,5 +188,6 @@ Example
 .. image:: _static/polar_orbit.png
    :align: center
    :class: imgborder
+
 
 

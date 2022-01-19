@@ -3,7 +3,7 @@ Solar Orbiter (SOLO)
 The routines in this module can be used to load data from the Solar Orbiter (SOLO) mission.
 
 
-
+Magnetometer (MAG)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.solo.mag
 
@@ -24,8 +24,9 @@ Example
 
 
 
+Solar Wind Plasma Analyser (SWA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.solo.epd
+.. autofunction:: pyspedas.solo.swa
 
 Example
 ^^^^^^^^^
@@ -34,12 +35,13 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   epd_vars = pyspedas.solo.epd(trange=['2020-06-01', '2020-06-02'], datatype='step', mode='hcad')
-   tplot(['Magnet_Rows_Flux', 'Integral_Rows_Flux', 'Magnet_Cols_Flux', 'Integral_Cols_Flux'])
+   swa_vars = pyspedas.solo.swa(trange=['2020-07-22', '2020-07-23'], datatype='pas-eflux')
+   tplot('eflux')
 
-.. image:: _static/solo_epd.png
+.. image:: _static/solo_swa.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -61,24 +63,5 @@ Example
    :align: center
    :class: imgborder
 
-
-
-
-----------------------------------------------------------
-.. autofunction:: pyspedas.solo.swa
-
-Example
-^^^^^^^^^
-
-.. code-block:: python
-   
-   import pyspedas
-   from pytplot import tplot
-   swa_vars = pyspedas.solo.swa(trange=['2020-07-22', '2020-07-23'], datatype='pas-eflux')
-   tplot('eflux')
-
-.. image:: _static/solo_swa.png
-   :align: center
-   :class: imgborder
 
 

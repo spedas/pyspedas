@@ -23,6 +23,7 @@ Example
 
 
 
+
 Search-coil magnetometer (SCM)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.themis.scm
@@ -40,6 +41,7 @@ Example
 .. image:: _static/themis_scm.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -63,6 +65,7 @@ Example
 
 
 
+
 Electrostatic Analyzer (ESA)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.themis.esa
@@ -80,6 +83,7 @@ Example
 .. image:: _static/themis_esa.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -103,6 +107,7 @@ Example
 
 
 
+
 Moments data
 ----------------------------------------------------------
 .. autofunction:: pyspedas.themis.mom
@@ -120,6 +125,7 @@ Example
 .. image:: _static/themis_mom.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -143,6 +149,7 @@ Example
 
 
 
+
 State data
 ----------------------------------------------------------
 .. autofunction:: pyspedas.themis.state
@@ -163,6 +170,7 @@ Example
 
 
 
+
 Ground magnetometer data
 ----------------------------------------------------------
 .. autofunction:: pyspedas.themis.gmag
@@ -180,5 +188,6 @@ Example
 .. image:: _static/themis_gmag.png
    :align: center
    :class: imgborder
+
 
 

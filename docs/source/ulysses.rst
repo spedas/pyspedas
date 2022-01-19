@@ -23,6 +23,7 @@ Example
 
 
 
+
 Solar wind plasma (SWOOPS)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.ulysses.swoops
@@ -35,11 +36,12 @@ Example
    import pyspedas
    from pytplot import tplot
    swoops_vars = pyspedas.ulysses.swoops()
-   tplot(['Density', 'Temperature', 'Velocity']
+   tplot(['Density', 'Temperature', 'Velocity'])
 
 .. image:: _static/ulysses_swoops.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -63,6 +65,7 @@ Example
 
 
 
+
 Energetic particles (EPAC)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.ulysses.epac
@@ -80,6 +83,7 @@ Example
 .. image:: _static/ulysses_epac.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -103,6 +107,7 @@ Example
 
 
 
+
 Solar X-rays and cosmic gamma-ray bursts (GRB)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.ulysses.grb
@@ -120,5 +125,6 @@ Example
 .. image:: _static/ulysses_grb.png
    :align: center
    :class: imgborder
+
 
 

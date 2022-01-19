@@ -23,6 +23,7 @@ Example
 
 
 
+
 Solar Wind Electron, Proton and Alpha Monitor (SWEPAM)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.ace.swe
@@ -35,11 +36,12 @@ Example
    import pyspedas
    from pytplot import tplot
    swe_vars = pyspedas.ace.swe(trange=['2018-11-5', '2018-11-6'])
-   tplot(['Np', 'Vp', 'He_ratio', 'Tpr'])
+   tplot(['Vp', 'Tpr'])
 
 .. image:: _static/ace_swe.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -63,6 +65,7 @@ Example
 
 
 
+
 Cosmic Ray Isotope Spectrometer (CRIS)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.ace.cris
@@ -80,6 +83,7 @@ Example
 .. image:: _static/ace_cris.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -103,6 +107,7 @@ Example
 
 
 
+
 Ultra Low Energy Isotope Spectrometer (ULEIS)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.ace.uleis
@@ -120,6 +125,7 @@ Example
 .. image:: _static/ace_uleis.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -143,6 +149,7 @@ Example
 
 
 
+
 Solar Wind Ion Composition Spectrometer (SWICS)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.ace.swics
@@ -160,5 +167,6 @@ Example
 .. image:: _static/ace_swics.png
    :align: center
    :class: imgborder
+
 
 

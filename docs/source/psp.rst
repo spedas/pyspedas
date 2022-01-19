@@ -14,12 +14,13 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   fields_vars = pyspedas.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='mag_rtn', level='l2')
+   fields_vars = pyspedas.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='mag_rtn', level='l2', time_clip=True)
    tplot('psp_fld_l2_mag_RTN')
 
 .. image:: _static/psp_fields.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -43,6 +44,7 @@ Example
 
 
 
+
 SWEAP/SPAN-e
 ----------------------------------------------------------
 .. autofunction:: pyspedas.psp.spe
@@ -54,12 +56,13 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   spe_vars = pyspedas.psp.spe(trange=['2018-11-5', '2018-11-5/06:00'], datatype='spa_sf1_32e', level='l2')
+   spe_vars = pyspedas.psp.spe(trange=['2018-11-5', '2018-11-5/06:00'], datatype='spa_sf1_32e', level='l2', time_clip=True)
    tplot('EFLUX')
 
 .. image:: _static/psp_spe.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -74,12 +77,13 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   spi_vars = pyspedas.psp.spi(trange=['2018-11-5', '2018-11-5/06:00'], datatype='spi_sf0a_mom_inst', level='l3')
+   spi_vars = pyspedas.psp.spi(trange=['2018-11-5', '2018-11-5/06:00'], datatype='spi_sf0a_mom_inst', level='l3', time_clip=True)
    tplot(['DENS', 'VEL', 'T_TENSOR', 'TEMP', 'EFLUX_VS_ENERGY', 'EFLUX_VS_THETA', 'EFLUX_VS_PHI'])
 
 .. image:: _static/psp_spi.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -94,12 +98,13 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   epihi_vars = pyspedas.psp.epihi(trange=['2018-11-5', '2018-11-5/06:00'], datatype='let1_rates1h', level='l2')
+   epihi_vars = pyspedas.psp.epihi(trange=['2018-11-5', '2018-11-5/06:00'], datatype='let1_rates1h', level='l2', time_clip=True)
    tplot(['B_He_Rate', 'A_He_Flux', 'A_S_Rate'])
 
 .. image:: _static/psp_epihi.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -114,11 +119,12 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   epi_vars = pyspedas.psp.epi(trange=['2018-11-5', '2018-11-5/06:00'], datatype='summary', level='l2')
+   epi_vars = pyspedas.psp.epi(trange=['2018-11-5', '2018-11-5/06:00'], datatype='summary', level='l2', time_clip=True)
    tplot(['A_H_Rate_TS', 'H_CountRate_ChanT_SP', 'Electron_CountRate_ChanE', 'HET_A_H_Rate_TS', 'HET_A_Electrons_Rate_TS'])
 
 .. image:: _static/psp_epi.png
    :align: center
    :class: imgborder
+
 
 

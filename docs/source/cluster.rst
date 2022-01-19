@@ -23,6 +23,7 @@ Example
 
 
 
+
 Active Spacecraft Potential Control experiment (ASPOC)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.cluster.aspoc
@@ -40,6 +41,7 @@ Example
 .. image:: _static/cluster_aspoc.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -63,6 +65,7 @@ Example
 
 
 
+
 Digital Wave Processing instrument (DWP)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.cluster.dwp
@@ -80,6 +83,7 @@ Example
 .. image:: _static/cluster_dwp.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -103,6 +107,7 @@ Example
 
 
 
+
 Electric Field and Wave experiment (EFW)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.cluster.efw
@@ -120,6 +125,7 @@ Example
 .. image:: _static/cluster_efw.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -143,6 +149,7 @@ Example
 
 
 
+
 Research with Adaptive Particle Imaging Detectors (RAPID)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.cluster.rapid
@@ -160,6 +167,7 @@ Example
 .. image:: _static/cluster_rapid.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -183,6 +191,7 @@ Example
 
 
 
+
 Wide Band Data receiver (WBD)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.cluster.wbd
@@ -203,6 +212,7 @@ Example
 
 
 
+
 Waves of High Frequency and Sounder for Probing of Density by Relaxation (WHISPER)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.cluster.whi
@@ -220,5 +230,6 @@ Example
 .. image:: _static/cluster_whi.png
    :align: center
    :class: imgborder
+
 
 

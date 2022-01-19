@@ -19,6 +19,8 @@ T89 Example
    # calculate the field using the T89 model
    from pyspedas.geopack import tt89
    tt89('mms1_mec_r_gsm')
+
+   from pytplot import tplot
    tplot('mms1_mec_r_gsm_bt89')
 
 .. image:: _static/tt89.png

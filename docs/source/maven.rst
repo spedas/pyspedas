@@ -23,6 +23,7 @@ Example
 
 
 
+
 Solar Wind Electron Analyzer (SWEA)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.maven.swea
@@ -40,6 +41,7 @@ Example
 .. image:: _static/maven_swea.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -63,6 +65,7 @@ Example
 
 
 
+
 SupraThermal And Thermal Ion Composition (STATIC)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.maven.sta
@@ -80,6 +83,7 @@ Example
 .. image:: _static/maven_sta.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -103,6 +107,7 @@ Example
 
 
 
+
 Langmuir Probe and Waves (LPW)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.maven.lpw
@@ -123,6 +128,7 @@ Example
 
 
 
+
 Extreme Ultraviolet Monitor (EUV)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.maven.euv
@@ -140,5 +146,6 @@ Example
 .. image:: _static/maven_euv.png
    :align: center
    :class: imgborder
+
 
 

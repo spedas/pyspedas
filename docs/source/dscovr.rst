@@ -23,6 +23,7 @@ Example
 
 
 
+
 Faraday cup (FC)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.dscovr.fc
@@ -40,6 +41,7 @@ Example
 .. image:: _static/dscovr_fc.png
    :align: center
    :class: imgborder
+
 
 
 
@@ -63,6 +65,7 @@ Example
 
 
 
+
 Attitude data
 ----------------------------------------------------------
 .. autofunction:: pyspedas.dscovr.att
@@ -83,6 +86,7 @@ Example
 
 
 
+
 Load all data at once
 ----------------------------------------------------------
 .. autofunction:: pyspedas.dscovr.all
@@ -100,5 +104,6 @@ Example
 .. image:: _static/dscovr_all.png
    :align: center
    :class: imgborder
+
 
 
