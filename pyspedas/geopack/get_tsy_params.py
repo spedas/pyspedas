@@ -103,18 +103,32 @@ def get_tsy_params(dst_tvar, imf_tvar, Np_tvar, Vp_tvar, model, pressure_tvar=No
             print('G variables required for T01 model; create a tplot variable containing the G variables, and provide the name of that keyword to the g_variables keyword.')
             return
         else:
-            g_data = get_data(g_variables)
+            if isinstance(g_variables, str):
+                g_data = get_data(g_variables)
 
-            if g_variables is None:
-                print('Problem reading G variable: ' + g_variables)
-                return
+                if g_variables is None:
+                    print('Problem reading G variable: ' + g_variables)
+                    return
+
+                g1 = g_data.y[:, 0]
+                g2 = g_data.y[:, 1]
+            else:
+                if isinstance(g_variables, list):
+                    g_variables = np.array(g_variables)
+                    
+                if len(g_variables.shape) > 1:
+                    g1 = g_variables[:, 0]
+                    g2 = g_variables[:, 1]
+                else:
+                    g1 = np.repeat(g_variables[0], len(dst_data.y))
+                    g2 = np.repeat(g_variables[1], len(dst_data.y))
 
             out = np.array((P_data.y, 
                             dst_data.y, 
                             imf_data.y[:, 1], 
                             imf_data.y[:, 2], 
-                            g_data.y[:, 0], 
-                            g_data.y[:, 1], 
+                            g1, 
+                            g2, 
                             np.zeros(len(dst_data.y)), 
                             np.zeros(len(dst_data.y)), 
                             np.zeros(len(dst_data.y)), 

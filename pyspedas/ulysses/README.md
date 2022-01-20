@@ -33,7 +33,7 @@ tplot('B_MAG')
 ```python
 swoops_vars = pyspedas.ulysses.swoops()
 
-tplot(['Density', 'Temperature', 'Velocity']
+tplot(['Density', 'Temperature', 'Velocity'])
 ```
 
 #### Solar wind ion composition (SWICS)

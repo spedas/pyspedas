@@ -67,7 +67,7 @@ tplot(['total_den', 'total_v', 'total_t'])
 #### Toroidal Imaging Mass Angle Spectrograph (TIMAS)
 
 ```python
-timas_vars = pyspedas.polar.timas()
+timas_vars = pyspedas.polar.timas(trange=['1997-01-03/6:00', '1997-01-03/7:00'], time_clip=True)
 
 tplot(['Density_H', 'Density_O'])
 ```
