@@ -36,7 +36,7 @@ Example
    import pyspedas
    from pytplot import tplot
    efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
-   tplot(['density', 'Vavg', 'vel_gse', 'pos_gse'])
+   tplot(['efield_in_inertial_frame_spinfit_mgse', 'spacecraft_potential'])
 
 .. image:: _static/rbsp_efw.png
    :align: center
@@ -66,7 +66,7 @@ Example
 
 
 
-Energetic Particle, Composition, and Thermal Plasma Suite (ECT)
+Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - MagEIS
 ----------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.mageis
 
@@ -87,7 +87,7 @@ Example
 
 
 
-
+Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - HOPE
 ----------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.hope
 
@@ -107,8 +107,7 @@ Example
 
 
 
-
-
+Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - REPT
 ----------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.rept
 
@@ -141,7 +140,7 @@ Example
    import pyspedas
    from pytplot import tplot
    rps_vars = pyspedas.rbsp.rps(trange=['2018-11-5', '2018-11-6'], datatype='rps', level='l2')
-   tplot('Alpha')
+   tplot('DOSE1')
 
 .. image:: _static/rbsp_rps.png
    :align: center

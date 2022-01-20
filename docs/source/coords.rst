@@ -5,6 +5,23 @@ Transformations
 ------------------------------------
 .. autofunction:: pyspedas.cotrans
 
+Examples
+^^^^^^^^^
+
+.. code-block:: python
+   
+   import pyspedas
+   pyspedas.themis.state(trange=['2015-10-16', '2015-10-17'], probe='c')
+
+   from pyspedas import cotrans
+   cotrans(name_in='thc_pos_gse', name_out='gsm_data', coord_in='gse', coord_out='gsm')
+   cotrans(name_in='thc_pos_gse', name_out='sm_data', coord_in='gse', coord_out='sm')
+   cotrans(name_in='thc_pos_gse', name_out='geo_data', coord_in='gse', coord_out='geo')
+
+   from pytplot import tplot
+   tplot(['gsm_data', 'sm_data', 'geo_data'])
+   
+
 LMN Coordinates
 ------------------------
 .. autofunction:: pyspedas.cotrans.gsm2lmn.gsm2lmn
