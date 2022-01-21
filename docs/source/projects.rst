@@ -14,6 +14,7 @@ Load Routines
    geotail
    goes
    image
+   kyoto
    maven
    mica
    mms

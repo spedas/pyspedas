@@ -3,7 +3,24 @@ Coordinate Systems
 
 Transformations
 ------------------------------------
-.. autofunction:: pyspedas.cotrans.cotrans.cotrans
+.. autofunction:: pyspedas.cotrans
+
+Examples
+^^^^^^^^^
+
+.. code-block:: python
+   
+   import pyspedas
+   pyspedas.themis.state(trange=['2015-10-16', '2015-10-17'], probe='c')
+
+   from pyspedas import cotrans
+   cotrans(name_in='thc_pos_gse', name_out='gsm_data', coord_in='gse', coord_out='gsm')
+   cotrans(name_in='thc_pos_gse', name_out='sm_data', coord_in='gse', coord_out='sm')
+   cotrans(name_in='thc_pos_gse', name_out='geo_data', coord_in='gse', coord_out='geo')
+
+   from pytplot import tplot
+   tplot(['gsm_data', 'sm_data', 'geo_data'])
+   
 
 LMN Coordinates
 ------------------------
@@ -11,8 +28,8 @@ LMN Coordinates
 
 Getting/Setting the Coordinate System
 ----------------------------------------
-.. autofunction:: pyspedas.cotrans.cotrans_get_coord.cotrans_get_coord
-.. autofunction:: pyspedas.cotrans.cotrans_set_coord.cotrans_set_coord
+.. autofunction:: pyspedas.cotrans_get_coord
+.. autofunction:: pyspedas.cotrans_set_coord
 
 Support Routines
 ------------------------
