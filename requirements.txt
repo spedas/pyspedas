@@ -8,3 +8,4 @@ pywavelets
 pyqtgraph==0.12.2
 astropy
 geopack>=1.0.9
+hapiclient>=0.2.2

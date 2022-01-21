@@ -28,6 +28,7 @@ setup(
     install_requires=['numpy>=1.19.5', 'requests', 'geopack>=1.0.9',
                       'cdflib>=0.3.20', 'cdasws>=1.7.24', 'netCDF4',
                       'pywavelets', 'pyqtgraph==0.12.2', 'astropy',
+                      'hapiclient>=0.2.2',
                       'pytplot @ git+https://git@github.com/MAVENSDC/PyTplot@matplotlib-backend#egg=pytplot'],
     python_requires='>=3.7',
     include_package_data=True,
