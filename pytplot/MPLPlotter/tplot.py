@@ -101,6 +101,7 @@ def tplot(variables, var_label=None,
 
         pseudo_var = False
         overplots = None
+        spec = False
 
         var_quants = pytplot.data_quants[variable]
 
@@ -143,17 +144,7 @@ def tplot(variables, var_label=None,
                     line_opts = var_quants.attrs['plot_options']['line_opt']
 
             for pseudo_idx, var in enumerate(pseudo_vars):
-                spec = pytplot.data_quants[var].attrs['plot_options']['extras'].get('spec')
-
-                if spec:
-                    tplot(var, return_plot_objects=return_plot_objects, 
-                        xsize=xsize, ysize=ysize, save_png=save_png, 
-                        save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf, 
-                        fig=fig, axis=this_axis, display=False, 
-                        pseudo_plot_num=pseudo_idx, second_axis_size=0.1,
-                        pseudo_right_axis=pseudo_right_axis)
-                else:
-                    tplot(var, return_plot_objects=return_plot_objects, 
+                tplot(var, return_plot_objects=return_plot_objects, 
                         xsize=xsize, ysize=ysize, save_png=save_png, 
                         save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf, 
                         fig=fig, axis=this_axis, display=False, 
@@ -519,7 +510,7 @@ def tplot(variables, var_label=None,
         if spec:
             if colorbars.get(variable) is None:
                 continue
-                
+
             # add the color bar
             if pseudo_plot_num == 0:
                 # there's going to be a second axis, so we need to make sure there's room for it
