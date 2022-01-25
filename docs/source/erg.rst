@@ -45,7 +45,7 @@ High-energy Particles – electrons (HEP-e)
 
     import pyspedas
     from pytplot import tplot
-    pyspedas.erg.xep(trange=['2017-03-27', '2017-03-28'])
+    pyspedas.erg.hep(trange=['2017-03-27', '2017-03-28'])
     tplot(['erg_hep_l2_FEDO_L', 'erg_hep_l2_FEDO_H'])
 
 .. image:: _static/erg_hep.png
