@@ -250,6 +250,9 @@ def options(name, option=None, value=None, opt_dict=None):
                     return
                 pytplot.data_quants[i].attrs['plot_options']['extras']['alpha'] = value
 
+            if option == 'right_axis':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['right_axis'] = value
+
             if option == 'thick':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
 

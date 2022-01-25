@@ -98,9 +98,11 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         pytplot.tplot_rename(name, newname)
         return True
 
+    # if isinstance(data, str):
+    #     pytplot.data_quants[name] = {'name': name, 'data': data}
+    #     return True
     if isinstance(data, str):
-        pytplot.data_quants[name] = {'name': name, 'data': data}
-        return True
+        data = data.split(' ')
 
     # If the data is a list instead of a dictionary, user is looking to overplot
     if isinstance(data, list):
@@ -111,6 +113,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         pytplot.data_quants[name].attrs = copy.deepcopy(pytplot.data_quants[base_data[0]].attrs)
         pytplot.data_quants[name].name = name
         pytplot.data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
+        pytplot.data_quants[name].attrs['plot_options']['overplots_mpl'] = base_data
         return True
 
     # if the data table doesn't contain an 'x', assume this is a non-record varying variable

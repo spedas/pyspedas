@@ -29,6 +29,11 @@ def tplot(variables, var_label=None,
                      fig=None, 
                      axis=None, 
                      pseudo_plot_num=None, 
+                     pseudo_right_axis=False,
+                     pseudo_yaxis_options=None,
+                     pseudo_zaxis_options=None,
+                     pseudo_line_options=None,
+                     pseudo_extra_options=None,
                      second_axis_size=0.0,
                      return_plot_objects=False):
     """
@@ -49,7 +54,7 @@ def tplot(variables, var_label=None,
         fig, axes = plt.subplots(nrows=num_panels, sharex=True)
         fig.set_size_inches(xsize, ysize)
     else:
-        if pseudo_plot_num == 0:
+        if pseudo_plot_num == 0 or pseudo_right_axis == False:
             # setting up first axis
             axes = axis
         else:
@@ -66,7 +71,7 @@ def tplot(variables, var_label=None,
     colorbars = {}
 
     if xmargin is None:
-        xmargin = [0.21, 0.15]
+        xmargin = [0.10, 0.05]
 
     fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
 
@@ -94,18 +99,68 @@ def tplot(variables, var_label=None,
         else:
             this_axis = axes[idx]
 
+        pseudo_var = False
+        overplots = None
+
+        var_quants = pytplot.data_quants[variable]
+
+        if not isinstance(var_quants, dict):
+            if var_quants.attrs['plot_options'].get('overplots_mpl') is not None:
+                overplots = var_quants.attrs['plot_options']['overplots_mpl']
+                pseudo_var = True
+
         # deal with pseudo-variables first
-        if isinstance(var_data, list) or isinstance(var_data, str):
+        if isinstance(var_data, list) or isinstance(var_data, str) or pseudo_var:
             # this is a pseudo variable
-            if not isinstance(var_data, list):
+            if isinstance(var_data, str):
                 var_data = var_data.split(' ')
 
-            for pseudo_idx, var in enumerate(var_data):
-                tplot(var, return_plot_objects=return_plot_objects, 
-                    xsize=xsize, ysize=ysize, save_png=save_png, 
-                    save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf, 
-                    fig=fig, axis=this_axis, display=False, 
-                    pseudo_plot_num=pseudo_idx, second_axis_size=0.1)
+            if pseudo_var:
+                pseudo_vars = overplots
+            else:
+                pseudo_vars = var_data
+
+            # pseudo variable metadata should override the metadata
+            # for individual variables
+            yaxis_options = None
+            zaxis_options = None
+            line_opts = None
+            plot_extras = None
+            if pseudo_var:
+                plot_extras = var_quants.attrs['plot_options']['extras']
+                if plot_extras.get('spec') is not None:
+                    spec = True
+
+                if plot_extras.get('right_axis') is not None:
+                    if plot_extras.get('right_axis'):
+                        pseudo_right_axis = True
+
+                if pseudo_right_axis or spec:
+                    plot_extras = None
+                else:
+                    yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
+                    zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
+                    line_opts = var_quants.attrs['plot_options']['line_opt']
+
+            for pseudo_idx, var in enumerate(pseudo_vars):
+                spec = pytplot.data_quants[var].attrs['plot_options']['extras'].get('spec')
+
+                if spec:
+                    tplot(var, return_plot_objects=return_plot_objects, 
+                        xsize=xsize, ysize=ysize, save_png=save_png, 
+                        save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf, 
+                        fig=fig, axis=this_axis, display=False, 
+                        pseudo_plot_num=pseudo_idx, second_axis_size=0.1,
+                        pseudo_right_axis=pseudo_right_axis)
+                else:
+                    tplot(var, return_plot_objects=return_plot_objects, 
+                        xsize=xsize, ysize=ysize, save_png=save_png, 
+                        save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf, 
+                        fig=fig, axis=this_axis, display=False, 
+                        pseudo_plot_num=pseudo_idx, second_axis_size=0.1,
+                        pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
+                        pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
+                        pseudo_right_axis=pseudo_right_axis)
             continue
 
         # the data are stored as unix times, but matplotlib wants datatime objects
@@ -121,10 +176,25 @@ def tplot(variables, var_label=None,
             this_axis.set_xlim([datetime.fromtimestamp(x_range[0], tz=timezone.utc), datetime.fromtimestamp(x_range[1], tz=timezone.utc)])
 
         # set some more plot options
-        yaxis_options = pytplot.data_quants[variable].attrs['plot_options']['yaxis_opt']
-        zaxis_options = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']
-        line_opts = pytplot.data_quants[variable].attrs['plot_options']['line_opt']
-        plot_extras = pytplot.data_quants[variable].attrs['plot_options']['extras']
+        if pseudo_yaxis_options is not None:
+            yaxis_options = pseudo_yaxis_options
+        else:
+            yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
+
+        if pseudo_zaxis_options is not None:
+            zaxis_options = pseudo_zaxis_options
+        else:
+            zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
+
+        if pseudo_line_options is not None:
+            line_opts = pseudo_line_options
+        else:
+            line_opts = var_quants.attrs['plot_options']['line_opt']
+
+        if pseudo_extra_options is not None:
+            plot_extras = pseudo_extra_options
+        else:
+            plot_extras = var_quants.attrs['plot_options']['extras']
 
         ylog = yaxis_options['y_axis_type']
         if ylog == 'log':
@@ -447,6 +517,9 @@ def tplot(variables, var_label=None,
             spec = False
 
         if spec:
+            if colorbars.get(variable) is None:
+                continue
+                
             # add the color bar
             if pseudo_plot_num == 0:
                 # there's going to be a second axis, so we need to make sure there's room for it
