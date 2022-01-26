@@ -2,6 +2,10 @@ Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS) Mission
 ========================================================================
 The routines in this module can be used to load data from the Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS) Mission mission.
 
+Energetic Neutral Atom (ENA) imager
+----------------------------------------------------------
+.. autofunction:: pyspedas.twins.imager
+
 
 Lyman-alpha Detector (LAD)
 ----------------------------------------------------------
@@ -20,8 +24,6 @@ Example
 .. image:: _static/twins_lad.png
    :align: center
    :class: imgborder
-
-
 
 
 Ephemeris
