@@ -1,4 +1,4 @@
-
+import warnings
 from time import sleep
 from pyspedas import time_double
 from pytplot import get_data, store_data, options
@@ -70,6 +70,9 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         print('Error, no trange specified')
         return
 
+    if isinstance(parameters, list):
+        parameters = ','.join(parameters)
+
     opts = {'logging': False}
     data, hapi_metadata = load_hapi(server, dataset, parameters, trange[0], trange[1], **opts)
 
@@ -78,23 +81,42 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     # loop through the parameters in this dataset
     params = hapi_metadata['parameters']
 
-    for param in params:
+    for param in params[1:]:
         spec = False
         param_name = param.get('name')
         print('Loading ' + param_name)
 
         # load the data only for this parameter
         try:
-            data, hapi_metadata = load_hapi(server, dataset, param_name, trange[0], trange[1], **opts)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", category=ResourceWarning)
+                data, hapi_metadata = load_hapi(server, dataset, param_name, trange[0], trange[1], **opts)
         except:
+            breakpoint()
+            print('Error! 95')
             continue
 
         timestamps = [datapoint[0] for datapoint in data]
         unixtimes = [time_double(timestamp.decode('utf-8')) for timestamp in timestamps]
 
+        param_type = hapi_metadata['parameters'][1].get('type')
+
+        if param_type is None:
+            param_type = 'double'
+
+        data_size = hapi_metadata['parameters'][1].get('size')
+
+        if data_size is None:
+            single_line = True
+
         try:
-            single_line = isinstance(data[0][1], np.float64)
+            if param_type == 'double':
+                single_line = isinstance(data[0][1], np.float64)
+            elif param_type == 'integer':
+                single_line = isinstance(data[0][1], np.int32)
         except IndexError:
+            breakpoint()
+            print('Error! 103')
             continue
 
         if single_line:
@@ -103,6 +125,8 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
             try:
                 data_out = np.zeros((len(data), len(data[0][1])))
             except TypeError:
+                print('Error! 112')
+                breakpoint()
                 continue
 
         for idx, datapoint in enumerate(data):
@@ -112,6 +136,18 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
                 data_out[idx, :] = datapoint[1]
 
         data_out = data_out.squeeze()
+
+        # check for fill values
+        fill_value = hapi_metadata['parameters'][1].get('fill')
+        if fill_value is not None:
+            if param_type == 'double':
+                fill_value = float(fill_value)
+                data_out[data_out == fill_value] = np.nan
+            elif param_type == 'integer':
+                # NaN is only floating point, so we replace integer fill
+                # values with 0 instead of NaN
+                fill_value = int(fill_value)
+                data_out[data_out == fill_value] = 0
 
         bins = param.get('bins')
 
