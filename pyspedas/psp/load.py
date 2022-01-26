@@ -43,6 +43,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
             pathformat = instrument + '/' + level + '/mag_rtn_4_per_cycle/%Y/psp_fld_' + level + '_mag_rtn_4_sa_per_cyc_%Y%m%d_v??.cdf'
         elif datatype == 'mag_sc_4_per_cycle' or datatype == 'mag_sc_4_sa_per_cyc':
             pathformat = instrument + '/' + level + '/mag_sc_4_per_cycle/%Y/psp_fld_' + level + '_mag_sc_4_sa_per_cyc_%Y%m%d_v??.cdf'
+        elif datatype == 'rfs_hfr' or datatype == 'rfs_lfr' or datatype == 'rfs_burst' or datatype == 'f2_100bps':
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
         else:
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
             file_resolution = 6*3600.
