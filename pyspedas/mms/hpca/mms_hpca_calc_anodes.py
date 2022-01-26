@@ -64,7 +64,7 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
             options(var+fov_str, 'zlog', True)
             options(var+fov_str, 'ztitle', species_map[var_species] + ' ' + var.split('_')[3] + ' (cm^2-s-sr-eV)^-1')
             options(var+fov_str, 'ytitle', species_map[var_species] + ' Energy (eV)')
-            options(var+fov_str, 'Colormap', 'jet')
+            options(var+fov_str, 'Colormap', 'spedas')
             output_vars.append(var+fov_str)
 
     for avg_anode in avg_anodes:
@@ -82,7 +82,7 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
             options(var+fov_str, 'zlog', True)
             options(var+fov_str, 'ztitle', species_map[var_species] + ' ' + var.split('_')[3] + ' (cm^2-s-sr-eV)^-1')
             options(var+fov_str, 'ytitle', species_map[var_species] + ' Energy (eV)')
-            options(var+fov_str, 'Colormap', 'jet')
+            options(var+fov_str, 'Colormap', 'spedas')
             output_vars.append(var+fov_str)
     return output_vars
 
