@@ -29,7 +29,7 @@ setup(
                       'cdflib>=0.3.20', 'cdasws>=1.7.24', 'netCDF4',
                       'pywavelets', 'pyqtgraph==0.12.2', 'astropy',
                       'hapiclient>=0.2.2',
-                      'pytplot @ https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip#egg=pytplot'],
+                      'pytplot-mpl-temp'],
     python_requires='>=3.7',
     include_package_data=True,
 )
