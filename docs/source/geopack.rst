@@ -5,7 +5,7 @@ The routines in this module can be used to calculate Tsyganenko magnetic field m
 Tsyganenko 89 (T89)
 -----------------------------
 
-.. autofunction:: pyspedas.tt89
+.. autofunction:: pyspedas.geopack.tt89
 
 T89 Example
 ^^^^^^^^^^^^
@@ -31,7 +31,7 @@ T89 Example
 Tsyganenko 96 (T96)
 -----------------------------
 
-.. autofunction:: pyspedas.tt96
+.. autofunction:: pyspedas.geopack.tt96
 
 T96 Example
 ^^^^^^^^^^^^
@@ -63,7 +63,7 @@ T96 Example
 Tsyganenko 2001 (T01)
 -----------------------------
 
-.. autofunction:: pyspedas.tt01
+.. autofunction:: pyspedas.geopack.tt01
 
 T01 Example
 ^^^^^^^^^^^^
@@ -95,7 +95,7 @@ T01 Example
 Tsyganenko-Sitnov 2004 (TS04)
 -----------------------------
 
-.. autofunction:: pyspedas.tts04
+.. autofunction:: pyspedas.geopack.tts04
 
 TS04 Example
 ^^^^^^^^^^^^
@@ -128,7 +128,7 @@ Solar Wind Parameters
 -----------------------------
 To generate the "parmod" variable using Dst and solar wind data, use the `get_tsy_params` routine. 
 
-.. autofunction:: pyspedas.get_tsy_params
+.. autofunction:: pyspedas.geopack.get_tsy_params.get_tsy_params
 
 get_tsy_params Example
 ^^^^^^^^^^^^

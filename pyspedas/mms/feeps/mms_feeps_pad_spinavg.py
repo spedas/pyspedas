@@ -98,7 +98,7 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
     options(var_name + '_spin' + suffix, 'spec', True)
     options(var_name + '_spin' + suffix, 'ylog', False)
     options(var_name + '_spin' + suffix, 'zlog', True)
-    options(var_name + '_spin' + suffix, 'Colormap', 'jet')
+    options(var_name + '_spin' + suffix, 'Colormap', 'spedas')
     options(var_name + '_spin' + suffix, 'ztitle', units_label)
     options(var_name + '_spin' + suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' PA (deg)')
 
