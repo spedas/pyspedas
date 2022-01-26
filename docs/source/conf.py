@@ -25,7 +25,7 @@ copyright = '2018-2022, UC Regents, unless otherwise indicated'
 author = 'The pySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
-release = '1.2'
+release = '1.3'
 
 
 # -- General configuration ---------------------------------------------------
