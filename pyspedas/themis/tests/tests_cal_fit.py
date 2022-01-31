@@ -10,17 +10,18 @@ from pyspedas.themis.spacecraft.fields.fit import cal_fit
 class TestCalFitDataValidation(unittest.TestCase):
     """Tests of the data been identical to SPEDAS (IDL)."""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         """ IDL Data has to be downloaded to perform these tests"""
         from pyspedas.utilities.download import download
         from pyspedas.themis.config import CONFIG
         import pytplot
 
         # Testing time range
-        self.t = ['2008-03-15', '2008-03-16']
+        cls.t = ['2008-03-15', '2008-03-16']
 
         # Testing tollerange
-        self.tol = 1e-10
+        cls.tol = 1e-10
 
         # Download tplot files
         remote_server = 'https://spedas.org/'
@@ -31,20 +32,20 @@ class TestCalFitDataValidation(unittest.TestCase):
                            no_download=False)
         if not calfile:
             # Skip tests
-            self.skipTest("Cannot download data validation file")
+            raise unittest.SkipTest("Cannot download data validation file")
 
         # Load validation variables from the test file
         filename = calfile[0]
         pytplot.tplot_restore(filename)
-        self.tha_fit = pytplot.get_data('tha_fit')
-        self.tha_fgs = pytplot.get_data('tha_fgs')
-        self.tha_fgs_sigma = pytplot.get_data('tha_fgs_sigma')
-        self.tha_fit_bfit = pytplot.get_data('tha_fit_bfit')
-        self.tha_fit_efit = pytplot.get_data('tha_fit_efit')
-        self.tha_efs = pytplot.get_data('tha_efs')
-        self.tha_efs_sigma = pytplot.get_data('tha_efs_sigma')
-        self.tha_efs_0 = pytplot.get_data('tha_efs_0')
-        self.tha_efs_dot0 = pytplot.get_data('tha_efs_dot0')
+        cls.tha_fit = pytplot.get_data('tha_fit')
+        cls.tha_fgs = pytplot.get_data('tha_fgs')
+        cls.tha_fgs_sigma = pytplot.get_data('tha_fgs_sigma')
+        cls.tha_fit_bfit = pytplot.get_data('tha_fit_bfit')
+        cls.tha_fit_efit = pytplot.get_data('tha_fit_efit')
+        cls.tha_efs = pytplot.get_data('tha_efs')
+        cls.tha_efs_sigma = pytplot.get_data('tha_efs_sigma')
+        cls.tha_efs_0 = pytplot.get_data('tha_efs_0')
+        cls.tha_efs_dot0 = pytplot.get_data('tha_efs_dot0')
 
         pytplot.del_data('*')
 
