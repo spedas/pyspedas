@@ -312,13 +312,28 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                         nontime_varying_depends.append('v')
 
                 metadata[var_name] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
-                                      'scale_type': var_atts.get("SCALE_TYP", None),
-                                      'var_attrs': var_atts, 'file_name': filename, 'global_attrs': gatt}
+                                      'scale_type': var_atts.get("SCALE_TYP"),
+                                      'y_spec_scale_type': None,
+                                      'var_attrs': var_atts, 
+                                      'file_name': filename, 
+                                      'global_attrs': gatt}
 
                 if metadata[var_name]['scale_type'] is None:
                     alt_scale_type = var_atts.get("SCALETYP", "linear")
                     if alt_scale_type is not None:
                         metadata[var_name]['scale_type'] = alt_scale_type
+
+                # handle y-axis options for spectra
+                if 'DEPEND_1' in var_atts:
+                    if isinstance(var_atts['DEPEND_1'], str):
+                        depend_1_var_atts = cdf_file.varattsget(var_atts['DEPEND_1'])
+
+                        scale_type = depend_1_var_atts.get('SCALETYP')
+                        if scale_type is None:
+                            scale_type = depend_1_var_atts.get('SCALE_TYP')
+
+                        if scale_type is not None:
+                            metadata[var_name]['y_spec_scale_type'] = scale_type
 
                 # Check if the variable already exists in the for loop output
                 if var_name not in output_table:
@@ -370,9 +385,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             if metadata[var_name]['display_type'] == "spectrogram":
                 options(var_name, 'spec', 1)
             if metadata[var_name]['scale_type'] == 'log':
-                options(var_name, 'ylog', 1)
                 if metadata[var_name]['display_type'] == "spectrogram":
                     options(var_name, 'zlog', 1)
+                else:
+                    options(var_name, 'ylog', 1)
+            if metadata[var_name].get('y_spec_scale_type') is not None:
+                if metadata[var_name]['y_spec_scale_type'] == 'log':
+                    options(var_name, 'ylog', 1)
             if metadata[var_name].get('var_attrs') is not None:
                 if metadata[var_name]['var_attrs'].get('LABLAXIS') is not None:
                     options(var_name, 'ytitle', metadata[var_name]['var_attrs']['LABLAXIS'])
