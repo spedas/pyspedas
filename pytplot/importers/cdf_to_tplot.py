@@ -312,8 +312,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                         nontime_varying_depends.append('v')
 
                 metadata[var_name] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
-                                      'scale_type': var_atts.get("SCALE_TYP", "linear"),
+                                      'scale_type': var_atts.get("SCALE_TYP", None),
                                       'var_attrs': var_atts, 'file_name': filename, 'global_attrs': gatt}
+
+                if metadata[var_name]['scale_type'] is None:
+                    alt_scale_type = var_atts.get("SCALETYP", "linear")
+                    if alt_scale_type is not None:
+                        metadata[var_name]['scale_type'] = alt_scale_type
 
                 # Check if the variable already exists in the for loop output
                 if var_name not in output_table:
@@ -366,6 +371,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                 options(var_name, 'spec', 1)
             if metadata[var_name]['scale_type'] == 'log':
                 options(var_name, 'ylog', 1)
+                if metadata[var_name]['display_type'] == "spectrogram":
+                    options(var_name, 'zlog', 1)
             if metadata[var_name].get('var_attrs') is not None:
                 if metadata[var_name]['var_attrs'].get('LABLAXIS') is not None:
                     options(var_name, 'ytitle', metadata[var_name]['var_attrs']['LABLAXIS'])
