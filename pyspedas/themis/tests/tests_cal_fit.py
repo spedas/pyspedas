@@ -1,7 +1,7 @@
 """Tests of cal_fit function."""
 
-import pyspedas
-import pytplot
+import pyspedas.themis.spacecraft.fields.fit
+import pytplot.get_data
 import unittest
 import numpy as np
 from pyspedas.themis.spacecraft.fields.fit import cal_fit
@@ -77,15 +77,8 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_fit_efit(self):
         """Validate tha_fit_efit."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'], time_clip=True)
-        cal_fit(probe='a')
-        tha_fit_efit = pytplot.get_data('tha_fit_efit')
-        diff = np.nanmedian(tha_fit_efit.y - self.tha_fit_efit.y, axis=0, keepdims=True)
-        self.assertAlmostEqual(diff.sum(), 0)
-
-    def test_fit_efit(self):
-        """Validate tha_fit_efit."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'], time_clip=True)
+        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+                            get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_fit_efit = pytplot.get_data('tha_fit_efit')
         diff = np.nanmedian(tha_fit_efit.y - self.tha_fit_efit.y, axis=0, keepdims=True)
@@ -94,7 +87,7 @@ class TestCalFitDataValidation(unittest.TestCase):
     def test_efs(self):
         """Validate tha_efs."""
         pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
-                            time_clip=True)
+                            get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_efs = pytplot.get_data('tha_efs')
         diff = np.nanmedian(tha_efs.y - self.tha_efs.y, axis=0, keepdims=True)
@@ -103,7 +96,7 @@ class TestCalFitDataValidation(unittest.TestCase):
     def test_efs_sigma(self):
         """Validate tha_efs_sigma."""
         pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
-                            time_clip=True)
+                            get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_efs_sigma = pytplot.get_data('tha_efs_sigma')
         diff = np.nanmedian(tha_efs_sigma.y - self.tha_efs_sigma.y, axis=0, keepdims=True)
@@ -112,7 +105,7 @@ class TestCalFitDataValidation(unittest.TestCase):
     def test_efs_0(self):
         """Validate tha_efs_0."""
         pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
-                            time_clip=True)
+                            get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_efs_0 = pytplot.get_data('tha_efs_0')
         diff = np.nanmedian(tha_efs_0.y - self.tha_efs_0.y, axis=0, keepdims=True)
@@ -121,11 +114,12 @@ class TestCalFitDataValidation(unittest.TestCase):
     def test_efs_dot0(self):
         """Validate tha_efs_sigma."""
         pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
-                            time_clip=True)
+                            get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_efs_dot0 = pytplot.get_data('tha_efs_dot0')
         diff = np.nanmedian(tha_efs_dot0.y - self.tha_efs_dot0.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
+
 
 class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
     """Tests of the data been identical to SPEDAS (IDL)."""
@@ -168,6 +162,31 @@ class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
         tha_efs = pytplot.get_data('tha_efs')
         diff = np.nanmedian(tha_efs.y - self.tha_efs.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
+
+
+class TestCalFitInput(unittest.TestCase):
+
+    def setUp(self):
+        self.t = ['2008-03-15', '2008-03-15']
+
+    def test_wrong_satellite(self):
+        """Validate tha_fgs."""
+        pyspedas.themis.fit(trange=self.t, probe='x', level='l1', varnames=['tha_fit'], time_clip=True)
+        cal_fit(probe='x')
+
+    @unittest.skip("time/probe for this test are unknown")
+    def test_e34_ss(self):
+        # TODO: find time/probe when e34_ss is used (285-286, 298-302, 342)
+        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
+        cal_fit(probe='a')
+
+    @unittest.skip("time/probe for this test are unknown")
+    def test_sc_port_nan(self):
+        # TODO: find time/probe when sc_port trigger NaN values (354-356)
+        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
+        cal_fit(probe='a')
+
+    # TODO: add tests for metadata
 
 if __name__ == '__main__':
     unittest.main()
