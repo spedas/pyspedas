@@ -229,7 +229,7 @@ def options(name, option=None, value=None, opt_dict=None):
                 if(value == 6 or value == 'none'):
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
 
-            if option == 'char_size':
+            if option == 'char_size' or option == 'charsize':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['char_size'] = value
 
             if option == 'name':
@@ -249,6 +249,30 @@ def options(name, option=None, value=None, opt_dict=None):
                     print("Invalid value. Should be [0, 1]")
                     return
                 pytplot.data_quants[i].attrs['plot_options']['extras']['alpha'] = value
+
+            if option == 'xtick_length':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_length'] = value
+
+            if option == 'ytick_length':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_length'] = value
+
+            if option == 'xtick_color':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['xtickcolor'] = value
+
+            if option == 'ytick_color':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['ytickcolor'] = value
+
+            if option == 'xtick_labelcolor':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_labelcolor'] = value
+
+            if option == 'ytick_labelcolor':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_labelcolor'] = value
+
+            if option == 'xtick_direction':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_direction'] = value
+
+            if option == 'ytick_direction':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_direction'] = value
 
             if option == 'right_axis':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['right_axis'] = value

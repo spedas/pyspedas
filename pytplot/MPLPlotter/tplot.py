@@ -1,14 +1,13 @@
-
 import copy
 import numpy as np
-from scipy.interpolate import interp1d
 import matplotlib as mpl
 from datetime import date, datetime, timezone
 from matplotlib import pyplot as plt
-from matplotlib.colors import LinearSegmentedColormap
-import warnings
 import pytplot
 from fnmatch import filter as tname_filter
+
+from .lineplot import lineplot
+from .specplot import specplot
 
 # the following improves the x-axis ticks labels
 import matplotlib.units as munits
@@ -49,9 +48,16 @@ def tplot(variables, var_label=None,
         variables = [variables]
         
     num_panels = len(variables)
+    panel_sizes = [1]*num_panels
+
+    # support for the panel_size option
+    for var_idx, variable in enumerate(variables):
+        panel_size = pytplot.data_quants[variable].attrs['plot_options']['extras'].get('panel_size')
+        if panel_size is not None:
+            panel_sizes[var_idx] = panel_size
 
     if fig is None and axis is None:
-        fig, axes = plt.subplots(nrows=num_panels, sharex=True)
+        fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes})
         fig.set_size_inches(xsize, ysize)
     else:
         if pseudo_plot_num == 0 or pseudo_right_axis == False:
@@ -167,27 +173,24 @@ def tplot(variables, var_label=None,
             this_axis.set_xlim([datetime.fromtimestamp(x_range[0], tz=timezone.utc), datetime.fromtimestamp(x_range[1], tz=timezone.utc)])
 
         # set some more plot options
+        yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
         if pseudo_yaxis_options is not None:
             yaxis_options = pseudo_yaxis_options
-        else:
-            yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
 
+        zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
         if pseudo_zaxis_options is not None:
             zaxis_options = pseudo_zaxis_options
-        else:
-            zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
 
+        line_opts = var_quants.attrs['plot_options']['line_opt']
         if pseudo_line_options is not None:
             line_opts = pseudo_line_options
-        else:
-            line_opts = var_quants.attrs['plot_options']['line_opt']
 
+        plot_extras = var_quants.attrs['plot_options']['extras']
         if pseudo_extra_options is not None:
             plot_extras = pseudo_extra_options
-        else:
-            plot_extras = var_quants.attrs['plot_options']['extras']
 
         ylog = yaxis_options['y_axis_type']
+
         if ylog == 'log':
             this_axis.set_yscale('log')
         else:
@@ -197,19 +200,17 @@ def tplot(variables, var_label=None,
         if ytitle == '':
             ytitle = variable
         
+        ysubtitle = ''
         if yaxis_options.get('axis_subtitle') is not None:
             ysubtitle = yaxis_options['axis_subtitle']
-        else:
-            ysubtitle = ''
             
         if axis_font_size is not None:
             this_axis.tick_params(axis='x', labelsize=axis_font_size)
             this_axis.tick_params(axis='y', labelsize=axis_font_size)
 
+        char_size = 14
         if plot_extras.get('char_size') is not None:
             char_size = plot_extras['char_size']
-        else:
-            char_size = 14
 
         yrange = yaxis_options['y_range']
         if not np.isfinite(yrange[0]):
@@ -220,243 +221,53 @@ def tplot(variables, var_label=None,
         this_axis.set_ylim(yrange)
         this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size)
 
-        if plot_extras.get('alpha') is not None:
-            alpha = plot_extras['alpha']
-        else:
-            alpha = None
-
+        border = True
         if plot_extras.get('border') is not None:
             border = plot_extras['border']
-        else:
-            border = True
 
         if border == False:
             this_axis.axis('off')
 
+        # axis tick options
+        if plot_extras.get('xtickcolor') is not None:
+            this_axis.tick_params(axis='x', color=plot_extras.get('xtickcolor'))
+
+        if plot_extras.get('ytickcolor') is not None:
+            this_axis.tick_params(axis='y', color=plot_extras.get('ytickcolor'))
+
+        if plot_extras.get('xtick_direction') is not None:
+            this_axis.tick_params(axis='x', direction=plot_extras.get('xtick_direction'))
+
+        if plot_extras.get('ytick_direction') is not None:
+            this_axis.tick_params(axis='y', direction=plot_extras.get('ytick_direction'))
+
+        if plot_extras.get('xtick_length') is not None:
+            this_axis.tick_params(axis='x', length=plot_extras.get('xtick_length'))
+
+        if plot_extras.get('ytick_length') is not None:
+            this_axis.tick_params(axis='y', length=plot_extras.get('ytick_length'))
+
+        if plot_extras.get('xtick_labelcolor') is not None:
+            this_axis.tick_params(axis='y', labelcolor=plot_extras.get('xtick_labelcolor'))
+
+        if plot_extras.get('ytick_labelcolor') is not None:
+            this_axis.tick_params(axis='y', labelcolor=plot_extras.get('ytick_labelcolor'))
+
         # determine if this is a line plot or a spectrogram
+        spec = False
         if plot_extras.get('spec') is not None:
             spec = plot_extras['spec']
-        else:
-            spec = False
 
-        if not spec:
-            # create line plots
-            if yaxis_options.get('legend_names') is not None:
-                labels = yaxis_options['legend_names']
-                if labels[0] is None:
-                    labels = None
-            else:
-                labels = None
-            
-            if len(var_data.y.shape) == 1:
-                num_lines = 1
-            else:
-                num_lines = var_data.y.shape[1]
-
-            # set up line colors
-            if plot_extras.get('line_color') is not None:
-                colors = plot_extras['line_color']
-            else:
-                if num_lines == 3:
-                    colors = ['b', 'g', 'r']
-                elif num_lines == 4:
-                    colors = ['b', 'g', 'r', 'k']
-                else:
-                    colors = ['k', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
-
-                if num_lines >= len(colors):
-                    colors = colors*num_lines
-
-            # line thickness
-            if line_opts.get('line_width') is not None:
-                thick = line_opts['line_width']
-            else:
-                thick = 0.5
-
-            # line style
-            if line_opts.get('line_style_name') is not None:
-                line_style_user = line_opts['line_style_name']
-                # legacy values
-                if line_style_user == 'solid_line':
-                    line_style = 'solid'
-                elif line_style_user == 'dot':
-                    line_style = 'dotted'
-                elif line_style_user == 'dash':
-                    line_style = 'dashed'
-                elif line_style_user == 'dash_dot':
-                    line_style = 'dashdot'
-                else:
-                    line_style = line_style_user
-            else:
-                line_style = 'solid'
-
-            # create the plot
-            line_options = {'linewidth': thick, 'linestyle': line_style, 'alpha': alpha}
-
-            # check for error data first
-            if 'dy' in var_data._fields:
-                # error data provided
-                line_options['yerr'] = var_data.dy
-                plotter = this_axis.errorbar
-            else:
-                # no error data provided
-                plotter = this_axis.plot
-
-            for line in range(0, num_lines):
-                this_line = plotter(var_times, var_data.y if num_lines == 1 else var_data.y[:, line], color=colors[line], **line_options)
-
-                if labels is not None:
-                    if isinstance(this_line, list):
-                        this_line[0].set_label(labels[line])
-                    else:
-                        this_line.set_label(labels[line])
-
-            if labels is not None:
-                this_axis.legend()
-        else:
+        if spec:
             # create spectrogram plots
-            spec_options = {'shading': 'auto', 'alpha': alpha}
-            ztitle = zaxis_options['axis_label']
-            zlog = zaxis_options['z_axis_type']
-
-            if zaxis_options.get('z_range') is not None:
-                zrange = zaxis_options['z_range']
-            else:
-                zrange = [None, None]
-                
-            if zaxis_options.get('axis_subtitle') is not None:
-                zsubtitle = zaxis_options['axis_subtitle']
-            else:
-                zsubtitle = ''
-            
-            if zlog == 'log':
-                spec_options['norm'] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
-            else:
-                spec_options['norm'] = None
-                spec_options['vmin'] = zrange[0]
-                spec_options['vmax'] = zrange[1]
-            
-            if plot_extras.get('colormap') is not None:
-                cmap = plot_extras['colormap'][0]
-            else:
-                cmap = 'spedas'
-            
-            # kludge to add support for the 'spedas' color bar
-            if cmap == 'spedas':
-                _colors = pytplot.spedas_colorbar
-                spd_map = [(np.array([r, g, b])).astype(np.float64)/256 for r, g, b in zip(_colors.r, _colors.g, _colors.b)]
-                cmap = LinearSegmentedColormap.from_list('spedas', spd_map)
-                
-            spec_options['cmap'] = cmap
-
-            out_values = var_data.y
-
-            if len(var_data) == 3:
-                out_vdata = var_data.v
-            else:
-                print('Too many dimensions on the variable: ' + variable)
+            plot_created = specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable)
+            if not plot_created:
                 continue
-
-            # automatic interpolation options
-            if yaxis_options.get('x_interp') is not None:
-                x_interp = yaxis_options['x_interp']
-
-                # interpolate along the x-axis
-                if x_interp:
-                    if yaxis_options.get('x_interp_points') is not None:
-                        nx = yaxis_options['x_interp_points']
-                    else:
-                        fig_size = fig.get_size_inches()*fig.dpi
-                        nx = fig_size[0]
-
-                    if zlog == 'log':
-                        zdata = np.log10(out_values)
-                    else:
-                        zdata = out_values
-
-                    zdata[zdata < 0.0] = 0.0
-                    zdata[zdata == np.nan] = 0.0
-
-                    interp_func = interp1d(var_data.times, zdata, axis=0, bounds_error=False)
-                    out_times = np.arange(0, nx, dtype=np.float64)*(var_data.times[-1]-var_data.times[0])/(nx-1) + var_data.times[0]
-
-                    out_values = interp_func(out_times)
-
-                    if zlog == 'log':
-                        out_values = 10**out_values
-
-                    var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in out_times]
-
-            if yaxis_options.get('y_interp') is not None:
-                y_interp = yaxis_options['y_interp']
-
-                # interpolate along the y-axis
-                if y_interp:
-                    if yaxis_options.get('y_interp_points') is not None:
-                        ny = yaxis_options['y_interp_points']
-                    else:
-                        fig_size = fig.get_size_inches()*fig.dpi
-                        ny = fig_size[1]
-
-                    if zlog == 'log':
-                        zdata = np.log10(out_values)
-                    else:
-                        zdata = out_values
-
-                    if ylog =='log':
-                        vdata = np.log10(var_data.v)
-                        ycrange = np.log10(yrange)
-                    else:
-                        vdata = var_data.v
-                        ycrange = yrange
-
-                    if not np.isfinite(ycrange[0]):
-                        ycrange = [np.min(vdata), yrange[1]]
-
-                    zdata[zdata < 0.0] = 0.0
-                    zdata[zdata == np.nan] = 0.0
-
-                    interp_func = interp1d(vdata, zdata, axis=1, bounds_error=False)
-                    out_vdata = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
-
-                    out_values = interp_func(out_vdata)
-
-                    if zlog == 'log':
-                        out_values = 10**out_values
-
-                    if ylog == 'log':
-                        out_vdata = 10**out_vdata
-
-            # check for NaNs in the v values
-            nans_in_vdata = np.argwhere(np.isfinite(out_vdata) == False)
-            if len(nans_in_vdata) > 0:
-                # to deal with NaNs in the energy table, we set those energies to 0
-                # then apply a mask to the data values at these locations
-                out_vdata_nonan = out_vdata.copy()
-                times_with_nans = np.unique(nans_in_vdata[:, 0])
-                for nan_idx in np.arange(0, len(times_with_nans)):
-                    this_time_idx = times_with_nans[nan_idx]
-                    out_vdata_nonan[this_time_idx, ~np.isfinite(out_vdata[this_time_idx, :])] = 0
-
-                masked = np.ma.masked_where(~np.isfinite(out_vdata), out_values)
-                out_vdata = out_vdata_nonan
-                out_values = masked
-
-            # check for negatives if zlog is requested
-            if zlog =='log':
-                out_values[out_values<0.0] = 0.0
-
-            # create the spectrogram (ignoring warnings)
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                im = this_axis.pcolormesh(var_times, out_vdata.T, out_values.T, **spec_options)
-
-            # store everything needed to create the colorbars
-            colorbars[variable] = {}
-            colorbars[variable]['im'] = im
-            colorbars[variable]['axis_font_size'] = axis_font_size
-            colorbars[variable]['ztitle'] = ztitle
-            colorbars[variable]['zsubtitle'] = zsubtitle
+        else:
+            # create line plots
+            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras)
+            if not plot_created:
+                continue
             
         # apply any vertical bars
         if pytplot.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
