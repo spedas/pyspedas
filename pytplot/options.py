@@ -256,6 +256,12 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'ytick_length':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_length'] = value
 
+            if option == 'xtick_width':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_width'] = value
+
+            if option == 'ytick_width':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_width'] = value
+
             if option == 'xtick_color':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['xtickcolor'] = value
 

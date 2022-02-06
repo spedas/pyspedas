@@ -247,6 +247,12 @@ def tplot(variables, var_label=None,
         if plot_extras.get('ytick_length') is not None:
             this_axis.tick_params(axis='y', length=plot_extras.get('ytick_length'))
 
+        if plot_extras.get('xtick_width') is not None:
+            this_axis.tick_params(axis='x', width=plot_extras.get('xtick_width'))
+
+        if plot_extras.get('ytick_width') is not None:
+            this_axis.tick_params(axis='y', width=plot_extras.get('ytick_width'))
+
         if plot_extras.get('xtick_labelcolor') is not None:
             this_axis.tick_params(axis='y', labelcolor=plot_extras.get('xtick_labelcolor'))
 
