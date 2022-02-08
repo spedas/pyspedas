@@ -335,6 +335,11 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                         if scale_type is not None:
                             metadata[var_name]['y_spec_scale_type'] = scale_type
 
+                        depend_1_units = depend_1_var_atts.get('UNITS')
+
+                        if depend_1_units is not None:
+                            metadata[var_name]['y_spec_units'] = depend_1_units
+
                 # Check if the variable already exists in the for loop output
                 if var_name not in output_table:
                     output_table[var_name] = tplot_data
@@ -392,6 +397,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
             if metadata[var_name].get('y_spec_scale_type') is not None:
                 if metadata[var_name]['y_spec_scale_type'] == 'log':
                     options(var_name, 'ylog', 1)
+            if metadata[var_name].get('y_spec_units') is not None:
+                options(var_name, 'ysubtitle', '[' + metadata[var_name].get('y_spec_units') + ']')
             if metadata[var_name].get('var_attrs') is not None:
                 if metadata[var_name]['var_attrs'].get('LABLAXIS') is not None:
                     options(var_name, 'ytitle', metadata[var_name]['var_attrs']['LABLAXIS'])
