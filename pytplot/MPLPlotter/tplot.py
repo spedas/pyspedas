@@ -38,14 +38,21 @@ def tplot(variables, var_label=None,
     """
     This function creates tplot windows using matplotlib as a backend.
     """
+    tnames = pytplot.tplot_names(quiet=True)
     if isinstance(variables, str):
         # check for wild cards * or ?
         if '*' in variables or '?' in variables:
-            tnames = pytplot.tplot_names(quiet=True)
             variables = tname_filter(tnames, variables)
 
     if not isinstance(variables, list):
         variables = [variables]
+
+    # support for using the variable # instead of the variable name
+    for idx, variable in enumerate(variables):
+        if isinstance(variable, int):
+            if variable > len(tnames):
+                print('Variable not found: ' + str(variable))
+            variables[idx] = tnames[variable]
         
     num_panels = len(variables)
     panel_sizes = [1]*num_panels
