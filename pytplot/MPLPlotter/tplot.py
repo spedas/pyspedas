@@ -52,6 +52,8 @@ def tplot(variables, var_label=None,
 
     # support for the panel_size option
     for var_idx, variable in enumerate(variables):
+        if pytplot.data_quants.get(variable) is None:
+            continue
         panel_size = pytplot.data_quants[variable].attrs['plot_options']['extras'].get('panel_size')
         if panel_size is not None:
             panel_sizes[var_idx] = panel_size
@@ -317,6 +319,8 @@ def tplot(variables, var_label=None,
 
     # add the color bars to any spectra
     for idx, variable in enumerate(variables):
+        if pytplot.data_quants.get(variable) is None:
+            continue
         plot_extras = pytplot.data_quants[variable].attrs['plot_options']['extras']
 
         if plot_extras.get('spec') is not None:
