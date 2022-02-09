@@ -300,6 +300,8 @@ def tplot(variables, var_label=None,
         axis_delta = 0.0
 
         for label in var_label:
+            if isinstance(label, int):
+                label = tnames[label]
             label_data = pytplot.get_data(label, xarray=True)
 
             if label_data is None:
