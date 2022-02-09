@@ -250,6 +250,15 @@ def options(name, option=None, value=None, opt_dict=None):
                     return
                 pytplot.data_quants[i].attrs['plot_options']['extras']['alpha'] = value
 
+            if option == 'marker':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker'] = value
+                
+            if option == 'marker_size':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker_size'] = value
+
+            if option == 'symbols':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['symbols'] = value
+
             if option == 'xtick_length':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_length'] = value
 

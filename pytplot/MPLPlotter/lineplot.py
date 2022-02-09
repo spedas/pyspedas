@@ -50,8 +50,22 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     else:
         line_style = 'solid'
 
+    symbols = False
+    if line_opts.get('symbols') is not None:
+        if line_opts['symbols']:
+            symbols = True
+
     # create the plot
     line_options = {'linewidth': thick, 'linestyle': line_style, 'alpha': alpha}
+
+    if line_opts.get('marker') is not None:
+        line_options['marker'] = line_opts['marker']
+
+    if line_opts.get('marker_size') is not None:
+        if symbols:
+            line_options['s'] = line_opts['marker_size']
+        else:
+            line_options['markersize'] = line_opts['marker_size']
 
     # check for error data first
     if 'dy' in var_data._fields:
@@ -61,6 +75,8 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     else:
         # no error data provided
         plotter = this_axis.plot
+        if symbols:
+            plotter = this_axis.scatter
 
     for line in range(0, num_lines):
         this_line = plotter(var_times, var_data.y if num_lines == 1 else var_data.y[:, line], color=colors[line], **line_options)
