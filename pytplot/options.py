@@ -168,7 +168,7 @@ def options(name, option=None, value=None, opt_dict=None):
                 _reset_plots(i)
                 pytplot.data_quants[i].attrs['plot_options']['extras']['map'] = value
 
-            if option == 'legend_names':
+            if option == 'legend_names' or option == 'labels':
                 if isinstance(value, list):
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
                 else:
@@ -252,6 +252,15 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'marker':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker'] = value
+
+            if option == 'errorevery':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['errorevery'] = value
+                
+            if option == 'ecolor':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['ecolor'] = value
+
+            if option == 'elinewidth':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['elinewidth'] = value
                 
             if option == 'marker_size':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker_size'] = value

@@ -72,6 +72,14 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
         # error data provided
         line_options['yerr'] = var_data.dy
         plotter = this_axis.errorbar
+        if line_opts.get('ecolor') is not None:
+            line_options['ecolor'] = line_opts['ecolor']
+        if line_opts.get('elinewidth') is not None:
+            line_options['elinewidth'] = line_opts['elinewidth']
+        if line_opts.get('errorevery') is not None:
+            line_options['errorevery'] = line_opts['errorevery']
+        if line_opts.get('capsize') is not None:
+            line_options['capsize'] = line_opts['capsize']
     else:
         # no error data provided
         plotter = this_axis.plot
