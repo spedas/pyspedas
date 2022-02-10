@@ -90,10 +90,13 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
         this_line = plotter(var_times, var_data.y if num_lines == 1 else var_data.y[:, line], color=colors[line], **line_options)
 
         if labels is not None:
-            if isinstance(this_line, list):
-                this_line[0].set_label(labels[line])
-            else:
-                this_line.set_label(labels[line])
+            try:
+                if isinstance(this_line, list):
+                    this_line[0].set_label(labels[line])
+                else:
+                    this_line.set_label(labels[line])
+            except IndexError:
+                continue
 
     if labels is not None:
         this_axis.legend()
