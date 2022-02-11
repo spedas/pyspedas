@@ -4,9 +4,15 @@ from pyspedas import tinterpol, time_double, time_clip
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pytplot import tplot, get_data, store_data, options
 
-def gyrophase(trange=['2017-07-11', '2017-07-12'], probe='1', data_rate='srvy', level='l2', datatype='electron'):
+def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], probe='2', data_rate='brst', level='l2', datatype='electron'):
     """
-    Calculates FEEPS gyrophase angles
+    Calculates FEEPS gyrophase angles for electron burst data
+
+    Notes: This is intended for use with burst mode data, but the output gyrophase product, 
+           mms*_feeps_gyrophase, can be interpolated onto FEEPS burst or survey cadence
+           to produce spectra
+
+    Based on the IDL code writen by Drew Turner (10 Oct 2017): mms_feeps_getgyrophase.pro
     """
     mec_vars = pyspedas.mms.mec(trange=trange, probe=probe, data_rate=data_rate)
 
