@@ -39,7 +39,7 @@ def mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=''):
                         options('mms'+this_probe+'_des_energyspectr_par_'+this_dr+suffix, 'ytitle', 'MMS'+this_probe+' DES')
                         options('mms'+this_probe+'_des_energyspectr_par_'+this_dr+suffix, 'ylog', True)
                         options('mms'+this_probe+'_des_energyspectr_par_'+this_dr+suffix, 'zlog', True)
-                        options('mms'+this_probe+'_des_energyspectr_par_'+this_dr+suffix, 'Colormap', 'jet')
+                        options('mms'+this_probe+'_des_energyspectr_par_'+this_dr+suffix, 'Colormap', 'spedas')
                         options('mms'+this_probe+'_des_energyspectr_par_'+this_dr+suffix, 'ztitle', '[keV/(cm^2 s sr keV)]')
                         options('mms'+this_probe+'_des_energyspectr_par_'+this_dr+suffix, 'spec', True)
 
@@ -47,14 +47,14 @@ def mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=''):
                         options('mms'+this_probe+'_des_energyspectr_anti_'+this_dr+suffix, 'ytitle', 'MMS'+this_probe+' DES')
                         options('mms'+this_probe+'_des_energyspectr_anti_'+this_dr+suffix, 'ylog', True)
                         options('mms'+this_probe+'_des_energyspectr_anti_'+this_dr+suffix, 'zlog', True)
-                        options('mms'+this_probe+'_des_energyspectr_anti_'+this_dr+suffix, 'Colormap', 'jet')
+                        options('mms'+this_probe+'_des_energyspectr_anti_'+this_dr+suffix, 'Colormap', 'spedas')
                         options('mms'+this_probe+'_des_energyspectr_anti_'+this_dr+suffix, 'ztitle', '[keV/(cm^2 s sr keV)]')
 
                     if 'mms'+this_probe+'_des_energyspectr_perp_'+this_dr+suffix in tvars:
                         options('mms'+this_probe+'_des_energyspectr_perp_'+this_dr+suffix, 'ytitle', 'MMS'+this_probe+' DES')
                         options('mms'+this_probe+'_des_energyspectr_perp_'+this_dr+suffix, 'ylog', True)
                         options('mms'+this_probe+'_des_energyspectr_perp_'+this_dr+suffix, 'zlog', True)
-                        options('mms'+this_probe+'_des_energyspectr_perp_'+this_dr+suffix, 'Colormap', 'jet')
+                        options('mms'+this_probe+'_des_energyspectr_perp_'+this_dr+suffix, 'Colormap', 'spedas')
                         options('mms'+this_probe+'_des_energyspectr_perp_'+this_dr+suffix, 'ztitle', '[keV/(cm^2 s sr keV)]')
                         options('mms'+this_probe+'_des_energyspectr_anti_'+this_dr+suffix, 'spec', True)
 
@@ -62,27 +62,27 @@ def mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=''):
                         options('mms'+this_probe+'_des_energyspectr_omni_'+this_dr+suffix, 'ytitle', 'MMS'+this_probe+' DES')
                         options('mms'+this_probe+'_des_energyspectr_omni_'+this_dr+suffix, 'ylog', True)
                         options('mms'+this_probe+'_des_energyspectr_omni_'+this_dr+suffix, 'zlog', True)
-                        options('mms'+this_probe+'_des_energyspectr_omni_'+this_dr+suffix, 'Colormap', 'jet')
+                        options('mms'+this_probe+'_des_energyspectr_omni_'+this_dr+suffix, 'Colormap', 'spedas')
                         options('mms'+this_probe+'_des_energyspectr_omni_'+this_dr+suffix, 'ztitle', '[keV/(cm^2 s sr keV)]')
                         options('mms'+this_probe+'_des_energyspectr_omni_'+this_dr+suffix, 'spec', True)
 
                     if 'mms'+this_probe+'_des_pitchangdist_lowen_'+this_dr+suffix in tvars:
                         options('mms'+this_probe+'_des_pitchangdist_lowen_'+this_dr+suffix, 'zlog', True)
-                        options('mms'+this_probe+'_des_pitchangdist_lowen_'+this_dr+suffix, 'Colormap', 'jet')
+                        options('mms'+this_probe+'_des_pitchangdist_lowen_'+this_dr+suffix, 'Colormap', 'spedas')
                         options('mms'+this_probe+'_des_pitchangdist_lowen_'+this_dr+suffix, 'ytitle', 'MMS'+this_probe+' DES')
                         options('mms'+this_probe+'_des_pitchangdist_lowen_'+this_dr+suffix, 'ztitle', '[keV/(cm^2 s sr keV)]')
                         options('mms'+this_probe+'_des_pitchangdist_lowen_'+this_dr+suffix, 'spec', True)
 
                     if 'mms'+this_probe+'_des_pitchangdist_miden_'+this_dr+suffix in tvars:
                         options('mms'+this_probe+'_des_pitchangdist_miden_'+this_dr+suffix, 'zlog', True)
-                        options('mms'+this_probe+'_des_pitchangdist_miden_'+this_dr+suffix, 'Colormap', 'jet')
+                        options('mms'+this_probe+'_des_pitchangdist_miden_'+this_dr+suffix, 'Colormap', 'spedas')
                         options('mms'+this_probe+'_des_pitchangdist_miden_'+this_dr+suffix, 'ytitle', 'MMS'+this_probe+' DES')
                         options('mms'+this_probe+'_des_pitchangdist_miden_'+this_dr+suffix, 'ztitle', '[keV/(cm^2 s sr keV)]')
                         options('mms'+this_probe+'_des_pitchangdist_miden_'+this_dr+suffix, 'spec', True)
 
                     if 'mms'+this_probe+'_des_pitchangdist_highen_'+this_dr+suffix in tvars:
                         options('mms'+this_probe+'_des_pitchangdist_highen_'+this_dr+suffix, 'zlog', True)
-                        options('mms'+this_probe+'_des_pitchangdist_highen_'+this_dr+suffix, 'Colormap', 'jet')
+                        options('mms'+this_probe+'_des_pitchangdist_highen_'+this_dr+suffix, 'Colormap', 'spedas')
                         options('mms'+this_probe+'_des_pitchangdist_highen_'+this_dr+suffix, 'ytitle', 'MMS'+this_probe+' DES')
                         options('mms'+this_probe+'_des_pitchangdist_highen_'+this_dr+suffix, 'ztitle', '[keV/(cm^2 s sr keV)]')
                         options('mms'+this_probe+'_des_pitchangdist_highen_'+this_dr+suffix, 'spec', True)
@@ -105,7 +105,7 @@ def mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=''):
                         options('mms'+this_probe+'_dis_energyspectr_omni_'+this_dr+suffix, 'ytitle', 'MMS'+this_probe+' DIS')
                         options('mms'+this_probe+'_dis_energyspectr_omni_'+this_dr+suffix, 'ylog', True)
                         options('mms'+this_probe+'_dis_energyspectr_omni_'+this_dr+suffix, 'zlog', True)
-                        options('mms'+this_probe+'_dis_energyspectr_omni_'+this_dr+suffix, 'Colormap', 'jet')
+                        options('mms'+this_probe+'_dis_energyspectr_omni_'+this_dr+suffix, 'Colormap', 'spedas')
                         options('mms'+this_probe+'_dis_energyspectr_omni_'+this_dr+suffix, 'ztitle', '[keV/(cm^2 s sr keV)]')
                         options('mms'+this_probe+'_dis_energyspectr_omni_'+this_dr+suffix, 'spec', True)
 

@@ -8,6 +8,7 @@ from .config import CONFIG
 def load(trange=['2018-11-5', '2018-11-6'], 
          instrument='fields', 
          datatype='mag_rtn', 
+         spec_types=None, # for DFB AC spectral data
          level='l2',
          suffix='', 
          get_support_data=False, 
@@ -43,6 +44,26 @@ def load(trange=['2018-11-5', '2018-11-6'],
             pathformat = instrument + '/' + level + '/mag_rtn_4_per_cycle/%Y/psp_fld_' + level + '_mag_rtn_4_sa_per_cyc_%Y%m%d_v??.cdf'
         elif datatype == 'mag_sc_4_per_cycle' or datatype == 'mag_sc_4_sa_per_cyc':
             pathformat = instrument + '/' + level + '/mag_sc_4_per_cycle/%Y/psp_fld_' + level + '_mag_sc_4_sa_per_cyc_%Y%m%d_v??.cdf'
+        elif datatype == 'rfs_hfr' or datatype == 'rfs_lfr' or datatype == 'rfs_burst' or datatype == 'f2_100bps':
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+        elif datatype == 'dfb_dc_spec' or datatype == 'dfb_ac_spec' or datatype == 'dfb_dc_xspec' or datatype == 'dfb_ac_xspec':
+            out_vars = []
+            for item in spec_types:
+                loaded_data = load(trange=trange, instrument=instrument, datatype=datatype + '_' + item, level=level, 
+                    suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+                if loaded_data != []:
+                    out_vars.extend(loaded_data)
+            return out_vars
+        elif datatype[:12] == 'dfb_dc_spec_' or datatype[:12] == 'dfb_ac_spec_' or datatype[:13] == 'dfb_dc_xspec_' or datatype[:13] == 'dfb_ac_xspec_':
+            if datatype[:13] == 'dfb_dc_xspec_' or datatype[:13] == 'dfb_ac_xspec_':
+                dtype_tmp = datatype[:12]
+                stype_tmp = datatype[13:]
+            else:
+                dtype_tmp = datatype[:11]
+                stype_tmp = datatype[12:]
+            pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+
         else:
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
             file_resolution = 6*3600.

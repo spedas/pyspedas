@@ -4,7 +4,7 @@ from pytplot import store_data, options
 
 from pyspedas.particles.spd_units_string import spd_units_string
 
-def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=True, colorbar='jet', ytitle=None):
+def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=True, colorbar='spedas', ytitle=None):
     """
     Create tplot variable with standard spectrogram settings
 
@@ -32,7 +32,7 @@ def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=
             Set the z-axis to log scale (default: True)
 
         colorbar: str
-            PyTplot 'Colormap' option (default: 'jet')
+            PyTplot 'Colormap' option (default: 'spedas')
 
     Returns:
         String containing new variable name

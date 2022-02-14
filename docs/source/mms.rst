@@ -22,7 +22,6 @@ FGM Example
    tplot(['mms1_fgm_b_gsm_srvy_l2_btot', 'mms1_fgm_b_gsm_srvy_l2_bvec'])
 
 .. image:: _static/mms_fgm.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -41,7 +40,6 @@ SCM Example
    tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
 
 .. image:: _static/mms_scm.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -60,7 +58,6 @@ FSM Example
    tplot(['mms1_fsm_b_mag_brst_l3', 'mms1_fsm_b_gse_brst_l3'])
 
 .. image:: _static/mms_fsm.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -79,7 +76,6 @@ EDP Example
    tplot('mms1_edp_dce_gse_fast_l2')
 
 .. image:: _static/mms_edp.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -98,7 +94,6 @@ EDI Example
    tplot(['mms1_edi_vdrift_gse_srvy_l2', 'mms1_edi_e_gse_srvy_l2'])
 
 .. image:: _static/mms_edi.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -117,7 +112,6 @@ FEEPS Example
    tplot('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin')
 
 .. image:: _static/mms_feeps.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -136,7 +130,6 @@ EIS Example
    tplot(['mms1_epd_eis_srvy_l2_extof_proton_flux_omni', 'mms1_epd_eis_srvy_l2_extof_proton_flux_omni_spin'])
 
 .. image:: _static/mms_eis.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -155,7 +148,6 @@ ASPOC Example
    tplot(['mms1_aspoc_ionc_l2', 'mms1_asp1_ionc_l2', 'mms1_asp2_ionc_l2'])
 
 .. image:: _static/mms_aspoc.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -174,7 +166,6 @@ FPI Example
    tplot(['mms1_des_energyspectr_omni_fast', 'mms1_des_bulkv_gse_fast', 'mms1_des_numberdensity_fast'])
 
 .. image:: _static/mms_fpi.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -193,7 +184,6 @@ HPCA Example
    tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity', 'mms1_hpca_hplus_scalar_temperature'])
 
 .. image:: _static/mms_hpca.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -212,7 +202,6 @@ MEC Example
    tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 
 .. image:: _static/mms_mec.png
-   :scale: 75 %
    :align: center
    :class: imgborder
 
@@ -229,6 +218,5 @@ State Example
    tplot(['mms1_defeph_pos', 'mms1_defeph_vel'])
 
 .. image:: _static/mms_state.png
-   :scale: 75 %
    :align: center
    :class: imgborder

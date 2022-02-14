@@ -71,9 +71,9 @@ def load(trange=['2018-11-5', '2018-11-6'],
             pathformat = 'rbsp'+prb+'/'+level+'/ect/'+instrument+'/sectors/'+rel+'/%Y/rbsp'+prb+'_'+rel+'_ect-rept-sci-'+level+'_%Y%m%d_v*.cdf'
         elif instrument == 'rps':
             if datatype == 'rps-1min':
-                pathformat = 'rbsp'+prb+'/'+level+'/psbr/'+datatype+'/%Y/rbsp'+prb+'_'+level+'-1min_psbr-rps_%Y%m%d_v*.cdf'
+                pathformat = 'rbsp'+prb+'/'+level+'/rps/psbr-rps-1min/%Y/rbsp'+prb+'_'+level+'-1min_psbr-rps_%Y%m%d_v*.cdf'
             elif datatype == 'rps':
-                pathformat = 'rbsp'+prb+'/'+level+'/psbr/'+datatype+'/%Y/rbsp'+prb+'_'+level+'_psbr-rps_%Y%m%d_v*.cdf'
+                pathformat = 'rbsp'+prb+'/'+level+'/rps/psbr-rps/%Y/rbsp'+prb+'_'+level+'_psbr-rps_%Y%m%d_v*.cdf'
 
 
         # find the full remote path names using the trange

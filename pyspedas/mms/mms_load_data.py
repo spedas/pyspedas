@@ -49,8 +49,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if isinstance(trange[1], float):
         trange[1] = time_string(trange[1])
         
-    start_date = parse(trange[0]).strftime('%Y-%m-%d') # need to request full day, then parse out later
-    end_date = parse(time_string(time_double(trange[1])-0.1)).strftime('%Y-%m-%d-%H-%M-%S') # -1 second to avoid getting data for the next day
 
     download_only = CONFIG['download_only']
 
@@ -81,6 +79,18 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     for prb in probe:
         for drate in data_rate:
+            start_date = parse(trange[0]).strftime('%Y-%m-%d') # need to request full day, then parse out later
+            end_date = parse(time_string(time_double(trange[1])-0.1)).strftime('%Y-%m-%d-%H-%M-%S') # -1 second to avoid getting data for the next day
+            # kludge to fix issue for burst mode data in files from the previous day
+            if drate == 'brst':
+                sec_from_start_of_day = time_double(trange[0])-time_double(start_date)
+
+                # check if we're within 10 minutes of the start of the day
+                # and if so, grab 10 minutes of data from the end of the
+                # previous day
+                if sec_from_start_of_day <= 600.0:
+                    start_date = time_string(time_double(start_date)-600.0, fmt='%Y-%m-%d-%H-%M-%S')
+
             for lvl in level:
                 for dtype in datatype:
                     if user is None:

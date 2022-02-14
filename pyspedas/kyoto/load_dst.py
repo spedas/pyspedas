@@ -35,8 +35,17 @@ def dst(trange=None, time_clip=True, remote_data_dir='http://wdc.kugi.kyoto-u.ac
     --------
         Name of the tplot variable created.
     """
+
+    if trange is None:
+        print('trange keyword required to download data.')
+        return
+
     file_names = dailynames(file_format='%Y%m/index.html', trange=trange)
 
+    if file_names is None:
+        print('No files found for this trange.')
+        return
+        
     times = []
     data = []
     datatype = ''
