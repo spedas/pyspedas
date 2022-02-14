@@ -1,7 +1,7 @@
 """Tests of cal_fit function."""
-
 import pyspedas.themis.spacecraft.fields.fit
 import pytplot.get_data
+from pytplot.importers.tplot_restore import tplot_restore
 import unittest
 import numpy as np
 from pyspedas.themis.spacecraft.fields.fit import cal_fit
@@ -15,7 +15,6 @@ class TestCalFitDataValidation(unittest.TestCase):
         """ IDL Data has to be downloaded to perform these tests"""
         from pyspedas.utilities.download import download
         from pyspedas.themis.config import CONFIG
-        import pytplot
 
         # Testing time range
         cls.t = ['2008-03-15', '2008-03-16']
@@ -36,7 +35,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
         # Load validation variables from the test file
         filename = calfile[0]
-        pytplot.tplot_restore(filename)
+        tplot_restore(filename)
         cls.tha_fit = pytplot.get_data('tha_fit')
         cls.tha_fgs = pytplot.get_data('tha_fgs')
         cls.tha_fgs_sigma = pytplot.get_data('tha_fgs_sigma')
@@ -46,8 +45,6 @@ class TestCalFitDataValidation(unittest.TestCase):
         cls.tha_efs_sigma = pytplot.get_data('tha_efs_sigma')
         cls.tha_efs_0 = pytplot.get_data('tha_efs_0')
         cls.tha_efs_dot0 = pytplot.get_data('tha_efs_dot0')
-
-        pytplot.del_data('*')
 
     def setUp(self):
         """ We need to clean tplot variables before each run"""
@@ -132,7 +129,6 @@ class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
         """ IDL Data has to be downloaded to perform these tests"""
         from pyspedas.utilities.download import download
         from pyspedas.themis.config import CONFIG
-        import pytplot
 
         # Testing time range
         self.t = ['2008-03-15', '2008-03-16']
@@ -153,7 +149,7 @@ class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
 
         # Load validation variables from the test file
         filename = calfile[0]
-        pytplot.tplot_restore(filename)
+        tplot_restore(filename)
         self.tha_efs = pytplot.get_data('tha_efs')
 
         pytplot.del_data('*')
@@ -185,6 +181,7 @@ class TestCalFitInput(unittest.TestCase):
         cal_fit(probe='b')
 
     # TODO: add tests for metadata
+
 
 if __name__ == '__main__':
     unittest.main()
