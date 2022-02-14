@@ -49,6 +49,10 @@ class TestCalFitDataValidation(unittest.TestCase):
 
         pytplot.del_data('*')
 
+    def setUp(self):
+        """ We need to clean tplot variables before each run"""
+        pytplot.del_data('*')
+
     def test_fgs(self):
         """Validate tha_fgs."""
         pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
@@ -157,7 +161,7 @@ class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
     def test_efs(self):
         """Validate tha_efs."""
         pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
-                            time_clip=True)
+                            get_support_data=True, time_clip=True)
         cal_fit(probe='a', no_cal=True)
         tha_efs = pytplot.get_data('tha_efs')
         diff = np.nanmedian(tha_efs.y - self.tha_efs.y, axis=0, keepdims=True)
@@ -174,11 +178,11 @@ class TestCalFitInput(unittest.TestCase):
         pyspedas.themis.fit(trange=self.t, probe='x', level='l1', varnames=['tha_fit'], time_clip=True)
         cal_fit(probe='x')
 
-    @unittest.skip("time/probe for this test are unknown")
     def test_e34_ss(self):
-        # TODO: find time/probe when e34_ss is used (285-286, 298-302, 342)
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
-        cal_fit(probe='a')
+        t = ['2011-02-27', '2011-02-28']
+        pyspedas.themis.fit(trange=t, probe='b', level='l1', varnames=['thb_fit', 'thb_fit_code'],
+                            get_support_data=True, time_clip=True)
+        cal_fit(probe='b')
 
     @unittest.skip("time/probe for this test are unknown")
     def test_sc_port_nan(self):
