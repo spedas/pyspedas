@@ -184,12 +184,6 @@ class TestCalFitInput(unittest.TestCase):
                             get_support_data=True, time_clip=True)
         cal_fit(probe='b')
 
-    @unittest.skip("time/probe for this test are unknown")
-    def test_sc_port_nan(self):
-        # TODO: find time/probe when sc_port trigger NaN values (354-356)
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
-        cal_fit(probe='a')
-
     # TODO: add tests for metadata
 
 if __name__ == '__main__':
