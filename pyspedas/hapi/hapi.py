@@ -92,7 +92,8 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         # load the data only for this parameter
         try:
             with warnings.catch_warnings():
-                warnings.simplefilter("ignore", category=ResourceWarning)
+                warnings.simplefilter('ignore', category=ResourceWarning)
+                warnings.filterwarnings('ignore', message='Unverified HTTPS request')
                 data, hapi_metadata = load_hapi(server, dataset, param_name, trange[0], trange[1], **opts)
         except:
             breakpoint()
