@@ -38,6 +38,7 @@ https://pyspedas.readthedocs.io/
 - [Solar Orbiter (SOLO)](https://pyspedas.readthedocs.io/en/latest/solo.html)
 - [Solar Terrestrial Relations Observatory (STEREO)](https://pyspedas.readthedocs.io/en/latest/stereo.html)
 - [Spherical Elementary Currents (SECS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/secs/README.md)
+- [Swarm](https://github.com/spedas/pyspedas/blob/master/pyspedas/swarm/README.md)
 - [Time History of Events and Macroscale Interactions during Substorms (THEMIS)](https://pyspedas.readthedocs.io/en/latest/themis.html)
 - [Two Wide-Angle Imaging Neutral-Atom Spectrometers (TWINS)](https://pyspedas.readthedocs.io/en/latest/twins.html)
 - [Ulysses](https://pyspedas.readthedocs.io/en/latest/ulysses.html)
