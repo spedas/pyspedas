@@ -10,7 +10,7 @@ except:
     print('hapiclient not found; install with: "pip install hapiclient"')
 
 def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
-         catalog=False):
+         prefix='', catalog=False):
     """
     Loads data from a HAPI server into pytplot variables
 
@@ -28,6 +28,9 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         parameters: str or list of str
             Parameters in the dataset to load; default
             is to load them all
+
+        prefix: str
+            Prefix to append to the tplot variables
 
         suffix: str
             Suffix to append to the tplot variables
@@ -162,15 +165,15 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         if spec:
             data_table['v'] = centers
 
-        saved = store_data(param_name + suffix, data=data_table)
-        metadata = get_data(param_name + suffix, metadata=True)
+        saved = store_data(prefix + param_name + suffix, data=data_table)
+        metadata = get_data(prefix + param_name + suffix, metadata=True)
         metadata['HAPI'] = hapi_metadata
 
         if spec:
-            options(param_name + suffix, 'spec', True)
+            options(prefix + param_name + suffix, 'spec', True)
 
         if saved:
-            out_vars.append(param_name + suffix)
+            out_vars.append(prefix + param_name + suffix)
 
         # wait for a second before going to the next variable
         # to avoid hitting the server too quickly
