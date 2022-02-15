@@ -77,7 +77,11 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         parameters = ','.join(parameters)
 
     opts = {'logging': False}
-    data, hapi_metadata = load_hapi(server, dataset, parameters, trange[0], trange[1], **opts)
+    
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=ResourceWarning)
+        warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+        data, hapi_metadata = load_hapi(server, dataset, parameters, trange[0], trange[1], **opts)
 
     out_vars = []
 
