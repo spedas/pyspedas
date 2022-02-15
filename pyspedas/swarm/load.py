@@ -17,18 +17,31 @@ def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
         pyspedas.swarm.vfm
 
     """
+    server = CONFIG['remote_data_dir'] + 'hapi/'
 
     if not isinstance(probe, list):
         probe = [probe]
 
     tr = time_string(time_double(trange), fmt='%Y-%m-%dT%H:%M:%S')
 
+    out_vars = []
+
     for this_probe in probe:
+        prefix = 'swarm' + this_probe.lower() + '_'
         if instrument == 'vfm':
-            tvars = hapi(trange=tr, server=CONFIG['remote_data_dir'] + 'hapi/', dataset='SW_OPER_MAG' + this_probe.upper() + '_' + datatype.upper() + '_' + level[1:].upper(), parameters=varnames)
+            dataset = 'SW_OPER_MAG' + this_probe.upper() + '_' + datatype.upper() + '_' + level[1:].upper()
+            tvars = hapi(trange=tr, 
+                         server=server, 
+                         dataset=dataset, 
+                         parameters=varnames, 
+                         suffix=suffix, 
+                         prefix=prefix)
+
+            if tvars is not None and len(tvars) != 0:
+                out_vars.extend(tvars)
 
     if time_clip:
-        for new_var in tvars:
+        for new_var in out_vars:
             tclip(new_var, trange[0], trange[1], suffix='')
 
-    return tvars
+    return out_vars
