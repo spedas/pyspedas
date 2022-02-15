@@ -77,7 +77,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         parameters = ','.join(parameters)
 
     opts = {'logging': False}
-    
+
     with warnings.catch_warnings():
         warnings.simplefilter('ignore', category=ResourceWarning)
         warnings.filterwarnings('ignore', message='Unverified HTTPS request')
@@ -91,7 +91,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     for param in params[1:]:
         spec = False
         param_name = param.get('name')
-        print('Loading ' + param_name)
+        print('Loading ' + prefix + param_name + suffix)
 
         # load the data only for this parameter
         try:
@@ -100,8 +100,6 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
                 warnings.filterwarnings('ignore', message='Unverified HTTPS request')
                 data, hapi_metadata = load_hapi(server, dataset, param_name, trange[0], trange[1], **opts)
         except:
-            breakpoint()
-            print('Error! 95')
             continue
 
         timestamps = [datapoint[0] for datapoint in data]
@@ -123,8 +121,6 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
             elif param_type == 'integer':
                 single_line = isinstance(data[0][1], np.int32)
         except IndexError:
-            breakpoint()
-            print('Error! 103')
             continue
 
         if single_line:
@@ -133,8 +129,6 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
             try:
                 data_out = np.zeros((len(data), len(data[0][1])))
             except TypeError:
-                print('Error! 112')
-                breakpoint()
                 continue
 
         for idx, datapoint in enumerate(data):
