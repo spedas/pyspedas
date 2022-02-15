@@ -17,6 +17,6 @@ from pytplot import tplot
 ```python
 vfm_vars = pyspedas.swarm.vfm(probe='c', trange=['2017-03-27/06:00', '2017-03-27/08:00'], datatype='hr')
 
-tplot('B_VFM')
+tplot('swarmc_B_VFM')
 ```
 
