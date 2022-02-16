@@ -282,7 +282,8 @@ def cal_fit(probe='a', no_cal=False):
 
     if np.any(efsx_good):  # TODO: include processing of 'efs' where efsx_fixed is used
         if np.any(e34_ss):  # rotate efs 90 degrees if necessary, if e34 was used in spinfit
-            efs[e34_ss, :] = d.y[e34_ss, i, [2, 1, 4]]
+            tmp = d.y[e34_ss, i, :]  # Apply logical arrays
+            efs[e34_ss, :] = tmp[:, [2, 1, 4]]  # Apply dimension selection TODO: there should be a better way to combine indexes
             efs[e34_ss, 0] = -efs[e34_ss, 0]
 
     efsz = d.y[:, i, 4]  # save Ez separately, for possibility that it's the SC potential
