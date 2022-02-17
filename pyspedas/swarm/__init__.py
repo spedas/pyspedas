@@ -1,7 +1,7 @@
 
 from .load import load
 
-def vfm(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
+def mag(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
         probe='a',
         datatype='hr',
         level='l1b', 
@@ -44,4 +44,4 @@ def vfm(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
         List of tplot variables created.
 
     """
-    return load(instrument='vfm', trange=trange, probe=probe, level=level, datatype=datatype, suffix=suffix, varnames=varnames, time_clip=time_clip)
+    return load(instrument='mag', trange=trange, probe=probe, level=level, datatype=datatype, suffix=suffix, varnames=varnames, time_clip=time_clip)
