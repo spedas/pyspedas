@@ -5,7 +5,7 @@ from .config import CONFIG
 
 def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'], 
          probe='a',
-         instrument='vfm',
+         instrument='mag',
          datatype='', 
          level='l1b', 
          suffix='', 
@@ -14,7 +14,7 @@ def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
     """
     This function loads data from the Swarm mission; this function is not meant 
     to be called directly; instead, see the wrappers:
-        pyspedas.swarm.vfm
+        pyspedas.swarm.mag
 
     """
     server = CONFIG['remote_data_dir'] + 'hapi/'
@@ -28,7 +28,7 @@ def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
 
     for this_probe in probe:
         prefix = 'swarm' + this_probe.lower() + '_'
-        if instrument == 'vfm':
+        if instrument == 'mag':
             dataset = 'SW_OPER_MAG' + this_probe.upper() + '_' + datatype.upper() + '_' + level[1:].upper()
             tvars = hapi(trange=tr, 
                          server=server, 
