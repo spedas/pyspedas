@@ -11,8 +11,8 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
                   level='l2', 
                   datatype='electron',
                   data_units='intensity',
-                  bin_size = 15, # deg
-                  energy = [55, 72]):
+                  bin_size=15, # deg
+                  energy=[70, 600]):
     """
     Calculate gyrophase distributions using data from the MMS Fly's Eye Energetic Particle Sensor (FEEPS)
 
