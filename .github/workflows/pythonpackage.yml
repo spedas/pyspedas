@@ -59,6 +59,7 @@ jobs:
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coverage run -a -m pyspedas.mms.tests.feeps
         # coverage run -a -m pyspedas.mms.tests.eis
+        coverage run -a -m pyspedas.mms.tests.fpi_tests
         coverage run -a -m pyspedas.mms.tests.file_filter
         coverage run -a -m pyspedas.mms.tests.data_rate_segments
         coverage run -a -m pyspedas.dscovr.tests.tests
