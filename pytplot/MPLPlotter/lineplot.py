@@ -1,3 +1,5 @@
+import numpy as np
+
 def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras):
     alpha = plot_extras.get('alpha')
 
@@ -16,6 +18,19 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     # set up line colors
     if plot_extras.get('line_color') is not None:
         colors = plot_extras['line_color']
+
+        # check the color size vs. the size of the data
+        # colors should already be an array at this point
+        colors = np.array(colors)
+        if len(colors.shape) == 1:
+            if len(colors) != num_lines:
+                print('Problem with the number of line colors specified')
+                return
+        else:
+            # time varying symbol colors, not supported yet
+            if colors.shape[1] != num_lines:
+                print('Problem with the number of line colors specified')
+                return
     else:
         if num_lines == 3:
             colors = ['b', 'g', 'r']
