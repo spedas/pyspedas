@@ -6,7 +6,7 @@
 from . import tplot_utilities
 from .xlim import xlim
 
-def timespan(t1, dt, keyword = 'days'):
+def timespan(t1, dt, keyword='days'):
     """
     This function will set the time range for all time series plots.  This is a wrapper for the function "xlim" to
     better handle time axes.  
@@ -33,13 +33,13 @@ def timespan(t1, dt, keyword = 'days'):
 
     """
     
-    if keyword is 'days':
+    if keyword == 'days':
         dt *= 86400
-    elif keyword is 'hours':
+    elif keyword == 'hours':
         dt *= 3600
-    elif keyword is 'minutes':
+    elif keyword == 'minutes':
         dt *= 60
-    elif keyword is 'seconds':
+    elif keyword == 'seconds':
         dt *= 1
     else:
         print("Invalid 'keyword' option.\nEnum(None, 'hours', 'minutes', 'seconds', 'days')")
