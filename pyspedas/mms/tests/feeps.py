@@ -9,9 +9,9 @@ class FEEPSTestCases(unittest.TestCase):
     def test_gyrophase_angles(self):
         mms_load_feeps(data_rate='brst', trange=['2017-07-11/22:34', '2017-07-11/22:34:25'], probe=3)
         mms_feeps_gpd(probe='3', energy=[61, 77], data_rate='brst')
-        self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_61.0-77.0keV_gpd'))
+        self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_61-77keV_gpd'))
         mms_feeps_gpd(probe='3', data_rate='brst')
-        self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_70.0-600.0keV_gpd'))
+        self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_50-500keV_gpd'))
 
     def test_pad_ions_brst(self):
         mms_load_feeps(probe=4, data_rate='brst', datatype='ion', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
