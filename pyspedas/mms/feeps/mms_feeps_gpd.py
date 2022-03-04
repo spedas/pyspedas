@@ -11,8 +11,8 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
                   level='l2', 
                   datatype='electron',
                   data_units='intensity',
-                  bin_size = 15, # deg
-                  energy = [55, 72]):
+                  bin_size=15, # deg
+                  energy=[50, 500]):
     """
     Calculate gyrophase distributions using data from the MMS Fly's Eye Energetic Particle Sensor (FEEPS)
 
@@ -50,6 +50,9 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     ------
         Based on IDL code by Drew Turner (10 Oct 2017): mms_feeps_gpd.pro
     """
+
+    if isinstance(probe, int):
+        probe = str(probe)
 
     feeps_data = pyspedas.mms.feeps(trange=trange, data_rate=data_rate, probe=probe, level=level)
 
@@ -147,7 +150,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     # fill any missed bins with NAN
     gyro_flux[gyro_flux == 0.0] = np.nan 
 
-    en_range_string = str(np.fix(energy[0])) + '-' + str(np.fix(energy[1])) + 'keV'
+    en_range_string = str(int(energy[0])) + '-' + str(int(energy[1])) + 'keV'
 
     new_name = 'mms' + str(probe) + '_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_' + data_units + '_' + en_range_string + '_gpd'
 
