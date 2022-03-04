@@ -149,12 +149,12 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
             -1.*(Tbot[0,1]*V12fcs[0] + Tbot[1,1]*V12fcs[1] + Tbot[2,1]*V12fcs[2]), 
             -1.*(Tbot[0,2]*V12fcs[0] + Tbot[1,2]*V12fcs[1] + Tbot[2,2]*V12fcs[2])]
 
-    fgm_vars = pyspedas.mms.fgm(trange=[time_double(trange[0])-600, time_double(trange[1])+600], probe=probe, data_rate=data_rate)
+    fgm_vars = pyspedas.mms.fgm(trange=[time_double(trange[0])-600, time_double(trange[1])+600], probe=probe, data_rate='srvy')
 
     # interpolate the FGM var to the MEC var timestamps
-    tinterpol('mms'+probe+'_fgm_b_bcs_' + data_rate + '_l2_bvec', 'mms'+probe+'_mec_r_sun_bcs', newname='mms'+probe+'_fgm_b_bcs_' + data_rate + '_l2_bvec_int')
+    tinterpol('mms'+probe+'_fgm_b_bcs_srvy_l2_bvec', 'mms'+probe+'_mec_r_sun_bcs', newname='mms'+probe+'_fgm_b_bcs_srvy_l2_bvec_int')
 
-    B = get_data('mms'+probe+'_fgm_b_bcs_' + data_rate + '_l2_bvec_int')
+    B = get_data('mms'+probe+'_fgm_b_bcs_srvy_l2_bvec_int')
 
     # Now calculate gyrophase
     # Sun vector perp to B:
