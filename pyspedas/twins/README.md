@@ -24,7 +24,7 @@ img_vars = pyspedas.twins.imager(trange=['2018-11-5', '2018-11-6'])
 #### Lyman-alpha Detector (LAD)
 
 ```python
-lad_vars = pyspedas.twins.lad(trange=['2018-11-5', '2018-11-6'])
+lad_vars = pyspedas.twins.lad(trange=['2018-11-5/6:00', '2018-11-5/6:20'], time_clip=True)
 
 tplot(['lad1_data', 'lad2_data'])
 ```

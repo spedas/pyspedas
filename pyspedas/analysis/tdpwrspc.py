@@ -87,6 +87,6 @@ def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128,
                 options(newname, 'spec', True)
                 options(newname, 'ylog', True)
                 options(newname, 'zlog', True)
-                options(newname, 'Colormap', 'jet')
+                options(newname, 'Colormap', 'spedas')
                 # options(newname, 'yrange', [0.01, 16])
         return newname

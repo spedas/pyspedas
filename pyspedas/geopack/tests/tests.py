@@ -4,10 +4,10 @@ import unittest
 from pyspedas.utilities.data_exists import data_exists
 import pyspedas
 from pyspedas import time_double
-from pyspedas.geopack.tt89 import tt89
-from pyspedas.geopack.tt96 import tt96
-from pyspedas.geopack.tt01 import tt01
-from pyspedas.geopack.tts04 import tts04
+from pyspedas.geopack import tt89
+from pyspedas.geopack import tt96
+from pyspedas.geopack import tt01
+from pyspedas.geopack import tts04
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas import tinterpol
 from pytplot import join_vec

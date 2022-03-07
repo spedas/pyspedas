@@ -17,19 +17,15 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 import pyspedas
 import pyspedas.cotrans.cotrans
-import pyspedas.geopack.tt89
-import pyspedas.geopack.tt96
-import pyspedas.geopack.tt01
-import pyspedas.geopack.tts04
 
 # -- Project information -----------------------------------------------------
 
 project = 'pySPEDAS'
-copyright = '2021, The pySPEDAS Community'
+copyright = '2018-2022, UC Regents, unless otherwise indicated'
 author = 'The pySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
-release = '1.2'
+release = '1.3'
 
 
 # -- General configuration ---------------------------------------------------

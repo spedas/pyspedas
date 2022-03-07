@@ -182,7 +182,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
         session = requests.Session()
 
     if username is not None:
-        session.auth = (username, password)
+        session.auth = requests.auth.HTTPDigestAuth(username, password)
 
     if headers.get('User-Agent') is None:
         try:

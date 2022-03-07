@@ -29,7 +29,6 @@ pySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
    tplot(['B_RTN', 'psp_fld_l2_mag_RTN', 'mms2_fgm_b_gsm_srvy_l2_bvec', 'thd_fgs_gsm'])
 
 .. figure:: _static/solo-psp-mms-themis.png
-   :scale: 80 %
    :align: center
    :class: imgborder
 

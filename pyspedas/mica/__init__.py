@@ -76,7 +76,7 @@ def induction(site=None,
             data[w_fill] = np.nan
             store_data(out_var, data={'x': times, 'y': data, 'v': freq})
             options(out_var, 'spec', True)
-            options(out_var, 'Colormap', 'jet')
-            options(out_var, 'zlog', True)
+            options(out_var, 'Colormap', 'spedas')
+            options(out_var, 'zlog', False)
             
     return out_vars

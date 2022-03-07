@@ -100,7 +100,7 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
             options(obsstr+'PitchAngDist_sum'+suffix, 'yrange', [0, 180])
             options(obsstr+'PitchAngDist_sum'+suffix, 'zlog', True)
             options(obsstr+'PitchAngDist_sum'+suffix, 'spec', True)
-            options(obsstr+'PitchAngDist_sum'+suffix, 'Colormap', 'jet')
+            options(obsstr+'PitchAngDist_sum'+suffix, 'Colormap', 'spedas')
             out_vars.append(obsstr+'PitchAngDist_sum'+suffix)
 
         store_data(pad_avg_name, data={'x': low_en.times, 'y': e_pad_avg, 'v': low_en.v})
@@ -109,7 +109,7 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
         options(pad_avg_name, 'yrange', [0, 180])
         options(pad_avg_name, 'zlog', True)
         options(pad_avg_name, 'spec', True)
-        options(pad_avg_name, 'Colormap', 'jet')
+        options(pad_avg_name, 'Colormap', 'spedas')
         out_vars.append(pad_avg_name)
 
         return out_vars

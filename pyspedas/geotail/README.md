@@ -37,7 +37,7 @@ tplot(['Es', 'Ss', 'Bs', 'Vs', 'Ew', 'Sw', 'Bw', 'Vw'])
 #### Low Energy Particle experiment (LEP)
 
 ```python
-lep_vars = pyspedas.geotail.lep(trange=['2018-11-5', '2018-11-6'])
+lep_vars = pyspedas.geotail.lep(trange=['2018-11-5/05:00', '2018-11-5/06:00'], time_clip=True)
 
 tplot(['N0', 'V0'])
 ```
@@ -45,7 +45,7 @@ tplot(['N0', 'V0'])
 #### Comprehensive Plasma Instrumentation (CPI)
 
 ```python
-cpi_vars = pyspedas.geotail.cpi(trange=['2018-11-5', '2018-11-6'])
+cpi_vars = pyspedas.geotail.cpi(trange=['2018-11-5/15:00', '2018-11-5/18:00'], time_clip=True)
 
 tplot(['SW_P_Den', 'SW_P_AVGE', 'SW_V', 'HP_P_Den'])
 ```
@@ -61,7 +61,7 @@ tplot('IDiffI_I')
 #### Plasma Wave Instrument (PWI)
 
 ```python
-pwi_vars = pyspedas.geotail.pwi(trange=['2018-11-5', '2018-11-6'])
+pwi_vars = pyspedas.geotail.pwi(trange=['2018-11-5/06:00', '2018-11-5/07:00'], time_clip=True)
 
 tplot(['MCAE_AVE', 'MCAB_AVE'])
 ```

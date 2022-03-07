@@ -14,7 +14,7 @@ def time_domain_filter(data,time, freq_low, freq_high):
     Purpose: band-pass filter of data, assuming constant dt between points
     Parameters:
         data: input nx3 array
-	time: in seconds
+        time: in seconds
         freq_low: low coutoff frequency in Hz
         freq_high: high cutoff frequency in Hz
     Returns: nx3 array of band-pass filtered data

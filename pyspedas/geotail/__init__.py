@@ -1,5 +1,6 @@
 
 from .load import load
+from pytplot import options
 
 def mgf(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -299,7 +300,19 @@ def epic(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+    tvars = load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+    if tvars is None or notplot:
+        return tvars
+
+    if 'IDiffI_I'+suffix in tvars:
+        options('IDiffI_I'+suffix, 'spec', True)
+        options('IDiffI_I'+suffix, 'ylog', True)
+        options('IDiffI_I'+suffix, 'zlog', True)
+
+    return tvars
 
 def pwi(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
