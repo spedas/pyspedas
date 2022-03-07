@@ -12,7 +12,11 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """ IDL Data has to be downloaded to perform these tests"""
+        """
+        IDL Data has to be downloaded to perform these tests
+        The IDL script that creates data file:
+        https://github.com/spedas/pyspedas-validation/blob/cal_fit/src/themis/validation_files/thm_load_fit_validation_files.pro
+        """
         from pyspedas.utilities.download import download
         from pyspedas.themis.config import CONFIG
 
@@ -180,7 +184,29 @@ class TestCalFitInput(unittest.TestCase):
                             get_support_data=True, time_clip=True)
         cal_fit(probe='b')
 
-    # TODO: add tests for metadata
+
+class TestCalFitMeta(unittest.TestCase):
+    def setUp(self):
+        trange = ['2008-03-15', '2008-03-15']
+        pyspedas.themis.fit(trange=trange, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+                            get_support_data=True, time_clip=True)
+        cal_fit(probe='a', no_cal=True)
+
+    def test_meta_units(self):
+        vars = {'tha_fgs', 'tha_fgs_sigma', 'tha_fit_bfit', 'tha_fit_efit', 'tha_efs', 'tha_efs_sigma', 'tha_efs_0', 'tha_efs_dot0'}
+        for var in vars:
+            with self.subTest(f'Test of units in {var}', var=var):
+                meta = pytplot.get_data(var, metadata=True)
+                self.assertIn('units', meta)
+                # axis_subtitle currently displays units
+                self.assertIn('axis_subtitle', meta['plot_options']['yaxis_opt'])
+
+    def test_meta_legend(self):
+        vars = {'tha_fgs', 'tha_fgs_sigma', 'tha_fit_bfit', 'tha_fit_efit', 'tha_efs', 'tha_efs_sigma', 'tha_efs_0', 'tha_efs_dot0'}
+        for var in vars:
+            with self.subTest(f'Test of legend in {var}', var=var):
+                meta = pytplot.get_data(var, metadata=True)
+                self.assertIn('legend_names', meta['plot_options']['yaxis_opt'])
 
 
 if __name__ == '__main__':
