@@ -1,6 +1,6 @@
 import numpy as np
 import pyspedas 
-from pytplot import tplot, get_data, store_data, options
+from pytplot import get_data, store_data, options
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas.mms.feeps.mms_feeps_getgyrophase import mms_feeps_getgyrophase
 
@@ -75,7 +75,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     gyro_vars = mms_feeps_getgyrophase(trange=trange, probe=probe, data_rate=data_rate, level=level, datatype=datatype)
     gyro_data = get_data('mms' + str(probe) + '_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase')
 
-    if gyro_data is None:
+    if gyro_data is None or gyro_vars is None:
         print('Problem calculating gyrophase angles.')
         return
 

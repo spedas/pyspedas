@@ -6,7 +6,7 @@ import numpy as np
 
 try:
     from hapiclient import hapi as load_hapi
-except:
+except ImportError:
     print('hapiclient not found; install with: "pip install hapiclient"')
 
 def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',

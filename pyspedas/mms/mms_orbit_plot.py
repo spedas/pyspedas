@@ -1,6 +1,5 @@
 
 import os
-import warnings
 import matplotlib.pyplot as plt
 from pytplot import get_data
 from . import mms_load_mec

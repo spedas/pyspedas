@@ -1,7 +1,6 @@
 
 import numpy as np
-from pyspedas import time_double
-from pytplot import get_data, store_data, options
+from pytplot import get_data, store_data
 from geopack import geopack, t89
 
 def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
