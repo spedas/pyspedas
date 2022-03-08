@@ -48,3 +48,6 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
         else:
             print('Unsupported datatype: ' + dtype + '; valid options: "fast" and "burst"')
             continue
+
+        if out is None:
+            print('Problem loading segments for ' + dtype)

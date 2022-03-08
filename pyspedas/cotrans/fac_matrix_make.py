@@ -5,7 +5,7 @@ import numpy as np
 from pyspedas.analysis.tnormalize import tnormalize
 from pyspedas.analysis.tcrossp import tcrossp
 
-from pytplot import get_data, store_data, options
+from pytplot import get_data, store_data
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)

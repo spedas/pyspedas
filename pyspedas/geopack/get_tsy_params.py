@@ -106,7 +106,7 @@ def get_tsy_params(dst_tvar, imf_tvar, Np_tvar, Vp_tvar, model, pressure_tvar=No
             if isinstance(g_variables, str):
                 g_data = get_data(g_variables)
 
-                if g_variables is None:
+                if g_data is None:
                     print('Problem reading G variable: ' + g_variables)
                     return
 
