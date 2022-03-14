@@ -87,6 +87,7 @@ def cal_fit(probe='a', no_cal=False):
     """
     import math
     import numpy as np
+    import logging
 
     from pytplot import get_data, store_data, tplot_names, options
     from pyspedas.utilities.download import download
@@ -199,7 +200,11 @@ def cal_fit(probe='a', no_cal=False):
                        remote_path=CONFIG['remote_data_dir'],
                        local_path=CONFIG['local_data_dir'],
                        no_download=False)
-    # TODO: Add file check
+    if not calfile:
+        # This code should never be executed
+        logging.warning(f"Calibration file {thx}_fgmcal.txt is not found")
+        return
+
     caldata = np.loadtxt(calfile[0], converters={0: time_float_one})
     # TODO: In SPEDAS we checks if data is already calibrated
     # Limit to the time of interest
