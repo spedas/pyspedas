@@ -1,9 +1,9 @@
-
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
 from pyspedas.mms.fpi.mms_load_fpi_calc_pad import mms_load_fpi_calc_pad
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
+from pytplot import tplot_rename, del_data
 
 @print_vars
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',
@@ -132,6 +132,90 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(datatype, list): datatype = [datatype]
     if not isinstance(level, list): level = [level]
+
+    # the following kludge is due to the errorflags variable in the dist and moments files having the
+    # same variable name, so loading d?s-dist and d?s-moms files at the same time will overwrite
+    # one of the vars containing errorflags
+    if 'des-dist' in datatype and 'des-moms' in datatype:
+        # delete the old vars first
+        del_data('*_des_errorflags_*')
+        del_data('*_des_compressionloss_*')
+        # load the bars with a suffix applied
+        tplotnames_errflags_emom = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi',
+                              datatype='des-moms', varformat='*errorflags*|*compressionloss*', varnames=varnames,
+                              suffix=suffix+'_moms', get_support_data=0,
+                              time_clip=time_clip, no_update=no_update, center_measurement=center_measurement,
+                              available=available,
+                              notplot=notplot, latest_version=latest_version, major_version=major_version,
+                              min_version=min_version,
+                              cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
+        tplotnames_errflags_edist = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi',
+                              datatype='des-dist', varformat='*errorflags*|*compressionloss*', varnames=varnames,
+                              suffix=suffix+'_dist', get_support_data=0,
+                              time_clip=time_clip, no_update=no_update, center_measurement=center_measurement,
+                              available=available,
+                              notplot=notplot, latest_version=latest_version, major_version=major_version,
+                              min_version=min_version,
+                              cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
+        tvars.extend(tplotnames_errflags_emom)
+        tvars.extend(tplotnames_errflags_edist)
+    else:
+        # user didn't request both dist and moments, so no variables should have been clobbered
+        # but we still need to append _dist, _moms to the end of the names
+        for prb in probe:
+            for drate in data_rate:
+                this_probe = str(prb)
+                if 'des-dist' in datatype:
+                    tplot_rename('mms'+this_probe+'_des_errorflags_'+drate+suffix, 'mms'+this_probe+'_des_errorflags_'+drate+suffix+'_dist')
+                    tplot_rename('mms'+this_probe+'_des_compressionloss_'+drate+suffix, 'mms'+this_probe+'_des_compressionloss_'+drate+suffix+'_dist')
+                    tvars.append('mms'+this_probe+'_des_errorflags_'+drate+suffix+'_dist')
+                    tvars.append('mms'+this_probe+'_des_compressionloss_'+drate+suffix+'_dist')
+                if 'des-moms' in datatype or 'des' in datatype:
+                    tplot_rename('mms'+this_probe+'_des_errorflags_'+drate+suffix, 'mms'+this_probe+'_des_errorflags_'+drate+suffix+'_moms')
+                    tplot_rename('mms'+this_probe+'_des_compressionloss_'+drate+suffix, 'mms'+this_probe+'_des_compressionloss_'+drate+suffix+'_moms')
+                    tvars.append('mms'+this_probe+'_des_errorflags_'+drate+suffix+'_moms')
+                    tvars.append('mms'+this_probe+'_des_compressionloss_'+drate+suffix+'_moms')
+
+    # same kludge as above, but for ions
+    if 'dis-dist' in datatype and 'dis-moms' in datatype:
+        # delete the old vars first
+        del_data('*_dis_errorflags_*')
+        del_data('*_dis_compressionloss_*')
+        # load the bars with a suffix applied
+        tplotnames_errflags_imom = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi',
+                              datatype='dis-moms', varformat='*errorflags*|*compressionloss*', varnames=varnames,
+                              suffix=suffix+'_moms', get_support_data=0,
+                              time_clip=time_clip, no_update=no_update, center_measurement=center_measurement,
+                              available=available,
+                              notplot=notplot, latest_version=latest_version, major_version=major_version,
+                              min_version=min_version,
+                              cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
+        tplotnames_errflags_idist = mms_load_data(trange=trange, probe=probe, data_rate=data_rate, level=level, instrument='fpi',
+                              datatype='dis-dist', varformat='*errorflags*|*compressionloss*', varnames=varnames,
+                              suffix=suffix+'_dist', get_support_data=0,
+                              time_clip=time_clip, no_update=no_update, center_measurement=center_measurement,
+                              available=available,
+                              notplot=notplot, latest_version=latest_version, major_version=major_version,
+                              min_version=min_version,
+                              cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
+        tvars.extend(tplotnames_errflags_imom)
+        tvars.extend(tplotnames_errflags_idist)
+    else:
+        # user didn't request both dist and moments, so no variables should have been clobbered
+        # but we still need to append _dist, _moms to the end of the names
+        for prb in probe:
+            for drate in data_rate:
+                this_probe = str(prb)
+                if 'dis-dist' in datatype:
+                    tplot_rename('mms'+this_probe+'_dis_errorflags_'+drate+suffix, 'mms'+this_probe+'_dis_errorflags_'+drate+suffix+'_dist')
+                    tplot_rename('mms'+this_probe+'_dis_compressionloss_'+drate+suffix, 'mms'+this_probe+'_dis_compressionloss_'+drate+suffix+'_dist')
+                    tvars.append('mms'+this_probe+'_dis_errorflags_'+drate+suffix+'_dist')
+                    tvars.append('mms'+this_probe+'_dis_compressionloss_'+drate+suffix+'_dist')
+                if 'dis-moms' in datatype or 'dis' in datatype:
+                    tplot_rename('mms'+this_probe+'_dis_errorflags_'+drate+suffix, 'mms'+this_probe+'_dis_errorflags_'+drate+suffix+'_moms')
+                    tplot_rename('mms'+this_probe+'_dis_compressionloss_'+drate+suffix, 'mms'+this_probe+'_dis_compressionloss_'+drate+suffix+'_moms')
+                    tvars.append('mms'+this_probe+'_dis_errorflags_'+drate+suffix+'_moms')
+                    tvars.append('mms'+this_probe+'_dis_compressionloss_'+drate+suffix+'_moms')
 
     for prb in probe:
         for drate in data_rate:
