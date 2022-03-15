@@ -87,6 +87,7 @@ def cal_fit(probe='a', no_cal=False):
     """
     import math
     import numpy as np
+    import logging
 
     from pytplot import get_data, store_data, tplot_names, options
     from pyspedas.utilities.download import download
@@ -150,7 +151,7 @@ def cal_fit(probe='a', no_cal=False):
     b_opt_dict = {'legend_names': b_str, 'ysubtitle': b_units_str, 'color': color_str, 'alpha': 1}
     e_opt_dict = {'legend_names': e_str, 'ysubtitle': e_units_str, 'color': color_str, 'alpha': 1}
 
-    # TODO: tplot does not show 5th legend name
+    # if tplot does not show 5th legend name, update tplot
     b_opt_dict2 = {'legend_names': ['A', 'B', 'C', 'Sig', '<Bz>'], 'ysubtitle': b_units_str, 'color': color_str2, 'alpha': 1}
     e_opt_dict2 = {'legend_names': ['A', 'B', 'C', 'Sig', '<Ez>'], 'ysubtitle': e_units_str, 'color': color_str2, 'alpha': 1}
 
@@ -199,7 +200,11 @@ def cal_fit(probe='a', no_cal=False):
                        remote_path=CONFIG['remote_data_dir'],
                        local_path=CONFIG['local_data_dir'],
                        no_download=False)
-    # TODO: Add file check
+    if not calfile:
+        # This code should never be executed
+        logging.warning(f"Calibration file {thx}_fgmcal.txt is not found")
+        return
+
     caldata = np.loadtxt(calfile[0], converters={0: time_float_one})
     # TODO: In SPEDAS we checks if data is already calibrated
     # Limit to the time of interest
@@ -233,7 +238,7 @@ def cal_fit(probe='a', no_cal=False):
 
     # Create fgs variable and remove nans
     fgs = dprime.y[:, i, [1, 2, 4]]
-    idx = ~np.isnan(fgs[:, 0])  # TODO: check this criteria. IDL returns less number of points
+    idx = ~np.isnan(fgs[:, 0])
     fgs_data = {'x': d.times[idx], 'y': fgs[idx, :]}
 
     # Save fgs tplot variable
@@ -278,7 +283,7 @@ def cal_fit(probe='a', no_cal=False):
     # efsx_good, then at the end of calibration, pull the "good"
     # indices out of the calibrated efs[] array to make the thx_efs
     # tplot variable.
-    efsx_good = ~np.isnan(efs[:, 0])  # TODO: check this criteria.
+    efsx_good = ~np.isnan(efs[:, 0])
 
     if np.any(efsx_good):  # TODO: include processing of 'efs' where efsx_fixed is used
         if np.any(e34_ss):  # rotate efs 90 degrees if necessary, if e34 was used in spinfit
