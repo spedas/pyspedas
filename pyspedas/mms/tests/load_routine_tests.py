@@ -5,6 +5,8 @@ from pyspedas.mms import mms_load_state, mms_load_mec, mms_load_fgm, mms_load_sc
 from pyspedas.utilities.data_exists import data_exists
 from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from pyspedas.mms.fpi.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
+from pyspedas.mms.fpi.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
 
 from pytplot import get_data, del_data
 
@@ -138,6 +140,30 @@ class FPILoadTestCases(unittest.TestCase):
         t, d = get_data('mms1_des_bulkv_gse_brst')
         c, d = get_data('mms1_des_bulkv_gse_brst_centered')
         self.assertTrue(np.round(c[0]-t[0], decimals=3) == 0.015)
+
+    def test_errorflag_compression_bars(self):
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['des-dist', 'des-moms'])
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-dist', 'dis-moms'])
+        mms_fpi_make_errorflagbars('mms1_des_errorflags_brst_moms', level='l2')
+        mms_fpi_make_errorflagbars('mms1_dis_errorflags_brst_moms', level='l2')
+        mms_fpi_make_errorflagbars('mms1_des_errorflags_brst_dist', level='l2')
+        mms_fpi_make_errorflagbars('mms1_dis_errorflags_brst_dist', level='l2')
+        mms_fpi_make_compressionlossbars('mms1_des_compressionloss_brst_moms')
+        mms_fpi_make_compressionlossbars('mms1_dis_compressionloss_brst_moms')
+        mms_fpi_make_compressionlossbars('mms1_des_compressionloss_brst_dist')
+        mms_fpi_make_compressionlossbars('mms1_dis_compressionloss_brst_dist')
+        self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_full'))
+        self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_main'))
+        self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_mini'))
+        self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_full'))
+        self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_main'))
+        self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_mini'))
+        self.assertTrue(data_exists('mms1_des_errorflags_brst_dist_flagbars_dist'))
+        self.assertTrue(data_exists('mms1_dis_errorflags_brst_dist_flagbars_dist'))
+        self.assertTrue(data_exists('mms1_des_compressionloss_brst_moms_flagbars'))
+        self.assertTrue(data_exists('mms1_dis_compressionloss_brst_moms_flagbars'))
+        self.assertTrue(data_exists('mms1_des_compressionloss_brst_dist_flagbars'))
+        self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist_flagbars'))
 
 ############### HPCA ############### 
 class HPCALoadTestCases(unittest.TestCase):

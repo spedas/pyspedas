@@ -92,7 +92,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
         flagline_all = np.zeros(len(data.times))
         for j, flag in enumerate(flags):
             for i in range(14):
-                if np.int(flag[13-i:13-i+1]) == 0:
+                if int(flag[13-i:13-i+1]) == 0:
                     flagline[j, i] = np.nan
                     if flagline_all[j] != 1:
                         flagline_all[j] = np.nan
@@ -222,7 +222,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
         flagline = np.zeros((len(data.times), 2))
         for i in [0, 1]:
             for j in range(len(flags)):
-                if np.int(flags[13-i:13-i+1]) == 0:
+                if int(flags[13-i:13-i+1][0]) == 0:
                     flagline[j, i] = np.nan
                 else:
                     flagline[j, i] = 1
