@@ -167,8 +167,10 @@ if using_graphics:
         print("Turning off qt graphics.  Bokeh plotting is still enabled.")
         using_graphics = False
 
-# Ok.  In possibly the weirdest turn of events, I get a warning that interrupts Qt specplots
-# if I DO NOT import this library.  There is an error about collections.abc in the ImageItem.render()
-# function in pyqtgraph that completely works FINE as long as I've imported this library somewhere before
-# that render function being called.  Why??
-import requests
+    # Ok.  In possibly the weirdest turn of events, I get a warning that interrupts Qt specplots
+    # if I DO NOT import this library.  There is an error about collections.abc in the ImageItem.render()
+    # function in pyqtgraph that completely works FINE as long as I've imported this library somewhere before
+    # that render function being called.  Why??
+    # update 23 March 2022: egrimes bumped the indentation for this import to be under the using_graphics if statement
+    # since this is only required for Qt
+    import requests
