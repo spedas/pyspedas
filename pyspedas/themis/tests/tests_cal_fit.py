@@ -184,6 +184,9 @@ class TestCalFitInput(unittest.TestCase):
                             get_support_data=True, time_clip=True)
         cal_fit(probe='b')
 
+    def test_no_input(self):
+        cal_fit(probe="")
+
 
 class TestCalFitMeta(unittest.TestCase):
     def setUp(self):

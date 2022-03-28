@@ -152,8 +152,10 @@ def cal_fit(probe='a', no_cal=False):
     e_opt_dict = {'legend_names': e_str, 'ysubtitle': e_units_str, 'color': color_str, 'alpha': 1}
 
     # if tplot does not show 5th legend name, update tplot
-    b_opt_dict2 = {'legend_names': ['A', 'B', 'C', 'Sig', '<Bz>'], 'ysubtitle': b_units_str, 'color': color_str2, 'alpha': 1}
-    e_opt_dict2 = {'legend_names': ['A', 'B', 'C', 'Sig', '<Ez>'], 'ysubtitle': e_units_str, 'color': color_str2, 'alpha': 1}
+    b_opt_dict2 = {'legend_names': ['A', 'B', 'C', 'Sig', '<Bz>'],
+                   'ysubtitle': b_units_str, 'color': color_str2, 'alpha': 1}
+    e_opt_dict2 = {'legend_names': ['A', 'B', 'C', 'Sig', '<Ez>'],
+                   'ysubtitle': e_units_str, 'color': color_str2, 'alpha': 1}
 
     # Get list of tplot variables
     tnames = tplot_names(True)  # True for quiet output
@@ -163,8 +165,8 @@ def cal_fit(probe='a', no_cal=False):
 
     # B-field fit (FGM) processing
 
-    # TODO: Check tvar existance
-    if not tvar in tnames:
+    if tvar not in tnames:
+        logging.warning(f"Variable {tvar} is not found")
         return
 
     # Using deep copy to create an independent instance
@@ -285,10 +287,11 @@ def cal_fit(probe='a', no_cal=False):
     # tplot variable.
     efsx_good = ~np.isnan(efs[:, 0])
 
-    if np.any(efsx_good):  # TODO: include processing of 'efs' where efsx_fixed is used
+    if np.any(efsx_good):
         if np.any(e34_ss):  # rotate efs 90 degrees if necessary, if e34 was used in spinfit
             tmp = d.y[e34_ss, i, :]  # Apply logical arrays
-            efs[e34_ss, :] = tmp[:, [2, 1, 4]]  # Apply dimension selection TODO: there should be a better way to combine indexes
+            # TODO: there should be a better way to combine indexes
+            efs[e34_ss, :] = tmp[:, [2, 1, 4]]  # Apply dimension selection
             efs[e34_ss, 0] = -efs[e34_ss, 0]
 
     efsz = d.y[:, i, 4]  # save Ez separately, for possibility that it's the SC potential
@@ -323,7 +326,12 @@ def cal_fit(probe='a', no_cal=False):
                           remote_path=CONFIG['remote_data_dir'],
                           local_path=CONFIG['local_data_dir'],
                           no_download=False)
-    # TODO: Add file check
+
+    if not eficalfile:
+        # This code should never be executed
+        logging.warning(f"Calibration file {thx}_efi_calib_params.txt is not found")
+        return
+
     colnums = {"time": [0], "edc_offset": [14, 15, 16], "edc_gain": [17, 18, 19],
                "BOOM_LENGTH": [26, 27, 28], "BOOM_SHORTING_FACTOR": [29, 30, 31],
                "DSC_OFFSET": [32, 33, 34]}  # List of columns to be loaded
@@ -382,8 +390,8 @@ def cal_fit(probe='a', no_cal=False):
     options(tvar, opt_dict=e_opt_dict)
 
     # calculate efs_dot0
-    Ez = (efs[:, 0]*fgs[:, 0] + efs[:, 1]*fgs[:, 1])/(-1*fgs[:, 2])
-    angle = np.arccos(fgs[:, 2]/np.sqrt(np.sum(fgs**2, axis=1)))*180/np.pi
+    Ez = (efs[:, 0] * fgs[:, 0] + efs[:, 1] * fgs[:, 1]) / (-1 * fgs[:, 2])
+    angle = np.arccos(fgs[:, 2] / np.sqrt(np.sum(fgs ** 2, axis=1))) * 180 / np.pi
     angle80 = angle > 80
     if np.any(angle80):
         Ez[angle80] = np.NaN
