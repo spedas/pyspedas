@@ -96,6 +96,10 @@ def cal_fit(probe='a', no_cal=False):
     from copy import deepcopy
     from numpy.linalg import inv
 
+    if probe == 'f':
+        logging.warning(f"Probe f is not supported. Please use IDL version of 'thm_cal_fit' in SPEDAS.")
+        return
+
     # calibration parameters
     lv12 = 49.6  # m
     lv34 = 40.4  # m
