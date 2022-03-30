@@ -1,7 +1,7 @@
 import numpy as np
 from pyspedas import tinterpol
 from pyspedas.analysis.lingradest import  lingradest
-from pytplot import get_data, store_data, options
+from pytplot import get_data, store_data, options, join_vec
 
 def mms_lingradest(fields=None, positions=None, suffix=''):
     """
@@ -64,6 +64,8 @@ def mms_lingradest(fields=None, positions=None, suffix=''):
     store_data('By' + suffix, data={'x': B1.times, 'y': output['Bybc']})
     store_data('Bz' + suffix, data={'x': B1.times, 'y': output['Bzbc']})
 
+    join_vec(['Bt'+suffix, 'Bx'+suffix, 'By'+suffix, 'Bz'+suffix], new_tvar='Bbc' + suffix)
+
     # B-field gradients
     store_data('gradBx' + suffix, data={'x': B1.times, 'y': output['LGBx']})
     store_data('gradBy' + suffix, data={'x': B1.times, 'y': output['LGBy']})
@@ -77,6 +79,10 @@ def mms_lingradest(fields=None, positions=None, suffix=''):
     store_data('CyB' + suffix, data={'x': B1.times, 'y': output['LCyB']})
     store_data('CzB' + suffix, data={'x': B1.times, 'y': output['LCzB']})
 
+    store_data('divB_nT/1000km' + suffix, data={'x': B1.times, 'y': output['LD']})
+
+    join_vec(['absCB'+suffix, 'CxB'+suffix, 'CyB'+suffix, 'CzB'+suffix], new_tvar='curlB_nT/1000km' + suffix)
+
     # jx in nA/m^2
     store_data('jx' + suffix, data={'x': B1.times, 'y': 0.8 * output['LCxB']})
     # jy in nA/m^2
@@ -84,8 +90,12 @@ def mms_lingradest(fields=None, positions=None, suffix=''):
     # jz in nA/m^2
     store_data('jz' + suffix, data={'x': B1.times, 'y': 0.8 * output['LCzB']})
 
+    join_vec(['jx'+suffix, 'jy'+suffix, 'jz'+suffix], new_tvar='jtotal' + suffix)
+
     store_data('curvx' + suffix, data={'x': B1.times, 'y': output['curv_x_B']})
     store_data('curvy' + suffix, data={'x': B1.times, 'y': output['curv_y_B']})
     store_data('curvz' + suffix, data={'x': B1.times, 'y': output['curv_z_B']})
+
+    join_vec(['curvx'+suffix,  'curvy'+suffix,  'curvz'+suffix], new_tvar='curvB' + suffix)
 
     store_data('Rc_1000km' + suffix, data={'x': B1.times, 'y': output['RcurvB']})
