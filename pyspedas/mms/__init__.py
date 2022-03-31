@@ -19,6 +19,7 @@ from .dsp.dsp import mms_load_dsp
 from .aspoc.aspoc import mms_load_aspoc
 from .fsm.fsm import mms_load_fsm
 from .fgm.mms_curl import mms_curl
+from .fgm.mms_lingradest import mms_lingradest
 from .spd_mms_load_bss import spd_mms_load_bss
 
 '''
@@ -93,3 +94,7 @@ def dsp(*args, **kwargs):
 @wraps(mms_curl)
 def curlometer(*args, **kwargs):
     return mms_curl(*args, **kwargs)
+
+@wraps(mms_lingradest)
+def lingradest(*args, **kwargs):
+    return mms_lingradest(*args, **kwargs)
