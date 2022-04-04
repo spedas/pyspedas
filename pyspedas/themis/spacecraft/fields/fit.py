@@ -178,7 +178,6 @@ def cal_fit(probe='a', no_cal=False):
 
     # establish probe number in cal tables
     sclist = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': -1}  # for probe 'f' no flatsat FGM cal files
-    # TODO: Add processing of probe f
     scn = sclist[probe]
 
     #  Rotation vectors
