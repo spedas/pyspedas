@@ -49,7 +49,7 @@ def mms_split_fgm_data(probe, data_rate, level, instrument, suffix=''):
         store_data(tplot_name + '_btot' + suffix, data={'x': fgm_data.times, 'y': fgm_data.y[:, 3]}, attr_dict=metadata)
 
         options(tplot_name + '_btot' + suffix, 'legend_names', 'Bmag')
-        options(tplot_name + '_btot' + suffix, 'ytitle', 'MMS'+probe + ' \\ FGM')
+        options(tplot_name + '_btot' + suffix, 'ytitle', 'MMS'+probe + ' FGM')
 
         out_vars.append(tplot_name + '_bvec' + suffix)
         out_vars.append(tplot_name + '_btot' + suffix)

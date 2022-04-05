@@ -49,7 +49,7 @@ def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_ra
     data_in = get_data(name_in)
     metadata_in = get_data(name_in, metadata=True)
 
-    if data_in == None:
+    if data_in is None:
         logging.error('Error reading tplot variable: ' + name_in)
         return None
 

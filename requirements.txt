@@ -1,6 +1,6 @@
 numpy>=1.19.5
 requests
-cdflib>=0.3.20
+cdflib>=0.4.3
 pytplot-mpl-temp
 cdasws>=1.7.24
 netCDF4

@@ -192,7 +192,7 @@ def noon_midnight_meridian(dtime=None, delta=0.25):
     return noon_midnight
 
 
-def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, quiver_scale=30):
+def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, quiver_scale=30, pred = False, pred_var = None, plot_title_addon = None, colormaplimit=None, EICS_component='Jy'):
     """
     @Parameter: dtime input as a string
     @Parameter: s_loc input as a bool, which means the locations of the virtual stations.
@@ -207,6 +207,18 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     filename_unzipped = dailynames(file_format=pathformat_unzipped, trange=dtime_range, res=10)
     out_files_unzipped = [CONFIG['local_data_dir'] + rf_res for rf_res in filename_unzipped]
     Data_Days_time = read_data_files(out_files=out_files_unzipped, dtype=dtype, out_type='df')
+
+    if pred == True: # XC
+        obs_var = Data_Days_time['Jy']
+        print(np.size(pred_var), np.size(Data_Days_time['Jy']), np.shape(pred_var), np.shape(Data_Days_time['Jy']))
+        if np.size(pred_var) != np.size(Data_Days_time['Jy']):
+            raise ValueError('np.size(pred_var) != np.size(Data_Days_time[Jy]) !')
+        #if np.shape(pred_var) != np.shape(Data_Days_time['Jy']):
+        #    raise ValueError('np.shape(pred_var) != np.shape(Data_Days_time[Jy]) !')
+        pred_var = np.reshape(pred_var, np.shape(Data_Days_time['Jy']))
+        if np.shape(pred_var) == np.shape(Data_Days_time['Jy']):
+            print(' pred_var has the same size and shape with Data_Days_time[Jy] !')
+        Data_Days_time['Jy'] = pred_var
 
     J_comp = Data_Days_time['Jy']
     Jc_max, Jc_min = J_comp.max(), J_comp.min()
@@ -250,9 +262,10 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     draw_map(m)
 
     # plot vector field:
-
+    print('lon before: ', lon)
     lon = lon.to_numpy()
     lat = lat.to_numpy()
+    print('lon after:  ', lon)
     Jx = Jx.to_numpy()  # Note: positive is Northward
     Jy = Jy.to_numpy()  # Note: positive is Eastward
     Jx_uni = Jx / np.sqrt(Jx ** 2 + Jy ** 2)
@@ -326,26 +339,174 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     draw_map(m)
 
     Jy_log = Jy / np.abs(Jy) * np.log10(np.abs(Jy))
-    norm_cb = CenteredNorm()
+    Jy_log = Jy / np.abs(Jy) * np.log10(np.abs(Jy)) ##
+    if colormaplimit == None:
+        norm_cb = CenteredNorm()
+    else:
+        norm_cb = CenteredNorm(halfrange=colormaplimit)
     # norm_cb = NoNorm()
     # norm_cb = CenteredNorm(vmin=Jy.min(), vcenter=0, vmax=Jy.max())
     # use Jy for the contour map, not Jy_rot.
-    ctrf = m.contourf(lon, lat, Jy, contour_density, latlon=True, tri=True, cmap='jet_r', norm=norm_cb)
+    if EICS_component == 'Jy':
+        ctrf = m.contourf(lon, lat, Jy, contour_density, latlon=True, tri=True, cmap='jet_r', norm=norm_cb)
+    elif EICS_component == 'Jx':
+        ctrf = m.contourf(lon, lat, Jx, contour_density, latlon=True, tri=True, cmap='jet_r', norm=norm_cb)
     ##ctrf = m.contourf(lon, lat, Jy, contour_density, latlon=True, tri=True, cmap='jet_r', norm=norm_cb)
     # -------------
     if s_loc:
         m.scatter(lon, lat, latlon=True, marker='*', c='black')
+    FAC_loc = False
+    if FAC_loc: # for 2008-02-29 and 2008-02-22 events' field aligned current locations:
+        import pandas as pd
+        event_df_a = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step1_nosubSQ_V2.txt', delimiter="\s+")
+        event_df_b = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step2_nosubSQ_V2.txt', delimiter="\s+")
+        event_df_c = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step3_nosubSQ_V2.txt', delimiter="\s+")
+        event_df_d = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step4_nosubSQ_V2.txt', delimiter="\s+")
+        #print('cp00!')
+        #print(dtime)
+        #print(event_df.loc[0,'time'])
+        #print(dtime==event_df.loc[0,'time'])
+        row_event_df_a = event_df_a[event_df_a['time'] == dtime]
+        row_event_df_b = event_df_b[event_df_b['time'] == dtime]
+        row_event_df_c = event_df_c[event_df_c['time'] == dtime]
+        row_event_df_d = event_df_d[event_df_d['time'] == dtime]
+        #print(row_event_df)
+        #print(row_event_df['lat1_geo'].to_numpy()[0], type(row_event_df['lat1_geo'].to_numpy()[0]))
+        lon1_ev_a = row_event_df_a['lon1_geo'].to_numpy()[0]
+        lon2_ev_a = row_event_df_a['lon2_geo'].to_numpy()[0]
+        lat1_ev_a = row_event_df_a['lat1_geo'].to_numpy()[0]
+        lat2_ev_a = row_event_df_a['lat2_geo'].to_numpy()[0]
+
+        lon1_ev_b = row_event_df_b['lon1_geo'].to_numpy()[0]
+        lon2_ev_b = row_event_df_b['lon2_geo'].to_numpy()[0]
+        lat1_ev_b = row_event_df_b['lat1_geo'].to_numpy()[0]
+        lat2_ev_b = row_event_df_b['lat2_geo'].to_numpy()[0]
+
+        lon1_ev_c = row_event_df_c['lon1_geo'].to_numpy()[0]
+        lon2_ev_c = row_event_df_c['lon2_geo'].to_numpy()[0]
+        lat1_ev_c = row_event_df_c['lat1_geo'].to_numpy()[0]
+        lat2_ev_c = row_event_df_c['lat2_geo'].to_numpy()[0]
+
+        lon1_ev_d = row_event_df_d['lon1_geo'].to_numpy()[0]
+        lon2_ev_d = row_event_df_d['lon2_geo'].to_numpy()[0]
+        lat1_ev_d = row_event_df_d['lat1_geo'].to_numpy()[0]
+        lat2_ev_d = row_event_df_d['lat2_geo'].to_numpy()[0]
+
+
+        m.scatter(lon1_ev_a, lat1_ev_a, latlon=True, marker='o', s=20, c='red')
+        m.scatter(lon2_ev_a, lat2_ev_a, latlon=True, marker='o', s=20, c='blue')
+
+        m.scatter(lon1_ev_b, lat1_ev_b, latlon=True, marker='*', s=20, c='red')
+        m.scatter(lon2_ev_b, lat2_ev_b, latlon=True, marker='*', s=20, c='blue')
+
+        m.scatter(lon1_ev_c, lat1_ev_c, latlon=True, marker='^', s=20, c='red')
+        m.scatter(lon2_ev_c, lat2_ev_c, latlon=True, marker='^', s=20, c='blue')
+
+        m.scatter(lon1_ev_d, lat1_ev_d, latlon=True, marker='D', s=20, c='red')
+        m.scatter(lon2_ev_d, lat2_ev_d, latlon=True, marker='D', s=20, c='blue')
+
+        #print(event_df.loc[0,:])
+        #print(event_df.loc[1,:])
+        #print(event_df.loc[2,['lat1_geo', 'lat2_geo']])
+        #print(event_df['lon2_sm'])
+        print('cp01!')
     # -------------
     cb = m.colorbar(matplotlib.cm.ScalarMappable(norm=norm_cb, cmap='jet_r'), pad='15%')
-    cb.set_label(r'$\mathit{J}_y \  (mA/m)$')
+    if EICS_component == 'Jy':
+        cb.set_label(r'$\mathit{J}_y \  (mA/m)$')
+    elif EICS_component == 'Jx':
+        cb.set_label(r'$\mathit{J}_x \  (mA/m)$')
     ax_cb = cb.ax
     text = ax_cb.yaxis.label
     font_cb = matplotlib.font_manager.FontProperties(family='times new roman', style='italic', size=20)
     text.set_font_properties(font_cb)
-    plt.title(label='EICS ' + tp, fontsize=20, color="black", pad=20)
+    if pred == True:
+        if plot_title_addon != None:
+            plt.title(label= plot_title_addon + ' Predicted EICS ' + tp, fontsize=20, color="black", pad=20)
+        else:
+            plt.title(label= 'Predicted EICS ' + tp, fontsize=20, color="black", pad=20)
+    else:
+        plt.title(label='EICS ' + tp, fontsize=20, color="black", pad=20)
     plt.tight_layout()
-    plt.savefig(CONFIG['plots_dir'] + 'EICS' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+    if pred == True:
+        if EICS_component == 'Jy':
+            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jy' + '_pred' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+        elif EICS_component == 'Jx':
+            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jx' + '_pred' + '_contour_' + date_nightshade.strftime(
+                '%Y%m%d%H%M%S') + '.jpeg')
+    else:
+        if EICS_component == 'Jy':
+            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jy' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+        elif EICS_component == 'Jx':
+            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jx' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+
     plt.show()
+
+    # plot the visual grids:
+
+    fig3 = plt.figure(figsize=(8, 8))
+    ax3 = plt.gca()
+    m = Basemap(projection='lcc', resolution='c',
+                width=8E6, height=8E6,
+                lat_0=60, lon_0=-100)
+    # draw coastlines, country boundaries, fill continents.
+    m.drawcoastlines(linewidth=0.25)
+    m.drawcountries(linewidth=0.25)
+    m.fillcontinents(color='None', lake_color='None')
+    # draw the edge of the map projection region (the projection limb)
+    m.drawmapboundary(fill_color=None)
+    m.drawlsmask()
+    m.shadedrelief()
+    # draw parallels and meridians.
+    # label parallels on right and top
+    # meridians on bottom and left
+    parallels = np.arange(0., 81, 10.)
+    m.drawparallels(parallels, labels=[False, True, True, False])
+    meridians = np.arange(10., 351., 20.)
+    m.drawmeridians(meridians, labels=[True, False, False, True])
+
+    date_nightshade = datetime.strptime(dtime, '%Y-%m-%d/%H:%M:%S')
+    # m.nightshade(date=date_nightshade, alpha = 0.0)
+
+    delta = 0.25
+    lons_dd, lats_dd, tau, dec = daynight_terminator(date_nightshade, delta, m.lonmin, m.lonmax)
+    xy = [lons_dd, lats_dd]
+    xy = np.array(xy)
+    xb, yb = xy[0], xy[1]
+    m.plot(xb, yb, marker=None, color='m', latlon=True)  # for dawn-dusk circle line
+
+    # Plot the noon-midnight line.
+    n_interval = len(lons_dd)
+    ni_half = int(np.floor(len(lons_dd) / 2))
+    ni_otherhalf = n_interval - ni_half
+
+    noon_midnight = noon_midnight_meridian(dtime, delta)
+
+    m.plot(noon_midnight['lons_noon'], noon_midnight['lats_noon'], marker=None, color='deepskyblue',
+           latlon=True)  # noon semi-circle
+
+    m.plot(noon_midnight['lons_midnight'], noon_midnight['lats_midnight'], marker=None, color='k',
+           latlon=True)  # midnight semi-circle
+
+    draw_map(m)
+
+    # -------------
+    VG_labels = np.linspace(0, len(lon)-1, len(lon), dtype=int)
+    m.scatter(lon, lat, latlon=True, marker='*', c='black')
+
+    x_shift, y_shift = (-5, 5)
+    for i, vg_label in enumerate(VG_labels):
+        lon_tmp, lat_tmp = m(lon[i], lat[i])
+        plt.annotate(str(vg_label), xy=(lon_tmp, lat_tmp), xycoords='data', xytext=(x_shift, y_shift), textcoords='offset points', color='r', fontsize=6) #xy=(lon[i], lat[i])
+    # -------------
+    font_cb = matplotlib.font_manager.FontProperties(family='times new roman', style='italic', size=20)
+    text.set_font_properties(font_cb)
+    plt.title(label='EICS visual grids' + tp, fontsize=20, color="black", pad=20)
+    plt.tight_layout()
+    plt.savefig(CONFIG['plots_dir'] + 'EICS' + '_VisualGrids_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.pdf')
+    plt.show()
+
+
 
     print('EICS plots completed!')
     return
@@ -445,7 +606,7 @@ def _make_SECS_plots(data=None, dtime=None, contour_den=8, s_loc=False):
     return
 
 
-def make_plots(dtype='EICS', dtime=None, vplot_sized=True, contour_den=100, s_loc=False, quiver_scale=30):  # or SECS
+def make_plots(dtype='EICS', dtime=None, vplot_sized=True, contour_den=100, s_loc=False, quiver_scale=30, pred = False, pred_var = None, plot_title_addon = None, colormaplimit=None, EICS_component='Jy'):  # or SECS
     """
         This wrapper function to plot the vector and contour map for SECS/EICS data
 
@@ -472,7 +633,7 @@ def make_plots(dtype='EICS', dtime=None, vplot_sized=True, contour_den=100, s_lo
             None.
         """
     if dtype == 'EICS':
-        _make_EICS_plots(dtime=dtime, vplot_sized=vplot_sized, contour_den=contour_den, s_loc=s_loc, quiver_scale=quiver_scale)
+        _make_EICS_plots(dtime=dtime, vplot_sized=vplot_sized, contour_den=contour_den, s_loc=s_loc, quiver_scale=quiver_scale, pred = pred, pred_var = pred_var, plot_title_addon = plot_title_addon, colormaplimit=colormaplimit, EICS_component=EICS_component)
         # make a vector map and a contour map.
     if dtype == 'SECS':
         _make_SECS_plots(dtime=dtime, contour_den=contour_den, s_loc=s_loc)

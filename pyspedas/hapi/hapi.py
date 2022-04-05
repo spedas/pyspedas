@@ -6,11 +6,11 @@ import numpy as np
 
 try:
     from hapiclient import hapi as load_hapi
-except:
+except ImportError:
     print('hapiclient not found; install with: "pip install hapiclient"')
 
 def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
-         catalog=False):
+         prefix='', catalog=False):
     """
     Loads data from a HAPI server into pytplot variables
 
@@ -28,6 +28,9 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         parameters: str or list of str
             Parameters in the dataset to load; default
             is to load them all
+
+        prefix: str
+            Prefix to append to the tplot variables
 
         suffix: str
             Suffix to append to the tplot variables
@@ -74,7 +77,11 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         parameters = ','.join(parameters)
 
     opts = {'logging': False}
-    data, hapi_metadata = load_hapi(server, dataset, parameters, trange[0], trange[1], **opts)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=ResourceWarning)
+        warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+        data, hapi_metadata = load_hapi(server, dataset, parameters, trange[0], trange[1], **opts)
 
     out_vars = []
 
@@ -84,16 +91,15 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     for param in params[1:]:
         spec = False
         param_name = param.get('name')
-        print('Loading ' + param_name)
+        print('Loading ' + prefix + param_name + suffix)
 
         # load the data only for this parameter
         try:
             with warnings.catch_warnings():
-                warnings.simplefilter("ignore", category=ResourceWarning)
+                warnings.simplefilter('ignore', category=ResourceWarning)
+                warnings.filterwarnings('ignore', message='Unverified HTTPS request')
                 data, hapi_metadata = load_hapi(server, dataset, param_name, trange[0], trange[1], **opts)
         except:
-            breakpoint()
-            print('Error! 95')
             continue
 
         timestamps = [datapoint[0] for datapoint in data]
@@ -115,8 +121,6 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
             elif param_type == 'integer':
                 single_line = isinstance(data[0][1], np.int32)
         except IndexError:
-            breakpoint()
-            print('Error! 103')
             continue
 
         if single_line:
@@ -125,8 +129,6 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
             try:
                 data_out = np.zeros((len(data), len(data[0][1])))
             except TypeError:
-                print('Error! 112')
-                breakpoint()
                 continue
 
         for idx, datapoint in enumerate(data):
@@ -162,15 +164,15 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         if spec:
             data_table['v'] = centers
 
-        saved = store_data(param_name + suffix, data=data_table)
-        metadata = get_data(param_name + suffix, metadata=True)
+        saved = store_data(prefix + param_name + suffix, data=data_table)
+        metadata = get_data(prefix + param_name + suffix, metadata=True)
         metadata['HAPI'] = hapi_metadata
 
         if spec:
-            options(param_name + suffix, 'spec', True)
+            options(prefix + param_name + suffix, 'spec', True)
 
         if saved:
-            out_vars.append(param_name + suffix)
+            out_vars.append(prefix + param_name + suffix)
 
         # wait for a second before going to the next variable
         # to avoid hitting the server too quickly

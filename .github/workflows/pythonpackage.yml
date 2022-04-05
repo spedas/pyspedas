@@ -59,6 +59,7 @@ jobs:
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coverage run -a -m pyspedas.mms.tests.feeps
         # coverage run -a -m pyspedas.mms.tests.eis
+        coverage run -a -m pyspedas.mms.tests.fpi_tests
         coverage run -a -m pyspedas.mms.tests.file_filter
         coverage run -a -m pyspedas.mms.tests.data_rate_segments
         coverage run -a -m pyspedas.dscovr.tests.tests
@@ -91,5 +92,6 @@ jobs:
         coverage run -a -m pyspedas.erg.tests.tests
         coverage run -a -m pyspedas.solo.tests.tests
         coverage run -a -m pyspedas.kyoto.tests.tests
+        coverage run -a -m pyspedas.swarm.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
         coveralls

@@ -61,3 +61,4 @@ from . import equator_s
 from . import solo
 from . import secs
 from . import kyoto
+from . import swarm

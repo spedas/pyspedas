@@ -17,14 +17,18 @@ class LinkParser(HTMLParser):
         if tag == 'a':
             attrs = {k: v for (k, v) in attrs}
             if 'href' in attrs:
+                link = attrs['href']
+                # kludge to support http://rbspice?.ftecs.com/
+                if '/' in link:
+                    link = link.split('/')[-1]
                 try:
-                    self.links.append((attrs['href']))
+                    self.links.append((link))
                 except AttributeError:
-                    self.links = [(attrs['href'])]
+                    self.links = [(link)]
     
 
-def download_file(url=None, filename=None, headers = {}, username=None, password=None, verify=False, session=None):
-    '''
+def download_file(url=None, filename=None, headers={}, username=None, password=None, verify=False, session=None):
+    """
     Download a file and return its local path; this function is primarily meant to be called by the download function below
     
     Parameters:
@@ -52,7 +56,7 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
     Returns:
         String containing the local file name
 
-    '''
+    """
 
     if session is None:
         session = requests.Session()
@@ -119,7 +123,7 @@ def download_file(url=None, filename=None, headers = {}, username=None, password
     return filename
 
 def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False, last_version=False):
-    '''
+    """
     Download one or more remote files and return their local paths.
 
     Parameters:
@@ -160,7 +164,7 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
     Returns:
         String list specifying the full local path to all requested files
 
-    '''
+    """
     local_file_in = local_file
 
     if isinstance(remote_path, list):

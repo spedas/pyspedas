@@ -80,8 +80,6 @@ from pyspedas import tnames
 
 def atan2c(zx, zy):
     """Define arctan2 with complex numbers."""
-    if not np.isfinite(zx) or not np.isfinite(zy):
-        res = np.nan
     if np.isreal(zx) and np.isreal(zy):
         res = np.arctan2(zx, zy)
     else:
@@ -113,7 +111,6 @@ def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
     # Define arrays.
     helicity = np.empty((nosteps, int(nopfft/2), 3))
     ellip = np.empty((nosteps, int(nopfft/2), 3))
-    lam = np.array([0] * 2)
     alphax = np.empty((nosteps, int(nopfft/2)))
     alphasin2x = np.empty((nosteps, int(nopfft/2)))
     alphacos2x = np.empty((nosteps, int(nopfft/2)))
@@ -225,9 +222,6 @@ def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
                                  np.sin(waveangle[KK, k])) /
                                 np.abs(np.imag(ematspec[KK, k, 0, 1]) *
                                        np.sin(waveangle[KK, k])))
-
-    elliptict0 = np.empty((int(nopfft/2)))
-    helict0 = np.empty((int(nopfft/2)))
 
     # Average over helicity and ellipticity results.
     elliptict0 = (ellip[KK, :, 0]+ellip[KK, :, 1]+ellip[KK, :, 2])/3

@@ -12,6 +12,7 @@ from pyspedas.mms.mms_config import CONFIG
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_load_fast_segments(trange=None, suffix=''):
     '''
     This function loads the fast segment intervals
@@ -68,7 +69,7 @@ def mms_load_fast_segments(trange=None, suffix=''):
 
     vars_created = store_data('mms_bss_fast'+suffix, data={'x': bar_x, 'y': bar_y})
 
-    if vars_created == False:
+    if not vars_created:
         logging.error('Error creating fast segment intervals tplot variable')
         return None
 

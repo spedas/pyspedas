@@ -1,7 +1,6 @@
 
 import numpy as np
 import pandas as pd
-import requests
 import zipfile
 from tempfile import mkdtemp
 from pyspedas import time_double

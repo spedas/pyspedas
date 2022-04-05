@@ -118,7 +118,7 @@ def mms_load_sroi_segments(trange=None, probe=1, suffix=''):
 
     vars_created = store_data('mms' + probe + '_bss_sroi'+suffix, data={'x': bar_x, 'y': bar_y})
 
-    if vars_created == False:
+    if not vars_created:
         logging.error('Error creating SRoI segment intervals tplot variable')
         return None
 

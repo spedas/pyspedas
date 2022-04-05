@@ -28,18 +28,43 @@ def load(trange=['2020-06-01', '2020-06-02'],
 
     """
 
+    # Defaults for L2, L3 data
+    science_or_low_latency = 'science'
+    date_format = '%Y%m%d'
+    cdf_version = '??'
+
+    res = 24*3600.
+
+    if level == 'll02':
+        science_or_low_latency = 'low_latency'
+        date_format = '%Y%m%dt%H%M??-*'
+        cdf_version = '???'
+        res = 60.0
+
     if instrument == 'mag':
-        pathformat = instrument+'/science/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_%Y%m%d_v??.cdf'
+        pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
     elif instrument == 'epd':
-        pathformat = instrument+'/science/'+level+'/'+datatype+'/'+mode+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'-'+mode+'_%Y%m%d_v??.cdf'
+        pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/'+mode+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'-'+mode+'_'+date_format+'_v'+cdf_version+'.cdf'
     elif instrument == 'rpw':
-        pathformat = instrument+'/science/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_%Y%m%d_v??.cdf'
+        pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
     elif instrument == 'swa':
-        if datatype == 'pas-eflux':
-            pathformat = instrument+'/science/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_%Y%m%d_v??.cdf'
+        if level == 'l2' or level == 'll02':
+            if datatype == 'pas-eflux' or datatype == 'pas-grnd-mom' or datatype == 'pas-vdf':
+                pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
+            else:
+                date_format = '%Y%m%dt%H%M??-*'
+                res = 60.0
+                pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
+        elif level == 'l1':
+            if datatype == 'his-pha' or datatype == 'his-sensorrates' or datatype == 'pas-3d' or datatype == 'pas-cal' or datatype == 'pas-mom':
+                pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
+            else:
+                date_format = '%Y%m%dt%H%M??-*'
+                res = 60.0
+                pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
 
     # find the full remote path names using the trange
-    remote_names = dailynames(file_format=pathformat, trange=trange)
+    remote_names = dailynames(file_format=pathformat, trange=trange, res=res)
 
     out_files = []
 

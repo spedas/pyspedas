@@ -2,8 +2,7 @@
 import logging
 from time import time
 
-import pyspedas
-from pyspedas import time_double
+from pyspedas import time_double, mms
 from pyspedas.mms.particles.mms_part_products import mms_part_products
 
 logging.captureWarnings(True)
@@ -130,7 +129,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         center_measurement = True
     
     if instrument == 'fpi':
-        data_vars = pyspedas.mms.fpi(datatype='d'+species+'s-dist', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, spdf=spdf)
+        data_vars = mms.fpi(datatype='d'+species+'s-dist', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, spdf=spdf)
     elif instrument == 'hpca':
         # for HPCA, 'fast' should be 'srvy'
         if data_rate == 'fast':
@@ -138,7 +137,7 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
         # 'i' and 'e' are only valid for FPI
         if species in ['i', 'e']:
             species = 'hplus'
-        data_vars = pyspedas.mms.hpca(datatype='ion', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, get_support_data=True, spdf=spdf)
+        data_vars = mms.hpca(datatype='ion', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, get_support_data=True, spdf=spdf)
     else:
         logging.error('Error, unknown instrument: ' + instrument + '; valid options: fpi, hpca')
         return
@@ -156,19 +155,19 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     support_trange = [time_double(trange[0])-60.0, time_double(trange[1])+60.0]
 
     # load state data (needed for coordinate transformations and field-aligned coordinates)
-    pos_vars = pyspedas.mms.mec(probe=probe, trange=support_trange, time_clip=True, spdf=spdf)
+    pos_vars = mms.mec(probe=probe, trange=support_trange, time_clip=True, spdf=spdf)
 
     if len(pos_vars) == 0:
         logging.error('Error, no state data loaded.')
         return
 
-    mag_vars = pyspedas.mms.fgm(probe=probe, trange=support_trange, data_rate=mag_data_rate, time_clip=True, spdf=spdf)
+    mag_vars = mms.fgm(probe=probe, trange=support_trange, data_rate=mag_data_rate, time_clip=True, spdf=spdf)
 
     if len(mag_vars) == 0:
         logging.error('Error, no magnetic field data loaded.')
         return
 
-    scpot_vars = pyspedas.mms.edp(probe=probe, trange=support_trange, level='l2', spdf=spdf, data_rate=scpot_data_rate, datatype='scpot', varformat='*_edp_scpot_*')
+    scpot_vars = mms.edp(probe=probe, trange=support_trange, level='l2', spdf=spdf, data_rate=scpot_data_rate, datatype='scpot', varformat='*_edp_scpot_*')
 
     out_vars = []
 

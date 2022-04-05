@@ -1,7 +1,6 @@
 
 import numpy as np
-from pyspedas import time_double
-from pytplot import get_data, store_data, options
+from pytplot import get_data, store_data
 from geopack import geopack, t01
 
 def tt01(pos_var_gsm, parmod=None, suffix=''):

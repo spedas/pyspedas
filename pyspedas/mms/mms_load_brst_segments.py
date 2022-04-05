@@ -12,6 +12,7 @@ from pyspedas.mms.mms_config import CONFIG
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_load_brst_segments(trange=None, suffix=''):
     '''
     This function loads the burst segment intervals
@@ -73,7 +74,7 @@ def mms_load_brst_segments(trange=None, suffix=''):
 
     vars_created = store_data('mms_bss_burst'+suffix, data={'x': bar_x, 'y': bar_y})
 
-    if vars_created == False:
+    if not vars_created:
         logging.error('Error creating burst segment intervals tplot variable')
         return None
 
