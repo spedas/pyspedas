@@ -12,7 +12,8 @@ This function is similar to cotrans.pro of IDL SPEDAS.
 """
 import pytplot
 from pyspedas.cotrans.cotrans_lib import subcotrans
-
+from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
+from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 
 def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
             coord_in=None, coord_out=None):
@@ -38,15 +39,22 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
 
     Returns
     -------
-    Returns 1 for suggesful completion.
+    Returns 1 for successful completion.
         Fills a new pytplot variable with data in the coord_out system.
     """
-    if coord_in is None or coord_out is None:
-        print("cotrans error: No input or output coordinates were provided.")
+    if coord_out is None:
+        print("cotrans error: No output coordinates were provided.")
         return 0
+
+    if coord_in is None:
+        coord_in = cotrans_get_coord(name_in)
+        if coord_in is None:
+            print("cotrans error: No input coordinates were provided.")
+
     coord_in = coord_in.lower()
     coord_out = coord_out.lower()
     all_coords = ["gse", "gsm", "sm", "gei", "geo", "mag", "j2000"]
+
     if coord_in not in all_coords or coord_out not in all_coords:
         print("cotrans error: Requested coordinate system not supported.")
         return 0
@@ -81,8 +89,18 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     pytplot.data_quants[name_out].data = data_out
 
     # We should change an attribute for the coordinate system.
+    cotrans_set_coord(name_out, coord_out.upper())
 
-    msg = ("Output variable: " + name_out)
-    print(msg)
+    # should also update the legend, if it includes the coordinate system
+    # for this to work, the coordinate system should be in all upper case
+    metadata = pytplot.get_data(name_out, metadata=True)
+    if metadata.get('plot_options') is not None:
+        if metadata['plot_options'].get('yaxis_opt') is not None:
+            if metadata['plot_options']['yaxis_opt'].get('legend_names') is not None:
+                legend = metadata['plot_options']['yaxis_opt'].get('legend_names')
+                updated_legend = [item.replace(coord_in.upper(), coord_out.upper()) for item in legend]
+                metadata['plot_options']['yaxis_opt']['legend_names'] = updated_legend
+
+    print("Output variable: " + name_out)
 
     return 1
