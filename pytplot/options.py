@@ -207,7 +207,7 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'nodata':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
 
-            if option == 'line_style':
+            if option == 'line_style' or option == 'linestyle':
                 if value == 0 or value == 'solid_line':
                     to_be = []
                 elif value == 1 or value == 'dot':
@@ -224,7 +224,11 @@ def options(name, option=None, value=None, opt_dict=None):
                     to_be=value
 
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style'] = to_be
-                pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = value
+
+                if isinstance(value, list):
+                    pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = value
+                else:
+                    pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = [value]
 
                 if(value == 6 or value == 'none'):
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
@@ -302,7 +306,10 @@ def options(name, option=None, value=None, opt_dict=None):
                 pytplot.data_quants[i].attrs['plot_options']['extras']['right_axis'] = value
 
             if option == 'thick':
-                pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
+                if isinstance(value, list):
+                    pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
+                else:
+                    pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_width'] = [value]
 
             if option == 'yrange' or option == 'y_range':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]

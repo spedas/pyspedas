@@ -1,6 +1,6 @@
 import numpy as np
 
-def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras):
+def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=None):
     alpha = plot_extras.get('alpha')
 
     if yaxis_options.get('legend_names') is not None:
@@ -18,6 +18,8 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     # set up line colors
     if plot_extras.get('line_color') is not None:
         colors = plot_extras['line_color']
+        if pseudo_plot_num is not None and pseudo_plot_num < len(colors):
+            colors = [plot_extras['line_color'][pseudo_plot_num]]
 
         # check the color size vs. the size of the data
         # colors should already be an array at this point
@@ -46,24 +48,34 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     if line_opts.get('line_width') is not None:
         thick = line_opts['line_width']
     else:
-        thick = 0.5
+        thick = [0.5]
+
+    if num_lines >= len(thick):
+        thick = thick*num_lines
 
     # line style
     if line_opts.get('line_style_name') is not None:
         line_style_user = line_opts['line_style_name']
-        # legacy values
-        if line_style_user == 'solid_line':
-            line_style = 'solid'
-        elif line_style_user == 'dot':
-            line_style = 'dotted'
-        elif line_style_user == 'dash':
-            line_style = 'dashed'
-        elif line_style_user == 'dash_dot':
-            line_style = 'dashdot'
-        else:
-            line_style = line_style_user
+
+        # line_style_user should already be a list
+        # handle legacy values
+        line_style = []
+        for linestyle in line_style_user:
+            if linestyle == 'solid_line':
+                line_style.append('solid')
+            elif linestyle == 'dot':
+                line_style.append('dotted')
+            elif linestyle == 'dash':
+                line_style.append('dashed')
+            elif linestyle == 'dash_dot':
+                line_style.append('dashdot')
+            else:
+                line_style.append(linestyle)
     else:
-        line_style = 'solid'
+        line_style = ['solid']
+
+    if num_lines >= len(line_style):
+        line_style = line_style*num_lines
 
     symbols = False
     if line_opts.get('symbols') is not None:
@@ -71,7 +83,7 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
             symbols = True
 
     # create the plot
-    line_options = {'linewidth': thick, 'linestyle': line_style, 'alpha': alpha}
+    line_options = {'alpha': alpha}
 
     if line_opts.get('marker') is not None:
         line_options['marker'] = line_opts['marker']
@@ -102,7 +114,8 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
             plotter = this_axis.scatter
 
     for line in range(0, num_lines):
-        this_line = plotter(var_times, var_data.y if num_lines == 1 else var_data.y[:, line], color=colors[line], **line_options)
+        this_line = plotter(var_times, var_data.y if num_lines == 1 else var_data.y[:, line], color=colors[line],
+                            linestyle=line_style[line], linewidth=thick[line], **line_options)
 
         if labels is not None:
             try:

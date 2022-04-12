@@ -280,7 +280,7 @@ def tplot(variables, var_label=None,
                 continue
         else:
             # create line plots
-            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras)
+            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num)
             if not plot_created:
                 continue
             
