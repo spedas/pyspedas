@@ -5,6 +5,8 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
 
     if yaxis_options.get('legend_names') is not None:
         labels = yaxis_options['legend_names']
+        if pseudo_plot_num is not None and pseudo_plot_num < len(labels):
+            labels = [yaxis_options['legend_names'][pseudo_plot_num]]
         if labels[0] is None:
             labels = None
     else:
@@ -47,6 +49,8 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     # line thickness
     if line_opts.get('line_width') is not None:
         thick = line_opts['line_width']
+        if pseudo_plot_num is not None and pseudo_plot_num < len(thick):
+            thick = [line_opts['line_width'][pseudo_plot_num]]
     else:
         thick = [0.5]
 
@@ -71,6 +75,8 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
                 line_style.append('dashdot')
             else:
                 line_style.append(linestyle)
+        if pseudo_plot_num is not None and pseudo_plot_num < len(line_style):
+            line_style = [line_opts['line_style_name'][pseudo_plot_num]]
     else:
         line_style = ['solid']
 
