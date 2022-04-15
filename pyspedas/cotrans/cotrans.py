@@ -50,6 +50,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         coord_in = cotrans_get_coord(name_in)
         if coord_in is None:
             print("cotrans error: No input coordinates were provided.")
+            return 0
 
     coord_in = coord_in.lower()
     coord_out = coord_out.lower()
