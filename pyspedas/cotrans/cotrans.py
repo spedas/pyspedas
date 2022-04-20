@@ -50,6 +50,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         coord_in = cotrans_get_coord(name_in)
         if coord_in is None:
             print("cotrans error: No input coordinates were provided.")
+            return 0
 
     coord_in = coord_in.lower()
     coord_out = coord_out.lower()
@@ -100,6 +101,9 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
                 legend = metadata['plot_options']['yaxis_opt'].get('legend_names')
                 updated_legend = [item.replace(coord_in.upper(), coord_out.upper()) for item in legend]
                 metadata['plot_options']['yaxis_opt']['legend_names'] = updated_legend
+            if metadata['plot_options']['yaxis_opt'].get('axis_label') is not None:
+                ytitle = metadata['plot_options']['yaxis_opt'].get('axis_label')
+                metadata['plot_options']['yaxis_opt']['axis_label'] = ytitle.replace(coord_in.upper(), coord_out.upper())
 
     print("Output variable: " + name_out)
 
