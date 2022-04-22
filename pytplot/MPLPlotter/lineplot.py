@@ -3,19 +3,41 @@ import numpy as np
 def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=None):
     alpha = plot_extras.get('alpha')
 
-    if yaxis_options.get('legend_names') is not None:
-        labels = yaxis_options['legend_names']
-        if pseudo_plot_num is not None and pseudo_plot_num < len(labels):
-            labels = [yaxis_options['legend_names'][pseudo_plot_num]]
-        if labels[0] is None:
-            labels = None
-    else:
-        labels = None
-    
     if len(var_data.y.shape) == 1:
         num_lines = 1
     else:
         num_lines = var_data.y.shape[1]
+
+    if yaxis_options.get('legend_names') is not None:
+        labels = yaxis_options['legend_names']
+        if pseudo_plot_num is not None and pseudo_plot_num < len(labels):
+            labels = [yaxis_options['legend_names'][pseudo_plot_num]]
+
+        if labels[0] is None:
+            labels = None
+    else:
+        labels = None
+
+    legend_location = yaxis_options.get('legend_location')
+
+    bbox_to_anchor = None
+    if legend_location is not None:
+        if legend_location == 'spedas':
+            # the spedas legend puts the legend on the outside of the panel
+            # to the right of the panel (just like in IDL)
+            legend_location = 'center left'
+            bbox_to_anchor = (1.04, 0.5)
+
+    legend_size = yaxis_options.get('legend_size')
+    legend_shadow = yaxis_options.get('legend_shadow')
+    legend_title = yaxis_options.get('legend_title')
+    legend_titlesize = yaxis_options.get('legend_titlesize')
+    legend_color = yaxis_options.get('legend_color')
+    legend_markerfirst = yaxis_options.get('legend_markerfirst')
+    legend_markerscale = yaxis_options.get('legend_markerscale')
+    legend_edgecolor = yaxis_options.get('legend_edgecolor')
+    legend_facecolor = yaxis_options.get('legend_facecolor')
+    legend_frameon = yaxis_options.get('legend_frameon')
 
     # set up line colors
     if plot_extras.get('line_color') is not None:
@@ -133,6 +155,9 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
                 continue
 
     if labels is not None:
-        this_axis.legend()
+        this_axis.legend(loc=legend_location, fontsize=legend_size, shadow=legend_shadow, title=legend_title,
+                         labelcolor=legend_color, markerfirst=legend_markerfirst, markerscale=legend_markerscale,
+                         facecolor=legend_facecolor, edgecolor=legend_edgecolor, frameon=legend_frameon,
+                         title_fontsize=legend_titlesize, bbox_to_anchor=bbox_to_anchor)
 
     return True

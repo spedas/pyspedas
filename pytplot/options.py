@@ -174,6 +174,39 @@ def options(name, option=None, value=None, opt_dict=None):
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = [value]
 
+            if option == 'legend_location' or option == 'labels_location':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_location'] = value
+
+            if option == 'legend_size' or option == 'labels_size':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_size'] = value
+
+            if option == 'legend_shadow' or option == 'labels_shadow':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_shadow'] = value
+
+            if option == 'legend_title' or option == 'labels_title':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_title'] = value
+
+            if option == 'legend_titlesize' or option == 'labels_titlesize':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_titlesize'] = value
+
+            if option == 'legend_color' or option == 'labels_color':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_color'] = value
+
+            if option == 'legend_edgecolor' or option == 'labels_edgecolor':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_edgecolor'] = value
+
+            if option == 'legend_facecolor' or option == 'labels_facecolor':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_facecolor'] = value
+
+            if option == 'legend_markerfirst' or option == 'labels_markerfirst':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerfirst'] = value
+
+            if option == 'legend_markerscale' or option == 'labels_markerscale':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
+
+            if option == 'legend_frameon' or option == 'labels_frameon':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
+
             if option == 'xlog_slice':
                 if value:
                     pytplot.data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'log'
