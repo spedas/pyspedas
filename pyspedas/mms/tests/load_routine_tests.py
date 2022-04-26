@@ -103,6 +103,20 @@ class FPILoadTestCases(unittest.TestCase):
         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-moms', 'dis-dist'], time_clip=True)
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_brst'))
 
+    def test_load_rename_bars(self):
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='des-dist')
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-dist')
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='des-moms')
+        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-moms')
+        self.assertTrue(data_exists('mms1_dis_compressionloss_brst_moms'))
+        self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms'))
+        self.assertTrue(data_exists('mms1_des_errorflags_brst_moms'))
+        self.assertTrue(data_exists('mms1_des_compressionloss_brst_moms'))
+        self.assertTrue(data_exists('mms1_des_errorflags_brst_dist'))
+        self.assertTrue(data_exists('mms1_des_compressionloss_brst_dist'))
+        self.assertTrue(data_exists('mms1_dis_errorflags_brst_dist'))
+        self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist'))
+
     def test_center_fast_ion_data_notplot(self):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], notplot=True)
         centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered', notplot=True)

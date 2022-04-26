@@ -62,6 +62,8 @@ jobs:
         coverage run -a -m pyspedas.mms.tests.fpi_tests
         coverage run -a -m pyspedas.mms.tests.file_filter
         coverage run -a -m pyspedas.mms.tests.data_rate_segments
+        coverage run -a -m pyspedas.mms.tests.curlometer
+        coverage run -a -m pyspedas.mms.tests.wavpol
         coverage run -a -m pyspedas.dscovr.tests.tests
         coverage run -a -m pyspedas.utilities.tests.download_tests
         coverage run -a -m pyspedas.utilities.tests.misc_tests
@@ -77,7 +79,6 @@ jobs:
         coverage run -a -m pyspedas.stereo.tests.tests
         coverage run -a -m pyspedas.twins.tests.tests
         coverage run -a -m pyspedas.wind.tests.tests
-        coverage run -a -m pyspedas.mms.tests.curlometer
         coverage run -a -m pyspedas.poes.tests.tests
         coverage run -a -m pyspedas.polar.tests.tests
         coverage run -a -m pyspedas.geotail.tests.tests

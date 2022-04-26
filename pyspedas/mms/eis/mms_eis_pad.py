@@ -193,7 +193,8 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2',
                 options(new_name, 'spec', True)
                 options(new_name, 'Colormap', 'spedas')
                 options(new_name, 'ztitle', units_label)
-                options(new_name, 'ytitle', 'MMS' + str(probe_id) + ' ' + datatype_id + ' PA (deg)')
+                options(new_name, 'ytitle', 'MMS' + str(probe_id) + ' ' + datatype_id + ' PA')
+                options(new_name, 'ysubtitle', '[deg]')
                 out_vars.append(new_name)
 
                 spin_avg_pads = mms_eis_pad_spinavg(scopes=scopes, probe=probe_id, data_rate=data_rate, level=level, datatype=datatype_id, data_units=data_units, species=species_id, energy=energy, size_pabin=size_pabin, suffix=suffix)
