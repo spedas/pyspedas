@@ -1,6 +1,7 @@
 
 import unittest
 
+from pyspedas.mms.spd_mms_load_bss import spd_mms_load_bss
 from pyspedas.mms.mms_load_sroi_segments import mms_load_sroi_segments
 from pyspedas.mms.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.mms.mms_load_brst_segments import mms_load_brst_segments
@@ -25,7 +26,13 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(len(fast[0]) == 35)
         self.assertTrue(fast[0][0] == 1443504404.0)
         self.assertTrue(fast[1][0] == 1443554774.0)
-
+    def test_spd_mms_load_bss(self):
+        spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'])
+        self.assertTrue(data_exists('mms_bss_fast'))
+        self.assertTrue(data_exists('mms_bss_burst'))
+        spd_mms_load_bss(trange=['2019-10-01', '2019-11-01'])
+        self.assertTrue(data_exists('mms_bss_burst'))
+        self.assertTrue(data_exists('mms1_bss_sroi'))
 
 if __name__ == '__main__':
     unittest.main()
