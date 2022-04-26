@@ -159,7 +159,8 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
         options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'zlog', True)
         options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'Colormap', 'spedas')
         options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'ztitle', units_label)
-        options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' (keV)')
+        options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype)
+        options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix, 'ysubtitle', '[keV]')
         out_vars.append('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix)
 
     return out_vars

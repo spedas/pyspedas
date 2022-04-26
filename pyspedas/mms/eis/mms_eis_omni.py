@@ -71,7 +71,8 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ylog', 1)
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'zlog', 1)
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ztitle', units_label)
-        options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species + ' Energy [keV]')
+        options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species)
+        options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ysubtitle', 'Energy [keV]')
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'yrange', [14, 45])
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'Colormap', 'spedas')
 

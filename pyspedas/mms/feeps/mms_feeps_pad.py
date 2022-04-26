@@ -167,7 +167,8 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     options(new_name, 'spec', True)
     options(new_name, 'Colormap', 'spedas')
     options(new_name, 'ztitle', units_label)
-    options(new_name, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' PA (deg)')
+    options(new_name, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' PA')
+    options(new_name, 'ysubtitle', '[deg]')
 
     # create the spin-averaged PAD
     spin_avg_var = mms_feeps_pad_spinavg(probe=probe, data_units=data_units, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix, energy=energy, bin_size=bin_size)
