@@ -37,9 +37,9 @@ class LoadTestCases(unittest.TestCase):
         data = maven.sep()
         self.assertTrue(data_exists('f_ion_flux_tot_s2-cal-svy-full'))
 
-    def test_load_lpw_data(self):
-        data = maven.lpw()
-        self.assertTrue(data_exists('mvn_lpw_lp_iv_l2_lpiv'))
+    #def test_load_lpw_data(self):
+    #    data = maven.lpw()
+    #    self.assertTrue(data_exists('mvn_lpw_lp_iv_l2_lpiv'))
 
     def test_load_euv_data(self):
         data = maven.euv()
