@@ -1,11 +1,21 @@
 import unittest
-import numpy as np
 from ..feeps.mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
 from pyspedas import mms_load_feeps, mms_feeps_pad
 from pyspedas.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
 from ...utilities.data_exists import data_exists
+from pytplot import del_data
 
 class FEEPSTestCases(unittest.TestCase):
+    def test_feeps_pad_regression(self):
+        """
+        This is a regression test for a bug caused by the v7 of the FEEPS CDF files
+        v7 CDFs have an extra dimension on the variables containing the pitch angle data
+        """
+        mms_load_feeps(datatype='electron', trange=['2016-11-23', '2016-11-24'], data_rate='srvy', probe=4)
+        mms_feeps_pad(probe=4)
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad'))
+        del_data('*')
+
     def test_gyrophase_angles(self):
         mms_load_feeps(data_rate='brst', trange=['2017-07-11/22:34', '2017-07-11/22:34:25'], probe=3)
         mms_feeps_gpd(probe='3', energy=[61, 77], data_rate='brst')
