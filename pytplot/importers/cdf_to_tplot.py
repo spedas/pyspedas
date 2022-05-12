@@ -198,10 +198,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                             # check if a conversion to seconds is required
                             if 'SI_CONVERSION' in delta_plus_var_att:
                                 si_conv = delta_plus_var_att['SI_CONVERSION']
-                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+                                delta_plus_var = delta_plus_var.astype(float)*np.float64(si_conv.split('>')[0])
                             elif 'SI_CONV' in delta_plus_var_att:
                                 si_conv = delta_plus_var_att['SI_CONV']
-                                delta_plus_var = delta_plus_var.astype(float)*np.float(si_conv.split('>')[0])
+                                delta_plus_var = delta_plus_var.astype(float)*np.float64(si_conv.split('>')[0])
 
                         if 'DELTA_MINUS_VAR' in epoch_var_atts:
                             delta_minus_var = cdf_file.varget(epoch_var_atts['DELTA_MINUS_VAR'])
