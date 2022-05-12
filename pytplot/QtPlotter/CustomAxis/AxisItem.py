@@ -3,7 +3,6 @@ import pyqtgraph as pg
 import pyqtgraph.debug as debug
 from pyqtgraph import Point
 from pyqtgraph.Qt import QtCore
-from pyqtgraph.python2_3 import asUnicode
 
 class AxisItem(pg.AxisItem):
     """
@@ -234,7 +233,7 @@ class AxisItem(pg.AxisItem):
                 if s is None:
                     rects.append(None)
                 else:
-                    br = p.boundingRect(QtCore.QRectF(0, 0, 100, 100), QtCore.Qt.AlignCenter, asUnicode(s))
+                    br = p.boundingRect(QtCore.QRectF(0, 0, 100, 100), QtCore.Qt.AlignCenter, str(s))
                     ## boundingRect is usually just a bit too large
                     ## (but this probably depends on per-font metrics?)
                     br.setHeight(br.height() * 1.4)
@@ -274,7 +273,7 @@ class AxisItem(pg.AxisItem):
                 vstr = strings[j]
                 if vstr is None:  ## this tick was ignored because it is out of bounds
                     continue
-                vstr = asUnicode(vstr)
+                vstr = str(vstr)
                 x = tickPositions[i][j]
                 # textRect = p.boundingRect(QtCore.QRectF(0, 0, 100, 100), QtCore.Qt.AlignCenter, vstr)
                 textRect = rects[j]
