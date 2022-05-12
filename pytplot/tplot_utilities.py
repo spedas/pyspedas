@@ -256,15 +256,21 @@ def get_heatmap_color(color_map, min_val, max_val, values, zscale='log'):
 def timebar_delete(t, varname=None, dim='height'):
     if varname is None:
         for name in pytplot.data_quants:
-            list_timebars = pytplot.data_quants[name]['plot_options']['time_bar']
+            if isinstance(pytplot.data_quants[name], dict):
+                # non-record varying variable
+                continue
+            try:
+                list_timebars = pytplot.data_quants[name].attrs['plot_options']['time_bar']
+            except KeyError:
+                continue
             elem_to_delete = []
             for elem in list_timebars:
                 for num in t:
-                    if (elem.location == num) and (elem.dimension == dim):
+                    if (elem['location'] == num) and (elem['dimension'] == dim):
                         elem_to_delete.append(elem)
             for i in elem_to_delete:
                 list_timebars.remove(i)
-            pytplot.data_quants[name]['plot_options']['time_bar'] = list_timebars
+            pytplot.data_quants[name].attrs['plot_options']['time_bar'] = list_timebars
     else:
         if not isinstance(varname, list):
             varname = [varname]
@@ -272,15 +278,21 @@ def timebar_delete(t, varname=None, dim='height'):
             if i not in pytplot.data_quants.keys():
                 print(str(i) + " is currently not in pytplot.")
                 return
-            list_timebars = pytplot.data_quants[i]['plot_options']['time_bar']
+            if isinstance(pytplot.data_quants[i], dict):
+                # non-record varying variable
+                continue
+            try:
+                list_timebars = pytplot.data_quants[i].attrs['plot_options']['time_bar']
+            except KeyError:
+                continue
             elem_to_delete = []
             for elem in list_timebars:
                 for num in t:
-                    if (elem.location == num) and (elem.dimension == dim):
+                    if (elem['location'] == num) and (elem['dimension'] == dim):
                         elem_to_delete.append(elem)
             for j in elem_to_delete:
                 list_timebars.remove(j)
-            pytplot.data_quants[i]['plot_options']['time_bar']
+            # pytplot.data_quants[i].attrs['plot_options']['time_bar']
     return
 
 
