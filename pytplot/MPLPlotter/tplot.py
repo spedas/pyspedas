@@ -291,7 +291,21 @@ def tplot(variables, var_label=None,
             for time_bar in time_bars:
                 this_axis.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), 
                     color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
-    
+
+        # highlight time intervals
+        if pytplot.data_quants[variable].attrs['plot_options'].get('highlight_intervals') is not None:
+            highlight_intervals = pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals']
+
+            for highlight_interval in highlight_intervals:
+                hightlight_opts = copy.deepcopy(highlight_interval)
+                del hightlight_opts['location']
+                if highlight_interval['edgecolor'] is not None or highlight_interval['facecolor'] is not None:
+                    del hightlight_opts['color']
+
+                this_axis.axvspan(mdates.date2num(datetime.utcfromtimestamp(highlight_interval['location'][0])),
+                                  mdates.date2num(datetime.utcfromtimestamp(highlight_interval['location'][1])),
+                                  **hightlight_opts)
+
     # apply any addition x-axes specified by the var_label keyword
     if var_label is not None:
         if not isinstance(var_label, list):

@@ -696,3 +696,23 @@ def reduce_spec_dataset(tplot_dataset=None, name=None):
             else:
                 da = da.sum(dim=d, skipna=True, keep_attrs=True)
     return da
+
+def highlight(variables, range, color='gray', alpha=0.2, fill=True, edgecolor=None, facecolor=None, hatch=None):
+    if not isinstance(variables, list):
+        variables = [variables]
+
+    for variable in variables:
+        if range is None:
+            pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals'] = None
+            return
+        interval = {'location': range,
+                    'color': color,
+                    'alpha': alpha,
+                    'fill': fill,
+                    'edgecolor': edgecolor,
+                    'facecolor': facecolor,
+                    'hatch': hatch}
+        if pytplot.data_quants[variable].attrs['plot_options'].get('highlight_intervals') is None:
+            pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals'] = [interval]
+        else:
+            pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals'].append(interval)
