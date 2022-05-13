@@ -698,18 +698,20 @@ def reduce_spec_dataset(tplot_dataset=None, name=None):
     return da
 
 
-def highlight(variables, range, color='gray', alpha=0.2, fill=True, edgecolor=None, facecolor=None, hatch=None):
+def highlight(variables=None, range=None, color='gray', alpha=0.2, fill=True, edgecolor=None, facecolor=None, hatch=None, delete=False):
     """
     This function highlights a time interval on tplot variables
-
     """
     if not isinstance(variables, list):
         variables = [variables]
 
     for variable in variables:
+        if delete:
+            pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals'] = None
+            continue
         if range is None:
             pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals'] = None
-            return
+            continue
         interval = {'location': range,
                     'color': color,
                     'alpha': alpha,
