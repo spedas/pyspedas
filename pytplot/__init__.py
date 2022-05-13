@@ -156,6 +156,7 @@ from pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
 from pytplot.importers.sts_to_tplot import sts_to_tplot
 from .tplot_utilities import compare_versions
 from .tplot_utilities import highlight
+from .tplot_utilities import annotate
 from .link import link
 from pytplot.tplot_math import *
 

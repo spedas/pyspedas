@@ -306,6 +306,22 @@ def tplot(variables, var_label=None,
                                   mdates.date2num(datetime.utcfromtimestamp(highlight_interval['location'][1])),
                                   **hightlight_opts)
 
+        # add annotations
+        if pytplot.tplot_opt_glob.get('annotations') is not None:
+            annotations = pytplot.tplot_opt_glob['annotations']
+            for annotation in annotations:
+                this_axis.annotate(annotation['text'], annotation['position'],
+                                   xycoords=annotation['xycoords'],
+                                   fontsize=annotation['fontsize'],
+                                   alpha=annotation['alpha'],
+                                   fontfamily=annotation['fontfamily'],
+                                   fontvariant=annotation['fontvariant'],
+                                   fontstyle=annotation['fontstyle'],
+                                   fontstretch=annotation['fontstretch'],
+                                   fontweight=annotation['fontweight'],
+                                   rotation=annotation['rotation'],
+                                   color=annotation['color'])
+
     # apply any addition x-axes specified by the var_label keyword
     if var_label is not None:
         if not isinstance(var_label, list):

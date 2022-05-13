@@ -697,7 +697,12 @@ def reduce_spec_dataset(tplot_dataset=None, name=None):
                 da = da.sum(dim=d, skipna=True, keep_attrs=True)
     return da
 
+
 def highlight(variables, range, color='gray', alpha=0.2, fill=True, edgecolor=None, facecolor=None, hatch=None):
+    """
+    This function highlights a time interval on tplot variables
+
+    """
     if not isinstance(variables, list):
         variables = [variables]
 
@@ -716,3 +721,41 @@ def highlight(variables, range, color='gray', alpha=0.2, fill=True, edgecolor=No
             pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals'] = [interval]
         else:
             pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals'].append(interval)
+
+
+def annotate(text=None, position=None,
+             xycoords='figure fraction',
+             color='black',
+             fontfamily=None,
+             fontsize='x-large',
+             alpha=1,
+             fontvariant='normal',
+             fontstyle='normal',
+             fontstretch='normal',
+             fontweight='normal',
+             rotation='horizontal',
+             delete=False):
+    """
+    This function adds annotations to tplot figures
+    """
+    if delete:
+        pytplot.tplot_opt_glob['annotations'] = None
+        return
+
+    annotations = {'text': text,
+                   'position': position,
+                   'xycoords': xycoords,
+                   'fontfamily': fontfamily,
+                   'fontsize': fontsize,
+                   'fontvariant': fontvariant,
+                   'fontstyle': fontstyle,
+                   'fontstretch': fontstretch,
+                   'fontweight': fontweight,
+                   'rotation': rotation,
+                   'color': color,
+                   'alpha': alpha}
+
+    if pytplot.tplot_opt_glob.get('annotations') is None:
+        pytplot.tplot_opt_glob['annotations'] = [annotations]
+    else:
+        pytplot.tplot_opt_glob['annotations'].append(annotations)
