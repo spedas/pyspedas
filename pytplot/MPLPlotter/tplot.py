@@ -228,7 +228,12 @@ def tplot(variables, var_label=None,
             yrange[1] = None
 
         this_axis.set_ylim(yrange)
-        this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size)
+
+        ytitle_color = 'black'
+        if yaxis_options.get('axis_color') is not None:
+            ytitle_color = yaxis_options['axis_color']
+
+        this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size, color=ytitle_color)
 
         border = True
         if plot_extras.get('border') is not None:
@@ -387,7 +392,13 @@ def tplot(variables, var_label=None,
             cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
             if colorbars[variable]['axis_font_size'] is not None:
                 cax.tick_params(labelsize=colorbars[variable]['axis_font_size'])
-            fig.colorbar(colorbars[variable]['im'], cax=cax, label=colorbars[variable]['ztitle'] + '\n ' + colorbars[variable]['zsubtitle'])
+            colorbar = fig.colorbar(colorbars[variable]['im'], cax=cax)
+
+            ztitle_color = 'black'
+            if zaxis_options.get('axis_color') is not None:
+                ztitle_color = zaxis_options['axis_color']
+
+            colorbar.set_label(colorbars[variable]['ztitle'] + '\n ' + colorbars[variable]['zsubtitle'], color=ztitle_color, fontsize=char_size)
 
     if return_plot_objects:
         return fig, axes

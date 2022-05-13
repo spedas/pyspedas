@@ -377,6 +377,12 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'zsubtitle':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_subtitle'] = value
 
+            if option == 'ytitle_color':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['axis_color'] = value
+
+            if option == 'ztitle_color':
+                pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_color'] = value
+
             if option == 'ybar':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ybar'] = value
 
