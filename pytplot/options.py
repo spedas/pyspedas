@@ -302,6 +302,9 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'marker_size':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker_size'] = value
 
+            if option == 'markevery':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['markevery'] = value
+
             if option == 'symbols':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['symbols'] = value
 

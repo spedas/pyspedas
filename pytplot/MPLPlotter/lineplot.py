@@ -116,6 +116,9 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     if line_opts.get('marker') is not None:
         line_options['marker'] = line_opts['marker']
 
+    if line_opts.get('markevery') is not None:
+        line_options['markevery'] = line_opts['markevery']
+
     if line_opts.get('marker_size') is not None:
         if symbols:
             line_options['s'] = line_opts['marker_size']
