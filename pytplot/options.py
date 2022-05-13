@@ -293,6 +293,9 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'errorevery':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['errorevery'] = value
 
+            if option == 'capsize':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['capsize'] = value
+
             if option == 'ecolor':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['ecolor'] = value
 
