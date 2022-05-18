@@ -17,6 +17,7 @@ munits.registry[np.datetime64] = converter
 munits.registry[date] = converter
 munits.registry[datetime] = converter
 
+
 def tplot(variables, var_label=None,
                      xsize=8, 
                      ysize=10, 

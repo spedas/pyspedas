@@ -19,7 +19,7 @@ def options(name, option=None, value=None, opt_dict=None):
             The name of the option.  See section below.
         value : str/int/float/list
             The value of the option.  See section below.
-        dict : dict
+        opt_dict : dict
             This can be a dictionary of option:value pairs.  Option and value
             will not be needed if this dictionary item is supplied.
 
