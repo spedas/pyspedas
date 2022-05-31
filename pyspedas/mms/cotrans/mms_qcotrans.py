@@ -2,6 +2,12 @@ from pyspedas import cotrans_get_coord
 from pytplot import get_data
 from .mms_cotrans_qtransformer import mms_cotrans_qtransformer
 
+try:
+    import spacepy.coordinates as coord
+except ImportError:
+    print('SpacePy must be installed to use this module.')
+    print('Please install it using: pip install spacepy')
+
 
 def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, probe=None):
     """
