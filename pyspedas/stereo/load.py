@@ -44,11 +44,19 @@ def load(trange=['2013-11-5', '2013-11-6'],
             direction = 'behind'
 
         if instrument == 'mag':
+            CONFIG['remote_data_dir'] = 'http://sprg.ssl.berkeley.edu/data/misc/stereo/'
             pathformat = 'impact/level1/'+direction+'/mag/'+coord+'/%Y/%m/ST'+prb.upper()+'_L1_MAG'+burst+'_'+coord+'_%Y%m%d_V??.cdf'
         elif instrument == 'plastic':
             CONFIG['remote_data_dir'] = 'http://stereo-ssc.nascom.nasa.gov/data/ins_data/'
             if level == 'l2':
                 pathformat = 'plastic/level2/Protons/Derived_from_1D_Maxwellian/'+direction+'/'+datatype+'/%Y/ST'+prb.upper()+'_L2_PLA_1DMax_'+datatype+'_%Y%m%d_V??.cdf'
+        elif instrument == 'swea':
+            CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/stereo/'
+            pathformat = direction + '/' + level + '/impact/swea_' + datatype + '/%Y/sta_' + level + '_swea_' + datatype + '_%Y%m%d_v??.cdf'
+        elif instrument in ['ste', 'sept', 'sit', 'let', 'het']:
+            CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/stereo/'
+            pathformat = direction + '/' + level + '/impact/' + instrument + '/%Y/sta_' + level + '_' + instrument + '_%Y%m%d_v??.cdf'
+
 
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)
