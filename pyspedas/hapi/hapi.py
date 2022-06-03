@@ -94,10 +94,8 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     for param_idx, param in enumerate(params[1:]):
         spec = False
         param_name = param.get('name')
-        print('Loading ' + prefix + param_name + suffix)
-
-        param_type = hapi_metadata['parameters'][param_idx+1].get('type')
-        data_size = hapi_metadata['parameters'][param_idx+1].get('size')
+        param_type = param.get('type')
+        data_size = param.get('size')
 
         if param_type is None:
             param_type = 'double'
@@ -130,7 +128,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         data_out = data_out.squeeze()
 
         # check for fill values
-        fill_value = hapi_metadata['parameters'][param_idx+1].get('fill')
+        fill_value = param.get('fill')
         if fill_value is not None:
             if param_type == 'double':
                 fill_value = float(fill_value)
@@ -156,13 +154,20 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
 
         saved = store_data(prefix + param_name + suffix, data=data_table)
         metadata = get_data(prefix + param_name + suffix, metadata=True)
-        metadata['HAPI'] = hapi_metadata
+        metadata['HAPI'] = param
 
         if spec:
             options(prefix + param_name + suffix, 'spec', True)
 
+        param_units = param.get('units')
+        if param_units is not None:
+            options(prefix + param_name + suffix, 'ysubtitle', '[' + str(param_units) + ']')
+
+        param_desc = param.get('description')
+        if param_desc is not None:
+            options(prefix + param_name + suffix, 'ytitle', param_desc)
+
         if saved:
             out_vars.append(prefix + param_name + suffix)
 
-    
     return out_vars
