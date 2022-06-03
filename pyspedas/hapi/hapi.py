@@ -99,6 +99,9 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         param_type = hapi_metadata['parameters'][param_idx+1].get('type')
         data_size = hapi_metadata['parameters'][param_idx+1].get('size')
 
+        if param_type is None:
+            param_type = 'double'
+
         if data_size is None:
             single_line = True
 
