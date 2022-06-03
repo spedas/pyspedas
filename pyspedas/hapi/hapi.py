@@ -107,7 +107,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
             if param_type == 'double':
                 single_line = isinstance(data[0][param_idx+1], np.float64)
             elif param_type == 'integer':
-                single_line = isinstance(data[0][1], np.int32)
+                single_line = isinstance(data[0][param_idx+1], np.int32)
         except IndexError:
             continue
 
