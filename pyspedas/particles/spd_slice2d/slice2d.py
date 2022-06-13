@@ -57,10 +57,13 @@ def slice2d(dists,
     out = {'project_name': dists[0]['project_name'],
            'spacecraft': dists[0]['spacecraft'],
            'data_name': dists[0]['data_name'],
+           'units_name': dists[0]['units_name'],
            'species': dists[0]['species'],
            'xyunits': xyunits,
            'rotation': rotation,
+           'energy': energy,
            'trange': trange,
+           'n_samples': len(times_ind),
            **geo}
 
     return out
