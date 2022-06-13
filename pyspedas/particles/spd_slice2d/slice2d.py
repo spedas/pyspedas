@@ -7,7 +7,16 @@ from .slice2d_orientslice import slice2d_orientslice
 from pyspedas import time_double
 
 
-def slice2d(dists, trange=None, resolution=500, mag_data=None, vel_data=None, sun_data=None, slice_x=None, slice_z=None):
+def slice2d(dists,
+            trange=None,
+            resolution=500,
+            rotation='xy',
+            energy=False,
+            mag_data=None,
+            vel_data=None,
+            sun_data=None,
+            slice_x=None,
+            slice_z=None):
     """
 
     """
@@ -40,4 +49,18 @@ def slice2d(dists, trange=None, resolution=500, mag_data=None, vel_data=None, su
     geo = slice2d_geo(data['data'], resolution, data['rad'], data['phi'], data['theta'], data['dr'], data['dp'],
                       data['dt'], orient_matrix=orientation['matrix'])
 
-    return geo
+    if energy:
+        xyunits = 'eV'
+    else:
+        xyunits = 'km/s'
+
+    out = {'project_name': dists[0]['project_name'],
+           'spacecraft': dists[0]['spacecraft'],
+           'data_name': dists[0]['data_name'],
+           'species': dists[0]['species'],
+           'xyunits': xyunits,
+           'rotation': rotation,
+           'trange': trange,
+           **geo}
+
+    return out
