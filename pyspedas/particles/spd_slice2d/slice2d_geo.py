@@ -108,4 +108,4 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None)
 
     out = out.reshape((n_int, n_int), order='F')
 
-    return out
+    return {'data': out, 'xgrid': xgrid, 'ygrid': ygrid}
