@@ -31,6 +31,34 @@ def slice2d_getinfo(the_slice, title=None, xtitle=None, ytitle=None, ztitle=None
         elif rot == 'xz':
             xt = 'x'
             yt = 'z'
+        elif rot == 'bv':
+            xt = 'B'
+            yt = 'V'
+        elif rot == 'be':
+            xt = 'B'
+            yt = 'B x V'
+        elif rot == 'xvel':
+            xt = 'x'
+            yt = 'V'
+        elif rot == 'perp':
+            xt = 'V perp B'
+            yt = 'B x V'
+        elif rot == 'perp_xy':
+            xt = '$x_{perp}$'
+            yt = '$y_{perp}$'
+        elif rot == 'perp_xz':
+            xt = '$x_{perp}$'
+            yt = '$z_{perp}$'
+        elif rot == 'perp_yz':
+            xt = '$y_{perp}$'
+            yt = '$z_{perp}$'
+        elif rot == 'b_exb':
+            xt = 'B'
+            yt = 'V perp B'
+        elif rot == 'perp1-perp2':
+            xt = 'B x V'
+            yt = 'V perp B'
+
 
         # add prefix
         if the_slice['energy']:
@@ -39,10 +67,10 @@ def slice2d_getinfo(the_slice, title=None, xtitle=None, ytitle=None, ztitle=None
             xyprefix = 'V'
 
         if xtitle is None:
-            xtitle = xyprefix + xt + ' (' + the_slice['xyunits'] + ')'
+            xtitle = '$' + xyprefix + '_{' + xt + '}$ (' + the_slice['xyunits'] + ')'
 
         if ytitle is None:
-            ytitle = xyprefix + yt + ' (' + the_slice['xyunits'] + ')'
+            ytitle = '$' + xyprefix + '_{' + yt + '}$ (' + the_slice['xyunits'] + ')'
 
         if ztitle is None:
             ztitle = spd_units_string(the_slice['units_name'])
