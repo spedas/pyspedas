@@ -59,7 +59,6 @@ def slice2d_getinfo(the_slice, title=None, xtitle=None, ytitle=None, ztitle=None
             xt = 'B x V'
             yt = 'V perp B'
 
-
         # add prefix
         if the_slice['energy']:
             xyprefix = 'E'

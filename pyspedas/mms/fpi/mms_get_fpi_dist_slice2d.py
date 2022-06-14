@@ -171,7 +171,6 @@ def mms_get_fpi_dist_slice2d(tname, index=None, probe=None, data_rate=None, spec
 
     for time_idx, time in enumerate(data[0]):
         out_table = {**out}
-        #out['times'] = data[0]
         out_table['data'] = out_data[time_idx, :]
         out_table['bins'] = out_bins[time_idx, :]
         out_table['theta'] = out_theta[time_idx, :]
@@ -185,7 +184,6 @@ def mms_get_fpi_dist_slice2d(tname, index=None, probe=None, data_rate=None, spec
         out_table['n_phi'] = phi_len
         out_table['start_time'] = time # note: assumes the FPI data weren't centered!
         out_table['end_time'] = time + integ_time
-        #out_table['n_times'] = len(data[0])
         out_list.append(out_table)
 
     return out_list

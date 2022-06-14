@@ -11,6 +11,10 @@ def plot(the_slice,
          yrange=None,
          zrange=None,
          plotsize=10,
+         save_png=None,
+         save_svg=None,
+         save_pdf=None,
+         save_eps=None,
          display=True):
     """
 
@@ -55,6 +59,18 @@ def plot(the_slice,
     # draw lines at the origin
     axes.axvline(x=0, linestyle=(0, (5, 10)), color='black')
     axes.axhline(y=0, linestyle=(0, (5, 10)), color='black')
+
+    if save_png is not None and save_png != '':
+        plt.savefig(save_png + '.png')
+
+    if save_eps is not None and save_eps != '':
+        plt.savefig(save_eps + '.eps')
+
+    if save_svg is not None and save_svg != '':
+        plt.savefig(save_svg + '.svg')
+
+    if save_pdf is not None and save_pdf != '':
+        plt.savefig(save_pdf + '.pdf')
 
     if display:
         plt.show()
