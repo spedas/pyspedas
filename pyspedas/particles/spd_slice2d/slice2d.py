@@ -40,6 +40,7 @@ def slice2d(dists,
     slice_x_vec = slice2d_get_support(slice_x, trange)
     slice_z_vec = slice2d_get_support(slice_z, trange)
 
+
     orientation = slice2d_orientslice(vectors=None, # for interpolation
                                       vbulk=vbulk,
                                       bfield=bfield,

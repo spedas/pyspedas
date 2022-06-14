@@ -40,4 +40,7 @@ def tplot_average(tvar, trange):
     indices = np.argwhere((data.times <= t1) & (data.times >= t0))
 
     if len(indices) != 0:
-        return np.nanmean(data.y[indices])
+        if len(data.y.shape) > 1:
+            return np.array([np.nanmean(data.y[indices, 0]), np.nanmean(data.y[indices, 1]), np.nanmean(data.y[indices, 2])])
+        else:
+            return np.nanmean(data.y[indices])

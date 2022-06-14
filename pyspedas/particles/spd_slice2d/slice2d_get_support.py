@@ -10,6 +10,6 @@ def slice2d_get_support(variable, trange, matrix=False):
         return
 
     if isinstance(variable, str): # tplot variable
-        return float(tplot_average(variable, trange))
+        return tplot_average(variable, trange)
 
     return float(variable)
