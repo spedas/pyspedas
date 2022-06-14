@@ -5,7 +5,19 @@ from pyspedas import time_double
 
 def tplot_average(tvar, trange):
     """
+    Returns the average value of a tplot variable over a specified time range.
 
+    Input
+    -----
+        tvar: str
+            Name of the tplot variable to average
+
+        trange: list of str or list of float
+            Time range to average over
+
+    Returns
+    -------
+        Average value of the tplot variable
     """
     data = get_data(tvar)
 

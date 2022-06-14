@@ -54,3 +54,5 @@ def plot(the_slice,
     # draw lines at the origin
     axes.axvline(x=0, linestyle=(0, (5, 10)), color='black')
     axes.axhline(y=0, linestyle=(0, (5, 10)), color='black')
+
+    plt.show()

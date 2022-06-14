@@ -3,8 +3,8 @@ import numpy as np
 
 def slice2d_orientslice(vectors=None, vbulk=None, bfield=None, sunvec=None, slice_x=None, slice_z=None):
     """
-
-
+    Performs transformation into user specified coordinates.
+    This transformation is applied after the CUSTOM_ROTATION and ROTATION transformation have been performed.
     """
     if slice_z is None:
         slice_z = np.array([0, 0, 1])

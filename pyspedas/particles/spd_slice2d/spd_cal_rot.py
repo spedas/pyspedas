@@ -3,7 +3,19 @@ import numpy as np
 
 def spd_cal_rot(v1, v2):
     """
+    Returns a rotation matrix that rotates v1,v2 to the x-y plane; v1 is rotated to the x-axis and v2 into the x-y plane
 
+    Input
+    ------
+        v1: array of float
+            3 component vector
+
+        v2: array of float
+            3 component vector
+
+    Returns
+    --------
+        Rotation matrix that rotates v1,v2 to the x-y plane
     """
 
     v1 = np.array(v1)
@@ -20,4 +32,4 @@ def spd_cal_rot(v1, v2):
     rotinv[1, :] = b
     rotinv[2, :] = c
 
-    rot = np.linalg.inv(rotinv)
+    return np.linalg.inv(rotinv)

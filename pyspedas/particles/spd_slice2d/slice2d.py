@@ -3,6 +3,7 @@ from .slice2d_get_data import slice2d_get_data
 from .slice2d_geo import slice2d_geo
 from .slice2d_get_support import slice2d_get_support
 from .slice2d_orientslice import slice2d_orientslice
+from .slice2d_rotate import slice2d_rotate
 
 from pyspedas import time_double
 
@@ -46,8 +47,14 @@ def slice2d(dists,
                                       slice_x=slice_x_vec,
                                       slice_z=slice_z_vec)
 
+    rot_matrix = slice2d_rotate(rotation=rotation,
+                                vectors=None,
+                                bfield=bfield,
+                                vbulk=vbulk,
+                                sunvec=sunvec)
+
     geo = slice2d_geo(data['data'], resolution, data['rad'], data['phi'], data['theta'], data['dr'], data['dp'],
-                      data['dt'], orient_matrix=orientation['matrix'])
+                      data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'])
 
     if energy:
         xyunits = 'eV'

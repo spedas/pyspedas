@@ -4,6 +4,7 @@ from pyspedas.particles.spd_units_string import spd_units_string
 
 def slice2d_getinfo(the_slice, title=None, xtitle=None, ytitle=None, ztitle=None):
     """
+    Forms various title annotations based on the slice's metadata
     """
     if title is None:
         sc = the_slice.get('spacecraft')
