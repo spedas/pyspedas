@@ -10,7 +10,8 @@ def plot(the_slice,
          xrange=None,
          yrange=None,
          zrange=None,
-         plotsize=10):
+         plotsize=10,
+         display=True):
     """
 
     """
@@ -55,4 +56,5 @@ def plot(the_slice,
     axes.axvline(x=0, linestyle=(0, (5, 10)), color='black')
     axes.axhline(y=0, linestyle=(0, (5, 10)), color='black')
 
-    plt.show()
+    if display:
+        plt.show()
