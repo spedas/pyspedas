@@ -67,10 +67,16 @@ def slice2d_getinfo(the_slice, title=None, xtitle=None, ytitle=None, ztitle=None
             xyprefix = 'V'
 
         if xtitle is None:
-            xtitle = '$' + xyprefix + '_{' + xt + '}$ (' + the_slice['xyunits'] + ')'
+            if rot not in ['perp_xy', 'perp_xz', 'perp_yz']:
+                xtitle = '$' + xyprefix + '_{' + xt + '}$ (' + the_slice['xyunits'] + ')'
+            else:
+                xtitle = xyprefix + xt + ' (' + the_slice['xyunits'] + ')'
 
         if ytitle is None:
-            ytitle = '$' + xyprefix + '_{' + yt + '}$ (' + the_slice['xyunits'] + ')'
+            if rot not in ['perp_xy', 'perp_xz', 'perp_yz']:
+                ytitle = '$' + xyprefix + '_{' + yt + '}$ (' + the_slice['xyunits'] + ')'
+            else:
+                ytitle = xyprefix + yt + ' (' + the_slice['xyunits'] + ')'
 
         if ztitle is None:
             ztitle = spd_units_string(the_slice['units_name'])
