@@ -5,7 +5,7 @@ from .slice2d_get_support import slice2d_get_support
 from .slice2d_orientslice import slice2d_orientslice
 from .slice2d_rotate import slice2d_rotate
 
-from pyspedas import time_double
+from pyspedas import time_double, time_string
 
 
 def slice2d(dists,
@@ -27,6 +27,8 @@ def slice2d(dists,
         return
 
     tr = time_double(trange)
+
+    msg_prefix = 'Processing slice at ' + time_string(tr[0], fmt='%Y/%m/%d %H:%M:%S.%f') + '... '
 
     # check that there is data in range before proceeding
     times_ind = slice2d_intrange(dists, tr)
@@ -55,7 +57,8 @@ def slice2d(dists,
                                 sunvec=sunvec)
 
     geo = slice2d_geo(data['data'], resolution, data['rad'], data['phi'], data['theta'], data['dr'], data['dp'],
-                      data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'])
+                      data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'],
+                      msg_prefix=msg_prefix)
 
     if energy:
         xyunits = 'eV'

@@ -1,8 +1,10 @@
 from copy import deepcopy
+from time import time
 import numpy as np
 
 
-def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None, rotation_matrix=None):
+def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None, rotation_matrix=None,
+                msg_prefix=''):
     """
 
     """
@@ -10,6 +12,8 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
     n_int = int(n)
     rd = 180/np.pi
     tolerance = 5e-7 # to account for rounding errors
+    # for progress messages
+    previous_time = time()
 
     vrange = [-np.max(np.abs(r)), np.max(np.abs(r))]
     dr_range = [-np.max(dr), np.max(np.abs(dr))]
@@ -103,6 +107,12 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
             if len(bidx) > 1:
                 weight[bidx] = weight[bidx] + 1
                 out[bidx] = out[bidx] + data[i]
+
+            # output progress messages every 6 seconds
+            if (time() - previous_time) > 6:
+                msg = msg_prefix + str(int(100*((j+1)*num_points + i)/(na*num_points))) + '% complete'
+                print(msg)
+                previous_time = time()
 
     # average areas where bins overlapped
     adj = np.argwhere(weight == 0)
