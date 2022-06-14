@@ -1,4 +1,3 @@
-
 import unittest
 import pyspedas
 from pyspedas.utilities.data_exists import data_exists
@@ -6,6 +5,7 @@ from pyspedas.cotrans.fac_matrix_make import fac_matrix_make
 from pyspedas import tinterpol
 from pytplot import get_data, store_data
 from pyspedas import twavpol
+
 
 class WavpolTestCases(unittest.TestCase):
     def test_brst(self):
@@ -40,3 +40,7 @@ class WavpolTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_fac_waveangle'))
         self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_fac_elliptict'))
         self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_fac_helict'))
+
+
+if __name__ == '__main__':
+    unittest.main()

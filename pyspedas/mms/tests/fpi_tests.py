@@ -4,6 +4,7 @@ import unittest
 from pyspedas.utilities.data_exists import data_exists
 from pyspedas.mms.fpi.mms_fpi_split_tensor import mms_fpi_split_tensor
 
+
 class FPITestCases(unittest.TestCase):
     def test_split_tensors(self):
         data = pyspedas.mms.fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'],
@@ -25,3 +26,7 @@ class FPITestCases(unittest.TestCase):
 
         for v in output:
             self.assertTrue(data_exists(v))
+
+
+if __name__ == '__main__':
+    unittest.main()
