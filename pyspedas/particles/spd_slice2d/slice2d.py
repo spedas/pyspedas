@@ -28,7 +28,7 @@ def slice2d(dists,
 
     tr = time_double(trange)
 
-    msg_prefix = 'Processing slice at ' + time_string(tr[0], fmt='%Y/%m/%d %H:%M:%S.%f') + '... '
+    msg_prefix = 'Processing slice at ' + time_string(tr[0], fmt='%Y-%m-%d %H:%M:%S.%f') + '... '
 
     # check that there is data in range before proceeding
     times_ind = slice2d_intrange(dists, tr)
