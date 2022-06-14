@@ -110,7 +110,11 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
 
             # output progress messages every 6 seconds
             if (time() - previous_time) > 6:
-                msg = msg_prefix + str(int(100*((j+1)*num_points + i)/(na*num_points))) + '% complete'
+                if na == 0:
+                    num_angles = 1
+                else:
+                    num_angles = na
+                msg = msg_prefix + str(int(100*((j+1)*num_points + i)/(num_angles*num_points))) + '% complete'
                 print(msg)
                 previous_time = time()
 
