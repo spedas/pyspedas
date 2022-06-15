@@ -6,7 +6,9 @@ import numpy as np
 def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None, rotation_matrix=None,
                 custom_matrix=None, msg_prefix='', shift=None):
     """
-
+    Produces slices showing each bin's boundaries by assigning
+    each bin's value to all points on the slice plane that
+    fall within that bin's boundaries.
     """
     n = float(resolution)
     n_int = int(n)

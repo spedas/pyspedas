@@ -4,7 +4,12 @@ import numpy as np
 
 def slice2d_collate(data, weight, sphere, previous_out=None, sum_samples=False):
     """
-
+    Collate data aggregated as slice2d_get_data loops over input
+    Data aggregation continues until a change in energy or angle
+    bins occurs (mode change or other) or aggregation completes.
+    At those points this procedure is called to average the data,
+    concatenate data to output variables, and clear the appropriate
+    variables for the next loop.
     """
     if sum_samples:
         data_out = data

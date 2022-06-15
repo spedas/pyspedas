@@ -3,7 +3,23 @@ import numpy as np
 
 def slice2d_nearest(dists, time, samples):
     """
+    Get a time range that encompasses a specified number of
+    samples closest to a specified time.
 
+    Input
+    ------
+        dists: list
+            List containing distribution data structures
+
+        time: float
+            Unix time
+
+        samples: int
+            Number of samples to return
+
+    Returns
+    --------
+        List containing [start time, end time] for the time range
     """
     start_times = np.zeros(len(dists))
     end_times = np.zeros(len(dists))

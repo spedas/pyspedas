@@ -6,7 +6,21 @@ from .slice2d_get_ebounds import slice2d_get_ebounds
 
 def slice2d_get_sphere(dist, energy=False):
     """
+    Calculates the center and width of all bins in spherical coordinates.
 
+    Input
+    ------
+        dist: dict
+            3D particle data structure
+
+    Parameters
+    -----------
+        energy: bool
+            Specifies that the user requested energy instead of velocity
+
+    Returns
+    --------
+        Hash table containing center and width of all bins in spherical coordinates
     """
     n = dist['data'].shape[1]
     c = 299792458.0  # m/s

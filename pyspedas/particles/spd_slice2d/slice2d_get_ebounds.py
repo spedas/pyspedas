@@ -3,7 +3,17 @@ import numpy as np
 
 def slice2d_get_ebounds(dist):
     """
+    Returns an array of gapless energy boundaries.  The number of
+    elements returned will always be N+1 for N energy levels.
 
+    Input
+    ------
+        dist: dict
+            3D particle data structure
+
+    Returns
+    --------
+        Array of energy bin boundaries (# energy bins + 1)
     """
     n = dist['energy'].shape[1]+1
     energies = np.zeros((n, dist['energy'][:, :, :].shape[1], dist['energy'][:, :, :].shape[2]))

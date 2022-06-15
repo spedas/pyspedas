@@ -3,7 +3,19 @@ import numpy as np
 
 def slice2d_rlog(r, dr):
     """
+    Apply radial log scaling to aggregated velocity/energy vectors.
 
+    Input
+    ------
+        r: ndarray
+            N element array of radii
+
+        dr: ndarray
+            N element array of radial bin widths (full width)
+
+    Returns
+    --------
+        Returns hash table containing scaled radii and bin widths
     """
 
     # get log of radial boundaries

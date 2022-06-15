@@ -10,7 +10,7 @@ def slice2d_custom_rotation(custom_rotation=None,
                             sunvec=None,
                             determ_tolerance=1e-6):
     """
-
+    Retrieve a user-provided rotation matrix and apply to data as needed.
     """
 
     if custom_rotation is None:

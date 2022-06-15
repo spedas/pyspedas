@@ -10,7 +10,36 @@ from .slice2d_get_ebounds import slice2d_get_ebounds
 
 def slice2d_get_data(dists, trange=None, energy=False, erange=None):
     """
+    Returns an array of averaged data along with the corresponding
+    bin centers and widths in spherical coordinates. This routine
+    will apply energy range constraints and count thresholds.
 
+    Input
+    ------
+        dists: list of dicts
+            List of 3D particle data structures
+
+    Parameters
+    -----------
+        trange: list
+            Time range
+
+        energy: bool
+            Flag to get energy bins instead of velocity bins for radial distance
+
+        erange: list
+            Two element array specifying min/max energies to be used
+
+    Returns
+    --------
+        Dictionary containing data, bin centers and widths:
+            data: N element array containing averaged particle data
+            rad: N element array of bin centers along r (eV or km/s)
+            phi: N element array of bin centers along phi
+            theta: N element array of bin centers along theta
+            dr: N element array of bin widths along r (eV or km/s)
+            dp: N element array of bin widths along phi
+            dt: N element array of bin widths along theta
     """
     # Get indexes of data structures in requested time window
     times_idx = slice2d_intrange(dists, trange)

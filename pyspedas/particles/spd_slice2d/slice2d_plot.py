@@ -18,7 +18,7 @@ def plot(the_slice,
          save_eps=None,
          display=True):
     """
-
+    Creates plots of 2D particle slices
     """
     spec_options = {}
 
