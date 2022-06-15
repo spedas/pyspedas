@@ -45,7 +45,7 @@ def slice2d_get_data(dists, trange=None, energy=False, erange=None):
         if erange is not None:
             n = dist['energy'].shape[0]
             energies = slice2d_get_ebounds(dist)
-            ecenters = (energies[0:n-1, :, :]+energies[1:n, :, :])/2.0
+            ecenters = (energies[0:n, :, :]+energies[1:n+1, :, :])/2.0
             bins = bins & ((ecenters >= erange[0]) & (ecenters <= erange[1]))
 
         # Get data & bin boundaries

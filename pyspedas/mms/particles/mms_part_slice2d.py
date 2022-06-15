@@ -10,6 +10,7 @@ def mms_part_slice2d(trange=None,
                      samples=None,
                      window=None,
                      center_time=False,
+                     erange=None,
                      probe='1',
                      instrument='fpi',
                      data_rate=None,
@@ -59,6 +60,7 @@ def mms_part_slice2d(trange=None,
     instrument = instrument.lower()
     data_rate = data_rate.lower()
     level = level.lower()
+    probe = str(probe)
 
     if instrument == 'fpi':
         # not supposed to be centered!
@@ -77,7 +79,7 @@ def mms_part_slice2d(trange=None,
     vbulk = 'mms' + probe + '_d' + species + 's_bulkv_gse_' + data_rate
 
     the_slice = slice2d(dists, trange=trange, time=time, window=window, samples=samples, center_time=center_time,
-                        mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution)
+                        mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution, erange=erange)
 
     plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
          save_pdf=save_pdf, save_eps=save_eps, display=display)
