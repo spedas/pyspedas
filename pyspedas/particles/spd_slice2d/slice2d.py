@@ -22,6 +22,7 @@ def slice2d(dists,
             subtract_bulk=False,
             energy=False,
             log=False,
+            erange=None,
             mag_data=None,
             vel_data=None,
             sun_data=None,
@@ -73,7 +74,7 @@ def slice2d(dists,
     # check that there is data in range before proceeding
     times_ind = slice2d_intrange(dists, tr)
 
-    data = slice2d_get_data(dists, trange=tr)
+    data = slice2d_get_data(dists, trange=tr, erange=erange)
 
     # get original data and radial ranges for plotting
     #   - ignore outliers that may be the result of sanitizations performed outside this routine
