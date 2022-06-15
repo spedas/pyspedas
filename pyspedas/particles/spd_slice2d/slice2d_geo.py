@@ -4,7 +4,7 @@ import numpy as np
 
 
 def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None, rotation_matrix=None,
-                msg_prefix=''):
+                msg_prefix='', shift=None):
     """
 
     """
@@ -125,5 +125,9 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
     out = out / weight
 
     out = out.reshape((n_int, n_int), order='F')
+
+    if shift is not None:
+        xgrid -= shift[0]
+        ygrid -= shift[1]
 
     return {'data': out, 'xgrid': xgrid, 'ygrid': ygrid}

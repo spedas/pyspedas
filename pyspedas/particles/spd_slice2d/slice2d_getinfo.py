@@ -12,9 +12,9 @@ def slice2d_getinfo(the_slice, title=None, xtitle=None, ytitle=None, ztitle=None
             sc = ''
 
         if not isinstance(the_slice['trange'][0], str):
-            trange_str = ' -> '.join(time_string(the_slice['trange']))
+            trange_str = ' -> '.join(time_string(the_slice['trange'])) + ' (' + str(the_slice['n_samples']) + ')'
         else:
-            trange_str = ' -> '.join(the_slice['trange'])
+            trange_str = ' -> '.join(the_slice['trange']) + ' (' + str(the_slice['n_samples']) + ')'
 
         title = the_slice['project_name'] + ' ' + sc + ' ' + the_slice['data_name'] + ' (' + the_slice[
             'rotation'] + ') ' + trange_str

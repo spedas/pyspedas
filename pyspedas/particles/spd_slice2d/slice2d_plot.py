@@ -10,6 +10,7 @@ def plot(the_slice,
          xrange=None,
          yrange=None,
          zrange=None,
+         colormap='spedas',
          plotsize=10,
          save_png=None,
          save_svg=None,
@@ -22,13 +23,22 @@ def plot(the_slice,
     spec_options = {}
 
     if zrange is None:
+        zrange = the_slice.get('zrange')
+        # padding, # in thm_ui_slice2d should match this
+        zrange = [zrange[0]*0.999, zrange[1]*1.001]
+
+    if zrange is None:
         spec_options['norm'] = mpl.colors.LogNorm()
     else:
         spec_options['norm'] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
 
-    _colors = pytplot.spedas_colorbar
-    spd_map = [(np.array([r, g, b])).astype(np.float64) / 256 for r, g, b in zip(_colors.r, _colors.g, _colors.b)]
-    cmap = LinearSegmentedColormap.from_list('spedas', spd_map)
+    if colormap == 'spedas':
+        _colors = pytplot.spedas_colorbar
+        spd_map = [(np.array([r, g, b])).astype(np.float64) / 256 for r, g, b in zip(_colors.r, _colors.g, _colors.b)]
+        cmap = LinearSegmentedColormap.from_list('spedas', spd_map)
+    else:
+        cmap = colormap
+
     spec_options['cmap'] = cmap
 
     fig, axes = plt.subplots()
@@ -45,6 +55,8 @@ def plot(the_slice,
     axes.set_title(info['title'])
     axes.set_ylabel(info['ytitle'])
     axes.set_xlabel(info['xtitle'])
+
+    fig.subplots_adjust(left=0.14, right=0.86, top=0.86, bottom=0.14)
 
     box = axes.get_position()
     pad, width = 0.02, 0.01
