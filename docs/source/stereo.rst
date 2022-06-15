@@ -22,6 +22,34 @@ Example
    :class: imgborder
 
 
+Solar Wind Electron Analyzer (SWEA)
+----------------------------------------------------------
+.. autofunction:: pyspedas.stereo.swea
+
+
+Suprathermal Electron Telescope (STE)
+----------------------------------------------------------
+.. autofunction:: pyspedas.stereo.ste
+
+
+Solar Electron Proton Telescope (SEPT)
+----------------------------------------------------------
+.. autofunction:: pyspedas.stereo.sept
+
+
+Suprathermal Ion Telescope (SIT)
+----------------------------------------------------------
+.. autofunction:: pyspedas.stereo.sit
+
+
+Low Energy Telescope (LET)
+----------------------------------------------------------
+.. autofunction:: pyspedas.stereo.let
+
+
+High Energy Telescope (HET)
+----------------------------------------------------------
+.. autofunction:: pyspedas.stereo.het
 
 
 PLAsma and SupraThermal Ion Composition (PLASTIC)

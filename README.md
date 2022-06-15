@@ -1,5 +1,5 @@
 
-# pySPEDAS
+# PySPEDAS
 [![build](https://github.com/spedas/pyspedas/workflows/build/badge.svg)](https://github.com/spedas/pyspedas/actions)
 [![Coverage Status](https://coveralls.io/repos/github/spedas/pyspedas/badge.svg)](https://coveralls.io/github/spedas/pyspedas)
 [![Version](https://img.shields.io/pypi/v/pyspedas.svg)](https://pypi.org/project/pyspedas/)
@@ -7,7 +7,7 @@
 ![Status](https://img.shields.io/pypi/status/pyspedas.svg)
 ![License](https://img.shields.io/pypi/l/pyspedas.svg)
 
-pySPEDAS is an implementation of the SPEDAS framework for Python. 
+PySPEDAS is an implementation of the SPEDAS framework for Python. 
 
 The Space Physics Environment Data Analysis Software ([SPEDAS](http://spedas.org/wiki)) framework is written in IDL and contains data loading, data analysis and data plotting tools for various scientific missions (NASA, NOAA, etc.) and ground magnetometers.   
 
@@ -54,7 +54,7 @@ We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a 
 ## Installation
 
 ### Setup your Virtual Environment
-To avoid potential dependency issues with other Python packages, we suggest creating a virtual environment for pySPEDAS; you can create a virtual environment in your terminal with:
+To avoid potential dependency issues with other Python packages, we suggest creating a virtual environment for PySPEDAS; you can create a virtual environment in your terminal with:
 
 ```bash
 python -m venv pyspedas
@@ -85,10 +85,10 @@ python -m ipykernel install --user --name pyspedas --display-name "Python (pySPE
 
 (note: "pyspedas" is the name of your virtual environment)
 
-Then once you open the notebook, go to "Kernel" then "Change kernel" and select the one named "Python (pySPEDAS)"
+Then once you open the notebook, go to "Kernel" then "Change kernel" and select the one named "Python (PySPEDAS)"
 
 ### Install
-pySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
+PySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
 
 ```bash
 pip install pyspedas
@@ -96,7 +96,7 @@ pip install pyspedas
 
 ### Upgrade
 
-To upgrade to the latest version of pySPEDAS:
+To upgrade to the latest version of PySPEDAS:
 
 ```bash
 pip install pyspedas --upgrade
@@ -133,7 +133,7 @@ mms_fgm = pyspedas.mms.fgm(trange=['2015-10-16/13:05:30', '2015-10-16/13:07:30']
 tplot(['mms1_fgm_b_gse_brst_l2', 'mms1_fgm_b_gsm_brst_l2'])
 ```
 
-Note: by default, pySPEDAS loads all data contained in CDFs found within the requested time range; this can potentially load data outside of your requested trange. To remove the data outside of your requested trange, set the `time_clip` keyword to `True`
+Note: by default, PySPEDAS loads all data contained in CDFs found within the requested time range; this can potentially load data outside of your requested trange. To remove the data outside of your requested trange, set the `time_clip` keyword to `True`
 
 To load and plot 6 hours of PSP SWEAP/SPAN-i data:
 ```python
@@ -167,7 +167,7 @@ help(pyspedas.themis.fgm)
 You can ask questions by creating an issue or by joining the [SPEDAS mailing list](http://spedas.org/mailman/listinfo/spedas-list_spedas.org).
 
 ## Contributing
-We welcome contributions to pySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
+We welcome contributions to PySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
 
 ## Code of Conduct
 In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation. To learn more, please see our [Code of Conduct](https://github.com/spedas/pyspedas/blob/master/CODE_OF_CONDUCT.md).

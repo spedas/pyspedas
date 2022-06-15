@@ -32,7 +32,7 @@ def mms_split_fgm_data(probe, data_rate, level, instrument, suffix=''):
         else:
             tplot_name = 'mms' + probe + '_' + instrument + '_' + data_rate_mod + '_' + coord + suffix
 
-        if data_exists(tplot_name) == False:
+        if not data_exists(tplot_name):
             continue
 
         fgm_data = get_data(tplot_name)

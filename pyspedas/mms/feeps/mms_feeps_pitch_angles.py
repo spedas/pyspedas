@@ -36,7 +36,14 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     """
 
     # get the times from the currently loaded FEEPS data
-    times, pa_data = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix)
+    pa_variable = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix)
+
+    if pa_variable is None:
+        print('Error reading pitch angle variable')
+        return
+
+    times = pa_variable[0]
+    pa_data = pa_variable[1]
 
     if times is not None:
         if trange is None:
