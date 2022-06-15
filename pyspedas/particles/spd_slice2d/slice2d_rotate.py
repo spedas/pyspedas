@@ -54,4 +54,14 @@ def slice2d_rotate(rotation=None, vectors=None, bfield=None, vbulk=None, sunvec=
     if rotation != 'xy':
         print('Aligning slice plane to: ' + rotation)
 
+    # Transform particle and support vectors
+    if vectors is not None:
+        vectors = matrix @ vectors
+    if vbulk is not None:
+        vbulk = matrix @ vbulk
+    if bfield is not None:
+        bfield = matrix @ bfield
+    if sunvec is not None:
+        sunvec = matrix @ sunvec
+
     return {'matrix': matrix, 'vectors': vectors, 'bfield': bfield, 'vbulk': vbulk, 'sunvec': sunvec}

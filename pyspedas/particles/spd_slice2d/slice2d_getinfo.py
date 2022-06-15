@@ -65,6 +65,9 @@ def slice2d_getinfo(the_slice, title=None, xtitle=None, ytitle=None, ztitle=None
         else:
             xyprefix = 'V'
 
+        if the_slice['rlog']:
+            xyprefix = 'log(' + xyprefix + ')'
+
         if xtitle is None:
             if rot not in ['perp_xy', 'perp_xz', 'perp_yz']:
                 xtitle = '$' + xyprefix + '_{' + xt + '}$ (' + the_slice['xyunits'] + ')'

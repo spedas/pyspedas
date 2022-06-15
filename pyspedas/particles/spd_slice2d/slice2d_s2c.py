@@ -24,5 +24,5 @@ def slice2d_s2c(r, theta, phi):
     a = np.cos(rd*theta)
     vec = np.array((a*np.cos(rd*phi)*r,
                     a*np.sin(rd*phi)*r,
-                np.sin(rd*theta)*r))
+                    np.sin(rd*theta)*r))
     return vec.T

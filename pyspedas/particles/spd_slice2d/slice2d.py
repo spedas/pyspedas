@@ -6,7 +6,9 @@ from .slice2d_geo import slice2d_geo
 from .slice2d_get_support import slice2d_get_support
 from .slice2d_orientslice import slice2d_orientslice
 from .slice2d_rotate import slice2d_rotate
+from .slice2d_custom_rotation import slice2d_custom_rotation
 from .slice2d_nearest import slice2d_nearest
+from .slice2d_rlog import slice2d_rlog
 
 from pyspedas import time_double, time_string
 
@@ -19,6 +21,7 @@ def slice2d(dists,
             trange=None,
             resolution=500,
             rotation='xy',
+            custom_rotation=None,
             subtract_bulk=False,
             energy=False,
             log=False,
@@ -54,6 +57,8 @@ def slice2d(dists,
     if energy and not log:
         log = True
 
+    # Get the slice's time range
+    # ------------------------------------------------------------------------
     # get the time range if a time & window were specified instead
     if trange is None and window is not None:
         if center_time:
@@ -74,6 +79,11 @@ def slice2d(dists,
     # check that there is data in range before proceeding
     times_ind = slice2d_intrange(dists, tr)
 
+    # Extract particle data
+    #   - apply energy limits
+    #   - average data over the time window
+    #   - output r, phi, theta and dr, dphi and dtheta arrays
+    # ------------------------------------------------------------------------
     data = slice2d_get_data(dists, trange=tr, erange=erange)
 
     # get original data and radial ranges for plotting
@@ -91,6 +101,18 @@ def slice2d(dists,
 
     rrange = [np.nanmin(data['rad'] - 0.5*data['dr']), np.nanmax(data['rad'] + 0.5*data['dr'])]
 
+    # apply radial log scaling
+    if log:
+        scaled_r = slice2d_rlog(data['rad'], data['dr'])
+        # replace original vars
+        data['rad'] = scaled_r['r']
+        data['dr'] = scaled_r['dr']
+
+    # Get/apply coordinate transformations
+    #  - for 2D/3D interpolation, the data is transformed here
+    #  - for geometric interpolation, the data is transformed in slice2d_geo
+    #  - support data is always rotated at each step
+    # ------------------------------------------------------------------------
     # get support data for aligning slice
     bfield = slice2d_get_support(mag_data, trange)
     vbulk = slice2d_get_support(vel_data, trange)
@@ -98,27 +120,45 @@ def slice2d(dists,
     slice_x_vec = slice2d_get_support(slice_x, trange)
     slice_z_vec = slice2d_get_support(slice_z, trange)
 
-    orientation = slice2d_orientslice(vectors=None, # for interpolation
-                                      vbulk=vbulk,
-                                      bfield=bfield,
-                                      sunvec=sunvec,
+    # custom rotation
+    custom_rot = slice2d_custom_rotation(custom_rotation=custom_rotation,
+                                         trange=trange,
+                                         vectors=None,
+                                         bfield=bfield,
+                                         vbulk=vbulk,
+                                         sunvec=sunvec)
+
+    # for 2D/3D interpolation
+    orientation = slice2d_orientslice(vectors=custom_rot['vectors'],
+                                      vbulk=custom_rot['vbulk'],
+                                      bfield=custom_rot['bfield'],
+                                      sunvec=custom_rot['sunvec'],
                                       slice_x=slice_x_vec,
                                       slice_z=slice_z_vec)
 
+    # built-in rotation option
     rot_matrix = slice2d_rotate(rotation=rotation,
-                                vectors=None,
-                                bfield=bfield,
-                                vbulk=vbulk,
-                                sunvec=sunvec)
+                                vectors=orientation['vectors'],
+                                bfield=orientation['bfield'],
+                                vbulk=orientation['vbulk'],
+                                sunvec=orientation['sunvec'])
+
+    # problem rotating data
+    if rot_matrix is None:
+        return
 
     geo_shift = [0, 0, 0]
     if subtract_bulk:
         geo_shift = vbulk
 
+    # Create the slice
+    # ------------------------------------------------------------------------
     geo = slice2d_geo(data['data'], resolution, data['rad'], data['phi'], data['theta'], data['dr'], data['dp'],
                       data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'],
-                      msg_prefix=msg_prefix, shift=geo_shift)
+                      custom_matrix=custom_rot['matrix'], msg_prefix=msg_prefix, shift=geo_shift)
 
+    # Get metadata and return slice
+    # ------------------------------------------------------------------------
     if energy:
         xyunits = 'eV'
     else:
@@ -135,6 +175,7 @@ def slice2d(dists,
            'trange': trange,
            'zrange': drange,
            'rrange': rrange,
+           'rlog': log,
            'n_samples': len(times_ind),
            **geo}
 

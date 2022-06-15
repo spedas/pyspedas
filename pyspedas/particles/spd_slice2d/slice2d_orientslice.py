@@ -43,13 +43,10 @@ def slice2d_orientslice(vectors=None, vbulk=None, bfield=None, sunvec=None, slic
     # Transform particle and support vectors
     if vectors is not None:
         vectors = matrix @ vectors
-
     if vbulk is not None:
         vbulk = matrix @ vbulk
-
     if bfield is not None:
         bfield = matrix @ bfield
-
     if sunvec is not None:
         sunvec = matrix @ sunvec
 

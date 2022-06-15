@@ -4,7 +4,7 @@ import numpy as np
 
 
 def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None, rotation_matrix=None,
-                msg_prefix='', shift=None):
+                custom_matrix=None, msg_prefix='', shift=None):
     """
 
     """
@@ -31,8 +31,14 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
 
     m = deepcopy(orient_matrix)
     # rotate slice coordinates to desired location
-    if rotation_matrix is not None:
-        m = rotation_matrix @ m
+    if custom_matrix is not None:
+        if rotation_matrix is not None:
+            m = (custom_matrix @ rotation_matrix) @ m
+        else:
+            m = custom_matrix @ m
+    else:
+        if rotation_matrix is not None:
+            m = rotation_matrix @ m
     uvals = uvals @ m.T
 
     na = 0

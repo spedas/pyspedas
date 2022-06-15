@@ -9,7 +9,7 @@ def slice2d_get_sphere(dist, energy=False):
 
     """
     n = dist['data'].shape[1]
-    c = 299792458.0 # m/s
+    c = 299792458.0  # m/s
 
     # determine gapless energy boundaries.
     ebounds = slice2d_get_ebounds(dist)
