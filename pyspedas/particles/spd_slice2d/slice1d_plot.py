@@ -36,11 +36,11 @@ def plot(the_slice, direction, value, xrange=None, yrange=None):
         if direction == 'x':
             values_to_incl = np.argwhere((the_slice['ygrid'] >= value[0]) & (the_slice['ygrid'] <= value[1])).flatten()
             if len(values_to_incl) != 0:
-                plt.plot(the_slice['xgrid'], np.nansum(the_slice['data'][:, values_to_incl]))
+                plt.plot(the_slice['xgrid'], np.nansum(the_slice['data'][:, values_to_incl], axis=1))
         elif direction == 'y':
             values_to_incl = np.argwhere((the_slice['xgrid'] >= value[0]) & (the_slice['xgrid'] <= value[1])).flatten()
             if len(values_to_incl) != 0:
-                plt.plot(the_slice['ygrid'], np.nansum(the_slice['data'][values_to_incl, :]))
+                plt.plot(the_slice['ygrid'], np.nansum(the_slice['data'][values_to_incl, :], axis=1))
 
         plt.show()
         return
@@ -48,12 +48,12 @@ def plot(the_slice, direction, value, xrange=None, yrange=None):
     # single point
     if direction == 'x':
         closest_at_this_value = the_slice['ygrid'].flat[np.abs(the_slice['ygrid'] - value).argmin()]
-        idx_at_this_value = np.argwhere(the_slice['ygrid'] == closest_at_this_value)
-        plt.plot(the_slice['ygrid'], np.nansum(the_slice['data'][:, idx_at_this_value]))
+        idx_at_this_value = np.argwhere(the_slice['ygrid'] == closest_at_this_value).flatten()
+        plt.plot(the_slice['ygrid'], the_slice['data'][:, idx_at_this_value].flatten())
     elif direction == 'y':
         closest_at_this_value = the_slice['xgrid'].flat[np.abs(the_slice['xgrid'] - value).argmin()]
-        idx_at_this_value = np.argwhere(the_slice['xgrid'] == closest_at_this_value)
-        plt.plot(the_slice['xgrid'], np.nansum(the_slice['data'][idx_at_this_value, :]))
+        idx_at_this_value = np.argwhere(the_slice['xgrid'] == closest_at_this_value).flatten()
+        plt.plot(the_slice['xgrid'], the_slice['data'][idx_at_this_value, :].flatten())
 
     plt.show()
     return
