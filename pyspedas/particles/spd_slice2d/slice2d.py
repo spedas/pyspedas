@@ -179,4 +179,5 @@ def slice2d(dists,
            'n_samples': len(times_ind),
            **geo}
 
+    print('Finished slice at ' + time_string(tr[0], fmt='%Y-%m-%d %H:%M:%S.%f'))
     return out

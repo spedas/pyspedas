@@ -21,6 +21,7 @@ def mms_part_slice2d(trange=None,
                      species=None,
                      rotation='xy',
                      custom_rotation=None,
+                     subtract_bulk=False,
                      xrange=None,
                      yrange=None,
                      zrange=None,
@@ -65,10 +66,20 @@ def mms_part_slice2d(trange=None,
     level = level.lower()
     probe = str(probe)
 
+    if rotation in ['xy', 'xz', 'yz']:
+        load_support = False
+    else:
+        load_support = True
+
+    if subtract_bulk:
+        load_support = True
+
     if instrument == 'fpi':
+        datatype = ['d' + species + 's-dist']
+        if load_support:
+            datatype.append('d' + species + 's-moms')
         # not supposed to be centered!
-        pyspedas.mms.fpi(probe=probe, trange=trange_data, data_rate=data_rate, time_clip=True,
-                         datatype=['d' + species + 's-dist', 'd' + species + 's-moms'],
+        pyspedas.mms.fpi(probe=probe, trange=trange_data, data_rate=data_rate, time_clip=True, datatype=datatype,
                          level=level)
 
         dists = mms_get_fpi_dist_slice2d('mms' + probe + '_d' + species + 's_dist_' + data_rate, probe=probe)
@@ -76,14 +87,15 @@ def mms_part_slice2d(trange=None,
         print('Unknown instrument: ' + instrument + '; valid options: fpi')
         return
 
-    pyspedas.mms.fgm(probe=probe, trange=trange_data, data_rate=mag_data_rate, time_clip=True)
+    if load_support:
+        pyspedas.mms.fgm(probe=probe, trange=trange_data, data_rate=mag_data_rate, time_clip=True)
 
     bfield = 'mms' + probe + '_fgm_b_gse_' + mag_data_rate + '_l2_bvec'
     vbulk = 'mms' + probe + '_d' + species + 's_bulkv_gse_' + data_rate
 
     the_slice = slice2d(dists, trange=trange, time=time, window=window, samples=samples, center_time=center_time,
                         mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution, erange=erange,
-                        energy=energy, log=log, custom_rotation=custom_rotation)
+                        energy=energy, log=log, custom_rotation=custom_rotation, subtract_bulk=subtract_bulk)
 
     plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
          save_pdf=save_pdf, save_eps=save_eps, display=display)
