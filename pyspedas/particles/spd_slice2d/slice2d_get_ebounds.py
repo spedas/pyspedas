@@ -15,7 +15,7 @@ def slice2d_get_ebounds(dist):
     --------
         Array of energy bin boundaries (# energy bins + 1)
     """
-    n = dist['energy'].shape[1]+1
+    n = dist['energy'].shape[0]+1
     energies = np.zeros((n, dist['energy'][:, :, :].shape[1], dist['energy'][:, :, :].shape[2]))
 
     # use midpoints

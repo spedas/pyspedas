@@ -22,7 +22,7 @@ def slice2d_get_sphere(dist, energy=False):
     --------
         Hash table containing center and width of all bins in spherical coordinates
     """
-    n = dist['data'].shape[1]
+    n = dist['data'].shape[0]
     c = 299792458.0  # m/s
 
     # determine gapless energy boundaries.
