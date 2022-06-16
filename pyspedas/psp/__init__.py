@@ -25,7 +25,22 @@ def fields(trange=['2018-11-5', '2018-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options include:
+                'mag_rtn',
+                'mag_rtn_1min',
+                'mag_rtn_4_per_cycle',
+                'mag_sc',
+                'mag_sc_1min',
+                'mag_sc_4_per_cycle',
+                'mag_vso' (limited dates)
+                'rfs_burst' (limited dates)
+                'rfs_hfr', 
+                'rfs_lfr'
+                'dfb_dc_spec'
+                'dfb_ac_spec'
+                'dfb_dc_xspec'
+                'dfb_ac_xspec'
+                'merged_scam_wf'
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -116,7 +131,9 @@ def spc(trange=['2018-11-5', '2018-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options include:
+                'l3i' (level='l3')
+                'l2i' (level='l2')
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -153,6 +170,13 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
+    if datatype == 'l3i':
+        level = 'l3'
+        print("Using LEVEL=L3")
+    elif datatype == 'l2i':
+        level = 'l2'
+        print("Using LEVEL=L2")
+
     return load(instrument='spc', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def spe(trange=['2018-11-5', '2018-11-6'], 
