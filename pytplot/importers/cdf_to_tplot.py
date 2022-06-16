@@ -210,10 +210,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
                             # check if a conversion to seconds is required
                             if 'SI_CONVERSION' in delta_minus_var_att:
                                 si_conv = delta_minus_var_att['SI_CONVERSION']
-                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+                                delta_minus_var = delta_minus_var.astype(float)*np.float64(si_conv.split('>')[0])
                             elif 'SI_CONV' in delta_minus_var_att:
                                 si_conv = delta_minus_var_att['SI_CONV']
-                                delta_minus_var = delta_minus_var.astype(float)*np.float(si_conv.split('>')[0])
+                                delta_minus_var = delta_minus_var.astype(float)*np.float64(si_conv.split('>')[0])
 
                         # sometimes these are specified as arrays
                         if isinstance(delta_plus_var, np.ndarray) and isinstance(delta_minus_var, np.ndarray):
