@@ -54,7 +54,7 @@ def plot(the_slice, direction, value, xrange=None, yrange=None):
         elif direction == 'y':
             values_to_incl = np.argwhere((the_slice['xgrid'] >= value[0]) & (the_slice['xgrid'] <= value[1])).flatten()
             if len(values_to_incl) != 0:
-                axis.plot(the_slice['ygrid'], np.nansum(the_slice['data'][values_to_incl, :], axis=1), **options)
+                axis.plot(the_slice['ygrid'], np.nansum(the_slice['data'][values_to_incl, :], axis=0), **options)
 
         plt.show()
         return
