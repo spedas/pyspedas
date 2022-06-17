@@ -241,7 +241,7 @@ def spe(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='spe', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def spi(trange=['2018-11-5', '2018-11-6'], 
-        datatype='spi_sf0a_mom_inst', 
+        datatype='sf00_l3_mom', 
         level='l3',
         suffix='',  
         get_support_data=False, 
@@ -262,7 +262,11 @@ def spi(trange=['2018-11-5', '2018-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options Include:
+                'sf00_l3_mom': Moments of the Proton distribution function (RTN)
+                'sf0a_l3_mom': Moments of the Alpha distribution function (RTN)
+                'sf00_l3_mom_inst': Moments of the Proton distribution function (Instrument Frame)
+                'sf0a_l3_mom_inst': Moments of the Alpha distribution function (Instrument Frame)
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -299,6 +303,11 @@ def spi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
+    if datatype in ['sf00_l3_mom','sf0a_l3_mom','sf00_l3_mom_inst','sf0a_l3_mom_inst']:
+        datatype = 'spi_' + datatype
+        level = 'l3'
+        print("Using LEVEL=L3")
+
     return load(instrument='spi', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epihi(trange=['2018-11-5', '2018-11-6'], 
