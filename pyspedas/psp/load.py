@@ -33,10 +33,12 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     # remote path formats are going to be all lowercase
     datatype = datatype.lower()
+    prefix = 'psp_'  #To cover the case if one *does* call this routine directly.
 
     file_resolution = 24*3600.
-
     if instrument == 'fields':
+        prefix = '' #CDF Variables are already prefixed with psp_fld_
+
         # 4_per_cycle and 1min are daily, not 6h like the full resolution 'mag_(rtn|sc)'
         if datatype == 'mag_rtn_1min' or datatype == 'mag_sc_1min':
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
@@ -71,16 +73,22 @@ def load(trange=['2018-11-5', '2018-11-6'],
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
             file_resolution = 6*3600.
     elif instrument == 'spc':
+        prefix = 'psp_spc_'
         pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
     elif instrument == 'spe':
+        prefix = 'psp_spe_'
         pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_v??.cdf'
     elif instrument == 'spi':
+        prefix = 'psp_spi_'
         pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/psp_swp_spi_*_%Y%m%d_v??.cdf'
     elif instrument == 'epihi':
+        prefix = 'psp_epihi_'
         pathformat = 'isois/epihi/' + level + '/' + datatype + '/%Y/psp_isois-epihi_' + level + '*_%Y%m%d_v??.cdf'
     elif instrument == 'epilo':
+        prefix = 'psp_epilo_'
         pathformat = 'isois/epilo/' + level + '/' + datatype + '/%Y/psp_isois-epilo_' + level + '*_%Y%m%d_v??.cdf'
     elif instrument == 'epi':
+        prefix = 'psp_isois_'
         pathformat = 'isois/merged/' + level + '/' + datatype + '/%Y/psp_isois_' + level + '-' + datatype + '_%Y%m%d_v??.cdf'
 
     # find the full remote path names using the trange
@@ -98,7 +106,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
 
     if notplot:
         return tvars
