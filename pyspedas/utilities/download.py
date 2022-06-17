@@ -117,6 +117,7 @@ def download_file(url=None, filename=None, headers={}, username=None, password=N
 
     fsrc.close()
     ftmp.close()
+    os.unlink(ftmp.name) # delete the temporary file
     
     logging.info('Download complete: ' + filename)
 
