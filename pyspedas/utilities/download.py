@@ -61,8 +61,8 @@ def download_file(url=None, filename=None, headers={}, username=None, password=N
     if session is None:
         session = requests.Session()
     
-    if username != None:
-        session.auth = (username, password)
+    if username is not None:
+        session.auth = requests.auth.HTTPDigestAuth(username, password)
 
     # check if the file exists, and if so, set the last modification time in the header
     # this allows you to avoid re-downloading files that haven't changed
@@ -72,7 +72,6 @@ def download_file(url=None, filename=None, headers={}, username=None, password=N
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=ResourceWarning)
         fsrc = session.get(url, stream=True, verify=verify, headers=headers)
-
 
     # need to delete the If-Modified-Since header so it's not set in the dictionary in subsequent calls
     if headers.get('If-Modified-Since') != None:
