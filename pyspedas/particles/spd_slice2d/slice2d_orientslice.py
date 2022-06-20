@@ -42,7 +42,11 @@ def slice2d_orientslice(vectors=None, vbulk=None, bfield=None, sunvec=None, slic
 
     # Transform particle and support vectors
     if vectors is not None:
-        vectors = matrix @ vectors
+        transformed = np.zeros(vectors.shape)
+        num_vectors = vectors.shape[0]
+        for vector_idx in range(num_vectors):
+            transformed[vector_idx] = (matrix @ vectors[vector_idx, :]).flatten()
+        vectors = transformed
     if vbulk is not None:
         vbulk = matrix @ vbulk
     if bfield is not None:

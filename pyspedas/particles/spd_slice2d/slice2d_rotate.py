@@ -56,7 +56,11 @@ def slice2d_rotate(rotation=None, vectors=None, bfield=None, vbulk=None, sunvec=
 
     # Transform particle and support vectors
     if vectors is not None:
-        vectors = matrix @ vectors
+        transformed = np.zeros(vectors.shape)
+        num_vectors = vectors.shape[0]
+        for vector_idx in range(num_vectors):
+            transformed[vector_idx] = (matrix @ vectors[vector_idx, :]).flatten()
+        vectors = transformed
     if vbulk is not None:
         vbulk = matrix @ vbulk
     if bfield is not None:
