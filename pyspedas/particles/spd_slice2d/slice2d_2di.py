@@ -40,7 +40,8 @@ def slice2d_2di(datapoints, xyz, resolution, thetarange=None, zdirrange=None):
     # note: the following algorithm was translated directly
     # from IDL, and apparently came from thm_esa_slice2d
     # originally
-    uni2 = np.unique(x, return_index=True)[1]+1
+    # uni2 = np.unique(x, return_index=True)[1]+1
+    uni2 = np.unique(x, return_index=True)[1]
     uni1 = np.insert(uni2[0:len(uni2)-1] + 1, 0, 0)
 
     kk = 0
@@ -53,7 +54,7 @@ def slice2d_2di(datapoints, xyz, resolution, thetarange=None, zdirrange=None):
         datapointsi = datapointsi[np.argsort(yi)]
         yi = yi[np.argsort(yi)]
 
-        index2 = np.unique(yi, return_index=True)[1]+1
+        index2 = np.unique(yi, return_index=True)[1]
         if len(index2) == 1:
             index1 = 0
         else:
