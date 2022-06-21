@@ -23,7 +23,7 @@ import pytplot
 import copy
 
 
-def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
+def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata=False,
                  get_ignore_data=False, string_encoding='ascii',
                  prefix='', suffix='', plot=False, merge=False,
                  center_measurement=False, notplot=False, varnames=[]):
@@ -107,6 +107,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False,
         varformat = ".*"
     if get_support_data:
         var_type.append('support_data')
+    if get_metadata:
+        var_type.append('metadata')
     if get_ignore_data:
         var_type.append('ignore_data')
 
