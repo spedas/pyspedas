@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.interpolate
 import scipy.spatial
-from matplotlib.tri import Triangulation, LinearTriInterpolator
+
 
 def slice2d_2di(datapoints, xyz, resolution, thetarange=None, zdirrange=None):
     """
