@@ -1,3 +1,4 @@
+import warnings
 from copy import deepcopy
 import numpy as np
 
@@ -14,7 +15,9 @@ def slice2d_collate(data, weight, sphere, previous_out=None, sum_samples=False):
     if sum_samples:
         data_out = data
     else:
-        data_out = data/weight
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', category=RuntimeWarning)
+            data_out = data/weight
 
     data_out = data_out.flatten(order='F')
     weight = weight.flatten(order='F')

@@ -12,6 +12,7 @@ from .slice2d_rlog import slice2d_rlog
 from .slice2d_s2c import slice2d_s2c
 from .slice2d_2di import slice2d_2di
 from .slice2d_smooth import slice2d_smooth
+from .slice2d_subtract import slice2d_subtract
 
 from pyspedas import time_double, time_string
 
@@ -172,6 +173,12 @@ def slice2d(dists,
 
     geo_shift = [0, 0, 0]
     if subtract_bulk:
+        vectors = slice2d_subtract(rot_matrix['vectors'], vbulk)
+
+        if vectors is not None:
+            rot_matrix['vectors'] = vectors
+
+        # the shift is applied later for geometric interpolation
         geo_shift = vbulk
 
     # sort transformed vector grid
