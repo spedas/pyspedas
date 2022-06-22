@@ -25,6 +25,7 @@ def maven_load(filenames=None,
                prefix='',
                suffix='',
                get_support_data=False,
+               get_metadata=False,
                auto_yes=False):
     """
     Main function for downloading MAVEN data and loading it into tplot variables (if CDF or STS data type).
@@ -98,7 +99,7 @@ def maven_load(filenames=None,
                       only_update_prefs=only_update_prefs, local_dir=local_dir, list_files=list_files,
                       new_files=new_files, exclude_orbit_file=exclude_orbit_file, download_only=download_only,
                       varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                      auto_yes=auto_yes, varnames=varnames)
+                      get_metadata=get_metadata, auto_yes=auto_yes, varnames=varnames)
     return tvars
 
 def kp(trange=['2016-01-01', '2016-01-02'], datatype=None, varformat=None, get_support_data=False, 
@@ -114,7 +115,7 @@ def mag(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='ss', varforma
 def sta(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='2a', varformat=None, get_support_data=False, 
         auto_yes=True, downloadonly=False, varnames=[]):
     return maven_load(instruments='sta', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+        get_metadata=True, get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
 
 def swea(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='svyspec', varformat=None, get_support_data=False, 
         auto_yes=True, downloadonly=False, varnames=[]):
