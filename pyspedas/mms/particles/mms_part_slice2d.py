@@ -12,6 +12,8 @@ def mms_part_slice2d(trange=None,
                      window=None,
                      center_time=False,
                      erange=None,
+                     thetarange=None,
+                     zdirrange=None,
                      energy=False,
                      log=False,
                      probe='1',
@@ -26,7 +28,8 @@ def mms_part_slice2d(trange=None,
                      xrange=None,
                      yrange=None,
                      zrange=None,
-                     resolution=500,
+                     resolution=None,
+                     interpolation='geometric',
                      save_png=None,
                      save_svg=None,
                      save_pdf=None,
@@ -109,7 +112,8 @@ def mms_part_slice2d(trange=None,
 
     the_slice = slice2d(dists, trange=trange, time=time, window=window, samples=samples, center_time=center_time,
                         mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution, erange=erange,
-                        energy=energy, log=log, custom_rotation=custom_rotation, subtract_bulk=subtract_bulk)
+                        energy=energy, log=log, custom_rotation=custom_rotation, subtract_bulk=subtract_bulk,
+                        interpolation=interpolation, thetarange=thetarange, zdirrange=zdirrange)
 
     plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
          save_pdf=save_pdf, save_eps=save_eps, display=display)

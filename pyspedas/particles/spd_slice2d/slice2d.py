@@ -9,6 +9,8 @@ from .slice2d_rotate import slice2d_rotate
 from .slice2d_custom_rotation import slice2d_custom_rotation
 from .slice2d_nearest import slice2d_nearest
 from .slice2d_rlog import slice2d_rlog
+from .slice2d_s2c import slice2d_s2c
+from .slice2d_2di import slice2d_2di
 
 from pyspedas import time_double, time_string
 
@@ -18,14 +20,17 @@ def slice2d(dists,
             samples=None,
             window=None,
             center_time=False,
+            interpolation='geometric',
             trange=None,
-            resolution=500,
+            resolution=None,
             rotation='xy',
             custom_rotation=None,
             subtract_bulk=False,
             energy=False,
             log=False,
             erange=None,
+            thetarange=None,
+            zdirrange=None,
             mag_data=None,
             vel_data=None,
             sun_data=None,
@@ -49,6 +54,15 @@ def slice2d(dists,
     if rotation not in valid_rotations:
         print('Invalid rotation requested; valid options: ' + ', '.join(valid_rotations))
         return
+
+    if interpolation == '2d':
+        if resolution is None:
+            resolution = 150
+        if thetarange is None and zdirrange is None:
+            thetarange = [-20, 20]
+    elif interpolation == 'geometric':
+        if resolution is None:
+            resolution = 500
 
     if time is not None:
         time = time_double(time)
@@ -108,6 +122,11 @@ def slice2d(dists,
         data['rad'] = scaled_r['r']
         data['dr'] = scaled_r['dr']
 
+    # convert spherical data to cartesian coordinates for interpolation
+    xyz = None
+    if interpolation != 'geometric':
+        xyz = slice2d_s2c(data['rad'], data['theta'], data['phi'])
+
     # Get/apply coordinate transformations
     #  - for 2D/3D interpolation, the data is transformed here
     #  - for geometric interpolation, the data is transformed in slice2d_geo
@@ -123,7 +142,7 @@ def slice2d(dists,
     # custom rotation
     custom_rot = slice2d_custom_rotation(custom_rotation=custom_rotation,
                                          trange=trange,
-                                         vectors=None,
+                                         vectors=xyz,
                                          bfield=bfield,
                                          vbulk=vbulk,
                                          sunvec=sunvec)
@@ -151,11 +170,20 @@ def slice2d(dists,
     if subtract_bulk:
         geo_shift = vbulk
 
+    # sort transformed vector grid
+    if xyz is not None:
+        sorted_idxs = np.argsort(rot_matrix['vectors'][:, 0], kind='stable')
+        rot_matrix['vectors'] = rot_matrix['vectors'][sorted_idxs, :]
+        data['data'] = data['data'][sorted_idxs]
+
     # Create the slice
     # ------------------------------------------------------------------------
-    geo = slice2d_geo(data['data'], resolution, data['rad'], data['phi'], data['theta'], data['dr'], data['dp'],
-                      data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'],
-                      custom_matrix=custom_rot['matrix'], msg_prefix=msg_prefix, shift=geo_shift)
+    if interpolation == 'geometric':
+        the_slice = slice2d_geo(data['data'], resolution, data['rad'], data['phi'], data['theta'], data['dr'], data['dp'],
+                          data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'],
+                          custom_matrix=custom_rot['matrix'], msg_prefix=msg_prefix, shift=geo_shift)
+    elif interpolation == '2d':
+        the_slice = slice2d_2di(data['data'], rot_matrix['vectors'], resolution, thetarange=thetarange, zdirrange=zdirrange)
 
     # Get metadata and return slice
     # ------------------------------------------------------------------------
@@ -177,7 +205,7 @@ def slice2d(dists,
            'rrange': rrange,
            'rlog': log,
            'n_samples': len(times_ind),
-           **geo}
+           **the_slice}
 
     print('Finished slice at ' + time_string(tr[0], fmt='%Y-%m-%d %H:%M:%S.%f'))
     return out
