@@ -415,6 +415,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
 
         if to_merge is True:
             cur_data_quant = pytplot.data_quants[var_name]
+            if isinstance(pytplot.data_quants[var_name], dict):  # non-record varying variable, shouldn't be merged
+                continue
             plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs)
             pytplot.data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
             pytplot.data_quants[var_name].attrs = plot_options
