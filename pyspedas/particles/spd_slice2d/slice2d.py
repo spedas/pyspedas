@@ -11,6 +11,7 @@ from .slice2d_nearest import slice2d_nearest
 from .slice2d_rlog import slice2d_rlog
 from .slice2d_s2c import slice2d_s2c
 from .slice2d_2di import slice2d_2di
+from .slice2d_smooth import slice2d_smooth
 
 from pyspedas import time_double, time_string
 
@@ -29,6 +30,7 @@ def slice2d(dists,
             energy=False,
             log=False,
             erange=None,
+            smooth=None,
             thetarange=None,
             zdirrange=None,
             mag_data=None,
@@ -56,6 +58,8 @@ def slice2d(dists,
         return
 
     if interpolation == '2d':
+        if smooth is None:
+            smooth = 7
         if resolution is None:
             resolution = 150
         if thetarange is None and zdirrange is None:
@@ -184,6 +188,9 @@ def slice2d(dists,
                           custom_matrix=custom_rot['matrix'], msg_prefix=msg_prefix, shift=geo_shift)
     elif interpolation == '2d':
         the_slice = slice2d_2di(data['data'], rot_matrix['vectors'], resolution, thetarange=thetarange, zdirrange=zdirrange)
+
+    if smooth is not None:
+        the_slice = slice2d_smooth(the_slice, smooth)
 
     # Get metadata and return slice
     # ------------------------------------------------------------------------
