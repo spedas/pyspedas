@@ -33,6 +33,8 @@ def link(names, link_name, link_type='alt'):
         if isinstance(i,int):
             i = list(pytplot.data_quants.keys())[i-1]
 
+        if isinstance(pytplot.data_quants[pytplot.data_quants[i].name], dict):  # non-record varying variable
+            continue
         pytplot.data_quants[pytplot.data_quants[i].name].attrs['plot_options']['links'][link_type] = link_name
                 
     return
