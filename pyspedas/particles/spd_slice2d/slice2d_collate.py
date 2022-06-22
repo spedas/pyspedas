@@ -46,7 +46,7 @@ def slice2d_collate(data, weight, sphere, previous_out=None, sum_samples=False):
         theta_out = deepcopy(theta_in)
         dr_out = deepcopy(dr_in)
         dp_out = deepcopy(dp_in)
-        dt_out = deepcopy(dp_in)
+        dt_out = deepcopy(dt_in)
     else:
         data_out = np.concatenate((previous_out['data'], data_out))
         rad_out = np.concatenate((previous_out['rad'], rad_in))
