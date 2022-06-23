@@ -60,4 +60,4 @@ def sem(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='sem', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='sem', probe=probe, trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
