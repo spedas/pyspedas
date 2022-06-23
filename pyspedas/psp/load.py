@@ -65,6 +65,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 dtype_tmp = datatype[:11]
                 stype_tmp = datatype[12:]
             pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+        elif datatype == 'sqtn_rfs_v1v2':
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
 
         else:
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
