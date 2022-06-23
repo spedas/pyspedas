@@ -1,6 +1,7 @@
 
 from .load import load
 
+
 def sem(trange=['2018-11-5', '2018-11-6'], 
         probe=['noaa19'],
         datatype='*', 
@@ -21,6 +22,10 @@ def sem(trange=['2018-11-5', '2018-11-6'],
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
+        probe: str or list of str
+            POES spacecraft name(s); e.g., =metop1, metop2, noaa15, noaa16,
+            noaa18, noaa19 (default: noaa19)
 
         datatype: str
             Data type; Valid options:
