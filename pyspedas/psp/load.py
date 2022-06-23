@@ -63,7 +63,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 dtype_tmp = datatype[:11]
                 stype_tmp = datatype[12:]
             pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
-        elif datatype['sqtn_rfs_v1v2']:
+        elif datatype == 'sqtn_rfs_v1v2':
             # unfortunately the naming format of quasi-thermal-noise cdf file is different from others
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
 
