@@ -530,6 +530,8 @@ def _zlog_check(data_quants, value, i):
 
 
 def _reset_plots(name):
+    if isinstance(pytplot.data_quants[name], dict):  # non-record varying variable
+        return
     pytplot.data_quants[name].attrs['plot_options']['extras']['spec'] = 0
     pytplot.data_quants[name].attrs['plot_options']['extras']['alt'] = 0
     pytplot.data_quants[name].attrs['plot_options']['extras']['map'] = 0
