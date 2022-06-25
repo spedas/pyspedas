@@ -129,27 +129,29 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     out_files = []
 
-    if instrument == 'fields':
-        if username != None:
-            try:
-                print("Downloading unpublished Data....")
-                files = download(
-                    remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password
-                )
-            except:
-                files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
-    elif instrument in ['spc','spi','spe']:
-            try:
-                print("Downloading unpublished Data....")
-                files = download(
-                    remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password
-                )
-            except:
-                files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
-    else:
+    if username is None:
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    else:
+        if instrument == 'fields':
+            if username != None:
+                try:
+                    print("Downloading unpublished Data....")
+                    files = download(
+                        remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
+                        username=username, password=password
+                    )
+                except:
+                    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+        elif instrument in ['spc','spi','spe']:
+                try:
+                    print("Downloading unpublished Data....")
+                    files = download(
+                        remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
+                        username=username, password=password
+                    )
+                except:
+                    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+        
 
     if files is not None:
         for file in files:
