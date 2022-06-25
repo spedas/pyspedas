@@ -138,7 +138,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     print("Downloading unpublished Data....")
                     files = download(
                         remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
-                        username=username, password=password
+                        username=username, password=password, basic_auth=True
                     )
                 except:
                     files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
@@ -147,7 +147,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     print("Downloading unpublished Data....")
                     files = download(
                         remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
-                        username=username, password=password
+                        username=username, password=password, basic_auth=True
                     )
                 except:
                     files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
