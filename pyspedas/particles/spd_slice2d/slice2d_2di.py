@@ -5,7 +5,7 @@ import scipy.spatial
 
 def slice2d_2di(datapoints, xyz, resolution, thetarange=None, zdirrange=None):
     """
-
+    Produces slice by interpolating projected data. Based on spd_slice2d_2di in IDL
     """
 
     # cut by theta value
