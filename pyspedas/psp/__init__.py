@@ -13,7 +13,10 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        username=None,
+        password=None
+        ):
     """
     This function loads Parker Solar Probe FIELDS data
     
@@ -99,7 +102,12 @@ def fields(trange=['2018-11-5', '2018-11-6'],
                     'SCMulfhg_SCMvlfhg','SCMulfhg_SCMwlfhg','SCMvlfhg_SCMwlfhg',
                     'dV12hg_dV34hg']
 
-    loaded_vars = load(instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    loaded_vars = load(
+        instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
+        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
+        username=username, password=password
+    )
     
     if loaded_vars is None or notplot or downloadonly:
         return loaded_vars
@@ -119,7 +127,10 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        username=None,
+        password=None
+    ):
     """
     This function loads Parker Solar Probe Solar Probe Cup data
     
@@ -170,14 +181,17 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    if datatype == 'l3i':
-        level = 'l3'
-        print("Using LEVEL=L3")
-    elif datatype == 'l2i':
-        level = 'l2'
-        print("Using LEVEL=L2")
+    if username is None:
+        if datatype == 'l3i':
+            level = 'l3'
+            print("Using LEVEL=L3")
+        elif datatype == 'l2i':
+            level = 'l2'
+            print("Using LEVEL=L2")
 
-    return load(instrument='spc', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='spc', trange=trange, datatype=datatype, level=level, suffix=suffix, 
+        get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, 
+        notplot=notplot, time_clip=time_clip, no_update=no_update, username=username, password=password)
 
 def spe(trange=['2018-11-5', '2018-11-6'], 
         datatype='spa_sf1_32e', 
@@ -189,7 +203,10 @@ def spe(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        username=None,
+        password=None
+    ):
     """
     This function loads Parker Solar Probe SWEAP/SPAN-e data
     
@@ -238,7 +255,10 @@ def spe(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='spe', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='spe', trange=trange, datatype=datatype, level=level, 
+        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, 
+        username=username, password=password)
 
 def spi(trange=['2018-11-5', '2018-11-6'], 
         datatype='sf00_l3_mom', 
@@ -250,7 +270,10 @@ def spi(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        username=None,
+        password=None
+    ):
     """
     This function loads Parker Solar Probe SWEAP/SPAN-i data
     
@@ -308,7 +331,11 @@ def spi(trange=['2018-11-5', '2018-11-6'],
         level = 'l3'
         print("Using LEVEL=L3")
 
-    return load(instrument='spi', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='spi', trange=trange, datatype=datatype, level=level, 
+        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, 
+        username=username, password=password
+        )
 
 def epihi(trange=['2018-11-5', '2018-11-6'], 
         datatype='let1_rates1h', 

@@ -122,7 +122,7 @@ def download_file(url=None, filename=None, headers={}, username=None, password=N
 
     return filename
 
-def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False, last_version=False):
+def download(remote_path='', remote_file='', local_path='', local_file='', headers={}, username=None, password=None, verify=True, session=None, no_download=False, last_version=False, basic_auth=False):
     """
     Download one or more remote files and return their local paths.
 
@@ -234,7 +234,10 @@ def download(remote_path='', remote_file='', local_path='', local_file='', heade
                     # we'll need to parse the HTML index file for the file list
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore", category=ResourceWarning)
-                        html_index = session.get(url_base, verify=verify, headers=headers)
+                        if basic_auth == False:
+                            html_index = session.get(url_base, verify=verify, headers=headers)
+                        else:
+                            html_index = session.get(url_base, verify=verify, headers=headers, auth=(username,password))
 
                     if html_index.status_code == 404:
                         logging.error('Remote index not found: ' + url_base)
