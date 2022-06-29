@@ -3,6 +3,7 @@ import xarray as xr
 from pytplot import tplot, store_data
 import pytplot
 import calendar
+import copy
 
 
 def change_time_to_unix_time(time_var):
@@ -126,7 +127,7 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
                 var_name = prefix + var + suffix
                 to_merge = False
                 if (var_name in pytplot.data_quants.keys() and (merge == True)):
-                    prev_data_quant = pytplot.data_quants[var_name].values
+                    prev_data_quant = pytplot.data_quants[var_name]
                     to_merge = True
 
                 tplot_data = {'x': unix_times, 'y': masked_vars[var]}
@@ -135,9 +136,11 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
                     stored_variables.append(var_name)
 
                 if to_merge == True:
-                    cur_data_quant = pytplot.data_quants[var_name].values
+                    cur_data_quant = pytplot.data_quants[var_name]
+                    plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs)
                     merged_data = [prev_data_quant, cur_data_quant]
-                    pytplot.data_quants[var_name].values = xr.concat(merged_data).values
+                    pytplot.data_quants[var_name] = xr.concat(merged_data, dim='time').sortby('time')
+                    pytplot.data_quants[var_name].attrs = plot_options
 
                 # If we are interested in seeing a quick plot of the variables, do it
                 if plot:
