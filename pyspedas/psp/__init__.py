@@ -41,6 +41,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
                 'rfs_burst' (limited dates)
                 'rfs_hfr', 
                 'rfs_lfr'
+                'f2_100bps'
                 'dfb_dc_spec'
                 'dfb_ac_spec'
                 'dfb_dc_xspec'
@@ -108,7 +109,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         print("Using LEVEL=L3")
 
     spec_types = None
-    if datatype == 'dfb_dc_spec' or datatype == 'dfb_ac_spec' or datatype == 'dfb_dc_xspec' or datatype == 'dfb_ac_xspec':
+    if datatype in ['dfb_dc_spec', 'dfb_ac_spec', 'dfb_dc_xspec', 'dfb_ac_xspec']:
         if level == 'l1':
             spec_types = ['1', '2', '3', '4']
         else:
@@ -136,6 +137,17 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
     if 'psp_fld_l2_mag_RTN'+suffix in loaded_vars:
         options('psp_fld_l2_mag_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+    if 'psp_fld_l2_mag_RTN_1min'+suffix in loaded_vars:
+        options('psp_fld_l2_mag_RTN_1min'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+    if 'psp_fld_l2_mag_RTN_4_Sa_per_Cyc'+suffix in loaded_vars:
+        options('psp_fld_l2_mag_RTN_4_Sa_per_Cyc'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+
+    if 'psp_fld_l2_mag_SC'+suffix in loaded_vars:
+        options('psp_fld_l2_mag_SC'+suffix, 'legend_names', ['Bx', 'By', 'Bz'])
+    if 'psp_fld_l2_mag_SC_1min'+suffix in loaded_vars:
+        options('psp_fld_l2_mag_SC_1min'+suffix, 'legend_names', ['Bx', 'By', 'Bz'])
+    if 'psp_fld_l2_mag_SC_4_Sa_per_Cyc'+suffix in loaded_vars:
+        options('psp_fld_l2_mag_SC_4_Sa_per_Cyc'+suffix, 'legend_names', ['Bx', 'By', 'Bz'])
 
     return loaded_vars
 

@@ -52,18 +52,18 @@ def load(trange=['2018-11-5', '2018-11-6'],
         prefix = '' #CDF Variables are already prefixed with psp_fld_
 
         # 4_per_cycle and 1min are daily, not 6h like the full resolution 'mag_(rtn|sc)'
-        if datatype == 'mag_rtn_1min' or datatype == 'mag_sc_1min':
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
-        elif datatype == 'mag_rtn_4_per_cycle' or datatype == 'mag_rtn_4_sa_per_cyc':
-            pathformat = instrument + '/' + level + '/mag_rtn_4_per_cycle/%Y/psp_fld_' + level + '_mag_rtn_4_sa_per_cyc_%Y%m%d_v??.cdf'
-        elif datatype == 'mag_sc_4_per_cycle' or datatype == 'mag_sc_4_sa_per_cyc':
-            pathformat = instrument + '/' + level + '/mag_sc_4_per_cycle/%Y/psp_fld_' + level + '_mag_sc_4_sa_per_cyc_%Y%m%d_v??.cdf'
-        elif datatype == 'mag_rtn' or datatype == 'mag_sc':
+        if datatype in ['mag_rtn', 'mag_sc']:
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
             file_resolution = 6*3600.
-        elif datatype == 'rfs_hfr' or datatype == 'rfs_lfr' or datatype == 'rfs_burst' or datatype == 'f2_100bps':
+        elif datatype in ['mag_rtn_1min', 'mag_sc_1min', 'rfs_hfr', 'rfs_lfr', 'rfs_burst', 'f2_100bps']:
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
-        elif datatype == 'dfb_dc_spec' or datatype == 'dfb_ac_spec' or datatype == 'dfb_dc_xspec' or datatype == 'dfb_ac_xspec':
+        elif datatype in ['mag_rtn_4_per_cycle', 'mag_rtn_4_sa_per_cyc']:
+            pathformat = instrument + '/' + level + '/mag_rtn_4_per_cycle/%Y/psp_fld_' + level + '_mag_rtn_4_sa_per_cyc_%Y%m%d_v??.cdf'
+        elif datatype in ['mag_sc_4_per_cycle', 'mag_sc_4_sa_per_cyc']:
+            pathformat = instrument + '/' + level + '/mag_sc_4_per_cycle/%Y/psp_fld_' + level + '_mag_sc_4_sa_per_cyc_%Y%m%d_v??.cdf'
+        elif datatype == 'sqtn_rfs_v1v2':
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'        
+        elif datatype in ['dfb_dc_spec', 'dfb_ac_spec', 'dfb_dc_xspec', 'dfb_ac_xspec']:
             out_vars = []
             for item in spec_types:
                 loaded_data = load(trange=trange, instrument=instrument, datatype=datatype + '_' + item, level=level, 
@@ -80,28 +80,20 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 dtype_tmp = datatype[:11]
                 stype_tmp = datatype[12:]
             pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
-        elif datatype == 'sqtn_rfs_v1v2':
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
 
 
-        # unpublished data (only download v02 data which would be published)
-        elif (username != None) and (datatype == 'mag_RTN'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
-            file_resolution = 6*3600.
-        elif (username != None) and (datatype == 'mag_RTN_1min'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
-        elif (username != None) and (datatype == 'mag_RTN_4_Sa_per_Cyc'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
-        elif (username != None) and (datatype == 'mag_SC'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
-            file_resolution = 6*3600.
-        elif (username != None) and (datatype == 'mag_SC_1min'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
-        elif (username != None) and (datatype == 'mag_SC_4_Sa_per_Cyc'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
-        elif (username != None) and (datatype == 'sqtn_rfs_V1V2'):
-            # unpublished QTN data
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+
+        # unpublished data (only download v02 mag data which would be published)
+        elif username != None:
+            if datatype in ['mag_RTN', 'mag_SC']:
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
+                file_resolution = 6*3600.
+
+            elif datatype in ['mag_RTN_1min', 'mag_RTN_4_Sa_per_Cyc', 'mag_SC_1min', 'mag_SC_4_Sa_per_Cyc']:
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
+
+            elif datatype ==  'sqtn_rfs_V1V2':
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
 
         else:
             # Generic SPDF path.  
