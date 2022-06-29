@@ -5,6 +5,7 @@ from datetime import date, datetime, timezone
 from matplotlib import pyplot as plt
 import pytplot
 from fnmatch import filter as tname_filter
+from time import sleep
 
 from .lineplot import lineplot
 from .specplot import specplot
@@ -519,10 +520,12 @@ def mouse_move_slice(event, slice_axes, slice_plot):
     slice_axes.set_xlim(yrange)
     slice_axes.set_xscale(xscale)
     slice_axes.set_yscale(yscale)
+
     try:
         plt.draw()
     except ValueError:
         return
+    sleep(0.01)
 
 
 def get_var_label_ticks(var_xr, times):
