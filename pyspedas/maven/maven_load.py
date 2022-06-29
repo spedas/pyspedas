@@ -141,6 +141,7 @@ def load_data(filenames=None,
               prefix='',
               suffix='',
               get_support_data=False,
+              get_metadata=False,
               auto_yes=False):
     """
     This function downloads MAVEN data loads it into tplot variables, if applicable.
@@ -267,11 +268,11 @@ def load_data(filenames=None,
                 if desc != '' and suffix == '':
                     created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames, string_encoding='utf-8',
                                                                  get_support_data=get_support_data, prefix=prefix,
-                                                                 suffix=desc, merge=True)
+                                                                 get_metadata=get_metadata, suffix=desc, merge=True)
                 else:
                     created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames, string_encoding='utf-8',
                                                                   get_support_data=get_support_data, prefix=prefix,
-                                                                  suffix=suffix, merge=True)
+                                                                  get_metadata=get_metadata, suffix=suffix, merge=True)
 
                 # Specifically for SWIA and SWEA data, make sure the plots have log axes and are spectrograms
                 instr = l2_regex.match(os.path.basename(f)).group("instrument")

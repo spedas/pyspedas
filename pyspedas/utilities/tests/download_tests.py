@@ -36,9 +36,9 @@ class DownloadTestCases(unittest.TestCase):
         self.assertTrue(files[0] == os.path.join('psp_data/spc/l3', 'psp_swp_spc_l3i_20190401_v01.cdf'))
 
     def test_auth(self):
-        files = download(remote_file='https://postman-echo.com/basic-auth', local_file='test_auth')
+        files = download(remote_file='https://postman-echo.com/digest-auth', local_file='test_auth')
         self.assertTrue(len(files) == 0)
-        files = download(remote_file='https://postman-echo.com/basic-auth', local_file='test_auth_works', username='postman', password='password')
+        files = download(remote_file='https://postman-echo.com/digest-auth', local_file='test_auth_works', username='postman', password='password')
         self.assertTrue(len(files) == 1)
         
 if __name__ == '__main__':

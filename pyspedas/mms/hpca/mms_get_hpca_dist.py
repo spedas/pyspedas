@@ -144,7 +144,16 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
     out_theta = np.repeat(theta_rebin1, data_in[1].shape[2], axis=0) # repeated across energy
     theta_len = len(data_in.v1)
     out_dtheta = np.zeros([energy_len, theta_len, azimuth_dim[2]]) + 22.5
-    
+
+    # get start/end times
+    # - this assumes that the times from the particle (and angle) data
+    #   are at the center of the corresponding energy sweep
+    # - also assumes that there are no gaps in the data
+    dt = time_data[1:]-time_data[0:-1]
+    dt_sweep = data_in.times[1:]-data_in.times[0:-1]
+    start_times = time_data[full]-dt_sweep[data_idx]
+    end_times = start_times + dt[full]
+
     # get azimuth 
     #  -shift from time-azimuth-elevation-energy to time-energy-azimuth-elevation
     out_phi = azimuth.y[full, :, :, :]
@@ -192,20 +201,32 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
 
         out_data[i, :, :, :] = data_in.y[start_idx:end_idx, :, :].transpose([2, 0, 1])
 
-    out['data'] = out_data
-    out['bins'] = out_bins
-    out['theta'] = out_theta
-    out['phi'] = out_phi
-    out['energy'] = out_energy
-    out['dtheta'] = out_dtheta
-    out['dphi'] = out_dphi
-    out['denergy'] = out_denergy
-    out['n_energy'] = energy_len
-    out['n_theta'] = theta_len
-    out['n_phi'] = phi_len
-    out['n_times'] = full.size
+    out_list = []
 
-    return out
+    for time_idx, time in enumerate(start_times):
+        out_table = {**out}
+        out_table['data'] = out_data[time_idx, :, :, :]
+        out_table['bins'] = out_bins
+        out_table['theta'] = out_theta
+        if len(out_phi.shape) == 4:
+            out_table['phi'] = out_phi[time_idx, :, :, :]
+        else:
+            out_table['phi'] = out_phi
+        out_table['energy'] = out_energy
+        out_table['dtheta'] = out_dtheta
+        if len(out_phi.shape) == 4:
+            out_table['dphi'] = out_dphi[time_idx, :, :, :]
+        else:
+            out_table['dphi'] = out_dphi
+        out_table['denergy'] = out_denergy
+        out_table['n_energy'] = energy_len
+        out_table['n_theta'] = len(data_in[2])
+        out_table['n_phi'] = phi_len
+        out_table['start_time'] = time
+        out_table['end_time'] = end_times[time_idx]
+        out_list.append(out_table)
+
+    return out_list
 
 
 
