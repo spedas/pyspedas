@@ -29,13 +29,15 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options include:
-                'mag_rtn',
-                'mag_rtn_1min',
-                'mag_rtn_4_per_cycle',
-                'mag_sc',
-                'mag_sc_1min',
-                'mag_sc_4_per_cycle',
-                'mag_vso' (limited dates)
+                'mag_RTN'
+                'mag_RTN_1min'
+                'mag_rtn_4_per_cycle' (SPDF only)
+                'mag_RTN_4_Sa_per_Cyc' 
+                'mag_SC'
+                'mag_SC_1min'
+                'mag_sc_4_per_cycle' (SPDF only)
+                'mag_SC_4_Sa_per_Cyc' 
+                'mag_VSO' (limited dates)
                 'rfs_burst' (limited dates)
                 'rfs_hfr', 
                 'rfs_lfr'
@@ -44,6 +46,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
                 'dfb_dc_xspec'
                 'dfb_ac_xspec'
                 'merged_scam_wf'
+                'sqtn_rfs_V1V2'
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -74,6 +77,24 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        username: str
+            Username to use for authentication.
+
+            If passed, attempt to download data from the FIELDS Instrument Team server
+            instead of the fully public server at SPDF.
+            Provides access to unpublished, V02 files.
+
+            Implemented for dataypes:
+                'mag_RTN_1min'
+                'mag_RTN_4_Sa_per_Cyc'
+                'mag_SC'
+                'mag_SC_1min'
+                'mag_SC_4_Sa_per_Cyc'
+                'sqtn_rfs_V1V2'
+
+        password: str
+            Password to use for authentication
 
     Returns
     ----------
@@ -176,18 +197,28 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        username: str
+            Username to use for authentication.
+            
+            If passed, attempt to download data from the SWEAP Instrument Team server
+            instead of the fully public server at SPDF.
+            Provides access to unpublished files.
+
+        password: str
+            Password to use for authentication
+            
     Returns
     ----------
         List of tplot variables created.
 
     """
-    if username is None:
-        if datatype == 'l3i':
-            level = 'l3'
-            print("Using LEVEL=L3")
-        elif datatype == 'l2i':
-            level = 'l2'
-            print("Using LEVEL=L2")
+
+    if datatype == 'l3i':
+        level = 'l3'
+        print("Using LEVEL=L3")
+    elif datatype == 'l2i':
+        level = 'l2'
+        print("Using LEVEL=L2")
 
     return load(instrument='spc', trange=trange, datatype=datatype, level=level, suffix=suffix, 
         get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, 
@@ -249,6 +280,16 @@ def spe(trange=['2018-11-5', '2018-11-6'],
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        username: str
+            Username to use for authentication.
+            
+            If passed, attempt to download data from the SWEAP Instrument Team server
+            instead of the fully public server at SPDF.
+            Provides access to unpublished files.
+
+        password: str
+            Password to use for authentication
 
     Returns
     ----------
@@ -320,6 +361,16 @@ def spi(trange=['2018-11-5', '2018-11-6'],
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        username: str
+            Username to use for authentication.
+            
+            If passed, attempt to download data from the SWEAP Instrument Team server
+            instead of the fully public server at SPDF.
+            Provides access to unpublished files.
+
+        password: str
+            Password to use for authentication
 
     Returns
     ----------
@@ -396,7 +447,9 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='epihi', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='epihi', trange=trange, datatype=datatype, level=level, 
+        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epilo(trange=['2018-11-5', '2018-11-6'], 
         datatype='pe', 
@@ -457,7 +510,9 @@ def epilo(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='epilo', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='epilo', trange=trange, datatype=datatype, level=level, 
+        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def epi(trange=['2018-11-5', '2018-11-6'], 
         datatype='summary', 
@@ -518,4 +573,6 @@ def epi(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='epi', trange=trange, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='epi', trange=trange, datatype=datatype, level=level, 
+        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
