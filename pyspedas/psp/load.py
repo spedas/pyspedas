@@ -17,7 +17,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         username=None,
+         password=None
+         ):
     """
     This function loads Parker Solar Probe data into tplot variables; this function is not 
     meant to be called directly; instead, see the wrappers: 
@@ -32,7 +35,11 @@ def load(trange=['2018-11-5', '2018-11-6'],
     """
 
     # remote path formats are going to be all lowercase
-    datatype = datatype.lower()
+    if username is None:
+        datatype = datatype.lower()
+    else:
+        # which is not the case for unpublished data
+        pass
     prefix = 'psp_'  #To cover the case if one *does* call this routine directly.
 
     file_resolution = 24*3600.
@@ -65,19 +72,48 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 dtype_tmp = datatype[:11]
                 stype_tmp = datatype[12:]
             pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+        elif datatype == 'sqtn_rfs_v1v2':
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+        elif datatype == 'sqtn_rfs_V1V2':
+            # unpublished QTN data
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+
+        # unpublished data (only download v02 data which would be published)
+        elif (username != None) and (datatype == 'mag_RTN'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
+        elif (username != None) and (datatype == 'mag_RTN_1min'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
+        elif (username != None) and (datatype == 'mag_RTN_4_Sa_per_Cyc'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
+        elif (username != None) and (datatype == 'mag_SC'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
+        elif (username != None) and (datatype == 'mag_SC_1min'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
+        elif (username != None) and (datatype == 'mag_SC_4_Sa_per_Cyc'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
 
         else:
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
             file_resolution = 6*3600.
     elif instrument == 'spc':
-        prefix = 'psp_spc_'
-        pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
+        if username is None:
+            prefix = 'psp_spc_'
+            pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
+        else:
+            # unpublished data
+            prefix = 'psp_spc_'
+            pathformat = 'sweap/spc/' + level + '/%Y/%m/psp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
     elif instrument == 'spe':
         prefix = 'psp_spe_'
         pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_v??.cdf'
     elif instrument == 'spi':
-        prefix = 'psp_spi_'
-        pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/psp_swp_spi_*_%Y%m%d_v??.cdf'
+        if username is None:
+            prefix = 'psp_spi_'
+            pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/psp_swp_spi_*_%Y%m%d_v??.cdf'
+        else:
+            # unpublished data
+            prefix = 'psp_spi_'
+            pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/%m/psp_swp_' + datatype + '*_%Y%m%d_v0?.cdf'
     elif instrument == 'epihi':
         prefix = 'psp_epihi_'
         pathformat = 'isois/epihi/' + level + '/' + datatype + '/%Y/psp_isois-epihi_' + level + '*_%Y%m%d_v??.cdf'
@@ -93,7 +129,30 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    if username is None:
+        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    else:
+        if instrument == 'fields':
+            if username != None:
+                try:
+                    print("Downloading unpublished Data....")
+                    files = download(
+                        remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
+                        username=username, password=password, basic_auth=True
+                    )
+                except:
+                    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+        elif instrument in ['spc','spi','spe']:
+                try:
+                    print("Downloading unpublished Data....")
+                    files = download(
+                        remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
+                        username=username, password=password, basic_auth=True
+                    )
+                except:
+                    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+        
+
     if files is not None:
         for file in files:
             out_files.append(file)
