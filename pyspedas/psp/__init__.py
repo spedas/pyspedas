@@ -102,9 +102,10 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
     """
 
-    # SCaM data is Level 3
-    if datatype == 'merged_scam_wf':
+    # SCaM and QTN data are Level 3
+    if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2']:
         level = 'l3'
+        print("Using LEVEL=L3")
 
     spec_types = None
     if datatype == 'dfb_dc_spec' or datatype == 'dfb_ac_spec' or datatype == 'dfb_dc_xspec' or datatype == 'dfb_ac_xspec':
@@ -206,7 +207,7 @@ def spc(trange=['2018-11-5', '2018-11-6'],
 
         password: str
             Password to use for authentication
-            
+
     Returns
     ----------
         List of tplot variables created.
@@ -249,7 +250,14 @@ def spe(trange=['2018-11-5', '2018-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options include:
+                spa_sf0_pad  (L3)
+                spb_sf0_pad  (L3)
+                spe_sf0_pad  (L3)
+                spa_sf1_32e  (L2)
+                spb_sf1_32e  (L2)
+                spa_sf0_16ax8dx32e  (L2)
+                spb_sf0_16ax8dx32e  (L2)
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
