@@ -6,6 +6,7 @@ from matplotlib.colors import LinearSegmentedColormap
 import warnings
 import pytplot
 
+
 def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable):
     alpha = plot_extras.get('alpha')
     spec_options = {'shading': 'auto', 'alpha': alpha}

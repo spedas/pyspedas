@@ -357,10 +357,14 @@ def options(name, option=None, value=None, opt_dict=None):
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
 
             if option == 'xrange_slice':
-                pytplot.data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_range'] = [value[0], value[1]]
+                plt_opts = pytplot.data_quants[i].attrs['plot_options']
+                if plt_opts.get('slice_xaxis_opt') is not None:
+                    plt_opts['slice_xaxis_opt']['xi_range'] = [value[0], value[1]]
 
             if option == 'yrange_slice':
-                pytplot.data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_range'] = [value[0], value[1]]
+                plt_opts = pytplot.data_quants[i].attrs['plot_options']
+                if plt_opts.get('slice_yaxis_opt') is not None:
+                    plt_opts['slice_yaxis_opt']['yi_range'] = [value[0], value[1]]
 
             if option == 'xtitle':
                 pytplot.data_quants[i].attrs['plot_options']['xaxis_opt']['axis_label'] = value

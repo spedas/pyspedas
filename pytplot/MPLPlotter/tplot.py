@@ -35,6 +35,7 @@ def tplot(variables, var_label=None,
                      pseudo_line_options=None,
                      pseudo_extra_options=None,
                      second_axis_size=0.0,
+                     slice=False,
                      return_plot_objects=False):
     """
     This function creates tplot windows using matplotlib as a backend.
@@ -114,6 +115,10 @@ def tplot(variables, var_label=None,
             this_axis = axes
         else:
             this_axis = axes[idx]
+
+        # we need to track the variable name in the axis object
+        # for spectrogram slices
+        this_axis.var_name = variable
 
         pseudo_var = False
         overplots = None
@@ -416,8 +421,109 @@ def tplot(variables, var_label=None,
     if save_pdf is not None and save_pdf != '':
         plt.savefig(save_pdf + '.pdf')
 
+    if slice:
+        slice_fig, slice_axes = plt.subplots(nrows=1)
+        slice_plot, = slice_axes.plot([0], [0])
+        mouse_event_func = lambda event: mouse_move_slice(event, slice_axes, slice_plot)
+        cid = fig.canvas.mpl_connect('motion_notify_event', mouse_event_func)
+
     if display:
         plt.show()
+
+
+def mouse_move_slice(event, slice_axes, slice_plot):
+    """
+    This function is called when the mouse moves over an axis
+    and the slice keyword is set to True; for spectra figures, it
+    updates the slice plot based on the mouse location
+    """
+    if event.inaxes is None:
+        return
+
+    # check for a spectrogram
+    try:
+        data = pytplot.get_data(event.inaxes.var_name)
+    except AttributeError:
+        return
+
+    if data is None:
+        return
+
+    if len(data) != 3:
+        return
+
+    slice_time = mdates.num2date(event.xdata).timestamp()
+    idx = np.abs(data.times-slice_time).argmin()
+
+    if len(data.v.shape) > 1:
+        # time varying y-axis
+        vdata = data.v[idx, :]
+    else:
+        vdata = data.v
+
+    yaxis_options = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['yaxis_opt']
+    zaxis_options = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['zaxis_opt']
+
+    yrange = yaxis_options.get('y_range')
+    if yrange is None:
+        yrange = [np.nanmin(vdata), np.nanmax(vdata)]
+
+    zrange = zaxis_options.get('z_range')
+    if zrange is None:
+        zrange = [np.nanmin(data.y), np.nanmax(data.y)]
+
+    y_label = zaxis_options.get('axis_label')
+    if y_label is not None:
+        slice_axes.set_ylabel(y_label)
+
+    title = datetime.utcfromtimestamp(data.times[idx]).strftime('%Y-%m-%d %H:%M:%S.%f')
+
+    x_label = yaxis_options.get('axis_label')
+    if x_label is not None:
+        title = x_label + ' (' + title + ')'
+
+    slice_axes.set_title(title)
+
+    x_subtitle = yaxis_options.get('axis_subtitle')
+    if x_subtitle is not None:
+        slice_axes.set_xlabel(x_subtitle)
+
+    slice_yaxis_opt = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options'].get('slice_yaxis_opt')
+
+    xscale = None
+    yscale = None
+
+    if slice_yaxis_opt is not None:
+        xscale = slice_yaxis_opt.get('xi_axis_type')
+        yscale = slice_yaxis_opt.get('yi_axis_type')
+
+    if yscale is None:
+        # if the user didn't explicitly set the ylog_slice option,
+        # use the option from the plot
+        yscale = zaxis_options.get('z_axis_type')
+        if yscale is None:
+            yscale = 'linear'
+
+    if xscale is None:
+        # if the user didn't explicitly set the xlog_slice option,
+        # use the option from the plot
+        xscale = yaxis_options.get('y_axis_type')
+        if xscale is None:
+            xscale = 'linear'
+
+    if yscale == 'log' and zrange[0] == 0.0:
+        zrange[0] = np.nanmin(data.y[idx, :])
+
+    slice_plot.set_data(vdata, data.y[idx, :])
+    slice_axes.set_ylim(zrange)
+    slice_axes.set_xlim(yrange)
+    slice_axes.set_xscale(xscale)
+    slice_axes.set_yscale(yscale)
+    try:
+        plt.draw()
+    except ValueError:
+        return
+
 
 def get_var_label_ticks(var_xr, times):
     out_ticks = []
