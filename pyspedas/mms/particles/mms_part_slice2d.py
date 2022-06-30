@@ -35,9 +35,141 @@ def mms_part_slice2d(trange=None,
                      save_svg=None,
                      save_pdf=None,
                      save_eps=None,
+                     return_slice=False,
                      display=True):
     """
-    EXPERIMENTAL, PLEASE DO NOT USE
+    This routine creates 2D slices of 3D distribution function data from the FPI and HPCA instruments.
+    This is essentially a wrapper around slice2d and slice2d_plot, that loads the data,
+    any required support data, calculates the slice with slice2d and plots it with slice2d_plot.
+
+    Parameters
+    -----------
+        probe: int or str
+            MMS spacecraft probe # (1, 2, 3 or 4)
+
+        instrument: str
+            MMS plasma instrument (fpi or hpca)
+
+        species: str
+            Particle species; depends on the instrument:
+            FPI: 'e' for electrons, 'i' for ions
+            HPCA: 'hplus' for H+, 'oplus' for O+, 'heplus' for He+, 'heplusplus', for He++
+
+        data_rate: str
+            FPI/HPCA data rate [fast (fpi), srvy (hpca), or brst (both fpi and hpca)]
+
+        mag_data_rate: str
+            FGM data rate for transformations
+
+        level: str
+            Data level (default: l2); lower levels require an SDC username and password
+
+        trange: list of str or list of float
+            Two-element time range over which data will be averaged (optional; can also use the 'time' keyword)
+
+        time: str or float
+            Time at which the slice will be computed (optional; can also use 'trange' above)
+
+        samples: int
+            Number of nearest samples to TIME to average.
+
+        window: float
+            Length in seconds from TIME over which data will be averaged
+
+        center_time: bool
+            Flag denoting that TIME should be midpoint for window instead of beginning
+
+        interpolation: str
+            Interpolation method; valid options:
+
+            'geometric': Each point on the plot is given the value of the bin it intersects.
+                         This allows bin boundaries to be drawn at high resolutions.
+            '2d': Data points within the specified theta or z-axis range are projected onto
+                  the slice plane and linearly interpolated onto a regular 2D grid.
+
+        rotation: str
+            Aligns the data relative to the magnetic field and/or bulk velocity.
+            This is applied after the CUSTOM_ROTATION. (BV and BE are invariant
+            between coordinate systems); valid options:
+
+            'BV':  The x axis is parallel to B field; the bulk velocity defines the x-y plane
+            'BE':  The x axis is parallel to B field; the B x V(bulk) vector defines the x-y plane
+            'xy':  (default) The x axis is along the data's x axis and y is along the data's y axis
+            'xz':  The x axis is along the data's x axis and y is along the data's z axis
+            'yz':  The x axis is along the data's y axis and y is along the data's z axis
+            'xvel':  The x axis is along the data's x axis; the x-y plane is defined by the bulk velocity
+            'perp':  The x axis is the bulk velocity projected onto the plane normal to the B field; y is B x V(bulk)
+            'perp_xy':  The data's x & y axes are projected onto the plane normal to the B field
+            'perp_xz':  The data's x & z axes are projected onto the plane normal to the B field
+            'perp_yz':  The data's y & z axes are projected onto the plane normal to the B field
+
+        custom_rotation: str or np.ndarray
+            Applies a custom rotation matrix to the data.  Input may be a
+            3x3 rotation matrix or a tplot variable containing matrices.
+            If the time window covers multiple matrices they will be averaged.
+            This is applied before other transformations
+
+        energy: bool
+            Flag to plot data against energy (in eV) instead of velocity.
+
+        log: bool
+            Flag to apply logarithmic scaling to the radial measure (i.e. energy/velocity).
+            (on by default if ENERGY is True)
+
+        erange: list of float
+            Two element array specifying the energy range to be used in eV
+
+        thetarange: list of float
+            (2D interpolation only) Angle range, in degrees [-90,90], used to calculate slice.
+            Default = [-20,20]; will override ZDIRRANGE.
+
+        zdirrange: list of float
+            (2D interpolation only) Z-Axis range, in km/s, used to calculate slice.
+            Ignored if called with THETARANGE.
+
+        subtract_bulk: bool
+            Subtract the bulk velocity vector
+
+        resolution: int
+            Integer specifying the resolution along each dimension of the
+            slice (defaults:  2D interpolation: 150, geometric: 500)
+
+        smooth: int
+            An odd integer >=3 specifying the width of a smoothing window in #
+            of points.  Smoothing is applied to the final plot using a gaussian
+            convolution. Even entries will be incremented, 0 and 1 are ignored.
+
+        xrange: list of float
+            Keyword to limit the range of the slice's x-axis in the plot
+
+        yrange: list of float
+            Keyword to limit the range of the slice's y-axis in the plot
+
+        zrange: list of float
+            Keyword to limit the range of the slice's color bar
+
+        save_png: str
+            Save the plot as a PNG file
+
+        save_eps: str
+            Save the plot as an EPS file
+
+        save_pdf: str
+            Save the plot as a PDF file
+
+        save_svg: str
+            Save the plot as an SVG file
+
+        display: bool
+            Flag to allow disabling displaying of the figure
+
+        return_slice: bool
+            Flag to return the slice instead of displaying it
+
+    Returns
+    --------
+        None (but creates a figure), unless return_slice is set to True
+
     """
 
     if trange is None:
@@ -115,6 +247,9 @@ def mms_part_slice2d(trange=None,
                         mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution, erange=erange,
                         energy=energy, log=log, custom_rotation=custom_rotation, subtract_bulk=subtract_bulk,
                         interpolation=interpolation, thetarange=thetarange, zdirrange=zdirrange, smooth=smooth)
+
+    if return_slice:
+        return the_slice
 
     plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
          save_pdf=save_pdf, save_eps=save_eps, display=display)

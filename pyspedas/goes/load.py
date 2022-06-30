@@ -133,6 +133,9 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     tvars = netcdf_to_tplot(out_files, suffix=suffix, merge=True, time='time_tag')
 
+    if tvars is None:
+        return
+
     if time_clip:
         for new_var in tvars:
             tclip(new_var, trange[0], trange[1], suffix='')

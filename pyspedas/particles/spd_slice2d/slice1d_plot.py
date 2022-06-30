@@ -6,7 +6,26 @@ from pyspedas.particles.spd_units_string import spd_units_string
 
 def plot(the_slice, direction, value, xrange=None, yrange=None):
     """
+    Create 1D plot from a 2D particle slice.
 
+    If the 'value' argument is a scalar, this plots a cut through
+    the distribution at the nearest point in the specified direction
+
+    If the 'value' argument is a two-element list, this sums over
+    the values between the min and max of the list
+
+    Input
+    --------
+        the_slice: dict
+            2D slice returned by slice2d
+
+        direction: str
+            Axis to plot - 'x' or 'y'
+
+        value: float or list of float
+            If direction is 'x', this is the y-value to create a 1D plot at (and vice versa)
+            can also be a range of values, e.g., [-1000, 1000] to sum over the y-values
+            from -1000 to +1000
     """
 
     direction = direction.lower()
