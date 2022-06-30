@@ -35,6 +35,7 @@ def mms_part_slice2d(trange=None,
                      save_svg=None,
                      save_pdf=None,
                      save_eps=None,
+                     return_slice=False,
                      display=True):
     """
     This routine creates 2D slices of 3D distribution function data from the FPI and HPCA instruments.
@@ -50,16 +51,18 @@ def mms_part_slice2d(trange=None,
             MMS plasma instrument (fpi or hpca)
 
         species: str
-            Particle species
+            Particle species; depends on the instrument:
+            FPI: 'e' for electrons, 'i' for ions
+            HPCA: 'hplus' for H+, 'oplus' for O+, 'heplus' for He+, 'heplusplus', for He++
 
         data_rate: str
-            FPI/HPCA data rate (fast, srvy, or brst)
+            FPI/HPCA data rate [fast (fpi), srvy (hpca), or brst (both fpi and hpca)]
 
         mag_data_rate: str
             FGM data rate for transformations
 
         level: str
-            Data level (default: l2)
+            Data level (default: l2); lower levels require an SDC username and password
 
         trange: list of str or list of float
             Two-element time range over which data will be averaged (optional; can also use the 'time' keyword)
@@ -160,9 +163,13 @@ def mms_part_slice2d(trange=None,
         display: bool
             Flag to allow disabling displaying of the figure
 
+        return_slice: bool
+            Flag to return the slice instead of displaying it
+
     Returns
     --------
-        None (but creates a figure)
+        None (but creates a figure), unless return_slice is set to True
+
     """
 
     if trange is None:
@@ -240,6 +247,9 @@ def mms_part_slice2d(trange=None,
                         mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution, erange=erange,
                         energy=energy, log=log, custom_rotation=custom_rotation, subtract_bulk=subtract_bulk,
                         interpolation=interpolation, thetarange=thetarange, zdirrange=zdirrange, smooth=smooth)
+
+    if return_slice:
+        return the_slice
 
     plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
          save_pdf=save_pdf, save_eps=save_eps, display=display)
