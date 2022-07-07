@@ -14,12 +14,14 @@ def mms_part_slice2d(trange=None,
                      erange=None,
                      thetarange=None,
                      zdirrange=None,
+                     average_angle=None,
                      energy=False,
                      log=False,
                      probe='1',
                      instrument='fpi',
                      data_rate=None,
                      level='l2',
+                     spdf=False,
                      mag_data_rate=None,
                      species=None,
                      rotation='xy',
@@ -63,6 +65,9 @@ def mms_part_slice2d(trange=None,
 
         level: str
             Data level (default: l2); lower levels require an SDC username and password
+
+        spdf: bool
+            Flag to download the data from SPDF instead of the MMS SDC
 
         trange: list of str or list of float
             Two-element time range over which data will be averaged (optional; can also use the 'time' keyword)
@@ -214,13 +219,13 @@ def mms_part_slice2d(trange=None,
     if instrument == 'fpi':
         # not supposed to be centered!
         dist_vars = pyspedas.mms.fpi(probe=probe, trange=trange_data, data_rate=data_rate, time_clip=True,
-                                     datatype='d' + species + 's-dist', level=level)
+                                     datatype='d' + species + 's-dist', level=level, spdf=spdf)
 
         dists = mms_get_fpi_dist('mms' + probe + '_d' + species + 's_dist_' + data_rate, probe=probe)
     elif instrument == 'hpca':
         # supposed to be centered!
         dist_vars = pyspedas.mms.hpca(probe=probe, trange=trange_data, data_rate=data_rate, time_clip=True,
-                                      datatype='ion', level=level, center_measurement=True)
+                                      datatype='ion', level=level, center_measurement=True, spdf=spdf)
 
         dists = mms_get_hpca_dist('mms' + probe + '_hpca_' + species + '_phase_space_density', species=species,
                                   probe=probe, data_rate=data_rate)
@@ -231,22 +236,23 @@ def mms_part_slice2d(trange=None,
     bfield = None
     vbulk = None
     if load_support:
-        fgm_support = pyspedas.mms.fgm(probe=probe, trange=trange_data, data_rate=mag_data_rate, time_clip=True)
+        fgm_support = pyspedas.mms.fgm(probe=probe, trange=trange_data, data_rate=mag_data_rate, time_clip=True, spdf=spdf)
         bfield = 'mms' + probe + '_fgm_b_gse_' + mag_data_rate + '_l2_bvec'
 
         if instrument == 'fpi':
             fpi_support = pyspedas.mms.fpi(probe=probe, trange=trange_data, data_rate=data_rate, time_clip=True,
-                                           datatype='d'+species+'s-moms', level=level, center_measurement=True)
+                                           datatype='d'+species+'s-moms', level=level, center_measurement=True, spdf=spdf)
             vbulk = 'mms' + probe + '_d' + species + 's_bulkv_gse_' + data_rate
         elif instrument == 'hpca':
             hpca_support = pyspedas.mms.hpca(probe=probe, trange=trange_data, data_rate=data_rate, time_clip=True,
-                                             datatype='moments', level=level, center_measurement=True)
+                                             datatype='moments', level=level, center_measurement=True, spdf=spdf)
             vbulk = 'mms' + probe + '_hpca_' + species + '_ion_bulk_velocity'
 
     the_slice = slice2d(dists, trange=trange, time=time, window=window, samples=samples, center_time=center_time,
                         mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution, erange=erange,
                         energy=energy, log=log, custom_rotation=custom_rotation, subtract_bulk=subtract_bulk,
-                        interpolation=interpolation, thetarange=thetarange, zdirrange=zdirrange, smooth=smooth)
+                        interpolation=interpolation, thetarange=thetarange, zdirrange=zdirrange, smooth=smooth,
+                        average_angle=average_angle)
 
     if return_slice:
         return the_slice
