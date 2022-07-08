@@ -198,6 +198,17 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         correct_photoelectrons = False
         internal_photoelectron_corrections = False
 
+    # Remind user that l2 moments should be used preferentially and FAC moments are experimental
+    if 'moments' in output or 'moments_fac' in output:
+        msg = """Moments generated with mms_part_products may be missing several important
+corrections, including photoelectron removal and spacecraft potential.
+The official moments released by the instrument teams include these and
+are the scientific products that should be used for analysis."""
+        print('==================================================================================')
+        print('WARNING:')
+        print(msg)
+        print('==================================================================================')
+
     # grab the DES photoelectron model if needed
     if (instrument != 'fpi' or species != 'e') and (correct_photoelectrons or internal_photoelectron_corrections):
         logging.error('Photoelectron corrections only valid for DES; no corrections will be applied.')
