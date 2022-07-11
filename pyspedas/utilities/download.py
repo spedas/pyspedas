@@ -1,4 +1,5 @@
 import os
+import re
 import warnings
 import requests
 import logging
@@ -141,7 +142,8 @@ def download(remote_path='',
              verify=True,
              session=None,
              no_download=False,
-             last_version=False):
+             last_version=False,
+             regex=False):
     """
     Download one or more remote files and return their local paths.
 
@@ -180,6 +182,10 @@ def download(remote_path='',
             Flag to only download the last in file in a lexically sorted 
             list when multiple matches are found using wildcards
 
+        regex: bool
+            Flag to allow regular expressions in the file name matching,
+            instead of unix style matching
+
     Returns:
         String list specifying the full local path to all requested files
 
@@ -215,7 +221,7 @@ def download(remote_path='',
         headers['User-Agent'] = 'pySPEDAS ' + release_version
 
     out = []
-    index_table={}
+    index_table = {}
 
     if not isinstance(remote_file, list):
         remote_file = [remote_file]
@@ -244,7 +250,7 @@ def download(remote_path='',
 
         if no_download is False:
             # expand the wildcards in the url
-            if '?' in url or '*' in url and no_download is False:
+            if '?' in url or '*' in url or regex and no_download is False:
                 if index_table.get(url_base) is not None:
                     links = index_table[url_base]
                 else:
@@ -274,8 +280,12 @@ def download(remote_path='',
                         links = []
 
                 # find the file names that match our string
-                # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
-                new_links = fnmatch.filter(links, url_file)
+                if not regex:
+                    # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
+                    new_links = fnmatch.filter(links, url_file)
+                else:
+                    reg_expression = re.compile(url_file)
+                    new_links = list(filter(reg_expression.match, links))
 
                 if last_version and len(new_links) > 1:
                     new_links = sorted(new_links)
@@ -314,7 +324,13 @@ def download(remote_path='',
                 local_path_to_search = local_path
 
             for dirpath, dirnames, filenames in os.walk(local_path_to_search):
-                matching_files = fnmatch.filter(filenames, local_file[local_file.rfind("/")+1:])
+                local = local_file[local_file.rfind("/")+1:]
+                if not regex:
+                    matching_files = fnmatch.filter(filenames, local)
+                else:
+                    reg_expression = re.compile(local)
+                    matching_files = list(filter(reg_expression.match, filenames))
+
                 for file in matching_files:
                     out.append(os.path.join(dirpath, file))
 
