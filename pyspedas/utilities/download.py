@@ -143,6 +143,7 @@ def download(remote_path='',
              session=None,
              no_download=False,
              last_version=False,
+             basic_auth=False,
              regex=False):
     """
     Download one or more remote files and return their local paths.
@@ -168,6 +169,10 @@ def download(remote_path='',
 
         password: str
             Password to be used in HTTP authentication
+
+        basic_auth: bool
+            Flag to indicate that the remote server uses basic authentication
+            instead of digest authentication
 
         verify: bool
             Flag indicating whether to verify the SSL/TLS certificate
@@ -259,7 +264,10 @@ def download(remote_path='',
                     # we'll need to parse the HTML index file for the file list
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore", category=ResourceWarning)
-                        html_index = session.get(url_base, verify=verify, headers=headers)
+                        if not basic_auth:
+                            html_index = session.get(url_base, verify=verify, headers=headers)
+                        else:
+                            html_index = session.get(url_base, verify=verify, headers=headers, auth=(username, password))
 
                     if html_index.status_code == 404:
                         logging.error('Remote index not found: ' + url_base)
