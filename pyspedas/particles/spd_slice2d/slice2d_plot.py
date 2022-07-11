@@ -16,6 +16,7 @@ def plot(the_slice,
          save_svg=None,
          save_pdf=None,
          save_eps=None,
+         dpi=None,
          display=True):
     """
     Creates plots of 2D particle slices
@@ -73,16 +74,16 @@ def plot(the_slice,
     axes.axhline(y=0, linestyle=(0, (5, 10)), color='black')
 
     if save_png is not None and save_png != '':
-        plt.savefig(save_png + '.png')
+        plt.savefig(save_png + '.png', dpi=dpi)
 
     if save_eps is not None and save_eps != '':
-        plt.savefig(save_eps + '.eps')
+        plt.savefig(save_eps + '.eps', dpi=dpi)
 
     if save_svg is not None and save_svg != '':
-        plt.savefig(save_svg + '.svg')
+        plt.savefig(save_svg + '.svg', dpi=dpi)
 
     if save_pdf is not None and save_pdf != '':
-        plt.savefig(save_pdf + '.pdf')
+        plt.savefig(save_pdf + '.pdf', dpi=dpi)
 
     if display:
         plt.show()
