@@ -639,6 +639,11 @@ def get_y_range(dataset):
         y_min = np.nan
         y_max = np.nan
 
+    # CDF files may have array of strings (e.g., RBSP EMFISIS)
+    if isinstance(y_min, str):
+        y_min = np.nan
+        y_max = np.nan
+        
     if y_min == y_max:
         # Show 10% and 10% below the straight line
         y_min = y_min - (.1 * np.abs(y_min))
