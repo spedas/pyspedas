@@ -26,6 +26,7 @@ def tplot(variables, var_label=None,
                      save_eps='', 
                      save_svg='', 
                      save_pdf='',
+                     save_jpeg='',
                      dpi=None,
                      display=True, 
                      fig=None, 
@@ -422,6 +423,9 @@ def tplot(variables, var_label=None,
 
     if save_pdf is not None and save_pdf != '':
         plt.savefig(save_pdf + '.pdf', dpi=dpi)
+
+    if save_jpeg is not None and save_jpeg != '':
+        plt.savefig(save_jpeg + '.jpeg', dpi=dpi)
 
     if slice:
         slice_fig, slice_axes = plt.subplots(nrows=1)
