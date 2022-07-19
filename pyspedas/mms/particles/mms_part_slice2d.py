@@ -38,6 +38,7 @@ def mms_part_slice2d(trange=None,
                      save_svg=None,
                      save_pdf=None,
                      save_eps=None,
+                     plotsize=10,
                      dpi=None,
                      return_slice=False,
                      display=True):
@@ -260,4 +261,4 @@ def mms_part_slice2d(trange=None,
         return the_slice
 
     plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
-         save_pdf=save_pdf, save_eps=save_eps, save_jpeg=save_jpeg, display=display, dpi=dpi)
+         save_pdf=save_pdf, save_eps=save_eps, save_jpeg=save_jpeg, display=display, dpi=dpi, plotsize=plotsize)
