@@ -382,13 +382,14 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 if 'coordinate_system' in vatt_lower:
                     attr_dict['data_att'] = {'coord_sys': attr_dict["CDF"]["VATT"][vatt_keys[vatt_lower.index('coordinate_system')]]}
                 if 'labels' in vatt_lower:
-                    if isinstance(attr_dict["CDF"]["VATT"]['labels'], str):
-                        # check for line separators
-                        # this fixes the legend for RBSP L3 EFW data
-                        if '\\n' in attr_dict["CDF"]["VATT"]['labels']:
-                            attr_dict["CDF"]["VATT"]['labels'] = attr_dict["CDF"]["VATT"]['labels'].split('\\n')
-                        if '\\N' in attr_dict["CDF"]["VATT"]['labels']:
-                            attr_dict["CDF"]["VATT"]['labels'] = attr_dict["CDF"]["VATT"]['labels'].split('\\N')
+                    if attr_dict["CDF"]["VATT"].get('labels') is not None:
+                        if isinstance(attr_dict["CDF"]["VATT"]['labels'], str):
+                            # check for line separators
+                            # this fixes the legend for RBSP L3 EFW data
+                            if '\\n' in attr_dict["CDF"]["VATT"]['labels']:
+                                attr_dict["CDF"]["VATT"]['labels'] = attr_dict["CDF"]["VATT"]['labels'].split('\\n')
+                            if '\\N' in attr_dict["CDF"]["VATT"]['labels']:
+                                attr_dict["CDF"]["VATT"]['labels'] = attr_dict["CDF"]["VATT"]['labels'].split('\\N')
             store_data(var_name, data=output_table[var_name], attr_dict=attr_dict)
         except ValueError:
             continue
