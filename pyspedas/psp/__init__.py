@@ -247,9 +247,7 @@ def spe(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False,
-        username=None,
-        password=None
+        time_clip=False
     ):
     """
     This function loads Parker Solar Probe SWEAP/SPAN-e data
@@ -301,16 +299,6 @@ def spe(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-        username: str
-            Username to use for authentication.
-            
-            If passed, attempt to download data from the SWEAP Instrument Team server
-            instead of the fully public server at SPDF.
-            Provides access to unpublished files.
-
-        password: str
-            Password to use for authentication
-
     Returns
     ----------
         List of tplot variables created.
@@ -318,8 +306,7 @@ def spe(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='spe', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, 
-        username=username, password=password)
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def spi(trange=['2018-11-5', '2018-11-6'], 
         datatype='sf00_l3_mom', 

@@ -134,26 +134,31 @@ def load(trange=['2018-11-5', '2018-11-6'],
     out_files = []
 
     if username is None:
-        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
+                        local_path=CONFIG['local_data_dir'], no_download=no_update)
     else:
         if instrument == 'fields':
             try:
                 print("Downloading unpublished Data....")
                 files = download(
-                    remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
+                    remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], 
+                    local_path=CONFIG['local_data_dir'], no_download=no_update,
                     username=username, password=password, basic_auth=True
                 )
             except:
-                files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
-        elif instrument in ['spc','spi','spe']:
+                files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
+                                local_path=CONFIG['local_data_dir'], no_download=no_update)
+        elif instrument in ['spc','spi']:
             try:
                 print("Downloading unpublished Data....")
                 files = download(
-                    remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update,
+                    remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], 
+                    local_path=CONFIG['local_data_dir'], no_download=no_update,
                     username=username, password=password, basic_auth=True
                 )
             except:
-                files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+                files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
+                                local_path=CONFIG['local_data_dir'], no_download=no_update)
         
 
     if files is not None:
@@ -165,7 +170,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, 
+                        varformat=varformat, varnames=varnames, notplot=notplot)
 
     if notplot:
         return tvars
