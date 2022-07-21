@@ -3,7 +3,7 @@ import numpy as np
 
 def slice2d_subtract(vectors=None, velocity=None):
     """
-
+    Shift velocities by specified vector
     """
 
     if vectors is None or velocity is None:

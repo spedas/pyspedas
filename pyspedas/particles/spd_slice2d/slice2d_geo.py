@@ -1,10 +1,10 @@
 from copy import deepcopy
 from time import time
 import numpy as np
-
+from pyspedas.particles.spd_slice2d.quaternions import qtom, qcompose
 
 def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None, rotation_matrix=None,
-                custom_matrix=None, msg_prefix='', shift=None):
+                custom_matrix=None, msg_prefix='', shift=None, average_angle=None):
     """
     Produces slices showing each bin's boundaries by assigning
     each bin's value to all points on the slice plane that
@@ -43,14 +43,38 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
             m = rotation_matrix @ m
     uvals = uvals @ m.T
 
-    na = 0
+    if average_angle is not None:
+        alpha = [np.min(average_angle), np.max(average_angle)]
+
+        # number of additional slices to average/sum over
+        na = 2 * np.sqrt(n) * (alpha[1] - alpha[0]) / 90.0
+        if na < 2:
+            na = 2
+
+        na = int(np.floor(na))
+
+        # copy slice's x-vector
+        xv = np.outer(m[:, 0], np.ones(na)).T
+
+        # interpolate across the angle range
+        a_range = (np.append(np.arange(0, na-1, dtype=np.float64)/(na-1), 1) * (alpha[1]-alpha[0])) + alpha[0]
+
+        # construct quaternion array to get rotation matrices
+        qs = qcompose(xv, a_range/rd, free=True)  # quaternions to rotate about x by a
+        ms = qtom(qs)  # get matrices
+    else:
+        na = 0
+
     num_points = len(data)
     out = np.zeros(n_int**2)
     weight = np.zeros(n_int**2)
 
     # loop over slice plans (if averaging over angle)
     for j in range(-1, na):
-        ut = deepcopy(uvals)
+        if j >= 0:
+            ut = np.matmul(ms[j, :, :], deepcopy(uvals).T).T
+        else:
+            ut = deepcopy(uvals)
 
         # Convert transformed slice coordinates to spherical
         pcoords = rd*np.arctan2(ut[:, 1], ut[:, 0])  # phi

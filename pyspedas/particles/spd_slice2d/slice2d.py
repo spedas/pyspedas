@@ -34,13 +34,124 @@ def slice2d(dists,
             smooth=None,
             thetarange=None,
             zdirrange=None,
+            average_angle=None,
             mag_data=None,
             vel_data=None,
             sun_data=None,
             slice_x=None,
             slice_z=None):
     """
+    Returns an interpolated 2D slice of 3D particle data for plotting
 
+    Interpolation methods:
+
+    2D Interpolation:
+        Data points within the specified theta or z-axis range are projected onto
+        the slice plane and linearly interpolated onto a regular 2D grid.
+
+    Geometric:
+        Each point on the plot is given the value of the bin it intersects.
+        This allows bin boundaries to be drawn at high resolutions.
+
+    Input
+    ---------------------
+        dists: list of dicts
+            List of 3D particle data structures
+
+    Basic Keywords
+    ---------------------
+        trange: list of str or list of float
+            Two-element time range over which data will be averaged (optional)
+
+        time: str
+            Time at which the slice will be computed (optional)
+
+        samples: int
+            Numer of samples nearest to TIME to average (default 1)
+
+        window: int or float
+            Length in seconds from TIME over which data will be averaged.
+
+        center_time: bool
+            Flag denoting that TIME should be midpoint for window instead of beginning.
+
+        interpolation: str
+            Interpolation method to use; options: 'geometric' for geometric interpolation
+            and '2d' for 2D interpolation (described above)
+
+    Orientation Keywords
+    ---------------------
+        custom_rotation: str or np.ndarray
+            Applies a custom rotation matrix to the data.  Input may be a
+            3x3 rotation matrix or a tplot variable containing matrices.
+            If the time window covers multiple matrices they will be averaged.
+
+        rotation: str
+            Aligns the data relative to the magnetic field and/or bulk velocity.
+            This is applied after the CUSTOM_ROTATION. (BV and BE are invariant
+            between coordinate systems)
+
+            Use MAG_DATA keyword to specify magnetic field vector.
+            Use VEL_DATA keyword to specify bulk velocity (optional).
+
+            'BV':  The x-axis is parallel to B field; the bulk velocity defines the x-y plane
+            'BE':  The x-axis is parallel to B field; the B x V(bulk) vector defines the x-y plane
+            'xy':  (default) The x-axis is along the data's x-axis and y is along the data's y axis
+            'xz':  The x-axis is along the data's x-axis and y is along the data's z axis
+            'yz':  The x-axis is along the data's y-axis and y is along the data's z axis
+            'xvel':  The x-axis is along the data's x-axis; the x-y plane is defined by the bulk velocity
+            'perp':  The x-axis is the bulk velocity projected onto the plane normal to the B field; y is B x V(bulk)
+            'perp_xy':  The data's x & y axes are projected onto the plane normal to the B field
+            'perp_xz':  The data's x & z axes are projected onto the plane normal to the B field
+            'perp_yz':  The data's y & z axes are projected onto the plane normal to the B field
+
+        mag_data: str
+            Name of tplot variable containing magnetic field data or 3-vector.
+            This will be used for slice plane alignment and must be in the
+            same coordinates as the particle data.
+
+        vel_data: str
+            Name of tplot variable containing the bulk velocity data or 3-vector.
+            This will be used for slice plane alignment and must be in the
+            same coordinates as the particle data.
+            If not set the bulk velocity will be automatically calculated
+            from the distribution (when needed).
+
+    Other Keywords
+    ---------------------
+        resolution: int
+            Integer specifying the resolution along each dimension of the
+            slice (defaults:  2D interpolation: 150, geometric: 500)
+
+        smooth: int
+            An odd integer >=3 specifying the width of a smoothing window in #
+            of points.  Smoothing is applied to the final plot using a gaussian
+            convolution. Even entries will be incremented, 0 and 1 are ignored.
+
+        energy: bool
+            Flag to plot data against energy (in eV) instead of velocity.
+
+        log: bool
+            Flag to apply logarithmic scaling to the radial measure (i.e. energy/velocity).
+            (on by default if energy=True)
+
+        erange: list of float
+            Two element list specifying the energy range to be used in eV
+
+        thetarange: list of float
+            (2D interpolation only): angle range, in degrees (-90, +90), used to calculate the slice
+            default = [-20, 20]; will override zdirrange
+
+        zdirrange: list of float
+            (2D interpolation only): Z-Axis range, in km/s, used to calculate slice.
+            Ignored if called with THETARANGE.
+
+        subtract_bulk: bool
+            Flag to subtract the bulk velocity vector
+
+    Returns
+    ---------------------
+        Dictionary containing 2D slice of 3D particle data
     """
 
     if trange is None:
@@ -191,8 +302,9 @@ def slice2d(dists,
     # ------------------------------------------------------------------------
     if interpolation == 'geometric':
         the_slice = slice2d_geo(data['data'], resolution, data['rad'], data['phi'], data['theta'], data['dr'], data['dp'],
-                          data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'],
-                          custom_matrix=custom_rot['matrix'], msg_prefix=msg_prefix, shift=geo_shift)
+                                data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'],
+                                custom_matrix=custom_rot['matrix'], msg_prefix=msg_prefix, shift=geo_shift,
+                                average_angle=average_angle)
     elif interpolation == '2d':
         the_slice = slice2d_2di(data['data'], rot_matrix['vectors'], resolution, thetarange=thetarange, zdirrange=zdirrange)
 
