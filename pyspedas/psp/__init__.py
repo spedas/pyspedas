@@ -1,13 +1,15 @@
 
 from .load import load
+from .filter import filter_fields
 
-from pytplot import options
+from pytplot import options, data_quants
 
+# Loading
 def fields(trange=['2018-11-5', '2018-11-6'], 
         datatype='mag_rtn', 
         level='l2',
         suffix='',  
-        get_support_data=False, 
+        get_support_data=True, 
         varformat=None,
         varnames=[],
         downloadonly=False,
@@ -55,8 +57,8 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
-            "VAR_TYPE" attribute of "data".
+            will be loaded into tplot.  By default, FIELDS support data is loaded
+            to enable filtering on quality flags.
 
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
@@ -103,6 +105,9 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
     """
 
+    if suffix:
+        suffix = '_' + suffix
+
     # SCaM and QTN data are Level 3
     if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2']:
         level = 'l3'
@@ -135,19 +140,23 @@ def fields(trange=['2018-11-5', '2018-11-6'],
     if loaded_vars is None or notplot or downloadonly:
         return loaded_vars
 
-    if 'psp_fld_l2_mag_RTN'+suffix in loaded_vars:
-        options('psp_fld_l2_mag_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
-    if 'psp_fld_l2_mag_RTN_1min'+suffix in loaded_vars:
-        options('psp_fld_l2_mag_RTN_1min'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
-    if 'psp_fld_l2_mag_RTN_4_Sa_per_Cyc'+suffix in loaded_vars:
-        options('psp_fld_l2_mag_RTN_4_Sa_per_Cyc'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+    # Set options and attr for related quality flag variable
+    qf_root = 'psp_fld_l2_quality_flags'+suffix if 'psp_fld_l2_quality_flags'+suffix in loaded_vars else None
+    mag_rtnvars = [x for x in loaded_vars if 'fld_l2_mag_RTN' in x ]
+    mag_scvars = [x for x in loaded_vars if 'fld_l2_mag_SC' in x ]
+    rfs_vars = [x for x in loaded_vars if 'rfs_lfr' in x or 'rfs_hfr' in x]
 
-    if 'psp_fld_l2_mag_SC'+suffix in loaded_vars:
-        options('psp_fld_l2_mag_SC'+suffix, 'legend_names', ['Bx', 'By', 'Bz'])
-    if 'psp_fld_l2_mag_SC_1min'+suffix in loaded_vars:
-        options('psp_fld_l2_mag_SC_1min'+suffix, 'legend_names', ['Bx', 'By', 'Bz'])
-    if 'psp_fld_l2_mag_SC_4_Sa_per_Cyc'+suffix in loaded_vars:
-        options('psp_fld_l2_mag_SC_4_Sa_per_Cyc'+suffix, 'legend_names', ['Bx', 'By', 'Bz'])
+    for var in mag_rtnvars:
+        options(var, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+        data_quants[var] = data_quants[var].assign_attrs({'qf_root':qf_root})
+
+    for var in mag_scvars:
+        options(var, 'legend_names', ['Bx', 'By', 'Bz'])
+        data_quants[var] = data_quants[var].assign_attrs({'qf_root':qf_root})
+
+    for var in rfs_vars:
+        data_quants[var] = data_quants[var].assign_attrs({'qf_root':qf_root})
+
 
     return loaded_vars
 
@@ -583,3 +592,4 @@ def epi(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='epi', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
         downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
