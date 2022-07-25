@@ -3,7 +3,7 @@ import enum
 import numpy as np
 from copy import deepcopy
 from collections.abc import Iterable
-from pytplot import data_quants, get_timespan, get_data, store_data
+from pytplot import tplot_names, data_quants, get_timespan, get_data, store_data
 
 def filter_fields(tvars, dqflag = 0, names_out = True):
     """
@@ -15,10 +15,12 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
     where each 'XXX' is a 0 padded flag indicator sorted from lowest to highest.
  
     So, psp.filter_FIELDS('mag_RTN_1min_x',[4,16]) 
-        results in tvar named "mag_RTN_1min_x_004016"
+        - results in tvar named "mag_RTN_1min_x_004016"
+        - tvar holds data where *NEITHER* flag 4 NOR flag 16 is set.
 
     Or, psp.filter_FIELDS('mag_RTN_1min',0) 
-        results in tvar named "mag_RTN_1min_000"
+        - results in tvar named "mag_RTN_1min_000"
+        - tvar holds data with no set flags
     
     Valid only for variables of type:
         '...psp_fld_l2_mag_...' (full res, 1 minute, or 4 Sa per cycle)
@@ -31,8 +33,10 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
 
         dqflag: int or list of ints
             Elements indicate which of the data quality flags
-            to filter on. 
-            From the set {0,1,2,4,8,16,32,64,128,256,512} 
+            to filter on.             
+            From the set {-1,0,1,2,4,8,16,32,64,128,256,512} 
+
+            For flags >= 1: filters OUT wherever ANY of the selected flags are set.
 
             Note: if using 0 or -1, no other flags should be selected
             -1: Keep cases with no set flags or only the 128 flag set 
@@ -68,13 +72,17 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
         dqflag = [dqflag]
 
     for flg in dqflag:
-        assert flg in {0,1,2,4,8,16,32,64,128,256,512}, "Bad FIELDS Quality Flag: {}".format(flg)
+        assert flg in {-1,0,1,2,4,8,16,32,64,128,256,512}, "Bad FIELDS Quality Flag: {}".format(flg)
 
     if len(dqflag) > 1:
         assert 0 not in dqflag, 'DQFLAG of 0 must be set by itself'
         assert -1 not in dqflag, 'DQFLAG of -1 must be set by itself'
 
-    # Reduce list to supported variables
+    dqflag.sort()
+
+    # Reduce list to supported variables that are already loaded
+    tvars = [x for x in tvars if x in tplot_names(quiet=True)]
+
     tvars = [x for x in tvars if 'fld_l2_mag_RTN' in x 
                               or 'fld_l2_mag_SC' in x 
                               or 'rfs_lfr' in x
@@ -84,15 +92,11 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
         return new_names       
 
     # Create time specific quality flags as needed
+    qf_target = []
+    err_flg = []
+    keep = []
     for tvar in tvars:
-        qf_target = []
-        err_flg = []
-        keep = []
-        # leave = []        
-        # TODO: this might be preferred way to acces attrs (uses the tplot interface instead of xarray directly): 
-        # dv = get_data(tvar, metadata=True)
-        # Is there an advantage?
-        # But there's still no pytplot equivalent to adding attributes without creating an entirely new variable
+
         qf_root = data_quants[tvar].qf_root
         if qf_root:
             keep.append(tvar)
@@ -124,13 +128,12 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
 
             qf_target.append(qf_root + tag)
         else:
-            # leave.append(tvar)
             print("Source quality flags missing. No filtered variabled created for: {}".format(tvar))
     
     # Remove cases where match epochs couldn't work
-    valid_tn = [tvar[i] for i in range(len(tvar)) if err_flg[i] == 1]
-    qf_target = [qf_target[i] for i in range(len(tvar)) if err_flg[i] == 1]
-    bad_tn = [tvar[i] for i in range(len(tvar)) if err_flg[i] == 0]
+    valid_tn = [keep[i] for i in range(len(keep)) if err_flg[i] == 0]
+    qf_target = [qf_target[i] for i in range(len(keep)) if err_flg[i] == 0]
+    bad_tn = [keep[i] for i in range(len(keep)) if err_flg[i] == 1]
     if len(bad_tn) > 0:
         print("Error creating some matching time quality flags.")
         for tn in bad_tn:
@@ -149,6 +152,7 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
             # Get the quality flag arrays
             for qfname in qf_target:
                 if qfname not in qfmap:
+                    d = get_data(qfname)
                     qfmap[qfname] = d.y
 
             for i, tn in enumerate(valid_tn):
@@ -162,10 +166,11 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
                 if 'CDF' in new_attrs:
                     _ = new_attrs.pop('CDF')
                 new_attrs['qf_root'] = None
-                new_attrs['plot_options']['yaxis_opt']['axis_label'] += '(flt: {})'.format(suffix)
-                # TODO: how to increase left margin programmatically so this can be a new line?! (default matplotlib is .1 normal, able to be adjusted in gui)
-                new_data = deepcopy(get_data(tn))
-                new_data.y[mask] = np.nan
+                new_attrs['plot_options']['yaxis_opt']['axis_label'] += '\n(flt: {})'.format(suffix)
+                # TODO: how to increase left margin programmatically so this can be a new line?! (default matplotlib is .1 normal)
+                data = deepcopy(get_data(tn))
+                new_data = {'x':data.times, 'y':data.y, 'v':data.v}
+                new_data['y'][mask] = np.nan
                 store_data(tn+suffix, new_data, attr_dict=new_attrs)
                 if names_out:
                     new_names.append(tn+suffix)
@@ -175,13 +180,38 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
             # Get quality flag arrays and flagged bits
             for qfname in qf_target:
                 if qfname not in qfmap:
-                    qfmap[qfname] = dict()
                     d = get_data(qfname)
+                    qfmap[qfname] = dict()
                     qfmap[qfname]['dqf'] = d.y
                     qfmap[qfname]['dqfbits'] = _ff_unpackbits(d.y)
 
+            suffix = '_'
+            mybits = _ff_unpackbits(np.uint32(0))
+            for flg in dqflag:
+                suffix += '{:03}'.format(flg)
+                mybits += _ff_unpackbits(np.uint32(flg))
 
+            for i, tn in enumerate(valid_tn):
+                new_attrs = deepcopy(get_data(tn, metadata=True))
+                if 'CDF' in new_attrs:
+                    _ = new_attrs.pop('CDF')
+                new_attrs['qf_root'] = None
+                new_attrs['plot_options']['yaxis_opt']['axis_label'] += '\n(flt: {})'.format(suffix)
+                # TODO: how to increase left margin programmatically so this can be a new line and visisble by default?! (default matplotlib is .1 normal, able to be adjusted in gui)
+
+                data = deepcopy(get_data(tn))
+                new_data = {'x':data.times, 'y':data.y, 'v':data.v}
+                rem_mask = np.full(len(new_data['y']), False)
+                for j in range(len(mybits)):
+                    if mybits[j] == 1:
+                        mask = qfmap[qf_target[i]]['dqfbits'][:, j] == 1
+                        rem_mask[mask] = True
+                new_data['y'][rem_mask] = np.nan
+                store_data(tn+suffix, new_data, attr_dict=new_attrs)
+                if names_out:
+                    new_names.append(tn+suffix)
     return new_names
+
 
 def _ff_unpackbits(x):
     """
@@ -233,7 +263,7 @@ def _ff_match_qf_epochs(target, source, tag):
     
     qfd = get_data(source)
     src = qfd.times
-    tar = get_data(target).times
+    tar = get_data(target).times.copy()
 
     # Check for valid ranges
     if (tar[-1] < src[0]) or (tar[0] > src[-1]):
@@ -250,9 +280,9 @@ def _ff_match_qf_epochs(target, source, tag):
     newY = np.full_like(tar, qfd.y[0], dtype=qfd.y.dtype)
     for i in range(len(src) - 1):
         mask = (tar >= src[i]) & (tar < src[i+1])
-        newY[mask] = qfd.y[i]
+        newY[mask] = qfd.y[i].copy()
     mask = tar >= src[-1]
-    newY[mask] = qfd.y[-1]
+    newY[mask] = qfd.y[-1].copy()
 
     newData = {'x':tar, 'y':newY}
     store_data(source+tag, newData)
