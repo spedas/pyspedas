@@ -593,7 +593,7 @@ def _make_SECS_plots(data=None, dtime=None, contour_den=8, s_loc=False):
     if s_loc:
         m.scatter(lon, lat, latlon=True, marker='*', c='black')
     cb = m.colorbar(matplotlib.cm.ScalarMappable(norm=norm_cb, cmap='seismic'), pad='15%')
-    cb.set_label(r'$\mathit{J} \  (mA/m)$')
+    cb.set_label(r'$\mathit{J} \  (A)$')
     ax_cb = cb.ax
     text = ax_cb.yaxis.label
     font_cb = matplotlib.font_manager.FontProperties(family='times new roman', style='italic', size=20)
