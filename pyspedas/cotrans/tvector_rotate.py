@@ -61,12 +61,12 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
 
         vec_fac = np.zeros((len(vec_data.times), len(vec_data.y[0, :])))
 
-        if mat_data.y.shape[0] == 1:  # only a single matrix
-            matrix = mat_data.y[0, :, :]
-        else:
-            matrix = mat_data.y[i, :, :]
-
         for i in range(0, len(vec_data.times)):
+            if mat_data.y.shape[0] == 1:  # only a single matrix
+                matrix = mat_data.y[0, :, :]
+            else:
+                matrix = mat_data.y[i, :, :]
+
             vec_fac[i, :] = matrix @ vec_data.y[i, :]
 
         saved = store_data(new_var, data={'x': vec_data.times, 'y': vec_fac}, attr_dict=vec_metadata)
