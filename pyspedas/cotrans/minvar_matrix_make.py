@@ -52,11 +52,13 @@ def minvar_matrix_make(in_var_name,
 
     i = 0
 
-    while current_d + twindow <= stop_d:
+    while current_d + twindow <= stop_d + twindow:
+        if i >= o_num:
+            break
         # output time for the mva matrix is the midpoint time for the interval
         o_times[i] = current_d + twindow / 2.0
 
-        idx = np.argwhere((data.times >= current_d) & (data.times <= current_d + twindow)).flatten()
+        idx = np.argwhere((data.times >= current_d) & (data.times <= (current_d + twindow))).flatten()
 
         if len(idx) == 0:
             current_d += tslide
@@ -65,7 +67,12 @@ def minvar_matrix_make(in_var_name,
 
         in_data = data.y[idx, :]
 
-        out = minvar(in_data)
+        try:
+            out = minvar(in_data)
+        except np.linalg.LinAlgError:
+            current_d += tslide
+            i += 1
+            continue
 
         if out is not None:
             v_rot, o_eig, o_lam = out
