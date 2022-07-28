@@ -9,7 +9,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         datatype='mag_rtn', 
         level='l2',
         suffix='',  
-        get_support_data=True, 
+        get_support_data=False, 
         varformat=None,
         varnames=[],
         downloadonly=False,
@@ -140,11 +140,21 @@ def fields(trange=['2018-11-5', '2018-11-6'],
     if loaded_vars is None or notplot or downloadonly:
         return loaded_vars
 
-    # Set options and attr for related quality flag variable
-    qf_root = 'psp_fld_l2_quality_flags'+suffix if 'psp_fld_l2_quality_flags'+suffix in loaded_vars else None
+    # If variables are loaded that quality flag filtering supports --
+    # Make sure the quality flag variable is also loaded and linked. 
     mag_rtnvars = [x for x in loaded_vars if 'fld_l2_mag_RTN' in x ]
     mag_scvars = [x for x in loaded_vars if 'fld_l2_mag_SC' in x ]
     rfs_vars = [x for x in loaded_vars if 'rfs_lfr' in x or 'rfs_hfr' in x]
+    if (len(mag_rtnvars + mag_scvars + rfs_vars) > 0) \
+        & ('psp_fld_l2_quality_flags'+suffix not in loaded_vars):
+        loaded_extra = load(
+            instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
+            suffix=suffix, get_support_data=True, varformat=varformat, varnames=['psp_fld_l2_quality_flags'], 
+            downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
+            username=username, password=password
+        )
+        qf_root = 'psp_fld_l2_quality_flags'+suffix if 'psp_fld_l2_quality_flags'+suffix in loaded_extra else None
+        loaded_vars += loaded_extra
 
     for var in mag_rtnvars:
         options(var, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
@@ -157,8 +167,8 @@ def fields(trange=['2018-11-5', '2018-11-6'],
     for var in rfs_vars:
         data_quants[var] = data_quants[var].assign_attrs({'qf_root':qf_root})
 
-
     return loaded_vars
+
 
 def spc(trange=['2018-11-5', '2018-11-6'], 
         datatype='l3i', 

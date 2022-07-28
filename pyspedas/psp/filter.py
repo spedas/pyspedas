@@ -139,7 +139,6 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
         for tn in bad_tn:
             print("No filtered variabled created for: {}".format(tn))
 
-
     # Create the filtered variables
     if len(valid_tn) == 0:
         print("No valid variables for filtering\n")
@@ -166,11 +165,21 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
                 if 'CDF' in new_attrs:
                     _ = new_attrs.pop('CDF')
                 new_attrs['qf_root'] = None
-                new_attrs['plot_options']['yaxis_opt']['axis_label'] += '\n(flt: {})'.format(suffix)
-                # TODO: how to increase left margin programmatically so this can be a new line?! (default matplotlib is .1 normal)
+                new_attrs['plot_options']['yaxis_opt']['axis_label'] += '\n(flt: {})'.format(suffix)  # TODO: how to increase left margin programmatically so this can be a new line?! (default matplotlib is .1 normal)
+                
                 data = deepcopy(get_data(tn))
-                new_data = {'x':data.times, 'y':data.y, 'v':data.v}
+                if issubclass(data.y.dtype.type, np.integer):
+                    new_data = {'x':data.times, 'y':data.y.astype(float)}
+                else:
+                    new_data = {'x':data.times, 'y':data.y}
+
+                try:
+                    new_data['v'] = data.v
+                except:
+                    pass
+   
                 new_data['y'][mask] = np.nan
+
                 store_data(tn+suffix, new_data, attr_dict=new_attrs)
                 if names_out:
                     new_names.append(tn+suffix)
@@ -196,17 +205,26 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
                 if 'CDF' in new_attrs:
                     _ = new_attrs.pop('CDF')
                 new_attrs['qf_root'] = None
-                new_attrs['plot_options']['yaxis_opt']['axis_label'] += '\n(flt: {})'.format(suffix)
-                # TODO: how to increase left margin programmatically so this can be a new line and visisble by default?! (default matplotlib is .1 normal, able to be adjusted in gui)
-
+                new_attrs['plot_options']['yaxis_opt']['axis_label'] += '\n(flt: {})'.format(suffix) # TODO: how to increase left margin programmatically so this can be a new line and visisble by default?! (default matplotlib is .1 normal)
+                
                 data = deepcopy(get_data(tn))
-                new_data = {'x':data.times, 'y':data.y, 'v':data.v}
+                if issubclass(data.y.dtype.type, np.integer):
+                    new_data = {'x':data.times, 'y':data.y.astype(float)}
+                else:
+                    new_data = {'x':data.times, 'y':data.y}
+
+                try:
+                    new_data['v'] = data.v
+                except:
+                    pass
+
                 rem_mask = np.full(len(new_data['y']), False)
                 for j in range(len(mybits)):
                     if mybits[j] == 1:
                         mask = qfmap[qf_target[i]]['dqfbits'][:, j] == 1
                         rem_mask[mask] = True
                 new_data['y'][rem_mask] = np.nan
+                    
                 store_data(tn+suffix, new_data, attr_dict=new_attrs)
                 if names_out:
                     new_names.append(tn+suffix)
