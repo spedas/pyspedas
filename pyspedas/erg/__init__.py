@@ -11,6 +11,10 @@ from .satellite.erg.pwe.pwe_hfa import pwe_hfa
 from .satellite.erg.pwe.pwe_ofa import pwe_ofa
 from .satellite.erg.pwe.pwe_wfc import pwe_wfc
 from .satellite.erg.xep.xep import xep
+from .satellite.erg.particle.erg_xep_part_products import erg_xep_part_products
+from .satellite.erg.particle.erg_hep_part_products import erg_hep_part_products
+from .satellite.erg.particle.erg_mep_part_products import erg_mep_part_products
+from .satellite.erg.particle.erg_lep_part_products import erg_lep_part_products
 
 from .ground.camera.camera_omti_asi import camera_omti_asi
 from .ground.geomag.gmag_isee_fluxgate import gmag_isee_fluxgate
