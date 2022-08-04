@@ -10,8 +10,7 @@
 Main routine for coordinate transformation is erg_cotrans().
 """
 
-from pyspedas import tnames
-from pytplot import tplot_copy
+from pyspedas import tnames, tcopy
 
 from .dsi2j2000 import dsi2j2000
 from .sga2sgi import sga2sgi
@@ -31,7 +30,7 @@ def erg_coord_trans(in_name=None,
                     noload=False):
 
     if in_coord == out_coord:
-        tplot_copy(in_name, out_name)
+        tcopy(in_name, out_name)
         return
 
     # From SGA
