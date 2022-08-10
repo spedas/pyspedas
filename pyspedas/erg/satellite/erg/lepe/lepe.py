@@ -3,6 +3,9 @@ import cdflib
 import numpy as np
 from pytplot import clip, get_data, options, store_data, ylim, zlim
 
+from pyspedas.utilities.time_double import time_double
+
+
 from ..load import load
 
 
@@ -208,11 +211,16 @@ def lepe(trange=['2017-04-04', '2017-04-05'],
             tplot_variables = []
             other_variables_dict = {}
             if prefix + 'FEDU' + suffix in loaded_data:
+                trange_double = time_double(trange)
+                time_array = np.array(loaded_data[prefix + 'FEDU' + suffix]['x'])
+                inside_indices_array = np.argwhere( (trange_double[0] < time_array)
+                             & (trange_double[1] > time_array))
+                inside_indices_list = inside_indices_array[:, 0].tolist()
                 store_data(prefix + 'FEDU' + suffix,
-                           data={'x': loaded_data[prefix + 'FEDU' + suffix]['x'],
-                                 'y': loaded_data[prefix + 'FEDU' + suffix]['y'],
-                                 'v1': np.sqrt(loaded_data[prefix + 'FEDU' + suffix]['v'][:, 0, :]
-                                               * loaded_data[prefix + 'FEDU' + suffix]['v'][:, 1, :]),  # geometric mean
+                           data={'x': time_array[inside_indices_list],
+                                 'y': loaded_data[prefix + 'FEDU' + suffix]['y'][inside_indices_list],
+                                 'v1': (loaded_data[prefix + 'FEDU' + suffix]['v'][inside_indices_list][:, 0, :]
+                                        + loaded_data[prefix + 'FEDU' + suffix]['v'][inside_indices_list][:, 1, :]) / 2.,  # arithmetic mean
                                  'v2': ['01', '02', '03', '04', '05', 'A', 'B', '18', '19', '20', '21', '22'],
                                  'v3': [i for i in range(16)]},
                        attr_dict={'CDF':loaded_data[prefix + 'FEDU' + suffix]['CDF']})
@@ -220,17 +228,16 @@ def lepe(trange=['2017-04-04', '2017-04-05'],
                 tplot_variables.append(prefix + 'FEDU' + suffix)
 
                 options(prefix + 'FEDU' + suffix, 'spec', 1)
-                if prefix + 'FEDU' + suffix in tplot_variables:
-                    clip(prefix + 'FEDU' + suffix, 0,
-                         np.nanmax(loaded_data[prefix + 'FEDU' + suffix]['y']))
                 ylim(prefix + 'FEDU' + suffix, 19, 21*1e3)
                 zlim(prefix + 'FEDU' + suffix, 1, 1e6)
                 options(prefix + 'FEDU' + suffix, 'zlog', 1)
                 options(prefix + 'FEDU' + suffix, 'ylog', 1)
                 options(prefix + 'FEDU' + suffix, 'ysubtitle', '[eV]')
 
+            if prefix + 'Count_Rate' + suffix in loaded_data:
                 other_variables_dict[prefix + 'Count_Rate' +
                                      suffix] = loaded_data[prefix + 'Count_Rate' + suffix]
+            if prefix + 'Count_Rate_BG' + suffix in loaded_data:
                 other_variables_dict[prefix + 'Count_Rate_BG' +
                                      suffix] = loaded_data[prefix + 'Count_Rate_BG' + suffix]
 

@@ -1,7 +1,8 @@
 
 import cdflib
 import numpy as np
-from pytplot import clip, get_data, options, store_data, ylim, zlim, tplot_copy
+from pytplot import clip, get_data, options, store_data, ylim, zlim
+from pyspedas import tcopy
 
 from ..load import load
 
@@ -212,7 +213,7 @@ def lepi(trange=['2017-07-01', '2017-07-02'],
         for vns_pattarn in vns_list:
             t_plot_name = prefix + vns_pattarn + suffix
             if t_plot_name in loaded_data:
-                tplot_copy(t_plot_name, t_plot_name + '_raw')
+                tcopy(t_plot_name, t_plot_name + '_raw')
                 get_data_vars_temporal = get_data(t_plot_name)
                 meta_data_in = get_data(t_plot_name, metadata=True)
                 if 'sub' in t_plot_name:

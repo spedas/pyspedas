@@ -75,7 +75,7 @@ def load(trange=['2017-03-27', '2017-03-28'],
                     vatt = cdf_file.varattsget(var)
                     tvars[t_plot_name]['CDF'] = {'VATT':vatt,
                                                 'GATT':gatt,
-                                                'FILENAME':out_files[-1]}
+                                                'FILENAME':out_files}
         return tvars
 
     if time_clip:
