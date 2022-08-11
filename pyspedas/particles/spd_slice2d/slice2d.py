@@ -35,6 +35,7 @@ def slice2d(dists,
             thetarange=None,
             zdirrange=None,
             average_angle=None,
+            sum_angle=None,
             mag_data=None,
             vel_data=None,
             sun_data=None,
@@ -304,7 +305,7 @@ def slice2d(dists,
         the_slice = slice2d_geo(data['data'], resolution, data['rad'], data['phi'], data['theta'], data['dr'], data['dp'],
                                 data['dt'], orient_matrix=orientation['matrix'], rotation_matrix=rot_matrix['matrix'],
                                 custom_matrix=custom_rot['matrix'], msg_prefix=msg_prefix, shift=geo_shift,
-                                average_angle=average_angle)
+                                average_angle=average_angle, sum_angle=sum_angle)
     elif interpolation == '2d':
         the_slice = slice2d_2di(data['data'], rot_matrix['vectors'], resolution, thetarange=thetarange, zdirrange=zdirrange)
 

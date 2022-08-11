@@ -4,7 +4,7 @@ import numpy as np
 from pyspedas.particles.spd_slice2d.quaternions import qtom, qcompose
 
 def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None, rotation_matrix=None,
-                custom_matrix=None, msg_prefix='', shift=None, average_angle=None):
+                custom_matrix=None, msg_prefix='', shift=None, average_angle=None, sum_angle=None):
     """
     Produces slices showing each bin's boundaries by assigning
     each bin's value to all points on the slice plane that
@@ -43,8 +43,11 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
             m = rotation_matrix @ m
     uvals = uvals @ m.T
 
-    if average_angle is not None:
-        alpha = [np.min(average_angle), np.max(average_angle)]
+    if average_angle is not None or sum_angle is not None:
+        if sum_angle is not None:
+            alpha = [np.min(sum_angle), np.max(sum_angle)]
+        if average_angle is not None:
+            alpha = [np.min(average_angle), np.max(average_angle)]
 
         # number of additional slices to average/sum over
         na = 2 * np.sqrt(n) * (alpha[1] - alpha[0]) / 90.0
@@ -154,7 +157,9 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
     adj = np.argwhere(weight == 0)
     if len(adj) > 0:
         weight[adj] = 1
-    out = out / weight
+
+    if sum_angle is None:
+        out = out / weight
 
     out = out.reshape((n_int, n_int), order='F')
 
