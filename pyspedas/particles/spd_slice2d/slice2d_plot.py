@@ -13,6 +13,7 @@ def plot(the_slice,
          colormap='spedas',
          plotsize=10,
          save_png=None,
+         save_jpeg=None,
          save_svg=None,
          save_pdf=None,
          save_eps=None,
@@ -75,6 +76,9 @@ def plot(the_slice,
 
     if save_png is not None and save_png != '':
         plt.savefig(save_png + '.png', dpi=dpi)
+
+    if save_jpeg is not None and save_jpeg != '':
+        plt.savefig(save_jpeg + '.jpeg', dpi=dpi)
 
     if save_eps is not None and save_eps != '':
         plt.savefig(save_eps + '.eps', dpi=dpi)
