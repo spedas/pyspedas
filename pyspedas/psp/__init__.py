@@ -244,13 +244,20 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-
-    if datatype == 'l3i':
-        level = 'l3'
-        print("Using LEVEL=L3")
-    elif datatype == 'l2i':
-        level = 'l2'
-        print("Using LEVEL=L2")
+    if username == None:
+        if datatype == 'l3i':
+            level = 'l3'
+            print("Using LEVEL=L3")
+        elif datatype == 'l2i':
+            level = 'l2'
+            print("Using LEVEL=L2")
+    else:
+        if datatype == 'l3i':
+            level = 'L3'
+            print("Using LEVEL=L3 (unpublished)")
+        elif datatype == 'l2i':
+            level = 'L2'
+            print("Using LEVEL=L2 (unpublished)")
 
     return load(instrument='spc', trange=trange, datatype=datatype, level=level, suffix=suffix, 
         get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, 
