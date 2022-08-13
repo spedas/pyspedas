@@ -81,6 +81,31 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 dtype_tmp = datatype[:11]
                 stype_tmp = datatype[12:]
             pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+        elif datatype == 'sqtn_rfs_v1v2':
+            # unfortunately the naming format of quasi-thermal-noise cdf file is different from others
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+        elif datatype == 'sqtn_rfs_V1V2':
+            # unpublished QTN data
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+        elif datatype == 'merged_scam_wf':
+            if username == None:
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+            else:
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+
+        # unpublished data (only download v02 data which would be published)
+        elif (username != None) and (datatype == 'mag_RTN'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
+        elif (username != None) and (datatype == 'mag_RTN_1min'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
+        elif (username != None) and (datatype == 'mag_RTN_4_Sa_per_Cyc'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
+        elif (username != None) and (datatype == 'mag_SC'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
+        elif (username != None) and (datatype == 'mag_SC_1min'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
+        elif (username != None) and (datatype == 'mag_SC_4_Sa_per_Cyc'):
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
 
 
 
