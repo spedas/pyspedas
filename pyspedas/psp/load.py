@@ -93,22 +93,6 @@ def load(trange=['2018-11-5', '2018-11-6'],
             else:
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
 
-        # unpublished data (only download v02 data which would be published)
-        elif (username != None) and (datatype == 'mag_RTN'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
-        elif (username != None) and (datatype == 'mag_RTN_1min'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
-        elif (username != None) and (datatype == 'mag_RTN_4_Sa_per_Cyc'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
-        elif (username != None) and (datatype == 'mag_SC'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
-        elif (username != None) and (datatype == 'mag_SC_1min'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
-        elif (username != None) and (datatype == 'mag_SC_4_Sa_per_Cyc'):
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
-
-
-
         # unpublished data (only download v02 mag data which would be published)
         elif username != None:
             if datatype in ['mag_RTN', 'mag_SC']:
