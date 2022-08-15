@@ -334,6 +334,7 @@ def slice2d(dists,
            'zrange': drange,
            'rrange': rrange,
            'rlog': log,
+           'interpolation': interpolation,
            'n_samples': len(times_ind),
            **the_slice}
 
