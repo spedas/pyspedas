@@ -180,6 +180,9 @@ def slice2d(dists,
     elif interpolation == 'geometric':
         if resolution is None:
             resolution = 500
+    else:
+        print('Unknown interpolation method: ' + interpolation + '; valid options: "geometric", "2d"')
+        return
 
     if time is not None:
         time = time_double(time)
