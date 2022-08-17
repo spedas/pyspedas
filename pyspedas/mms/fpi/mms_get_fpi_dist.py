@@ -2,12 +2,14 @@
 import logging
 from copy import deepcopy
 import numpy as np
+from pyspedas import time_double
 from pytplot import get_data
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None, level='l2'):
+
+def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None, level='l2', single_time=None):
     """
     Returns 3D particle data structures containing MMS FPI
     data for use with SPEDAS particle routines. 
@@ -45,7 +47,10 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
 
     data = [0, 0, 0, 0, 0]
 
-    if index != None:
+    if single_time is not None:
+        index = np.searchsorted(data_in.times, time_double(single_time), side='left')
+
+    if index is not None:
         data[0] = data_in[0][index]
         data[1] = data_in[1][index]
         if data_in[2].ndim == 1:
