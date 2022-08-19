@@ -82,6 +82,7 @@ def mms_fpi_ang_ang(time,
     closest_idx = np.searchsorted(dist.times, time_double(time), side='left')
 
     data = dist.y[closest_idx, :, :, :]
+
     if len(dist.v1.shape) > 1:
         phi = dist.v1[closest_idx, :]
     else:
@@ -108,6 +109,7 @@ def mms_fpi_ang_ang(time,
 
     spec_options = {}
 
+    # the first figure: azimuth vs. zenith
     fig, axes = plt.subplots()
     fig.set_size_inches(xsize, ysize)
 
@@ -116,7 +118,10 @@ def mms_fpi_ang_ang(time,
         _colors = pytplot.spedas_colorbar
         spd_map = [(np.array([r, g, b])).astype(np.float64)/256 for r, g, b in zip(_colors.r, _colors.g, _colors.b)]
         spec_options['cmap'] = LinearSegmentedColormap.from_list('spedas', spd_map)
+    else:
+        spec_options['cmap'] = cmap
 
+    # phi can be out of order, so we need to sort prior to sending to pcolormesh
     phi_sorted_idx = np.argsort(phi)
     phi_sorted = phi[phi_sorted_idx]
     data_phi_sorted = data_summed[phi_sorted_idx, :]
