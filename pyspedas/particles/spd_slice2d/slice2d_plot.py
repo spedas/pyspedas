@@ -11,6 +11,8 @@ def plot(the_slice,
          yrange=None,
          zrange=None,
          colormap='spedas',
+         olines=8,
+         contours=False,
          plotsize=10,
          save_png=None,
          save_jpeg=None,
@@ -73,6 +75,12 @@ def plot(the_slice,
     # draw lines at the origin
     axes.axvline(x=0, linestyle=(0, (5, 10)), color='black')
     axes.axhline(y=0, linestyle=(0, (5, 10)), color='black')
+
+    interp_type = the_slice.get('interpolation')
+
+    if interp_type != 'geometric' or contours:
+        levels = 10.**(np.arange(olines)/float(olines)*(np.log10(zrange[1])-np.log10(zrange[0]))+np.log10(zrange[0]))
+        contours = axes.contour(the_slice['xgrid'], the_slice['ygrid'], the_slice['data'].T, levels, linewidths=0.5)
 
     if save_png is not None and save_png != '':
         plt.savefig(save_png + '.png', dpi=dpi)
