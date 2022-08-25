@@ -7,19 +7,23 @@ from pytplot import get_data
 import pyspedas
 from pyspedas import time_double
 from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
+from pyspedas.mms.fpi.mms_pad_fpi import mms_pad_fpi
 
 
 def mms_fpi_ang_ang(time,
                     species='i',
                     probe='1',
                     data_rate='fast',
+                    fgm_data_rate='srvy',
                     level='l2',
+                    fgm_level='l2',
                     center_measurement=False,
                     energy_range=[10, 30000],
                     xsize=8,
                     ysize=8,
                     cmap='spedas',
                     zrange=[None, None],
+                    nocontours=False,
                     display=True):
     """
     Creates various plots directly from the FPI distribution functions, including:
@@ -77,6 +81,7 @@ def mms_fpi_ang_ang(time,
                                 level=level,
                                 center_measurement=center_measurement)
 
+    fgm_vars = pyspedas.mms.fgm(trange=trange, probe=probe, data_rate=fgm_data_rate, level=fgm_level)
     dist = get_data('mms'+probe+'_d'+species+'s_dist_'+data_rate)
 
     closest_idx = np.searchsorted(dist.times, time_double(time), side='left')
@@ -109,6 +114,10 @@ def mms_fpi_ang_ang(time,
 
     spec_options = {}
 
+    pa_dist = mms_pad_fpi(dists,
+                      time=dist.times[closest_idx],
+                      mag_data='mms'+probe+'_fgm_b_gse_'+fgm_data_rate+'_'+fgm_level+'_bvec')
+
     # the first figure: azimuth vs. zenith
     fig, axes = plt.subplots()
     fig.set_size_inches(xsize, ysize)
@@ -138,6 +147,12 @@ def mms_fpi_ang_ang(time,
     cax = fig.add_axes([box.xmax + pad, box.ymin, width, box.height])
     colorbar = fig.colorbar(im, cax=cax)
     colorbar.set_label('f ($s^3$/$cm^6$)')
+
+    if not nocontours:
+        num_levels = 16
+        contour_levels = np.array(180*np.arange(num_levels+1)/num_levels, dtype=int)
+        contours = axes.contour(pa_dist['wpol'], pa_dist['waz'], pa_dist['pa_azpol'], contour_levels, linewidths=0.5)
+        axes.clabel(contours, contours.levels, inline=True, fontsize=10)
 
     # Zenith vs. energy
     fig2, axes2 = plt.subplots()
@@ -184,6 +199,23 @@ def mms_fpi_ang_ang(time,
     cax3 = fig3.add_axes([box.xmax + pad, box.ymin, width, box.height])
     colorbar3 = fig3.colorbar(im3, cax=cax3)
     colorbar3.set_label('f ($s^3$/$cm^6$)')
+
+    # PA vs. energy
+    fig4, axes4 = plt.subplots()
+    fig4.set_size_inches(xsize, ysize)
+
+    fig4.subplots_adjust(left=0.14, right=0.85)
+    axes4.set_yscale('log')
+    axes4.set_xlabel('Pitch angle (deg)')
+    axes4.set_ylabel('Energy (eV)')
+
+    spec_options['norm'] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
+
+    im4 = axes4.pcolormesh(pa_dist['pa'], pa_dist['egy'], pa_dist['data'], **spec_options)
+
+    cax4 = fig4.add_axes([box.xmax + pad, box.ymin, width, box.height])
+    colorbar4 = fig4.colorbar(im4, cax=cax4)
+    colorbar4.set_label('f ($s^3$/$cm^6$)')
 
     if display:
         plt.show()
