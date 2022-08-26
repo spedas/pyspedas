@@ -9,7 +9,7 @@ def hep(trange=['2017-03-27', '2017-03-28'],
         datatype='omniflux',
         level='l2',
         suffix='',
-        get_support_data=False,
+        get_support_data=True,
         varformat=None,
         varnames=[],
         downloadonly=False,
@@ -258,6 +258,68 @@ def hep(trange=['2017-03-27', '2017-03-28'],
                            attr_dict={'CDF':loaded_data[prefix + 'FEDU_H' + suffix]['CDF']})
                 tplot_variables.append(prefix + 'FEDU_H' + suffix)
                 clip(prefix + 'FEDU_H' + suffix, -1.0e+10, 1.0e+10)
+
+            if prefix + 'FEDU_L_Angle_sga' + suffix in loaded_data:
+                
+                store_data(prefix + 'FEDU_L_Angle_sga' + suffix, data={'x': loaded_data[prefix + 'FEDU_L_Angle_sga' + suffix]['x'],
+                                                             'y': loaded_data[prefix + 'FEDU_L_Angle_sga' + suffix]['y']},
+                           attr_dict={'CDF':loaded_data[prefix + 'FEDU_L_Angle_sga' + suffix]['CDF']})
+                tplot_variables.append(prefix + 'FEDU_L_Angle_sga' + suffix)
+
+            if prefix + 'FEDU_H_Angle_sga' + suffix in loaded_data:
+                
+                store_data(prefix + 'FEDU_H_Angle_sga' + suffix, data={'x': loaded_data[prefix + 'FEDU_H_Angle_sga' + suffix]['x'],
+                                                             'y': loaded_data[prefix + 'FEDU_H_Angle_sga' + suffix]['y']},
+                           attr_dict={'CDF':loaded_data[prefix + 'FEDU_H_Angle_sga' + suffix]['CDF']})
+                tplot_variables.append(prefix + 'FEDU_H_Angle_sga' + suffix)
+
+            if prefix + 'FEDU_L_Angle_gse' + suffix in loaded_data:
+                
+                store_data(prefix + 'FEDU_L_Angle_gse' + suffix, data={'x': loaded_data[prefix + 'FEDU_L_Angle_gse' + suffix]['x'],
+                                                             'y': loaded_data[prefix + 'FEDU_L_Angle_gse' + suffix]['y']},
+                           attr_dict={'CDF':loaded_data[prefix + 'FEDU_L_Angle_gse' + suffix]['CDF']})
+                tplot_variables.append(prefix + 'FEDU_L_Angle_gse' + suffix)
+
+            if prefix + 'FEDU_H_Angle_gse' + suffix in loaded_data:
+                
+                store_data(prefix + 'FEDU_H_Angle_gse' + suffix, data={'x': loaded_data[prefix + 'FEDU_H_Angle_gse' + suffix]['x'],
+                                                             'y': loaded_data[prefix + 'FEDU_H_Angle_gse' + suffix]['y']},
+                           attr_dict={'CDF':loaded_data[prefix + 'FEDU_H_Angle_gse' + suffix]['CDF']})
+                tplot_variables.append(prefix + 'FEDU_H_Angle_gse' + suffix)
+
+            if prefix + 'sctno_L' + suffix in loaded_data:
+                
+                store_data(prefix + 'sctno_L' + suffix, data={'x': loaded_data[prefix + 'sctno_L' + suffix]['x'],
+                                                             'y': loaded_data[prefix + 'sctno_L' + suffix]['y']},
+                           attr_dict={'CDF':loaded_data[prefix + 'sctno_L' + suffix]['CDF']})
+                tplot_variables.append(prefix + 'sctno_L' + suffix)
+
+            if prefix + 'sctno_H' + suffix in loaded_data:
+                
+                store_data(prefix + 'sctno_H' + suffix, data={'x': loaded_data[prefix + 'sctno_H' + suffix]['x'],
+                                                             'y': loaded_data[prefix + 'sctno_H' + suffix]['y']},
+                           attr_dict={'CDF':loaded_data[prefix + 'sctno_H' + suffix]['CDF']})
+                tplot_variables.append(prefix + 'sctno_H' + suffix)
+
+            if prefix + 'rawcnt_H' + suffix in loaded_data:
+    
+                store_data(prefix + 'rawcnt_H' + suffix, data={'x': loaded_data[prefix + 'rawcnt_H' + suffix]['x'],
+                                                             'y': loaded_data[prefix + 'rawcnt_H' + suffix]['y'],
+                                                             'v1': np.sqrt(loaded_data[prefix + 'rawcnt_H' + suffix]['v'][0, :] *
+                                                                           loaded_data[prefix + 'rawcnt_H' + suffix]['v'][1, :]),  # geometric mean for 'v1'
+                                                             'v2': [i for i in range(15)]},
+                           attr_dict={'CDF':loaded_data[prefix + 'rawcnt_H' + suffix]['CDF']})
+                tplot_variables.append(prefix + 'rawcnt_H' + suffix)
+
+            if prefix + 'rawcnt_L' + suffix in loaded_data:
+    
+                store_data(prefix + 'rawcnt_L' + suffix, data={'x': loaded_data[prefix + 'rawcnt_L' + suffix]['x'],
+                                                             'y': loaded_data[prefix + 'rawcnt_L' + suffix]['y'],
+                                                             'v1': np.sqrt(loaded_data[prefix + 'rawcnt_L' + suffix]['v'][0, :] *
+                                                                           loaded_data[prefix + 'rawcnt_L' + suffix]['v'][1, :]),  # geometric mean for 'v1'
+                                                             'v2': [i for i in range(15)]},
+                           attr_dict={'CDF':loaded_data[prefix + 'rawcnt_L' + suffix]['CDF']})
+                tplot_variables.append(prefix + 'rawcnt_L' + suffix)
 
             return tplot_variables
 

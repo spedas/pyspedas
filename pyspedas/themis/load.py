@@ -164,7 +164,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
                 for site, in_greenland in zip(stations, greenland):
                     if in_greenland:
                         pathformat.append('thg/greenland_gmag/' + level
-                                          + '/mag/' + site + '/%Y/thg_' + level
+                                          + '/' + site + '/%Y/thg_' + level
                                           + '_mag_' + site + '_%Y%m%d_v??.cdf')
                     else:
                         pathformat.append('thg/' + level + '/mag/' + site

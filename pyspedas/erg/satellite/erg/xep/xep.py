@@ -176,8 +176,8 @@ def xep(trange=['2017-06-01', '2017-06-02'],
                 store_data(prefix + 'FEDU_SSD' + suffix,
                            data={'x': loaded_data[prefix + 'FEDU_SSD' + suffix]['x'],
                                  'y': loaded_data[prefix + 'FEDU_SSD' + suffix]['y'],
-                                 'v1': np.sqrt(loaded_data[prefix + 'FEDU_SSD' + suffix]['v'][:, 0]
-                                               * loaded_data[prefix + 'FEDU_SSD' + suffix]['v'][:, 1]),  # Geometric mean of 'v'
+                                 'v1': np.sqrt(loaded_data[prefix + 'FEDU_SSD' + suffix]['v'][:9, 0]
+                                               * loaded_data[prefix + 'FEDU_SSD' + suffix]['v'][:9, 1]),  # Geometric mean of 'v'
                                  'v2': [i for i in range(16)]},  # [0, 1, 2, .., 15]
                            attr_dict={'CDF':loaded_data[prefix + 'FEDU_SSD' + suffix]['CDF']})
 
