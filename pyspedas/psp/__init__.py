@@ -57,8 +57,9 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, FIELDS support data is loaded
-            to enable filtering on quality flags.
+            will be loaded into tplot.  By default, this flag is False but 
+            FIELDS support data is always loaded for datatypes where filtering
+            on quality flags is supported.
 
         varformat: str
             The file variable formats to load into tplot.  Wildcard character

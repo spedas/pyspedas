@@ -5,20 +5,29 @@ from copy import deepcopy
 from collections.abc import Iterable
 from pytplot import tplot_names, data_quants, get_timespan, get_data, store_data
 
-def filter_fields(tvars, dqflag = 0, names_out = True):
+def filter_fields(tvars, dqflag = 0, keep = False, names_out = True):
     """
-    This function removes flagged values from PSP FIELDS magnetometer tplot 
-    variables based on selected quality flags.  
+    This function filters on flagged values from PSP FIELDS magnetometer tplot 
+    variables based on selected quality flags.  By default it filters OUT the 
+    data where selected flags are set, but the keyword parameter "keep" can be 
+    set True to keep just the data where the selected quality flags are set.
     
     For each TVAR passed in a new tplot variable is created with the filtered 
     data.  The new name is of the form:  <tvarname>_XXXXXX 
     where each 'XXX' is a 0 padded flag indicator sorted from lowest to highest.
+    [If keep=True, the new name is of the form: <tvarname>_KXXXXXX]
  
-    So, psp.filter_FIELDS('mag_RTN_1min_x',[4,16]) 
+    Flags 0 and -1 are special cases where the 'keep' flag is ignored
+
+    So, psp.filter_fields('mag_RTN_1min_x',[4,16]) 
         - results in tvar named "mag_RTN_1min_x_004016"
         - tvar holds data where *NEITHER* flag 4 NOR flag 16 is set.
 
-    Or, psp.filter_FIELDS('mag_RTN_1min',0) 
+    And, psp.filter_fields('mag_RTN_1min_x',[4,16], keep=True) 
+        - results in tvar named "mag_RTN_1min_x_K004016"
+        - tvar holds data where *BOTH* flag 4 AND flag 16 is set.
+
+    psp.filter_fields('mag_RTN_1min',0) 
         - results in tvar named "mag_RTN_1min_000"
         - tvar holds data with no set flags
     
@@ -36,7 +45,11 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
             to filter on.             
             From the set {-1,0,1,2,4,8,16,32,64,128,256,512} 
 
+            For keep=False (default)
             For flags >= 1: filters OUT wherever ANY of the selected flags are set.
+
+            For keep=True
+            For flags >= 1: returns data wherever ANY of the selected flags are set.
 
             Note: if using 0 or -1, no other flags should be selected
             -1: Keep cases with no set flags or only the 128 flag set 
@@ -52,10 +65,16 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
             256: High frequency noise affecting RFS and TDS receivers. 
             512: Antennas driven towards the FIELDS power supply rails.   
 
+        keep: bool
+            If True, for dqflags >=1, return data where any of the selected flags 
+            are set.  Otherwise, return data where none of the selected flags 
+            are set.  (Default False)
+
         names_out: bool
             If set, return a list of the tplot variable names created 
             from this filter. Order corresponds to the input array of tvar
             names, so that tvar[i] filtered is in names_out[i]
+            (Default True)
 
     Returns
     ----------
@@ -94,12 +113,12 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
     # Create time specific quality flags as needed
     qf_target = []
     err_flg = []
-    keep = []
+    keep_var = []
     for tvar in tvars:
 
         qf_root = data_quants[tvar].qf_root
         if qf_root:
-            keep.append(tvar)
+            keep_var.append(tvar)
             if ('rfs_hfr' in tvar) or ('rfs_lfr' in tvar):
                 # Lots of possible epoch tags for the rfs data
                 tag = '_' + data_quants[tvar].CDF['VATT']['DEPEND_0']
@@ -131,9 +150,9 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
             print("Source quality flags missing. No filtered variabled created for: {}".format(tvar))
     
     # Remove cases where match epochs couldn't work
-    valid_tn = [keep[i] for i in range(len(keep)) if err_flg[i] == 0]
-    qf_target = [qf_target[i] for i in range(len(keep)) if err_flg[i] == 0]
-    bad_tn = [keep[i] for i in range(len(keep)) if err_flg[i] == 1]
+    valid_tn = [keep_var[i] for i in range(len(keep_var)) if err_flg[i] == 0]
+    qf_target = [qf_target[i] for i in range(len(keep_var)) if err_flg[i] == 0]
+    bad_tn = [keep_var[i] for i in range(len(keep_var)) if err_flg[i] == 1]
     if len(bad_tn) > 0:
         print("Error creating some matching time quality flags.")
         for tn in bad_tn:
@@ -194,7 +213,7 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
                     qfmap[qfname]['dqf'] = d.y
                     qfmap[qfname]['dqfbits'] = _ff_unpackbits(d.y)
 
-            suffix = '_'
+            suffix = '_K' if keep else '_'
             mybits = _ff_unpackbits(np.uint32(0))
             for flg in dqflag:
                 suffix += '{:03}'.format(flg)
@@ -223,11 +242,18 @@ def filter_fields(tvars, dqflag = 0, names_out = True):
                     if mybits[j] == 1:
                         mask = qfmap[qf_target[i]]['dqfbits'][:, j] == 1
                         rem_mask[mask] = True
+
+                if keep:
+                    rem_mask = ~rem_mask
                 new_data['y'][rem_mask] = np.nan
-                    
-                store_data(tn+suffix, new_data, attr_dict=new_attrs)
-                if names_out:
-                    new_names.append(tn+suffix)
+
+                if rem_mask.all():
+                    #Handle completely empty data case.    
+                    print("{}: (Skipped) No data matches this filter".format(tn))
+                else:
+                    store_data(tn+suffix, new_data, attr_dict=new_attrs)
+                    if names_out:
+                        new_names.append(tn+suffix)
     return new_names
 
 
@@ -248,7 +274,7 @@ def _ff_unpackbits(x):
 
 def _ff_match_qf_epochs(target, source, tag):
     """
-    Helper to psp.fields_filter routine.  Extends the quality_flag variable to
+    Helper to psp.filter_fields routine.  Extends the quality_flag variable to
     match the time resolution target.  Results valid only if the source epochs
     and target epochs cover the same time period.
     
