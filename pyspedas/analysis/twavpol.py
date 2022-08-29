@@ -77,6 +77,12 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
+# these routines require numpy v1.20.0 or later
+if np.__version__ < '1.20':
+    print('Error: numpy 1.20.0 or later is required for wave polarization calculations. ')
+    print('Please update numpy with: pip install numpy --upgrade')
+    breakpoint()
+
 
 def atan2c(zx, zy):
     """Define arctan2 with complex numbers."""
@@ -438,9 +444,22 @@ def wavpol(ct, bx, by, bz,
                 # specx[KK, :] = np.fft.fft(tempx, norm='forward')
                 # specy[KK, :] = np.fft.fft(tempy, norm='forward')
                 # specz[KK, :] = np.fft.fft(tempz, norm='forward')
-                specx[KK, :] = np.fft.fft(tempx, norm='ortho')/len(tempx)
-                specy[KK, :] = np.fft.fft(tempy, norm='ortho')/len(tempy)
-                specz[KK, :] = np.fft.fft(tempz, norm='ortho')/len(tempz)
+
+                # mask out the NaNs
+                temp_i = np.arange(len(tempx))
+                tempx_mask = np.isfinite(tempx)
+                tempx_filtered = np.interp(temp_i, temp_i[tempx_mask], tempx[tempx_mask])
+                tempy_mask = np.isfinite(tempy)
+                tempy_filtered = np.interp(temp_i, temp_i[tempy_mask], tempy[tempy_mask])
+                tempz_mask = np.isfinite(tempz)
+                tempz_filtered = np.interp(temp_i, temp_i[tempz_mask], tempz[tempz_mask])
+
+                # back to forward option, 23June2022, after applying mask for NaNs above
+                # forward seems to be the only option that works now after the NaN mask
+                # is applied; this requires numpy >= 1.20.0
+                specx[KK, :] = np.fft.fft(tempx_filtered, norm='forward')
+                specy[KK, :] = np.fft.fft(tempy_filtered, norm='forward')
+                specz[KK, :] = np.fft.fft(tempz_filtered, norm='forward')
 
                 halfspecx[KK, :] = specx[KK, 0:int(nopfft/2)]
                 halfspecy[KK, :] = specy[KK, 0:int(nopfft/2)]

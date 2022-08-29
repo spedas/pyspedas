@@ -32,12 +32,17 @@ from cdaweb import CDAWeb
 from config import CONFIG
 
 
-def show_my_message(title, msg):
+appx = QApplication(sys.argv)
+
+
+def show_my_message(self, title, msg):
     """Show a message."""
-    alert = QMessageBox()
+    alert = QMessageBox(self)
     alert.setWindowTitle(title)
     alert.setText(msg)
-    alert.exec_()
+    alert.setIcon(2)
+    alert.show()
+    return alert
 
 
 class cdagui(QMainWindow):
@@ -85,18 +90,18 @@ class GUIWidget(QWidget):
                                self.instrument_box.selectedItems()]
             if len(mission_list) < 1 or len(instrument_list) < 1:
                 msg = "Please select at least one mission and one instrument."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
                 return 0
             datasets = self.cda.get_datasets(mission_list, instrument_list)
             datalen = len(datasets)
             if datalen < 1:
                 msg = "No datasets were found with these parameters."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
                 return 0
             elif datalen > 50:
                 msg = "Number of datasets found: " + str(datalen)
                 msg += "\nOnly 50 will be shown."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
             self.mission_selected.setText(str(mission_list))
             self.instrument_selected.setText(str(instrument_list))
             self.dataset_box.addItems(datasets[:50])
@@ -180,18 +185,18 @@ class GUIWidget(QWidget):
             t1 = self.time_end_box.text()
             if len(dataset_list) < 1 or len(t0) < 9 or len(t1) < 9:
                 msg = "Please select at least one dataset and start-end times."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
                 return 0
             file_list = self.cda.get_filenames(dataset_list, t0, t1)
             filelen = len(file_list)
             if filelen < 1:
                 msg = "No datasets were found with these parameters."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
                 return 0
             elif filelen > 50:
                 msg = "Number of files found: " + str(filelen)
                 msg += "\nOnly 50 will be shown."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
             self.file_box.addItems(file_list[:50])
 
         def pick_time(start_or_end):
@@ -279,12 +284,12 @@ class GUIWidget(QWidget):
             file_list = [item.text() for item in self.file_box.selectedItems()]
             if len(file_list) < 1:
                 msg = "Please select at least one file to download."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
                 return 0
             local_dir = self.dir_box.text()
             if len(local_dir) < 1:
                 msg = "Please select a local directory."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
                 return 0
             download_only = False
             if check1.isChecked():
@@ -302,7 +307,7 @@ class GUIWidget(QWidget):
             filelen = len(result)
             if filelen < 1:
                 msg = "No files were downloaded."
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
                 return 0
             else:
                 count_no_downloads = 0
@@ -325,7 +330,7 @@ class GUIWidget(QWidget):
                     msg += ("\nFiles loaded to pytplot: " + str(count_tplot))
                     msg += ("\nFiles that could not be loaded to pytplot: "
                             + str(count_tplot_problem))
-                show_my_message(title, msg)
+                aaa = show_my_message(self.parent, title, msg)
 
         def select_dir():
             """Select directory."""

@@ -1,6 +1,8 @@
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
 from pyspedas.mms.fpi.mms_load_fpi_calc_pad import mms_load_fpi_calc_pad
+from pyspedas.mms.fpi.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
+from pyspedas.mms.fpi.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import tplot_rename, del_data
@@ -225,4 +227,41 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
                     if out_var:
                         tvars.extend(out_var)
 
+                    # create the error bars
+                    # moments
+                    if dtype == 'des-moms':
+                        des_moms_eflags = mms_fpi_make_errorflagbars('mms' + str(prb) + '_des_errorflags_' + drate + '_moms', level=lvl)
+                        if des_moms_eflags is not None:
+                            tvars.extend(des_moms_eflags)
+
+                    if dtype == 'dis-moms':
+                        dis_moms_eflags = mms_fpi_make_errorflagbars('mms' + str(prb) + '_dis_errorflags_' + drate + '_moms', level=lvl)
+                        if dis_moms_eflags is not None:
+                            tvars.extend(dis_moms_eflags)
+
+                    # distributions
+                    if dtype == 'des-dist':
+                        des_dist_eflags = mms_fpi_make_errorflagbars('mms' + str(prb) + '_des_errorflags_' + drate + '_dist', level=lvl)
+                        if des_dist_eflags is not None:
+                            tvars.extend(des_dist_eflags)
+
+                    if dtype == 'dis-dist':
+                        dis_dist_eflags = mms_fpi_make_errorflagbars('mms' + str(prb) + '_dis_errorflags_' + drate + '_dist', level=lvl)
+                        if dis_dist_eflags is not None:
+                            tvars.extend(dis_dist_eflags)
+
+                    if drate == 'brst':
+                        des_moms_comp = mms_fpi_make_compressionlossbars('mms' + str(prb) + '_des_compressionloss_' + drate + '_moms')
+                        dis_moms_comp = mms_fpi_make_compressionlossbars('mms' + str(prb) + '_dis_compressionloss_' + drate + '_moms')
+                        des_dist_comp = mms_fpi_make_compressionlossbars('mms' + str(prb) + '_des_compressionloss_' + drate + '_dist')
+                        dis_dist_comp = mms_fpi_make_compressionlossbars('mms' + str(prb) + '_dis_compressionloss_' + drate + '_dist')
+
+                        if des_moms_comp is not None:
+                            tvars.extend(des_moms_comp)
+                        if dis_moms_comp is not None:
+                            tvars.extend(dis_moms_comp)
+                        if des_dist_comp is not None:
+                            tvars.extend(des_dist_comp)
+                        if dis_dist_comp is not None:
+                            tvars.extend(dis_dist_comp)
     return tvars

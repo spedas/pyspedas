@@ -17,11 +17,46 @@ from pytplot import tplot
 #### Magnetometer (MAG)
 
 ```python
-mag_vars = pyspedas.stereo.mag(trange=['2013-11-5', '2013-11-6'])
+mag_vars = pyspedas.stereo.mag(trange=['2013-1-5', '2013-1-6'])
 
 tplot('BFIELD')
 ```
 
+#### Solar Wind Electron Analyzer (SWEA)
+
+```python
+swea_vars = pyspedas.stereo.swea(trange=['2013-1-5', '2013-1-6'])
+```
+
+#### Suprathermal Electron Telescope (STE)
+
+```python
+ste_vars = pyspedas.stereo.ste(trange=['2013-1-5', '2013-1-6'])
+```
+
+#### Solar Electron Proton Telescope (SEPT)
+
+```python
+sept_vars = pyspedas.stereo.sept(trange=['2013-1-5', '2013-1-6'])
+```
+
+#### Suprathermal Ion Telescope (SIT)
+
+```python
+sit_vars = pyspedas.stereo.sit(trange=['2013-1-5', '2013-1-6'])
+```
+
+#### Low Energy Telescope (LET)
+
+```python
+sit_vars = pyspedas.stereo.let(trange=['2013-1-5', '2013-1-6'])
+```
+
+#### High Energy Telescope (HET)
+
+```python
+sit_vars = pyspedas.stereo.het(trange=['2013-1-5', '2013-1-6'])
+```
 
 #### PLAsma and SupraThermal Ion Composition (PLASTIC) 
 

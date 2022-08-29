@@ -3,7 +3,8 @@ import datetime as dt
 from pyspedas import time_string, time_double, tnames
 import pytplot
 
-def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'electron', level = 'l2', suffix = ''):
+
+def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', level='l2', suffix='', trange=None):
     """
     This function removes bad eyes, bad lowest energy channels based on data from Drew Turner
     
@@ -23,9 +24,15 @@ def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'elect
         suffix: str
             suffix of the loaded data
 
+        trange: list of str or list of float
+            Time range
     Returns:
         None
     """
+    if trange is None:
+        print('Time range required for mms_feeps_remove_bad_data.')
+        return
+
     data_rate_level = data_rate + '_' + level
 
     # electrons first, remove bad eyes
@@ -47,7 +54,7 @@ def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'elect
     bad_data_table['2018-10-01']['mms4'] = {'top': [1, 7], 'bottom': [4, 11]}
 
     dates = np.asarray(time_double(list(bad_data_table.keys())))
-    closest_table_tm = (np.abs(dates - dt.datetime.now().timestamp())).argmin()
+    closest_table_tm = (np.abs(dates - time_double(trange[0]))).argmin()
 
     closest_table = time_string(dates[closest_table_tm], '%Y-%m-%d')
     bad_data = bad_data_table[closest_table]['mms'+probe]
@@ -90,8 +97,6 @@ def mms_feeps_remove_bad_data(probe = '1', data_rate = 'srvy', datatype = 'elect
             times, data, energies = bad_var_data
             data[:] = np.nan
             pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
-
-
 
     # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 2. BAD LOWEST E-CHANNELS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     # ; Next, these eyes have bad first channels (i.e., lowest energy channel, E-channel 0 in IDL indexing).  

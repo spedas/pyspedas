@@ -88,38 +88,26 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     # loop through the parameters in this dataset
     params = hapi_metadata['parameters']
 
-    for param in params[1:]:
+    timestamps = [datapoint[0] for datapoint in data]
+    unixtimes = [time_double(timestamp.decode('utf-8')) for timestamp in timestamps]
+
+    for param_idx, param in enumerate(params[1:]):
         spec = False
         param_name = param.get('name')
-        print('Loading ' + prefix + param_name + suffix)
-
-        # load the data only for this parameter
-        try:
-            with warnings.catch_warnings():
-                warnings.simplefilter('ignore', category=ResourceWarning)
-                warnings.filterwarnings('ignore', message='Unverified HTTPS request')
-                data, hapi_metadata = load_hapi(server, dataset, param_name, trange[0], trange[1], **opts)
-        except:
-            continue
-
-        timestamps = [datapoint[0] for datapoint in data]
-        unixtimes = [time_double(timestamp.decode('utf-8')) for timestamp in timestamps]
-
-        param_type = hapi_metadata['parameters'][1].get('type')
+        param_type = param.get('type')
+        data_size = param.get('size')
 
         if param_type is None:
             param_type = 'double'
-
-        data_size = hapi_metadata['parameters'][1].get('size')
 
         if data_size is None:
             single_line = True
 
         try:
             if param_type == 'double':
-                single_line = isinstance(data[0][1], np.float64)
+                single_line = isinstance(data[0][param_idx+1], np.float64)
             elif param_type == 'integer':
-                single_line = isinstance(data[0][1], np.int32)
+                single_line = isinstance(data[0][param_idx+1], np.int32)
         except IndexError:
             continue
 
@@ -127,20 +115,20 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
             data_out = np.zeros((len(data)))
         else:
             try:
-                data_out = np.zeros((len(data), len(data[0][1])))
+                data_out = np.zeros((len(data), len(data[0][param_idx+1])))
             except TypeError:
                 continue
 
         for idx, datapoint in enumerate(data):
             if single_line:
-                data_out[idx] = datapoint[1]
+                data_out[idx] = datapoint[param_idx+1]
             else:
-                data_out[idx, :] = datapoint[1]
+                data_out[idx, :] = datapoint[param_idx+1]
 
         data_out = data_out.squeeze()
 
         # check for fill values
-        fill_value = hapi_metadata['parameters'][1].get('fill')
+        fill_value = param.get('fill')
         if fill_value is not None:
             if param_type == 'double':
                 fill_value = float(fill_value)
@@ -166,16 +154,20 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
 
         saved = store_data(prefix + param_name + suffix, data=data_table)
         metadata = get_data(prefix + param_name + suffix, metadata=True)
-        metadata['HAPI'] = hapi_metadata
+        metadata['HAPI'] = param
 
         if spec:
             options(prefix + param_name + suffix, 'spec', True)
 
+        param_units = param.get('units')
+        if param_units is not None:
+            options(prefix + param_name + suffix, 'ysubtitle', '[' + str(param_units) + ']')
+
+        param_desc = param.get('description')
+        if param_desc is not None:
+            options(prefix + param_name + suffix, 'ytitle', param_desc)
+
         if saved:
             out_vars.append(prefix + param_name + suffix)
 
-        # wait for a second before going to the next variable
-        # to avoid hitting the server too quickly
-        sleep(1)
-    
     return out_vars

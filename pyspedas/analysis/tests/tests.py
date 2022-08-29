@@ -6,6 +6,7 @@ from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
                       yclip, time_clip, deriv_data, tdeflag, clean_spikes,
                       tinterpol)
 from pyspedas.analysis.tcrossp import tcrossp
+from pyspedas.analysis.tdotp import tdotp
 from pyspedas.analysis.tnormalize import tnormalize
 from pytplot import get_data, store_data, replace_data
 
@@ -23,6 +24,13 @@ class BaseTestCase(unittest.TestCase):
 
 class AnalysisTestCases(BaseTestCase):
     """Test functions under analysis folder."""
+    def test_tdotp(self):
+        store_data('var1', data={'x': [0], 'y': [[3, -3, 1]]})
+        store_data('var2', data={'x': [0], 'y': [[4, 9, 2]]})
+        dp = tdotp('var1', 'var2')
+        dpdata = get_data('var1_dot_var2')
+        self.assertTrue(dpdata.y == np.array([-13]))
+
     def test_tcrossp(self):
         """ cross product tests"""
         cp = tcrossp([3, -3, 1], [4, 9, 2], return_data=True)

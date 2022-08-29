@@ -83,6 +83,9 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
     data = get_data(tname)
     metadata = get_data(tname, metadata=True)
 
+    if metadata is None:
+        return
+
     if metadata['CDF']['GATT']['Data_type'][-4:] == 'moms' or level == 'ql':
         labels_full=['Contact FPI team','Saturation','SCpot>20V','no SCpot','>10% Cold','>25% Hot','High Mach#','Low Density','Onboard Mag','L2pre Mag','Photoelectrons','Compression', 'Spintones', 'Radiation']
 

@@ -81,7 +81,12 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
 
     if data_rate == 'brst' and angles_from_bfield == False:
         # v5.5+ = mms1_epd_feeps_srvy_l2_electron_pitch_angle
-        pa_times, pa_data = get_data(prefix+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix)
+        pad_pas = get_data(prefix+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix)
+        if pad_pas is None:
+            logging.error("Error reading variable containing FEEPS pitch angles")
+            return
+        pa_times = pad_pas[0]
+        pa_data = pad_pas[1]
     else:
         pa_var, idx_maps = mms_feeps_pitch_angles(probe=probe, level=level, data_rate=data_rate, datatype=datatype, suffix=suffix)
         pa_times, pa_data = get_data(pa_var)
@@ -167,7 +172,8 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     options(new_name, 'spec', True)
     options(new_name, 'Colormap', 'spedas')
     options(new_name, 'ztitle', units_label)
-    options(new_name, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' PA (deg)')
+    options(new_name, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' PA')
+    options(new_name, 'ysubtitle', '[deg]')
 
     # create the spin-averaged PAD
     spin_avg_var = mms_feeps_pad_spinavg(probe=probe, data_units=data_units, datatype=datatype, data_rate=data_rate, level=level, suffix=suffix, energy=energy, bin_size=bin_size)

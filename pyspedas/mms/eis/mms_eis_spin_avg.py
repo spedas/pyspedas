@@ -95,7 +95,8 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
 
             store_data(this_scope + '_spin', data={'x': flux_times[spin_starts], 'y': spin_avg_flux, 'v': energies})
             options(this_scope + '_spin', 'ztitle', units_label)
-            options(this_scope + '_spin', 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species + ' (spin) Energy [keV]')
+            options(this_scope + '_spin', 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species + ' (spin)')
+            options(this_scope + '_spin', 'ysubtitle', 'Energy [keV]')
             options(this_scope + '_spin', 'spec', True)
             options(this_scope + '_spin', 'ylog', True)
             options(this_scope + '_spin', 'zlog', True)

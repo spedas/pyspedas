@@ -1,7 +1,8 @@
 
 import numpy as np
-from pyspedas import tnames
+from pyspedas import tnames, tinterpol
 from pytplot import get_data, store_data
+
 
 def tvector_rotate(mat_var_in, vec_var_in, newname=None):
     """
@@ -58,10 +59,20 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
         vec_data = get_data(vec_var)
         vec_metadata = get_data(vec_var, metadata=True)
 
+        if not np.array_equal(vec_data.times, mat_data.times) and len(mat_data.times) != 1:
+            print('Interpolating the matrix timestamps to the vector time stamps')
+            tinterpol(mat_var_in, vec_var)
+            mat_data = get_data(mat_var_in + '-itrp')
+
         vec_fac = np.zeros((len(vec_data.times), len(vec_data.y[0, :])))
 
         for i in range(0, len(vec_data.times)):
-            vec_fac[i, :] = mat_data.y[i, :, :] @ vec_data.y[i, :]
+            if mat_data.y.shape[0] == 1:  # only a single matrix
+                matrix = mat_data.y[0, :, :]
+            else:
+                matrix = mat_data.y[i, :, :]
+
+            vec_fac[i, :] = matrix @ vec_data.y[i, :]
 
         saved = store_data(new_var, data={'x': vec_data.times, 'y': vec_fac}, attr_dict=vec_metadata)
 

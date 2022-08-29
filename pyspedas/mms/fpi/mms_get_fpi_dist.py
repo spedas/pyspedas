@@ -1,12 +1,15 @@
 
 import logging
+from copy import deepcopy
 import numpy as np
+from pyspedas import time_double
 from pytplot import get_data
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None):
+
+def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None, level='l2', single_time=None):
     """
     Returns 3D particle data structures containing MMS FPI
     data for use with SPEDAS particle routines. 
@@ -44,7 +47,10 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
 
     data = [0, 0, 0, 0, 0]
 
-    if index != None:
+    if single_time is not None:
+        index = np.searchsorted(data_in.times, time_double(single_time), side='left')
+
+    if index is not None:
         data[0] = data_in[0][index]
         data[1] = data_in[1][index]
         if data_in[2].ndim == 1:
@@ -65,14 +71,31 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
     if species is None:
         species = tname.split('_')[1][1]
 
+    if data_rate is None:
+        data_rate = tname.split('_')[3]
+
     if species.lower() == 'i':
         mass = 1.04535e-2
         charge = 1.
         data_name = 'FPI Ion'
+        if data_rate is not None and level is not None:
+            if data_rate == 'brst' and level == 'l2':
+                integ_time = 0.15
+            if data_rate == 'brst' and level == 'acr':
+                integ_time = 0.0375
+        if data_rate == 'fast':
+            integ_time = 4.5
     elif species.lower() == 'e':
         mass = 5.68566e-06
         charge = -1.
         data_name = 'FPI Electron'
+        if data_rate is not None and level is not None:
+            if data_rate == 'brst' and level == 'l2':
+                integ_time = 0.03
+            if data_rate == 'brst' and level == 'acr':
+                integ_time = 0.0075
+        if data_rate == 'fast':
+            integ_time = 4.5
     else:
         logging.error('Invalid species: ' + species + '; valid options: "i" for ions and "e" for electrons')
         return
@@ -149,17 +172,23 @@ def mms_get_fpi_dist(tname, index=None, probe=None, data_rate=None, species=None
     out_phi = (out_phi+180.) % 360
     out_theta = -out_theta
 
-    out['data'] = out_data
-    out['bins'] = out_bins
-    out['theta'] = out_theta
-    out['phi'] = out_phi
-    out['energy'] = out_energy
-    out['dtheta'] = out_dtheta
-    out['dphi'] = out_dphi
-    out['denergy'] = out_denergy
-    out['n_energy'] = energy_len
-    out['n_theta'] = len(data[3])
-    out['n_phi'] = phi_len
-    out['n_times'] = len(data[0])
+    out_list = []
 
-    return out
+    for time_idx, time in enumerate(data[0]):
+        out_table = {**out}
+        out_table['data'] = out_data[time_idx, :]
+        out_table['bins'] = out_bins[time_idx, :]
+        out_table['theta'] = out_theta[time_idx, :]
+        out_table['phi'] = out_phi[time_idx, :]
+        out_table['energy'] = out_energy[time_idx, :]
+        out_table['dtheta'] = out_dtheta[time_idx, :]
+        out_table['dphi'] = out_dphi[time_idx, :]
+        out_table['denergy'] = out_denergy[time_idx, :]
+        out_table['n_energy'] = energy_len
+        out_table['n_theta'] = len(data[3])
+        out_table['n_phi'] = phi_len
+        out_table['start_time'] = time # note: assumes the FPI data weren't centered!
+        out_table['end_time'] = time + integ_time
+        out_list.append(out_table)
+
+    return out_list

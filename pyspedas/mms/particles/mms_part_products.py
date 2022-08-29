@@ -27,11 +27,12 @@ from pyspedas.mms.particles.mms_part_des_photoelectrons import mms_part_des_phot
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast', instrument='fpi', probe='1',
     output=['energy', 'theta', 'phi'], energy=None, phi=None, theta=None, pitch=None, gyro=None, mag_name=None,
     pos_name=None, fac_type='mphigeo', sc_pot_name=None, correct_photoelectrons=False, zero_negative_values=False,
     internal_photoelectron_corrections=False, disable_photoelectron_corrections=False, no_regrid=False,
-    regrid=[32, 16]):
+    regrid=[32, 16], vel_name=None):
     """
     Generate spectra and moments from 3D MMS particle data; note: this routine isn't
     meant to be called directly - see the wrapper mms_part_getspec instead.
@@ -148,7 +149,9 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         data_times = mms_get_hpca_dist(in_tvarname, species=species, probe=probe, data_rate=data_rate, times=True)
     else:
         data_times = data_in.times
-    ntimes = len(data_times)
+
+    # ntimes = len(data_times)
+    ntimes = len(dist_in)
 
     # create rotation matrix to field aligned coordinates if needed
     fac_outputs = ['pa', 'gyro', 'fac_energy', 'fac_moments']
@@ -160,40 +163,51 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
             # problem creating the FAC matrices
             fac_requested = False
 
-    out_energy = np.zeros((dist_in['n_times'], dist_in['n_energy']))
-    out_energy_y = np.zeros((dist_in['n_times'], dist_in['n_energy']))
-    out_theta = np.zeros((dist_in['n_times'], dist_in['n_theta']))
-    out_phi = np.zeros((dist_in['n_times'], dist_in['n_phi']))
-    out_theta_y = np.zeros((dist_in['n_times'], dist_in['n_theta']))
-    out_phi_y = np.zeros((dist_in['n_times'], dist_in['n_phi']))
+    out_energy = np.zeros((ntimes, dist_in[0]['n_energy']))
+    out_energy_y = np.zeros((ntimes, dist_in[0]['n_energy']))
+    out_theta = np.zeros((ntimes, dist_in[0]['n_theta']))
+    out_phi = np.zeros((ntimes, dist_in[0]['n_phi']))
+    out_theta_y = np.zeros((ntimes, dist_in[0]['n_theta']))
+    out_phi_y = np.zeros((ntimes, dist_in[0]['n_phi']))
     if fac_requested:
-        out_pad = np.zeros((dist_in['n_times'], dist_in['n_theta']))
-        out_pad_y = np.zeros((dist_in['n_times'], dist_in['n_theta']))
-        out_gyro = np.zeros((dist_in['n_times'], dist_in['n_phi']))
-        out_gyro_y = np.zeros((dist_in['n_times'], dist_in['n_phi']))
+        out_pad = np.zeros((ntimes, dist_in[0]['n_theta']))
+        out_pad_y = np.zeros((ntimes, dist_in[0]['n_theta']))
+        out_gyro = np.zeros((ntimes, dist_in[0]['n_phi']))
+        out_gyro_y = np.zeros((ntimes, dist_in[0]['n_phi']))
 
     # moments
     if 'moments' in output:
-        out_density = np.zeros(dist_in['n_times'])
-        out_avgtemp = np.zeros(dist_in['n_times'])
-        out_vthermal = np.zeros(dist_in['n_times'])
-        out_flux = np.zeros([dist_in['n_times'], 3])
-        out_velocity = np.zeros([dist_in['n_times'], 3])
-        out_mftens = np.zeros([dist_in['n_times'], 6])
-        out_ptens = np.zeros([dist_in['n_times'], 6])
+        out_density = np.zeros(ntimes)
+        out_avgtemp = np.zeros(ntimes)
+        out_vthermal = np.zeros(ntimes)
+        out_flux = np.zeros([ntimes, 3])
+        out_velocity = np.zeros([ntimes, 3])
+        out_mftens = np.zeros([ntimes, 6])
+        out_ptens = np.zeros([ntimes, 6])
         #out_ttens = np.zeros([dist_in['n_times'], 3, 3])
 
     out_vars = []
     last_update_time = None
 
     if 'moments' in output or correct_photoelectrons or internal_photoelectron_corrections:
-        support_data = mms_pgs_clean_support(data_times, mag_name=mag_name, vel_name=None, sc_pot_name=sc_pot_name)
+        support_data = mms_pgs_clean_support(data_times, mag_name=mag_name, vel_name=vel_name, sc_pot_name=sc_pot_name)
         mag_data = support_data[0]
         scpot_data = support_data[2]
 
     if disable_photoelectron_corrections:
         correct_photoelectrons = False
         internal_photoelectron_corrections = False
+
+    # Remind user that l2 moments should be used preferentially and FAC moments are experimental
+    if 'moments' in output or 'moments_fac' in output:
+        msg = """Moments generated with mms_part_products may be missing several important
+corrections, including photoelectron removal and spacecraft potential.
+The official moments released by the instrument teams include these and
+are the scientific products that should be used for analysis."""
+        print('==================================================================================')
+        print('WARNING:')
+        print(msg)
+        print('==================================================================================')
 
     # grab the DES photoelectron model if needed
     if (instrument != 'fpi' or species != 'e') and (correct_photoelectrons or internal_photoelectron_corrections):
@@ -218,9 +232,14 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         last_update_time = spd_pgs_progress_update(last_update_time=last_update_time, current_sample=i, total_samples=ntimes, type_string=in_tvarname)
 
         if instrument == 'fpi':
-            dist_in = mms_get_fpi_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
+            dists = mms_get_fpi_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
         elif instrument == 'hpca':
-            dist_in = mms_get_hpca_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
+            dists = mms_get_hpca_dist(in_tvarname, index=i, species=species, probe=probe, data_rate=data_rate)
+
+        if isinstance(dists, list):
+            dist_in = dists[0]
+        else:
+            dist_in = dists
 
         # apply the DES photoelectron corrections
         if correct_photoelectrons or internal_photoelectron_corrections:
@@ -331,23 +350,23 @@ def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast',
         out_vars.extend(moments_vars)
 
     if 'energy' in output:
-        spd_pgs_make_tplot(in_tvarname+'_energy', x=data_times, y=out_energy_y, z=out_energy, units=units, ylog=True, ytitle=dist_in['data_name'] + ' \\ energy (eV)')
+        spd_pgs_make_tplot(in_tvarname+'_energy', x=data_times, y=out_energy_y, z=out_energy, units=units, ylog=True, ytitle=dist_in['data_name'], ysubtitle='energy (eV)')
         out_vars.append(in_tvarname+'_energy')
 
     if 'theta' in output:
-        spd_pgs_make_tplot(in_tvarname+'_theta', x=data_times, y=out_theta_y, z=out_theta, units=units, ytitle=dist_in['data_name'] + ' \\ theta (deg)')
+        spd_pgs_make_tplot(in_tvarname+'_theta', x=data_times, y=out_theta_y, z=out_theta, units=units, ytitle=dist_in['data_name'], ysubtitle='theta (deg)')
         out_vars.append(in_tvarname+'_theta')
 
     if 'phi' in output:
-        spd_pgs_make_tplot(in_tvarname+'_phi', x=data_times, y=out_phi_y, z=out_phi, units=units, ytitle=dist_in['data_name'] + ' \\ phi (deg)')
+        spd_pgs_make_tplot(in_tvarname+'_phi', x=data_times, y=out_phi_y, z=out_phi, units=units, ytitle=dist_in['data_name'], ysubtitle='phi (deg)')
         out_vars.append(in_tvarname+'_phi')
 
     if 'pa' in output:
-        spd_pgs_make_tplot(in_tvarname+'_pa', x=data_times, y=out_pad_y, z=out_pad, units=units, ytitle=dist_in['data_name'] + ' \\ PA (deg)')
+        spd_pgs_make_tplot(in_tvarname+'_pa', x=data_times, y=out_pad_y, z=out_pad, units=units, ytitle=dist_in['data_name'], ysubtitle='PA (deg)')
         out_vars.append(in_tvarname+'_pa')
 
     if 'gyro' in output:
-        spd_pgs_make_tplot(in_tvarname+'_gyro', x=data_times, y=out_gyro_y, z=out_gyro, units=units, ytitle=dist_in['data_name'] + ' \\ gyro (deg)')
+        spd_pgs_make_tplot(in_tvarname+'_gyro', x=data_times, y=out_gyro_y, z=out_gyro, units=units, ytitle=dist_in['data_name'], ysubtitle='gyro (deg)')
         out_vars.append(in_tvarname+'_gyro')
 
     return out_vars
