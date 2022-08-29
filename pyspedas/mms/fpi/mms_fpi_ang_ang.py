@@ -24,6 +24,11 @@ def mms_fpi_ang_ang(time,
                     cmap='spedas',
                     zrange=[None, None],
                     nocontours=False,
+                    save_png=None,
+                    save_jpeg=None,
+                    save_eps=None,
+                    save_svg=None,
+                    dpi=300,
                     display=True):
     """
     Creates various plots directly from the FPI distribution functions, including:
@@ -154,6 +159,18 @@ def mms_fpi_ang_ang(time,
         contours = axes.contour(pa_dist['wpol'], pa_dist['waz'], pa_dist['pa_azpol'], contour_levels, linewidths=0.5)
         axes.clabel(contours, contours.levels, inline=True, fontsize=10)
 
+    if save_png is not None and save_png != '':
+        plt.savefig(save_png + '_azimuth_vs_zenith.png', dpi=dpi)
+
+    if save_jpeg is not None and save_jpeg != '':
+        plt.savefig(save_jpeg + '_azimuth_vs_zenith.jpeg', dpi=dpi)
+
+    if save_eps is not None and save_eps != '':
+        plt.savefig(save_eps + '_azimuth_vs_zenith.eps', dpi=dpi)
+
+    if save_svg is not None and save_svg != '':
+        plt.savefig(save_svg + '_azimuth_vs_zenith.svg', dpi=dpi)
+
     # Zenith vs. energy
     fig2, axes2 = plt.subplots()
     fig2.set_size_inches(xsize, ysize)
@@ -178,6 +195,18 @@ def mms_fpi_ang_ang(time,
     colorbar2 = fig2.colorbar(im2, cax=cax2)
     colorbar2.set_label('f ($s^3$/$cm^6$)')
 
+    if save_png is not None and save_png != '':
+        plt.savefig(save_png + '_zenith_vs_energy.png', dpi=dpi)
+
+    if save_jpeg is not None and save_jpeg != '':
+        plt.savefig(save_jpeg + '_zenith_vs_energy.jpeg', dpi=dpi)
+
+    if save_eps is not None and save_eps != '':
+        plt.savefig(save_eps + '_zenith_vs_energy.eps', dpi=dpi)
+
+    if save_svg is not None and save_svg != '':
+        plt.savefig(save_svg + '_zenith_vs_energy.svg', dpi=dpi)
+
     # Azimuth vs. energy
     fig3, axes3 = plt.subplots()
     fig3.set_size_inches(xsize, ysize)
@@ -200,6 +229,18 @@ def mms_fpi_ang_ang(time,
     colorbar3 = fig3.colorbar(im3, cax=cax3)
     colorbar3.set_label('f ($s^3$/$cm^6$)')
 
+    if save_png is not None and save_png != '':
+        plt.savefig(save_png + '_azimuth_vs_energy.png', dpi=dpi)
+
+    if save_jpeg is not None and save_jpeg != '':
+        plt.savefig(save_jpeg + '_azimuth_vs_energy.jpeg', dpi=dpi)
+
+    if save_eps is not None and save_eps != '':
+        plt.savefig(save_eps + '_azimuth_vs_energy.eps', dpi=dpi)
+
+    if save_svg is not None and save_svg != '':
+        plt.savefig(save_svg + '_azimuth_vs_energy.svg', dpi=dpi)
+
     # PA vs. energy
     fig4, axes4 = plt.subplots()
     fig4.set_size_inches(xsize, ysize)
@@ -216,6 +257,18 @@ def mms_fpi_ang_ang(time,
     cax4 = fig4.add_axes([box.xmax + pad, box.ymin, width, box.height])
     colorbar4 = fig4.colorbar(im4, cax=cax4)
     colorbar4.set_label('f ($s^3$/$cm^6$)')
+
+    if save_png is not None and save_png != '':
+        plt.savefig(save_png + '_pa_vs_energy.png', dpi=dpi)
+
+    if save_jpeg is not None and save_jpeg != '':
+        plt.savefig(save_jpeg + '_pa_vs_energy.jpeg', dpi=dpi)
+
+    if save_eps is not None and save_eps != '':
+        plt.savefig(save_eps + '_pa_vs_energy.eps', dpi=dpi)
+
+    if save_svg is not None and save_svg != '':
+        plt.savefig(save_svg + '_pa_vs_energy.svg', dpi=dpi)
 
     if display:
         plt.show()
