@@ -28,19 +28,26 @@ def minvar(data):
 
     #  Min var starts here
     # data must be Nx3
-    vecavg = np.nanmean(data, axis=0)
+    vecavg = np.nanmean(np.nan_to_num(data, nan=0.0), axis=0)
 
     mvamat = np.zeros((3, 3))
     for i in range(3):
         for j in range(3):
-            mvamat[i, j] = np.nanmean(data[:, i] * data[:, j]) - vecavg[i] * vecavg[j]
+            mvamat[i, j] = np.nanmean(np.nan_to_num(data[:, i] * data[:, j], nan=0.0)) - vecavg[i] * vecavg[j]
 
     # Calculate eigenvalues and eigenvectors
     w, v = np.linalg.eigh(mvamat, UPLO='U')
+    # v = v.transpose()
 
     # Sorting to ensure descending order
     w = np.abs(w)
     idx = np.flip(np.argsort(w))
+
+    # IDL compatability
+    if True:
+        if np.sum(w) == 0.0:
+            idx = [0, 2, 1]
+
     w = w[idx]
     v = v[:, idx]
 
@@ -48,6 +55,7 @@ def minvar(data):
     YcrossZdotX = v[0, 0] * (v[1, 1] * v[2, 2] - v[2, 1] * v[1, 2])
     if YcrossZdotX < 0:
         v[:, 1] = -v[:, 1]
+        # v[:, 2] = -v[:, 2] # Should not it is being flipped at Z-axis?
 
     # Ensure minvar direction is along +Z (for FAC system)
     if v[2, 2] < 0:
