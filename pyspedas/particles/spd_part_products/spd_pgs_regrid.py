@@ -3,6 +3,7 @@ import numpy as np
 from scipy.interpolate import NearestNDInterpolator
 from astropy.coordinates import spherical_to_cartesian
 
+
 def spd_pgs_regrid(data, regrid_dimen):
     """
 
@@ -64,6 +65,7 @@ def spd_pgs_regrid(data, regrid_dimen):
             output['bins'][i, j] = bins_grid_interp(grid_x[j], grid_y[j], grid_z[j])
 
     return output
+
 
 def griddata(phi, theta, data):
     r = np.ones(len(phi))

@@ -4,6 +4,7 @@ from pytplot import store_data, options
 
 from pyspedas.particles.spd_units_string import spd_units_string
 
+
 def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=True, colorbar='spedas', ytitle=None, ysubtitle=''):
     """
     Create tplot variable with standard spectrogram settings

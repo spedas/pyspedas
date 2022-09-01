@@ -3,6 +3,7 @@ from time import time
 import numpy as np
 from pyspedas.particles.spd_slice2d.quaternions import qtom, qcompose
 
+
 def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None, rotation_matrix=None,
                 custom_matrix=None, msg_prefix='', shift=None, average_angle=None, sum_angle=None):
     """

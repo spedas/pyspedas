@@ -10,6 +10,7 @@ try:
 except ImportError:
     nansum = np.nansum
 
+
 def spd_pgs_make_theta_spec(data_in, resolution=None, colatitude=False):
     """
     Builds theta (latitudinal) spectrogram from simplified particle data structure.
@@ -102,5 +103,3 @@ def spd_pgs_make_theta_spec(data_in, resolution=None, colatitude=False):
     y = y[1:]
 
     return (y, ave)
-
-

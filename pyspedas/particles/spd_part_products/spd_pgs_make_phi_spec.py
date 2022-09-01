@@ -10,6 +10,7 @@ try:
 except ImportError:
     nansum = np.nansum
 
+
 def spd_pgs_make_phi_spec(data_in, resolution=None):
     """
     Builds phi (longitudinal) spectrogram from the particle data structure

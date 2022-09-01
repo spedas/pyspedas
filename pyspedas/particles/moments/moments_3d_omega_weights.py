@@ -1,5 +1,5 @@
-
 import numpy as np
+
 
 def moments_3d_omega_weights(theta, phi, dtheta, dphi):
     """

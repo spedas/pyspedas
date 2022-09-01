@@ -8,6 +8,7 @@ try:
 except ImportError:
     nanmean = np.nanmean
 
+
 def spd_pgs_make_e_spec(data_in):
     """
     Builds energy spectrogram from the particle data structure
