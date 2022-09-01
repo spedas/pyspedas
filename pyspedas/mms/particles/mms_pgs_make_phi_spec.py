@@ -8,8 +8,11 @@ try:
 except ImportError:
     nansum = np.nansum
 
-def mms_pgs_make_phi_spec(data_in, resolution=32):
 
+def mms_pgs_make_phi_spec(data_in, resolution=32):
+    """
+
+    """
     data = data_in.copy()
     n_phi = resolution
 
