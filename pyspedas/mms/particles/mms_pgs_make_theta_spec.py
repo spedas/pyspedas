@@ -9,7 +9,11 @@ try:
 except ImportError:
     nansum = np.nansum
 
+
 def mms_pgs_make_theta_spec(data_in, resolution=16, colatitude=False):
+    """
+
+    """
     data = data_in.copy()
     n_theta = resolution
 

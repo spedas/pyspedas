@@ -28,11 +28,29 @@ logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 
-def mms_part_products(in_tvarname, units='eflux', species='e', data_rate='fast', instrument='fpi', probe='1',
-    output=['energy', 'theta', 'phi'], energy=None, phi=None, theta=None, pitch=None, gyro=None, mag_name=None,
-    pos_name=None, fac_type='mphigeo', sc_pot_name=None, correct_photoelectrons=False, zero_negative_values=False,
-    internal_photoelectron_corrections=False, disable_photoelectron_corrections=False, no_regrid=False,
-    regrid=[32, 16], vel_name=None):
+def mms_part_products(in_tvarname,
+                      units='eflux',
+                      species='e',
+                      data_rate='fast',
+                      instrument='fpi',
+                      probe='1',
+                      output=['energy', 'theta', 'phi'],
+                      energy=None,
+                      phi=None,
+                      theta=None,
+                      pitch=None,
+                      gyro=None,
+                      mag_name=None,
+                      pos_name=None,
+                      fac_type='mphigeo',
+                      sc_pot_name=None,
+                      correct_photoelectrons=False,
+                      zero_negative_values=False,
+                      internal_photoelectron_corrections=False,
+                      disable_photoelectron_corrections=False,
+                      no_regrid=False,
+                      regrid=[32, 16],
+                      vel_name=None):
     """
     Generate spectra and moments from 3D MMS particle data; note: this routine isn't
     meant to be called directly - see the wrapper mms_part_getspec instead.

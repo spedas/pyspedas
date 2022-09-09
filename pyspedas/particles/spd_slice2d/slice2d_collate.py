@@ -68,4 +68,3 @@ def slice2d_collate(data, weight, sphere, previous_out=None, sum_samples=False):
             'dp': dp_out,
             'dt': dt_out
         }
-

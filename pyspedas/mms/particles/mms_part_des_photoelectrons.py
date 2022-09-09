@@ -8,6 +8,7 @@ from pytplot import get_data, cdf_to_tplot
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_part_des_photoelectrons(dist_var):
     """
     Loads and returns the FPI/DES photoelectron model based on stepper ID

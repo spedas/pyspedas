@@ -13,6 +13,7 @@ from pytplot import get_data, store_data
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_pgs_xgse(mag_temp, pos_temp):
     """
     Generates the 'xgse' transformation matrix
@@ -30,6 +31,7 @@ def mms_pgs_xgse(mag_temp, pos_temp):
     x_basis = tcrossp(y_basis, z_basis, return_data=True)
 
     return (x_basis, y_basis, z_basis)
+
 
 def mms_pgs_phigeo(mag_temp, pos_temp):
     """
@@ -59,6 +61,7 @@ def mms_pgs_phigeo(mag_temp, pos_temp):
     y_basis = tcrossp(z_basis, x_basis, return_data=True)
 
     return (x_basis, y_basis, z_basis)
+
 
 def mms_pgs_mphigeo(mag_temp, pos_temp):
     """
