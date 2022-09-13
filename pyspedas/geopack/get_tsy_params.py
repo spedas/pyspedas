@@ -4,7 +4,16 @@ from pyspedas import tinterpol, tdeflag
 from pyspedas.geopack.get_w_params import get_w
 from pytplot import get_data, store_data
 
-def get_tsy_params(dst_tvar, imf_tvar, Np_tvar, Vp_tvar, model, pressure_tvar=None, newname=None, speed=False, g_variables=None):
+
+def get_tsy_params(dst_tvar,
+                   imf_tvar,
+                   Np_tvar,
+                   Vp_tvar,
+                   model,
+                   pressure_tvar=None,
+                   newname=None,
+                   speed=False,
+                   g_variables=None):
     """
     This procedure will interpolate inputs, generate
     Tsyganenko model parameters and store them in a tplot 
@@ -164,5 +173,3 @@ def get_tsy_params(dst_tvar, imf_tvar, Np_tvar, Vp_tvar, model, pressure_tvar=No
 
     if saved:
         return newname
-
-

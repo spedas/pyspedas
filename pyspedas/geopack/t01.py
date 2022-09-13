@@ -3,6 +3,7 @@ import numpy as np
 from pytplot import get_data, store_data
 from geopack import geopack, t01
 
+
 def tt01(pos_var_gsm, parmod=None, suffix=''):
     """
     tplot wrapper for the functional interface to Sheng Tian's implementation of the Tsyganenko 2001 and IGRF model:
