@@ -8,6 +8,7 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pytplot import store_data
 
+
 def get_w(trange=None, create_tvar=False, newname=None):
     """
     This routine downloads the 6 Tsygeneko (TS05) model 
