@@ -9,6 +9,7 @@ import datetime
 import math
 import numpy as np
 import pytz
+from dateutil.parser import parse
 import pytplot
 from platform import system
 import copy
@@ -157,6 +158,17 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         print("Unknown option supplied: " + str(option))
 
     return new_tplot_opt_glob
+
+
+def str_to_int_fuzzy(time_str):
+    """
+    Implementation of str_to_int (below) that uses dateutil and .timestamp()
+    to convert the date/time string to integer (number of seconds since Jan 1, 1970)
+
+    This function is slower than str_to_int, but more flexible
+    """
+    dt_object = parse(time_str)
+    return int(int(dt_object.replace(tzinfo=datetime.timezone.utc).timestamp()))
 
 
 def str_to_int(time_str):

@@ -32,9 +32,9 @@ def xlim(min, max):
 
     """
     if not isinstance(min, (int, float, complex)):
-        min = tplot_utilities.str_to_int(min)
+        min = tplot_utilities.str_to_int_fuzzy(min)
     if not isinstance(max, (int, float, complex)):
-        max = tplot_utilities.str_to_int(max)
+        max = tplot_utilities.str_to_int_fuzzy(max)
     if 'x_range' in pytplot.tplot_opt_glob:
         pytplot.tplot_opt_glob['x_range_last'] = pytplot.tplot_opt_glob['x_range']
         pytplot.lim_info['xlast'] = pytplot.tplot_opt_glob['x_range']

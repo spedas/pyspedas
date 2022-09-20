@@ -1,6 +1,7 @@
 import numpy as np
 
-def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=None):
+
+def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=None, time_idxs=None):
     alpha = plot_extras.get('alpha')
 
     if len(var_data.y.shape) == 1:
@@ -128,7 +129,7 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     # check for error data first
     if 'dy' in var_data._fields:
         # error data provided
-        line_options['yerr'] = var_data.dy
+        line_options['yerr'] = var_data.dy[time_idxs]
         plotter = this_axis.errorbar
         if line_opts.get('ecolor') is not None:
             line_options['ecolor'] = line_opts['ecolor']
@@ -145,7 +146,7 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
             plotter = this_axis.scatter
 
     for line in range(0, num_lines):
-        this_line = plotter(var_times, var_data.y if num_lines == 1 else var_data.y[:, line], color=colors[line],
+        this_line = plotter(var_times, var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line], color=colors[line],
                             linestyle=line_style[line], linewidth=thick[line], **line_options)
 
         if labels is not None:

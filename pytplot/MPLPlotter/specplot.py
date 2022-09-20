@@ -7,7 +7,7 @@ import warnings
 import pytplot
 
 
-def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable):
+def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable, time_idxs=None):
     alpha = plot_extras.get('alpha')
     spec_options = {'shading': 'auto', 'alpha': alpha}
     ztitle = zaxis_options['axis_label']
@@ -50,13 +50,17 @@ def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_
         
     spec_options['cmap'] = cmap
 
-    out_values = var_data.y
+    out_values = var_data.y[time_idxs, :]
 
     if len(var_data) == 3:
         out_vdata = var_data.v
     else:
         print('Too many dimensions on the variable: ' + variable)
         return
+
+    if len(out_vdata.shape) > 1:
+        # time varying 'v', need to limit the values to those within the requested time range
+        out_vdata = out_vdata[time_idxs, :]
 
     # automatic interpolation options
     if yaxis_options.get('x_interp') is not None:
@@ -78,8 +82,8 @@ def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_
             zdata[zdata < 0.0] = 0.0
             zdata[zdata == np.nan] = 0.0
 
-            interp_func = interp1d(var_data.times, zdata, axis=0, bounds_error=False)
-            out_times = np.arange(0, nx, dtype=np.float64)*(var_data.times[-1]-var_data.times[0])/(nx-1) + var_data.times[0]
+            interp_func = interp1d(var_data.times[time_idxs], zdata, axis=0, bounds_error=False)
+            out_times = np.arange(0, nx, dtype=np.float64)*(var_data.times[time_idxs][-1]-var_data.times[time_idxs][0])/(nx-1) + var_data.times[time_idxs][0]
 
             out_values = interp_func(out_times)
 
@@ -105,10 +109,10 @@ def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_
                 zdata = out_values
 
             if ylog =='log':
-                vdata = np.log10(var_data.v)
+                vdata = np.log10(out_vdata)
                 ycrange = np.log10(yrange)
             else:
-                vdata = var_data.v
+                vdata = out_vdata
                 ycrange = yrange
 
             if not np.isfinite(ycrange[0]):

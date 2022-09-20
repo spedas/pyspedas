@@ -178,9 +178,6 @@ def tplot(variables, var_label=None,
                         pseudo_right_axis=pseudo_right_axis)
             continue
 
-        # the data are stored as unix times, but matplotlib wants datatime objects
-        var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data.times]
-        
         # set the figure title
         if idx == 0 and plot_title != '':
             this_axis.set_title(plot_title)
@@ -189,6 +186,17 @@ def tplot(variables, var_label=None,
         if pytplot.tplot_opt_glob.get('x_range') is not None:
             x_range = pytplot.tplot_opt_glob['x_range']
             this_axis.set_xlim([datetime.fromtimestamp(x_range[0], tz=timezone.utc), datetime.fromtimestamp(x_range[1], tz=timezone.utc)])
+            time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
+            if len(time_idxs) == 0:
+                print('No data found in the time range: ' + variable)
+                continue
+            var_data_times = var_data.times[time_idxs]
+        else:
+            var_data_times = var_data.times
+            time_idxs = np.arange(len(var_data_times))
+
+        # the data are stored as unix times, but matplotlib wants datatime objects
+        var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data_times]
 
         # set some more plot options
         yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
@@ -230,13 +238,15 @@ def tplot(variables, var_label=None,
         if plot_extras.get('char_size') is not None:
             char_size = plot_extras['char_size']
 
-        yrange = yaxis_options['y_range']
-        if not np.isfinite(yrange[0]):
-            yrange[0] = None
-        if not np.isfinite(yrange[1]):
-            yrange[1] = None
-
-        this_axis.set_ylim(yrange)
+        user_set_yrange = yaxis_options.get('y_range_user')
+        if user_set_yrange is not None:
+            # the user has set the yrange manually
+            yrange = yaxis_options['y_range']
+            if not np.isfinite(yrange[0]):
+                yrange[0] = None
+            if not np.isfinite(yrange[1]):
+                yrange[1] = None
+            this_axis.set_ylim(yrange)
 
         ytitle_color = 'black'
         if yaxis_options.get('axis_color') is not None:
@@ -289,12 +299,12 @@ def tplot(variables, var_label=None,
 
         if spec:
             # create spectrogram plots
-            plot_created = specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable)
+            plot_created = specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable, time_idxs=time_idxs)
             if not plot_created:
                 continue
         else:
             # create line plots
-            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num)
+            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num, time_idxs=time_idxs)
             if not plot_created:
                 continue
             

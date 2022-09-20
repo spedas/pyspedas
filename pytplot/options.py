@@ -352,6 +352,8 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'yrange' or option == 'y_range':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
+                # track whether the yrange option was set by the user
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range_user'] = True
 
             if option == 'zrange' or option == 'z_range':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
