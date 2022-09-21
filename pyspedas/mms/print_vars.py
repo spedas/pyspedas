@@ -1,4 +1,4 @@
-
+import logging
 from pyspedas.mms.mms_config import CONFIG
 
 # the following decorator prints the loaded tplot variables after each load routine call
@@ -8,11 +8,11 @@ def print_vars(func):
         if variables is None:
             return None
         if kwargs.get('available') or CONFIG['download_only']:
-            print('Available files:')
+            logging.info('Available files:')
         else:
-            print('Loaded variables:')
+            logging.info('Loaded variables:')
         for var in variables:
-            print(var)
+            logging.info(var)
         return variables
     wrapper.__name__ = func.__name__
     wrapper.__doc__ = func.__doc__

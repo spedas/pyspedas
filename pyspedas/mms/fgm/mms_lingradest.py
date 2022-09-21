@@ -1,7 +1,9 @@
+import logging
 import numpy as np
 from pyspedas import tinterpol
 from pyspedas.analysis.lingradest import  lingradest
 from pytplot import get_data, store_data, options, join_vec
+
 
 def mms_lingradest(fields=None, positions=None, suffix=''):
     """
@@ -9,7 +11,7 @@ def mms_lingradest(fields=None, positions=None, suffix=''):
     """
 
     if fields is None or positions is None:
-        print('B-field and spacecraft position keywords required.')
+        logging.error('B-field and spacecraft position keywords required.')
         return
 
     # interpolate the magnetic field data all onto the same timeline (MMS1):

@@ -1,4 +1,4 @@
-
+import logging
 import numpy as np
 from pyspedas import tinterpol, tdeflag
 from pyspedas.geopack.get_w_params import get_w
@@ -72,7 +72,7 @@ def get_tsy_params(dst_tvar,
     model = model.lower()
 
     if model not in ['t89', 't96', 't01', 'ts04']:
-        print('Unknown model: ' + model)
+        logging.error('Unknown model: ' + model)
         return
 
     tdeflag(Np_tvar, method='remove_nan', overwrite=True)
@@ -109,14 +109,14 @@ def get_tsy_params(dst_tvar,
                         np.zeros(len(dst_data.y))))
     elif model == 't01':
         if g_variables is None:
-            print('G variables required for T01 model; create a tplot variable containing the G variables, and provide the name of that keyword to the g_variables keyword.')
+            logging.error('G variables required for T01 model; create a tplot variable containing the G variables, and provide the name of that keyword to the g_variables keyword.')
             return
         else:
             if isinstance(g_variables, str):
                 g_data = get_data(g_variables)
 
                 if g_data is None:
-                    print('Problem reading G variable: ' + g_variables)
+                    logging.error('Problem reading G variable: ' + g_variables)
                     return
 
                 g1 = g_data.y[:, 0]
@@ -149,7 +149,7 @@ def get_tsy_params(dst_tvar,
         w_data = get_data(params+'_interp')
 
         if w_data is None:
-            print('Problem loading W variables for TS04 model.')
+            logging.error('Problem loading W variables for TS04 model.')
             return
 
         out = np.array((P_data.y, 
@@ -163,7 +163,7 @@ def get_tsy_params(dst_tvar,
                         w_data.y[:, 4], 
                         w_data.y[:, 5]))
     elif model == 't01':
-        print('not implemented yet')
+        logging.error('not implemented yet')
         return
 
     if newname is None:

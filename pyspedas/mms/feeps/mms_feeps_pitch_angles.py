@@ -1,10 +1,11 @@
-
+import logging
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas import mms_load_fgm
 from pyspedas import data_exists
 from pytplot import get_data, store_data
 import numpy as np
 import math
+
 
 def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy', datatype='electron', suffix=''):
     """
@@ -39,7 +40,7 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     pa_variable = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix)
 
     if pa_variable is None:
-        print('Error reading pitch angle variable')
+        logging.error('Error reading pitch angle variable')
         return
 
     times = pa_variable[0]

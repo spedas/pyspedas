@@ -1,3 +1,4 @@
+import logging
 from copy import deepcopy
 from time import time
 import numpy as np
@@ -151,7 +152,7 @@ def slice2d_geo(data, resolution, r, phi, theta, dr, dp, dt, orient_matrix=None,
                 else:
                     num_angles = na
                 msg = msg_prefix + str(int(100*((j+1)*num_points + i)/(num_angles*num_points))) + '% complete'
-                print(msg)
+                logging.info(msg)
                 previous_time = time()
 
     # average areas where bins overlapped

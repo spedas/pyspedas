@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 
 
@@ -10,11 +11,11 @@ def slice2d_subtract(vectors=None, velocity=None):
         return
 
     if vectors.shape[1] != 3 or len(velocity) != 3:
-        print('Invalid vector dimensions, cannot subtract velocity')
+        logging.error('Invalid vector dimensions, cannot subtract velocity')
         return
 
     if np.sum(~np.isfinite((velocity))):
-        print('Invalid bulk velocity data, cannot subtract velocity')
+        logging.error('Invalid bulk velocity data, cannot subtract velocity')
         return
 
     if not isinstance(velocity, np.ndarray):

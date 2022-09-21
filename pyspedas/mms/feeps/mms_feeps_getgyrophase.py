@@ -1,7 +1,9 @@
+import logging
 import numpy as np
 from pyspedas import mms, tinterpol, time_double
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pytplot import get_data, store_data, options
+
 
 def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], probe='2', data_rate='brst', level='l2', datatype='electron'):
     """
@@ -15,7 +17,7 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
     """
     mec_vars = mms.mec(trange=trange, probe=probe, data_rate=data_rate)
     if mec_vars is None:
-        print('Problem loading MEC data for calculating FEEPS gyrophase angles')
+        logging.error('Problem loading MEC data for calculating FEEPS gyrophase angles')
 
     qeci2sm = get_data('mms'+probe+'_mec_quat_eci_to_sm')
     qeci2bcs = get_data('mms'+probe+'_mec_quat_eci_to_bcs')
@@ -51,11 +53,11 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
     
     saved = store_data('mms'+probe+'_mec_r_sun_bcs', data = {'x': rsun.times, 'y': rsunbcs})
     if not saved:
-        print('Problem saving r_sun_bcs')
+        logging.error('Problem saving r_sun_bcs')
 
     saved = store_data('mms'+probe+'_mec_r_dusk_bcs', data = {'x': rsun.times, 'y': rduskbcs})
     if not saved:
-        print('Problem saving r_dusk_bcs')
+        logging.error('Problem saving r_dusk_bcs')
 
     # Rotation matrices for FEEPS coord system (FCS) into body coordinate system (BCS):
     Ttop = np.array([[1./np.sqrt(2.), -1./np.sqrt(2.), 0], [1./np.sqrt(2.), 1./np.sqrt(2.), 0], [0, 0, 1]]).T
@@ -156,7 +158,7 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
 
     fgm_vars = mms.fgm(trange=[time_double(trange[0])-600, time_double(trange[1])+600], probe=probe, data_rate='srvy')
     if fgm_vars is None:
-        print('Problem loading FGM vars for calculating FEEPS gyrophase angles')
+        logging.error('Problem loading FGM vars for calculating FEEPS gyrophase angles')
 
     # interpolate the FGM var to the MEC var timestamps
     tinterpol('mms'+probe+'_fgm_b_bcs_srvy_l2_bvec', 'mms'+probe+'_mec_r_sun_bcs', newname='mms'+probe+'_fgm_b_bcs_srvy_l2_bvec_int')
@@ -215,7 +217,7 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
     
     saved = store_data('mms'+probe+'_epd_feeps_'+data_rate+'_gyrophase', data={'x': rsun.times, 'y': phi*180./np.pi})
     if not saved:
-        print('Problem saving gyrophase angles')
+        logging.error('Problem saving gyrophase angles')
         return
 
     options('mms'+probe+'_epd_feeps_'+data_rate+'_gyrophase', 'yrange', [0, 360.0])

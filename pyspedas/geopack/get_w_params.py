@@ -1,4 +1,4 @@
-
+import logging
 import numpy as np
 import pandas as pd
 import zipfile
@@ -18,7 +18,7 @@ def get_w(trange=None, create_tvar=False, newname=None):
     """
 
     if trange is None:
-        print('trange keyword must be specified.')
+        logging.error('trange keyword must be specified.')
         return
 
     years = dailynames(trange=trange, file_format='%Y')
@@ -73,7 +73,7 @@ def get_w(trange=None, create_tvar=False, newname=None):
     in_range = np.argwhere((ut_out >= time_double(trange[0])) & (ut_out < time_double(trange[1]))).squeeze()
 
     if len(in_range) == 0:
-        print('No data found in the trange.')
+        logging.error('No data found in the trange.')
         return
 
     if create_tvar:

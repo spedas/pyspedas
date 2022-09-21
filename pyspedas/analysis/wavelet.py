@@ -10,6 +10,7 @@ For an example, see:
     http://spedas.org/wiki/index.php?title=Wavelet
 
 """
+import logging
 import numpy as np
 import pywt
 import pytplot
@@ -49,7 +50,7 @@ def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
     powervar = []
 
     if len(varnames) < 1:
-        print('wavelet error: No pytplot names were provided.')
+        logging.error('wavelet error: No pytplot names were provided.')
         return
 
     if scales is None:
@@ -69,7 +70,7 @@ def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
         data = alldata[1]
 
         if len_time < 2:
-            print('wavelet error: Not enought data points for ' + old)
+            logging.error('wavelet error: Not enought data points for ' + old)
             continue
 
         coef, freqs = pywt.cwt(data, scales=scales, wavelet=wavename,
@@ -81,6 +82,6 @@ def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
         pytplot.options(new, 'spec', 1)
         powervar.append(new)
 
-        print('wavelet was applied to: ' + new)
+        logging.info('wavelet was applied to: ' + new)
 
     return powervar

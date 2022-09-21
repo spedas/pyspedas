@@ -6,6 +6,7 @@ Notes
 Similar to dpwrspc.pro in IDL SPEDAS.
 
 """
+import logging
 import numpy as np
 
 
@@ -82,14 +83,14 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
     okspec = np.where(nend <= totalpoints-1)
 
     if len(okspec[0]) <= 0:
-        print('Not enough points for a calculation')
+        logging.error('Not enough points for a calculation')
         return
 
     tdps = np.zeros(nspectra)
     nfreqs = int(int(nboxpnts/2)/binsize)
 
     if nfreqs <= 1:
-        print('Not enough frequencies for a calculation')
+        logging.error('Not enough frequencies for a calculation')
         return
 
     dps = np.zeros([nspectra, nfreqs])
@@ -120,7 +121,7 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
             bign = nboxpnts
 
             if bign % 2 != 0:
-                print('dpwrspc: needs an even number of data points,\
+                logging.warning('dpwrspc: needs an even number of data points,\
                       dropping last point...')
                 t = t[0:bign-1]
                 x = x[0:bign-1]

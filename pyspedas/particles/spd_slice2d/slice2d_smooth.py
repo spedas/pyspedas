@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import scipy.signal as signal
 
@@ -42,6 +43,6 @@ def slice2d_smooth(the_slice, width):
 
         the_slice['data'] = signal.convolve2d(the_slice['data'], kernel, mode='same')
     else:
-        print('Smoothing not applied. Smoothing value must be >= 2')
+        logging.error('Smoothing not applied. Smoothing value must be >= 2')
 
     return the_slice

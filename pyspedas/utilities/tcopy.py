@@ -6,6 +6,7 @@ Notes
 Allowed wildcards are ? for a single character, * from multiple characters.
 
 """
+import logging
 import pytplot
 import pyspedas
 import copy
@@ -32,7 +33,7 @@ def tcopy_one(name_in, name_out):
     tvar_new = copy.deepcopy(tvar_old)
     tvar_new.name = name_out
     pytplot.data_quants.update({name_out: tvar_new})
-    print(name_in + ' copied to ' + name_out)
+    logging.info(name_in + ' copied to ' + name_out)
 
 
 def tcopy(names_in, names_out=None, suffix=None):
@@ -55,7 +56,7 @@ def tcopy(names_in, names_out=None, suffix=None):
     """
     names_in = pyspedas.tnames(names_in)
     if len(names_in) < 1:
-        print('tcopy error: No pytplot variables found.')
+        logging.error('tcopy error: No pytplot variables found.')
         return
 
     if suffix is None:
@@ -68,7 +69,7 @@ def tcopy(names_in, names_out=None, suffix=None):
         names_out = [names_out]
 
     if len(names_in) != len(names_out):
-        print('tcopy error: List with the names_in does not match list\
+        logging.error('tcopy error: List with the names_in does not match list\
               with the names out.')
         return
 
@@ -78,4 +79,4 @@ def tcopy(names_in, names_out=None, suffix=None):
         if len(pyspedas.tnames(n)) == 1:
             tcopy_one(n, o)
         else:
-            print('tplot name not found: ' + n)
+            logging.error('tplot name not found: ' + n)

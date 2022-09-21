@@ -7,7 +7,7 @@ Similar to tclip.pro in IDL SPEDAS.
 This function clips y-axis data. To clip time-axis, use time_clip.
 
 """
-
+import logging
 import pyspedas
 import pytplot
 import numpy as np
@@ -45,7 +45,7 @@ def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('yclip error: No pytplot names were provided.')
+        logging.error('yclip error: No pytplot names were provided.')
         return
 
     if suffix is None:
@@ -72,4 +72,4 @@ def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
 
         data = pytplot.clip(old, ymin, ymax, new)
 
-        print('yclip was applied to: ' + new)
+        logging.info('yclip was applied to: ' + new)

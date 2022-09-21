@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import shutil
@@ -8,6 +9,7 @@ from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
 
 from datetime import timedelta
+
 
 def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, mirror=False):
 
@@ -83,8 +85,8 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
         for root, dirs, files in os.walk(data_dir):
             for file in files:
                 this_file = os.sep.join([root, file])
-                if CONFIG['debug_mode']: print('Checking ' + this_file)
-                if CONFIG['debug_mode']: print('against: ' + full_path)
+                if CONFIG['debug_mode']: logging.info('Checking ' + this_file)
+                if CONFIG['debug_mode']: logging.info('against: ' + full_path)
                 
                 matches = regex.match(this_file)
                 if matches:
@@ -110,12 +112,12 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
         # need to copy files from network mirror to local data directory
         for file in local_files:
             local_file = file.replace(mirror_dir, local_dir)
-            if CONFIG['debug_mode']: print('Copying ' + file + ' to ' + local_file)
+            if CONFIG['debug_mode']: logging.info('Copying ' + file + ' to ' + local_file)
             shutil.copyfile(file, local_file)
             local_files_copied.append(local_file)
         local_files = local_files_copied
 
     for file in local_files:
-        print('Loading: ' + file)
+        logging.info('Loading: ' + file)
 
     return local_files
