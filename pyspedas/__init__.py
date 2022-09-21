@@ -66,3 +66,8 @@ from . import solo
 from . import secs
 from . import kyoto
 from . import swarm
+
+import logging
+
+logging.captureWarnings(True)
+logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
