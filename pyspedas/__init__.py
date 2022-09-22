@@ -70,13 +70,14 @@ from . import swarm
 import logging
 
 logging_format = '%(asctime)s: %(message)s'
+logging_date_fmt = '%d-%b-%y %H:%M:%S'
 logging.captureWarnings(True)
-logging.basicConfig(format=logging_format, datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+logging.basicConfig(format=logging_format, datefmt=logging_date_fmt, level=logging.INFO)
 
 logger = logging.getLogger()
 
 logger_handler = logger.handlers[0]
-logger_fmt = logging.Formatter(logging_format)
+logger_fmt = logging.Formatter(logging_format, logging_date_fmt)
 logger_handler.setFormatter(logger_fmt)
 
 logger.setLevel(logging.INFO)
