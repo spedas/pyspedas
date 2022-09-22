@@ -67,17 +67,43 @@ from . import secs
 from . import kyoto
 from . import swarm
 
+# set up logging/console output
 import logging
+from os import environ
 
-logging_format = '%(asctime)s: %(message)s'
-logging_date_fmt = '%d-%b-%y %H:%M:%S'
+logging_level = environ.get('PYTPLOT_LOGGING_LEVEL')
+logging_format = environ.get('PYTPLOT_LOGGING_FORMAT')
+logging_date_fmt = environ.get('PYTPLOT_LOGGING_DATE_FORMAT')
+
+if logging_format is None:
+    logging_format = '%(asctime)s: %(message)s'
+
+if logging_date_fmt is None:
+    logging_date_fmt = '%d-%b-%y %H:%M:%S'
+
+if logging_level is None:
+    logging_level = logging.INFO
+else:
+    logging_level = logging_level.lower()
+    if logging_level == 'debug':
+        logging_level = logging.DEBUG
+    elif logging_level == 'info':
+        logging_level = logging.INFO
+    elif logging_level == 'warn' or logging_level == 'warning':
+        logging_level = logging.WARNING
+    elif logging_level == 'error':
+        logging_level = logging.ERROR
+    elif logging_level == 'critical':
+        logging_level = logging.CRITICAL
+
 logging.captureWarnings(True)
-logging.basicConfig(format=logging_format, datefmt=logging_date_fmt, level=logging.INFO)
 
+# basicConfig here doesn't work if it has previously been called
+logging.basicConfig(format=logging_format, datefmt=logging_date_fmt, level=logging_level)
+
+# manually set the logger options from the defaults/environment variables
 logger = logging.getLogger()
-
-logger_handler = logger.handlers[0]
+logger_handler = logger.handlers[0]  # should exist since basicConfig has been called
 logger_fmt = logging.Formatter(logging_format, logging_date_fmt)
 logger_handler.setFormatter(logger_fmt)
-
-logger.setLevel(logging.INFO)
+logger.setLevel(logging_level)
