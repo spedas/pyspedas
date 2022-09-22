@@ -69,6 +69,14 @@ from . import swarm
 
 import logging
 
+logging_format = '%(asctime)s: %(message)s'
 logging.captureWarnings(True)
-logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
-logging.getLogger().setLevel(logging.INFO)
+logging.basicConfig(format=logging_format, datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+
+logger = logging.getLogger()
+
+logger_handler = logger.handlers[0]
+logger_fmt = logging.Formatter(logging_format)
+logger_handler.setFormatter(logger_fmt)
+
+logger.setLevel(logging.INFO)
