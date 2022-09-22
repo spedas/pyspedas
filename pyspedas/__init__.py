@@ -71,3 +71,4 @@ import logging
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+logging.getLogger().setLevel(logging.INFO)
