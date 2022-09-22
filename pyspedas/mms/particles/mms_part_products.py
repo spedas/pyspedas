@@ -222,10 +222,10 @@ def mms_part_products(in_tvarname,
 corrections, including photoelectron removal and spacecraft potential.
 The official moments released by the instrument teams include these and
 are the scientific products that should be used for analysis."""
-        print('==================================================================================')
-        print('WARNING:')
-        print(msg)
-        print('==================================================================================')
+        logging.warning('==================================================================================')
+        logging.warning('WARNING:')
+        logging.warning(msg)
+        logging.warning('==================================================================================')
 
     # grab the DES photoelectron model if needed
     if (instrument != 'fpi' or species != 'e') and (correct_photoelectrons or internal_photoelectron_corrections):

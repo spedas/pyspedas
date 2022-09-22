@@ -1,8 +1,9 @@
-
+import logging
 from pyspedas import time_double
 from pyspedas.mms.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.mms.mms_load_sroi_segments import mms_load_sroi_segments
 from pyspedas.mms.mms_load_brst_segments import mms_load_brst_segments
+
 
 def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'burst'], 
                      include_labels=False, probe='1', nodownload=False):
@@ -46,8 +47,8 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
         elif dtype == 'burst':
             out = mms_load_brst_segments(trange=trange)
         else:
-            print('Unsupported datatype: ' + dtype + '; valid options: "fast" and "burst"')
+            logging.error('Unsupported datatype: ' + dtype + '; valid options: "fast" and "burst"')
             continue
 
         if out is None:
-            print('Problem loading segments for ' + dtype)
+            logging.error('Problem loading segments for ' + dtype)

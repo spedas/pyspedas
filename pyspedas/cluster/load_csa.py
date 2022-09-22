@@ -8,6 +8,7 @@ with a CDF file which is packaged as tar.gz.
 
 We download the tar.gr file directly, without using pyspedas.download().
 """
+import logging
 from pyspedas.analysis.time_clip import time_clip as tclip
 from pyspedas.utilities.time_string import time_string
 from pyspedas.utilities.time_double import time_double
@@ -144,17 +145,17 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
     out_gz = local_path + 'temp_cluster_file.tar.gz'  # Temp file name
 
     # Download the file.
-    print("Downloading Cluster data, please wait....")
+    logging.info("Downloading Cluster data, please wait....")
     try:
         r = requests.get(url, allow_redirects=True)
         r.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        print("Download HTTP error: ", err)
+        logging.error("Download HTTP error: ", err)
         return tvars
     except requests.exceptions.RequestException as e:
-        print("Download error: ", e)
+        logging.error("Download error: ", e)
         return tvars
-    print("Download complete.")
+    logging.info("Download complete.")
 
     # Open the downloaded file.
     with open(out_gz, 'wb') as w:
@@ -186,14 +187,14 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
                              varnames=varnames,
                              notplot=notplot)
     except IndexError as e:
-        print("cdf_to_tplot cannot load Cluster cdf file.")
-        print("File: ", out_files[0])
-        print("IndexError:", e)
+        logging.error("cdf_to_tplot cannot load Cluster cdf file.")
+        logging.error("File: ", out_files[0])
+        logging.error("IndexError:", e)
         return tvars
     except TypeError as e:
-        print("cdf_to_tplot cannot load Cluster cdf file.")
-        print("File: ", out_files[0])
-        print("TypeError:", e)
+        logging.error("cdf_to_tplot cannot load Cluster cdf file.")
+        logging.error("File: ", out_files[0])
+        logging.error("TypeError:", e)
         return tvars
 
     if notplot:

@@ -1,9 +1,10 @@
-
+import logging
 import requests
 from pyspedas import time_double
 from pyspedas import time_clip as tclip
 from pyspedas.utilities.dailynames import dailynames
 from pytplot import store_data, options
+
 
 def dst(trange=None, time_clip=True, remote_data_dir='http://wdc.kugi.kyoto-u.ac.jp/', suffix=''):
     """
@@ -37,13 +38,13 @@ def dst(trange=None, time_clip=True, remote_data_dir='http://wdc.kugi.kyoto-u.ac
     """
 
     if trange is None:
-        print('trange keyword required to download data.')
+        logging.error('trange keyword required to download data.')
         return
 
     file_names = dailynames(file_format='%Y%m/index.html', trange=trange)
 
     if file_names is None:
-        print('No files found for this trange.')
+        logging.error('No files found for this trange.')
         return
         
     times = []
@@ -78,7 +79,7 @@ def dst(trange=None, time_clip=True, remote_data_dir='http://wdc.kugi.kyoto-u.ac
             datatype = 'Real Time'
 
     if len(times) == 0:
-        print('No data found.')
+        logging.error('No data found.')
         return
 
     store_data('kyoto_dst'+suffix, data={'x': times, 'y': data})
@@ -88,15 +89,16 @@ def dst(trange=None, time_clip=True, remote_data_dir='http://wdc.kugi.kyoto-u.ac
 
     options('kyoto_dst'+suffix, 'ytitle', 'Dst (' + datatype + ')')
 
-    print('**************************************************************************************')
-    print('The DST data are provided by the World Data Center for Geomagnetism, Kyoto, and')
-    print(' are not for redistribution (http://wdc.kugi.kyoto-u.ac.jp/). Furthermore, we thank')
-    print(' the geomagnetic observatories (Kakioka [JMA], Honolulu and San Juan [USGS], Hermanus')
-    print(' [RSA], Alibag [IIG]), NiCT, INTERMAGNET, and many others for their cooperation to')
-    print(' make the Dst index available.')
-    print('**************************************************************************************')
+    logging.info('**************************************************************************************')
+    logging.info('The DST data are provided by the World Data Center for Geomagnetism, Kyoto, and')
+    logging.info(' are not for redistribution (http://wdc.kugi.kyoto-u.ac.jp/). Furthermore, we thank')
+    logging.info(' the geomagnetic observatories (Kakioka [JMA], Honolulu and San Juan [USGS], Hermanus')
+    logging.info(' [RSA], Alibag [IIG]), NiCT, INTERMAGNET, and many others for their cooperation to')
+    logging.info(' make the Dst index available.')
+    logging.info('**************************************************************************************')
 
     return 'kyoto_dst'+suffix
+
 
 def parse_html(html_text, year=None, month=None):
     times = []

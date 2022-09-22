@@ -1,4 +1,6 @@
+import logging
 import numpy as np
+
 
 def lingradest(Bx1, Bx2, Bx3, Bx4,
                By1, By2, By3, By4,
@@ -41,7 +43,7 @@ def lingradest(Bx1, Bx2, Bx3, Bx4,
         len(By1) != datarrLength or len(By2) != datarrLength or len(By3) != datarrLength or len(By4) != datarrLength or \
         len(Bz1) != datarrLength or len(Bz2) != datarrLength or len(Bz3) != datarrLength or len(Bz4) != datarrLength or \
         R1.shape[0] != datarrLength or R2.shape[0] != datarrLength or R3.shape[0] != datarrLength or R4.shape[0] != datarrLength:
-            print('Problem with input sizes; all input data should be interpolated to the same time stamps')
+            logging.error('Problem with input sizes; all input data should be interpolated to the same time stamps')
             return
 
     Rb = np.zeros((datarrLength, 3))
@@ -152,7 +154,7 @@ def lingradest(Bx1, Bx2, Bx3, Bx4,
 
         RcurvB[i] = curvB[i]**(-1)
 
-    print('Calculations completed')
+    logging.info('Calculations completed')
 
     return {'Bxbc': Bxbc, 'Bybc': Bybc, 'Bzbc': Bzbc, 'Bbc': Bbc,
             'LGBx': LGBx, 'LGBy': LGBy, 'LGBz': LGBz,

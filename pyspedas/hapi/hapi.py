@@ -1,5 +1,5 @@
+import logging
 import warnings
-from time import sleep
 from pyspedas import time_double
 from pytplot import get_data, store_data, options
 import numpy as np
@@ -7,7 +7,8 @@ import numpy as np
 try:
     from hapiclient import hapi as load_hapi
 except ImportError:
-    print('hapiclient not found; install with: "pip install hapiclient"')
+    logging.error('hapiclient not found; install with: "pip install hapiclient"')
+
 
 def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
          prefix='', catalog=False):
@@ -44,12 +45,12 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     """
 
     if server is None:
-        print('Error, no server specified; example servers include:')
-        print('- https://cdaweb.gsfc.nasa.gov/hapi')
-        print('- https://pds-ppi.igpp.ucla.edu/hapi')
-        print('- http://planet.physics.uiowa.edu/das/das2Server/hapi')
-        print('- https://iswa.gsfc.nasa.gov/IswaSystemWebApp/hapi')
-        print('- http://lasp.colorado.edu/lisird/hapi')
+        logging.error('No server specified; example servers include:')
+        logging.error('- https://cdaweb.gsfc.nasa.gov/hapi')
+        logging.error('- https://pds-ppi.igpp.ucla.edu/hapi')
+        logging.error('- http://planet.physics.uiowa.edu/das/das2Server/hapi')
+        logging.error('- https://iswa.gsfc.nasa.gov/IswaSystemWebApp/hapi')
+        logging.error('- http://lasp.colorado.edu/lisird/hapi')
         return
 
     if catalog:
@@ -57,20 +58,20 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         items = []
         if 'catalog' in catalog.keys():
             items = catalog['catalog']
-        print('Available datasets: ')
+        logging.info('Available datasets: ')
         for item in items:
             if 'title' in item.keys():
-                print(item['id'] + ': ' + item['title'])
+                logging.info(item['id'] + ': ' + item['title'])
             else:
-                print(item['id'])
+                logging.info(item['id'])
         return
 
     if dataset is None:
-        print('Error, no dataset specified; please see the catalog for a list of available data sets.')
+        logging.error('Error, no dataset specified; please see the catalog for a list of available data sets.')
         return
 
     if trange is None:
-        print('Error, no trange specified')
+        logging.error('Error, no trange specified')
         return
 
     if isinstance(parameters, list):

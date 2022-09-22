@@ -1,11 +1,12 @@
+import logging
 from pytplot import get_data, store_data
 from pyspedas import cotrans_set_coord, tinterpol
 
 try:
     import spacepy.coordinates as coord
 except ImportError:
-    print('SpacePy must be installed to use this module.')
-    print('Please install it using: pip install spacepy')
+    logging.error('SpacePy must be installed to use this module.')
+    logging.error('Please install it using: pip install spacepy')
 
 
 def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
@@ -35,7 +36,7 @@ def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
     q_data = get_data(q_name)
 
     if len(data.times) != len(q_data.times):
-        print('Interpolating the data to the MEC quaternion time stamps.')
+        logging.info('Interpolating the data to the MEC quaternion time stamps.')
         tinterpol(in_name, q_name)
         data = get_data(in_name + '-itrp')
 

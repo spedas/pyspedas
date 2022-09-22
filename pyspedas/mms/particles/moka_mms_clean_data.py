@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 from scipy.ndimage.interpolation import shift
 from pyspedas.mms.particles.mms_convert_flux_units import mms_convert_flux_units
@@ -9,7 +10,7 @@ def moka_mms_clean_data(data_in, units=None, disterr=None):
     """
 
     if units is None:
-        print('Units must be specified.')
+        logging.error('Units must be specified.')
         return
 
     data = mms_convert_flux_units(data_in, units=units)

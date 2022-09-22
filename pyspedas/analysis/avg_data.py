@@ -6,6 +6,7 @@ Creates a new pytplot variable as the time average of original.
     Similar to avg_data.pro in IDL SPEDAS.
 
 """
+import logging
 import numpy as np
 import pyspedas
 import pytplot
@@ -45,7 +46,7 @@ def avg_data(names, dt=None, width=60, noremainder=False,
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('avg_data error: No pytplot names were provided.')
+        logging.error('avg_data error: No pytplot names were provided.')
         return
 
     if suffix is None:
@@ -83,7 +84,6 @@ def avg_data(names, dt=None, width=60, noremainder=False,
         if dt is None:
             # Use width
             width = int(width)
-            # print(dim0, width)
             for i in range(0, dim0, width):
                 last = (i + width) if (i + width) < dim0 else dim0
                 # idx = int(i + width/2) # redefined below before it's ever used?
@@ -106,10 +106,10 @@ def avg_data(names, dt=None, width=60, noremainder=False,
             timedbl = np.array(pyspedas.time_float(time))
             alldt = timedbl[-1] - timedbl[0]
             if not dt > 0.0:
-                print("avg_data: Time interval dt<=0.0. Exiting.")
+                logging.error("avg_data: Time interval dt<=0.0. Exiting.")
                 return
             if dt > alldt:
-                print("avg_data: Time interval dt is too large. Exiting.")
+                logging.error("avg_data: Time interval dt is too large. Exiting.")
                 return
 
             # Find bins for time: equal bins of length dt.
@@ -156,4 +156,4 @@ def avg_data(names, dt=None, width=60, noremainder=False,
         # copy attributes
         pytplot.data_quants[new].attrs = d.attrs.copy()
 
-        print('avg_data was applied to: ' + new)
+        logging.info('avg_data was applied to: ' + new)

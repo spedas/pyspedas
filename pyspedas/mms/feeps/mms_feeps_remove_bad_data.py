@@ -1,5 +1,5 @@
+import logging
 import numpy as np
-import datetime as dt
 from pyspedas import time_string, time_double, tnames
 import pytplot
 
@@ -30,7 +30,7 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
         None
     """
     if trange is None:
-        print('Time range required for mms_feeps_remove_bad_data.')
+        logging.error('Time range required for mms_feeps_remove_bad_data.')
         return
 
     data_rate_level = data_rate + '_' + level

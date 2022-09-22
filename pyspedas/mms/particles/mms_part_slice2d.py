@@ -1,3 +1,4 @@
+import logging
 import pyspedas
 from pyspedas import time_double
 from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
@@ -184,7 +185,7 @@ def mms_part_slice2d(trange=None,
 
     if trange is None:
         if time is None:
-            print('Please specify a time or time range over which to compute the slice.')
+            logging.error('Please specify a time or time range over which to compute the slice.')
             return
         trange_data = [time_double(time)-60, time_double(time)+60]
     else:
@@ -235,7 +236,7 @@ def mms_part_slice2d(trange=None,
         dists = mms_get_hpca_dist('mms' + probe + '_hpca_' + species + '_phase_space_density', species=species,
                                   probe=probe, data_rate=data_rate)
     else:
-        print('Unknown instrument: ' + instrument + '; valid options: fpi, hpca')
+        logging.error('Unknown instrument: ' + instrument + '; valid options: fpi, hpca')
         return
 
     bfield = None

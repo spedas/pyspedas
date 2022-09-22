@@ -1,5 +1,6 @@
-
+import logging
 from pytplot import get_data
+
 
 def cotrans_get_coord(name):
     '''
@@ -29,5 +30,5 @@ def cotrans_get_coord(name):
         if metadata['data_att'].get('coord_sys'):
             return metadata['data_att']['coord_sys']
 
-    print('Coordinate system not found: ' + name)
+    logging.error('Coordinate system not found: ' + name)
     return None

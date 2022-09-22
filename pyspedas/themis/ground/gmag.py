@@ -1,4 +1,4 @@
-
+import logging
 import requests
 
 from pyspedas.themis.load import load
@@ -183,7 +183,7 @@ def gmag_list(group='all'):
         station_group = get_group(station_name)
         if group in ['all', '*', ''] or group in station_group:
             station_list.append(station_name)
-            print(station_name + ": from " + station['day_first'] + " to "
+            logging.info(station_name + ": from " + station['day_first'] + " to "
                   + station['day_last'])
 
     return station_list
@@ -210,9 +210,8 @@ def gmag_groups():
                     group_dict[key].append(station['ccode'].lower())
 
     # print them
-    print()
     for g, s in group_dict.items():
-        print(g + ":" + ",'".join(s) + "'")
+        logging.info(g + ":" + ",'".join(s) + "'")
 
     return group_dict
 

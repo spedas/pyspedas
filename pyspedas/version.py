@@ -1,4 +1,5 @@
 """Print the version number for the current installation."""
+import logging
 
 
 def version():
@@ -12,4 +13,4 @@ def version():
     """
     import pkg_resources
     ver = pkg_resources.get_distribution("pyspedas").version
-    print("pyspedas version: " + ver)
+    logging.info("pyspedas version: " + ver)
