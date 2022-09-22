@@ -319,10 +319,9 @@ def wavpol(ct, bx, by, bz,
     endsampfreq = 1./(ct[nopoints-1]-ct[nopoints-2])
 
     if beginsampfreq != endsampfreq:
-        logging.warning('wavpol Warning: file sampling frequency changes from ',
-              beginsampfreq, 'Hz to ', endsampfreq, 'Hz')
+        logging.warning('wavpol Warning: file sampling frequency changes from ' + str(beginsampfreq) + 'Hz to ' + str(endsampfreq) + 'Hz')
     else:
-        logging.warning('wavpol: File sampling frequency=', beginsampfreq, 'Hz')
+        logging.warning('wavpol: File sampling frequency=' + str(beginsampfreq) + 'Hz')
 
     samp_freq = beginsampfreq
     samp_per = 1./samp_freq
@@ -363,14 +362,14 @@ def wavpol(ct, bx, by, bz,
     # Total numbers of FFT calculations including 1 leap frog for each batch
     ind_batch0 = 0
     nosteps = 0
-    logging.info('n_batches', n_batches)
+    logging.info('n_batches: ' + str(n_batches))
 
     for i in range(n_batches):
         nosteps = int(nosteps + np.floor((errs[i] - ind_batch0)/steplength))
         ind_batch0 = errs[i]
 
     nosteps = nosteps + n_batches
-    logging.info('Total number of steps:', nosteps)
+    logging.info('Total number of steps:' + str(nosteps))
 
     # leveltplot = 0.000001  # Power rejection level 0 to 1
     nosmbins = bin_freq  # No. of bins in frequency domain
@@ -426,8 +425,7 @@ def wavpol(ct, bx, by, bz,
         ngood = np.count_nonzero(~np.isnan(xs))  # Count finite data.
         if ngood > nopfft:
             nbp_fft_batches[batch] = np.floor(ngood/steplength)
-            logging.info('Total number of possible FFT in the batch no ', batch,
-                  ' is:', nbp_fft_batches[batch])
+            logging.info('Total number of possible FFT in the batch no ' + str(batch) + ' is:' + str(nbp_fft_batches[batch]))
             ind0_fft = 0
             for j in range(int(nbp_fft_batches[batch])):
                 # ind1_fft = nopfft * (j+1)-1
@@ -574,9 +572,9 @@ def wavpol(ct, bx, by, bz,
 
                 # Print an indication that a computation is happening.
                 if KK == 0 or KK % 40 == 0:
-                    logging.info('wavpol step', KK, ' ', end='')
+                    logging.info('wavpol step: ' + str(KK) + ' ')
                 elif KK % 4 == 0:
-                    logging.info('.', end='')
+                    print('.', end='')
 
                 KK += 1
                 # End loop "for j"
@@ -597,9 +595,9 @@ def wavpol(ct, bx, by, bz,
             # End "if ngood > nopfft"
         else:
             binwidth = samp_freq/nopfft
-            logging.error('Fourier Transform is not possible. ',
-                  'Ngood = ', ngood,
-                  'Required number of points for FFT = ', nopfft)
+            logging.error('Fourier Transform is not possible. ')
+            logging.error('Ngood = ' + str(ngood))
+            logging.error('Required number of points for FFT = ' + str(nopfft))
 
             timeline[KK] = (ct[ind0] +
                             np.abs(int(nopfft/2))/samp_freq +
