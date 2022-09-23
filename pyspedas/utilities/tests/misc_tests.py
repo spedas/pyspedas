@@ -8,7 +8,7 @@ from pyspedas.utilities.time_string import (time_string, time_datetime,
                                             time_string_one)
 from pyspedas.utilities.time_double import (time_float_one, time_float,
                                             time_double)
-from pytplot import get_data, store_data
+from pytplot import get_data, store_data, options
 
 
 class UtilTestCases(unittest.TestCase):
@@ -57,11 +57,18 @@ class UtilTestCases(unittest.TestCase):
 
     def test_tkm2re(self):
         store_data('test', data={'x': [1, 2, 3], 'y': [5, 5, 5]})
+        options('test', 'ysubtitle', '[Re]')
         # convert to km
         tkm2re('test', km=True)
         # convert back
         tkm2re('test_km')
         self.assertTrue(data_exists('test_km_re'))
+        nothing = tkm2re('doesnt_exist')
+        self.assertTrue(nothing is None)
+        tkm2re('test_km', newname='another_test_km')
+        self.assertTrue(data_exists('another_test_km'))
+        anerror = tkm2re('test_km', newname=['test1_km', 'test1_km'])
+        self.assertTrue(anerror is None)
 
 
 if __name__ == '__main__':
