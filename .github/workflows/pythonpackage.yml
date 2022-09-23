@@ -56,6 +56,7 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
+        coverage run -a -m pyspedas.hapi.tests.tests
         coverage run -a -m pyspedas.mms.tests.mms_part_getspec
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coverage run -a -m pyspedas.mms.tests.feeps
