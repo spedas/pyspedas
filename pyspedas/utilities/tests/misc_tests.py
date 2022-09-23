@@ -2,7 +2,8 @@
 import unittest
 
 from pyspedas.utilities.dailynames import dailynames
-from pyspedas import tcopy
+from pyspedas import tcopy, tkm2re
+from pyspedas.utilities.data_exists import data_exists
 from pyspedas.utilities.time_string import (time_string, time_datetime,
                                             time_string_one)
 from pyspedas.utilities.time_double import (time_float_one, time_float,
@@ -39,7 +40,6 @@ class UtilTestCases(unittest.TestCase):
                                    file_format='%M', res=600.) ==
                         ['00', '10', '20', '30', '40', '50'])
 
-
     def test_tcopy(self):
         """Test tcopy function."""
         store_data('test', data={'x': [1, 2, 3], 'y': [5, 5, 5]})
@@ -54,6 +54,14 @@ class UtilTestCases(unittest.TestCase):
         # the following should gracefully error
         tcopy('doesnt exist', 'another-copy')
         tcopy(['another-copy', 'test'], 'another-copy')
+
+    def test_tkm2re(self):
+        store_data('test', data={'x': [1, 2, 3], 'y': [5, 5, 5]})
+        # convert to km
+        tkm2re('test', km=True)
+        # convert back
+        tkm2re('test_km')
+        self.assertTrue(data_exists('test_km_re'))
 
 
 if __name__ == '__main__':

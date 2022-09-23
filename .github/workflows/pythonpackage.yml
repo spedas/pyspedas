@@ -56,6 +56,8 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
+        coverage run -a -m pyspedas.hapi.tests.tests
+        coverage run -a -m pyspedas.mms.tests.mms_part_getspec
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coverage run -a -m pyspedas.mms.tests.feeps
         # coverage run -a -m pyspedas.mms.tests.eis
@@ -95,4 +97,5 @@ jobs:
         coverage run -a -m pyspedas.kyoto.tests.tests
         coverage run -a -m pyspedas.swarm.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
+        coverage run -a -m pyspedas.themis.tests.tests_cal_fit
         coveralls
