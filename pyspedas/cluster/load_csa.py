@@ -150,10 +150,10 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
         r = requests.get(url, allow_redirects=True)
         r.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        logging.error("Download HTTP error: ", err)
+        logging.error("Download HTTP error: " + str(err))
         return tvars
     except requests.exceptions.RequestException as e:
-        logging.error("Download error: ", e)
+        logging.error("Download error: " + str(e))
         return tvars
     logging.info("Download complete.")
 
@@ -188,13 +188,13 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
                              notplot=notplot)
     except IndexError as e:
         logging.error("cdf_to_tplot cannot load Cluster cdf file.")
-        logging.error("File: ", out_files[0])
-        logging.error("IndexError:", e)
+        logging.error("File: " + out_files[0])
+        logging.error("IndexError: " + str(e))
         return tvars
     except TypeError as e:
         logging.error("cdf_to_tplot cannot load Cluster cdf file.")
-        logging.error("File: ", out_files[0])
-        logging.error("TypeError:", e)
+        logging.error("File: " + out_files[0])
+        logging.error("TypeError: " + str(e))
         return tvars
 
     if notplot:
