@@ -95,4 +95,5 @@ jobs:
         coverage run -a -m pyspedas.kyoto.tests.tests
         coverage run -a -m pyspedas.swarm.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
+        coverage run -a -m pyspedas.themis.tests.tests_cal_fit
         coveralls
