@@ -18,9 +18,7 @@ class LoadTestCases(unittest.TestCase):
     def test_notplot(self):
         data = pyspedas.rbsp.efw(trange=['2015-11-6', '2015-11-7'], level='l3', notplot=True)
         self.assertTrue('density' in data.keys())
-        self.assertTrue('Vavg' in data.keys())
-        self.assertTrue('vel_gse' in data.keys())
-        self.assertTrue('efield_inertial_frame_mgse' in data.keys())
+        self.assertTrue('efield_in_inertial_frame_spinfit_mgse' in data.keys())
         self.assertTrue('x' in data['density'].keys())
         self.assertTrue('y' in data['density'].keys())
 
