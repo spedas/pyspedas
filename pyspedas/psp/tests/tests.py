@@ -8,6 +8,11 @@ class LoadTestCases(unittest.TestCase):
     def test_load_fld_data(self):
         fields_vars = pyspedas.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='mag_rtn', level='l2', time_clip=True)
         self.assertTrue(data_exists('psp_fld_l2_mag_RTN'))
+        filtered = pyspedas.psp.filter_fields('psp_fld_l2_mag_RTN', [4, 16])
+        self.assertTrue(data_exists('psp_fld_l2_mag_RTN_004016'))
+        filtered = pyspedas.psp.filter_fields('psp_fld_l2_mag_RTN', 0)
+        self.assertTrue(data_exists('psp_fld_l2_mag_RTN_000'))
+        filtered = pyspedas.psp.filter_fields('psp_fld_l2_mag_RTN', [4, 16], keep=True)
 
     def test_load_spc_data(self):
         spc_vars = pyspedas.psp.spc(trange=['2018-11-5', '2018-11-6'], datatype='l3i', level='l3')
