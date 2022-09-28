@@ -31,6 +31,8 @@ class LoadTestCases(unittest.TestCase):
     def test_load_swa_data(self):
         swa_vars = pyspedas.solo.swa()
         self.assertTrue(data_exists('eflux'))
+        swa_vars = pyspedas.solo.swa(level='l2', datatype='eas1-nm3d-def')
+        self.assertTrue(data_exists('SWA_EAS1_Data'))
 
     def test_load_swa_l1_data(self):
         swa_vars = pyspedas.solo.swa(level='l1', datatype='eas-padc')
