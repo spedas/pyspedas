@@ -5,6 +5,11 @@ from pyspedas.utilities.data_exists import data_exists
 
 
 class EISTestCases(unittest.TestCase):
+    def test_electronenergy(self):
+        mms_load_eis(datatype='electronenergy')
+        self.assertTrue(data_exists('mms1_epd_eis_srvy_l2_electronenergy_electron_flux_omni'))
+        self.assertTrue(data_exists('mms1_epd_eis_srvy_l2_electronenergy_electron_flux_omni_spin'))
+
     def test_pad_extof_srvy(self):
         mms_load_eis(datatype='extof')
         mms_eis_pad(datatype='extof')
