@@ -32,6 +32,13 @@ class LoadTestCases(unittest.TestCase):
         swa_vars = pyspedas.solo.swa()
         self.assertTrue(data_exists('eflux'))
 
+    def test_load_swa_l1_data(self):
+        swa_vars = pyspedas.solo.swa(level='l1', datatype='eas-padc')
+        self.assertTrue(data_exists('SWA_EAS_BM_Data'))
+        self.assertTrue(data_exists('SWA_EAS_MagDataUsed'))
+        swa_vars = pyspedas.solo.swa(level='l1', datatype='his-pha', trange=['2020-06-03', '2020-06-04'])
+        self.assertTrue(data_exists('HIS_PHA_EOQ_STEP'))
+
     def test_downloadonly(self):
         files = pyspedas.solo.mag(downloadonly=True)
         self.assertTrue(os.path.exists(files[0]))
