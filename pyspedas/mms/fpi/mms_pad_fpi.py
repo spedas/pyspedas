@@ -181,7 +181,7 @@ def mms_pad_fpi(dists,
 
         # magnetic field direction
         tr = [dists[n]['start_time'], dists[n]['end_time']]
-        bfield = tplot_average(mag_data, tr)
+        bfield = tplot_average(mag_data, tr, quiet=True)
         babs = np.sqrt(bfield[0]**2 + bfield[1]**2 + bfield[2]**2)
         bnrm = bfield/babs
         bnrm_avg += bnrm
@@ -189,12 +189,12 @@ def mms_pad_fpi(dists,
 
         # bulk velocity
         if not subtract_bulk:
-            Vbulk = np.array([0.0, 0.0, 0.0])
+            vbulk = np.array([0.0, 0.0, 0.0])
 
-        vbpara = bnrm[0]*Vbulk[0]+bnrm[1]*Vbulk[1]+bnrm[2]*Vbulk[2]
-        vbperp = Vbulk - vbpara
+        vbpara = bnrm[0]*vbulk[0]+bnrm[1]*vbulk[1]+bnrm[2]*vbulk[2]
+        vbperp = vbulk - vbpara
         vbperp_abs = np.sqrt(vbperp[0]**2+vbperp[1]**2+vbperp[2]**2)
-        vxb = np.array([-Vbulk[1]*bnrm[2]+Vbulk[2]*bnrm[1], -Vbulk[2]*bnrm[0]+Vbulk[0]*bnrm[2], -Vbulk[0]*bnrm[1]+Vbulk[1]*bnrm[0]])
+        vxb = np.array([-vbulk[1]*bnrm[2]+vbulk[2]*bnrm[1], -vbulk[2]*bnrm[0]+vbulk[0]*bnrm[2], -vbulk[0]*bnrm[1]+vbulk[1]*bnrm[0]])
         vxbabs = np.sqrt(vxb[0]**2+vxb[1]**2+vxb[2]**2)
         vxbnrm = vxb/vxbabs
         exb = np.array([vxb[1]*bnrm[2]-vxb[2]*bnrm[1],vxb[2]*bnrm[0]-vxb[0]*bnrm[2],vxb[0]*bnrm[1]-vxb[1]*bnrm[0]])
@@ -202,9 +202,9 @@ def mms_pad_fpi(dists,
         exbnrm = exb/exbabs
         vbulk_para += vbpara
         vbulk_perp += vbperp_abs
-        vbulk_vxb += vxbnrm[0]*Vbulk[0]+vxbnrm[1]*Vbulk[1]+vxbnrm[2]*Vbulk[2]
-        vbulk_exb += exbnrm[0]*Vbulk[0]+exbnrm[1]*Vbulk[1]+exbnrm[2]*Vbulk[2]
-        vbulk_avg += Vbulk
+        vbulk_vxb += vxbnrm[0]*vbulk[0]+vxbnrm[1]*vbulk[1]+vxbnrm[2]*vbulk[2]
+        vbulk_exb += exbnrm[0]*vbulk[0]+exbnrm[1]*vbulk[1]+exbnrm[2]*vbulk[2]
+        vbulk_avg += vbulk
 
         # particle velocities & pitch angles
 
@@ -217,9 +217,9 @@ def mms_pad_fpi(dists,
         vz = vdata[:, 2]
 
         if subtract_bulk:
-            vx -= Vbulk[0]
-            vy -= Vbulk[1]
-            vz -= Vbulk[2]
+            vx -= vbulk[0]
+            vy -= vbulk[1]
+            vz -= vbulk[2]
 
         # pitch angles
         dp = (bnrm[0]*vx + bnrm[1]*vy + bnrm[2]*vz)/np.sqrt(vx**2+vy**2+vz**2)

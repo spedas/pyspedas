@@ -4,7 +4,7 @@ from pytplot import get_data
 from pyspedas import time_double
 
 
-def tplot_average(tvar, trange):
+def tplot_average(tvar, trange, quiet=False):
     """
     Returns the average value of a tplot variable over a specified time range.
 
@@ -35,7 +35,8 @@ def tplot_average(tvar, trange):
     t0 = np.min(trange)
     t1 = np.max(trange)
 
-    logging.info('Averaging ' + tvar)
+    if not quiet:
+        logging.info('Averaging ' + tvar)
 
     # find the data within the time range
     indices = np.argwhere((data.times <= t1) & (data.times >= t0))
