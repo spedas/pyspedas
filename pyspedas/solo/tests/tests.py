@@ -1,14 +1,18 @@
-
 import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
-
 import pyspedas
+
 
 class LoadTestCases(unittest.TestCase):
     def test_load_mag_data(self):
         mag_vars = pyspedas.solo.mag(time_clip=True)
         self.assertTrue(data_exists('B_RTN'))
+
+    def test_load_mag_ll02_data(self):
+        mag_vars = pyspedas.solo.mag(level='ll02', trange=['2020-08-04', '2020-08-05'])
+        self.assertTrue(data_exists('B_RTN'))
+        self.assertTrue(data_exists('B_SRF'))
 
     def test_load_epd_data(self):
         epd_vars = pyspedas.solo.epd()
@@ -31,6 +35,7 @@ class LoadTestCases(unittest.TestCase):
     def test_downloadonly(self):
         files = pyspedas.solo.mag(downloadonly=True)
         self.assertTrue(os.path.exists(files[0]))
+
 
 if __name__ == '__main__':
     unittest.main()
