@@ -28,12 +28,10 @@ class EISTestCases(unittest.TestCase):
         mms_eis_pad(probe=4, data_units='cps')
         self.assertTrue(data_exists('mms4_epd_eis_srvy_l2_extof_44-1315keV_proton_cps_omni_pad_spin'))
         self.assertTrue(data_exists('mms4_epd_eis_srvy_l2_extof_44-1315keV_proton_cps_omni_pad'))
-        self.assertTrue(data_exists('mms4_epd_eis_srvy_l2_extof_proton_cps_omni_spin'))
         self.assertTrue(data_exists('mms4_epd_eis_srvy_l2_extof_proton_cps_omni'))
         self.assertTrue(data_exists('mms4_epd_eis_srvy_l2_extof_oxygen_energy_range'))
         self.assertTrue(data_exists('mms4_epd_eis_srvy_l2_extof_proton_energy_range'))
         self.assertTrue(data_exists('mms4_epd_eis_srvy_l2_extof_proton_counts_omni'))
-        self.assertTrue(data_exists('mms4_epd_eis_srvy_l2_extof_proton_cps_omni'))
 
     def test_pad_extof_brst(self):
         mms_load_eis(probe=4, datatype='extof', data_rate='brst', trange=['2022-03-03/07:05:00', '2022-03-03/07:08:00'])
