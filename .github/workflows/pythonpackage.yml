@@ -86,7 +86,7 @@ jobs:
         coverage run -a -m pyspedas.ace.tests.tests
         coverage run -a -m pyspedas.equator_s.tests.tests
         coverage run -a -m pyspedas.image.tests.tests
-        # coverage run -a -m pyspedas.psp.tests.tests
+        coverage run -a -m pyspedas.psp.tests.tests
         coverage run -a -m pyspedas.rbsp.tests.tests
         coverage run -a -m pyspedas.stereo.tests.tests
         coverage run -a -m pyspedas.twins.tests.tests

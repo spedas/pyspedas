@@ -7,10 +7,20 @@ from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 from pyspedas.mms.fpi.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
 from pyspedas.mms.fpi.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
+import pyspedas
+
 
 from pytplot import get_data, del_data
 
 from pyspedas import tdpwrspc
+
+
+class FSMLoadTestCases(unittest.TestCase):
+    def test_load_basic(self):
+        fsm = pyspedas.mms.fsm(trange=['2015-10-16/06:00', '2015-10-16/06:05'])
+        self.assertTrue(data_exists('mms1_fsm_b_mag_brst_l3'))
+        self.assertTrue(data_exists('mms1_fsm_b_gse_brst_l3'))
+
 
 class StateLoadTestCases(unittest.TestCase):
     def test_load_eph_no_update(self):
@@ -29,6 +39,7 @@ class StateLoadTestCases(unittest.TestCase):
         data = mms_load_state(trange=['2015-10-16', '2015-10-16/06:00'], datatypes=['spinras', 'spindec'])
         self.assertTrue(data_exists('mms1_defatt_spinras'))
         self.assertTrue(data_exists('mms1_defatt_spindec'))
+
 
 ############### DSP ############### 
 class DSPLoadTestCases(unittest.TestCase):
@@ -52,6 +63,7 @@ class DSPLoadTestCases(unittest.TestCase):
     def test_load_epsd_suffix(self):
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype='epsd', level='l2', data_rate='fast', suffix='_test')
         self.assertTrue(data_exists('mms1_dsp_epsd_omni_test'))
+
 
 ############### FEEPS ############### 
 class FEEPSLoadTestCases(unittest.TestCase):
@@ -88,6 +100,7 @@ class FEEPSLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_omni_spin'))
         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni_spin'))
+
 
 ############### FPI ############### 
 class FPILoadTestCases(unittest.TestCase):
@@ -179,6 +192,7 @@ class FPILoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_des_compressionloss_brst_dist_flagbars'))
         self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist_flagbars'))
 
+
 ############### HPCA ############### 
 class HPCALoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
@@ -222,6 +236,7 @@ class HPCALoadTestCases(unittest.TestCase):
         c, d = get_data('mms1_hpca_hplus_ion_bulk_velocity_centered')
         self.assertTrue(np.round(c[0]-t[0], decimals=3) == 5.0)
 
+
 ############### EDI ############### 
 class EDILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
@@ -236,6 +251,7 @@ class EDILoadTestCases(unittest.TestCase):
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2_test'))
 
+
 ############### ASPOC ############### 
 class ASPOCLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
@@ -249,6 +265,7 @@ class ASPOCLoadTestCases(unittest.TestCase):
     def test_load_suffix(self):
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_aspoc_ionc_l2_test'))
+
 
 ############### EDP ############### 
 class EDPLoadTestCases(unittest.TestCase):
@@ -278,6 +295,7 @@ class EDPLoadTestCases(unittest.TestCase):
     def test_load_brst_data(self):
         data = mms_load_edp(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_edp_dce_gse_brst_l2'))
+
 
 ############### FGM ############### 
 class FGMLoadTestCases(unittest.TestCase):
@@ -320,7 +338,8 @@ class FGMLoadTestCases(unittest.TestCase):
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], no_update=True) # load the file from the local cache
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
 
-############### MEC ############### 
+
+############### MEC ###############
 class MECLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'])
@@ -334,6 +353,7 @@ class MECLoadTestCases(unittest.TestCase):
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_mec_r_sm_test'))
 
+
 class SCMLoadTestCases(unittest.TestCase):
     def test_brst_dpwrspc_data(self):
         data = mms_load_scm(probe=4, data_rate='brst', datatype='scb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
@@ -346,6 +366,10 @@ class SCMLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
         data = mms_load_scm(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_scm_acb_gse_scsrvy_srvy_l2'))
+
+    def test_load_schb(self):
+        data = pyspedas.mms.scm(probe=4, data_rate='brst', datatype='schb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
+        self.assertTrue(data_exists('mms4_scm_acb_gse_schb_brst_l2'))
 
     def test_load_suffix(self):
         data = mms_load_scm(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
@@ -361,6 +385,7 @@ class SCMLoadTestCases(unittest.TestCase):
     def test_load_brst_data(self):
         data = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], datatype='scb')
         self.assertTrue(data_exists('mms1_scm_acb_gse_scb_brst_l2'))
+
 
 if __name__ == '__main__':
     unittest.main()
