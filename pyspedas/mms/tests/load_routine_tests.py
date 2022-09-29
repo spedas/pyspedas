@@ -5,8 +5,7 @@ from pyspedas.mms import mms_load_state, mms_load_mec, mms_load_fgm, mms_load_sc
 from pyspedas.utilities.data_exists import data_exists
 from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
-from pyspedas.mms.fpi.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
-from pyspedas.mms.fpi.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
+from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
 import pyspedas
 
 
@@ -385,6 +384,14 @@ class SCMLoadTestCases(unittest.TestCase):
     def test_load_brst_data(self):
         data = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], datatype='scb')
         self.assertTrue(data_exists('mms1_scm_acb_gse_scb_brst_l2'))
+
+    def test_available(self):
+        files = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], datatype='scb', available=True)
+        self.assertTrue(len(files) == 2)
+
+    def test_hpca_info(self):
+        info = mms_get_hpca_info()
+        self.assertTrue(list(info.keys()) == ['elevation', 't_spin', 't_sweep', 'azimuth_energy_offset'])
 
 
 if __name__ == '__main__':
