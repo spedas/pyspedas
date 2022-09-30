@@ -67,6 +67,7 @@ jobs:
       run: |
         coverage run -a -m pyspedas.hapi.tests.tests
         coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
+        coverage run -a -m pyspedas.mms.tests.slice2d
         coverage run -a -m pyspedas.mms.tests.mms_part_getspec
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coverage run -a -m pyspedas.mms.tests.feeps
