@@ -71,6 +71,12 @@ class SliceTests(unittest.TestCase):
         mms_part_slice2d(time=time, probe='1', species='i', data_rate='brst', rotation='xy',
                          interpolation='2d', save_png='test_fpi_brst_2d_interp', display=False)
 
+    def test_fpi_2d_interp_zdirrange(self):
+        time = '2015-10-16/13:06:30'
+        mms_part_slice2d(time=time, probe='1', species='i', data_rate='brst', rotation='xy',
+                         interpolation='2d', save_png='test_fpi_brst_zdirrange', display=False,
+                         zdirrange=[0, 2500])
+
     def test_fpi_limits(self):
         time = '2015-10-16/13:06:30'
         mms_part_slice2d(time=time, probe='1', species='i', data_rate='brst', rotation='xy', erange=[0, 10000],
