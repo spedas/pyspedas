@@ -1,4 +1,5 @@
 import logging
+import warnings
 import numpy as np
 import pandas as pd
 import zipfile
@@ -36,9 +37,12 @@ def get_w(trange=None, create_tvar=False, newname=None):
     w6_out = np.empty(0)
 
     for year in years:
-        file = download(remote_path='http://geo.phys.spbu.ru/~tsyganenko/TS05_data_and_stuff/',
-                        remote_file=year+'_OMNI_5m_with_TS05_variables.???',
-                        local_path=tmpdir)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            file = download(remote_path='https://geo.phys.spbu.ru/~tsyganenko/TS05_data_and_stuff/',
+                            remote_file=year+'_OMNI_5m_with_TS05_variables.???',
+                            local_path=tmpdir,
+                            verify=False)
 
         if file[0][-3:] == 'zip':
             with zipfile.ZipFile(file[0], 'r') as zip_ref:

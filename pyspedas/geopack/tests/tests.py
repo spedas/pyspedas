@@ -1,5 +1,3 @@
-
-import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
 import pyspedas
@@ -14,19 +12,26 @@ from pytplot import join_vec
 
 trange = ['2015-10-16', '2015-10-17']
 
+
 def get_params(model):
     support_trange = [time_double(trange[0])-60*60*24, 
                       time_double(trange[1])+60*60*24]
     pyspedas.kyoto.dst(trange=support_trange)
     pyspedas.omni.data(trange=trange)
     join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
+    if model == 't01':
+        g_variables = [6.0, 10.0]
+    else:
+        g_variables = None
     return get_tsy_params('kyoto_dst', 
                     'BX_GSE-BY_GSM-BZ_GSM_joined', 
                     'proton_density', 
                     'flow_speed', 
                     model, 
                     pressure_tvar='Pressure',
+                    g_variables=g_variables,
                     speed=True)
+
 
 class LoadTestCases(unittest.TestCase):
     def test_igrf(self):
@@ -59,6 +64,7 @@ class LoadTestCases(unittest.TestCase):
         tinterpol('mms1_mec_r_gsm', 'proton_density')
         tts04('mms1_mec_r_gsm-itrp', parmod=params)
         self.assertTrue(data_exists('mms1_mec_r_gsm-itrp_bts04'))
+
 
 if __name__ == '__main__':
     unittest.main()
