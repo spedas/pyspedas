@@ -12,6 +12,7 @@ import pytplot
 import xarray as xr
 from pytplot import tplot_utilities as utilities
 import copy
+import warnings
 tplot_num = 1
 
 
@@ -124,7 +125,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         return True
 
     times = data.pop('x')
-    values = np.array(data.pop('y'))
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        values = np.array(data.pop('y'))
 
     if 'dy' in data.keys():
         err_values = np.array(data.pop('dy'))
