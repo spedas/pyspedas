@@ -162,9 +162,6 @@ def get_tsy_params(dst_tvar,
                         w_data.y[:, 3], 
                         w_data.y[:, 4], 
                         w_data.y[:, 5]))
-    elif model == 't01':
-        logging.error('not implemented yet')
-        return
 
     if newname is None:
         newname = model + '_par'
