@@ -1,13 +1,20 @@
-
 import unittest
 from pyspedas.utilities.data_exists import data_exists
-
 import pyspedas
+
 
 class LoadTestCases(unittest.TestCase):
     def test_load_mfi_data(self):
-        mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'])
+        mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'], time_clip=True)
         self.assertTrue(data_exists('Magnitude'))
+
+    def test_load_mfi_notplot(self):
+        mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'], notplot=True)
+        self.assertTrue(isinstance(mfi_vars, dict))
+
+    def test_load_mfi_downloadonly(self):
+        mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'], downloadonly=True)
+        self.assertTrue(isinstance(mfi_vars, list))
 
     def test_load_swe_data(self):
         swe_vars = pyspedas.ace.swe()
@@ -43,6 +50,10 @@ class LoadTestCases(unittest.TestCase):
     def test_load_swi_data(self):
         swi_vars = pyspedas.ace.swics()
         self.assertTrue(data_exists('vHe2'))
+
+    def test_data_dir(self):
+        self.assertTrue(pyspedas.ace.config.CONFIG['local_data_dir'] == 'ace_data/')
+
 
 if __name__ == '__main__':
     unittest.main()
