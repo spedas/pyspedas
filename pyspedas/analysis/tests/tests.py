@@ -30,6 +30,8 @@ class AnalysisTestCases(BaseTestCase):
         dp = tdotp('var1', 'var2')
         dpdata = get_data('var1_dot_var2')
         self.assertTrue(dpdata.y == np.array([-13]))
+        dp = tdotp('var1_doesnt_exist', 'var2')
+        dp = tdotp('var1', 'var2_doesnt_exist')
 
     def test_tcrossp(self):
         """ cross product tests"""
