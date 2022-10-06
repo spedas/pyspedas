@@ -64,6 +64,8 @@ jobs:
       if: github.ref == 'refs/heads/master'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        SPEDAS_DATA_DIR: data
+        ACE_DATA_DIR: ace_data/
       run: |
         coverage run -a -m pyspedas.hapi.tests.tests
         coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
