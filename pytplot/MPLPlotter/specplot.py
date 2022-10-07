@@ -82,7 +82,10 @@ def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_
             zdata[zdata < 0.0] = 0.0
             zdata[zdata == np.nan] = 0.0
 
-            interp_func = interp1d(var_data.times[time_idxs], zdata, axis=0, bounds_error=False)
+            spec_unix_times = np.array([(time - np.datetime64('1970-01-01T00:00:00')) / np.timedelta64(1, 's') for time in
+                              var_data.times[time_idxs]])
+
+            interp_func = interp1d(spec_unix_times, zdata, axis=0, bounds_error=False)
             out_times = np.arange(0, nx, dtype=np.float64)*(var_data.times[time_idxs][-1]-var_data.times[time_idxs][0])/(nx-1) + var_data.times[time_idxs][0]
 
             out_values = interp_func(out_times)
@@ -90,7 +93,8 @@ def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_
             if zlog == 'log':
                 out_values = 10**out_values
 
-            var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in out_times]
+            var_times = np.array(out_times, dtype='datetime64[s]')
+            #var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in out_times]
 
     if yaxis_options.get('y_interp') is not None:
         y_interp = yaxis_options['y_interp']
