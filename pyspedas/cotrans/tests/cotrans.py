@@ -15,17 +15,21 @@ from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
+from pyspedas.cotrans.fac_matrix_make import fac_matrix_make
 from pytplot import get_data, store_data, del_data
 
 
 class CotransTestCases(unittest.TestCase):
     """Tests for cotrans."""
+    def test_fac_matrix_make(self):
+        doesntexist = fac_matrix_make('doesnt_exist')
 
     def test_get_set_coord(self):
         """ Test for cotrans_set_coord/cotrans_get_coord """
         doesntexist = cotrans_get_coord('test_coord')
         self.assertTrue(doesntexist == None)
         store_data('test_coord', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
+        cotrans(name_in='test_coord', coord_out="geo")
         before = cotrans_get_coord('test_coord')
         self.assertTrue(before == None)
         setcoord = cotrans_set_coord('test_coord', 'GSE')
@@ -36,6 +40,7 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(setcoord)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSM')
+        setcoord = cotrans_set_coord('doesnt_exist', 'GSM')
 
 
     def test_dsl2gse(self):
@@ -50,6 +55,8 @@ class CotransTestCases(unittest.TestCase):
                               varnames=['tha_spinras', 'tha_spindec'])
         pyspedas.themis.fgm(probe='a', trange=time_range,
                             varnames=['tha_fgl_dsl'])
+
+        fac_matrix_make('tha_fgl_dsl')
 
         dsl2gse('tha_fgl_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgl_gse')
 

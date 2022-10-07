@@ -81,11 +81,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
 
     # Find the name of the output pytplot variable.
     if name_out is None:
-        # If no output tplot name is provided, create one.
-        if name_in is None:
-            name_out = "data_out_" + coord_out
-        else:
-            name_out = name_in + "_" + coord_out
+        name_out = name_in + "_" + coord_out
 
     # Save output pytplot variable.
     pytplot.tplot_copy(name_in, name_out)

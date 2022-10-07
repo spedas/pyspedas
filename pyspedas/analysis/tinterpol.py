@@ -62,8 +62,6 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     if (newname is None) or (len(newname) == 1 and newname[0] is None):
         n_names = [s + suffix for s in old_names]
-    elif newname == '':
-        n_names = old_names
     else:
         n_names = newname
 

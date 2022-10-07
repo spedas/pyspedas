@@ -362,7 +362,7 @@ class MECLoadTestCases(unittest.TestCase):
 class SCMLoadTestCases(unittest.TestCase):
     def test_brst_dpwrspc_data(self):
         data = mms_load_scm(probe=4, data_rate='brst', datatype='scb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
-        tdpwrspc('mms4_scm_acb_gse_scb_brst_l2')
+        tdpwrspc('mms4_scm_acb_gse_scb_brst_l2', notmvariance=True)
         self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2'))
         self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_x_dpwrspc'))
         self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_y_dpwrspc'))
