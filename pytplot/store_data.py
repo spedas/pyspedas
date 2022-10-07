@@ -143,10 +143,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     #     for tt, time in enumerate(times):
     #         times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
     # If given a list of datetime string, convert times to seconds since epoch
-    if any(isinstance(t, str) for t in times):
-        for tt, time in enumerate(times):
-            times[tt] = pytplot.tplot_utilities.str_to_int(time)
-    elif any(isinstance(t, float) for t in times):
+    if any(isinstance(t, float) for t in times) or any(isinstance(t, str) for t in times) or any(isinstance(t, int) for t in times):
         times = np.array(times, dtype='datetime64[s]')
 
     if len(times) != len(values):
