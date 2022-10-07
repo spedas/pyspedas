@@ -3,10 +3,13 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
+import numpy as np
 import pytplot
 from collections import namedtuple
+import datetime
 
-def get_data(name, xarray=False, metadata=False):
+
+def get_data(name, xarray=False, metadata=False, dt=False):
     """
     This function extracts the data from the tplot Variables stored in memory.
     
@@ -56,26 +59,30 @@ def get_data(name, xarray=False, metadata=False):
 
     error = temp_data_quant.attrs['plot_options']['error']
 
+    if not dt:
+        times = np.array([(time - np.datetime64('1970-01-01T00:00:00'))/np.timedelta64(1, 's') for time in temp_data_quant.time.values])
+    else:
+        times = temp_data_quant.time.values
 
     if 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys() and 'v3' in temp_data_quant.coords.keys():
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2', 'v3'])
-        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values, temp_data_quant.coords['v3'].values)
+        return variable(times, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values, temp_data_quant.coords['v3'].values)
     elif 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys():
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2'])
-        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values)
+        return variable(times, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values)
     elif 'v1' in temp_data_quant.coords.keys():
         variable = namedtuple('variable', ['times', 'y', 'v1'])
-        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v1'].values)
+        return variable(times, temp_data_quant.data, temp_data_quant.coords['v1'].values)
     elif 'v' in temp_data_quant.coords.keys():
         variable = namedtuple('variable', ['times', 'y', 'v'])
-        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['v'].values)
+        return variable(times, temp_data_quant.data, temp_data_quant.coords['v'].values)
     elif 'spec_bins' in temp_data_quant.coords.keys():
         variable = namedtuple('variable', ['times', 'y', 'v'])
-        return variable(temp_data_quant.time.values, temp_data_quant.data, temp_data_quant.coords['spec_bins'].values)
+        return variable(times, temp_data_quant.data, temp_data_quant.coords['spec_bins'].values)
 
     if error is not None:
         variable = namedtuple('variable', ['times', 'y', 'dy'])
-        return variable(temp_data_quant.time.values, temp_data_quant.data, error)
+        return variable(times, temp_data_quant.data, error)
     else:
         variable = namedtuple('variable', ['times', 'y'])
-        return variable(temp_data_quant.time.values, temp_data_quant.data)
+        return variable(times, temp_data_quant.data)

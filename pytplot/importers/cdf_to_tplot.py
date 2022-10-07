@@ -16,6 +16,7 @@ except:
 import re
 import numpy as np
 import xarray as xr
+from datetime import timedelta
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
 from pytplot.options import options
@@ -227,8 +228,15 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 if epoch_cache.get(filename + x_axis_var) is None:
                     if ('CDF_TIME' in data_type_description) or \
                             ('CDF_EPOCH' in data_type_description):
-                        xdata = cdfepoch.unixtime(xdata)
-                        epoch_cache[filename+x_axis_var] = np.array(xdata)+delta_time
+                        # the old way:
+                        # store the times as unix times, and cache them
+                        # xdata = cdfepoch.unixtime(xdata)
+                        # epoch_cache[filename+x_axis_var] = np.array(xdata)+delta_time
+                        # the new way:
+                        # store and cache the datetime objects directly
+                        # and delay conversion to unix times until get_data is called
+                        xdata = cdfepoch.to_datetime(xdata)
+                        epoch_cache[filename + x_axis_var] = xdata + timedelta(seconds=delta_time)
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
 

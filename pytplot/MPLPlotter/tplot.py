@@ -104,7 +104,7 @@ def tplot(variables, var_label=None,
     fig.subplots_adjust(hspace=vertical_spacing)
     
     for idx, variable in enumerate(variables):
-        var_data_org = pytplot.get_data(variable)
+        var_data_org = pytplot.get_data(variable, dt=True)
         
         if var_data_org is None:
             print('Variable not found: ' + variable)
@@ -196,7 +196,8 @@ def tplot(variables, var_label=None,
             time_idxs = np.arange(len(var_data_times))
 
         # the data are stored as unix times, but matplotlib wants datatime objects
-        var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data_times]
+        # var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data_times]
+        var_times = var_data_times
 
         # set some more plot options
         yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
