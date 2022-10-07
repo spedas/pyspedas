@@ -30,6 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install basemap
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/master'
     - name: Install dependencies (Windows)
@@ -40,6 +41,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install basemap
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'windows-latest' && github.ref == 'refs/heads/master'
     - name: Install dependencies (macOS)
