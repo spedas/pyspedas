@@ -87,6 +87,7 @@ jobs:
         TWINS_DATA_DIR: twins_data/
         ULY_DATA_DIR: uly_data/
         WIND_DATA_DIR: wind_data/
+        PYTPLOT_LOGGING_LEVEL: error
       run: |
         coverage run -a -m pyspedas.hapi.tests.tests
         coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
