@@ -81,6 +81,10 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
         else:
             full_path = os.sep.join([re.escape(local_dir), file_name])
 
+        # check for extra /'s in the path
+        if '//' in full_path:
+            full_path = full_path.replace('//', '/')
+
         regex = re.compile(full_path)
         for root, dirs, files in os.walk(data_dir):
             for file in files:
