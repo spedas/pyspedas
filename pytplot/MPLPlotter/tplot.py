@@ -185,7 +185,8 @@ def tplot(variables, var_label=None,
         # set the x-axis range, if it was set with xlim or tlimit
         if pytplot.tplot_opt_glob.get('x_range') is not None:
             x_range = pytplot.tplot_opt_glob['x_range']
-            this_axis.set_xlim([datetime.fromtimestamp(x_range[0], tz=timezone.utc), datetime.fromtimestamp(x_range[1], tz=timezone.utc)])
+            x_range = np.array(x_range, dtype='datetime64[s]')
+            this_axis.set_xlim(x_range)
             time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
             if len(time_idxs) == 0:
                 print('No data found in the time range: ' + variable)
