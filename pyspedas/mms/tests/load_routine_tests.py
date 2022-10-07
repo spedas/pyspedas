@@ -1,21 +1,18 @@
 import unittest
 import numpy as np
-
-from pyspedas.mms import mms_load_state, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_eis, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
+from pyspedas.mms import mms_load_state, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
 from pyspedas.utilities.data_exists import data_exists
 from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
-import pyspedas
-
-
-from pytplot import get_data, del_data
-
 from pyspedas import tdpwrspc
+import pyspedas
+from pytplot import get_data, del_data
 
 
 class FSMLoadTestCases(unittest.TestCase):
     def test_load_basic(self):
+        files = pyspedas.mms.fsm(trange=['2015-10-16/06:00', '2015-10-16/06:05'], available=True)
         fsm = pyspedas.mms.fsm(trange=['2015-10-16/06:00', '2015-10-16/06:05'])
         self.assertTrue(data_exists('mms1_fsm_b_mag_brst_l3'))
         self.assertTrue(data_exists('mms1_fsm_b_gse_brst_l3'))
@@ -52,6 +49,7 @@ class DSPLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dsp_bpsd_omni'))
 
     def test_load_bpsd_data(self):
+        data = mms_load_dsp(trange=['2015-10-16','2015-10-17'], datatype='bpsd', level='l2', data_rate='fast', available=True)
         data = mms_load_dsp(trange=['2015-10-16','2015-10-17'], datatype='bpsd', level='l2', data_rate='fast')
         self.assertTrue(data_exists('mms1_dsp_bpsd_omni_fast_l2'))
 
@@ -67,6 +65,7 @@ class DSPLoadTestCases(unittest.TestCase):
 ############### FEEPS ############### 
 class FEEPSLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
+        data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
@@ -104,6 +103,7 @@ class FEEPSLoadTestCases(unittest.TestCase):
 ############### FPI ############### 
 class FPILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
+        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], available=True)
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
 
@@ -195,6 +195,7 @@ class FPILoadTestCases(unittest.TestCase):
 ############### HPCA ############### 
 class HPCALoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
+        data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
 
@@ -239,6 +240,7 @@ class HPCALoadTestCases(unittest.TestCase):
 ############### EDI ############### 
 class EDILoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
+        data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'], available=True)
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'])
         self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2'))
 
@@ -254,6 +256,7 @@ class EDILoadTestCases(unittest.TestCase):
 ############### ASPOC ############### 
 class ASPOCLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
+        data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_aspoc_ionc_l2'))
 
@@ -269,6 +272,7 @@ class ASPOCLoadTestCases(unittest.TestCase):
 ############### EDP ############### 
 class EDPLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
+        data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
 
@@ -307,6 +311,7 @@ class FGMLoadTestCases(unittest.TestCase):
         self.assertTrue(d1.shape == d2.shape)
 
     def test_load_default_data(self):
+        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
         self.assertTrue(data_exists('Epoch'))
@@ -341,6 +346,7 @@ class FGMLoadTestCases(unittest.TestCase):
 ############### MEC ###############
 class MECLoadTestCases(unittest.TestCase):
     def test_load_default_data(self):
+        data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_mec_r_sm'))
 
@@ -363,6 +369,7 @@ class SCMLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms4_scm_acb_gse_scb_brst_l2_z_dpwrspc'))
 
     def test_load_default_data(self):
+        data = mms_load_scm(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_scm(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_scm_acb_gse_scsrvy_srvy_l2'))
 

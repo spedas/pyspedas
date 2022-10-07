@@ -50,6 +50,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install basemap
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'macos-latest' && github.ref == 'refs/heads/master'
     - name: Lint with flake8
@@ -89,6 +90,8 @@ jobs:
         WIND_DATA_DIR: wind_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
+        coverage run -a -m pyspedas.secs.tests.tests
+        coverage run -a -m pyspedas.sosmag.tests.tests
         coverage run -a -m pyspedas.hapi.tests.tests
         coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
         coverage run -a -m pyspedas.mms.tests.mms_part_getspec
@@ -100,6 +103,7 @@ jobs:
         coverage run -a -m pyspedas.mms.tests.data_rate_segments
         coverage run -a -m pyspedas.mms.tests.curlometer
         coverage run -a -m pyspedas.mms.tests.wavpol
+        coverage run -a -m pyspedas.mms.tests.slice2d
         coverage run -a -m pyspedas.dscovr.tests.tests
         coverage run -a -m pyspedas.utilities.tests.download_tests
         coverage run -a -m pyspedas.utilities.tests.misc_tests
