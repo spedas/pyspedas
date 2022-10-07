@@ -66,6 +66,27 @@ jobs:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         SPEDAS_DATA_DIR: data
         ACE_DATA_DIR: ace_data/
+        CLUSTER_DATA_DIR: cluster_data/
+        DSC_DATA_DIR: dsc_data/
+        CSSWE_DATA_DIR: csswe_data/
+        EQUATORS_DATA_DIR: eqs_data/
+        FAST_DATA_DIR: fast_data/
+        GEOTAIL_DATA_DIR: geotail_data/
+        GOES_DATA_DIR: goes_data/
+        IMAGE_DATA_DIR: img_data/
+        MICA_DATA_DIR: mica_data/
+        MMS_DATA_DIR: mms_data/
+        OMNI_DATA_DIR: omni_data/
+        POES_DATA_DIR: poes_data/
+        POLAR_DATA_DIR: polar_data/
+        PSP_DATA_DIR: psp_data/
+        RBSP_DATA_DIR: rbsp_data/
+        SOLO_DATA_DIR: solo_data/
+        STEREO_DATA_DIR: stereo_data/
+        THM_DATA_DIR: themis_data/
+        TWINS_DATA_DIR: twins_data/
+        ULY_DATA_DIR: uly_data/
+        WIND_DATA_DIR: wind_data/
       run: |
         coverage run -a -m pyspedas.hapi.tests.tests
         coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests

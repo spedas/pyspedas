@@ -1,14 +1,18 @@
-
 import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
-
 import pyspedas
+
 
 class LoadTestCases(unittest.TestCase):
     def test_downloadonly(self):
         files = pyspedas.wind.mfi(trange=['2013-11-5', '2013-11-6'], downloadonly=True)
         self.assertTrue(os.path.exists(files[0]))
+
+    def test_load_3dp_data(self):
+        tdp_vars = pyspedas.wind.threedp(trange=['2003-09-5', '2003-09-6'], notplot=True)
+        self.assertTrue('N_e_dens_wi_3dp' in tdp_vars)
+        tdp_vars = pyspedas.wind.threedp(datatype='3dp_elm2', trange=['2003-09-5', '2003-09-6'], notplot=True)
 
     def test_load_mfi_data(self):
         mfi_vars = pyspedas.wind.mfi(trange=['2013-11-5', '2013-11-6'], time_clip=True)
@@ -40,6 +44,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('C/O_ratio'))
         self.assertTrue(data_exists('C_ion_temp'))
         self.assertTrue(data_exists('O_ion_temp'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,15 +1,16 @@
-
 import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
-
 import pyspedas
+
 
 class LoadTestCases(unittest.TestCase):
     def test_load_mag_data(self):
         mag_vars = pyspedas.dscovr.mag(time_clip=True)
         self.assertTrue(data_exists('dsc_h0_mag_B1RTN'))
         self.assertTrue(data_exists('dsc_h0_mag_B1GSE'))
+        mag_vars = pyspedas.dscovr.mag(notplot=True)
+        self.assertTrue('dsc_h0_mag_B1GSE' in mag_vars)
 
     def test_load_fc_data(self):
         fc_vars = pyspedas.dscovr.fc()
