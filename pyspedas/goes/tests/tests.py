@@ -83,9 +83,25 @@ class LoadTestCases(unittest.TestCase):
         hepad_vars = pyspedas.goes.hepad(datatype='5min')
         self.assertTrue(data_exists('P10_FLUX'))
 
-    def test_load_1min_xrs_data(self):
+    def test_load_xrs_data(self):
         xrs_vars = pyspedas.goes.xrs()
         self.assertTrue(data_exists('A_AVG'))
+        xrs_vars = pyspedas.goes.xrs(datatype='5min', trange=['2000-09-01', '2000-09-01'])
+        xrs_vars = pyspedas.goes.xrs(datatype='2s')
+
+    def test_load_eps_data(self):
+        eps_vars = pyspedas.goes.eps(trange=['2000-09-01', '2000-09-01'], probe='11')
+        eps_vars = pyspedas.goes.eps(trange=['2000-09-01', '2000-09-01'], probe='11', datatype='5min')
+        self.assertTrue(data_exists('e1_flux_i'))
+        self.assertTrue(data_exists('e2_flux_i'))
+        self.assertTrue(data_exists('e3_flux_i'))
+        self.assertTrue(data_exists('p1_flux'))
+        self.assertTrue(data_exists('p2_flux'))
+        self.assertTrue(data_exists('p3_flux'))
+        self.assertTrue(data_exists('p4_flux'))
+        self.assertTrue(data_exists('p5_flux'))
+        self.assertTrue(data_exists('p6_flux'))
+        self.assertTrue(data_exists('p7_flux'))
 
 
 if __name__ == '__main__':

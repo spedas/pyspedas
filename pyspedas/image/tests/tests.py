@@ -1,10 +1,9 @@
-
 import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
-
 import pyspedas
 from pytplot import del_data
+
 
 class LoadTestCases(unittest.TestCase):
     def tearDown(self):
@@ -13,6 +12,10 @@ class LoadTestCases(unittest.TestCase):
     def test_downloadonly(self):
         files = pyspedas.image.mena(downloadonly=True)
         self.assertTrue(os.path.exists(files[0]))
+
+    def test_load_notplot(self):
+        mena_vars = pyspedas.image.mena(notplot=True)
+        self.assertTrue('Image0' in mena_vars)
 
     def test_load_lena_data(self):
         lena_vars = pyspedas.image.lena(time_clip=True)
@@ -47,6 +50,7 @@ class LoadTestCases(unittest.TestCase):
         orb_vars = pyspedas.image.orbit(datatype='pre_or')
         self.assertTrue(data_exists('GSM_POS'))
         self.assertTrue(data_exists('GSM_VEL'))
+
 
 if __name__ == '__main__':
     unittest.main()

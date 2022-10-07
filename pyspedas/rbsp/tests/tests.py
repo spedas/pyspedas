@@ -1,8 +1,6 @@
-
 import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
-
 import pyspedas
 from pytplot import del_data
 
@@ -38,6 +36,9 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('EwSamples'))
         # HFR waveform data
         self.assertTrue(data_exists('HFRsamples'))
+        # L4 density
+        dens = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='density', level='l4')
+        self.assertTrue(data_exists('density'))
 
     def test_load_efw_data(self):
         efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l2')
@@ -45,9 +46,9 @@ class LoadTestCases(unittest.TestCase):
         efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
         self.assertTrue(data_exists('density'))
 
-    # def test_load_rbspice_data(self):
-    #     rbspice_vars = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='tofxeh', level='l3')
-    #     self.assertTrue(data_exists('Alpha'))
+    def test_load_rbspice_data(self):
+        files = pyspedas.rbsp.rbspice(downloadonly=True, trange=['2018-11-5', '2018-11-6'], datatype='tofxeh', level='l3')
+        self.assertTrue(isinstance(files, list))
 
     def test_load_mageis_data(self):
         mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')

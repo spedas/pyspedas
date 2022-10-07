@@ -6,6 +6,7 @@ Notes
 Similar to clean_spikes.pro in IDL SPEDAS.
 
 """
+import logging
 import numpy as np
 import pyspedas
 import pytplot
@@ -45,7 +46,7 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('clean_spikes error: No pytplot names were provided.')
+        logging.error('clean_spikes error: No pytplot names were provided.')
         return
 
     if suffix is None:
@@ -110,4 +111,4 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
         del pytplot.data_quants[tmp]
         del pytplot.data_quants[tmps]
 
-        print('clean_spikes was applied to: ' + new)
+        logging.info('clean_spikes was applied to: ' + new)

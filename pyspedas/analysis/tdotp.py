@@ -1,5 +1,6 @@
-
+import logging
 from pytplot import get_data, store_data
+
 
 def tdotp(variable1, variable2, newname=None):
     """
@@ -29,11 +30,11 @@ def tdotp(variable1, variable2, newname=None):
     data2 = get_data(variable2, xarray=True)
 
     if data1 is None:
-        print('Variable not found: ' + variable1)
+        logging.error('Variable not found: ' + variable1)
         return
 
     if data2 is None:
-        print('Variable not found: ' + variable2)
+        logging.error('Variable not found: ' + variable2)
         return
 
     if newname is None:
@@ -45,4 +46,5 @@ def tdotp(variable1, variable2, newname=None):
     # save the output
     saved = store_data(newname, data={'x': data1.time.values, 'y': out.values})
 
-    return newname
+    if saved is not None:
+        return newname

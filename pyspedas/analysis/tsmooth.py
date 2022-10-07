@@ -9,6 +9,7 @@ Similar to tsmooth2.pro in IDL SPEDAS.
 Also, see: https://www.harrisgeospatial.com/docs/SMOOTH.html
 
 """
+import logging
 import math
 import numpy as np
 import pyspedas
@@ -38,7 +39,7 @@ def smooth(data, width=10, preserve_nans=None):
     N = len(data)
 
     if N <= width:
-        print("smooth: Not enough points.")
+        logging.error("smooth: Not enough points.")
         return result
 
     for i, d in enumerate(data):
@@ -88,7 +89,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('tsmooth error: No pytplot names were provided.')
+        logging.error('tsmooth error: No pytplot names were provided.')
         return
 
     if suffix is None:
@@ -125,4 +126,4 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
 
         pytplot.data_quants[new].values = data
 
-        print('tsmooth was applied to: ' + new)
+        logging.info('tsmooth was applied to: ' + new)

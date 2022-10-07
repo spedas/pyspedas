@@ -112,18 +112,24 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
     # Delivery interval
     delivery_interval = 'ALL'
 
+    if not probes:
+        return tvars
+
+    if not datatypes:
+        return tvars
+
+    if not isinstance(probes, list):
+        probes = [probes]
+
+    if not isinstance(datatypes, list):
+        datatypes = [datatypes]
+
     # TODO: Create a function that can resolve wildcards
     # similar to IDL spedas ssl_check_valid_name
     # my_datatypes=ssl_check_valid_name(uc_datatypes,master_datatypes)
     # my_probes=ssl_check_valid_name(uc_probes,master_probes)
-    if not probes:  # list is empty
-        return tvars
-    elif probes[0] == '*':  # load all probes
+    if probes[0] == '*':  # load all probes
         probes = cl_master_probes()
-    if not datatypes:  # list is empty
-        return tvars
-    elif datatypes[0] == '*':  # load all probes
-        datatypes = cl_master_datatypes()
 
     # Construct the query string
     base_url = 'https://csa.esac.esa.int/csa-sl-tap/data?'
@@ -179,23 +185,12 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
         return out_files
 
     # Load data into tplot
-    try:
-        tvars = cdf_to_tplot(out_files,
-                             suffix=suffix,
-                             get_support_data=get_support_data,
-                             varformat=varformat,
-                             varnames=varnames,
-                             notplot=notplot)
-    except IndexError as e:
-        logging.error("cdf_to_tplot cannot load Cluster cdf file.")
-        logging.error("File: " + out_files[0])
-        logging.error("IndexError: " + str(e))
-        return tvars
-    except TypeError as e:
-        logging.error("cdf_to_tplot cannot load Cluster cdf file.")
-        logging.error("File: " + out_files[0])
-        logging.error("TypeError: " + str(e))
-        return tvars
+    tvars = cdf_to_tplot(out_files,
+                         suffix=suffix,
+                         get_support_data=get_support_data,
+                         varformat=varformat,
+                         varnames=varnames,
+                         notplot=notplot)
 
     if notplot:
         return tvars

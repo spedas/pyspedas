@@ -1,3 +1,4 @@
+import logging
 import warnings
 import astropy
 
@@ -32,7 +33,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
     elif 'hour' in datatype:
         pathformat = 'hourly/%Y/omni2_h0_mrg1hr_%Y%m01_v??.cdf'
     else:
-        raise TypeError("%r are invalid keyword arguments" % datatype)
+        logging.error('Invalid datatype: '+ datatype)
+        return
 
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange)

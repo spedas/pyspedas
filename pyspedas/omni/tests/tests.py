@@ -1,10 +1,9 @@
-
 import os
 import unittest
 import pandas as pd
 from pyspedas.utilities.data_exists import data_exists
-
 import pyspedas
+
 
 class LoadTestCases(unittest.TestCase):
     def test_utc_timestamp_regression(self):
@@ -40,9 +39,16 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('BZ_GSM'))
         self.assertTrue(data_exists('proton_density'))
 
+    def test_load_hro_hour_data(self):
+        omni_vars = pyspedas.omni.data(level='hro2', datatype='hour', trange=['2013-01-01', '2013-01-02'])
+
+    def test_load_invalid_datatype(self):
+        omni_vars = pyspedas.omni.data(datatype='1')
+
     def test_downloadonly(self):
         files = pyspedas.omni.data(downloadonly=True, trange=['2014-2-15', '2014-2-16'])
         self.assertTrue(os.path.exists(files[0]))
+
 
 if __name__ == '__main__':
     unittest.main()
