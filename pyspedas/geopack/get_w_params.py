@@ -44,6 +44,10 @@ def get_w(trange=None, create_tvar=False, newname=None):
                             local_path=tmpdir,
                             verify=False)
 
+        if len(file) == 0:
+            logging.error('No files found for ' + year)
+            continue
+
         if file[0][-3:] == 'zip':
             with zipfile.ZipFile(file[0], 'r') as zip_ref:
                 zip_ref.extractall(tmpdir)
