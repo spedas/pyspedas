@@ -28,6 +28,7 @@ jobs:
         MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
       run: |
           python -m pip install --upgrade pip
+          pip install --upgrade https://github.com/MAVENSDC/PyTplot/archive/matplotlib-superfast.zip
           pip install -r requirements.txt
           pip install coveralls
           pip install basemap
