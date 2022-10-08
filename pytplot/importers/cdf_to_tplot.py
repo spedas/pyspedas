@@ -236,7 +236,11 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                         # store and cache the datetime objects directly
                         # and delay conversion to unix times until get_data is called
                         xdata = cdfepoch.to_datetime(xdata)
-                        epoch_cache[filename + x_axis_var] = xdata + timedelta(seconds=delta_time)
+                        if isinstance(delta_time, np.ndarray):
+                            delta_t = np.array([timedelta(seconds=dtime) for dtime in delta_time])
+                        else:
+                            delta_t = timedelta(seconds=delta_time)
+                        epoch_cache[filename + x_axis_var] = xdata + delta_t
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
 
