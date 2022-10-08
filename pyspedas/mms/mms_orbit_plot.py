@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from pytplot import get_data
 from . import mms_load_mec
 
+
 def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], data_rate='srvy', xr=None, yr=None, plane='xy', coord='gse'):
     """
     This function creates MMS orbit plots
@@ -94,4 +95,3 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
             axis.set_ylim(yr)
 
         plt.show()
-

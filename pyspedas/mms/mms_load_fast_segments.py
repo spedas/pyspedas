@@ -1,4 +1,3 @@
-
 import os
 import logging
 import numpy as np
@@ -8,9 +7,6 @@ from pytplot import store_data, options
 from pyspedas import time_double
 from pyspedas.utilities.download import download
 from pyspedas.mms.mms_config import CONFIG
-
-logging.captureWarnings(True)
-logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 
 def mms_load_fast_segments(trange=None, suffix=''):
