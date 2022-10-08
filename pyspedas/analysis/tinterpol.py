@@ -66,7 +66,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
         n_names = newname
 
     if isinstance(interp_to, str):
-        interp_to_data = get_data(interp_to)
+        interp_to_data = get_data(interp_to, dt=True)
 
         if interp_to_data is None:
             logging.error('Error, tplot variable: ' + interp_to + ' not found.')
