@@ -144,10 +144,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     #     for tt, time in enumerate(times):
     #         times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
     # If given a list of datetime string, convert times to seconds since epoch
-    if not isinstance(times[0], datetime.datetime):
+    if not isinstance(times[0], datetime.datetime) and not isinstance(times[0], np.datetime64):
         if isinstance(times[0], float) or isinstance(times[0], np.float64):
             times = [datetime.datetime.utcfromtimestamp(time) for time in times]
-        elif isinstance(times[0], int) or isinstance(times[0], np.int64):
+        elif isinstance(times[0], int) or isinstance(times[0], np.integer):
             times = [datetime.datetime.utcfromtimestamp(float(time)) for time in times]
         elif isinstance(times[0], str):
             times = [parse(time).replace(tzinfo=datetime.timezone.utc).timestamp() for time in times]
