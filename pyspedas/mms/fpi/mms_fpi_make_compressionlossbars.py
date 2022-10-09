@@ -2,7 +2,7 @@ import logging
 import numpy as np
 from fnmatch import fnmatch
 from pytplot import get_data, store_data, options
-from pyspedas import time_double
+from pyspedas import time_datetime
 
 
 def mms_fpi_make_compressionlossbars(tname, lossy=False):
@@ -58,7 +58,7 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
         logging.error('Unable to determine data rate from variable name.')
         return
 
-    data = get_data(tname)
+    data = get_data(tname, dt=True)
     metadata = get_data(tname, metadata=True)
 
     if data is None:
@@ -72,7 +72,7 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
         version = file_id.split('_v')[1].split('.')
         if version[0] == '2':
             if version[1] == '1':
-                if data.times[0] < time_double('2016-04-01'):
+                if data.times[0] < time_datetime('2016-04-01'):
                     lossy = 3
                 else:
                     lossy = 1

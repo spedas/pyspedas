@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from pytplot import get_data
-from pyspedas import time_double
+from pyspedas import time_string
 
 
 def tplot_average(tvar, trange, quiet=False):
@@ -20,7 +20,7 @@ def tplot_average(tvar, trange, quiet=False):
     -------
         Average value of the tplot variable
     """
-    data = get_data(tvar)
+    data = get_data(tvar, dt=True)
 
     if data is None:
         logging.error('Error reading: ' + tvar)
@@ -30,10 +30,10 @@ def tplot_average(tvar, trange, quiet=False):
         logging.error('Error: time range must be two element array.')
         return
 
-    trange = time_double(trange)
+    trange = time_string(trange)
 
-    t0 = np.min(trange)
-    t1 = np.max(trange)
+    t0 = np.datetime64(trange[0])
+    t1 = np.datetime64(trange[-1])
 
     if not quiet:
         logging.info('Averaging ' + tvar)

@@ -16,7 +16,7 @@ def mms_fpi_split_tensor(tensor_variable):
         List of variables created.
     """
 
-    data = get_data(tensor_variable)
+    data = get_data(tensor_variable, dt=True)
 
     if data is None:
         logging.error('Problem returning data from the variable: ' + tensor_variable)

@@ -25,11 +25,11 @@ class FPITestCases(unittest.TestCase):
         pa_dist = mms_pad_fpi(dists_e, trange=trange, mag_data='mms1_fgm_b_gse_brst_l2_bvec')
         pa_dist = mms_pad_fpi(dists, time='2015-10-16/13:06:30', units='eflux', mag_data='mms1_fgm_b_gse_brst_l2_bvec')
         pa_dist = mms_pad_fpi(dists,
-                              subtract_bulk=True,
-                              time='2015-10-16/13:06:30',
-                              units='eflux',
-                              mag_data='mms1_fgm_b_gse_brst_l2_bvec',
-                              vel_data='mms1_dis_bulkv_gse_brst')
+                      subtract_bulk=True,
+                      time='2015-10-16/13:06:30',
+                      units='eflux',
+                      mag_data='mms1_fgm_b_gse_brst_l2_bvec',
+                      vel_data='mms1_dis_bulkv_gse_brst')
 
     def test_split_tensors(self):
         data = pyspedas.mms.fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'],
