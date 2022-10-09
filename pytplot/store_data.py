@@ -144,9 +144,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     #         times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
     # If given a list of datetime string, convert times to seconds since epoch
     if isinstance(times[0], float) or isinstance(times[0], str) or isinstance(times[0], int):
-        times = np.array(np.array(times), dtype='datetime64[s]')
-    elif isinstance(times[0], np.ndarray):
-        times = np.array(times, dtype='datetime64[s]')
+        times = [datetime.datetime.utcfromtimestamp(time) for time in times]
 
     if len(times) != len(values):
         print("The lengths of x and y do not match!")
