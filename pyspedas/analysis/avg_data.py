@@ -6,6 +6,7 @@ Creates a new pytplot variable as the time average of original.
     Similar to avg_data.pro in IDL SPEDAS.
 
 """
+from copy import deepcopy
 import logging
 import numpy as np
 import pyspedas
@@ -68,9 +69,9 @@ def avg_data(names, dt=None, width=60, noremainder=False,
     for old_idx, old in enumerate(old_names):
         new = n_names[old_idx]
 
-        d = pytplot.data_quants[old].copy()
-        data = d.values
-        time = d.time.values
+        data, time = pytplot.get_data(old)
+        data = deepcopy(data)
+        metadata = pytplot.get_data(old, metadata=True)
 
         dim = data.shape
         dim0 = dim[0]
@@ -152,8 +153,6 @@ def avg_data(names, dt=None, width=60, noremainder=False,
                 new_data.append(nd0)
                 time0 = time1
 
-        pytplot.store_data(new, data={'x': new_time, 'y': new_data})
-        # copy attributes
-        pytplot.data_quants[new].attrs = d.attrs.copy()
+        pytplot.store_data(new, data={'x': new_time, 'y': new_data}, attr_dict=metadata)
 
         logging.info('avg_data was applied to: ' + new)
