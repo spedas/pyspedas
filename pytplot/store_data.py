@@ -151,8 +151,6 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             times = [datetime.datetime.utcfromtimestamp(float(time)) for time in times]
         elif isinstance(times[0], str):
             times = [parse(time).replace(tzinfo=datetime.timezone.utc).timestamp() for time in times]
-        else:
-            print('unknown type: ' + str(type(times[0])))
 
     if len(times) != len(values):
         print("The lengths of x and y do not match!")
