@@ -53,7 +53,6 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
     else:
         data_dir = CONFIG['local_data_dir']
 
-
     # directory and file name search patterns
     #   -assume directories are of the form:
     #      (srvy, SITL): spacecraft/instrument/rate/level[/datatype]/year/month/

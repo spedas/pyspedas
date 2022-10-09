@@ -44,7 +44,7 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
                 if not data_exists(flag_var):
                     continue
                     
-                flagged = get_data(flag_var)
+                flagged = get_data(flag_var, dt=True)
 
                 if flagged is None:
                     continue
@@ -55,7 +55,7 @@ def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
                 for var_specifier in ['_b_gse_', '_b_gsm_', '_b_dmpa_', '_b_bcs_']:
                     var_name = 'mms'+str(this_probe)+'_'+instrument+var_specifier+this_dr+'_'+this_lvl+suffix
                     if var_name in tplot_vars:
-                        times, var_data = get_data(var_name)
+                        times, var_data = get_data(var_name, dt=True)
                         metadata = get_data(var_name, metadata=True)
                         var_data[flagged_data] = np.nan
                         store_data(var_name, data={'x': times, 'y': var_data}, attr_dict=metadata)

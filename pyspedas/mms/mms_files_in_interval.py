@@ -1,7 +1,7 @@
-
 import re
 from dateutil.parser import parse
 from bisect import bisect_left
+
 
 def mms_files_in_interval(in_files, trange):
     '''

@@ -1,4 +1,3 @@
-
 import csv
 import logging
 import requests
@@ -6,8 +5,6 @@ import numpy as np
 from pytplot import store_data, options
 from pyspedas import time_double, time_string
 
-logging.captureWarnings(True)
-logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def get_mms_srois(start_time=None, end_time=None, sc_id=None):
     if start_time is None:

@@ -1,4 +1,3 @@
-
 from getpass import getpass
 from scipy.io import readsav
 import requests
@@ -7,8 +6,6 @@ import pickle
 import logging
 import warnings
 
-logging.captureWarnings(True)
-logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_login_lasp(always_prompt=False, headers={}):
     '''

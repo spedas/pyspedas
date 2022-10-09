@@ -80,7 +80,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
     instrument = tname.split('_')[1].upper()
     data_rate = tname.split('_')[3].capitalize()
 
-    data = get_data(tname)
+    data = get_data(tname, dt=True)
     metadata = get_data(tname, metadata=True)
 
     if metadata is None:

@@ -7,6 +7,9 @@ Similar to deriv_data.pro in IDL SPEDAS.
 
 """
 import logging
+
+import numpy as np
+
 import pyspedas
 import pytplot
 
@@ -56,13 +59,6 @@ def deriv_data(names, new_names=None, suffix=None, overwrite=None):
         n_names = [s + suffix for s in old_names]
 
     for i, old in enumerate(old_names):
-        new = n_names[i]
-
-        if new != old:
-            pyspedas.tcopy(old, new)
-
-        data = pytplot.data_quants[new]
-        data_new = data.differentiate('time').copy()
-        pytplot.data_quants[new].values = data_new.values
-
-        logging.info('deriv_data was applied to: ' + new)
+        data = pytplot.get_data(old, dt=True)
+        pytplot.store_data(n_names[i], data={'x': data.times, 'y': np.gradient(data.y)})
+        logging.info('deriv_data was applied to: ' + n_names[i])

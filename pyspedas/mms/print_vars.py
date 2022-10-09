@@ -1,6 +1,7 @@
 import logging
 from pyspedas.mms.mms_config import CONFIG
 
+
 # the following decorator prints the loaded tplot variables after each load routine call
 def print_vars(func):
     def wrapper(*args, **kwargs):

@@ -33,7 +33,9 @@ def mms_pgs_make_phi_spec(data_in, resolution=32):
     for bin_idx in range(0, len(outbins)-1):
         this_bin = np.argwhere((phi_flat >= outbins[bin_idx]) & (phi_flat < outbins[bin_idx+1]))
         if len(this_bin) > 0:
-            ave[bin_idx] += nansum(data_flat[this_bin])/nansum(bins_flat[this_bin])
+            bins = nansum(bins_flat[this_bin])
+            if bins != 0.0:
+                ave[bin_idx] += nansum(data_flat[this_bin])/bins
     
     y = outbins[0:n_phi]+0.5*(outbins[1::]-outbins[0:n_phi])
 
