@@ -33,7 +33,7 @@ class PGSTests(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dis_dist_brst_gyro'))
 
     def test_fpi_disable_pe_corr(self):
-        mms_part_getspec(trange=['2015-10-16/13:06:07', '2015-10-16/13:06:10'],
+        mms_part_getspec(trange=['2015-10-16/13:06:07', '2015-10-16/13:06:08'],
                          data_rate='brst',
                          species='e',
                          output='energy',
@@ -41,7 +41,7 @@ class PGSTests(unittest.TestCase):
         self.assertTrue(data_exists('mms1_des_dist_brst_energy'))
 
     def test_fpi_brst_e(self):
-        mms_part_getspec(trange=['2015-10-16/13:06:07', '2015-10-16/13:06:10'],
+        mms_part_getspec(trange=['2015-10-16/13:06:07', '2015-10-16/13:06:08'],
                          data_rate='brst',
                          species='e',
                          output='energy theta phi pa gyro moments')
@@ -55,7 +55,7 @@ class PGSTests(unittest.TestCase):
         self.assertTrue(data_exists('mms1_des_dist_brst_gyro'))
 
     def test_fpi_brst_limits(self):
-        mms_part_getspec(trange=['2015-10-16/13:06:07', '2015-10-16/13:06:10'],
+        mms_part_getspec(trange=['2015-10-16/13:06:07', '2015-10-16/13:06:08'],
                          data_rate='brst',
                          species='e',
                          theta=[0, 90],

@@ -7,9 +7,11 @@ Allowed wildcards are ? for a single character, * from multiple characters.
 Similar to tinterpol.pro in IDL SPEDAS.
 
 """
+import datetime
 import logging
 from pyspedas import tnames
 from pytplot import get_data, store_data
+import numpy as np
 
 
 def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
@@ -66,7 +68,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
         n_names = newname
 
     if isinstance(interp_to, str):
-        interp_to_data = get_data(interp_to)
+        interp_to_data = get_data(interp_to, dt=True)
 
         if interp_to_data is None:
             logging.error('Error, tplot variable: ' + interp_to + ' not found.')
@@ -78,6 +80,9 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     for name_idx, name in enumerate(old_names):
         xdata = get_data(name, xarray=True)
+
+        if not isinstance(interp_to_times[0], datetime.datetime) and not isinstance(interp_to_times[0], np.datetime64):
+            interp_to_times = [datetime.datetime.utcfromtimestamp(time) for time in interp_to_times]
         xdata_interpolated = xdata.interp({'time': interp_to_times},
                                           method=method)
 

@@ -35,7 +35,7 @@ def mms_split_fgm_data(probe, data_rate, level, instrument, suffix=''):
         if not data_exists(tplot_name):
             continue
 
-        fgm_data = get_data(tplot_name)
+        fgm_data = get_data(tplot_name, dt=True)
 
         if fgm_data is None:
             continue

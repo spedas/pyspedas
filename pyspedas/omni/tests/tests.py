@@ -1,6 +1,5 @@
 import os
 import unittest
-import pandas as pd
 from pyspedas.utilities.data_exists import data_exists
 import pyspedas
 
@@ -9,8 +8,7 @@ class LoadTestCases(unittest.TestCase):
     def test_utc_timestamp_regression(self):
         varname = 'BX_GSE'
         data_omni = pyspedas.omni.data(trange=['2010-01-01/00:00:00', '2010-01-02/00:00:00'],notplot=True,varformat=varname,time_clip=True)
-        date_time = pd.to_datetime(data_omni[varname]['x'],unit='s')
-        self.assertTrue(str(date_time[0]) == '2010-01-01 00:00:00')
+        self.assertTrue(str(data_omni[varname]['x'][0]) == '2010-01-01 00:00:00')
 
     def test_load_hro2_data(self):
         omni_vars = pyspedas.omni.data()

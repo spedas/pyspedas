@@ -35,7 +35,7 @@ class GmagTestCases(unittest.TestCase):
 
     def test_load_gmag_data(self):
         """Load gmag."""
-        pyspedas.themis.gmag(varnames=['thg_mag_amer'])
+        pyspedas.themis.gmag(varnames=['thg_mag_amer'], sites='amer')
         self.assertTrue(data_exists('thg_mag_amer'))
 
 
