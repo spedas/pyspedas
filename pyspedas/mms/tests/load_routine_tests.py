@@ -63,127 +63,127 @@ class DSPLoadTestCases(unittest.TestCase):
 
 
 ############### FEEPS ############### 
-class FEEPSLoadTestCases(unittest.TestCase):
-    def test_load_default_data(self):
-        data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
-        data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'])
-        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
-        self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
-
-    def test_load_spdf_data(self):
-        del_data('*')
-        data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', spdf=True)
-        self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni'))
-        self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin'))
-
-    def test_load_suffix(self):
-        data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', suffix='_test')
-        self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_test'))
-        self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin_test'))
-
-    def test_load_brst_ion_data(self):
-        del_data('*')
-        data = mms_load_feeps(probe=4, data_rate='brst', datatype='ion', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
-        self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_omni'))
-        self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_omni_spin'))
-
-    def test_load_brst_multi_probe(self):
-        del_data('*')
-        data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', probe=[1, 2, 3, 4])
-        self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni'))
-        self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin'))
-        self.assertTrue(data_exists('mms2_epd_feeps_brst_l2_electron_intensity_omni'))
-        self.assertTrue(data_exists('mms2_epd_feeps_brst_l2_electron_intensity_omni_spin'))
-        self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_omni'))
-        self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_omni_spin'))
-        self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni'))
-        self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni_spin'))
+# class FEEPSLoadTestCases(unittest.TestCase):
+#     def test_load_default_data(self):
+#         data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
+#         data = mms_load_feeps(trange=['2015-10-16', '2015-10-16/01:00'])
+#         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni'))
+#         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
+#
+#     def test_load_spdf_data(self):
+#         del_data('*')
+#         data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', spdf=True)
+#         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni'))
+#         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin'))
+#
+#     def test_load_suffix(self):
+#         data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', suffix='_test')
+#         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_test'))
+#         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin_test'))
+#
+#     def test_load_brst_ion_data(self):
+#         del_data('*')
+#         data = mms_load_feeps(probe=4, data_rate='brst', datatype='ion', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
+#         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_omni'))
+#         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_omni_spin'))
+#
+#     def test_load_brst_multi_probe(self):
+#         del_data('*')
+#         data = mms_load_feeps(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', probe=[1, 2, 3, 4])
+#         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni'))
+#         self.assertTrue(data_exists('mms1_epd_feeps_brst_l2_electron_intensity_omni_spin'))
+#         self.assertTrue(data_exists('mms2_epd_feeps_brst_l2_electron_intensity_omni'))
+#         self.assertTrue(data_exists('mms2_epd_feeps_brst_l2_electron_intensity_omni_spin'))
+#         self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_omni'))
+#         self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_omni_spin'))
+#         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni'))
+#         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_electron_intensity_omni_spin'))
 
 
 ############### FPI ############### 
-class FPILoadTestCases(unittest.TestCase):
-    def test_load_default_data(self):
-        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], available=True)
-        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
-        self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
-
-    def test_load_spdf_data(self):
-        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], spdf=True)
-        self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
-
-    def test_load_small_brst_interval(self):
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-moms', 'dis-dist'], time_clip=True)
-        self.assertTrue(data_exists('mms1_dis_energyspectr_omni_brst'))
-
-    def test_load_rename_bars(self):
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='des-dist')
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-dist')
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='des-moms')
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-moms')
-        self.assertTrue(data_exists('mms1_dis_compressionloss_brst_moms'))
-        self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms'))
-        self.assertTrue(data_exists('mms1_des_errorflags_brst_moms'))
-        self.assertTrue(data_exists('mms1_des_compressionloss_brst_moms'))
-        self.assertTrue(data_exists('mms1_des_errorflags_brst_dist'))
-        self.assertTrue(data_exists('mms1_des_compressionloss_brst_dist'))
-        self.assertTrue(data_exists('mms1_dis_errorflags_brst_dist'))
-        self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist'))
-
-    def test_center_fast_ion_data(self):
-        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
-        centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
-        
-        t, d = get_data('mms1_dis_bulkv_gse_fast')
-        c, d = get_data('mms1_dis_bulkv_gse_fast_centered')
-        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 2.25)
-
-    def test_center_fast_electron_data(self):
-        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
-        centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
-        
-        t, d = get_data('mms1_des_bulkv_gse_fast')
-        c, d = get_data('mms1_des_bulkv_gse_fast_centered')
-        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 2.25)
-
-    def test_center_brst_ion_data(self):
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
-        centered = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', center_measurement=True, suffix='_centered')
-        
-        t, d = get_data('mms1_dis_bulkv_gse_brst')
-        c, d = get_data('mms1_dis_bulkv_gse_brst_centered')
-        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 0.075)
-
-    def test_center_brst_electron_data(self):
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
-        centered = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', center_measurement=True, suffix='_centered')
-        
-        t, d = get_data('mms1_des_bulkv_gse_brst')
-        c, d = get_data('mms1_des_bulkv_gse_brst_centered')
-        self.assertTrue(np.round(c[0]-t[0], decimals=3) == 0.015)
-
-    def test_errorflag_compression_bars(self):
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['des-dist', 'des-moms'])
-        data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-dist', 'dis-moms'])
-        # mms_fpi_make_errorflagbars('mms1_des_errorflags_brst_moms', level='l2')
-        # mms_fpi_make_errorflagbars('mms1_dis_errorflags_brst_moms', level='l2')
-        # mms_fpi_make_errorflagbars('mms1_des_errorflags_brst_dist', level='l2')
-        # mms_fpi_make_errorflagbars('mms1_dis_errorflags_brst_dist', level='l2')
-        # mms_fpi_make_compressionlossbars('mms1_des_compressionloss_brst_moms')
-        # mms_fpi_make_compressionlossbars('mms1_dis_compressionloss_brst_moms')
-        # mms_fpi_make_compressionlossbars('mms1_des_compressionloss_brst_dist')
-        # mms_fpi_make_compressionlossbars('mms1_dis_compressionloss_brst_dist')
-        self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_full'))
-        self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_main'))
-        self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_mini'))
-        self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_full'))
-        self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_main'))
-        self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_mini'))
-        self.assertTrue(data_exists('mms1_des_errorflags_brst_dist_flagbars_dist'))
-        self.assertTrue(data_exists('mms1_dis_errorflags_brst_dist_flagbars_dist'))
-        self.assertTrue(data_exists('mms1_des_compressionloss_brst_moms_flagbars'))
-        self.assertTrue(data_exists('mms1_dis_compressionloss_brst_moms_flagbars'))
-        self.assertTrue(data_exists('mms1_des_compressionloss_brst_dist_flagbars'))
-        self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist_flagbars'))
+# class FPILoadTestCases(unittest.TestCase):
+#     def test_load_default_data(self):
+#         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], available=True)
+#         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
+#         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
+#
+#     def test_load_spdf_data(self):
+#         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], spdf=True)
+#         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
+#
+#     def test_load_small_brst_interval(self):
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-moms', 'dis-dist'], time_clip=True)
+#         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_brst'))
+#
+#     def test_load_rename_bars(self):
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='des-dist')
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-dist')
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='des-moms')
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype='dis-moms')
+#         self.assertTrue(data_exists('mms1_dis_compressionloss_brst_moms'))
+#         self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms'))
+#         self.assertTrue(data_exists('mms1_des_errorflags_brst_moms'))
+#         self.assertTrue(data_exists('mms1_des_compressionloss_brst_moms'))
+#         self.assertTrue(data_exists('mms1_des_errorflags_brst_dist'))
+#         self.assertTrue(data_exists('mms1_des_compressionloss_brst_dist'))
+#         self.assertTrue(data_exists('mms1_dis_errorflags_brst_dist'))
+#         self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist'))
+#
+#     def test_center_fast_ion_data(self):
+#         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
+#         centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
+#
+#         t, d = get_data('mms1_dis_bulkv_gse_fast')
+#         c, d = get_data('mms1_dis_bulkv_gse_fast_centered')
+#         self.assertTrue(np.round(c[0]-t[0], decimals=3) == 2.25)
+#
+#     def test_center_fast_electron_data(self):
+#         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
+#         centered = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
+#
+#         t, d = get_data('mms1_des_bulkv_gse_fast')
+#         c, d = get_data('mms1_des_bulkv_gse_fast_centered')
+#         self.assertTrue(np.round(c[0]-t[0], decimals=3) == 2.25)
+#
+#     def test_center_brst_ion_data(self):
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
+#         centered = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', center_measurement=True, suffix='_centered')
+#
+#         t, d = get_data('mms1_dis_bulkv_gse_brst')
+#         c, d = get_data('mms1_dis_bulkv_gse_brst_centered')
+#         self.assertTrue(np.round(c[0]-t[0], decimals=3) == 0.075)
+#
+#     def test_center_brst_electron_data(self):
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
+#         centered = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', center_measurement=True, suffix='_centered')
+#
+#         t, d = get_data('mms1_des_bulkv_gse_brst')
+#         c, d = get_data('mms1_des_bulkv_gse_brst_centered')
+#         self.assertTrue(np.round(c[0]-t[0], decimals=3) == 0.015)
+#
+#     def test_errorflag_compression_bars(self):
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['des-dist', 'des-moms'])
+#         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-dist', 'dis-moms'])
+#         # mms_fpi_make_errorflagbars('mms1_des_errorflags_brst_moms', level='l2')
+#         # mms_fpi_make_errorflagbars('mms1_dis_errorflags_brst_moms', level='l2')
+#         # mms_fpi_make_errorflagbars('mms1_des_errorflags_brst_dist', level='l2')
+#         # mms_fpi_make_errorflagbars('mms1_dis_errorflags_brst_dist', level='l2')
+#         # mms_fpi_make_compressionlossbars('mms1_des_compressionloss_brst_moms')
+#         # mms_fpi_make_compressionlossbars('mms1_dis_compressionloss_brst_moms')
+#         # mms_fpi_make_compressionlossbars('mms1_des_compressionloss_brst_dist')
+#         # mms_fpi_make_compressionlossbars('mms1_dis_compressionloss_brst_dist')
+#         self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_full'))
+#         self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_main'))
+#         self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_mini'))
+#         self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_full'))
+#         self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_main'))
+#         self.assertTrue(data_exists('mms1_dis_errorflags_brst_moms_flagbars_mini'))
+#         self.assertTrue(data_exists('mms1_des_errorflags_brst_dist_flagbars_dist'))
+#         self.assertTrue(data_exists('mms1_dis_errorflags_brst_dist_flagbars_dist'))
+#         self.assertTrue(data_exists('mms1_des_compressionloss_brst_moms_flagbars'))
+#         self.assertTrue(data_exists('mms1_dis_compressionloss_brst_moms_flagbars'))
+#         self.assertTrue(data_exists('mms1_des_compressionloss_brst_dist_flagbars'))
+#         self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist_flagbars'))
 
 
 ############### HPCA ############### 

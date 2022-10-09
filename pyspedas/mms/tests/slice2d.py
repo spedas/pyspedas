@@ -7,7 +7,8 @@ from pyspedas.particles.spd_units_string import spd_units_string
 class SliceTests(unittest.TestCase):
     def test_fpi_brst_rotations(self):
         time = '2015-10-16/13:06:30'
-        rotations = ['xy', 'xz', 'bv', 'be', 'xvel', 'perp', 'perp_xy', 'perp_xz', 'perp_yz', 'b_exb', 'perp1-perp2']
+        # rotations = ['xy', 'xz', 'bv', 'be', 'xvel', 'perp', 'perp_xy', 'perp_xz', 'perp_yz', 'b_exb', 'perp1-perp2']
+        rotations = ['bv']
         species = ['i']
         for spc in species:
             for rotation in rotations:
@@ -47,13 +48,13 @@ class SliceTests(unittest.TestCase):
         time = '2015-10-16/13:06:30'
         mms_part_slice2d(time=time, probe='1', species='i', data_rate='brst', rotation='xy',
                          interpolation='geometric', save_png='test_fpi_brst_window',
-                         window=15, display=False)
+                         window=3, display=False)
 
     def test_fpi_window_center(self):
         time = '2015-10-16/13:06:30'
         mms_part_slice2d(time=time, probe='1', species='i', data_rate='brst', rotation='xy',
                          interpolation='geometric', save_png='test_fpi_brst_window_center',
-                         window=15, center_time=True, display=False)
+                         window=3, center_time=True, display=False)
 
     def test_fpi_custom_rotation(self):
         rot = np.zeros((3, 3))
@@ -93,7 +94,7 @@ class SliceTests(unittest.TestCase):
                          save_png='test_hpca_brst', display=False)
 
     def test_hpca_trange(self):
-        trange = ['2015-10-16/13:06', '2015-10-16/13:07']
+        trange = ['2015-10-16/13:06:30', '2015-10-16/13:06:40']
         mms_part_slice2d(trange=trange, probe='1', species='hplus', instrument='hpca', data_rate='brst', rotation='xy',
                          save_png='test_hpca_brst_trange', display=False)
 
