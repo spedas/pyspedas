@@ -24,7 +24,7 @@ class WavpolTestCases(unittest.TestCase):
         fac_matrix_make(mms_fgm_name, other_dim='xgse', newname=mms_fgm_name + '_fac_mat')
         tinterpol('mms4_fgm_b_gse_srvy_l2_bvec_fac_mat', mms_scm_name)
         fac_mat = get_data('mms4_fgm_b_gse_srvy_l2_bvec_fac_mat-itrp')
-        scm_data = get_data(mms_scm_name)
+        scm_data = get_data(mms_scm_name, dt=True)
         scm_fac = [fac_mat.y[idx, :, :] @ scm_data.y[idx, :] for idx in range(0, len(scm_data.y[:, 0]))]
         store_data(mms_scm_name + '_fac', data={'x': scm_data.times, 'y': scm_fac})
         # number of points for FFT

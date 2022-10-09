@@ -19,7 +19,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mvn_kp::spacecraft::geo_x'))
 
     def test_load_mag_data(self):
-        data = maven.mag()
+        data = maven.mag(datatype='ss1s')
         self.assertTrue(data_exists('OB_B'))
 
     def test_load_sta_data(self):
