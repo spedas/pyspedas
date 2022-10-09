@@ -35,8 +35,7 @@ def pwr_spec(tvar, nbp=256, nsp=128, name=None):
         >>> pytplot.tplot('data_0_pwrspec')
     """
 
-    x = pytplot.data_quants[tvar].coords['time']
-    y = pytplot.data_quants[tvar].values.squeeze()
+    x, y = pytplot.get_data(tvar)
 
     if len(y.shape) > 1:
         print("Can only perform action for a single line")
@@ -54,7 +53,6 @@ def pwr_spec(tvar, nbp=256, nsp=128, name=None):
             continue
 
         median_diff_between_points = np.median(np.diff(x_n))
-
         w = signal.get_window("hanning", nbp)
         f,pxx = signal.periodogram(y_n, fs=(1/median_diff_between_points), window=w, detrend='linear')
         f = f[1:-1]

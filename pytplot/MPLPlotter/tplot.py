@@ -104,7 +104,7 @@ def tplot(variables, var_label=None,
     fig.subplots_adjust(hspace=vertical_spacing)
     
     for idx, variable in enumerate(variables):
-        var_data_org = pytplot.get_data(variable)
+        var_data_org = pytplot.get_data(variable, dt=True)
         
         if var_data_org is None:
             print('Variable not found: ' + variable)
@@ -185,7 +185,8 @@ def tplot(variables, var_label=None,
         # set the x-axis range, if it was set with xlim or tlimit
         if pytplot.tplot_opt_glob.get('x_range') is not None:
             x_range = pytplot.tplot_opt_glob['x_range']
-            this_axis.set_xlim([datetime.fromtimestamp(x_range[0], tz=timezone.utc), datetime.fromtimestamp(x_range[1], tz=timezone.utc)])
+            x_range = np.array(x_range, dtype='datetime64[s]')
+            this_axis.set_xlim(x_range)
             time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
             if len(time_idxs) == 0:
                 print('No data found in the time range: ' + variable)
@@ -196,7 +197,8 @@ def tplot(variables, var_label=None,
             time_idxs = np.arange(len(var_data_times))
 
         # the data are stored as unix times, but matplotlib wants datatime objects
-        var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data_times]
+        # var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data_times]
+        var_times = var_data_times
 
         # set some more plot options
         yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
@@ -356,7 +358,7 @@ def tplot(variables, var_label=None,
         for label in var_label:
             if isinstance(label, int):
                 label = tnames[label]
-            label_data = pytplot.get_data(label, xarray=True)
+            label_data = pytplot.get_data(label, xarray=True, dt=True)
 
             if label_data is None:
                 print('Variable not found: ' + label)
@@ -370,9 +372,9 @@ def tplot(variables, var_label=None,
             axis_delta = axis_delta - num_panels*0.1
             new_xaxis = this_axis.secondary_xaxis(axis_delta)
             xaxis_ticks = this_axis.get_xticks().tolist()
-            xaxis_ticks_dt = [mpl.dates.num2date(tick_val) for tick_val in xaxis_ticks]
-            xaxis_ticks_unix = [tick_val.timestamp() for tick_val in xaxis_ticks_dt]
-            xaxis_labels = get_var_label_ticks(label_data, xaxis_ticks_unix)
+            xaxis_ticks_dt = [np.datetime64(mpl.dates.num2date(tick_val).isoformat()) for tick_val in xaxis_ticks]
+            # xaxis_ticks_unix = [tick_val.timestamp() for tick_val in xaxis_ticks_dt]
+            xaxis_labels = get_var_label_ticks(label_data, xaxis_ticks_dt)
             new_xaxis.set_xticks(xaxis_ticks_dt)
             new_xaxis.set_xticklabels(xaxis_labels)
             ytitle = pytplot.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
