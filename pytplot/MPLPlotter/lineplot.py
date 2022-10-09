@@ -28,6 +28,8 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
             # to the right of the panel (just like in IDL)
             legend_location = 'center left'
             bbox_to_anchor = (1.04, 0.5)
+    else:
+        legend_location = 'upper right'
 
     legend_size = yaxis_options.get('legend_size')
     legend_shadow = yaxis_options.get('legend_shadow')
