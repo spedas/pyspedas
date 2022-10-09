@@ -13,6 +13,7 @@ import xarray as xr
 from pytplot import tplot_utilities as utilities
 import copy
 import warnings
+from dateutil.parser import parse
 tplot_num = 1
 
 
@@ -143,8 +144,15 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     #     for tt, time in enumerate(times):
     #         times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
     # If given a list of datetime string, convert times to seconds since epoch
-    if isinstance(times[0], float) or isinstance(times[0], str) or isinstance(times[0], int):
-        times = [datetime.datetime.utcfromtimestamp(time) for time in times]
+    if not isinstance(times[0], datetime.datetime):
+        if isinstance(times[0], float) or isinstance(times[0], np.float64):
+            times = [datetime.datetime.utcfromtimestamp(time) for time in times]
+        elif isinstance(times[0], int) or isinstance(times[0], np.int64):
+            times = [datetime.datetime.utcfromtimestamp(float(time)) for time in times]
+        elif isinstance(times[0], str):
+            times = [parse(time).replace(tzinfo=datetime.timezone.utc).timestamp() for time in times]
+        else:
+            print('unknown type: ' + str(type(times[0])))
 
     if len(times) != len(values):
         print("The lengths of x and y do not match!")
