@@ -94,7 +94,7 @@ class SliceTests(unittest.TestCase):
                          save_png='test_hpca_brst', display=False)
 
     def test_hpca_trange(self):
-        trange = ['2015-10-16/13:06:30', '2015-10-16/13:06:40']
+        trange = ['2015-10-16/13:06:20', '2015-10-16/13:06:40']
         mms_part_slice2d(trange=trange, probe='1', species='hplus', instrument='hpca', data_rate='brst', rotation='xy',
                          save_png='test_hpca_brst_trange', display=False)
 
