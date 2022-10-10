@@ -130,9 +130,9 @@ bokeh_plotters = {'bkTVarFigure1D': HTMLPlotter.TVarFigure1D,
                   'bkTVarFigureAlt': HTMLPlotter.TVarFigureAlt,
                   'bkTVarFigureSpec': HTMLPlotter.TVarFigureSpec}
 
-from .store_data import store_data
+from .store_data import store_data, store
 from .tplot import tplot
-from .get_data import get_data
+from .get_data import get_data, get
 from .xlim import xlim
 from .ylim import ylim
 from .zlim import zlim

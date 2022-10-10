@@ -88,3 +88,39 @@ def get_data(name, xarray=False, metadata=False, dt=False):
     else:
         variable = namedtuple('variable', ['times', 'y'])
         return variable(times, temp_data_quant.data)
+
+
+def get(name, xarray=False, metadata=False, dt=True):
+    """
+    This function extracts the data from the tplot Variables stored in memory.
+
+    Parameters:
+        name : str
+            Name of the tplot variable
+        xarray : bool
+            Keep the variable as an xarray object
+        metadata : bool
+            Return the metadata of the object (the attr dictionary) instead of the actual data
+        dt : bool
+            Return the times as np.datetime64[ns] objects instead of unix times
+            (significantly faster)
+
+    Returns: tuple of data/dimensions/metadata stored in pytplot
+        time_val : numpy array of seconds since 1970
+        data_val : n-dimensional array of data
+        spec_bins_val (if exists) : spectral bins if the plot is a spectrogram
+        v1_val (if exists) : numpy array of v1 dimension coordinates
+        v2_val {if exists} : numpy array of v2 dimension coordinates
+        v3_val (if exists) : numpy array of v3 dimension coordinates
+
+
+    Examples:
+        >>> # Retrieve the data from Variable 1
+        >>> import pytplot
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [1,2,3,4,5]
+        >>> pytplot.store("Variable1", data={'x':x_data, 'y':y_data})
+        >>> time, data = pytplot.get("Variable1")
+
+    """
+    return get_data(name, xarray=xarray, metadata=metadata, dt=dt)

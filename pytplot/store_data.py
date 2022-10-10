@@ -314,3 +314,71 @@ def _check_spec_bins_ordering(times, spec_bins):
     else:
         ascending = spec_bins[0].iloc[0] < spec_bins[1].iloc[0]
     return ascending
+
+
+def store(name, data=None, delete=False, newname=None, metadata={}):
+    """
+    This function creates a "Tplot Variable" based on the inputs, and
+    stores this data in memory.  Tplot Variables store all of the information
+    needed to generate a plot.
+
+    Parameters:
+        name : str
+            Name of the tplot variable that will be created
+        data : dict
+            A python dictionary object.
+
+            'x' should be a 1-dimensional array that represents the data's x axis.  Typically this data is time,
+            represented in seconds since epoch (January 1st 1970)
+
+            'y' should be the data values. This can be 2 dimensions if multiple lines or a spectrogram are desired.
+
+            'v' is optional, and is only used for spectrogram plots.  This will be a list of bins to be used.  If this
+            is provided, then 'y' should have dimensions of x by z.
+
+            'v1/v2/v3/etc' are also optional, and are only used for to spectrogram plots.  These will act as the coordinates
+            for 'y' if 'y' has numerous dimensions.  By default, 'v2' is plotted in spectrogram plots.
+
+            'x' and 'y' can be any data format that can be read in by the pandas module.  Python lists, numpy arrays,
+            or any pandas data type will all work.
+        delete : bool, optional
+            Deletes the tplot variable matching the "name" parameter
+        newname: str
+            Renames TVar to new name
+        attr_dict: dict
+            A dictionary object of attributes (these do not affect routines in pytplot, this is merely to keep metadata alongside the file)
+
+    .. note::
+        If you want to combine multiple tplot variables into one, simply supply the list of tplot variables to the
+        "data" parameter.  This will cause the data to overlay when plotted.
+
+    Returns:
+        None
+
+    Examples:
+        >>> # Store a single line
+        >>> import pytplot
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [1,2,3,4,5]
+        >>> pytplot.store("Variable1", data={'x':x_data, 'y':y_data})
+
+        >>> # Store a two lines
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
+        >>> pytplot.store("Variable2", data={'x':x_data, 'y':y_data})
+
+        >>> # Store a spectrogram
+        >>> x_data = [1,2,3]
+        >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
+        >>> v_data = [1,2,3]
+        >>> pytplot.store("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+
+        >>> # Combine two different line plots
+        >>> pytplot.store("Variable1and2", data=['Variable1', 'Variable2'])
+
+        >>> #Rename TVar
+        >>> pytplot.store('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+        >>> pytplot.store('a',newname='f')
+    """
+    return store_data(name, data=data, delete=delete, newname=newname, attr_dict=metadata)
+
