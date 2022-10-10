@@ -10,7 +10,7 @@ jobs:
       matrix:
         #python-version: [3.5, 3.6, 3.7, 3.8]
         #os: [ubuntu-latest, macos-latest, windows-latest]
-        os: [macos-latest]
+        os: [ubuntu-latest]
         #os: [ubuntu-latest]
         #os: [windows-latest]
         python-version: [3.9]
@@ -21,26 +21,39 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast'
     - name: Install dependencies (Linux)
+      env:
+        MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
+        MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
       run: |
           python -m pip install --upgrade pip
+          pip install --upgrade https://github.com/MAVENSDC/PyTplot/archive/matplotlib-superfast.zip
           pip install -r requirements.txt
           pip install coveralls
+          pip install basemap
           python -m pyspedas.mms.tests.setup_tests
-      if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/master'
+      if: matrix.os == 'ubuntu-latest' && (github.ref == 'refs/heads/master'  || github.ref == 'refs/heads/eric-superfast')
     - name: Install dependencies (Windows)
+      env:
+        MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
+        MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install basemap
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'windows-latest' && github.ref == 'refs/heads/master'
     - name: Install dependencies (macOS)
+      env:
+        MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
+        MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install basemap
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'macos-latest' && github.ref == 'refs/heads/master'
     - name: Lint with flake8
@@ -48,22 +61,52 @@ jobs:
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude 'erg'
         # exit-zero treats all errors as warnings. 
-        flake8 . --count --exit-zero --max-complexity=10 --statistics # --max-line-length=127
+        flake8 . --count --exit-zero --max-complexity=10 --statistics # --max-line-length=127 --exclude 'erg'
     - name: Test with unittest
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        SPEDAS_DATA_DIR: data
+        ACE_DATA_DIR: ace_data/
+        CLUSTER_DATA_DIR: cluster_data/
+        DSC_DATA_DIR: dsc_data/
+        CSSWE_DATA_DIR: csswe_data/
+        EQUATORS_DATA_DIR: eqs_data/
+        FAST_DATA_DIR: fast_data/
+        GEOTAIL_DATA_DIR: geotail_data/
+        GOES_DATA_DIR: goes_data/
+        IMAGE_DATA_DIR: img_data/
+        MICA_DATA_DIR: mica_data/
+        MMS_DATA_DIR: mms_data/
+        OMNI_DATA_DIR: omni_data/
+        POES_DATA_DIR: poes_data/
+        POLAR_DATA_DIR: polar_data/
+        PSP_DATA_DIR: psp_data/
+        RBSP_DATA_DIR: rbsp_data/
+        SOLO_DATA_DIR: solo_data/
+        STEREO_DATA_DIR: stereo_data/
+        THM_DATA_DIR: themis_data/
+        TWINS_DATA_DIR: twins_data/
+        ULY_DATA_DIR: uly_data/
+        WIND_DATA_DIR: wind_data/
+        PYTPLOT_LOGGING_LEVEL: error
       run: |
+        coverage run -a -m pyspedas.secs.tests.tests
+        coverage run -a -m pyspedas.sosmag.tests.tests
+        coverage run -a -m pyspedas.hapi.tests.tests
+        coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
+        coverage run -a -m pyspedas.mms.tests.mms_part_getspec
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         coverage run -a -m pyspedas.mms.tests.feeps
-        # coverage run -a -m pyspedas.mms.tests.eis
+        coverage run -a -m pyspedas.mms.tests.eis
         coverage run -a -m pyspedas.mms.tests.fpi_tests
         coverage run -a -m pyspedas.mms.tests.file_filter
         coverage run -a -m pyspedas.mms.tests.data_rate_segments
         coverage run -a -m pyspedas.mms.tests.curlometer
         coverage run -a -m pyspedas.mms.tests.wavpol
+        coverage run -a -m pyspedas.mms.tests.slice2d
         coverage run -a -m pyspedas.dscovr.tests.tests
         coverage run -a -m pyspedas.utilities.tests.download_tests
         coverage run -a -m pyspedas.utilities.tests.misc_tests
@@ -95,4 +138,5 @@ jobs:
         coverage run -a -m pyspedas.kyoto.tests.tests
         coverage run -a -m pyspedas.swarm.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
+        coverage run -a -m pyspedas.themis.tests.tests_cal_fit
         coveralls

@@ -4,6 +4,7 @@ import numpy as np
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_convert_flux_units(data_in, units=None):
     """
     Perform unit conversions for MMS particle data structures
@@ -50,21 +51,21 @@ def mms_convert_flux_units(data_in, units=None):
 
     # get mass of species
     if species_lc == 'i':
-        A = 1.0 # H+
+        A = 1.0  # H+
     elif species_lc == 'proton':
-        A = 1.0 # H+
+        A = 1.0  # H+
     elif species_lc == 'hplus':
-        A = 1.0 # H+
+        A = 1.0  # H+
     elif species_lc == 'heplus':
-        A = 4.0 # He+
+        A = 4.0  # He+
     elif species_lc == 'heplusplus':
-        A = 4.0 # He++
+        A = 4.0  # He++
     elif species_lc == 'oplus':
-        A = 16.0 # O+
+        A = 16.0  # O+
     elif species_lc == 'oplusplus':
-        A = 16.0 # O++
+        A = 16.0  # O++
     elif species_lc == 'e':
-        A = 1.0/1836.0 # e-
+        A = 1.0/1836.0  # e-
 
     # scaling factor between df and flux units
     flux_to_df = A**2.0 * 0.5447 * 1e6
@@ -77,8 +78,8 @@ def mms_convert_flux_units(data_in, units=None):
     # rather than multiplying by all applicable in/out factors
     # these exponents should always be integers!
     #    [energy, flux_to_df, cm_to_km]
-    exp_in = [0,0,0]
-    exp_out = [0,0,0]
+    exp_in = [0, 0, 0]
+    exp_out = [0, 0, 0]
 
     # get input/output scaling exponents
     if units_in == 'flux':

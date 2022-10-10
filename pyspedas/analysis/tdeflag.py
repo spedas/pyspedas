@@ -7,6 +7,7 @@ Allowed wildcards are ? for a single character, * from multiple characters.
 Similar to tdeflag.pro in IDL SPEDAS.
 
 """
+import logging
 import pyspedas
 import pytplot
 import numpy
@@ -41,7 +42,7 @@ def tdeflag(names, method=None, new_names=None, suffix=None,
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('tdeflag error: No pytplot names were provided.')
+        logging.error('tdeflag error: No pytplot names were provided.')
         return
 
     if suffix is None:
@@ -72,4 +73,4 @@ def tdeflag(names, method=None, new_names=None, suffix=None,
                 new_data.append(data[j])
         pytplot.store_data(n_names[i], data={'x': new_time, 'y': new_data})
 
-        print('tdeflag was applied to: ' + n_names[i])
+        logging.info('tdeflag was applied to: ' + n_names[i])

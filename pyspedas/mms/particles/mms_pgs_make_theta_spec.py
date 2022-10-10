@@ -9,7 +9,11 @@ try:
 except ImportError:
     nansum = np.nansum
 
+
 def mms_pgs_make_theta_spec(data_in, resolution=16, colatitude=False):
+    """
+
+    """
     data = data_in.copy()
     n_theta = resolution
 
@@ -34,7 +38,9 @@ def mms_pgs_make_theta_spec(data_in, resolution=16, colatitude=False):
     for bin_idx in range(0, len(outbins)-1):
         this_bin = np.argwhere((theta_flat >= outbins[bin_idx]) & (theta_flat < outbins[bin_idx+1]))
         if len(this_bin) > 0:
-            ave[bin_idx] += nansum(data_flat[this_bin])/nansum(bins_flat[this_bin])
+            bins = nansum(bins_flat[this_bin])
+            if bins != 0.0:
+                ave[bin_idx] += nansum(data_flat[this_bin])/bins
 
     if not colatitude:
         data['theta'] = 90.0-data['theta']

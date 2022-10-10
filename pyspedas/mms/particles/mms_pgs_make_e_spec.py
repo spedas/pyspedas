@@ -9,8 +9,11 @@ try:
 except ImportError:
     nansum = np.nansum
 
-def mms_pgs_make_e_spec(data_in):
 
+def mms_pgs_make_e_spec(data_in):
+    """
+
+    """
     data = data_in.copy()
 
     # zero inactive bins to ensure areas with no data are represented as NaN

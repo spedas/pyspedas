@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import pyspedas 
 from pytplot import get_data, store_data, options
@@ -57,7 +58,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     feeps_data = pyspedas.mms.feeps(trange=trange, data_rate=data_rate, probe=probe, level=level)
 
     if len(feeps_data) == 0:
-        print('Problem loading FEEPS data for this time range.')
+        logging.error('Problem loading FEEPS data for this time range.')
         return
 
     # Account for angular response (finite field of view) of instruments
@@ -76,7 +77,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     gyro_data = get_data('mms' + str(probe) + '_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase')
 
     if gyro_data is None or gyro_vars is None:
-        print('Problem calculating gyrophase angles.')
+        logging.error('Problem calculating gyrophase angles.')
         return
 
     eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
@@ -121,13 +122,13 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
             var_name = 'mms' + str(probe) + '_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_' + sensor_type + '_' + data_units + '_sensorid_' + str(particle_idxs[isen]+1) + '_clean_sun_removed'
             data = get_data(var_name)
             if data is None:
-                print('Data not found: ' + var_name)
+                logging.error('Data not found: ' + var_name)
                 continue
             data.y[data.y == 0.0] = np.nan # remove any 0s before averaging
             # Energy indices to use:
             indx = np.argwhere((data.v <= energy[1]) & (data.v >= energy[0]))
             if len(indx) == 0:
-                print('Energy range selected is not covered by the detector for FEEPS ' + datatype + ' data')
+                logging.error('Energy range selected is not covered by the detector for FEEPS ' + datatype + ' data')
                 continue
             dflux[:, pa_map[isen]] = np.nanmean(data.y[:, indx], axis=1).flatten()
             dpa[:, pa_map[isen]] = gyro_data.y[:,  pa_map[isen]].flatten()

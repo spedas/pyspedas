@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import matplotlib.pyplot as plt
 from .slice2d_getinfo import slice2d_getinfo
@@ -30,7 +31,7 @@ def plot(the_slice, direction, value, xrange=None, yrange=None):
 
     direction = direction.lower()
     if direction not in ['x', 'y']:
-        print('Invalid direction specified. Valid options are: x, y')
+        logging.error('Invalid direction specified. Valid options are: x, y')
         return
 
     if xrange is None:

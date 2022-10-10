@@ -30,6 +30,8 @@ class AnalysisTestCases(BaseTestCase):
         dp = tdotp('var1', 'var2')
         dpdata = get_data('var1_dot_var2')
         self.assertTrue(dpdata.y == np.array([-13]))
+        dp = tdotp('var1_doesnt_exist', 'var2')
+        dp = tdotp('var1', 'var2_doesnt_exist')
 
     def test_tcrossp(self):
         """ cross product tests"""
@@ -221,8 +223,17 @@ class AnalysisTestCases(BaseTestCase):
         tinterpol('aaabbbccc', 'test')  # Test non-existent name
         tn = [1., 1.5, 4.6, 5.8, 6.]
         dn = [10., 15., 46., 58., 60.]
+        data = np.array([[0, 1, 2, 3, 4],
+                        [5, 6, 7, 8, 9],
+                        [10, 11, 12, 13, 14],
+                        [15, 16, 17, 18, 19],
+                        [20, 21, 22, 23, 24]])
         store_data('test1', data={'x': tn, 'y': dn})
+        store_data('test2', data={'x': tn, 'y': data, 'v': [10, 20, 30, 40, 50]})
         tinterpol('test1', 'test')
+        tinterpol('test1', 'doesnt_exist')
+        tinterpol('test2', 'test', newname='')
+        tinterpol('test2', [1, 2, 3, 4, 5, 6])
         d = get_data('test1-itrp')
         self.assertTrue(d[1][1] == 20.)
 

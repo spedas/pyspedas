@@ -1,10 +1,11 @@
-
+import logging
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas import mms_load_fgm
 from pyspedas import data_exists
 from pytplot import get_data, store_data
 import numpy as np
 import math
+
 
 def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy', datatype='electron', suffix=''):
     """
@@ -36,10 +37,10 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     """
 
     # get the times from the currently loaded FEEPS data
-    pa_variable = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix)
+    pa_variable = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix, dt=True)
 
     if pa_variable is None:
-        print('Error reading pitch angle variable')
+        logging.error('Error reading pitch angle variable')
         return
 
     times = pa_variable[0]
@@ -47,7 +48,9 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
     if times is not None:
         if trange is None:
-            trange = [float(times.min()), float(times.max())]
+            times_min = (times[0] - np.datetime64('1970-01-01T00:00:00'))/np.timedelta64(1, 's')
+            times_max = (times[1] - np.datetime64('1970-01-01T00:00:00'))/np.timedelta64(1, 's')
+            trange = [times_min, times_max]
 
     eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
 

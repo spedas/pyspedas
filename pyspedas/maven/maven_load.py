@@ -1,3 +1,4 @@
+import logging
 from dateutil.parser import parse
 import os
 
@@ -25,7 +26,7 @@ def maven_filenames(filenames=None,
 
     # Check for orbit num rather than time string
     if isinstance(start_date, int) and isinstance(end_date, int):
-        print("Orbit numbers specified, checking for updated orbit # file from naif.jpl.nasa.gov")
+        logging.info("Orbit numbers specified, checking for updated orbit # file from naif.jpl.nasa.gov")
         get_orbit_files()
         start_date, end_date = orbit_time(start_date, end_date)
         start_date = parse(start_date)
@@ -91,7 +92,7 @@ def maven_filenames(filenames=None,
         s = get_filenames(query, public)
 
         if not s:
-            print("No files found for {}.".format(instrument))
+            logging.error("No files found for {}.".format(instrument))
             maven_files[instrument] = []
             continue
 
@@ -112,7 +113,7 @@ def maven_filenames(filenames=None,
         query = '&'.join(query_args)
         s = get_filenames(query, public)
         if not s:
-            print("No files found for {}.".format(instrument))
+            logging.error("No files found for {}.".format(instrument))
             maven_files[instrument] = []
         else:
             s = s.split(',')
@@ -203,7 +204,7 @@ def load_data(filenames=None,
 
             if list_files:
                 for f in s:
-                    print(f)
+                    logging.info(f)
                 return
 
             if new_files:
@@ -213,8 +214,8 @@ def load_data(filenames=None,
                     s = get_new_files(bn_files_to_load, data_dir, instr, level)
             if len(s) == 0:
                 continue
-            print("Your request will download a total of: "+str(len(s))+" files for instrument "+str(instr))
-            print('Would you like to proceed with the download? ')
+            logging.info("Your request will download a total of: "+str(len(s))+" files for instrument "+str(instr))
+            logging.info('Would you like to proceed with the download? ')
             valid_response = False
             cancel = False
             if auto_yes:
@@ -225,11 +226,11 @@ def load_data(filenames=None,
                     valid_response = True
                     cancel = False
                 elif response == 'n' or response == 'N':
-                    print('Cancelled download. Returning...')
+                    logging.error('Cancelled download. Returning...')
                     valid_response = True
                     cancel = True
                 else:
-                    print('Invalid input.  Please answer with y or n.')
+                    logging.error('Invalid input.  Please answer with y or n.')
 
             if cancel:
                 continue

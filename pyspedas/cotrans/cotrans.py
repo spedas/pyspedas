@@ -10,10 +10,12 @@ Notes
 -----
 This function is similar to cotrans.pro of IDL SPEDAS.
 """
+import logging
 import pytplot
 from pyspedas.cotrans.cotrans_lib import subcotrans
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
+
 
 def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
             coord_in=None, coord_out=None):
@@ -43,13 +45,13 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         Fills a new pytplot variable with data in the coord_out system.
     """
     if coord_out is None:
-        print("cotrans error: No output coordinates were provided.")
+        logging.error("cotrans error: No output coordinates were provided.")
         return 0
 
     if coord_in is None:
         coord_in = cotrans_get_coord(name_in)
         if coord_in is None:
-            print("cotrans error: No input coordinates were provided.")
+            logging.error("cotrans error: No input coordinates were provided.")
             return 0
 
     coord_in = coord_in.lower()
@@ -57,7 +59,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     all_coords = ["gse", "gsm", "sm", "gei", "geo", "mag", "j2000"]
 
     if coord_in not in all_coords or coord_out not in all_coords:
-        print("cotrans error: Requested coordinate system not supported.")
+        logging.error("cotrans error: Requested coordinate system not supported.")
         return 0
 
     if name_in is not None:
@@ -71,7 +73,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
                                           'y': list(data_in)})
 
     if len(data_in[:]) < 1:
-        print("cotrans error: Data is empty.")
+        logging.error("cotrans error: Data is empty.")
         return 0
 
     # Perform coordinate transformation.
@@ -79,11 +81,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
 
     # Find the name of the output pytplot variable.
     if name_out is None:
-        # If no output tplot name is provided, create one.
-        if name_in is None:
-            name_out = "data_out_" + coord_out
-        else:
-            name_out = name_in + "_" + coord_out
+        name_out = name_in + "_" + coord_out
 
     # Save output pytplot variable.
     pytplot.tplot_copy(name_in, name_out)
@@ -105,6 +103,6 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
                 ytitle = metadata['plot_options']['yaxis_opt'].get('axis_label')
                 metadata['plot_options']['yaxis_opt']['axis_label'] = ytitle.replace(coord_in.upper(), coord_out.upper())
 
-    print("Output variable: " + name_out)
+    logging.info("Output variable: " + name_out)
 
     return 1

@@ -2,6 +2,7 @@
 import numpy as np
 from astropy.coordinates import spherical_to_cartesian, cartesian_to_spherical
 
+
 def spd_pgs_do_fac(data_in, mat):
     """
     Applies field aligned coordinate transformation to input data

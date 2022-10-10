@@ -1,8 +1,9 @@
-
+import logging
 import os
 import matplotlib.pyplot as plt
 from pytplot import get_data
 from . import mms_load_mec
+
 
 def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], data_rate='srvy', xr=None, yr=None, plane='xy', coord='gse'):
     """
@@ -38,18 +39,18 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
     mec_vars = mms_load_mec(trange=trange, data_rate=data_rate, probe=probes, varformat='*_r_' + coord, time_clip=True)
 
     if len(mec_vars) == 0:
-        print('Problem loading MEC data')
+        logging.error('Problem loading MEC data')
         return
 
     plane = plane.lower()
     coord = coord.lower()
 
     if plane not in ['xy', 'yz', 'xz']:
-        print('Error, invalid plane specified; valid options are: xy, yz, xz')
+        logging.error('Error, invalid plane specified; valid options are: xy, yz, xz')
         return
 
     if coord not in ['eci', 'gsm', 'geo', 'sm', 'gse', 'gse2000']:
-        print('Error, invalid coordinate system specified; valid options are: eci, gsm, geo, sm, gse, gse2000')
+        logging.error('Error, invalid coordinate system specified; valid options are: eci, gsm, geo, sm, gse, gse2000')
         return
 
     km_in_re = 6371.2
@@ -63,7 +64,7 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
     for probe in probes:
         position_data = get_data('mms' + str(probe) + '_mec_r_' + coord)
         if position_data is None:
-            print('No ' + data_rate + ' MEC data found for ' + 'MMS' + str(probe))
+            logging.error('No ' + data_rate + ' MEC data found for ' + 'MMS' + str(probe))
             continue
         else:
             t, d = position_data
@@ -94,4 +95,3 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
             axis.set_ylim(yr)
 
         plt.show()
-

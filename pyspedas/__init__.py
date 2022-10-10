@@ -28,8 +28,10 @@ from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
 from .cotrans.cotrans_set_coord import cotrans_set_coord
 
-from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, mms_load_edp, mms_load_eis, mms_load_feeps, \
-    mms_load_hpca, mms_load_fpi, mms_load_aspoc, mms_load_dsp, mms_load_fsm, mms_load_state
+from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
+    mms_load_edp, mms_load_eis, mms_load_feeps, \
+    mms_load_hpca, mms_load_fpi, mms_load_aspoc, \
+    mms_load_dsp, mms_load_fsm, mms_load_state
 from .mms.feeps.mms_feeps_pad import mms_feeps_pad
 from .mms.feeps.mms_feeps_gpd import mms_feeps_gpd
 from .mms.eis.mms_eis_pad import mms_eis_pad
@@ -37,6 +39,7 @@ from .mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 
 from .maven import maven_load
+from .sosmag.load import sosmag_load
 
 from . import erg
 from . import ulysses
@@ -63,3 +66,44 @@ from . import solo
 from . import secs
 from . import kyoto
 from . import swarm
+
+# set up logging/console output
+import logging
+from os import environ
+
+logging_level = environ.get('PYTPLOT_LOGGING_LEVEL')
+logging_format = environ.get('PYTPLOT_LOGGING_FORMAT')
+logging_date_fmt = environ.get('PYTPLOT_LOGGING_DATE_FORMAT')
+
+if logging_format is None:
+    logging_format = '%(asctime)s: %(message)s'
+
+if logging_date_fmt is None:
+    logging_date_fmt = '%d-%b-%y %H:%M:%S'
+
+if logging_level is None:
+    logging_level = logging.INFO
+else:
+    logging_level = logging_level.lower()
+    if logging_level == 'debug':
+        logging_level = logging.DEBUG
+    elif logging_level == 'info':
+        logging_level = logging.INFO
+    elif logging_level == 'warn' or logging_level == 'warning':
+        logging_level = logging.WARNING
+    elif logging_level == 'error':
+        logging_level = logging.ERROR
+    elif logging_level == 'critical':
+        logging_level = logging.CRITICAL
+
+logging.captureWarnings(True)
+
+# basicConfig here doesn't work if it has previously been called
+logging.basicConfig(format=logging_format, datefmt=logging_date_fmt, level=logging_level)
+
+# manually set the logger options from the defaults/environment variables
+logger = logging.getLogger()
+logger_handler = logger.handlers[0]  # should exist since basicConfig has been called
+logger_fmt = logging.Formatter(logging_format, logging_date_fmt)
+logger_handler.setFormatter(logger_fmt)
+logger.setLevel(logging_level)

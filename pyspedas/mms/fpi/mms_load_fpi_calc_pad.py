@@ -67,9 +67,9 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
 
         pad_avg_name = obsstr+'PitchAngDist_avg'+suffix
 
-        low_en = get_data(pad_vars[0])
-        mid_en = get_data(pad_vars[1])
-        high_en = get_data(pad_vars[2])
+        low_en = get_data(pad_vars[0], dt=True)
+        mid_en = get_data(pad_vars[1], dt=True)
+        high_en = get_data(pad_vars[2], dt=True)
 
         if low_en is None or mid_en is None or high_en is None:
             v3_low_pad = tnames(pad_vars[0].lower()+'_'+data_rate)
@@ -78,9 +78,9 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
             if v3_low_pad == [] or v3_mid_pad == [] or v3_high_pad == []:
                 continue
 
-            low_en = get_data(v3_low_pad[0])
-            mid_en = get_data(v3_mid_pad[0])
-            high_en = get_data(v3_high_pad[0])
+            low_en = get_data(v3_low_pad[0], dt=True)
+            mid_en = get_data(v3_mid_pad[0], dt=True)
+            high_en = get_data(v3_high_pad[0], dt=True)
             pad_avg_name = pad_avg_name.lower()
 
         e_pad_sum = low_en.y+mid_en.y+high_en.y

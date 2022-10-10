@@ -1,7 +1,8 @@
-
+import logging
 import numpy as np
 from pytplot import get_data, store_data
 from geopack import geopack, t01
+
 
 def tt01(pos_var_gsm, parmod=None, suffix=''):
     """
@@ -35,7 +36,7 @@ def tt01(pos_var_gsm, parmod=None, suffix=''):
     pos_data = get_data(pos_var_gsm)
 
     if pos_data is None:
-        print('Variable not found: ' + pos_var_gsm)
+        logging.error('Variable not found: ' + pos_var_gsm)
         return
 
     b0gsm = np.zeros((len(pos_data.times), 3))
@@ -50,7 +51,7 @@ def tt01(pos_var_gsm, parmod=None, suffix=''):
         if par is not None:
             par = par.y
     else:
-        print('parmod keyword required.')
+        logging.error('parmod keyword required.')
         return
 
     for idx, time in enumerate(pos_data.times):

@@ -1,4 +1,4 @@
-
+import logging
 import numpy as np
 from pyspedas import tnames, tinterpol
 from pytplot import get_data, store_data
@@ -31,11 +31,11 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
     """
 
     if tnames(mat_var_in) == []:
-        print('Transformation requires the matrix variable to be set to a valid tplot variable.')
+        logging.error('Transformation requires the matrix variable to be set to a valid tplot variable.')
         return
 
     if tnames(vec_var_in) == []:
-        print('Transformation requires the vector variables to be set to a valid tplot variable.')
+        logging.error('Transformation requires the vector variables to be set to a valid tplot variable.')
         return
 
     vec_var_in = tnames(vec_var_in)
@@ -47,7 +47,7 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
         newname = [newname]
 
     if len(newname) != len(vec_var_in):
-        print('Length of newname keyword should match the length of vec_var_in')
+        logging.error('Length of newname keyword should match the length of vec_var_in')
         return
 
     out_names = []
@@ -60,7 +60,7 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
         vec_metadata = get_data(vec_var, metadata=True)
 
         if not np.array_equal(vec_data.times, mat_data.times) and len(mat_data.times) != 1:
-            print('Interpolating the matrix timestamps to the vector time stamps')
+            logging.info('Interpolating the matrix timestamps to the vector time stamps')
             tinterpol(mat_var_in, vec_var)
             mat_data = get_data(mat_var_in + '-itrp')
 

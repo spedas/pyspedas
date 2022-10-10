@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one
 # bottleneck nanmean is ~2.5x faster
@@ -77,7 +78,7 @@ def mms_eis_spec_combine_sc(
                 if probes:
                     probe_string = probes[0]
                 else:
-                    print('No probes found from eis_sc_check tnames.')
+                    logging.error('No probes found from eis_sc_check tnames.')
                     return
 
             allmms_prefix = 'mmsx_epd_eis_' + data_rate + '_' + level + '_' + dtype + '_'
@@ -87,7 +88,7 @@ def mms_eis_spec_combine_sc(
             omni_vars = tnames('mms?_epd_eis_'+data_rate+'_'+level+'_'+dtype+'_'+_species+'_'+data_units+'_omni'+suffix)
 
             if not omni_vars:
-                print('No EIS '+dtype+'data loaded!')
+                logging.error('No EIS '+dtype+'data loaded!')
                 return
 
             time_size = np.zeros(len(probes))
@@ -155,7 +156,7 @@ def mms_eis_spec_combine_sc(
             # Spin-average the data
             spin_nums = get_data(prefix+'spin'+suffix)
             if spin_nums is None:
-                print('Error: Could not find EIS spin variable -- now ending procedure.')
+                logging.error('Error: Could not find EIS spin variable -- now ending procedure.')
                 return
 
             # find where the spin starts

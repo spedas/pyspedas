@@ -3,6 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pydivide
 
+import logging
 import re
 import os
 from . import download_files_utilities as utils
@@ -36,10 +37,10 @@ def param_list(kp):
             param_list_.append("#%3d %s" % (index, base_tag))
             index += 1
         else:
-            print('*****WARNING*****')
-            print('Returning INCOMPLETE Parameter List')
-            print('Base tag neither DataFrame nor Series')
-            print('Plese check read_insitu_file definition')
+            logging.warning('*****WARNING*****')
+            logging.warning('Returning INCOMPLETE Parameter List')
+            logging.warning('Base tag neither DataFrame nor Series')
+            logging.warning('Plese check read_insitu_file definition')
 
     return param_list_
 

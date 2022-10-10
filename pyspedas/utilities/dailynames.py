@@ -1,8 +1,8 @@
-
-
+import logging
 import numpy as np
 from pyspedas import time_string, time_double
 from datetime import datetime
+
 
 def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%d', prefix='', suffix=''):
     '''
@@ -34,10 +34,10 @@ def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_for
 
     '''
     if trange is None:
-        print('No trange specified')
+        logging.error('No trange specified')
         return
 
-    if hour_res == True:
+    if hour_res:
         res = 3600.
         file_format = '%Y%m%d%H'
 

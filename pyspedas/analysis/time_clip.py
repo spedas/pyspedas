@@ -6,7 +6,7 @@ Notes
 Similar to tclip.pro in IDL SPEDAS.
 
 """
-
+import logging
 import pyspedas
 import pytplot
 
@@ -40,7 +40,7 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        print('Time clip error: No pytplot names were provided.')
+        logging.error('Time clip error: No pytplot names were provided.')
         return
 
     if suffix is None:
@@ -76,7 +76,7 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
         index_end = len(time)
 
         if index_end < 1:
-            print('Time clip found empty list.')
+            logging.error('Time clip found empty list.')
             continue
 
         new_time = pyspedas.time_float(time)
@@ -84,15 +84,15 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
         new_time_end = pyspedas.time_float(time_end)
 
         if new_time_start > new_time_end:
-            print('Error: Start time is larger than end time.')
+            logging.error('Error: Start time is larger than end time.')
             continue
 
         if (new_time_start > new_time[-1]) or (new_time_end < new_time[0]):
-            print('Time clip returns empty data.')
+            logging.error('Time clip returns empty data.')
             continue
 
         if (new_time_start <= new_time[0]) and (new_time_end >= new_time[-1]):
-            print('Time clip returns full data set.')
+            logging.info('Time clip returns full data set.')
             continue
 
         for i in range(index_end):
@@ -181,7 +181,7 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
                     'y': data[index_start:index_end]},
                     attr_dict=metadata)
         except:
-            print('Problem time clipping: ' + n_names[j])
+            logging.error('Problem time clipping: ' + n_names[j])
             continue
 
-        print('Time clip was applied to: ' + n_names[j])
+        logging.info('Time clip was applied to: ' + n_names[j])

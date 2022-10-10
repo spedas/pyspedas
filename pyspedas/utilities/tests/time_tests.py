@@ -4,12 +4,18 @@ from datetime import datetime, timezone
 from pyspedas.utilities.time_string import time_string, time_datetime, time_string_one
 from pyspedas.utilities.time_double import time_float_one, time_float, time_double
 
+
 class TimeTestCases(unittest.TestCase):
     def test_time_datetime(self):
         """Test time_datetime function."""
+        now = time_datetime()
+        self.assertTrue(time_datetime('2015-12-15/00:00') == datetime(2015, 12, 15, 0, 0, tzinfo=timezone.utc))
         self.assertTrue(time_datetime(1450137600.0000000) == datetime(2015, 12, 15, 0, 0, tzinfo=timezone.utc))
         self.assertTrue([time_datetime(1450137600.0000000), time_datetime(1444953600.0000000)] 
             == [datetime(2015, 12, 15, 0, 0, tzinfo=timezone.utc), datetime(2015, 10, 16, 0, 0, tzinfo=timezone.utc)])
+        self.assertTrue(time_datetime([1450137600.0000000, 1444953600.0000000])
+            == [datetime(2015, 12, 15, 0, 0, tzinfo=timezone.utc), datetime(2015, 10, 16, 0, 0, tzinfo=timezone.utc)])
+
 
     def test_time_string(self):
         """Test time_string function."""

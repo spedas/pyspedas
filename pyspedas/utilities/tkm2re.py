@@ -1,7 +1,7 @@
-
-
+import logging
 import pytplot
 from pyspedas import tnames
+
 
 def tkm2re(name, km=False, newname=None, suffix=''):
     """
@@ -35,7 +35,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
     names = tnames(name)
 
     if names == []:
-        print('No tplot variables found: ' + name)
+        logging.error('No tplot variables found: ' + name)
         return
 
     if newname is None:
@@ -50,7 +50,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
             newname = [newname]
 
         if len(newname) != len(names):
-            print('Number of output variable names (newname) should match the number of input variables.')
+            logging.error('Number of output variable names (newname) should match the number of input variables.')
             return
 
     out = []
@@ -60,7 +60,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
         metadata = pytplot.get_data(in_tvar, metadata=True)
 
         if data is None:
-            print('Problem reading variable: ' + in_tvar)
+            logging.error('Problem reading variable: ' + in_tvar)
             continue
 
         if km == False:
@@ -71,7 +71,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
         saved = pytplot.store_data(out_tvar, data={'x': data.times, 'y': data_out}, attr_dict=metadata)
 
         if not saved:
-            print('Problem creating tplot variable.')
+            logging.error('Problem creating tplot variable.')
             continue
 
         # update the subtitle, if needed

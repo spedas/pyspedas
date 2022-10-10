@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 from .spd_cal_rot import spd_cal_rot
 
@@ -12,11 +13,11 @@ def slice2d_rotate(rotation=None, vectors=None, bfield=None, vbulk=None, sunvec=
     req_vbulk = ['bv', 'be', 'xvel', 'perp', 'perp2', 'b_exb', 'perp1-perp2']
 
     if bfield is None and rotation in req_bfield:
-        print('Rotation: ' + rotation + ' requires B-field data')
+        logging.error('Rotation: ' + rotation + ' requires B-field data')
         return
 
     if vbulk is None and rotation in req_vbulk:
-        print('Rotation: ' + rotation + ' requires bulk velocity data')
+        logging.error('Rotation: ' + rotation + ' requires bulk velocity data')
         return
 
     if rotation == 'bv':
@@ -48,11 +49,11 @@ def slice2d_rotate(rotation=None, vectors=None, bfield=None, vbulk=None, sunvec=
         # [B, (BxV)xB] (this is the parallel - perp 2 plane)
         matrix = spd_cal_rot(bfield, np.cross(np.cross(bfield, vbulk), bfield))
     else:
-        print('Unknown rotation: ' + rotation)
+        logging.error('Unknown rotation: ' + rotation)
         return
 
     if rotation != 'xy':
-        print('Aligning slice plane to: ' + rotation)
+        logging.info('Aligning slice plane to: ' + rotation)
 
     # Transform particle and support vectors
     if vectors is not None:

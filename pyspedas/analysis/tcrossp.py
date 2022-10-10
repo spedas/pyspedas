@@ -1,6 +1,6 @@
-
 import numpy as np
 from pytplot import get_data, store_data
+
 
 def tcrossp(v1, v2, newname=None, return_data=False):
     """
@@ -40,7 +40,6 @@ def tcrossp(v1, v2, newname=None, return_data=False):
         v1_name = 'var1'
         data1 = v1
 
-
     if not isinstance(v2, np.ndarray) and isinstance(v2, str):
         v2_data = get_data(v2)
         v2_name = v2
@@ -68,4 +67,3 @@ def tcrossp(v1, v2, newname=None, return_data=False):
             times = v2_data[0]
         store_data(newname, data={'x': times, 'y': out})
         return newname
-

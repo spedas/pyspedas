@@ -7,9 +7,12 @@ Allowed wildcards are ? for a single character, * from multiple characters.
 Similar to tinterpol.pro in IDL SPEDAS.
 
 """
-
+import datetime
+import logging
 from pyspedas import tnames
 from pytplot import get_data, store_data
+import numpy as np
+
 
 def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
     """
@@ -50,7 +53,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
     old_names = tnames(names)
 
     if len(old_names) < 1:
-        print('tinterpol error: No pytplot names were provided.')
+        logging.error('tinterpol error: No pytplot names were provided.')
         return
 
     if suffix is None:
@@ -61,16 +64,14 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     if (newname is None) or (len(newname) == 1 and newname[0] is None):
         n_names = [s + suffix for s in old_names]
-    elif newname == '':
-        n_names = old_names
     else:
         n_names = newname
 
     if isinstance(interp_to, str):
-        interp_to_data = get_data(interp_to)
+        interp_to_data = get_data(interp_to, dt=True)
 
         if interp_to_data is None:
-            print('Error, tplot variable: ' + interp_to + ' not found.')
+            logging.error('Error, tplot variable: ' + interp_to + ' not found.')
             return
 
         interp_to_times = interp_to_data[0]
@@ -79,6 +80,9 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     for name_idx, name in enumerate(old_names):
         xdata = get_data(name, xarray=True)
+
+        if not isinstance(interp_to_times[0], datetime.datetime) and not isinstance(interp_to_times[0], np.datetime64):
+            interp_to_times = [datetime.datetime.utcfromtimestamp(time) for time in interp_to_times]
         xdata_interpolated = xdata.interp({'time': interp_to_times},
                                           method=method)
 
@@ -93,5 +97,4 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
             store_data(n_names[name_idx], data={'x': interp_to_times,
                        'y': xdata_interpolated.values})
 
-        print('tinterpol (' + method + ') was applied to: '
-              + n_names[name_idx])
+        logging.info('tinterpol (' + method + ') was applied to: ' + n_names[name_idx])

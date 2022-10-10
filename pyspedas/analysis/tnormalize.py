@@ -1,6 +1,6 @@
-
 import numpy as np
 from pytplot import get_data, store_data
+
 
 def tnormalize(variable, newname=None, return_data=False):
     """
@@ -51,4 +51,3 @@ def tnormalize(variable, newname=None, return_data=False):
             newname = variable + '_normalized'
         store_data(newname, data={'x': times, 'y': data_norm}, attr_dict=metadata_in)
         return newname
-
