@@ -335,9 +335,12 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
 
                 labl_ptr = var_atts.get('LABL_PTR_1')
                 if labl_ptr is not None:
-                    labl_ptr_arr = cdf_file.varget(labl_ptr)
-                    if labl_ptr_arr is not None:
-                        metadata[var_name]['labels'] = labl_ptr_arr.flatten().tolist()
+                    try:
+                        labl_ptr_arr = cdf_file.varget(labl_ptr)
+                        if labl_ptr_arr is not None:
+                            metadata[var_name]['labels'] = labl_ptr_arr.flatten().tolist()
+                    except:
+                        pass
 
                 if metadata[var_name]['scale_type'] is None:
                     alt_scale_type = var_atts.get("SCALETYP", "linear")
