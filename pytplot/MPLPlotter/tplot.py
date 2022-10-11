@@ -58,7 +58,12 @@ def tplot(variables, var_label=None,
             if variable > len(tnames):
                 print('Variable not found: ' + str(variable))
             variables[idx] = tnames[variable]
-        
+
+    # support for matplotlib styles
+    style = pytplot.tplot_opt_glob.get('style')
+    if style is not None:
+        plt.style.use(style)
+
     num_panels = len(variables)
     panel_sizes = [1]*num_panels
 
@@ -301,12 +306,12 @@ def tplot(variables, var_label=None,
 
         if spec:
             # create spectrogram plots
-            plot_created = specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable, time_idxs=time_idxs)
+            plot_created = specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable, time_idxs=time_idxs, style=style)
             if not plot_created:
                 continue
         else:
             # create line plots
-            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num, time_idxs=time_idxs)
+            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num, time_idxs=time_idxs, style=style)
             if not plot_created:
                 continue
             

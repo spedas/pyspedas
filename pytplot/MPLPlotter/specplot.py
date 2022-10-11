@@ -7,7 +7,19 @@ import warnings
 import pytplot
 
 
-def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_extras, colorbars, axis_font_size, fig, variable, time_idxs=None):
+def specplot(var_data,
+             var_times,
+             this_axis,
+             yaxis_options,
+             zaxis_options,
+             plot_extras,
+             colorbars,
+             axis_font_size,
+             fig,
+             variable,
+             time_idxs=None,
+             style=None):
+
     alpha = plot_extras.get('alpha')
     spec_options = {'shading': 'auto', 'alpha': alpha}
     ztitle = zaxis_options['axis_label']
@@ -36,11 +48,15 @@ def specplot(var_data, var_times, this_axis, yaxis_options, zaxis_options, plot_
         spec_options['norm'] = None
         spec_options['vmin'] = zrange[0]
         spec_options['vmax'] = zrange[1]
-    
+
+    cmap = None
+
     if plot_extras.get('colormap') is not None:
         cmap = plot_extras['colormap'][0]
     else:
-        cmap = 'spedas'
+        # default to the SPEDAS color map if the user doesn't have a MPL style set
+        if style is None:
+            cmap = 'spedas'
     
     # kludge to add support for the 'spedas' color bar
     if cmap == 'spedas':

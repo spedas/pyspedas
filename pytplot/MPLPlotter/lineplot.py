@@ -1,7 +1,15 @@
 import numpy as np
 
 
-def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=None, time_idxs=None):
+def lineplot(var_data,
+             var_times,
+             this_axis,
+             line_opts,
+             yaxis_options,
+             plot_extras,
+             pseudo_plot_num=None,
+             time_idxs=None,
+             style=None):
     alpha = plot_extras.get('alpha')
 
     if len(var_data.y.shape) == 1:
@@ -43,6 +51,8 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
     legend_frameon = yaxis_options.get('legend_frameon')
 
     # set up line colors
+    colors = None
+
     if plot_extras.get('line_color') is not None:
         colors = plot_extras['line_color']
         if pseudo_plot_num is not None and pseudo_plot_num < len(colors):
@@ -61,15 +71,16 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
                 print('Problem with the number of line colors specified')
                 return
     else:
-        if num_lines == 3:
-            colors = ['b', 'g', 'r']
-        elif num_lines == 4:
-            colors = ['b', 'g', 'r', 'k']
-        else:
-            colors = ['k', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
+        if style is None:
+            if num_lines == 3:
+                colors = ['b', 'g', 'r']
+            elif num_lines == 4:
+                colors = ['b', 'g', 'r', 'k']
+            else:
+                colors = ['k', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
 
-        if num_lines >= len(colors):
-            colors = colors*num_lines
+            if num_lines >= len(colors):
+                colors = colors*num_lines
 
     # line thickness
     if line_opts.get('line_width') is not None:
@@ -148,7 +159,11 @@ def lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extr
             plotter = this_axis.scatter
 
     for line in range(0, num_lines):
-        this_line = plotter(var_times, var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line], color=colors[line],
+        if colors is not None:
+            color = colors[line]
+        else:
+            color=None
+        this_line = plotter(var_times, var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line], color=color,
                             linestyle=line_style[line], linewidth=thick[line], **line_options)
 
         if labels is not None:

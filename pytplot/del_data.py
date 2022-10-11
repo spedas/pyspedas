@@ -6,6 +6,7 @@
 import pytplot
 import fnmatch
 
+
 def del_data(name=None):
     """
     This function will delete tplot variables that are already stored in memory.  
