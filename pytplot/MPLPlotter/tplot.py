@@ -243,7 +243,7 @@ def tplot(variables, var_label=None,
 
         char_size = pytplot.tplot_opt_glob.get('charsize')
         if char_size is None:
-            char_size = 14
+            char_size = 12
 
         if plot_extras.get('char_size') is not None:
             char_size = plot_extras['char_size']
