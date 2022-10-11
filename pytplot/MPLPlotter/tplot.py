@@ -255,7 +255,11 @@ def tplot(variables, var_label=None,
                 yrange[1] = None
             this_axis.set_ylim(yrange)
 
-        ytitle_color = 'black'
+        if style is None:
+            ytitle_color = 'black'
+        else:
+            ytitle_color = None
+
         if yaxis_options.get('axis_color') is not None:
             ytitle_color = yaxis_options['axis_color']
 
@@ -420,7 +424,11 @@ def tplot(variables, var_label=None,
                 cax.tick_params(labelsize=colorbars[variable]['axis_font_size'])
             colorbar = fig.colorbar(colorbars[variable]['im'], cax=cax)
 
-            ztitle_color = 'black'
+            if style is None:
+                ztitle_color = 'black'
+            else:
+                ztitle_color = None
+
             if zaxis_options.get('axis_color') is not None:
                 ztitle_color = zaxis_options['axis_color']
 
