@@ -20,8 +20,8 @@ munits.registry[datetime] = converter
 
 
 def tplot(variables, var_label=None,
-                     xsize=8, 
-                     ysize=10, 
+                     xsize=None,
+                     ysize=None,
                      save_png='', 
                      save_eps='', 
                      save_svg='', 
@@ -83,7 +83,7 @@ def tplot(variables, var_label=None,
     if ysize is None:
         ysize = pytplot.tplot_opt_glob.get('ysize')
         if ysize is None:
-            ysize = 8
+            ysize = 12
 
     if fig is None and axis is None:
         fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes})
