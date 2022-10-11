@@ -10,7 +10,8 @@ def lineplot(var_data,
              plot_extras,
              pseudo_plot_num=None,
              time_idxs=None,
-             style=None):
+             style=None,
+             var_metadata=None):
     alpha = plot_extras.get('alpha')
 
     if len(var_data.y.shape) == 1:
@@ -27,6 +28,8 @@ def lineplot(var_data,
             labels = None
     else:
         labels = None
+        if var_metadata.get('CDF') is not None:
+            labels = var_metadata['CDF'].get('LABELS')
 
     legend_location = yaxis_options.get('legend_location')
 

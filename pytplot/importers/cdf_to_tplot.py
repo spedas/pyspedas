@@ -328,9 +328,16 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 metadata[var_name] = {'display_type': var_atts.get("DISPLAY_TYPE", "time_series"),
                                       'scale_type': var_atts.get("SCALE_TYP"),
                                       'y_spec_scale_type': None,
-                                      'var_attrs': var_atts, 
+                                      'var_attrs': var_atts,
+                                      'labels': None,
                                       'file_name': filename, 
                                       'global_attrs': gatt}
+
+                labl_ptr = var_atts.get('LABL_PTR_1')
+                if labl_ptr is not None:
+                    labl_ptr_arr = cdf_file.varget(labl_ptr)
+                    if labl_ptr_arr is not None:
+                        metadata[var_name]['labels'] = labl_ptr_arr.flatten().tolist()
 
                 if metadata[var_name]['scale_type'] is None:
                     alt_scale_type = var_atts.get("SCALETYP", "linear")
@@ -387,6 +394,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 attr_dict["CDF"]["VATT"] = metadata[var_name]['var_attrs']
                 attr_dict["CDF"]["GATT"] = metadata[var_name]['global_attrs']
                 attr_dict["CDF"]["FILENAME"] = metadata[var_name]['file_name']
+                attr_dict["CDF"]["LABELS"] = metadata[var_name]['labels']
 
                 # extract the coordinate system, if available
                 vatt_keys = list(attr_dict["CDF"]["VATT"].keys())

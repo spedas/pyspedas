@@ -110,6 +110,7 @@ def tplot(variables, var_label=None,
     
     for idx, variable in enumerate(variables):
         var_data_org = pytplot.get_data(variable, dt=True)
+        var_metadata = pytplot.get_data(variable, metadata=True)
         
         if var_data_org is None:
             print('Variable not found: ' + variable)
@@ -324,7 +325,7 @@ def tplot(variables, var_label=None,
                 continue
         else:
             # create line plots
-            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num, time_idxs=time_idxs, style=style)
+            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num, time_idxs=time_idxs, style=style, var_metadata=var_metadata)
             if not plot_created:
                 continue
             
