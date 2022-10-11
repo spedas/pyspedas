@@ -601,7 +601,7 @@ def replace_common_exp(title):
             continue
         else:
             if exp:
-                if char == ' ' or char == '/' or char == ']' or char == ')':
+                if not char.isalnum():
                     title_out += '}$' + char
                     exp = False
                     continue
