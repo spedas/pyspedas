@@ -170,7 +170,6 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     options(new_name, 'ylog', False)
     options(new_name, 'zlog', True)
     options(new_name, 'spec', True)
-    options(new_name, 'Colormap', 'spedas')
     options(new_name, 'ztitle', units_label)
     options(new_name, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' PA')
     options(new_name, 'ysubtitle', '[deg]')

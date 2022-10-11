@@ -39,7 +39,6 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm1_'+this_dr+'_'+this_lvl+suffix, 'spec', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm1_'+this_dr+'_'+this_lvl+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm1_'+this_dr+'_'+this_lvl+suffix, 'zlog', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm1_'+this_dr+'_'+this_lvl+suffix, 'Colormap', 'spedas')
                 if 'mms'+str(this_probe)+'_'+instrument+'_bpsd_scm2_'+this_dr+'_'+this_lvl+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm2_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' DSP BPSD SCM2')
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm2_'+this_dr+'_'+this_lvl+suffix, 'ysubtitle', '[Hz]')
@@ -47,7 +46,6 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm2_'+this_dr+'_'+this_lvl+suffix, 'spec', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm2_'+this_dr+'_'+this_lvl+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm2_'+this_dr+'_'+this_lvl+suffix, 'zlog', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm2_'+this_dr+'_'+this_lvl+suffix, 'Colormap', 'spedas')
                 if 'mms'+str(this_probe)+'_'+instrument+'_bpsd_scm3_'+this_dr+'_'+this_lvl+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm3_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' DSP BPSD SCM3')
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm3_'+this_dr+'_'+this_lvl+suffix, 'ysubtitle', '[Hz]')
@@ -55,7 +53,6 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm3_'+this_dr+'_'+this_lvl+suffix, 'spec', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm3_'+this_dr+'_'+this_lvl+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm3_'+this_dr+'_'+this_lvl+suffix, 'zlog', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_bpsd_scm3_'+this_dr+'_'+this_lvl+suffix, 'Colormap', 'spedas')
                 if 'mms'+str(this_probe)+'_'+instrument+'_bpsd_omni_'+this_dr+'_'+this_lvl+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_omni_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' DSP BPSD')
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_omni_'+this_dr+'_'+this_lvl+suffix, 'ysubtitle', '[Hz]')
@@ -63,7 +60,6 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_omni_'+this_dr+'_'+this_lvl+suffix, 'spec', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_omni_'+this_dr+'_'+this_lvl+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_bpsd_omni_'+this_dr+'_'+this_lvl+suffix, 'zlog', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_bpsd_omni_'+this_dr+'_'+this_lvl+suffix, 'Colormap', 'spedas')
                 if 'mms'+str(this_probe)+'_'+instrument+'_epsd_omni'+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_omni'+suffix, 'ytitle', 'MMS'+str(this_probe)+' DSP EPSD')
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_omni'+suffix, 'ysubtitle', '[Hz]')
@@ -71,7 +67,6 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_omni'+suffix, 'spec', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_omni'+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_omni'+suffix, 'zlog', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_epsd_omni'+suffix, 'Colormap', 'spedas')
                 if 'mms'+str(this_probe)+'_'+instrument+'_epsd_x'+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_x'+suffix, 'ytitle', 'MMS'+str(this_probe)+' DSP EPSD-X')
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_x'+suffix, 'ysubtitle', '[Hz]')
@@ -79,7 +74,6 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_x'+suffix, 'spec', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_x'+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_x'+suffix, 'zlog', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_epsd_x'+suffix, 'Colormap', 'spedas')
                 if 'mms'+str(this_probe)+'_'+instrument+'_epsd_y'+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_y'+suffix, 'ytitle', 'MMS'+str(this_probe)+' DSP EPSD-Y')
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_y'+suffix, 'ysubtitle', '[Hz]')
@@ -87,7 +81,6 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_y'+suffix, 'spec', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_y'+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_y'+suffix, 'zlog', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_epsd_y'+suffix, 'Colormap', 'spedas')
                 if 'mms'+str(this_probe)+'_'+instrument+'_epsd_z'+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_z'+suffix, 'ytitle', 'MMS'+str(this_probe)+' DSP EPSD-Z')
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_z'+suffix, 'ysubtitle', '[Hz]')
@@ -95,4 +88,3 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_z'+suffix, 'spec', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_z'+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_epsd_z'+suffix, 'zlog', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_epsd_z'+suffix, 'Colormap', 'spedas')
