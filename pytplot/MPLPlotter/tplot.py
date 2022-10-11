@@ -75,6 +75,16 @@ def tplot(variables, var_label=None,
         if panel_size is not None:
             panel_sizes[var_idx] = panel_size
 
+    if xsize is None:
+        xsize = pytplot.tplot_opt_glob.get('xsize')
+        if xsize is None:
+            xsize = 8
+
+    if ysize is None:
+        ysize = pytplot.tplot_opt_glob.get('ysize')
+        if ysize is None:
+            ysize = 8
+
     if fig is None and axis is None:
         fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes})
         fig.set_size_inches(xsize, ysize)
