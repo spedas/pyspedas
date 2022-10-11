@@ -236,7 +236,10 @@ def tplot(variables, var_label=None,
         ysubtitle = ''
         if yaxis_options.get('axis_subtitle') is not None:
             ysubtitle = yaxis_options['axis_subtitle']
-            
+
+        # replace some common superscripts
+        ysubtitle = replace_common_exp(ysubtitle)
+
         if axis_font_size is not None:
             this_axis.tick_params(axis='x', labelsize=axis_font_size)
             this_axis.tick_params(axis='y', labelsize=axis_font_size)
@@ -438,11 +441,18 @@ def tplot(variables, var_label=None,
             if zaxis_options.get('axis_color') is not None:
                 ztitle_color = zaxis_options['axis_color']
 
+            ztitle_text = colorbars[variable]['ztitle']
+            zsubtitle_text = colorbars[variable]['zsubtitle']
+
+            # replace some common superscripts
+            ztitle_text = replace_common_exp(ztitle_text)
+            zsubtitle_text = replace_common_exp(zsubtitle_text)
+
             if ztitle_color is not None:
-                colorbar.set_label(colorbars[variable]['ztitle'] + '\n ' + colorbars[variable]['zsubtitle'],
+                colorbar.set_label(ztitle_text + '\n ' + zsubtitle_text,
                                    color=ztitle_color, fontsize=char_size)
             else:
-                colorbar.set_label(colorbars[variable]['ztitle'] + '\n ' + colorbars[variable]['zsubtitle'],
+                colorbar.set_label(ztitle_text + '\n ' + zsubtitle_text,
                                    fontsize=char_size)
 
     if return_plot_objects:
@@ -574,3 +584,29 @@ def get_var_label_ticks(var_xr, times):
     for time in times:
         out_ticks.append('{:.2f}'.format(var_xr.interp(coords={'time': time}, kwargs={'fill_value': 'extrapolate', 'bounds_error': False}).values))
     return out_ticks
+
+
+def replace_common_exp(title):
+    if '$' in title:
+        return title
+    if '^' not in title:
+        return title
+    exp = False
+    title_out = ''
+    for char in title:
+        if char == '^':
+            exp = True
+            title_out += '$^{'
+            continue
+        else:
+            if exp:
+                if char == ' ' or char == '/' or char == ']' or char == ')':
+                    title_out += '}$' + char
+                    exp = False
+                    continue
+        title_out += char
+    if exp:
+        title_out += '}$'
+    return title_out
+
+
