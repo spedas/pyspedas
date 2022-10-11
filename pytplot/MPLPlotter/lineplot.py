@@ -1,4 +1,5 @@
 import numpy as np
+import pytplot
 
 
 def lineplot(var_data,
@@ -49,6 +50,9 @@ def lineplot(var_data,
     legend_edgecolor = yaxis_options.get('legend_edgecolor')
     legend_facecolor = yaxis_options.get('legend_facecolor')
     legend_frameon = yaxis_options.get('legend_frameon')
+
+    if legend_size is None:
+        legend_size = pytplot.tplot_opt_glob.get('charsize')
 
     # set up line colors
     colors = None
