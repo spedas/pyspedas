@@ -246,7 +246,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     zaxis_opt['z_axis_type'] = 'linear'
     line_opt = {}
     time_bar = []
-    extras = dict(panel_size=1, char_size=10, border=True)
+    extras = dict(panel_size=1, border=True)
     links = {}
 
     # Add dicts to the xarray attrs

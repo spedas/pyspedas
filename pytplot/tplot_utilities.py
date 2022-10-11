@@ -157,6 +157,9 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'style':
         new_tplot_opt_glob['style'] = value
 
+    elif option == 'charsize':
+        new_tplot_opt_glob['charsize'] = value
+
     else:
         print("Unknown option supplied: " + str(option))
 

@@ -241,7 +241,10 @@ def tplot(variables, var_label=None,
             this_axis.tick_params(axis='x', labelsize=axis_font_size)
             this_axis.tick_params(axis='y', labelsize=axis_font_size)
 
-        char_size = 14
+        char_size = pytplot.tplot_opt_glob.get('charsize')
+        if char_size is None:
+            char_size = 14
+
         if plot_extras.get('char_size') is not None:
             char_size = plot_extras['char_size']
 
