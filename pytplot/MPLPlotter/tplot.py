@@ -263,7 +263,10 @@ def tplot(variables, var_label=None,
         if yaxis_options.get('axis_color') is not None:
             ytitle_color = yaxis_options['axis_color']
 
-        this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size, color=ytitle_color)
+        if ytitle_color is not None:
+            this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size, color=ytitle_color)
+        else:
+            this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size)
 
         border = True
         if plot_extras.get('border') is not None:
@@ -432,7 +435,12 @@ def tplot(variables, var_label=None,
             if zaxis_options.get('axis_color') is not None:
                 ztitle_color = zaxis_options['axis_color']
 
-            colorbar.set_label(colorbars[variable]['ztitle'] + '\n ' + colorbars[variable]['zsubtitle'], color=ztitle_color, fontsize=char_size)
+            if ztitle_color is not None:
+                colorbar.set_label(colorbars[variable]['ztitle'] + '\n ' + colorbars[variable]['zsubtitle'],
+                                   color=ztitle_color, fontsize=char_size)
+            else:
+                colorbar.set_label(colorbars[variable]['ztitle'] + '\n ' + colorbars[variable]['zsubtitle'],
+                                   fontsize=char_size)
 
     if return_plot_objects:
         return fig, axes
