@@ -41,6 +41,8 @@ def plot(the_slice,
     if style is None:
         if colormap is None:
             colormap = 'spedas'
+    else:
+        plt.style.use(style)
 
     if colormap == 'spedas':
         _colors = pytplot.spedas_colorbar
