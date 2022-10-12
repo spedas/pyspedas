@@ -23,7 +23,7 @@ def load(trange=None,
     if not isinstance(measurements, list):
         measurements = [measurements]
 
-    if not isinstance(auxiliaries, list):
+    if auxiliaries is not None and not isinstance(auxiliaries, list):
         auxiliaries = [auxiliaries]
 
     if models is not None:
