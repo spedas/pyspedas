@@ -50,9 +50,13 @@ def lineplot(var_data,
     legend_color = yaxis_options.get('legend_color')
     legend_markerfirst = yaxis_options.get('legend_markerfirst')
     legend_markerscale = yaxis_options.get('legend_markerscale')
+    legend_markersize = yaxis_options.get('legend_markersize')
     legend_edgecolor = yaxis_options.get('legend_edgecolor')
     legend_facecolor = yaxis_options.get('legend_facecolor')
     legend_frameon = yaxis_options.get('legend_frameon')
+
+    if legend_markersize is None:
+        legend_markersize = 4
 
     if legend_size is None:
         legend_size = pytplot.tplot_opt_glob.get('charsize')
@@ -183,9 +187,11 @@ def lineplot(var_data,
                 continue
 
     if labels is not None:
-        this_axis.legend(loc=legend_location, fontsize=legend_size, shadow=legend_shadow, title=legend_title,
+        legend = this_axis.legend(loc=legend_location, fontsize=legend_size, shadow=legend_shadow, title=legend_title,
                          labelcolor=legend_color, markerfirst=legend_markerfirst, markerscale=legend_markerscale,
                          facecolor=legend_facecolor, edgecolor=legend_edgecolor, frameon=legend_frameon,
                          title_fontsize=legend_titlesize, bbox_to_anchor=bbox_to_anchor)
+        for legobj in legend.legendHandles:
+            legobj.set_linewidth(legend_markersize)
 
     return True

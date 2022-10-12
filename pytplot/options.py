@@ -204,6 +204,9 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'legend_markerscale' or option == 'labels_markerscale':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
 
+            if option == 'legend_markersize' or option == 'legend_markersize':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markersize'] = value
+
             if option == 'legend_frameon' or option == 'labels_frameon':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
 
