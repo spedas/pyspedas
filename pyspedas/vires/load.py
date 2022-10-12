@@ -36,7 +36,11 @@ def load(trange=None,
     else:
         request.set_collection(collection)
 
-    request.set_products(measurements=measurements, auxiliaries=auxiliaries, models=models, sampling_step=sampling_step, residuals=residuals)
+    if auxiliaries is None:
+        request.set_products(measurements=measurements, models=models, sampling_step=sampling_step, residuals=residuals)
+    else:
+        request.set_products(measurements=measurements, auxiliaries=auxiliaries, models=models, sampling_step=sampling_step, residuals=residuals)
+
     data = request.get_between(start_time=tr[0], end_time=tr[1])
     return xarray_to_tplot(data.as_xarray())
 
