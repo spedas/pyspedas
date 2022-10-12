@@ -85,12 +85,10 @@ def mag(trange=['2020-06-01', '2020-06-02'],
     if 'B_SRF'+suffix in mag_vars:
         options('B_SRF'+suffix, 'legend_names', ['Bx (SRF)', 'By (SRF)', 'Bz (SRF)'])
         options('B_SRF'+suffix, 'ytitle', ytitle)
-        options('B_SRF'+suffix, 'color', ['b', 'g', 'r'])
 
     if 'B_RTN'+suffix in mag_vars:
         options('B_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
         options('B_RTN'+suffix, 'ytitle', ytitle)
-        options('B_RTN'+suffix, 'color', ['b', 'g', 'r'])
 
     return mag_vars
 
