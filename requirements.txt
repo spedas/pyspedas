@@ -8,3 +8,4 @@ pywavelets
 astropy
 geopack>=1.0.9
 hapiclient>=0.2.2
+viresclient
