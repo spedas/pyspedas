@@ -83,7 +83,7 @@ def tplot(variables, var_label=None,
     if ysize is None:
         ysize = pytplot.tplot_opt_glob.get('ysize')
         if ysize is None:
-            ysize = 12
+            ysize = 10
 
     if fig is None and axis is None:
         fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes})
