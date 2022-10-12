@@ -10,7 +10,7 @@ def plot(the_slice,
          xrange=None,
          yrange=None,
          zrange=None,
-         colormap='spedas',
+         colormap=None,
          olines=8,
          contours=False,
          plotsize=10,
@@ -35,6 +35,12 @@ def plot(the_slice,
         spec_options['norm'] = mpl.colors.LogNorm()
     else:
         spec_options['norm'] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
+
+    style = pytplot.tplot_opt_glob.get('style')
+
+    if style is None:
+        if colormap is None:
+            colormap = 'spedas'
 
     if colormap == 'spedas':
         _colors = pytplot.spedas_colorbar

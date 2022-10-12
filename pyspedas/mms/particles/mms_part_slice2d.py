@@ -44,7 +44,7 @@ def mms_part_slice2d(trange=None,
                      plotsize=10,
                      dpi=None,
                      return_slice=False,
-                     cmap='spedas',
+                     cmap=None,
                      display=True):
     """
     This routine creates 2D slices of 3D distribution function data from the FPI and HPCA instruments.
