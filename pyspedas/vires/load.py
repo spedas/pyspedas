@@ -52,6 +52,12 @@ def xarray_to_tplot(xr):
         saved = store_data(key, data={'x': times, 'y': xr[key].data})
         options(key, 'ytitle', xr[key].description)
         options(key, 'ysubtitle', '[' + xr[key].units + ']')
+
+        # find the legend if this is a vector
+        for item in xr[key].coords:
+            if item != 'Timestamp':
+                options(key, 'legend_names', xr[key].coords[item].values.tolist())
+
         if saved:
             out.append(key)
         else:
