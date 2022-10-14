@@ -156,9 +156,10 @@ def sosmag_get_session(auth_cookie):
             content = consent_response.content
         # This will result in a redirect to the initial HAPI/capabilities.
         capabilities = json.loads(content)
-        # The json output is supposed to look something like this:
-        #   {'version':'2.1.0','status':{'code':1200,'message':'OK'},'outputFormats':['csv','json']}
-        version = capabilities['version']
+        # The json output should be:
+        #  2022/10/24: {'HAPI':'2.1.0','status':{'code':1200,'message':'OK'},'outputFormats':['csv','json']}
+        #  previous: {'version':'2.1.0','status':{'code':1200,'message':'OK'},'outputFormats':['csv','json']}
+        version = capabilities['HAPI']
         status = capabilities['status']
         # If the output is what we expect, return True and the session cookies
         if version != '' and status != {} and status['message'] == 'OK':
@@ -211,7 +212,7 @@ def sosmag_get_capabilities(jsession_id, xsrf_token):
         )
         # Extract the capabilities from the response.
         capabilities = json.loads(test_response.content)
-        version = capabilities['version']
+        version = capabilities['HAPI']
         status = capabilities['status']
         # If the capabilities are as expected, return True.
         if version != '' and status != {} and status['message'] == 'OK':
@@ -373,14 +374,14 @@ def sosmag_to_tplot(
             print('SOSMAG data has wrong shape. Abort.')
             return False
 
-        # Time is the 12th field
-        td = np.array(time_double(d[:, 12]))
+        # Time is the 0th field
+        td = np.array(time_double(d[:, 0]))
 
         # Magnetic field in GSE 'b_gse_x', 'b_gse_y', 'b_gse_z'
-        # Data fields: [0, 1, 2]
-        yd = np.array(d[:, 0:3], dtype=float)
+        # Data fields: [2, 3, 4]
+        yd = np.array(d[:, 2:5], dtype=float)
         var_name0 = pre + '_b_gse' + suffix
-        pnames = [p[0]['name'], p[1]['name'], p[2]['name']]
+        pnames = [p[2]['name'], p[3]['name'], p[4]['name']]
         pd = 'Magnetic Field B in GSE coordinates'
         attr_dict = {'description': pd}
         store_data(var_name0, data={'x': td, 'y': yd}, attr_dict=attr_dict)
@@ -390,10 +391,10 @@ def sosmag_to_tplot(
         options(var_name0, 'description', desc)
 
         # Magnetic field in HPEN 'b_hpen_x', 'b_hpen_y', 'b_hpen_z'
-        # Data fields: [3, 4, 5]
-        yd = np.array(d[:, 3:6], dtype=float)
+        # Data fields: [5, 6, 7]
+        yd = np.array(d[:, 5:8], dtype=float)
         var_name1 = pre + '_b_hpen' + suffix
-        pnames = [p[3]['name'], p[4]['name'], p[5]['name']]
+        pnames = [p[5]['name'], p[6]['name'], p[7]['name']]
         pd = 'Magnetic Field B in HPEN coordinates'
         attr_dict = {'description': pd}
         store_data(var_name1, data={'x': td, 'y': yd}, attr_dict=attr_dict)
@@ -403,10 +404,10 @@ def sosmag_to_tplot(
         options(var_name1, 'description', desc)
 
         # Spacecraft Position in GSE 'position_x', 'position_y', 'position_z'
-        # Data fields: [9, 10, 11]
-        yd = np.array(d[:, 9:12], dtype=float)
+        # Data fields: [8, 9, 10]
+        yd = np.array(d[:, 8:11], dtype=float)
         var_name2 = pre + '_position' + suffix
-        pnames = [p[9]['name'], p[10]['name'], p[11]['name']]
+        pnames = [p[8]['name'], p[9]['name'], p[10]['name']]
         pd = 'Spacecraft Position in GSE'
         attr_dict = {'description': pd}
         store_data(var_name2, data={'x': td, 'y': yd}, attr_dict=attr_dict)
@@ -462,6 +463,14 @@ def sosmag_load(
         True, if function was successful.
     var_names: list of str
         Names of tplot variables created.
+
+    Notes
+    -----
+    Link that can be tested on a browser:
+    https://swe.ssa.esa.int/hapi/data?
+    id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_recalib
+    &time.min=2021-01-31T01:00:00.000Z
+    &time.max=2021-01-31T01:01:00.000Z&format=json
     '''
     success = False
     var_names = []

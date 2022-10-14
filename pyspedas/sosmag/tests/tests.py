@@ -33,8 +33,6 @@ class SOSMAG_Tests(unittest.TestCase):
         invalid = pyspedas.sosmag.load.sosmag_get_data('', '')
         invalid = pyspedas.sosmag.load.sosmag_to_tplot([1], '', '')
         invalid = pyspedas.sosmag.load.sosmag_to_tplot(None, '', '')
-        with self.assertRaises(TypeError):
-            sosmag_load(trange=['2000-01-01', '2000-01-02'])
 
 
 if __name__ == '__main__':
