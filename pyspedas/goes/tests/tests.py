@@ -11,6 +11,13 @@ class LoadTestCases(unittest.TestCase):
         mag_files = pyspedas.goes.fgm(datatype='1min', downloadonly=True)
         self.assertTrue(os.path.exists(mag_files[0]))
 
+    def test_load_orbit_data(self):
+        mag_vars = pyspedas.goes.orbit()
+        self.assertTrue(data_exists('XYZ_GSM'))
+        self.assertTrue(data_exists('XYZ_GSE'))
+        self.assertTrue(data_exists('XYZ_SM'))
+        self.assertTrue(data_exists('XYZ_GEO'))
+
     def test_load_1min_mag_data(self):
         mag_vars = pyspedas.goes.fgm(datatype='1min')
         self.assertTrue(data_exists('BX_1'))
