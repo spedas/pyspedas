@@ -148,7 +148,6 @@ def mms_eis_spec_combine_sc(
             options(new_name, 'ylog', True)
             options(new_name, 'zlog', True)
             options(new_name, 'spec', True)
-            options(new_name, 'Colormap', 'spedas')
             options(new_name, 'ztitle', units_label)
             options(new_name, 'ytitle', ' \\ '.join(['mms'+probe_string, _species.upper(), 'Energy [keV]']))
             out_vars.append(new_name)

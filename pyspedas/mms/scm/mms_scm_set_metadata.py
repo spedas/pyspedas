@@ -1,5 +1,6 @@
 from pytplot import options
 
+
 def mms_scm_set_metadata(tnames, probe, datatype, coord, suffix=''):
     """
     This function updates the metadata for the SCM data products
@@ -28,18 +29,14 @@ def mms_scm_set_metadata(tnames, probe, datatype, coord, suffix=''):
 
     for tvar in tnames:
         if tvar == 'mms'+probe+'_scm_'+datatype+'_'+coord+suffix:
-            options(tvar, 'color', ['b', 'g', 'r'])
             options(tvar, 'ytitle', 'MMS'+probe+' '+datatype+' ('+coord+')')
             options(tvar, 'legend_names', ['1', '2', '3'])
         elif tvar == 'mms'+probe+'_scm_acb_'+coord+'_scsrvy_srvy_l2'+suffix:
-            options(tvar, 'color', ['b', 'g', 'r'])
             options(tvar, 'legend_names', ['Bx', 'By', 'Bz'])
             options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype)
         elif tvar == 'mms'+probe+'_scm_acb_'+coord+'_scb_brst_l2'+suffix:
-            options(tvar, 'color', ['b', 'g', 'r'])
             options(tvar, 'legend_names', ['Bx', 'By', 'Bz'])
             options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype)
         elif tvar == 'mms'+probe+'_scm_acb_'+coord+'_schb_brst_l2'+suffix:
-            options(tvar, 'color', ['b', 'g', 'r'])
             options(tvar, 'legend_names', ['Bx', 'By', 'Bz'])
             options(tvar, 'ytitle', 'MMS'+probe+' SCM '+datatype)

@@ -74,7 +74,6 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species)
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ysubtitle', 'Energy [keV]')
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'yrange', [14, 45])
-        options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'Colormap', 'spedas')
 
         # create new variable with omni energy limits
         energy_minus = get_data(prefix + species_str + '_t0_energy_dminus' + suffix)

@@ -74,7 +74,6 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
     options(var_name + '_spin' + suffix, 'ylog', True)
     options(var_name + '_spin' + suffix, 'zlog', True)
     options(var_name + '_spin' + suffix, 'yrange', [lower_en, 600.0])
-    options(var_name + '_spin' + suffix, 'Colormap', 'spedas')
     options(var_name + '_spin' + suffix, 'ztitle', units_label)
     options(var_name + '_spin' + suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype)
     options(var_name + '_spin' + suffix, 'ysubtitle', '[keV]')

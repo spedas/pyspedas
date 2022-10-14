@@ -100,7 +100,6 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
             options(this_scope + '_spin', 'spec', True)
             options(this_scope + '_spin', 'ylog', True)
             options(this_scope + '_spin', 'zlog', True)
-            options(this_scope + '_spin', 'Colormap', 'spedas')
             out_vars.append(this_scope + '_spin')
         return out_vars
     else:

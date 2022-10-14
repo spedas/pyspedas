@@ -64,7 +64,6 @@ def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'opl
             options(var+'_spin', 'spec', True)
             options(var+'_spin', 'ylog', True)
             options(var+'_spin', 'zlog', True)
-            options(var+'_spin', 'Colormap', 'spedas')
             options(var+'_spin', 'ztitle', species_map[var_species] + ' ' + var.split('_')[3] + ' (cm^2-s-sr-eV)^-1')
             options(var+'_spin', 'ytitle', species_map[var_species])
             options(var+'_spin', 'ysubtitle', 'Energy [eV]')
