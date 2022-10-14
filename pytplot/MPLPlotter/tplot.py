@@ -201,6 +201,19 @@ def tplot(variables, var_label=None,
         # set the x-axis range, if it was set with xlim or tlimit
         if pytplot.tplot_opt_glob.get('x_range') is not None:
             x_range = pytplot.tplot_opt_glob['x_range']
+
+            if isinstance(x_range[0], float):
+                if np.isfinite(x_range[0]):
+                    x_range[0] = datetime.utcfromtimestamp(x_range[0])
+                else:
+                    x_range[0] = datetime.utcfromtimestamp(0)
+
+            if isinstance(x_range[1], float):
+                if np.isfinite(x_range[1]):
+                    x_range[1] = datetime.utcfromtimestamp(x_range[1])
+                else:
+                    x_range[1] = datetime.utcfromtimestamp(0)
+
             x_range = np.array(x_range, dtype='datetime64[s]')
             this_axis.set_xlim(x_range)
             time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
