@@ -1,5 +1,56 @@
-
 from .load import load
+from .load_orbit import load_orbit
+
+
+def orbit(trange=['2013-11-5', '2013-11-6'],
+        probe='15',
+        suffix='',
+        downloadonly=False,
+        no_update=False,
+        notplot=False,
+        get_support_data=False,
+        varformat=None,
+        varnames=[],
+        time_clip=True):
+    """
+
+    This function loads GOES orbit data
+
+    Parameters
+    ----------
+        trange : list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
+        probe: str/int or list of strs/ints
+            GOES spacecraft #, e.g., probe=15
+
+        suffix: str
+            The tplot variable names will be given this suffix.  By default,
+            no suffix is added.
+
+        downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables
+
+        notplot: bool
+            If set, load the data into dictionaries containing the numpy objects instead
+            of creating tplot variables
+
+        no_update: bool
+            If set, only load data from your local cache
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+
+    Returns
+    ----------
+        List of tplot variables created.
+
+    """
+    return load_orbit(trange=trange, probe=probe, varnames=varnames, varformat=varformat, suffix=suffix, downloadonly=downloadonly, no_update=no_update, time_clip=time_clip, notplot=notplot, get_support_data=get_support_data)
+
 
 def fgm(trange=['2013-11-5', '2013-11-6'], 
         probe='15',
@@ -45,6 +96,7 @@ def fgm(trange=['2013-11-5', '2013-11-6'],
     """
     return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
+
 def eps(trange=['2013-11-5', '2013-11-6'], 
         probe='12',
         datatype='1min', 
@@ -88,6 +140,7 @@ def eps(trange=['2013-11-5', '2013-11-6'],
 
     """
     return load(instrument='eps', trange=trange, probe=probe, datatype=datatype, suffix=suffix, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+
 
 def epead(trange=['2013-11-5', '2013-11-6'], 
         probe='15',
@@ -133,6 +186,7 @@ def epead(trange=['2013-11-5', '2013-11-6'],
     """
     return load(instrument='epead', trange=trange, probe=probe, datatype=datatype, suffix=suffix, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
+
 def maged(trange=['2013-11-5', '2013-11-6'], 
         probe='15',
         datatype='1min', 
@@ -176,6 +230,7 @@ def maged(trange=['2013-11-5', '2013-11-6'],
 
     """
     return load(instrument='maged', trange=trange, probe=probe, datatype=datatype, suffix=suffix, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+
 
 def magpd(trange=['2013-11-5', '2013-11-6'], 
         probe='15',
@@ -221,6 +276,7 @@ def magpd(trange=['2013-11-5', '2013-11-6'],
     """
     return load(instrument='magpd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
+
 def hepad(trange=['2013-11-5', '2013-11-6'], 
         probe='15',
         datatype='1min', 
@@ -264,6 +320,7 @@ def hepad(trange=['2013-11-5', '2013-11-6'],
 
     """
     return load(instrument='hepad', trange=trange, probe=probe, datatype=datatype, suffix=suffix, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+
 
 def xrs(trange=['2013-11-5', '2013-11-6'], 
         probe='15',
