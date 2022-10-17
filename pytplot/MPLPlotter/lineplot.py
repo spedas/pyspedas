@@ -61,18 +61,10 @@ def lineplot(var_data,
     if legend_size is None:
         legend_size = pytplot.tplot_opt_glob.get('charsize')
 
+    markers = get_options(line_opts, 'marker', pseudo_plot_num=pseudo_plot_num)
+
     # set up line colors
     colors = None
-
-    if line_opts.get('marker') is not None:
-        markers = line_opts['marker']
-        if not isinstance(markers, list):
-            markers = [line_opts['marker']]
-        if pseudo_plot_num is not None and pseudo_plot_num < len(markers):
-            markers = [markers[pseudo_plot_num]]
-    else:
-        markers = None
-
     if plot_extras.get('line_color') is not None:
         colors = plot_extras['line_color']
         if pseudo_plot_num is not None and pseudo_plot_num < len(colors):
@@ -103,13 +95,9 @@ def lineplot(var_data,
                 colors = colors*num_lines
 
     # line thickness
-    if line_opts.get('line_width') is not None:
-        thick = line_opts['line_width']
-        if pseudo_plot_num is not None and pseudo_plot_num < len(thick):
-            thick = [line_opts['line_width'][pseudo_plot_num]]
-    else:
+    thick = get_options(line_opts, 'line_width', pseudo_plot_num=pseudo_plot_num)
+    if thick is None:
         thick = [0.5]
-
     if num_lines >= len(thick):
         thick = thick*num_lines
 
@@ -147,23 +135,8 @@ def lineplot(var_data,
     # create the plot
     line_options = {'alpha': alpha}
 
-    if line_opts.get('markevery') is not None:
-        marker_every = line_opts.get('markevery')
-        if not isinstance(marker_every, list):
-            marker_every = [marker_every]
-        if pseudo_plot_num is not None and pseudo_plot_num < len(marker_every):
-            marker_every = [line_opts['markevery'][pseudo_plot_num]]
-    else:
-        marker_every = None
-
-    if line_opts.get('marker_size') is not None:
-        marker_sizes = line_opts.get('marker_size')
-        if not isinstance(marker_sizes, list):
-            marker_sizes = [marker_sizes]
-        if pseudo_plot_num is not None and pseudo_plot_num < len(marker_sizes):
-            marker_sizes = [line_opts['marker_size'][pseudo_plot_num]]
-    else:
-        marker_sizes = None
+    marker_every = get_options(line_opts, 'markevery', pseudo_plot_num=pseudo_plot_num)
+    marker_sizes = get_options(line_opts, 'marker_size', pseudo_plot_num=pseudo_plot_num)
 
     # check for error data first
     if 'dy' in var_data._fields:
@@ -225,3 +198,15 @@ def lineplot(var_data,
             legobj.set_linewidth(legend_markersize)
 
     return True
+
+
+def get_options(options, option, pseudo_plot_num=None):
+    if options.get(option) is not None:
+        plot_options = options[option]
+        if not isinstance(plot_options, list):
+            plot_options = [options[option]]
+        if pseudo_plot_num is not None and pseudo_plot_num < len(plot_options):
+            plot_options = [plot_options[pseudo_plot_num]]
+    else:
+        plot_options = None
+    return plot_options
