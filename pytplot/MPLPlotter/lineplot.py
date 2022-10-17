@@ -64,6 +64,15 @@ def lineplot(var_data,
     # set up line colors
     colors = None
 
+    if line_opts.get('marker') is not None:
+        markers = line_opts['marker']
+        if not isinstance(markers, list):
+            markers = [line_opts['marker']]
+        if pseudo_plot_num is not None and pseudo_plot_num < len(markers):
+            markers = [markers[pseudo_plot_num]]
+    else:
+        markers = None
+
     if plot_extras.get('line_color') is not None:
         colors = plot_extras['line_color']
         if pseudo_plot_num is not None and pseudo_plot_num < len(colors):
@@ -138,17 +147,23 @@ def lineplot(var_data,
     # create the plot
     line_options = {'alpha': alpha}
 
-    if line_opts.get('marker') is not None:
-        line_options['marker'] = line_opts['marker']
-
     if line_opts.get('markevery') is not None:
-        line_options['markevery'] = line_opts['markevery']
+        marker_every = line_opts.get('markevery')
+        if not isinstance(marker_every, list):
+            marker_every = [marker_every]
+        if pseudo_plot_num is not None and pseudo_plot_num < len(marker_every):
+            marker_every = [line_opts['markevery'][pseudo_plot_num]]
+    else:
+        marker_every = None
 
     if line_opts.get('marker_size') is not None:
-        if symbols:
-            line_options['s'] = line_opts['marker_size']
-        else:
-            line_options['markersize'] = line_opts['marker_size']
+        marker_sizes = line_opts.get('marker_size')
+        if not isinstance(marker_sizes, list):
+            marker_sizes = [marker_sizes]
+        if pseudo_plot_num is not None and pseudo_plot_num < len(marker_sizes):
+            marker_sizes = [line_opts['marker_size'][pseudo_plot_num]]
+    else:
+        marker_sizes = None
 
     # check for error data first
     if 'dy' in var_data._fields:
@@ -173,9 +188,24 @@ def lineplot(var_data,
         if colors is not None:
             color = colors[line]
         else:
-            color=None
+            color = None
+
+        if markers is not None:
+            marker = markers[line]
+        else:
+            marker = None
+
+        if marker_sizes is not None:
+            if symbols:
+                line_options['s'] = marker_sizes[line]
+            else:
+                line_options['markersize'] = marker_sizes[line]
+
+        if marker_every is not None:
+            line_options['markevery'] = marker_every[line]
+
         this_line = plotter(var_times, var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line], color=color,
-                            linestyle=line_style[line], linewidth=thick[line], **line_options)
+                            linestyle=line_style[line], linewidth=thick[line], marker=marker, **line_options)
 
         if labels is not None:
             try:
