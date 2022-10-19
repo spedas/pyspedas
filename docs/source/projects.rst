@@ -7,6 +7,7 @@ Load Routines
    ace
    erg
    cluster
+   cnofs
    csswe
    dscovr
    equator-s
