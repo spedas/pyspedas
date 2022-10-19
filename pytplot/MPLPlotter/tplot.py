@@ -78,12 +78,15 @@ def tplot(variables, var_label=None,
     if xsize is None:
         xsize = pytplot.tplot_opt_glob.get('xsize')
         if xsize is None:
-            xsize = 8
+            xsize = 12
 
     if ysize is None:
         ysize = pytplot.tplot_opt_glob.get('ysize')
         if ysize is None:
-            ysize = 10
+            if num_panels > 4:
+                ysize = 8
+            else:
+                ysize = 5
 
     if fig is None and axis is None:
         fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes})
