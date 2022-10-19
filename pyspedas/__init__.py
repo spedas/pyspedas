@@ -67,6 +67,7 @@ from . import secs
 from . import kyoto
 from . import swarm
 from . import vires
+from . import cnofs
 
 # set up logging/console output
 import logging
