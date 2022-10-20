@@ -170,8 +170,8 @@ def noon_midnight_meridian(dtime=None, delta=0.25):
         lons_latmax = 0 + 15 * diff_in_hours  # longitude for noon line
         lons_latmin = lons_latmax - 180  # longitude for midnight line
     elif diff_in_hours < 0:
-        lons_latmax = 0 - 15 * diff_in_hours  # longitude for noon line
-        lons_latmin = lons_latmax + 180  # longitude for midnight line
+        lons_latmax = 0 + 15 * diff_in_hours  # longitude for noon line, old version is -
+        lons_latmin = lons_latmax - 180  # longitude for midnight line, old version is +
     #
     lons_max_arr = np.full((1, ni_half), lons_latmax)  # for noon line
     lats_max_arr = np.linspace(-90, 90, ni_half)  # for noon line
