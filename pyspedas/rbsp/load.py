@@ -38,7 +38,11 @@ def load(trange=['2018-11-5', '2018-11-6'],
     if not isinstance(probe, list):
         probe = [probe]
 
+    datatype_in = datatype
+    datatype = datatype.lower()
+    prefix = ''
     out_files = []
+    tvars = []
 
     for prb in probe:
         if instrument == 'emfisis':
@@ -53,6 +57,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/'+cadence+'/'+coord+'/%Y/rbsp-'+prb+'_'+datatype+'_'+cadence+'-'+coord+'_'+instrument+'-'+level+'_%Y%m%d_v*.cdf'
         elif instrument == 'rbspice':
             pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/'+datatype+'/%Y/rbsp-'+prb+'-'+instrument+'_lev-'+str(level[-1])+'?'+datatype+'_%Y%m%d_v*.cdf'
+            prefix = 'rbsp'+prb+'_rbspice_'+level+'_'+datatype_in+'_'
         elif instrument == 'efw':
             if level == 'l3':
                 pathformat = 'rbsp'+prb+'/'+level+'/'+instrument+'/%Y/rbsp'+prb+'_'+instrument+'-'+level+'_%Y%m%d_v??.cdf'
@@ -84,13 +89,14 @@ def load(trange=['2018-11-5', '2018-11-6'],
             for file in files:
                 out_files.append(file)
 
-    out_files = sorted(out_files)
+        if not downloadonly:
+            tvars_o = cdf_to_tplot(sorted(out_files), prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+                                   varformat=varformat, varnames=varnames, notplot=notplot)
+            tvars.extend(tvars_o)
 
     if downloadonly:
-        return out_files
+        return sorted(out_files)
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
-    
     if notplot:
         return tvars
 
