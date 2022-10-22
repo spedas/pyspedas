@@ -1,8 +1,9 @@
+import logging
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
 
-def rbsp_load_rbspice_read(level='l3', probe='a', datatype='TOFxEH', trange=None):
+def rbsp_load_rbspice_read(level='l3', probe='a', datatype='TOFxEH'):
     """
     Works on previously loaded RBSPICE tplot variables: adds energy channel energy values to primary data variable, separates non-H species variables,
     creates variables for individual telescopes, and sets appropriate tplot options
@@ -16,8 +17,6 @@ def rbsp_load_rbspice_read(level='l3', probe='a', datatype='TOFxEH', trange=None
     datatype : str
         RBSPICE data type ['EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH' (default),'TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'],
         but change for different data levels.
-    trange : list
-        time range of interest [default = entire]
     """
     if probe is None:
         probe = 'a'
@@ -29,10 +28,13 @@ def rbsp_load_rbspice_read(level='l3', probe='a', datatype='TOFxEH', trange=None
     else:
         units_label = 'counts/s'
         convert_factor = 1.                 # do not need to convert counts/s           
+
     prefix = 'rbsp'+probe+'_rbspice_'+level+'_'+datatype+'_'
     # find the flux/cps data name(s)
     data_var = tnames(prefix + 'F*DU')
     energy_var = tnames(prefix + 'F*DU_Energy')
+
+    logging.info('Correcting RBSPICE energy tables...')
     for i in range(len(data_var)):
         en_data = get_data(energy_var[i])
         temp_energy = en_data.transpose()

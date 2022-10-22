@@ -37,7 +37,10 @@ def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
     if not data_var:
         logging.error('Error, problem finding the RBSPICE data to calculate omni-directional spectrograms')
         return
-    
+
+    logging.info('Calculating omni directional energy spectra; this might take a few minutes...')
+    out = []
+
     for i in range(len(data_var)):
         species_str = data_var[i][-4:-2]
         if species_str == 'FP':
@@ -74,3 +77,5 @@ def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
             options(newname, 'ytitle', 'rbsp-'+probe+'\nrbspice\n'+species+'\nomni')
             options(newname, 'ysubtitle', '[keV]')
             options(newname, 'ztitle', units_label)
+            out.append(newname)
+    return out

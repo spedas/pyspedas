@@ -1,5 +1,8 @@
-
 from .load import load
+from pyspedas.rbsp.rbspice_lib.rbsp_load_rbspice_read import rbsp_load_rbspice_read
+from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_omni import rbsp_rbspice_omni
+from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_spin_avg import rbsp_rbspice_spin_avg
+
 
 def emfisis(trange=['2018-11-5', '2018-11-6'], 
         probe='a',
@@ -120,6 +123,7 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='emfisis', wavetype=wavetype, trange=trange, probe=probe, datatype=datatype, level=level, cadence=cadence, coord=coord, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+
 def rbspice(trange=['2018-11-5', '2018-11-6'], 
         probe='a',
         datatype='TOFxEH',
@@ -183,7 +187,31 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='rbspice', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='rbspice', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+    if tvars is None or notplot or downloadonly:
+        return tvars
+
+    if not isinstance(probe, list):
+        probe = [probe]
+
+    for prb in probe:
+        # Add energy channel energy values to primary data variable,
+        # create variables for individual telescopes, and set appropriate tplot options
+        rbsp_load_rbspice_read(level=level, probe=prb, datatype=datatype)
+
+        # Calculate omni-directional variable
+        omni_vars = rbsp_rbspice_omni(probe=prb, datatype=datatype, level=level)
+        if omni_vars:
+            tvars.extend(omni_vars)
+
+        # Calculate spin-averaged variable
+        sp_avg_vars = rbsp_rbspice_spin_avg(probe=prb, datatype=datatype, level=level)
+        if omni_vars:
+            tvars.extend(sp_avg_vars)
+
+    return tvars
+
 
 def efw(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
@@ -249,6 +277,7 @@ def efw(trange=['2015-11-5', '2015-11-6'],
 
     """
     return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
 
 def mageis(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
@@ -316,6 +345,7 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
     """
     return load(instrument='mageis', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+
 def hope(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
         datatype='moments', 
@@ -382,6 +412,7 @@ def hope(trange=['2015-11-5', '2015-11-6'],
     """
     return load(instrument='hope', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+
 def rept(trange=['2015-11-5', '2015-11-6'], 
         probe='a',
         datatype='', 
@@ -447,6 +478,7 @@ def rept(trange=['2015-11-5', '2015-11-6'],
 
     """
     return load(instrument='rept', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
 
 def rps(trange=['2015-11-5', '2015-11-6'], 
         probe='a',

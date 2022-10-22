@@ -27,21 +27,29 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
         units_label = '1/(cm^2-sr-s-keV)'
     else:
         units_label = 'counts/s'
+
     probe = probe.strip()
     prefix = 'rbsp'+probe+'_rbspice_'+level+'_'+datatype+'_'
+
     spin_nums = get_data(prefix + 'Spin')
     if spin_nums is None:
         return
     spin_starts = np.unique(spin_nums.y, return_index=True)[1][1:]-1
+
     if datatype == 'TOFxEH':
         species = 'proton'
     elif datatype == 'TOFxEnonH':
         species = ['helium', 'oxygen']
     elif datatype == 'TOFxPHHHELT':
         species = ['proton', 'oxygen']
+
     var_data = tnames(prefix + species + '_T?')
     var_omni = tnames(prefix + species + '_omni')
     var_data.extend(var_omni)
+
+    logging.info('Calculating spin averaged energy spectra..')
+    out = []
+
     for n in range(len(var_data)):
         if var_data[n] == '':
             logging.error('Error, problem finding the tplot variables to calculate the spin averages')
@@ -54,7 +62,7 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
             if var_data[n][-1] == 'T':
                 species = var_data[n][-7:]
             elif var_data[n][-4:] == 'omni':
-                species = var_data[n][-7:]
+                species = var_data[n][-11:-5]
             if species == 'proton':
                 if datatype != 'TOFxPHHHELT':
                     zrange = [5., 1.e5]
@@ -74,7 +82,7 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
                 current_start = spin_starts[spin_idx]+1
             sp = '_spin'
             if var_data[n][-4:] == 'omni':
-                suffix = '_omni'
+                suffix = ''
             elif var_data[n][-2] == 'T'+str(n):
                 suffix = '_T'+str(n)
             else:
@@ -87,3 +95,5 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
             options(var_data[n]+sp+suffix, 'ytitle', 'rbsp'+probe+'\nrbspice\n'+species+'\n'+suffix)
             options(var_data[n]+sp+suffix, 'ysubtitle', '[keV]')
             options(var_data[n]+sp+suffix, 'ztitle', units_label)
+            out.append(var_data[n]+sp+suffix)
+    return out

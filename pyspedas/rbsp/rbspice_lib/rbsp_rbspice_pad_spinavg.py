@@ -64,6 +64,9 @@ def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=N
     else:
         pad_name = [prefix+species+'_T'+str(i)+'_'+en_range_string+'_pad' for i in scopes]
 
+    logging.info('Calculating spin averaged pitch angle distribution..')
+    out = []
+
     for ii in range(len(pad_name)):
         pad_data = get_data(pad_name[ii])
         
@@ -112,5 +115,7 @@ def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=N
         options(newname, 'ytitle', ytitle)
         options(newname, 'yrange', [0, 180.0])
         options(newname, 'ysubtitle', en_range_string+'\nspin-avg PAD\n(deg)')
+        out.append(newname)
 
         #tdegap(newname, overwrite=True)
+    return out

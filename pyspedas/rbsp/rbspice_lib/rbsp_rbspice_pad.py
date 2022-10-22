@@ -76,6 +76,9 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
         logging.error('No '+datatype+' data is currently loaded for probe rbsp-'+probe+' for the selected time period')
         return
 
+    logging.info('Calculating RBSPICE pitch angle distribution..')
+    out = []
+
     for ion_type_idx in range(len(species)):
         # get pitch angle data (all telescopes in single variable)
         d_pa = get_data(prefix + 'Alpha')
@@ -143,18 +146,21 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
                 options(new_name, 'ytitle', 'rbsp-'+probe+'\nrbspice\n'+species[ion_type_idx]+'\nomni')
                 options(new_name, 'ysubtitle', en_range_string+'\nPA [Deg]')
                 options(new_name, 'ztitle', units_label)
+                out.append(new_name)
             else:
                 new_name = []
                 for ii in range(len(scopes)):
                     new_name.append(prefix+species[qq]+'_T'+str(scopes[ii])+'_'+en_range_string+'_pad')
                     store_data(new_name[ii], data={'x':d_flux.x, 'y':new_pa_flux[:,:,ii], 'v':pa_label})
-
                     options(new_name[ii], 'yrange', [0, 180])
                     options(new_name[ii], 'spec', True)
                     options(new_name[ii], 'zlog', True)
                     options(new_name[ii], 'ytitle', 'rbsp-'+probe+'\nrbspice\n' +species[ion_type_idx]+'\nT'+str(scopes[t]))
                     options(new_name[ii], 'ysubtitle', en_range_string + '\nPA [Deg]')
                     options(new_name[ii], 'ztitle', units_label)
+                    out.append(new_name[ii])
 
             # now do the spin average
-            rbsp_rbspice_pad_spinavg(probe=probe, datatype=datatype, species=species[ion_type_idx], energy=energy, bin_size=bin_size, scopes=scopes)
+            sp_vars = rbsp_rbspice_pad_spinavg(probe=probe, datatype=datatype, species=species[ion_type_idx], energy=energy, bin_size=bin_size, scopes=scopes)
+            out.extend(sp_vars)
+            return out
