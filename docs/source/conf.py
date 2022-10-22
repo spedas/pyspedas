@@ -20,9 +20,9 @@ import pyspedas.cotrans.cotrans
 
 # -- Project information -----------------------------------------------------
 
-project = 'pySPEDAS'
+project = 'PySPEDAS'
 copyright = '2018-2022, UC Regents, unless otherwise indicated'
-author = 'The pySPEDAS Community'
+author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
 release = '1.3'
