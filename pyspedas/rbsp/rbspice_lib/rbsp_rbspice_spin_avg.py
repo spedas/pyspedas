@@ -84,7 +84,6 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
             options(var_data[n]+sp+suffix, 'zlog', True)
             options(var_data[n]+sp+suffix, 'spec', True)
             options(var_data[n]+sp+suffix, 'zrange', zrange)
-            breakpoint()
             options(var_data[n]+sp+suffix, 'ytitle', 'rbsp'+probe+'\nrbspice\n'+species+'\n'+suffix)
             options(var_data[n]+sp+suffix, 'ysubtitle', '[keV]')
             options(var_data[n]+sp+suffix, 'ztitle', units_label)
