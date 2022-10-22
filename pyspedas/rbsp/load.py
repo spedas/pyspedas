@@ -42,7 +42,11 @@ def load(trange=['2018-11-5', '2018-11-6'],
     datatype = datatype.lower()
     prefix = ''
     out_files = []
-    tvars = []
+
+    if notplot:
+        tvars = {}
+    else:
+        tvars = []
 
     for prb in probe:
         if instrument == 'emfisis':
@@ -80,7 +84,6 @@ def load(trange=['2018-11-5', '2018-11-6'],
             elif datatype == 'rps':
                 pathformat = 'rbsp'+prb+'/'+level+'/rps/psbr-rps/%Y/rbsp'+prb+'_'+level+'_psbr-rps_%Y%m%d_v*.cdf'
 
-
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)
 
@@ -92,7 +95,11 @@ def load(trange=['2018-11-5', '2018-11-6'],
         if not downloadonly:
             tvars_o = cdf_to_tplot(sorted(out_files), prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                                    varformat=varformat, varnames=varnames, notplot=notplot)
-            tvars.extend(tvars_o)
+
+            if notplot:
+                tvars = dict(tvars, **tvars_o)
+            else:
+                tvars.extend(tvars_o)
 
     if downloadonly:
         return sorted(out_files)
