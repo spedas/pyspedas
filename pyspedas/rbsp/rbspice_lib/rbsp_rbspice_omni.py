@@ -17,6 +17,10 @@ def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
         but change for different data levels.
     level : str
         data level ['l1','l2','l3' (default),'l3pap']
+
+    Returns
+    -------
+    Tplot variables created
     """
     if probe is None:
         probe = 'a'

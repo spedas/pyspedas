@@ -26,7 +26,7 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
     
     Returns
     -------
-    None
+    Tplot variables created
     """
     if not probe:
         probe = 'a'
@@ -163,4 +163,4 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
             # now do the spin average
             sp_vars = rbsp_rbspice_pad_spinavg(probe=probe, datatype=datatype, species=species[ion_type_idx], energy=energy, bin_size=bin_size, scopes=scopes)
             out.extend(sp_vars)
-            return out
+    return out
