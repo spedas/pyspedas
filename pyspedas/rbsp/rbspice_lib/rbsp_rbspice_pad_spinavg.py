@@ -24,6 +24,10 @@ def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=N
         desired size of the pitch angle bins in degrees [default = 15]
     scopes : list
         string array of telescopes to be included in PAD [0-5, default is all]
+
+    Returns
+    --------
+    Tplot variables created
     """
     if probe is None:
         probe = 'a'

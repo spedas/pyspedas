@@ -3,6 +3,7 @@ import unittest
 from pyspedas.utilities.data_exists import data_exists
 import pyspedas
 from pytplot import del_data
+from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
 
 
 class LoadTestCases(unittest.TestCase):
@@ -46,9 +47,17 @@ class LoadTestCases(unittest.TestCase):
         efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
         self.assertTrue(data_exists('density'))
 
-    def test_load_rbspice_data(self):
+    def test_load_rbspice_download(self):
         files = pyspedas.rbsp.rbspice(downloadonly=True, trange=['2018-11-5', '2018-11-6'], datatype='tofxeh', level='l3')
         self.assertTrue(isinstance(files, list))
+
+    def test_load_rbspice_data(self):
+        data = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEH', level='l3')
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_spin'))
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni'))
+        rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3')
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad'))
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad_spin'))
 
     def test_load_mageis_data(self):
         mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')

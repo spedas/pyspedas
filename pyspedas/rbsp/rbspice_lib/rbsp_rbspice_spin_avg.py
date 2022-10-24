@@ -16,6 +16,10 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
         RBSPICE data type ['TOFxEH' (default),'TOFxEnonH']
     level : str
         data level ['l1','l2','l3' (default),'l3pap']
+
+    Returns
+    --------
+    Tplot variables created
     """
     if probe is None:
         probe = 'a'
