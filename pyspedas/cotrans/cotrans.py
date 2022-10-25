@@ -79,6 +79,9 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     # Perform coordinate transformation.
     data_out = subcotrans(list(time_in), list(data_in), coord_in, coord_out)
 
+    if time_in is not None and data_in is not None:
+        return data_out
+
     # Find the name of the output pytplot variable.
     if name_out is None:
         name_out = name_in + "_" + coord_out
