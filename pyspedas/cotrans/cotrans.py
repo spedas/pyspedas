@@ -68,9 +68,8 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         time_in = tplot_data[0]
         data_in = tplot_data[1]
     else:
-        name_in = "cotranstemp"
-        pytplot.store_data(name_in, data={'x': list(time_in),
-                                          'y': list(data_in)})
+        pytplot.store_data('cotranstemp', data={'x': list(time_in),
+                                                'y': list(data_in)})
 
     if len(data_in[:]) < 1:
         logging.error("cotrans error: Data is empty.")
@@ -79,8 +78,11 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     # Perform coordinate transformation.
     data_out = subcotrans(list(time_in), list(data_in), coord_in, coord_out)
 
-    if time_in is not None and data_in is not None:
+    if name_in is None and name_out is None:
         return data_out
+
+    if name_in is None:
+        name_in = 'cotranstemp'
 
     # Find the name of the output pytplot variable.
     if name_out is None:
