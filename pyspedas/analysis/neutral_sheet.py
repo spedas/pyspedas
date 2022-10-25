@@ -228,17 +228,6 @@ def den_ns_model(time, gsm_pos, sc2NS=False):
         return sc2NS
 
 
-def smpf(xgsm, rmp, im):
-    im = 0
-    rmp2 = -0.14*xgsm**2 - 18.2*xgsm+217.4
-    if rmp2 < 0:
-        im = 9999.99
-    else:
-        rmp = np.sqrt(rmp2)
-        if xgsm <= -65:
-            rmp = 28.5
-
-
 def sfa4(aa, bb, cc, dd):
     ndx = 0
     xmin = 0
@@ -528,22 +517,16 @@ def neutral_sheet(time, pos, kp=None, model='themis', mlt=None, in_coord='gsm', 
 
     # call the appropriate neutral sheet model
     if model == 'sm':
-        distance2NS = sm_ns_model(time, gsm_pos, sc2NS=sc2NS)
+        return sm_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == 'themis':
-        distance2NS = themis_ns_model(time, gsm_pos, sc2NS=sc2NS)
+        return themis_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == 'aen':
-        distance2NS = aen_ns_model(time, gsm_pos, sc2NS=sc2NS)
+        return aen_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == 'den':
-        distance2NS = den_ns_model(time, gsm_pos, sc2NS=sc2NS)
+        return den_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == 'fairfield':
-        distance2NS = fairfield_ns_model(time, gsm_pos, sc2NS=sc2NS)
+        return fairfield_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == 'den_fairfield':
-        distance2NS = den_fairfield_ns_model(time, gsm_pos, sc2NS=sc2NS)
+        return den_fairfield_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == 'lopez':
-        distance2NS = lopez_ns_model(time, gsm_pos, kp=kp, mlt=mlt, sc2NS=sc2NS)
-    else:
-        logging.error('Invalid neutral sheet model.')
-        logging.error('Valid models are: [sm, themis, aen, den, fairfield, den_fairfield, lopez]')
-        return
-
-    return distance2NS
+        return lopez_ns_model(time, gsm_pos, kp=kp, mlt=mlt, sc2NS=sc2NS)
