@@ -32,7 +32,6 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
     else:
         units_label = 'counts/s'
 
-    probe = probe.strip()
     prefix = 'rbsp'+probe+'_rbspice_'+level+'_'+datatype+'_'
 
     spin_nums = get_data(prefix + 'Spin')
