@@ -267,6 +267,12 @@ def qslerp(q, x1, x2, geometric=False, eq_tolerance=1e-12):
     x2i = deepcopy(x2)
     x1i = deepcopy(x1)
 
+    # check that quaternions are consistent with generic quaternion invariants
+    qi = qvalidate(qi,'qi','qslerp')
+
+    if isinstance(qi, int):
+        return qi
+
     # check that input quaternions are unit length
     qn = qnorm(qi)
 
@@ -565,73 +571,110 @@ def mtoq(m):
 
     This routine is based on the IDL version by Patrick Cruce
     """
-    qout = np.zeros((m.shape[0], 4))
-
     mi = deepcopy(m)
 
+    dims = np.shape(mi)
+
+    if len(dims) == 2:
+        if dims[0] != 3 or dims[1] != 3:
+            logging.error('Wrong dimensions in input matrix')
+            return -1
+
+        mi = np.reshape(m, (1, 3, 3))
+
+        dims = [1, dims]
+
+    elif len(dims) == 3:
+        if dims[1] != 3 or dims[2] != 3:
+            logging.error('Wrong dimensions in input matrix')
+            return -1
+    else:
+        logging.error('Wrong dimensions in input matrix')
+        return -1
+
+    qout = np.zeros((dims[0], 4))
+
     arg = 1.0 + mi[:, 0, 0] + mi[:, 1, 1] + mi[:, 2, 2]
+
     idx = np.argwhere(arg < 0.0)
-    if len(idx) > 0:
+
+    if len(idx) != 0:
         arg[idx] = 0.0
-    qout[:, 0] = 0.5*np.sqrt(arg)
+
+    qout[:, 0] = 0.5 * np.sqrt(arg)
 
     arg = 1.0 + mi[:, 0, 0] - mi[:, 1, 1] - mi[:, 2, 2]
+
     idx = np.argwhere(arg < 0.0)
-    if len(idx) > 0:
+
+    if len(idx) != 0:
         arg[idx] = 0.0
-    qout[:, 1] = 0.5*np.sqrt(arg)
+
+    qout[:, 1] = 0.5 * np.sqrt(arg)
 
     arg = 1.0 - mi[:, 0, 0] + mi[:, 1, 1] - mi[:, 2, 2]
+
     idx = np.argwhere(arg < 0.0)
-    if len(idx) > 0:
+
+    if len(idx) != 0:
         arg[idx] = 0.0
-    qout[:, 2] = 0.5*np.sqrt(arg)
+
+    qout[:, 2] = 0.5 * np.sqrt(arg)
 
     arg = 1.0 - mi[:, 0, 0] - mi[:, 1, 1] + mi[:, 2, 2]
-    idx = np.argwhere(arg < 0.0)
-    if len(idx) > 0:
-        arg[idx] = 0.0
-    qout[:, 3] = 0.5*np.sqrt(arg)
 
-    imax = np.zeros(mi.shape[0], dtype='int64')
-    dmax = np.zeros(mi.shape[0])
+    idx = np.argwhere(arg < 0.0)
+
+    if len(idx) != 0:
+        arg[idx] = 0.0
+
+    qout[:, 3] = 0.5 * np.sqrt(arg)
+
+    imax = np.zeros(dims[0], dtype=int)
+    dmax = np.zeros(dims[0])
+
     for i in range(4):
         idx = np.argwhere(np.abs(qout[:, i]) > dmax)
-        if len(idx) > 0:
+        if len(idx) != 0:
             imax[idx] = i
             dmax[idx] = qout[idx, i]
 
     idx = np.argwhere(imax == 0)
-    if len(idx) > 0:
+
+    if len(idx) != 0:
         qout[idx, 1] = (mi[idx, 2, 1] - mi[idx, 1, 2]) / (4 * qout[idx, 0])
         qout[idx, 2] = (mi[idx, 0, 2] - mi[idx, 2, 0]) / (4 * qout[idx, 0])
         qout[idx, 3] = (mi[idx, 1, 0] - mi[idx, 0, 1]) / (4 * qout[idx, 0])
 
     idx = np.argwhere(imax == 1)
-    if len(idx) > 0:
-        qout[idx, 2] = (mi[idx, 1, 0]+mi[idx, 0, 1])/(4*qout[idx, 1])
-        qout[idx, 3] = (mi[idx, 2, 0]+mi[idx, 0, 2])/(4*qout[idx, 1])
-        qout[idx, 0] = (mi[idx, 2, 1]-mi[idx, 1, 2])/(4*qout[idx, 1])
+
+    if len(idx) != 0:
+        qout[idx, 2] = (mi[idx, 1, 0] + mi[idx, 0, 1]) / (4 * qout[idx, 1])
+        qout[idx, 3] = (mi[idx, 2, 0] + mi[idx, 0, 2]) / (4 * qout[idx, 1])
+        qout[idx, 0] = (mi[idx, 2, 1] - mi[idx, 1, 2]) / (4 * qout[idx, 1])
 
     idx = np.argwhere(imax == 2)
-    if len(idx) > 0:
+
+    if len(idx) != 0:
         qout[idx, 3] = (m[idx, 2, 1] + m[idx, 1, 2]) / (4 * qout[idx, 2])
         qout[idx, 0] = (m[idx, 0, 2] - m[idx, 2, 0]) / (4 * qout[idx, 2])
         qout[idx, 1] = (m[idx, 1, 0] + m[idx, 0, 1]) / (4 * qout[idx, 2])
 
     idx = np.argwhere(imax == 3)
-    if len(idx) > 0:
+
+    if len(idx) != 0:
         qout[idx, 0] = (mi[idx, 1, 0] - mi[idx, 0, 1]) / (4 * qout[idx, 3])
         qout[idx, 1] = (mi[idx, 2, 0] + mi[idx, 0, 2]) / (4 * qout[idx, 3])
         qout[idx, 2] = (mi[idx, 2, 1] + mi[idx, 1, 2]) / (4 * qout[idx, 3])
 
     idx = np.argwhere(qout[:, 0] < 0.0)
-    if len(idx) > 0:
+
+    if len(idx) != 0:
         qout[idx, :] = -qout[idx, :]
 
     qret = qnormalize(qout)
 
-    return qret
+    return np.reshape(qret, (dims[0], 4))
 
 
 def qtom(qi):
