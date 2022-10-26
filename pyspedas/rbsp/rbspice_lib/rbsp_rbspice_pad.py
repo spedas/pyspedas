@@ -87,7 +87,9 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
             pa_file[:, scopes[aa]] = d_pa.y[:, scopes[aa]]
 
         pa_flux = np.zeros((len(d_pa.times), n_pabins, len(scopes)))
-        pa_flux[np.argwhere(pa_flux == 0)] = np.nan
+        pa_flux_nans = np.argwhere(pa_flux == 0)
+        if len(pa_flux_nans) > 0:
+            pa_flux[pa_flux_nans] = np.nan
         pa_num_in_bin = np.zeros((len(d_pa.times), n_pabins, len(scopes)))
 
         for qq in range(len(species)):
@@ -97,7 +99,9 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
 
             logging.info(prefix + species[qq])
             flux_file = np.zeros((len(d_flux.times), len(scopes))) # time steps, look direction
-            flux_file[np.argwhere(flux_file == 0)] = np.nan
+            flux_file_nans = np.argwhere(flux_file == 0)
+            if len(flux_file_nans) > 0:
+                flux_file[flux_file_nans] = np.nan
             new_pa_flux = np.zeros((len(d_flux.times), n_pabins, len(scopes)))          # the average for each bin
 
             # get energy range of interest

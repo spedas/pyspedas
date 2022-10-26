@@ -21,6 +21,7 @@ https://pyspedas.readthedocs.io/
 - [Arase (ERG)](https://pyspedas.readthedocs.io/en/latest/erg.html)
 - [Cluster](https://pyspedas.readthedocs.io/en/latest/cluster.html)
 - [Colorado Student Space Weather Experiment (CSSWE)](https://pyspedas.readthedocs.io/en/latest/csswe.html)
+- [Communications/Navigation Outage Forecasting System (C/NOFS)](https://pyspedas.readthedocs.io/en/latest/cnofs.html)
 - [Deep Space Climate Observatory (DSCOVR)](https://pyspedas.readthedocs.io/en/latest/dscovr.html)
 - [Equator-S](https://pyspedas.readthedocs.io/en/latest/equator-s.html)
 - [Fast Auroral Snapshot Explorer (FAST)](https://pyspedas.readthedocs.io/en/latest/fast.html)
