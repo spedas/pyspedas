@@ -18,10 +18,6 @@ def rbsp_load_rbspice_read(level='l3', probe='a', datatype='TOFxEH'):
         RBSPICE data type ['EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH' (default),'TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'],
         but change for different data levels.
     """
-    if probe is None:
-        probe = 'a'
-    if level is None:
-        level = 'l3'
     if level != 'l1':
         units_label = '1/(cm^2-sr-s-keV)'
         convert_factor = 1000.              # to convert flux from 1/MeV to 1/keV

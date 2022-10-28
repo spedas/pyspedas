@@ -28,22 +28,16 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
     -------
     Tplot variables created
     """
-    if not probe:
-        probe = 'a'
-    if not datatype:
-        datatype = 'TOFxEH'
     if datatype == 'TOFxEH':
         species = 'proton'
     elif datatype == 'TOFxEnonH':
-        species = ['helium','oxygen']
+        species = ['helium', 'oxygen']
     elif datatype == 'TOFxPHHHELT':
-        species = ['proton','oxygen']
+        species = ['proton', 'oxygen']
 
     if not isinstance(species, list):
         species = [species]
 
-    if not level:
-        level = 'l3'
     if level != 'l1':
         units_label = '1/(cm^2-sr-s-keV)'
     else:
@@ -155,7 +149,7 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
                 new_name = []
                 for ii in range(len(scopes)):
                     new_name.append(prefix+species[qq]+'_T'+str(scopes[ii])+'_'+en_range_string+'_pad')
-                    store_data(new_name[ii], data={'x':d_flux.x, 'y':new_pa_flux[:,:,ii], 'v':pa_label})
+                    store_data(new_name[ii], data={'x': d_flux.times, 'y': new_pa_flux[:, :, ii], 'v': pa_label})
                     options(new_name[ii], 'yrange', [0, 180])
                     options(new_name[ii], 'spec', True)
                     options(new_name[ii], 'zlog', True)

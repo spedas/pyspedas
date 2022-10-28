@@ -29,12 +29,6 @@ def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=N
     --------
     Tplot variables created
     """
-    if probe is None:
-        probe = 'a'
-    if datatype is None:
-        datatype = 'TOFxEH'
-    if level is None:
-        level = 'l3'
     if level != 'l1':
         units_label = '1/(cm^2-sr-s-keV)'
     else:
