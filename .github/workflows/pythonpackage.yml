@@ -94,6 +94,7 @@ jobs:
         PYTPLOT_LOGGING_LEVEL: error
       run: |
         coverage run -a -m pyspedas.cotrans.tests.quaternions
+        coverage run -a -m pyspedas.cnofs.tests.tests
         coverage run -a -m pyspedas.secs.tests.tests
         coverage run -a -m pyspedas.sosmag.tests.tests
         coverage run -a -m pyspedas.hapi.tests.tests
