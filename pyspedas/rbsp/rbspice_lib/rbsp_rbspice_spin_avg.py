@@ -46,12 +46,19 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
     elif datatype == 'TOFxPHHHELT':
         species = ['proton', 'oxygen']
 
-    var_data = tnames(prefix + species + '_T?')
-    var_omni = tnames(prefix + species + '_omni')
-    var_data.extend(var_omni)
+    if isinstance(species, list):
+        var_data = []
+        for spc in species:
+            var_data.extend(tnames(prefix + spc + '_T?'))
+            var_data.extend(tnames(prefix + spc + '_omni'))
+    else:
+        var_data = tnames(prefix + species + '_T?')
+        var_omni = tnames(prefix + species + '_omni')
+        var_data.extend(var_omni)
 
     logging.info('Calculating spin averaged energy spectra..')
     out = []
+    zrange = None
 
     for n in range(len(var_data)):
         if var_data[n] == '':
@@ -62,8 +69,8 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
             if len(flux_data) < 3:
                 logging.error('Error, couldn''t find energy table for the flux/cps data variable')
                 continue
-            if var_data[n][-1] == 'T':
-                species = var_data[n][-7:]
+            if var_data[n][-2:-1] == 'T':
+                species = var_data[n][-9:-3]
             elif var_data[n][-4:] == 'omni':
                 species = var_data[n][-11:-5]
             if species == 'proton':
@@ -78,6 +85,7 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
                     zrange = [1., 1.e2]
                 else:
                     zrange = [1e1, 1.e4]
+
             spin_sum_flux = np.zeros((len(spin_starts), len(flux_data.v)))
             current_start = 0
             for spin_idx in range(len(spin_starts)):
@@ -94,8 +102,12 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
             options(var_data[n]+sp+suffix, 'ylog', True)
             options(var_data[n]+sp+suffix, 'zlog', True)
             options(var_data[n]+sp+suffix, 'spec', True)
-            options(var_data[n]+sp+suffix, 'zrange', zrange)
-            options(var_data[n]+sp+suffix, 'ytitle', 'rbsp'+probe+'\nrbspice\n'+species+'\n'+suffix)
+            if zrange is not None:
+                options(var_data[n]+sp+suffix, 'zrange', zrange)
+            if isinstance(species, list):
+                options(var_data[n]+sp+suffix, 'ytitle', 'rbsp'+probe+'\nrbspice\n'+datatype+'\n'+suffix)
+            else:
+                options(var_data[n]+sp+suffix, 'ytitle', 'rbsp'+probe+'\nrbspice\n'+species+'\n'+suffix)
             options(var_data[n]+sp+suffix, 'ysubtitle', '[keV]')
             options(var_data[n]+sp+suffix, 'ztitle', units_label)
             out.append(var_data[n]+sp+suffix)
