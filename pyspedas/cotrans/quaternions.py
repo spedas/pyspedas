@@ -44,10 +44,10 @@ def qmult(q1, q2):
     q1i = qvalidate(q1i, 'q1', 'qmult')
     q2i = qvalidate(q2i, 'q2', 'qmult')
 
-    if q1i.size == 0 and q1i[0] == -1:
+    if isinstance(q1i, int):
         return q1i
 
-    if q2i.size == 0 and q2i[0] == -1:
+    if isinstance(q2i, int):
         return q2i
 
     # make sure elements match
@@ -276,7 +276,7 @@ def qslerp(q, x1, x2, geometric=False, eq_tolerance=1e-12):
     # check that input quaternions are unit length
     qn = qnorm(qi)
 
-    idx = np.argwhere(np.abs(qn - 1.0) > eq_tolerance)
+    idx = np.argwhere(np.abs(qn - 1.0) > eq_tolerance).flatten()
     if len(idx) > 0:
         logging.error('At least one input quaternion is not unit length')
         return
