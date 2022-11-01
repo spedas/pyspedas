@@ -12,6 +12,7 @@ def time_ephemeris(t, et2ut=False):
     Or:      ut = time_ephemeris(et, et2ut=True)   ; Converts from ephemeris time to UT double precision (UNIX time)
     Warning: this routine is only accurate to about 1 millisecond and does not attempt to reflect GR effects
 
+    Based on the SPEDAS IDL routine by Davin Larson
     """
     if not isinstance(t, float):
         t = time_double(t)
