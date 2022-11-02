@@ -68,6 +68,7 @@ from . import kyoto
 from . import swarm
 from . import vires
 from . import cnofs
+from . import lanl
 
 # set up logging/console output
 import logging
