@@ -25,6 +25,7 @@ Load Routines
    polar
    psp
    solo
+   st5
    stereo
    themis
    twins

@@ -38,6 +38,7 @@ https://pyspedas.readthedocs.io/
 - [Polar](https://pyspedas.readthedocs.io/en/latest/polar.html)
 - [Parker Solar Probe (PSP)](https://pyspedas.readthedocs.io/en/latest/psp.html)
 - [Solar Orbiter (SOLO)](https://pyspedas.readthedocs.io/en/latest/solo.html)
+- [Space Technology 5 (ST5)](https://pyspedas.readthedocs.io/en/latest/st5.html)
 - [Solar Terrestrial Relations Observatory (STEREO)](https://pyspedas.readthedocs.io/en/latest/stereo.html)
 - [Spherical Elementary Currents (SECS)](https://github.com/spedas/pyspedas/blob/master/pyspedas/secs/README.md)
 - [Swarm](https://github.com/spedas/pyspedas/blob/master/pyspedas/swarm/README.md)

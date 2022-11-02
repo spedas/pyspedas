@@ -69,6 +69,7 @@ from . import swarm
 from . import vires
 from . import cnofs
 from . import lanl
+from . import st5
 
 # set up logging/console output
 import logging
