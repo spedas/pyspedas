@@ -4,7 +4,12 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from _collections import OrderedDict
-from . import HTMLPlotter
+bokeh_available = True
+try:
+    from . import HTMLPlotter
+except ImportError:
+    bokeh_available = False
+
 import os
 import sys
 import xarray as xr
@@ -125,10 +130,11 @@ if using_graphics:
                    'qtTVarFigureAlt': QtPlotter.TVarFigureAlt,
                    'qtTVarFigureMap': QtPlotter.TVarFigureMap}
 
-bokeh_plotters = {'bkTVarFigure1D': HTMLPlotter.TVarFigure1D,
-                  'bkTVarFigureMap': HTMLPlotter.TVarFigureMap,
-                  'bkTVarFigureAlt': HTMLPlotter.TVarFigureAlt,
-                  'bkTVarFigureSpec': HTMLPlotter.TVarFigureSpec}
+if bokeh_available:
+    bokeh_plotters = {'bkTVarFigure1D': HTMLPlotter.TVarFigure1D,
+                      'bkTVarFigureMap': HTMLPlotter.TVarFigureMap,
+                      'bkTVarFigureAlt': HTMLPlotter.TVarFigureAlt,
+                      'bkTVarFigureSpec': HTMLPlotter.TVarFigureSpec}
 
 from .store_data import store_data, store
 from .tplot import tplot
