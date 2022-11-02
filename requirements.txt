@@ -1,7 +1,7 @@
 numpy>=1.19.5
 requests
 cdflib>=0.4.3
-pytplot-mpl-temp>=2.1.7
+pytplot-mpl-temp>=2.1.8
 cdasws>=1.7.24
 netCDF4
 pywavelets
