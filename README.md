@@ -29,6 +29,7 @@ https://pyspedas.readthedocs.io/
 - [Geostationary Operational Environmental Satellite (GOES)](https://pyspedas.readthedocs.io/en/latest/goes.html)
 - [Imager for Magnetopause-to-Aurora Global Exploration (IMAGE)](https://pyspedas.readthedocs.io/en/latest/image.html)
 - [Kyoto Dst Index](https://pyspedas.readthedocs.io/en/latest/kyoto.html)
+- [LANL Plasma Analyzers](https://pyspedas.readthedocs.io/en/latest/lanl.html)
 - [Mars Atmosphere and Volatile Evolution (MAVEN)](https://pyspedas.readthedocs.io/en/latest/maven.html)
 - [Magnetic Induction Coil Array (MICA)](https://pyspedas.readthedocs.io/en/latest/mica.html)
 - [Magnetospheric Multiscale (MMS)](https://pyspedas.readthedocs.io/en/latest/mms.html)
