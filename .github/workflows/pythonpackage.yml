@@ -91,8 +91,11 @@ jobs:
         TWINS_DATA_DIR: twins_data/
         ULY_DATA_DIR: uly_data/
         WIND_DATA_DIR: wind_data/
+        LANL_DATA_DIR: lanl_data/
+        CNOFS_DATA_DIR: cnofs_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
+        coverage run -a -m pyspedas.lanl.tests.tests
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         coverage run -a -m pyspedas.cnofs.tests.tests
         coverage run -a -m pyspedas.secs.tests.tests

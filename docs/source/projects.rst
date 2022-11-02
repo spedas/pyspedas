@@ -16,6 +16,7 @@ Load Routines
    goes
    image
    kyoto
+   lanl
    maven
    mica
    mms
