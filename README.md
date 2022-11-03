@@ -18,6 +18,7 @@ https://pyspedas.readthedocs.io/
 
 ## Projects Supported
 - [Advanced Composition Explorer (ACE)](https://pyspedas.readthedocs.io/en/latest/ace.html)
+- [Akebono](https://pyspedas.readthedocs.io/en/latest/akebono.html)
 - [Arase (ERG)](https://pyspedas.readthedocs.io/en/latest/erg.html)
 - [Cluster](https://pyspedas.readthedocs.io/en/latest/cluster.html)
 - [Colorado Student Space Weather Experiment (CSSWE)](https://pyspedas.readthedocs.io/en/latest/csswe.html)

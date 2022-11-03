@@ -5,10 +5,12 @@ Load Routines
    :maxdepth: 2
 
    ace
+   akebono
    erg
    cluster
    cnofs
    csswe
+   de2
    dscovr
    equator-s
    fast
