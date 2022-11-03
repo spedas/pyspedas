@@ -70,6 +70,7 @@ from . import vires
 from . import cnofs
 from . import lanl
 from . import st5
+from . import de2
 
 # set up logging/console output
 import logging
