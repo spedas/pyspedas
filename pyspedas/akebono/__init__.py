@@ -271,7 +271,7 @@ def orb(trange=['2012-10-01', '2012-10-02'],
 
 def orb_postprocessing(files):
     """
-    Placeholder for orb post-processing 
+    Load the orbit CSV files and create the tplot variables
     """
     prefix_project = 'akb_'
     prefix_descriptor = 'orb_'
@@ -336,9 +336,7 @@ def orb_postprocessing(files):
         
 def load_csv_file(filenames, cols=None):
     """
-    function that loads a CSV file into a pandas Data Frame and returns the pandas Data Frame
-    the header of the CSV file is:
-    PASS       UT           ksc_azm(deg) ksc_elv(deg) ksc_dis(km) ksc_ang(deg) syo_azm(deg) syo_elv(deg) syo_dis(km) syo_ang(deg) pra_azm(deg) pra_elv(deg) pra_dis(km) pra_ang(deg) esr_azm(deg) esr_elv(deg) esr_dis(km) esr_ang(deg) GCLAT(deg) GCLON(deg) INV(deg) FMLAT(deg) MLAT(deg) MLT(h) Bmdl       X       Y       Z (nT) GCLON_S/C(deg) GCLAT_S/C(deg) LSUN ALT(km) s_Direc     s/c_pos     s/c_vel(km/s)
+    Loads a list of CSV/txt files into pandas data frames
     """
     if not isinstance(filenames, list):
         filenames = [filenames]
