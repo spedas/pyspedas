@@ -92,8 +92,11 @@ jobs:
         WIND_DATA_DIR: wind_data/
         LANL_DATA_DIR: lanl_data/
         CNOFS_DATA_DIR: cnofs_data/
+        ST5_DATA_DIR: st5_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
+        coverage run -a -m pyspedas.de2.tests.tests
+        coverage run -a -m pyspedas.st5.tests.tests
         coverage run -a -m pyspedas.lanl.tests.tests
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         coverage run -a -m pyspedas.cnofs.tests.tests
