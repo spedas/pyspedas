@@ -23,6 +23,7 @@ https://pyspedas.readthedocs.io/
 - [Colorado Student Space Weather Experiment (CSSWE)](https://pyspedas.readthedocs.io/en/latest/csswe.html)
 - [Communications/Navigation Outage Forecasting System (C/NOFS)](https://pyspedas.readthedocs.io/en/latest/cnofs.html)
 - [Deep Space Climate Observatory (DSCOVR)](https://pyspedas.readthedocs.io/en/latest/dscovr.html)
+- [Dynamics Explorer 2 (DE2)](https://pyspedas.readthedocs.io/en/latest/de2.html)
 - [Equator-S](https://pyspedas.readthedocs.io/en/latest/equator-s.html)
 - [Fast Auroral Snapshot Explorer (FAST)](https://pyspedas.readthedocs.io/en/latest/fast.html)
 - [Geotail](https://pyspedas.readthedocs.io/en/latest/geotail.html)
