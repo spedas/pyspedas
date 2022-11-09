@@ -63,10 +63,10 @@ def slice2d_rotate(rotation=None, vectors=None, bfield=None, vbulk=None, sunvec=
             transformed[vector_idx] = (matrix.T @ vectors[vector_idx, :]).flatten()
         vectors = transformed
     if vbulk is not None:
-        vbulk = matrix @ vbulk
+        vbulk = matrix.T @ vbulk
     if bfield is not None:
-        bfield = matrix @ bfield
+        bfield = matrix.T @ bfield
     if sunvec is not None:
-        sunvec = matrix @ sunvec
+        sunvec = matrix.T @ sunvec
 
     return {'matrix': matrix, 'vectors': vectors, 'bfield': bfield, 'vbulk': vbulk, 'sunvec': sunvec}

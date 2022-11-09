@@ -289,7 +289,7 @@ def slice2d(dists,
 
     geo_shift = [0, 0, 0]
     if subtract_bulk:
-        vectors = slice2d_subtract(rot_matrix['vectors'], vbulk)
+        vectors = slice2d_subtract(rot_matrix['vectors'], rot_matrix['vbulk'])
 
         if vectors is not None:
             rot_matrix['vectors'] = vectors
