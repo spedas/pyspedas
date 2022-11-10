@@ -33,7 +33,12 @@ def mms_login_lasp(always_prompt=False, headers={}):
         pass
 
     if saved_auth is None or always_prompt == True:
-        user = input('SDC username (blank for public access): ')
+        try:
+            user = input('SDC username (blank for public access): ')
+        except:
+            logging.error('Error while reading SDC username/password; defaulting to public user...')
+            user = ''
+
         if user != '': 
             passwd = getpass() 
         else: passwd = ''
