@@ -15,6 +15,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          downloadonly=False,
          notplot=False,
          no_update=False,
+         berkeley=False,
          time_clip=False):
     """
     This function loads data from the WIND mission; this function is not meant 
@@ -27,6 +28,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.wind.orbit
 
     """
+
+    if berkeley:
+        remote_data_dir = 'http://themis.ssl.berkeley.edu/data/wind/'
+    else:
+        remote_data_dir = CONFIG['remote_data_dir']
 
     if instrument == 'fgm':
         pathformat = 'mfi/mfi_'+datatype+'/%Y/wi_'+datatype+'_mfi_%Y%m%d_v??.cdf'
@@ -42,14 +48,17 @@ def load(trange=['2013-11-5', '2013-11-6'],
         if datatype == '3dp_emfits_e0':
             pathformat = '3dp/'+datatype+'/%Y/wi_'+datatype.split('_')[1]+'_'+datatype.split('_')[2]+'_'+datatype.split('_')[0]+'_%Y%m%d_v??.cdf'
         else:
-            pathformat = '3dp/'+datatype+'/%Y/wi_'+datatype.split('_')[1]+'_'+datatype.split('_')[0]+'_%Y%m%d_v??.cdf'
+            if not berkeley:
+                pathformat = '3dp/'+datatype+'/%Y/wi_'+datatype.split('_')[1]+'_'+datatype.split('_')[0]+'_%Y%m%d_v??.cdf'
+            else:
+                pathformat = '3dp/'+datatype+'/%Y/wi_'+datatype+'_3dp_%Y%m%d_v??.cdf'
 
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange)
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=True)
+    files = download(remote_file=remote_names, remote_path=remote_data_dir, local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=True)
     if files is not None:
         for file in files:
             out_files.append(file)
