@@ -1,4 +1,5 @@
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
 
 
 def mpa(trange=['2004-10-31', '2004-11-01'],
@@ -169,5 +170,5 @@ def spa_postprocessing(variables):
     return variables
 
 
-        
-
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='LANL', instrument=instrument, label=label)

@@ -1,5 +1,5 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
 
 
 def cindi(trange=['2013-11-5', '2013-11-6'],
@@ -176,3 +176,6 @@ def vefi(trange=['2010-11-5', '2010-11-6'],
     """
     return load(instrument='vefi', datatype=datatype, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='CNOFS', instrument=instrument, label=label)

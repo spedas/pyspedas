@@ -1,4 +1,5 @@
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
 
 
 def mag(trange=['2006-06-01', '2006-06-02'],
@@ -78,5 +79,6 @@ def mag_postprocessing(variables):
     """
     return variables
 
-        
 
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='ST5', instrument=instrument, label=label)

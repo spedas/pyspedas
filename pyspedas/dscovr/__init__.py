@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def mag(trange=['2018-10-16', '2018-10-17'], 
         datatype='h0', 
@@ -268,3 +269,7 @@ def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False, suffix='', no_u
     mag_vars = mag(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
     fc_vars = fc(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
     return att_vars + orb_vars + mag_vars + fc_vars
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='DSCOVR', instrument=instrument, label=label)

@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def fgm(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -60,6 +61,7 @@ def fgm(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
+
 def aspoc(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
         datatype='pp', 
@@ -118,6 +120,7 @@ def aspoc(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='aspoc', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+
 
 def cis(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -178,6 +181,7 @@ def cis(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
+
 def dwp(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
         datatype='pp', 
@@ -236,6 +240,7 @@ def dwp(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='dwp', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+
 
 def edi(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -296,6 +301,7 @@ def edi(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
+
 def efw(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
         datatype='pp', 
@@ -354,6 +360,7 @@ def efw(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+
 
 def peace(trange=['2016-11-5', '2016-11-6'], 
         probe='1',
@@ -414,6 +421,7 @@ def peace(trange=['2016-11-5', '2016-11-6'],
     """
     return load(instrument='peace', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
+
 def rapid(trange=['2016-11-5', '2016-11-6'], 
         probe='1',
         datatype='pp', 
@@ -472,6 +480,7 @@ def rapid(trange=['2016-11-5', '2016-11-6'],
 
     """
     return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+
 
 def staff(trange=['2012-11-5', '2012-11-6'], 
         probe='1',
@@ -532,6 +541,7 @@ def staff(trange=['2012-11-5', '2012-11-6'],
     """
     return load(instrument='staff', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
+
 def wbd(trange=['2012-11-6', '2012-11-7'], 
         probe='1',
         datatype='waveform', 
@@ -591,6 +601,7 @@ def wbd(trange=['2012-11-6', '2012-11-7'],
     """
     return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
+
 def whi(trange=['2012-11-5', '2012-11-6'], 
         probe='1',
         datatype='pp', 
@@ -649,3 +660,7 @@ def whi(trange=['2012-11-5', '2012-11-6'],
 
     """
     return load(instrument='whi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='Cluster', instrument=instrument, label=label)

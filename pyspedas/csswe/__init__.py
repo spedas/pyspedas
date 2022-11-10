@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def reptile(trange=['2013-11-5', '2013-11-6'],
         datatype='flux', 
@@ -66,3 +67,8 @@ def reptile(trange=['2013-11-5', '2013-11-6'],
 
     """
     return load(instrument='reptile', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    out = find_datasets(mission='Smallsats/Cubesats', instrument='csswe', label=label)
+    return out
