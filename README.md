@@ -6,11 +6,7 @@
 ![Status](https://img.shields.io/pypi/status/pyspedas.svg)
 ![License](https://img.shields.io/pypi/l/pyspedas.svg)
 
-The Space Physics Environment Data Analysis Software in Python (PySPEDAS) framework supports multi-mission, multi-instrument retrieval, analysis, and visualization of Heliophysics timeseries data.
-
-Please see our documentation at: 
-
-https://pyspedas.readthedocs.io/
+The Python-based Space Physics Environment Data Analysis Software (PySPEDAS) framework supports multi-mission, multi-instrument retrieval, analysis, and visualization of Heliophysics timeseries data.
 
 ## Projects Supported
 - [Advanced Composition Explorer (ACE)](https://pyspedas.readthedocs.io/en/latest/ace.html)
@@ -54,7 +50,7 @@ We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a 
 
 ## Installation
 
-### Setup your Virtual Environment
+### Virtual Environment
 To avoid potential dependency issues with other Python packages, we suggest creating a virtual environment for PySPEDAS; you can create a virtual environment in your terminal with:
 
 ```bash
@@ -198,6 +194,11 @@ Additional examples of loading and plotting data can be found in the documentati
 - [2D slices of MMS distribution functions](https://github.com/spedas/mms-examples/blob/master/advanced/Generate_2D_slices_of_FPI_and_HPCA_data.ipynb)
 - [Generating spectrograms and moments from MMS distribution functions](https://github.com/spedas/mms-examples/blob/master/advanced/Generate%20spectrograms%20and%20moments%20with%20mms_part_getspec.ipynb)
 
+
+## Documentation
+For more information, please see our HTML documentation at: 
+
+https://pyspedas.readthedocs.io/
 
 ## Getting Help
 To find the options supported, call `help` on the instrument function you're interested in:
