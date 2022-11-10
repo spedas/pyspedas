@@ -2,6 +2,7 @@ from .load import load
 from pyspedas.rbsp.rbspice_lib.rbsp_load_rbspice_read import rbsp_load_rbspice_read
 from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_omni import rbsp_rbspice_omni
 from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_spin_avg import rbsp_rbspice_spin_avg
+from pyspedas.utilities.datasets import find_datasets
 
 
 def emfisis(trange=['2018-11-5', '2018-11-6'], 
@@ -544,3 +545,7 @@ def rps(trange=['2015-11-5', '2015-11-6'],
 
     """
     return load(instrument='rps', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='Van Allen Probes (RBSP)', instrument=instrument, label=label)

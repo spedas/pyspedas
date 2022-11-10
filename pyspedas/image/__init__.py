@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def lena(trange=['2004-11-5', '2004-11-6'], 
         datatype='k0',
@@ -420,3 +421,7 @@ def orbit(trange=['2004-11-5', '2004-11-6'],
 
     """
     return load(instrument='orbit', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='IMAGE', instrument=instrument, label=label)

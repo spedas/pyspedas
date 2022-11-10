@@ -1,6 +1,7 @@
-
 from .load import load
 from pytplot import options
+from pyspedas.utilities.datasets import find_datasets
+
 
 def mgf(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -373,3 +374,7 @@ def pwi(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='pwi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='Geotail', instrument=instrument, label=label)

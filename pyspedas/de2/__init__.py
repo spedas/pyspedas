@@ -1,4 +1,5 @@
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
 
 
 def mag(trange=['1983-02-16', '1983-02-17'],
@@ -589,5 +590,6 @@ def lang_postprocessing(variables):
     """
     return variables
 
-        
 
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='Dynamics Explorer', instrument=instrument, label=label)
