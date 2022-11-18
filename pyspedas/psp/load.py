@@ -2,7 +2,7 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pyspedas.analysis.time_clip import time_clip as tclip
 from pytplot import cdf_to_tplot
-
+from .rfs import rfs_variables_to_load
 from .config import CONFIG
 
 def load(trange=['2018-11-5', '2018-11-6'], 
@@ -169,6 +169,12 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     if downloadonly:
         return out_files
+
+    # find the list of varnames for RFS data
+    # these files have > 1500 variables, but
+    # we only load ~50
+    if 'rfs' in datatype.lower() and varformat is None and varnames == []:
+        varnames = rfs_variables_to_load(out_files)
 
     tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, 
                         varformat=varformat, varnames=varnames, notplot=notplot)
