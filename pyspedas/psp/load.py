@@ -175,6 +175,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
     # we only load ~50
     if 'rfs' in datatype.lower() and varformat is None and varnames == []:
         varnames = rfs_variables_to_load(out_files)
+        # we'll need the support data for the quality flags
+        get_support_data = True
 
     tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, 
                         varformat=varformat, varnames=varnames, notplot=notplot)

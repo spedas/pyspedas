@@ -22,8 +22,7 @@ def rfs_variables_to_load(files):
             continue
         if elements is None:
             continue
-        if len(elements) > 0:
-            if variable in out:
-                continue
-            out.append(variable)
+        if variable in out:
+            continue
+        out.append(variable)
     return out
