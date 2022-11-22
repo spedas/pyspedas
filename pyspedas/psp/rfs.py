@@ -8,6 +8,8 @@ def rfs_variables_to_load(files):
     as the IDL code).
     """
     out = []
+    if len(files) == 0:
+        return []
     # the variables should be the same across all files
     file = files[0]
     cdf_file = cdflib.CDF(file)
