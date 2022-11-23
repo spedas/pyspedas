@@ -36,7 +36,7 @@ class LoadTestCases(unittest.TestCase):
         swa_vars = pyspedas.solo.swa()
         self.assertTrue(data_exists('eflux'))
         swa_vars = pyspedas.solo.swa(level='l2', datatype='eas1-nm3d-def')
-        self.assertTrue(data_exists('SWA_EAS1_Data'))
+        self.assertTrue(data_exists('SWA_EAS1_NM3D_DEF_Data'))
         swa_vars = pyspedas.solo.swa(notplot=True)
         self.assertTrue('eflux' in swa_vars)
 
