@@ -6,6 +6,9 @@ from pyspedas.utilities.leap_seconds import load_leap_table
 def mms_tai2unix(values):
     """
     Converts MMS timestamps in TAI to unix timestamps
+
+    Based on Mitsuo Oka's IDL code with the same name.
+
     Input
     ---------
         values: float, list of floats or np.ndarray
