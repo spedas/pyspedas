@@ -58,7 +58,7 @@ def mms_load_brst_segments(trange=None, suffix=''):
 
     # +10 second offset added; there appears to be an extra 10
     # seconds of data, consistently, not included in the range here
-    unix_end = [end_time+10.0 for end_time in unix_end]
+    unix_end = np.array([end_time+10.0 for end_time in unix_end])
 
     bar_x = []
     bar_y = []
