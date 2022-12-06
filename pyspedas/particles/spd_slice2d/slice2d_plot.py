@@ -14,6 +14,7 @@ def plot(the_slice,
          olines=8,
          contours=False,
          plotsize=10,
+         title=None,
          save_png=None,
          save_jpeg=None,
          save_svg=None,
@@ -72,7 +73,7 @@ def plot(the_slice,
         axes.tick_params(axis='x', labelsize=axis_font_size)
         axes.tick_params(axis='y', labelsize=axis_font_size)
 
-    info = slice2d_getinfo(the_slice)
+    info = slice2d_getinfo(the_slice, title=title)
 
     axes.set_title(info['title'], fontsize=char_size)
     axes.set_ylabel(info['ytitle'], fontsize=char_size)
