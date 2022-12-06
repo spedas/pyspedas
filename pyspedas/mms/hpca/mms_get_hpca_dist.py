@@ -199,7 +199,10 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
         else:
             end_idx = int(data_idx[i]+n_times/2.)
 
-        out_data[i, :, :, :] = data_in.y[start_idx:end_idx, :, :].transpose([2, 0, 1])
+        try:
+            out_data[i, :, :, :] = data_in.y[start_idx:end_idx, :, :].transpose([2, 0, 1])
+        except ValueError:
+            out_data[i, :, :, :] = np.nan
 
     out_list = []
 
