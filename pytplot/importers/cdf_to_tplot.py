@@ -430,10 +430,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
             stored_variables.append(var_name)
 
         if metadata.get(var_name) is not None:
-            if metadata[var_name]['display_type'] == "spectrogram":
+            if metadata[var_name]['display_type'].lower() == "spectrogram":
                 options(var_name, 'spec', 1)
             if metadata[var_name]['scale_type'] == 'log':
-                if metadata[var_name]['display_type'] == "spectrogram":
+                if metadata[var_name]['display_type'].lower() == "spectrogram":
                     options(var_name, 'zlog', 1)
                 else:
                     options(var_name, 'ylog', 1)
@@ -446,7 +446,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 if metadata[var_name]['var_attrs'].get('LABLAXIS') is not None:
                     options(var_name, 'ytitle', metadata[var_name]['var_attrs']['LABLAXIS'])
                 if metadata[var_name]['var_attrs'].get('UNITS') is not None:
-                    if metadata[var_name]['display_type'] == 'spectrogram':
+                    if metadata[var_name]['display_type'].lower() == 'spectrogram':
                         options(var_name, 'ztitle', '[' + metadata[var_name]['var_attrs']['UNITS'] + ']')
                     else:
                         options(var_name, 'ysubtitle', '[' + metadata[var_name]['var_attrs']['UNITS'] + ']')
