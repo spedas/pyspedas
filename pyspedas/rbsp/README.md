@@ -60,7 +60,6 @@ tplot('Ion_density')
 
 rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
 
-tplot('Tperp_e_200')
 ```
 
 #### Relativistic Proton Spectrometer (RPS)
