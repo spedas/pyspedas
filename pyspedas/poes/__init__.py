@@ -1,5 +1,5 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
 
 
 def sem(trange=['2018-11-5', '2018-11-6'], 
@@ -66,3 +66,7 @@ def sem(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='sem', probe=probe, trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='POES', instrument='sem2', label=label)

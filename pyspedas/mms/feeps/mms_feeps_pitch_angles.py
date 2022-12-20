@@ -180,47 +180,47 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
                 Vbcs = Vb12bcs
             pas[:, i] = 180./math.pi*np.arccos((Vbcs[0]*Bbcs[:, 0] + Vbcs[1]*Bbcs[:, 1] + Vbcs[2]*Bbcs[:, 2])/(np.sqrt(Vbcs[0]**2+Vbcs[1]**2+Vbcs[2]**2) * np.sqrt(Bbcs[:, 0]**2+Bbcs[:, 1]**2+Bbcs[:, 2]**2)))
     
-            if data_rate == 'srvy':
-                # the following 2 hash tables map TOP/BOTTOM telescope #s to index of the PA array created above
-                top_tele_idx_map = {}
-                bot_tele_idx_map = {}
-                top_tele_idx_map[1] = 0
-                top_tele_idx_map[2] = 1
-                top_tele_idx_map[3] = 2
-                top_tele_idx_map[4] = 3
-                top_tele_idx_map[5] = 4
-                top_tele_idx_map[9] = 5
-                top_tele_idx_map[10] = 6
-                top_tele_idx_map[11] = 7
-                top_tele_idx_map[12] = 8
-                bot_tele_idx_map[1] = 9
-                bot_tele_idx_map[2] = 10
-                bot_tele_idx_map[3] = 11
-                bot_tele_idx_map[4] = 12
-                bot_tele_idx_map[5] = 13
-                bot_tele_idx_map[9] = 14
-                bot_tele_idx_map[10] = 15
-                bot_tele_idx_map[11] = 16
-                bot_tele_idx_map[12] = 17
+        if data_rate == 'srvy':
+            # the following 2 hash tables map TOP/BOTTOM telescope #s to index of the PA array created above
+            top_tele_idx_map = {}
+            bot_tele_idx_map = {}
+            top_tele_idx_map[1] = 0
+            top_tele_idx_map[2] = 1
+            top_tele_idx_map[3] = 2
+            top_tele_idx_map[4] = 3
+            top_tele_idx_map[5] = 4
+            top_tele_idx_map[9] = 5
+            top_tele_idx_map[10] = 6
+            top_tele_idx_map[11] = 7
+            top_tele_idx_map[12] = 8
+            bot_tele_idx_map[1] = 9
+            bot_tele_idx_map[2] = 10
+            bot_tele_idx_map[3] = 11
+            bot_tele_idx_map[4] = 12
+            bot_tele_idx_map[5] = 13
+            bot_tele_idx_map[9] = 14
+            bot_tele_idx_map[10] = 15
+            bot_tele_idx_map[11] = 16
+            bot_tele_idx_map[12] = 17
 
-                top_idxs = []
-                bot_idxs = []
+            top_idxs = []
+            bot_idxs = []
 
-                # PAs for only active eyes
-                new_pas = np.empty([len(btimes), len(eyes['top'])+len(eyes['bottom'])]) # pitch angles for each eye at eaceh time
+            # PAs for only active eyes
+            new_pas = np.empty([len(btimes), len(eyes['top'])+len(eyes['bottom'])]) # pitch angles for each eye at eaceh time
 
-                for top_idx, top_eye in enumerate(eyes['top']):
-                    new_pas[:, top_idx] = pas[:, top_tele_idx_map[top_eye]]
-                    top_idxs.append(top_idx)
+            for top_idx, top_eye in enumerate(eyes['top']):
+                new_pas[:, top_idx] = pas[:, top_tele_idx_map[top_eye]]
+                top_idxs.append(top_idx)
 
-                for bot_idx, bot_eye in enumerate(eyes['bottom']):
-                    new_pas[:, bot_idx+len(eyes['top'])] = pas[:, bot_tele_idx_map[bot_eye]]
-                    bot_idxs.append(bot_idx+len(eyes['top']))
+            for bot_idx, bot_eye in enumerate(eyes['bottom']):
+                new_pas[:, bot_idx+len(eyes['top'])] = pas[:, bot_tele_idx_map[bot_eye]]
+                bot_idxs.append(bot_idx+len(eyes['top']))
 
-                idx_maps = {'electron-top': top_idxs, 'electron-bottom': bot_idxs}
+            idx_maps = {'electron-top': top_idxs, 'electron-bottom': bot_idxs}
 
-            else:
-                new_pas = pas
+        else:
+            new_pas = pas
 
     elif datatype == 'ion':
         pas = np.empty([len(btimes), 6]) # pitch angles for each eye at each time

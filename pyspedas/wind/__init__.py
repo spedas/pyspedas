@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def threedp(trange=['1999-11-5', '1999-11-6'],
         datatype='3dp_emfits_e0',
@@ -10,6 +11,7 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
+        berkeley=False,
         time_clip=False):
     """
     This function loads 3DP data
@@ -59,7 +61,7 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='3dp', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='3dp', berkeley=berkeley, trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def orbit(trange=['1999-11-5', '1999-11-6'],
         datatype='pre_or',
@@ -360,3 +362,7 @@ def swe(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='Wind', instrument=instrument, label=label)

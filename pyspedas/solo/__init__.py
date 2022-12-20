@@ -1,6 +1,7 @@
-
 from pytplot import options
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def mag(trange=['2020-06-01', '2020-06-02'],
         datatype='rtn-normal', 
@@ -85,14 +86,13 @@ def mag(trange=['2020-06-01', '2020-06-02'],
     if 'B_SRF'+suffix in mag_vars:
         options('B_SRF'+suffix, 'legend_names', ['Bx (SRF)', 'By (SRF)', 'Bz (SRF)'])
         options('B_SRF'+suffix, 'ytitle', ytitle)
-        options('B_SRF'+suffix, 'color', ['b', 'g', 'r'])
 
     if 'B_RTN'+suffix in mag_vars:
         options('B_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
         options('B_RTN'+suffix, 'ytitle', ytitle)
-        options('B_RTN'+suffix, 'color', ['b', 'g', 'r'])
 
     return mag_vars
+
 
 def rpw(trange=['2020-06-15', '2020-06-16'],
         datatype='hfr-surv', 
@@ -194,6 +194,7 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
     """
     return load(instrument='rpw', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+
 def swa(trange=['2020-07-22', '2020-07-23'],
         datatype='pas-eflux', 
         level='l2', 
@@ -268,6 +269,7 @@ def swa(trange=['2020-07-22', '2020-07-23'],
 
     return loaded_vars
 
+
 def epd(trange=['2020-06-14', '2020-06-15'],
         datatype='step', 
         mode='hcad', 
@@ -336,3 +338,6 @@ def epd(trange=['2020-06-14', '2020-06-15'],
     """
     return load(instrument='epd', trange=trange, level=level, datatype=datatype, mode=mode, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='Solar Orbiter', instrument=instrument, label=label)

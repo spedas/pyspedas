@@ -111,7 +111,6 @@ def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1',
         options(newname, 'ylog', False)
         options(newname, 'zlog', True)
         options(newname, 'spec', True)
-        options(newname, 'Colormap', 'spedas')
         options(newname, 'ztitle', units_label)
         options(newname, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' spin PAD')
         options(newname, 'ysubtitle', '[deg]')

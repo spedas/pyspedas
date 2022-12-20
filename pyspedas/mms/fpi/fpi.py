@@ -159,8 +159,10 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
                               notplot=notplot, latest_version=latest_version, major_version=major_version,
                               min_version=min_version,
                               cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
-        tvars.extend(tplotnames_errflags_emom)
-        tvars.extend(tplotnames_errflags_edist)
+        if tplotnames_errflags_emom is not None:
+            tvars.extend(tplotnames_errflags_emom)
+        if tplotnames_errflags_edist is not None:
+            tvars.extend(tplotnames_errflags_edist)
     else:
         # user didn't request both dist and moments, so no variables should have been clobbered
         # but we still need to append _dist, _moms to the end of the names
@@ -200,8 +202,10 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
                               notplot=notplot, latest_version=latest_version, major_version=major_version,
                               min_version=min_version,
                               cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
-        tvars.extend(tplotnames_errflags_imom)
-        tvars.extend(tplotnames_errflags_idist)
+        if tplotnames_errflags_imom is not None:
+            tvars.extend(tplotnames_errflags_imom)
+        if tplotnames_errflags_idist is not None:
+            tvars.extend(tplotnames_errflags_idist)
     else:
         # user didn't request both dist and moments, so no variables should have been clobbered
         # but we still need to append _dist, _moms to the end of the names

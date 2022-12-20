@@ -28,7 +28,6 @@ jobs:
         MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
       run: |
           python -m pip install --upgrade pip
-          pip install --upgrade https://github.com/MAVENSDC/PyTplot/archive/matplotlib-superfast.zip
           pip install -r requirements.txt
           pip install coveralls
           pip install basemap
@@ -91,11 +90,21 @@ jobs:
         TWINS_DATA_DIR: twins_data/
         ULY_DATA_DIR: uly_data/
         WIND_DATA_DIR: wind_data/
+        LANL_DATA_DIR: lanl_data/
+        CNOFS_DATA_DIR: cnofs_data/
+        ST5_DATA_DIR: st5_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
+        # coverage run -a -m pyspedas.akebono.tests.tests
+        coverage run -a -m pyspedas.de2.tests.tests
+        coverage run -a -m pyspedas.st5.tests.tests
+        coverage run -a -m pyspedas.lanl.tests.tests
+        coverage run -a -m pyspedas.cotrans.tests.quaternions
+        coverage run -a -m pyspedas.cnofs.tests.tests
         coverage run -a -m pyspedas.secs.tests.tests
         coverage run -a -m pyspedas.sosmag.tests.tests
         coverage run -a -m pyspedas.hapi.tests.tests
+        coverage run -a -m pyspedas.mms.tests.neutral_sheet
         coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
         coverage run -a -m pyspedas.mms.tests.mms_part_getspec
         coverage run -a -m pyspedas.mms.tests.load_routine_tests

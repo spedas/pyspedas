@@ -35,23 +35,18 @@ def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):
     for var in tnames(valid_vel):
         if var == prefix+'_hpca_hplus_ion_bulk_velocity'+suffix:
             options(var, 'legend_names', ['Vx (H+)', 'Vy (H+)', 'Vz (H+)'])
-            options(var, 'color', ['b', 'g', 'r'])
             options(var, 'ytitle', 'H+ velocity')
         if var == prefix+'_hpca_heplus_ion_bulk_velocity'+suffix:
             options(var, 'legend_names', ['Vx (He+)', 'Vy (He+)', 'Vz (He+)'])
-            options(var, 'color', ['b', 'g', 'r'])
             options(var, 'ytitle', 'He+ velocity')
         if var == prefix+'_hpca_heplusplus_ion_bulk_velocity'+suffix:
             options(var, 'legend_names', ['Vx (He++)', 'Vy (He++)', 'Vz (He++)'])
-            options(var, 'color', ['b', 'g', 'r'])
             options(var, 'ytitle', 'He++ velocity')
         if var == prefix+'_hpca_oplus_ion_bulk_velocity'+suffix:
             options(var, 'legend_names', ['Vx (O+)', 'Vy (O+)', 'Vz (O+)'])
-            options(var, 'color', ['b', 'g', 'r'])
             options(var, 'ytitle', 'O+ velocity')
         if var == prefix+'_hpca_oplusplus_ion_bulk_velocity'+suffix:
             options(var, 'legend_names', ['Vx (O++)', 'Vy (O++)', 'Vz (O++)'])
-            options(var, 'color', ['b', 'g', 'r'])
             options(var, 'ytitle', 'O++ velocity')
 
     for var in tnames(valid_temp):

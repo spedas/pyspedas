@@ -66,6 +66,12 @@ from . import solo
 from . import secs
 from . import kyoto
 from . import swarm
+from . import vires
+from . import cnofs
+from . import lanl
+from . import st5
+from . import de2
+from . import akebono
 
 # set up logging/console output
 import logging
