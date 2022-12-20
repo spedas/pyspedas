@@ -37,7 +37,6 @@ def minvar(data):
 
     # Calculate eigenvalues and eigenvectors
     w, v = np.linalg.eigh(mvamat, UPLO='U')
-    # v = v.transpose()
 
     # Sorting to ensure descending order
     w = np.abs(w)
@@ -62,7 +61,6 @@ def minvar(data):
         v[:, 2] = -v[:, 2]
         v[:, 1] = -v[:, 1]
 
-    s = data.shape
     vrot = np.array([np.dot(row, v) for row in data])
 
     return vrot, v, w
