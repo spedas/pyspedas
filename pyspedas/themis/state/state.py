@@ -1,5 +1,5 @@
-
 from pyspedas.themis.load import load
+from pyspedas.themis.state.spinmodel.spinmodel_postprocess import spinmodel_postprocess
 
 
 def state(trange=['2007-03-23', '2007-03-24'],
@@ -63,8 +63,12 @@ def state(trange=['2007-03-23', '2007-03-24'],
         List of tplot variables created.
 
     """
-    return load(instrument='state', trange=trange, level=level, probe=probe,
-                suffix=suffix, get_support_data=get_support_data,
-                varformat=varformat, varnames=varnames,
-                downloadonly=downloadonly, notplot=notplot,
-                time_clip=time_clip, no_update=no_update)
+    res = load(instrument='state', trange=trange, level=level, probe=probe,
+               suffix=suffix, get_support_data=get_support_data,
+               varformat=varformat, varnames=varnames,
+               downloadonly=downloadonly, notplot=notplot,
+               time_clip=time_clip, no_update=no_update)
+    if get_support_data is True:
+        for p in probe:
+            spinmodel_postprocess(p)
+    return res
