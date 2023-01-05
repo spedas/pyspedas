@@ -5,7 +5,15 @@ from pytplot import get_data
 from . import mms_load_mec
 
 
-def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], data_rate='srvy', xr=None, yr=None, plane='xy', coord='gse'):
+def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
+                   probes=[1, 2, 3, 4],
+                   data_rate='srvy',
+                   xr=None,
+                   yr=None,
+                   plane='xy',
+                   coord='gse',
+                   xsize=5,
+                   ysize=5):
     """
     This function creates MMS orbit plots
     
@@ -33,6 +41,12 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
         coord: str
             coordinate system
 
+        xsize: float
+            size of the figure in the x-direction, in inches (default: 5)
+
+        ysize: float
+            size of the figure in the y-direction, in inches (default: 5)
+
     """
     spacecraft_colors = [(0,0,0), (213/255,94/255,0), (0,158/255,115/255), (86/255,180/255,233/255)]
 
@@ -55,7 +69,7 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'], probes=[1, 2, 3, 4], dat
 
     km_in_re = 6371.2
 
-    fig, axis = plt.subplots(sharey=True, sharex=True)
+    fig, axis = plt.subplots(sharey=True, sharex=True, figsize=(xsize, ysize))
 
     im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec/earth_polar1.png')
     plt.imshow(im, extent=(-1, 1, -1, 1))
