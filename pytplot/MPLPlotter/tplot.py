@@ -217,7 +217,7 @@ def tplot(variables, var_label=None,
                 else:
                     x_range[1] = datetime.utcfromtimestamp(0)
 
-            x_range = np.array(x_range, dtype='datetime64[s]')
+            x_range = np.array(x_range, dtype='datetime64[ns]')
             this_axis.set_xlim(x_range)
             time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
             if len(time_idxs) == 0:
