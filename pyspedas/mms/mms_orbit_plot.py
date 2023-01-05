@@ -18,6 +18,14 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
                    markevery=10,
                    markersize=5,
                    earth=True,
+                   dpi=300,
+                   save_png='',
+                   save_pdf='',
+                   save_eps='',
+                   save_jpeg='',
+                   save_svg='',
+                   return_plot_objects=False,
+                   display=True
                    ):
     """
     This function creates MMS orbit plots
@@ -63,6 +71,31 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
 
         earth: bool
             plot a reference image of the Earth (default: True)
+
+        dpi: int
+            dots per inch for the plot (default: 300)
+
+        save_png: str
+            file path to save the plot as a PNG file (default: None)
+
+        save_pdf: str
+            file path to save the plot as a PDF file (default: None)
+
+        save_eps: str
+            file path to save the plot as an EPS file (default: None)
+
+        save_jpeg: str
+            file path to save the plot as a JPEG file (default: None)
+
+        save_svg: str
+            file path to save the plot as an SVG file (default: None)
+
+        return_plot_objects: bool
+            whether to return the plot objects as a tuple (default: False)
+
+        display: bool
+            whether to display the plot using matplotlib's `show()` function (default: True)
+
     """
     spacecraft_colors = [(0,0,0), (213/255,94/255,0), (0,158/255,115/255), (86/255,180/255,233/255)]
 
@@ -117,7 +150,7 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
 
         axis.set_aspect('equal')
 
-    if plot_count > 0: # at least one plot created
+    if plot_count > 0:  # at least one plot created
         axis.legend()
         axis.set_title(trange[0] + ' to ' + trange[1])
         axis.annotate(coord.upper() + ' coordinates', xy=(0.6, 0.05), xycoords='axes fraction')
@@ -126,4 +159,23 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
         if yr is not None:
             axis.set_ylim(yr)
 
-        plt.show()
+        if return_plot_objects:
+            return fig, axis
+
+        if save_png is not None and save_png != '':
+            plt.savefig(save_png + '.png', dpi=dpi)
+
+        if save_eps is not None and save_eps != '':
+            plt.savefig(save_eps + '.eps', dpi=dpi)
+
+        if save_svg is not None and save_svg != '':
+            plt.savefig(save_svg + '.svg', dpi=dpi)
+
+        if save_pdf is not None and save_pdf != '':
+            plt.savefig(save_pdf + '.pdf', dpi=dpi)
+
+        if save_jpeg is not None and save_jpeg != '':
+            plt.savefig(save_jpeg + '.jpeg', dpi=dpi)
+
+        if display:
+            plt.show()
