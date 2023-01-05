@@ -13,7 +13,12 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
                    plane='xy',
                    coord='gse',
                    xsize=5,
-                   ysize=5):
+                   ysize=5,
+                   marker='x',
+                   markevery=10,
+                   markersize=5,
+                   earth=True,
+                   ):
     """
     This function creates MMS orbit plots
     
@@ -23,7 +28,7 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: list of str
+        probes: list of str
             probe #, e.g., '4' for MMS4
 
         data_rate: str
@@ -47,6 +52,17 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
         ysize: float
             size of the figure in the y-direction, in inches (default: 5)
 
+        marker: str
+            marker style for the data points (default: 'x')
+
+        markevery: int or sequence of int
+            plot a marker at every n-th data point (default: 10)
+
+        markersize: float
+            size of the marker in points (default: 5)
+
+        earth: bool
+            plot a reference image of the Earth (default: True)
     """
     spacecraft_colors = [(0,0,0), (213/255,94/255,0), (0,158/255,115/255), (86/255,180/255,233/255)]
 
@@ -71,8 +87,10 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
 
     fig, axis = plt.subplots(sharey=True, sharex=True, figsize=(xsize, ysize))
 
-    im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec/earth_polar1.png')
-    plt.imshow(im, extent=(-1, 1, -1, 1))
+    if earth:
+        im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec/earth_polar1.png')
+        plt.imshow(im, extent=(-1, 1, -1, 1))
+
     plot_count = 0
 
     for probe in probes:
@@ -85,15 +103,15 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
             plot_count += 1
 
         if plane == 'xy':
-            axis.plot(d[:, 0]/km_in_re, d[:, 1]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.plot(d[:, 0]/km_in_re, d[:, 1]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1], marker=marker, markevery=markevery, markersize=markersize)
             axis.set_xlabel('X Position, Re')
             axis.set_ylabel('Y Position, Re')
         if plane == 'yz':
-            axis.plot(d[:, 1]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.plot(d[:, 1]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1], marker=marker, markevery=markevery, markersize=markersize)
             axis.set_xlabel('Y Position, Re')
             axis.set_ylabel('Z Position, Re')
         if plane == 'xz':
-            axis.plot(d[:, 0]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1])
+            axis.plot(d[:, 0]/km_in_re, d[:, 2]/km_in_re, label='MMS' + str(probe), color=spacecraft_colors[int(probe)-1], marker=marker, markevery=markevery, markersize=markersize)
             axis.set_xlabel('X Position, Re')
             axis.set_ylabel('Z Position, Re')
 
