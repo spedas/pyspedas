@@ -1,3 +1,10 @@
+"""
+This module provides functions for transforming MMS vector fields from one coordinate system to another using quaternion rotation.
+
+To use this module, you will need to install the SpacePy package: pip install spacepy.
+
+The main function of this module is mms_cotrans_qrotate, which performs a quaternion rotation on a PyTplot variable. The function takes in the names of the input and quaternion tplot variables, the name of the output tplot variable, and the coordinate system for the output data. An optional inverse flag allows the user to use the quaternion conjugate on the quaternion data prior to rotating. If the data and quaternion tplot variables are not the same length, the function will interpolate the data to the quaternion timestamps.
+"""
 import logging
 from pytplot import get_data, store_data
 from pyspedas import cotrans_set_coord, tinterpol
