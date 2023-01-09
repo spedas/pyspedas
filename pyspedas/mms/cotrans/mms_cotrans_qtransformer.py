@@ -1,3 +1,17 @@
+"""
+This module contains the function mms_cotrans_qtransformer, which performs a quaternion rotation on a tplot variable from one coordinate system to another. It does this by recursively rotating through the ECI coordinate system.
+
+The mms_cotrans_qtransformer function takes in four required arguments:
+
+in_name: the name of the tplot variable to be transformed
+out_name: the name of the tplot variable to be created with the transformed data
+in_coord: the coordinate system of the input data
+out_coord: the coordinate system to rotate to
+It also takes an optional argument:
+
+probe: the spacecraft probe number (default is '1')
+The function returns the name of the output tplot variable.
+"""
 from pytplot import tplot_copy
 from .mms_cotrans_qrotate import mms_cotrans_qrotate
 

@@ -1,3 +1,18 @@
+"""
+Performs coordinate transformations for MMS data using MMS MEC quaternions.
+
+This function uses the mms_cotrans_qtransformer function to recursively transform the input data from the input coordinate system to the output coordinate system by going through ECI. The transformation operations are performed using the SpacePy library.
+
+Parameters:
+in_name (str or list of str): Names of Tplot variables of vectors to be transformed.
+out_name (str or list of str): Names of output variables.
+in_coord (str): Input coordinate system (e.g. 'bcs', 'gse', 'gse2000', 'gsm', 'sm', 'geo', 'eci').
+out_coord (str): Output coordinate system (e.g. 'bcs', 'gse', 'gse2000', 'gsm', 'sm', 'geo', 'eci').
+probe (str): MMS spacecraft # (must be '1', '2', '3', or '4').
+
+Returns:
+list of str: List of variables created.
+"""
 import logging
 from pyspedas import cotrans_get_coord
 from pytplot import get_data

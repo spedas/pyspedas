@@ -1,7 +1,9 @@
+import logging
 from pyspedas import time_double
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from .mms_file_filter import mms_file_filter
+from .mms_get_local_files import mms_get_local_files
 from pytplot import cdf_to_tplot
 from pyspedas.analysis.time_clip import time_clip as tclip
 
@@ -82,7 +84,18 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
                     if files is not None:
                         for file in files:
                             out_files.append(file)
-                    
+
+                    if out_files == []:
+                        logging.info('Searching for local files...')
+                        out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
+
+                        if out_files == [] and CONFIG['mirror_data_dir'] != None:
+                            # check for network mirror; note: network mirrors are assumed to be read-only
+                            # and we always copy the files from the mirror to the local data directory
+                            # before trying to load into tplot variables
+                            logging.info('No local files found; checking network mirror...')
+                            out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange, mirror=True)
+
                     out_files = sorted(out_files)
 
                     filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
