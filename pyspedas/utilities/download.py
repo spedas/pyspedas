@@ -253,7 +253,7 @@ def download(remote_path='',
 
         short_path = local_file[:1+local_file.rfind("/")]
 
-        if no_download is False:
+        if not no_download:
             # expand the wildcards in the url
             if '?' in url or '*' in url or regex and no_download is False:
                 if index_table.get(url_base) is not None:
@@ -264,10 +264,13 @@ def download(remote_path='',
                     # we'll need to parse the HTML index file for the file list
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore", category=ResourceWarning)
-                        if not basic_auth:
-                            html_index = session.get(url_base, verify=verify, headers=headers)
-                        else:
-                            html_index = session.get(url_base, verify=verify, headers=headers, auth=(username, password))
+                        try:
+                            if not basic_auth:
+                                html_index = session.get(url_base, verify=verify, headers=headers)
+                            else:
+                                html_index = session.get(url_base, verify=verify, headers=headers, auth=(username, password))
+                        except requests.exceptions.ConnectionError:
+                            continue
 
                     if html_index.status_code == 404:
                         logging.error('Remote index not found: ' + url_base)
