@@ -162,6 +162,15 @@ def tplot_restore(filename):
                 for option_name in temp_tplot['tv'][0][1]['P'][0].dtype.names:
                     if option_name == 'TITLE':
                         tplot_options('title', temp_tplot['tv'][0][1]['P'][0][option_name][0])
+
+            # correct legend_names array
+            plt_options = pytplot.data_quants[data_name].attrs['plot_options']
+            yaxis_opts = plt_options.get('yaxis_opt')
+            if yaxis_opts is not None:
+                yaxis_opts = plt_options.get('yaxis_opt')
+                if yaxis_opts.get('legend_names') is not None:
+                    lnames = pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'][0]
+                    pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lname.decode('utf-8') for lname in lnames]
                 
         #temp_tplot['tv'][0][1] is all of the "settings" variables
             #temp_tplot['tv'][0][1]['D'][0] is "device" options

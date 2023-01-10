@@ -204,20 +204,22 @@ def tplot(variables, var_label=None,
         # set the x-axis range, if it was set with xlim or tlimit
         if pytplot.tplot_opt_glob.get('x_range') is not None:
             x_range = pytplot.tplot_opt_glob['x_range']
+            x_range_start = x_range[0]
+            x_range_stop = x_range[1]
 
-            if isinstance(x_range[0], float):
-                if np.isfinite(x_range[0]):
-                    x_range[0] = datetime.utcfromtimestamp(x_range[0])
+            if isinstance(x_range_start, float):
+                if np.isfinite(x_range_start):
+                    x_range_start = datetime.utcfromtimestamp(x_range_start)
                 else:
-                    x_range[0] = datetime.utcfromtimestamp(0)
+                    x_range_start = datetime.utcfromtimestamp(0)
 
-            if isinstance(x_range[1], float):
-                if np.isfinite(x_range[1]):
-                    x_range[1] = datetime.utcfromtimestamp(x_range[1])
+            if isinstance(x_range_stop, float):
+                if np.isfinite(x_range_stop):
+                    x_range_stop = datetime.utcfromtimestamp(x_range_stop)
                 else:
-                    x_range[1] = datetime.utcfromtimestamp(0)
+                    x_range_stop = datetime.utcfromtimestamp(0)
 
-            x_range = np.array(x_range, dtype='datetime64[ns]')
+            x_range = np.array([x_range_start, x_range_stop], dtype='datetime64[ns]')
             this_axis.set_xlim(x_range)
             time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
             if len(time_idxs) == 0:
@@ -614,6 +616,7 @@ def get_var_label_ticks(var_xr, times):
 
 
 def replace_common_exp(title):
+    title = title.decode('utf-8')
     if '$' in title:
         return title
     if '^' not in title:
