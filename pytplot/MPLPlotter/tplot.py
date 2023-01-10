@@ -616,7 +616,8 @@ def get_var_label_ticks(var_xr, times):
 
 
 def replace_common_exp(title):
-    title = title.decode('utf-8')
+    if hasattr(title, 'decode'):
+        title = title.decode('utf-8')
     if '$' in title:
         return title
     if '^' not in title:
