@@ -150,10 +150,11 @@ def tplot_restore(filename):
             pytplot.data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
         
             for option_name in temp_tplot['tv'][0][0].dtype.names:
-                if option_name == 'TRANGE':
-                    # x_range of [0, 0] causes tplot to create an empty figure
-                    if temp_tplot['tv'][0][0][option_name][0][0] != 0 or temp_tplot['tv'][0][0][option_name][0][1] != 0:
-                        tplot_options('x_range', temp_tplot['tv'][0][0][option_name][0])
+                # the following should be set on the tplot variable, not for the entire session
+                #if option_name == 'TRANGE':
+                #    # x_range of [0, 0] causes tplot to create an empty figure
+                #    if temp_tplot['tv'][0][0][option_name][0][0] != 0 or temp_tplot['tv'][0][0][option_name][0][1] != 0:
+                #        tplot_options('x_range', temp_tplot['tv'][0][0][option_name][0])
                 if option_name == 'WSIZE':
                     tplot_options('wsize', temp_tplot['tv'][0][0][option_name][0])
                 if option_name == 'VAR_LABEL':
