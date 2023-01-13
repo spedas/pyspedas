@@ -37,10 +37,13 @@ def load(trange=['2018-11-5', '2018-11-6'],
     # remote path formats generally are going to be all lowercase except for
     # on the Berkeley FIELDS server
     if (username is not None) and (datatype in ['mag_RTN_1min',
-                                            'mag_RTN_4_Sa_per_Cyc'
-                                            'mag_SC'
-                                            'mag_SC_1min'
-                                            'mag_SC_4_Sa_per_Cyc']):
+                                            'mag_RTN_4_Sa_per_Cyc',
+                                            'mag_RTN',
+                                            'mag_SC',
+                                            'mag_SC_1min',
+                                            'mag_SC_4_Sa_per_Cyc',
+                                            'sqtn_rfs_V1V2'
+                                            ]):
         pass
     else:
         datatype = datatype.lower()
@@ -80,8 +83,17 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 dtype_tmp = datatype[:11]
                 stype_tmp = datatype[12:]
             pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
-
-
+        elif datatype == 'sqtn_rfs_v1v2':
+            # unfortunately the naming format of quasi-thermal-noise cdf file is different from others
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+        elif datatype == 'sqtn_rfs_V1V2':
+            # unpublished QTN data
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+        elif datatype == 'merged_scam_wf':
+            if username == None:
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+            else:
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
 
         # unpublished data (only download v02 mag data which would be published)
         elif username != None:
@@ -94,6 +106,9 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
             elif datatype ==  'sqtn_rfs_V1V2':
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+
+            elif datatype in ['ephem_spp_rtn']:
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/spp_fld_' + level + '_' + datatype + '_%Y%m%d_v01.cdf'
 
         else:
             # Generic SPDF path.  
@@ -139,7 +154,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
     else:
         if instrument == 'fields':
             try:
-                print("Downloading unpublished Data....")
+                print("Downloading unpublished FIELDS Data....")
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
@@ -150,7 +165,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                                 local_path=CONFIG['local_data_dir'], no_download=no_update)
         elif instrument in ['spc','spi']:
             try:
-                print("Downloading unpublished Data....")
+                print("Downloading unpublished SWEAP Data....")
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
