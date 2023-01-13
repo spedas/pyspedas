@@ -35,7 +35,8 @@ def download_file(url=None,
                   username=None,
                   password=None,
                   verify=False,
-                  session=None):
+                  session=None,
+                  basic_auth=False):
     """
     Download a file and return its local path; this function is primarily meant to be called by the download function
     
@@ -80,7 +81,10 @@ def download_file(url=None,
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=ResourceWarning)
-        fsrc = session.get(url, stream=True, verify=verify, headers=headers)
+        if not basic_auth:
+            fsrc = session.get(url, stream=True, verify=verify, headers=headers)
+        else:
+            fsrc = session.get(url, stream=True, verify=verify, headers=headers, auth=(username, password))
 
     # need to delete the If-Modified-Since header so it's not set in the dictionary in subsequent calls
     if headers.get('If-Modified-Since') is not None:
@@ -310,7 +314,7 @@ def download(remote_path='',
                 for new_link in new_links:
                     resp_data = download(remote_path=remote_path, remote_file=short_path+new_link,
                                          local_path=local_path, username=username, password=password,
-                                         verify=verify, headers=headers, session=session)
+                                         verify=verify, headers=headers, session=session, basic_auth=basic_auth)
                     if resp_data is not None:
                         for file in resp_data:
                             out.append(file)
@@ -318,7 +322,7 @@ def download(remote_path='',
                 continue
 
             resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify,
-                                      headers=headers, session=session)
+                                      headers=headers, session=session, basic_auth=basic_auth)
         
         if resp_data is not None:
             if not isinstance(resp_data, list):
