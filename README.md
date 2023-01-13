@@ -31,6 +31,7 @@ The Python-based Space Physics Environment Data Analysis Software (PySPEDAS) fra
 - [Polar Orbiting Environmental Satellites (POES)](https://pyspedas.readthedocs.io/en/latest/poes.html)
 - [Polar](https://pyspedas.readthedocs.io/en/latest/polar.html)
 - [Parker Solar Probe (PSP)](https://pyspedas.readthedocs.io/en/latest/psp.html)
+- [Solar & Heliospheric Observatory (SOHO)](https://pyspedas.readthedocs.io/en/latest/soho.html)
 - [Solar Orbiter (SOLO)](https://pyspedas.readthedocs.io/en/latest/solo.html)
 - [Solar Terrestrial Relations Observatory (STEREO)](https://pyspedas.readthedocs.io/en/latest/stereo.html)
 - [Space Technology 5 (ST5)](https://pyspedas.readthedocs.io/en/latest/st5.html)
