@@ -2,6 +2,7 @@ import numpy as np
 import math
 from .spinmodel_segment import SpinmodelSegment
 from pytplot import get_data, store_data
+from pyspedas.utilities.data_exists import data_exists
 
 
 def get_sm_data(probe: str, valname: str, correction_level: int) -> (np.ndarray, np.ndarray):
@@ -20,7 +21,11 @@ def get_sm_data(probe: str, valname: str, correction_level: int) -> (np.ndarray,
     else:
         infix = '_ecl_'
     tvar_name = 'th' + probe + '_spin' + infix + valname
-    return get_data(tvar_name)
+    if data_exists(tvar_name):
+        res = get_data(tvar_name)
+        return res.times, res.y
+    else:
+        return None
 
 
 class SpinmodelInterpTResult:
@@ -110,12 +115,12 @@ class Spinmodel:
         idx = np.arange(len(self.seg_list))[cond]
         self.seg_initial_delta_phi[idx] += ecl_corr
         self.seg_segflags[idx] |= 4
-        #print("Eclipse start: ", ecl_start, "Eclipse end: ", ecl_end)
-        #print("First eclipse segment")
-        #self.seg_list[idx[0]].print()
-        #print("Last eclipse segment")
-        #idx_len = len(idx)
-        #self.seg_list[idx[idx_len - 1]].print()
+        # print("Eclipse start: ", ecl_start, "Eclipse end: ", ecl_end)
+        # print("First eclipse segment")
+        # self.seg_list[idx[0]].print()
+        # print("Last eclipse segment")
+        # idx_len = len(idx)
+        # self.seg_list[idx[idx_len - 1]].print()
         for si in idx:
             seg = self.seg_list[si]
             seg.initial_delta_phi += ecl_corr
@@ -370,11 +375,11 @@ class Spinmodel:
             self.seg_count = 1
         else:
             lseg = self.seg_list[self.lastseg]
-            #print('Adding segment')
-            #print('Last:')
-            #lseg.print()
-            #print('Current')
-            #newseg.print()
+            # print('Adding segment')
+            # print('Last:')
+            # lseg.print()
+            # print('Current')
+            # newseg.print()
             # Previously, this was an exact equality test.  Now, the DEPEND_TIME variables are handled slightly
             # differently than plain old double-precision variables, so the possibility of small floating point
             # differences needs to be accounted for. For the purposes of spin model segments, if the times are within
@@ -531,6 +536,19 @@ class Spinmodel:
                     print("Last segment end time", lseg.t2, "New segment start time", newseg.t1)
                     raise RuntimeError
 
+    def get_info(self):
+        """ Returns the time span covered by the model.
+        The IDL version also returns information about any eclipse time periods, will add later
+        if needed.
+
+        Args: None
+
+        Returns: tuple with start time and end time
+        """
+        start_time = self.seg_times[0]
+        end_time = self.seg_t2[-1]
+        return start_time, end_time
+
     def __init__(self, probe, correction_level):
         self.lastseg = SpinmodelSegment(t1=0.0, t2=0.0, c1=0, c2=0, b=0.0, c=0.0, npts=0, maxgap=0.0, phaserr=0.0,
                                         initial_delta_phi=0.0, idpu_spinper=0.0, segflags=0)
@@ -618,11 +636,11 @@ def get_spinmodel(probe: str, correction_level: int) -> Spinmodel:
         A reference to a Spinmodel object stored in the dictionary.
     """
     try:
-        model=spinmodel_dict[(probe,correction_level)]
+        model = spinmodel_dict[(probe, correction_level)]
     except KeyError:
-        print("No spinmodel loaded for probe ",probe," correction level: ", correction_level)
+        print("No spinmodel loaded for probe ", probe, " correction level: ", correction_level)
         print("It is necessary to load THEMIS state data, with get_support_data=True, to initialize the spin model.")
-        raise RuntimeError
+        model = None
     return model
 
 
