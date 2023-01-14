@@ -1,5 +1,7 @@
 from pyspedas.themis.load import load
+from pyspedas.themis.state.apply_spinaxis_corrections import apply_spinaxis_corrections
 from pyspedas.themis.state.spinmodel.spinmodel_postprocess import spinmodel_postprocess
+from pytplot import del_data
 
 
 def state(trange=['2007-03-23', '2007-03-24'],
@@ -12,14 +14,15 @@ def state(trange=['2007-03-23', '2007-03-24'],
           downloadonly=False,
           notplot=False,
           no_update=False,
-          time_clip=False):
+          time_clip=False,
+          keep_spin=False):
     """
     This function loads THEMIS state data
 
     Parameters:
         trange: list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe: str or list of str
@@ -59,6 +62,9 @@ def state(trange=['2007-03-23', '2007-03-24'],
             Time clip the variables to exactly the range specified
             in the trange keyword
 
+        keep_spin: bool
+            If True, do not delete the spin model tplot variables after the spin models are built.
+
     Returns:
         List of tplot variables created.
 
@@ -70,5 +76,21 @@ def state(trange=['2007-03-23', '2007-03-24'],
                time_clip=time_clip, no_update=no_update)
     if get_support_data is True:
         for p in probe:
+            # Process spin model variables
             spinmodel_postprocess(p)
+            if keep_spin is not True:
+                spinvar_pattern = 'th' + p + '_spin_*'
+                del_data(spinvar_pattern)
+            # Perform spin axis RA and Dec corrections
+            spinras_var = 'th' + p + '_spinras'
+            delta_spinras_var = 'th' + p + '_spinras_correction'
+            corrected_spinras_var = 'th' + p + '_spinras_corrected'
+
+            spindec_var = 'th' + p + '_spindec'
+            delta_spindec_var = 'th' + p + '_spindec_correction'
+            corrected_spindec_var = 'th' + p + '_spindec_corrected'
+
+            apply_spinaxis_corrections(spinras=spinras_var, delta_spinras=delta_spinras_var,
+                                       corrected_spinras=corrected_spinras_var, spindec=spindec_var,
+                                       delta_spindec=delta_spindec_var, corrected_spindec=corrected_spindec_var)
     return res
