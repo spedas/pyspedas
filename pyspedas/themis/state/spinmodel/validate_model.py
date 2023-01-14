@@ -3,7 +3,7 @@ import pyspedas.utilities.time_string
 from pytplot import get_data, store_data, del_data, cdf_to_tplot
 from pyspedas import themis
 from .spinmodel import get_spinmodel
-
+from pyspedas.utilities.time_string import time_string
 
 def compare_models():
     """  Compare a set of tplot variables representing the SpinmodelSegment and interpolated data
@@ -78,6 +78,7 @@ def validate_model(filename: str):
     t_dummy, probe_idx = get_data('parm_probe')
     t_dummy, correction_level = get_data('parm_correction_level')
     print(trange)
+    print(time_string(trange))
     print(probe_idx)
     int_idx = int(probe_idx)
     probes = ['a', 'b', 'c', 'd', 'e']
