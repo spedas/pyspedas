@@ -113,6 +113,10 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.themis.efi(time_clip=True, varnames=['thc_eff_e12_efs'])
         self.assertTrue(data_exists('thc_eff_e12_efs'))
 
+    def test_load_slp_data(self):
+        pyspedas.themis.slp(varnames='slp_sun_ltime')
+        self.assertTrue(data_exists('slp_sun_ltime'))
+
     def test_downloadonly(self):
         """Downloadonly keyword."""
         files = pyspedas.themis.efi(downloadonly=True,
