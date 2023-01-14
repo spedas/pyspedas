@@ -95,18 +95,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     # We should change an attribute for the coordinate system.
     cotrans_set_coord(name_out, coord_out.upper())
 
-    # should also update the legend, if it includes the coordinate system
-    # for this to work, the coordinate system should be in all upper case
-    metadata = pytplot.get_data(name_out, metadata=True)
-    if metadata.get('plot_options') is not None:
-        if metadata['plot_options'].get('yaxis_opt') is not None:
-            if metadata['plot_options']['yaxis_opt'].get('legend_names') is not None:
-                legend = metadata['plot_options']['yaxis_opt'].get('legend_names')
-                updated_legend = [item.replace(coord_in.upper(), coord_out.upper()) for item in legend]
-                metadata['plot_options']['yaxis_opt']['legend_names'] = updated_legend
-            if metadata['plot_options']['yaxis_opt'].get('axis_label') is not None:
-                ytitle = metadata['plot_options']['yaxis_opt'].get('axis_label')
-                metadata['plot_options']['yaxis_opt']['axis_label'] = ytitle.replace(coord_in.upper(), coord_out.upper())
+    # Code to update the legend and axis labels has been moved into cotrans_set_coord().
 
     logging.info("Output variable: " + name_out)
 
