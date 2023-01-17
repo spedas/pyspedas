@@ -164,7 +164,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                             # No/bad internet connection; try loading the files locally
                             logging.error('No internet connection!')
 
-                    
                     if out_files == []:
                         if not download_only: logging.info('Searching for local files...')
                         out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
