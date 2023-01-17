@@ -37,9 +37,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
     # remote path formats generally are going to be all lowercase except for
     # on the Berkeley FIELDS server
     if (username is not None) and (datatype in ['mag_RTN_1min',
-                                            'mag_RTN_4_Sa_per_Cyc'
-                                            'mag_SC'
-                                            'mag_SC_1min'
+                                            'mag_RTN_4_Sa_per_Cyc',
+                                            'mag_RTN',
+                                            'mag_SC',
+                                            'mag_SC_1min',
                                             'mag_SC_4_Sa_per_Cyc']):
         pass
     else:
