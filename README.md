@@ -31,6 +31,7 @@ The Python-based Space Physics Environment Data Analysis Software (PySPEDAS) fra
 - [Polar Orbiting Environmental Satellites (POES)](https://pyspedas.readthedocs.io/en/latest/poes.html)
 - [Polar](https://pyspedas.readthedocs.io/en/latest/polar.html)
 - [Parker Solar Probe (PSP)](https://pyspedas.readthedocs.io/en/latest/psp.html)
+- [Solar & Heliospheric Observatory (SOHO)](https://pyspedas.readthedocs.io/en/latest/soho.html)
 - [Solar Orbiter (SOLO)](https://pyspedas.readthedocs.io/en/latest/solo.html)
 - [Solar Terrestrial Relations Observatory (STEREO)](https://pyspedas.readthedocs.io/en/latest/stereo.html)
 - [Space Technology 5 (ST5)](https://pyspedas.readthedocs.io/en/latest/st5.html)
@@ -157,6 +158,14 @@ stereo_files = pyspedas.stereo.mag(trange=['2013-11-1', '2013-11-6'], downloadon
 
 ## Examples
 Please see the following notebooks for examples of using PySPEDAS
+### PyTplot Basics
+- [Introduction to PyTplot](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/Introduction_to_PyTplot.ipynb)
+
+### Loading Data
+- [MMS examples](https://github.com/spedas/mms-examples/tree/master/basic)
+- [THEMIS examples](https://github.com/spedas/themis-examples/tree/main/basic)
+- [Load data from HAPI servers](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/PySPEDAS_loading_data_from_HAPI_servers.ipynb)
+- [Exploring the Heliosphere with Python](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/Exploring_the_Heliosphere_with_Python.ipynb)
 
 ### Plotting
 - [Annotations](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/PyTplot_annotations.ipynb)
@@ -168,12 +177,6 @@ Please see the following notebooks for examples of using PySPEDAS
 - [Pseudo variables](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/PyTplot_pseudo_variables.ipynb)
 - [Highlight intervals and vertical bars](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/PyTplot_highlight_intervals_and_vertical_bars.ipynb)
 
-### Loading Data
-- [MMS examples](https://github.com/spedas/mms-examples/tree/master/basic)
-- [THEMIS examples](https://github.com/spedas/themis-examples/tree/main/basic)
-- [Load data from HAPI servers](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/PySPEDAS_loading_data_from_HAPI_servers.ipynb)
-- [Exploring the Heliosphere with Python](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/Exploring_the_Heliosphere_with_Python.ipynb)
-
 Additional examples of loading and plotting data can be found in the documentation for the project you're interested in ([PySPEDAS projects](https://pyspedas.readthedocs.io/en/latest/projects.html)), as well as the project's README file.
 
 ### Dates and Times
@@ -181,14 +184,15 @@ Additional examples of loading and plotting data can be found in the documentati
 
 ### Coordinate Transformations
 - [Coordinate transformations](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/Coordinate_transformations_with_OMNI_data.ipynb)
-- [Transforming MMS data to boundary normal (LMN) coordinates](https://github.com/spedas/mms-examples/blob/master/advanced/MMS_LMN_coordinate_transformation.ipynb)
+- [Boundary normal (LMN) coordinates](https://github.com/spedas/mms-examples/blob/master/advanced/MMS_LMN_coordinate_transformation.ipynb)
 - [Quaternion transformations with SpacePy](https://github.com/spedas/mms-examples/blob/master/basic/MMS_quaternion_coordinate_transformations.ipynb)
 
 ### Analysis
 - [Plasma calculations with PlasmaPy](https://github.com/spedas/mms-examples/blob/master/advanced/Plasma%20calculations%20with%20PlasmaPy.ipynb)
-- [Calculating Poynting flux with MMS data](https://github.com/spedas/mms-examples/blob/master/advanced/Poynting_flux_with_MMS_data.ipynb)
+- [Poynting flux with MMS data](https://github.com/spedas/mms-examples/blob/master/advanced/Poynting_flux_with_MMS_data.ipynb)
 - [Plasma beta with MMS data](https://github.com/spedas/mms-examples/blob/master/basic/Plasma%20Beta%20with%20FGM%20and%20FPI%20data.ipynb) (note: the PlasmaPy notebook above shows a much easier method)
-- [MMS curlometer calculations](https://github.com/spedas/mms-examples/blob/master/basic/Curlometer%20Technique.ipynb)
+- [Curlometer calculations](https://github.com/spedas/mms-examples/blob/master/basic/Curlometer%20Technique.ipynb)
+- [Neutral sheet models](https://github.com/spedas/mms-examples/blob/master/advanced/MMS_neutral_sheet_models.ipynb)
 - [Wave polarization calculations](https://github.com/spedas/mms-examples/blob/master/advanced/Wave_polarization_using_SCM_data.ipynb)
 - [Dynamic power spectra calculations](https://github.com/spedas/mms-examples/blob/master/basic/Search-coil%20Magnetometer%20(SCM).ipynb)
 - [2D slices of MMS distribution functions](https://github.com/spedas/mms-examples/blob/master/advanced/Generate_2D_slices_of_FPI_and_HPCA_data.ipynb)
@@ -210,6 +214,11 @@ You can ask questions by creating an issue or by joining the [SPEDAS mailing lis
 
 ## Contributing
 We welcome contributions to PySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
+
+## Plug-in Development
+An introduction to PySPEDAS plug-in development can be found here:
+
+[Introduction to PySPEDAS plug-in development](https://github.com/spedas/pyspedas/tree/master/docs/pyspedas_plugin_development.pdf)
 
 ## Code of Conduct
 In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation. To learn more, please see our [Code of Conduct](https://github.com/spedas/pyspedas/blob/master/CODE_OF_CONDUCT.md).
