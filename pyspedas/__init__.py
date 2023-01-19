@@ -75,6 +75,7 @@ from . import de2
 from . import akebono
 from . import soho
 from . import barrel
+from . import elfin
 
 # set up logging/console output
 import logging
