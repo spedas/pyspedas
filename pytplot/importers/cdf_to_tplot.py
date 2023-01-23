@@ -423,7 +423,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                             if '\\N' in attr_dict["CDF"]["VATT"]['labels']:
                                 attr_dict["CDF"]["VATT"]['labels'] = attr_dict["CDF"]["VATT"]['labels'].split('\\N')
             store_data(var_name, data=output_table[var_name], attr_dict=attr_dict)
-        except ValueError:
+        except (TypeError, ValueError) as err:
             continue
 
         if var_name not in stored_variables:
