@@ -41,10 +41,6 @@ def time_float_one(s_time=None):
     if isinstance(s_time, (int, float, np.integer, np.float64)):
         return float(s_time)
 
-    if isinstance(s_time, np.datetime64):
-        ts = (s_time - np.datetime64('1970-01-01T00:00:00'))/np.timedelta64(1,'s')
-        return ts
-
     try:
         in_datetime = parser.isoparse(s_time)
     except ValueError:
@@ -72,10 +68,6 @@ def time_float(str_time=None):
     """
     if str_time is None:
         return time_float_one()
-
-    if isinstance(str_time, np.datetime64):
-        ts = (str_time - np.datetime64('1970-01-01T00:00:00'))/np.timedelta64(1,'s')
-        return ts
 
     if isinstance(str_time, str):
         return time_float_one(str_time)
