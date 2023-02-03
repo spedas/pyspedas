@@ -408,11 +408,23 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 attr_dict["CDF"]["FILENAME"] = metadata[var_name]['file_name']
                 attr_dict["CDF"]["LABELS"] = metadata[var_name]['labels']
 
+                # populate data_att; used by PySPEDAS as a common interface to
+                # data attributes such as units, coordinate system, etc
+                attr_dict["data_att"] = {"coord_sys": "",
+                                         "y_units": None,
+                                         "z_units": None}
+
                 # extract the coordinate system, if available
                 vatt_keys = list(attr_dict["CDF"]["VATT"].keys())
                 vatt_lower = [k.lower() for k in vatt_keys]
                 if 'coordinate_system' in vatt_lower:
-                    attr_dict['data_att'] = {'coord_sys': attr_dict["CDF"]["VATT"][vatt_keys[vatt_lower.index('coordinate_system')]]}
+                    attr_dict['data_att']['coord_sys'] = attr_dict["CDF"]["VATT"][vatt_keys[vatt_lower.index('coordinate_system')]]
+
+                    # some common coordinate system filters from IDL
+                    if '>' in attr_dict['data_att']['coord_sys']:
+                        # support for e.g. DSL>Despun Spacecraft
+                        attr_dict['data_att']['coord_sys'] = attr_dict['data_att']['coord_sys'].split('>')[0]
+
                 if 'labels' in vatt_lower:
                     if attr_dict["CDF"]["VATT"].get('labels') is not None:
                         if isinstance(attr_dict["CDF"]["VATT"]['labels'], str):
