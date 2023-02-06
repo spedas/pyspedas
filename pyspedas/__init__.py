@@ -72,6 +72,7 @@ from . import lanl
 from . import st5
 from . import de2
 from . import akebono
+from . import soho
 
 # set up logging/console output
 import logging

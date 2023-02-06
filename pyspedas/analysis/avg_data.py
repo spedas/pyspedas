@@ -68,9 +68,10 @@ def avg_data(names, dt=None, width=60, noremainder=False,
     for old_idx, old in enumerate(old_names):
         new = n_names[old_idx]
 
-        time, data = pytplot.get_data(old)
+        d = pytplot.get_data(old)
+        time = d[0]
+        data = d[1]
         metadata = pytplot.get_data(old, metadata=True)
-
         dim = data.shape
         dim0 = dim[0]
         if len(dim) < 2:

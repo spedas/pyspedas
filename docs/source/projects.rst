@@ -26,6 +26,7 @@ Load Routines
    poes
    polar
    psp
+   soho
    solo
    st5
    stereo

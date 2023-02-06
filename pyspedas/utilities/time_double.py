@@ -68,17 +68,17 @@ def time_float(str_time=None):
     """
     if str_time is None:
         return time_float_one()
+
+    if isinstance(str_time, str):
+        return time_float_one(str_time)
+
+    time_list = list()
+    if isinstance(str_time, Iterable):
+        for t in str_time:
+            time_list.append(time_float_one(t))
+        return time_list
     else:
-        if isinstance(str_time, str):
-            return time_float_one(str_time)
-        else:
-            time_list = list()
-            if isinstance(str_time, Iterable):
-                for t in str_time:
-                    time_list.append(time_float_one(t))
-                return time_list
-            else:
-                return time_float_one(str_time)
+        return time_float_one(str_time)
 
 
 def time_double(str_time=None):
