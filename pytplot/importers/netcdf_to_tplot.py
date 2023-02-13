@@ -122,7 +122,7 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
 
         for i,var in enumerate(file.variables):
             # Here, we are making sure that the variables are time-based, otherwise we don't want to store them as tplot variables!
-            if 'record' in file[var].dimensions[0] or 'time' in file[var].dimensions[0]:
+            if len(file[var].dimensions)>0 and ('record' in file[var].dimensions[0] or 'time' in file[var].dimensions[0]):
                 # Store the data now, as well as merge variables if that's desired
                 var_name = prefix + var + suffix
                 to_merge = False
