@@ -68,7 +68,10 @@ def fgm(trange=['2020-10-01', '2020-10-02'],
         List of tplot variables created.
 
     """
-    tvars = load(instrument='fgm', probe=probe, trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='fgm', probe=probe, trange=trange, level=level, 
+                datatype=datatype, suffix=suffix, get_support_data=get_support_data, 
+                varformat=varformat, varnames=varnames, downloadonly=downloadonly, 
+                notplot=notplot, time_clip=time_clip, no_update=no_update)
 
     if tvars is None or notplot or downloadonly:
         return tvars
