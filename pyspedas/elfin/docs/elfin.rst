@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   elfin_vars = pyspedas.elfin.fgm(trange=['2020-11-5', '2020-11-6'])
+   elfin_vars = pyspedas.elfin.fgm(trange=['2020-11-28', '2020-11-28'])
    tplot('ela_fgs')
 
 .. image:: _static/elfin_fgm.png
@@ -33,8 +33,8 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   elfin_vars = pyspedas.elfin.epd(trange=['2020-11-5', '2020-11-6'])
-   tplot(['ela_pef_nflux', 'ela_pif_cps'])
+   elfin_vars = pyspedas.elfin.epd(trange=['2020-11-28', '2020-11-29'])
+   tplot('ela_pef')
 
 .. image:: _static/elfin_epd.png
    :align: center
