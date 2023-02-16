@@ -418,12 +418,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 vatt_keys = list(attr_dict["CDF"]["VATT"].keys())
                 vatt_lower = [k.lower() for k in vatt_keys]
                 if 'coordinate_system' in vatt_lower:
-                    attr_dict['data_att']['coord_sys'] = attr_dict["CDF"]["VATT"][vatt_keys[vatt_lower.index('coordinate_system')]]
-
-                    # some common coordinate system filters from IDL
-                    if '>' in attr_dict['data_att']['coord_sys']:
-                        # support for e.g. DSL>Despun Spacecraft
-                        attr_dict['data_att']['coord_sys'] = attr_dict['data_att']['coord_sys'].split('>')[0]
+                    attr_dict['data_att']['coord_sys'] = filter_greater_than(attr_dict["CDF"]["VATT"][vatt_keys[vatt_lower.index('coordinate_system')]])
 
                 if 'labels' in vatt_lower:
                     if attr_dict["CDF"]["VATT"].get('labels') is not None:
@@ -458,10 +453,11 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 if metadata[var_name]['var_attrs'].get('LABLAXIS') is not None:
                     options(var_name, 'ytitle', metadata[var_name]['var_attrs']['LABLAXIS'])
                 if metadata[var_name]['var_attrs'].get('UNITS') is not None:
+                    unitsstr = filter_greater_than(metadata[var_name]['var_attrs']['UNITS'])
                     if metadata[var_name]['display_type'].lower() == 'spectrogram':
-                        options(var_name, 'ztitle', '[' + metadata[var_name]['var_attrs']['UNITS'] + ']')
+                        options(var_name, 'ztitle', f'[{unitsstr}]')
                     else:
-                        options(var_name, 'ysubtitle', '[' + metadata[var_name]['var_attrs']['UNITS'] + ']')
+                        options(var_name, 'ysubtitle', f'[{unitsstr}]')
 
             # Gather up all options in the variable attribute section, toss them into options and see what sticks
             options(var_name, opt_dict=metadata[var_name]['var_attrs'])
@@ -481,3 +477,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
         tplot(stored_variables)
 
     return stored_variables
+
+
+def filter_greater_than(attr):
+    """
+    Returns any text to the left of > in a variable attribute
+    (e.g., coordinate systems, units)
+    """
+    if not isinstance(attr, str):
+        return attr
+    return attr.split('>')[0].rstrip()
