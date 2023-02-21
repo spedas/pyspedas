@@ -4,6 +4,7 @@ from pytplot import tplot, store_data
 import pytplot
 import calendar
 import copy
+import logging
 
 
 def change_time_to_unix_time(time_var):
@@ -19,9 +20,9 @@ def change_time_to_unix_time(time_var):
     return unix_times
 
 
-def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge=False):
+def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=False):
     '''
-    This function will automatically create tplot variables from CDF files.
+    This function will automatically create tplot variables from netCDF files.
 
     Parameters:
         filenames : str/list of str
@@ -68,7 +69,8 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
         filenames = filenames
     else:
         print("Invalid filenames input.")
-        #return stored_variables
+        # return stored_variables
+    time_local = time
 
     for filename in filenames:
 
@@ -104,10 +106,20 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
 
         # Most files are from GOES data, which seems to usually have 'time_tag' in them that contain time information.
         # There is an exception filter below that will allow a user to pick a different time variable if time_tag doesn't exist.
+        # Other names for the time variable in GOES-R: 'L2_SciData_TimeStamp', 'time'
+        time = time_local
         if time != '':
+            if time not in vars_and_atts.keys():
+                if 'time' in vars_and_atts.keys():
+                    msg = "Variable name '" + time + "' not found in file '" + filename + "'. Variable 'time' will be used instead."
+                    logging.error(msg)
+                    time = 'time'
+                elif 'time_tag' in vars_and_atts.keys():
+                    msg = "Variable name '" + time + "' not found in file '" + filename + "'. Variable 'time_tag' will be used instead."
+                    logging.error(msg)
+                    time = 'time_tag'
             time_var = file[time]
             unix_times = change_time_to_unix_time(time_var)
-
         elif time == '':
             time = input('Please enter time variable name. \nVariable list: {l}'.format(l=vars_and_atts.keys()))
             while True:
@@ -120,9 +132,10 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
                     time_var = time
                     unix_times = change_time_to_unix_time(time_var)
 
-        for i,var in enumerate(file.variables):
+        for i, var in enumerate(file.variables):
+
             # Here, we are making sure that the variables are time-based, otherwise we don't want to store them as tplot variables!
-            if len(file[var].dimensions)>0 and ('record' in file[var].dimensions[0] or 'time' in file[var].dimensions[0]):
+            if len(file[var].dimensions) > 0 and ('record' in file[var].dimensions[0] or 'time' in file[var].dimensions[0]):
                 # Store the data now, as well as merge variables if that's desired
                 var_name = prefix + var + suffix
                 to_merge = False
@@ -150,4 +163,3 @@ def netcdf_to_tplot(filenames, time ='', prefix='', suffix='', plot=False, merge
                 continue
 
         return stored_variables
-
