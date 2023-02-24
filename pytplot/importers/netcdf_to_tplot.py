@@ -4,7 +4,6 @@ from pytplot import tplot, store_data
 import pytplot
 import calendar
 import copy
-import logging
 
 
 def change_time_to_unix_time(time_var):
@@ -112,11 +111,11 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
             if time not in vars_and_atts.keys():
                 if 'time' in vars_and_atts.keys():
                     msg = "Variable name '" + time + "' not found in file '" + filename + "'. Variable 'time' will be used instead."
-                    logging.error(msg)
+                    print(msg)
                     time = 'time'
                 elif 'time_tag' in vars_and_atts.keys():
                     msg = "Variable name '" + time + "' not found in file '" + filename + "'. Variable 'time_tag' will be used instead."
-                    logging.error(msg)
+                    print(msg)
                     time = 'time_tag'
             time_var = file[time]
             unix_times = change_time_to_unix_time(time_var)
