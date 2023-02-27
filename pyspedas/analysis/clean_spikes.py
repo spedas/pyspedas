@@ -98,7 +98,6 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
         else:
             # More than one dim data.
             for j in range(dim[1]):
-                # print("j = ", j)
                 for i in range(dim[0]):
                     # compare smoothed out values to original values
                     if abs(d0[i, j] - ds[i, j]) > thresh * abs(ds[i, j]):
