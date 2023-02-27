@@ -16,6 +16,8 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_orbit_data(self):
         del_data()
+        orbit_vars = pyspedas.goes.orbit(downloadonly=True)
+        orbit_vars = pyspedas.goes.orbit(notplot=True)
         orbit_vars = pyspedas.goes.orbit()
         self.assertTrue(data_exists('XYZ_GSM'))
         self.assertTrue(data_exists('XYZ_GSE'))
