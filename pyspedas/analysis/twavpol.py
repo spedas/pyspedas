@@ -68,7 +68,7 @@ Restrictions:
     Care should be taken in evaluating degree of polarisation results.
     For meaningful results there should be significant wave power at the
     frequency where the polarisation approaches
-    100%. Remembercomparing two straight lines yields 100% polarisation.
+    100%. Remember, comparing two straight lines yields 100% polarisation.
 
 """
 import logging
@@ -247,11 +247,11 @@ def wavpol(ct, bx, by, bz,
     ----------
     ct : list of float
         Time.
-    b1 : list of float
+    bx : list of float
         Bx field.
-    b2 : list of float
+    by : list of float
         By field.
-    b3 : list of float
+    bz : list of float
         Bz field.
     nopfft : int, optional
         Number of points in FFT. The default is 256.
@@ -374,7 +374,16 @@ def wavpol(ct, bx, by, bz,
     # leveltplot = 0.000001  # Power rejection level 0 to 1
     nosmbins = bin_freq  # No. of bins in frequency domain
     # Smoothing profile based on Hanning:
-    aa = np.array([0.024, 0.093, 0.232, 0.301, 0.232, 0.093, 0.024])
+    # aa = np.array([0.024, 0.093, 0.232, 0.301, 0.232, 0.093, 0.024])
+    # The predefined smoothing array aa is incorrect unless bin_freq = 7.  For smaller
+    # values of bin_freq, only the first few entries will be used, and the values will be
+    # asymmetric and unnormalized.   For larger values, out-of-bound array indices can occur.
+    # Now we generate a properly sized Hamming array (not Hann/hanning!).   The code below
+    # will match the old predefined values for bin_freq = 7.  JWL 2023-02-02
+
+    w = np.hamming(bin_freq)
+    tot = np.sum(w)
+    aa = w/tot
 
     ind0 = 0
     KK = 0
