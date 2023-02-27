@@ -352,7 +352,7 @@ def wavpol(ct, bx, by, bz,
     # If there are too many batches, return.
     if n_batches > 80000.0:
         logging.error("wavpol error: Large number of batches. " +
-              "Returning to avoid memory runaway.")
+                      "Returning to avoid memory runaway.")
         err_flag = 1
         result = (timeline, freqline, powspec, degpol, waveangle,
                   elliptict, helict, pspec3, err_flag)
@@ -583,7 +583,7 @@ def wavpol(ct, bx, by, bz,
                 if KK == 0 or KK % 40 == 0:
                     logging.info('wavpol step: ' + str(KK) + ' ')
                 elif KK % 4 == 0:
-                    print('.', end='')
+                    logging.info('.', end='')
 
                 KK += 1
                 # End loop "for j"
@@ -689,7 +689,7 @@ def twavpol(tvarname, prefix='', nopfft=-1, steplength=-1, bin_freq=-1):
     b3 = bfield[:, 2]
     if (len(ct) != len(b1) or len(ct) != len(b2) or len(ct) != len(b3)):
         logging.error('twavpol error: Number of time elements does not match' +
-              'number of magnetic field elements.')
+                      'number of magnetic field elements.')
         return 0
 
     # Apply vawpol.
