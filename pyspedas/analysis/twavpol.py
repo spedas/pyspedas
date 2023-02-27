@@ -582,8 +582,6 @@ def wavpol(ct, bx, by, bz,
                 # Print an indication that a computation is happening.
                 if KK == 0 or KK % 40 == 0:
                     logging.info('wavpol step: ' + str(KK) + ' ')
-                elif KK % 4 == 0:
-                    logging.info('.', end='')
 
                 KK += 1
                 # End loop "for j"
