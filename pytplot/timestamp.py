@@ -6,30 +6,29 @@
 import pytplot
 import datetime
 
-def timestamp(val):  
+
+def timestamp(val):
     """
     This function will turn on a time stamp that shows up at the bottom of every generated plot.
-    
+
     Parameters
         val  str
-            A string that can either be 'on' or 'off'.  
-            
+            A string that can either be 'on' or 'off'.
+
     Returns
         None
-    
+
     Examples
          # Turn on the timestamp
          import pytplot
          pytplot.timestamp('on')
     """
-    
-    
-    
-    if val is 'on':
+
+    if val == 'on':
         todaystring = datetime.datetime.now().strftime('%Y-%m-%d %H%M%S')
         pytplot.extra_layouts['time_stamp'] = todaystring
     else:
         if 'time_stamp' in pytplot.extra_layouts:
             del pytplot.extra_layouts['time_stamp']
-    
+
     return
