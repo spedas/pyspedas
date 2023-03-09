@@ -27,11 +27,11 @@ class CotransTestCases(unittest.TestCase):
     def test_get_set_coord(self):
         """ Test for cotrans_set_coord/cotrans_get_coord """
         doesntexist = cotrans_get_coord('test_coord')
-        self.assertTrue(doesntexist == None)
+        self.assertTrue(doesntexist is None)
         store_data('test_coord', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
         cotrans(name_in='test_coord', coord_out="geo")
         before = cotrans_get_coord('test_coord')
-        self.assertTrue(before == None)
+        self.assertTrue(before is None)
         setcoord = cotrans_set_coord('test_coord', 'GSE')
         self.assertTrue(setcoord)
         after = cotrans_get_coord('test_coord')
@@ -63,7 +63,7 @@ class CotransTestCases(unittest.TestCase):
         t, d = get_data('tha_fgl_gse')
         # Now test the inverse.
         dsl2gse('tha_fgl_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgl_gse',
-                isgsetodsl=1)
+                isgsetodsl=True)
 
         self.assertTrue(abs(d[0].tolist()[0]-15.905078404701147) <= 1e-6)
         self.assertTrue(abs(d[0].tolist()[1]--13.962618931740064) <= 1e-6)
@@ -90,6 +90,21 @@ class CotransTestCases(unittest.TestCase):
         out_len = len(dout[0])
         cotrans(name_in=name_in, coord_in="gei", coord_out="geo")
         self.assertTrue(out_len == in_len)
+
+    def test_cotrans_coord_mismatch(self):
+        """Test that cotrans rejects a request where in_coord does not match the system from the variable metadata."""
+        del_data()
+        trange = ['2010-02-25/00:00:00', '2010-02-25/23:59:59']
+        probe = 'a'
+        name_in = "tha_pos"
+        name_out = "tha_pos_new_geo"
+        pyspedas.themis.state(probe=probe, trange=trange,
+                              time_clip=True, varnames=[name_in])
+        # Metadata coordinate system is GEI, but requesting GSM->GEO transform.  This should generate an error message
+        # and return failure.
+        result = cotrans(name_in=name_in, name_out=name_out,
+                coord_in="gsm", coord_out="geo")
+        self.assertTrue(result == 0)
 
     def test_cotrans_igrf(self):
         """Test GSE->GSM and IGRF."""
