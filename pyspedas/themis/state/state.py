@@ -74,11 +74,11 @@ def state(trange=['2007-03-23', '2007-03-24'],
                varformat=varformat, varnames=varnames,
                downloadonly=downloadonly, notplot=notplot,
                time_clip=time_clip, no_update=no_update)
-    if get_support_data is True:
+    if get_support_data:
         for p in probe:
             # Process spin model variables
             spinmodel_postprocess(p)
-            if keep_spin is not True:
+            if not keep_spin:
                 spinvar_pattern = 'th' + p + '_spin_*'
                 del_data(spinvar_pattern)
             # Perform spin axis RA and Dec corrections
