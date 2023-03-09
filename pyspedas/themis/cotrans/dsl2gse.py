@@ -4,6 +4,7 @@ Notes:
     Works in a similar way to IDL spedas dsl2gse.pro
 """
 
+import logging
 import numpy as np
 import pytplot
 
@@ -16,25 +17,25 @@ from copy import deepcopy
 
 
 def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl: bool = False,
-            ignore_input_coord: bool = True) -> int:
+            ignore_input_coord: bool = False) -> int:
     """Transform dsl to gse.
 
     Parameters
     ----------
         name_in: str
-            Name of input pytplot variable (eg. 'tha_fgl_dsl')
+            Name of input pytplot variable (e.g. 'tha_fgl_dsl')
         spinras: str
-            Name of pytplot variable for spin (eg.'tha_spinras').
+            Name of pytplot variable for spin (e.g.'tha_spinras').
         spindec: str
-            Name of pytplot variable for spin (eg.'tha_spinras').
+            Name of pytplot variable for spin (e.g.'tha_spinras').
         name_out: str
-            Name of output pytplot variable (eg. 'tha_fgl_gse')
+            Name of output pytplot variable (e.g. 'tha_fgl_gse')
         isgsetodsl: bool
-            If 0 (default) then DSL to GSE.
-            If 1, then GSE to DSL.
+            If False (default) then DSL to GSE.
+            If True, then GSE to DSL.
         ignore_input_coord: bool
-            if 0 (default), do not check the input coordinate system
-            if 1, fail and return 0 if input coordinate does not match the requested transform.
+            if False (default), do not check the input coordinate system
+            if True, fail and return 0 if input coordinate does not match the requested transform.
 
     Returns
     -------
@@ -44,21 +45,21 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
     needed_vars = [name_in, spinras, spindec]
     c = [value for value in needed_vars if data_exists(value)]
     if len(c) < 3:
-        print("Variables needed: " + str(needed_vars))
+        logging.error("Variables needed: " + str(needed_vars))
         m = [value for value in needed_vars if value not in c]
-        print("Variables missing: " + str(m))
-        print("Please load missing variables.")
+        logging.error("Variables missing: " + str(m))
+        logging.error("Please load missing variables.")
         return 0
 
-    if ignore_input_coord is False:
+    if not ignore_input_coord:
         in_coord = cotrans_get_coord(name_in)
         if in_coord is None:
             in_coord = "None"
-        if (isgsetodsl is True) and (in_coord.lower() != 'gse'):
-            print("GSE to DSL transform requested, but input coordinate system is " + in_coord)
+        if isgsetodsl and (in_coord.lower() != 'gse'):
+            logging.error("GSE to DSL transform requested, but input coordinate system is " + in_coord)
             return 0
-        if (isgsetodsl is False) and (in_coord.lower() != 'dsl'):
-            print("DSL to GSE transform requested, but input coordinate system is " + in_coord)
+        if not isgsetodsl and (in_coord.lower() != 'dsl'):
+            logging.error("DSL to GSE transform requested, but input coordinate system is " + in_coord)
             return 0
 
     # Interpolate spinras and spindec
@@ -120,7 +121,7 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
                             yscs[:, 2] * zgse[:, 0] - yscs[:, 0] * zgse[:, 2],
                             yscs[:, 0] * zgse[:, 1] - yscs[:, 1] * zgse[:, 0]))
 
-    if isgsetodsl == 0:
+    if not isgsetodsl:
         # DSL -> GSE
         dd = data_in[1]
         d0 = dd[:, 0] * my_x[:, 0] + dd[:, 1] * my_y[:, 0] + dd[:, 2] * zgse[:, 0]
