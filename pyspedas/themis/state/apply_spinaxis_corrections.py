@@ -1,9 +1,12 @@
+import logging
 from pytplot import get_data, store_data
 import numpy as np
 from pyspedas.utilities.data_exists import data_exists
 
 
-def apply_oneaxis_correction(rawvar: str, deltavar: str, corrvar: str):
+def apply_oneaxis_correction(rawvar: str,
+                             deltavar: str,
+                             corrvar: str):
     """
     This function applies spin axis corrections for a single spin axis quantity (RA or DEC).
 
@@ -19,7 +22,7 @@ def apply_oneaxis_correction(rawvar: str, deltavar: str, corrvar: str):
     """
 
     if (data_exists(rawvar)) and (data_exists(deltavar)):
-        print("Applying corrections")
+        logging.debug("Applying spin axis corrections")
         res1 = get_data(rawvar)
         raw_times = res1.times
         raw_data = res1.y
@@ -44,14 +47,17 @@ def apply_oneaxis_correction(rawvar: str, deltavar: str, corrvar: str):
         store_data(corrvar, data={'x': raw_times, 'y': fix_raw}, attr_dict=metadata)
     elif not (data_exists(deltavar)):
         # If the corrections aren't present, just copy the original data
-        print('Spin axis corrections variable ' + deltavar + ' not found, skipping ' + corrvar)
+        logging.debug('Spin axis corrections variable ' + deltavar + ' not found, skipping ' + corrvar)
     else:
         # Raw variable doesn't exist, nothing to do here.
-        print('Spin axis variable ' + rawvar + ' not found, skipping ' + corrvar)
+        logging.debug('Spin axis variable ' + rawvar + ' not found, skipping ' + corrvar)
 
 
-def apply_spinaxis_corrections(spinras: str, spindec: str, delta_spinras: str,
-                               delta_spindec: str, corrected_spinras: str,
+def apply_spinaxis_corrections(spinras: str,
+                               spindec: str,
+                               delta_spinras: str,
+                               delta_spindec: str,
+                               corrected_spinras: str,
                                corrected_spindec: str):
     """
     This function applies V03 state spin axis corrections (if present) to state spinras and spindec

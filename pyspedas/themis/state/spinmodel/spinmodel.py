@@ -1,11 +1,14 @@
 import numpy as np
 import math
+import logging
 from .spinmodel_segment import SpinmodelSegment
 from pytplot import get_data, store_data
 from pyspedas.utilities.data_exists import data_exists
 
 
-def get_sm_data(probe: str, valname: str, correction_level: int) -> (np.ndarray, np.ndarray):
+def get_sm_data(probe: str,
+                valname: str,
+                correction_level: int) -> (np.ndarray, np.ndarray):
     """ Return the times and values for a spin model tplot variable
 
     Args:
@@ -47,8 +50,14 @@ class SpinmodelInterpTResult:
 
     __slots__ = 'spinphase', 'spincount', 'spinper', 't_last', 'eclipse_delta_phi', 'segflags', 'idx', 'dt'
 
-    def __init__(self, spinphase: np.ndarray, spincount: np.ndarray, spinper: np.ndarray, t_last: np.ndarray,
-                 eclipse_delta_phi: np.ndarray, segflags: np.ndarray, idx: np.ndarray, dt: np.ndarray):
+    def __init__(self, spinphase: np.ndarray,
+                 spincount: np.ndarray,
+                 spinper: np.ndarray,
+                 t_last: np.ndarray,
+                 eclipse_delta_phi: np.ndarray,
+                 segflags: np.ndarray,
+                 idx: np.ndarray,
+                 dt: np.ndarray):
         self.spinphase = spinphase
         self.spincount = spincount
         self.spinper = spinper
@@ -82,7 +91,7 @@ class Spinmodel:
         seg_phaserr (ndarray): Array of phaserr values from seg_list
         seg_initial_delta_phi (ndarray): Array of initial_delta_phi values from seg_list
         seg_idpu_spinper (ndarray): Array of idpu_spinper values from seg_list
-        seg_segflags (ndarray): Array of segflags values fro seg_list
+        seg_segflags (ndarray): Array of segflags values from seg_list
         seg_count (int): Count of segments
 
     """
@@ -95,7 +104,10 @@ class Spinmodel:
         for seg in self.seg_list:
             seg.print()
 
-    def adjust_delta_phi(self, ecl_start: float, ecl_end: float, ecl_corr: float):
+    def adjust_delta_phi(self,
+                         ecl_start: float,
+                         ecl_end: float,
+                         ecl_corr: float):
         """ Apply the level 2 (spin fit) corrections to the segments falling in an eclipse time interval.
 
         Args:
@@ -126,7 +138,8 @@ class Spinmodel:
             seg.initial_delta_phi += ecl_corr
             seg.segflags |= 4
 
-    def findseg_t(self, t: np.ndarray) -> np.ndarray:
+    def findseg_t(self,
+                  t: np.ndarray) -> np.ndarray:
         """ Return an ndarray of index values for the segments covering a set of input times
 
         This is a helper routine for the interp_t method.
@@ -142,9 +155,9 @@ class Spinmodel:
         idx2 = np.searchsorted(self.seg_t2, t)
         diff = (idx2 - (idx1 + 1)).nonzero()
         if len(diff) == len(t):
-            print('Indices don''t match up')
-            print(idx1)
-            print(idx2)
+            logging.warning('Indices don''t match up:')
+            logging.warning(idx1)
+            logging.warning(idx2)
         else:
             # If any points are beyond the last segment t2, assign them to the last segment and extrapolate.
             idx_max = self.seg_count - 1
@@ -153,7 +166,9 @@ class Spinmodel:
             idx_adjusted[idx_extrap] = idx_max
             return idx_adjusted
 
-    def interp_t(self, t: np.ndarray, use_spinphase_correction=True) -> SpinmodelInterpTResult:
+    def interp_t(self,
+                 t: np.ndarray,
+                 use_spinphase_correction: bool = True) -> SpinmodelInterpTResult:
         """ Interpolate the spin model to a set of input times, and return an object holding the results.
 
         This is the workhorse routine for accessing the spin model. Clients will specify a set of input times (e.g.
@@ -292,7 +307,7 @@ class Spinmodel:
             spincount[idx3] = spincount[idx3] + my_seg_c1[idx3]
 
         if use_spinphase_correction:
-            print("applying spinphase correction")
+            logging.info("applying spinphase correction")
             interp_correction = np.interp(t, self.spin_corr_times, self.spin_corr_vals)
             spinphase -= interp_correction
             cond = spinphase > 360.0
@@ -332,7 +347,8 @@ class Spinmodel:
         self.seg_initial_delta_phi = np.array([o.initial_delta_phi for o in self.seg_list])
         self.seg_segflags = np.array([o.segflags for o in self.seg_list])
 
-    def make_tplot_vars(self, prefix: str):
+    def make_tplot_vars(self,
+                        prefix: str):
         """ Create a set of tplot variables from the spinmodel segment attributes.
 
         This is useful for regression testing or cross-platform validation of the spin model creation process.
@@ -354,7 +370,8 @@ class Spinmodel:
         store_data(prefix + 'initial_delta_phi', data={'x': self.seg_times, 'y': self.seg_initial_delta_phi})
         store_data(prefix + 'segflags', data={'x': self.seg_times, 'y': self.seg_segflags})
 
-    def addseg(self, newseg: SpinmodelSegment):
+    def addseg(self,
+               newseg: SpinmodelSegment):
         """ Add a segment to the spin model object being constructed.
 
         A spin model is assumed to satisfy a condition that the end time of one segment exactly matches the start time
@@ -527,13 +544,13 @@ class Spinmodel:
                     else:
                         # Case 4: small gap, but segments on either side only contain
                         # one spin each.  This should never happen.
-                        print('<1 spin gap, but neither segment has enough spins to steal.  This should not happen!')
+                        logging.error('<1 spin gap, but neither segment has enough spins to steal.  This should not happen!')
                         raise RuntimeError
 
                 else:
                     # Case 5: out of order sun pulse times.  This should never happen.
-                    print('Sun pulse times out of order..this should not happen!')
-                    print("Last segment end time", lseg.t2, "New segment start time", newseg.t1)
+                    logging.error('Sun pulse times out of order..this should not happen!')
+                    logging.error("Last segment end time" + str(lseg.t2) + " New segment start time " + str(newseg.t1))
                     raise RuntimeError
 
     def get_info(self):
@@ -549,7 +566,9 @@ class Spinmodel:
         end_time = self.seg_t2[-1]
         return start_time, end_time
 
-    def __init__(self, probe, correction_level):
+    def __init__(self,
+                 probe,
+                 correction_level):
         self.lastseg = SpinmodelSegment(t1=0.0, t2=0.0, c1=0, c2=0, b=0.0, c=0.0, npts=0, maxgap=0.0, phaserr=0.0,
                                         initial_delta_phi=0.0, idpu_spinper=0.0, segflags=0)
         self.seg_times = np.zeros(1, float)
@@ -579,7 +598,7 @@ class Spinmodel:
         # The spin_correction variable only exists in V03 state CDFs, and has its own time variable
         tmp = get_sm_data(probe, 'correction', 0)
         if tmp is None:
-            print('spin_correction variable not available, defaulting to 0.0')
+            logging.info('spin_correction variable not available, defaulting to 0.0')
             self.spin_corr_times = [0.0, 1.0]
             self.spin_corr_vals = [0.0, 0.0]
         else:
@@ -589,7 +608,7 @@ class Spinmodel:
         tmp = get_sm_data(probe, 'fgm_corr_offset', correction_level)
         if tmp is None:
             do_fgm_corr = False
-            print('FGM correction variables not available')
+            logging.info('FGM correction variables not available')
         else:
             do_fgm_corr = True
             fgm_corr_time, fgm_corr_offset = tmp
@@ -611,11 +630,11 @@ class Spinmodel:
             # lastseg=copy.copy(origseg)
         self.make_arrays()
         if do_fgm_corr and (correction_level == 2):
-            print(f"applying FGM corrections, do_fgm_corr = {do_fgm_corr}, correction_level = {correction_level}")
+            logging.info(f"applying FGM corrections, do_fgm_corr = {do_fgm_corr}, correction_level = {correction_level}")
             for i in np.arange(len(fgm_corr_offset)):
                 self.adjust_delta_phi(fgm_corr_time[i], fgm_corr_tend[i], fgm_corr_offset[i])
         else:
-            print(f"Skipping FGM corrections, do_fgm_corr {do_fgm_corr}, correction_level = {correction_level}")
+            logging.info(f"Skipping FGM corrections, do_fgm_corr {do_fgm_corr}, correction_level = {correction_level}")
 
 
 # This dictionary is where the spinmodel objects are stored.   The keys are tuples of (probe, correction_level)
@@ -625,12 +644,15 @@ class Spinmodel:
 spinmodel_dict: dict[(str, int)] = {}
 
 
-def get_spinmodel(probe: str, correction_level: int) -> Spinmodel:
+def get_spinmodel(probe: str,
+                  correction_level: int,
+                  quiet: bool = False) -> Spinmodel:
     """ Get a reference to a Spinmodel object stored in the dictionary.
 
     Args:
         probe: Probe name, one of 'a','b','c','d','e'
         correction_level: 0 for no corrections, 1 for waveform corrections, 2 for spin fit corrections
+        quiet:  If True, do not log anything if the model is uninitialized
 
     Returns:
         A reference to a Spinmodel object stored in the dictionary.
@@ -638,13 +660,16 @@ def get_spinmodel(probe: str, correction_level: int) -> Spinmodel:
     try:
         model = spinmodel_dict[(probe, correction_level)]
     except KeyError:
-        print("No spinmodel loaded for probe ", probe, " correction level: ", correction_level)
-        print("It is necessary to load THEMIS state data, with get_support_data=True, to initialize the spin model.")
+        if not quiet:
+            logging.warning("No spinmodel loaded for probe " + probe + " correction level: " + str(correction_level))
+            logging.warning("It is necessary to load THEMIS state data, with get_support_data=True, to initialize the spin model.")
         model = None
     return model
 
 
-def save_spinmodel(probe: str, correction_level: int, model: Spinmodel):
+def save_spinmodel(probe: str,
+                   correction_level: int,
+                   model: Spinmodel):
     """ Store a reference to a Spinmodel object in the dictionary, using the probe and correction level as the key
 
     Args:

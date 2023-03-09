@@ -1,3 +1,4 @@
+import logging
 from .spinmodel import Spinmodel, save_spinmodel
 from pyspedas.utilities.data_exists import data_exists
 
@@ -28,18 +29,18 @@ def spinmodel_postprocess(probe: str):
         if not (data_exists(non_ecl_v) and data_exists(ecl_v)):
             missing_var = True
 
-    if missing_var is True:
-        print("Some required spin model variables were not requested, skipping spin model creation")
+    if missing_var:
+        logging.warning("Some required spin model variables were not requested, skipping spin model creation")
         return
 
-    print("Creating spin model for probe ", probe, "correction level 0")
+    logging.info("Creating spin model for probe " + probe + " correction level 0")
     # Expect a warning message here: That name is currently not in tplot.
     # Maybe there's a better idiom in pytplot for checking whether a variable exists?
     model0 = Spinmodel(probe, 0)
     save_spinmodel(probe, 0, model0)
-    print("Creating spin model for probe ", probe, "correction level 1")
+    logging.info("Creating spin model for probe " + probe + " correction level 1")
     model1 = Spinmodel(probe, 1)
     save_spinmodel(probe, 1, model1)
-    print("Creating spin model for probe ", probe, "correction level 2")
+    logging.info("Creating spin model for probe " + probe + " correction level 2")
     model2 = Spinmodel(probe, 2)
     save_spinmodel(probe, 2, model2)

@@ -1,3 +1,4 @@
+import logging
 import pyspedas
 import pyspedas.themis
 from pyspedas.utilities.data_exists import data_exists
@@ -12,7 +13,9 @@ def tvar_trange(tvar_name):
     return [result.times[0], result.times[-1]]
 
 
-def load_needed(trange_loaded, trange_needed, tolerance=0.0):
+def load_needed(trange_loaded,
+                trange_needed,
+                tolerance=0.0):
     """
     Given a time range of loaded data, and the time range needed, determine if
     a support variable needs to be reloaded.  A small amount of extrapolation is considered
@@ -36,7 +39,12 @@ def load_needed(trange_loaded, trange_needed, tolerance=0.0):
         return True
 
 
-def autoload_support(varname=None, trange=None, probe=None, spinaxis=False, spinmodel=False, slp=False):
+def autoload_support(varname=None,
+                     trange=None,
+                     probe=None,
+                     spinaxis: bool = False,
+                     spinmodel: bool = False,
+                     slp: bool = False):
     """
     Automatically load THEMIS support data required to cover a given probe or time range.
 
@@ -71,19 +79,19 @@ def autoload_support(varname=None, trange=None, probe=None, spinaxis=False, spin
     if varname is not None:
         trange = tvar_trange(varname)
     elif trange is None:
-        print("Must specify either a tplot name or a time range in order to load support data")
+        logging.error("Must specify either a tplot name or a time range in order to load support data")
         return
-    elif (probe is None) and ((spinaxis is True) or (spinmodel is True)):
-        print("Must specify either a tplot name or a probe in order to load spin axis or spin model data")
+    elif (probe is None) and (spinaxis or spinmodel):
+        logging.error("Must specify either a tplot name or a probe in order to load spin axis or spin model data")
         return
 
     # Validate varname if present
     if (varname is not None) and not (data_exists(varname)):
-        print("tplot variable name " + varname + " not found.")
+        logging.error("tplot variable name " + varname + " not found.")
         return
 
     # Set probe name (if needed)
-    if (spinaxis is True) or (spinmodel is True):
+    if spinaxis or spinmodel:
         if probe is None:
             probe = varname[2]
 
@@ -101,8 +109,8 @@ def autoload_support(varname=None, trange=None, probe=None, spinaxis=False, spin
     slop = 120.0  # Tolerance (seconds) for determining if existing data covers desired range
 
     # Does spin model cover desired time interval?
-    if spinmodel is True:
-        sm = get_spinmodel(probe, correction_level=1)
+    if spinmodel:
+        sm = get_spinmodel(probe, correction_level=1, quiet=True)
         if sm is None:
             do_state = True
         else:
@@ -113,7 +121,7 @@ def autoload_support(varname=None, trange=None, probe=None, spinaxis=False, spin
 
     # Do spin axis variables exist, and cover desired time interval?
 
-    if spinaxis is True:
+    if spinaxis:
         v1 = "th" + probe + "_spinras"
         v2 = "th" + probe + "_spindec"
         v3 = "th" + probe + "_spinras_corrected"
@@ -146,7 +154,7 @@ def autoload_support(varname=None, trange=None, probe=None, spinaxis=False, spin
     # Check SLP variables.  They must all exist, and cover the desired time range, or
     # reload is necessary.
 
-    if slp is True:
+    if slp:
         v1 = 'slp_lun_att_x'
         v2 = 'slp_lun_att_z'
         v3 = 'slp_lun_pos'

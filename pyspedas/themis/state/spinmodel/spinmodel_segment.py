@@ -24,9 +24,19 @@ class SpinmodelSegment:
     __slots__ = 't1', 't2', 'c1', 'c2', 'b', 'c', 'npts', 'maxgap', 'phaserr', 'initial_delta_phi', 'idpu_spinper', \
                 'segflags'
 
-    def __init__(self, t1: float, t2: float, c1: int, c2: int, b: float, c: float, npts: int, maxgap: float,
+    def __init__(self,
+                 t1: float,
+                 t2: float,
+                 c1: int,
+                 c2: int,
+                 b: float,
+                 c: float,
+                 npts: int,
+                 maxgap: float,
                  phaserr: float,
-                 initial_delta_phi: float, idpu_spinper: float, segflags: int):
+                 initial_delta_phi: float,
+                 idpu_spinper: float,
+                 segflags: int):
         self.t1 = t1
         self.t2 = t2
         self.c1 = c1
@@ -53,7 +63,8 @@ class SpinmodelSegment:
                                                                self.initial_delta_phi,
                                                                self.idpu_spinper, self.segflags))
 
-    def extrap_before_t(self, t: float) -> (float, float, int, float, float):
+    def extrap_before_t(self,
+                        t: float) -> (float, float, int, float, float):
         """Return modeled values for a time before the segment start
 
         Args:
@@ -75,7 +86,8 @@ class SpinmodelSegment:
         eclipse_delta_phi = 0.0
         return spinper, spincount, spinphase, eclipse_delta_phi, t_last
 
-    def extrap_after_t(self, t: float) -> (float, float, int, float, float):
+    def extrap_after_t(self,
+                       t: float) -> (float, float, int, float, float):
         """Return modeled values for a time after the segment end
 
         Args:
@@ -105,7 +117,8 @@ class SpinmodelSegment:
         t_last = self.t2 + intspins * spinper
         return spinper, spinphase, spincount, eclipse_delta_phi, t_last
 
-    def interp_t(self, t: float) -> (float, float, int, float, float):
+    def interp_t(self,
+                 t: float) -> (float, float, int, float, float):
         """Return modeled values for a time falling within the segment start/end times
 
         Args:
@@ -142,7 +155,8 @@ class SpinmodelSegment:
         spincount = spincount + self.c1
         return spinper, spinphase, spincount, eclipse_delta_phi, t_last
 
-    def interp_before_n(self, n: int) -> (float, int, float):
+    def interp_before_n(self,
+                        n: int) -> (float, int, float):
         """Return modeled values for a spin count before the start of a segment
 
         Args:
@@ -159,7 +173,8 @@ class SpinmodelSegment:
         t_last = self.t1 - nspins * spinper
         return spinper, nspins, t_last
 
-    def interp_after_n(self, n: int) -> (float, int, float):
+    def interp_after_n(self,
+                       n: int) -> (float, int, float):
         """Return modeled values for a spin count after the end of a segment
 
         Args:
@@ -177,7 +192,8 @@ class SpinmodelSegment:
         t_last = self.t2 + spinper * nspins
         return spinper, nspins, t_last
 
-    def interp_n(self, n: int) -> (float, int, float):
+    def interp_n(self,
+                 n: int) -> (float, int, float):
         """Return modeled values for a spin count falling within a segment
 
          Args:
