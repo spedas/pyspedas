@@ -172,7 +172,12 @@ def tplot_restore(filename):
                 if yaxis_opts.get('legend_names') is not None:
                     lnames = pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'][0]
                     pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lname.decode('utf-8') for lname in lnames]
-                
+
+                # decode any other string options
+                for y_key in yaxis_opts.keys():
+                    if isinstance(yaxis_opts[y_key], bytes):
+                        yaxis_opts[y_key] = yaxis_opts[y_key].decode("utf-8")
+
         #temp_tplot['tv'][0][1] is all of the "settings" variables
             #temp_tplot['tv'][0][1]['D'][0] is "device" options
             #temp_tplot['tv'][0][1]['P'][0] is "plot" options
