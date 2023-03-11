@@ -21,7 +21,7 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
     - name: Install dependencies (Linux)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
@@ -64,7 +64,7 @@ jobs:
         # exit-zero treats all errors as warnings. 
         flake8 . --count --exit-zero --max-complexity=10 --statistics # --max-line-length=127 --exclude 'erg'
     - name: Test with unittest
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         SPEDAS_DATA_DIR: data
