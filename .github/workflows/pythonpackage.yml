@@ -124,6 +124,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.misc_tests
         coverage run -a -m pyspedas.utilities.tests.time_tests
         coverage run -a -m pyspedas.cotrans.tests.cotrans
+        coverage run -a -m pyspedas.cotrans.tests.quaternions
+        coverage run -a -m pyspedas.cotrans.tests.test_minvar
         coverage run -a -m pyspedas.cluster.tests.tests
         coverage run -a -m pyspedas.csswe.tests.tests
         coverage run -a -m pyspedas.ace.tests.tests
@@ -138,6 +140,7 @@ jobs:
         coverage run -a -m pyspedas.polar.tests.tests
         coverage run -a -m pyspedas.geotail.tests.tests
         coverage run -a -m pyspedas.analysis.tests.tests
+        coverage run -a -m pyspedas.analysis.tests.test_twavpol
         coverage run -a -m pyspedas.fast.tests.tests
         coverage run -a -m pyspedas.omni.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests
@@ -151,4 +154,8 @@ jobs:
         coverage run -a -m pyspedas.swarm.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
         coverage run -a -m pyspedas.themis.tests.tests_cal_fit
+        coverage run -a -m pyspedas.themis.tests.tests_dsl_cotrans
+        coverage run -a -m pyspedas.themis.tests.test_spinmodel
+        coverage run -a -m pyspedas.themis.tests.tests_state
+        coverage run -a -m pyspedas.themis.tests.test_cal_fit_tplot_metadata
         coveralls
