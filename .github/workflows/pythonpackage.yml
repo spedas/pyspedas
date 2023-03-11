@@ -155,7 +155,7 @@ jobs:
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
         coverage run -a -m pyspedas.themis.tests.tests_cal_fit
         coverage run -a -m pyspedas.themis.tests.tests_dsl_cotrans
-        coverage run -a -m pyspedas.themis.tests.test_spinmodel
+        coverage run -a -m pyspedas.themis.tests.tests_spinmodel
         coverage run -a -m pyspedas.themis.tests.tests_state
         coverage run -a -m pyspedas.themis.tests.test_cal_fit_tplot_metadata
         coveralls
