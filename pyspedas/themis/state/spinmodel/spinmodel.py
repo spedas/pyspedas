@@ -467,6 +467,9 @@ class Spinmodel:
                     self.seg_count += 1
                 elif gap_spin_count > -0.5:
                     # Case 2, 3, 4, or 5
+                    # Now that we're using floating point time comparisons with tolerance, rather than strict
+                    # equality, none of these cases seem to occur anymore.  I am leaving the code in place just
+                    # in case, but as of 2023/03/12, there is no real data that will give us test coverage here.
                     if (lseg.c2 - lseg.c1) >= 2:
                         # Case 2: small gap, previous segment has at least 2 spins
                         # dprint,'<1 spin gap, stealing spin from last segment'
