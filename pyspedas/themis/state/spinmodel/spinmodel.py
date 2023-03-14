@@ -4,6 +4,7 @@ import logging
 from .spinmodel_segment import SpinmodelSegment
 from pytplot import get_data, store_data
 from pyspedas.utilities.data_exists import data_exists
+from pyspedas.utilities.time_string import time_string
 
 
 def get_sm_data(probe: str,
@@ -468,38 +469,20 @@ class Spinmodel:
                 elif gap_spin_count > -0.5:
                     # Case 2, 3, 4, or 5
                     # Now that we're using floating point time comparisons with tolerance, rather than strict
-                    # equality, none of these cases seem to occur anymore.  I am leaving the code in place just
-                    # in case, but as of 2023/03/12, there is no real data that will give us test coverage here.
+                    # equality, none of these cases seem to occur anymore. Cases 2 and (possibly) 3 have apparently
+                    # been absorbed into the "segments are contiguous (within tolerance)" case.  Cases 4 and 5 were
+                    # "this should never happen" scenarios.  It would be somewhat difficult to contrive plausible test
+                    # inputs that would trigger cases 2 or 3 in this iteration of the code, so (for the sake of our test
+                    # coverage metrics), I will replace those code blocks with exceptions. If they ever do turn up
+                    # in practice, we can revive them from the version history or from the IDL code.  -- JWL 2023/03/13
+
                     if (lseg.c2 - lseg.c1) >= 2:
                         # Case 2: small gap, previous segment has at least 2 spins
                         # dprint,'<1 spin gap, stealing spin from last segment'
-                        c2_new = lseg.c2 - 1
-                        dummy_spinper, t_last, dummy = lseg.interp_n(c2_new)
-                        # Fill in eclipse delta_phi parameters
-                        gap_idpu_spinper = (newseg.idpu_spinper + lseg.idpu_spinper) / 2.0
-                        gap_segflags = newseg.segflags & lseg.segflags
-                        # We need to calculate gap_initial_delta_phi by extrapolating
-                        # from lseg to t_last = fillseg.t1
-                        dummy_spincount, dummy_tlast, dummy_spinphase, dummy_spinper, gap_initial_delta_phi = \
-                            lseg.interp_t(t_last)
-                        lseg.c2 = c2_new
-                        lseg.t2 = t_last
-                        dt = newseg.t1 - t_last
-                        spinper = dt
-                        fillseg = SpinmodelSegment(t1=t_last, t2=newseg.t1, c1=c2_new, c2=c2_new + 1,
-                                                   b=360.0 / spinper, c=0.0, npts=0, maxgap=dt, phaserr=0.0,
-                                                   initial_delta_phi=0.0,
-                                                   idpu_spinper=gap_idpu_spinper, segflags=gap_segflags)
-                        fillseg.initial_delta_phi = gap_initial_delta_phi
-                        self.seg_list.append(fillseg)
-                        self.lastseg += 1
-                        self.seg_count += 1
-
-                        newseg.c1 = fillseg.c2
-                        newseg.c2 = newseg.c2 + newseg.c1
-                        self.seg_list.append(newseg)
-                        self.lastseg += 1
-                        self.seg_count += 1
+                        logging.error('Unexpected case 2 (small gap, previous segment with at least 2 spins)')
+                        logging.error('Segment time: ' + time_string(lseg.t2))
+                        logging.error('Please contact pyspedas or themis support and include the above information.')
+                        raise RuntimeError
                     elif newseg.c2 >= 2:
                         # Case 3: small gap, previous segment has only 1 spin,
                         # current segment has at least 2 spins
@@ -507,53 +490,21 @@ class Spinmodel:
                         # new UTC day, therefore the spin numbers start over
                         # at 0.  So we want to change newseg to start
                         # at spin 1 instead of spin 0.
-
-                        dummy_spinper, t_last, dummy = newseg.interp_n(1)
-
-                        # Fill in eclipse delta_phi parameters
-                        gap_idpu_spinper = (newseg.idpu_spinper + lseg.idpu_spinper) / 2.0
-                        gap_segflags = newseg.segflags & lseg.segflags
-                        # We need to calculate gap_initial_delta_phi by extrapolating
-                        # from lseg to lseg.t2 = fillseg.t1
-                        dummy_spincount, dummy_tlast, dummy_spinphase, dummy_spinper, gap_initial_delta_phi = \
-                            lseg.interp_t(lseg.t2)
-
-                        # We also need to calculate new_initial_delta_phi for newseg,
-                        # since we've removed its first spin. New start time is t_last.
-
-                        dummy_spincount, dummy_tlast, dummy_spinphase, dummy_spinper, newseg_initial_delta_phi = \
-                            newseg.interp_t(t_last)
-
-                        dt = t_last - newseg.t1
-                        bp = newseg.b + 2.0 * newseg.c * dt
-                        newseg.b = bp
-                        newseg.t1 = newseg.t1 + dt
-                        newseg.c1 = lseg.c2 + 1
-                        newseg.c2 = newseg.c2 + newseg.c1
-                        newseg.initial_delta_phi = newseg_initial_delta_phi
-                        fill_spinper = newseg.t1 - lseg.t2
-                        gap_time = fill_spinper
-                        fillseg = SpinmodelSegment(t1=lseg.t2, t2=newseg.t1, c1=lseg.c2, c2=lseg.c2 + 1,
-                                                   b=360.0 / fill_spinper, c=0.0, npts=0, maxgap=gap_time, phaserr=0.0,
-                                                   initial_delta_phi=0.0, idpu_spinper=gap_idpu_spinper,
-                                                   segflags=gap_segflags)
-                        fillseg.initial_delta_phi = gap_initial_delta_phi
-                        self.seg_list.append(fillseg)
-                        self.lastseg += 1
-                        self.seg_count += 1
-                        self.seg_list.append(newseg)
-                        self.lastseg += 1
-                        self.seg_count += 1
+                        logging.error('Unexpected case 3 (small gap, previous segment with only 1 spin, current segment with 2+ spins.)')
+                        logging.error('Segment time: ' + time_string(lseg.t2))
+                        logging.error('Please contact pyspedas or themis support and include the above information.')
+                        raise RuntimeError
                     else:
                         # Case 4: small gap, but segments on either side only contain
                         # one spin each.  This should never happen.
-                        logging.error('<1 spin gap, but neither segment has enough spins to steal.  This should not happen!')
+                        logging.error('Unexpected case 4 (<1 spin gap, but neither segment has enough spins to steal.)')
+                        logging.error('Segment time: ' + time_string(lseg.t2))
+                        logging.error('Please contact pyspedas or themis support and include the above information.')
                         raise RuntimeError
-
                 else:
                     # Case 5: out of order sun pulse times.  This should never happen.
-                    logging.error('Sun pulse times out of order..this should not happen!')
-                    logging.error("Last segment end time" + str(lseg.t2) + " New segment start time " + str(newseg.t1))
+                    logging.error('Unexpected case 5 (Sun pulse times out of order)')
+                    logging.error("Last segment end time" + time_string(lseg.t2) + " New segment start time " + time_string(newseg.t1))
                     raise RuntimeError
 
     def get_info(self):
