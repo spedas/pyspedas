@@ -484,12 +484,9 @@ class Spinmodel:
                         logging.error('Please contact pyspedas or themis support and include the above information.')
                         raise RuntimeError
                     elif newseg.c2 >= 2:
-                        # Case 3: small gap, previous segment has only 1 spin,
-                        # current segment has at least 2 spins
-                        # It is assumed that newseg is the first segment of a
-                        # new UTC day, therefore the spin numbers start over
-                        # at 0.  So we want to change newseg to start
-                        # at spin 1 instead of spin 0.
+                        # Case 3: small gap, previous segment has only 1 spin, current segment has at least 2 spins
+                        # It is assumed that newseg is the first segment of a new UTC day, therefore the spin numbers
+                        # start over at 0.  So we want to change newseg to start at spin 1 instead of spin 0.
                         logging.error('Unexpected case 3 (small gap, previous segment with only 1 spin, current segment with 2+ spins.)')
                         logging.error('Segment time: ' + time_string(lseg.t2))
                         logging.error('Please contact pyspedas or themis support and include the above information.')
