@@ -98,19 +98,19 @@ def specplot(var_data,
             zdata[zdata < 0.0] = 0.0
             zdata[zdata == np.nan] = 0.0
 
-            spec_unix_times = np.array([(time - np.datetime64('1970-01-01T00:00:00')) / np.timedelta64(1, 's') for time in
-                              var_data.times[time_idxs]])
+            # convert to floats for the interpolation
+            spec_unix_times = np.int64(var_data.times[time_idxs]) / 1e9
 
-            interp_func = interp1d(spec_unix_times, zdata, axis=0, bounds_error=False)
-            out_times = np.arange(0, nx, dtype=np.float64)*(var_data.times[time_idxs][-1]-var_data.times[time_idxs][0])/(nx-1) + var_data.times[time_idxs][0]
-
+            # interpolate in the x-direction
+            interp_func = interp1d(spec_unix_times, zdata, axis=0, bounds_error=False, kind='linear')
+            out_times = np.arange(0, nx, dtype=np.float64)*(spec_unix_times[-1]-spec_unix_times[0])/(nx-1) + spec_unix_times[0]
             out_values = interp_func(out_times)
 
             if zlog == 'log':
                 out_values = 10**out_values
 
-            var_times = np.array(out_times, dtype='datetime64[s]')
-            #var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in out_times]
+            # convert back to datetime64 objects
+            var_times = np.array(out_times, dtype='datetime64[ns]')
 
     if yaxis_options.get('y_interp') is not None:
         y_interp = yaxis_options['y_interp']
@@ -128,7 +128,7 @@ def specplot(var_data,
             else:
                 zdata = out_values
 
-            if ylog =='log':
+            if ylog == 'log':
                 vdata = np.log10(out_vdata)
                 ycrange = np.log10(yrange)
             else:
