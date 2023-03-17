@@ -467,6 +467,9 @@ def tplot(variables, var_label=None,
             else:
                 ztitle_color = None
 
+            if zaxis_options is None:
+                continue
+
             if zaxis_options.get('axis_color') is not None:
                 ztitle_color = zaxis_options['axis_color']
 
