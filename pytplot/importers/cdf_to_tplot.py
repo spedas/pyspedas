@@ -5,6 +5,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import cdflib
+import logging
 
 # If the user has astropy installed, use the cdflib's CDFAstropy class for time conversion
 # (Converting to unix time is much, much faster this way)
@@ -24,7 +25,7 @@ import pytplot
 import copy
 
 
-def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata=False,
+def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=False, get_metadata=False,
                  get_ignore_data=False, string_encoding='ascii',
                  prefix='', suffix='', plot=False, merge=False,
                  center_measurement=False, notplot=False, varnames=[]):
@@ -44,6 +45,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
     Parameters:
         filenames : str/list of str
             The file names and full paths of CDF files.
+        mastercdf : str
+            The file name of a master CDF to be used, if any
         varformat : str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
@@ -89,7 +92,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
 
     if not isinstance(varnames, list):
         varnames = [varnames]
-    
+
     if len(varnames) > 0:
         if '*' in varnames:
             varnames = []
@@ -113,15 +116,43 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
     if get_ignore_data:
         var_type.append('ignore_data')
 
-        
     varformat = varformat.replace("*", ".*")
     var_regex = re.compile(varformat)
+
+    # This step may not be appropriate if the lexicographic sort does not correspond to a time sort. (For example,
+    # if filenames contain orbit numbers rather than dates, and no leading zeroes are used.)  JWL 2023-03-17
+
     filenames.sort()
+
+    # Get metadata from master CDF, if provided
+    # In IDL, cdf2tplot uses the first file provided as a de-facto master CDF.
+    # In pytplot, cdf_to_tplot can do things like loading data from all 4 MMS probes in a single call.
+    # So, we can't always use the first CDF in the list, because it may not apply to other files in the list.
+    # Therefore, we supply a master CDF, if needed, in a separate argument. JWL 2023-03-17
+
+    if not mastercdf is None:
+        mastercdf_flag = True
+        logging.debug('Processing master CDF %s', mastercdf)
+        master_cdf_file = cdflib.CDF(mastercdf)
+        master_cdf_file.string_encoding = string_encoding
+        master_cdf_info = master_cdf_file.cdf_info()
+        master_cdf_variables = master_cdf_info['rVariables'] + master_cdf_info['zVariables']
+        logging.debug("master_cdf_variables: " + str(master_cdf_variables))
+    else:
+        mastercdf_flag = False
+
+    logging.debug("Input filenames: " + str(filenames))
     for filename in filenames:
+        logging.debug('Processing filename %s', filename)
         cdf_file = cdflib.CDF(filename)
         cdf_file.string_encoding = string_encoding
         cdf_info = cdf_file.cdf_info()
         all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
+        logging.debug("all_cdf_variables: " + str(all_cdf_variables))
+        if not mastercdf_flag:
+            # If not using a master CDF, each CDF is its own master
+            master_cdf_file = cdf_file
+            mastercdf = filename
         # User defined variables.
         if len(varnames) > 0:
             load_cdf_variables = [value for value in varnames if value in all_cdf_variables]
@@ -129,14 +160,16 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
             load_cdf_variables = all_cdf_variables
 
         try:
-            gatt = cdf_file.globalattsget()
+            gatt = master_cdf_file.globalattsget()
         except:
-            gatt={}
+            logging.warning('Unable to get global attributes for filename %s', mastercdf)
+            gatt = {}
 
         for var in load_cdf_variables:
             if not re.match(var_regex, var):
                 continue
-            var_atts = cdf_file.varattsget(var)
+            var_atts = master_cdf_file.varattsget(var)
+            logging.debug('Processing variable attributes for %s', var)
 
             if 'VAR_TYPE' in var_atts:
                 this_var_type = var_atts['VAR_TYPE'].lower()
@@ -144,11 +177,12 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 this_var_type = var_atts['PARAMETER_TYPE'].lower()
             else:
                 # 'VAR_TYPE' and 'PARAMETER_TYPE' not found in the variable attributes
+                logging.info('No VAR_TYPE or PARAMETER_TYPE attributes defined for variable %s', var)
                 continue
 
             if this_var_type in var_type:
-                var_atts = cdf_file.varattsget(var)
-                var_properties = cdf_file.varinq(var)
+                var_atts = master_cdf_file.varattsget(var)
+                var_properties = master_cdf_file.varinq(var)
 
                 # Find data name and if it is already in stored variables
                 if 'TPLOT_NAME' in var_atts:
@@ -164,9 +198,13 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                     # non-record varying variables (NRVs)
                     # added by egrimes, 13Jan2021
                     # here we assume if there isn't a DEPEND_TIME or DEPEND_0, there are no other depends
+                    logging.debug(
+                        'No DEPEND_TIME or DEPEND_0 attributes found for variable %s, filename %s assuming non-record-variant',
+                        var, filename)
                     try:
                         ydata = cdf_file.varget(var)
                     except:
+                        logging.info('Unable to get ydata for NRV variable %s, filename %s', var, filename)
                         continue
 
                     if ydata is None:
@@ -180,16 +218,17 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 data_type_description \
                     = cdf_file.varinq(x_axis_var)['Data_Type_Description']
 
-                if epoch_cache.get(filename+x_axis_var) is None:
+                if epoch_cache.get(filename + x_axis_var) is None:
                     delta_plus_var = 0.0
                     delta_minus_var = 0.0
                     delta_time = 0.0
 
-                    # Skip variables with ValueErrors. 
+                    # Skip variables with ValueErrors.
                     try:
                         xdata = cdf_file.varget(x_axis_var)
                         epoch_var_atts = cdf_file.varattsget(x_axis_var)
                     except ValueError:
+                        logging.debug('Problem getting data for variable %s, filename %s', var, filename)
                         continue
 
                     # check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
@@ -201,10 +240,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                             # check if a conversion to seconds is required
                             if 'SI_CONVERSION' in delta_plus_var_att:
                                 si_conv = delta_plus_var_att['SI_CONVERSION']
-                                delta_plus_var = delta_plus_var.astype(float)*np.float64(si_conv.split('>')[0])
+                                delta_plus_var = delta_plus_var.astype(float) * np.float64(si_conv.split('>')[0])
                             elif 'SI_CONV' in delta_plus_var_att:
                                 si_conv = delta_plus_var_att['SI_CONV']
-                                delta_plus_var = delta_plus_var.astype(float)*np.float64(si_conv.split('>')[0])
+                                delta_plus_var = delta_plus_var.astype(float) * np.float64(si_conv.split('>')[0])
 
                         if 'DELTA_MINUS_VAR' in epoch_var_atts:
                             delta_minus_var = cdf_file.varget(epoch_var_atts['DELTA_MINUS_VAR'])
@@ -213,17 +252,17 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                             # check if a conversion to seconds is required
                             if 'SI_CONVERSION' in delta_minus_var_att:
                                 si_conv = delta_minus_var_att['SI_CONVERSION']
-                                delta_minus_var = delta_minus_var.astype(float)*np.float64(si_conv.split('>')[0])
+                                delta_minus_var = delta_minus_var.astype(float) * np.float64(si_conv.split('>')[0])
                             elif 'SI_CONV' in delta_minus_var_att:
                                 si_conv = delta_minus_var_att['SI_CONV']
-                                delta_minus_var = delta_minus_var.astype(float)*np.float64(si_conv.split('>')[0])
+                                delta_minus_var = delta_minus_var.astype(float) * np.float64(si_conv.split('>')[0])
 
                         # sometimes these are specified as arrays
                         if isinstance(delta_plus_var, np.ndarray) and isinstance(delta_minus_var, np.ndarray):
-                            delta_time = (delta_plus_var-delta_minus_var)/2.0
-                        else: # and sometimes constants
+                            delta_time = (delta_plus_var - delta_minus_var) / 2.0
+                        else:  # and sometimes constants
                             if delta_plus_var != 0.0 or delta_minus_var != 0.0:
-                                delta_time = (delta_plus_var-delta_minus_var)/2.0
+                                delta_time = (delta_plus_var - delta_minus_var) / 2.0
 
                 if epoch_cache.get(filename + x_axis_var) is None:
                     if ('CDF_TIME' in data_type_description) or \
@@ -247,9 +286,11 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 try:
                     ydata = cdf_file.varget(var)
                 except:
+                    logging.warning('Unable to get ydata for variable %s', var)
                     continue
 
                 if ydata is None:
+                    logging.info('No ydata for variable %s', var)
                     continue
                 if "FILLVAL" in var_atts:
                     if (var_properties['Data_Type_Description'] ==
@@ -271,7 +312,6 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
 
                 tplot_data = {'x': xdata, 'y': ydata}
 
-
                 # Data may depend on other data in the CDF.
                 depend_1 = None
                 depend_2 = None
@@ -284,6 +324,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                             if depend_1.dtype.type is np.str_:
                                 depend_1 = None
                         except ValueError:
+                            logging.warning('Unable to get DEPEND_1 variable %s while processing %s',
+                                            var_atts["DEPEND_1"], var)
                             pass
                 if "DEPEND_2" in var_atts:
                     if var_atts["DEPEND_2"] in all_cdf_variables:
@@ -293,6 +335,10 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                             if depend_2.dtype.type is np.str_:
                                 depend_2 = None
                         except ValueError:
+                            logging.warning('Unable to get DEPEND_2 variable %s while processing %s',
+                                            var_atts["DEPEND_2"], var)
+                            logging.warning('Unable to get DEPEND_2 variable %s while processing %s',
+                                            var_atts["DEPEND_2"], var)
                             pass
                 if "DEPEND_3" in var_atts:
                     if var_atts["DEPEND_3"] in all_cdf_variables:
@@ -302,6 +348,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                             if depend_3.dtype.type is np.str_:
                                 depend_3 = None
                         except ValueError:
+                            logging.warning('Unable to get DEPEND_3 variable %s while processing %s',
+                                            var_atts["DEPEND_3"], var)
                             pass
 
                 nontime_varying_depends = []
@@ -339,7 +387,7 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                                       'y_spec_scale_type': None,
                                       'var_attrs': var_atts,
                                       'labels': None,
-                                      'file_name': filename, 
+                                      'file_name': filename,
                                       'global_attrs': gatt}
 
                 labl_ptr = var_atts.get('LABL_PTR_1')
@@ -418,7 +466,8 @@ def cdf_to_tplot(filenames, varformat=None, get_support_data=False, get_metadata
                 vatt_keys = list(attr_dict["CDF"]["VATT"].keys())
                 vatt_lower = [k.lower() for k in vatt_keys]
                 if 'coordinate_system' in vatt_lower:
-                    attr_dict['data_att']['coord_sys'] = filter_greater_than(attr_dict["CDF"]["VATT"][vatt_keys[vatt_lower.index('coordinate_system')]])
+                    attr_dict['data_att']['coord_sys'] = filter_greater_than(
+                        attr_dict["CDF"]["VATT"][vatt_keys[vatt_lower.index('coordinate_system')]])
 
                 if 'labels' in vatt_lower:
                     if attr_dict["CDF"]["VATT"].get('labels') is not None:
