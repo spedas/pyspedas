@@ -42,7 +42,7 @@ def get_data(name, xarray=False, metadata=False, dt=False):
     """
 
     if name not in pytplot.data_quants.keys():
-        print("The name " + name + " is currently not in pytplot")
+        print("The name " + str(name) + " is currently not in pytplot")
         return
     
     temp_data_quant = pytplot.data_quants[name]
