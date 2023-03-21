@@ -204,7 +204,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                     try:
                         ydata = cdf_file.varget(var)
                     except:
-                        logging.info('Unable to get ydata for NRV variable %s, filename %s', var, filename)
+                        logging.debug('Unable to get ydata for NRV variable %s, filename %s', var, filename)
                         continue
 
                     if ydata is None:
