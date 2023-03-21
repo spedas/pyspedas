@@ -48,10 +48,15 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         logging.error("cotrans error: No output coordinates were provided.")
         return 0
 
+    # Input data may be specified as a bare array rather than a tplot variable
+    if not (name_in is None):
+        var_coord_in = cotrans_get_coord(name_in)
+    else:
+        var_coord_in = None
+
     # If the input coordinate system is supplied as an argument, and the tplot variable has a coordinate system
     # specified in its metadata, check that they match, and if not, log the error and return failure.
 
-    var_coord_in = cotrans_get_coord(name_in)
     if not (var_coord_in is None) and not(coord_in is None):
         if var_coord_in.lower() != coord_in.lower():
             logging.error("cotrans error: " + name_in + " has " +
