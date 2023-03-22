@@ -8,12 +8,12 @@ Creates a new pytplot variable as the time average of original.
 """
 import logging
 import numpy as np
-import pyspedas
-import pytplot
+from pyspedas import tnames, time_float
+from pytplot import store_data, get_data
 
 
-def avg_data(names, dt=None, width=60, noremainder=False,
-             new_names=None, suffix=None, overwrite=None):
+def avg_data(names, trange=[], res=None, width=None,
+             new_names=None, suffix=None, overwrite=False):
     """
     Get a new tplot variable with averaged data.
 
@@ -21,38 +21,41 @@ def avg_data(names, dt=None, width=60, noremainder=False,
     ----------
     names: str/list of str
         List of pytplot names.
-    dt: float, optional
-        Time window in seconds for averaging data. It can be less than 1 sec.
+    trange: list of float, optional
+        Start time, end time.
+        If empty, the data start and end time will be used.
+    res: float, optional
+        Time resolution in seconds for averaging data.
+        It can be less than 1 sec.
+        Default is 60 sec.
     width: int, optional
         Number of values for the averaging window.
-        Default is 60 points (usually this means 60 seconds).
-        If dt is set, then width is ignored.
-    noremainder: boolean, optional
-        If True, the remainter (last part of data) will not be included.
-        If False. the remainter will be included.
+        If res is set, then width is ignored.
     new_names: str/list of str, optional
         List of new_names for pytplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
-        A suffix to apply. Default is '-avg'.
+        A suffix to apply.
+        Default is '-avg'.
     overwrite: bool, optional
         Replace the existing tplot name.
+        Default is False.
 
     Returns
     -------
     None.
 
     """
-    old_names = pyspedas.tnames(names)
+    old_names = tnames(names)
 
-    if len(old_names) < 1:
+    if names is None or len(old_names) < 1:
         logging.error('avg_data error: No pytplot names were provided.')
         return
 
     if suffix is None:
         suffix = '-avg'
 
-    if overwrite is not None:
+    if overwrite:
         n_names = old_names
     elif new_names is None:
         n_names = [s + suffix for s in old_names]
@@ -68,90 +71,134 @@ def avg_data(names, dt=None, width=60, noremainder=False,
     for old_idx, old in enumerate(old_names):
         new = n_names[old_idx]
 
-        d = pytplot.get_data(old)
+        # Get times and data
+        d = get_data(old)
+        metadata = get_data(old, metadata=True)
+
         time = d[0]
-        data = d[1]
-        metadata = pytplot.get_data(old, metadata=True)
+        time = np.array(time_float(time))
+        time_len = len(time)
+
+        data = np.array(d[1])
         dim = data.shape
         dim0 = dim[0]
+        if dim0 != time_len:
+            logging.error('avg_data: Data and time length mismatch.')
+            continue
         if len(dim) < 2:
             dim1 = 1
         else:
             dim1 = dim[1]
 
-        new_data = []
-        new_time = []
-        if dt is None:
-            # Use width
-            width = int(width)
-            for i in range(0, dim0, width):
-                last = (i + width) if (i + width) < dim0 else dim0
-                # idx = int(i + width/2) # redefined below before it's ever used?
-                if (i + width > dim0) and noremainder:
-                    continue  # Skip the last part of data.
+        # Data may also contain v, v1, v2, v3
+        process_energies = []
+        retain_energies = []
+        for i in range(len(d)):
+            if i > 1:
+                if len(d[i]) == len(time):
+                    process_energies.append(i)
                 else:
-                    idx = int((i + last - 1)/2)  # Include the last part.
-                new_time.append(time[idx])
+                    # These will retained in the results as-is
+                    retain_energies.append(i)
+        process_v = {}
+        for i in process_energies:
+            process_v[d._fields[i]] = []
 
-                if dim1 < 2:
-                    nd0 = np.average(data[i:last])
-                else:
-                    nd0 = []
-                    for j in range(dim1):
-                        nd0.append(np.average(data[i:last, j]))
-                new_data.append(nd0)
+        # Find start and end times
+        if trange is not None:
+            trange = time_float(trange)
+        if len(trange) == 2 and trange[0] < trange[1]:
+            time_start = trange[0]
+            time_end = trange[1]
         else:
-            # Use dt
-            dt = float(dt)
-            timedbl = np.array(pyspedas.time_float(time))
-            alldt = timedbl[-1] - timedbl[0]
-            if not dt > 0.0:
-                logging.error("avg_data: Time interval dt<=0.0. Exiting.")
-                return
-            if dt > alldt:
-                logging.error("avg_data: Time interval dt is too large. Exiting.")
-                return
+            time_start = time[0]
+            time_end = time[-1]
 
-            # Find bins for time: equal bins of length dt.
-            bincount = int(alldt/dt)
-            if alldt % dt > 0.0 and not noremainder:  # residual bin
-                # Include the last bin which might not be the same size.
-                bincount += 1
+        if time_start < time[0]:
+            time_start = time[0]
+        if time_end > time[-1]:
+            time_end = time[-1]
 
-            time0 = timedbl[0]
-            maxtime = timedbl[-1]
-            for i in range(bincount):
-                time1 = time0 + dt
-                bintime = time0 + dt/2.0
-                if bintime > maxtime:
-                    bintime = maxtime
-                new_time.append(bintime)
-                # Find all indexes between time0 and time1.
-                idx = np.where((timedbl >= time0) & (timedbl < time1))
+        # Check for empty set
+        count_in_range = len(time[(time >= time_start) & (time <= time_end)])
+        if time_end <= time_start or count_in_range < 2:
+            logging.error('avg_data: No time values in provided time range.')
+            continue
 
-                # Check if idx is empty, ie. there is a gap in data.
-                idx_is_empty = False
-                if not idx:
-                    idx_is_empty = True
-                elif len(idx) == 1:
-                    if len(idx[0]) == 0:
-                        idx_is_empty = True
+        # Find time bins
 
-                if dim1 < 2:
-                    if idx_is_empty:  # Empty list.
-                        nd0 = np.nan
-                    else:
-                        nd0 = np.average(data[idx])
+        time_duration = time_end - time_start
+        if res is None and width is None:
+            res = 60  # Default is 60 sec
+
+        if res is not None:
+            # Given the resolution, compute bins
+            dt = res
+            bin_count = int(time_duration/dt)
+            ind = np.floor((time-time_start)/dt)
+        else:
+            # Given the width, compute bins
+            bins = np.arange(count_in_range)
+            ind = np.floor(bins/width)
+            bin_count = int(count_in_range/width)
+            dt = time_duration/bin_count
+
+        if bin_count < 2:
+            msg = 'avg_data: too few bins. Bins=' + str(bin_count) \
+                + ', Data points=' + str(count_in_range)
+            logging.error(msg)
+            continue
+
+        # Split time into bins
+        mdt = (time_end-time_start)/dt
+        if (mdt-int(mdt) >= 0.5):
+            max_ind = np.ceil(mdt)
+        else:
+            max_ind = np.floor(mdt)
+        w1 = np.asarray(ind < 0).nonzero()
+        ind[w1] = -1
+        w2 = np.asarray(ind >= max_ind).nonzero()
+        ind[w2] = -1
+
+        # Find new times
+        mx = np.max(ind)+1
+        new_times = (np.arange(mx)+0.5)*dt + time_start
+
+        # Find new data
+        new_data = []
+        for i in range(int(max_ind)):
+            if i < 0:
+                continue
+
+            idx0 = np.asarray(ind == i).nonzero()
+            isempty = True if len(idx0) < 1 else False
+
+            if dim1 < 2:
+                nd0 = np.nan if isempty else np.average(data[idx0])
+            else:
+                nd0 = []
+                for j in range(dim1):
+                    nd0.append(np.nan) if isempty else nd0.append(np.average(data[idx0, j]))
+            new_data.append(nd0)
+
+            for i in process_energies:
+                # The following processes v, v1, v2, v3
+                dime1 = len(d[i][0])
+                if dime1 < 2:
+                    nd1 = np.nan if isempty else np.average(d[i][idx0])
                 else:
-                    nd0 = []
-                    for j in range(dim1):
-                        if idx_is_empty:  # Empty list.
-                            nd0.append(np.nan)
-                        else:
-                            nd0.append(np.average(data[idx, j]))
-                new_data.append(nd0)
-                time0 = time1
+                    nd1 = []
+                    for j in range(dime1):
+                        nd1.append(np.nan) if isempty else nd1.append(np.average(d[i][idx0, j]))
+                process_v[d._fields[i]].append(nd1)
 
-        pytplot.store_data(new, data={'x': new_time, 'y': new_data}, attr_dict=metadata)
+        # Create the new pytplot variable
+        data_dict = {'x': new_times, 'y': new_data}
+        for i in retain_energies:
+            data_dict[d._fields[i]] = d[i]
+        for i in process_energies:
+            data_dict[d._fields[i]] = process_v[d._fields[i]]
+
+        store_data(new, data=data_dict, attr_dict=metadata)
 
         logging.info('avg_data was applied to: ' + new)
