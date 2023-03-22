@@ -188,3 +188,7 @@ class TestMMSOrbitPlot(unittest.TestCase):
 
         # Check that plot_objects is a tuple
         self.assertIsInstance(plot_objects, tuple)
+
+
+if __name__ == '__main__':
+    unittest.main()
