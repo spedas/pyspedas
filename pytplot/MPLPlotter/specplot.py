@@ -110,7 +110,7 @@ def specplot(var_data,
                 out_values = 10**out_values
 
             # convert back to datetime64 objects
-            var_times = np.array(out_times, dtype='datetime64[ns]')
+            var_times = np.array(out_times*1e9, dtype='datetime64[ns]')
 
     if yaxis_options.get('y_interp') is not None:
         y_interp = yaxis_options['y_interp']
