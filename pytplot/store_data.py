@@ -157,7 +157,15 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         return False
 
     times = np.array(times)
-    trange = [np.nanmin(times), np.nanmax(times)]
+
+    # assumes monotonically increasing time series
+    if isinstance(times[0], datetime.datetime):
+        trange = [times[0].replace(tzinfo=datetime.timezone.utc).timestamp(),
+                  times[-1].replace(tzinfo=datetime.timezone.utc).timestamp()]
+    elif isinstance(times[0], np.datetime64):
+        trange = np.float64([times[0], times[-1]]) / 1e9
+    else:
+        trange = [times[0], times[-1]]
 
     # Figure out the 'v' data
     spec_bins_exist = False
