@@ -153,6 +153,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
             # If not using a master CDF, each CDF is its own master
             master_cdf_file = cdf_file
             mastercdf = filename
+            master_cdf_variables = all_cdf_variables
         # User defined variables.
         if len(varnames) > 0:
             load_cdf_variables = [value for value in varnames if value in all_cdf_variables]
@@ -167,9 +168,14 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
 
         for var in load_cdf_variables:
             if not re.match(var_regex, var):
+                logging.debug("Variable %s does not match varformat, skipping", var)
                 continue
-            var_atts = master_cdf_file.varattsget(var)
             logging.debug('Processing variable attributes for %s', var)
+            try:
+                var_atts = master_cdf_file.varattsget(var)
+            except ValueError:
+                logging.warning("Unable to get variable attributes for %s in file %s, skipping", var, mastercdf)
+                continue
 
             if 'VAR_TYPE' in var_atts:
                 this_var_type = var_atts['VAR_TYPE'].lower()
@@ -177,11 +183,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                 this_var_type = var_atts['PARAMETER_TYPE'].lower()
             else:
                 # 'VAR_TYPE' and 'PARAMETER_TYPE' not found in the variable attributes
-                logging.info('No VAR_TYPE or PARAMETER_TYPE attributes defined for variable %s', var)
+                logging.info('No VAR_TYPE or PARAMETER_TYPE attributes defined for variable %s, skipping', var)
                 continue
 
             if this_var_type in var_type:
-                var_atts = master_cdf_file.varattsget(var)
                 var_properties = master_cdf_file.varinq(var)
 
                 # Find data name and if it is already in stored variables
@@ -317,9 +322,9 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                 depend_2 = None
                 depend_3 = None
                 if "DEPEND_1" in var_atts:
-                    if var_atts["DEPEND_1"] in all_cdf_variables:
+                    if var_atts["DEPEND_1"] in master_cdf_variables:
                         try:
-                            depend_1 = np.array(cdf_file.varget(var_atts["DEPEND_1"]))
+                            depend_1 = np.array(master_cdf_file.varget(var_atts["DEPEND_1"]))
                             # Ignore the depend types if they are strings
                             if depend_1.dtype.type is np.str_:
                                 depend_1 = None
@@ -328,22 +333,20 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                                             var_atts["DEPEND_1"], var)
                             pass
                 if "DEPEND_2" in var_atts:
-                    if var_atts["DEPEND_2"] in all_cdf_variables:
+                    if var_atts["DEPEND_2"] in master_cdf_variables:
                         try:
-                            depend_2 = np.array(cdf_file.varget(var_atts["DEPEND_2"]))
+                            depend_2 = np.array(master_cdf_file.varget(var_atts["DEPEND_2"]))
                             # Ignore the depend types if they are strings
                             if depend_2.dtype.type is np.str_:
                                 depend_2 = None
                         except ValueError:
                             logging.warning('Unable to get DEPEND_2 variable %s while processing %s',
                                             var_atts["DEPEND_2"], var)
-                            logging.warning('Unable to get DEPEND_2 variable %s while processing %s',
-                                            var_atts["DEPEND_2"], var)
                             pass
                 if "DEPEND_3" in var_atts:
-                    if var_atts["DEPEND_3"] in all_cdf_variables:
+                    if var_atts["DEPEND_3"] in master_cdf_variables:
                         try:
-                            depend_3 = np.array(cdf_file.varget(var_atts["DEPEND_3"]))
+                            depend_3 = np.array(master_cdf_file.varget(var_atts["DEPEND_3"]))
                             # Ignore the depend types if they are strings
                             if depend_3.dtype.type is np.str_:
                                 depend_3 = None
@@ -393,7 +396,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                 labl_ptr = var_atts.get('LABL_PTR_1')
                 if labl_ptr is not None:
                     try:
-                        labl_ptr_arr = cdf_file.varget(labl_ptr)
+                        labl_ptr_arr = master_cdf_file.varget(labl_ptr)
                         if labl_ptr_arr is not None:
                             metadata[var_name]['labels'] = labl_ptr_arr.flatten().tolist()
                     except:
@@ -407,7 +410,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                 # handle y-axis options for spectra
                 if 'DEPEND_1' in var_atts:
                     if isinstance(var_atts['DEPEND_1'], str):
-                        depend_1_var_atts = cdf_file.varattsget(var_atts['DEPEND_1'])
+                        depend_1_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_1'])
 
                         scale_type = depend_1_var_atts.get('SCALETYP')
                         if scale_type is None:
