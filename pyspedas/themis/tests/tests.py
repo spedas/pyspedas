@@ -2,8 +2,12 @@
 import os
 import unittest
 from pyspedas.utilities.data_exists import data_exists
+from pyspedas.utilities.time_string import time_string
 
 import pyspedas
+import pytplot
+from pyspedas.themis.state.autoload_support import autoload_support, load_needed
+from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
 
 
 class GmagTestCases(unittest.TestCase):
@@ -116,6 +120,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_slp_data(self):
         pyspedas.themis.slp(varnames='slp_sun_ltime')
         self.assertTrue(data_exists('slp_sun_ltime'))
+
 
     def test_downloadonly(self):
         """Downloadonly keyword."""
