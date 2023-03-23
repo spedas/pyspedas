@@ -1,9 +1,11 @@
 """Test gmag and themis load functions."""
 import os
 import unittest
+import logging
+import pyspedas
+import pytplot
 from pyspedas.utilities.data_exists import data_exists
 
-import pyspedas
 
 
 class GmagTestCases(unittest.TestCase):
