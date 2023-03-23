@@ -12,7 +12,8 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
         notplot=False,
         no_update=False,
         berkeley=False,
-        time_clip=False):
+        time_clip=False,
+        addmaster=False):
     """
     This function loads 3DP data
     
@@ -61,7 +62,7 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
         List of tplot variables created.
 
     """
-    return load(instrument='3dp', berkeley=berkeley, trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='3dp', berkeley=berkeley, addmaster=addmaster, trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 def orbit(trange=['1999-11-5', '1999-11-6'],
         datatype='pre_or',
