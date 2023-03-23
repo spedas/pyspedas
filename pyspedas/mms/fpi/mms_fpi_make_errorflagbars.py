@@ -225,7 +225,11 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
         flagline = np.zeros((len(data.times), 2))
         for i in [0, 1]:
             for j in range(len(flags)):
-                if int(flags[13-i:13-i+1][0]) == 0:
+                try:
+                    flagset = int(flags[13-i:13-i+1][0])
+                except IndexError:
+                    continue
+                if flagset == 0:
                     flagline[j, i] = np.nan
                 else:
                     flagline[j, i] = 1
