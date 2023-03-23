@@ -7,12 +7,6 @@ from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
 import pytplot
 
 
-def tvar_trange(tvar_name):
-    """ Get the time range stored in a tplot variable. """
-    result = pytplot.get_data(tvar_name)
-    return [result.times[0], result.times[-1]]
-
-
 def load_needed(trange_loaded,
                 trange_needed,
                 tolerance=0.0):
@@ -33,7 +27,7 @@ def load_needed(trange_loaded,
     """
     st = trange_loaded[0] - tolerance
     et = trange_loaded[1] + tolerance
-    if (trange_needed[0] < st) or (trange_needed[1] > et):
+    if (trange_needed[0] > st) and (trange_needed[1] < et):
         return False
     else:
         return True
@@ -77,7 +71,7 @@ def autoload_support(varname=None,
 
     """
     if varname is not None:
-        trange = tvar_trange(varname)
+        trange = pytplot.get_timespan(varname)
     elif trange is None:
         logging.error("Must specify either a tplot name or a time range in order to load support data")
         return
@@ -97,7 +91,7 @@ def autoload_support(varname=None,
 
     # Set time range (if needed)
     if trange is None:
-        trange_needed = tvar_trange(varname)
+        trange_needed = pytplot.get_timespan(varname)
     else:
         if isinstance(trange[0], str):
             trange_needed = time_double(trange)
@@ -115,7 +109,7 @@ def autoload_support(varname=None,
             do_state = True
         else:
             sminfo = sm.get_info()
-            trange_loaded = [sminfo.start_time, sminfo.end_time]
+            trange_loaded = sminfo
             if load_needed(trange_loaded, trange_needed, tolerance=slop):
                 do_state = True
 
@@ -131,8 +125,8 @@ def autoload_support(varname=None,
         if not (data_exists(v1)) or not (data_exists(v2)):
             do_state = True
         else:
-            v1_tr = tvar_trange(v1)
-            v2_tr = tvar_trange(v2)
+            v1_tr = pytplot.get_timespan(v1)
+            v2_tr = pytplot.get_timespan(v2)
             if (load_needed(v1_tr, trange_needed, tolerance=slop) or
                     load_needed(v2_tr, trange_needed, tolerance=slop)):
                 do_state = True
@@ -142,12 +136,12 @@ def autoload_support(varname=None,
         # needed time range.
 
         if data_exists(v3):
-            v3_tr = tvar_trange(v3)
+            v3_tr = pytplot.get_timespan(v3)
             if load_needed(v3_tr, trange_needed, tolerance=slop):
                 do_state = True
 
         if data_exists(v4):
-            v4_tr = tvar_trange(v4)
+            v4_tr = pytplot.get_timespan(v4)
             if load_needed(v4_tr, trange_needed, tolerance=slop):
                 do_state = True
 
@@ -162,10 +156,10 @@ def autoload_support(varname=None,
         if not (data_exists(v1) and data_exists(v2) and data_exists(v3) and data_exists(v4)):
             do_slp = True
         else:
-            v1_tr = tvar_trange(v1)
-            v2_tr = tvar_trange(v2)
-            v3_tr = tvar_trange(v3)
-            v4_tr = tvar_trange(v4)
+            v1_tr = pytplot.get_timespan(v1)
+            v2_tr = pytplot.get_timespan(v2)
+            v3_tr = pytplot.get_timespan(v3)
+            v4_tr = pytplot.get_timespan(v4)
             if (load_needed(v1_tr, trange_needed, tolerance=slop)
                     or load_needed(v2_tr, trange_needed, tolerance=slop)
                     or load_needed(v3_tr, trange_needed, tolerance=slop)
