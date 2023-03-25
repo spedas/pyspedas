@@ -504,7 +504,7 @@ class Spinmodel:
                     logging.error("Last segment end time" + time_string(lseg.t2) + " New segment start time " + time_string(newseg.t1))
                     raise RuntimeError
 
-    def get_info(self):
+    def get_timerange(self):
         """ Returns the time span covered by the model.
         The IDL version also returns information about any eclipse time periods, will add later
         if needed.
@@ -516,6 +516,42 @@ class Spinmodel:
         start_time = self.seg_times[0]
         end_time = self.seg_t2[-1]
         return start_time, end_time
+
+    def get_eclipse_times(self, min_shadow_duration:float=60.0):
+        """ Returns lists of start time and end times for eclipses found in the spin model
+
+        Args:
+            None
+
+        Returns: A tuple containing two listss, one for start times and one for end times.  Returns empty
+            lists if no eclipses found.
+        """
+        start_times=[]
+        end_times=[]
+        processing_shadow=False
+
+        for i in range(self.seg_count):
+            this_eclipse_flag=self.seg_segflags[i] & 1
+            if not(this_eclipse_flag) and not(processing_shadow):
+                # Previous and current segments are not eclipses, do nothing
+                pass
+            elif not(this_eclipse_flag) and processing_shadow:
+                # Transition out of shadow, reset status
+                processing_shadow=False
+            elif this_eclipse_flag and not(processing_shadow):
+                # Transition into shadow, add entries to start and end time lists, set status
+                start_times.append(self.seg_times[i])
+                end_times.append(self.seg_t2[i])
+                processing_shadow=True
+            else:
+                # Previous and current segments in shadow, update last end time
+                end_times[-1]=self.seg_t2[i]
+
+        return start_times, end_times
+
+
+
+
 
     def __init__(self,
                  probe,

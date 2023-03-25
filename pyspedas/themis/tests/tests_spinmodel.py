@@ -69,11 +69,11 @@ class SpinmodelDataValidation(unittest.TestCase):
         #print(probe)
         #print(int_corr_level)
         thm_data = themis.state(trange=trange, probe=probe, get_support_data=True)
-        model = get_spinmodel(probe, int_corr_level)
-        model.make_tplot_vars('py_seg_')
+        cls.model = get_spinmodel(probe, int_corr_level)
+        cls.model.make_tplot_vars('py_seg_')
         #pytplot.tplot_names()
         dummy_t, tst_times = get_data('interp_times')
-        res = model.interp_t(tst_times)
+        res = cls.model.interp_t(tst_times)
         store_data('py_spinphase', data={'x': tst_times, 'y': res.spinphase})
         store_data('py_spinper', data={'x': tst_times, 'y': res.spinper})
         store_data('py_spincount', data={'x': tst_times, 'y': res.spincount})
@@ -170,6 +170,14 @@ class SpinmodelDataValidation(unittest.TestCase):
         idldata = get_data('interp_eclipse_delta_phi')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
+    def test_timerange(self):
+        trange=self.model.get_timerange()
+        print(time_string(trange[0]),time_string(trange[1]))
+
+    def test_eclipse_times(self):
+        start_times,end_times=self.model.get_eclipse_times()
+        for i in range(len(start_times)):
+            print(time_string(start_times[i]),time_string(end_times[i]))
 
 if __name__ == '__main__':
     unittest.main()

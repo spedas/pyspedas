@@ -108,7 +108,7 @@ def autoload_support(varname=None,
         if sm is None:
             do_state = True
         else:
-            sminfo = sm.get_info()
+            sminfo = sm.get_timerange()
             trange_loaded = sminfo
             if load_needed(trange_loaded, trange_needed, tolerance=slop):
                 do_state = True
