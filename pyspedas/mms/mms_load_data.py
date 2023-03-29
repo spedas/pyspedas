@@ -29,7 +29,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     This function is not meant to be called directly. Please see the individual load routines for documentation and use. 
 
     """
-
     if not isinstance(probe, list): probe = [probe]
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(level, list): level = [level]
@@ -46,7 +45,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         trange[0] = time_string(trange[0])
     if isinstance(trange[1], float):
         trange[1] = time_string(trange[1])
-        
 
     download_only = CONFIG['download_only']
 
@@ -104,7 +102,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                     if CONFIG['debug_mode']: logging.info('Fetching: ' + url)
 
-                    if no_download == False:
+                    if not no_download:
                         # query list of available files
                         try:
                             with warnings.catch_warnings():
@@ -193,7 +191,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         out_files = sorted(out_files)
 
         filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
-        if filtered_out_files == []:
+        if not filtered_out_files:
             logging.info('No matching CDF versions found.')
             return
 
@@ -202,7 +200,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         if notplot:
             return new_variables
 
-        if new_variables == []:
+        if not new_variables:
             logging.warning('No data loaded.')
             return
 

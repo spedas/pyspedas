@@ -98,7 +98,7 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
             whether to display the plot using matplotlib's `show()` function (default: True)
 
     """
-    spacecraft_colors = [(0,0,0), (213/255,94/255,0), (0,158/255,115/255), (86/255,180/255,233/255)]
+    spacecraft_colors = [(0, 0, 0), (213/255, 94/255, 0), (0, 158/255, 115/255), (86/255, 180/255, 233/255)]
 
     mec_vars = mms_load_mec(trange=trange, data_rate=data_rate, probe=probes, varformat='*_r_' + coord, time_clip=True)
 
