@@ -1,4 +1,3 @@
-
 import numpy as np
 import logging
 import re
@@ -8,11 +7,11 @@ from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
 from pyspedas.mms.hpca.mms_hpca_energies import mms_hpca_energies
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
-
 from pytplot import get_data, store_data
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+
 
 @print_vars
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
@@ -100,11 +99,11 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
             
-    Returns:
+    Returns
+    -----------
         List of tplot variables created.
 
     """
-
     if level.lower() != 'l2':
         if varformat is None:
             if level.lower() != 'l1a':

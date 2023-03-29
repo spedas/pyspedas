@@ -10,11 +10,12 @@ except ImportError:
 from pytplot import get_data, store_data, options
 from ...utilities.tnames import tnames
 
+
 def mms_eis_spec_combine_sc(
         species='proton', data_units='flux', datatype='extof', data_rate='srvy',
         level='l2', suffix='',
     ):
-    '''
+    """
     Combines omni-directional energy spectrogram variable from EIS on multiple
         MMS spacecraft.
 
@@ -39,9 +40,10 @@ def mms_eis_spec_combine_sc(
             species for calculation, e.g., proton, oxygen, alpha or electron
             (default: 'proton')
 
-    Returns:
+    Returns
+    --------
         Name of tplot variables created.
-    '''
+    """
     ## Thoughts for extensions:
     ## - Ensure arguments passed to modules are of lowecase
 

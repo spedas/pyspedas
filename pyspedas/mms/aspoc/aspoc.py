@@ -1,6 +1,7 @@
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.print_vars import print_vars
 
+
 @print_vars
 def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='', varformat=None, varnames=[], get_support_data=False, suffix='', time_clip=False, no_update=False,
@@ -81,7 +82,8 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
-    Returns:
+    Returns
+    --------
         List of tplot variables created.
 
     """

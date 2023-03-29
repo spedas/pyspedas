@@ -1,4 +1,3 @@
-
 from pyspedas.mms.mec_ascii.mms_get_state_data import mms_get_state_data
 from pyspedas.mms.print_vars import print_vars
 

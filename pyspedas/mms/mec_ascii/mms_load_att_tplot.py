@@ -60,4 +60,3 @@ def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 
     if 'spindec' in datatypes:
         store_data(prefix + '_' + level + 'att_spindec' + suffix, data={'x': file_times_uniq[0], 'y': file_ldecs_out})
         tclip(prefix + '_' + level + 'att_spindec' + suffix, trange[0], trange[1], suffix='')
-

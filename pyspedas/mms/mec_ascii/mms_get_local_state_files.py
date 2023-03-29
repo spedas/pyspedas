@@ -3,9 +3,8 @@ import fnmatch
 import glob
 import logging
 import pandas as pd
-
-from pyspedas import time_double
 from pyspedas.mms.mms_config import CONFIG
+
 
 def mms_get_local_state_files(probe='1', level='def', filetype='eph', trange=None):
     """

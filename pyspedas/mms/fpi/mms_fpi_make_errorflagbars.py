@@ -1,6 +1,7 @@
 import numpy as np
 from pytplot import get_data, store_data, options
 
+
 def mms_fpi_make_errorflagbars(tname, level='l2'):
     """
     This procedure creates FPI error flag bars for plotting
@@ -76,7 +77,6 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
     -----------
         List containing the names of the created tplot variables
     """
-
     instrument = tname.split('_')[1].upper()
     data_rate = tname.split('_')[3].capitalize()
 
