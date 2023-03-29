@@ -1,7 +1,6 @@
 import os
 import fnmatch
 import glob
-import re
 import logging
 import pandas as pd
 
@@ -46,23 +45,28 @@ def mms_get_local_state_files(probe='1', level='def', filetype='eph', trange=Non
     #   and FILETYPE is either DEFATT, PREDATT, DEFEPH, PREDEPH in uppercase
     #   and start/endDate is YYYYDOY
     #   and version is Vnn (.V00, .V01, etc..)
-    dir_pattern = os.sep.join([CONFIG['local_data_dir'], 'ancillary', 'mms'+probe, level+filetype])
-    file_pattern = 'MMS'+probe+'_'+level.upper()+filetype.upper()+'_'+'???????_???????.V??'
+    dir_pattern = os.sep.join([CONFIG['local_data_dir'], 'ancillary', f'mms{probe}', f'{level}{filetype}'])
+    file_pattern = f'MMS{probe}_{level.upper()}{filetype.upper()}_???????_???????.V??'
 
     files_in_trange = []
     out_files = []
 
     files = glob.glob(os.sep.join([dir_pattern, file_pattern]))
 
-    # find the files within the trange
-    file_regex = re.compile(os.sep.join([dir_pattern, 'MMS'+probe+'_'+level.upper()+filetype.upper()+'_([0-9]{7})_([0-9]{7}).V[0-9]{2}']))
     for file in files:
-        time_match = file_regex.match(file)
-        if time_match != None:
-            start_time = pd.to_datetime(time_match.group(1), format='%Y%j').timestamp()
-            end_time = pd.to_datetime(time_match.group(2), format='%Y%j').timestamp()
-            if start_time < time_double(trange[1]) and end_time >= time_double(trange[0]):
+        filename = os.path.basename(file)
+        try:
+            date_parts = filename.split('_')
+            start_time_str = date_parts[2]
+            end_time_str = date_parts[3].split('.')[0]
+            
+            start_time = pd.to_datetime(start_time_str, format='%Y%j').timestamp()
+            end_time = pd.to_datetime(end_time_str, format='%Y%j').timestamp()
+            
+            if start_time < pd.Timestamp(trange[1]).timestamp() and end_time >= pd.Timestamp(trange[0]).timestamp():
                 files_in_trange.append(file)
+        except IndexError:
+            continue
 
     # ensure only the latest version of each file is loaded
     for file in files_in_trange:
