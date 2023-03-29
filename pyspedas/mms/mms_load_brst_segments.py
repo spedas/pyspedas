@@ -3,26 +3,26 @@ import logging
 import numpy as np
 from scipy.io import readsav
 from pytplot import store_data, options
-
 from pyspedas import time_double
 from pyspedas.utilities.download import download
 from pyspedas.mms.mms_config import CONFIG
 
 
 def mms_load_brst_segments(trange=None, suffix=''):
-    '''
+    """
     This function loads the burst segment intervals
     
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-    Returns:
+    Returns
+    ---------
         Tuple containing (start_times, end_times)
-
-    '''
+    """
 
     if trange is None:
         logging.error('Error; no trange specified.')

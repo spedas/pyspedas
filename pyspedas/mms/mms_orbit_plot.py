@@ -30,7 +30,8 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
     """
     This function creates MMS orbit plots
     
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 

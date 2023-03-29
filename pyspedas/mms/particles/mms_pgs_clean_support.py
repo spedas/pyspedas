@@ -21,7 +21,6 @@ def mms_pgs_clean_support(times, mag_name=None, vel_name=None, sc_pot_name=None)
     ----------
 		Tuple containing interpolated (magnetic field, velocity, spacecraft potential)
 	"""
-
     out_mag = None
     out_vel = None
     out_scpot = None

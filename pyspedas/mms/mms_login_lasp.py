@@ -8,10 +8,9 @@ import warnings
 
 
 def mms_login_lasp(always_prompt=False, headers={}):
-    '''
+    """
     This function logs the user into the SDC and returns a tuple with: (requests.Session object, username)
-    '''
-
+    """
     homedir = os.path.expanduser('~')
     user_input_passwd = False
     saved_auth = None
