@@ -1,4 +1,4 @@
-
+import re
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from pyspedas.mms.fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
@@ -6,10 +6,8 @@ from pyspedas.mms.fgm.mms_split_fgm_data import mms_split_fgm_data
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pyspedas.utilities.data_exists import data_exists
-
 from pytplot import del_data
 
-import re
 
 @print_vars
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy',
@@ -100,11 +98,11 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         get_fgm_ephemeris: bool
             Keep the ephemeris variables in the FGM files
             
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
-
     if (varformat is not None) and (not keep_flagged) and (not available) and (not notplot):
         varformat_fetch = varformat+'|*_flag_*'
     else:

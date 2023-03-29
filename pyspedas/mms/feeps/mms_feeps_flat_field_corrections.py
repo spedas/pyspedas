@@ -1,7 +1,7 @@
 import numpy as np
-
 from pytplot import get_data, store_data
 from pyspedas import tnames
+
 
 def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 'brst', suffix = ''):
     """
@@ -12,7 +12,8 @@ def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 
            
        from Drew Turner, 1/19/2017
     
-    Parameters:
+    Parameters
+    ---------------
         probes: list of str
             list of probes #, e.g., '4' for MMS4
 
@@ -22,7 +23,8 @@ def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 
         suffix: str
             suffix of the loaded data
 
-    Notes:
+    Notes
+    ---------------
         From Drew Turner, 1/18/17:
            Here are the correction factors that we need to apply to the current 
            ION counts/rates/fluxes in the CDF files.  
@@ -147,6 +149,3 @@ def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 
                                 if np.isnan(c_energies).all():
                                     continue
                                 store_data(c_var[0], data={'x': c_times, 'y': c_data*correction, 'v': c_energies})
-
-
-

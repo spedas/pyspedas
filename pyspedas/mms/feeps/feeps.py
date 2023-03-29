@@ -10,6 +10,7 @@ from pyspedas.mms.feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
+
 @print_vars
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='electron', varformat=None, varnames=[], get_support_data=True, suffix='', time_clip=False,
@@ -92,7 +93,8 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
-    Returns:
+    Returns
+    ---------
         List of tplot variables created.
 
     """

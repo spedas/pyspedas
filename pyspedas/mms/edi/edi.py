@@ -3,6 +3,7 @@ from pyspedas.mms.edi.mms_edi_set_metadata import mms_edi_set_metadata
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
+
 @print_vars
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield',
         varformat=None, varnames=[], get_support_data=False, suffix='', time_clip=False, no_update=False,
@@ -83,7 +84,8 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
-    Returns:
+    Returns
+    --------
         List of tplot variables created.
 
     """

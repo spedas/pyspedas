@@ -1,4 +1,3 @@
-
 import logging
 import warnings
 import numpy as np
@@ -17,6 +16,7 @@ except ImportError:
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+
 
 def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suffix='', datatype='electron', data_units='intensity', data_rate='srvy', angles_from_bfield=False):
     """
@@ -51,7 +51,8 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
         angles_from_bfield: bool
             calculate the pitch angles from the B-field data instead of reading from the CDFs
 
-    Returns:
+    Returns
+    --------
         List of tplot variables created.
     """
 

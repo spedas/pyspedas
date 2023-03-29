@@ -8,7 +8,8 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
     """
     This function removes bad eyes, bad lowest energy channels based on data from Drew Turner
     
-    Parameters:
+    Parameters
+    ------------
         probe: str
             probe #, e.g., '4' for MMS4
 
@@ -26,7 +27,8 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
 
         trange: list of str or list of float
             Time range
-    Returns:
+    Returns
+    ------------
         None
     """
     if trange is None:

@@ -4,8 +4,8 @@ from pyspedas.mms.eis.mms_eis_spin_avg import mms_eis_spin_avg
 from pyspedas.mms.eis.mms_eis_set_metadata import mms_eis_set_metadata
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
-
 from pyspedas import tnames
+
 
 @print_vars
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='extof',
@@ -87,7 +87,8 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

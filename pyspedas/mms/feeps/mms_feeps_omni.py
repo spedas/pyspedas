@@ -1,4 +1,3 @@
-
 import logging
 import warnings
 import numpy as np
@@ -15,11 +14,13 @@ except ImportError:
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity', data_rate='srvy', level='l2', suffix=''):
     """
     This function will calculate the omni-directional FEEPS spectrograms, and is automatically called from mms_load_feeps
     
-    Parameters:
+    Parameters
+    ------------
         eyes: dict
             Hash table containing the active sensor eyes
 
@@ -41,7 +42,8 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    ------------
         List of tplot variables created.
     """
 
@@ -163,8 +165,3 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
         out_vars.append('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_'+data_units+'_omni'+suffix)
 
     return out_vars
-
-
-
-
-

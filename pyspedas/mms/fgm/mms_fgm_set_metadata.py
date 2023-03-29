@@ -1,6 +1,7 @@
 from pytplot import options
 from pyspedas import tnames
 
+
 def mms_fgm_set_metadata(probe, data_rate, level, instrument, suffix=''):
     """
     This function updates the metadata for FGM data products

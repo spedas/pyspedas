@@ -1,9 +1,9 @@
-
 import logging
 import pytplot
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+
 
 def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate='srvy', level='l2', sensor_eyes=None):
     """
@@ -13,7 +13,8 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
        [original variable]_clean - spectra with the integral channel removed
        [original variable]_500keV_int - the integral channel that was removed
     
-    Parameters:
+    Parameters
+    -----------
         units_type: str
             instrument datatype, e.g., 'intensity'
 
@@ -35,10 +36,10 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
         sensor_eyes: dict
             Hash table containing the active sensor eyes
 
-    Returns:
+    Returns
+    -----------
         List of tplot variables created.
     """
-
     if sensor_eyes is None:
         logging.error('Error: sensor_eyes not defined')
         return

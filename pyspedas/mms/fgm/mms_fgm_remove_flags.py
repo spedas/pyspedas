@@ -3,23 +3,25 @@ from pytplot import get_data, store_data
 from pyspedas import tnames
 from pyspedas.utilities.data_exists import data_exists
 
+
 def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):
     """
     This function removes data flagged by the FGM 'flag' variable (flags > 0), 
     in order to only show science quality data by default.
     
-    Parameters:
-        probe : str or list of str
+    Parameters
+    -----------
+        probe: str or list of str
             probe or list of probes, valid values for MMS probes are ['1','2','3','4']. 
 
-        data_rate : str or list of str
+        data_rate: str or list of str
             instrument data rates for FGM include 'brst' 'fast' 'slow' 'srvy'. The
             default is 'srvy'.
 
-        level : str
+        level: str
             indicates level of data processing. the default if no level is specified is 'l2'
 
-        instrument : str
+        instrument: str
             instrument; probably 'fgm'
             
         suffix: str

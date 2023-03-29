@@ -1,6 +1,7 @@
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.print_vars import print_vars
 
+
 @print_vars
 def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst', 
     level='l3', datatype='8khz', get_support_data=False, time_clip=False, no_update=False, 
@@ -80,7 +81,8 @@ def mms_load_fsm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='brst
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
-    Returns:
+    Returns
+    -----------
         List of tplot variables created.
 
     """

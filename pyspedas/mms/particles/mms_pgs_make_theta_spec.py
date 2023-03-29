@@ -1,5 +1,3 @@
-
-
 import numpy as np
 
 # use nansum from bottleneck if it's installed, otherwise use the numpy one

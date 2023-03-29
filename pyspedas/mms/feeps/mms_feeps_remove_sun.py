@@ -1,4 +1,3 @@
-
 import logging
 from .mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
 from pytplot import get_data, store_data
@@ -7,11 +6,13 @@ import numpy as np
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', data_units='intensity', data_rate='srvy', level='l2', suffix=''):
     """
     Removes the sunlight contamination from FEEPS data
     
-    Parameters:
+    Parameters
+    -----------
         sensor_eyes: dict
             Hash table containing the active sensor eyes
 
@@ -36,10 +37,10 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    -----------
         List of tplot variables created.
     """
-    
     sector_times, spin_sectors = get_data('mms'+probe+'_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_spinsectnum'+suffix)
     mask_sectors = mms_read_feeps_sector_masks_csv(trange=trange)
     out_vars = []

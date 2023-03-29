@@ -4,20 +4,18 @@ import re
 import shutil
 from .mms_config import CONFIG
 from .mms_files_in_interval import mms_files_in_interval
-
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
-
 from datetime import timedelta
 
 
 def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, mirror=False):
-
     """
     Search for local MMS files in case a list cannot be retrieved from the
     remote server.  
     
-    Parameters:
+    Parameters
+    ------------
         probe: str
             probe #, e.g., '4' for MMS4
 
@@ -39,10 +37,10 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
         mirror: bool
             if True, copy files from network mirror to local data directory
 
-    Returns:
+    Returns
+    ---------
         List of file paths.
     """
-
     files_out = []
 
     if mirror:

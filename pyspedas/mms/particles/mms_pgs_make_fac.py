@@ -1,13 +1,10 @@
-
 import logging
 import numpy as np
-
 from pyspedas.utilities.data_exists import data_exists
 from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.analysis.tnormalize import tnormalize
 from pyspedas.analysis.tcrossp import tcrossp
 from pyspedas.analysis.tinterpol import tinterpol
-
 from pytplot import get_data, store_data
 
 logging.captureWarnings(True)

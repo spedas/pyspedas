@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def mms_feeps_energy_table(probe, eye, sensor_id):
     """
     This function returns the energy table based on
@@ -9,7 +10,8 @@ def mms_feeps_energy_table(probe, eye, sensor_id):
        
     from Drew Turner, 1/19/2017
     
-    Parameters:
+    Parameters
+    -------------
         probe: str
             probe #, e.g., '4' for MMS4
 
@@ -19,10 +21,12 @@ def mms_feeps_energy_table(probe, eye, sensor_id):
         sensor_id: int
             sensor ID
 
-    Returns:
+    Returns
+    --------
         Energy table 
 
-    Notes:
+    Notes
+    --------
         BAD EYES are replaced by NaNs
 
         - different original energy tables are used depending on if the sensor head is 6-8 (ions) or not (electrons)

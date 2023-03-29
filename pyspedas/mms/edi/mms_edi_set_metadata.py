@@ -1,6 +1,7 @@
 from pytplot import options
 from pyspedas import tnames
 
+
 def mms_edi_set_metadata(probe, data_rate, level, suffix=''):
     """
     This function updates the metadata for EDI data products

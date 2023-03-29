@@ -2,6 +2,7 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
+
 def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'oplusplus', 'heplus', 'heplusplus'], fov=['0', '360'], avg=False, suffix=''):
     """
     This function will sum (or average, when the avg keyword is set to True) the HPCA data over each spin

@@ -3,17 +3,17 @@ import logging
 import numpy as np
 from scipy.io import readsav
 from pytplot import store_data, options
-
 from pyspedas import time_double
 from pyspedas.utilities.download import download
 from pyspedas.mms.mms_config import CONFIG
 
 
 def mms_load_fast_segments(trange=None, suffix=''):
-    '''
+    """
     This function loads the fast segment intervals
     
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -22,11 +22,11 @@ def mms_load_fast_segments(trange=None, suffix=''):
         suffix: str
             Suffix to append to the end of the tplot variables
             
-    Returns:
+    Returns
+    --------
         Tuple containing (start_times, end_times)
 
-    '''
-
+    """
     if trange is None:
         logging.error('Error; no trange specified.')
         return None

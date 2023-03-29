@@ -11,7 +11,8 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     """
     Generates a tplot variable containing the FEEPS pitch angles for each telescope from magnetic field data.
 
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -32,10 +33,10 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    ----------
         Tuple: (tplot variable created, hash table used by PAD routine)
     """
-
     # get the times from the currently loaded FEEPS data
     pa_variable = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix, dt=True)
 
@@ -288,7 +289,6 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
             bot_idxs.append(bot_idx+len(eyes['top']))
 
         idx_maps = {'ion-top': top_idxs, 'ion-bottom': bot_idxs}
-
 
     outvar = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pa'+suffix
 

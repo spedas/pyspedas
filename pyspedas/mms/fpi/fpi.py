@@ -7,6 +7,7 @@ from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import tplot_rename, del_data
 
+
 @print_vars
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',
     level='l2', datatype='*', varformat=None, varnames=[], suffix='',
@@ -95,11 +96,11 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
             
-    Returns:
+    Returns
+    -----------
         List of tplot variables created.
 
     """
-
     # different datatypes for burst mode files
     if data_rate.lower() == 'brst':
         if isinstance(datatype, str):

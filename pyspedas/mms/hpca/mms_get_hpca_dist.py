@@ -1,10 +1,10 @@
-
 import logging
 import numpy as np
 from pytplot import get_data
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+
 
 def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=None, times=False):
     """
@@ -33,10 +33,10 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
         times: bool
             Flag to return the distribution times instead of the particle data structure(s)
 
-    Returns:
+    Returns
+    ------------
         3D particle data structure(s) containing MMS HPCA distribution functions
     """
-
     data_in = get_data(tname)
 
     # Match particle data to azimuth data
@@ -230,8 +230,3 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
         out_list.append(out_table)
 
     return out_list
-
-
-
-
-

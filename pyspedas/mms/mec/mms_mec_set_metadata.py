@@ -1,6 +1,7 @@
 from pytplot import options
 from pyspedas import tnames
 
+
 def mms_mec_set_metadata(probe, data_rate, level, suffix=''):
     """
     This function updates the metadata for MEC data products

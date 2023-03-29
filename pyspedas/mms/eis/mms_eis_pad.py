@@ -16,6 +16,7 @@ except ImportError:
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', 
     data_rate='srvy', datatype='extof', species='proton', data_units='flux', 
     energy=[55, 800], size_pabin=15, suffix=''):
@@ -54,7 +55,8 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2',
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    ----------
         Name of tplot variables created.
     """
 

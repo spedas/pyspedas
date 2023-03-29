@@ -1,16 +1,15 @@
 import os
 import logging
 import warnings
-
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
-
 from pyspedas import time_double, time_string
 from pyspedas.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.mms.mms_config import CONFIG
 from pyspedas.mms.mec_ascii.mms_get_local_state_files import mms_get_local_state_files
 from pyspedas.mms.mec_ascii.mms_load_eph_tplot import mms_load_eph_tplot
 from pyspedas.mms.mec_ascii.mms_load_att_tplot import mms_load_att_tplot
+
 
 def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'], 
     datatypes=['pos', 'vel'], level='def', no_download=False, pred_or_def=True, 

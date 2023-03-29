@@ -3,6 +3,7 @@ from pyspedas.mms.mec.mms_mec_set_metadata import mms_mec_set_metadata
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
+
 @print_vars
 def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='epht89q', varformat=None, varnames=[], suffix='', get_support_data=False,
@@ -83,13 +84,15 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
     
-    Notes:
+    Notes
+    ---------
         The default datatype was changed to 'epht89q' on 15Nov2021. There are sometimes issues with 
         creating the Tsyganenko 04 data products, which leads to the 'epht04d' files not being available. 
         The 'epht89d' files contain the same ephemeris data - the only difference are the data products
         that rely on the field model. 
         
-    Returns:
+    Returns
+    -----------
         List of tplot variables created.
 
     """
