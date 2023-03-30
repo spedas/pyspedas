@@ -17,7 +17,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity', data_rate='srvy', level='l2', suffix=''):
     """
-    This function will calculate the omni-directional FEEPS spectrograms, and is automatically called from mms_load_feeps
+    This function will calculate the omnidirectional FEEPS spectrograms, and is automatically called from mms_load_feeps
     
     Parameters
     ------------

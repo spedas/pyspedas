@@ -12,7 +12,7 @@ def mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', level='def',
     Parameters
     ----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 

@@ -14,7 +14,7 @@ def mms_files_in_interval(in_files, trange):
             List of hash tables containing files returned by the SDC
 
         trange : list of str
-            time range of interest [starttime, endtime] with the format
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 

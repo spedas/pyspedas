@@ -18,8 +18,7 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
     """
     This function loads MMS data from NASA SPDF into pyTplot variables
 
-    This function is not meant to be called directly. Please see the individual load routines for documentation and use. 
-
+    This function is not meant to be called directly. Please see the individual load routines for documentation and use.
     """
 
     tvars_created = []
