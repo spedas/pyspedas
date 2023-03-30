@@ -1,5 +1,5 @@
 import logging
-from pytplot import get_data, store_data
+from pytplot import get_data, store_data, tplot_copy
 import numpy as np
 from pyspedas.utilities.data_exists import data_exists
 
@@ -47,10 +47,11 @@ def apply_oneaxis_correction(rawvar: str,
         store_data(corrvar, data={'x': raw_times, 'y': fix_raw}, attr_dict=metadata)
     elif not (data_exists(deltavar)):
         # If the corrections aren't present, just copy the original data
-        logging.debug('Spin axis corrections variable ' + deltavar + ' not found, skipping ' + corrvar)
+        logging.info('Spin axis corrections variable ' + deltavar + ' not found, copying ' + rawvar + ' to ' + corrvar)
+        tplot_copy(rawvar,corrvar)
     else:
         # Raw variable doesn't exist, nothing to do here.
-        logging.debug('Spin axis variable ' + rawvar + ' not found, skipping ' + corrvar)
+        logging.info('Spin axis variable ' + rawvar + ' not found, skipping ' + corrvar)
 
 
 def apply_spinaxis_corrections(spinras: str,

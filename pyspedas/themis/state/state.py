@@ -1,4 +1,5 @@
 from pyspedas.themis.load import load
+from pyspedas.utilities.data_exists import data_exists
 from pyspedas.themis.state.apply_spinaxis_corrections import apply_spinaxis_corrections
 from pyspedas.themis.state.spinmodel.spinmodel_postprocess import spinmodel_postprocess
 from pytplot import del_data
@@ -69,6 +70,17 @@ def state(trange=['2007-03-23', '2007-03-24'],
         List of tplot variables created.
 
     """
+    # If support data is being loaded, premptively delete the thx_spinras_correction and thx_spindec_correction
+    # variables, to avoid dangling corrections if they don't exist in this time interval.
+    if get_support_data:
+        for p in probe:
+            spinras_corrvar='th'+probe+'_spinras_correction'
+            spindec_corrvar='th'+probe+'_spindec_correction'
+            if data_exists(spinras_corrvar):
+                del_data(spinras_corrvar)
+            if data_exists(spindec_corrvar):
+                del_data(spindec_corrvar)
+
     res = load(instrument='state', trange=trange, level=level, probe=probe,
                suffix=suffix, get_support_data=get_support_data,
                varformat=varformat, varnames=varnames,
