@@ -22,9 +22,12 @@ def mms_dsp_set_metadata(probe, data_rate, level, suffix=''):
             no suffix is added.
 
     """
-    if not isinstance(probe, list): probe = [probe]
-    if not isinstance(data_rate, list): data_rate = [data_rate]
-    if not isinstance(level, list): level = [level]
+    if not isinstance(probe, list):
+        probe = [probe]
+    if not isinstance(data_rate, list):
+        data_rate = [data_rate]
+    if not isinstance(level, list):
+        level = [level]
 
     instrument = 'dsp'
 

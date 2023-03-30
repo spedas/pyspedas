@@ -121,7 +121,7 @@ def mms_feeps_omni(eyes, probe='1', datatype='electron', data_units='intensity',
                         dalleyes[:, iE[0], idx+len(top_sensors)] = np.nan
                 except Warning:
                     logging.warning('NaN in energy table encountered; sensor B' + str(sensor))
-        else: # sitl data
+        else:  # sitl data
             dalleyes = np.empty((len(tmpdata[0]), len(tmpdata[2]), len(top_sensors)))
             dalleyes[:] = np.nan
 

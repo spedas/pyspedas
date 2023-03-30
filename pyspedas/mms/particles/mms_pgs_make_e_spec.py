@@ -38,7 +38,7 @@ def mms_pgs_make_e_spec(data_in):
     else:
         ave = outbins/data['bins']
 
-    return (outtable, ave)
+    return outtable, ave
 
 
 def find_nearest_neighbor(table, item):

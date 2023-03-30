@@ -46,4 +46,4 @@ def mms_pgs_make_theta_spec(data_in, resolution=16, colatitude=False):
 
     y = outbins[0:n_theta]+0.5*(outbins[1::]-outbins[0:n_theta])
 
-    return (y, ave)
+    return y, ave

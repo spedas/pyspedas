@@ -27,7 +27,7 @@ def mms_pgs_xgse(mag_temp, pos_temp):
     y_basis = tnormalize(y_basis, return_data=True)
     x_basis = tcrossp(y_basis, z_basis, return_data=True)
 
-    return (x_basis, y_basis, z_basis)
+    return x_basis, y_basis, z_basis
 
 
 def mms_pgs_phigeo(mag_temp, pos_temp):
@@ -57,7 +57,7 @@ def mms_pgs_phigeo(mag_temp, pos_temp):
     x_basis = tnormalize(x_basis, return_data=True)
     y_basis = tcrossp(z_basis, x_basis, return_data=True)
 
-    return (x_basis, y_basis, z_basis)
+    return x_basis, y_basis, z_basis
 
 
 def mms_pgs_mphigeo(mag_temp, pos_temp):
@@ -88,7 +88,7 @@ def mms_pgs_mphigeo(mag_temp, pos_temp):
     x_basis = tnormalize(x_basis, return_data=True)
     y_basis = tcrossp(z_basis, x_basis, return_data=True)
 
-    return (x_basis, y_basis, z_basis)
+    return x_basis, y_basis, z_basis
 
 
 def mms_pgs_make_fac(times, mag_tvar_in, pos_tvar_in, fac_type='mphigeo'):

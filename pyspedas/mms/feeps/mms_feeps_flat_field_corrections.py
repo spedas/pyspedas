@@ -120,7 +120,7 @@ def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 
                             i_var = tnames('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species_id+'_'+sensor_type+'_intensity_sensorid_'+sensor_id+suffix)
                             c_var = tnames('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+species_id+'_'+sensor_type+'_counts_sensorid_'+sensor_id+suffix)
 
-                            if cr_var == []:
+                            if not cr_var:
                                 count_rate = None
                             else:
                                 count_rate = get_data(cr_var[0])
@@ -130,7 +130,7 @@ def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 
                                     continue
                                 store_data(cr_var[0], data={'x': cr_times, 'y': cr_data*correction, 'v': cr_energies})
 
-                            if i_var == []:
+                            if not i_var:
                                 intensity = None
                             else:
                                 intensity = get_data(i_var[0])
@@ -140,7 +140,7 @@ def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 
                                     continue
                                 store_data(i_var[0], data={'x': i_times, 'y': i_data*correction, 'v': i_energies})
 
-                            if c_var == []:
+                            if not c_var:
                                 counts = None
                             else:
                                 counts = get_data(c_var[0])

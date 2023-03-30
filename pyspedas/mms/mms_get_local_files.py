@@ -113,7 +113,8 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
         # need to copy files from network mirror to local data directory
         for file in local_files:
             local_file = file.replace(mirror_dir, local_dir)
-            if CONFIG['debug_mode']: logging.info('Copying ' + file + ' to ' + local_file)
+            if CONFIG['debug_mode']:
+                logging.info('Copying ' + file + ' to ' + local_file)
             shutil.copyfile(file, local_file)
             local_files_copied.append(local_file)
         local_files = local_files_copied
