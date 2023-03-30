@@ -8,12 +8,12 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
     spdf=False, always_prompt=False):
     """
-    This function loads ASPOC data into tplot variables
+    Load data from the Active Spacecraft Potential Control (ASPOC)
     
     Parameters
     ----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
@@ -53,11 +53,11 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         notplot: bool
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
-            access to multi-dimensional data products)
+            access to multidimensional data products)
 
         available: bool
             If True, simply return the available data files (without downloading)
-            for the requested paramters
+            for the requested parameters
 
         no_update: bool
             Set this flag to preserve the original data. if not set and newer 
@@ -77,7 +77,7 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
         always_prompt: bool
             Set this keyword to always prompt for the user's username and password;
-            useful if you accidently save an incorrect password, or if your SDC password has changed
+            useful if you accidentally save an incorrect password, or if your SDC password has changed
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC

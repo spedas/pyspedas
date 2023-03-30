@@ -8,7 +8,6 @@ from pytplot import store_data
 def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 'spindec'], suffix='', trange=None):
     """
     Helper routine for loading state data (ASCII files from the SDC); not meant to be called directly; see pyspedas.mms.state instead
-    
     """
     prefix = 'mms' + probe
 

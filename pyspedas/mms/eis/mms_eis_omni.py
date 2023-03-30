@@ -9,7 +9,7 @@ logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%
 
 def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_units='flux', data_rate='srvy', level='l2'):
     """
-    This function will calculate the omni-directional EIS spectrograms, and is automatically called from mms_load_eis
+    This function will calculate the omnidirectional EIS spectrograms, and is automatically called from mms_load_eis
     
     Parameters
     ----------

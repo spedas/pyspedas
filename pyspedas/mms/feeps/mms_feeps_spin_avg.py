@@ -13,7 +13,7 @@ except ImportError:
 
 def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', data_rate='srvy', level='l2', suffix=''):
     """
-    This function will spin-average the omni-directional FEEPS energy spectra
+    This function will spin-average the omnidirectional FEEPS energy spectra
     
     Parameters
     -----------
