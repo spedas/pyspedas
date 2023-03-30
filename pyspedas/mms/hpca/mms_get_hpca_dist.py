@@ -68,7 +68,6 @@ def mms_get_hpca_dist(tname, index=None, probe=None, data_rate=None, species=Non
         logging.error('Azimuth data does not cover current data\'s time range')
         return
 
-
     # filter times when azimuth data is all zero
     #   -just check the first energy & elevation
     #   -assume azimuth values are positive

@@ -77,4 +77,4 @@ def mms_load_fast_segments(trange=None, suffix=''):
     options('mms_bss_fast'+suffix, 'legend_names', ['Fast'])
     options('mms_bss_fast'+suffix, 'ytitle', '')
 
-    return (unix_start, unix_end)
+    return unix_start, unix_end

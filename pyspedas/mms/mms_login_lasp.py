@@ -58,7 +58,7 @@ def mms_login_lasp(always_prompt=False, headers={}):
                 auth = session.post('https://lasp.colorado.edu', verify=True, timeout=5, headers=headers)
                 testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science', verify=True, timeout=5, headers=headers)
         except:
-            return (session, None)
+            return session, None
 
         # check if the login failed
         if testget.status_code == 401:
@@ -72,4 +72,4 @@ def mms_login_lasp(always_prompt=False, headers={}):
     if user == '':
         user = None
 
-    return (session, user)
+    return session, user

@@ -293,7 +293,7 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     outvar = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pa'+suffix
 
     if data_exists(outvar): # kludge for bug when the PAs were previously calculated
-        return (outvar, idx_maps)
+        return outvar, idx_maps
 
     store_data(outvar, data={'x': btimes, 'y': new_pas})
 
@@ -303,4 +303,4 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
     store_data(outvar, data={'x': times, 'y': outdata_interpolated.values})
 
-    return (outvar, idx_maps)
+    return outvar, idx_maps

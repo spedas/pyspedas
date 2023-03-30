@@ -73,7 +73,8 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
     elif data_units == 'counts':
         units_label = '[counts/s]'
     
-    if not isinstance(probe, str): probe=str(probe)
+    if not isinstance(probe, str):
+        probe = str(probe)
 
     prefix = 'mms' + probe
     n_pabins = 180/bin_size

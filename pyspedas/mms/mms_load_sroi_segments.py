@@ -128,4 +128,4 @@ def mms_load_sroi_segments(trange=None, probe=1, suffix=''):
     options('mms' + probe + '_bss_sroi'+suffix, 'legend_names', ['Fast'])
     options('mms' + probe + '_bss_sroi'+suffix, 'ytitle', '')
 
-    return (start_out, end_out)
+    return start_out, end_out

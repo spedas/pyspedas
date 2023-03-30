@@ -82,4 +82,4 @@ def mms_load_brst_segments(trange=None, suffix=''):
     options('mms_bss_burst'+suffix, 'legend_names', ['Burst'])
     options('mms_bss_burst'+suffix, 'ytitle', '')
 
-    return (unix_start, unix_end)
+    return unix_start, unix_end

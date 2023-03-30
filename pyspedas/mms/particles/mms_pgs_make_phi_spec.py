@@ -38,4 +38,4 @@ def mms_pgs_make_phi_spec(data_in, resolution=32):
     
     y = outbins[0:n_phi]+0.5*(outbins[1::]-outbins[0:n_phi])
 
-    return (y, ave)
+    return y, ave

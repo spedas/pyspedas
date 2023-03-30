@@ -88,7 +88,6 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2',
     # the probes will need to be strings beyond this point
     probe = [str(p) for p in probe]
 
-
     logging.info('Calculating the EIS pitch angle distribution; this may take several minutes')
 
     for probe_id in probe:
