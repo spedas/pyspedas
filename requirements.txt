@@ -9,3 +9,4 @@ astropy
 geopack>=1.0.10
 hapiclient>=0.2.2
 viresclient
+pandas>=2.0.0
