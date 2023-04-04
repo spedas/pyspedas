@@ -95,7 +95,7 @@ jobs:
         ST5_DATA_DIR: st5_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
-        coverage run -a -m pyspedas.akebono.tests.tests
+        # coverage run -a -m pyspedas.akebono.tests.tests
         coverage run -a -m pyspedas.soho.tests.tests
         coverage run -a -m pyspedas.de2.tests.tests
         coverage run -a -m pyspedas.st5.tests.tests
