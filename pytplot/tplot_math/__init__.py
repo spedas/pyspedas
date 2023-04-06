@@ -22,3 +22,11 @@ from .spec_mult import spec_mult
 from .split_vec import split_vec
 from .subtract import subtract
 from .pwr_spec import pwr_spec
+from .clean_spikes import clean_spikes
+from .tsmooth import tsmooth
+from .tdotp import tdotp
+from .tcrossp import tcrossp
+from .tnormalize import tnormalize
+from .subtract_median import subtract_median
+from .subtract_average import subtract_average
+from .time_clip import time_clip

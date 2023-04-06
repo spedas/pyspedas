@@ -145,6 +145,7 @@ from .zlim import zlim
 from .tlimit import tlimit
 from pytplot.exporters.tplot_save import tplot_save
 from .tplot_names import tplot_names
+from .tnames import tnames
 from pytplot.importers.tplot_restore import tplot_restore
 from .get_timespan import get_timespan
 from .tplot_options import tplot_options
@@ -157,6 +158,8 @@ from .del_data import del_data
 from .timespan import timespan
 from .options import options
 from .timestamp import timestamp
+from .time_double import time_float,time_double
+from .time_string import time_string, time_datetime
 from pytplot.importers.cdf_to_tplot import cdf_to_tplot
 from pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
 from pytplot.importers.sts_to_tplot import sts_to_tplot
