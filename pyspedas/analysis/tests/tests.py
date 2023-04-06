@@ -72,11 +72,11 @@ class AnalysisTestCases(BaseTestCase):
         subtract_median('aaabbbcc')
         subtract_median('test1', new_names='aabb')
         d = get_data('aabb')
+        self.assertTrue(len(d[1]) == 6)
         subtract_median(['test', 'aabb'], new_names='aaabbb')
         subtract_median('test1', overwrite=1)
         subtract_average('test', new_names="testtest")
         subtract_average(['test-m', 'test'], new_names="testtest2")
-        self.assertTrue(len(d[1]) == 6)
 
     def test_subtract_average(self):
         """Test subtract_average."""
