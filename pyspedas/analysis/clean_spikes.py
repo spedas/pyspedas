@@ -7,11 +7,7 @@ Similar to clean_spikes.pro in IDL SPEDAS.
 
 """
 import logging
-import numpy as np
-import pyspedas
 import pytplot
-from pyspedas.analysis.subtract_average import subtract_average
-from pyspedas.analysis.tsmooth import tsmooth
 
 
 def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
@@ -43,71 +39,7 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     None.
 
     """
-    old_names = pyspedas.tnames(names)
-
-    if len(old_names) < 1:
-        logging.error('clean_spikes error: No pytplot names were provided.')
-        return
-
-    if suffix is None:
-        suffix = '-despike'
-
-    if overwrite is not None:
-        n_names = old_names
-    elif new_names is None:
-        n_names = [s + suffix for s in old_names]
-    else:
-        n_names = new_names
-
-    if isinstance(n_names, str):
-        n_names = [n_names]
-
-    if len(n_names) != len(old_names):
-        n_names = [s + suffix for s in old_names]
-
-    for old_idx, old in enumerate(old_names):
-        new = n_names[old_idx]
-        tmp = new + '_tmp_data'
-
-        # Create new
-        if old != new:
-            pyspedas.tcopy(old, new)
-
-        # Perform subtract_average or just copy the values
-        if sub_avg:
-            subtract_average(new, new_names=tmp)
-        else:
-            pyspedas.tcopy(new, tmp)
-
-        # Find spikes
-        tmps = tmp + '-s'
-        tsmooth(tmp, new_names=tmps, width=nsmooth)
-        ds0 = pytplot.get_data(tmps)  # smoothed out values
-        ds = ds0[1]
-        dor0 = pytplot.get_data(tmp)  # original values
-        d0 = dor0[1]
-        dn = d0.copy()  # final values
-
-        dim = dn.shape
-        if len(dim) == 1:
-            # One dim data.
-            for i in range(dim[0]):
-                # compare smoothed out values to original values
-                if abs(d0[i] - ds[i]) > thresh * abs(ds[i]):
-                    dn[i] = np.NaN  # for spikes, set to NaN
-        else:
-            # More than one dim data.
-            for j in range(dim[1]):
-                for i in range(dim[0]):
-                    # compare smoothed out values to original values
-                    if abs(d0[i, j] - ds[i, j]) > thresh * abs(ds[i, j]):
-                        dn[i, j] = np.NaN  # for spikes, set to NaN
-
-        # pytplot.data_quants[new] = d
-        pytplot.replace_data(new, dn)
-
-        # remove temp data
-        del pytplot.data_quants[tmp]
-        del pytplot.data_quants[tmps]
-
-        logging.info('clean_spikes was applied to: ' + new)
+    logging.info("clean_spikes has been moved to the pytplot.tplot_math package. Please update your imports!")
+    logging.info("This version will eventually be removed.")
+    pytplot.tplot_math.clean_spikes(names=names, nsmooth=nsmooth, thresh=thresh, sub_avg=sub_avg, new_names=new_names,
+                                    suffix=suffix,overwrite=overwrite)

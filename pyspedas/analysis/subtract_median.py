@@ -6,8 +6,8 @@ Notes
 Similar to tsub_average.pro in IDL SPEDAS.
 
 """
-from .subtract_average import subtract_average
-
+import logging
+import pytplot
 
 def subtract_median(names, new_names=None, suffix=None, overwrite=None):
     """
@@ -30,5 +30,7 @@ def subtract_median(names, new_names=None, suffix=None, overwrite=None):
     None.
 
     """
-    subtract_average(names, new_names=None, suffix=None, overwrite=None,
-                     median=1)
+    logging.info("subtract_median has been moved to the pytplot.tplot_math package. Please update your imports!")
+    logging.info("This version will eventually be removed.")
+
+    pytplot.tplot_math.subtract_median(names=names, new_names=new_names, suffix=suffix, overwrite=overwrite)
