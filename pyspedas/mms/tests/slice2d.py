@@ -5,6 +5,24 @@ from pyspedas.particles.spd_units_string import spd_units_string
 
 
 class SliceTests(unittest.TestCase):
+    def test_notime(self):
+        nothing = mms_part_slice2d()
+        self.assertTrue(not nothing)
+
+    def test_fpi_nospecies(self):
+        mms_part_slice2d(time='2015-10-16/13:06:30', probe='1', rotation='xy', display=False)
+        mms_part_slice2d(time='2015-10-16/13:06:30', probe='1', instrument='hpca', rotation='xy', display=False)
+
+    def test_fpi_return_slice(self):
+        the_slice = mms_part_slice2d(time='2015-10-16/13:06:30', probe='1', rotation='xy', display=False, return_slice=True)
+        self.assertTrue(isinstance(the_slice, dict))
+
+    def test_fpi_brst_slice_x(self):
+        mms_part_slice2d(time='2015-10-16/13:06:30', slice_x=np.array([1, 0, 0]), probe='1', species='i', data_rate='brst', rotation='bv', save_png='test_fpi_brst_i_bv_slice_x', display=False)
+
+    def test_fpi_brst_slice_norm(self):
+        mms_part_slice2d(time='2015-10-16/13:06:30', slice_norm=np.array([0, 0, 1]), probe='1', species='i', data_rate='brst', rotation='bv', save_png='test_fpi_brst_i_bv_slice_norm', display=False)
+
     def test_fpi_brst_rotations(self):
         time = '2015-10-16/13:06:30'
         # rotations = ['xy', 'xz', 'bv', 'be', 'xvel', 'perp', 'perp_xy', 'perp_xz', 'perp_yz', 'b_exb', 'perp1-perp2']
