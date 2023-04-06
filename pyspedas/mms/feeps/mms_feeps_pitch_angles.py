@@ -292,8 +292,11 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
     outvar = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pa'+suffix
 
-    if data_exists(outvar): # kludge for bug when the PAs were previously calculated
-        return outvar, idx_maps
+    if data_exists(outvar):  # kludge for bug when the PAs were previously calculated
+        # check if the current variable's time array matches our output
+        current_pas = get_data(outvar)
+        if np.array_equal(current_pas.times, btimes):
+            return outvar, idx_maps
 
     store_data(outvar, data={'x': btimes, 'y': new_pas})
 
