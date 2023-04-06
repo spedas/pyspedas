@@ -43,7 +43,14 @@ def specplot(var_data,
         zsubtitle = ''
     
     if zlog == 'log':
-        spec_options['norm'] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
+        # gracefully handle the case of all NaNs in the data, but log scale set
+        if np.isnan(var_data.y).all():
+            # no need to set a log scale if all the data values are NaNs
+            spec_options['norm'] = None
+            spec_options['vmin'] = zrange[0]
+            spec_options['vmax'] = zrange[1]
+        else:
+            spec_options['norm'] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
     else:
         spec_options['norm'] = None
         spec_options['vmin'] = zrange[0]
@@ -168,8 +175,8 @@ def specplot(var_data,
         out_values = masked
 
     # check for negatives if zlog is requested
-    if zlog =='log':
-        out_values[out_values<0.0] = 0.0
+    if zlog == 'log':
+        out_values[out_values < 0.0] = 0.0
 
     # create the spectrogram (ignoring warnings)
     with warnings.catch_warnings():
