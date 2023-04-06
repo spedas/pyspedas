@@ -8,6 +8,7 @@ import numpy as np
 from pytplot import tplot_utilities as utilities
 from copy import deepcopy
 from collections import OrderedDict
+import logging
 
 
 def replace_data(tplot_name, new_data):
@@ -36,14 +37,14 @@ def replace_data(tplot_name, new_data):
 
     # check if old name is in current dictionary
     if tplot_name not in pytplot.data_quants.keys():
-        print(f"{tplot_name} is currently not in pytplot")
+        logging.info(f"{tplot_name} is currently not in pytplot")
         return
 
     new_data_np = np.asarray(new_data)
     shape_old = pytplot.data_quants[tplot_name].values.shape
     shape_new = new_data_np.shape
     if shape_old != shape_new:
-        print(f"Dimensions do not match for replace data. {shape_new} does not equal {shape_old}.  Returning...")
+        logging.info(f"Dimensions do not match for replace data. {shape_new} does not equal {shape_old}.  Returning...")
         return
 
     pytplot.data_quants[tplot_name].values = new_data_np

@@ -6,6 +6,7 @@
 from . import tplot_utilities
 from bokeh.models import Span
 import pytplot
+import logging
 
 def timebar(t, varname = None, databar = False, delete = False, color = 'black', thick = 1, dash = False):    
     """
@@ -96,7 +97,7 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
             varname = [varname]
         for j in varname:
             if j not in pytplot.data_quants.keys():
-                print(str(j) + "is currently not in pytplot")
+                logging.info(str(j) + "is currently not in pytplot")
             else:
                 num_bars = len(t)
                 for i in range(num_bars):

@@ -5,6 +5,7 @@
 
 from . import tplot_utilities
 from .xlim import xlim
+import logging
 
 def timespan(t1, dt, keyword='days'):
     """
@@ -42,7 +43,7 @@ def timespan(t1, dt, keyword='days'):
     elif keyword == 'seconds':
         dt *= 1
     else:
-        print("Invalid 'keyword' option.\nEnum(None, 'hours', 'minutes', 'seconds', 'days')")
+        logging.warning("Invalid 'keyword' option %s.\nEnum(None, 'hours', 'minutes', 'seconds', 'days')",keyword)
         
     if not isinstance(t1, (int, float, complex)):
         t1 = tplot_utilities.str_to_int(t1)

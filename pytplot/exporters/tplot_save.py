@@ -5,6 +5,7 @@
 
 import pickle
 import pytplot
+import logging
 
 def tplot_save(names, filename=None):
     """
@@ -49,7 +50,7 @@ def tplot_save(names, filename=None):
     to_pickle =[]
     for name in names:    
         if name not in pytplot.data_quants.keys():
-            print("That name is currently not in pytplot") 
+            logging.error("The name %s is currently not in pytplot", name)
             return
         to_pickle.append(pytplot.data_quants[name])
     

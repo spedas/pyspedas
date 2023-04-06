@@ -5,7 +5,7 @@
 
 import pytplot
 from . import tplot_utilities
-
+import logging
 
 def get_timespan(name):
     """
@@ -32,7 +32,7 @@ def get_timespan(name):
     """
     
     if name not in pytplot.data_quants.keys():
-        print("That name is currently not in pytplot") 
+        logging.info("The name %s is currently not in pytplot",name)
         return
 
     return pytplot.data_quants[name].attrs['plot_options']['trange'][0], pytplot.data_quants[name].attrs['plot_options']['trange'][1]

@@ -11,6 +11,7 @@ from pytplot.options import options
 from pytplot.store_data import store_data
 from pytplot.tplot_options import tplot_options
 from scipy.io import readsav
+import logging
 
 
 def tplot_restore(filename):
@@ -38,7 +39,7 @@ def tplot_restore(filename):
     
     #Error check
     if not (os.path.isfile(filename)):
-        print("Not a valid file name")
+        logging.error("%s is not a valid file name",filename)
         return
     
     #Check if the restored file was an IDL file

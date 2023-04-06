@@ -5,6 +5,7 @@
 
 import pytplot
 import fnmatch
+import logging
 
 
 def del_data(name=None):
@@ -55,7 +56,7 @@ def del_data(name=None):
                 if key in pytplot.data_quants:
                     del pytplot.data_quants[key]
         elif i not in pytplot.data_quants.keys():
-            print(str(i) + " is currently not in pytplot.")
+            logging.info(str(i) + " is currently not in pytplot.")
             return
         
         else:

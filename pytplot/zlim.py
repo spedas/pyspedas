@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import pytplot
+import logging
 
 def zlim(name, min, max):
     """
@@ -33,7 +34,7 @@ def zlim(name, min, max):
 
     """
     if name not in pytplot.data_quants.keys():
-        print("That name is currently not in pytplot.")
+        logging.info("The name %s is currently not in pytplot.", name)
         return
 
     pytplot.data_quants[name].attrs['plot_options']['zaxis_opt']['z_range'] = [min, max]

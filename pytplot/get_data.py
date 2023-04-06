@@ -7,6 +7,7 @@ import numpy as np
 import pytplot
 from collections import namedtuple
 import datetime
+import logging
 
 
 def get_data(name, xarray=False, metadata=False, dt=False):
@@ -42,7 +43,7 @@ def get_data(name, xarray=False, metadata=False, dt=False):
     """
 
     if name not in pytplot.data_quants.keys():
-        print("The name " + str(name) + " is currently not in pytplot")
+        logging.info("The name " + str(name) + " is currently not in pytplot")
         return
     
     temp_data_quant = pytplot.data_quants[name]

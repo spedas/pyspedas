@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from matplotlib.colors import LinearSegmentedColormap
 import warnings
 import pytplot
+import logging
 
 
 def specplot(var_data,
@@ -78,7 +79,7 @@ def specplot(var_data,
     if len(var_data) == 3:
         out_vdata = var_data.v
     else:
-        print('Too many dimensions on the variable: ' + variable)
+        logging.warning('Too many dimensions on the variable: ' + variable)
         return
 
     if len(out_vdata.shape) > 1:

@@ -1,5 +1,6 @@
 import numpy as np
 import pytplot
+import logging
 
 
 def lineplot(var_data,
@@ -75,12 +76,12 @@ def lineplot(var_data,
         colors = np.array(colors)
         if len(colors.shape) == 1:
             if len(colors) != num_lines:
-                print('Incorrect number of line colors specified; expected: ' + str(num_lines) + '; got: ' + str(len(colors)))
+                logging.info('Incorrect number of line colors specified; expected: ' + str(num_lines) + '; got: ' + str(len(colors)))
                 return
         else:
             # time varying symbol colors, not supported yet
             if colors.shape[1] != num_lines:
-                print('Incorrect number of line colors specified; expected: ' + str(num_lines) + '; got: ' + str(colors.shape[1]))
+                logging.info('Incorrect number of line colors specified; expected: ' + str(num_lines) + '; got: ' + str(colors.shape[1]))
                 return
     else:
         if style is None:

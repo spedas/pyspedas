@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import pytplot
+import logging
 
 
 def get_ylimits(name, trg=None):
@@ -42,7 +43,7 @@ def get_ylimits(name, trg=None):
     for i in range(name_num):
 
         if name[i] not in pytplot.data_quants.keys():
-            print(str(name[i]) + " is currently not in pytplot.")
+            logging.info(str(name[i]) + " is currently not in pytplot.")
             return
         y = pytplot.data_quants[name[i]]
 

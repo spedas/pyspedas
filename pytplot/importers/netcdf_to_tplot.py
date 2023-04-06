@@ -68,7 +68,7 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
     elif isinstance(filenames, list):
         filenames = filenames
     else:
-        print("Invalid filenames input.")
+        logging.error("Invalid filenames input. Must be string or list of strings.")
         # return stored_variables
     time_local = time
 

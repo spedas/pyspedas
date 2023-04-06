@@ -103,7 +103,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
     elif isinstance(filenames, list):
         filenames = filenames
     else:
-        print("Invalid filenames input.")
+        logging.warning("Invalid filenames input. Must be string or list of strings.")
         return stored_variables
 
     var_type = ['data']

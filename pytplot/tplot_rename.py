@@ -5,6 +5,7 @@
 
 import pytplot
 from collections import OrderedDict
+import logging
 
 def tplot_rename(old_name, new_name):
     """
@@ -35,7 +36,7 @@ def tplot_rename(old_name, new_name):
 
     # check if old name is in current dictionary
     if old_name not in pytplot.data_quants.keys():
-        print("That name is currently not in pytplot")
+        logging.info("The name %s is currently not in pytplot", old_name)
         return
 
     #remake dictionary with new name in old name's slot
