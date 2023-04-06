@@ -28,6 +28,8 @@ def mms_part_slice2d(trange=None,
                      species=None,
                      rotation='xy',
                      custom_rotation=None,
+                     slice_x=None,
+                     slice_norm=None,
                      subtract_bulk=False,
                      xrange=None,
                      yrange=None,
@@ -121,6 +123,17 @@ def mms_part_slice2d(trange=None,
             3x3 rotation matrix or a tplot variable containing matrices.
             If the time window covers multiple matrices they will be averaged.
             This is applied before other transformations
+
+        slice_x: str or np.ndarray
+            Specifies the slice plane's x-axis within the coordinates
+            specified by custom_rotation and rotation. If not specified, the given
+            coordinate's x-axis will be used. If slice_x is not perpendicular to the
+            normal, its projection onto the slice plane will be used.
+
+        slice_norm: str or np.ndarray
+            Specifies the slice plane's normal within the coordinates
+            specified by custom_rotation and rotation; if not specified, the given
+            coordinate's z-axis will be used (slice along by x-y plane in those coordinates).
 
         energy: bool
             Flag to plot data against energy (in eV) instead of velocity.
@@ -260,7 +273,7 @@ def mms_part_slice2d(trange=None,
                         mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution, erange=erange,
                         energy=energy, log=log, custom_rotation=custom_rotation, subtract_bulk=subtract_bulk,
                         interpolation=interpolation, thetarange=thetarange, zdirrange=zdirrange, smooth=smooth,
-                        average_angle=average_angle, sum_angle=sum_angle)
+                        average_angle=average_angle, sum_angle=sum_angle, slice_x=slice_x, slice_z=slice_norm)
 
     if return_slice:
         return the_slice
