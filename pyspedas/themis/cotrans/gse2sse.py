@@ -140,7 +140,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
             tvector_rotate('sse_mat_cotrans',name_trans,newname=name_out)
         else:
             tvector_rotate('sse_mat_cotrans',name_in,newname=name_out)
-
+        cotrans_set_coord(name_out,'SSE')
         return 1
     
     else:
@@ -155,7 +155,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
             pytplot.store_data(name_out,data={'x':trans_data.times,'y':earth_data})
         else:
             tvector_rotate('sse_mat_cotrans',name_in,newname=name_out)
-
+        cotrans_set_coord(name_out,'GSE')
         return 1
 
 
