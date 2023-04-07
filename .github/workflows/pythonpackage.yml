@@ -104,7 +104,7 @@ jobs:
         coverage run -a -m pyspedas.cnofs.tests.tests
         coverage run -a -m pyspedas.secs.tests.tests
         coverage run -a -m pyspedas.sosmag.tests.tests
-        # coverage run -a -m pyspedas.hapi.tests.tests
+        coverage run -a -m pyspedas.hapi.tests.tests
         coverage run -a -m pyspedas.mms.tests.events
         coverage run -a -m pyspedas.mms.tests.orbit_plots
         coverage run -a -m pyspedas.mms.tests.neutral_sheet
