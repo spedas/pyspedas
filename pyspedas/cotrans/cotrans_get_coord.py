@@ -31,5 +31,5 @@ def cotrans_get_coord(name):
         if metadata['data_att'].get('coord_sys'):
             return metadata['data_att']['coord_sys']
 
-    logging.error('Coordinate system not found: ' + name)
+    logging.debug('Coordinate system not found: ' + name)
     return None
