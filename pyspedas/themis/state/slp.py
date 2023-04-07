@@ -1,5 +1,6 @@
-
+import logging
 from pyspedas.themis.load import load
+from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 
 
 def slp(trange=['2007-03-23', '2007-03-24'],
@@ -59,8 +60,18 @@ def slp(trange=['2007-03-23', '2007-03-24'],
         List of tplot variables created.
 
     """
-    return load(instrument='slp', trange=trange, level=level,
+    retval =  load(instrument='slp', trange=trange, level=level,
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
                 time_clip=time_clip, no_update=no_update)
+
+    if not downloadonly:
+        # Coordinate system is not set in the data CDFs, so setting it here for now.
+        # Everything except for the light travel time variables is in GEI true-of-date.
+        for varname in retval:
+            if not "ltime" in varname:
+                logging.debug("Setting %s to GEI coordinates", varname)
+                cotrans_set_coord(varname,"GEI")
+
+    return retval

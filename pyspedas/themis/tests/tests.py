@@ -5,6 +5,7 @@ import logging
 import pyspedas
 import pytplot
 from pyspedas.utilities.data_exists import data_exists
+from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 
 
 
@@ -116,8 +117,28 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('thc_eff_e12_efs'))
 
     def test_load_slp_data(self):
-        pyspedas.themis.slp(varnames='slp_sun_ltime')
+        pyspedas.themis.slp()
+        # Check that all data is loaded
         self.assertTrue(data_exists('slp_sun_ltime'))
+        self.assertTrue(data_exists('slp_lun_ltime'))
+        self.assertTrue(data_exists('slp_sun_pos'))
+        self.assertTrue(data_exists('slp_lun_vel'))
+        self.assertTrue(data_exists('slp_sun_ltime'))
+        self.assertTrue(data_exists('slp_lun_ltime'))
+        self.assertTrue(data_exists('slp_lun_vel'))
+        self.assertTrue(data_exists('slp_sun_att_x'))
+        self.assertTrue(data_exists('slp_sun_att_z'))
+        self.assertTrue(data_exists('slp_lun_att_x'))
+        self.assertTrue(data_exists('slp_lun_att_z'))
+        # Check that coordinate systems are set properly
+        self.assertEqual(cotrans_get_coord('slp_sun_pos').lower(),'gei')
+        self.assertEqual(cotrans_get_coord('slp_sun_vel').lower(),'gei')
+        self.assertEqual(cotrans_get_coord('slp_sun_att_x').lower(),'gei')
+        self.assertEqual(cotrans_get_coord('slp_sun_att_z').lower(),'gei')
+        self.assertEqual(cotrans_get_coord('slp_lun_pos').lower(),'gei')
+        self.assertEqual(cotrans_get_coord('slp_lun_vel').lower(),'gei')
+        self.assertEqual(cotrans_get_coord('slp_lun_att_x').lower(),'gei')
+        self.assertEqual(cotrans_get_coord('slp_lun_att_z').lower(),'gei')
 
     def test_downloadonly(self):
         """Downloadonly keyword."""
