@@ -1,6 +1,7 @@
 [run]
+source_pkgs =
+  pyspedas
+  pytplot
 omit =
-  /home/travis/virtualenv/*
-  */site-packages/*
   */bin/*
   */docs/*
