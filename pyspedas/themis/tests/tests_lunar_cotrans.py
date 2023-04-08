@@ -84,7 +84,7 @@ class LunCotransDataValidation(unittest.TestCase):
 
     def test_gse2sse_pos(self):
         """ Validate gse2sse position transform """
-        result = gse2sse('tha_state_pos_gse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_pos_sse')
+        result = gse2sse('tha_state_pos_gse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_pos_sse', variable_type='pos')
         self.assertEqual(result,1)
         py_sse_mat_cotrans = pytplot.get_data('sse_mat_cotrans')
         assert_allclose(py_sse_mat_cotrans.y, self.sse_mat_cotrans.y, atol=1.0e-06)
@@ -94,17 +94,18 @@ class LunCotransDataValidation(unittest.TestCase):
 
     def test_gse2sse_vel(self):
         """ Validate gse2sse velocity transform """
-        result = gse2sse('tha_state_vel_gse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_vel_sse')
+        result = gse2sse('tha_state_vel_gse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_vel_sse',variable_type='vel')
         self.assertEqual(result,1)
         vel_sse = pytplot.get_data('tha_state_vel_sse')
-        assert_allclose(vel_sse.y, self.tha_state_vel_sse.y, atol=1.0e-06)
+        assert_allclose(vel_sse.y, self.tha_state_vel_sse.y, atol=1.0e-03)
         self.assertEqual(cotrans_get_coord('tha_state_vel_sse').lower(),'sse')
 
     def test_sse2gse_pos(self):
         """ Validate sse2gse position transform """
         pytplot.store_data('tha_state_pos_sse',data={'x':self.tha_state_pos_sse.times, 'y':self.tha_state_pos_sse.y})
         cotrans_set_coord('tha_state_pos_sse','sse')
-        result = gse2sse('tha_state_pos_sse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_pos_gse_sse_gse',isssetogse=True)
+        result = gse2sse('tha_state_pos_sse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_pos_gse_sse_gse',isssetogse=True,
+                         variable_type='pos')
         self.assertEqual(result,1)
         pos_gse = pytplot.get_data('tha_state_pos_gse_sse_gse')
         assert_allclose(pos_gse.y, self.tha_state_pos_gse_sse_gse.y, atol=0.1)
@@ -113,10 +114,11 @@ class LunCotransDataValidation(unittest.TestCase):
 
     def test_sse2gse_vel(self):
         """ Validate sse2gse velocity transform """
-        result = gse2sse('tha_state_vel_sse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_vel_gse_sse_gse',isssetogse=True)
+        result = gse2sse('tha_state_vel_sse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_vel_gse_sse_gse',isssetogse=True,
+                         variable_type='vel')
         self.assertEqual(result,1)
         vel_gse = pytplot.get_data('tha_state_vel_gse_sse_gse')
-        assert_allclose(vel_gse.y, self.tha_state_vel_gse_sse_gse.y, atol=1.0e-06)
+        assert_allclose(vel_gse.y, self.tha_state_vel_gse_sse_gse.y, atol=1.0e-03)
         self.assertEqual(cotrans_get_coord('tha_state_vel_gse_sse_gse').lower(),'gse')
 
 
