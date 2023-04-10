@@ -10,7 +10,27 @@ except ImportError:
 
 def mms_pgs_make_e_spec(data_in):
     """
+    Builds an energy spectrogram from a simplified particle data structure.
 
+    Parameters
+    ----------
+    data_in : dict
+        The input data structure.
+
+    Returns
+    -------
+    outtable : ndarray, shape (ny,)
+        The energy bins.
+    ave : ndarray, shape (ny,)
+        The spectrogram.
+
+    Notes
+    -----
+    - Each energy bin in the output spectrogram (`ave`) is the weighted average
+      of the corresponding bins in the input data (`data_in`).
+    - The input data is sanitized by zeroing inactive bins to ensure areas with
+      no data are represented as NaN.
+    - The function uses the first energy table for rebinning the data.
     """
     data = data_in.copy()
 
