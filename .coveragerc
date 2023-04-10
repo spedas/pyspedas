@@ -5,3 +5,4 @@ source_pkgs =
 omit =
   */bin/*
   */docs/*
+  */QtPlotter/*
