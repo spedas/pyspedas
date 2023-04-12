@@ -3,6 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
+import logging
 import pytplot
 import numpy as np
 from pytplot import tplot_utilities as utilities
@@ -104,7 +105,7 @@ def options(name, option=None, value=None, opt_dict=None):
         opt_dict = {option: value}
     else:
         if not isinstance(opt_dict,dict):
-            print("dict must be a dictionary object.  Returning.")
+            logging.error("dict must be a dictionary object.  Returning.")
             return
 
     if not isinstance(name, list):
@@ -118,7 +119,7 @@ def options(name, option=None, value=None, opt_dict=None):
             option = option.lower()
 
             if i not in pytplot.data_quants.keys():
-                print(str(i) + " is currently not in pytplot.")
+                logging.info(str(i) + " is currently not in pytplot.")
                 return
 
             if option == 'color':
@@ -141,7 +142,7 @@ def options(name, option=None, value=None, opt_dict=None):
                 _reset_plots(i)
                 if value:
                     if 'spec_bins' not in pytplot.data_quants[i].coords:
-                        print(f"{i} does not contain coordinates for spectrogram plotting.  Continuing...")
+                        logging.warning(f"{i} does not contain coordinates for spectrogram plotting.  Continuing...")
                         continue
                     else:
                         pytplot.data_quants[i].attrs['plot_options']['extras']['spec'] = value
@@ -233,7 +234,7 @@ def options(name, option=None, value=None, opt_dict=None):
                 # check for negative values and warn the user that they will be ignored
                 negflag = _zlog_check(pytplot.data_quants, value, i)
                 if negflag != 0 and value:
-                    print(str(i) + ' contains negative values; setting the z-axis to log scale will cause the negative values to be ignored on figures.')
+                    logging.warning(str(i) + ' contains negative values; setting the z-axis to log scale will cause the negative values to be ignored on figures.')
 
                 if value:
                     pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'log'
@@ -277,7 +278,7 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == "panel_size":
                 if value > 1 or value <= 0:
-                    print("Invalid value. Should be (0, 1]")
+                    logging.info("Invalid panel_size value (%f). Should be in (0, 1]",value)
                     return
                 pytplot.data_quants[i].attrs['plot_options']['extras']['panel_size'] = value
 
@@ -286,7 +287,7 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'alpha':
                 if value > 1 or value < 0:
-                    print("Invalid value. Should be [0, 1]")
+                    logging.info("Invalid alpha value (%f). Should be [0, 1]",value)
                     return
                 pytplot.data_quants[i].attrs['plot_options']['extras']['alpha'] = value
 
@@ -428,7 +429,7 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'spec_dim_to_plot' or option == 'spec_plot_dim':
                 if len(pytplot.data_quants[i].values.shape) <= 2:
-                    print(f"Must have more than 2 coordinate dimensions to set spec_coord_to_plot for {pytplot.data_quants[i].name}")
+                    logging.warning(f"Must have more than 2 coordinate dimensions to set spec_coord_to_plot for {pytplot.data_quants[i].name}")
                     continue
 
                 # Set the 'spec_dim_to_plot' value to either 'v' or 'v1', 'v2', 'v3', etc.
@@ -438,16 +439,16 @@ def options(name, option=None, value=None, opt_dict=None):
                         if value == 1:
                             coord_to_plot = "v"
                             if coord_to_plot not in pytplot.data_quants[i].coords:
-                                print(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
+                                logging.warning(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
                                 continue
                         else:
-                            print(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
+                            logging.warning(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
                             continue
                     pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = coord_to_plot
                 elif isinstance(value, str):
                     coord_to_plot = value
                     if coord_to_plot not in pytplot.data_quants[i].coords:
-                        print(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
+                        logging.warning(f"Dimension {value} not found in {pytplot.data_quants[i].name}")
                         continue
                     else:
                         pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = value
@@ -458,12 +459,12 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'spec_slices_to_use':
                 if not isinstance(value, dict):
-                    print("Must be a dictionary object in the format {'v2':15, 'v3':7}")
+                    logging.error("Must be a dictionary object in the format {'v2':15, 'v3':7}")
                     return
                 else:
                     for coord in value:
                         if coord not in pytplot.data_quants[i].coords:
-                            print(f"Dimension {coord} not found in {pytplot.data_quants[i].name}")
+                            logging.warning(f"Dimension {coord} not found in {pytplot.data_quants[i].name}")
                             continue
 
                 pytplot.data_quants[i].attrs['plot_options']['extras']['spec_slices_to_use'] = value
@@ -501,13 +502,13 @@ def _ylog_check(data_quants, value, i):
         for dataset in datasets:
             if 'spec' not in dataset.attrs['plot_options']['extras']:
                 if dataset.min(skipna=True) < 0:
-                    print('Negative data is incompatible with log plotting.')
+                    logging.warning('Negative data is incompatible with log plotting.')
                     negflag = 1
                     break
             else:
                 if dataset.attrs['plot_options']['extras']['spec'] == 1:
                     if dataset.coords['spec_bins'].min(skipna=True) < 0:
-                        print('Negative data is incompatible with log plotting.')
+                        logging.warning('Negative data is incompatible with log plotting.')
                         negflag = 1
                         break
     elif value != 1:

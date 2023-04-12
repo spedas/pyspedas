@@ -3,6 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
+import logging
 import pytplot
 import numpy as np
 
@@ -27,7 +28,7 @@ def link(names, link_name, link_type='alt'):
         
     for i in names:
         if i not in pytplot.data_quants.keys():
-            print(str(i) + " is not currently in pytplot.")
+            logging.info(str(i) + " is not currently in pytplot.")
             return
         
         if isinstance(i,int):

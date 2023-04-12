@@ -1,4 +1,5 @@
 import numpy as np
+import logging
 import pytplot
 from scipy import signal
 
@@ -38,7 +39,7 @@ def pwr_spec(tvar, nbp=256, nsp=128, name=None):
     x, y = pytplot.get_data(tvar)
 
     if len(y.shape) > 1:
-        print("Can only perform action for a single line")
+        logging.warning("Cannot create pwr_spec for variable %s, must be a single line",tvar)
 
     l = len(x)
     x_new = []

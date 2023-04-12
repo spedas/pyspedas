@@ -5,6 +5,7 @@
 
 from __future__ import division
 import os
+import logging
 import datetime
 import math
 import numpy as np
@@ -167,7 +168,7 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         new_tplot_opt_glob['ysize'] = value
 
     else:
-        print("Unknown option supplied: " + str(option))
+        logging.warning("Unknown option supplied: " + str(option))
 
     return new_tplot_opt_glob
 
@@ -311,7 +312,7 @@ def timebar_delete(t, varname=None, dim='height'):
             varname = [varname]
         for i in varname:
             if i not in pytplot.data_quants.keys():
-                print(str(i) + " is currently not in pytplot.")
+                logging.info(str(i) + " is currently not in pytplot.")
                 return
             if isinstance(pytplot.data_quants[i], dict):
                 # non-record varying variable

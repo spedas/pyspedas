@@ -1,6 +1,7 @@
 import pytplot
 import pandas as pd
 import copy
+import logging
 
 def spec_mult(tvar,new_tvar=None):
     """
@@ -29,7 +30,7 @@ def spec_mult(tvar,new_tvar=None):
     if new_tvar is None:
         new_tvar = tvar+'_specmult'
     if 'spec_bins' not in pytplot.data_quants[tvar].coords:
-        print("Specified variable must have spec bins stored.  Returning...")
+        logging.error("Specified variable must have spec bins stored.  Returning...")
         return
     d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
     dataframe = d.values

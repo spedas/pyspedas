@@ -3,6 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
+import logging
 import pytplot
 from copy import deepcopy
 from collections import OrderedDict
@@ -37,7 +38,7 @@ def tplot_copy(old_name, new_name):
 
     # check if old name is in current dictionary
     if old_name not in pytplot.data_quants.keys():
-        print("That name is currently not in pytplot")
+        logging.info("The name %s is currently not in pytplot",old_name)
         return
 
     # Add a new data quantity with the copied data

@@ -1,3 +1,4 @@
+import logging
 import pytplot
 import numpy as np
 
@@ -27,7 +28,7 @@ def split_vec(tvar, new_name=None, columns='all', suffix=None):
 
     # Make sure the tvar is found
     if tvar not in pytplot.data_quants:
-        print(f"Error: {tvar} not found in memory.")
+        logging.error(f"Error: {tvar} not found in memory.")
         return
 
     # Give a default to the new name
@@ -49,7 +50,7 @@ def split_vec(tvar, new_name=None, columns='all', suffix=None):
     # Determine what the suffix list will be
     if suffix is not None:
         if vec_length > len(suffix):
-            print(f"split_vec error: number of columns ({vec_length}) is greater than the number of suffix entered")
+            logging.error(f"split_vec error: number of columns ({vec_length}) is greater than the number of suffix entered")
     else:
         if vec_length == 3:
             suffix = ["_x", "_y", "_z"]

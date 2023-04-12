@@ -48,7 +48,7 @@ def tplot_restore(filename):
         temp_tplot = readsav(filename)
         for i in range(len(temp_tplot['dq'])):
             if isinstance(temp_tplot['dq'][i][0], str):
-                print("Error reading variable; this error occurs when the variable wasn't loaded in IDL when the SAV file was created.")
+                logging.warning("Error reading variable; this error occurs when the variable wasn't loaded in IDL when the SAV file was created.")
                 continue
 
             data_name = temp_tplot['dq'][i][0].decode("utf-8")

@@ -1,4 +1,5 @@
 import copy
+import logging
 import numpy as np
 import matplotlib as mpl
 from datetime import date, datetime, timezone
@@ -56,7 +57,7 @@ def tplot(variables, var_label=None,
     for idx, variable in enumerate(variables):
         if isinstance(variable, int):
             if variable > len(tnames):
-                print('Variable not found: ' + str(variable))
+                logging.info('Variable not found: ' + str(variable))
             variables[idx] = tnames[variable]
 
     # support for matplotlib styles
@@ -126,7 +127,7 @@ def tplot(variables, var_label=None,
         var_metadata = pytplot.get_data(variable, metadata=True)
         
         if var_data_org is None:
-            print('Variable not found: ' + variable)
+            logging.info('Variable not found: ' + variable)
             continue
 
         var_data = copy.deepcopy(var_data_org)
@@ -223,7 +224,7 @@ def tplot(variables, var_label=None,
             this_axis.set_xlim(x_range)
             time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
             if len(time_idxs) == 0:
-                print('No data found in the time range: ' + variable)
+                logging.info('No data found in the time range: ' + variable)
                 continue
             var_data_times = var_data.times[time_idxs]
         else:
@@ -408,11 +409,11 @@ def tplot(variables, var_label=None,
             label_data = pytplot.get_data(label, xarray=True, dt=True)
 
             if label_data is None:
-                print('Variable not found: ' + label)
+                logging.info('Variable not found: ' + label)
                 continue
 
             if len(label_data.values.shape) != 1:
-                print(label + ' specified as a vector; var_label only supports scalars. Try splitting the vector into seperate tplot variables.')
+                logging.info(label + ' specified as a vector; var_label only supports scalars. Try splitting the vector into seperate tplot variables.')
                 continue
 
             # set up the new x-axis

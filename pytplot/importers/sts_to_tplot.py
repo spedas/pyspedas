@@ -5,6 +5,7 @@
 
 import os
 import datetime
+import logging
 import numpy as np
 import xarray as xr
 import pytplot
@@ -45,7 +46,7 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
     elif isinstance(sts_file, list):
         sts_file = sts_file
     else:
-        print("Invalid filenames input.")
+        logging.error("Invalid filenames input.")
         return stored_variables
     sts_file.sort()
     for s_file in sts_file:
@@ -84,7 +85,7 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
         try:
             sts_dict.pop(key)
         except KeyError:
-            print('Key {} was not found'.format(key))
+            logging.info('Key {} was not found'.format(key))
 
     # Don't create tplot vars if that's not what's desired
     if read_only:
