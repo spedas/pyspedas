@@ -138,6 +138,7 @@ jobs:
         coverage run -a -m pyspedas.wind.tests.tests
         coverage run -a -m pyspedas.poes.tests.tests
         coverage run -a -m pyspedas.polar.tests.tests
+        coverage run -a -m pyspedas.geopack.tests.tests
         coverage run -a -m pyspedas.geotail.tests.tests
         coverage run -a -m pyspedas.analysis.tests.tests
         coverage run -a -m pyspedas.analysis.tests.test_twavpol
