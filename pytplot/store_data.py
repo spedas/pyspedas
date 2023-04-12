@@ -7,6 +7,7 @@ from __future__ import division
 import pandas as pd
 import numpy as np
 import datetime
+import logging
 from .del_data import del_data
 import pytplot
 import xarray as xr
@@ -92,7 +93,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         return False
 
     if data is None and newname is None:
-        print('Please provide data.')
+        logging.error('Please provide data.')
         return False
 
     # If newname is specified, we are just renaming the variable
@@ -135,7 +136,8 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         err_values = np.array(data.pop('dy'))
 
         if len(err_values) != len(times):
-            print('Warning: length of error values does not match length of time values')
+            logging.warning('Warning: %s: length of error values (%d) does not match length of time values (%d)',name,len(err_values),
+                            len(times))
     else:
         err_values = None
 
@@ -153,7 +155,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             times = [parse(time).replace(tzinfo=datetime.timezone.utc).timestamp() for time in times]
 
     if len(times) != len(values):
-        print("The lengths of x and y do not match!")
+        logging.warning("%s: lengths of x (%d) and y (%d) do not match!",name,len(times),len(values))
         return False
 
     times = np.array(times)
@@ -195,7 +197,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             # The spec_bins are time varying
             spec_bins_time_varying = True
             if len(spec_bins) != len(times):
-                print("Length of v and x do not match.  Cannot create tplot variable.")
+                logging.error("Length of v (%d) and x (%d) do not match.  Cannot create tplot variable %s.",len(spec_bins),len(times),name)
                 return
         else:
             spec_bins = spec_bins.transpose()
@@ -224,7 +226,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             else:
                 temp.coords['spec_bins'] = (spec_bins_dimension+'_dim', np.squeeze(spec_bins.values))
         except ValueError:
-            print('Conflicting size for at least one dimension')
+            logging.warning('Conflicting size for at least one dimension for variable %s', name)
 
     for d in coordinate_list:
         if data[d] is None:
@@ -233,14 +235,14 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             d_dimension = pd.DataFrame(data[d])
             if len(d_dimension.columns) != 1:
                 if len(d_dimension) != len(times):
-                    print("Length of",d,"and time do not match.  Cannot create coordinate for it.")
+                    logging.warning("Length of %s (%d) and time (%d) do not match.  Cannot create coordinate for %s.",d,len(d_dimension),len(times),name)
                     continue
                 temp.coords[d] = (('time', d+'_dim'), d_dimension.values)
             else:
                 d_dimension = d_dimension.transpose()
                 temp.coords[d] = (d+'_dim', np.squeeze(d_dimension.values))
         except:
-            print("Could not create coordinate", d+'_dim', "for variable", name)
+            logging.warning("Could not create coordinate %s_dim for variable %s",d, name)
 
     # Set up Attributes Dictionaries
     xaxis_opt = dict(axis_label='Time')
