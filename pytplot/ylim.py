@@ -2,7 +2,7 @@
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
-
+import logging
 import pytplot
 
 def ylim(name, min, max):
