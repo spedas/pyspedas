@@ -21,7 +21,7 @@ from pyspedas.analysis.deriv_data import deriv_data
 from copy import deepcopy
 
 def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str, 
-            isssetogse: bool = False, variable_type: str = 'Other', ignore_input_coord: bool = False, rotate_only: bool = False) -> int:
+            isssetogse: bool = False, variable_type: str = 'Other', ignore_input_coord: bool = False, rotation_only: bool = False) -> int:
 
     """Transform gse to sse.
 
@@ -45,7 +45,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
             A string describing the type of data being transformed.  If value is "pos" or "vel", the appropriate
                 offsets (lunar position or velocity) are applied during the transform.  Any other value will be treated
                 as equivalent to rotate_only=True.
-        rotate_only: bool
+        rotation_only: bool
             if False (default), assume input variable is a position with units of km, and apply the earth-moon
                 offset before rotating to SSE, or after rotating to GSE
             if True, assume the input variable is a velocity or some other quantity that does not need the earth-moon
@@ -133,22 +133,22 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
 
     pytplot.store_data('sse_mat_cotrans', data={'x': sunpos.times, 'y': out_data})
 
-    if variable_type.lower() == "pos" and not rotate_only:
+    if variable_type.lower() == "pos" and not rotation_only:
         tinterpol(lun_pos_gse_name,name_in,newname='gse2sse_offset')
         gse2sse_offset_data = pytplot.get_data('gse2sse_offset')
-    elif variable_type.lower() == "vel" and not rotate_only:
+    elif variable_type.lower() == "vel" and not rotation_only:
         deriv_data(lun_pos_gse_name,new_names='gse2sse_lun_vel')
         tinterpol('gse2sse_lun_vel',name_in,newname='gse2sse_offset')
         gse2sse_offset_data = pytplot.get_data('gse2sse_offset')
     else:
         logging.info("No offsets performed for variable type %s",variable_type)
-        rotate_only = True
+        rotation_only = True
 
     if not isssetogse:
         """ GSE -> SSE
         """
 
-        if not rotate_only:
+        if not rotation_only:
             logging.info("Applying earth-moon %s offset to input variable %s",variable_type,name_in)
             input_pos = pytplot.get_data(name_in)
             translated_pos = input_pos.y - gse2sse_offset_data.y
@@ -156,6 +156,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
             pytplot.store_data(name_trans,data={'x':input_pos.times, 'y':translated_pos})
             tvector_rotate('sse_mat_cotrans',name_trans,newname=name_out)
         else:
+            logging.info("No earth-moon offsets applied")
             tvector_rotate('sse_mat_cotrans',name_in,newname=name_out)
 
         cotrans_set_coord(name_out,'SSE')
@@ -164,13 +165,14 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
     else:
         """ SSE -> GSE
         """
-        if not rotate_only:
+        if not rotation_only:
             tvector_rotate('sse_mat_cotrans',name_in,newname='gse2sse_rotated')
             logging.info("Applying moon-earth %s offset to rotated variable %s",variable_type,'gse2sse_rotated')
             rotated_data = pytplot.get_data('gse2sse_rotated')
             earth_data = rotated_data.y + gse2sse_offset_data.y
             pytplot.store_data(name_out,data={'x':rotated_data.times,'y':earth_data})
         else:
+            logging.info("No earth-moon offsets applied")
             tvector_rotate('sse_mat_cotrans',name_in,newname=name_out)
 
         cotrans_set_coord(name_out,'GSE')
