@@ -166,6 +166,7 @@ from pytplot.importers.sts_to_tplot import sts_to_tplot
 from .tplot_utilities import compare_versions
 from .tplot_utilities import highlight
 from .tplot_utilities import annotate
+from .data_exists import data_exists
 from .link import link
 from pytplot.tplot_math import *
 
