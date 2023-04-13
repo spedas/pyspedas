@@ -12,44 +12,8 @@ Notes
 Similar to time_double.pro in IDL SPEDAS.
 
 """
-
-from dateutil import parser
-from datetime import datetime, timezone
-import numpy as np
-from collections.abc import Iterable
-
-
-def time_float_one(s_time=None):
-    """
-    Transform one datetime from string to decimal.
-
-    Parameters
-    ----------
-    s_time : str, optional
-        Input string.
-        The default is None, which returns Now.
-
-    Returns
-    -------
-    float
-        Output time.
-
-    """
-    if s_time is None:
-        s_time = str(datetime.now())
-
-    if isinstance(s_time, (int, float, np.integer, np.float64)):
-        return float(s_time)
-
-    try:
-        in_datetime = parser.isoparse(s_time)
-    except ValueError:
-        in_datetime = parser.parse(s_time)
-
-    float_time = in_datetime.replace(tzinfo=timezone.utc).timestamp()
-
-    return float_time
-
+import pytplot
+import logging
 
 def time_float(str_time=None):
     """
@@ -66,20 +30,9 @@ def time_float(str_time=None):
         Output times as floats.
 
     """
-    if str_time is None:
-        return time_float_one()
-
-    if isinstance(str_time, str):
-        return time_float_one(str_time)
-
-    time_list = list()
-    if isinstance(str_time, Iterable):
-        for t in str_time:
-            time_list.append(time_float_one(t))
-        return time_list
-    else:
-        return time_float_one(str_time)
-
+    logging.info("time_float has been moved to the pytplot package. Please update your imports!")
+    logging.info("This version will eventually be removed.")
+    return pytplot.time_float(str_time=str_time)
 
 def time_double(str_time=None):
     """
@@ -98,4 +51,6 @@ def time_double(str_time=None):
         Output times as floats.
 
     """
-    return time_float(str_time)
+    logging.info("time_double has been moved to the pytplot package. Please update your imports!")
+    logging.info("This version will eventually be removed.")
+    return pytplot.time_float(str_time=str_time)
