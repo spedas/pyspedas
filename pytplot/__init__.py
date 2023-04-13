@@ -158,8 +158,8 @@ from .del_data import del_data
 from .timespan import timespan
 from .options import options
 from .timestamp import timestamp
-from .time_double import time_float,time_double
-from .time_string import time_string, time_datetime
+from .time_double import time_float,time_double, time_float_one
+from .time_string import time_string, time_datetime, time_string_one
 from pytplot.importers.cdf_to_tplot import cdf_to_tplot
 from pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
 from pytplot.importers.sts_to_tplot import sts_to_tplot
