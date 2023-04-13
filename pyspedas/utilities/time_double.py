@@ -15,6 +15,26 @@ Similar to time_double.pro in IDL SPEDAS.
 import pytplot
 import logging
 
+def time_float_one(s_time=None):
+    """
+    Transform one datetime from string to decimal.
+
+    Parameters
+    ----------
+    s_time : str, optional
+        Input string.
+        The default is None, which returns Now.
+
+    Returns
+    -------
+    float
+        Output time.
+
+    """
+    logging.info("time_float_one has been moved to the pytplot package. Please update your imports!")
+    logging.info("This version will eventually be removed.")
+    return pytplot.time_float_one(s_time=s_time)
+
 def time_float(str_time=None):
     """
     Transform a list of datetimes from string to decimal.

@@ -14,6 +14,29 @@ Compare to https://www.epochconverter.com/
 import logging
 import pytplot
 
+def time_string_one(float_time=None, fmt=None):
+    """
+    Transform a single float daytime value to string.
+
+    Parameters
+    ----------
+    float_time : float, optional
+        Input time.
+        The default is None, which returns the time now.
+    fmt : float, optional
+        Time format.
+        The default is None, which uses '%Y-%m-%d %H:%M:%S.%f'.
+
+    Returns
+    -------
+    str
+        Datetime as string.
+
+    """
+    logging.info("time_string_one has been moved to the pytplot package. Please update your imports!")
+    logging.info("This version will eventually be removed.")
+    return pytplot.time_string_one(float_time=float_time,fmt=fmt)
+
 def time_string(float_time=None, fmt=None):
     """
     Transform a list of float daytime values to a list of strings.
