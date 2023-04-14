@@ -30,6 +30,7 @@ def load(trange=['2020-11-5', '2020-11-6'],
         pyspedas.elfin.state
         pyspedas.elfin.eng
 
+        This is a test
     """
 
     if instrument == 'fgm':
