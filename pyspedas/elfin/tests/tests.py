@@ -5,6 +5,7 @@ import pyspedas
 
 
 class LoadTestCases(unittest.TestCase):
+
     def test_load_fgm_data(self):
         out_vars = pyspedas.elfin.fgm(time_clip=True)
         self.assertTrue(data_exists('ela_fgs'))
