@@ -7,6 +7,7 @@ from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, 
 
 from pyspedas.utilities.data_exists import data_exists
 from pyspedas.themis.cotrans.gse2sse import gse2sse
+from pyspedas.themis.cotrans.sse2sel import sse2sel
 from pyspedas.themis.state.autoload_support import autoload_support
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
@@ -109,6 +110,16 @@ class LunCotransDataValidation(unittest.TestCase):
         pos_sse = pytplot.get_data('tha_state_pos_sse')
         assert_allclose(pos_sse.y, self.tha_state_pos_sse.y, atol=0.1)
         self.assertEqual(cotrans_get_coord('tha_state_pos_sse').lower(),'sse')
+
+    def test_sse2sel_pos(self):
+        """ Validate sse2sel position transform """
+        result = sse2sel('tha_state_pos_sse', 'slp_sun_pos', 'slp_lun_pos', 'slp_lun_att_x', 'slp_lun_att_z', 'tha_state_pos_sel', variable_type='pos')
+        self.assertEqual(result,1)
+        #py_sel_mat_cotrans = pytplot.get_data('sel_mat_cotrans')
+        #assert_allclose(py_sel_mat_cotrans.y, self.sse_mat_cotrans.y, atol=1.0e-06)
+        pos_sse = pytplot.get_data('tha_state_pos_sel')
+        assert_allclose(pos_sse.y, self.tha_state_pos_sel.y, atol=0.1)
+        self.assertEqual(cotrans_get_coord('tha_state_pos_sel').lower(),'sel')
 
     def test_gse2sse_pos_rotate_only(self):
         """ Validate gse2sse position transform """
