@@ -17,7 +17,7 @@ from pyspedas.themis.cotrans.gse2sse import gse2sse
 
 def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str, 
             name_lun_att_x: str, name_lun_att_z: str, name_out: str, 
-            isseltosse: bool = False, variable_type: str = 'Other', ignore_input_coord: bool = False, rotate_only: bool = False) -> int:
+            isseltosse: bool = False, ignore_input_coord: bool = False) -> int:
     """Transform sse to sel.
     Parameters
     ----------
