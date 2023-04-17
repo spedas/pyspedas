@@ -1,5 +1,3 @@
-
-
 import numpy as np
 
 # use nansum from bottleneck if it's installed, otherwise use the numpy one
@@ -12,7 +10,23 @@ except ImportError:
 
 def mms_pgs_make_theta_spec(data_in, resolution=16, colatitude=False):
     """
+    Builds a theta (latitudinal) spectrogram from a simplified particle data structure.
 
+    Parameters
+    ----------
+    data_in : dict
+        A dictionary containing the particle data, including 'data', 'theta', and 'bins' keys.
+    resolution : int, optional
+        The number of bins to use for the spectrogram. Defaults to 16.
+    colatitude : bool, optional
+        Set to True if the input data is in colatitude rather than latitude.
+
+    Returns
+    -------
+    y : numpy.ndarray
+        The y axis of the spectrogram.
+    ave : numpy.ndarray
+        The spectrogram.
     """
     data = data_in.copy()
     n_theta = resolution
@@ -48,4 +62,4 @@ def mms_pgs_make_theta_spec(data_in, resolution=16, colatitude=False):
 
     y = outbins[0:n_theta]+0.5*(outbins[1::]-outbins[0:n_theta])
 
-    return (y, ave)
+    return y, ave

@@ -1,5 +1,6 @@
 from pyspedas import time_double
 
+
 def mms_feeps_active_eyes(trange, probe, data_rate, species, level):
     """
     This function returns the FEEPS active eyes, based on date/probe/species/rate
@@ -90,5 +91,3 @@ def mms_feeps_active_eyes(trange, probe, data_rate, species, level):
         return {'top': [5, 11, 12], 'bottom': []}
 
     return sensors
-
-

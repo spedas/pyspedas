@@ -302,6 +302,9 @@ def download(remote_path='',
                     reg_expression = re.compile(url_file)
                     new_links = list(filter(reg_expression.match, links))
 
+                if len(new_links) == 0:
+                    logging.info("No links matching pattern %s found at remote index %s",url_file,url_base)
+
                 if last_version and len(new_links) > 1:
                     new_links = sorted(new_links)
                     new_links = [new_links[-1]]

@@ -2,7 +2,6 @@
 def mms_get_hpca_info():
     """
     Returns structure containing hpca look directions, energies, and other info.
-
     """
      
     forward_anodes = [14,15,0,1,2,3,4,5]

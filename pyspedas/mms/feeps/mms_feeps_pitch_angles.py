@@ -11,9 +11,10 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     """
     Generates a tplot variable containing the FEEPS pitch angles for each telescope from magnetic field data.
 
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
@@ -32,10 +33,10 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    ----------
         Tuple: (tplot variable created, hash table used by PAD routine)
     """
-
     # get the times from the currently loaded FEEPS data
     pa_variable = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix, dt=True)
 
@@ -289,11 +290,13 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
         idx_maps = {'ion-top': top_idxs, 'ion-bottom': bot_idxs}
 
-
     outvar = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pa'+suffix
 
-    if data_exists(outvar): # kludge for bug when the PAs were previously calculated
-        return (outvar, idx_maps)
+    if data_exists(outvar):  # kludge for bug when the PAs were previously calculated
+        # check if the current variable's time array matches our output
+        current_pas = get_data(outvar)
+        if np.array_equal(current_pas.times, btimes):
+            return outvar, idx_maps
 
     store_data(outvar, data={'x': btimes, 'y': new_pas})
 
@@ -303,4 +306,4 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
     store_data(outvar, data={'x': times, 'y': outdata_interpolated.values})
 
-    return (outvar, idx_maps)
+    return outvar, idx_maps

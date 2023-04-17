@@ -1,7 +1,5 @@
-
 import logging
 from time import time
-
 from pyspedas import time_double, mms
 from pyspedas.mms.particles.mms_part_products import mms_part_products
 

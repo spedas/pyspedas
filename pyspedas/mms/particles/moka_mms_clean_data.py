@@ -8,7 +8,6 @@ def moka_mms_clean_data(data_in, units=None, disterr=None):
     """
     This is a translation of Mitsuo Oka's IDL routine: moka_mms_clean_data
     """
-
     if units is None:
         logging.error('Units must be specified.')
         return

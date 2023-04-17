@@ -35,7 +35,6 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
         List of the tplot variables created.
 
     """
-
     if fnmatch(tname, 'mms?_dis*'):
         instrument = 'DIS'
     elif fnmatch(tname, 'mms?_des*'):

@@ -1,4 +1,3 @@
-
 import warnings
 import numpy as np
 import scipy 
@@ -12,11 +11,13 @@ try:
 except ImportError:
     nanmean = np.nanmean
 
+
 def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron', data_rate='srvy', level='l2', suffix='', energy=[70, 600], bin_size=16.3636):
     """
     This function will spin-average the FEEPS pitch angle distributions
     
-    Parameters:
+    Parameters
+    -----------
         probe: str
             probe #, e.g., '4' for MMS4
 
@@ -41,10 +42,10 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
         bin_size: float
             size of the pitch angle bins
 
-    Returns:
+    Returns
+    ----------
         Name of tplot variable created.
     """
-
     units_label = ''
     if data_units == 'intensity':
         units_label = '1/(cm^2-sr-s-keV)'

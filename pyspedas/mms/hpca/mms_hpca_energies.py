@@ -1,5 +1,5 @@
-
 import numpy as np
+
 
 def mms_hpca_energies():
     return np.array([1.35500, 1.57180, 1.84280, 2.22220, 2.60160, 3.08940, 3.63140, 4.28180,
