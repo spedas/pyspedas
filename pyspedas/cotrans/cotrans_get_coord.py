@@ -3,7 +3,8 @@ from pytplot import get_data
 
 
 def cotrans_get_coord(name):
-    '''
+    """
+
     This function returns the coordinate system of a tplot variable
 
     Parameters:
@@ -20,7 +21,7 @@ def cotrans_get_coord(name):
         Coordinate system of the tplot variable 
         or 
         None if the coordinate system isn't set
-    '''
+    """
 
     metadata = get_data(name, metadata=True)
     if metadata is None:
@@ -30,5 +31,5 @@ def cotrans_get_coord(name):
         if metadata['data_att'].get('coord_sys'):
             return metadata['data_att']['coord_sys']
 
-    logging.error('Coordinate system not found: ' + name)
+    logging.debug('Coordinate system not found: ' + name)
     return None

@@ -48,8 +48,23 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         logging.error("cotrans error: No output coordinates were provided.")
         return 0
 
+    # Input data may be specified as a bare array rather than a tplot variable
+    if not (name_in is None):
+        var_coord_in = cotrans_get_coord(name_in)
+    else:
+        var_coord_in = None
+
+    # If the input coordinate system is supplied as an argument, and the tplot variable has a coordinate system
+    # specified in its metadata, check that they match, and if not, log the error and return failure.
+
+    if not (var_coord_in is None) and not(coord_in is None):
+        if var_coord_in.lower() != coord_in.lower():
+            logging.error("cotrans error: " + name_in + " has " +
+                          var_coord_in.lower() + " coordinates, but transform from " + coord_in.lower() + " was requested.")
+            return 0
+
     if coord_in is None:
-        coord_in = cotrans_get_coord(name_in)
+        coord_in = var_coord_in
         if coord_in is None:
             logging.error("cotrans error: No input coordinates were provided.")
             return 0
@@ -95,18 +110,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     # We should change an attribute for the coordinate system.
     cotrans_set_coord(name_out, coord_out.upper())
 
-    # should also update the legend, if it includes the coordinate system
-    # for this to work, the coordinate system should be in all upper case
-    metadata = pytplot.get_data(name_out, metadata=True)
-    if metadata.get('plot_options') is not None:
-        if metadata['plot_options'].get('yaxis_opt') is not None:
-            if metadata['plot_options']['yaxis_opt'].get('legend_names') is not None:
-                legend = metadata['plot_options']['yaxis_opt'].get('legend_names')
-                updated_legend = [item.replace(coord_in.upper(), coord_out.upper()) for item in legend]
-                metadata['plot_options']['yaxis_opt']['legend_names'] = updated_legend
-            if metadata['plot_options']['yaxis_opt'].get('axis_label') is not None:
-                ytitle = metadata['plot_options']['yaxis_opt'].get('axis_label')
-                metadata['plot_options']['yaxis_opt']['axis_label'] = ytitle.replace(coord_in.upper(), coord_out.upper())
+    # Code to update the legend and axis labels has been moved into cotrans_set_coord().
 
     logging.info("Output variable: " + name_out)
 

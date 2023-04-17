@@ -6,9 +6,8 @@ Notes
 Allowed wildcards are ? for a single character, * from multiple characters.
 
 """
-import fnmatch
-from pytplot import tplot_names
-
+import logging
+import pytplot
 
 def tnames(pattern=None):
     """
@@ -25,16 +24,6 @@ def tnames(pattern=None):
         List of pytplot variables.
 
     """
-    name_list = list()
-    all_names = tplot_names(quiet=True)
-
-    if pattern is None:
-        name_list.extend(all_names)
-    else:
-        if isinstance(pattern, str):
-            name_list.extend(fnmatch.filter(all_names, pattern))
-        else:
-            for p in pattern:
-                name_list.extend(fnmatch.filter(all_names, p))
-
-    return name_list
+    logging.info("tnames has been moved to the pytplot package. Please update your imports!")
+    logging.info("This version will eventually be removed.")
+    return pytplot.tnames(pattern)
