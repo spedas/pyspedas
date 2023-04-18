@@ -1,7 +1,7 @@
 import numpy as np 
 from pytplot import get_data, store_data
 from pyspedas import tnames
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 
 
 def mms_fgm_remove_flags(probe, data_rate, level, instrument, suffix=''):

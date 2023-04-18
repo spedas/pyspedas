@@ -3,7 +3,7 @@ import unittest
 
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas import tcopy, tkm2re
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pytplot import get_data, store_data, options
 
 

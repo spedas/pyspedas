@@ -1,8 +1,8 @@
 import logging
 import pyspedas
 import pyspedas.themis
-from pyspedas.utilities.data_exists import data_exists
-from pyspedas.utilities.time_double import time_double
+from pytplot import data_exists
+from pytplot import time_double
 from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
 import pytplot
 

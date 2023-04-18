@@ -5,7 +5,7 @@ import unittest
 import pytplot
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.themis.cotrans.gse2sse import gse2sse
 from pyspedas.themis.cotrans.sse2sel import sse2sel
 from pyspedas.themis.state.autoload_support import autoload_support

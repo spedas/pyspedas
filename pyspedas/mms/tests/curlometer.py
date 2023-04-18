@@ -1,7 +1,7 @@
 
 import unittest
 import pyspedas
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.mms.fgm.mms_lingradest import mms_lingradest
 
 class CurlTestCases(unittest.TestCase):

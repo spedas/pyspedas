@@ -4,7 +4,7 @@ import unittest
 import logging
 import pyspedas
 import pytplot
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 
 

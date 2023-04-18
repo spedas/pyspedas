@@ -5,7 +5,7 @@ import unittest
 import pyspedas
 import pytplot
 import pyspedas.themis
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from numpy.testing import assert_allclose
 
 class StateDataValidation(unittest.TestCase):

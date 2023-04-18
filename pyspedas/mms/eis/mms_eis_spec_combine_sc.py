@@ -7,8 +7,7 @@ try:
     nanmean = bn.nanmean
 except ImportError:
     nanmean = np.nanmean
-from pytplot import get_data, store_data, options
-from ...utilities.tnames import tnames
+from pytplot import get_data, store_data, options, tnames
 
 
 def mms_eis_spec_combine_sc(

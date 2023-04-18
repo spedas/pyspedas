@@ -1,6 +1,6 @@
 import unittest
 from pyspedas.hapi.hapi import hapi
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 
 
 class HAPITests(unittest.TestCase):

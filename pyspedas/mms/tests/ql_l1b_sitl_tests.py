@@ -1,6 +1,6 @@
 import unittest
 import pyspedas
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 

@@ -6,7 +6,7 @@ import pytplot
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 import numpy as np
 
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 
 from pyspedas.analysis.twavpol import twavpol
 

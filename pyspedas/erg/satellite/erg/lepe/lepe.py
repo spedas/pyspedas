@@ -3,7 +3,7 @@ import cdflib
 import numpy as np
 from pytplot import clip, get_data, options, store_data, ylim, zlim
 
-from pyspedas.utilities.time_double import time_double
+from pytplot import time_double
 
 
 from ..load import load

@@ -8,7 +8,7 @@ from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, 
 from pytplot import get_data, store_data, del_data, cdf_to_tplot
 from pyspedas import themis
 from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-from pyspedas.utilities.time_string import time_string
+from pytplot import time_string
 
 
 class SpinmodelDataValidation(unittest.TestCase):

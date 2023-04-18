@@ -3,7 +3,7 @@ from pyspedas import tinterpol
 from pyspedas.analysis.tcrossp import tcrossp
 from pyspedas.analysis.tnormalize import tnormalize
 from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.utilities.time_string import time_string
+from pytplot import time_string
 from pytplot import get_data, get_timespan, options, store_data, tplot_names
 
 from ...orb.orb import orb

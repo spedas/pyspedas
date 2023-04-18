@@ -1,6 +1,6 @@
 import unittest
 from pyspedas.mms.particles.mms_part_getspec import mms_part_getspec
-from ...utilities.data_exists import data_exists
+from pytplot import data_exists
 
 
 class PGSTests(unittest.TestCase):
