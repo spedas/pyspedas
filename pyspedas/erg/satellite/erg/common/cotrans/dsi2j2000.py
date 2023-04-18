@@ -1,7 +1,7 @@
 import numpy as np
 from pyspedas import tinterpol
-from pyspedas.analysis.tcrossp import tcrossp
-from pyspedas.analysis.tnormalize import tnormalize
+from pytplot import tcrossp
+from pytplot import tnormalize
 from pyspedas.cotrans.cotrans import cotrans
 from pytplot import time_string
 from pytplot import get_data, get_timespan, options, store_data, tplot_names

@@ -2,8 +2,8 @@
 import unittest
 
 from pyspedas.utilities.dailynames import dailynames
-from pyspedas import tcopy, tkm2re
-from pytplot import data_exists
+from pyspedas import tcopy
+from pytplot import data_exists, tkm2re
 from pytplot import get_data, store_data, options
 
 
