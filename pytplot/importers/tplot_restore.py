@@ -145,6 +145,19 @@ def tplot_restore(filename):
             
             if temp_tplot['dq'][i][3].dtype.names is not None:
                 for option_name in temp_tplot['dq'][i][3].dtype.names:
+                    if option_name.lower() == 'data_att':
+                        arr = temp_tplot['dq'][i][3][option_name][0]
+                        att_names = arr.dtype.names
+
+                        # extract the values associated with the field names
+                        att_values = arr.item()
+
+                        att_values = [value.decode('utf-8') for value in att_values if isinstance(value, bytes)]
+
+                        # create a dictionary with the desired mappings
+                        data_att = {name.lower(): value for name, value in zip(att_names, att_values)}
+                        pytplot.data_quants[data_name].attrs['data_att'] = data_att
+
                     options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0])
 
             pytplot.data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
