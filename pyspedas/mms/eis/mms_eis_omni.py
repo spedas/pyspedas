@@ -1,7 +1,6 @@
 import logging
 import numpy as np
-from pytplot import get_data, store_data, options
-from ...utilities.tnames import tnames
+from pytplot import get_data, store_data, options, tnames
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)

@@ -1,6 +1,6 @@
 import unittest
 import pyspedas
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.mms.cotrans.mms_qcotrans import mms_qcotrans
 
 class CotransTestCases(unittest.TestCase):

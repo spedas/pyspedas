@@ -1,13 +1,13 @@
 """Automated tests for the analysis functions."""
 
 import unittest
-from pyspedas.analysis.tsmooth import smooth
+from pytplot import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
                       yclip, time_clip, deriv_data, tdeflag, clean_spikes,
                       tinterpol)
-from pyspedas.analysis.tcrossp import tcrossp
-from pyspedas.analysis.tdotp import tdotp
-from pyspedas.analysis.tnormalize import tnormalize
+from pytplot import tcrossp
+from pytplot import tdotp
+from pytplot import tnormalize
 from pytplot import get_data, store_data, replace_data
 
 import numpy as np

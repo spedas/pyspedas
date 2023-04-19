@@ -8,7 +8,7 @@ import logging
 from math import pi
 import numpy as np
 from pytplot import get_data, store_data
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.themis.state.spinmodel.spinmodel import Spinmodel
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord

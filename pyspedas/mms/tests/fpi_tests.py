@@ -1,7 +1,7 @@
 import pyspedas
 import unittest
 
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.mms.fpi.mms_fpi_split_tensor import mms_fpi_split_tensor
 from pyspedas.mms.fpi.mms_fpi_ang_ang import mms_fpi_ang_ang
 from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist

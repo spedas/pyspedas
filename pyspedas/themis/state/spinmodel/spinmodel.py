@@ -3,8 +3,8 @@ import math
 import logging
 from .spinmodel_segment import SpinmodelSegment
 from pytplot import get_data, store_data
-from pyspedas.utilities.data_exists import data_exists
-from pyspedas.utilities.time_string import time_string
+from pytplot import data_exists
+from pytplot import time_string
 
 
 def get_sm_data(probe: str,

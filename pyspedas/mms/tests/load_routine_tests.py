@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from pyspedas.mms import mms_load_state, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info

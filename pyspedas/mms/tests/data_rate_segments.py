@@ -5,7 +5,7 @@ from pyspedas.mms.spd_mms_load_bss import spd_mms_load_bss
 from pyspedas.mms.mms_load_sroi_segments import mms_load_sroi_segments
 from pyspedas.mms.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.mms.mms_load_brst_segments import mms_load_brst_segments
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 
 
 class SegmentTestCases(unittest.TestCase):

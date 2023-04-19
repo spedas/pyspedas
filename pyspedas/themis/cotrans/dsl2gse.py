@@ -10,7 +10,7 @@ import pytplot
 
 import pyspedas
 from pyspedas.cotrans.cotrans_lib import subgei2gse
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 from copy import deepcopy

@@ -1,9 +1,9 @@
 """Test gmag and themis load functions."""
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
-from pyspedas.utilities.time_string import time_string
-from pyspedas.utilities.time_double import time_double
+from pytplot import data_exists
+from pytplot import time_string
+from pytplot import time_double
 
 import pyspedas
 import pytplot

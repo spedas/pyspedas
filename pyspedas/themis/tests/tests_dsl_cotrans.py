@@ -6,7 +6,7 @@ import pytplot
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 
 from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.themis.cotrans.ssl2dsl import ssl2dsl
 from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.themis.state.autoload_support import autoload_support

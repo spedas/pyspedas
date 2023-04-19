@@ -7,8 +7,8 @@ from .load import load
 import numpy as np
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
-from pyspedas.utilities.time_double import time_double
+from pytplot import time_clip as tclip
+from pytplot import time_double
 import pandas as pd
 import time
 import zipfile

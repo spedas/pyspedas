@@ -7,7 +7,7 @@ import numpy as np
 import pytplot
 from pyspedas import tnormalize, tcrossp
 from pyspedas.cotrans.tvector_rotate import tvector_rotate
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
@@ -17,7 +17,7 @@ from pyspedas.themis.cotrans.gse2sse import gse2sse
 
 def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str, 
             name_lun_att_x: str, name_lun_att_z: str, name_out: str, 
-            isseltosse: bool = False, variable_type: str = 'Other', ignore_input_coord: bool = False, rotate_only: bool = False) -> int:
+            isseltosse: bool = False, ignore_input_coord: bool = False) -> int:
     """Transform sse to sel.
     Parameters
     ----------
@@ -133,7 +133,9 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
     z_axis = sel_z_sse.y
 
     # Y basis vector
-    y_axis = tcrossp(z_axis, x_axis, return_data=True)
+    tcrossp('sel_z_sse', 'sel_x_sse', newname='sel_y_sse')
+    sel_y_sse = pytplot.get_data('sel_y_sse')
+    y_axis = sel_y_sse.y
 
     out_data = np.zeros((sun_pos_dim[0], 3, 3))
     if not isseltosse:
@@ -146,41 +148,16 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
         out_data[:,:,1] = y_axis
         out_data[:,:,2] = z_axis
     pytplot.store_data('sel_mat_cotrans', data={'x': sunpos.times, 'y': out_data})
-    if variable_type.lower() == "pos" and not rotate_only:
-        tinterpol(lun_pos_gse_name,name_in,newname='sse2sel_offset')
-        sse2sel_offset_data = pytplot.get_data('sse2sel_offset')
-    elif variable_type.lower() == "vel" and not rotate_only:
-        deriv_data(lun_pos_gse_name,new_names='sse2sel_lun_vel')
-        tinterpol('sse2sel_lun_vel',name_in,newname='sse2sel_offset')
-        sse2sel_offset_data = pytplot.get_data('sse2sel_offset')
-    else:
-        logging.info("No offsets performed for variable type %s",variable_type)
-        rotate_only = True
     if not isseltosse:
         """ SSE -> SEL
         """
-        if not rotate_only:
-            logging.info("Applying earth-moon %s offset to input variable %s",variable_type,name_in)
-            input_pos = pytplot.get_data(name_in)
-            translated_pos = input_pos.y - sse2sel_offset_data.y
-            name_trans = name_in + '_trans'
-            pytplot.store_data(name_trans,data={'x':input_pos.times, 'y':translated_pos})
-            tvector_rotate('sse_mat_cotrans',name_trans,newname=name_out)
-        else:
-            tvector_rotate('sel_mat_cotrans',name_in,newname=name_out)
+        tvector_rotate('sel_mat_cotrans',name_in,newname=name_out)
         cotrans_set_coord(name_out,'SEL')
         return 1
     
     else:
         """ SEL -> SSE
         """
-        if not rotate_only:
-            tvector_rotate('sse_mat_cotrans',name_in,newname='sse2sel_rotated')
-            logging.info("Applying moon-earth %s offset to rotated variable %s",variable_type,'sse2sel_rotated')
-            rotated_data = pytplot.get_data('sse2sel_rotated')
-            earth_data = rotated_data.y + sse2sel_offset_data.y
-            pytplot.store_data(name_out,data={'x':rotated_data.times,'y':earth_data})
-        else:
-            tvector_rotate('sel_mat_cotrans',name_in,newname=name_out)
+        tvector_rotate('sel_mat_cotrans',name_in,newname=name_out)
         cotrans_set_coord(name_out,'SSE')
         return 1

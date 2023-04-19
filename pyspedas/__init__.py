@@ -1,25 +1,25 @@
 from .version import version
-from .utilities.data_exists import data_exists
-from .utilities.tnames import tnames
-from .utilities.time_string import time_string, time_datetime
-from .utilities.time_double import time_float, time_double
+from pytplot import data_exists
+from pytplot import tnames
+from pytplot import time_string, time_datetime
+from pytplot import time_float, time_double
 from .utilities.tcopy import tcopy
-from .utilities.tkm2re import tkm2re
+from pytplot import tkm2re
 
 from .analysis.avg_data import avg_data
-from .analysis.clean_spikes import clean_spikes
+from pytplot import clean_spikes
 from .analysis.deriv_data import deriv_data
 from .analysis.dpwrspc import dpwrspc
-from .analysis.subtract_average import subtract_average
-from .analysis.subtract_median import subtract_median
-from .analysis.time_clip import time_clip
+from pytplot import subtract_average
+from pytplot import subtract_median
+from pytplot import time_clip
 from .analysis.tdeflag import tdeflag
 from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
-from .analysis.tnormalize import tnormalize
-from .analysis.tdotp import tdotp
-from .analysis.tcrossp import tcrossp
-from .analysis.tsmooth import tsmooth
+from pytplot import tnormalize
+from pytplot import tdotp
+from pytplot import tcrossp
+from pytplot import tsmooth
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
 from pytplot import cdf_to_tplot

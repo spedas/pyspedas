@@ -4,8 +4,8 @@ from pyspedas import tnames, tcopy
 from pytplot import get_data, store_data
 
 from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.analysis.tnormalize import tnormalize
-from pyspedas.analysis.tcrossp import tcrossp
+from pytplot import tnormalize
+from pytplot import tcrossp
 from pyspedas.analysis.tinterpol import tinterpol
 
 from ..common.cotrans.erg_cotrans import erg_cotrans

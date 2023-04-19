@@ -92,7 +92,7 @@ def cal_fit(probe='a', no_cal=False):
     from pytplot import get_data, store_data, tplot_names, options
     from pyspedas.utilities.download import download
     from pyspedas.themis.config import CONFIG
-    from pyspedas.utilities.time_double import time_float_one
+    from pytplot import time_float_one
     from copy import deepcopy
     from numpy.linalg import inv
 

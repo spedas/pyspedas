@@ -5,7 +5,7 @@ from pyspedas.mms.fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 from pyspedas.mms.fgm.mms_split_fgm_data import mms_split_fgm_data
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pytplot import del_data
 
 

@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
 import numpy as np
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import store_data
 
 
