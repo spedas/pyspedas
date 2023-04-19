@@ -195,7 +195,7 @@ def lineplot(var_data,
                          labelcolor=legend_color, markerfirst=legend_markerfirst, markerscale=legend_markerscale,
                          facecolor=legend_facecolor, edgecolor=legend_edgecolor, frameon=legend_frameon,
                          title_fontsize=legend_titlesize, bbox_to_anchor=bbox_to_anchor)
-        for legobj in legend.legendHandles:
+        for legobj in legend.legend_handles:
             legobj.set_linewidth(legend_markersize)
 
     return True
