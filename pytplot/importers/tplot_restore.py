@@ -152,6 +152,7 @@ def tplot_restore(filename):
                         # extract the values associated with the field names
                         att_values = arr.item()
 
+                        # ensure the values are decoded to strings
                         att_values = [value.decode('utf-8') for value in att_values if isinstance(value, bytes)]
 
                         # create a dictionary with the desired mappings
