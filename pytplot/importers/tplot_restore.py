@@ -172,7 +172,10 @@ def tplot_restore(filename):
                 yaxis_opts = plt_options.get('yaxis_opt')
                 if yaxis_opts.get('legend_names') is not None:
                     lnames = pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'][0]
-                    pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lname.decode('utf-8') for lname in lnames]
+                    if isinstance(lnames, list) or isinstance(lnames, np.ndarray):
+                        pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lname.decode('utf-8') for lname in lnames]
+                    else:
+                        pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lnames.decode('utf-8')]
 
                 # decode any other string options
                 for y_key in yaxis_opts.keys():
