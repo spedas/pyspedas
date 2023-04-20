@@ -1,8 +1,7 @@
 from pyspedas.themis.load import load
-from pytplot import data_exists
-from pyspedas.themis.state.apply_spinaxis_corrections import apply_spinaxis_corrections
-from pyspedas.themis.state.spinmodel.spinmodel_postprocess import spinmodel_postprocess
-from pytplot import del_data
+from pytplot import data_exists, del_data
+from .apply_spinaxis_corrections import apply_spinaxis_corrections
+from .spinmodel.spinmodel_postprocess import spinmodel_postprocess
 
 
 def state(trange=['2007-03-23', '2007-03-24'],

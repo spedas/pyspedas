@@ -1,14 +1,9 @@
 """ Tests of spinmodel construction and interpolation """
-import pytplot.get_data
-from pytplot.importers.cdf_to_tplot import cdf_to_tplot
 import unittest
-import pytplot
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
+from pytplot import get_data, store_data, time_string, del_data, cdf_to_tplot
+from pyspedas.themis import state, get_spinmodel
 
-from pytplot import get_data, store_data, del_data, cdf_to_tplot
-from pyspedas import themis
-from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-from pytplot import time_string
 
 
 class SpinmodelDataValidation(unittest.TestCase):
@@ -52,9 +47,9 @@ class SpinmodelDataValidation(unittest.TestCase):
             raise unittest.SkipTest("Cannot download data validation file")
 
         # Load validation variables from the test file
-        pytplot.del_data('*')
+        del_data('*')
         filename = datafile[0]
-        pytplot.cdf_to_tplot(filename)
+        cdf_to_tplot(filename)
         # pytplot.tplot_restore(filename)
         t_dummy, trange = get_data('parm_trange')
         t_dummy, probe_idx = get_data('parm_probe')
@@ -68,7 +63,7 @@ class SpinmodelDataValidation(unittest.TestCase):
         probe = probes[int_idx]
         #print(probe)
         #print(int_corr_level)
-        thm_data = themis.state(trange=trange, probe=probe, get_support_data=True)
+        thm_data = state(trange=trange, probe=probe, get_support_data=True)
         cls.model = get_spinmodel(probe, int_corr_level)
         cls.model.make_tplot_vars('py_seg_')
         #pytplot.tplot_names()
@@ -86,63 +81,63 @@ class SpinmodelDataValidation(unittest.TestCase):
         # pytplot.del_data('*')
 
     def test_seg_t1(self):
-        pydata = pytplot.get_data('py_seg_t1')
-        idldata = pytplot.get_data('seg_t1')
+        pydata = get_data('py_seg_t1')
+        idldata = get_data('seg_t1')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_t2(self):
-        pydata = pytplot.get_data('py_seg_t2')
-        idldata = pytplot.get_data('seg_t2')
+        pydata = get_data('py_seg_t2')
+        idldata = get_data('seg_t2')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_c1(self):
-        pydata = pytplot.get_data('py_seg_c1')
-        idldata = pytplot.get_data('seg_c1')
+        pydata = get_data('py_seg_c1')
+        idldata = get_data('seg_c1')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_c2(self):
-        pydata = pytplot.get_data('py_seg_c2')
-        idldata = pytplot.get_data('seg_c2')
+        pydata = get_data('py_seg_c2')
+        idldata = get_data('seg_c2')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_b(self):
-        pydata = pytplot.get_data('py_seg_b')
-        idldata = pytplot.get_data('seg_b')
+        pydata = get_data('py_seg_b')
+        idldata = get_data('seg_b')
         assert_allclose(pydata.y, idldata.y, rtol=1.0e-05)
 
     def test_seg_c(self):
-        pydata = pytplot.get_data('py_seg_c')
-        idldata = pytplot.get_data('seg_c')
+        pydata = get_data('py_seg_c')
+        idldata = get_data('seg_c')
         assert_allclose(pydata.y, idldata.y, rtol=1.0e-06)
 
     def test_seg_npts(self):
-        pydata = pytplot.get_data('py_seg_npts')
-        idldata = pytplot.get_data('seg_npts')
+        pydata = get_data('py_seg_npts')
+        idldata = get_data('seg_npts')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_maxgap(self):
-        pydata = pytplot.get_data('py_seg_maxgap')
-        idldata = pytplot.get_data('seg_maxgap')
+        pydata = get_data('py_seg_maxgap')
+        idldata = get_data('seg_maxgap')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_phaserr(self):
-        pydata = pytplot.get_data('py_seg_phaserr')
-        idldata = pytplot.get_data('seg_phaserr')
+        pydata = get_data('py_seg_phaserr')
+        idldata = get_data('seg_phaserr')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_idpu_spinper(self):
-        pydata = pytplot.get_data('py_seg_idpu_spinper')
-        idldata = pytplot.get_data('seg_idpu_spinper')
+        pydata = get_data('py_seg_idpu_spinper')
+        idldata = get_data('seg_idpu_spinper')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_initial_delta_phi(self):
-        pydata = pytplot.get_data('py_seg_initial_delta_phi')
-        idldata = pytplot.get_data('seg_initial_delta_phi')
+        pydata = get_data('py_seg_initial_delta_phi')
+        idldata = get_data('seg_initial_delta_phi')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_seg_segflags(self):
-        pydata = pytplot.get_data('py_seg_segflags')
-        idldata = pytplot.get_data('seg_segflags')
+        pydata = get_data('py_seg_segflags')
+        idldata = get_data('seg_segflags')
         assert_allclose(pydata.y, idldata.y, atol=1.0e-06)
 
     def test_interp_spinphase(self):

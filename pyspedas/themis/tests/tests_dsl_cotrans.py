@@ -1,15 +1,10 @@
 """Tests of ssl2dsl and dsl2gse functions."""
-import pytplot.get_data
-from pytplot.importers.cdf_to_tplot import cdf_to_tplot
+
 import unittest
-import pytplot
+from pytplot import get_data,del_data,tplot_restore,data_exists
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 
-from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-from pytplot import data_exists
-from pyspedas.themis.cotrans.ssl2dsl import ssl2dsl
-from pyspedas.themis.cotrans.dsl2gse import dsl2gse
-from pyspedas.themis.state.autoload_support import autoload_support
+from pyspedas.themis import autoload_support, ssl2dsl,dsl2gse
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
 from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 
@@ -45,36 +40,36 @@ class DSLCotransDataValidation(unittest.TestCase):
             raise unittest.SkipTest("Cannot download data validation file")
 
         # Load validation variables from the test file
-        pytplot.del_data('*')
+        del_data('*')
         filename = datafile[0]
         # pytplot.cdf_to_tplot(filename)
-        pytplot.tplot_restore(filename)
+        tplot_restore(filename)
         #pytplot.tplot_names()
-        cls.basis_x = pytplot.get_data('basis_x')
-        cls.basis_y = pytplot.get_data('basis_y')
-        cls.basis_z = pytplot.get_data('basis_z')
-        cls.basis_x_gei2gse = pytplot.get_data('basis_x_gei2gse')
-        cls.basis_y_gei2gse = pytplot.get_data('basis_y_gei2gse')
-        cls.basis_z_gei2gse = pytplot.get_data('basis_z_gei2gse')
-        cls.basis_x_gse2gei = pytplot.get_data('basis_x_gse2gei')
-        cls.basis_y_gse2gei = pytplot.get_data('basis_y_gse2gei')
-        cls.basis_z_gse2gei = pytplot.get_data('basis_z_gse2gei')
+        cls.basis_x = get_data('basis_x')
+        cls.basis_y = get_data('basis_y')
+        cls.basis_z = get_data('basis_z')
+        cls.basis_x_gei2gse = get_data('basis_x_gei2gse')
+        cls.basis_y_gei2gse = get_data('basis_y_gei2gse')
+        cls.basis_z_gei2gse = get_data('basis_z_gei2gse')
+        cls.basis_x_gse2gei = get_data('basis_x_gse2gei')
+        cls.basis_y_gse2gei = get_data('basis_y_gse2gei')
+        cls.basis_z_gse2gei = get_data('basis_z_gse2gei')
 
-        cls.basis_x_dsl2gse = pytplot.get_data('basis_x_dsl2gse')
-        cls.basis_y_dsl2gse = pytplot.get_data('basis_y_dsl2gse')
-        cls.basis_z_dsl2gse = pytplot.get_data('basis_z_dsl2gse')
+        cls.basis_x_dsl2gse = get_data('basis_x_dsl2gse')
+        cls.basis_y_dsl2gse = get_data('basis_y_dsl2gse')
+        cls.basis_z_dsl2gse = get_data('basis_z_dsl2gse')
 
-        cls.basis_x_gse2dsl = pytplot.get_data('basis_x_gse2dsl')
-        cls.basis_y_gse2dsl = pytplot.get_data('basis_y_gse2dsl')
-        cls.basis_z_gse2dsl = pytplot.get_data('basis_z_gse2dsl')
+        cls.basis_x_gse2dsl = get_data('basis_x_gse2dsl')
+        cls.basis_y_gse2dsl = get_data('basis_y_gse2dsl')
+        cls.basis_z_gse2dsl = get_data('basis_z_gse2dsl')
 
-        cls.basis_x_ssl2dsl = pytplot.get_data('basis_x_ssl2dsl')
-        cls.basis_y_ssl2dsl = pytplot.get_data('basis_y_ssl2dsl')
-        cls.basis_z_ssl2dsl = pytplot.get_data('basis_z_ssl2dsl')
+        cls.basis_x_ssl2dsl = get_data('basis_x_ssl2dsl')
+        cls.basis_y_ssl2dsl = get_data('basis_y_ssl2dsl')
+        cls.basis_z_ssl2dsl = get_data('basis_z_ssl2dsl')
 
-        cls.basis_x_dsl2ssl = pytplot.get_data('basis_x_dsl2ssl')
-        cls.basis_y_dsl2ssl = pytplot.get_data('basis_y_dsl2ssl')
-        cls.basis_z_dsl2ssl = pytplot.get_data('basis_z_dsl2ssl')
+        cls.basis_x_dsl2ssl = get_data('basis_x_dsl2ssl')
+        cls.basis_y_dsl2ssl = get_data('basis_y_dsl2ssl')
+        cls.basis_z_dsl2ssl = get_data('basis_z_dsl2ssl')
 
         state_trange = ['2007-03-20', '2007-03-30']
         autoload_support(trange=state_trange, probe='a', spinaxis=True, spinmodel=True)
@@ -82,7 +77,7 @@ class DSLCotransDataValidation(unittest.TestCase):
 
     def setUp(self):
         """ We need to clean tplot variables before each run"""
-        # pytplot.del_data('*')
+        # del_data('*')
 
     def test_gei2gse(self):
         """Validate gei2gse transform """
@@ -119,7 +114,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_x', 'DSL')
         result = dsl2gse('basis_x', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_x_dsl2gse')
         self.assertEqual(result,1)
-        bx_gse = pytplot.get_data('basis_x_dsl2gse')
+        bx_gse = get_data('basis_x_dsl2gse')
         assert_allclose(bx_gse.y, self.basis_x_dsl2gse.y, atol=1.0e-06)
 
     def test_dsl2gse_y(self):
@@ -128,7 +123,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_y', 'DSL')
         result = dsl2gse('basis_y', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_y_dsl2gse')
         self.assertEqual(result, 1)
-        by_gse = pytplot.get_data('basis_y_dsl2gse')
+        by_gse = get_data('basis_y_dsl2gse')
         assert_allclose(by_gse.y, self.basis_y_dsl2gse.y, atol=1.0e-06)
 
     def test_dsl2gse_z(self):
@@ -136,7 +131,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_z', 'DSL')
         result = dsl2gse('basis_z', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_z_dsl2gse')
         self.assertEqual(result, 1)
-        bz_gse = pytplot.get_data('basis_z_dsl2gse')
+        bz_gse = get_data('basis_z_dsl2gse')
         assert_allclose(bz_gse.y, self.basis_z_dsl2gse.y, atol=1.0e-06)
 
     def test_gse2dsl_x(self):
@@ -145,7 +140,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         result = dsl2gse('basis_x', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_x_gse2dsl', isgsetodsl=True)
         self.assertEqual(result, 1)
         self.assertEqual(result, 1)
-        bx_gse = pytplot.get_data('basis_x_gse2dsl')
+        bx_gse = get_data('basis_x_gse2dsl')
         assert_allclose(bx_gse.y, self.basis_x_gse2dsl.y, atol=1.0e-06)
 
     def test_gse2dsl_y(self):
@@ -154,7 +149,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_y', 'GSE')
         result = dsl2gse('basis_y', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_y_gse2dsl', isgsetodsl=True)
         self.assertEqual(result, 1)
-        by_gse = pytplot.get_data('basis_y_gse2dsl')
+        by_gse = get_data('basis_y_gse2dsl')
         assert_allclose(by_gse.y, self.basis_y_gse2dsl.y, atol=1.0e-06)
 
     def test_gse2dsl_z(self):
@@ -162,7 +157,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_z', 'GSE')
         result = dsl2gse('basis_z', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_z_gse2dsl', isgsetodsl=True)
         self.assertEqual(result, 1)
-        bz_gse = pytplot.get_data('basis_z_gse2dsl')
+        bz_gse = get_data('basis_z_gse2dsl')
         assert_allclose(bz_gse.y, self.basis_z_gse2dsl.y, atol=1.0e-06)
 
     def test_ssl2dsl_x(self):
@@ -172,7 +167,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_x', 'SSL')
         result = ssl2dsl('basis_x', sm, 'basis_x_ssldsl')
         self.assertEqual(result, 1)
-        bx_dsl = pytplot.get_data('basis_x_ssl2dsl')
+        bx_dsl = get_data('basis_x_ssl2dsl')
         assert_allclose(bx_dsl.y, self.basis_x_ssl2dsl.y, atol=1.0e-06)
 
     def test_ssl2dsl_y(self):
@@ -182,7 +177,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_y', 'SSL')
         result = ssl2dsl('basis_y', sm, 'basis_y_ssldsl', use_spinphase_correction=True)
         self.assertEqual(result, 1)
-        by_dsl = pytplot.get_data('basis_y_ssl2dsl')
+        by_dsl = get_data('basis_y_ssl2dsl')
         assert_allclose(by_dsl.y, self.basis_y_ssl2dsl.y, atol=1.0e-06)
 
     def test_ssl2dsl_z(self):
@@ -192,7 +187,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_z', 'SSL')
         result = ssl2dsl('basis_z', sm, 'basis_z_ssldsl', use_spinphase_correction=True)
         self.assertEqual(result, 1)
-        bz_dsl = pytplot.get_data('basis_z_ssl2dsl')
+        bz_dsl = get_data('basis_z_ssl2dsl')
         assert_allclose(bz_dsl.y, self.basis_z_ssl2dsl.y, atol=1.0e-06)
 
     def test_dsl2ssl_x(self):
@@ -202,7 +197,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_x', 'DSL')
         result = ssl2dsl('basis_x', sm, 'basis_x_dsl2ssl', use_spinphase_correction=True, isdsltossl=True)
         self.assertEqual(result, 1)
-        bx_ssl = pytplot.get_data('basis_x_dsl2ssl')
+        bx_ssl = get_data('basis_x_dsl2ssl')
         # This test needs a slightly looser tolerance for some reason.
         assert_allclose(bx_ssl.y, self.basis_x_dsl2ssl.y, atol=1.5e-06)
 
@@ -213,7 +208,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_y', 'DSL')
         result = ssl2dsl('basis_y', sm, 'basis_y_dsl2ssl', use_spinphase_correction=True, isdsltossl=True)
         self.assertEqual(result, 1)
-        by_ssl = pytplot.get_data('basis_y_dsl2ssl')
+        by_ssl = get_data('basis_y_dsl2ssl')
         # This test needs a slightly looser tolerance for some reason.
         assert_allclose(by_ssl.y, self.basis_y_dsl2ssl.y, atol=1.5e-06)
 
@@ -224,7 +219,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cotrans_set_coord('basis_z', 'DSL')
         result = ssl2dsl('basis_z', sm, 'basis_z_dsl2ssl', use_spinphase_correction=True, isdsltossl=True)
         self.assertEqual(result, 1)
-        bz_ssl = pytplot.get_data('basis_z_dsl2ssl')
+        bz_ssl = get_data('basis_z_dsl2ssl')
         assert_allclose(bz_ssl.y, self.basis_z_dsl2ssl.y, atol=1.0e-06)
 
     def test_catch_mismatch_dsl2ssl_z(self):

@@ -1,14 +1,9 @@
 """Test gmag and themis load functions."""
 import os
 import unittest
-from pytplot import data_exists
-from pytplot import time_string
-from pytplot import time_double
-
-import pyspedas
-import pytplot
-from pyspedas.themis.state.autoload_support import autoload_support, load_needed
-from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
+from pytplot import data_exists, time_string, time_double, del_data, get_timespan
+from pyspedas.themis import autoload_support, get_spinmodel, fit
+from pyspedas.themis.state.autoload_support import load_needed
 
 
 class AutoLoadTestCases(unittest.TestCase):
@@ -76,19 +71,19 @@ class AutoLoadTestCases(unittest.TestCase):
 
     def test_autoload_support_from_var(self):
         """Load FGM."""
-        pytplot.del_data('thc_*')
-        pytplot.del_data('slp_*')
-        pyspedas.themis.fit(trange=['2023-01-06','2023-01-07'])
+        del_data('thc_*')
+        del_data('slp_*')
+        fit(trange=['2023-01-06','2023-01-07'])
         autoload_support(varname='thc_fgs_gse',slp=True,spinaxis=True,spinmodel=True)
         self.assertTrue(data_exists('thc_spinras'))
         self.assertTrue(data_exists('thc_spindec'))
         self.assertTrue(data_exists('slp_lun_att_x'))
         spinmodel=get_spinmodel(probe='c',correction_level=1)
         self.assertTrue(not (spinmodel is None))
-        trange_needed=pytplot.get_timespan('thc_fgs_gse')
-        ts1=pytplot.get_timespan('thc_spinras')
-        ts2=pytplot.get_timespan('thc_spindec')
-        ts3=pytplot.get_timespan('slp_lun_att_x')
+        trange_needed=get_timespan('thc_fgs_gse')
+        ts1=get_timespan('thc_spinras')
+        ts2=get_timespan('thc_spindec')
+        ts3=get_timespan('slp_lun_att_x')
         ts4=spinmodel.get_timerange()
         self.assertFalse(load_needed(ts1,trange_needed,tolerance=120.0))
         self.assertFalse(load_needed(ts2,trange_needed,tolerance=120.0))
@@ -97,8 +92,8 @@ class AutoLoadTestCases(unittest.TestCase):
 
     def test_autoload_support_without_var(self):
         """Load FGM."""
-        pytplot.del_data('thc_*')
-        pytplot.del_data('slp_*')
+        del_data('thc_*')
+        del_data('slp_*')
         trange=['2023-01-06','2023-01-07']
         autoload_support(trange=time_double(trange),probe='c',slp=True,spinaxis=True,spinmodel=True)
         self.assertTrue(data_exists('thc_spinras'))
@@ -107,9 +102,9 @@ class AutoLoadTestCases(unittest.TestCase):
         spinmodel=get_spinmodel(probe='c',correction_level=1)
         self.assertTrue(not (spinmodel is None))
         trange_needed=time_double(trange)
-        ts1=pytplot.get_timespan('thc_spinras')
-        ts2=pytplot.get_timespan('thc_spindec')
-        ts3=pytplot.get_timespan('slp_lun_att_x')
+        ts1=get_timespan('thc_spinras')
+        ts2=get_timespan('thc_spindec')
+        ts3=get_timespan('slp_lun_att_x')
         ts4=spinmodel.get_timerange()
         self.assertFalse(load_needed(ts1,trange_needed,tolerance=120.0))
         self.assertFalse(load_needed(ts2,trange_needed,tolerance=120.0))
@@ -118,8 +113,8 @@ class AutoLoadTestCases(unittest.TestCase):
 
     def test_autoload_support_reload_all(self):
         """Load FGM."""
-        pytplot.del_data('thc_*')
-        pytplot.del_data('slp_*')
+        del_data('thc_*')
+        del_data('slp_*')
         trange=['2008-01-01','2008-01-01']
         autoload_support(trange=time_double(trange),probe='c',slp=True,spinaxis=True,spinmodel=True)
         self.assertTrue(data_exists('thc_spinras'))
@@ -128,9 +123,9 @@ class AutoLoadTestCases(unittest.TestCase):
         spinmodel=get_spinmodel(probe='c',correction_level=1)
         self.assertTrue(not (spinmodel is None))
         trange_needed=time_double(trange)
-        ts1=pytplot.get_timespan('thc_spinras')
-        ts2=pytplot.get_timespan('thc_spindec')
-        ts3=pytplot.get_timespan('slp_lun_att_x')
+        ts1=get_timespan('thc_spinras')
+        ts2=get_timespan('thc_spindec')
+        ts3=get_timespan('slp_lun_att_x')
         ts4=spinmodel.get_timerange()
         self.assertFalse(load_needed(ts1,trange_needed,tolerance=120.0))
         self.assertFalse(load_needed(ts2,trange_needed,tolerance=120.0))
@@ -140,9 +135,9 @@ class AutoLoadTestCases(unittest.TestCase):
         trange=['2022-01-06','2022-01-07']
         autoload_support(trange=time_double(trange),probe='c',slp=True,spinaxis=True,spinmodel=True)
         trange_needed=time_double(trange)
-        ts1=pytplot.get_timespan('thc_spinras')
-        ts2=pytplot.get_timespan('thc_spindec')
-        ts3=pytplot.get_timespan('slp_lun_att_x')
+        ts1=get_timespan('thc_spinras')
+        ts2=get_timespan('thc_spindec')
+        ts3=get_timespan('slp_lun_att_x')
         spinmodel=get_spinmodel(probe='c',correction_level=1)
         ts4=spinmodel.get_timerange()
         self.assertFalse(load_needed(ts1,trange_needed,tolerance=120.0))
@@ -165,7 +160,7 @@ class AutoLoadTestCases(unittest.TestCase):
 
     def test_autoload_support_no_probe_no_var_slp_only(self):
         # Passing a trange only should work if only SLP data is requested
-        pytplot.del_data('slp_*')
+        del_data('slp_*')
         trange=['2007-03-23','2007-03-24']
         autoload_support(trange=trange,slp=True)
         self.assertTrue(data_exists('slp_lun_att_x'))
