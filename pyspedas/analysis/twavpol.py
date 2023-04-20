@@ -537,12 +537,10 @@ def wavpol(ct, bx, by, bz,
                 #                                              ematspec)
 
                 # A user suggested using the @ operator (shorthand for np.matmul()) to square the ematspec array,
-                # since it already deals with any leading dimensions.  But only the KK-th slice is populated, so
-                # we need to isolate that slice before squaring, then copy it into the corresponding slice of the
-                # matsqrd array.  -- JWL 2023-04-20
+                # since it already deals with any leading dimensions.  (Note that only the KKth and lower slices are
+                # initialized at this point.) -- JWL 2023-04-20
 
-                ematspec_slice = ematspec[KK,:,:,:]
-                matsqrd[KK,:,:,:] = ematspec_slice @ ematspec_slice
+                matsqrd[KK] = ematspec[KK] @ ematspec[KK]
 
                 trmatsqrd[KK, :] = np.real(matsqrd[KK, :, 0, 0] +
                                            matsqrd[KK, :, 1, 1] +
