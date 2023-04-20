@@ -77,10 +77,8 @@ import numpy as np
 # use nansum from bottleneck if it's installed, otherwise use the numpy one
 try:
     import bottleneck as bn
-    logging.info("Using bottleneck version of nansum")
     nansum = bn.nansum
 except ImportError:
-    logging.info("Using numpy version of nansum.  Installing the bottleneck package may speed up some calculations.")
     nansum = np.nansum
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
