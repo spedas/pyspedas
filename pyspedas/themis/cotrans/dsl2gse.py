@@ -69,9 +69,9 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
     hi_names = [hiras_name, hidec_name]
 
     # If new names exist, delete the variables
-    if hiras_name in pytplot.tplot_names():
+    if data_exists(hiras_name):
         pytplot.del_data(hiras_name)
-    if hidec_name in pytplot.tplot_names():
+    if data_exists(hidec_name):
         pytplot.del_data(hidec_name)
 
     pyspedas.tinterpol(spinnames_in, name_in, method="linear",
