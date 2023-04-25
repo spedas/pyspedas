@@ -3,10 +3,8 @@
 import unittest
 from pytplot import get_data,del_data,tplot_restore,data_exists
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
-
+from pyspedas import cotrans_get_coord, cotrans_set_coord
 from pyspedas.themis import autoload_support, ssl2dsl,dsl2gse
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 
 
 class DSLCotransDataValidation(unittest.TestCase):
