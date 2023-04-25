@@ -37,10 +37,14 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(setcoord)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSE')
+        md = get_data('test_coord',metadata=True)
+        md['data_att']['units'] = 'km'
         setcoord = cotrans_set_coord('test_coord', 'GSM')
         self.assertTrue(setcoord)
+        md_after = get_data('test_coord',metadata=True)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSM')
+        self.assertTrue(md_after['data_att']['units'] == 'km')
         setcoord = cotrans_set_coord('doesnt_exist', 'GSM')
 
 
