@@ -152,6 +152,7 @@ from .tplot_options import tplot_options
 from .tplot_rename import tplot_rename
 from .tplot_copy import tplot_copy
 from .replace_data import replace_data
+from .replace_metadata import replace_metadata
 from .get_ylimits import get_ylimits
 from .timebar import timebar
 from .del_data import del_data
