@@ -6,19 +6,10 @@ Notes:
 
 import logging
 import numpy as np
-import pytplot
-
-import pyspedas
-from pyspedas import tnormalize, tcrossp
-from pyspedas.cotrans.tvector_rotate import tvector_rotate
-from pyspedas.cotrans.cotrans_lib import subgei2gse
-from pytplot import data_exists
-from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
-from pyspedas.analysis.tinterpol import tinterpol
-from pyspedas.analysis.deriv_data import deriv_data
 from copy import deepcopy
+
+from pyspedas import tnormalize, tcrossp, cotrans_get_coord, cotrans_set_coord, tinterpol, deriv_data, cotrans, tvector_rotate
+from pytplot import data_exists, get_data, store_data
 
 def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str, 
             isssetogse: bool = False, variable_type: str = 'Other', ignore_input_coord: bool = False, rotation_only: bool = False) -> int:
@@ -102,9 +93,11 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
         sun_pos_gse_name=name_sun_pos
         lun_pos_gse_name=name_lun_pos
 
+    meta_copy = deepcopy(get_data(name_in, metadata=True))
+
     # Make rotation matrix
-    sunpos = pytplot.get_data(sun_pos_gse_name)
-    lunpos = pytplot.get_data(lun_pos_gse_name)
+    sunpos = get_data(sun_pos_gse_name)
+    lunpos = get_data(lun_pos_gse_name)
     sun_pos_dim = sunpos.y.shape
 
     # Moon to sun vector = sunpos - lunpos
@@ -131,15 +124,15 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
         out_data[:,:,1] = sse_y
         out_data[:,:,2] = sse_z
 
-    pytplot.store_data('sse_mat_cotrans', data={'x': sunpos.times, 'y': out_data})
+    store_data('sse_mat_cotrans', data={'x': sunpos.times, 'y': out_data})
 
     if variable_type.lower() == "pos" and not rotation_only:
         tinterpol(lun_pos_gse_name,name_in,newname='gse2sse_offset')
-        gse2sse_offset_data = pytplot.get_data('gse2sse_offset')
+        gse2sse_offset_data = get_data('gse2sse_offset')
     elif variable_type.lower() == "vel" and not rotation_only:
         deriv_data(lun_pos_gse_name,new_names='gse2sse_lun_vel')
         tinterpol('gse2sse_lun_vel',name_in,newname='gse2sse_offset')
-        gse2sse_offset_data = pytplot.get_data('gse2sse_offset')
+        gse2sse_offset_data = get_data('gse2sse_offset')
     else:
         logging.info("No offsets performed for variable type %s",variable_type)
         rotation_only = True
@@ -150,10 +143,10 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
 
         if not rotation_only:
             logging.info("Applying earth-moon %s offset to input variable %s",variable_type,name_in)
-            input_pos = pytplot.get_data(name_in)
+            input_pos = get_data(name_in)
             translated_pos = input_pos.y - gse2sse_offset_data.y
             name_trans = name_in + '_trans'
-            pytplot.store_data(name_trans,data={'x':input_pos.times, 'y':translated_pos})
+            store_data(name_trans,data={'x':input_pos.times, 'y':translated_pos},attr_dict=meta_copy)
             tvector_rotate('sse_mat_cotrans',name_trans,newname=name_out)
         else:
             logging.info("No earth-moon offsets applied")
@@ -168,9 +161,9 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
         if not rotation_only:
             tvector_rotate('sse_mat_cotrans',name_in,newname='gse2sse_rotated')
             logging.info("Applying moon-earth %s offset to rotated variable %s",variable_type,'gse2sse_rotated')
-            rotated_data = pytplot.get_data('gse2sse_rotated')
+            rotated_data = get_data('gse2sse_rotated')
             earth_data = rotated_data.y + gse2sse_offset_data.y
-            pytplot.store_data(name_out,data={'x':rotated_data.times,'y':earth_data})
+            store_data(name_out,data={'x':rotated_data.times,'y':earth_data},attr_dict=meta_copy)
         else:
             logging.info("No earth-moon offsets applied")
             tvector_rotate('sse_mat_cotrans',name_in,newname=name_out)
