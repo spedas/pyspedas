@@ -6,14 +6,13 @@ Notes:
 
 import logging
 import numpy as np
-import pytplot
+from copy import deepcopy
+#import pytplot
 
 import pyspedas
+from pyspedas import cotrans_get_coord, cotrans_set_coord
 from pyspedas.cotrans.cotrans_lib import subgei2gse
-from pytplot import data_exists
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
-from copy import deepcopy
+from pytplot import data_exists, del_data, store_data, get_data
 
 
 def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl: bool = False,
@@ -70,19 +69,19 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
 
     # If new names exist, delete the variables
     if data_exists(hiras_name):
-        pytplot.del_data(hiras_name)
+        del_data(hiras_name)
     if data_exists(hidec_name):
-        pytplot.del_data(hidec_name)
+        del_data(hidec_name)
 
     pyspedas.tinterpol(spinnames_in, name_in, method="linear",
                        newname=hi_names, suffix='')
 
     # Get data
-    data_in = pytplot.get_data(name_in)
-    meta_in = pytplot.get_data(name_in, metadata=True)
+    data_in = get_data(name_in)
+    meta_in = get_data(name_in, metadata=True)
     meta_copy = deepcopy(meta_in)
-    data_ras = pytplot.get_data(hiras_name)
-    data_dec = pytplot.get_data(hidec_name)
+    data_ras = get_data(hiras_name)
+    data_dec = get_data(hidec_name)
 
     # Make a unit vector that points along the spin axis
     spla = (90.0 - (data_dec[1])) * np.pi / 180.0
@@ -140,7 +139,7 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
     dd_out = [d0, d1, d2]
     data_out = np.column_stack(dd_out)
 
-    pytplot.store_data(name_out, data={'x': data_in[0], 'y': data_out}, attr_dict=meta_copy)
+    store_data(name_out, data={'x': data_in[0], 'y': data_out}, attr_dict=meta_copy)
     cotrans_set_coord(name_out, out_coord)
 
     return 1
