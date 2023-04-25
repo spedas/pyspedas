@@ -1,1 +1,1 @@
-from .spinmodel.spinmodel import get_spinmodel, save_spinmodel
+from .spinmodel.spinmodel import Spinmodel, get_spinmodel, save_spinmodel
