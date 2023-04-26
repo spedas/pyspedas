@@ -28,7 +28,7 @@ setup(
     install_requires=['numpy>=1.19.5', 'requests', 'geopack>=1.0.10',
                       'cdflib>=0.4.3', 'cdasws>=1.7.24', 'netCDF4>=1.6.2',
                       'pywavelets', 'astropy', 'hapiclient>=0.2.2',
-                      'pytplot-mpl-temp>=2.1.33', 'viresclient'],
+                      'pytplot-mpl-temp>=2.1.34', 'viresclient'],
     python_requires='>=3.7',
     include_package_data=True,
 )
