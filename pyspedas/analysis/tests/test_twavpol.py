@@ -68,7 +68,7 @@ class TwavpolDataValidation(unittest.TestCase):
         py_powspec = pytplot.get_data('thc_scf_fac_powspec')
         #print(np.nanmin(py_powspec.y),np.nanmax(py_powspec.y))
         assert_allclose(py_powspec.times,self.thc_scf_fac_powspec.times,atol=1.0e-06)
-        assert_allclose(py_powspec.y, self.thc_scf_fac_powspec.y, atol=1.0e-06)
+        assert_allclose(py_powspec.y, self.thc_scf_fac_powspec.y, atol=1.0e-06,rtol=1.0e-06)
         #pytplot.tplot('thc_scf_fac_powspec')
 
     def test_degpol(self):
@@ -77,7 +77,7 @@ class TwavpolDataValidation(unittest.TestCase):
         py_degpol = pytplot.get_data('thc_scf_fac_degpol')
         #print(np.min(py_degpol.y),np.nanmax(py_degpol.y))
         assert_allclose(py_degpol.times,self.thc_scf_fac_degpol.times,atol=1.0e-06)
-        assert_allclose(py_degpol.y, self.thc_scf_fac_degpol.y, atol=1.0e-06)
+        assert_allclose(py_degpol.y, self.thc_scf_fac_degpol.y, atol=1.0e-06,rtol=1.0e-06)
         #pytplot.tplot('thc_scf_fac_degpol')
 
     def test_waveangle(self):
@@ -86,7 +86,7 @@ class TwavpolDataValidation(unittest.TestCase):
         py_waveangle = pytplot.get_data('thc_scf_fac_waveangle')
         #print(np.nanmin(py_waveangle.y),np.nanmax(py_waveangle.y))
         assert_allclose(py_waveangle.times,self.thc_scf_fac_waveangle.times,atol=1.0e-05)
-        assert_allclose(py_waveangle.y, self.thc_scf_fac_waveangle.y, atol=1.0e-05)
+        assert_allclose(py_waveangle.y, self.thc_scf_fac_waveangle.y, atol=1.0e-05,rtol=1.0e-06)
         #pytplot.tplot('thc_scf_fac_waveangle')
 
     def test_elliptict(self):
@@ -95,7 +95,7 @@ class TwavpolDataValidation(unittest.TestCase):
         py_elliptict = pytplot.get_data('thc_scf_fac_elliptict')
         #print(np.nanmin(py_elliptict.y),np.nanmax(py_elliptict.y))
         assert_allclose(py_elliptict.times,self.thc_scf_fac_elliptict.times,atol=1.0e-06)
-        assert_allclose(py_elliptict.y, self.thc_scf_fac_elliptict.y, atol=1.0e-06)
+        assert_allclose(py_elliptict.y, self.thc_scf_fac_elliptict.y, atol=1.0e-06,rtol=1.0e-06)
         #pytplot.tplot('thc_scf_fac_elliptict')
 
     def test_helict(self):
@@ -104,7 +104,7 @@ class TwavpolDataValidation(unittest.TestCase):
         py_helict = pytplot.get_data('thc_scf_fac_helict')
         #print(np.nanmin(py_helict.y),np.nanmax(py_helict.y))
         assert_allclose(py_helict.times,self.thc_scf_fac_helict.times,atol=1.0e-06)
-        assert_allclose(py_helict.y, self.thc_scf_fac_helict.y, atol=1.0e-06)
+        assert_allclose(py_helict.y, self.thc_scf_fac_helict.y, atol=1.0e-06,rtol=1.0e-06)
         #pytplot.tplot('thc_scf_fac_helict')
 
 

@@ -73,8 +73,11 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     coord_out = coord_out.lower()
     all_coords = ["gse", "gsm", "sm", "gei", "geo", "mag", "j2000"]
 
-    if coord_in not in all_coords or coord_out not in all_coords:
-        logging.error("cotrans error: Requested coordinate system not supported.")
+    if coord_in not in all_coords:
+        logging.error("cotrans error: Requested input coordinate system %s not supported.",coord_in)
+        return 0
+    if coord_out not in all_coords:
+        logging.error("cotrans error: Requested output coordinate system %s not supported.",coord_out)
         return 0
 
     if name_in is not None:

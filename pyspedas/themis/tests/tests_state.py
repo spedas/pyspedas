@@ -1,11 +1,7 @@
 import logging
-import pytplot.get_data
-from pytplot.importers.cdf_to_tplot import cdf_to_tplot
 import unittest
-import pyspedas
-import pytplot
-import pyspedas.themis
-from pytplot import data_exists
+from pyspedas.themis import state
+from pytplot import data_exists, get_data, del_data, tplot_restore
 from numpy.testing import assert_allclose
 
 class StateDataValidation(unittest.TestCase):
@@ -36,54 +32,54 @@ class StateDataValidation(unittest.TestCase):
             raise unittest.SkipTest("Cannot download data validation file")
 
         # Load validation variables from the test file
-        pytplot.del_data('*')
+        del_data('*')
         filename = datafile[0]
-        pytplot.tplot_restore(filename)
+        tplot_restore(filename)
         #pytplot.tplot_names()
-        cls.tha_pos = pytplot.get_data('tha_state_pos')
-        cls.tha_vel = pytplot.get_data('tha_state_vel')
-        cls.tha_spinras = pytplot.get_data('tha_state_spinras')
-        cls.tha_spindec = pytplot.get_data('tha_state_spindec')
-        cls.tha_spinras_correction = pytplot.get_data('tha_state_spinras_correction')
-        cls.tha_spindec_correction = pytplot.get_data('tha_state_spindec_correction')
-        cls.tha_spinras_corrected = pytplot.get_data('tha_state_spinras_corrected')
-        cls.tha_spindec_corrected = pytplot.get_data('tha_state_spindec_corrected')
+        cls.tha_pos = get_data('tha_state_pos')
+        cls.tha_vel = get_data('tha_state_vel')
+        cls.tha_spinras = get_data('tha_state_spinras')
+        cls.tha_spindec = get_data('tha_state_spindec')
+        cls.tha_spinras_correction = get_data('tha_state_spinras_correction')
+        cls.tha_spindec_correction = get_data('tha_state_spindec_correction')
+        cls.tha_spinras_corrected = get_data('tha_state_spinras_corrected')
+        cls.tha_spindec_corrected = get_data('tha_state_spindec_corrected')
 
         # Load with pyspedas
-        pyspedas.themis.state(probe='a',trange=cls.t,get_support_data=True)
+        state(probe='a',trange=cls.t,get_support_data=True)
 
     def setUp(self):
         """ We need to clean tplot variables before each run"""
-        # pytplot.del_data('*')
+        # del_data('*')
 
     def test_state_spinras(self):
         """Validate state variables """
-        my_data = pytplot.get_data('tha_state_spinras')
+        my_data = get_data('tha_state_spinras')
         assert_allclose(my_data.y,self.tha_spinras.y,rtol=1.0e-06)
 
     def test_state_spindec(self):
         """Validate state variables """
-        my_data = pytplot.get_data('tha_state_spindec')
+        my_data = get_data('tha_state_spindec')
         assert_allclose(my_data.y,self.tha_spindec.y,rtol=1.0e-06)
 
     def test_state_spinras_correction(self):
         """Validate state variables """
-        my_data = pytplot.get_data('tha_state_spinras_correction')
+        my_data = get_data('tha_state_spinras_correction')
         assert_allclose(my_data.y,self.tha_spinras_correction.y,rtol=1.0e-06)
 
     def test_state_spindec_correction(self):
         """Validate state variables """
-        my_data = pytplot.get_data('tha_state_spindec_correction')
+        my_data = get_data('tha_state_spindec_correction')
         assert_allclose(my_data.y,self.tha_spindec_correction.y,rtol=1.0e-06)
 
     def test_state_spinras_corrected(self):
         """Validate state variables """
-        my_data = pytplot.get_data('tha_state_spinras_corrected')
+        my_data = get_data('tha_state_spinras_corrected')
         assert_allclose(my_data.y,self.tha_spinras_corrected.y,rtol=1.0e-06)
 
     def test_state_spindec_corrected(self):
         """Validate state variables """
-        my_data = pytplot.get_data('tha_state_spindec_corrected')
+        my_data = get_data('tha_state_spindec_corrected')
         assert_allclose(my_data.y,self.tha_spindec_corrected.y,rtol=1.0e-06)
 
     def test_state_reload_no_v03(self):
@@ -91,10 +87,10 @@ class StateDataValidation(unittest.TestCase):
         # data loaded that doesn't have the corrections (prevents dangling correction variables)
         ts1 = ['2007-03-23','2007-03-24']
         ts2 = ['2023-01-01','2023-01-02']
-        pyspedas.themis.state(trange=ts1,probe='a',get_support_data=True) # V03 corrections exist
+        state(trange=ts1,probe='a',get_support_data=True) # V03 corrections exist
         self.assertTrue(data_exists('tha_spinras_correction'))
         self.assertTrue(data_exists('tha_spindec_correction'))
-        pyspedas.themis.state(trange=ts2,probe='a',get_support_data=True) # V03 corrections do not exist
+        state(trange=ts2,probe='a',get_support_data=True) # V03 corrections do not exist
         self.assertFalse(data_exists('tha_spinras_correction'))
         self.assertFalse(data_exists('tha_spindec_correction'))
 

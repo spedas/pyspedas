@@ -11,6 +11,7 @@ These tests include the function in the following files:
 """
 import unittest
 import pyspedas
+import logging
 from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
@@ -36,10 +37,14 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(setcoord)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSE')
+        md = get_data('test_coord',metadata=True)
+        md['data_att']['units'] = 'km'
         setcoord = cotrans_set_coord('test_coord', 'GSM')
         self.assertTrue(setcoord)
+        md_after = get_data('test_coord',metadata=True)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSM')
+        self.assertTrue(md_after['data_att']['units'] == 'km')
         setcoord = cotrans_set_coord('doesnt_exist', 'GSM')
 
 
@@ -182,9 +187,14 @@ class CotransTestCases(unittest.TestCase):
         name1 = "name1"
         name2 = "name2"
         count = 0
-        # Test non-existent system.
-        cotrans(name_out=name1, time_in=t, data_in=d,
-                coord_in="coord_in", coord_out="coord_out")
+        # Test non-existent systems.
+        result = cotrans(name_out=name1, time_in=t, data_in=d,
+                coord_in="badcoord", coord_out="gei")
+        self.assertTrue(result == 0)
+        result = cotrans(name_out=name1, time_in=t, data_in=d,
+                         coord_in="gei", coord_out="badcoord")
+        self.assertTrue(result == 0)
+
         # Test empty data.
         cotrans(name_out=name1, time_in=t, data_in=[],
                 coord_in="gei", coord_out="geo")
@@ -205,7 +215,7 @@ class CotransTestCases(unittest.TestCase):
                 dout2 = get_data(name2)
                 out_len2 = len(dout2[0])
                 dd2 = dout2[1][1]
-                print(count, "--- in:", coord_in, "out:", coord_out)
+                logging.info("%d --- in: %s out: %s", count, coord_in, coord_out)
                 # print(dout[1][1])
                 # print(dd2)
                 self.assertTrue(out_len2 == in_len)

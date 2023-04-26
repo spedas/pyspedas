@@ -27,6 +27,7 @@ from pytplot import cdf_to_tplot
 from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
 from .cotrans.cotrans_set_coord import cotrans_set_coord
+from .cotrans.tvector_rotate import tvector_rotate
 
 from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
     mms_load_edp, mms_load_eis, mms_load_feeps, \

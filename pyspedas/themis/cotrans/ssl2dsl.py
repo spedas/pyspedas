@@ -7,12 +7,11 @@ Notes:
 import logging
 from math import pi
 import numpy as np
-from pytplot import get_data, store_data
-from pytplot import data_exists
-from pyspedas.themis.state.spinmodel.spinmodel import Spinmodel
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 from copy import deepcopy
+
+from pytplot import get_data, store_data, data_exists
+from pyspedas import cotrans_get_coord, cotrans_set_coord
+from pyspedas.themis.state import Spinmodel
 
 
 def ssl2dsl(name_in: str, spinmodel_obj: Spinmodel, name_out: str, isdsltossl: bool = False, ignore_input_coord: bool  = False,

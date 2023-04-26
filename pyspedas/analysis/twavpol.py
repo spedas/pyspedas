@@ -74,6 +74,12 @@ Restrictions:
 import logging
 import warnings
 import numpy as np
+# use nansum from bottleneck if it's installed, otherwise use the numpy one
+try:
+    import bottleneck as bn
+    nansum = bn.nansum
+except ImportError:
+    nansum = np.nansum
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
@@ -97,6 +103,7 @@ def wpol_ematspec(i1, i2, i3, i4, aa, nosmbins, matspec):
     """Calculate ematspec array."""
     id0 = (i2 - int((nosmbins-1)/2))
     id1 = (i2 + int((nosmbins-1)/2)) + 1
+    # Using nansum() rather than sum() here results in a mismatch between IDL and Python results.
     res = np.sum(aa[0:nosmbins] * matspec[i1, id0:id1, i3, i4])
     return res
 
@@ -183,10 +190,10 @@ def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
 
     for k in range(int(nopfft/2)):
         for k1 in range(3):
-            upper = np.sum(2*np.real(lambdau[KK, k, k1, 0:3]) *
+            upper = nansum(2*np.real(lambdau[KK, k, k1, 0:3]) *
                            np.imag(lambdau[KK, k, k1, 0:3]))
             la2 = np.imag(lambdau[KK, k, k1, 0:3])**2
-            lower = np.sum(np.real(lambdau[KK, k, k1, 0:3])**2 - la2)
+            lower = nansum(np.real(lambdau[KK, k, k1, 0:3])**2 - la2)
             gammay = np.nan
             if np.isfinite(upper) and np.isfinite(lower):
                 if upper > 0.0:
@@ -196,6 +203,7 @@ def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
             lambday[KK, k, k1, :] = (np.exp((0.0 - 1j*0.5*gammay)) *
                                      lambdau[KK, k, k1, :])
             lay2 = np.imag(lambday[KK, k, k1, 0:3])**2
+            # Using nansum() rather than sum() in the helicity calculation results in a mismatch betweeen IDL and Python results.
             helicity[KK, k, k1] = (1 /
                                    (np.sqrt(np.real(lambday[KK, k, k1, 0])**2 +
                                     np.real(lambday[KK, k, k1, 1])**2 +
@@ -523,10 +531,16 @@ def wavpol(ct, bx, by, bz,
 
                 # Calculation of the degree of polarization.
                 # Calculation of square of smoothed spec matrix.
-                for k1 in range(3):
-                    for k2 in range(3):
-                        matsqrd[KK, :, k1, k2] = wpol_matsqrd(KK, k1, k2,
-                                                              ematspec)
+                # for k1 in range(3):
+                #    for k2 in range(3):
+                #        matsqrd[KK, :, k1, k2] = wpol_matsqrd(KK, k1, k2,
+                #                                              ematspec)
+
+                # A user suggested using the @ operator (shorthand for np.matmul()) to square the ematspec array,
+                # since it already deals with any leading dimensions.  (Note that only the KKth and lower slices are
+                # initialized at this point.) -- JWL 2023-04-20
+
+                matsqrd[KK] = ematspec[KK] @ ematspec[KK]
 
                 trmatsqrd[KK, :] = np.real(matsqrd[KK, :, 0, 0] +
                                            matsqrd[KK, :, 1, 1] +

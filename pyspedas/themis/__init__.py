@@ -16,3 +16,7 @@ from pyspedas.themis.ground.ask import ask
 
 from pyspedas.themis.state.state import state
 from pyspedas.themis.state.slp import slp
+
+from pyspedas.themis.state.autoload_support import autoload_support
+from pyspedas.themis.state import get_spinmodel
+from pyspedas.themis.cotrans import sse2sel,gse2sse,dsl2gse,ssl2dsl
