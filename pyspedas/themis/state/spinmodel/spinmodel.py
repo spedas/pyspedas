@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import logging
+from typing import Dict
 from .spinmodel_segment import SpinmodelSegment
 from pytplot import get_data, store_data
 from pytplot import data_exists
@@ -628,7 +629,7 @@ class Spinmodel:
 # and the values are Spinmodel objects.  Spinmodel objects are added to the dictionary by the
 # spinmodel_postprocess routine.
 
-spinmodel_dict: dict[(str, int)] = {}
+spinmodel_dict: Dict[(str, int)] = {}
 
 
 def get_spinmodel(probe: str,
