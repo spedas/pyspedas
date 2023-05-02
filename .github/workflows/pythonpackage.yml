@@ -13,7 +13,7 @@ jobs:
         os: [ubuntu-latest]
         #os: [ubuntu-latest]
         #os: [windows-latest]
-        python-version: [3.11]
+        python-version: [3.8]
 
     steps:
     - uses: actions/checkout@v2
