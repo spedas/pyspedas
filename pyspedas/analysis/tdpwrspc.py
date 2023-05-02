@@ -8,13 +8,16 @@ Notes
 Similar to tdpwrspc.pro in IDL SPEDAS.
 
 """
+import logging
+import numpy as np
 from .dpwrspc import dpwrspc
 from pytplot import get_data, store_data, options, split_vec
+from pyspedas import time_double
 
 
-def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128,
+def tdpwrspc(varname, newname=None, nboxpoints=None, nshiftpoints=None,
              binsize=3, nohanning=False, noline=False, notperhz=False,
-             notmvariance=False):
+             trange=None, notmvariance=False):
     """
     Compute power spectra for a tplot variable.
 
@@ -72,16 +75,56 @@ def tdpwrspc(varname, newname=None, nboxpoints=256, nshiftpoints=128,
                                          notmvariance=notmvariance))
             return out_vars
         else:
-            pwrspc = dpwrspc(data_tuple[0], data_tuple[1],
-                             nboxpoints=nboxpoints,
-                             nshiftpoints=nshiftpoints,
+            t = data_tuple[0]
+            y = data_tuple[1]
+            if trange is not None:
+                tr = time_double(trange)
+                ok = np.argwhere((t >= tr[0]) & (t < tr[1]))
+                if len(ok) == 0:
+                    logging.error('No data in time range')
+                    logging.error(f'{tr}')
+                    return
+                t = t[ok]
+                y = y[ok]
+
+            # filter out NaNs
+            ok = np.isfinite(y)
+            if len(ok) == 0:
+                logging.error('No finite data in time range')
+                return
+            t = t[ok]
+            y = y[ok]
+
+            t00 = data_tuple[0][0]
+            t = t - t00
+
+            # Only do this if there are enough data points, default nboxpoints to
+            # 64 and nshiftpoints to 32, and use larger values when there are more
+            # points
+            if nboxpoints is None:
+                nbp = np.max([2**(np.floor(np.log(len(ok)) / np.log(2)) - 5), 8])
+            else:
+                nbp = nboxpoints
+
+            if nshiftpoints is None:
+                nsp = nbp/2.0
+            else:
+                nsp = nshiftpoints
+
+            if len(ok) <= nbp:
+                logging.error('Not enough data in time range')
+                return
+
+            pwrspc = dpwrspc(t, y,
+                             nboxpoints=nbp,
+                             nshiftpoints=nsp,
                              binsize=binsize,
                              nohanning=nohanning,
                              noline=noline, notperhz=notperhz,
                              notmvariance=notmvariance)
 
             if pwrspc is not None:
-                store_data(newname, data={'x': pwrspc[0],
+                store_data(newname, data={'x': pwrspc[0] + t00,
                                           'y': pwrspc[2],
                                           'v': pwrspc[1]})
                 options(newname, 'spec', True)
