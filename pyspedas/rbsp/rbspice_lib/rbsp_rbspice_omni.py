@@ -3,6 +3,14 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except ImportError:
+    nanmean = np.nanmean
+
 
 def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
     """
@@ -71,7 +79,7 @@ def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
             flux_omni = np.zeros((len(d.times),len(d.y[0, :, 0])))
             for k in range(len(d.times)):
                 for l in range(len(d.y[0, :, 0])):
-                    flux_omni[k, l] = np.nanmean(d.y[k, l, :])
+                    flux_omni[k, l] = nanmean(d.y[k, l, :])
             newname = prefix+species+'_omni'
             store_data(newname, data={'x': d.times, 'y': flux_omni, 'v': d_for_en_table.v})
             options(newname, 'ylog', True)

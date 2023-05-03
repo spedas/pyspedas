@@ -3,6 +3,14 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg import rbsp_rbspice_pad_spinavg
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except ImportError:
+    nanmean = np.nanmean
+
 
 def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000], bin_size=15, scopes=None):
     """
@@ -136,7 +144,7 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
                 new_omni_pa_flux = np.zeros((len(new_pa_flux[:, 0, 0]),len(new_pa_flux[0, :, 0])))
                 for ii in range(len(new_pa_flux[:, 0, 0])):
                     for jj in range(len(new_pa_flux[0, :, 0])):
-                        new_omni_pa_flux[ii, jj] = np.nanmean(new_pa_flux[ii, jj, :])
+                        new_omni_pa_flux[ii, jj] = nanmean(new_pa_flux[ii, jj, :])
                 store_data(new_name, data={'x': d_flux.times, 'y': new_omni_pa_flux, 'v': pa_label})
                 options(new_name, 'yrange', [0, 180])
                 options(new_name, 'spec', True)
