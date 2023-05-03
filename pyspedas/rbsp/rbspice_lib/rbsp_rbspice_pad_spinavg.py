@@ -3,6 +3,14 @@ import numpy as np
 import scipy
 from pytplot import get_data, store_data, options
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except ImportError:
+    nanmean = np.nanmean
+
 
 def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=None, energy=[0, 1000], bin_size=15., scopes=None):
     """
@@ -85,7 +93,7 @@ def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=N
         # loop through the spins for this telescope
         for spin_idx in range(len(spin_starts)):
             # loop over energies
-            spin_sum_flux[spin_idx,:] = np.nanmean(pad_data.y[current_start:spin_starts[spin_idx]+1,:], axis=0)
+            spin_sum_flux[spin_idx,:] = nanmean(pad_data.y[current_start:spin_starts[spin_idx]+1,:], axis=0)
             spin_times[spin_idx] = pad_data.times[current_start]
             # rebin the data before storing it
             # the idea here is, for bin_size = 15 deg, rebin the data from center points to:
