@@ -138,7 +138,7 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
                         else:
                             new_pa_flux[i, bin_idx, t] = np.nan
 
-            en_range_string = str(energy[0]).replace('.', '') + '-' + str(energy[1]).replace('.', '') + 'keV'
+            en_range_string = str(energy[0]) + '-' + str(energy[1]) + 'keV'
             if len(scopes) == 6:
                 new_name = prefix+species[qq]+'_omni_'+en_range_string+'_pad'
                 new_omni_pa_flux = np.zeros((len(new_pa_flux[:, 0, 0]),len(new_pa_flux[0, :, 0])))

@@ -67,6 +67,9 @@ class LoadTestCases(unittest.TestCase):
         rbsp_rbspice_pad(probe='a', datatype='TOFxEnonH', level='l3')
         self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEnonH_oxygen_omni_spin'))
         self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEnonH_oxygen_omni_0-1000keV_pad_spin'))
+        rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000.0])
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000.0keV_pad'))
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000.0keV_pad_spin'))
 
     def test_load_mageis_data(self):
         mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
