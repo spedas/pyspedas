@@ -109,9 +109,8 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
             # get energy range of interest
             e = d_flux_t0.v
             indx = np.argwhere((e < energy[1]) & (e > energy[0]))
-            energy_count = len(indx[0])
 
-            if energy_count == 0:
+            if len(indx) == 0:
                 logging.warning('Energy range selected is not covered by the detector for ' + datatype + ' ' + species[ion_type_idx])
                 continue
 
@@ -168,5 +167,6 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
 
             # now do the spin average
             sp_vars = rbsp_rbspice_pad_spinavg(probe=probe, datatype=datatype, species=species[ion_type_idx], energy=energy, bin_size=bin_size, scopes=scopes)
-            out.extend(sp_vars)
+            if sp_vars is not None:
+                out.extend(sp_vars)
     return out
