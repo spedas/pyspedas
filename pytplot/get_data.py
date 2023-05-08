@@ -2,15 +2,14 @@
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
-
 import numpy as np
 import pytplot
 from collections import namedtuple
-import datetime
 import logging
+from astropy import units as u
 
 
-def get_data(name, xarray=False, metadata=False, dt=False):
+def get_data(name, xarray=False, metadata=False, dt=False, units=False):
     """
     This function extracts the data from the tplot Variables stored in memory.
     
@@ -21,7 +20,11 @@ def get_data(name, xarray=False, metadata=False, dt=False):
             Keep the variable as an xarray object
         metadata : bool
             Return the metadata of the object (the attr dictionary) instead of the actual data
-
+        dt: bool
+            Return the times as np.datetime64[ns] objects instead of unix times
+            (significantly faster)
+        units: bool
+            Attach the astropy units to the data and dependencioes prior to returning
          
     Returns: tuple of data/dimensions/metadata stored in pytplot
         time_val : numpy array of seconds since 1970
@@ -67,31 +70,70 @@ def get_data(name, xarray=False, metadata=False, dt=False):
     else:
         times = temp_data_quant.time.values
 
-    if 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys() and 'v3' in temp_data_quant.coords.keys():
+    coord_names = temp_data_quant.coords.keys()
+    data_values = temp_data_quant.data
+    v1_values = None
+    v2_values = None
+    v3_values = None
+
+    data_att_set = 'data_att' in temp_data_quant.attrs
+
+    if 'v' in coord_names:
+        v1_values = temp_data_quant.coords['v'].values
+    if 'spec_bins' in coord_names:
+        v1_values = temp_data_quant.coords['spec_bins'].values
+    if 'v1' in coord_names:
+        v1_values = temp_data_quant.coords['v1'].values
+    if 'v2' in coord_names:
+        v2_values = temp_data_quant.coords['v2'].values
+    if 'v3' in coord_names:
+        v3_values = temp_data_quant.coords['v3'].values
+
+    if data_att_set and units:
+        data_units = temp_data_quant.attrs['data_att'].get('units')
+        v1_units = temp_data_quant.attrs['data_att'].get('depend_1_units')
+        v2_units = temp_data_quant.attrs['data_att'].get('depend_2_units')
+        v3_units = temp_data_quant.attrs['data_att'].get('depend_3_units')
+
+        try:
+            if data_units is not None:
+                data_values = data_values * u.Unit(data_units)
+            if v1_values is not None and v1_units is not None:
+                v1_values = v1_values * u.Unit(v1_units)
+            if v2_values is not None and v2_units is not None:
+                v2_values = v2_values * u.Unit(v2_units)
+            if v3_values is not None and v3_units is not None:
+                v3_values = v3_values * u.Unit(v3_units)
+        except ValueError:
+            # occurs when there's a problem converting the units string
+            # to astropy units
+            pass
+
+    if 'v1' in coord_names and 'v2' in coord_names and 'v3' in coord_names:
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2', 'v3'])
-        return variable(times, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values, temp_data_quant.coords['v3'].values)
-    elif 'v1' in temp_data_quant.coords.keys() and 'v2' in temp_data_quant.coords.keys():
+        return variable(times, data_values, v1_values, v2_values, v3_values)
+    elif 'v1' in coord_names and 'v2' in coord_names:
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2'])
-        return variable(times, temp_data_quant.data, temp_data_quant.coords['v1'].values, temp_data_quant.coords['v2'].values)
-    elif 'v1' in temp_data_quant.coords.keys():
+        return variable(times, data_values, v1_values, v2_values)
+    elif 'v1' in coord_names:
         variable = namedtuple('variable', ['times', 'y', 'v1'])
-        return variable(times, temp_data_quant.data, temp_data_quant.coords['v1'].values)
-    elif 'v' in temp_data_quant.coords.keys():
+        return variable(times, data_values, v1_values)
+    elif 'v' in coord_names:
         variable = namedtuple('variable', ['times', 'y', 'v'])
-        return variable(times, temp_data_quant.data, temp_data_quant.coords['v'].values)
-    elif 'spec_bins' in temp_data_quant.coords.keys():
+        return variable(times, data_values, v1_values)
+    elif 'spec_bins' in coord_names:
         variable = namedtuple('variable', ['times', 'y', 'v'])
-        return variable(times, temp_data_quant.data, temp_data_quant.coords['spec_bins'].values)
+        return variable(times, data_values, v1_values)
 
     if error is not None:
         variable = namedtuple('variable', ['times', 'y', 'dy'])
-        return variable(times, temp_data_quant.data, error)
+        return variable(times, data_values, error)
     else:
         variable = namedtuple('variable', ['times', 'y'])
-        return variable(times, temp_data_quant.data)
+        return variable(times, data_values)
 
 
-def get(name, xarray=False, metadata=False, dt=True):
+def get(name, xarray=False, metadata=False, dt=True, units=True):
     """
     This function extracts the data from the tplot Variables stored in memory.
 
@@ -104,7 +146,10 @@ def get(name, xarray=False, metadata=False, dt=True):
             Return the metadata of the object (the attr dictionary) instead of the actual data
         dt : bool
             Return the times as np.datetime64[ns] objects instead of unix times
-            (significantly faster)
+            (significantly faster); defaults to True for pytplot.get
+        units: bool
+            Attach the astropy units to the data and dependencioes prior to returning
+            defaults to True for pytplot.get
 
     Returns: tuple of data/dimensions/metadata stored in pytplot
         time_val : numpy array of seconds since 1970
@@ -124,4 +169,4 @@ def get(name, xarray=False, metadata=False, dt=True):
         >>> time, data = pytplot.get("Variable1")
 
     """
-    return get_data(name, xarray=xarray, metadata=metadata, dt=dt)
+    return get_data(name, xarray=xarray, metadata=metadata, dt=dt, units=units)
