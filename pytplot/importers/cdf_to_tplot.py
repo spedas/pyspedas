@@ -423,6 +423,21 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
 
                         if depend_1_units is not None:
                             metadata[var_name]['y_spec_units'] = depend_1_units
+                            metadata[var_name]['DEPEND_1_UNITS'] = depend_1_units
+
+                # options for multidimensional variables
+                if 'DEPEND_2' in var_atts:
+                    if isinstance(var_atts['DEPEND_2'], str):
+                        depend_2_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_2'])
+                        depend_2_units = depend_2_var_atts.get('UNITS')
+                        if depend_2_units is not None:
+                            metadata[var_name]['DEPEND_2_UNITS'] = depend_2_units
+                if 'DEPEND_3' in var_atts:
+                    if isinstance(var_atts['DEPEND_3'], str):
+                        depend_3_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_3'])
+                        depend_3_units = depend_3_var_atts.get('UNITS')
+                        if depend_3_units is not None:
+                            metadata[var_name]['DEPEND_3_UNITS'] = depend_3_units
 
                 # Check if the variable already exists in the for loop output
                 if var_name not in output_table:
@@ -462,8 +477,14 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                 # populate data_att; used by PySPEDAS as a common interface to
                 # data attributes such as units, coordinate system, etc
                 attr_dict["data_att"] = {"coord_sys": "",
-                                         "y_units": None,
-                                         "z_units": None}
+                                         "units": metadata[var_name]['var_attrs'].get('UNITS'),
+                                         "depend_1_units": metadata[var_name].get('DEPEND_1_UNITS'),
+                                         "depend_2_units": metadata[var_name].get('DEPEND_2_UNITS'),
+                                         "depend_3_units": metadata[var_name].get('DEPEND_3_UNITS')}
+
+                # populate depend_1_units in data_att, if it's not set
+                if attr_dict['data_att']['depend_1_units'] is None and metadata[var_name]['var_attrs'].get('UNITS') is not None:
+                    attr_dict['data_att']['depend_1_units'] = metadata[var_name]['var_attrs'].get('UNITS')
 
                 # extract the coordinate system, if available
                 vatt_keys = list(attr_dict["CDF"]["VATT"].keys())
