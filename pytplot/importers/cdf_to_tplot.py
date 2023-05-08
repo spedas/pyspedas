@@ -428,16 +428,24 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                 # options for multidimensional variables
                 if 'DEPEND_2' in var_atts:
                     if isinstance(var_atts['DEPEND_2'], str):
-                        depend_2_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_2'])
-                        depend_2_units = depend_2_var_atts.get('UNITS')
-                        if depend_2_units is not None:
-                            metadata[var_name]['DEPEND_2_UNITS'] = depend_2_units
+                        try:
+                            depend_2_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_2'])
+                            depend_2_units = depend_2_var_atts.get('UNITS')
+                            if depend_2_units is not None:
+                                metadata[var_name]['DEPEND_2_UNITS'] = depend_2_units
+                        except ValueError:
+                            # some variables aren't actually available
+                            pass
                 if 'DEPEND_3' in var_atts:
                     if isinstance(var_atts['DEPEND_3'], str):
-                        depend_3_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_3'])
-                        depend_3_units = depend_3_var_atts.get('UNITS')
-                        if depend_3_units is not None:
-                            metadata[var_name]['DEPEND_3_UNITS'] = depend_3_units
+                        try:
+                            depend_3_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_3'])
+                            depend_3_units = depend_3_var_atts.get('UNITS')
+                            if depend_3_units is not None:
+                                metadata[var_name]['DEPEND_3_UNITS'] = depend_3_units
+                        except ValueError:
+                            # some variables aren't actually available
+                            pass
 
                 # Check if the variable already exists in the for loop output
                 if var_name not in output_table:
