@@ -52,12 +52,12 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
     for sensor in top_sensors:
         top_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+species+'_top_'+units_type+'_sensorid_'+str(sensor)
 
-        time, data, energies = pytplot.get_data(top_name+suffix)
+        time, data, energies = pytplot.get(top_name+suffix)
 
         top_name_out = top_name+'_clean'+suffix
         try:
-            pytplot.store_data(top_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
-            pytplot.store_data(top_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
+            pytplot.store(top_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
+            pytplot.store(top_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
             out_vars.append(top_name_out)
             out_vars.append(top_name+'_500keV_int'+suffix)
         except Warning:
@@ -71,12 +71,12 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
     for sensor in bot_sensors:
         bot_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+species+'_bottom_'+units_type+'_sensorid_'+str(sensor)
 
-        time, data, energies = pytplot.get_data(bot_name+suffix)
+        time, data, energies = pytplot.get(bot_name+suffix)
 
         bot_name_out = bot_name+'_clean'+suffix
         try:
-            pytplot.store_data(bot_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
-            pytplot.store_data(bot_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
+            pytplot.store(bot_name_out, data={'x': time, 'y': data[:, :-1], 'v': energies[:-1]})
+            pytplot.store(bot_name+'_500keV_int'+suffix, data={'x': time, 'y': data[:, -1]})
             out_vars.append(bot_name_out)
             out_vars.append(bot_name+'_500keV_int'+suffix)
         except Warning:

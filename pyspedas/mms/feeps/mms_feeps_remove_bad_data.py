@@ -98,12 +98,12 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
     for bad_var in bad_vars:
         if not bad_var:
             continue
-        bad_var_data = pytplot.get_data(bad_var[0])
+        bad_var_data = pytplot.get(bad_var[0])
 
         if bad_var_data is not None:
             times, data, energies = bad_var_data
             data[:] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
+            pytplot.store(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
     # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 2. BAD LOWEST E-CHANNELS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     # ; Next, these eyes have bad first channels (i.e., lowest energy channel, E-channel 0 in IDL indexing).  
@@ -271,7 +271,7 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
     for bad_var in bad_vars:
         if not bad_var:
             continue
-        bad_var_data = pytplot.get_data(bad_var[0])
+        bad_var_data = pytplot.get(bad_var[0])
         if bad_var_data is not None:
             times, data, energies = bad_var_data
 
@@ -280,13 +280,13 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
                 continue
 
             data[:, 0] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
+            pytplot.store(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
     # set the first and second energy channels to NaN
     for bad_var in bad_vars_both_chans:
         if not bad_var:
             continue
-        bad_var_data = pytplot.get_data(bad_var[0])
+        bad_var_data = pytplot.get(bad_var[0])
         if bad_var_data is not None:
             times, data, energies = bad_var_data
 
@@ -296,13 +296,13 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
 
             data[:, 0] = np.nan
             data[:, 1] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
+            pytplot.store(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
     # set the bottom 3 energy channels to NaN
     for bad_var in bad_vars_3_chans:
         if not bad_var:
             continue
-        bad_var_data = pytplot.get_data(bad_var[0])
+        bad_var_data = pytplot.get(bad_var[0])
         if bad_var_data is not None:
             times, data, energies = bad_var_data
 
@@ -313,4 +313,4 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
             data[:, 0] = np.nan
             data[:, 1] = np.nan
             data[:, 2] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
+            pytplot.store(bad_var[0], data={'x': times, 'y': data, 'v': energies})

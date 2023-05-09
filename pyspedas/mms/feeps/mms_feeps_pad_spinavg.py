@@ -1,7 +1,7 @@
 import warnings
 import numpy as np
 import scipy 
-from pytplot import get_data, store_data, options
+from pytplot import get_data, store, options
 
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one
 # bottleneck nanmean is ~2.5x faster
@@ -95,7 +95,7 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
         current_start = spin_starts[spin_idx] + 1
 
     # store_data(var_name + '_spin' + suffix, data={'x': spin_times, 'y': spin_avg_flux, 'v': angles})
-    store_data(var_name + '_spin' + suffix, data={'x': spin_times, 'y': rebinned_data, 'v': new_bins})
+    store(var_name + '_spin' + suffix, data={'x': spin_times, 'y': rebinned_data, 'v': new_bins})
     options(var_name + '_spin' + suffix, 'spec', True)
     options(var_name + '_spin' + suffix, 'ylog', False)
     options(var_name + '_spin' + suffix, 'zlog', True)
