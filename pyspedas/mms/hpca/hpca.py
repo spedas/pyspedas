@@ -7,7 +7,7 @@ from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
 from pyspedas.mms.hpca.mms_hpca_energies import mms_hpca_energies
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
-from pytplot import get_data, store_data
+from pytplot import get_data, store_data, get
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
@@ -175,8 +175,6 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                     else:
                         theta = theta_data
 
-                    store_data(tvar, data={'x': df_data.times, 'y': df_data.y, 'v1': theta, 'v2': df_data.v2}, attr_dict=df_metadata)
-
                     # check if energy table contains all 0s
                     zerocheck = np.argwhere(df_data.v2 == 0.0)
                     if len(zerocheck) == 63:
@@ -184,5 +182,10 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                         energy_table = mms_hpca_energies()
                         logging.warning('Found energy table with all 0s: ' + tvar + '; using hard-coded energy table instead')
                         store_data(tvar, data={'x': df_data.times, 'y': df_data.y, 'v1': theta, 'v2': energy_table}, attr_dict=df_metadata)
+                    else:
+                        store_data(tvar, data={'x': df_data.times, 'y': df_data.y, 'v1': theta, 'v2': df_data.v2},
+                                   attr_dict=df_metadata)
 
+                    metadata = get(tvar, metadata=True)
+                    metadata['data_att']['depend_1_units'] = 'deg'
     return tvars
