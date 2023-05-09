@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 import pyspedas 
-from pytplot import get_data, store_data, options
+from pytplot import get, store, options
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas.mms.feeps.mms_feeps_getgyrophase import mms_feeps_getgyrophase
 
@@ -74,7 +74,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     # get the gyrophase angles
     # calculate the gyro phase angles from the magnetic field data
     gyro_vars = mms_feeps_getgyrophase(trange=trange, probe=probe, data_rate=data_rate, level=level, datatype=datatype)
-    gyro_data = get_data('mms' + str(probe) + '_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase')
+    gyro_data = get('mms' + str(probe) + '_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase')
 
     if gyro_data is None or gyro_vars is None:
         logging.error('Problem calculating gyrophase angles.')
@@ -120,7 +120,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
         for isen in range(len(particle_idxs)): # loop through sensors
             # get the data
             var_name = 'mms' + str(probe) + '_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_' + sensor_type + '_' + data_units + '_sensorid_' + str(particle_idxs[isen]+1) + '_clean_sun_removed'
-            data = get_data(var_name)
+            data = get(var_name)
             if data is None:
                 logging.error('Data not found: ' + var_name)
                 continue
@@ -155,7 +155,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
 
     new_name = 'mms' + str(probe) + '_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_' + data_units + '_' + en_range_string + '_gpd'
 
-    saved = store_data(new_name, data={'x': gyro_data.times, 'y': gyro_flux, 'v': gyro_centers})
+    saved = store(new_name, data={'x': gyro_data.times, 'y': gyro_flux, 'v': gyro_centers})
 
     if saved:
         options(new_name, 'spec', True)

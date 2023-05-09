@@ -1,5 +1,5 @@
 import numpy as np
-from pytplot import get_data, store_data
+from pytplot import get, store
 from pyspedas import tnames
 
 
@@ -123,29 +123,29 @@ def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 
                             if not cr_var:
                                 count_rate = None
                             else:
-                                count_rate = get_data(cr_var[0])
+                                count_rate = get(cr_var[0])
                             if count_rate is not None:
                                 cr_times, cr_data, cr_energies = count_rate
                                 if np.isnan(cr_energies).all():
                                     continue
-                                store_data(cr_var[0], data={'x': cr_times, 'y': cr_data*correction, 'v': cr_energies})
+                                store(cr_var[0], data={'x': cr_times, 'y': cr_data*correction, 'v': cr_energies})
 
                             if not i_var:
                                 intensity = None
                             else:
-                                intensity = get_data(i_var[0])
+                                intensity = get(i_var[0])
                             if intensity is not None:
                                 i_times, i_data, i_energies = intensity
                                 if np.isnan(i_energies).all():
                                     continue
-                                store_data(i_var[0], data={'x': i_times, 'y': i_data*correction, 'v': i_energies})
+                                store(i_var[0], data={'x': i_times, 'y': i_data*correction, 'v': i_energies})
 
                             if not c_var:
                                 counts = None
                             else:
-                                counts = get_data(c_var[0])
+                                counts = get(c_var[0])
                             if counts is not None:
                                 c_times, c_data, c_energies = counts
                                 if np.isnan(c_energies).all():
                                     continue
-                                store_data(c_var[0], data={'x': c_times, 'y': c_data*correction, 'v': c_energies})
+                                store(c_var[0], data={'x': c_times, 'y': c_data*correction, 'v': c_energies})

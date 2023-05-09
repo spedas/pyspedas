@@ -2,7 +2,7 @@ import logging
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas import mms_load_fgm
 from pyspedas import data_exists
-from pytplot import get_data, store_data
+from pytplot import get, store
 import numpy as np
 import math
 
@@ -38,7 +38,7 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
         Tuple: (tplot variable created, hash table used by PAD routine)
     """
     # get the times from the currently loaded FEEPS data
-    pa_variable = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix, dt=True)
+    pa_variable = get('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix, dt=True)
 
     if pa_variable is None:
         logging.error('Error reading pitch angle variable')
@@ -58,7 +58,7 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
     # need the B-field data
     mms_load_fgm(trange=trange, probe=probe, data_rate=data_rate, varformat='*_b_bcs_*')
 
-    btimes, Bbcs = get_data('mms'+probe+'_fgm_b_bcs_'+data_rate+'_l2')
+    btimes, Bbcs = get('mms'+probe+'_fgm_b_bcs_'+data_rate+'_l2')
 
     idx_maps = None
 
@@ -294,16 +294,16 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
     if data_exists(outvar):  # kludge for bug when the PAs were previously calculated
         # check if the current variable's time array matches our output
-        current_pas = get_data(outvar)
+        current_pas = get(outvar)
         if np.array_equal(current_pas.times, btimes):
             return outvar, idx_maps
 
-    store_data(outvar, data={'x': btimes, 'y': new_pas})
+    store(outvar, data={'x': btimes, 'y': new_pas})
 
     # interpolate to the PA time stamps
-    outdata = get_data(outvar, xarray=True)
+    outdata = get(outvar, xarray=True)
     outdata_interpolated = outdata.interp({'time': times})
 
-    store_data(outvar, data={'x': times, 'y': outdata_interpolated.values})
+    store(outvar, data={'x': times, 'y': outdata_interpolated.values})
 
     return outvar, idx_maps
