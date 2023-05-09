@@ -1,4 +1,4 @@
-# Copyright 2020 Regents of the University of Colorado. All Rights Reserved.
+  # Copyright 2020 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
@@ -9,7 +9,7 @@ import pandas as pd
 import copy
 import datetime
 
-def degap(tvar,dt,margin,func='nan',new_tvar = None):
+def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None):
     '''
     Fills gaps in the data either with NaNs or the last number.
 
@@ -17,8 +17,8 @@ def degap(tvar,dt,margin,func='nan',new_tvar = None):
         tvar : str
             Name of tplot variable to modify
         dt : int/float
-            Step size of the data in seconds
-        margin : int/float, optional
+            Step size of the data in seconds, default is to use the median time interval
+        margin : int/float, optional, default is 0.25 seconds
             The maximum deviation from the step size allowed before degapping occurs.  In other words, if you'd like to fill in data every 4 seconds
             but occasionally the data is 4.1 seconds apart, set the margin to .1 so that a data point is not inserted there.
         func : str, optional
@@ -34,11 +34,16 @@ def degap(tvar,dt,margin,func='nan',new_tvar = None):
         >>> # TODO
     '''
 
-#fix from T.Hori, 2023-04-10, jimm02
+    #fix from T.Hori, 2023-04-10, jimm02
     #    gap_size = np.diff(pytplot.data_quants[tvar].coords['time']) This is in Nanoseconds, and causes a type mismatch with dt+margin
     #    new_tvar_index = pytplot.data_quants[tvar].coords['time']
     new_tvar_index = pytplot.get_data(tvar)[0] #Unix time float64
     gap_size = np.diff(new_tvar_index)
+
+    #Default for dt is the median value of gap_size, the time interval differences
+    if dt == None:
+        dt = np.median(gap_size)
+
     gap_index_locations = np.where(gap_size > dt+margin)
     values_to_add = np.array([])
     for i in gap_index_locations[0]:
