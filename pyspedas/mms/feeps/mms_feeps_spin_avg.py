@@ -1,4 +1,5 @@
 import warnings
+import logging
 import numpy as np
 from pytplot import get, store, options
 
@@ -54,7 +55,13 @@ def mms_feeps_spin_avg(probe='1', data_units='intensity', datatype='electron', d
 
     # get the spin sectors
     # v5.5+ = mms1_epd_feeps_srvy_l1b_electron_spinsectnum
-    sector_times, spin_sectors = get(prefix + data_rate + '_' + level + '_' + datatype + '_spinsectnum' + suffix)
+    spin_sector_tuple = get(prefix + data_rate + '_' + level + '_' + datatype + '_spinsectnum' + suffix)
+
+    if spin_sector_tuple is None:
+        logging.warning('Problem reading spin sector variable')
+        return
+
+    sector_times, spin_sectors = spin_sector_tuple
 
     spin_starts = [spin_end + 1 for spin_end in np.where(spin_sectors[:-1] >= spin_sectors[1:])[0]]
 

@@ -41,7 +41,14 @@ def mms_feeps_remove_sun(sensor_eyes, trange, probe='1', datatype='electron', da
     -----------
         List of tplot variables created.
     """
-    sector_times, spin_sectors = get('mms'+probe+'_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_spinsectnum'+suffix)
+    spin_sector_tuple = get('mms'+probe+'_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_spinsectnum'+suffix)
+
+    if spin_sector_tuple is None:
+        logging.warning(f"Error - couldn't find the spin sector variable!!!! Cannot remove sun contamination!")
+        return
+
+    sector_times, spin_sectors = spin_sector_tuple
+
     mask_sectors = mms_read_feeps_sector_masks_csv(trange=trange)
     out_vars = []
 
