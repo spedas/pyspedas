@@ -52,7 +52,13 @@ def mms_feeps_split_integral_ch(units_type, species, probe, suffix='', data_rate
     for sensor in top_sensors:
         top_name = 'mms'+str(probe)+'_epd_feeps_'+data_rate+'_'+level+'_'+species+'_top_'+units_type+'_sensorid_'+str(sensor)
 
-        time, data, energies = pytplot.get(top_name+suffix)
+        data_tuple = pytplot.get(top_name+suffix)
+
+        if data_tuple is None:
+            logging.warning(f"Couldn't find the variable: {top_name+suffix}")
+            continue
+
+        time, data, energies = data_tuple
 
         top_name_out = top_name+'_clean'+suffix
         try:
