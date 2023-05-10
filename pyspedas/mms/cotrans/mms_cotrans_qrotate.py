@@ -42,6 +42,14 @@ def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
 
     q_data = get_data(q_name)
 
+    if data is None:
+        logging.error(f'Problem reading input tplot variable: {in_name}')
+        return
+
+    if q_data is None:
+        logging.error(f'Problem reading quaternion variable: {q_name}')
+        return
+
     if len(data.times) != len(q_data.times):
         logging.info('Interpolating the data to the MEC quaternion time stamps.')
         tinterpol(in_name, q_name)
