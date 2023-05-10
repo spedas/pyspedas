@@ -123,19 +123,29 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         for lvl in levels:
             for drate in data_rates:
                 for datatype in datatypes:
-                   mms_feeps_remove_bad_data(trange=trange, probe=probe, data_rate=drate, datatype =datatype, level=lvl, suffix=suffix)
+                    mms_feeps_remove_bad_data(trange=trange, probe=probe, data_rate=drate, datatype =datatype, level=lvl, suffix=suffix)
 
-                   for data_unit in data_units:
-                       eyes = mms_feeps_active_eyes(trange, probe, drate, datatype, lvl)
+                    for data_unit in data_units:
+                        eyes = mms_feeps_active_eyes(trange, probe, drate, datatype, lvl)
 
-                       split_vars = mms_feeps_split_integral_ch(data_unit, datatype, probe, suffix=suffix, data_rate=drate, level=lvl, sensor_eyes=eyes)
+                        split_vars = mms_feeps_split_integral_ch(data_unit, datatype, probe, suffix=suffix, data_rate=drate, level=lvl, sensor_eyes=eyes)
 
-                       sun_removed_vars = mms_feeps_remove_sun(eyes, trange, probe=probe, datatype=datatype, data_units=data_unit, data_rate=drate, level=lvl, suffix=suffix)
+                        sun_removed_vars = mms_feeps_remove_sun(eyes, trange, probe=probe, datatype=datatype, data_units=data_unit, data_rate=drate, level=lvl, suffix=suffix)
 
-                       omni_vars = mms_feeps_omni(eyes, probe=probe, datatype=datatype, data_units=data_unit, data_rate=drate, level=lvl, suffix=suffix)
+                        omni_vars = mms_feeps_omni(eyes, probe=probe, datatype=datatype, data_units=data_unit, data_rate=drate, level=lvl, suffix=suffix)
 
-                       tvars = tvars + split_vars + sun_removed_vars + omni_vars
-                       
-                       tvars.append(mms_feeps_spin_avg(probe=probe, data_units=data_unit, datatype=datatype, data_rate=drate, level=lvl, suffix=suffix))
+                        if split_vars is not None:
+                            tvars = tvars + split_vars
+
+                        if sun_removed_vars is not None:
+                            tvars = tvars + sun_removed_vars
+
+                        if omni_vars is not None:
+                            tvars = tvars + omni_vars
+
+                        spin_avg_vars = mms_feeps_spin_avg(probe=probe, data_units=data_unit, datatype=datatype, data_rate=drate, level=lvl, suffix=suffix)
+
+                        if spin_avg_vars is not None:
+                            tvars.append(spin_avg_vars)
 
     return tvars
