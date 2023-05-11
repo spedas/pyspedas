@@ -103,7 +103,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
             major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
 
-    if tvars == [] or available or notplot or CONFIG['download_only']:
+    if tvars == [] or available or notplot or CONFIG['download_only'] or tvars is None:
         return tvars
 
     probes = probe if isinstance(probe, list) else [probe]
