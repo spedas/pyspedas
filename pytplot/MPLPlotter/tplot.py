@@ -455,7 +455,10 @@ def tplot(variables, var_label=None,
             else:
                 this_axis = axes[idx]
 
-            fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
+            xmargin = pytplot.tplot_opt_glob.get('xmargin')
+            if xmargin is None:
+                fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
+
             box = this_axis.get_position()
             pad, width = 0.02, 0.02
             cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
