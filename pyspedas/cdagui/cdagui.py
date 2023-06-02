@@ -18,21 +18,25 @@ Notes:
         python pyspedas/cdagui/cdagui.py
     To start the gui inside the python environment:
         exec(open('cdagui.py').read())
-
 """
 import sys
 import datetime
-from PyQt5.QtCore import Qt, QDate, QCoreApplication
-from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow,
-                             QGridLayout, QPushButton, QListWidget,
-                             QGroupBox, QCheckBox, QMessageBox,
-                             QVBoxLayout, QLabel, QLineEdit,
-                             QFileDialog, QCalendarWidget, QDialog)
 from cdaweb import CDAWeb
 from config import CONFIG
 
 
-appx = QApplication(sys.argv)
+try:
+    from PyQt5.QtCore import Qt, QDate, QCoreApplication
+    from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow,
+                                 QGridLayout, QPushButton, QListWidget,
+                                 QGroupBox, QCheckBox, QMessageBox,
+                                 QVBoxLayout, QLabel, QLineEdit,
+                                 QFileDialog, QCalendarWidget, QDialog)
+    appx = QApplication(sys.argv)
+except ImportError:
+    print(
+        "PyQt5 library is not installed. You can install it by using: pip install pyqt5")
+    sys.exit()
 
 
 def show_my_message(self, title, msg):
@@ -45,12 +49,13 @@ def show_my_message(self, title, msg):
     return alert
 
 
-class cdagui(QMainWindow):
+class cdagui():
     """Main CDAWeb Window."""
 
     def __init__(self, parent=None):
         """Inilitalize."""
         super().__init__()
+
         self.main_widget = GUIWidget(self)
         self.setCentralWidget(self.main_widget)
         self.init_UI()
@@ -435,6 +440,7 @@ class GUIWidget(QWidget):
 
 
 if __name__ == '__main__':
+
     app = QCoreApplication.instance()
     if app is None:
         app = QApplication(sys.argv)
