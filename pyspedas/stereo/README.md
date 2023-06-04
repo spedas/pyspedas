@@ -5,6 +5,8 @@ The routines in this module can be used to load data from the STEREO mission.
 ### Instruments
 - Magnetometer (MAG)
 - PLAsma and SupraThermal Ion Composition (PLASTIC) 
+- STEREO Electromagnetic Waves Experiement (SWAVES)
+- Beacon (low resolution beacon data)
 
 ### Examples
 Get started by importing pyspedas and tplot; these are required to load and plot the data:
@@ -71,4 +73,11 @@ tplot(['proton_number_density', 'proton_bulk_speed', 'proton_temperature', 'prot
 ```python
 hfr_vars = pyspedas.stereo.waves(trange=['2013-11-5', '2013-11-6'])
 tplot(['PSD_FLUX'])
+```
+
+#### Beacon Data
+
+```python
+beacon_vars = pyspedas.stereo.beacon(trange=['2013-11-5', '2013-11-6'])
+tplot(['MAGBField'])
 ```
