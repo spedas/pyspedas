@@ -75,7 +75,7 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
     for filename in filenames:
 
         # Read in file
-        file = Dataset(filename, "r+")
+        file = Dataset(filename)
 
         # Creating dictionary that will contain variables and their attributes
         vars_and_atts = {}
