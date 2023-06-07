@@ -17,7 +17,8 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False,
         username=None,
-        password=None
+        password=None,
+        last_version=False
         ):
     """
     This function loads Parker Solar Probe FIELDS data
@@ -100,6 +101,8 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         password: str
             Password to use for authentication
 
+        last_version: bool
+            If True, only download the highest-numbered file version
     Returns
     ----------
         List of tplot variables created.
@@ -135,7 +138,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
         suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
         downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
-        username=username, password=password
+        username=username, password=password,last_version=last_version
     )
     
     if loaded_vars is None or notplot or downloadonly:
@@ -154,7 +157,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
             instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
             suffix=suffix, get_support_data=True, varformat=varformat, varnames=['psp_fld_l2_quality_flags'],
             downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
-            username=username, password=password
+            username=username, password=password,last_version=last_version
         )
         qf_root = 'psp_fld_l2_quality_flags'+suffix if 'psp_fld_l2_quality_flags'+suffix in loaded_extra else None
         loaded_vars += loaded_extra
@@ -185,7 +188,8 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False,
         username=None,
-        password=None
+        password=None,
+        last_version=False
     ):
     """
     This function loads Parker Solar Probe Solar Probe Cup data
@@ -242,6 +246,9 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         password: str
             Password to use for authentication
 
+        last_version: bool
+            If True, only download the highest-numbered file version
+
     Returns
     ----------
         List of tplot variables created.
@@ -257,7 +264,7 @@ def spc(trange=['2018-11-5', '2018-11-6'],
 
     return load(instrument='spc', trange=trange, datatype=datatype, level=level, suffix=suffix, 
         get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, 
-        notplot=notplot, time_clip=time_clip, no_update=no_update, username=username, password=password)
+        notplot=notplot, time_clip=time_clip, no_update=no_update, username=username, password=password, last_version=last_version)
 
 def spe(trange=['2018-11-5', '2018-11-6'], 
         datatype='spa_sf1_32e', 
@@ -269,7 +276,8 @@ def spe(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False
+        time_clip=False,
+        last_version=False
     ):
     """
     This function loads Parker Solar Probe SWEAP/SPAN-e data
@@ -321,6 +329,9 @@ def spe(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        last_version: bool
+            If True, only download the highest-numbered file version
+
     Returns
     ----------
         List of tplot variables created.
@@ -328,7 +339,7 @@ def spe(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='spe', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version)
 
 def spi(trange=['2018-11-5', '2018-11-6'], 
         datatype='sf00_l3_mom', 
@@ -342,7 +353,8 @@ def spi(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False,
         username=None,
-        password=None
+        password=None,
+        last_version=False
     ):
     """
     This function loads Parker Solar Probe SWEAP/SPAN-i data
@@ -401,6 +413,9 @@ def spi(trange=['2018-11-5', '2018-11-6'],
         password: str
             Password to use for authentication
 
+        last_version: bool
+            If True, only download the highest-numbered file version
+
     Returns
     ----------
         List of tplot variables created.
@@ -414,7 +429,7 @@ def spi(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='spi', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
         downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, 
-        username=username, password=password
+        username=username, password=password,last_version=last_version
         )
 
 def epihi(trange=['2018-11-5', '2018-11-6'], 
@@ -427,7 +442,8 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        last_version=False):
     """
     This function loads Parker Solar Probe ISoIS/EPI-Hi data
     
@@ -471,6 +487,9 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        last_version: bool
+            If True, only download the highest-numbered file version
+
     Returns
     ----------
         List of tplot variables created.
@@ -478,7 +497,7 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='epihi', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version)
 
 def epilo(trange=['2018-11-5', '2018-11-6'], 
         datatype='pe', 
@@ -490,7 +509,8 @@ def epilo(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        last_version=False):
     """
     This function loads Parker Solar Probe ISoIS/EPI-Lo data
     
@@ -534,6 +554,9 @@ def epilo(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        last_version: bool
+            If True, only download the highest-numbered file version
+
     Returns
     ----------
         List of tplot variables created.
@@ -541,7 +564,7 @@ def epilo(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='epilo', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version)
 
 def epi(trange=['2018-11-5', '2018-11-6'], 
         datatype='summary', 
@@ -553,7 +576,8 @@ def epi(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        last_version=False):
     """
     This function loads Parker Solar Probe ISoIS/EPI (merged summary) data
     
@@ -597,6 +621,9 @@ def epi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        last_version: bool
+            If True, only download the highest-numbered file version
+
     Returns
     ----------
         List of tplot variables created.
@@ -604,5 +631,5 @@ def epi(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='epi', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version)
 

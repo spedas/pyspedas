@@ -5,13 +5,13 @@ from pytplot import cdf_to_tplot
 from .rfs import rfs_variables_to_load
 from .config import CONFIG
 
-def load(trange=['2018-11-5', '2018-11-6'], 
-         instrument='fields', 
-         datatype='mag_RTN', 
-         spec_types=None, # for DFB AC spectral data
+def load(trange=['2018-11-5', '2018-11-6'],
+         instrument='fields',
+         datatype='mag_RTN',
+         spec_types=None,  # for DFB AC spectral data
          level='l2',
-         suffix='', 
-         get_support_data=False, 
+         suffix='',
+         get_support_data=False,
          varformat=None,
          varnames=[],
          downloadonly=False,
@@ -19,8 +19,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
          no_update=False,
          time_clip=False,
          username=None,
-         password=None
-         ):
+         password=None,
+         last_version=False):
     """
     This function loads Parker Solar Probe data into tplot variables; this function is not 
     meant to be called directly; instead, see the wrappers: 
@@ -69,7 +69,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
             for item in spec_types:
                 loaded_data = load(trange=trange, instrument=instrument, datatype=datatype + '_' + item, level=level, 
                     suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, last_version=last_version)
                 if loaded_data != []:
                     out_vars.extend(loaded_data)
             return out_vars
@@ -136,7 +136,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     if username is None:
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                        local_path=CONFIG['local_data_dir'], no_download=no_update)
+                        local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
     else:
         if instrument == 'fields':
             try:
@@ -144,22 +144,22 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password, basic_auth=True
+                    username=username, password=password, basic_auth=True,last_version=last_version
                 )
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
         elif instrument in ['spc','spi']:
             try:
                 print("Downloading unpublished Data....")
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password, basic_auth=True
+                    username=username, password=password, basic_auth=True,last_version=last_version
                 )
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
         
 
     if files is not None:
