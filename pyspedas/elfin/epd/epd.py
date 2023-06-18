@@ -1,4 +1,8 @@
+import logging
+
 from ..load import load
+from .postprocessing import epd_l1_postprocessing
+
 
 def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         probe='a',
@@ -98,48 +102,12 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
     if type_ in ("cal", "calibrated") or type_ not in CALIBRATED_TYPE_UNITS.keys():
         type_ = "nflux"
 
-    return epd_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
-                              unit=CALIBRATED_TYPE_UNITS[type_], no_spec=no_spec)
+    if level == "l1":
+        return epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
+                                     unit=CALIBRATED_TYPE_UNITS[type_], no_spec=no_spec)
+    elif level == "l2":
+        logging.warning("ELFIN EPD L2 postprocessing not yet supported")
+    else:
+        raise ValueError(f"Unknown level: {level}")
 
-
-def epd_postprocessing(
-    tplotnames,
-    trange=None,
-    type_=None,
-    nspinsinsum=None,
-    unit=None,
-    no_spec=False,
-):
-    """
-    Calibrates data from the Energetic Particle Detector (EPD) and sets dlimits.
-
-    Parameters
-    ----------
-        tplotnames : list of str
-            The tplot names of EPD data to be postprocessed.
-
-        trange : list of str
-            Time range of interest [starttime, endtime] with the format
-            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
-            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-
-        type_ : str, optional
-            Desired data type. Options: 'raw', 'cps', 'nflux', 'eflux'.
-
-        nspinsinsum : int, optional
-            Number of spins in sum which is needed by the calibration function.
-
-        unit : str, optional
-            Units of the data.
-
-        no_spec : bool
-            Flag to set tplot options to linear rather than the default of spec.
-            Default is False.
-
-    Returns
-    ----------
-        List of tplot variables created.
-    """
-
-    return tplotnames
-
+    return tvars
