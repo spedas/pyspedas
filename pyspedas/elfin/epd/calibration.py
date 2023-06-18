@@ -1,10 +1,23 @@
-from pathlib import Path
+import pathlib
 from typing import List, Dict
 
 from pyspedas import time_double
 
-def read_epde_calibration_data(path: Path) -> List[Dict]:
-    """Read ELFIN EPDE calibration data from file and return list of calibration datasets."""
+def read_epde_calibration_data(path: pathlib.Path) -> List[Dict]:
+    """
+    Read ELFIN EPDE calibration data from file and return
+    list of parsed calibration datasets.
+
+    Parameters
+    ----------
+        path : pathlib.Path
+            The path to the calibration data file.
+
+    Returns
+    ----------
+        List of EPDE calibration data parsed from the file.
+
+    """
 
     def parse_float_line(line: str):
         array_str = line.split(":")[1].strip()
