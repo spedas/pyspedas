@@ -51,7 +51,7 @@ def epd_l1_postprocessing(
     for name in filter(lambda n: "spinper" in n, tplotnames):
         d = get(name)
         cal_spinper = d.y / FGM_SAMPLE_RATE
-        store(name, {"x": d.times, "y": cal_spinper}, attr_dict=get(name, metadata=True))
+        store(name, {"x": d.times, "y": cal_spinper}, metadata=get(name, metadata=True))
 
     if nspinsinsum is None:
         tn = tnames("*nspinsinsum*")
