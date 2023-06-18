@@ -66,5 +66,5 @@ EXPECTED_EPDE_CAL_DATA = [
 class EPDCalibrationTestCases(unittest.TestCase):
 
     def test_read_epde_calibration_data(self):
-        test_file_path = importlib.resources.path("pyspedas.elfin.tests", "test_epde_cal_data.txt")
-        self.assertListEqual(read_epde_calibration_data(test_file_path), EXPECTED_EPDE_CAL_DATA)
+        with importlib.resources.path("pyspedas.elfin.tests", "test_epde_cal_data.txt") as test_file_path:
+            self.assertListEqual(read_epde_calibration_data(test_file_path), EXPECTED_EPDE_CAL_DATA)
