@@ -2,6 +2,7 @@ import logging
 
 from pytplot import get, store, del_data, tnames, tplot_rename, options
 
+from .calibration import calibrate_epd
 
 def epd_l1_postprocessing(
     tplotnames,
@@ -55,8 +56,11 @@ def epd_l1_postprocessing(
 
     if nspinsinsum is None:
         tn = tnames("*nspinsinsum*")
-        nspin = get(tn[0])
-        nspinsinsum = nspin.y if nspin is not None else 1
+        if tn:
+            nspin = get(tn[0])
+            nspinsinsum = nspin.y if nspin is not None else 1
+        else:
+            nspinsinsum = 1
 
     new_tvars = []
     for name in tplotnames:
@@ -76,10 +80,8 @@ def epd_l1_postprocessing(
         tplot_rename(name, new_name)
         new_tvars.append(new_name)
 
-        # calibrate_epd(new_name,
-        #               trange=trange,
-        #               type_=type_,
-        #               nspinsinsum=nspinsinsum)
-        logging.warning("EPD L1 calibration is a no-op currently")
+        calibrate_epd(new_name, trange=trange, type_=type_, nspinsinsum=nspinsinsum)
+
+    # TODO: Set units and tplot options (obey no_spec)
 
     return new_tvars
