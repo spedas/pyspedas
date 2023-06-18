@@ -1,6 +1,6 @@
-from .load import load
+from ..load import load
 
-def epd(trange=['2020-11-01', '2020-11-02'],
+def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         probe='a',
         datatype='pef',
         level='l1',
