@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from . import tplot_utilities
+from . import time_double
 from .xlim import xlim
 import logging
 
@@ -46,7 +46,7 @@ def timespan(t1, dt, keyword='days'):
         logging.warning("Invalid 'keyword' option %s.\nEnum(None, 'hours', 'minutes', 'seconds', 'days')",keyword)
         
     if not isinstance(t1, (int, float, complex)):
-        t1 = tplot_utilities.str_to_int(t1)
+        t1 = time_double.time_double(t1)
     t2 = t1+dt
     xlim(t1, t2)
     
