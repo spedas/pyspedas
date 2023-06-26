@@ -64,6 +64,8 @@ class cdaWindow:
             instrument_list.selection_clear(0, tk.END)
             dataset_list.delete(0, tk.END)
             file_list.delete(0, tk.END)
+            label_groups.config(text="Selected Mission Groups:")
+            label_instruments.config(text="Selected Instrument Types:")
 
         def exit_gui():
             # Button: Exit
@@ -129,7 +131,7 @@ class cdaWindow:
             all_files = cda.get_filenames(sel_d_val, t0, t1)
             filelen = len(all_files)
             if filelen < 1:
-                msg = "No datasets were found with these parameters."
+                msg = "No files were found with these parameters."
                 messagebox.showinfo(msgtitle, msg)
                 status("")  # Reset status
                 return []
@@ -158,7 +160,7 @@ class cdaWindow:
             sel_f = list(file_list.curselection())
             sel_f_val = [file_list.get(index) for index in sel_f]
             if len(sel_f_val) < 1:
-                messagebox.showerror(msgtitle, "Please select one or more file to download!")
+                messagebox.showerror(msgtitle, "Please select one or more files to download!")
                 status("")  # Reset status
                 return []
 
@@ -279,7 +281,7 @@ class cdaWindow:
         label30 = tk.Label(window, text=msg)
         label30.grid(row=3, column=0, sticky="nse")
 
-        button31 = tk.Button(window, text="1. Find Datasets", background="#AFEEAF", command=find_datasets, width=40)
+        button31 = tk.Button(window, text="1. Find Datasets", bg="#AFEEAF", command=find_datasets, width=30)
         button31.grid(row=3, column=1, sticky="nsw")
 
         # Row 4 - Dataset labels
@@ -342,7 +344,7 @@ class cdaWindow:
         label80 = tk.Label(window, text=msg)
         label80.grid(row=8, column=0, sticky="nse", pady=6)
 
-        button81 = tk.Button(window, text="2. Get File List", background="#AFEEAF", command=find_filelist, width=40)
+        button81 = tk.Button(window, text="2. Get File List", bg="#AFEEAF", command=find_filelist, width=30)
         button81.grid(row=8, column=1, sticky="nsw", pady=6)
 
         # Row 9, 10 - Files
@@ -378,23 +380,30 @@ class cdaWindow:
 
         # Row 12 - Download Only checkbox, Get Data button, Clear, Exit
         window.grid_rowconfigure(12, weight=0)
+
         cell120 = tk.Frame(window)
-        cell120.grid(row=12, columnspan=2, sticky="new", pady=4)
+        cell120.grid(row=12, column=0, sticky="new", pady=4)
         cell120.grid_columnconfigure(0, weight=0)
         cell120.grid_columnconfigure(1, weight=1)
         cell120.grid_columnconfigure(2, weight=0)
-        cell120.grid_columnconfigure(3, weight=0)
-        cell120.grid_columnconfigure(4, weight=0)
-
         only_ch = tk.Checkbutton(cell120, text="Download Only", variable=download_box, onvalue=1, offvalue=0)
         only_ch.grid(row=0, column=0, sticky="new", padx=4)
+        msg = "Select Files(s) and press:"
+        label120 = tk.Label(cell120, text=msg)
+        label120.grid(row=0, column=2, sticky="nse", pady=6)
 
-        button122 = tk.Button(cell120, text="3. Get Data", background="#AFEEAF", command=get_data, width=40)
-        button122.grid(row=0, column=2, sticky="wns", padx=4)
-        button123 = tk.Button(cell120, text="Clear", command=clear_boxes, width=10, bg="#E9967A")
-        button123.grid(row=0, column=3, sticky="wns", padx=4)
-        button124 = tk.Button(cell120, text="Exit", command=exit_gui, width=10, bg="#E9967A")
-        button124.grid(row=0, column=4, sticky="wns", padx=4)
+        cell121 = tk.Frame(window)
+        cell121.grid(row=12, column=1, sticky="new", pady=4)
+        cell121.grid_columnconfigure(0, weight=0)
+        cell121.grid_columnconfigure(1, weight=1)
+        cell121.grid_columnconfigure(2, weight=0)
+        cell121.grid_columnconfigure(3, weight=0)
+        button122 = tk.Button(cell121, text="3. Get Data", bg="#AFEEAF", command=get_data, width=30)
+        button122.grid(row=0, column=0, sticky="wns", padx=4)
+        button123 = tk.Button(cell121, text="Clear", command=clear_boxes, width=10, bg="#E9967A")
+        button123.grid(row=0, column=2, sticky="wns", padx=4)
+        button124 = tk.Button(cell121, text="Exit", command=exit_gui, width=10, bg="#E9967A")
+        button124.grid(row=0, column=3, sticky="wns", padx=4)
 
         # Row 13 - Status bar
         window.grid_rowconfigure(13, weight=0)
