@@ -77,6 +77,10 @@ def options(name, option=None, value=None, opt_dict=None):
                                          that dimension.  See examples for how it works.
         border              bool         Turns on or off the top/right axes that would create a box around the plot
         var_label_ticks     int          Sets the number of ticks if this variable is displayed as an alternative x axis
+
+        data_gap            numerical    If there is a gap in the data larger than this number in seconds, then insert 
+                                         NaNs. This is similar to using the degap procedure on the variable, but is 
+                                         applied at plot-time, and does not persist in the variable data.
         =================== ==========   =====
     Returns:
         None
@@ -426,6 +430,9 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 't_average':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['t_average'] = value
+
+            if option == 'data_gap': #jmm, 2023-06-20
+                pytplot.data_quants[i].attrs['plot_options']['extras']['data_gap'] = value
 
             if option == 'spec_dim_to_plot' or option == 'spec_plot_dim':
                 if len(pytplot.data_quants[i].values.shape) <= 2:
