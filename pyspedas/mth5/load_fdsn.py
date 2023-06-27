@@ -9,6 +9,8 @@ from pytplot import store_data
 from mth5.clients.make_mth5 import FDSN
 from mth5.mth5 import MTH5
 
+from pyspedas.mth5.utilities import mth5_time_str
+
 def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
     """
     Load FDSN data using MTH5 interface.
@@ -40,7 +42,6 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
     fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
 
     # Get MTH5 file from the server
-    # TODO: convert trange to a proper start and end time
     # TODO: channel should not be a "*" - we use "*F*"
     request_df = pd.DataFrame(
         {
@@ -48,8 +49,8 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
             "station": [station],
             "location": ["--"],
             "channel": ["*F*"],
-            "start": [trange[0]], #  ["2019-11-14T00:00:00"],
-            "end":  [trange[1]] # ["2019-11-15T00:00:00"]
+            "start": [mth5_time_str(trange[0])], #  ["2019-11-14T00:00:00"],
+            "end":  [mth5_time_str(trange[1])] # ["2019-11-15T00:00:00"]
         }
     )
 
