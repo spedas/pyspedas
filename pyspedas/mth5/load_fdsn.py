@@ -5,6 +5,10 @@ import pyspedas
 from .config import CONFIG
 from pytplot import store_data
 
+# MTH5 installation is checked in __init__
+from mth5.clients.make_mth5 import FDSN
+from mth5.mth5 import MTH5
+
 def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
     """
     Load FDSN data using MTH5 interface.
