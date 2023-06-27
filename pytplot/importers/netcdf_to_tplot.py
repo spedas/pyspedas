@@ -81,7 +81,7 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
 
         # Read file
         if os.path.isfile(filename):
-            vfile = Dataset(filename, "r+")
+            vfile = Dataset(filename)
         else:
             logging.error("Cannot find file: " + filename)
             continue
