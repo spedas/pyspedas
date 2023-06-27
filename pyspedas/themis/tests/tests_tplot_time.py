@@ -30,20 +30,67 @@ class TplotTimeValidation(unittest.TestCase):
         from pytplot import tplot,timespan
         from pyspedas.themis import fgm
         vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
-        tplot('tha_fgl_dsl')
+        tplot('tha_fgl_dsl') # full plot
         timespan('2007-03-23/14:00',0.9,"seconds")
-        tplot('tha_fgl_dsl')
+        tplot('tha_fgl_dsl')  # short time interval
 
     def test_subsec_tlimit(self):
         """Test pytplot.timespan as used in ERG notebook"""
         from pytplot import tplot,tlimit
         from pyspedas.themis import fgm
         vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
-        tplot('tha_fgl_dsl')
+        tplot('tha_fgl_dsl')  # full plot
         tlimit(['2007-03-23/14:00','2007-03-23/14:00:00.9'])
-        tplot('tha_fgl_dsl')
+        tplot('tha_fgl_dsl')  # short time interval
+
+    def test_tlimit_full_arg(self):
+        """Test pytplot.timespan as used in ERG notebook"""
+        from pytplot import tplot,tlimit
+        from pyspedas.themis import fgm
+        vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
+        tplot('tha_fgl_dsl')  # full plot
+        tlimit(['2007-03-23/14:00','2007-03-23/14:00:00.9'])
+        tplot('tha_fgl_dsl')  # short time interval
         tlimit('full')
-        tplot('tha_fgl_dsl')
+        tplot('tha_fgl_dsl')  # back to full interval
+
+    def test_tlimit_full_flag(self):
+        """Test pytplot.timespan as used in ERG notebook"""
+        from pytplot import tplot,tlimit
+        from pyspedas.themis import fgm
+        vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
+        tplot('tha_fgl_dsl')  # full plot
+        tlimit(['2007-03-23/14:00','2007-03-23/14:00:00.9'])
+        tplot('tha_fgl_dsl')  # short time interval
+        tlimit(full=True)
+        tplot('tha_fgl_dsl')  # back to full interval
+
+    def test_tlimit_last_arg(self):
+        """Test pytplot.timespan as used in ERG notebook"""
+        from pytplot import tplot,tlimit
+        from pyspedas.themis import fgm
+        vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
+        tplot('tha_fgl_dsl')  # full plot
+        tlimit(['2007-03-23/14:00','2007-03-23/15:00:00'])
+        tplot('tha_fgl_dsl')  # time interval 1  14:00 to 15:00
+        tlimit(['2007-03-23/12:00','2007-03-23/13:00:00'])
+        tplot('tha_fgl_dsl')  # time interval 2 12:00 to 13:00
+        tlimit('last')
+        tplot('tha_fgl_dsl')  # back to time interval 1, 14:00 to 15:00
+
+    def test_tlimit_last_flag(self):
+        """Test pytplot.timespan as used in ERG notebook"""
+        from pytplot import tplot,tlimit
+        from pyspedas.themis import fgm
+        vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
+        tplot('tha_fgl_dsl')  # full plot
+        tlimit(['2007-03-23/14:00','2007-03-23/15:00:00'])
+        tplot('tha_fgl_dsl')  # time interval 1  14:00 to 15:00
+        tlimit(['2007-03-23/12:00','2007-03-23/13:00:00'])
+        tplot('tha_fgl_dsl')  # time interval 2 12:00 to 13:00
+        tlimit(last=True)
+        tplot('tha_fgl_dsl')  # back to time interval 1, 14:00 to 15:00
+
 
 if __name__ == '__main__':
     unittest.main()
