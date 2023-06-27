@@ -4,6 +4,7 @@ from pytplot import store_data
 import os
 
 import pyspedas
+from .config import CONFIG
 
 try:
     from mth5.clients.make_mth5 import FDSN
@@ -30,10 +31,9 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
         List of tplot variables created.
     """
 
-   # TODO: detect os variable according to pyspedas coding
-    mth5dir = './'
-    if os.environ.get('SPEDAS_DATA_DIR'):
-        mth5dir = os.environ['SPEDAS_DATA_DIR']
+    mth5dir = CONFIG['local_data_dir']
+    # if os.environ.get('SPEDAS_DATA_DIR'):
+    #     mth5dir = os.environ['SPEDAS_DATA_DIR']
 
     if not network:
         logging.info("Network not specified")
@@ -47,12 +47,13 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
 
     # Get MTH5 file from the server
     # TODO: convert trange to a proper start and end time
+    # TODO: channel should not be a "*" - we use "*F*"
     request_df = pd.DataFrame(
         {
             "network": [network],
             "station": [station],
             "location": ["--"],
-            "channel": ["*"],
+            "channel": ["*F*"],
             "start": [trange[0]], #  ["2019-11-14T00:00:00"],
             "end":  [trange[1]] # ["2019-11-15T00:00:00"]
         }
@@ -70,6 +71,11 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
             with open(mth5dir + filename) as f: f.close()
             pyspedas.logger.info("mth5 file object is closed")
         return
+
+    # TODO: change to context manager as below:
+    # with mth5_object.open_mth5(mth5_path) as mth5_object_ref
+    # with mth5_object.open_mth5(mth5_path) as m
+
 
     mth5_object = MTH5()
     mth5_object.open_mth5(mth5_path)
@@ -96,7 +102,7 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
             run_ts = run_data.to_runts()
 
             # Determine is we have all components
-            # TODO: What to do with the runs without 3 components
+            # TODO: What to do with the runs without 3 components - operate only with 3 components for now...
             # TODO: can channels_recorded_magnetic be missing from the dataset?
             if len(run_ts.dataset.channels_recorded_magnetic) != 3:
                 continue
@@ -107,7 +113,7 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
             else:
                 time = np.append(time, run_ts.dataset.time.to_numpy())
 
-            # TODO: can channels_recorded_magnetic not be hx, hy, hz?
+            # TODO: can channels_recorded_magnetic not be hx, hy, hz? Just in case add the check
             x = np.append(x, run_ts.dataset.hx.to_numpy())
             y = np.append(y, run_ts.dataset.hy.to_numpy())
             z = np.append(z, run_ts.dataset.hz.to_numpy())
