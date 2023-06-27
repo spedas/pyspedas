@@ -141,11 +141,8 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     else:
         err_values = None
 
-    # If given a list of datetime objects, convert times to seconds since epoch.
-    # if any(isinstance(t, datetime.datetime) for t in times):
-    #     for tt, time in enumerate(times):
-    #         times[tt] = (time-datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)).total_seconds()
-    # If given a list of datetime string, convert times to seconds since epoch
+    # Convert input time representation to datetime objects, if needed
+
     if not isinstance(times[0], datetime.datetime) and not isinstance(times[0], np.datetime64):
         if isinstance(times[0], float) or isinstance(times[0], np.float64):
             times = [datetime.datetime.utcfromtimestamp(time) if np.isfinite(time) else datetime.datetime.utcfromtimestamp(0) for time in times]

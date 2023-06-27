@@ -5,7 +5,6 @@
 
 import pytplot
 from . import tplot_utilities
-from bokeh.models import Range1d
 
 def xlim(min, max):
     """
@@ -40,7 +39,7 @@ def xlim(min, max):
         pytplot.lim_info['xlast'] = pytplot.tplot_opt_glob['x_range']
     else:
         pytplot.tplot_opt_glob['x_range_full'] = [min, max]
-        pytplot.lim_info['xfull'] = Range1d(min, max)
-        pytplot.lim_info['xlast'] = Range1d(min, max)
+        pytplot.lim_info['xfull'] = [min, max]
+        pytplot.lim_info['xlast'] = [min, max]
     pytplot.tplot_opt_glob['x_range'] = [min, max]
     return
