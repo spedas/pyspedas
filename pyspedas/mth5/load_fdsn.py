@@ -1,19 +1,9 @@
-import logging
-import numpy as np
-from pytplot import store_data
 import os
-
+import numpy as np
+import pandas as pd
 import pyspedas
 from .config import CONFIG
-
-try:
-    from mth5.clients.make_mth5 import FDSN
-    from mth5.mth5 import MTH5
-except ImportError:
-    logging.error('MTH5 must be installed to use this module.')
-    logging.error('Please install it using: pip install mth5')
-
-import pandas as pd
+from pytplot import store_data
 
 def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
     """
@@ -36,11 +26,11 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
     #     mth5dir = os.environ['SPEDAS_DATA_DIR']
 
     if not network:
-        logging.info("Network not specified")
+        pyspedas.logging.info("Network not specified")
         return
 
     if not station:
-        logging.info("Station not specified")
+        pyspedas.logging.info("Station not specified")
         return
 
     fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
