@@ -121,9 +121,8 @@ def mms_part_getspec(instrument='fpi',
     start_time = time()
 
     if trange is None:
-        # test data for development
-        trange = ['2015-10-16/13:06', '2015-10-16/13:07']
-        # data_rate = 'brst'
+        logging.error('Time range not specified; please specify time range using the trange keyword.')
+        return
 
     if mag_data_rate is None:
         if data_rate == 'brst':

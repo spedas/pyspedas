@@ -6,6 +6,11 @@ from pytplot import del_data, tplot, data_exists
 
 
 class FEEPSTestCases(unittest.TestCase):
+    def test_feeps_sitl(self):
+        mms_load_feeps(datatype='electron', trange=['2016-11-23', '2016-11-24'], data_rate='srvy', probe=4,
+                       level='sitl')
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_sitl_electron_intensity_omni'))
+
     def test_feeps_pad_regression(self):
         """
         This is a regression test for a bug caused by the v7 of the FEEPS CDF files
@@ -57,6 +62,15 @@ class FEEPSTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad'))
         tplot(['mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad',
                'mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin'], display=False)
+
+    def test_electron_srvy_after_aug17(self):
+        # there's a different set of active eyes after 16 August 2017
+        # this test executes that code
+        mms_load_feeps(probe=4, trange=['2017-12-01', '2017-12-02'])
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_omni'))
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
+        tplot(['mms4_epd_feeps_srvy_l2_electron_intensity_omni',
+               'mms4_epd_feeps_srvy_l2_electron_intensity_omni_spin'], display=False)
 
     def test_sector_masks(self):
         d = mms_read_feeps_sector_masks_csv(['2015-08-01', '2015-08-02'])
