@@ -167,6 +167,7 @@ from pytplot.importers.sts_to_tplot import sts_to_tplot
 from .tplot_utilities import compare_versions
 from .tplot_utilities import highlight
 from .tplot_utilities import annotate
+from .data_att_getters_setters import set_coords, get_coords, set_units, get_units
 from .data_exists import data_exists
 from .link import link
 from pytplot.tplot_math import *
