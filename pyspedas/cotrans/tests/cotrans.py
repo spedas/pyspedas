@@ -14,10 +14,9 @@ import pyspedas
 import logging
 from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 from pyspedas.cotrans.fac_matrix_make import fac_matrix_make
 from pytplot import get_data, store_data, del_data
+from pyspedas import cotrans_get_coord, cotrans_set_coord
 
 
 class CotransTestCases(unittest.TestCase):
@@ -25,8 +24,9 @@ class CotransTestCases(unittest.TestCase):
     def test_fac_matrix_make(self):
         doesntexist = fac_matrix_make('doesnt_exist')
 
-    def test_get_set_coord(self):
-        """ Test for cotrans_set_coord/cotrans_get_coord """
+    def test_get_set_coord_wrappers(self):
+        """ Test for cotrans_set_coord/cotrans_get_coord wrappers """
+        del_data()
         doesntexist = cotrans_get_coord('test_coord')
         self.assertTrue(doesntexist is None)
         store_data('test_coord', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
@@ -47,6 +47,52 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(md_after['data_att']['units'] == 'km')
         setcoord = cotrans_set_coord('doesnt_exist', 'GSM')
 
+    def test_get_set_coords(self):
+        """ Test for pytplot.set_coords/get_coords """
+        from pytplot import set_coords,get_coords
+
+        del_data()
+        doesntexist = get_coords('test_coord')
+        self.assertTrue(doesntexist is None)
+        store_data('test_coord', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
+        cotrans(name_in='test_coord', coord_out="geo")
+        before = get_coords('test_coord')
+        self.assertTrue(before is None)
+        setcoord = set_coords('test_coord', 'GSE')
+        self.assertTrue(setcoord)
+        after = get_coords('test_coord')
+        self.assertTrue(after == 'GSE')
+        md = get_data('test_coord',metadata=True)
+        md['data_att']['units'] = 'km'
+        setcoord = set_coords('test_coord', 'GSM')
+        self.assertTrue(setcoord)
+        md_after = get_data('test_coord',metadata=True)
+        after = get_coords('test_coord')
+        self.assertTrue(after == 'GSM')
+        self.assertTrue(md_after['data_att']['units'] == 'km')
+        setcoord = set_coords('doesnt_exist', 'GSM')
+
+    def test_get_set_units(self):
+        """ Test for pytplot.set_coords/get_coords """
+        from pytplot import set_units,get_units, set_coords, get_coords
+
+        del_data()
+        doesntexist = get_units('test_units')
+        self.assertTrue(doesntexist is None)
+        store_data('test_units', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
+        before = get_units('test_units')
+        self.assertTrue(before is None)
+        setunits = set_units('test_units', 'Km')
+        self.assertTrue(setunits)
+        after = get_units('test_units')
+        self.assertTrue(after == 'Km')
+        set_coords('test_units','GEO')
+        setunits = set_units('test_units', 'mm')
+        self.assertTrue(setunits)
+        coords_after=get_coords('test_units')
+        units_after=get_units('test_units')
+        self.assertTrue(coords_after == 'GEO')
+        self.assertTrue(units_after == 'mm')
 
     def test_dsl2gse(self):
         """Test themis.cotrans.dsl2gse."""
