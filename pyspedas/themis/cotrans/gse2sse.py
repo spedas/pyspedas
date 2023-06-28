@@ -8,8 +8,8 @@ import logging
 import numpy as np
 from copy import deepcopy
 
-from pyspedas import tnormalize, tcrossp, cotrans_get_coord, cotrans_set_coord, tinterpol, deriv_data, cotrans, tvector_rotate
-from pytplot import data_exists, get_data, store_data
+from pyspedas import tnormalize, tcrossp, tinterpol, deriv_data, cotrans, tvector_rotate
+from pytplot import data_exists, get_data, store_data, get_coords, set_coords
 
 def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str, 
             isssetogse: bool = False, variable_type: str = 'Other', ignore_input_coord: bool = False, rotation_only: bool = False) -> int:
@@ -58,7 +58,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
    
     if not ignore_input_coord:
         # check input coord
-        in_coord = cotrans_get_coord(name_in)
+        in_coord = get_coords(name_in)
         if in_coord is None:
             in_coord = "None"
         if not isssetogse and (in_coord.lower() != 'gse'):
@@ -69,7 +69,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
             return 0
         
         # check sun pos coord
-        sun_pos_coord = cotrans_get_coord(name_sun_pos)
+        sun_pos_coord = get_coords(name_sun_pos)
         if sun_pos_coord is None:
             sun_pos_coord = "None"
         if sun_pos_coord.lower() != 'gse':
@@ -80,7 +80,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
             sun_pos_gse_name=name_sun_pos
 
         # check lun pos coord
-        lun_pos_coord = cotrans_get_coord(name_lun_pos)
+        lun_pos_coord = get_coords(name_lun_pos)
         if lun_pos_coord is None:
             lun_pos_coord = "None"
         if lun_pos_coord.lower() != 'gse':
@@ -152,7 +152,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
             logging.info("No earth-moon offsets applied")
             tvector_rotate('sse_mat_cotrans',name_in,newname=name_out)
 
-        cotrans_set_coord(name_out,'SSE')
+        set_coords(name_out,'SSE')
         return 1
     
     else:
@@ -168,7 +168,7 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
             logging.info("No earth-moon offsets applied")
             tvector_rotate('sse_mat_cotrans',name_in,newname=name_out)
 
-        cotrans_set_coord(name_out,'GSE')
+        set_coords(name_out,'GSE')
         return 1
 
 

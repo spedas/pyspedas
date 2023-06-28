@@ -9,8 +9,7 @@ from math import pi
 import numpy as np
 from copy import deepcopy
 
-from pytplot import get_data, store_data, data_exists
-from pyspedas import cotrans_get_coord, cotrans_set_coord
+from pytplot import get_data, store_data, data_exists, get_coords, set_coords
 from pyspedas.themis.state import Spinmodel
 
 
@@ -50,7 +49,7 @@ def ssl2dsl(name_in: str, spinmodel_obj: Spinmodel, name_out: str, isdsltossl: b
         return 0
 
     if not ignore_input_coord:
-        in_coord=cotrans_get_coord(name_in)
+        in_coord=get_coords(name_in)
         if in_coord is None:
             in_coord = "None"
         if isdsltossl and (in_coord.upper() != 'DSL'):
@@ -97,6 +96,6 @@ def ssl2dsl(name_in: str, spinmodel_obj: Spinmodel, name_out: str, isdsltossl: b
     dd_out = [out_d0, out_d1, out_d2]
     data_out = np.column_stack(dd_out)
     store_data(name_out, data={'x': in_times, 'y': data_out}, attr_dict=meta_copy)
-    cotrans_set_coord(name_out,out_coord)
+    set_coords(name_out,out_coord)
 
     return 1

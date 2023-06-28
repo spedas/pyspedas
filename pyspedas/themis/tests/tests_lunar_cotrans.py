@@ -3,8 +3,8 @@ import unittest
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 from copy import deepcopy
 from pytplot import data_exists, get_data, store_data, cdf_to_tplot, del_data, tplot_restore, replace_metadata
+from pytplot import get_coords,set_coords
 from pyspedas.themis import gse2sse,sse2sel,autoload_support
-from pyspedas import cotrans_get_coord, cotrans_set_coord
 
 
 
@@ -102,14 +102,14 @@ class LunCotransDataValidation(unittest.TestCase):
     def test_replace_metadata(self):
         data = get_data('tha_state_pos_gse')
         orig_meta = deepcopy(get_data('tha_state_pos_gse',metadata=True))
-        orig_coord = cotrans_get_coord('tha_state_pos_gse')
+        orig_coord = get_coords('tha_state_pos_gse')
         self.assertEqual(orig_coord.lower(), 'gse')
         store_data('newvar',data={'x':data[0],'y':data[1]})
         replace_metadata('newvar',orig_meta)
-        self.assertEqual(cotrans_get_coord('newvar').lower(),'gse')
+        self.assertEqual(get_coords('newvar').lower(),'gse')
         orig_meta['data_att']['coord_sys'] = 'goofy'  # won't affect tha_state_pos_gse, should not affect newvar either
-        self.assertEqual(cotrans_get_coord('newvar').lower(),'gse')
-        self.assertEqual(cotrans_get_coord('tha_state_pos_gse').lower(),'gse')
+        self.assertEqual(get_coords('newvar').lower(),'gse')
+        self.assertEqual(get_coords('tha_state_pos_gse').lower(),'gse')
 
     def test_gse2sse_pos(self):
         """ Validate gse2sse position transform """
@@ -121,7 +121,7 @@ class LunCotransDataValidation(unittest.TestCase):
         pos_meta = get_data('tha_state_pos_sse',metadata=True)
         self.assertEqual(pos_meta['data_att']['units'],'km')
         assert_allclose(pos_sse.y, self.tha_state_pos_sse.y, atol=0.1)
-        self.assertEqual(cotrans_get_coord('tha_state_pos_sse').lower(),'sse')
+        self.assertEqual(get_coords('tha_state_pos_sse').lower(),'sse')
 
     def test_gse2sse_pos_rotate_only(self):
         """ Validate gse2sse position transform """
@@ -131,7 +131,7 @@ class LunCotransDataValidation(unittest.TestCase):
         pos_meta = get_data('tha_state_pos_sse',metadata=True)
         self.assertEqual(pos_meta['data_att']['units'],'km')
         assert_allclose(pos_sse.y, self.tha_state_pos_sse_rotate_only.y, atol=0.1)
-        self.assertEqual(cotrans_get_coord('tha_state_pos_sse_rotate_only').lower(),'sse')
+        self.assertEqual(get_coords('tha_state_pos_sse_rotate_only').lower(),'sse')
 
     def test_gse2sse_vel(self):
         """ Validate gse2sse velocity transform """
@@ -141,7 +141,7 @@ class LunCotransDataValidation(unittest.TestCase):
         vel_meta = get_data('tha_state_vel_sse',metadata=True)
         self.assertEqual(vel_meta['data_att']['units'],'km/s')
         assert_allclose(vel_sse.y, self.tha_state_vel_sse.y, atol=1.0e-03)
-        self.assertEqual(cotrans_get_coord('tha_state_vel_sse').lower(),'sse')
+        self.assertEqual(get_coords('tha_state_vel_sse').lower(),'sse')
 
     def test_gse2sse_vel_rotate_only(self):
         """ Validate gse2sse position transform """
@@ -151,7 +151,7 @@ class LunCotransDataValidation(unittest.TestCase):
         vel_meta = get_data('tha_state_vel_sse',metadata=True)
         self.assertEqual(vel_meta['data_att']['units'],'km/s')
         assert_allclose(vel_sse.y, self.tha_state_vel_sse_rotate_only.y, atol=1.0e-03)
-        self.assertEqual(cotrans_get_coord('tha_state_vel_sse_rotate_only').lower(),'sse')
+        self.assertEqual(get_coords('tha_state_vel_sse_rotate_only').lower(),'sse')
 
     def test_gse2sse_field(self):
         """ Validate gse2sse field transform """
@@ -161,12 +161,12 @@ class LunCotransDataValidation(unittest.TestCase):
         fgs_meta = get_data('tha_fgs_sse',metadata=True)
         self.assertEqual(fgs_meta['data_att']['units'],'nT')
         assert_allclose(fgs_sse.y, self.tha_fgs_sse.y, atol=1.0e-02)
-        self.assertEqual(cotrans_get_coord('tha_fgs_sse').lower(), 'sse')
+        self.assertEqual(get_coords('tha_fgs_sse').lower(), 'sse')
 
     def test_sse2gse_pos(self):
         """ Validate sse2gse position transform """
         store_data('tha_state_pos_sse',data={'x':self.tha_state_pos_sse.times, 'y':self.tha_state_pos_sse.y})
-        cotrans_set_coord('tha_state_pos_sse','sse')
+        set_coords('tha_state_pos_sse','sse')
         before_meta = get_data('tha_state_pos_sse',metadata=True)
         before_meta['data_att']['units'] = 'km'
         result = gse2sse('tha_state_pos_sse', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_pos_gse_sse_gse',isssetogse=True,
@@ -176,19 +176,19 @@ class LunCotransDataValidation(unittest.TestCase):
         pos_meta = get_data('tha_state_pos_gse_sse_gse',metadata=True)
         self.assertEqual(pos_meta['data_att']['units'],'km')
         assert_allclose(pos_gse.y, self.tha_state_pos_gse_sse_gse.y, atol=0.1)
-        self.assertEqual(cotrans_get_coord('tha_state_pos_gse_sse_gse').lower(),'gse')
+        self.assertEqual(get_coords('tha_state_pos_gse_sse_gse').lower(),'gse')
 
     def test_sse2gse_pos_rotate_only(self):
         """ Validate sse2gse position transform """
         store_data('tha_state_pos_sse_rotate_only',
                            data={'x':self.tha_state_pos_sse_rotate_only.times, 'y':self.tha_state_pos_sse_rotate_only.y})
-        cotrans_set_coord('tha_state_pos_sse_rotate_only','sse')
+        set_coords('tha_state_pos_sse_rotate_only','sse')
         result = gse2sse('tha_state_pos_sse_rotate_only', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_pos_gse_sse_gse_rotation_only',isssetogse=True,
                          variable_type='pos', rotation_only=True)
         self.assertEqual(result,1)
         pos_gse = get_data('tha_state_pos_gse_sse_gse_rotation_only')
         assert_allclose(pos_gse.y, self.tha_state_pos_gse_sse_gse_rotate_only.y, atol=0.1)
-        self.assertEqual(cotrans_get_coord('tha_state_pos_gse_sse_gse_rotate_only').lower(),'gse')
+        self.assertEqual(get_coords('tha_state_pos_gse_sse_gse_rotate_only').lower(),'gse')
 
     def test_sse2gse_vel(self):
         """ Validate sse2gse velocity transform """
@@ -197,19 +197,19 @@ class LunCotransDataValidation(unittest.TestCase):
         self.assertEqual(result,1)
         vel_gse = get_data('tha_state_vel_gse_sse_gse')
         assert_allclose(vel_gse.y, self.tha_state_vel_gse_sse_gse.y, atol=1.0e-02)
-        self.assertEqual(cotrans_get_coord('tha_state_vel_gse_sse_gse').lower(),'gse')
+        self.assertEqual(get_coords('tha_state_vel_gse_sse_gse').lower(),'gse')
 
     def test_sse2gse_vel_rotate_only(self):
         """ Validate sse2gse position transform """
         store_data('tha_state_vel_sse_rotate_only',
                            data={'x':self.tha_state_vel_sse_rotate_only.times, 'y':self.tha_state_vel_sse_rotate_only.y})
-        cotrans_set_coord('tha_state_vel_sse_rotate_only','sse')
+        set_coords('tha_state_vel_sse_rotate_only','sse')
         result = gse2sse('tha_state_vel_sse_rotate_only', 'slp_sun_pos', 'slp_lun_pos', 'tha_state_vel_gse_sse_gse_rotation_only',isssetogse=True,
                          variable_type='pos', rotation_only=True)
         self.assertEqual(result,1)
         vel_gse = get_data('tha_state_vel_gse_sse_gse_rotation_only')
         assert_allclose(vel_gse.y, self.tha_state_vel_gse_sse_gse_rotate_only.y, atol=1.0e-03)
-        self.assertEqual(cotrans_get_coord('tha_state_vel_gse_sse_gse_rotate_only').lower(),'gse')
+        self.assertEqual(get_coords('tha_state_vel_gse_sse_gse_rotate_only').lower(),'gse')
 
     def test_sse2gse_field(self):
         """ Validate gse2sse field transform """
@@ -217,7 +217,7 @@ class LunCotransDataValidation(unittest.TestCase):
         self.assertEqual(result, 1)
         fgs_gse = get_data('tha_fgs_gse_sse_gse')
         assert_allclose(fgs_gse.y, self.tha_fgs_gse_sse_gse.y, atol=1.0e-02)
-        self.assertEqual(cotrans_get_coord('tha_fgs_gse_sse_gse').lower(), 'gse')
+        self.assertEqual(get_coords('tha_fgs_gse_sse_gse').lower(), 'gse')
 
     def test_sse2sel_pos(self):
         """ Validate sse2sel position transform """
@@ -237,7 +237,7 @@ class LunCotransDataValidation(unittest.TestCase):
         pos_meta = get_data('tha_state_pos_sel',metadata=True)
         self.assertEqual(pos_meta['data_att']['units'],'km')
         assert_allclose(pos_sel.y, self.tha_state_pos_sel.y, atol=0.1)
-        self.assertEqual(cotrans_get_coord('tha_state_pos_sel').lower(),'sel')
+        self.assertEqual(get_coords('tha_state_pos_sel').lower(),'sel')
 
     def test_sse2sel_fgs(self):
         """ Validate sse2sel field transform """
@@ -245,25 +245,25 @@ class LunCotransDataValidation(unittest.TestCase):
         self.assertEqual(result,1)
         fgs_sel = get_data('tha_fgs_sel')
         assert_allclose(fgs_sel.y, self.tha_fgs_sel.y, atol=.005)
-        self.assertEqual(cotrans_get_coord('tha_fgs_sel').lower(),'sel')
+        self.assertEqual(get_coords('tha_fgs_sel').lower(),'sel')
 
     def test_sel2sse_pos(self):
         """ Validate sel2sse position transform """
         # Restore original baseline input tplot variable
         store_data('tha_state_pos_sel',data={'x':self.tha_state_pos_sel.times, 'y':self.tha_state_pos_sel.y})
-        cotrans_set_coord('tha_state_pos_sel','sel')
+        set_coords('tha_state_pos_sel','sel')
 
         result = sse2sel('tha_state_pos_sel', 'slp_sun_pos', 'slp_lun_pos', 'slp_lun_att_x', 'slp_lun_att_z', 'tha_state_pos_sel_sse', isseltosse=True)
         self.assertEqual(result,1)
         pos_sse = get_data('tha_state_pos_gse_sel_sse')
         assert_allclose(pos_sse.y, self.tha_state_pos_gse_sel_sse.y, atol=0.1)
-        self.assertEqual(cotrans_get_coord('tha_state_pos_gse_sel_sse').lower(),'sse')
+        self.assertEqual(get_coords('tha_state_pos_gse_sel_sse').lower(),'sse')
 
     def test_sel2sse_field(self):
         """ Validate sel2sse field transform """
         # Restore original baseline input tplot variable
         store_data('tha_fgs_sel',data={'x':self.tha_fgs_sel.times, 'y':self.tha_fgs_sel.y})
-        cotrans_set_coord('tha_fgs_sel','sel')
+        set_coords('tha_fgs_sel','sel')
         md_before = get_data('tha_fgs_sel',metadata=True)
         md_before['data_att']['units'] = 'nT'
         result = sse2sel('tha_fgs_sel', 'slp_sun_pos', 'slp_lun_pos', 'slp_lun_att_x', 'slp_lun_att_z', 'tha_fgs_sel_sse', isseltosse=True)
@@ -272,7 +272,7 @@ class LunCotransDataValidation(unittest.TestCase):
         fgs_meta = get_data('tha_fgs_sel_sse',metadata=True)
         self.assertEqual(fgs_meta['data_att']['units'],'nT')
         assert_allclose(fgs_sse.y, self.tha_fgs_sse.y, atol=0.1)
-        self.assertEqual(cotrans_get_coord('tha_fgs_sel_sse').lower(),'sse')
+        self.assertEqual(get_coords('tha_fgs_sel_sse').lower(),'sse')
 
 if __name__ == '__main__':
     unittest.main()

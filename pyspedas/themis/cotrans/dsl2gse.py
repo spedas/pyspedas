@@ -10,9 +10,8 @@ from copy import deepcopy
 #import pytplot
 
 import pyspedas
-from pyspedas import cotrans_get_coord, cotrans_set_coord
 from pyspedas.cotrans.cotrans_lib import subgei2gse
-from pytplot import data_exists, del_data, store_data, get_data
+from pytplot import data_exists, del_data, store_data, get_data, set_coords, get_coords
 
 
 def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl: bool = False,
@@ -51,7 +50,7 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
         return 0
 
     if not ignore_input_coord:
-        in_coord = cotrans_get_coord(name_in)
+        in_coord = get_coords(name_in)
         if in_coord is None:
             in_coord = "None"
         if isgsetodsl and (in_coord.lower() != 'gse'):
@@ -140,6 +139,6 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
     data_out = np.column_stack(dd_out)
 
     store_data(name_out, data={'x': data_in[0], 'y': data_out}, attr_dict=meta_copy)
-    cotrans_set_coord(name_out, out_coord)
+    set_coords(name_out, out_coord)
 
     return 1

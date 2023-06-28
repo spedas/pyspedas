@@ -12,9 +12,8 @@ This function is similar to cotrans.pro of IDL SPEDAS.
 """
 import logging
 import pytplot
+from pytplot import get_coords,set_coords
 from pyspedas.cotrans.cotrans_lib import subcotrans
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 
 
 def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
@@ -50,7 +49,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
 
     # Input data may be specified as a bare array rather than a tplot variable
     if not (name_in is None):
-        var_coord_in = cotrans_get_coord(name_in)
+        var_coord_in = get_coords(name_in)
     else:
         var_coord_in = None
 
@@ -111,7 +110,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     pytplot.data_quants[name_out].data = data_out
 
     # We should change an attribute for the coordinate system.
-    cotrans_set_coord(name_out, coord_out.upper())
+    set_coords(name_out, coord_out.upper())
 
     # Code to update the legend and axis labels has been moved into cotrans_set_coord().
 

@@ -7,10 +7,8 @@ import numpy as np
 import pytplot
 from pyspedas import tnormalize, tcrossp
 from pyspedas.cotrans.tvector_rotate import tvector_rotate
-from pytplot import data_exists
+from pytplot import data_exists, get_coords, set_coords
 from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 from pyspedas.analysis.tinterpol import tinterpol
 from pyspedas.analysis.deriv_data import deriv_data
 from pyspedas.themis.cotrans.gse2sse import gse2sse
@@ -63,7 +61,7 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
    
     if not ignore_input_coord:
         # check input coord
-        in_coord = cotrans_get_coord(name_in)
+        in_coord = get_coords(name_in)
         if in_coord is None:
             in_coord = "None"
         if not isseltosse and (in_coord.lower() != 'sse'):
@@ -74,7 +72,7 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
             return 0
         
         # check sun pos coord
-        sun_pos_coord = cotrans_get_coord(name_sun_pos)
+        sun_pos_coord = get_coords(name_sun_pos)
         if sun_pos_coord is None:
             sun_pos_coord = "None"
         if sun_pos_coord.lower() != 'gse':
@@ -84,7 +82,7 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
         else:
             sun_pos_gse_name=name_sun_pos
         # check lun pos coord
-        lun_pos_coord = cotrans_get_coord(name_lun_pos)
+        lun_pos_coord = get_coords(name_lun_pos)
         if lun_pos_coord is None:
             lun_pos_coord = "None"
         if lun_pos_coord.lower() != 'gse':
@@ -94,7 +92,7 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
         else:
             lun_pos_gse_name = name_lun_pos
         # check lun att x coord
-        lun_att_x_coord = cotrans_get_coord(name_lun_att_x)
+        lun_att_x_coord = get_coords(name_lun_att_x)
         if lun_att_x_coord is None:
             lun_att_x_coord = "None"
         if lun_att_x_coord.lower() != 'gse':
@@ -104,7 +102,7 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
         else:
             lun_att_x_gse_name = name_lun_att_x
         # check lun att z coord
-        lun_att_z_coord = cotrans_get_coord(name_lun_att_z)
+        lun_att_z_coord = get_coords(name_lun_att_z)
         if lun_att_z_coord is None:
             lun_att_z_coord = "None"
         if lun_att_z_coord.lower() != 'gse':
@@ -152,12 +150,12 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
         """ SSE -> SEL
         """
         tvector_rotate('sel_mat_cotrans',name_in,newname=name_out)
-        cotrans_set_coord(name_out,'SEL')
+        set_coords(name_out,'SEL')
         return 1
     
     else:
         """ SEL -> SSE
         """
         tvector_rotate('sel_mat_cotrans',name_in,newname=name_out)
-        cotrans_set_coord(name_out,'SSE')
+        set_coords(name_out,'SSE')
         return 1

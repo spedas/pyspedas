@@ -14,8 +14,7 @@ Returns:
 list of str: List of variables created.
 """
 import logging
-from pyspedas import cotrans_get_coord
-from pytplot import get_data
+from pytplot import get_data, get_coords
 from .mms_cotrans_qtransformer import mms_cotrans_qtransformer
 
 try:
@@ -74,7 +73,7 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
 
     for idx, variable in enumerate(in_name):
         if in_coord is None:
-            var_coords = cotrans_get_coord(variable)
+            var_coords = get_coords(variable)
             in_coord = var_coords
             if var_coords is None:
                 logging.error('Could not determine coordinate system for: ' + variable)

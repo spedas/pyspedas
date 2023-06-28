@@ -1,6 +1,6 @@
 import logging
 from pyspedas.themis.load import load
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
+from pytplot import set_coords
 
 
 def slp(trange=['2007-03-23', '2007-03-24'],
@@ -72,6 +72,6 @@ def slp(trange=['2007-03-23', '2007-03-24'],
         for varname in retval:
             if not "ltime" in varname:
                 logging.debug("Setting %s to GEI coordinates", varname)
-                cotrans_set_coord(varname,"GEI")
+                set_coords(varname,"GEI")
 
     return retval

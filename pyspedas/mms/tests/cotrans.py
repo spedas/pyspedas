@@ -1,9 +1,8 @@
 import unittest
 import pyspedas
-from pytplot import data_exists, tplot_rename
+from pytplot import data_exists, tplot_rename, set_coords
 from pyspedas.mms.cotrans.mms_qcotrans import mms_qcotrans
 from pyspedas.mms.cotrans.mms_cotrans_lmn import mms_cotrans_lmn
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
 
 
 class CotransTestCases(unittest.TestCase):
@@ -28,13 +27,13 @@ class CotransTestCases(unittest.TestCase):
         # out_name not specified
         mms_qcotrans(in_name='mms1_mec_v_sm_2gse', out_coord='gse')
         # in_coord not specified, and not set in metadata
-        cotrans_set_coord('mms1_mec_v_sm', '')
+        set_coords('mms1_mec_v_sm', '')
         mms_qcotrans(in_name='mms1_mec_v_sm', out_name='mms1_mec_v_sm_2gse', out_coord='gse')
         # invalid in_coord
-        cotrans_set_coord('mms1_mec_v_sm', '')
+        set_coords('mms1_mec_v_sm', '')
         mms_qcotrans(in_name='mms1_mec_v_sm', out_name='mms1_mec_v_sm_2gse2', out_coord='gse')
         # invalid out_coord
-        cotrans_set_coord('mms1_mec_v_sm', 'sm')
+        set_coords('mms1_mec_v_sm', 'sm')
         mms_qcotrans(in_name='mms1_mec_v_sm', out_name='mms1_mec_v_sm_2gse2', out_coord='gse2')
         # trouble extracting probe from var name
         tplot_rename('mms1_mec_v_sm', 'mmsx_mec_v_sm')
@@ -58,7 +57,7 @@ class CotransTestCases(unittest.TestCase):
         # invalid variable name
         mms_cotrans_lmn('mms1_fgm_b_gsm_brst_l2_bvec2', 'mms1_fgm_b_gsm_brst_l2_bvec_2lmn')
         # invalid coordinate system
-        cotrans_set_coord('mms1_fgm_b_gsm_brst_l2_bvec', 'gse2')
+        set_coords('mms1_fgm_b_gsm_brst_l2_bvec', 'gse2')
         mms_cotrans_lmn('mms1_fgm_b_gsm_brst_l2_bvec', 'mms1_fgm_b_gsm_brst_l2_bvec_2lmn')
         # problem extracting probe from variable name
         tplot_rename('mms1_fgm_b_gsm_brst_l2_bvec', 'mmsx_fgm_b_gsm_brst_l2_bvec')
