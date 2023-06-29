@@ -43,6 +43,27 @@ class TplotTimeValidation(unittest.TestCase):
         tlimit(['2007-03-23/14:00','2007-03-23/14:00:00.9'])
         tplot('tha_fgl_dsl')  # short time interval
 
+    def test_timebar(self):
+        """Test pytplot.timespan as used in ERG notebook"""
+        from pytplot import tplot,tlimit, timebar
+        from pyspedas.themis import fgm
+        vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
+        tplot('tha_fgl_dsl')  # full plot
+        # Test various timebar formats
+        # Standard format
+        timebar('2007-03-23 14:00:00')
+        tplot('tha_fgl_dsl')
+        # Slash between date and time
+        timebar('2007-03-23/13:00:00')
+        tplot('tha_fgl_dsl')
+        # ISO8601
+        timebar('20070323T1330')
+        tplot('tha_fgl_dsl')
+        tlimit(['2007-03-23/14:00', '2007-03-23/14:00:00.9'])
+        # Subsecond precision
+        timebar('2007-03-23/14:00:00.5')
+        tplot('tha_fgl_dsl')
+
     def test_tlimit_full_arg(self):
         """Test pytplot.timespan as used in ERG notebook"""
         from pytplot import tplot,tlimit
