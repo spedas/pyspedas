@@ -10,18 +10,18 @@ import numpy as np
 from copy import deepcopy
 
 from pytplot import get_data, store_data, data_exists, get_coords, set_coords
-from pyspedas.themis.state import Spinmodel
+from pyspedas.themis.state import Spinmodel,get_spinmodel
+from pyspedas.themis import autoload_support
 
 
-def ssl2dsl(name_in: str, spinmodel_obj: Spinmodel, name_out: str, isdsltossl: bool = False, ignore_input_coord: bool  = False,
-            use_spinphase_correction: bool=True) -> int:
+def ssl2dsl(name_in: str, name_out: str, isdsltossl: bool = False, ignore_input_coord: bool  = False,
+            probe: str=None, use_spinphase_correction: bool=True, eclipse_correction_level: int=0) -> int:
     """Transform ssl to dsl.
 
     Parameters
     ----------
         name_in: str
             Name of input pytplot variable (e.g. 'tha_fgl_ssl')
-        spinmodel_obj: Spinmodel
         name_out: str
             Name of output pytplot variable (e.g. 'tha_fgl_dsl')
         isdsltossl: bool
@@ -30,9 +30,17 @@ def ssl2dsl(name_in: str, spinmodel_obj: Spinmodel, name_out: str, isdsltossl: b
         ignore_input_coord: bool
             if False (default), then fail and return 0 if input coordinate system does not match requested transform
             if True, do not check input coordinate system.
+        probe: str
+            Usually optional, if the variable name is prefixed with 'tha', 'thb', etc.
+            Otherwise, one of ['a','b','c','d','e','f']
         use_spinphase_correction: bool
-            If True, use spin phase corrections from V03 STATE CDF
-            if False, omit this correction
+            If True (default), use spin phase corrections from V03 STATE CDF
+            if False, omit this
+        eclipse_correction_level: int
+            Specify which of the three available spin models to use for this transform
+            0: (default) No eclipse correction
+            1: Eclipse corrections for waveform data
+            2: Eclipse corrections for particles and spin fits (includes additional angular offset)
 
     Returns
     -------
@@ -47,6 +55,12 @@ def ssl2dsl(name_in: str, spinmodel_obj: Spinmodel, name_out: str, isdsltossl: b
         logging.error("Variables missing: " + str(m))
         logging.error("Please load missing variables.")
         return 0
+
+    if probe is None:
+        probe=name_in[2]
+
+    autoload_support(varname=name_in, probe=probe, spinmodel=True)
+    spinmodel_obj=get_spinmodel(probe=probe, correction_level=eclipse_correction_level)
 
     if not ignore_input_coord:
         in_coord=get_coords(name_in)
