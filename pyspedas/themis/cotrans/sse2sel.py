@@ -1,6 +1,6 @@
 """Transformation SSE data to SEL data.
 Notes:
-    Works in a similar wasy to IDL spedas sse2sel.pro
+    Works in a similar way to IDL spedas sse2sel.pro
 """
 import logging
 import numpy as np
@@ -12,23 +12,14 @@ from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.analysis.tinterpol import tinterpol
 from pyspedas.analysis.deriv_data import deriv_data
 from pyspedas.themis.cotrans.gse2sse import gse2sse
+from pyspedas.themis import autoload_support
 
-def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str, 
-            name_lun_att_x: str, name_lun_att_z: str, name_out: str, 
-            isseltosse: bool = False, ignore_input_coord: bool = False) -> int:
+def sse2sel(name_in: str, name_out: str, isseltosse: bool = False, ignore_input_coord: bool = False) -> int:
     """Transform sse to sel.
     Parameters
     ----------
         name_in: str
             Name of input pytplot variable (e.g. 'tha_state_pos_sse' or 'tha_state_pos_sel')
-        name_sun_pos: str
-            Name of pytplot variable for sun position in GEI coordinates (e.g.'slp_sun_pos').
-        name_lun_pos: str
-            Name of pytplot variable for moon position in GEI coordinates (e.g.'slp_lun_pos').
-        name_lun_att_x: str
-            Name of pytplot variable for SEL X-axis in GEI coordinates (e.g. 'slp_lun_att_x'). 
-        name_lun_att_z: str
-            Name of pytplot variable for SEL Z-axis in GEI coordinates (e.g. 'slp_lun_att_z').
         name_out: str
             Name of output pytplot variable (e.g. 'tha_fgl_sse')
         isseltosse: bool
@@ -50,15 +41,21 @@ def sse2sel(name_in: str, name_sun_pos: str, name_lun_pos: str,
     -------
         1 for sucessful completion.
     """
-    needed_vars = [name_in, name_sun_pos, name_lun_pos, name_lun_att_x, name_lun_att_z]
+    needed_vars = [name_in]
     c = [value for value in needed_vars if data_exists(value)]
-    if len(c) < 5:
+    if len(c) < 1:
         logging.error("Variables needed: " + str(needed_vars))
         m = [value for value in needed_vars if value not in c]
         logging.error("Variables missing: " + str(m))
         logging.error("Please load missing variables.")
         return 0
-   
+
+    autoload_support(varname=name_in,slp=True)
+    name_sun_pos = 'slp_sun_pos'
+    name_lun_pos = 'slp_lun_pos'
+    name_lun_att_x = 'slp_lun_att_x'
+    name_lun_att_z = 'slp_lun_att_z'
+
     if not ignore_input_coord:
         # check input coord
         in_coord = get_coords(name_in)
