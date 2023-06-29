@@ -9,10 +9,11 @@ import numpy as np
 from copy import deepcopy
 
 from pyspedas import tnormalize, tcrossp, tinterpol, deriv_data, cotrans, tvector_rotate
+from pyspedas.themis import autoload_support
 from pytplot import data_exists, get_data, store_data, get_coords, set_coords
 
-def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str, 
-            isssetogse: bool = False, variable_type: str = 'Other', ignore_input_coord: bool = False, rotation_only: bool = False) -> int:
+def gse2sse(name_in: str, name_out: str, isssetogse: bool = False,
+            variable_type: str = 'Other', ignore_input_coord: bool = False, rotation_only: bool = False) -> int:
 
     """Transform gse to sse.
 
@@ -20,10 +21,6 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
     ----------
         name_in: str
             Name of input pytplot variable (e.g. 'tha_fgl_dsl')
-        name_sun_pos: str
-            Name of pytplot variable for sun position (e.g.'slp_sun_pos').
-        name_lun_pos: str
-            Name of pytplot variable for spin (e.g.'slp_lun_pos').
         name_out: str
             Name of output pytplot variable (e.g. 'tha_fgl_sse')
         isssetogse: bool
@@ -47,15 +44,20 @@ def gse2sse(name_in: str, name_sun_pos: str, name_lun_pos: str, name_out: str,
         1 for sucessful completion.
     """
 
-    needed_vars = [name_in, name_sun_pos, name_lun_pos]
+    needed_vars = [name_in]
     c = [value for value in needed_vars if data_exists(value)]
-    if len(c) < 3:
+    if len(c) < 1:
         logging.error("Variables needed: " + str(needed_vars))
         m = [value for value in needed_vars if value not in c]
         logging.error("Variables missing: " + str(m))
         logging.error("Please load missing variables.")
         return 0
-   
+
+    # load support data
+    autoload_support(varname=name_in, slp=True)
+    name_sun_pos = 'slp_sun_pos'
+    name_lun_pos = 'slp_lun_pos'
+
     if not ignore_input_coord:
         # check input coord
         in_coord = get_coords(name_in)
