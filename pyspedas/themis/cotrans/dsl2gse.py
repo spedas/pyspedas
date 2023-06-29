@@ -12,20 +12,17 @@ from copy import deepcopy
 import pyspedas
 from pyspedas.cotrans.cotrans_lib import subgei2gse
 from pytplot import data_exists, del_data, store_data, get_data, set_coords, get_coords
+from pyspedas.themis import autoload_support
 
 
-def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl: bool = False,
-            ignore_input_coord: bool = False) -> int:
+def dsl2gse(name_in: str, name_out: str, isgsetodsl: bool = False, ignore_input_coord: bool = False,
+            probe: str=None, use_spinaxis_corrections: bool=True) -> int:
     """Transform dsl to gse.
 
     Parameters
     ----------
         name_in: str
             Name of input pytplot variable (e.g. 'tha_fgl_dsl')
-        spinras: str
-            Name of pytplot variable for spin (e.g.'tha_spinras').
-        spindec: str
-            Name of pytplot variable for spin (e.g.'tha_spinras').
         name_out: str
             Name of output pytplot variable (e.g. 'tha_fgl_gse')
         isgsetodsl: bool
@@ -34,20 +31,29 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
         ignore_input_coord: bool
             if False (default), do not check the input coordinate system
             if True, fail and return 0 if input coordinate does not match the requested transform.
+        probe: str
+            Usually optional, if the probe can be inferred from the input variable name (e.g. tha_xxx_yyy).
+            Otherwise, one of ['a','b','c','d','e','f']
+        use_spinaxis_corrections: bool
+            If True (default), use spin axis corrections from V03 state CDFs when available.
+            If False, use the uncorrected spin axis variables.
 
     Returns
     -------
-        1 for sucessful completion.
+        1 for successful completion.
 
     """
-    needed_vars = [name_in, spinras, spindec]
+    needed_vars = [name_in]
     c = [value for value in needed_vars if data_exists(value)]
-    if len(c) < 3:
+    if len(c) < 1:
         logging.error("Variables needed: " + str(needed_vars))
         m = [value for value in needed_vars if value not in c]
         logging.error("Variables missing: " + str(m))
         logging.error("Please load missing variables.")
         return 0
+
+    if probe is None:
+        probe = name_in[2]
 
     if not ignore_input_coord:
         in_coord = get_coords(name_in)
@@ -59,6 +65,15 @@ def dsl2gse(name_in: str, spinras: str, spindec: str, name_out: str, isgsetodsl:
         if not isgsetodsl and (in_coord.lower() != 'dsl'):
             logging.error("DSL to GSE transform requested, but input coordinate system is " + in_coord)
             return 0
+
+    autoload_support(varname=name_in, probe=probe, spinaxis=True)
+
+    if use_spinaxis_corrections:
+        spinras = 'th' + probe + '_spinras_corrected'
+        spindec = 'th' + probe + '_spindec_corrected'
+    else:
+        spinras = 'th' + probe + '_spinras'
+        spindec = 'th' + probe + '_spindec'
 
     # Interpolate spinras and spindec
     spinnames_in = [spinras, spindec]
