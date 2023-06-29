@@ -118,12 +118,12 @@ def sse2sel(name_in: str, name_out: str, isseltosse: bool = False, ignore_input_
     sun_pos_dim = sunpos.y.shape
 
     # X basis vector
-    result = gse2sse(lun_att_x_gse_name, sun_pos_gse_name, lun_pos_gse_name, 'sel_x_sse', rotation_only=True)
+    result = gse2sse(lun_att_x_gse_name, 'sel_x_sse', rotation_only=True)
     sel_x_sse = pytplot.get_data('sel_x_sse')
     x_axis = sel_x_sse.y
     
     # Z basis vector
-    result = gse2sse(lun_att_z_gse_name, sun_pos_gse_name, lun_pos_gse_name, 'sel_z_sse', rotation_only=True)
+    result = gse2sse(lun_att_z_gse_name, 'sel_z_sse', rotation_only=True)
     sel_z_sse = pytplot.get_data('sel_z_sse')
     z_axis = sel_z_sse.y
 
