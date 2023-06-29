@@ -13,7 +13,7 @@ from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 thm_vars = pyspedas.themis.fgm(probe='a', level='l2')
 thm_vars = pyspedas.themis.state(probe='a', get_support_data=True, varnames=['tha_spinras', 'tha_spindec'])
 
-dsl2gse('tha_fgs_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgs_gse_cotrans')
+dsl2gse('tha_fgs_dsl', 'tha_fgs_gse_cotrans')
 
 data = get_data('tha_fgs_gse_cotrans')
 
