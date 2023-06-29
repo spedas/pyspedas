@@ -68,7 +68,20 @@ class DSLCotransDataValidation(unittest.TestCase):
         cls.basis_y_dsl2ssl = get_data('basis_y_dsl2ssl')
         cls.basis_z_dsl2ssl = get_data('basis_z_dsl2ssl')
 
-        state_trange = ['2007-03-20', '2007-03-30']
+        # The cotrans routines now can load their own support data.  However, it seems you actually need
+        # some substantial padding of the support data time interval compared to the target variable.  I
+        # think this is due to the V03 state spinaxis and spinphase corrections, which are only given once per
+        # day. So you need at least the preceding and following days to be able to interpolate to the current
+        # date, or even two days to account for non-linear interpolation methods.  Perhaps autoload_support
+        # should be taking this into account and add some extra padding.  The basis test vectors have timestamps
+        # during 2007-03-23, but the IDL test data was generated with state loaded from 2007-03-29 through
+        # 2007-03-30.
+
+        # original time range from IDL test data generation
+        # state_trange = ['2007-03-20', '2007-03-30']
+
+        # smallest time interval that gives acceptably identical results to IDL
+        state_trange = ['2007-03-21','2007-03-25']
         autoload_support(trange=state_trange, probe='a', spinaxis=True, spinmodel=True)
 
 
@@ -108,8 +121,9 @@ class DSLCotransDataValidation(unittest.TestCase):
 
     def test_dsl2gse_x(self):
         """Validate dsl2gse X axis transform """
+
         set_coords('basis_x', 'DSL')
-        result = dsl2gse('basis_x', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_x_dsl2gse')
+        result = dsl2gse('basis_x', 'basis_x_dsl2gse', probe='a')
         self.assertEqual(result,1)
         bx_gse = get_data('basis_x_dsl2gse')
         assert_allclose(bx_gse.y, self.basis_x_dsl2gse.y, atol=1.0e-06)
@@ -118,7 +132,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         """Validate dsl2gse Y axis transform """
         from pyspedas.cotrans.cotrans_lib import subgse2gei
         set_coords('basis_y', 'DSL')
-        result = dsl2gse('basis_y', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_y_dsl2gse')
+        result = dsl2gse('basis_y', 'basis_y_dsl2gse', probe='a')
         self.assertEqual(result, 1)
         by_gse = get_data('basis_y_dsl2gse')
         assert_allclose(by_gse.y, self.basis_y_dsl2gse.y, atol=1.0e-06)
@@ -126,7 +140,7 @@ class DSLCotransDataValidation(unittest.TestCase):
     def test_dsl2gse_z(self):
         """Validate dsl2gse Z axis transform """
         set_coords('basis_z', 'DSL')
-        result = dsl2gse('basis_z', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_z_dsl2gse')
+        result = dsl2gse('basis_z','basis_z_dsl2gse', probe='a')
         self.assertEqual(result, 1)
         bz_gse = get_data('basis_z_dsl2gse')
         assert_allclose(bz_gse.y, self.basis_z_dsl2gse.y, atol=1.0e-06)
@@ -134,7 +148,7 @@ class DSLCotransDataValidation(unittest.TestCase):
     def test_gse2dsl_x(self):
         """Validate gse2dsl X axis transform """
         set_coords('basis_x', 'GSE')
-        result = dsl2gse('basis_x', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_x_gse2dsl', isgsetodsl=True)
+        result = dsl2gse('basis_x', 'basis_x_gse2dsl', probe='a', isgsetodsl=True)
         self.assertEqual(result, 1)
         self.assertEqual(result, 1)
         bx_gse = get_data('basis_x_gse2dsl')
@@ -144,7 +158,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         """Validate gse2dsl Y axis transform """
         from pyspedas.cotrans.cotrans_lib import subgse2gei
         set_coords('basis_y', 'GSE')
-        result = dsl2gse('basis_y', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_y_gse2dsl', isgsetodsl=True)
+        result = dsl2gse('basis_y', 'basis_y_gse2dsl', probe='a', isgsetodsl=True)
         self.assertEqual(result, 1)
         by_gse = get_data('basis_y_gse2dsl')
         assert_allclose(by_gse.y, self.basis_y_gse2dsl.y, atol=1.0e-06)
@@ -152,47 +166,43 @@ class DSLCotransDataValidation(unittest.TestCase):
     def test_gse2dsl_z(self):
         """Validate gse2dsl Z axis transform """
         set_coords('basis_z', 'GSE')
-        result = dsl2gse('basis_z', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_z_gse2dsl', isgsetodsl=True)
+        result = dsl2gse('basis_z', 'basis_z_gse2dsl', probe='a', isgsetodsl=True)
         self.assertEqual(result, 1)
         bz_gse = get_data('basis_z_gse2dsl')
         assert_allclose(bz_gse.y, self.basis_z_gse2dsl.y, atol=1.0e-06)
 
     def test_ssl2dsl_x(self):
         """Validate ssl2dsl X axis transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         set_coords('basis_x', 'SSL')
-        result = ssl2dsl('basis_x', sm, 'basis_x_ssldsl')
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_x','basis_x_ssldsl',probe='a',eclipse_correction_level=1)
         self.assertEqual(result, 1)
         bx_dsl = get_data('basis_x_ssl2dsl')
         assert_allclose(bx_dsl.y, self.basis_x_ssl2dsl.y, atol=1.0e-06)
 
     def test_ssl2dsl_y(self):
         """Validate ssl2dsl Y axis transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         set_coords('basis_y', 'SSL')
-        result = ssl2dsl('basis_y', sm, 'basis_y_ssldsl', use_spinphase_correction=True)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_y','basis_y_ssldsl',probe='a',eclipse_correction_level=1, use_spinphase_correction=True)
         self.assertEqual(result, 1)
         by_dsl = get_data('basis_y_ssl2dsl')
         assert_allclose(by_dsl.y, self.basis_y_ssl2dsl.y, atol=1.0e-06)
 
     def test_ssl2dsl_z(self):
         """Validate ssl2dsl Z axis transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         set_coords('basis_z', 'SSL')
-        result = ssl2dsl('basis_z', sm, 'basis_z_ssldsl', use_spinphase_correction=True)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_z','basis_z_ssldsl', probe='a',eclipse_correction_level=1,use_spinphase_correction=True)
         self.assertEqual(result, 1)
         bz_dsl = get_data('basis_z_ssl2dsl')
         assert_allclose(bz_dsl.y, self.basis_z_ssl2dsl.y, atol=1.0e-06)
 
     def test_dsl2ssl_x(self):
         """Validate dsl2ssl X axis transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         set_coords('basis_x', 'DSL')
-        result = ssl2dsl('basis_x', sm, 'basis_x_dsl2ssl', use_spinphase_correction=True, isdsltossl=True)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_x','basis_x_dsl2ssl',probe='a',eclipse_correction_level=1, use_spinphase_correction=True, isdsltossl=True)
         self.assertEqual(result, 1)
         bx_ssl = get_data('basis_x_dsl2ssl')
         # This test needs a slightly looser tolerance for some reason.
@@ -200,10 +210,9 @@ class DSLCotransDataValidation(unittest.TestCase):
 
     def test_dsl2ssl_y(self):
         """Validate dsl2ssl Y axis transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         set_coords('basis_y', 'DSL')
-        result = ssl2dsl('basis_y', sm, 'basis_y_dsl2ssl', use_spinphase_correction=True, isdsltossl=True)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_y','basis_y_dsl2ssl', probe='a', eclipse_correction_level=1, use_spinphase_correction=True, isdsltossl=True)
         self.assertEqual(result, 1)
         by_ssl = get_data('basis_y_dsl2ssl')
         # This test needs a slightly looser tolerance for some reason.
@@ -211,72 +220,67 @@ class DSLCotransDataValidation(unittest.TestCase):
 
     def test_dsl2ssl_z(self):
         """Validate dsl2ssl Z axis transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         set_coords('basis_z', 'DSL')
-        result = ssl2dsl('basis_z', sm, 'basis_z_dsl2ssl', use_spinphase_correction=True, isdsltossl=True)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_z','basis_z_dsl2ssl', probe='a', eclipse_correction_level=1, use_spinphase_correction=True, isdsltossl=True)
         self.assertEqual(result, 1)
         bz_ssl = get_data('basis_z_dsl2ssl')
         assert_allclose(bz_ssl.y, self.basis_z_dsl2ssl.y, atol=1.0e-06)
 
     def test_catch_mismatch_dsl2ssl_z(self):
         """Test detection of mismatched input vs. requested coordinate systems in dsl2ssl transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         # Requesting DSL to SSL, but specifying SSL as input coordinate system
         set_coords('basis_z', 'SSL')
-        result = ssl2dsl('basis_z', sm, 'basis_z_dsl2ssl', use_spinphase_correction=True, isdsltossl=True, ignore_input_coord = False)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_z','basis_z_dsl2ssl', probe='a', eclipse_correction_level=1, use_spinphase_correction=True, isdsltossl=True, ignore_input_coord = False)
         self.assertEqual(result, 0)
 
     def test_catch_mismatch_ssl2dsl_z(self):
         """Test detection of mismatched input vs. requested coordinates in ssl2dsl transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         # Requesting SSL to DSL, but specifying DSL as input coordinate system
         set_coords('basis_z', 'DSL')
-        result = ssl2dsl('basis_z', sm, 'basis_z_ssldsl', use_spinphase_correction=True, ignore_input_coord=False)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_z','basis_z_ssldsl', probe='a', eclipse_correction_level=1, use_spinphase_correction=True, ignore_input_coord=False)
         self.assertEqual(result, 0)
 
     def test_catch_mismatch_gse2dsl_z(self):
         """Test detection of mismatched input vs requested coordinates in gse2dsl transform """
         set_coords('basis_z', 'DSL')
-        result = dsl2gse('basis_z', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_z_gse2dsl', isgsetodsl=True)
+        result = dsl2gse('basis_z', 'basis_z_gse2dsl', probe='a', isgsetodsl=True)
         self.assertEqual(result, 0)
 
     def test_catch_mismatch_dsl2gse_z(self):
         """Test detection of mismatched input vs. requested coordinates in dsl2gse transform """
         set_coords('basis_z', 'GSE')
-        result = dsl2gse('basis_z', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_z_gse2dsl')
+        result = dsl2gse('basis_z', 'basis_z_gse2dsl', probe='a')
         self.assertEqual(result, 0)
 
     def test_ignore_mismatch_dsl2ssl_z(self):
         """Test ability to bypass coordinate system consistency check in dsl2ssl transform """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         # Requesting DSL to SSL, but specifying SSL as input coordinate system
         set_coords('basis_z', 'SSL')
-        result = ssl2dsl('basis_z', sm, 'basis_z_dsl2ssl', use_spinphase_correction=True, isdsltossl=True, ignore_input_coord = True)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_z','basis_z_dsl2ssl', probe='a', eclipse_correction_level=1, use_spinphase_correction=True, isdsltossl=True, ignore_input_coord = True)
         self.assertEqual(result, 1)
 
     def test_ignore_mismatch_ssl2dsl_z(self):
         """Test ability to bypass coordinate system consistency check in ssl2dsl transform  """
-        from pyspedas.themis.state.spinmodel.spinmodel import get_spinmodel
-        sm = get_spinmodel(probe='a', correction_level=1)
         # Requesting SSL to DSL, but specifying DSL as input coordinate system
         set_coords('basis_z', 'DSL')
-        result = ssl2dsl('basis_z', sm, 'basis_z_ssldsl', use_spinphase_correction=True, ignore_input_coord=True)
+        # Usually probe can be inferred from the input variable name, but we need it here.
+        result = ssl2dsl('basis_z','basis_z_ssldsl', probe='a', eclipse_correction_level=1,use_spinphase_correction=True, ignore_input_coord=True)
         self.assertEqual(result, 1)
 
     def test_ignore_mismatch_gse2dsl_z(self):
         """Test ability to bypass coordinate system consistency check in gse2dsl transform """
         set_coords('basis_z', 'DSL')
-        result = dsl2gse('basis_z', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_z_gse2dsl', isgsetodsl=True, ignore_input_coord=True)
+        result = dsl2gse('basis_z', 'basis_z_gse2dsl', probe='a', isgsetodsl=True, ignore_input_coord=True)
         self.assertEqual(result, 1)
 
     def test_ignore_mismatch_dsl2gse_z(self):
         """Test ability to bypass coordinate system consistency check in dsl2gse transform """
         set_coords('basis_z', 'GSE')
-        result = dsl2gse('basis_z', 'tha_spinras_corrected', 'tha_spindec_corrected', 'basis_z_gse2dsl', ignore_input_coord=True)
+        result = dsl2gse('basis_z', 'basis_z_gse2dsl', probe='a', ignore_input_coord=True)
         self.assertEqual(result, 1)
 
 if __name__ == '__main__':
