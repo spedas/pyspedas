@@ -16,7 +16,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False,
+        time_clip=True,
         nspinsinsum=None,
         no_spec=False,
 ):
