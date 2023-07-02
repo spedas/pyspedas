@@ -68,12 +68,21 @@ def epd_l1_postprocessing(
             del_data(name)
             continue
         if "sectnum" in name:
+            options(name, 'ytitle', 'sectnum')
+            new_tvars.append(name)
             continue
         if "spinper" in name:
+            options(name, 'ytitle', 'spinper')
+            options(name, 'ysubtitle','[sec]')
+            new_tvars.append(name)
             continue
         if "nspinsinsum" in name:
+            options(name, 'ytitle', 'nspinsinsum')
+            new_tvars.append(name)
             continue
         if "nsectors" in name:
+            options(name, 'ytitle', 'nsectors')
+            new_tvars.append(name)
             continue
 
         new_name = f"{name}_{type_}"
