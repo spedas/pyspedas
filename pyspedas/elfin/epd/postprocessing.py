@@ -63,30 +63,33 @@ def epd_l1_postprocessing(
             nspinsinsum = 1
 
     new_tvars = []
+
     for name in tplotnames:
         if "energies" in name:
             del_data(name)
             continue
         if "sectnum" in name:
-            options(name, 'ytitle', 'sectnum')
+            options(name, 'ytitle', name)
             new_tvars.append(name)
             continue
         if "spinper" in name:
-            options(name, 'ytitle', 'spinper')
+            options(name, 'ytitle', name)
             options(name, 'ysubtitle','[sec]')
             new_tvars.append(name)
             continue
         if "nspinsinsum" in name:
-            options(name, 'ytitle', 'nspinsinsum')
+            options(name, 'ytitle', name)
             new_tvars.append(name)
             continue
         if "nsectors" in name:
-            options(name, 'ytitle', 'nsectors')
+            options(name, 'ytitle', name)
             new_tvars.append(name)
             continue
-
+        
         new_name = f"{name}_{type_}"
         tplot_rename(name, new_name)
+        options(new_name, 'ytitle', new_name) # set units for elx_pef variable
+        options(new_name, 'ysubtitle', unit)
         new_tvars.append(new_name)
 
         calibrate_epd(new_name, trange=trange, type_=type_, nspinsinsum=nspinsinsum)

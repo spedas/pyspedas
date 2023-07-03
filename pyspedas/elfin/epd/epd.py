@@ -95,8 +95,8 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
     CALIBRATED_TYPE_UNITS = {
         "raw": "counts/sector",
         "cps": "counts/s",
-        "nflux": "#/(scm!U2!NstrMeV)",
-        "eflux": "keV/(scm!U2!NstrMeV)",
+        "nflux": "#/(s-cm$^2$-str-MeV)",
+        "eflux": "keV/(s-cm$^2$-str-MeV)",
     }
 
     if type_ in ("cal", "calibrated") or type_ not in CALIBRATED_TYPE_UNITS.keys():
