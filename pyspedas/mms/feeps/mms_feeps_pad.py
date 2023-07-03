@@ -90,7 +90,10 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
         pa_times = pad_pas[0]
         pa_data = pad_pas[1]
     else:
-        pa_var, idx_maps = mms_feeps_pitch_angles(probe=probe, level=level, data_rate=data_rate, datatype=datatype, suffix=suffix)
+        feeps_pa_data = mms_feeps_pitch_angles(probe=probe, level=level, data_rate=data_rate, datatype=datatype, suffix=suffix)
+        if feeps_pa_data is None:
+            return
+        pa_var, idx_maps = feeps_pa_data
         pa_times, pa_data = get(pa_var)
 
     if pa_data is None:
