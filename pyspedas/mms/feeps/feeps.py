@@ -98,6 +98,13 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         List of tplot variables created.
 
     """
+
+    # as of 3 July 2023, there's a mixture of v7.x.x and v6.x.x files at the SDC
+    # these files aren't compatible, so we need to only load the latest major version
+    # to avoid crashes (unless otherwise specified)
+    if not latest_version and not major_version and min_version is None and cdf_version is None:
+        major_version = True
+
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='feeps',
             datatype=datatype, varformat=varformat, varnames=varnames, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
