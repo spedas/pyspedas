@@ -197,7 +197,7 @@ def download(remote_path='',
             instead of unix style matching
 
         no_wildcards: bool
-            Flat to assume no wild cards in the requested url/filename
+            Flag to assume no wild cards in the requested url/filename
 
     Returns:
         String list specifying the full local path to all requested files
