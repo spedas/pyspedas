@@ -148,7 +148,8 @@ def download(remote_path='',
              no_download=False,
              last_version=False,
              basic_auth=False,
-             regex=False):
+             regex=False,
+             no_wildcards=False):
     """
     Download one or more remote files and return their local paths.
 
@@ -194,6 +195,9 @@ def download(remote_path='',
         regex: bool
             Flag to allow regular expressions in the file name matching,
             instead of unix style matching
+
+        no_wildcards: bool
+            Flat to assume no wild cards in the requested url/filename
 
     Returns:
         String list specifying the full local path to all requested files
@@ -259,7 +263,7 @@ def download(remote_path='',
 
         if not no_download:
             # expand the wildcards in the url
-            if '?' in url or '*' in url or regex and no_download is False:
+            if ('?' in url or '*' in url or regex) and (not no_download and not no_wildcards):
                 if index_table.get(url_base) is not None:
                     links = index_table[url_base]
                 else:
