@@ -3,6 +3,7 @@ from pyspedas.mms.spd_mms_load_bss import spd_mms_load_bss
 from pyspedas.mms.mms_load_sroi_segments import mms_load_sroi_segments, get_mms_srois
 from pyspedas.mms.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.mms.mms_load_brst_segments import mms_load_brst_segments
+from pyspedas.mms.mms_update_brst_intervals import mms_update_brst_intervals
 from pytplot import data_exists
 
 
@@ -30,6 +31,13 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms_bss_burst'))
         # error, no trange specified
         brst = mms_load_brst_segments()
+
+    def test_update_brst_intervals(self):
+        intervals = mms_update_brst_intervals()
+        self.assertTrue('start_times' in intervals)
+        self.assertTrue('end_times' in intervals)
+        self.assertTrue(intervals['start_times'][0] == 1430876725.0)
+        self.assertTrue(intervals['end_times'][0] == 1430879715.0)
 
     def test_fast(self):
         fast = mms_load_fast_segments(trange=['2015-10-01', '2015-11-01'])
