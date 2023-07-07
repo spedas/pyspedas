@@ -95,6 +95,10 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
         else:
             new_coords = out_coord
 
+        if new_coords is None:
+            logging.error('Output coordinate system is missing.')
+            return
+
         new_coords = new_coords.lower()
 
         if new_coords not in valid_coords:
@@ -120,6 +124,10 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
             continue
 
         transformed = mms_cotrans_qtransformer(variable, out_name[idx], var_coords, new_coords, probe=probe)
+
+        if transformed is None:
+            logging.error('Problem occurred during the transformation; ensure that the MEC quaternions are loaded and try again.')
+            return
 
         if transformed is not None:
             out_vars.append(transformed)
