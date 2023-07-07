@@ -11,6 +11,8 @@ from pathlib import Path
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
 from html.parser import HTMLParser
+from netCDF4 import Dataset
+from cdflib import CDF
 
 
 # the following is used to parse the links from an HTML index file
@@ -27,7 +29,40 @@ class LinkParser(HTMLParser):
                     self.links.append((link))
                 except AttributeError:
                     self.links = [(link)]
-    
+
+
+def check_downloaded_file(filename):
+    """
+    Check if a file exists and if it can be opened (for CDF and netCDF files).
+
+    If the file exists but it is not CDF or netCDF, it returns True without trying to open the file.
+    """
+    result = False
+    fpath = Path(filename)
+    if fpath.is_file() and len(filename) > 3:
+        if filename[-4:] == '.cdf':
+            # Try to open the cdf file
+            try:
+                cdf_file = CDF(filename)
+                result = True
+            except:
+                logging.info("Cannot open CDF file: " + filename)
+                result = False
+        elif filename[-3:] == '.nc':
+            # Try to open the netCDF file
+            try:
+                netcdf_file = Dataset(filename)
+                result = True
+            except:
+                logging.info("Cannot open netCDF file: " + filename)
+                result = False
+        else:
+            # The file is not CDF or netCDF, print a warning and return true
+            logging.info("The file is not CDF or netCDF. Filename: " + filename)
+            result = True
+
+    return result
+
 
 def download_file(url=None,
                   filename=None,
@@ -36,10 +71,11 @@ def download_file(url=None,
                   password=None,
                   verify=False,
                   session=None,
-                  basic_auth=False):
+                  basic_auth=False,
+                  nbr_tries=0):
     """
     Download a file and return its local path; this function is primarily meant to be called by the download function
-    
+
     Parameters:
         url: str
             Remote URL to download
@@ -62,14 +98,22 @@ def download_file(url=None,
         session: requests.Session object
             Requests session object that allows you to persist things like HTTP authentication through multiple calls
 
+        nbr_tries: int
+            Counts how many times we tried to download the file. Default is 0.
+
+    Notes:
+        Checks if the CDF or netCDF file can be opened, and if it can't, tries to download the file for a second time.
+
     Returns:
         String containing the local file name
 
     """
+    headers_original = headers
+    session_original = session
 
     if session is None:
         session = requests.Session()
-    
+
     if username is not None:
         session.auth = requests.auth.HTTPDigestAuth(username, password)
 
@@ -90,48 +134,77 @@ def download_file(url=None,
     if headers.get('If-Modified-Since') is not None:
         del headers['If-Modified-Since']
 
-    # the file hasn't changed
+    needs_to_download_file = False
     if fsrc.status_code == 304:
+        # the file hasn't changed
         logging.info('File is current: ' + filename)
         fsrc.close()
-        return filename
-
-    # file not found 
-    if fsrc.status_code == 404:
+    elif fsrc.status_code == 404:
+        # file not found
         logging.error('Remote file not found: ' + url)
         fsrc.close()
         return None
-
-    # authentication issues
-    if fsrc.status_code == 401 or fsrc.status_code == 403:
+    elif fsrc.status_code == 401 or fsrc.status_code == 403:
+        # authentication issues
         logging.error('Unauthorized: ' + url)
         fsrc.close()
         return None
-
-    if fsrc.status_code == 200:
+    elif fsrc.status_code == 200:
+        # this is the main download case
+        needs_to_download_file = True
         logging.info('Downloading ' + url + ' to ' + filename)
     else:
+        # all other problems
         logging.error(fsrc.reason)
         fsrc.close()
         return None
 
-    ftmp = NamedTemporaryFile(delete=False)
+    if needs_to_download_file:
+        ftmp = NamedTemporaryFile(delete=False)
 
-    with open(ftmp.name, 'wb') as f:
-        copyfileobj(fsrc.raw, f)
+        with open(ftmp.name, 'wb') as f:
+            copyfileobj(fsrc.raw, f)
 
-    # make sure the directory exists
-    if not os.path.exists(os.path.dirname(filename)) and os.path.dirname(filename) != '':
-        os.makedirs(os.path.dirname(filename))
+        # make sure the directory exists
+        if not os.path.exists(os.path.dirname(filename)) and os.path.dirname(filename) != '':
+            os.makedirs(os.path.dirname(filename))
 
-    # if the download was successful, copy to data directory
-    copy(ftmp.name, filename)
+        # if the download was successful, copy to data directory
+        copy(ftmp.name, filename)
 
-    fsrc.close()
-    ftmp.close()
-    os.unlink(ftmp.name)  # delete the temporary file
-    
-    logging.info('Download complete: ' + filename)
+        fsrc.close()
+        ftmp.close()
+        os.unlink(ftmp.name)  # delete the temporary file
+
+        logging.info('Download complete: ' + filename)
+
+    # At this point, we check if the file can be opened.
+    # If it cannot be opened, we delete the file and try again.
+    if nbr_tries == 0 and check_downloaded_file(filename) == False:
+        nbr_tries = 1
+        logging.info('There was a problem with the file: ' + filename)
+        logging.info('We are going to download it for a second time.')
+        if os.path.exists(filename):
+            os.unlink(filename)
+
+        download_file(url=url,
+                      filename=filename,
+                      headers=headers_original,
+                      username=username,
+                      password=password,
+                      verify=verify,
+                      session=session_original,
+                      basic_auth=basic_auth,
+                      nbr_tries=nbr_tries)
+
+    # If the file again cannot be opened, we give up.
+    if nbr_tries > 0 and check_downloaded_file(filename) == False:
+        nbr_tries = 2
+        logging.info('Tried twice. There was a problem with the file: ' + filename)
+        logging.info('File will be removed. Try to download it again at a later time.')
+        if os.path.exists(filename):
+            os.unlink(filename)
+        filename = None
 
     return filename
 
@@ -189,7 +262,7 @@ def download(remote_path='',
             Flag to not download remote files
 
         last_version: bool
-            Flag to only download the last in file in a lexically sorted 
+            Flag to only download the last in file in a lexically sorted
             list when multiple matches are found using wildcards
 
         regex: bool
@@ -307,7 +380,7 @@ def download(remote_path='',
                     new_links = list(filter(reg_expression.match, links))
 
                 if len(new_links) == 0:
-                    logging.info("No links matching pattern %s found at remote index %s",url_file,url_base)
+                    logging.info("No links matching pattern %s found at remote index %s", url_file, url_base)
 
                 if last_version and len(new_links) > 1:
                     new_links = sorted(new_links)
@@ -330,7 +403,7 @@ def download(remote_path='',
 
             resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify,
                                       headers=headers, session=session, basic_auth=basic_auth)
-        
+
         if resp_data is not None:
             if not isinstance(resp_data, list):
                 resp_data = [resp_data]
@@ -339,7 +412,7 @@ def download(remote_path='',
         else:
             # download wasn't successful, search for local files
             logging.info('Searching for local files...')
-                
+
             if local_path == '':
                 local_path_to_search = str(Path('.').resolve())
             else:
