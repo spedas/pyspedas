@@ -11,7 +11,7 @@ from mth5.mth5 import MTH5
 
 from pyspedas.mth5.utilities import mth5_time_str
 
-def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
+def load_fdsn(trange=None, network=None, station=None):
     """
     Load FDSN data using MTH5 interface.
 
@@ -27,9 +27,10 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
         List of tplot variables created.
     """
 
-    mth5dir = CONFIG['local_data_dir']
-    # if os.environ.get('SPEDAS_DATA_DIR'):
-    #     mth5dir = os.environ['SPEDAS_DATA_DIR']
+    # If trange is not specified we don't know what to load
+    if trange is None:
+        pyspedas.logging.info("trange not specified")
+        return
 
     if not network:
         pyspedas.logging.info("Network not specified")
@@ -40,6 +41,11 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
         return
 
     fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
+
+    # Determine where data will be stored
+    mth5dir = CONFIG['local_data_dir']
+    # if os.environ.get('SPEDAS_DATA_DIR'):
+    #     mth5dir = os.environ['SPEDAS_DATA_DIR']
 
     # Get MTH5 file from the server
     # TODO: channel should not be a "*" - we use "*F*"
@@ -56,21 +62,25 @@ def load_fdsn(trange=['2019-11-14', '2019-11-15'], network=None, station=None):
 
     try:
         mth5_path = fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=mth5dir)
-    except:
+    except Exception:
         pyspedas.logger.error("Cannot initialize mth5 object")
-        filename = fdsn_object.make_filename(request_df)
-        # attempt to open and close
-        if os.path.exists(mth5dir + filename):
-            # This code does not seem to be working
-            # TODO: figure out how to close mth5 object if error
-            with open(mth5dir + filename) as f: f.close()
-            pyspedas.logger.info("mth5 file object is closed")
-        return
+        mth5filename = fdsn_object.make_filename(request_df)
+        mth5file = os.path.join(mth5dir, mth5filename)
+        # attempt find the open file identifier and close it
+        if os.path.exists(mth5file):
+            # h5py must be installed as a requirement of MTH5
+            import h5py
+            fids = h5py.h5f.get_obj_ids(types=h5py.h5f.OBJ_FILE)
+            for fid in fids:
+                # Test if the open file handler is the one we want to close
+                if os.path.basename(fid.name.decode('utf8')) == mth5filename:
+                    h5py.File(fid).close()
+                    pyspedas.logger.info(f"mth5 file {mth5filename} object is now closed.")
+        raise
 
     # TODO: change to context manager as below:
     # with mth5_object.open_mth5(mth5_path) as mth5_object_ref
     # with mth5_object.open_mth5(mth5_path) as m
-
 
     mth5_object = MTH5()
     mth5_object.open_mth5(mth5_path)
