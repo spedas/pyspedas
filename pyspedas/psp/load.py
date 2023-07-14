@@ -33,7 +33,6 @@ def load(trange=['2018-11-5', '2018-11-6'],
         psp.epi ISoIS/EPI (merged Hi-Lo) data
     
     """
-
     # remote path formats generally are going to be all lowercase except for
     # on the Berkeley FIELDS server
     if (username is not None) and (datatype in ['mag_RTN_1min',
@@ -41,7 +40,9 @@ def load(trange=['2018-11-5', '2018-11-6'],
                                             'mag_RTN',
                                             'mag_SC',
                                             'mag_SC_1min',
-                                            'mag_SC_4_Sa_per_Cyc']):
+                                            'mag_SC_4_Sa_per_Cyc',
+                                            'sqtn_rfs_V1V2'
+                                            ]):
         pass
     else:
         datatype = datatype.lower()
