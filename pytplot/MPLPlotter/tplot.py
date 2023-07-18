@@ -202,6 +202,16 @@ def tplot(variables, var_label=None,
         if idx == 0 and plot_title != '':
             this_axis.set_title(plot_title)
         
+        #if data_gap is an option for this variable, or if it's a add
+        #gaps here; an individual gap setting should override the
+        #global setting
+        plot_extras = var_quants.attrs['plot_options']['extras']
+        if plot_extras.get('data_gap') is not None and plot_extras.get('data_gap') > 0:
+            var_data = pytplot.makegap(var_data, dt = plot_extras.get('data_gap'))
+        else:
+            if pytplot.tplot_opt_glob['data_gap'] is not None and pytplot.tplot_opt_glob['data_gap'] > 0:
+                var_data = pytplot.makegap(var_data, dt = pytplot.tplot_opt_glob['data_gap'])
+
         # set the x-axis range, if it was set with xlim or tlimit
         if pytplot.tplot_opt_glob.get('x_range') is not None:
             x_range = pytplot.tplot_opt_glob['x_range']
@@ -342,14 +352,6 @@ def tplot(variables, var_label=None,
         if plot_extras.get('ytick_labelcolor') is not None:
             this_axis.tick_params(axis='y', labelcolor=plot_extras.get('ytick_labelcolor'))
 
-        #if data_gap is an option for this variable, or if it's a global option, then add gaps here
-        #but an individual gap setting should override the global setting
-        if plot_extras.get('data_gap') is not None:
-            var_data = pytplot.makegap(var_data, dt = plot_extras.get('data_gap'))
-        else:
-            if pytplot.tplot_opt_glob['data_gap'] > 0:
-                var_data = pytplot.makegap(var_data, dt = pytplot.tplot_opt_glob['data_gap'])
-
         # determine if this is a line plot or a spectrogram
         spec = False
         if plot_extras.get('spec') is not None:
@@ -362,7 +364,6 @@ def tplot(variables, var_label=None,
                 continue
         else:
             # create line plots
-            breakpoint()
             plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num, time_idxs=time_idxs, style=style, var_metadata=var_metadata)
             if not plot_created:
                 continue
