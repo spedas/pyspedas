@@ -11,21 +11,11 @@ from .xlim import xlim
 
 def tlimit(arg=None, full=False, last=False):
 
-    if full:
+    if full or arg == 'full':
         if pytplot.tplot_opt_glob.get('x_range') is not None:
             del pytplot.tplot_opt_glob['x_range']
-        return
-
-    if last:
+    elif last or arg == 'last':
         pytplot.tplot_opt_glob['x_range'] = pytplot.tplot_opt_glob['x_range_last']
-        return
-
-    if arg == 'last':
-        xlast = pytplot.lim_info['xlast']
-        pytplot.lim_info['xlast'] = pytplot.tplot_opt_glob['x_range']
-        pytplot.tplot_opt_glob['x_range'] = xlast
-    elif arg == 'full':
-        pytplot.tplot_opt_glob['x_range'] = pytplot.lim_info['xfull']
     elif isinstance(arg, list):
         minn = arg[0]
         maxx = arg[1]

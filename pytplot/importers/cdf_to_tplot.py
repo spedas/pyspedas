@@ -410,20 +410,23 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                 # handle y-axis options for spectra
                 if 'DEPEND_1' in var_atts:
                     if isinstance(var_atts['DEPEND_1'], str):
-                        depend_1_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_1'])
+                        try:
+                            depend_1_var_atts = master_cdf_file.varattsget(var_atts['DEPEND_1'])
 
-                        scale_type = depend_1_var_atts.get('SCALETYP')
-                        if scale_type is None:
-                            scale_type = depend_1_var_atts.get('SCALE_TYP')
+                            scale_type = depend_1_var_atts.get('SCALETYP')
+                            if scale_type is None:
+                                scale_type = depend_1_var_atts.get('SCALE_TYP')
 
-                        if scale_type is not None:
-                            metadata[var_name]['y_spec_scale_type'] = scale_type
+                            if scale_type is not None:
+                                metadata[var_name]['y_spec_scale_type'] = scale_type
 
-                        depend_1_units = depend_1_var_atts.get('UNITS')
+                            depend_1_units = depend_1_var_atts.get('UNITS')
 
-                        if depend_1_units is not None:
-                            metadata[var_name]['y_spec_units'] = depend_1_units
-                            metadata[var_name]['DEPEND_1_UNITS'] = depend_1_units
+                            if depend_1_units is not None:
+                                metadata[var_name]['y_spec_units'] = depend_1_units
+                                metadata[var_name]['DEPEND_1_UNITS'] = depend_1_units
+                        except ValueError:
+                            pass
 
                 # options for multidimensional variables
                 if 'DEPEND_2' in var_atts:

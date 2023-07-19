@@ -59,7 +59,7 @@ def timebar(t, varname = None, databar = False, delete = False, color = 'black',
     if not isinstance(t[0], (int, float, complex)):
         t1 = []
         for time in t:
-            t1.append(tplot_utilities.str_to_int(time))
+            t1.append(tplot_utilities.str_to_float_fuzzy(time))
         t = t1
         
     dim = 'height'

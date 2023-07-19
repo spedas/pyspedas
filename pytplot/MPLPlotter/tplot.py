@@ -218,19 +218,23 @@ def tplot(variables, var_label=None,
             x_range_start = x_range[0]
             x_range_stop = x_range[1]
 
-            if isinstance(x_range_start, float):
+            if isinstance(x_range_start, int):
+                x_range_start = datetime.utcfromtimestamp(x_range_start)
+            elif isinstance(x_range_start, float):
                 if np.isfinite(x_range_start):
                     x_range_start = datetime.utcfromtimestamp(x_range_start)
                 else:
                     x_range_start = datetime.utcfromtimestamp(0)
 
-            if isinstance(x_range_stop, float):
+            if isinstance(x_range_stop, int):
+                x_range_stop = datetime.utcfromtimestamp(x_range_stop)
+            elif isinstance(x_range_stop, float):
                 if np.isfinite(x_range_stop):
                     x_range_stop = datetime.utcfromtimestamp(x_range_stop)
                 else:
                     x_range_stop = datetime.utcfromtimestamp(0)
 
-            x_range = np.array([x_range_start, x_range_stop], dtype='datetime64[ns]')
+            x_range = np.array([x_range_start, x_range_stop],dtype='datetime64[ns]')
             this_axis.set_xlim(x_range)
             time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
             if len(time_idxs) == 0:
@@ -241,8 +245,6 @@ def tplot(variables, var_label=None,
             var_data_times = var_data.times
             time_idxs = np.arange(len(var_data_times))
 
-        # the data are stored as unix times, but matplotlib wants datatime objects
-        # var_times = [datetime.fromtimestamp(time, tz=timezone.utc) for time in var_data_times]
         var_times = var_data_times
 
         # set some more plot options
@@ -465,7 +467,10 @@ def tplot(variables, var_label=None,
             else:
                 this_axis = axes[idx]
 
-            fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
+            xmargin = pytplot.tplot_opt_glob.get('xmargin')
+            if xmargin is None:
+                fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
+
             box = this_axis.get_position()
             pad, width = 0.02, 0.02
             cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
