@@ -9,6 +9,7 @@ from pyspedas.mms.feeps.mms_feeps_omni import mms_feeps_omni
 from pyspedas.mms.feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
+from pytplot import time_clip as tclip
 
 
 @print_vars
@@ -107,7 +108,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='feeps',
             datatype=datatype, varformat=varformat, varnames=varnames, get_support_data=get_support_data, suffix=suffix,
-            time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
+            no_update=no_update, available=available, latest_version=latest_version,
             major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
 
     if tvars == [] or available or notplot or CONFIG['download_only'] or tvars is None:
@@ -154,5 +155,9 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
                         if spin_avg_vars is not None:
                             tvars.append(spin_avg_vars)
+
+    if time_clip:
+        for new_var in tvars:
+            tclip(new_var, trange[0], trange[1], suffix='')
 
     return tvars

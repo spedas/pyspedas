@@ -2,10 +2,16 @@ import unittest
 from ..feeps.mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
 from pyspedas import mms_load_feeps, mms_feeps_pad
 from pyspedas.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
-from pytplot import del_data, tplot, data_exists
+from pytplot import del_data, tplot, data_exists, get
 
 
 class FEEPSTestCases(unittest.TestCase):
+    def test_time_clip_regression(self):
+        # regression test for time clipping bug with spin-averaged spectra
+        mms_load_feeps(trange=['2015-12-15/10:00', '2015-12-15/12:00'], time_clip=True)
+        data = get('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin')
+        self.assertTrue(data.y[-1, :].sum() != 0.0)
+
     def test_feeps_sitl(self):
         mms_load_feeps(datatype='electron', trange=['2016-11-23', '2016-11-24'], data_rate='srvy', probe=4,
                        level='sitl')
