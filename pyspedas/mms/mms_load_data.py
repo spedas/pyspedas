@@ -148,7 +148,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 with warnings.catch_warnings():
                                     warnings.simplefilter("ignore", category=ResourceWarning)
                                     fsrc = sdc_session.get(download_url, stream=True, verify=True, headers=headers)
-                                ftmp = NamedTemporaryFile(delete=False)
+                                ftmp = NamedTemporaryFile()
 
                                 with open(ftmp.name, 'wb') as f:
                                     copyfileobj(fsrc.raw, f)
