@@ -1,7 +1,7 @@
 import logging
 
 from ..load import load
-from .postprocessing import epd_l1_postprocessing
+from .postprocessing import epd_l1_postprocessing, epd_l2_postprocessing
 
 
 def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
@@ -106,7 +106,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         return epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
                                      unit=CALIBRATED_TYPE_UNITS[type_], no_spec=no_spec)
     elif level == "l2":
-        logging.warning("ELFIN EPD L2 postprocessing not yet supported")
+        return epd_l2_postprocessing(tvars)
     else:
         raise ValueError(f"Unknown level: {level}")
 

@@ -1,7 +1,9 @@
 import logging
 
-from pytplot import get, store, del_data, tnames, tplot_rename, options
+from pytplot import get, store, del_data, tnames, tplot_rename, options, tplot
+from pyspedas.analysis.time_clip import time_clip as tclip
 
+from .calibration_l2 import epd_l2_omniflux
 from .calibration import calibrate_epd
 
 def epd_l1_postprocessing(
@@ -97,3 +99,49 @@ def epd_l1_postprocessing(
     # TODO: Set units and tplot options (obey no_spec)
 
     return new_tvars
+
+
+def epd_l2_postprocessing(
+    tplotnames,
+    fluxtype='nflux',
+    res='hs',
+    datatype='e',
+):
+    """
+    Process ELF EPD L2 data and generate omni, para, anti, perp flux spectra.
+
+    Parameters
+    ----------
+        tplotnames : list of str
+            The tplot names of EPD data to be postprocessed.
+
+        fluxtype: str, optional
+            Type of flux spectra. 
+            Options: 'nflux' for number flux, 'eflux' for energy flux.
+            Default is 'nflux'.
+
+        res: str, optional
+            Resolution of spectra. 
+            Options: 'hs' for half spin, 'fs' for full spin. 
+            Default is 'hs'.
+
+        datatype: str, optional
+            Type of data. 
+            Options: 'e' for electron data, 'i' for ion data
+            Default is 'e'.
+
+    Returns
+    ----------
+        List of tplot variables created.
+    """
+
+    tplotnames = tplotnames.copy()
+    tvars=[]
+    for name in filter(lambda n: f"p{datatype}f_{res}_Epat_{fluxtype}" in n, tplotnames):
+        omni_var = epd_l2_omniflux(name)
+        tvars.append(omni_var)
+
+    tplot(omni_var)
+    breakpoint()
+
+    return tvars
