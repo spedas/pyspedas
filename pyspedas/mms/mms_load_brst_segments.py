@@ -6,9 +6,10 @@ from pytplot import store_data, options
 from pyspedas import time_double
 from pyspedas.utilities.download import download
 from pyspedas.mms.mms_config import CONFIG
+from pyspedas.mms.mms_update_brst_intervals import mms_update_brst_intervals
 
 
-def mms_load_brst_segments(trange=None, suffix=''):
+def mms_load_brst_segments(trange=None, suffix='', sdc=True):
     """
     This function loads the burst segment intervals
     
@@ -18,6 +19,13 @@ def mms_load_brst_segments(trange=None, suffix=''):
             time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
+        suffix: str
+            String to append to the end of the tplot variable names
+
+        sdc: bool
+            Flag to download the data from the SDC instead of spedas.org
+            (spedas.org is out of date, but faster); defaults to True
 
     Returns
     ---------
@@ -30,22 +38,33 @@ def mms_load_brst_segments(trange=None, suffix=''):
 
     tr = time_double(trange)
 
-    save_file = os.path.join(CONFIG['local_data_dir'], 'mms_brst_intervals.sav')
-    brst_file = download(remote_file='http://www.spedas.org/mms/mms_brst_intervals.sav',
-        local_file=save_file)
+    if not sdc:
+        save_file = os.path.join(CONFIG['local_data_dir'], 'mms_brst_intervals.sav')
+        brst_file = download(remote_file='http://www.spedas.org/mms/mms_brst_intervals.sav',
+            local_file=save_file)
 
-    if len(brst_file) == 0:
-        logging.error('Error downloading burst intervals sav file')
-        return None
+        if len(brst_file) == 0:
+            logging.error('Error downloading burst intervals sav file')
+            return None
 
-    try:
-        intervals = readsav(save_file)
-    except FileNotFoundError:
-        logging.error('Error loading burst intervals sav file: ' + save_file)
-        return None
+        try:
+            intervals = readsav(save_file)
+        except FileNotFoundError:
+            logging.error('Error loading burst intervals sav file: ' + save_file)
+            return None
 
-    unix_start = intervals['brst_intervals'].start_times[0]
-    unix_end = intervals['brst_intervals'].end_times[0]
+        unix_start = intervals['brst_intervals'].start_times[0]
+        unix_end = intervals['brst_intervals'].end_times[0]
+
+    else:
+        intervals = mms_update_brst_intervals()
+
+        if intervals is not None:
+            unix_start = np.array(intervals['start_times'])
+            unix_end = np.array(intervals['end_times'])
+        else:
+            logging.error('Error downloading latest burst intervals file.')
+            return
 
     sorted_idxs = np.argsort(unix_start)
     unix_start = unix_start[sorted_idxs]
@@ -55,6 +74,10 @@ def mms_load_brst_segments(trange=None, suffix=''):
 
     unix_start = unix_start[times_in_range]
     unix_end = unix_end[times_in_range]
+
+    if len(unix_start) == 0:
+        logging.error('No burst intervals found in the time range.')
+        return
 
     # +10 second offset added; there appears to be an extra 10
     # seconds of data, consistently, not included in the range here
