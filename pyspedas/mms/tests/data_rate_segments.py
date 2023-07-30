@@ -31,6 +31,12 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms_bss_burst'))
         # error, no trange specified
         brst = mms_load_brst_segments()
+        # download from spedas.org
+        brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'], sdc=False, suffix='_sdc')
+        self.assertTrue(len(brst[0]) == 53)
+        self.assertTrue(brst[0][0] == 1444975174.0)
+        self.assertTrue(brst[1][0] == 1444975244.0)
+        self.assertTrue(data_exists('mms_bss_burst_sdc'))
 
     def test_update_brst_intervals(self):
         intervals = mms_update_brst_intervals()
