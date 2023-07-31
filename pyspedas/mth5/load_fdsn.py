@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pyspedas
 from .config import CONFIG
-from pytplot import store_data
+from pytplot import store_data, options
 
 # MTH5 installation is checked in __init__
 from mth5.clients.make_mth5 import FDSN
@@ -94,9 +94,17 @@ def load_fdsn(trange=None, network=None, station=None):
     y = np.array([])
     z = np.array([])
 
+    attr_dict = {}  # metadata
+    units = set()  # basic units
+    measurements_type = set()  # basic type of measurements
+
     # loop over surveys and runs
     for survey in surveys:
         station_data = mth5_object.get_station(station_name=station, survey=survey)
+        attr_dict["metadata"] = station_data.metadata
+
+        # TODO: Check orientation reference frame
+        # "orientation.reference_frame": "geographic"
 
         # Loop over runs
         for run_name in station_data.metadata.run_list:
@@ -123,12 +131,35 @@ def load_fdsn(trange=None, network=None, station=None):
             y = np.append(y, run_ts.dataset.hy.to_numpy())
             z = np.append(z, run_ts.dataset.hz.to_numpy())
 
+            try:
+                units.add(run_ts.dataset.hx.units)
+                units.add(run_ts.dataset.hy.units)
+                units.add(run_ts.dataset.hz.units)
+            except AttributeError:
+                pyspedas.logger.warning("Problem with adding  run dataset units")
+
+            try:
+                measurements_type.add(run_ts.dataset.hx.type)
+                measurements_type.add(run_ts.dataset.hx.type)
+                measurements_type.add(run_ts.dataset.hx.type)
+            except AttributeError:
+                pyspedas.logger.warning("Problem with adding run dataset type")
+
     # TODO: Should data be sorted before saving
     data = {'x': time, 'y': np.vstack((x, y, z)).T}
     tplot_variable = 'fdsn_' + network + '_' + station
 
     # TODO: Add metadata
-    store_data(tplot_variable, data=data)
+
+
+    store_data(tplot_variable, data=data, attr_dict=attr_dict)
+    tplot_options = {
+        "name": f"FDSN: {network}, station: {station}",  # network and stations
+        "ytitle": f"{','.join(list(measurements_type))}",  # measurment
+        "ysubtitle": f"{','.join(list(units))}"  # units
+    }
+
+    options(tplot_variable, opt_dict=tplot_options)
 
     # It is crucial to close mth5 file
     mth5_object.close_mth5()
