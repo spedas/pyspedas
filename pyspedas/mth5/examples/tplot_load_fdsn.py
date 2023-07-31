@@ -11,9 +11,7 @@ pytplot.tplot('fdsn_4P_ALW48')
 time, mag = pytplot.get_data('fdsn_4P_ALW48')
 
 # Re-normalize magnetometer data removing the baseline
-mag[:,0] -= np.mean(mag[:,0])
-mag[:,1] -= np.mean(mag[:,1])
-mag[:,2] -= np.mean(mag[:,2])
+mag -= np.mean(mag, axis=0)
 
 pytplot.store_data('fdsn_4P_ALW48_norm', data={'x': time, 'y':mag})
 
