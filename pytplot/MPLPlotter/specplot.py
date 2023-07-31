@@ -50,6 +50,9 @@ def specplot(var_data,
             spec_options['norm'] = None
             spec_options['vmin'] = zrange[0]
             spec_options['vmax'] = zrange[1]
+        elif not np.any(var_data.y):
+            # properly handle all 0s in the data
+            spec_options['norm'] = mpl.colors.LogNorm(vmin=np.nanmin(var_data.v), vmax=np.nanmax(var_data.v))
         else:
             spec_options['norm'] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
     else:
