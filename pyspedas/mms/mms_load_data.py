@@ -148,7 +148,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 with warnings.catch_warnings():
                                     warnings.simplefilter("ignore", category=ResourceWarning)
                                     fsrc = sdc_session.get(download_url, stream=True, verify=True, headers=headers)
-                                ftmp = NamedTemporaryFile()
+                                ftmp = NamedTemporaryFile(delete=False)
 
                                 with open(ftmp.name, 'wb') as f:
                                     copyfileobj(fsrc.raw, f)
@@ -162,6 +162,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 file_found = True
                                 fsrc.close()
                                 ftmp.close()
+                                os.unlink(ftmp.name)  # delete the temporary file
                         except requests.exceptions.ConnectionError:
                             # No/bad internet connection; try loading the files locally
                             logging.error('No internet connection!')
