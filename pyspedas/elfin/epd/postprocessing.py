@@ -3,7 +3,7 @@ import logging
 from pytplot import get, store, del_data, tnames, tplot_rename, options, tplot
 from pyspedas.analysis.time_clip import time_clip as tclip
 
-from .calibration_l2 import epd_l2_omniflux
+from .calibration_l2 import epd_l2_flux4dir
 from .calibration import calibrate_epd
 
 def epd_l1_postprocessing(
@@ -130,6 +130,8 @@ def epd_l2_postprocessing(
             Options: 'e' for electron data, 'i' for ion data
             Default is 'e'.
 
+        
+
     Returns
     ----------
         List of tplot variables created.
@@ -137,11 +139,12 @@ def epd_l2_postprocessing(
 
     tplotnames = tplotnames.copy()
     tvars=[]
-    for name in filter(lambda n: f"p{datatype}f_{res}_Epat_{fluxtype}" in n, tplotnames):
-        omni_var = epd_l2_omniflux(name)
-        tvars.append(omni_var)
-
-    tplot(omni_var)
-    breakpoint()
+    flux_tname = [name for name in tplotnames if f"p{datatype}f_{res}_Epat_{fluxtype}" in name]
+    LC_tname = [name for name in tplotnames if f"_LCdeg_{res}" in name]  #TODO: change loss cone name later
+    if len(flux_tname) != 1 | len(LC_tname) != 1:
+        logging.error('two flux tplot variables are founded!')
+        return
+  
+    tvars = epd_l2_flux4dir(flux_tname[0], LC_tname[0])
 
     return tvars
