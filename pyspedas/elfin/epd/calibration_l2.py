@@ -2,7 +2,32 @@ import logging
 from pytplot import get_data, store_data, options
 import numpy as np
 
+def epd_l2_flux4dir_option(
+    flux_var,
+):
+    """
+    Add options for omni/para/anti/perp flux spectra
 
+    Parameters
+    ----------
+        flux_var: str
+            Tplot variable name of 2d omni/para/anti/perp flux spectra
+
+    """
+    unit_ = '#/(s-cm$^2$-str-MeV)' if "nflux" in flux_var else 'keV/(s-cm$^2$-str-MeV)'
+    zrange = [10, 2e7] if "nflux" in flux_var else [1e4, 1e9]
+
+    options(flux_var, 'spec', True)
+    options(flux_var, 'yrange', [55., 6800])  # energy range
+    options(flux_var, 'zrange', zrange)
+    options(flux_var, 'ylog', True)
+    options(flux_var, 'zlog', True)
+    flux_var_ytitle = flux_var[0:10] + "\n" + flux_var[11:]
+    options(flux_var, 'ytitle', flux_var_ytitle)
+    options(flux_var, 'ysubtitle', 'Energy (keV)')
+    options(flux_var, 'ztitle', unit_)
+
+    
 def epd_l2_flux4dir(
     flux_tvar, 
     LC_tvar,
@@ -29,7 +54,7 @@ def epd_l2_flux4dir(
         anti_var: str
             Tplot variable name of 2d antiparallel spectra
     """
-
+    
     # load L2 t-PA-E 3D flux 
     data = get_data(flux_tvar)
 
@@ -51,6 +76,7 @@ def epd_l2_flux4dir(
     pas2plot_domega[index1, index2] = (np.pi/nspinsectors)*np.sin(np.pi/nspinsectors) 
     #pas2plot_repeat = np.repeat(pas2plot[:, :, np.newaxis], nEngChannel, axis=2)
     pas2plot_bcast = np.broadcast_to(pas2plot[:, :, np.newaxis], (nspinsavailable, nPAsChannel, nEngChannel))
+
     #===========================
     #        OMNI FLUX
     #=========================== 
@@ -60,12 +86,7 @@ def epd_l2_flux4dir(
     # output omni tvar
     omni_var = f"{flux_tvar.replace('Epat_','')}_omni"
     store_data(omni_var, data={'x': data.times, 'y': omniflux, 'v': energy}, attr_dict=get_data(flux_tvar, metadata=True))
-    options(omni_var, 'spec', True)
-    options(omni_var, 'yrange', [55., 6800])
-    options(omni_var, 'zrange', [10, 2e7])
-    options(omni_var, 'ylog', True)
-    options(omni_var, 'zlog', True)
-    options(omni_var, 'ytitle', omni_var)
+    epd_l2_flux4dir_option(omni_var)
 
     #===========================
     #        PARA FLUX
@@ -86,12 +107,7 @@ def epd_l2_flux4dir(
     # output para tvar
     para_var = f"{flux_tvar.replace('Epat_','')}_para"
     store_data(para_var, data={'x': data.times, 'y': paraflux, 'v': energy}, attr_dict=get_data(flux_tvar, metadata=True))
-    options(para_var, 'spec', True)
-    options(para_var, 'yrange', [55., 6800])
-    options(para_var, 'zrange', [10, 2e7])
-    options(para_var, 'ylog', True)
-    options(para_var, 'zlog', True)
-    options(para_var, 'ytitle', para_var)
+    epd_l2_flux4dir_option(para_var)
 
     #===========================
     #        ANTI FLUX
@@ -105,12 +121,7 @@ def epd_l2_flux4dir(
     # output anti tvar
     anti_var = f"{flux_tvar.replace('Epat_','')}_anti"
     store_data(anti_var, data={'x': data.times, 'y': antiflux, 'v': energy}, attr_dict=get_data(flux_tvar, metadata=True))
-    options(anti_var, 'spec', True)
-    options(anti_var, 'yrange', [55., 6800])
-    options(anti_var, 'zrange', [10, 2e7])
-    options(anti_var, 'ylog', True)
-    options(anti_var, 'zlog', True)
-    options(anti_var, 'ytitle', anti_var)
+    epd_l2_flux4dir_option(anti_var)
 
     #===========================
     #        PERP FLUX
@@ -125,11 +136,6 @@ def epd_l2_flux4dir(
     # output anti tvar
     perp_var = f"{flux_tvar.replace('Epat_','')}_perp"
     store_data(perp_var, data={'x': data.times, 'y': perpflux, 'v': energy}, attr_dict=get_data(flux_tvar, metadata=True))
-    options(perp_var, 'spec', True)
-    options(perp_var, 'yrange', [55., 6800])
-    options(perp_var, 'zrange', [10, 2e7])
-    options(perp_var, 'ylog', True)
-    options(perp_var, 'zlog', True)
-    options(perp_var, 'ytitle', perp_var)
+    epd_l2_flux4dir_option(perp_var)
     
     return [omni_var, para_var, anti_var, perp_var]
