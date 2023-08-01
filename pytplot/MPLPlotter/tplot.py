@@ -432,7 +432,7 @@ def tplot(variables, var_label=None,
             axis_delta = axis_delta - num_panels*0.1
             new_xaxis = this_axis.secondary_xaxis(axis_delta)
             xaxis_ticks = this_axis.get_xticks().tolist()
-            xaxis_ticks_dt = [np.datetime64(mpl.dates.num2date(tick_val).isoformat()) for tick_val in xaxis_ticks]
+            xaxis_ticks_dt = [np.datetime64(mpl.dates.num2date(tick_val).replace(tzinfo=None).isoformat()) for tick_val in xaxis_ticks]
             # xaxis_ticks_unix = [tick_val.timestamp() for tick_val in xaxis_ticks_dt]
             xaxis_labels = get_var_label_ticks(label_data, xaxis_ticks_dt)
             new_xaxis.set_xticks(xaxis_ticks_dt)
