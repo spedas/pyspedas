@@ -106,7 +106,12 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         return epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
                                      unit=CALIBRATED_TYPE_UNITS[type_], no_spec=no_spec)
     elif level == "l2":
-        return epd_l2_postprocessing(tvars)
+        # check whether input type is allowed
+        if type_ not in ("nflux","eflux"):
+            logging.warning(f"fluxtype {type_} is not allowed in l2 data, change to nflux!")
+            type_ = "nflux"
+
+        return epd_l2_postprocessing(tvars, fluxtype=type_)
     else:
         raise ValueError(f"Unknown level: {level}")
 

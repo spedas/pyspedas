@@ -129,7 +129,6 @@ def epd_l2_postprocessing(
             Type of data. 
             Options: 'e' for electron data, 'i' for ion data
             Default is 'e'.
-
         
 
     Returns
