@@ -39,8 +39,8 @@ def epd_l2_flux4dir(
     FOVo2 = 11.  # Field of View divided by 2 (deg)
     dphsect = 360./nspinsectors 
     SectWidtho2 = dphsect/2.
-    LCfatol = FOVo2 + SectWidtho2 # tolerance of pitch angle in field aligned direction
-    LCfptol = -FOVo2  # tolerance of pitch angel in perpendicular direction
+    LCfatol = FOVo2 + SectWidtho2 # tolerance of pitch angle in field aligned direction, default 22.25 deg
+    LCfptol = -FOVo2  # tolerance of pitch angel in perpendicular direction, default -11. deg
 
     # calculate domega in PA
     pas2plot = data.v1
@@ -83,7 +83,7 @@ def epd_l2_flux4dir(
     spec2plot_allowable[iparapas, jparapas, kparapas] = 1
     paraflux = np.nansum(spec2plot * pas2plot_bcast * spec2plot_allowable, axis=1) / np.nansum(pas2plot_bcast * spec2plot_allowable, axis=1)
 
-    # output omni tvar
+    # output para tvar
     para_var = f"{flux_tvar.replace('Epat_','')}_para"
     store_data(para_var, data={'x': data.times, 'y': paraflux, 'v': energy}, attr_dict=get_data(flux_tvar, metadata=True))
     options(para_var, 'spec', True)
@@ -93,4 +93,43 @@ def epd_l2_flux4dir(
     options(para_var, 'zlog', True)
     options(para_var, 'ytitle', para_var)
 
-    return [omni_var, para_var]
+    #===========================
+    #        ANTI FLUX
+    #=========================== 
+    # select index 
+    iantipas, jantipas, kantipas = np.where(pas2plot_bcast > 180+LCfatol-paraedgedeg_bcast)
+    spec2plot_allowable = np.zeros((nspinsavailable, nPAsChannel, nEngChannel))
+    spec2plot_allowable[iantipas, jantipas, kantipas] = 1
+    antiflux = np.nansum(spec2plot * pas2plot_bcast * spec2plot_allowable, axis=1) / np.nansum(pas2plot_bcast * spec2plot_allowable, axis=1)
+
+    # output anti tvar
+    anti_var = f"{flux_tvar.replace('Epat_','')}_anti"
+    store_data(anti_var, data={'x': data.times, 'y': antiflux, 'v': energy}, attr_dict=get_data(flux_tvar, metadata=True))
+    options(anti_var, 'spec', True)
+    options(anti_var, 'yrange', [55., 6800])
+    options(anti_var, 'zrange', [10, 2e7])
+    options(anti_var, 'ylog', True)
+    options(anti_var, 'zlog', True)
+    options(anti_var, 'ytitle', anti_var)
+
+    #===========================
+    #        PERP FLUX
+    #=========================== 
+    # select index 
+    iperppas, jperppas, kperppas = np.where(
+        (pas2plot_bcast < 180-LCfptol-paraedgedeg_bcast) & (pas2plot_bcast > LCfptol+paraedgedeg_bcast))
+    spec2plot_allowable = np.zeros((nspinsavailable, nPAsChannel, nEngChannel))
+    spec2plot_allowable[iperppas, jperppas, kperppas] = 1
+    perpflux = np.nansum(spec2plot * pas2plot_bcast * spec2plot_allowable, axis=1) / np.nansum(pas2plot_bcast * spec2plot_allowable, axis=1)
+
+    # output anti tvar
+    perp_var = f"{flux_tvar.replace('Epat_','')}_perp"
+    store_data(perp_var, data={'x': data.times, 'y': perpflux, 'v': energy}, attr_dict=get_data(flux_tvar, metadata=True))
+    options(perp_var, 'spec', True)
+    options(perp_var, 'yrange', [55., 6800])
+    options(perp_var, 'zrange', [10, 2e7])
+    options(perp_var, 'ylog', True)
+    options(perp_var, 'zlog', True)
+    options(perp_var, 'ytitle', perp_var)
+    
+    return [omni_var, para_var, anti_var, perp_var]
