@@ -280,6 +280,9 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'name':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['name'] = value
 
+            if option == 'title':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['title'] = value
+
             if option == "panel_size":
                 if value > 1 or value <= 0:
                     logging.info("Invalid panel_size value (%f). Should be in (0, 1]",value)

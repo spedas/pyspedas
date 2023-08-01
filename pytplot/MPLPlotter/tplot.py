@@ -260,6 +260,12 @@ def tplot(variables, var_label=None,
         if pseudo_line_options is not None:
             line_opts = pseudo_line_options
 
+        if line_opts is not None:
+            if 'name' in line_opts:
+                this_axis.set_title(line_opts['name'])
+            elif 'title' in line_opts:
+                this_axis.set_title(line_opts['title'])
+
         plot_extras = var_quants.attrs['plot_options']['extras']
         if pseudo_extra_options is not None:
             plot_extras = pseudo_extra_options
