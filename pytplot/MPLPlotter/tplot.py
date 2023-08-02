@@ -376,13 +376,20 @@ def tplot(variables, var_label=None,
             if not plot_created:
                 continue
             
-        # apply any vertical bars
+        # apply any vertical/horizontal bars
         if pytplot.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
             time_bars = pytplot.data_quants[variable].attrs['plot_options']['time_bar']
 
             for time_bar in time_bars:
-                this_axis.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc), 
-                    color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
+                # vertical bars
+                if time_bar['dimension'] == 'height':
+                    this_axis.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc),
+                        color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
+
+                # horizontal bars
+                if time_bar['dimension'] == 'width':
+                    this_axis.axhline(y=time_bar['location'], color=np.array(time_bar.get('line_color'))/256.0,
+                                      lw=time_bar.get('line_width'))
 
         # highlight time intervals
         if pytplot.data_quants[variable].attrs['plot_options'].get('highlight_intervals') is not None:
