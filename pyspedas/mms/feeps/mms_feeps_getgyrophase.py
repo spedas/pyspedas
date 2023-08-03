@@ -206,6 +206,9 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
         for j in range(24):
             th1 = np.arccos(np.nansum(Tperp[i,:,j] * Sperp)/(np.sqrt(np.nansum(Tperp[i,:,j]**2))*np.sqrt(np.nansum(Sperp**2))))
             th2 = np.arccos(np.nansum(Tperp[i,:,j] * Dperp)/(np.sqrt(np.nansum(Tperp[i,:,j]**2))*np.sqrt(np.nansum(Dperp**2))))
+            # strip the units
+            th1 = th1.value
+            th2 = th2.value
             if th1 <= np.pi/2.0 and th2 < np.pi/2:
                 phi[i, j] = 2*np.pi - th1
             if th1 < np.pi/2.0 and th2 >= np.pi/2.0:
