@@ -142,6 +142,9 @@ def options(name, option=None, value=None, opt_dict=None):
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['extras']['colormap'] = [value]
 
+            if option == 'colormap_width':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['colormap_width'] = value
+
             if option == 'spec':
                 _reset_plots(i)
                 if value:

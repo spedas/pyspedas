@@ -466,6 +466,11 @@ def tplot(variables, var_label=None,
         else:
             spec = False
 
+        if plot_extras.get('colormap_width') is not None:
+            colormap_width = plot_extras['colormap_width']
+        else:
+            colormap_width = 0.02
+
         if spec:
             if colorbars.get(variable) is None:
                 continue
@@ -485,7 +490,7 @@ def tplot(variables, var_label=None,
                 fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
 
             box = this_axis.get_position()
-            pad, width = 0.02, 0.02
+            pad, width = 0.02, colormap_width
             cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
             if colorbars[variable]['axis_font_size'] is not None:
                 cax.tick_params(labelsize=colorbars[variable]['axis_font_size'])
