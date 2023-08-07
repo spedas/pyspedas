@@ -25,7 +25,7 @@ setup(
     project_urls={'Information': 'http://spedas.org/wiki/',
                   },
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    install_requires=['numpy>=1.19.5', 'requests', 'geopack>=1.0.10',
+    install_requires=['numpy>=1.25.0', 'requests', 'geopack>=1.0.10',
                       'cdflib<1.0.0', 'cdasws>=1.7.24', 'netCDF4>=1.6.2',
                       'pywavelets', 'astropy', 'hapiclient>=0.2.2',
                       'pytplot-mpl-temp>=2.1.44', 'viresclient'],

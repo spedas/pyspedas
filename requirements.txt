@@ -1,4 +1,4 @@
-numpy>=1.19.5
+numpy>=1.25.0
 requests
 cdflib<1.0.0
 pytplot-mpl-temp>=2.1.44
