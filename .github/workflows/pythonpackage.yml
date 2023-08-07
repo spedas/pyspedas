@@ -96,7 +96,7 @@ jobs:
         LANL_DATA_DIR: lanl_data/
         CNOFS_DATA_DIR: cnofs_data/
         ST5_DATA_DIR: st5_data/
-        PYTPLOT_LOGGING_LEVEL: error
+        PYTPLOT_LOGGING_LEVEL: warning
       run: |
         # coverage run -a -m pyspedas.akebono.tests.tests
         coverage run -a -m pyspedas.soho.tests.tests
