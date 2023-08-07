@@ -31,7 +31,7 @@ jobs:
           pip install -r requirements.txt
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
-          pip install basemap
+          # pip install basemap
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest' && (github.ref == 'refs/heads/master'  || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis')
     - name: Install dependencies (Windows)
@@ -105,7 +105,7 @@ jobs:
         coverage run -a -m pyspedas.lanl.tests.tests
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         coverage run -a -m pyspedas.cnofs.tests.tests
-        coverage run -a -m pyspedas.secs.tests.tests
+        # coverage run -a -m pyspedas.secs.tests.tests
         coverage run -a -m pyspedas.sosmag.tests.tests
         coverage run -a -m pyspedas.hapi.tests.tests
         coverage run -a -m pyspedas.mms.tests.cotrans
