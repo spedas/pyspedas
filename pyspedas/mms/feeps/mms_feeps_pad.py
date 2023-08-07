@@ -164,7 +164,7 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
                         if len(ind[0]) > 1:
                             pa_flux[pa_idx, ipa] = nanmean(dflux[pa_idx, ind[0]], axis=0)
                         else:
-                            pa_flux[pa_idx, ipa] = dflux[pa_idx, ind[0]]
+                            pa_flux[pa_idx, ipa] = dflux[pa_idx, ind[0][0]]
 
     pa_flux[pa_flux == 0] = 'nan' # fill any missed bins with NAN
 
