@@ -159,12 +159,12 @@ def mms_feeps_pad(bin_size=16.3636, probe='1', energy=[70, 600], level='l2', suf
             if not np.isnan(dpa[pa_idx, :][0]):
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore", category=RuntimeWarning)
-                    ind = np.where((dpa[pa_idx, :] + dangresp >= pa_label[ipa]-delta_pa) & (dpa[pa_idx, :]-dangresp < pa_label[ipa]+delta_pa))
-                    if ind[0].size != 0:
-                        if len(ind[0]) > 1:
-                            pa_flux[pa_idx, ipa] = nanmean(dflux[pa_idx, ind[0]], axis=0)
+                    ind = np.argwhere((dpa[pa_idx, :] + dangresp >= pa_label[ipa]-delta_pa) & (dpa[pa_idx, :]-dangresp < pa_label[ipa]+delta_pa)).flatten()
+                    if ind.size != 0:
+                        if len(ind) > 1:
+                            pa_flux[pa_idx, ipa] = nanmean(dflux[pa_idx, ind], axis=0)
                         else:
-                            pa_flux[pa_idx, ipa] = dflux[pa_idx, ind[0][0]]
+                            pa_flux[pa_idx, ipa] = dflux[pa_idx, ind[0]]
 
     pa_flux[pa_flux == 0] = 'nan' # fill any missed bins with NAN
 
