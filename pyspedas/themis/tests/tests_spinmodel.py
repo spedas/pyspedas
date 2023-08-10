@@ -57,9 +57,9 @@ class SpinmodelDataValidation(unittest.TestCase):
         #print(trange)
         #print(time_string(trange))
         #print(probe_idx)
-        int_idx = int(probe_idx)
+        int_idx = int(probe_idx[0])
         probes = ['a', 'b', 'c', 'd', 'e']
-        int_corr_level = int(correction_level)
+        int_corr_level = int(correction_level[0])
         probe = probes[int_idx]
         #print(probe)
         #print(int_corr_level)
