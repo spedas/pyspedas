@@ -23,6 +23,7 @@ from pytplot.tplot import tplot
 from pytplot.options import options
 import pytplot
 import copy
+from collections.abc import Iterable
 
 
 def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=False, get_metadata=False,
@@ -402,6 +403,18 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                     except:
                         pass
 
+                units = filter_greater_than(var_atts.get('UNITS'))
+                if units is None:
+                    unit_ptr = var_atts.get('UNIT_PTR')
+                    if unit_ptr is not None:
+                        try:
+                            unit_ptr_array = master_cdf_file.varget(unit_ptr)
+                            if unit_ptr_array is not None:
+                                units = filter_greater_than(unit_ptr_array.flatten().tolist())
+                        except:
+                            pass
+                metadata[var_name]['units'] = units
+
                 if metadata[var_name]['scale_type'] is None:
                     alt_scale_type = var_atts.get("SCALETYP", "linear")
                     if alt_scale_type is not None:
@@ -488,7 +501,8 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                 # populate data_att; used by PySPEDAS as a common interface to
                 # data attributes such as units, coordinate system, etc
                 attr_dict["data_att"] = {"coord_sys": "",
-                                         "units": metadata[var_name]['var_attrs'].get('UNITS'),
+                                         #"units": metadata[var_name]['var_attrs'].get('UNITS'),
+                                         "units": metadata[var_name]['units'],
                                          "depend_1_units": metadata[var_name].get('DEPEND_1_UNITS'),
                                          "depend_2_units": metadata[var_name].get('DEPEND_2_UNITS'),
                                          "depend_3_units": metadata[var_name].get('DEPEND_3_UNITS')}
@@ -563,11 +577,29 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
     return stored_variables
 
 
-def filter_greater_than(attr):
+def filter_greater_than_single(attr):
     """
     Returns any text to the left of > in a variable attribute
     (e.g., coordinate systems, units)
+    Assumes input is a single value
     """
     if not isinstance(attr, str):
         return attr
     return attr.split('>')[0].rstrip()
+
+def filter_greater_than(attr):
+    """
+    Strip CDF comments from attribute values (single value or array/list of values)
+    Returns any text to the left of '>'
+    Args:
+        attr:
+
+    Returns: str
+
+    """
+    if isinstance(attr,str):
+        return filter_greater_than_single(attr)
+    elif isinstance(attr,Iterable):
+        return list(map(filter_greater_than_single,attr))
+    else:
+        return filter_greater_than_single(attr)
