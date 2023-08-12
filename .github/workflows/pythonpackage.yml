@@ -13,7 +13,7 @@ jobs:
         os: [ubuntu-latest]
         #os: [ubuntu-latest]
         #os: [windows-latest]
-        python-version: [3.9]
+        python-version: [3.8]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,9 +29,9 @@ jobs:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          # pip install spacepy  # required for MMS qcotrans tests
+          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
-          # pip install basemap
+          pip install basemap
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest' && (github.ref == 'refs/heads/master'  || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis')
     - name: Install dependencies (Windows)
@@ -96,7 +96,7 @@ jobs:
         LANL_DATA_DIR: lanl_data/
         CNOFS_DATA_DIR: cnofs_data/
         ST5_DATA_DIR: st5_data/
-        PYTPLOT_LOGGING_LEVEL: warning
+        PYTPLOT_LOGGING_LEVEL: error
       run: |
         # coverage run -a -m pyspedas.akebono.tests.tests
         coverage run -a -m pyspedas.soho.tests.tests
@@ -105,10 +105,10 @@ jobs:
         coverage run -a -m pyspedas.lanl.tests.tests
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         coverage run -a -m pyspedas.cnofs.tests.tests
-        # coverage run -a -m pyspedas.secs.tests.tests
+        coverage run -a -m pyspedas.secs.tests.tests
         coverage run -a -m pyspedas.sosmag.tests.tests
         coverage run -a -m pyspedas.hapi.tests.tests
-        # coverage run -a -m pyspedas.mms.tests.cotrans
+        coverage run -a -m pyspedas.mms.tests.cotrans
         coverage run -a -m pyspedas.mms.tests.events
         coverage run -a -m pyspedas.mms.tests.orbit_plots
         coverage run -a -m pyspedas.mms.tests.neutral_sheet
