@@ -19,6 +19,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         time_clip=True,
         nspinsinsum=None,
         no_spec=False,
+        fullspin=False,
 ):
     """
     This function loads data from the Energetic Particle Detector (EPD)
@@ -78,7 +79,11 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
             Time clip the variables to exactly the range specified in the trange keyword
 
         nspinsinsum : int, optional
-             Number of spins in sum which is needed by the calibration function.
+            Number of spins in sum which is needed by the calibration function.
+
+        fullspin: bool
+            If true, generate full spin with l2 epd instead of half spin
+            Default is False
 
     Returns
     ----------
@@ -111,7 +116,8 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
             logging.warning(f"fluxtype {type_} is not allowed in l2 data, change to nflux!")
             type_ = "nflux"
 
-        return epd_l2_postprocessing(tvars, fluxtype=type_)
+        res = 'hs' if fullspin is False else 'fs'
+        return epd_l2_postprocessing(tvars, fluxtype=type_, res=res)
     else:
         raise ValueError(f"Unknown level: {level}")
 
