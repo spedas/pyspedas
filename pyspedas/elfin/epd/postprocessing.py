@@ -3,7 +3,7 @@ import logging
 from pytplot import get, store, del_data, tnames, tplot_rename, options, tplot
 from pyspedas.analysis.time_clip import time_clip as tclip
 
-from .calibration_l2 import epd_l2_flux4dir
+from .calibration_l2 import epd_l2_Espectra, epd_l2_PAspectra
 from .calibration import calibrate_epd
 
 def epd_l1_postprocessing(
@@ -138,12 +138,22 @@ def epd_l2_postprocessing(
 
     tplotnames = tplotnames.copy()
     tvars=[]
+
     flux_tname = [name for name in tplotnames if f"p{datatype}f_{res}_Epat_{fluxtype}" in name]
-    LC_tname = [name for name in tplotnames if f"_LCdeg_{res}" in name]  #TODO: change loss cone name later
-    if len(flux_tname) != 1 | len(LC_tname) != 1:
-        logging.error('two flux tplot variables are founded!')
+    LC_tname = [name for name in tplotnames if f"_{res}_LCdeg" in name]  #TODO: change loss cone name later
+    if len(flux_tname) != 1: 
+        logging.error(f'{len(flux_tname)} flux tplot variables is found!')
         return
-  
-    tvars = epd_l2_flux4dir(flux_tname[0], LC_tname[0])
+    
+    if len(LC_tname) != 1: 
+        logging.error(f'{len(LC_tname)} LC tplot variables is found!')
+        return
+    
+    # get energy spectra in four directions
+    tvars = epd_l2_Espectra(flux_tname[0], LC_tname[0])
+
+    # get pitch angle spectra
+    #tvars = epd_l2_PAspectra(flux_tname[0], energies=[(60, 200),(300, 1000)])
+    tvars = epd_l2_PAspectra(flux_tname[0])
 
     return tvars
