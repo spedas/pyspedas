@@ -413,7 +413,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
                                 units = filter_greater_than(unit_ptr_array.flatten().tolist())
                         except:
                             pass
-                metadata[var_name]['units'] = units
+                metadata[var_name]['units'] = str(units)
 
                 if metadata[var_name]['scale_type'] is None:
                     alt_scale_type = var_atts.get("SCALETYP", "linear")
