@@ -90,12 +90,14 @@ def load(trange=['2018-11-5', '2018-11-6'],
             if datatype in ['mag_RTN', 'mag_SC']:
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
                 file_resolution = 6*3600.
-
+            
             elif datatype in ['mag_RTN_1min', 'mag_RTN_4_Sa_per_Cyc', 'mag_SC_1min', 'mag_SC_4_Sa_per_Cyc', 'rfs_hfr']:
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
 
             elif datatype ==  'sqtn_rfs_V1V2':
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+
+            print('datatype ' + datatype)
 
         else:
             # Generic SPDF path.  
