@@ -102,6 +102,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
             file_resolution = 6*3600.
 
+        # Files on Berkeley server are stored in monthly directories 
+        if username != None:
+            pathformat = pathformat.replace('/%Y/psp_fld', '/%Y/%m/psp_fld')
+
     elif instrument == 'spc':
         prefix = 'psp_spc_'
         if username is None:
