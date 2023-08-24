@@ -62,7 +62,8 @@ def mms_load_sroi_segments(trange=None, probe=1, suffix=''):
     """
     This function loads the Science Region of Interest (SRoI) segment intervals
     
-    Parameters:
+    Parameters
+    ------------
         trange: list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -74,11 +75,11 @@ def mms_load_sroi_segments(trange=None, probe=1, suffix=''):
         suffix: str
             Suffix to append to the end of the tplot variables
             
-    Returns:
+    Returns
+    ---------
         Tuple containing (start_times, end_times)
 
     """
-
     if not isinstance(probe, str):
         probe = str(probe)
 
@@ -127,4 +128,4 @@ def mms_load_sroi_segments(trange=None, probe=1, suffix=''):
     options('mms' + probe + '_bss_sroi'+suffix, 'legend_names', ['Fast'])
     options('mms' + probe + '_bss_sroi'+suffix, 'ytitle', '')
 
-    return (start_out, end_out)
+    return start_out, end_out

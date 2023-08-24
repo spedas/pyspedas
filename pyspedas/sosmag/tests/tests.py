@@ -1,7 +1,7 @@
 import unittest
 import pyspedas
 from pyspedas import sosmag_load
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 
 pyspedas.sosmag.load.sosmag_parameters['print_messages'] = True
 

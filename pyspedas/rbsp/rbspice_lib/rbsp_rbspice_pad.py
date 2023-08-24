@@ -3,6 +3,14 @@ import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg import rbsp_rbspice_pad_spinavg
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except ImportError:
+    nanmean = np.nanmean
+
 
 def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000], bin_size=15, scopes=None):
     """
@@ -101,9 +109,8 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
             # get energy range of interest
             e = d_flux_t0.v
             indx = np.argwhere((e < energy[1]) & (e > energy[0]))
-            energy_count = len(indx[0])
 
-            if energy_count == 0:
+            if len(indx) == 0:
                 logging.warning('Energy range selected is not covered by the detector for ' + datatype + ' ' + species[ion_type_idx])
                 continue
 
@@ -130,13 +137,13 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
                         else:
                             new_pa_flux[i, bin_idx, t] = np.nan
 
-            en_range_string = str(energy[0]).replace('.', '') + '-' + str(energy[1]).replace('.', '') + 'keV'
+            en_range_string = str(energy[0]) + '-' + str(energy[1]) + 'keV'
             if len(scopes) == 6:
                 new_name = prefix+species[qq]+'_omni_'+en_range_string+'_pad'
                 new_omni_pa_flux = np.zeros((len(new_pa_flux[:, 0, 0]),len(new_pa_flux[0, :, 0])))
                 for ii in range(len(new_pa_flux[:, 0, 0])):
                     for jj in range(len(new_pa_flux[0, :, 0])):
-                        new_omni_pa_flux[ii, jj] = np.nanmean(new_pa_flux[ii, jj, :])
+                        new_omni_pa_flux[ii, jj] = nanmean(new_pa_flux[ii, jj, :])
                 store_data(new_name, data={'x': d_flux.times, 'y': new_omni_pa_flux, 'v': pa_label})
                 options(new_name, 'yrange', [0, 180])
                 options(new_name, 'spec', True)
@@ -160,5 +167,6 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
 
             # now do the spin average
             sp_vars = rbsp_rbspice_pad_spinavg(probe=probe, datatype=datatype, species=species[ion_type_idx], energy=energy, bin_size=bin_size, scopes=scopes)
-            out.extend(sp_vars)
+            if sp_vars is not None:
+                out.extend(sp_vars)
     return out

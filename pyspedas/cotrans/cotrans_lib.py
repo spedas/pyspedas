@@ -12,6 +12,7 @@ These functions are in cotrans_lib.pro of IDL SPEDAS.
 For a comparison to IDL, see: http://spedas.org/wiki/index.php?title=Cotrans
 """
 import numpy as np
+import logging
 from datetime import datetime
 from pyspedas.cotrans.igrf import set_igrf_params
 from pyspedas.cotrans.j2000 import set_j2000_params
@@ -133,7 +134,7 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     Same as SPEDAS cdipdir.
     """
     if (time_in is None) and (iyear is None) and (idoy is None):
-        print("Error: No time was provided.")
+        logging.error("Error: No time was provided.")
         return
 
     if (iyear is None) or (idoy is None):
@@ -329,7 +330,7 @@ def subgei2gse(time_in, data_in):
 
     """
     xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
-    print("Running transformation: subgei2gse")
+    logging.info("Running transformation: subgei2gse")
     return np.column_stack([xgse, ygse, zgse])
 
 
@@ -396,7 +397,7 @@ def subgse2gei(time_in, data_in):
 
     """
     xgei, ygei, zgei = tgsegei_vect(time_in, data_in)
-    print("Running transformation: subgse2gei")
+    logging.info("Running transformation: subgse2gei")
     return np.column_stack([xgei, ygei, zgei])
 
 
@@ -476,7 +477,7 @@ def subgse2gsm(time_in, data_in):
 
     """
     xgsm, ygsm, zgsm = tgsegsm_vect(time_in, data_in)
-    print("Running transformation: subgse2gsm")
+    logging.info("Running transformation: subgse2gsm")
     return np.column_stack([xgsm, ygsm, zgsm])
 
 
@@ -557,7 +558,7 @@ def subgsm2gse(time_in, data_in):
 
     """
     xgse, ygse, zgse = tgsmgse_vect(time_in, data_in)
-    print("Running transformation: subgsm2gse")
+    logging.info("Running transformation: subgsm2gse")
     return np.column_stack([xgse, ygse, zgse])
 
 
@@ -629,7 +630,7 @@ def subgsm2sm(time_in, data_in):
 
     """
     xsm, ysm, zsm = tgsmsm_vect(time_in, data_in)
-    print("Running transformation: subgsm2sm")
+    logging.info("Running transformation: subgsm2sm")
     return np.column_stack([xsm, ysm, zsm])
 
 
@@ -701,7 +702,7 @@ def subsm2gsm(time_in, data_in):
 
     """
     xgsm, ygsm, zgsm = tsmgsm_vect(time_in, data_in)
-    print("Running transformation: subsm2gsm")
+    logging.info("Running transformation: subsm2gsm")
     return np.column_stack([xgsm, ygsm, zgsm])
 
 
@@ -733,7 +734,7 @@ def subgei2geo(time_in, data_in):
     ygeo = -sgst * xgei + cgst * ygei
     zgeo = zgei
 
-    print("Running transformation: subgei2geo")
+    logging.info("Running transformation: subgei2geo")
     return np.column_stack([xgeo, ygeo, zgeo])
 
 
@@ -765,7 +766,7 @@ def subgeo2gei(time_in, data_in):
     ygei = sgst * xgeo + cgst * ygeo
     zgei = zgeo
 
-    print("Running transformation: subgeo2gei")
+    logging.info("Running transformation: subgeo2gei")
     return np.column_stack([xgei, ygei, zgei])
 
 
@@ -826,7 +827,7 @@ def subgeo2mag(time_in, data_in):
         mlat[1, 1] = 1.0
         mag[i] = mlat @ out
 
-    print("Running transformation: subgeo2mag")
+    logging.info("Running transformation: subgeo2mag")
     return mag
 
 
@@ -886,7 +887,7 @@ def submag2geo(time_in, data_in):
         glong[2, 2] = 1.0
         geo[i] = glong @ out
 
-    print("Running transformation: submag2geo")
+    logging.info("Running transformation: submag2geo")
     return geo
 
 
@@ -1097,7 +1098,7 @@ def subgei2j2000(time_in, data_in):
     cmatrix = j2000_matrix_vec(time_in)
     d_out = ctv_mx_vec_rot(cmatrix, d)
 
-    print("Running transformation: subgei2j2000")
+    logging.info("Running transformation: subgei2j2000")
     return np.transpose(d_out)
 
 
@@ -1125,7 +1126,7 @@ def subj20002gei(time_in, data_in):
     icmatrix = np.transpose(cmatrix, (1, 0, 2))
     d_out = ctv_mx_vec_rot(icmatrix, d)
 
-    print("Running transformation: subj20002gei")
+    logging.info("Running transformation: subj20002gei")
     return np.transpose(d_out)
 
 
@@ -1257,19 +1258,23 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
     coord_in = coord_in.lower()
     coord_out = coord_out.lower()
 
-    if (coord_in not in coord_all) or (coord_out not in coord_all):
-        print("Error: coordinate system cannot be found.")
+    if coord_in not in coord_all:
+        logging.error("Unknown coord_in value %s",coord_in)
+        return None
+
+    if coord_out not in coord_all:
+        logging.error("Unknown coord_out value %s",coord_out)
         return None
 
     if coord_in == coord_out:
-        print("Warning: coord_in equal to coord_out.")
+        logging.warning("Warning: coord_in equal to coord_out.")
         return data_out
 
     # Construct a list of transformations.
     p = find_path_t1_t2(coord_in, coord_out)
     p = shorten_path_t1_t2(p)
     p = shorten_path_t1_t2(p)
-    print(p)
+    logging.info(p)
 
     # Daisy chain the list of transformations.
     for i in range(len(p)-1):

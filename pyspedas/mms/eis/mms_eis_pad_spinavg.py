@@ -1,4 +1,3 @@
-
 import logging
 import warnings
 import numpy as np
@@ -15,6 +14,7 @@ except ImportError:
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+
 
 def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1', 
     data_rate='srvy', level='l2', datatype='extof', data_units='flux', 
@@ -54,7 +54,8 @@ def mms_eis_pad_spinavg(scopes=['0','1','2','3','4','5'], probe='1',
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    --------
         Name of tplot variables created.
     """
 

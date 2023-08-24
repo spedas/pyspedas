@@ -1,6 +1,7 @@
 from pytplot import options
 from pyspedas import tnames
 
+
 def mms_mec_set_metadata(probe, data_rate, level, suffix=''):
     """
     This function updates the metadata for MEC data products
@@ -22,7 +23,8 @@ def mms_mec_set_metadata(probe, data_rate, level, suffix=''):
             no suffix is added.
 
     """
-    if not isinstance(probe, list): probe = [probe]
+    if not isinstance(probe, list):
+        probe = [probe]
 
     instrument = 'mec'
 

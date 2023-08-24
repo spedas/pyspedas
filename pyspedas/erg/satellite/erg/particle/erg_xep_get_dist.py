@@ -4,8 +4,8 @@ import logging
 import numpy as np
 from copy import deepcopy
 from pyspedas import tnames
-from pyspedas.utilities.time_double import time_double
-from pyspedas.utilities.time_string import time_string
+from pytplot import time_double
+from pytplot import time_string
 from pytplot import get_data
 from scipy import interpolate
 

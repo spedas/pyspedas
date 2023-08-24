@@ -3,18 +3,19 @@ from pyspedas.mms.edp.mms_edp_set_metadata import mms_edp_set_metadata
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
+
 @print_vars
 def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce',
         varformat=None, varnames=[], get_support_data=False, suffix='', time_clip=True, no_update=False,
         available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
         spdf=False, always_prompt=False):
     """
-    This function loads EDP data into tplot variables
+    Load data from the Electric field Double Probes (EDP) instrument
     
     Parameters
     ----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
@@ -54,11 +55,11 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         notplot: bool
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
-            access to multi-dimensional data products)
+            access to multidimensional data products)
 
         available: bool
             If True, simply return the available data files (without downloading)
-            for the requested paramters
+            for the requested parameters
 
         no_update: bool
             Set this flag to preserve the original data. if not set and newer 
@@ -78,15 +79,23 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
         always_prompt: bool
             Set this keyword to always prompt for the user's username and password;
-            useful if you accidently save an incorrect password, or if your SDC password has changed
+            useful if you accidentally save an incorrect password, or if your SDC password has changed
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
-    Returns:
+    Returns
+    --------
         List of tplot variables created.
 
     """
+
+    # as of 20 June 2023, there's a mixture of v2.x.x and v3.x.x files at the SDC
+    # these files aren't compatible, so we need to only load the latest major version
+    # to avoid crashes (unless otherwise specified)
+    if not latest_version and not major_version and min_version is None and cdf_version is None:
+        major_version = True
+
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='edp',
             datatype=datatype, varformat=varformat, varnames=varnames, get_support_data=get_support_data, suffix=suffix,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 

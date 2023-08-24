@@ -1,6 +1,6 @@
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 import pyspedas
 
 
@@ -38,7 +38,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('proton_density'))
 
     def test_load_hro_hour_data(self):
-        omni_vars = pyspedas.omni.data(level='hro2', datatype='hour', trange=['2013-01-01', '2013-01-02'])
+        omni_vars = pyspedas.omni.data(level='hro2', datatype='hour', trange=['2013-03-01', '2013-03-02'])
+        self.assertTrue(data_exists('BX_GSE'))
+        self.assertTrue(data_exists('BY_GSE'))
+        self.assertTrue(data_exists('BZ_GSE'))
+        self.assertTrue(data_exists('BY_GSM'))
+        self.assertTrue(data_exists('BZ_GSM'))
 
     def test_load_invalid_datatype(self):
         omni_vars = pyspedas.omni.data(datatype='1')

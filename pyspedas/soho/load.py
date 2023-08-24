@@ -1,7 +1,7 @@
 import logging
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 
 from .config import CONFIG
@@ -34,7 +34,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
         pathformat = instrument+'/'+datatype+'/%Y/soho_'+instrument+'-'+datatype+'_%Y%m%d_v??.cdf'
     elif instrument == 'costep':
         pathformat = instrument+'/'+datatype+'/%Y/soho_'+instrument+'-'+datatype+'_%Y0101_v??.??.cdf'
-        res = 24 * 3600. * 365.
+        res = 24 * 3600. * 366
     elif instrument == 'erne':
         pathformat = instrument+'/'+datatype+'/%Y/soho_'+instrument+'-'+datatype+'_%Y%m%d_v??.cdf'
     elif instrument == 'orbit':

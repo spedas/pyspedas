@@ -2,10 +2,21 @@ import unittest
 from ..feeps.mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
 from pyspedas import mms_load_feeps, mms_feeps_pad
 from pyspedas.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
-from ...utilities.data_exists import data_exists
-from pytplot import del_data
+from pytplot import del_data, tplot, data_exists, get
+
 
 class FEEPSTestCases(unittest.TestCase):
+    def test_time_clip_regression(self):
+        # regression test for time clipping bug with spin-averaged spectra
+        mms_load_feeps(trange=['2015-12-15/10:00', '2015-12-15/12:00'], time_clip=True)
+        data = get('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin')
+        self.assertTrue(data.y[-1, :].sum() != 0.0)
+
+    def test_feeps_sitl(self):
+        mms_load_feeps(datatype='electron', trange=['2016-11-23', '2016-11-24'], data_rate='srvy', probe=4,
+                       level='sitl')
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_sitl_electron_intensity_omni'))
+
     def test_feeps_pad_regression(self):
         """
         This is a regression test for a bug caused by the v7 of the FEEPS CDF files
@@ -14,6 +25,7 @@ class FEEPSTestCases(unittest.TestCase):
         mms_load_feeps(datatype='electron', trange=['2016-11-23', '2016-11-24'], data_rate='srvy', probe=4)
         mms_feeps_pad(probe=4)
         self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad'))
+        tplot('mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad', display=False)
         del_data('*')
 
     def test_gyrophase_angles(self):
@@ -22,30 +34,49 @@ class FEEPSTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_61-77keV_gpd'))
         mms_feeps_gpd(probe='3', data_rate='brst')
         self.assertTrue(data_exists('mms3_epd_feeps_brst_l2_electron_intensity_50-500keV_gpd'))
+        tplot(['mms3_epd_feeps_brst_l2_electron_intensity_61-77keV_gpd',
+               'mms3_epd_feeps_brst_l2_electron_intensity_50-500keV_gpd'], display=False)
 
     def test_pad_ions_brst(self):
         mms_load_feeps(probe=4, data_rate='brst', datatype='ion', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
         mms_feeps_pad(probe=4, data_rate='brst', datatype='ion', angles_from_bfield=True)
         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_70-600keV_pad'))
         self.assertTrue(data_exists('mms4_epd_feeps_brst_l2_ion_intensity_70-600keV_pad_spin'))
+        tplot(['mms4_epd_feeps_brst_l2_ion_intensity_70-600keV_pad',
+               'mms4_epd_feeps_brst_l2_ion_intensity_70-600keV_pad_spin'], display=False)
 
     def test_pad_ions_srvy(self):
         mms_load_feeps(probe=4, datatype='ion', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
         mms_feeps_pad(probe=4, datatype='ion')
         self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_ion_intensity_70-600keV_pad'))
         self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_ion_intensity_70-600keV_pad_spin'))
+        tplot(['mms4_epd_feeps_srvy_l2_ion_intensity_70-600keV_pad',
+               'mms4_epd_feeps_srvy_l2_ion_intensity_70-600keV_pad_spin'], display=False)
 
     def test_pad_electrons_srvy(self):
         mms_load_feeps()
         mms_feeps_pad()
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin'))
         self.assertTrue(data_exists('mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad'))
+        tplot(['mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad',
+               'mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin'], display=False)
 
     def test_pad_electrons_srvy_probe(self):
         mms_load_feeps(probe=4)
         mms_feeps_pad(probe=4)
         self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin'))
         self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad'))
+        tplot(['mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad',
+               'mms4_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin'], display=False)
+
+    def test_electron_srvy_after_aug17(self):
+        # there's a different set of active eyes after 16 August 2017
+        # this test executes that code
+        mms_load_feeps(probe=4, trange=['2017-12-01', '2017-12-02'])
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_omni'))
+        self.assertTrue(data_exists('mms4_epd_feeps_srvy_l2_electron_intensity_omni_spin'))
+        tplot(['mms4_epd_feeps_srvy_l2_electron_intensity_omni',
+               'mms4_epd_feeps_srvy_l2_electron_intensity_omni_spin'], display=False)
 
     def test_sector_masks(self):
         d = mms_read_feeps_sector_masks_csv(['2015-08-01', '2015-08-02'])
@@ -70,6 +101,7 @@ class FEEPSTestCases(unittest.TestCase):
         self.assertTrue(d['mms3imaskb9'] == [53, 54, 55, 56, 57, 58])
         self.assertTrue(d['mms2imaskt9'] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 53, 54, 60, 61, 62, 63])
         self.assertTrue(d['mms1imaskb6'] == [40, 41, 42, 49, 50, 51, 52, 53, 54, 57, 58])
+
 
 if __name__ == '__main__':
     unittest.main()

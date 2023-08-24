@@ -1,6 +1,6 @@
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 import pyspedas
 from pyspedas.cluster.load_csa import load_csa, cl_master_probes, cl_master_datatypes
 

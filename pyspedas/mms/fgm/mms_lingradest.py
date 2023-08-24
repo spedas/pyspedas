@@ -7,9 +7,26 @@ from pytplot import get_data, store_data, options, join_vec
 
 def mms_lingradest(fields=None, positions=None, suffix=''):
     """
+    Calculations of Grad, Curl, Curv,..., for MMS using
+    the Linear Gradient/Curl Estimator technique
+    see Chanteur, ISSI, 1998, Ch. 11
 
+    Parameters
+    ----------
+    fields : list of str
+        Names of the magnetic field data variables, ordered by spacecraft
+        (e.g., ['mms1_b_gse', 'mms2_b_gse', 'mms3_b_gse', 'mms4_b_gse']).
+    positions : list of str
+        Names of the spacecraft position data variables, ordered by spacecraft
+        (e.g., ['mms1_pos_gse', 'mms2_pos_gse', 'mms3_pos_gse', 'mms4_pos_gse']).
+    suffix : str, optional
+        Suffix to add to the names of the output variables.
+
+    Returns
+    -------
+    None
+        The function stores the computed parameters as PyTplot variables
     """
-
     if fields is None or positions is None:
         logging.error('B-field and spacecraft position keywords required.')
         return

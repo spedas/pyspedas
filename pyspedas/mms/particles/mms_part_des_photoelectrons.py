@@ -1,4 +1,3 @@
-
 import os
 import logging
 from pyspedas.mms.mms_config import CONFIG

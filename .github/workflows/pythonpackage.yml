@@ -13,7 +13,7 @@ jobs:
         os: [ubuntu-latest]
         #os: [ubuntu-latest]
         #os: [windows-latest]
-        python-version: [3.9]
+        python-version: [3.8]
 
     steps:
     - uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
     - name: Install dependencies (Linux)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
@@ -29,10 +29,11 @@ jobs:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
           python -m pyspedas.mms.tests.setup_tests
-      if: matrix.os == 'ubuntu-latest' && (github.ref == 'refs/heads/master'  || github.ref == 'refs/heads/eric-superfast')
+      if: matrix.os == 'ubuntu-latest' && (github.ref == 'refs/heads/master'  || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis')
     - name: Install dependencies (Windows)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
@@ -40,6 +41,7 @@ jobs:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
           python -m pyspedas.mms.tests.setup_tests
@@ -51,6 +53,7 @@ jobs:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
           python -m pyspedas.mms.tests.setup_tests
@@ -64,7 +67,7 @@ jobs:
         # exit-zero treats all errors as warnings. 
         flake8 . --count --exit-zero --max-complexity=10 --statistics # --max-line-length=127 --exclude 'erg'
     - name: Test with unittest
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         SPEDAS_DATA_DIR: data
@@ -105,6 +108,7 @@ jobs:
         coverage run -a -m pyspedas.secs.tests.tests
         coverage run -a -m pyspedas.sosmag.tests.tests
         coverage run -a -m pyspedas.hapi.tests.tests
+        coverage run -a -m pyspedas.mms.tests.cotrans
         coverage run -a -m pyspedas.mms.tests.events
         coverage run -a -m pyspedas.mms.tests.orbit_plots
         coverage run -a -m pyspedas.mms.tests.neutral_sheet
@@ -124,6 +128,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.misc_tests
         coverage run -a -m pyspedas.utilities.tests.time_tests
         coverage run -a -m pyspedas.cotrans.tests.cotrans
+        coverage run -a -m pyspedas.cotrans.tests.quaternions
+        coverage run -a -m pyspedas.cotrans.tests.test_minvar
         coverage run -a -m pyspedas.cluster.tests.tests
         coverage run -a -m pyspedas.csswe.tests.tests
         coverage run -a -m pyspedas.ace.tests.tests
@@ -136,8 +142,10 @@ jobs:
         coverage run -a -m pyspedas.wind.tests.tests
         coverage run -a -m pyspedas.poes.tests.tests
         coverage run -a -m pyspedas.polar.tests.tests
+        coverage run -a -m pyspedas.geopack.tests.tests
         coverage run -a -m pyspedas.geotail.tests.tests
         coverage run -a -m pyspedas.analysis.tests.tests
+        coverage run -a -m pyspedas.analysis.tests.test_twavpol
         coverage run -a -m pyspedas.fast.tests.tests
         coverage run -a -m pyspedas.omni.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests
@@ -151,4 +159,9 @@ jobs:
         coverage run -a -m pyspedas.swarm.tests.tests
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
         coverage run -a -m pyspedas.themis.tests.tests_cal_fit
+        coverage run -a -m pyspedas.themis.tests.tests_dsl_cotrans
+        coverage run -a -m pyspedas.themis.tests.tests_lunar_cotrans
+        coverage run -a -m pyspedas.themis.tests.tests_spinmodel
+        coverage run -a -m pyspedas.themis.tests.tests_state
+        coverage run -a -m pyspedas.themis.tests.test_cal_fit_tplot_metadata
         coveralls

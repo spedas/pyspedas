@@ -65,10 +65,9 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
 
     # remove NaNs from the data
     where_finite = np.where(np.isnan(quantity) == False)
-
     quantity2process = quantity[where_finite[0]]
     times2process = time[where_finite[0]]
-    nboxpnts = nboxpoints
+    nboxpnts = int(nboxpoints)
     nshiftpnts = nshiftpoints
 
     totalpoints = len(times2process)
@@ -77,7 +76,7 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
     # test nspectra, if the value of nshiftpnts is much smaller than
     # nboxpnts/2 strange things happen
 
-    nbegin = np.array([nshiftpnts*i for i in range(nspectra)])
+    nbegin = np.array([nshiftpnts*i for i in range(nspectra)], dtype=np.int64)
     nend = nbegin + nboxpnts
 
     okspec = np.where(nend <= totalpoints-1)
@@ -100,14 +99,14 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
         nbegin = int(nthspectrum*nshiftpnts)
         nend = nbegin + nboxpnts
 
-        if nend <= totalpoints-1:
+        if nend <= totalpoints:
             t = times2process[nbegin:nend]
             t0 = t[0]
             t = t - t0
             x = quantity2process[nbegin:nend]
 
             # Use center time
-            tdps[nthspectrum] = (times2process[nbegin]+times2process[nend])/2.0
+            tdps[nthspectrum] = (times2process[nbegin]+times2process[nend-1])/2.0
 
             if noline is False:
                 coef = np.polyfit(t, x, 1)
@@ -185,4 +184,4 @@ def dpwrspc(time, quantity, nboxpoints=256, nshiftpoints=128, binsize=3,
             dps[nthspectrum, :] = power
             fdps[nthspectrum, :] = freqcenter
 
-    return (tdps, fdps, dps)
+    return tdps, fdps, dps

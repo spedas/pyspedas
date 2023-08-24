@@ -1,10 +1,8 @@
 import os
 import logging
 import warnings
-
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
-
 from pyspedas import time_double, time_string
 from pyspedas.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.mms.mms_config import CONFIG
@@ -12,19 +10,18 @@ from pyspedas.mms.mec_ascii.mms_get_local_state_files import mms_get_local_state
 from pyspedas.mms.mec_ascii.mms_load_eph_tplot import mms_load_eph_tplot
 from pyspedas.mms.mec_ascii.mms_load_att_tplot import mms_load_att_tplot
 
+
 def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'], 
     datatypes=['pos', 'vel'], level='def', no_download=False, pred_or_def=True, 
     suffix='', always_prompt=False):
     """
     Helper routine for loading state data (ASCII files from the SDC); not meant to be called directly; see pyspedas.mms.state instead
-    
     """
 
     if not isinstance(probe, list): probe = [probe]
 
     local_data_dir = CONFIG['local_data_dir']
     download_only = CONFIG['download_only']
-
 
     start_time = time_double(trange[0])-60*60*24.
     end_time = time_double(trange[1])
@@ -136,7 +133,7 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                 continue
 
             # if no files are found remotely, try locally
-            if out_files == []:
+            if not out_files:
                 out_files = mms_get_local_state_files(probe=probe_id, level=level, filetype=filetype, trange=[start_time_str, end_time_str])
 
             if filetype == 'eph':

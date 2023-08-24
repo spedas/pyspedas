@@ -5,7 +5,7 @@ import warnings
 import pkg_resources
 import numpy as np
 from pytplot import cdf_to_tplot
-from ..analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pyspedas import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
@@ -26,10 +26,8 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     """
     This function loads MMS data into pyTplot variables
 
-    This function is not meant to be called directly. Please see the individual load routines for documentation and use. 
-
+    This function is not meant to be called directly. Please see the individual load routines for documentation and use.
     """
-
     if not isinstance(probe, list): probe = [probe]
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(level, list): level = [level]
@@ -46,7 +44,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         trange[0] = time_string(trange[0])
     if isinstance(trange[1], float):
         trange[1] = time_string(trange[1])
-        
 
     download_only = CONFIG['download_only']
 
@@ -91,6 +88,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
             for lvl in level:
                 for dtype in datatype:
+
+                    file_found = False
+
                     if user is None:
                         url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/file_info/science?start_date=' + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
                     else:
@@ -101,7 +101,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                     if CONFIG['debug_mode']: logging.info('Fetching: ' + url)
 
-                    if no_download == False:
+                    if not no_download:
                         # query list of available files
                         try:
                             with warnings.catch_warnings():
@@ -135,6 +135,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
                                     if not download_only: logging.info('Loading ' + out_file)
                                     out_files.append(out_file)
+                                    file_found = True
                                     continue
 
                                 if user is None:
@@ -158,22 +159,27 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 # if the download was successful, copy to data directory
                                 copy(ftmp.name, out_file)
                                 out_files.append(out_file)
+                                file_found = True
                                 fsrc.close()
                                 ftmp.close()
+                                os.unlink(ftmp.name)  # delete the temporary file
                         except requests.exceptions.ConnectionError:
                             # No/bad internet connection; try loading the files locally
                             logging.error('No internet connection!')
 
-                    if out_files == []:
-                        if not download_only: logging.info('Searching for local files...')
-                        out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
+                    if not file_found:
+                        added_local_files = False
+                        if not download_only:
+                            logging.info('Searching for local files...')
+                            out_files.extend(mms_get_local_files(prb, instrument, drate, lvl, dtype, trange))
+                            added_local_files = True
 
-                        if out_files == [] and CONFIG['mirror_data_dir'] != None:
+                        if added_local_files and CONFIG['mirror_data_dir'] is not None:
                             # check for network mirror; note: network mirrors are assumed to be read-only
                             # and we always copy the files from the mirror to the local data directory
                             # before trying to load into tplot variables 
                             logging.info('No local files found; checking network mirror...')
-                            out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange, mirror=True)
+                            out_files.extend(mms_get_local_files(prb, instrument, drate, lvl, dtype, trange, mirror=True))
 
     if not no_download:
         sdc_session.close()
@@ -185,7 +191,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         out_files = sorted(out_files)
 
         filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
-        if filtered_out_files == []:
+        if not filtered_out_files:
             logging.info('No matching CDF versions found.')
             return
 
@@ -194,7 +200,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         if notplot:
             return new_variables
 
-        if new_variables == []:
+        if not new_variables:
             logging.warning('No data loaded.')
             return
 
@@ -205,8 +211,3 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         return new_variables
     else:
         return out_files
-
-
-
-
-

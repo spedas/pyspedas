@@ -188,6 +188,18 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
+
+    # Valid names
+    vprobe = ['a', 'b']
+    vlevels = ['l1', 'l2', 'l3', 'l4']
+    vdatatypesl1 = ['TOFxEH', 'TOFxEnonH', 'TOFxPHHHELT']
+    vdatatypesl2 = ['TOFxEH', 'TOFxEnonH', 'TOFxPHHHELT']
+    vdatatypesl3 = ['TOFxEH', 'TOFxEnonH', 'TOFxPHHHELT']
+    vdatatypesl3pap = ['']  # L3PAP data is not yet supported
+    vdatatypesl4 = ['']  # L4 data is not yet supported
+    vdatatypes = vdatatypesl1 + vdatatypesl2 + vdatatypesl3 + vdatatypesl3pap + vdatatypesl4
+    vdatatypes_lower = [vdatatype.lower() for vdatatype in vdatatypes]
+
     tvars = load(instrument='rbspice', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
     if tvars is None or notplot or downloadonly:
@@ -196,20 +208,21 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
     if not isinstance(probe, list):
         probe = [probe]
 
-    for prb in probe:
-        # Add energy channel energy values to primary data variable,
-        # create variables for individual telescopes, and set appropriate tplot options
-        rbsp_load_rbspice_read(level=level, probe=prb, datatype=datatype)
+    if datatype.lower() in vdatatypes_lower:
+        for prb in probe:
+            # Add energy channel energy values to primary data variable,
+            # create variables for individual telescopes, and set appropriate tplot options
+            rbsp_load_rbspice_read(level=level, probe=prb, datatype=datatype)
 
-        # Calculate omni-directional variable
-        omni_vars = rbsp_rbspice_omni(probe=prb, datatype=datatype, level=level)
-        if omni_vars:
-            tvars.extend(omni_vars)
+            # Calculate omni-directional variable
+            omni_vars = rbsp_rbspice_omni(probe=prb, datatype=datatype, level=level)
+            if omni_vars:
+                tvars.extend(omni_vars)
 
-        # Calculate spin-averaged variable
-        sp_avg_vars = rbsp_rbspice_spin_avg(probe=prb, datatype=datatype, level=level)
-        if omni_vars:
-            tvars.extend(sp_avg_vars)
+            # Calculate spin-averaged variable
+            sp_avg_vars = rbsp_rbspice_spin_avg(probe=prb, datatype=datatype, level=level)
+            if omni_vars:
+                tvars.extend(sp_avg_vars)
 
     return tvars
 

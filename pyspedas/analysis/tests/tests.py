@@ -1,13 +1,13 @@
 """Automated tests for the analysis functions."""
 
 import unittest
-from pyspedas.analysis.tsmooth import smooth
+from pytplot import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
                       yclip, time_clip, deriv_data, tdeflag, clean_spikes,
                       tinterpol)
-from pyspedas.analysis.tcrossp import tcrossp
-from pyspedas.analysis.tdotp import tdotp
-from pyspedas.analysis.tnormalize import tnormalize
+from pytplot import tcrossp
+from pytplot import tdotp
+from pytplot import tnormalize
 from pytplot import get_data, store_data, replace_data
 
 import numpy as np
@@ -24,6 +24,7 @@ class BaseTestCase(unittest.TestCase):
 
 class AnalysisTestCases(BaseTestCase):
     """Test functions under analysis folder."""
+
     def test_tdotp(self):
         store_data('var1', data={'x': [0], 'y': [[3, -3, 1]]})
         store_data('var2', data={'x': [0], 'y': [[4, 9, 2]]})
@@ -71,11 +72,11 @@ class AnalysisTestCases(BaseTestCase):
         subtract_median('aaabbbcc')
         subtract_median('test1', new_names='aabb')
         d = get_data('aabb')
+        self.assertTrue(len(d[1]) == 6)
         subtract_median(['test', 'aabb'], new_names='aaabbb')
         subtract_median('test1', overwrite=1)
         subtract_average('test', new_names="testtest")
         subtract_average(['test-m', 'test'], new_names="testtest2")
-        self.assertTrue(len(d[1]) == 6)
 
     def test_subtract_average(self):
         """Test subtract_average."""
@@ -139,23 +140,25 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test-avg')
         self.assertTrue((d[1] == [4.0, 11.5, 10.5]).all())
         avg_data('test', width=2, overwrite=True)  # Test overwrite
-        avg_data('test', dt=4.0, noremainder=False)  # Test dt option
         store_data('test', data={'x': [1., 2., 3., 4., 5., 6.],
                                  'y': [3., 5., 8., -4., 20., 1.]})
         avg_data('test', width=2, new_names='aabb')  # Test new_names
         d = get_data('aabb')
         # Test multiple names
         avg_data(['test', 'aabb'], new_names='aaabbb', width=2)
+        dt = [1., 12., 13., 14., 15., 16.]
         dn = [[3., 5., 8.], [15., 20., 1.], [3., 5., 8.], [15., 20., 1.],
               [23., 15., 28.], [15., 20., 1.]]
-        store_data('test1', data={'x': [1., 12., 13., 14., 15., 16.], 'y': dn})
+        dv = dn
+        store_data('test1', data={'x': dt, 'y': dn, 'v': dv})
         avg_data('test1', width=2)  # Test 3-d data
-        avg_data('test1', new_names='test2', dt=2.)  # Test a reasonable dt
-        avg_data('test1', dt=-1.)  # Test dt error
-        avg_data('test1', dt=1.e8)  # Test dt error
+        avg_data('test1', new_names='test2', res=2.)  # Test a reasonable resolution
+        avg_data('test1', res=-1.)  # Test res error
+        avg_data('test1', res=1.e8)  # Test res error
         d2 = get_data('test2')
-        self.assertTrue(len(d) > 0)
+        self.assertTrue(len(d2) > 0)
         self.assertTrue(d2[1][-1][0] == 19.0)
+        self.assertTrue(len(d2[2]) == len(d2[0]))
 
     def test_clean_spikes(self):
         """Test clean_spikes."""

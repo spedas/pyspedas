@@ -3,18 +3,19 @@ from pyspedas.mms.edi.mms_edi_set_metadata import mms_edi_set_metadata
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
+
 @print_vars
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield',
         varformat=None, varnames=[], get_support_data=False, suffix='', time_clip=False, no_update=False,
         available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
         spdf=False, always_prompt=False):
     """
-    This function loads EDI data into tplot variables
+    Load data from the Electron Drift Instrument (EDI)
     
     Parameters
     ----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
@@ -54,11 +55,11 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
         notplot: bool
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
-            access to multi-dimensional data products)
+            access to multidimensional data products)
 
         available: bool
             If True, simply return the available data files (without downloading)
-            for the requested paramters
+            for the requested parameters
 
         no_update: bool
             Set this flag to preserve the original data. if not set and newer 
@@ -78,12 +79,13 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
 
         always_prompt: bool
             Set this keyword to always prompt for the user's username and password;
-            useful if you accidently save an incorrect password, or if your SDC password has changed
+            useful if you accidentally save an incorrect password, or if your SDC password has changed
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
-    Returns:
+    Returns
+    --------
         List of tplot variables created.
 
     """

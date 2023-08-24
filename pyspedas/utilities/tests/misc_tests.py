@@ -2,12 +2,8 @@
 import unittest
 
 from pyspedas.utilities.dailynames import dailynames
-from pyspedas import tcopy, tkm2re
-from pyspedas.utilities.data_exists import data_exists
-from pyspedas.utilities.time_string import (time_string, time_datetime,
-                                            time_string_one)
-from pyspedas.utilities.time_double import (time_float_one, time_float,
-                                            time_double)
+from pyspedas import tcopy
+from pytplot import data_exists, tkm2re
 from pytplot import get_data, store_data, options
 
 

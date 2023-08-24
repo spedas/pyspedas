@@ -29,7 +29,6 @@ def mms_convert_flux_units(data_in, units=None):
         3D particle data structure with the data in the units specified by
         the 'units' parameter
     """
-
     if units is None:
         logging.error('Error, no units specified')
         return None

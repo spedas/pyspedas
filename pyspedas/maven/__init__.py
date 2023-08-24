@@ -3,6 +3,7 @@ This module contains routines for loading MAVEN data.
 """
 
 from .maven_load import load_data
+import pyspedas.maven.spdf as spdf_load
 
 
 def maven_load(filenames=None,
@@ -102,55 +103,93 @@ def maven_load(filenames=None,
                       get_metadata=get_metadata, auto_yes=auto_yes, varnames=varnames)
     return tvars
 
+
 def kp(trange=['2016-01-01', '2016-01-02'], datatype=None, varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, insitu=True, iuvs=False, varnames=[]):
+        auto_yes=True, downloadonly=False, insitu=True, iuvs=False, varnames=[], spdf=False):
+    if spdf:
+        if datatype is None:
+            datatype = 'kp-4sec'
+        return spdf_load.kp(trange=trange, datatype=datatype, varformat=varformat, get_support_data=get_support_data)
     return maven_load(start_date=trange[0], end_date=trange[1], type=datatype, level='kp', varformat=varformat, varnames=varnames, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, insitu=insitu, iuvs=iuvs)
 
-def mag(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='ss', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
+
+def mag(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False,
+        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+    if spdf:
+        if datatype is None:
+            datatype = 'sunstate-1sec'
+        return spdf_load.mag(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
+                             downloadonly=downloadonly, varnames=varnames)
+    if datatype is None:
+        datatype = 'ss'
     return maven_load(instruments='mag', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
 
-def sta(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='2a', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
+
+def sta(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False,
+        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+    if spdf:
+        if datatype is None:
+            datatype = 'c0-64e2m'
+        return spdf_load.static(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
+                             downloadonly=downloadonly, varnames=varnames)
+    if datatype is None:
+        datatype = '2a'
     return maven_load(instruments='sta', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_metadata=True, get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
 
+
 def swea(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='svyspec', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
+        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+    if spdf:
+        return spdf_load.swea(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
+                             downloadonly=downloadonly, varnames=varnames)
     return maven_load(instruments='swe', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
 
+
 def swia(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='onboardsvyspec', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
+        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+    if spdf:
+        return spdf_load.swia(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
+                             downloadonly=downloadonly, varnames=varnames)
     return maven_load(instruments='swi', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
 
+
 def sep(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='s2-cal-svy-full', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
+        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+    if spdf:
+        return spdf_load.sep(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
+                             downloadonly=downloadonly, varnames=varnames)
     return maven_load(instruments='sep', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+
 
 def rse(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
         auto_yes=True, downloadonly=False, varnames=[]):
     return maven_load(instruments='rse', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
 
+
 def lpw(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='lpiv', varformat=None, get_support_data=False, 
         auto_yes=True, downloadonly=False, varnames=[]):
     return maven_load(instruments='lpw', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+
 
 def euv(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='bands', varformat=None, get_support_data=False, 
         auto_yes=True, downloadonly=False, varnames=[]):
     return maven_load(instruments='euv', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
 
+
 def iuv(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
         auto_yes=True, downloadonly=False, varnames=[]):
     return maven_load(instruments='iuv', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
         get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+
 
 def ngi(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
         auto_yes=True, downloadonly=False, varnames=[]):

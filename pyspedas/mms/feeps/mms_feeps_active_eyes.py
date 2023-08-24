@@ -1,4 +1,6 @@
+import numpy as np
 from pyspedas import time_double
+
 
 def mms_feeps_active_eyes(trange, probe, data_rate, species, level):
     """
@@ -69,6 +71,8 @@ def mms_feeps_active_eyes(trange, probe, data_rate, species, level):
 
     if isinstance(trange[0], str): 
         start_time = time_double(trange[0])
+    elif isinstance(trange[0], np.datetime64):
+        start_time = np.int64(trange[0]) / 1e9
     else:
         start_time = trange[0]
 
@@ -90,5 +94,3 @@ def mms_feeps_active_eyes(trange, probe, data_rate, species, level):
         return {'top': [5, 11, 12], 'bottom': []}
 
     return sensors
-
-

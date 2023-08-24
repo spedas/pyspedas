@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime, timezone
 
-from pyspedas.utilities.time_string import time_string, time_datetime, time_string_one
-from pyspedas.utilities.time_double import time_float_one, time_float, time_double
+from pytplot import time_string, time_datetime
+from pytplot import time_float, time_double
 
 
 class TimeTestCases(unittest.TestCase):

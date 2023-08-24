@@ -1,7 +1,7 @@
 import numpy as np
 from pyspedas import tnames
-from pyspedas.analysis.tcrossp import tcrossp
-from pyspedas.utilities.time_string import time_string
+from pytplot import tcrossp
+from pytplot import time_string
 from pytplot import get_data, get_timespan
 from pytplot.tplot_math.degap import degap
 from scipy import interpolate

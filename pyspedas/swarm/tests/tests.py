@@ -1,5 +1,5 @@
 import unittest
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 import pyspedas
 
 

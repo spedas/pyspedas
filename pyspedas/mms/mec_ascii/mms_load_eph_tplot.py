@@ -1,14 +1,13 @@
 import logging
 import pandas as pd
 import numpy as np
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import store_data, options
 
 
 def mms_load_eph_tplot(filenames, level='def', probe='1', datatypes=['pos', 'vel'], suffix='', trange=None):
     """
     Helper routine for loading state data (ASCII files from the SDC); not meant to be called directly; see pyspedas.mms.state instead
-    
     """
     prefix = 'mms' + probe
 
@@ -51,4 +50,3 @@ def mms_load_eph_tplot(filenames, level='def', probe='1', datatypes=['pos', 'vel
         options(prefix + '_' + level + 'eph_vel' + suffix, 'ytitle', 'MMS'+str(probe)+' velocity')
         options(prefix + '_' + level + 'eph_vel' + suffix, 'ysubtitle', '[km/s]')
         options(prefix + '_' + level + 'eph_vel' + suffix, 'legend_names', ['Vx ECI', 'Vy ECI', 'Vz ECI'])
-

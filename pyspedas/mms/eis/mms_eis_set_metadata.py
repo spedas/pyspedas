@@ -1,6 +1,7 @@
 from pyspedas import tnames
 from pytplot import options
 
+
 def mms_eis_set_metadata(tplotnames, data_rate='srvy', datatype='extof', suffix=''):
     """
     This function updates the metadata for the EIS data products

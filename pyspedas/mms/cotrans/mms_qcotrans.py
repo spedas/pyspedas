@@ -14,8 +14,7 @@ Returns:
 list of str: List of variables created.
 """
 import logging
-from pyspedas import cotrans_get_coord
-from pytplot import get_data
+from pytplot import get_data, get_coords
 from .mms_cotrans_qtransformer import mms_cotrans_qtransformer
 
 try:
@@ -74,7 +73,7 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
 
     for idx, variable in enumerate(in_name):
         if in_coord is None:
-            var_coords = cotrans_get_coord(variable)
+            var_coords = get_coords(variable)
             in_coord = var_coords
             if var_coords is None:
                 logging.error('Could not determine coordinate system for: ' + variable)
@@ -95,6 +94,10 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
             new_coords = out_coord[idx]
         else:
             new_coords = out_coord
+
+        if new_coords is None:
+            logging.error('Output coordinate system is missing.')
+            return
 
         new_coords = new_coords.lower()
 
@@ -121,6 +124,10 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
             continue
 
         transformed = mms_cotrans_qtransformer(variable, out_name[idx], var_coords, new_coords, probe=probe)
+
+        if transformed is None:
+            logging.error('Problem occurred during the transformation; ensure that the MEC quaternions are loaded and try again.')
+            return
 
         if transformed is not None:
             out_vars.append(transformed)

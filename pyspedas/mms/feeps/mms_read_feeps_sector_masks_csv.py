@@ -1,20 +1,22 @@
-
 import csv
 import os
 import numpy as np
 from pyspedas import time_double, time_string
 
+
 def mms_read_feeps_sector_masks_csv(trange):
     """
     This function returns the FEEPS sectors to mask due to sunlight contamination
     
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             
-    Returns:
+    Returns
+    -----------
         Hash table containing the sectors to mask for each spacecraft and sensor ID
 
     """

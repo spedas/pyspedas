@@ -1,4 +1,3 @@
-
 import logging
 import warnings
 import numpy as np
@@ -15,6 +14,7 @@ except ImportError:
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+
 
 def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='extof', data_rate='srvy', level='l2', suffix=''):
     """
@@ -43,7 +43,8 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    --------
         List of tplot variables created.
     """
     prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' + level + '_'
@@ -104,4 +105,4 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
         return out_vars
     else:
         logging.error('Error, problem finding EIS spin variable to calculate spin-averages')
-        return None
+        return

@@ -1,17 +1,17 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 from .rfs import rfs_variables_to_load
 from .config import CONFIG
 
-def load(trange=['2018-11-5', '2018-11-6'], 
-         instrument='fields', 
-         datatype='mag_RTN', 
-         spec_types=None, # for DFB AC spectral data
+def load(trange=['2018-11-5', '2018-11-6'],
+         instrument='fields',
+         datatype='mag_RTN',
+         spec_types=None,  # for DFB AC spectral data
          level='l2',
-         suffix='', 
-         get_support_data=False, 
+         suffix='',
+         get_support_data=False,
          varformat=None,
          varnames=[],
          downloadonly=False,
@@ -19,8 +19,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
          no_update=False,
          time_clip=False,
          username=None,
-         password=None
-         ):
+         password=None,
+         last_version=False):
     """
     This function loads Parker Solar Probe data into tplot variables; this function is not 
     meant to be called directly; instead, see the wrappers: 
@@ -33,14 +33,16 @@ def load(trange=['2018-11-5', '2018-11-6'],
         psp.epi ISoIS/EPI (merged Hi-Lo) data
     
     """
-
     # remote path formats generally are going to be all lowercase except for
     # on the Berkeley FIELDS server
     if (username is not None) and (datatype in ['mag_RTN_1min',
-                                            'mag_RTN_4_Sa_per_Cyc'
-                                            'mag_SC'
-                                            'mag_SC_1min'
-                                            'mag_SC_4_Sa_per_Cyc']):
+                                            'mag_RTN_4_Sa_per_Cyc',
+                                            'mag_RTN',
+                                            'mag_SC',
+                                            'mag_SC_1min',
+                                            'mag_SC_4_Sa_per_Cyc',
+                                            'sqtn_rfs_V1V2'
+                                            ]):
         pass
     else:
         datatype = datatype.lower()
@@ -68,7 +70,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
             for item in spec_types:
                 loaded_data = load(trange=trange, instrument=instrument, datatype=datatype + '_' + item, level=level, 
                     suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, last_version=last_version)
                 if loaded_data != []:
                     out_vars.extend(loaded_data)
             return out_vars
@@ -83,14 +85,14 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
 
 
-        # unpublished data (only download v02 mag data which would be published)
+        # unpublished data
         elif username != None:
             if datatype in ['mag_RTN', 'mag_SC']:
-                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v02.cdf'
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
                 file_resolution = 6*3600.
 
             elif datatype in ['mag_RTN_1min', 'mag_RTN_4_Sa_per_Cyc', 'mag_SC_1min', 'mag_SC_4_Sa_per_Cyc']:
-                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v02.cdf'
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
 
             elif datatype ==  'sqtn_rfs_V1V2':
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
@@ -99,6 +101,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
             # Generic SPDF path.  
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
             file_resolution = 6*3600.
+
+        # Files on Berkeley server are stored in monthly directories 
+        if username != None:
+            pathformat = pathformat.replace('/%Y/psp_fld', '/%Y/%m/psp_fld')
 
     elif instrument == 'spc':
         prefix = 'psp_spc_'
@@ -135,7 +141,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     if username is None:
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                        local_path=CONFIG['local_data_dir'], no_download=no_update)
+                        local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
     else:
         if instrument == 'fields':
             try:
@@ -143,22 +149,22 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password, basic_auth=True
+                    username=username, password=password, basic_auth=True,last_version=last_version
                 )
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
         elif instrument in ['spc','spi']:
             try:
                 print("Downloading unpublished Data....")
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password, basic_auth=True
+                    username=username, password=password, basic_auth=True,last_version=last_version
                 )
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
         
 
     if files is not None:

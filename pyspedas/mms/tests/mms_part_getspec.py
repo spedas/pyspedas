@@ -1,9 +1,15 @@
 import unittest
 from pyspedas.mms.particles.mms_part_getspec import mms_part_getspec
-from ...utilities.data_exists import data_exists
+from pytplot import data_exists
 
 
 class PGSTests(unittest.TestCase):
+    def test_pgs_errors(self):
+        # no trange specified
+        mms_part_getspec()
+        # unsupported instrument
+        mms_part_getspec(trange=['2015-10-16/13:06:00', '2015-10-16/13:06:10'], instrument='feeps')
+
     def test_fpi_brst_fac_type(self):
         mms_part_getspec(trange=['2015-10-16/13:06:00', '2015-10-16/13:06:10'],
                          data_rate='brst',
