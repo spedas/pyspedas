@@ -74,6 +74,7 @@ from . import st5
 from . import de2
 from . import akebono
 from . import soho
+from . import barrel
 
 # set up logging/console output
 import logging
