@@ -400,9 +400,9 @@ def download(remote_path='',
                             out.append(file)
                 session.close()
                 continue
-
             resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify,
                                       headers=headers, session=session, basic_auth=basic_auth)
+
 
         if resp_data is not None:
             if not isinstance(resp_data, list):

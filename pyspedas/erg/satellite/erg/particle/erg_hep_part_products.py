@@ -5,7 +5,6 @@ from copy import deepcopy
 from pyspedas import tnames, tinterpol, tcopy
 from pytplot import time_double
 from pytplot import time_string
-
 from pyspedas.particles.moments.spd_pgs_moments import spd_pgs_moments
 from pyspedas.particles.spd_part_products.spd_pgs_regrid import spd_pgs_regrid
 from pytplot import get_timespan, get_data, store_data

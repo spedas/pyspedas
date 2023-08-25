@@ -81,6 +81,11 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
             if is_left_mat:
                 m_d_y = ctv_swap_hands(m_d_y)
 
+        if not np.array_equal(vec_data.times, mat_data.times) and len(mat_data.times) != 1:
+            print('Interpolating the matrix timestamps to the vector time stamps')
+            tinterpol(mat_var_in, vec_var)
+            mat_data = get_data(mat_var_in + '-itrp')
+
         vec_fac = np.zeros((len(vec_data.times), len(vec_data.y[0, :])))
 
         for i in range(0, len(vec_data.times)):
