@@ -1,6 +1,7 @@
-
 from .load import load
 from pytplot import options
+from pyspedas.utilities.datasets import find_datasets
+
 
 def mfi(trange=['2018-11-5', '2018-11-6'],
         datatype='h3',
@@ -82,6 +83,7 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
 
     return tvars
 
+
 def swe(trange=['2018-11-5', '2018-11-6'],
         datatype='h0',
         suffix='',  
@@ -145,6 +147,7 @@ def swe(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
 
 def epam(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -211,6 +214,7 @@ def epam(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='epm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+
 def cris(trange=['2018-11-5', '2018-11-6'],
         datatype='h2',
         suffix='',  
@@ -272,6 +276,7 @@ def cris(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='cris', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
 
 def sis(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -460,6 +465,7 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
     """
     return load(instrument='sep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
+
 def swics(trange=['2018-11-5', '2018-11-6'],
         datatype='sw2_h3',
         suffix='',  
@@ -525,3 +531,7 @@ def swics(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='swics', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='ACE', instrument=instrument, label=label)

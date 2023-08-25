@@ -1,6 +1,6 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 
 from .config import CONFIG
@@ -42,7 +42,10 @@ def load(trange=['2020-06-01', '2020-06-02'],
         res = 60.0
 
     if instrument == 'mag':
-        pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
+        if level == 'll02':
+            pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/%Y/solo_'+level+'_'+instrument+'_'+date_format+'_v'+cdf_version+'.cdf'
+        else:
+            pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
     elif instrument == 'epd':
         pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/'+mode+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'-'+mode+'_'+date_format+'_v'+cdf_version+'.cdf'
     elif instrument == 'rpw':
@@ -62,6 +65,8 @@ def load(trange=['2020-06-01', '2020-06-02'],
                 date_format = '%Y%m%dt%H%M??-*'
                 res = 60.0
                 pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
+        elif level == 'l3':
+            pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
 
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange, res=res)

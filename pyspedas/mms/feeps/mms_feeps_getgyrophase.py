@@ -1,7 +1,9 @@
+import logging
 import numpy as np
 from pyspedas import mms, tinterpol, time_double
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
-from pytplot import get_data, store_data, options
+from pytplot import get, store, options
+
 
 def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], probe='2', data_rate='brst', level='l2', datatype='electron'):
     """
@@ -15,11 +17,11 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
     """
     mec_vars = mms.mec(trange=trange, probe=probe, data_rate=data_rate)
     if mec_vars is None:
-        print('Problem loading MEC data for calculating FEEPS gyrophase angles')
+        logging.error('Problem loading MEC data for calculating FEEPS gyrophase angles')
 
-    qeci2sm = get_data('mms'+probe+'_mec_quat_eci_to_sm')
-    qeci2bcs = get_data('mms'+probe+'_mec_quat_eci_to_bcs')
-    rsun = get_data('mms'+probe+'_mec_r_sun_de421_eci')
+    qeci2sm = get('mms'+probe+'_mec_quat_eci_to_sm', units=False)
+    qeci2bcs = get('mms'+probe+'_mec_quat_eci_to_bcs', units=False)
+    rsun = get('mms'+probe+'_mec_r_sun_de421_eci', units=False)
 
     rsunbcs = np.zeros((len(rsun.times), 3))
     rduskbcs = np.zeros((len(rsun.times), 3))
@@ -49,13 +51,13 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
         # Now convert to BCS:
         rduskbcs[i, :] = np.array([R[0,0]*rduskeci[0] + R[1,0]*rduskeci[1] + R[2,0]*rduskeci[2], R[0,1]*rduskeci[0] + R[1,1]*rduskeci[1] + R[2,1]*rduskeci[2], R[0,2]*rduskeci[0] + R[1,2]*rduskeci[1] + R[2,2]*rduskeci[2]])
     
-    saved = store_data('mms'+probe+'_mec_r_sun_bcs', data = {'x': rsun.times, 'y': rsunbcs})
+    saved = store('mms'+probe+'_mec_r_sun_bcs', data = {'x': rsun.times, 'y': rsunbcs})
     if not saved:
-        print('Problem saving r_sun_bcs')
+        logging.error('Problem saving r_sun_bcs')
 
-    saved = store_data('mms'+probe+'_mec_r_dusk_bcs', data = {'x': rsun.times, 'y': rduskbcs})
+    saved = store('mms'+probe+'_mec_r_dusk_bcs', data = {'x': rsun.times, 'y': rduskbcs})
     if not saved:
-        print('Problem saving r_dusk_bcs')
+        logging.error('Problem saving r_dusk_bcs')
 
     # Rotation matrices for FEEPS coord system (FCS) into body coordinate system (BCS):
     Ttop = np.array([[1./np.sqrt(2.), -1./np.sqrt(2.), 0], [1./np.sqrt(2.), 1./np.sqrt(2.), 0], [0, 0, 1]]).T
@@ -156,12 +158,12 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
 
     fgm_vars = mms.fgm(trange=[time_double(trange[0])-600, time_double(trange[1])+600], probe=probe, data_rate='srvy')
     if fgm_vars is None:
-        print('Problem loading FGM vars for calculating FEEPS gyrophase angles')
+        logging.error('Problem loading FGM vars for calculating FEEPS gyrophase angles')
 
     # interpolate the FGM var to the MEC var timestamps
     tinterpol('mms'+probe+'_fgm_b_bcs_srvy_l2_bvec', 'mms'+probe+'_mec_r_sun_bcs', newname='mms'+probe+'_fgm_b_bcs_srvy_l2_bvec_int')
 
-    B = get_data('mms'+probe+'_fgm_b_bcs_srvy_l2_bvec_int')
+    B = get('mms'+probe+'_fgm_b_bcs_srvy_l2_bvec_int')
 
     # Now calculate gyrophase
     # Telescope vectors perp to B:
@@ -204,6 +206,9 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
         for j in range(24):
             th1 = np.arccos(np.nansum(Tperp[i,:,j] * Sperp)/(np.sqrt(np.nansum(Tperp[i,:,j]**2))*np.sqrt(np.nansum(Sperp**2))))
             th2 = np.arccos(np.nansum(Tperp[i,:,j] * Dperp)/(np.sqrt(np.nansum(Tperp[i,:,j]**2))*np.sqrt(np.nansum(Dperp**2))))
+            # strip the units
+            th1 = th1.value
+            th2 = th2.value
             if th1 <= np.pi/2.0 and th2 < np.pi/2:
                 phi[i, j] = 2*np.pi - th1
             if th1 < np.pi/2.0 and th2 >= np.pi/2.0:
@@ -213,9 +218,9 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
             if th1 >= np.pi/2.0 and th2 > np.pi/2.0:
                 phi[i, j] = th1
     
-    saved = store_data('mms'+probe+'_epd_feeps_'+data_rate+'_gyrophase', data={'x': rsun.times, 'y': phi*180./np.pi})
+    saved = store('mms'+probe+'_epd_feeps_'+data_rate+'_gyrophase', data={'x': rsun.times, 'y': phi*180./np.pi})
     if not saved:
-        print('Problem saving gyrophase angles')
+        logging.error('Problem saving gyrophase angles')
         return
 
     options('mms'+probe+'_epd_feeps_'+data_rate+'_gyrophase', 'yrange', [0, 360.0])
@@ -224,10 +229,10 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
     eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
     sensor_types = ['top', 'bottom']
 
-    feepst = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_spinsectnum')
+    feepst = get('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_spinsectnum')
 
     indt = np.zeros(len(feepst.times), dtype='int32')
-    gpd = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_gyrophase')
+    gpd = get('mms'+probe+'_epd_feeps_'+data_rate+'_gyrophase')
 
     for i in range(len(feepst.times)):
         indt[i] = np.argwhere(np.abs(gpd.times - feepst.times[i]) == np.min(np.abs(gpd.times - feepst.times[i]))).flatten()[0]
@@ -240,7 +245,7 @@ def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], prob
     for i in range(len(iT)):
         gp_data[:, i] = gpd.y[indt, iT[i]]
     
-    saved = store_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase', data = {'x': gpd.times[indt], 'y': gp_data})
+    saved = store('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase', data = {'x': gpd.times[indt], 'y': gp_data})
 
     if saved:
         options('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase', 'yrange', [0.0, 360.0])

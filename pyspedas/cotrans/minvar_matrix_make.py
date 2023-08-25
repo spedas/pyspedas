@@ -85,10 +85,7 @@ def minvar_matrix_make(in_var_name,
         if tslide == 0:
             break
 
-    if len(data) > 2:
-        o_d = {'x': o_times[:-1], 'y': o_eigs[0:-1, :, :], 'v': data.v}
-    else:
-        o_d = {'x': o_times[:-1], 'y': o_eigs[0:-1, :, :]}
+    o_d = {'x': o_times[:-1], 'y': o_eigs[0:-1, :, :]}
 
     out_vars = []
 

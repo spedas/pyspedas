@@ -6,6 +6,7 @@ For cdasws documentation, see:
     https://cdaweb.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
 
 """
+import logging
 import os
 import re
 from cdasws import CdasWs
@@ -137,20 +138,20 @@ class CDAWeb():
                         msg = "cdf_to_tplot could not load " + localfile
                         msg += "\n\n"
                         msg += "Error from pytplot: " + str(err)
-                        print(msg)
+                        logging.error(msg)
                         tplot_loaded = 0
             else:
-                print(str(count) + '. There was a problem. Could not download \
+                logging.error(str(count) + '. There was a problem. Could not download \
                       file: ' + remotef)
                 tplot_loaded = -1
                 localfile = ''
             result.append([remotef, localfile, tplot_loaded])
 
-        print('Downloaded ' + str(dcount) + ' files.')
+        logging.info('Downloaded ' + str(dcount) + ' files.')
         if not download_only:
             loaded_vars = list(set(loaded_vars))
-            print('tplot variables:')
+            logging.info('tplot variables:')
             for var in loaded_vars:
-                print(var)
+                logging.info(var)
 
         return result

@@ -6,7 +6,7 @@ import os
 import numpy as np
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 
 from .config import CONFIG
 import zipfile

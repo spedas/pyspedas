@@ -1,9 +1,8 @@
-
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
-
+from pytplot import data_exists
 import pyspedas
+
 
 class LoadTestCases(unittest.TestCase):
     def test_downloadonly(self):
@@ -13,6 +12,9 @@ class LoadTestCases(unittest.TestCase):
     def test_load_mag_data(self):
         mag_vars = pyspedas.stereo.mag(trange=['2013-11-5', '2013-11-6'], time_clip=True)
         self.assertTrue(data_exists('BFIELD'))
+        mag_vars = pyspedas.stereo.mag(trange=['2013-11-5', '2013-11-6'], datatype='32hz')
+        mag_vars = pyspedas.stereo.mag(trange=['2013-11-5', '2013-11-6'], notplot=True)
+        self.assertTrue('BFIELD' in mag_vars)
 
     def test_load_swea_data(self):
         swea_vars = pyspedas.stereo.swea(trange=['2013-1-5', '2013-1-6'], time_clip=True)
@@ -44,6 +46,24 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('proton_number_density'))
         self.assertTrue(data_exists('proton_bulk_speed'))
         self.assertTrue(data_exists('proton_temperature'))
+
+    def test_load_waves_data_a(self):
+        w_vars = pyspedas.stereo.waves(trange=['2013-11-5', '2013-11-6'], probe='a')
+        self.assertTrue(data_exists('PSD_FLUX'))
+        self.assertTrue(data_exists('PSD_SFU'))
+
+    def test_load_waves_data_b(self):
+        w_vars = pyspedas.stereo.waves(trange=['2013-11-5', '2013-11-6'], probe='b')
+        self.assertTrue(data_exists('PSD_FLUX'))
+        self.assertTrue(data_exists('PSD_SFU'))
+
+    def test_load_beacon_data_a(self):
+        w_vars = pyspedas.stereo.beacon(trange=['2013-11-5', '2013-11-6'], probe='a')
+        self.assertTrue(data_exists('MAGBField'))
+
+    def test_load_beacon_data_b(self):
+        w_vars = pyspedas.stereo.beacon(trange=['2013-11-5', '2013-11-6'], probe='b')
+        self.assertTrue(data_exists('MAGBField'))
 
 if __name__ == '__main__':
     unittest.main()

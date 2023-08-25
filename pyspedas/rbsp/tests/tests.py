@@ -1,10 +1,10 @@
-
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
-
+from pytplot import data_exists
 import pyspedas
 from pytplot import del_data
+from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
+
 
 class LoadTestCases(unittest.TestCase):
     def tearDown(self):
@@ -14,18 +14,17 @@ class LoadTestCases(unittest.TestCase):
         files = pyspedas.rbsp.efw(trange=['2015-11-3', '2015-11-4'], level='l3', downloadonly=True)
         self.assertTrue(os.path.exists(files[0]))
 
-    # temporarily disabled, 3Dec2021
-    # def test_notplot(self):
-    #     data = pyspedas.rbsp.efw(trange=['2015-11-6', '2015-11-7'], level='l3', notplot=True)
-    #     self.assertTrue('density' in data.keys())
-    #     self.assertTrue('Vavg' in data.keys())
-    #     self.assertTrue('vel_gse' in data.keys())
-    #     self.assertTrue('efield_inertial_frame_mgse' in data.keys())
-    #     self.assertTrue('x' in data['density'].keys())
-    #     self.assertTrue('y' in data['density'].keys())
+    def test_notplot(self):
+        data = pyspedas.rbsp.efw(trange=['2015-11-6', '2015-11-7'], level='l3', notplot=True)
+        self.assertTrue('density' in data.keys())
+        self.assertTrue('efield_in_inertial_frame_spinfit_mgse' in data.keys())
+        self.assertTrue('x' in data['density'].keys())
+        self.assertTrue('y' in data['density'].keys())
 
     def test_load_emfisis_data(self):
         emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='magnetometer', level='l3', time_clip=True)
+        self.assertTrue(data_exists('Mag'))
+        emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='magnetometer', level='l2')
         wfr_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], level='l2', datatype='wfr')
         hfr_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], level='l2', datatype='hfr')
         self.assertTrue(data_exists('Mag'))
@@ -38,14 +37,43 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('EwSamples'))
         # HFR waveform data
         self.assertTrue(data_exists('HFRsamples'))
+        # L4 density
+        dens = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='density', level='l4')
+        self.assertTrue(data_exists('density'))
 
     def test_load_efw_data(self):
+        efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l2')
+        self.assertTrue(data_exists('spec64_e12ac'))
         efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
         self.assertTrue(data_exists('density'))
 
-    # def test_load_rbspice_data(self):
-    #     rbspice_vars = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='tofxeh', level='l3')
-    #     self.assertTrue(data_exists('Alpha'))
+    def test_load_rbspice_download(self):
+        files = pyspedas.rbsp.rbspice(downloadonly=True, trange=['2018-11-5', '2018-11-6'], datatype='tofxeh', level='l3')
+        self.assertTrue(isinstance(files, list))
+
+    def test_load_rbspice_esrhelt(self):
+        rbspice_vars = pyspedas.rbsp.rbspice(trange=['2013-11-5', '2013-11-6'], datatype='ESRHELT', level='l3')
+        self.assertTrue(data_exists('rbspa_rbspice_l3_ESRHELT_FEDU'))
+
+    def test_load_rbspice_data(self):
+        data = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEH', level='l3')
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_spin'))
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni'))
+        rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3')
+        rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', scopes=[0, 1, 2, 3])
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad'))
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad_spin'))
+        data = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxPHHHELT')
+        rbsp_rbspice_pad(probe='a', datatype='TOFxPHHHELT', level='l3')
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxPHHHELT_oxygen_omni_spin'))
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxPHHHELT_oxygen_omni_0-1000keV_pad_spin'))
+        data = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEnonH')
+        rbsp_rbspice_pad(probe='a', datatype='TOFxEnonH', level='l3')
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEnonH_oxygen_omni_spin'))
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEnonH_oxygen_omni_0-1000keV_pad_spin'))
+        rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000.0])
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000.0keV_pad'))
+        self.assertTrue(data_exists('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000.0keV_pad_spin'))
 
     def test_load_mageis_data(self):
         mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
@@ -54,6 +82,10 @@ class LoadTestCases(unittest.TestCase):
     def test_load_hope_data(self):
         hope_vars = pyspedas.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='moments', level='l3', rel='rel04')
         self.assertTrue(data_exists('Ion_density'))
+        hope_vars = pyspedas.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='pitchangle', level='l3')
+        self.assertTrue(data_exists('FEDO'))
+        hope_vars = pyspedas.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='spinaverage', level='l2')
+        self.assertTrue(data_exists('I_Ele'))
 
     def test_load_rep_data(self):
         rept_vars = pyspedas.rbsp.rept(trange=['2018-11-4', '2018-11-5'], level='l2', rel='rel03')
@@ -62,10 +94,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('FPSA'))
         self.assertTrue(data_exists('FPDU'))
 
-    # disabled, 16Sep2021 due to a problem with the data
-    # def test_load_rps1min_data(self):
-    #   rps_vars = pyspedas.rbsp.rps()
-    #   self.assertTrue(data_exists('DOSE2_RATE'))
+    def test_load_rps1min_data(self):
+        rps_vars = pyspedas.rbsp.rps()
+        self.assertTrue(data_exists('DOSE2_RATE'))
+        rps_vars = pyspedas.rbsp.rps(datatype='rps')
+        self.assertTrue(data_exists('FPDU_Energy'))
+
 
 if __name__ == '__main__':
     unittest.main()

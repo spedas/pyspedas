@@ -1,6 +1,7 @@
 from pyspedas import tnames
 from pytplot import get_data, store_data, options
 
+
 def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', suffix='', autoscale=True):
     """
     Calculates the omni-directional pitch angle distribution (summed and averaged)
@@ -31,7 +32,8 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
         autoscale: bool
             If set, use the default zrange; otherwise, use the min and max of the data for the zrange
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """
@@ -67,9 +69,9 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
 
         pad_avg_name = obsstr+'PitchAngDist_avg'+suffix
 
-        low_en = get_data(pad_vars[0])
-        mid_en = get_data(pad_vars[1])
-        high_en = get_data(pad_vars[2])
+        low_en = get_data(pad_vars[0], dt=True)
+        mid_en = get_data(pad_vars[1], dt=True)
+        high_en = get_data(pad_vars[2], dt=True)
 
         if low_en is None or mid_en is None or high_en is None:
             v3_low_pad = tnames(pad_vars[0].lower()+'_'+data_rate)
@@ -78,9 +80,9 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
             if v3_low_pad == [] or v3_mid_pad == [] or v3_high_pad == []:
                 continue
 
-            low_en = get_data(v3_low_pad[0])
-            mid_en = get_data(v3_mid_pad[0])
-            high_en = get_data(v3_high_pad[0])
+            low_en = get_data(v3_low_pad[0], dt=True)
+            mid_en = get_data(v3_mid_pad[0], dt=True)
+            high_en = get_data(v3_high_pad[0], dt=True)
             pad_avg_name = pad_avg_name.lower()
 
         e_pad_sum = low_en.y+mid_en.y+high_en.y
@@ -109,7 +111,6 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
         options(pad_avg_name, 'yrange', [0, 180])
         options(pad_avg_name, 'zlog', True)
         options(pad_avg_name, 'spec', True)
-        options(pad_avg_name, 'Colormap', 'spedas')
         out_vars.append(pad_avg_name)
 
         return out_vars

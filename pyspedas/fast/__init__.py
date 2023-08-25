@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def dcb(trange=['2001-09-05', '2001-09-06'],
         datatype='', 
@@ -244,3 +245,7 @@ def teams(trange=['1998-09-05', '1998-09-06'],
 
     """
     return load(instrument='teams', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='FAST', instrument=instrument, label=label)

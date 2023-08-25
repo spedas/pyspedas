@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 from .slice2d_get_support import slice2d_get_support
 
@@ -23,7 +24,7 @@ def slice2d_custom_rotation(custom_rotation=None,
 
     matrix = slice2d_get_support(custom_rotation, trange, matrix=True)
 
-    print('Applying custom rotation')
+    logging.info('Applying custom rotation')
 
     # Transform particle and support vectors
     if vectors is not None:

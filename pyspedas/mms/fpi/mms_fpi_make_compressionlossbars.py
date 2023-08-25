@@ -1,7 +1,9 @@
+import logging
 import numpy as np
 from fnmatch import fnmatch
 from pytplot import get_data, store_data, options
-from pyspedas import time_double
+from pyspedas import time_datetime
+
 
 def mms_fpi_make_compressionlossbars(tname, lossy=False):
     """
@@ -33,13 +35,12 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
         List of the tplot variables created.
 
     """
-
     if fnmatch(tname, 'mms?_dis*'):
         instrument = 'DIS'
     elif fnmatch(tname, 'mms?_des*'):
         instrument = 'DES'
     else:
-        print('Unable to determine instrument from variable name.')
+        logging.error('Unable to determine instrument from variable name.')
         return
 
     if instrument == 'DES':
@@ -48,19 +49,19 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
         colors = 'blue'
 
     if fnmatch(tname, '*_fast*'):
-        print('All fast survey data are lossy compressed, so there is no need to create this bar.')
+        logging.info('All fast survey data are lossy compressed, so there is no need to create this bar.')
         return
     elif fnmatch(tname, '*_brst*'):
         data_rate = 'Brst'
     else:
-        print('Unable to determine data rate from variable name.')
+        logging.error('Unable to determine data rate from variable name.')
         return
 
-    data = get_data(tname)
+    data = get_data(tname, dt=True)
     metadata = get_data(tname, metadata=True)
 
     if data is None:
-        print('Problem reading the variable: ' + tname)
+        logging.error('Problem reading the variable: ' + tname)
         return
 
     flagline = np.zeros(len(data.times))
@@ -70,7 +71,7 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
         version = file_id.split('_v')[1].split('.')
         if version[0] == '2':
             if version[1] == '1':
-                if data.times[0] < time_double('2016-04-01'):
+                if data.times[0] < time_datetime('2016-04-01'):
                     lossy = 3
                 else:
                     lossy = 1

@@ -1,3 +1,4 @@
+import logging
 import warnings
 from copy import deepcopy
 import numpy as np
@@ -40,7 +41,7 @@ def slice2d_collate(data, weight, sphere, previous_out=None, sum_samples=False):
         dp_in = dp_in[valid]
         dt_in = dt_in[valid]
     else:
-        print('No valid data in distribution(s).')
+        logging.error('No valid data in distribution(s).')
         return
 
     if previous_out is None:
@@ -68,4 +69,3 @@ def slice2d_collate(data, weight, sphere, previous_out=None, sum_samples=False):
             'dp': dp_out,
             'dt': dt_out
         }
-

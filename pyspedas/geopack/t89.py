@@ -1,7 +1,8 @@
-
+import logging
 import numpy as np
 from pytplot import get_data, store_data
 from geopack import geopack, t89
+
 
 def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
     """
@@ -33,7 +34,7 @@ def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
     pos_data = get_data(pos_var_gsm)
 
     if pos_data is None:
-        print('Variable not found: ' + pos_var_gsm)
+        logging.error('Variable not found: ' + pos_var_gsm)
         return
 
     b0gsm = np.zeros((len(pos_data.times), 3))

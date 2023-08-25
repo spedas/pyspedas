@@ -1,13 +1,19 @@
-
 import unittest
-from pyspedas.utilities.data_exists import data_exists
-
+from pytplot import data_exists
 import pyspedas
 
+
 class LoadTestCases(unittest.TestCase):
+    def test_load_notplot(self):
+        mam_vars = pyspedas.equator_s.mam(notplot=True)
+        self.assertTrue('B_xyz_gse%eq_pp_mam' in mam_vars)
+
     def test_load_mam_data(self):
-        mam_vars = pyspedas.equator_s.mam()
+        mam_vars = pyspedas.equator_s.mam(time_clip=True)
         self.assertTrue(data_exists('B_xyz_gse%eq_pp_mam'))
+
+    def test_load_esa_downloadonly(self):
+        esa = pyspedas.equator_s.esa(downloadonly=True)
 
     def test_load_edi_data(self):
         edi_vars = pyspedas.equator_s.edi()
@@ -30,6 +36,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_sfd_data(self):
         sfd_vars = pyspedas.equator_s.sfd()
         self.assertTrue(data_exists('F_e>0.26%eq_sp_sfd'))
+
 
 if __name__ == '__main__':
     unittest.main()

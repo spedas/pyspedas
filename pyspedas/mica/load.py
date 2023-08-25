@@ -1,7 +1,7 @@
-
+import logging
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 
 from .config import CONFIG
@@ -24,9 +24,9 @@ def load(trange=['2019-02-01','2019-02-02'],
     """
 
     if site is None:
-        print('A valid MICA site code name must be entered.')
-        print('Current site codes include: ')
-        print('NAL, LYR, LOR, ISR, SDY, IQA, SNK, MCM, SPA, JBS, NEV, HAL, PG2[3,4,5]')
+        logging.error('A valid MICA site code name must be entered.')
+        logging.error('Current site codes include: ')
+        logging.error('NAL, LYR, LOR, ISR, SDY, IQA, SNK, MCM, SPA, JBS, NEV, HAL, PG2[3,4,5]')
         return
     
     pathformat = site.upper()+'/%Y/%m/mica_ulf_'+site.lower()+'_%Y%m%d_v??.cdf'

@@ -1,6 +1,7 @@
 from pytplot import options
 from pyspedas import tnames
 
+
 def mms_edp_set_metadata(probe, data_rate, level, suffix=''):
     """
     This function updates the metadata for EDP data products
@@ -34,11 +35,9 @@ def mms_edp_set_metadata(probe, data_rate, level, suffix=''):
             for this_lvl in level:
                 if 'mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP DCE')
-                    options('mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r'])
                     options('mms'+str(this_probe)+'_'+instrument+'_dce_gse_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Ex GSE', 'Ey GSE', 'Ez GSE'])
                 if 'mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP DCE')
-                    options('mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix, 'color', ['b', 'g', 'r'])
                     options('mms'+str(this_probe)+'_'+instrument+'_dce_dsl_'+this_dr+'_'+this_lvl+suffix, 'legend_names', ['Ex DSL', 'Ey DSL', 'Ez DSL'])
                 if 'mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix in tvars:
                     options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'ytitle', 'MMS'+str(this_probe)+' EDP HFesp')
@@ -46,4 +45,3 @@ def mms_edp_set_metadata(probe, data_rate, level, suffix=''):
                     options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'ylog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'zlog', True)
                     options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'spec', True)
-                    options('mms'+str(this_probe)+'_'+instrument+'_hfesp_'+this_dr+'_'+this_lvl+suffix, 'Colormap', 'jet')

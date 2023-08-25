@@ -7,6 +7,7 @@ from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import tplot_rename, del_data
 
+
 @print_vars
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',
     level='l2', datatype='*', varformat=None, varnames=[], suffix='',
@@ -14,12 +15,12 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     available=False, notplot=False, latest_version=False, major_version=False, 
     min_version=None, cdf_version=None, spdf=False, always_prompt=False):
     """
-    This function loads FPI data into tplot variables
+    Load data from the Fast Plasma Investigation (FPI)
     
     Parameters
     ----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
@@ -66,11 +67,11 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         notplot: bool
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
-            access to multi-dimensional data products)
+            access to multidimensional data products)
 
         available: bool
             If True, simply return the available data files (without downloading)
-            for the requested paramters
+            for the requested parameters
 
         no_update: bool
             Set this flag to preserve the original data. if not set and newer 
@@ -90,16 +91,16 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
         always_prompt: bool
             Set this keyword to always prompt for the user's username and password;
-            useful if you accidently save an incorrect password, or if your SDC password has changed
+            useful if you accidentally save an incorrect password, or if your SDC password has changed
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
             
-    Returns:
+    Returns
+    -----------
         List of tplot variables created.
 
     """
-
     # different datatypes for burst mode files
     if data_rate.lower() == 'brst':
         if isinstance(datatype, str):
@@ -159,8 +160,10 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
                               notplot=notplot, latest_version=latest_version, major_version=major_version,
                               min_version=min_version,
                               cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
-        tvars.extend(tplotnames_errflags_emom)
-        tvars.extend(tplotnames_errflags_edist)
+        if tplotnames_errflags_emom is not None:
+            tvars.extend(tplotnames_errflags_emom)
+        if tplotnames_errflags_edist is not None:
+            tvars.extend(tplotnames_errflags_edist)
     else:
         # user didn't request both dist and moments, so no variables should have been clobbered
         # but we still need to append _dist, _moms to the end of the names
@@ -200,8 +203,10 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
                               notplot=notplot, latest_version=latest_version, major_version=major_version,
                               min_version=min_version,
                               cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
-        tvars.extend(tplotnames_errflags_imom)
-        tvars.extend(tplotnames_errflags_idist)
+        if tplotnames_errflags_imom is not None:
+            tvars.extend(tplotnames_errflags_imom)
+        if tplotnames_errflags_idist is not None:
+            tvars.extend(tplotnames_errflags_idist)
     else:
         # user didn't request both dist and moments, so no variables should have been clobbered
         # but we still need to append _dist, _moms to the end of the names

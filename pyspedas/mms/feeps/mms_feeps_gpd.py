@@ -1,8 +1,17 @@
+import logging
 import numpy as np
 import pyspedas 
-from pytplot import get_data, store_data, options
+from pytplot import get, store, options
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas.mms.feeps.mms_feeps_getgyrophase import mms_feeps_getgyrophase
+
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except ImportError:
+    nanmean = np.nanmean
 
 
 def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'], 
@@ -57,7 +66,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     feeps_data = pyspedas.mms.feeps(trange=trange, data_rate=data_rate, probe=probe, level=level)
 
     if len(feeps_data) == 0:
-        print('Problem loading FEEPS data for this time range.')
+        logging.error('Problem loading FEEPS data for this time range.')
         return
 
     # Account for angular response (finite field of view) of instruments
@@ -73,10 +82,10 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     # get the gyrophase angles
     # calculate the gyro phase angles from the magnetic field data
     gyro_vars = mms_feeps_getgyrophase(trange=trange, probe=probe, data_rate=data_rate, level=level, datatype=datatype)
-    gyro_data = get_data('mms' + str(probe) + '_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase')
+    gyro_data = get('mms' + str(probe) + '_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_gyrophase')
 
     if gyro_data is None or gyro_vars is None:
-        print('Problem calculating gyrophase angles.')
+        logging.error('Problem calculating gyrophase angles.')
         return
 
     eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
@@ -119,17 +128,17 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
         for isen in range(len(particle_idxs)): # loop through sensors
             # get the data
             var_name = 'mms' + str(probe) + '_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_' + sensor_type + '_' + data_units + '_sensorid_' + str(particle_idxs[isen]+1) + '_clean_sun_removed'
-            data = get_data(var_name)
+            data = get(var_name)
             if data is None:
-                print('Data not found: ' + var_name)
+                logging.error('Data not found: ' + var_name)
                 continue
             data.y[data.y == 0.0] = np.nan # remove any 0s before averaging
             # Energy indices to use:
             indx = np.argwhere((data.v <= energy[1]) & (data.v >= energy[0]))
             if len(indx) == 0:
-                print('Energy range selected is not covered by the detector for FEEPS ' + datatype + ' data')
+                logging.error('Energy range selected is not covered by the detector for FEEPS ' + datatype + ' data')
                 continue
-            dflux[:, pa_map[isen]] = np.nanmean(data.y[:, indx], axis=1).flatten()
+            dflux[:, pa_map[isen]] = nanmean(data.y[:, indx], axis=1).flatten()
             dpa[:, pa_map[isen]] = gyro_data.y[:,  pa_map[isen]].flatten()
 
     # we need to replace the 0.0s left in after populating dpa with NaNs; these 
@@ -143,9 +152,14 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     # Now loop through PA bins and time, find the telescopes where there is data in those bins and average it up!
     for it in range(len(dpa[:, 0])):
         for ipa in range(int(n_bins)):
-            ind = np.argwhere((dpa[it, :] + dAngResp >= gyro_centers[ipa]-delta_gyro) & (dpa[it, :] - dAngResp < gyro_centers[ipa]+delta_gyro))
-            if len(ind) > 0:
-                gyro_flux[it, ipa] = np.nanmean(dflux[it, ind], axis=0).flatten()
+            ind = np.argwhere((dpa[it, :] + dAngResp >= gyro_centers[ipa]-delta_gyro) & (dpa[it, :] - dAngResp < gyro_centers[ipa]+delta_gyro)).flatten()
+            if ind.size != 0:
+                if len(ind) > 1:
+                    gyro_flux[it, ipa] = nanmean(dflux[it, ind])
+                else:
+                    gyro_flux[it, ipa] = dflux[it, ind[0]]
+            #if len(ind) > 0:
+            #   gyro_flux[it, ipa] = np.nanmean(dflux[it, ind], axis=0).flatten()
 
     # fill any missed bins with NAN
     gyro_flux[gyro_flux == 0.0] = np.nan 
@@ -154,7 +168,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
 
     new_name = 'mms' + str(probe) + '_epd_feeps_' + data_rate + '_' + level + '_' + datatype + '_' + data_units + '_' + en_range_string + '_gpd'
 
-    saved = store_data(new_name, data={'x': gyro_data.times, 'y': gyro_flux, 'v': gyro_centers})
+    saved = store(new_name, data={'x': gyro_data.times, 'y': gyro_flux, 'v': gyro_centers})
 
     if saved:
         options(new_name, 'spec', True)

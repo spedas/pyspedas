@@ -1,8 +1,9 @@
-
+import logging
 import math
 import numpy as np
 from pytplot import get_data, store_data, options
 from pyspedas import tinterpol
+
 
 def mms_curl(fields=None, positions=None, suffix=''):
     """
@@ -40,11 +41,11 @@ def mms_curl(fields=None, positions=None, suffix=''):
 
     """
     if fields is None or positions is None:
-        print('Error: B-field and spacecraft position keywords required.')
+        logging.error('Error: B-field and spacecraft position keywords required.')
         return
 
     if len(fields) != 4 or len(positions) != 4:
-        print('Error, fields and positions keywords should be specified as 4-element arrays containing the tplot variable name for the field and position variables')
+        logging.error('Error, fields and positions keywords should be specified as 4-element arrays containing the tplot variable name for the field and position variables')
         return
         
     # *********************************************************
@@ -71,16 +72,16 @@ def mms_curl(fields=None, positions=None, suffix=''):
     mms4_bfield = get_data(fields[3] + '_i')
 
     if mms1_bfield is None:
-        print('Error, B-field variable is missing: ' + fields[0])
+        logging.error('Error, B-field variable is missing: ' + fields[0])
         return
     elif mms2_bfield is None:
-        print('Error, B-field variable is missing: ' + fields[1] + '_i')
+        logging.error('Error, B-field variable is missing: ' + fields[1] + '_i')
         return
     elif mms3_bfield is None:
-        print('Error, B-field variable is missing: ' + fields[2] + '_i')
+        logging.error('Error, B-field variable is missing: ' + fields[2] + '_i')
         return
     elif mms4_bfield is None:
-        print('Error, B-field variable is missing: ' + fields[3] + '_i')
+        logging.error('Error, B-field variable is missing: ' + fields[3] + '_i')
         return
 
     timesb1, datab1 = mms1_bfield
@@ -100,16 +101,16 @@ def mms_curl(fields=None, positions=None, suffix=''):
     mms4_pos = get_data(positions[3] + '_i')
 
     if mms1_pos is None:
-        print('Error, S/C position variable is missing: ' + positions[0] + '_i')
+        logging.error('Error, S/C position variable is missing: ' + positions[0] + '_i')
         return
     elif mms2_pos is None:
-        print('Error, S/C position variable is missing: ' + positions[1] + '_i')
+        logging.error('Error, S/C position variable is missing: ' + positions[1] + '_i')
         return
     elif mms3_pos is None:
-        print('Error, S/C position variable is missing: ' + positions[2] + '_i')
+        logging.error('Error, S/C position variable is missing: ' + positions[2] + '_i')
         return
     elif mms4_pos is None:
-        print('Error, S/C position variable is missing: ' + positions[3] + '_i')
+        logging.error('Error, S/C position variable is missing: ' + positions[3] + '_i')
         return
 
     timesp1, p1 = mms1_pos
@@ -218,15 +219,12 @@ def mms_curl(fields=None, positions=None, suffix=''):
     options('divB' + suffix, 'ysubtitle', '[nT/km]')
     options('curlB' + suffix, 'ytitle', 'curl(B)')
     options('curlB' + suffix, 'ysubtitle', '[nT/km]')
-    options('curlB' + suffix, 'Color', ['b', 'g', 'r'])
     options('curlB' + suffix, 'legend_names', ['delBx', 'delBy', 'delBz'])
     options('jtotal' + suffix, 'ytitle', 'J')
     options('jtotal' + suffix, 'ysubtitle', '[A/m^2]')
-    options('jtotal' + suffix, 'Color', ['b', 'g', 'r'])
     options('jtotal' + suffix, 'legend_names', ['Jx', 'Jy', 'Jz'])
     options('jperp' + suffix, 'ytitle', 'Jperp')
     options('jperp' + suffix, 'ysubtitle', '[A/m^2]')
-    options('jperp' + suffix, 'Color', ['b', 'g', 'r'])
     options('jperp' + suffix, 'legend_names', ['Jperpx', 'Jperpy', 'Jperpz'])
     options('jpar' + suffix, 'ytitle', 'Jparallel')
     options('jpar' + suffix, 'ysubtitle', '[A/m^2]')

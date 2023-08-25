@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def data(trange=['2013-11-5', '2013-11-6'],
         datatype='1min',
@@ -68,3 +69,7 @@ def data(trange=['2013-11-5', '2013-11-6'],
                 get_support_data=get_support_data, get_ignore_data=get_ignore_data,varformat=varformat, 
                 varnames=varnames, downloadonly=downloadonly, notplot=notplot, 
                 time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='ACE', instrument='OMNI', label=label)

@@ -1,15 +1,16 @@
 import logging
 
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pytplot import get_data, store_data, options
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_split_fgm_data(probe, data_rate, level, instrument, suffix=''):
     """
-
-
+    Helper routine for splitting 4-vector FGM data (Bx, By, Bz, b_total)
+    into 2 tplot variables, one for the vector (Bx, By, Bz), and one for the total
     """
 
     probe = probe.lower()
@@ -35,7 +36,7 @@ def mms_split_fgm_data(probe, data_rate, level, instrument, suffix=''):
         if not data_exists(tplot_name):
             continue
 
-        fgm_data = get_data(tplot_name)
+        fgm_data = get_data(tplot_name, dt=True)
 
         if fgm_data is None:
             continue

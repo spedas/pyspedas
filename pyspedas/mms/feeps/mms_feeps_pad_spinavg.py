@@ -1,8 +1,7 @@
-
 import warnings
 import numpy as np
 import scipy 
-from pytplot import get_data, store_data, options
+from pytplot import get_data, store, options
 
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one
 # bottleneck nanmean is ~2.5x faster
@@ -12,11 +11,13 @@ try:
 except ImportError:
     nanmean = np.nanmean
 
+
 def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron', data_rate='srvy', level='l2', suffix='', energy=[70, 600], bin_size=16.3636):
     """
     This function will spin-average the FEEPS pitch angle distributions
     
-    Parameters:
+    Parameters
+    -----------
         probe: str
             probe #, e.g., '4' for MMS4
 
@@ -41,10 +42,10 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
         bin_size: float
             size of the pitch angle bins
 
-    Returns:
+    Returns
+    ----------
         Name of tplot variable created.
     """
-
     units_label = ''
     if data_units == 'intensity':
         units_label = '1/(cm^2-sr-s-keV)'
@@ -94,11 +95,10 @@ def mms_feeps_pad_spinavg(probe='1', data_units='intensity', datatype='electron'
         current_start = spin_starts[spin_idx] + 1
 
     # store_data(var_name + '_spin' + suffix, data={'x': spin_times, 'y': spin_avg_flux, 'v': angles})
-    store_data(var_name + '_spin' + suffix, data={'x': spin_times, 'y': rebinned_data, 'v': new_bins})
+    store(var_name + '_spin' + suffix, data={'x': spin_times, 'y': rebinned_data, 'v': new_bins})
     options(var_name + '_spin' + suffix, 'spec', True)
     options(var_name + '_spin' + suffix, 'ylog', False)
     options(var_name + '_spin' + suffix, 'zlog', True)
-    options(var_name + '_spin' + suffix, 'Colormap', 'spedas')
     options(var_name + '_spin' + suffix, 'ztitle', units_label)
     options(var_name + '_spin' + suffix, 'ytitle', 'MMS' + str(probe) + ' ' + datatype + ' PA')
     options(var_name + '_spin' + suffix, 'ysubtitle', '[deg]')

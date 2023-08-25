@@ -1,11 +1,12 @@
-
 import re
+
 
 def mms_file_filter(files, latest_version=False, major_version=False, min_version=None, version=None):
     """
     This function filters a list of MMS data files based on CDF version
     
-    Parameters:
+    Parameters
+    ------------
         version: str
             Specify a specific CDF version # to return (e.g., cdf_version='4.3.0')
 
@@ -18,7 +19,8 @@ def mms_file_filter(files, latest_version=False, major_version=False, min_versio
         major_version: bool
             Only return the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
 
-    Returns:
+    Returns
+    ----------
         List of filtered files
     """
     

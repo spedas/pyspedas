@@ -16,6 +16,7 @@ except ImportError:
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2', 
     data_rate='srvy', datatype='extof', species='proton', data_units='flux', 
     energy=[55, 800], size_pabin=15, suffix=''):
@@ -54,7 +55,8 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2',
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    ----------
         Name of tplot variables created.
     """
 
@@ -85,7 +87,6 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2',
 
     # the probes will need to be strings beyond this point
     probe = [str(p) for p in probe]
-
 
     logging.info('Calculating the EIS pitch angle distribution; this may take several minutes')
 
@@ -158,7 +159,6 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2',
                     options(new_name, 'ylog', False)
                     options(new_name, 'zlog', True)
                     options(new_name, 'spec', True)
-                    options(new_name, 'Colormap', 'spedas')
                     options(new_name, 'ztitle', units_label)
                     options(new_name, 'ytitle', 'MMS' + str(probe_id) + ' ' + datatype_id + ' PA (deg)')
                     out_vars.append(new_name)
@@ -191,7 +191,6 @@ def mms_eis_pad(scopes=['0', '1', '2', '3', '4', '5'], probe='1', level='l2',
                 options(new_name, 'ylog', False)
                 options(new_name, 'zlog', True)
                 options(new_name, 'spec', True)
-                options(new_name, 'Colormap', 'spedas')
                 options(new_name, 'ztitle', units_label)
                 options(new_name, 'ytitle', 'MMS' + str(probe_id) + ' ' + datatype_id + ' PA')
                 options(new_name, 'ysubtitle', '[deg]')

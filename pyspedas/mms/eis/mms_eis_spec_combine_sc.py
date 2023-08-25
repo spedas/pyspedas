@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one
 # bottleneck nanmean is ~2.5x faster
@@ -6,14 +7,14 @@ try:
     nanmean = bn.nanmean
 except ImportError:
     nanmean = np.nanmean
-from pytplot import get_data, store_data, options
-from ...utilities.tnames import tnames
+from pytplot import get_data, store_data, options, tnames
+
 
 def mms_eis_spec_combine_sc(
         species='proton', data_units='flux', datatype='extof', data_rate='srvy',
         level='l2', suffix='',
     ):
-    '''
+    """
     Combines omni-directional energy spectrogram variable from EIS on multiple
         MMS spacecraft.
 
@@ -38,9 +39,10 @@ def mms_eis_spec_combine_sc(
             species for calculation, e.g., proton, oxygen, alpha or electron
             (default: 'proton')
 
-    Returns:
+    Returns
+    --------
         Name of tplot variables created.
-    '''
+    """
     ## Thoughts for extensions:
     ## - Ensure arguments passed to modules are of lowecase
 
@@ -77,7 +79,7 @@ def mms_eis_spec_combine_sc(
                 if probes:
                     probe_string = probes[0]
                 else:
-                    print('No probes found from eis_sc_check tnames.')
+                    logging.error('No probes found from eis_sc_check tnames.')
                     return
 
             allmms_prefix = 'mmsx_epd_eis_' + data_rate + '_' + level + '_' + dtype + '_'
@@ -87,7 +89,7 @@ def mms_eis_spec_combine_sc(
             omni_vars = tnames('mms?_epd_eis_'+data_rate+'_'+level+'_'+dtype+'_'+_species+'_'+data_units+'_omni'+suffix)
 
             if not omni_vars:
-                print('No EIS '+dtype+'data loaded!')
+                logging.error('No EIS '+dtype+'data loaded!')
                 return
 
             time_size = np.zeros(len(probes))
@@ -147,7 +149,6 @@ def mms_eis_spec_combine_sc(
             options(new_name, 'ylog', True)
             options(new_name, 'zlog', True)
             options(new_name, 'spec', True)
-            options(new_name, 'Colormap', 'spedas')
             options(new_name, 'ztitle', units_label)
             options(new_name, 'ytitle', ' \\ '.join(['mms'+probe_string, _species.upper(), 'Energy [keV]']))
             out_vars.append(new_name)
@@ -155,7 +156,7 @@ def mms_eis_spec_combine_sc(
             # Spin-average the data
             spin_nums = get_data(prefix+'spin'+suffix)
             if spin_nums is None:
-                print('Error: Could not find EIS spin variable -- now ending procedure.')
+                logging.error('Error: Could not find EIS spin variable -- now ending procedure.')
                 return
 
             # find where the spin starts

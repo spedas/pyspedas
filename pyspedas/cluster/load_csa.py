@@ -8,9 +8,10 @@ with a CDF file which is packaged as tar.gz.
 
 We download the tar.gr file directly, without using pyspedas.download().
 """
-from pyspedas.analysis.time_clip import time_clip as tclip
-from pyspedas.utilities.time_string import time_string
-from pyspedas.utilities.time_double import time_double
+import logging
+from pytplot import time_clip as tclip
+from pytplot import time_string
+from pytplot import time_double
 from pytplot import cdf_to_tplot
 
 import requests
@@ -111,18 +112,24 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
     # Delivery interval
     delivery_interval = 'ALL'
 
+    if not probes:
+        return tvars
+
+    if not datatypes:
+        return tvars
+
+    if not isinstance(probes, list):
+        probes = [probes]
+
+    if not isinstance(datatypes, list):
+        datatypes = [datatypes]
+
     # TODO: Create a function that can resolve wildcards
     # similar to IDL spedas ssl_check_valid_name
     # my_datatypes=ssl_check_valid_name(uc_datatypes,master_datatypes)
     # my_probes=ssl_check_valid_name(uc_probes,master_probes)
-    if not probes:  # list is empty
-        return tvars
-    elif probes[0] == '*':  # load all probes
+    if probes[0] == '*':  # load all probes
         probes = cl_master_probes()
-    if not datatypes:  # list is empty
-        return tvars
-    elif datatypes[0] == '*':  # load all probes
-        datatypes = cl_master_datatypes()
 
     # Construct the query string
     base_url = 'https://csa.esac.esa.int/csa-sl-tap/data?'
@@ -141,20 +148,20 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
 
     local_path = CONFIG['local_data_dir']
     Path(local_path).mkdir(parents=True, exist_ok=True)
-    out_gz = local_path + 'temp_cluster_file.tar.gz'  # Temp file name
+    out_gz = os.path.join(local_path, 'temp_cluster_file.tar.gz')  # Temp file name
 
     # Download the file.
-    print("Downloading Cluster data, please wait....")
+    logging.info("Downloading Cluster data, please wait....")
     try:
         r = requests.get(url, allow_redirects=True)
         r.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        print("Download HTTP error: ", err)
+        logging.error("Download HTTP error: " + str(err))
         return tvars
     except requests.exceptions.RequestException as e:
-        print("Download error: ", e)
+        logging.error("Download error: " + str(e))
         return tvars
-    print("Download complete.")
+    logging.info("Download complete.")
 
     # Open the downloaded file.
     with open(out_gz, 'wb') as w:
@@ -171,30 +178,19 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
     # Get unique set of files.
     f_set = set(f)
     # File list with full path.
-    out_files = [local_path+s for s in list(f_set)]
+    out_files = [os.path.join(local_path, s) for s in list(f_set)]
     out_files = sorted(out_files)
 
     if downloadonly:
         return out_files
 
     # Load data into tplot
-    try:
-        tvars = cdf_to_tplot(out_files,
-                             suffix=suffix,
-                             get_support_data=get_support_data,
-                             varformat=varformat,
-                             varnames=varnames,
-                             notplot=notplot)
-    except IndexError as e:
-        print("cdf_to_tplot cannot load Cluster cdf file.")
-        print("File: ", out_files[0])
-        print("IndexError:", e)
-        return tvars
-    except TypeError as e:
-        print("cdf_to_tplot cannot load Cluster cdf file.")
-        print("File: ", out_files[0])
-        print("TypeError:", e)
-        return tvars
+    tvars = cdf_to_tplot(out_files,
+                         suffix=suffix,
+                         get_support_data=get_support_data,
+                         varformat=varformat,
+                         varnames=varnames,
+                         notplot=notplot)
 
     if notplot:
         return tvars

@@ -1,7 +1,7 @@
 
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 
 import pyspedas
 
@@ -32,6 +32,8 @@ class LoadTestCases(unittest.TestCase):
     def test_load_epic_data(self):
         epic_vars = pyspedas.geotail.epic()
         self.assertTrue(data_exists('IDiffI_I'))
+        epic_vars = pyspedas.geotail.epic(notplot=True)
+        self.assertTrue('IDiffI_I' in epic_vars)
 
     def test_load_pwi_data(self):
         pwi_vars = pyspedas.geotail.pwi()

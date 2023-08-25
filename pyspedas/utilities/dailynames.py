@@ -1,11 +1,18 @@
-
-
+import logging
 import numpy as np
 from pyspedas import time_string, time_double
-from datetime import datetime
+from datetime import datetime, timezone
 
-def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_format='%Y%m%d', prefix='', suffix=''):
-    '''
+
+def dailynames(directory='',
+               trange=None,
+               res=24*3600.,
+               hour_res=False,
+               file_format='%Y%m%d',
+               prefix='',
+               suffix='',
+               return_times=False):
+    """
     Creates a list of file names using a time range, resoution and file format
     Based on Davin Larson's file_dailynames in IDL SPEDAS
 
@@ -32,18 +39,19 @@ def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_for
     Returns:
         List containing filenames
 
-    '''
+    """
     if trange is None:
-        print('No trange specified')
+        logging.error('No trange specified')
         return
 
-    if hour_res == True:
+    if hour_res:
         res = 3600.
         file_format = '%Y%m%d%H'
 
     # allows the user to pass in trange as list of datetime objects
     if type(trange[0]) == datetime and type(trange[1]) == datetime:
-        trange = [time_string(trange[0].timestamp()), time_string(trange[1].timestamp())]
+        trange = [time_string(trange[0].replace(tzinfo=timezone.utc).timestamp()),
+                  time_string(trange[1].replace(tzinfo=timezone.utc).timestamp())]
 
     tr = [trange[0], trange[1]]
     
@@ -61,6 +69,9 @@ def dailynames(directory='', trange=None, res=24*3600., hour_res=False, file_for
         n = int(mmtr[1]-mmtr[0])
 
     times = [(float(num)+mmtr[0])*res for num in range(n)]
+
+    if return_times:
+        return times
 
     dates = []
     files = []

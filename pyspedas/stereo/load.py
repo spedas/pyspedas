@@ -1,6 +1,6 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 
 from .config import CONFIG
@@ -28,6 +28,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
     """
 
     out_files = []
+    all_instr = ['mag','plastic','swea','ste', 
+                 'sept', 'sit', 'let', 'het',
+                 'waves', 'beacon'
+                 ]
+    assert instrument in all_instr, f"Instrument {instrument} not in {all_instr}"
 
     if not isinstance(probe, list):
         probe = [probe]
@@ -52,11 +57,16 @@ def load(trange=['2013-11-5', '2013-11-6'],
                 pathformat = 'plastic/level2/Protons/Derived_from_1D_Maxwellian/'+direction+'/'+datatype+'/%Y/ST'+prb.upper()+'_L2_PLA_1DMax_'+datatype+'_%Y%m%d_V??.cdf'
         elif instrument == 'swea':
             CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/stereo/'
-            pathformat = direction + '/' + level + '/impact/swea_' + datatype + '/%Y/sta_' + level + '_swea_' + datatype + '_%Y%m%d_v??.cdf'
+            pathformat = direction + '/' + level + '/impact/swea_' + datatype + f'/%Y/st{prb}_' + level + '_swea_' + datatype + '_%Y%m%d_v??.cdf'
         elif instrument in ['ste', 'sept', 'sit', 'let', 'het']:
             CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/stereo/'
-            pathformat = direction + '/' + level + '/impact/' + instrument + '/%Y/sta_' + level + '_' + instrument + '_%Y%m%d_v??.cdf'
-
+            pathformat = direction + '/' + level + '/impact/' + instrument + f'/%Y/st{prb}_' + level + '_' + instrument + '_%Y%m%d_v??.cdf'
+        elif instrument == "waves" :
+            CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/stereo/'
+            pathformat = direction + '/' + level + '/waves/' + datatype + f'/%Y/st{prb}_' + level + '_wav_' + datatype + '_%Y%m%d_v??.cdf'
+        elif instrument == 'beacon':
+            CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/stereo/'
+            pathformat = direction + '/' + instrument + f'/%Y/st{prb}_lb_impact_'+'%Y%m%d_v??.cdf'
 
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)

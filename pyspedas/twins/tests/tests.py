@@ -1,9 +1,8 @@
-
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
-
+from pytplot import data_exists
 import pyspedas
+
 
 class LoadTestCases(unittest.TestCase):
     def test_downloadonly(self):
@@ -13,6 +12,8 @@ class LoadTestCases(unittest.TestCase):
     def test_load_img_data(self):
         img_vars = pyspedas.twins.imager()
         self.assertTrue(data_exists('smooth_image_val'))
+        img_vars = pyspedas.twins.imager(notplot=True)
+        self.assertTrue('smooth_image_val' in img_vars)
 
     def test_load_lad_data(self):
         lad_vars = pyspedas.twins.lad(time_clip=True)
@@ -22,6 +23,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_ephem_data(self):
         ephemeris_vars = pyspedas.twins.ephemeris()
         self.assertTrue(data_exists('FLTGEO'))
+
 
 if __name__ == '__main__':
     unittest.main()

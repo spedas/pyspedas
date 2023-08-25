@@ -1,15 +1,17 @@
 
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas import maven
+from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files
 
-# class OrbitTestCases(unittest.TestCase):
-#     def test_get_merge_orbit_files(self):
-#         from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files
-#         get_orbit_files()
-#         merge_orbit_files()
-#         self.assertTrue(os.path.join(os.path.join(os.path.dirname(__file__), '..'), 'maven_orb_rec.orb'))
+
+class OrbitTestCases(unittest.TestCase):
+    def test_get_merge_orbit_files(self):
+        get_orbit_files()
+        merge_orbit_files()
+        self.assertTrue(os.path.join(os.path.join(os.path.dirname(__file__), '..'), 'maven_orb_rec.orb'))
+
 
 class LoadTestCases(unittest.TestCase):
     def test_load_kp_data(self):
@@ -17,7 +19,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mvn_kp::spacecraft::geo_x'))
 
     def test_load_mag_data(self):
-        data = maven.mag()
+        data = maven.mag(datatype='ss1s')
         self.assertTrue(data_exists('OB_B'))
 
     def test_load_sta_data(self):

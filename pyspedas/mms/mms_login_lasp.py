@@ -1,4 +1,3 @@
-
 from getpass import getpass
 from scipy.io import readsav
 import requests
@@ -7,14 +6,11 @@ import pickle
 import logging
 import warnings
 
-logging.captureWarnings(True)
-logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 def mms_login_lasp(always_prompt=False, headers={}):
-    '''
+    """
     This function logs the user into the SDC and returns a tuple with: (requests.Session object, username)
-    '''
-
+    """
     homedir = os.path.expanduser('~')
     user_input_passwd = False
     saved_auth = None
@@ -36,7 +32,12 @@ def mms_login_lasp(always_prompt=False, headers={}):
         pass
 
     if saved_auth is None or always_prompt == True:
-        user = input('SDC username (blank for public access): ')
+        try:
+            user = input('SDC username (blank for public access): ')
+        except:
+            logging.error('Error while reading SDC username/password; defaulting to public user...')
+            user = ''
+
         if user != '': 
             passwd = getpass() 
         else: passwd = ''
@@ -57,7 +58,7 @@ def mms_login_lasp(always_prompt=False, headers={}):
                 auth = session.post('https://lasp.colorado.edu', verify=True, timeout=5, headers=headers)
                 testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science', verify=True, timeout=5, headers=headers)
         except:
-            return (session, None)
+            return session, None
 
         # check if the login failed
         if testget.status_code == 401:
@@ -71,4 +72,4 @@ def mms_login_lasp(always_prompt=False, headers={}):
     if user == '':
         user = None
 
-    return (session, user)
+    return session, user

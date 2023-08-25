@@ -5,9 +5,12 @@ Load Routines
    :maxdepth: 2
 
    ace
+   akebono
    erg
    cluster
+   cnofs
    csswe
+   de2
    dscovr
    equator-s
    fast
@@ -15,6 +18,7 @@ Load Routines
    goes
    image
    kyoto
+   lanl
    maven
    mica
    mms
@@ -22,7 +26,9 @@ Load Routines
    poes
    polar
    psp
+   soho
    solo
+   st5
    stereo
    themis
    twins

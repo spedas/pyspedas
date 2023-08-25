@@ -68,19 +68,25 @@ Restrictions:
     Care should be taken in evaluating degree of polarisation results.
     For meaningful results there should be significant wave power at the
     frequency where the polarisation approaches
-    100%. Remembercomparing two straight lines yields 100% polarisation.
+    100%. Remember, comparing two straight lines yields 100% polarisation.
 
 """
-
+import logging
 import warnings
 import numpy as np
+# use nansum from bottleneck if it's installed, otherwise use the numpy one
+try:
+    import bottleneck as bn
+    nansum = bn.nansum
+except ImportError:
+    nansum = np.nansum
 from pytplot import get_data, store_data, options
 from pyspedas import tnames
 
 # these routines require numpy v1.20.0 or later
 if np.__version__ < '1.20':
-    print('Error: numpy 1.20.0 or later is required for wave polarization calculations. ')
-    print('Please update numpy with: pip install numpy --upgrade')
+    logging.error('Error: numpy 1.20.0 or later is required for wave polarization calculations. ')
+    logging.error('Please update numpy with: pip install numpy --upgrade')
     breakpoint()
 
 
@@ -97,6 +103,7 @@ def wpol_ematspec(i1, i2, i3, i4, aa, nosmbins, matspec):
     """Calculate ematspec array."""
     id0 = (i2 - int((nosmbins-1)/2))
     id1 = (i2 + int((nosmbins-1)/2)) + 1
+    # Using nansum() rather than sum() here results in a mismatch between IDL and Python results.
     res = np.sum(aa[0:nosmbins] * matspec[i1, id0:id1, i3, i4])
     return res
 
@@ -183,10 +190,10 @@ def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
 
     for k in range(int(nopfft/2)):
         for k1 in range(3):
-            upper = np.sum(2*np.real(lambdau[KK, k, k1, 0:3]) *
+            upper = nansum(2*np.real(lambdau[KK, k, k1, 0:3]) *
                            np.imag(lambdau[KK, k, k1, 0:3]))
             la2 = np.imag(lambdau[KK, k, k1, 0:3])**2
-            lower = np.sum(np.real(lambdau[KK, k, k1, 0:3])**2 - la2)
+            lower = nansum(np.real(lambdau[KK, k, k1, 0:3])**2 - la2)
             gammay = np.nan
             if np.isfinite(upper) and np.isfinite(lower):
                 if upper > 0.0:
@@ -196,6 +203,7 @@ def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
             lambday[KK, k, k1, :] = (np.exp((0.0 - 1j*0.5*gammay)) *
                                      lambdau[KK, k, k1, :])
             lay2 = np.imag(lambday[KK, k, k1, 0:3])**2
+            # Using nansum() rather than sum() in the helicity calculation results in a mismatch betweeen IDL and Python results.
             helicity[KK, k, k1] = (1 /
                                    (np.sqrt(np.real(lambday[KK, k, k1, 0])**2 +
                                     np.real(lambday[KK, k, k1, 1])**2 +
@@ -247,11 +255,11 @@ def wavpol(ct, bx, by, bz,
     ----------
     ct : list of float
         Time.
-    b1 : list of float
+    bx : list of float
         Bx field.
-    b2 : list of float
+    by : list of float
         By field.
-    b3 : list of float
+    bz : list of float
         Bz field.
     nopfft : int, optional
         Number of points in FFT. The default is 256.
@@ -319,10 +327,9 @@ def wavpol(ct, bx, by, bz,
     endsampfreq = 1./(ct[nopoints-1]-ct[nopoints-2])
 
     if beginsampfreq != endsampfreq:
-        print('wavpol Warning: file sampling frequency changes from ',
-              beginsampfreq, 'Hz to ', endsampfreq, 'Hz')
+        logging.warning('wavpol Warning: file sampling frequency changes from ' + str(beginsampfreq) + 'Hz to ' + str(endsampfreq) + 'Hz')
     else:
-        print('wavpol: File sampling frequency=', beginsampfreq, 'Hz')
+        logging.warning('wavpol: File sampling frequency=' + str(beginsampfreq) + 'Hz')
 
     samp_freq = beginsampfreq
     samp_per = 1./samp_freq
@@ -352,8 +359,8 @@ def wavpol(ct, bx, by, bz,
 
     # If there are too many batches, return.
     if n_batches > 80000.0:
-        print("wavpol error: Large number of batches. " +
-              "Returning to avoid memory runaway.")
+        logging.error("wavpol error: Large number of batches. " +
+                      "Returning to avoid memory runaway.")
         err_flag = 1
         result = (timeline, freqline, powspec, degpol, waveangle,
                   elliptict, helict, pspec3, err_flag)
@@ -363,19 +370,28 @@ def wavpol(ct, bx, by, bz,
     # Total numbers of FFT calculations including 1 leap frog for each batch
     ind_batch0 = 0
     nosteps = 0
-    print('n_batches', n_batches)
+    logging.info('n_batches: ' + str(n_batches))
 
     for i in range(n_batches):
         nosteps = int(nosteps + np.floor((errs[i] - ind_batch0)/steplength))
         ind_batch0 = errs[i]
 
     nosteps = nosteps + n_batches
-    print('Total number of steps:', nosteps)
+    logging.info('Total number of steps:' + str(nosteps))
 
     # leveltplot = 0.000001  # Power rejection level 0 to 1
     nosmbins = bin_freq  # No. of bins in frequency domain
     # Smoothing profile based on Hanning:
-    aa = np.array([0.024, 0.093, 0.232, 0.301, 0.232, 0.093, 0.024])
+    # aa = np.array([0.024, 0.093, 0.232, 0.301, 0.232, 0.093, 0.024])
+    # The predefined smoothing array aa is incorrect unless bin_freq = 7.  For smaller
+    # values of bin_freq, only the first few entries will be used, and the values will be
+    # asymmetric and unnormalized.   For larger values, out-of-bound array indices can occur.
+    # Now we generate a properly sized Hamming array (not Hann/hanning!).   The code below
+    # will match the old predefined values for bin_freq = 7.  JWL 2023-02-02
+
+    w = np.hamming(bin_freq)
+    tot = np.sum(w)
+    aa = w/tot
 
     ind0 = 0
     KK = 0
@@ -426,8 +442,7 @@ def wavpol(ct, bx, by, bz,
         ngood = np.count_nonzero(~np.isnan(xs))  # Count finite data.
         if ngood > nopfft:
             nbp_fft_batches[batch] = np.floor(ngood/steplength)
-            print('Total number of possible FFT in the batch no ', batch,
-                  ' is:', nbp_fft_batches[batch])
+            logging.info('Total number of possible FFT in the batch no ' + str(batch) + ' is:' + str(nbp_fft_batches[batch]))
             ind0_fft = 0
             for j in range(int(nbp_fft_batches[batch])):
                 # ind1_fft = nopfft * (j+1)-1
@@ -516,10 +531,16 @@ def wavpol(ct, bx, by, bz,
 
                 # Calculation of the degree of polarization.
                 # Calculation of square of smoothed spec matrix.
-                for k1 in range(3):
-                    for k2 in range(3):
-                        matsqrd[KK, :, k1, k2] = wpol_matsqrd(KK, k1, k2,
-                                                              ematspec)
+                # for k1 in range(3):
+                #    for k2 in range(3):
+                #        matsqrd[KK, :, k1, k2] = wpol_matsqrd(KK, k1, k2,
+                #                                              ematspec)
+
+                # A user suggested using the @ operator (shorthand for np.matmul()) to square the ematspec array,
+                # since it already deals with any leading dimensions.  (Note that only the KKth and lower slices are
+                # initialized at this point.) -- JWL 2023-04-20
+
+                matsqrd[KK] = ematspec[KK] @ ematspec[KK]
 
                 trmatsqrd[KK, :] = np.real(matsqrd[KK, :, 0, 0] +
                                            matsqrd[KK, :, 1, 1] +
@@ -574,10 +595,7 @@ def wavpol(ct, bx, by, bz,
 
                 # Print an indication that a computation is happening.
                 if KK == 0 or KK % 40 == 0:
-                    print(' ')
-                    print('wavpol step', KK, ' ', end='')
-                elif KK % 4 == 0:
-                    print('.', end='')
+                    logging.info('wavpol step: ' + str(KK) + ' ')
 
                 KK += 1
                 # End loop "for j"
@@ -598,9 +616,9 @@ def wavpol(ct, bx, by, bz,
             # End "if ngood > nopfft"
         else:
             binwidth = samp_freq/nopfft
-            print('Fourier Transform is not possible. ',
-                  'Ngood = ', ngood,
-                  'Required number of points for FFT = ', nopfft)
+            logging.error('Fourier Transform is not possible. ')
+            logging.error('Ngood = ' + str(ngood))
+            logging.error('Required number of points for FFT = ' + str(nopfft))
 
             timeline[KK] = (ct[ind0] +
                             np.abs(int(nopfft/2))/samp_freq +
@@ -627,7 +645,7 @@ def wavpol(ct, bx, by, bz,
     # Returns results.
     result = (timeline, freqline, powspec, degpol, waveangle,
               elliptict, helict, pspec3, err_flag)
-    print('\nwavpol completed successfully')
+    logging.info('\nwavpol completed successfully')
 
     return result
 
@@ -664,26 +682,26 @@ def twavpol(tvarname, prefix='', nopfft=-1, steplength=-1, bin_freq=-1):
 
     all_names = tnames(tvarname)
     if len(all_names) < 1:
-        print('twavpol error: No valid pytplot variables match tvarname.')
+        logging.error('twavpol error: No valid pytplot variables match tvarname.')
         return 0
 
     xdata = get_data(tvarname)
 
     ct = xdata.times
     if len(ct) < 2:
-        print('twavpol error: Time variable does not have enough points.')
+        logging.error('twavpol error: Time variable does not have enough points.')
         return 0
 
     bfield = xdata.y
     if bfield.ndim != 2:
-        print('twavpol error: Data should have 2 dimensions.')
+        logging.error('twavpol error: Data should have 2 dimensions.')
         return 0
     b1 = bfield[:, 0]
     b2 = bfield[:, 1]
     b3 = bfield[:, 2]
     if (len(ct) != len(b1) or len(ct) != len(b2) or len(ct) != len(b3)):
-        print('twavpol error: Number of time elements does not match' +
-              'number of magnetic field elements.')
+        logging.error('twavpol error: Number of time elements does not match' +
+                      'number of magnetic field elements.')
         return 0
 
     # Apply vawpol.
@@ -693,7 +711,7 @@ def twavpol(tvarname, prefix='', nopfft=-1, steplength=-1, bin_freq=-1):
                                         bin_freq=bin_freq)
 
     if err_flag == 1:
-        print('twavpol error: There were errors while applying wavpol.')
+        logging.error('twavpol error: There were errors while applying wavpol.')
         return 0
 
     # Store new pytplot variables as spectrograms.

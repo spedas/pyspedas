@@ -11,38 +11,94 @@ These tests include the function in the following files:
 """
 import unittest
 import pyspedas
+import logging
 from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
-from pyspedas.cotrans.cotrans_set_coord import cotrans_set_coord
+from pyspedas.cotrans.fac_matrix_make import fac_matrix_make
 from pytplot import get_data, store_data, del_data
+from pyspedas import cotrans_get_coord, cotrans_set_coord
 
 
 class CotransTestCases(unittest.TestCase):
     """Tests for cotrans."""
+    def test_fac_matrix_make(self):
+        doesntexist = fac_matrix_make('doesnt_exist')
 
-    def test_get_set_coord(self):
-        """ Test for cotrans_set_coord/cotrans_get_coord """
+    def test_get_set_coord_wrappers(self):
+        """ Test for cotrans_set_coord/cotrans_get_coord wrappers """
+        del_data()
         doesntexist = cotrans_get_coord('test_coord')
-        self.assertTrue(doesntexist == None)
+        self.assertTrue(doesntexist is None)
         store_data('test_coord', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
+        cotrans(name_in='test_coord', coord_out="geo")
         before = cotrans_get_coord('test_coord')
-        self.assertTrue(before == None)
+        self.assertTrue(before is None)
         setcoord = cotrans_set_coord('test_coord', 'GSE')
         self.assertTrue(setcoord)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSE')
+        md = get_data('test_coord',metadata=True)
+        md['data_att']['units'] = 'km'
         setcoord = cotrans_set_coord('test_coord', 'GSM')
         self.assertTrue(setcoord)
+        md_after = get_data('test_coord',metadata=True)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSM')
+        self.assertTrue(md_after['data_att']['units'] == 'km')
+        setcoord = cotrans_set_coord('doesnt_exist', 'GSM')
 
+    def test_get_set_coords(self):
+        """ Test for pytplot.set_coords/get_coords """
+        from pytplot import set_coords,get_coords
+
+        del_data()
+        doesntexist = get_coords('test_coord')
+        self.assertTrue(doesntexist is None)
+        store_data('test_coord', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
+        cotrans(name_in='test_coord', coord_out="geo")
+        before = get_coords('test_coord')
+        self.assertTrue(before is None)
+        setcoord = set_coords('test_coord', 'GSE')
+        self.assertTrue(setcoord)
+        after = get_coords('test_coord')
+        self.assertTrue(after == 'GSE')
+        md = get_data('test_coord',metadata=True)
+        md['data_att']['units'] = 'km'
+        setcoord = set_coords('test_coord', 'GSM')
+        self.assertTrue(setcoord)
+        md_after = get_data('test_coord',metadata=True)
+        after = get_coords('test_coord')
+        self.assertTrue(after == 'GSM')
+        self.assertTrue(md_after['data_att']['units'] == 'km')
+        setcoord = set_coords('doesnt_exist', 'GSM')
+
+    def test_get_set_units(self):
+        """ Test for pytplot.set_coords/get_coords """
+        from pytplot import set_units,get_units, set_coords, get_coords
+
+        del_data()
+        doesntexist = get_units('test_units')
+        self.assertTrue(doesntexist is None)
+        store_data('test_units', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
+        before = get_units('test_units')
+        self.assertTrue(before is None)
+        setunits = set_units('test_units', 'Km')
+        self.assertTrue(setunits)
+        after = get_units('test_units')
+        self.assertTrue(after == 'Km')
+        set_coords('test_units','GEO')
+        setunits = set_units('test_units', 'mm')
+        self.assertTrue(setunits)
+        coords_after=get_coords('test_units')
+        units_after=get_units('test_units')
+        self.assertTrue(coords_after == 'GEO')
+        self.assertTrue(units_after == 'mm')
 
     def test_dsl2gse(self):
         """Test themis.cotrans.dsl2gse."""
         del_data()
         # Try with missing variables. It should exit without problems.
-        dsl2gse('tha_fgl_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgl_gse')
+        dsl2gse('tha_fgl_dsl','tha_fgl_gse')
         # Now load the needed variables.
         time_range = ['2017-03-23 00:00:00', '2017-03-23 23:59:59']
         pyspedas.themis.state(probe='a', trange=time_range,
@@ -51,12 +107,14 @@ class CotransTestCases(unittest.TestCase):
         pyspedas.themis.fgm(probe='a', trange=time_range,
                             varnames=['tha_fgl_dsl'])
 
-        dsl2gse('tha_fgl_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgl_gse')
+        fac_matrix_make('tha_fgl_dsl')
+
+        dsl2gse('tha_fgl_dsl', 'tha_fgl_gse')
 
         t, d = get_data('tha_fgl_gse')
         # Now test the inverse.
-        dsl2gse('tha_fgl_dsl', 'tha_spinras', 'tha_spindec', 'tha_fgl_gse',
-                isgsetodsl=1)
+        dsl2gse('tha_fgl_dsl', 'tha_fgl_gse',
+                isgsetodsl=True)
 
         self.assertTrue(abs(d[0].tolist()[0]-15.905078404701147) <= 1e-6)
         self.assertTrue(abs(d[0].tolist()[1]--13.962618931740064) <= 1e-6)
@@ -83,6 +141,21 @@ class CotransTestCases(unittest.TestCase):
         out_len = len(dout[0])
         cotrans(name_in=name_in, coord_in="gei", coord_out="geo")
         self.assertTrue(out_len == in_len)
+
+    def test_cotrans_coord_mismatch(self):
+        """Test that cotrans rejects a request where in_coord does not match the system from the variable metadata."""
+        del_data()
+        trange = ['2010-02-25/00:00:00', '2010-02-25/23:59:59']
+        probe = 'a'
+        name_in = "tha_pos"
+        name_out = "tha_pos_new_geo"
+        pyspedas.themis.state(probe=probe, trange=trange,
+                              time_clip=True, varnames=[name_in])
+        # Metadata coordinate system is GEI, but requesting GSM->GEO transform.  This should generate an error message
+        # and return failure.
+        result = cotrans(name_in=name_in, name_out=name_out,
+                coord_in="gsm", coord_out="geo")
+        self.assertTrue(result == 0)
 
     def test_cotrans_igrf(self):
         """Test GSE->GSM and IGRF."""
@@ -160,9 +233,14 @@ class CotransTestCases(unittest.TestCase):
         name1 = "name1"
         name2 = "name2"
         count = 0
-        # Test non-existent system.
-        cotrans(name_out=name1, time_in=t, data_in=d,
-                coord_in="coord_in", coord_out="coord_out")
+        # Test non-existent systems.
+        result = cotrans(name_out=name1, time_in=t, data_in=d,
+                coord_in="badcoord", coord_out="gei")
+        self.assertTrue(result == 0)
+        result = cotrans(name_out=name1, time_in=t, data_in=d,
+                         coord_in="gei", coord_out="badcoord")
+        self.assertTrue(result == 0)
+
         # Test empty data.
         cotrans(name_out=name1, time_in=t, data_in=[],
                 coord_in="gei", coord_out="geo")
@@ -183,7 +261,7 @@ class CotransTestCases(unittest.TestCase):
                 dout2 = get_data(name2)
                 out_len2 = len(dout2[0])
                 dd2 = dout2[1][1]
-                print(count, "--- in:", coord_in, "out:", coord_out)
+                logging.info("%d --- in: %s out: %s", count, coord_in, coord_out)
                 # print(dout[1][1])
                 # print(dd2)
                 self.assertTrue(out_len2 == in_len)

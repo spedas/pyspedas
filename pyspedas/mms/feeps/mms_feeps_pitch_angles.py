@@ -1,18 +1,20 @@
-
+import logging
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas import mms_load_fgm
 from pyspedas import data_exists
-from pytplot import get_data, store_data
+from pytplot import get, store
 import numpy as np
 import math
+
 
 def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy', datatype='electron', suffix=''):
     """
     Generates a tplot variable containing the FEEPS pitch angles for each telescope from magnetic field data.
 
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
@@ -31,15 +33,15 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    ----------
         Tuple: (tplot variable created, hash table used by PAD routine)
     """
-
     # get the times from the currently loaded FEEPS data
-    pa_variable = get_data('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix)
+    pa_variable = get('mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pitch_angle'+suffix, dt=True)
 
     if pa_variable is None:
-        print('Error reading pitch angle variable')
+        logging.error('Error reading pitch angle variable')
         return
 
     times = pa_variable[0]
@@ -47,14 +49,16 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
     if times is not None:
         if trange is None:
-            trange = [float(times.min()), float(times.max())]
+            times_min = (times[0] - np.datetime64('1970-01-01T00:00:00'))/np.timedelta64(1, 's')
+            times_max = (times[1] - np.datetime64('1970-01-01T00:00:00'))/np.timedelta64(1, 's')
+            trange = [times_min, times_max]
 
     eyes = mms_feeps_active_eyes(trange, probe, data_rate, datatype, level)
 
     # need the B-field data
     mms_load_fgm(trange=trange, probe=probe, data_rate=data_rate, varformat='*_b_bcs_*')
 
-    btimes, Bbcs = get_data('mms'+probe+'_fgm_b_bcs_'+data_rate+'_l2')
+    btimes, Bbcs = get('mms'+probe+'_fgm_b_bcs_'+data_rate+'_l2')
 
     idx_maps = None
 
@@ -177,47 +181,47 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
                 Vbcs = Vb12bcs
             pas[:, i] = 180./math.pi*np.arccos((Vbcs[0]*Bbcs[:, 0] + Vbcs[1]*Bbcs[:, 1] + Vbcs[2]*Bbcs[:, 2])/(np.sqrt(Vbcs[0]**2+Vbcs[1]**2+Vbcs[2]**2) * np.sqrt(Bbcs[:, 0]**2+Bbcs[:, 1]**2+Bbcs[:, 2]**2)))
     
-            if data_rate == 'srvy':
-                # the following 2 hash tables map TOP/BOTTOM telescope #s to index of the PA array created above
-                top_tele_idx_map = {}
-                bot_tele_idx_map = {}
-                top_tele_idx_map[1] = 0
-                top_tele_idx_map[2] = 1
-                top_tele_idx_map[3] = 2
-                top_tele_idx_map[4] = 3
-                top_tele_idx_map[5] = 4
-                top_tele_idx_map[9] = 5
-                top_tele_idx_map[10] = 6
-                top_tele_idx_map[11] = 7
-                top_tele_idx_map[12] = 8
-                bot_tele_idx_map[1] = 9
-                bot_tele_idx_map[2] = 10
-                bot_tele_idx_map[3] = 11
-                bot_tele_idx_map[4] = 12
-                bot_tele_idx_map[5] = 13
-                bot_tele_idx_map[9] = 14
-                bot_tele_idx_map[10] = 15
-                bot_tele_idx_map[11] = 16
-                bot_tele_idx_map[12] = 17
+        if data_rate == 'srvy':
+            # the following 2 hash tables map TOP/BOTTOM telescope #s to index of the PA array created above
+            top_tele_idx_map = {}
+            bot_tele_idx_map = {}
+            top_tele_idx_map[1] = 0
+            top_tele_idx_map[2] = 1
+            top_tele_idx_map[3] = 2
+            top_tele_idx_map[4] = 3
+            top_tele_idx_map[5] = 4
+            top_tele_idx_map[9] = 5
+            top_tele_idx_map[10] = 6
+            top_tele_idx_map[11] = 7
+            top_tele_idx_map[12] = 8
+            bot_tele_idx_map[1] = 9
+            bot_tele_idx_map[2] = 10
+            bot_tele_idx_map[3] = 11
+            bot_tele_idx_map[4] = 12
+            bot_tele_idx_map[5] = 13
+            bot_tele_idx_map[9] = 14
+            bot_tele_idx_map[10] = 15
+            bot_tele_idx_map[11] = 16
+            bot_tele_idx_map[12] = 17
 
-                top_idxs = []
-                bot_idxs = []
+            top_idxs = []
+            bot_idxs = []
 
-                # PAs for only active eyes
-                new_pas = np.empty([len(btimes), len(eyes['top'])+len(eyes['bottom'])]) # pitch angles for each eye at eaceh time
+            # PAs for only active eyes
+            new_pas = np.empty([len(btimes), len(eyes['top'])+len(eyes['bottom'])]) # pitch angles for each eye at eaceh time
 
-                for top_idx, top_eye in enumerate(eyes['top']):
-                    new_pas[:, top_idx] = pas[:, top_tele_idx_map[top_eye]]
-                    top_idxs.append(top_idx)
+            for top_idx, top_eye in enumerate(eyes['top']):
+                new_pas[:, top_idx] = pas[:, top_tele_idx_map[top_eye]]
+                top_idxs.append(top_idx)
 
-                for bot_idx, bot_eye in enumerate(eyes['bottom']):
-                    new_pas[:, bot_idx+len(eyes['top'])] = pas[:, bot_tele_idx_map[bot_eye]]
-                    bot_idxs.append(bot_idx+len(eyes['top']))
+            for bot_idx, bot_eye in enumerate(eyes['bottom']):
+                new_pas[:, bot_idx+len(eyes['top'])] = pas[:, bot_tele_idx_map[bot_eye]]
+                bot_idxs.append(bot_idx+len(eyes['top']))
 
-                idx_maps = {'electron-top': top_idxs, 'electron-bottom': bot_idxs}
+            idx_maps = {'electron-top': top_idxs, 'electron-bottom': bot_idxs}
 
-            else:
-                new_pas = pas
+        else:
+            new_pas = pas
 
     elif datatype == 'ion':
         pas = np.empty([len(btimes), 6]) # pitch angles for each eye at each time
@@ -286,18 +290,20 @@ def mms_feeps_pitch_angles(trange=None, probe='1', level='l2', data_rate='srvy',
 
         idx_maps = {'ion-top': top_idxs, 'ion-bottom': bot_idxs}
 
-
     outvar = 'mms'+probe+'_epd_feeps_'+data_rate+'_'+level+'_'+datatype+'_pa'+suffix
 
-    if data_exists(outvar): # kludge for bug when the PAs were previously calculated
-        return (outvar, idx_maps)
+    if data_exists(outvar):  # kludge for bug when the PAs were previously calculated
+        # check if the current variable's time array matches our output
+        current_pas = get(outvar)
+        if np.array_equal(current_pas.times, btimes):
+            return outvar, idx_maps
 
-    store_data(outvar, data={'x': btimes, 'y': new_pas})
+    store(outvar, data={'x': btimes, 'y': new_pas})
 
     # interpolate to the PA time stamps
-    outdata = get_data(outvar, xarray=True)
+    outdata = get(outvar, xarray=True)
     outdata_interpolated = outdata.interp({'time': times})
 
-    store_data(outvar, data={'x': times, 'y': outdata_interpolated.values})
+    store(outvar, data={'x': times, 'y': outdata_interpolated.values})
 
-    return (outvar, idx_maps)
+    return outvar, idx_maps

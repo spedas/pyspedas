@@ -1,17 +1,15 @@
-
 import logging
 import numpy as np
-
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.analysis.tnormalize import tnormalize
-from pyspedas.analysis.tcrossp import tcrossp
+from pytplot import tnormalize
+from pytplot import tcrossp
 from pyspedas.analysis.tinterpol import tinterpol
-
 from pytplot import get_data, store_data
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
+
 
 def mms_pgs_xgse(mag_temp, pos_temp):
     """
@@ -29,7 +27,8 @@ def mms_pgs_xgse(mag_temp, pos_temp):
     y_basis = tnormalize(y_basis, return_data=True)
     x_basis = tcrossp(y_basis, z_basis, return_data=True)
 
-    return (x_basis, y_basis, z_basis)
+    return x_basis, y_basis, z_basis
+
 
 def mms_pgs_phigeo(mag_temp, pos_temp):
     """
@@ -58,7 +57,8 @@ def mms_pgs_phigeo(mag_temp, pos_temp):
     x_basis = tnormalize(x_basis, return_data=True)
     y_basis = tcrossp(z_basis, x_basis, return_data=True)
 
-    return (x_basis, y_basis, z_basis)
+    return x_basis, y_basis, z_basis
+
 
 def mms_pgs_mphigeo(mag_temp, pos_temp):
     """
@@ -88,7 +88,7 @@ def mms_pgs_mphigeo(mag_temp, pos_temp):
     x_basis = tnormalize(x_basis, return_data=True)
     y_basis = tcrossp(z_basis, x_basis, return_data=True)
 
-    return (x_basis, y_basis, z_basis)
+    return x_basis, y_basis, z_basis
 
 
 def mms_pgs_make_fac(times, mag_tvar_in, pos_tvar_in, fac_type='mphigeo'):

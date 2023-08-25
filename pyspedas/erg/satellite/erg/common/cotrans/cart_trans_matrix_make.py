@@ -1,5 +1,5 @@
 import numpy as np
-from pyspedas.analysis.tnormalize import tnormalize
+from pytplot import tnormalize
 
 
 def cart_trans_matrix_make(x, y, z):

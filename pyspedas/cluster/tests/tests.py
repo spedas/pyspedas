@@ -1,13 +1,28 @@
-
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
-
+from pytplot import data_exists
 import pyspedas
+from pyspedas.cluster.load_csa import load_csa, cl_master_probes, cl_master_datatypes
+
 
 class LoadTestCases(unittest.TestCase):
+    def test_csa(self):
+        dtypes = cl_master_datatypes()
+        probes = cl_master_probes()
+        self.assertTrue('CP_FGM_SPIN' in dtypes)
+        self.assertTrue('C1' in probes)
+
+    def test_load_fgm_data_csa(self):
+        mag_vars = load_csa(datatypes=['CP_FGM_SPIN'], probes=None)  # returns empty list
+        mag_vars = load_csa(datatypes=None)  # returns empty list
+        mag_vars = load_csa(datatypes='CP_FGM_SPIN', probes='*')
+        mag_vars = load_csa(datatypes=['CP_FGM_SPIN'], notplot=True)
+        self.assertTrue(data_exists('B_vec_xyz_gse__C1_CP_FGM_SPIN'))
+        self.assertTrue(data_exists('B_mag__C1_CP_FGM_SPIN'))
+        self.assertTrue(data_exists('sc_pos_xyz_gse__C1_CP_FGM_SPIN'))
+
     def test_load_fgm_data(self):
-        mag_vars = pyspedas.cluster.fgm()
+        mag_vars = pyspedas.cluster.fgm(time_clip=True)
         self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
 
     def test_load_fgm_cp_data(self):
@@ -25,11 +40,10 @@ class LoadTestCases(unittest.TestCase):
     def test_load_dwp_data(self):
         dwp_vars = pyspedas.cluster.dwp()
         self.assertTrue(data_exists('Correl_freq__C1_PP_DWP'))
- 
-    # crash loading the default data
-    # def test_load_edi_data(self):
-    #     edi_vars = pyspedas.cluster.edi()
-    #     self.assertTrue(data_exists(''))
+
+    def test_load_edi_data(self):
+        edi_vars = pyspedas.cluster.edi(downloadonly=True)
+        self.assertTrue(isinstance(edi_vars, list))
         
     def test_load_efw_data(self):
         efw_vars = pyspedas.cluster.efw()
@@ -47,10 +61,9 @@ class LoadTestCases(unittest.TestCase):
         sta_vars = pyspedas.cluster.staff()
         self.assertTrue(data_exists('E_pow_f2__C1_PP_STA'))
 
-    # large files        
-    # def test_load_wbd_data(self):
-    #     wbd_vars = pyspedas.cluster.wbd()
-    #     self.assertTrue(data_exists(''))
+    def test_load_wbd_data(self):
+        wbd_vars = pyspedas.cluster.wbd(trange=['2012-11-6/02:10', '2012-11-6/02:15'], notplot=True)
+        self.assertTrue('WBD_Elec' in wbd_vars)
         
     def test_load_whi_data(self):
         whi_vars = pyspedas.cluster.whi()

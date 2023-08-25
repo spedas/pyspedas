@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def vhm(trange=['2009-01-01', '2009-01-02'],
         datatype='1min', 
@@ -504,3 +505,7 @@ def grb(trange=['2003-01-01', '2003-01-02'],
 
     """
     return load(instrument='grb', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='Ulysses', instrument=instrument, label=label)

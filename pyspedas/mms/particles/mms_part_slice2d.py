@@ -1,3 +1,4 @@
+import logging
 import pyspedas
 from pyspedas import time_double
 from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
@@ -27,6 +28,8 @@ def mms_part_slice2d(trange=None,
                      species=None,
                      rotation='xy',
                      custom_rotation=None,
+                     slice_x=None,
+                     slice_norm=None,
                      subtract_bulk=False,
                      xrange=None,
                      yrange=None,
@@ -34,6 +37,7 @@ def mms_part_slice2d(trange=None,
                      resolution=None,
                      interpolation='geometric',
                      contours=False,
+                     title=None,
                      smooth=None,
                      save_jpeg=None,
                      save_png=None,
@@ -43,6 +47,7 @@ def mms_part_slice2d(trange=None,
                      plotsize=10,
                      dpi=None,
                      return_slice=False,
+                     cmap=None,
                      display=True):
     """
     This routine creates 2D slices of 3D distribution function data from the FPI and HPCA instruments.
@@ -119,6 +124,17 @@ def mms_part_slice2d(trange=None,
             If the time window covers multiple matrices they will be averaged.
             This is applied before other transformations
 
+        slice_x: str or np.ndarray
+            Specifies the slice plane's x-axis within the coordinates
+            specified by custom_rotation and rotation. If not specified, the given
+            coordinate's x-axis will be used. If slice_x is not perpendicular to the
+            normal, its projection onto the slice plane will be used.
+
+        slice_norm: str or np.ndarray
+            Specifies the slice plane's normal within the coordinates
+            specified by custom_rotation and rotation; if not specified, the given
+            coordinate's z-axis will be used (slice along by x-y plane in those coordinates).
+
         energy: bool
             Flag to plot data against energy (in eV) instead of velocity.
 
@@ -184,7 +200,7 @@ def mms_part_slice2d(trange=None,
 
     if trange is None:
         if time is None:
-            print('Please specify a time or time range over which to compute the slice.')
+            logging.error('Please specify a time or time range over which to compute the slice.')
             return
         trange_data = [time_double(time)-60, time_double(time)+60]
     else:
@@ -235,7 +251,7 @@ def mms_part_slice2d(trange=None,
         dists = mms_get_hpca_dist('mms' + probe + '_hpca_' + species + '_phase_space_density', species=species,
                                   probe=probe, data_rate=data_rate)
     else:
-        print('Unknown instrument: ' + instrument + '; valid options: fpi, hpca')
+        logging.error('Unknown instrument: ' + instrument + '; valid options: fpi, hpca')
         return
 
     bfield = None
@@ -257,11 +273,11 @@ def mms_part_slice2d(trange=None,
                         mag_data=bfield, vel_data=vbulk, rotation=rotation, resolution=resolution, erange=erange,
                         energy=energy, log=log, custom_rotation=custom_rotation, subtract_bulk=subtract_bulk,
                         interpolation=interpolation, thetarange=thetarange, zdirrange=zdirrange, smooth=smooth,
-                        average_angle=average_angle, sum_angle=sum_angle)
+                        average_angle=average_angle, sum_angle=sum_angle, slice_x=slice_x, slice_z=slice_norm)
 
     if return_slice:
         return the_slice
 
     plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
          save_pdf=save_pdf, save_eps=save_eps, save_jpeg=save_jpeg, display=display, dpi=dpi, plotsize=plotsize,
-         contours=contours)
+         contours=contours, colormap=cmap, title=title)

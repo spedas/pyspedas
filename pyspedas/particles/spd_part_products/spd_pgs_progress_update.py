@@ -4,6 +4,7 @@ from time import time
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def spd_pgs_progress_update(last_update_time=None, current_sample=None, total_samples=None, type_string=None):
     """
     Helper routine prints status message indicating completion percent

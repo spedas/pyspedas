@@ -1,15 +1,14 @@
-
 import logging
 import numpy as np
-from pytplot import get_data, store_data, options
-from ...utilities.tnames import tnames
+from pytplot import get_data, store_data, options, tnames
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_units='flux', data_rate='srvy', level='l2'):
     """
-    This function will calculate the omni-directional EIS spectrograms, and is automatically called from mms_load_eis
+    This function will calculate the omnidirectional EIS spectrograms, and is automatically called from mms_load_eis
     
     Parameters
     ----------
@@ -34,8 +33,8 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         level: str
             data level ['l1a','l1b','l2pre','l2' (default)]
 
-
-    Returns:
+    Returns
+    ---------
         Name of tplot variable created.
     """
     
@@ -74,7 +73,6 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ytitle', 'MMS' + probe + ' ' + datatype + ' ' + species)
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'ysubtitle', 'Energy [keV]')
         options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'yrange', [14, 45])
-        options(prefix + species_str + '_' + data_units + '_omni' + suffix, 'Colormap', 'spedas')
 
         # create new variable with omni energy limits
         energy_minus = get_data(prefix + species_str + '_t0_energy_dminus' + suffix)

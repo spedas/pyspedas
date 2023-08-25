@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 
 from .slice2d_intrange import slice2d_intrange
@@ -157,7 +158,7 @@ def slice2d(dists,
 
     if trange is None:
         if time is None:
-            print('Please specify a time or time range over which to compute the slice.')
+            logging.error('Please specify a time or time range over which to compute the slice.')
             return
         if window is None and samples is None:
             # use single closest distribution by default
@@ -167,7 +168,7 @@ def slice2d(dists,
                        'perp_xy', 'perp_xz', 'perp_yz', 'b_exb', 'perp1-perp2']
 
     if rotation not in valid_rotations:
-        print('Invalid rotation requested; valid options: ' + ', '.join(valid_rotations))
+        logging.error('Invalid rotation requested; valid options: ' + ', '.join(valid_rotations))
         return
 
     if interpolation == '2d':
@@ -181,7 +182,7 @@ def slice2d(dists,
         if resolution is None:
             resolution = 500
     else:
-        print('Unknown interpolation method: ' + interpolation + '; valid options: "geometric", "2d"')
+        logging.error('Unknown interpolation method: ' + interpolation + '; valid options: "geometric", "2d"')
         return
 
     if time is not None:
@@ -288,7 +289,7 @@ def slice2d(dists,
 
     geo_shift = [0, 0, 0]
     if subtract_bulk:
-        vectors = slice2d_subtract(rot_matrix['vectors'], vbulk)
+        vectors = slice2d_subtract(rot_matrix['vectors'], rot_matrix['vbulk'])
 
         if vectors is not None:
             rot_matrix['vectors'] = vectors
@@ -338,5 +339,5 @@ def slice2d(dists,
            'n_samples': len(times_ind),
            **the_slice}
 
-    print('Finished slice at ' + time_string(tr[0], fmt='%Y-%m-%d %H:%M:%S.%f'))
+    logging.info('Finished slice at ' + time_string(tr[0], fmt='%Y-%m-%d %H:%M:%S.%f'))
     return out

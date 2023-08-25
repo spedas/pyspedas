@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def mam(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
@@ -422,3 +423,7 @@ def sfd(trange=['1998-01-26', '1998-01-27'],
 
     """
     return load(instrument='sfd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='Equator-S', instrument=instrument, label=label)

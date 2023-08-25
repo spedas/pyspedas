@@ -1,9 +1,8 @@
-
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
-
+from pytplot import data_exists
 import pyspedas
+
 
 class LoadTestCases(unittest.TestCase):
     def test_downloadonly(self):
@@ -53,10 +52,15 @@ class LoadTestCases(unittest.TestCase):
         pixie_vars = pyspedas.polar.pixie()
         self.assertTrue(data_exists('TXF_HIGH'))
 
+    def test_load_vis_data(self):
+        vis_vars = pyspedas.polar.vis(notplot=True)
+        self.assertTrue('Image_Counts' in vis_vars)
+
     def test_load_orbit_data(self):
         orbit_vars = pyspedas.polar.orbit()
         self.assertTrue(data_exists('AVG_SPIN_RATE'))
         self.assertTrue(data_exists('SPIN_PHASE'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,6 @@
-
 from .load import load
+from pyspedas.utilities.datasets import find_datasets
+
 
 def ephemeris(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
@@ -183,3 +184,7 @@ def imager(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='imager', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+
+def datasets(instrument=None, label=True):
+    return find_datasets(mission='TWINS', instrument=instrument, label=label)

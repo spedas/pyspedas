@@ -1,3 +1,4 @@
+import logging
 from copy import deepcopy
 import numpy as np
 
@@ -45,7 +46,7 @@ def slice2d_get_data(dists, trange=None, energy=False, erange=None):
     times_idx = slice2d_intrange(dists, trange)
 
     if len(times_idx) == 0:
-        print('No data in the time range')
+        logging.error('No data in the time range')
         return
 
     weight = np.zeros(dists[0]['bins'][:, :, :].shape)

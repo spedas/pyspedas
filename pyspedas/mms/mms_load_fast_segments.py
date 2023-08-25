@@ -1,36 +1,32 @@
-
 import os
 import logging
 import numpy as np
 from scipy.io import readsav
 from pytplot import store_data, options
-
 from pyspedas import time_double
 from pyspedas.utilities.download import download
 from pyspedas.mms.mms_config import CONFIG
 
-logging.captureWarnings(True)
-logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
-
 
 def mms_load_fast_segments(trange=None, suffix=''):
-    '''
+    """
     This function loads the fast segment intervals
     
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         suffix: str
             Suffix to append to the end of the tplot variables
             
-    Returns:
+    Returns
+    --------
         Tuple containing (start_times, end_times)
 
-    '''
-
+    """
     if trange is None:
         logging.error('Error; no trange specified.')
         return None
@@ -81,4 +77,4 @@ def mms_load_fast_segments(trange=None, suffix=''):
     options('mms_bss_fast'+suffix, 'legend_names', ['Fast'])
     options('mms_bss_fast'+suffix, 'ytitle', '')
 
-    return (unix_start, unix_end)
+    return unix_start, unix_end

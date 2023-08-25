@@ -1,9 +1,11 @@
 """Test gmag and themis load functions."""
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
-
+import logging
 import pyspedas
+import pytplot
+from pytplot import data_exists, get_coords
+
 
 
 class GmagTestCases(unittest.TestCase):
@@ -35,7 +37,7 @@ class GmagTestCases(unittest.TestCase):
 
     def test_load_gmag_data(self):
         """Load gmag."""
-        pyspedas.themis.gmag(varnames=['thg_mag_amer'])
+        pyspedas.themis.gmag(varnames=['thg_mag_amer'], sites='amer')
         self.assertTrue(data_exists('thg_mag_amer'))
 
 
@@ -112,6 +114,30 @@ class LoadTestCases(unittest.TestCase):
         """Load EFI."""
         pyspedas.themis.efi(time_clip=True, varnames=['thc_eff_e12_efs'])
         self.assertTrue(data_exists('thc_eff_e12_efs'))
+
+    def test_load_slp_data(self):
+        pyspedas.themis.slp()
+        # Check that all data is loaded
+        self.assertTrue(data_exists('slp_sun_ltime'))
+        self.assertTrue(data_exists('slp_lun_ltime'))
+        self.assertTrue(data_exists('slp_sun_pos'))
+        self.assertTrue(data_exists('slp_lun_vel'))
+        self.assertTrue(data_exists('slp_sun_ltime'))
+        self.assertTrue(data_exists('slp_lun_ltime'))
+        self.assertTrue(data_exists('slp_lun_vel'))
+        self.assertTrue(data_exists('slp_sun_att_x'))
+        self.assertTrue(data_exists('slp_sun_att_z'))
+        self.assertTrue(data_exists('slp_lun_att_x'))
+        self.assertTrue(data_exists('slp_lun_att_z'))
+        # Check that coordinate systems are set properly
+        self.assertEqual(get_coords('slp_sun_pos').lower(),'gei')
+        self.assertEqual(get_coords('slp_sun_vel').lower(),'gei')
+        self.assertEqual(get_coords('slp_sun_att_x').lower(),'gei')
+        self.assertEqual(get_coords('slp_sun_att_z').lower(),'gei')
+        self.assertEqual(get_coords('slp_lun_pos').lower(),'gei')
+        self.assertEqual(get_coords('slp_lun_vel').lower(),'gei')
+        self.assertEqual(get_coords('slp_lun_att_x').lower(),'gei')
+        self.assertEqual(get_coords('slp_lun_att_z').lower(),'gei')
 
     def test_downloadonly(self):
         """Downloadonly keyword."""

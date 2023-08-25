@@ -1,19 +1,35 @@
-
 import logging
 from time import time
-
 from pyspedas import time_double, mms
 from pyspedas.mms.particles.mms_part_products import mms_part_products
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
-def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast', 
-    trange=None, output=['energy', 'theta', 'phi', 'pa', 'gyro'], units='eflux', energy=None,
-    phi=None, theta=None, pitch=None, gyro=None, mag_data_rate=None, scpot_data_rate=None, fac_type='mphigeo',
-    center_measurement=False, spdf=False, correct_photoelectrons=False, 
-    internal_photoelectron_corrections=False, disable_photoelectron_corrections=False, zero_negative_values=False,
-    regrid=[32, 16], no_regrid=False):
+
+def mms_part_getspec(instrument='fpi',
+                     probe='1',
+                     species='e',
+                     data_rate='fast',
+                     trange=None,
+                     output=['energy', 'theta', 'phi', 'pa', 'gyro'],
+                     units='eflux',
+                     energy=None,
+                     phi=None,
+                     theta=None,
+                     pitch=None,
+                     gyro=None,
+                     mag_data_rate=None,
+                     scpot_data_rate=None,
+                     fac_type='mphigeo',
+                     center_measurement=False,
+                     spdf=False,
+                     correct_photoelectrons=False,
+                     internal_photoelectron_corrections=False,
+                     disable_photoelectron_corrections=False,
+                     zero_negative_values=False,
+                     regrid=[32, 16],
+                     no_regrid=False):
     """
     Generate spectra and moments from 3D MMS particle data
 
@@ -105,9 +121,8 @@ def mms_part_getspec(instrument='fpi', probe='1', species='e', data_rate='fast',
     start_time = time()
 
     if trange is None:
-        # test data for development
-        trange = ['2015-10-16/13:06', '2015-10-16/13:07']
-        # data_rate = 'brst'
+        logging.error('Time range not specified; please specify time range using the trange keyword.')
+        return
 
     if mag_data_rate is None:
         if data_rate == 'brst':

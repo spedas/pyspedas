@@ -1,9 +1,10 @@
+import logging
 import numpy as np
 from pytplot import get_data
-from pyspedas import time_double
+from pyspedas import time_string
 
 
-def tplot_average(tvar, trange):
+def tplot_average(tvar, trange, quiet=False):
     """
     Returns the average value of a tplot variable over a specified time range.
 
@@ -19,22 +20,23 @@ def tplot_average(tvar, trange):
     -------
         Average value of the tplot variable
     """
-    data = get_data(tvar)
+    data = get_data(tvar, dt=True)
 
     if data is None:
-        print('Error reading: ' + tvar)
+        logging.error('Error reading: ' + tvar)
         return
 
     if len(trange) != 2:
-        print('Error: time range must be two element array.')
+        logging.error('Error: time range must be two element array.')
         return
 
-    trange = time_double(trange)
+    trange = time_string(trange)
 
-    t0 = np.min(trange)
-    t1 = np.max(trange)
+    t0 = np.datetime64(trange[0])
+    t1 = np.datetime64(trange[-1])
 
-    print('Averaging ' + tvar)
+    if not quiet:
+        logging.info('Averaging ' + tvar)
 
     # find the data within the time range
     indices = np.argwhere((data.times <= t1) & (data.times >= t0))

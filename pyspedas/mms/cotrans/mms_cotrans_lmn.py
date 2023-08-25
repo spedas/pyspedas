@@ -1,8 +1,10 @@
+"""
+This function transforms MMS vector fields from GSM coordinates to LMN (boundary-normal) coordinates using the Shue et al., 1998 magnetopause model. The input and output tplot variables are specified by name_in and name_out, respectively. Additional optional parameters include specifying the input data coordinates (GSM or GSE), probe, and data rate. The function returns the name of the output variable containing the data in LMN coordinates.
+"""
 
 import numpy as np
 import logging
-from pytplot import get_data, store_data, options
-from pyspedas.cotrans.cotrans_get_coord import cotrans_get_coord
+from pytplot import get_data, store_data, options, get_coords
 from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.cotrans.gsm2lmn import gsm2lmn
 from pyspedas.mms import mec
@@ -11,8 +13,9 @@ from pyspedas import tinterpol, omni
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_rate='srvy'):
-    '''
+    """
     Tranforms MMS vector fields from GSM coordinates to LMN (boundary-normal) coordinates
     using the Shue et al., 1998 magnetopause model
 
@@ -44,7 +47,7 @@ def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_ra
     --------
         Name of the variable containing the data in LMN coordinates.
 
-    '''
+    """
 
     data_in = get_data(name_in)
     metadata_in = get_data(name_in, metadata=True)
@@ -53,7 +56,7 @@ def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_ra
         logging.error('Error reading tplot variable: ' + name_in)
         return None
 
-    data_in_coord = cotrans_get_coord(name_in).lower()
+    data_in_coord = get_coords(name_in).lower()
 
     if data_in_coord != 'gse' and data_in_coord != 'gsm' and not gse and not gsm:
         logging.error('Please specify the coordinate system of the input data.')
@@ -96,7 +99,28 @@ def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_ra
     else:
         logging.error('Problem creating tplot variable.')
 
+
 def solarwind_load(trange, level='hro2', min5=False):
+    """
+    Loads solar wind data for use in the GSM to LMN transformation.
+
+    Parameters
+    ----------
+        trange: list of float
+            Time range of data to be loaded
+
+        level: str
+            Data level (default: hro2)
+
+        min5: bool
+            Flag indicating whether to load 1 minute or 5 minute data (default: 1 minute)
+
+    Returns
+    -------
+        Numpy array of solar wind data with shape (N, 3), where N is the number of time points
+        and the columns are the time, Bz GSM, and pressure.
+    """
+
     if min5:
         datatype = '5min'
     else:
