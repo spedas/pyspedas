@@ -1,4 +1,4 @@
-from .load import load
+from pyspedas.elfin.load import load
 
 def state(trange=['2020-11-5/10:00', '2020-11-5/12:00'],
           probe='a',
