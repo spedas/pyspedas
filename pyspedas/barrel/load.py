@@ -64,7 +64,7 @@ def load(trange=None,
         prefix = "brl"+flight
         tvars = tvars + cdf_to_tplot(out_files, prefix=prefix, get_support_data=get_support_data, notplot=notplot)
 
-    if tvars is None:
+    if len(tvars) == 0:
         return
 
     if time_clip:
