@@ -1,7 +1,7 @@
 import logging
 
-from ..load import load
-from .postprocessing import epd_l1_postprocessing, epd_l2_postprocessing
+from pyspedas.elfin.load import load
+from pyspedas.elfin.epd.postprocessing import epd_l1_postprocessing, epd_l2_postprocessing
 
 
 def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
@@ -20,6 +20,9 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         nspinsinsum=None,
         no_spec=False,
         fullspin=False,
+        PAspec_energies=None,
+        PAspec_energybins=None,
+
 ):
     """
     This function loads data from the Energetic Particle Detector (EPD)
@@ -90,10 +93,11 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         List of tplot variables created.
 
     """
+    logging.info("ELFIN EPD: START LOADING.")
     tvars = load(instrument='epd', probe=probe, trange=trange, level=level, datatype=datatype, suffix=suffix,
                  get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly,
                  notplot=notplot, time_clip=time_clip, no_update=no_update)
-
+    logging.info("ELFIN EPD: LOADING END.")
     if tvars is None or notplot or downloadonly:
         return tvars
 
@@ -101,7 +105,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         "raw": "counts/sector",
         "cps": "counts/s",
         "nflux": "#/(s-cm$^2$-str-MeV)",
-        "eflux": "keV/(s-cm$^2$-str-MeV)",
+        "eflux": "keV/(s-cm$^2$-str-MeV)0",
     }
 
     if type_ in ("cal", "calibrated") or type_ not in CALIBRATED_TYPE_UNITS.keys():
@@ -111,13 +115,14 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         return epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
                                      unit=CALIBRATED_TYPE_UNITS[type_], no_spec=no_spec)
     elif level == "l2":
+        logging.info("ELFIN EPD L2: START PROCESSING.")
         # check whether input type is allowed
         if type_ not in ("nflux","eflux"):
             logging.warning(f"fluxtype {type_} is not allowed in l2 data, change to nflux!")
             type_ = "nflux"
 
         res = 'hs' if fullspin is False else 'fs'
-        return epd_l2_postprocessing(tvars, fluxtype=type_, res=res)
+        return epd_l2_postprocessing(tvars, fluxtype=type_, res=res, PAspec_energies=PAspec_energies, PAspec_energybins=PAspec_energybins)
     else:
         raise ValueError(f"Unknown level: {level}")
 
