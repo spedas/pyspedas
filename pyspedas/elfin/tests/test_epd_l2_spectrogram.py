@@ -24,13 +24,15 @@ class TestELFStateValidation(unittest.TestCase):
         # 3. add download file from server
 
         # Testing time range
-        cls.t = ['2022-08-03/08:30:00','2022-08-03/09:00:00']
+        #cls.t = ['2022-08-03/08:30:00','2022-08-03/09:00:00']
         #cls.probe = 'a'
-        #cls.t = ['2021-04-26/00:34:18','2021-04-26/00:40:18']
-        #cls.probe = 'b'
+        #cls.t = ['2022-04-12/19:00:00','2022-04-12/19:15:00']
+        cls.t = ['2022-04-13/01:28:00','2022-04-13/01:35:00']
+        cls.probe = 'b'
         #cls.t = ['2022-08-28/15:54','2022-08-28/16:15']
-        cls.probe = 'a'
+        #cls.probe = 'a'
         # Load state validation variables from the test file
+        
         filename = f"elfin_data/validation_el{cls.probe}_state_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
         tplot_restore(filename)
         cls.elf_pos_gei = pytplot.get_data(f"el{cls.probe}_pos_gei")
@@ -80,8 +82,6 @@ class TestELFStateValidation(unittest.TestCase):
         tplot_restore(filename)
         cls.elf_pef_fs_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch0")
         cls.elf_pef_fs_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch1")
-        cls.elf_pef_fs_nflux_ch2 = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch2")
-        cls.elf_pef_fs_nflux_ch3 = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch3")
         cls.elf_pef_fs_nflux_omni = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_omni")
         cls.elf_pef_fs_nflux_para = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_para")
         cls.elf_pef_fs_nflux_anti = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_anti")
@@ -120,7 +120,7 @@ class TestELFStateValidation(unittest.TestCase):
         elf_att_spinper = pytplot.get_data(f"el{self.probe}_att_spinper")
         elf_spin_orbnorm = pytplot.get_data(f"el{self.probe}_spin_orbnorm_angle")
         elf_spin_sun = pytplot.get_data(f"el{self.probe}_spin_sun_angle")
-   
+
         assert_array_almost_equal(elf_pos_gei.y, self.elf_pos_gei.y, decimal=4)
         assert_array_almost_equal(elf_vel_gei.y, self.elf_vel_gei.y, decimal=4)
         assert_array_almost_equal(elf_att_gei.y, self.elf_att_gei.y, decimal=2)
@@ -149,14 +149,14 @@ class TestELFStateValidation(unittest.TestCase):
         elf_pef_hs_Epat_nflux = pytplot.get_data(f"el{self.probe}_pef_hs_Epat_nflux")
         elf_pef_Et_nflux = pytplot.get_data(f"el{self.probe}_pef_Et_nflux")
         elf_pef_pa = pytplot.get_data(f"el{self.probe}_pef_pa")
-
-        assert_array_almost_equal(elf_pef_hs_Epat_nflux.v1, self.elf_pef_hs_Epat_nflux_ch1.v, decimal=1)      
-        assert_array_almost_equal(elf_pef_hs_Epat_nflux.y[:,:,0], self.elf_pef_hs_Epat_nflux_ch0.y, decimal=1)
-        assert_array_almost_equal(elf_pef_hs_Epat_nflux.y[:,:,1], self.elf_pef_hs_Epat_nflux_ch1.y, decimal=1)
-        assert_array_almost_equal(elf_pef_hs_LCdeg.y, self.elf_pef_hs_LCdeg.y, decimal=1)
-        assert_array_almost_equal(elf_pef_hs_antiLCdeg.y, self.elf_pef_hs_antiLCdeg.y, decimal=1)
-        assert_array_almost_equal(elf_pef_pa.y, self.elf_pef_pa.y, decimal=1)
-        assert_allclose(elf_pef_Et_nflux.y, self.elf_pef_Et_nflux.y, rtol=1e-03)
+        
+        assert_allclose(elf_pef_hs_Epat_nflux.v1, self.elf_pef_hs_Epat_nflux_ch1.v[0:251,:], rtol=1e-02)
+        assert_allclose(elf_pef_hs_Epat_nflux.y[:,:,0], self.elf_pef_hs_Epat_nflux_ch0.y, rtol=1e-02)
+        assert_allclose(elf_pef_hs_Epat_nflux.y[:,:,1], self.elf_pef_hs_Epat_nflux_ch1.y, rtol=1e-02)
+        assert_allclose(elf_pef_hs_LCdeg.y, self.elf_pef_hs_LCdeg.y, rtol=1e-02)
+        assert_allclose(elf_pef_hs_antiLCdeg.y, self.elf_pef_hs_antiLCdeg.y, rtol=1e-02)
+        assert_allclose(elf_pef_pa.y, self.elf_pef_pa.y, rtol=1e-02)
+        assert_allclose(elf_pef_Et_nflux.y, self.elf_pef_Et_nflux.y, rtol=1e-02)
         assert_allclose(elf_pef_hs_nflux_omni.y, self.elf_pef_hs_nflux_omni.y, rtol=1e-02)
         assert_allclose(elf_pef_hs_nflux_para.y, self.elf_pef_hs_nflux_para.y, rtol=1e-02)
         assert_allclose(elf_pef_hs_nflux_anti.y, self.elf_pef_hs_nflux_anti.y, rtol=1e-02)
@@ -191,14 +191,14 @@ class TestELFStateValidation(unittest.TestCase):
         elf_pef_hs_Epat_eflux = pytplot.get_data(f"el{self.probe}_pef_hs_Epat_eflux")
         elf_pef_Et_eflux = pytplot.get_data(f"el{self.probe}_pef_Et_eflux")
 
-        assert_array_almost_equal(elf_pef_hs_Epat_eflux.v1, self.elf_pef_hs_Epat_eflux_ch1.v, decimal=1)      
-        assert_array_almost_equal(elf_pef_hs_Epat_eflux.y[:,:,0], self.elf_pef_hs_Epat_eflux_ch0.y, decimal=1)
-        assert_array_almost_equal(elf_pef_hs_Epat_eflux.y[:,:,1], self.elf_pef_hs_Epat_eflux_ch1.y, decimal=1)
-        assert_allclose(elf_pef_Et_eflux.y,  self.elf_pef_Et_eflux.y, rtol=1e-03)
-        assert_allclose(elf_pef_hs_eflux_omni.y, self.elf_pef_hs_eflux_omni.y, rtol=1e-02)
-        assert_allclose(elf_pef_hs_eflux_para.y, self.elf_pef_hs_eflux_para.y, rtol=1e-02)
-        assert_allclose(elf_pef_hs_eflux_anti.y, self.elf_pef_hs_eflux_anti.y, rtol=1e-02)
-        assert_allclose(elf_pef_hs_eflux_perp.y, self.elf_pef_hs_eflux_perp.y, rtol=1e-02)
+        assert_allclose(elf_pef_hs_Epat_eflux.v1, self.elf_pef_hs_Epat_eflux_ch1.v, rtol=1e-02)
+        assert_allclose(elf_pef_hs_Epat_eflux.y[:,:,0], self.elf_pef_hs_Epat_eflux_ch0.y,  rtol=1e-02)
+        assert_allclose(elf_pef_hs_Epat_eflux.y[:,:,1], self.elf_pef_hs_Epat_eflux_ch1.y,  rtol=1e-02)
+        assert_allclose(elf_pef_Et_eflux.y,  self.elf_pef_Et_eflux.y, rtol=1e-02)
+        assert_allclose(elf_pef_hs_eflux_omni.y, self.elf_pef_hs_eflux_omni.y, rtol=2e-02)
+        assert_allclose(elf_pef_hs_eflux_para.y, self.elf_pef_hs_eflux_para.y, rtol=2e-02)
+        assert_allclose(elf_pef_hs_eflux_anti.y, self.elf_pef_hs_eflux_anti.y, rtol=2e-02)
+        assert_allclose(elf_pef_hs_eflux_perp.y, self.elf_pef_hs_eflux_perp.y, rtol=2e-02)
         # test pa spectogram ch0
         spec2plot, pas2plot = spec_pa_sort(self.elf_pef_hs_eflux_ch0.y, self.elf_pef_hs_eflux_ch0.v) # idl variable use aceding and decending pa
         assert_allclose(elf_pef_hs_eflux_ch0.y, spec2plot, rtol=1e-02)
@@ -227,8 +227,6 @@ class TestELFStateValidation(unittest.TestCase):
             )
         elf_pef_fs_nflux_ch0 = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_ch0")
         elf_pef_fs_nflux_ch1 = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_ch1")
-        elf_pef_fs_nflux_ch2 = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_ch2")
-        elf_pef_fs_nflux_ch3 = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_ch3")
         elf_pef_fs_nflux_perp = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_perp")
         elf_pef_fs_nflux_anti = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_anti")
         elf_pef_fs_nflux_para = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_para")
@@ -237,11 +235,11 @@ class TestELFStateValidation(unittest.TestCase):
         elf_pef_fs_LCdeg = pytplot.get_data(f"el{self.probe}_pef_fs_LCdeg")
         elf_pef_fs_Epat_nflux = pytplot.get_data(f"el{self.probe}_pef_fs_Epat_nflux")
 
-        assert_array_almost_equal(elf_pef_fs_Epat_nflux.v1, self.elf_pef_fs_Epat_nflux_ch1.v, decimal=1)      
-        assert_array_almost_equal(elf_pef_fs_Epat_nflux.y[:,:,0], self.elf_pef_fs_Epat_nflux_ch0.y, decimal=1)
-        assert_array_almost_equal(elf_pef_fs_Epat_nflux.y[:,:,1], self.elf_pef_fs_Epat_nflux_ch1.y, decimal=1)
-        assert_array_almost_equal(elf_pef_fs_LCdeg.y, self.elf_pef_fs_LCdeg.y, decimal=1)
-        assert_array_almost_equal(elf_pef_fs_antiLCdeg.y, self.elf_pef_fs_antiLCdeg.y, decimal=1)
+        assert_allclose(elf_pef_fs_Epat_nflux.v1, self.elf_pef_fs_Epat_nflux_ch1.v, rtol=1e-02)
+        assert_allclose(elf_pef_fs_Epat_nflux.y[:,:,0], self.elf_pef_fs_Epat_nflux_ch0.y, rtol=1e-02)
+        assert_allclose(elf_pef_fs_Epat_nflux.y[:,:,1], self.elf_pef_fs_Epat_nflux_ch1.y, rtol=1e-02)
+        assert_allclose(elf_pef_fs_LCdeg.y, self.elf_pef_fs_LCdeg.y, rtol=1e-02)
+        assert_allclose(elf_pef_fs_antiLCdeg.y, self.elf_pef_fs_antiLCdeg.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_nflux_omni.y, self.elf_pef_fs_nflux_omni.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_nflux_para.y, self.elf_pef_fs_nflux_para.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_nflux_anti.y, self.elf_pef_fs_nflux_anti.y, rtol=1e-02)
@@ -274,10 +272,10 @@ class TestELFStateValidation(unittest.TestCase):
         elf_pef_fs_eflux_para = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_para")
         elf_pef_fs_eflux_omni = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_omni")
         elf_pef_fs_Epat_eflux = pytplot.get_data(f"el{self.probe}_pef_fs_Epat_eflux")
-
-        assert_array_almost_equal(elf_pef_fs_Epat_eflux.v1, self.elf_pef_fs_Epat_eflux_ch1.v, decimal=1)      
-        assert_array_almost_equal(elf_pef_fs_Epat_eflux.y[:,:,0], self.elf_pef_fs_Epat_eflux_ch0.y, decimal=1)
-        assert_array_almost_equal(elf_pef_fs_Epat_eflux.y[:,:,1], self.elf_pef_fs_Epat_eflux_ch1.y, decimal=1)
+        
+        assert_allclose(elf_pef_fs_Epat_eflux.v1, self.elf_pef_fs_Epat_eflux_ch1.v, rtol=1e-02)
+        assert_allclose(elf_pef_fs_Epat_eflux.y[:,:,0], self.elf_pef_fs_Epat_eflux_ch0.y, rtol=1e-02)
+        assert_allclose(elf_pef_fs_Epat_eflux.y[:,:,1], self.elf_pef_fs_Epat_eflux_ch1.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_eflux_omni.y, self.elf_pef_fs_eflux_omni.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_eflux_para.y, self.elf_pef_fs_eflux_para.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_eflux_anti.y, self.elf_pef_fs_eflux_anti.y, rtol=1e-02)

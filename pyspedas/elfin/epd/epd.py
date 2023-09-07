@@ -18,7 +18,6 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         no_update=False,
         time_clip=True,
         nspinsinsum=None,
-        no_spec=False,
         fullspin=False,
         PAspec_energies=None,
         PAspec_energybins=None,
@@ -88,6 +87,34 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
             If true, generate full spin with l2 epd instead of half spin
             Default is False
 
+        PAspec_energybins: list of tuple of int, optional
+            Specified the energy bins used for generating l2 pitch angle spectra. 
+            Default is [(0,2),(3,5), (6,8), (9,15)]. If both 'PAspec_energybins' and 'PAspec_energies' 
+            are set, 'energybins' takes precedence
+            
+        PAspec_energies: list of tuple of float, optional
+            Specifies the energy range for each bin in the l2 pitch angle spectra.
+            Example: energies=[(50.,160.),(160.,345.),(345.,900.),(900.,7000.)]
+            If both 'energybins' and 'energies' are set, 'energybins' takes precedence.
+            Energy and energybin table:
+            channel     energy_range    energy_midbin
+            0           50-80           63.2
+            1           80-120          97.9
+            2           120-160         138.5
+            3           160-210         183.3
+            4           210-270         238.1
+            5           270-345         305.2
+            6           345-430         385.1
+            7           430-630         520.4
+            8           630-900         752.9
+            9           900-1300        1081.6
+            10          1300-1800       1529.7
+            11          1800-2500       2121.3
+            12          2500-3350       2893.9
+            13          3350-4150       3728.6
+            14          4150-5800       4906.1
+            15          5800+           6500.0
+
     Returns
     ----------
         List of tplot variables created.
@@ -113,7 +140,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
 
     if level == "l1":
         return epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
-                                     unit=CALIBRATED_TYPE_UNITS[type_], no_spec=no_spec)
+                                     unit=CALIBRATED_TYPE_UNITS[type_])
     elif level == "l2":
         logging.info("ELFIN EPD L2: START PROCESSING.")
         # check whether input type is allowed

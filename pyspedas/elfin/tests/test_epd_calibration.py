@@ -1,7 +1,7 @@
 import unittest
 import importlib.resources
 
-from pyspedas.elfin.epd.calibration import read_epde_calibration_data
+from pyspedas.elfin.epd.calibration_l1 import read_epde_calibration_data
 
 EXPECTED_EPDE_CAL_DATA = [
     {'ch_efficiencies': [0.74, 0.8, 0.85, 0.86, 0.87, 0.87, 0.87, 0.87, 0.82, 0.8, 0.75, 0.6, 0.5, 0.45, 0.25, 0.05],
