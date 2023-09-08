@@ -28,8 +28,6 @@ def load(trange=None,
         pyspedas.barrel.hkpg
 
     """
-
-
     if not isinstance(probe, list):
         probe = [probe]
     
@@ -55,10 +53,18 @@ def load(trange=None,
     
     if downloadonly:
         return out_files
-    
-    tvars = cdf_to_tplot(out_files, get_support_data=get_support_data, notplot=notplot)
 
-    if tvars is None:
+    #Convert the cdf files to tvars.
+    # Make sure each of the variables is prefixed with the flight ID
+    tvars=[]
+    for file in out_files:
+        p_start = file.find("bar_")
+        p_end = file.find("_", p_start + len("bar_"))
+        flight = str.upper(file[p_start+len("bar_"):p_end + 1])
+        prefix = "brl"+flight
+        tvars = tvars + cdf_to_tplot(out_files, prefix=prefix, get_support_data=get_support_data, notplot=notplot)
+
+    if len(tvars) == 0:
         return
 
     if time_clip:
