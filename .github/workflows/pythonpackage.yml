@@ -72,6 +72,7 @@ jobs:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         SPEDAS_DATA_DIR: data
         ACE_DATA_DIR: ace_data/
+        BARREL_DATA_DIR: barrel_data/
         CLUSTER_DATA_DIR: cluster_data/
         DSC_DATA_DIR: dsc_data/
         CSSWE_DATA_DIR: csswe_data/
@@ -99,6 +100,7 @@ jobs:
         PYTPLOT_LOGGING_LEVEL: error
       run: |
         # coverage run -a -m pyspedas.akebono.tests.tests
+        coverage run -a -m pyspedas.barrel.tests.tests
         coverage run -a -m pyspedas.soho.tests.tests
         coverage run -a -m pyspedas.de2.tests.tests
         coverage run -a -m pyspedas.st5.tests.tests

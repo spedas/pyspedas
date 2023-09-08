@@ -1,6 +1,6 @@
 from .load import load
 
-def sspc(trange=['2013-01-17', '2013-01-19'], 
+def sspc(trange=['2013-01-28', '2013-01-29'],
         probe='1A',
         downloadonly=False,
         no_update=False,
@@ -8,7 +8,7 @@ def sspc(trange=['2013-01-17', '2013-01-19'],
    
     return load(datatype='sspc', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
-def mspc(trange=['2013-01-17', '2013-01-19'], 
+def mspc(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
@@ -16,7 +16,7 @@ def mspc(trange=['2013-01-17', '2013-01-19'],
    
     return load(datatype='mspc', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
-def fspc(trange=['2013-01-17', '2013-01-19'], 
+def fspc(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
@@ -24,7 +24,7 @@ def fspc(trange=['2013-01-17', '2013-01-19'],
    
     return load(datatype='fspc',trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
-def rcnt(trange=['2013-01-17', '2013-01-19'], 
+def rcnt(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
@@ -32,7 +32,7 @@ def rcnt(trange=['2013-01-17', '2013-01-19'],
    
     return load(datatype='rcnt', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
-def magn(trange=['2013-01-17', '2013-01-19'], 
+def magn(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
@@ -40,7 +40,7 @@ def magn(trange=['2013-01-17', '2013-01-19'],
    
     return load(datatype='magn', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
-def ephm(trange=['2013-01-17', '2013-01-19'], 
+def ephm(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
@@ -48,7 +48,7 @@ def ephm(trange=['2013-01-17', '2013-01-19'],
    
     return load(datatype='ephm', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
 
-def hkpg(trange=['2013-01-17', '2013-01-19'], 
+def hkpg(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,

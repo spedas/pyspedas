@@ -45,7 +45,7 @@ The Python-based Space Physics Environment Data Analysis Software (PySPEDAS) fra
 
 ## Requirements
 
-Python 3.7+ is required.  
+Python 3.8+ is required.  
 
 We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a suite of packages useful for scientific data analysis. Step-by-step instructions for installing Anaconda can be found at: [Windows](https://docs.anaconda.com/anaconda/install/windows/), [macOS](https://docs.anaconda.com/anaconda/install/mac-os/), [Linux](https://docs.anaconda.com/anaconda/install/linux/)
 
