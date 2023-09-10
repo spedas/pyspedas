@@ -104,6 +104,8 @@ def epd_l2_postprocessing(
     datatype='e',
     PAspec_energies = None,
     PAspec_energybins = None,
+    Espec_LCfatol = None,
+    Espec_LCfptol = None,
 ):
     """
     Process ELF EPD L2 data and generate omni, para, anti, perp flux spectra.
@@ -156,6 +158,16 @@ def epd_l2_postprocessing(
             14          4150-5800       4906.1
             15          5800+           6500.0
 
+        Espec_LCfatol: float, optional
+            Tolerance angle for para and anti flux. A positive value makes the loss 
+            cone/antiloss cone smaller by this amount. 
+            Default is 22.25 deg.
+
+        Espec_LCfptol: float, optional
+            Tolerance angle for perp flux. A negative value means a wider angle for 
+            perp flux.
+            Default is -11 deg.
+
     Returns
     ----------
         List of tplot variables created.
@@ -176,7 +188,7 @@ def epd_l2_postprocessing(
     
     logging.info("ELFIN EPD L2: START ENERGY SPECTOGRAM.")
     # get energy spectra in four directions
-    tvars = epd_l2_Espectra(flux_tname[0], LC_tname[0])
+    tvars = epd_l2_Espectra(flux_tname[0], LC_tname[0], LCfatol=Espec_LCfatol, LCfptol=Espec_LCfptol)
 
     logging.info("ELFIN EPD L2: START PITCH ANGLE SPECTOGRAM.")
     # get pitch angle spectra

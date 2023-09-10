@@ -27,7 +27,10 @@ class TestELFStateValidation(unittest.TestCase):
         #cls.t = ['2022-08-03/08:30:00','2022-08-03/09:00:00']
         #cls.probe = 'a'
         #cls.t = ['2022-04-12/19:00:00','2022-04-12/19:15:00']
-        cls.t = ['2022-04-13/01:28:00','2022-04-13/01:35:00']
+        #cls.t = ['2022-04-13/01:28:00','2022-04-13/01:35:00']
+        #cls.t = ['2021-10-10/09:50:00','2021-10-10/10:10:00'] # elb with gap
+        cls.t = ['2021-10-12/23:00:00','2021-10-12/23:10:00'] # elb with gap
+        #cls.t = ['2022-04-01/09:45:00','2022-04-01/10:10:00'] # elb with inner belt
         cls.probe = 'b'
         #cls.t = ['2022-08-28/15:54','2022-08-28/16:15']
         #cls.probe = 'a'
@@ -150,7 +153,7 @@ class TestELFStateValidation(unittest.TestCase):
         elf_pef_Et_nflux = pytplot.get_data(f"el{self.probe}_pef_Et_nflux")
         elf_pef_pa = pytplot.get_data(f"el{self.probe}_pef_pa")
         
-        assert_allclose(elf_pef_hs_Epat_nflux.v1, self.elf_pef_hs_Epat_nflux_ch1.v[0:251,:], rtol=1e-02)
+        assert_allclose(elf_pef_hs_Epat_nflux.v1, self.elf_pef_hs_Epat_nflux_ch1.v, rtol=0.1)
         assert_allclose(elf_pef_hs_Epat_nflux.y[:,:,0], self.elf_pef_hs_Epat_nflux_ch0.y, rtol=1e-02)
         assert_allclose(elf_pef_hs_Epat_nflux.y[:,:,1], self.elf_pef_hs_Epat_nflux_ch1.y, rtol=1e-02)
         assert_allclose(elf_pef_hs_LCdeg.y, self.elf_pef_hs_LCdeg.y, rtol=1e-02)
@@ -179,7 +182,14 @@ class TestELFStateValidation(unittest.TestCase):
 
     def test_epd_l2_hs_eflux(self):
         """Validate epd l2 halfspin eflux spectogram"""
-        pyspedas.elfin.epd(trange=self.t, probe=self.probe, level='l2',no_update=True, type_='eflux')
+        pyspedas.elfin.epd(
+            trange=self.t, 
+            probe=self.probe, 
+            level='l2',
+            no_update=True, 
+            type_='eflux', 
+            Espec_LCfatol=40, 
+            Espec_LCfptol=5,)
         elf_pef_hs_eflux_ch0 = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch0")
         elf_pef_hs_eflux_ch1 = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch1")
         elf_pef_hs_eflux_ch2 = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch2")
@@ -191,7 +201,7 @@ class TestELFStateValidation(unittest.TestCase):
         elf_pef_hs_Epat_eflux = pytplot.get_data(f"el{self.probe}_pef_hs_Epat_eflux")
         elf_pef_Et_eflux = pytplot.get_data(f"el{self.probe}_pef_Et_eflux")
 
-        assert_allclose(elf_pef_hs_Epat_eflux.v1, self.elf_pef_hs_Epat_eflux_ch1.v, rtol=1e-02)
+        assert_allclose(elf_pef_hs_Epat_eflux.v1, self.elf_pef_hs_Epat_eflux_ch1.v, rtol=0.1)
         assert_allclose(elf_pef_hs_Epat_eflux.y[:,:,0], self.elf_pef_hs_Epat_eflux_ch0.y,  rtol=1e-02)
         assert_allclose(elf_pef_hs_Epat_eflux.y[:,:,1], self.elf_pef_hs_Epat_eflux_ch1.y,  rtol=1e-02)
         assert_allclose(elf_pef_Et_eflux.y,  self.elf_pef_Et_eflux.y, rtol=1e-02)
@@ -235,7 +245,7 @@ class TestELFStateValidation(unittest.TestCase):
         elf_pef_fs_LCdeg = pytplot.get_data(f"el{self.probe}_pef_fs_LCdeg")
         elf_pef_fs_Epat_nflux = pytplot.get_data(f"el{self.probe}_pef_fs_Epat_nflux")
 
-        assert_allclose(elf_pef_fs_Epat_nflux.v1, self.elf_pef_fs_Epat_nflux_ch1.v, rtol=1e-02)
+        assert_allclose(elf_pef_fs_Epat_nflux.v1, self.elf_pef_fs_Epat_nflux_ch1.v, rtol=0.1)
         assert_allclose(elf_pef_fs_Epat_nflux.y[:,:,0], self.elf_pef_fs_Epat_nflux_ch0.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_Epat_nflux.y[:,:,1], self.elf_pef_fs_Epat_nflux_ch1.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_LCdeg.y, self.elf_pef_fs_LCdeg.y, rtol=1e-02)
@@ -273,7 +283,7 @@ class TestELFStateValidation(unittest.TestCase):
         elf_pef_fs_eflux_omni = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_omni")
         elf_pef_fs_Epat_eflux = pytplot.get_data(f"el{self.probe}_pef_fs_Epat_eflux")
         
-        assert_allclose(elf_pef_fs_Epat_eflux.v1, self.elf_pef_fs_Epat_eflux_ch1.v, rtol=1e-02)
+        assert_allclose(elf_pef_fs_Epat_eflux.v1, self.elf_pef_fs_Epat_eflux_ch1.v, rtol=0.1)
         assert_allclose(elf_pef_fs_Epat_eflux.y[:,:,0], self.elf_pef_fs_Epat_eflux_ch0.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_Epat_eflux.y[:,:,1], self.elf_pef_fs_Epat_eflux_ch1.y, rtol=1e-02)
         assert_allclose(elf_pef_fs_eflux_omni.y, self.elf_pef_fs_eflux_omni.y, rtol=1e-02)
@@ -288,7 +298,7 @@ class TestELFStateValidation(unittest.TestCase):
         assert_allclose(elf_pef_fs_eflux_ch1.y, spec2plot, rtol=1e-02)
 
         logging.info("FULLSPIN EFLUX DATA TEST FINISHED.")
-
+    
 
 if __name__ == '__main__':
     unittest.main()

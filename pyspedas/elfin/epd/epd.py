@@ -21,7 +21,8 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         fullspin=False,
         PAspec_energies=None,
         PAspec_energybins=None,
-
+        Espec_LCfatol=None,
+        Espec_LCfptol=None,
 ):
     """
     This function loads data from the Energetic Particle Detector (EPD)
@@ -115,6 +116,16 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
             14          4150-5800       4906.1
             15          5800+           6500.0
 
+        Espec_LCfatol: float, optional
+            Tolerance angle for para and anti flux. A positive value makes the loss 
+            cone/antiloss cone smaller by this amount. 
+            Default is 22.25 deg.
+
+        Espec_LCfptol: float, optional
+            Tolerance angle for perp flux. A negative value means a wider angle for 
+            perp flux.
+            Default is -11 deg.
+
     Returns
     ----------
         List of tplot variables created.
@@ -139,8 +150,10 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         type_ = "nflux"
 
     if level == "l1":
-        return epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
+        tvars = epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
                                      unit=CALIBRATED_TYPE_UNITS[type_])
+        return tvars
+    
     elif level == "l2":
         logging.info("ELFIN EPD L2: START PROCESSING.")
         # check whether input type is allowed
@@ -149,7 +162,16 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
             type_ = "nflux"
 
         res = 'hs' if fullspin is False else 'fs'
-        return epd_l2_postprocessing(tvars, fluxtype=type_, res=res, PAspec_energies=PAspec_energies, PAspec_energybins=PAspec_energybins)
+        tvars = epd_l2_postprocessing(
+            tvars, 
+            fluxtype=type_, 
+            res=res, 
+            PAspec_energies=PAspec_energies, 
+            PAspec_energybins=PAspec_energybins,
+            Espec_LCfatol=Espec_LCfatol,
+            Espec_LCfptol=Espec_LCfptol,)
+        
+        return tvars
     else:
         raise ValueError(f"Unknown level: {level}")
 

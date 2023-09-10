@@ -1,5 +1,6 @@
 import logging
 from pytplot import get_data, store_data, options
+from pytplot.tplot_math import degap
 import numpy as np
 import bisect
 
@@ -95,6 +96,7 @@ def epd_l2_Espectra(
     LC_tvar,
     LCfatol=None,
     LCfptol=None,
+    nodegap=True,
     ):
 
     """
@@ -114,6 +116,9 @@ def epd_l2_Espectra(
             Tolerance angle for perp flux. A negative value means a wider angle for 
             perp flux.
             Default is -11 deg.
+        Nodegap: bool, optional
+            Flag for degap. If set, skip degap. 
+            Default is False.
 
     Return
     ----------
@@ -139,8 +144,8 @@ def epd_l2_Espectra(
     FOVo2 = 11.  # Field of View divided by 2 (deg)
     dphsect = 360./nspinsectors 
     SectWidtho2 = dphsect/2.
-    LCfatol = FOVo2 + SectWidtho2 # tolerance of pitch angle in field aligned direction, default 22.25 deg
-    LCfptol = -FOVo2  # tolerance of pitch angel in perpendicular direction, default -11. deg
+    LCfatol = FOVo2 + SectWidtho2  if LCfatol is None else LCfatol # tolerance of pitch angle in field aligned direction, default 22.25 deg
+    LCfptol = -FOVo2  if LCfptol is None else LCfptol # tolerance of pitch angel in perpendicular direction, default -11. deg
     # TODO: make sure these default values are correct
     
     # calculate domega in PA
@@ -219,6 +224,23 @@ def epd_l2_Espectra(
     store_data(perp_var, data={'x': data.times, 'y': Espectra_perp, 'v': energy}, attr_dict=get_data(flux_tvar, metadata=True))
     epd_l2_Espectra_option(perp_var)
     
+    #===========================
+    #        DEGAP
+    #=========================== 
+    if nodegap is False:
+        nspinsinsum = get_data(f"{flux_tvar[0:3]}_pef_nspinsinsum")
+        spinper = get_data(f"{flux_tvar[0:3]}_pef_tspin")
+        if np.average(nspinsinsum.y) > 1 :
+            mydt = np.max(nspinsinsum.y)*np.median(spinper.y)
+        else:
+            mydt = np.median(spinper.y)
+        breakpoint()
+        degap(omni_var, dt=mydt, margin=0.5*mydt/2)
+        degap(para_var, dt=mydt, margin=0.5*mydt/2)
+        degap(anti_var, dt=mydt, margin=0.5*mydt/2)
+        degap(perp_var, dt=mydt, margin=0.5*mydt/2)
+
+
     return [omni_var, para_var, anti_var, perp_var]
 
 
@@ -272,6 +294,7 @@ def epd_l2_PAspectra(
     flux_tvar, 
     energybins = None,
     energies = None,
+    nodegap=True,
     ):
     """
     This function processes a 3D energy-time spectra from ELF EPD L2 data 
@@ -315,7 +338,9 @@ def epd_l2_PAspectra(
             13          3350-4150       3728.6
             14          4150-5800       4906.1
             15          5800+           6500.0
-            
+        Nodegap: bool, optional
+            Flag for degap. If set, skip degap. 
+            Default is False.
 
     Return
     ----------
@@ -383,6 +408,19 @@ def epd_l2_PAspectra(
 
         store_data(PA_var, data={'x': data.times, 'y': PAspectra_single, 'v': pas2plot})
         epd_l2_PAspectra_option(PA_var)
-        PA_tvars.append(PA_var)
+
+        #===========================
+        #        DEGAP
+        #=========================== 
+        if nodegap is False:
+            nspinsinsum = get_data(f"{flux_tvar[0:3]}_pef_nspinsinsum")
+            spinper = get_data(f"{flux_tvar[0:3]}_pef_tspin")
+            if np.average(nspinsinsum.y) > 1 :
+                mydt = np.max(nspinsinsum.y)*np.median(spinper.y)
+            else:
+                mydt = np.median(spinper.y)
+            degap(PA_var, dt=mydt, margin=0.5*mydt/2)
+            PA_tvars.append(PA_var)
+
 
     return PA_tvars
