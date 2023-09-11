@@ -1,10 +1,18 @@
-"""Tests of load elfin state data."""
-import pyspedas.elfin
+"""
+This module perform unitest on elfin state file by comparing 
+with tplot variable genrate by IDL routine
+
+How to run:
+    $ python -m pyspedas.elfin.tests.test_state
+"""
+import unittest
+import logging
 import pytplot.get_data
 from pytplot.importers.tplot_restore import tplot_restore
-import unittest
 from numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal
+import pyspedas.elfin
 
+TEST_DATASET_PATH="pyspedas/elfin/tests/test_dataset/"
 
 class TestELFStateValidation(unittest.TestCase):
     """Tests of the data been identical to SPEDAS (IDL)."""
@@ -13,20 +21,14 @@ class TestELFStateValidation(unittest.TestCase):
     def setUpClass(cls):
         """
         IDL Data has to be downloaded to perform these tests
-        The IDL script that creates data file:
-        https://github.com/spedas/pyspedas-validation/blob/cal_fit/src/themis/validation_files/thm_load_fit_validation_files.pro
+        The IDL script that creates data file: (epd_state_validation.pro)
         """
-        # TODO:
-        # 1. upload .pro file to repo and change the directory here
-        # 2. upload .tplot file to server and change the directory here
-        # 3. add download file from server
-
         # Testing time range
-        cls.t = ['2022-01-14/06:28', '2022-01-14/06:35']
-        cls.probe = 'a'
+        cls.t = ['2021-10-12/23:00:00','2021-10-12/23:10:00']
+        cls.probe = 'b'
 
         # Load validation variables from the test file
-        filename = 'elfin_data/elf_state_validation.tplot'
+        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_state_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
         tplot_restore(filename)
         cls.elf_pos_gei = pytplot.get_data(f"el{cls.probe}_pos_gei")
         cls.elf_vel_gei = pytplot.get_data(f"el{cls.probe}_vel_gei")
@@ -42,8 +44,8 @@ class TestELFStateValidation(unittest.TestCase):
         """ We need to clean tplot variables before each run"""
         pytplot.del_data('*')
 
-    def test_state_pos(self):
-        """Validate load data."""
+    def test_state(self):
+        """Validate state data."""
         pyspedas.elfin.state(trange=self.t, probe=self.probe)
         elf_pos_gei = pytplot.get_data(f"el{self.probe}_pos_gei")
         elf_vel_gei = pytplot.get_data(f"el{self.probe}_vel_gei")
@@ -62,6 +64,8 @@ class TestELFStateValidation(unittest.TestCase):
         assert_allclose(elf_att_spinper.y, self.elf_att_spinper.y, rtol=1e-2)
         assert_allclose(elf_spin_orbnorm.y, self.elf_spin_orbnorm.y, rtol=1e-2)
         assert_allclose(elf_spin_sun.y, self.elf_spin_sun.y, rtol=1e-2)
+
+        logging.info("STATE DATA TEST FINISHED.")
 
 
 if __name__ == '__main__':

@@ -1,8 +1,9 @@
+import bisect
 import logging
+import numpy as np
 from pytplot import get_data, store_data, options
 from pytplot.tplot_math import degap
-import numpy as np
-import bisect
+
 
 def spec_pa_sort(
     spec2plot,
@@ -185,7 +186,7 @@ def epd_l2_Espectra(
     paraedgedeg_bcast = np.broadcast_to(paraedgedeg[:, np.newaxis], (nspinsavailable, nPAsChannel))
 
     # select index 
-    iparapas, jparapas = np.where(pas2plot< -LCfatol+paraedgedeg_bcast)
+    iparapas, jparapas = np.where(pas2plot< paraedgedeg_bcast-LCfatol)
     spec2plot_allowable = np.zeros((nspinsavailable, nPAsChannel, nEngChannel))
     spec2plot_allowable[iparapas, jparapas, :] = 1
     Espectra_para = np.nansum(spec2plot * pas2plot_domega_bcast * spec2plot_allowable, axis=1) / np.nansum(pas2plot_domega_bcast * spec2plot_allowable, axis=1)
