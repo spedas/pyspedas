@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+import math
 from geopack.geopack import recalc as geopack_recalc
 from pyspedas import cotrans, time_double
 
@@ -464,6 +465,118 @@ def rthph2xyz(r,th,ph):
     return x,y,z
 
 
+"""
+C========================================================================================
+C
+      SUBROUTINE TAG14_EQUAT_SHEET (XGSM,YGSM,ZGSM,PSI,PDYN,ByIMF,BzIMF,
+     * XGSM_S,YGSM_S,ZGSM_S)
+C
+C  INPUT:   XGSM,YGSM,ZGSM: position of a point inside the magnetosphere
+C           PSI:  geodipole tilt angle in radians
+C           PDYN: solar wind ram pressure in nanoPascals
+c           ByIMF, BzIMF:  Y- and Z- GSM components of the IMF in nT
+c                            (averaged over previous 30 minutes)
+C
+c  OUTPUT:  XGSM_S,YGSM_S,ZGSM_S: GSM coordinates of a point of the TAG14 equatorial sheet,
+c           located at the same geocentric distance R=sqrt(XGSM^2+YGSM^2+ZGSM^2)
+c           and lying in the same GSM meridian plane as the original point {XGSM,YGSM,ZGSM}
+c
+c  Author: N. A. Tsyganenko, Dec.18, 2014
+c  Reference:  Tsyganenko, N. A., V. A. Andreeva, and E. I. Gordeev, Internally and externally induced deformations
+c              of the magnetospheric equatorial current as inferred from spacecraft data, 
+c              Ann.Geophys., v.33, pp.1-11, doi:10.5194/angeo-33-1-2015, 2015.
+c
+
+Translated from FORTRAN via Chat-GPT4
+
+"""
+
+
+def tag14_equat_sheet(xgsm, ygsm, zgsm, psi, pdyn, byimf, bzimf):
+    PI = 3.1415926539
+    ERR = 1e-8
+
+    # Constants
+    RH0, RH1, RH2, RH3, RH4, RH5, T0, T1, A00, A01, A02, A10, A11, A12, ALPHA0, DALPHA1, DALPHA2, DALPHA3, XAPPA, BETA0, BETA1 = (
+        11.01595255, 6.054799445, 0.8376136340, -2.283371357, -0.2505011095, -0.9648465280, 0.2865647076, 0.1847283161,
+        2.909423481, -0.1585372900, 0.5648121327, 1.889466989, 0.06086006001, 0.4853873874, 7.128509839, 4.867577218,
+        -0.2248219212, -0.1441988549, -0.2868279445, 2.179888855, 0.4035940369
+    )
+
+    xgsm1 = xgsm
+    ygsm1 = ygsm
+    zgsm1 = zgsm
+    r = math.sqrt(xgsm1 ** 2 + ygsm1 ** 2 + zgsm1 ** 2)
+    theta = math.acos(zgsm1 / r)
+
+    if xgsm1 == 0 and ygsm1 == 0:
+        phi = 0
+    else:
+        phi = math.atan2(ygsm1, xgsm1)
+
+    byfact = byimf / 5.0
+    bzfact = bzimf / 5.0
+
+    pdyn_0 = 2.0
+    pfact = (pdyn / pdyn_0) ** XAPPA - 1.0
+
+    cps = math.cos(psi)
+    sps = math.sin(psi)
+    cp = math.cos(phi)
+    sp = math.sin(phi)
+    th1 = 0.0
+    th2 = PI
+
+    while abs(th1 - th2) > ERR:
+        th = 0.5 * (th1 + th2)
+
+        xgsm1 = r * math.sin(th) * cp
+        ygsm1 = r * math.sin(th) * sp
+        zgsm1 = r * math.cos(th)
+        xsm = xgsm1 * cps - zgsm1 * sps
+        ysm = ygsm1
+        zsm = xgsm1 * sps + zgsm1 * cps
+
+        rho = math.sqrt(xsm ** 2 + ysm ** 2)
+
+        if abs(rho) < 1e-6:
+            cosphi = 1.0
+            sinphi = 0.0
+        else:
+            cosphi = xsm / rho
+            sinphi = ysm / rho
+
+        alpha = ALPHA0 + DALPHA1 * cosphi + DALPHA2 * pfact + DALPHA3 * bzfact
+        beta = BETA0 + BETA1 * bzfact
+
+        rh = RH0 + RH1 * pfact + RH2 * bzfact + (RH3 + RH4 * pfact + RH5 * bzfact) * cosphi
+        t = T0 + T1 * pfact
+        a0 = A00 + A01 * pfact + A02 * bzfact
+        a1 = A10 + A11 * pfact + A12 * bzfact
+
+        f = 1.0 - (1.0 + (rho / rh) ** alpha) ** (1.0 / alpha)
+        g = a0 + a1 * cosphi
+        f1 = t * byfact * (rho / 10.0) ** beta * sinphi
+
+        zsm_sheet = rh * math.tan(psi) * f * g + f1
+
+        ff = zsm - zsm_sheet
+
+        if ff > 0:
+            th1 = th
+        else:
+            th2 = th
+
+    theta_s_gsm = 0.5 * (th1 + th2)
+
+    xgsm_s = r * math.sin(theta_s_gsm) * cp
+    ygsm_s = r * math.sin(theta_s_gsm) * sp
+    zgsm_s = r * math.cos(theta_s_gsm)
+
+    return xgsm_s, ygsm_s, zgsm_s
+
+
+
 def neutral_sheet(time, pos, kp=None, model='themis', mlt=None, in_coord='gsm', sc2NS=False):
     """
     Calculate the distance to the neutral sheet for a given time and position.
@@ -530,3 +643,6 @@ def neutral_sheet(time, pos, kp=None, model='themis', mlt=None, in_coord='gsm', 
         return den_fairfield_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == 'lopez':
         return lopez_ns_model(time, gsm_pos, kp=kp, mlt=mlt, sc2NS=sc2NS)
+
+
+
