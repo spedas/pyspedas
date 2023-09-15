@@ -487,7 +487,8 @@ c              of the magnetospheric equatorial current as inferred from spacecr
 c              Ann.Geophys., v.33, pp.1-11, doi:10.5194/angeo-33-1-2015, 2015.
 c
 
-Translated from FORTRAN via Chat-GPT4
+Translated from FORTRAN via Chat-GPT4. 
+Original FORTRAN source: https://geo.phys.spbu.ru/~tsyganenko/models/cs/TAG14.for
 
 """
 
