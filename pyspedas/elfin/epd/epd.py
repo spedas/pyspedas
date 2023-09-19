@@ -163,10 +163,10 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
 
         res = 'hs' if fullspin is False else 'fs'
         tvars = epd_l2_postprocessing(
-            tvars, 
-            fluxtype=type_, 
-            res=res, 
-            PAspec_energies=PAspec_energies, 
+            tvars,
+            fluxtype=type_,
+            res=res,
+            PAspec_energies=PAspec_energies,
             PAspec_energybins=PAspec_energybins,
             Espec_LCfatol=Espec_LCfatol,
             Espec_LCfptol=Espec_LCfptol,)

@@ -178,21 +178,21 @@ def epd_l2_postprocessing(
 
     flux_tname = [name for name in tplotnames if f"p{datatype}f_{res}_Epat_{fluxtype}" in name]
     LC_tname = [name for name in tplotnames if f"_{res}_LCdeg" in name]  #TODO: change loss cone name later
-    if len(flux_tname) != 1: 
+    if len(flux_tname) != 1:
         logging.error(f'{len(flux_tname)} flux tplot variables is found!')
         return
     
-    if len(LC_tname) != 1: 
+    if len(LC_tname) != 1:
         logging.error(f'{len(LC_tname)} LC tplot variables is found!')
         return
     
     logging.info("ELFIN EPD L2: START ENERGY SPECTOGRAM.")
     # get energy spectra in four directions
-    tvars = epd_l2_Espectra(flux_tname[0], LC_tname[0], LCfatol=Espec_LCfatol, LCfptol=Espec_LCfptol)
+    E_tvar = epd_l2_Espectra(flux_tname[0], LC_tname[0], LCfatol=Espec_LCfatol, LCfptol=Espec_LCfptol)
 
     logging.info("ELFIN EPD L2: START PITCH ANGLE SPECTOGRAM.")
     # get pitch angle spectra
     #tvars = epd_l2_PAspectra(flux_tname[0], energies=[(60, 200),(300, 1000)])
-    tvars = epd_l2_PAspectra(flux_tname[0], energies=PAspec_energies, energybins=PAspec_energybins)
+    PA_tvar = epd_l2_PAspectra(flux_tname[0], energies=PAspec_energies, energybins=PAspec_energybins)
 
-    return tvars
+    return E_tvar + PA_tvar

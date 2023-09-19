@@ -79,7 +79,7 @@ def epd_l2_Espectra_option(
 
     """
     unit_ = '#/(s-cm$^2$-str-MeV)' if "nflux" in flux_var else 'keV/(s-cm$^2$-str-MeV)'
-    zrange = [10, 2e7] if "nflux" in flux_var else [1e4, 1e9]
+    zrange = [10, 2e7] if "nflux" in flux_var else [1.e1, 2.e7]
 
     options(flux_var, 'spec', True)
     options(flux_var, 'yrange', [55., 6800])  # energy range
@@ -88,7 +88,7 @@ def epd_l2_Espectra_option(
     options(flux_var, 'zlog', True)
     flux_var_ytitle = flux_var[0:10] + "\n" + flux_var[11:]
     options(flux_var, 'ytitle', flux_var_ytitle)
-    options(flux_var, 'ysubtitle', 'Energy (keV)')
+    options(flux_var, 'ysubtitle', '[keV]')
     options(flux_var, 'ztitle', unit_)
 
     
@@ -235,7 +235,7 @@ def epd_l2_Espectra(
             mydt = np.max(nspinsinsum.y)*np.median(spinper.y)
         else:
             mydt = np.median(spinper.y)
-        breakpoint()
+
         degap(omni_var, dt=mydt, margin=0.5*mydt/2)
         degap(para_var, dt=mydt, margin=0.5*mydt/2)
         degap(anti_var, dt=mydt, margin=0.5*mydt/2)
@@ -265,17 +265,17 @@ def epd_l2_PAspectra_option(
     if set_zrange is True:
         if "nflux" in flux_var:
             zrange_list = {
-                0: [2.e3, 5.e6], 
-                1: [1.e3, 3.e6], 
-                2: [1.e2, 1.e6], 
-                3: [1.e1, 5.e3], 
+                0: [2.e3, 2.e7],
+                1: [1.e3, 4.e6],
+                2: [1.e2, 1.e6],
+                3: [1.e1, 2.e4],
             }
         else:
             zrange_list = {
-                0: [5.e5, 1.e10], 
-                1: [5.e5, 5.e9], 
-                2: [5.e5, 2.5e9], 
-                3: [1.e5, 1.e8], 
+                0: [5.e5, 1.e10],
+                1: [5.e5, 5.e9],
+                2: [5.e5, 2.5e9],
+                3: [1.e5, 1.e8],
             }
         ch_num = int(flux_var.split("ch")[-1])
         zrange = zrange_list.get(ch_num, [1e1, 1e2]) if "nflux" in flux_var else zrange_list.get(ch_num, [1.e4, 1.e7])
@@ -353,10 +353,10 @@ def epd_l2_PAspectra(
         345.00043, 429.99945, 630.00061, 899.99890, 1300.0013, 1799.9985,
         2500.0022, 3349.9990, 4150.0034, 5800.0000])  # TODO: make sure it's safe to hardcode here
     EMAXS = np.array([
-        79.999962, 120.00005, 159.99998, 210.00015, 269.99973, 345.00043, 
-        429.99945, 630.00061, 899.99890, 1300.0013, 1799.9985, 2500.0022, 
+        79.999962, 120.00005, 159.99998, 210.00015, 269.99973, 345.00043,
+        429.99945, 630.00061, 899.99890, 1300.0013, 1799.9985, 2500.0022,
         3349.9990, 4150.0034, 5800.0000, 7200.0000])
-  
+
     # load L2 t-PA-E 3D flux 
     data = get_data(flux_tvar)
     energy_midbin = np.copy(data.v2)
@@ -421,7 +421,8 @@ def epd_l2_PAspectra(
             else:
                 mydt = np.median(spinper.y)
             degap(PA_var, dt=mydt, margin=0.5*mydt/2)
-            PA_tvars.append(PA_var)
+        
+        PA_tvars.append(PA_var)
 
 
     return PA_tvars
