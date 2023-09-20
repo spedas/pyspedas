@@ -97,6 +97,9 @@ def load(trange=['2018-11-5', '2018-11-6'],
             elif datatype ==  'sqtn_rfs_V1V2':
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
 
+            else:
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+
         else:
             # Generic SPDF path.  
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
@@ -105,6 +108,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
         # Files on Berkeley server are stored in monthly directories 
         if username != None:
             pathformat = pathformat.replace('/%Y/psp_fld', '/%Y/%m/psp_fld')
+            if level == 'l1':
+                pathformat = pathformat.replace('psp_fld', 'spp_fld')
 
     elif instrument == 'spc':
         prefix = 'psp_spc_'
