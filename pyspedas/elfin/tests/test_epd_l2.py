@@ -10,10 +10,13 @@ import logging
 from numpy.testing import assert_allclose
 import pytplot.get_data
 from pytplot.importers.tplot_restore import tplot_restore
+
 import pyspedas.elfin
 from pyspedas.elfin.epd.calibration_l2 import spec_pa_sort
+from pyspedas.utilities.download import download
+from pyspedas.elfin.config import CONFIG
 
-TEST_DATASET_PATH="pyspedas/elfin/tests/test_dataset/"
+TEST_DATASET_PATH="test/"
 
 class TestELFL2Validation(unittest.TestCase):
     """Tests of the data been identical to SPEDAS (IDL)."""
@@ -31,8 +34,16 @@ class TestELFL2Validation(unittest.TestCase):
         cls.t = ['2022-08-28/15:54','2022-08-28/16:15'] # pass
         cls.probe = 'a'
 
-        # load epd l2 hs nflux spectrogram 
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_hs_nflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        # load epd l2 hs nflux spectrogram
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_hs_nflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            # Skip tests
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_hs_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch0")
         cls.elf_pef_hs_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch1")
@@ -46,12 +57,19 @@ class TestELFL2Validation(unittest.TestCase):
         cls.elf_pef_hs_LCdeg = pytplot.get_data(f"el{cls.probe}_pef_hs_LCdeg")
         cls.elf_pef_Et_nflux = pytplot.get_data(f"el{cls.probe}_pef_Et_nflux")
         cls.elf_pef_pa = pytplot.get_data(f"el{cls.probe}_pef_pa")
-        cls.elf_pef_hs_Epat_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_nflux_ch0") 
+        cls.elf_pef_hs_Epat_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_nflux_ch0")
         # Epat is 3d, can't save it with idl
         cls.elf_pef_hs_Epat_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_nflux_ch1")
 
         # load epd l2 hs eflux spectrogram
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_hs_eflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_hs_eflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_hs_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch0")
         cls.elf_pef_hs_eflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch1")
@@ -62,12 +80,20 @@ class TestELFL2Validation(unittest.TestCase):
         cls.elf_pef_hs_eflux_anti = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_anti")
         cls.elf_pef_hs_eflux_perp = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_perp")
         cls.elf_pef_Et_eflux = pytplot.get_data(f"el{cls.probe}_pef_Et_eflux")
-        cls.elf_pef_hs_Epat_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_eflux_ch0") 
+        cls.elf_pef_hs_Epat_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_eflux_ch0")
         # Epat is 3d, can't save it with idl
         cls.elf_pef_hs_Epat_eflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_eflux_ch1")
-       
-        # load epd l2 fs nflux spectrogram 
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_fs_nflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+
+
+        # load epd l2 fs nflux spectrogram
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_fs_nflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_fs_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch0")
         cls.elf_pef_fs_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch1")
@@ -77,12 +103,20 @@ class TestELFL2Validation(unittest.TestCase):
         cls.elf_pef_fs_nflux_perp = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_perp")
         cls.elf_pef_fs_antiLCdeg = pytplot.get_data(f"el{cls.probe}_pef_fs_antiLCdeg")
         cls.elf_pef_fs_LCdeg = pytplot.get_data(f"el{cls.probe}_pef_fs_LCdeg")
-        cls.elf_pef_fs_Epat_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_nflux_ch0") 
+        cls.elf_pef_fs_Epat_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_nflux_ch0")
         # Epat is 3d, can't save it with idl
         cls.elf_pef_fs_Epat_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_nflux_ch1")
 
-        # load epd l2 fs eflux spectrogram 
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_fs_eflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+
+        # load epd l2 fs eflux spectrogram
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_fs_eflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_fs_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_ch0")
         cls.elf_pef_fs_eflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_ch1")
@@ -90,7 +124,7 @@ class TestELFL2Validation(unittest.TestCase):
         cls.elf_pef_fs_eflux_para = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_para")
         cls.elf_pef_fs_eflux_anti = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_anti")
         cls.elf_pef_fs_eflux_perp = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_perp")
-        cls.elf_pef_fs_Epat_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_eflux_ch0") 
+        cls.elf_pef_fs_Epat_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_eflux_ch0")
         # Epat is 3d, can't save it with idl
         cls.elf_pef_fs_Epat_eflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_eflux_ch1")
 

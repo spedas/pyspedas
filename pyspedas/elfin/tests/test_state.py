@@ -10,9 +10,12 @@ import logging
 import pytplot.get_data
 from pytplot.importers.tplot_restore import tplot_restore
 from numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal
-import pyspedas.elfin
 
-TEST_DATASET_PATH="pyspedas/elfin/tests/test_dataset/"
+import pyspedas.elfin
+from pyspedas.utilities.download import download
+from pyspedas.elfin.config import CONFIG
+
+TEST_DATASET_PATH="test/"
 
 class TestELFStateValidation(unittest.TestCase):
     """Tests of the data been identical to SPEDAS (IDL)."""
@@ -28,7 +31,14 @@ class TestELFStateValidation(unittest.TestCase):
         cls.probe = 'b'
 
         # Load validation variables from the test file
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_state_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_state_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pos_gei = pytplot.get_data(f"el{cls.probe}_pos_gei")
         cls.elf_vel_gei = pytplot.get_data(f"el{cls.probe}_vel_gei")

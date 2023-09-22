@@ -10,9 +10,12 @@ import logging
 import pytplot.get_data
 from pytplot.importers.tplot_restore import tplot_restore
 from numpy.testing import assert_allclose
-import pyspedas.elfin
 
-TEST_DATASET_PATH="pyspedas/elfin/tests/test_dataset/"
+import pyspedas.elfin
+from pyspedas.utilities.download import download
+from pyspedas.elfin.config import CONFIG
+
+TEST_DATASET_PATH="test/"
 
 class TestELFL1Validation(unittest.TestCase):
     """Tests of the data been identical to SPEDAS (IDL)."""
@@ -24,26 +27,54 @@ class TestELFL1Validation(unittest.TestCase):
         The IDL script that creates data file: epd_level1_check.pro
         """
         # Testing time range
-        cls.t = ['2022-04-12/19:00:00','2022-04-12/19:15:00'] 
+        cls.t = ['2022-04-12/19:00:00','2022-04-12/19:15:00']
         cls.probe = 'b'
 
         # load epd l1 raw flux
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l1_raw_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l1_raw_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_raw = pytplot.get_data(f"el{cls.probe}_pef_raw")
 
         # load epd l1 cps flux
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l1_cps_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l1_cps_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_cps = pytplot.get_data(f"el{cls.probe}_pef_cps")
 
         # load epd l1 nflux flux
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l1_nflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l1_nflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_nflux = pytplot.get_data(f"el{cls.probe}_pef_nflux")
 
         # load epd l1 eflux spectrogram
-        filename = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l1_eflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l1_eflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
+        calfile = download(remote_file=calfile_name,
+                           remote_path=CONFIG['remote_data_dir'],
+                           local_path=CONFIG['local_data_dir'],
+                           no_download=False)
+        if not calfile:
+            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+        filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_eflux = pytplot.get_data(f"el{cls.probe}_pef_eflux")
         cls.elf_pef_sectnum = pytplot.get_data(f"el{cls.probe}_pef_sectnum")
