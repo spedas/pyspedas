@@ -1,8 +1,9 @@
 import logging
+from pytplot import get_data
+import numpy as np
 
 from pyspedas.elfin.load import load
 from pyspedas.elfin.epd.postprocessing import epd_l1_postprocessing, epd_l2_postprocessing
-
 
 def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         probe='a',
@@ -132,13 +133,15 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
 
     """
     logging.info("ELFIN EPD: START LOADING.")
+    
     tvars = load(instrument='epd', probe=probe, trange=trange, level=level, datatype=datatype, suffix=suffix,
                  get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly,
                  notplot=notplot, time_clip=time_clip, no_update=no_update)
+
     logging.info("ELFIN EPD: LOADING END.")
     if tvars is None or notplot or downloadonly:
         return tvars
-
+   
     CALIBRATED_TYPE_UNITS = {
         "raw": "counts/sector",
         "cps": "counts/s",
@@ -150,10 +153,10 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         type_ = "nflux"
 
     if level == "l1":
-        tvars = epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
+        l1_tvars = epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
                                      unit=CALIBRATED_TYPE_UNITS[type_])
-        return tvars
-    
+        return l1_tvars
+
     elif level == "l2":
         logging.info("ELFIN EPD L2: START PROCESSING.")
         # check whether input type is allowed
@@ -162,8 +165,20 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
             type_ = "nflux"
 
         res = 'hs' if fullspin is False else 'fs'
-        tvars = epd_l2_postprocessing(
-            tvars,
+
+        # if 32 sector data is needed, pass the variables with 32
+        tvars_32 = [tvar for tvar in tvars if '_32' in tvar]
+        tvars_16 = [tvar.replace('_32', '') for tvar in tvars_32]
+        tvars_other = list(set(tvars) - set(tvars_32) - set(tvars_16))
+        
+        tvars_input = tvars_other + tvars_16
+        if len(tvars_32) != 0 :
+            data = get_data(tvars_32[0])
+            if np.any(~np.isnan(data.y)) : # if any 32 sector data is not nan
+                tvars_input = tvars_other + tvars_32
+        
+        l2_tvars = epd_l2_postprocessing(
+            tvars_input,
             fluxtype=type_,
             res=res,
             PAspec_energies=PAspec_energies,
@@ -171,7 +186,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
             Espec_LCfatol=Espec_LCfatol,
             Espec_LCfptol=Espec_LCfptol,)
         
-        return tvars
+        return l2_tvars
     else:
         raise ValueError(f"Unknown level: {level}")
 

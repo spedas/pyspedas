@@ -26,16 +26,6 @@ class TestELFL2Validation(unittest.TestCase):
         """
 
         # Testing time range
-        #cls.t = ['2022-08-03/08:30:00','2022-08-03/09:00:00'] # pass
-        #cls.probe = 'a'
-        #cls.t = ['2022-04-12/19:00:00','2022-04-12/19:15:00'] # elb, can't pass
-        #cls.probe = 'b'
-        #cls.t = ['2022-04-13/01:28:00','2022-04-13/01:35:00'] # pass
-        #cls.probe = 'b'
-        #cls.t = ['2021-10-10/09:50:00','2021-10-10/10:10:00'] # elb with gap, 4 case can't pass
-        #cls.probe = 'b'
-        #cls.t = ['2021-10-12/23:00:00','2021-10-12/23:10:00'] # elb with gap, pass
-        #cls.probe = 'b'
         #cls.t = ['2022-04-01/09:45:00','2022-04-01/10:10:00'] # elb with inner belt, pass
         #cls.probe = 'b'
         cls.t = ['2022-08-28/15:54','2022-08-28/16:15'] # pass
