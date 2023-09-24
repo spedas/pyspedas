@@ -185,7 +185,7 @@ class TestELFL2Validation(unittest.TestCase):
             trange=self.t,
             probe=self.probe,
             level='l2',
-            no_update=True,
+            no_update=False,
             type_='eflux',
             Espec_LCfatol=40,
             Espec_LCfptol=5,)
@@ -231,7 +231,7 @@ class TestELFL2Validation(unittest.TestCase):
             trange=self.t,
             probe=self.probe,
             level='l2',
-            no_update=True,
+            no_update=False,
             fullspin=True,
             PAspec_energybins=[(0,3),(4,6)],
             )
@@ -271,7 +271,7 @@ class TestELFL2Validation(unittest.TestCase):
             trange=self.t,
             probe=self.probe,
             level='l2',
-            no_update=True,
+            no_update=False,
             fullspin=True,
             type_='eflux',
             PAspec_energies=[(50,250),(250,430)],
