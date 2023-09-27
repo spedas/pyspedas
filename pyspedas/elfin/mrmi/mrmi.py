@@ -76,3 +76,8 @@ def mrmi(trange=['2020-11-5', '2020-11-6'],
 
     return mrmi_postprocessing(tvars)
 
+def mrmi_postprocessing(variables):
+    """
+    Placeholder for MRMa post-processing
+    """
+    return variables
