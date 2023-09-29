@@ -120,13 +120,19 @@ def load_fdsn(trange=None, network=None, station=None):
             if len(run_ts.dataset.channels_recorded_magnetic) != 3:
                 continue
 
+            # TODO: add check if the filters are available to calibrate data
+
+            # Convert counts to physical units
+            run_ts = run_ts.calibrate()
+
             # Copy numpy arrays to ensure that data is in memory after mth5 is closed
-            if not time:
+            if time.size == 0:
                 time = run_ts.dataset.time.to_numpy()
             else:
                 time = np.append(time, run_ts.dataset.time.to_numpy())
 
             # TODO: can channels_recorded_magnetic not be hx, hy, hz? Just in case add the check
+            # TODO: add support for bx, by, bz
             x = np.append(x, run_ts.dataset.hx.to_numpy())
             y = np.append(y, run_ts.dataset.hy.to_numpy())
             z = np.append(z, run_ts.dataset.hz.to_numpy())
@@ -136,7 +142,7 @@ def load_fdsn(trange=None, network=None, station=None):
                 units.add(run_ts.dataset.hy.units)
                 units.add(run_ts.dataset.hz.units)
             except AttributeError:
-                pyspedas.logger.warning("Problem with adding  run dataset units")
+                pyspedas.logger.warning("Problem with adding run dataset units")
 
             try:
                 measurements_type.add(run_ts.dataset.hx.type)
@@ -151,6 +157,7 @@ def load_fdsn(trange=None, network=None, station=None):
 
     # TODO: Add metadata
 
+    # TODO: Clip time according to original times, add noclip parameter
 
     store_data(tplot_variable, data=data, attr_dict=attr_dict)
     tplot_options = {
