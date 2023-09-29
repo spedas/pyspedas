@@ -26,7 +26,7 @@ import copy
 from collections.abc import Iterable
 
 
-def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=False, get_metadata=False,
+def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None, get_support_data=False, get_metadata=False,
                  get_ignore_data=False, string_encoding='ascii',
                  prefix='', suffix='', plot=False, merge=False,
                  center_measurement=False, notplot=False, varnames=[]):
@@ -51,6 +51,9 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
         varformat : str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+        exclude_format : str
+            The file variable formats to exclude from loading into tplot.  Wildcard character
+            "*" is accepted. By default, no variables are excluded.
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
             will be loaded into tplot.  By default, only loads in data with a
@@ -120,6 +123,13 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
     varformat = varformat.replace("*", ".*")
     var_regex = re.compile(varformat)
 
+    if exclude_format is not None:
+        exclude_format = exclude_format.replace("*",".*")
+        exclude_regex = re.compile(exclude_format)
+    else:
+        exclude_regex = None
+
+
     # This step may not be appropriate if the lexicographic sort does not correspond to a time sort. (For example,
     # if filenames contain orbit numbers rather than dates, and no leading zeroes are used.)  JWL 2023-03-17
 
@@ -170,6 +180,9 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, get_support_data=Fal
         for var in load_cdf_variables:
             if not re.match(var_regex, var):
                 logging.debug("Variable %s does not match varformat, skipping", var)
+                continue
+            elif exclude_regex is not None and re.match(exclude_regex, var):
+                logging.debug("Variable %s matches exclude_format, skipping", var)
                 continue
             logging.debug('Processing variable attributes for %s', var)
             try:
