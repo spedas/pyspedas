@@ -8,6 +8,7 @@ from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
 from pyspedas import tdpwrspc
 import pyspedas
 from pytplot import get_data, del_data, tplot
+import logging
 
 
 class FSMLoadTestCases(unittest.TestCase):
@@ -246,12 +247,29 @@ class FGMLoadTestCases(unittest.TestCase):
         self.assertTrue(d1.shape == d2.shape)
 
     def test_load_default_data(self):
-        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
+        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'],available=True)
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
         self.assertTrue(data_exists('Epoch'))
         self.assertTrue(data_exists('Epoch_state'))
         tplot(['mms1_fgm_b_gse_srvy_l2'], display=False)
+
+    def test_load_default_data_exclude(self):
+        # Capture all log messages of level INFO or above
+        with self.assertLogs(level=logging.INFO) as captured:
+            # assertLogs fails if there are no log messages, so we make sure there's at least one
+            logging.info("Dummy log message")
+            data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'],exclude_format='*rdeltahalf*',available=True)
+            data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'],exclude_format='*rdeltahalf*')
+            self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
+            self.assertTrue(data_exists('Epoch'))
+            self.assertTrue(data_exists('Epoch_state'))
+            tplot(['mms1_fgm_b_gse_srvy_l2'], display=False)
+            print("If no warnings have been logged, the test passed.")
+        # Assert that none of the log messages contain the string "rdeltahalf"
+        for rec in captured.records:
+            print(rec.msg)
+            self.assertTrue("rdeltahalf" not in rec.msg)
 
     def test_load_spdf_data(self):
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], spdf=True)
