@@ -1,4 +1,5 @@
 from .load import load
+from .spec import bg_sub
 
 def sspc(trange=['2013-01-28', '2013-01-29'],
         probe='1A',
