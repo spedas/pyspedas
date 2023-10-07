@@ -139,14 +139,17 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
                  notplot=notplot, time_clip=time_clip, no_update=no_update)
 
     logging.info("ELFIN EPD: LOADING END.")
-    if tvars is None or notplot or downloadonly:
+    if notplot or downloadonly:
+        return tvars
+    elif not tvars:
+        logging.error('ELFIN EPD: cannot load data.')
         return tvars
    
     CALIBRATED_TYPE_UNITS = {
         "raw": "counts/sector",
         "cps": "counts/s",
         "nflux": "#/(s-cm$^2$-str-MeV)",
-        "eflux": "keV/(s-cm$^2$-str-MeV)0",
+        "eflux": "keV/(s-cm$^2$-str-MeV)",
     }
 
     if type_ in ("cal", "calibrated") or type_ not in CALIBRATED_TYPE_UNITS.keys():

@@ -78,7 +78,7 @@ def epd_l2_Espectra_option(
             Tplot variable name of 2d omni/para/anti/perp flux spectra
 
     """
-    unit_ = '#/(s-cm$^2$-str-MeV)' if "nflux" in flux_var else 'keV/(s-cm$^2$-str-MeV)'
+    unit_ = '#/(s-cm$^2$\n-str-MeV)' if "nflux" in flux_var else 'keV/(s-cm$^2$\n-str-MeV)'
     zrange = [10, 2e7] if "nflux" in flux_var else [1.e1, 2.e7]
 
     options(flux_var, 'spec', True)
@@ -261,7 +261,7 @@ def epd_l2_PAspectra_option(
             Default is True. Only works for default four channels.
     """
 
-    unit_ = '#/(s-\ncm$^2$-str-MeV)' if "nflux" in flux_var else 'keV/(s-\ncm$^2$-str-MeV)'
+    unit_ = '#/(s-cm$^2$\n-str-MeV)' if "nflux" in flux_var else 'keV/(s-cm$^2$\n-str-MeV)'
     if set_zrange is True:
         if "nflux" in flux_var:
             zrange_list = {
