@@ -265,10 +265,10 @@ class FGMLoadTestCases(unittest.TestCase):
             self.assertTrue(data_exists('Epoch'))
             self.assertTrue(data_exists('Epoch_state'))
             tplot(['mms1_fgm_b_gse_srvy_l2'], display=False)
-            print("If no warnings have been logged, the test passed.")
         # Assert that none of the log messages contain the string "rdeltahalf"
+        logging.info("Captured log messages:")
         for rec in captured.records:
-            print(rec.msg)
+            logging.info(rec.msg)
             self.assertTrue("rdeltahalf" not in rec.msg)
 
     def test_load_spdf_data(self):
