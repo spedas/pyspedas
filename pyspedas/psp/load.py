@@ -114,12 +114,16 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 pathformat = pathformat.replace('psp_fld', 'spp_fld')
 
     elif instrument == 'spc':
-        prefix = 'psp_spc_'
         if username is None:
+            prefix = 'psp_spc_'
             pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
         else:
             # unpublished data
-            pathformat = 'sweap/spc/' + level + '/%Y/%m/psp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
+            # spc pre-public data is prepended by "spp", not "psp"
+            # The psp_ files are located in the same directory after public release
+            # but in that case users can just use the public (spdf) option. 
+            prefix = 'spp_spc_'
+            pathformat = 'sweap/spc/' + level + '/%Y/%m/spp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
     elif instrument == 'spe':
         prefix = 'psp_spe_'
         pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_v??.cdf'
