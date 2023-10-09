@@ -10,7 +10,6 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         datatype='pef',
         level='l1',
         type_='nflux',
-        suffix='',
         get_support_data=False,
         varformat=None,
         varnames=[],
@@ -39,9 +38,6 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
 
         level: str, optional.
             Data level. Options are 'l1' (default) and 'l2'.
-
-        suffix: str, optional
-            Suffix added to tplot variable names during loading. Defaults to no suffix.
 
         get_support_data: bool, optional
             If True, data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -131,7 +127,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
     """
     logging.info("ELFIN EPD: START LOADING.")
     
-    tvars = load(instrument='epd', probe=probe, trange=trange, level=level, datatype=datatype, suffix=suffix,
+    tvars = load(instrument='epd', probe=probe, trange=trange, level=level, datatype=datatype,
                  get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly,
                  notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -151,7 +147,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
 
     if type_ in ("cal", "calibrated") or type_ not in CALIBRATED_TYPE_UNITS.keys():
         type_ = "nflux"
-
+    breakpoint()
     if level == "l1":
         l1_tvars = epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
                                      unit=CALIBRATED_TYPE_UNITS[type_])
