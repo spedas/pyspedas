@@ -147,7 +147,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
 
     if type_ in ("cal", "calibrated") or type_ not in CALIBRATED_TYPE_UNITS.keys():
         type_ = "nflux"
-    breakpoint()
+        
     if level == "l1":
         l1_tvars = epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
                                      unit=CALIBRATED_TYPE_UNITS[type_])

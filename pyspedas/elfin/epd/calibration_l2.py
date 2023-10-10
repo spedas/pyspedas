@@ -181,7 +181,7 @@ def epd_l2_Espectra(
     # load loss cone data
     data = get_data(LC_tvar)
 
-    # southern hemisphere 
+    # loss cone
     paraedgedeg = np.array([lc if lc < 90 else 180-lc for lc in data.y])
     paraedgedeg_bcast = np.broadcast_to(paraedgedeg[:, np.newaxis], (nspinsavailable, nPAsChannel))
 
