@@ -5,7 +5,7 @@
 
 from __future__ import division
 import numpy as np
-from bokeh.plotting import figure
+from bokeh.plotting.figure import Figure
 from bokeh.models import (ColumnDataSource, DatetimeAxis, HoverTool, 
                           Range1d, Span, Title, Legend, BoxAnnotation)
 from bokeh.models.glyphs import Line
@@ -46,7 +46,7 @@ class TVarFigure1D(object):
         self.linenum = 0
         self.interactive_plot = None
 
-        self.fig = figure(x_axis_type='datetime',
+        self.fig = Figure(x_axis_type='datetime', 
                           tools=pytplot.tplot_opt_glob['tools'],
                           y_axis_type=self._getyaxistype())
         self.fig.add_tools(BoxZoomTool(dimensions='width'))
