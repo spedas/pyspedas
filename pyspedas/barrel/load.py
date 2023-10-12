@@ -15,7 +15,8 @@ def load(trange=None,
          notplot=False,
          downloadonly=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         dl_folder=None):
     """
     This function loads data from the BARREL mission; this function is not meant 
     to be called directly; instead, see the wrappers:
@@ -36,8 +37,9 @@ def load(trange=None,
 
     out_files = []
     for prb in probe:
+        folder = datatype if dl_folder is None else dl_folder
         remote_path = (
-            str(level) + '/' + str(prb) + '/' + str(datatype) +
+            str(level) + '/' + str(prb) + '/' + str(folder) +
             '/bar_' + str(prb) + '_' + str(level) + '_' + str(datatype) + '_%Y%m%d_' + str(version) + '.cdf'
         )
 
