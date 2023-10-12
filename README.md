@@ -12,6 +12,7 @@ The Python-based Space Physics Environment Data Analysis Software (PySPEDAS) fra
 - [Advanced Composition Explorer (ACE)](https://pyspedas.readthedocs.io/en/latest/ace.html)
 - [Akebono](https://pyspedas.readthedocs.io/en/latest/akebono.html)
 - [Arase (ERG)](https://pyspedas.readthedocs.io/en/latest/erg.html)
+- [BARREL](https://pyspedas.readthedocs.io/en/latest/barrel.html)
 - [Cluster](https://pyspedas.readthedocs.io/en/latest/cluster.html)
 - [Colorado Student Space Weather Experiment (CSSWE)](https://pyspedas.readthedocs.io/en/latest/csswe.html)
 - [Communications/Navigation Outage Forecasting System (C/NOFS)](https://pyspedas.readthedocs.io/en/latest/cnofs.html)
