@@ -28,6 +28,7 @@ def load(trange=None,
         pyspedas.barrel.hkpg
 
     """
+
     if not isinstance(probe, list):
         probe = [probe]
     

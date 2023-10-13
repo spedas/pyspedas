@@ -185,6 +185,7 @@ class cdaWindow:
                 messagebox.showerror(msgtitle, msg)
                 status("")  # Reset status
                 return []
+
             else:
                 file_result = result
                 count_no_downloads = 0
@@ -422,3 +423,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     startgui = cdaWindow(root)
     root.mainloop()
+

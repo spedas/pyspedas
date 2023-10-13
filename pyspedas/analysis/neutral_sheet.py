@@ -465,6 +465,7 @@ def rthph2xyz(r,th,ph):
     return x,y,z
 
 
+
 """
 C========================================================================================
 C
@@ -644,6 +645,3 @@ def neutral_sheet(time, pos, kp=None, model='themis', mlt=None, in_coord='gsm', 
         return den_fairfield_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == 'lopez':
         return lopez_ns_model(time, gsm_pos, kp=kp, mlt=mlt, sc2NS=sc2NS)
-
-
-

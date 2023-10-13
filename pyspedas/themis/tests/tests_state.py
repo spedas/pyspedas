@@ -94,6 +94,7 @@ class StateDataValidation(unittest.TestCase):
         self.assertFalse(data_exists('tha_spinras_correction'))
         self.assertFalse(data_exists('tha_spindec_correction'))
 
+
     def test_state_exclude_format(self):
         # Test that the exclude_format option to state() works
         state(trange=['2007-03-23','2007-03-24'], probe='b',varformat='*pos*',exclude_format='*sse*')

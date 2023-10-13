@@ -400,7 +400,6 @@ def download(remote_path='',
                             out.append(file)
                 session.close()
                 continue
-
             resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify,
                                       headers=headers, session=session, basic_auth=basic_auth)
 
@@ -415,7 +414,6 @@ def download(remote_path='',
             
             temp_out = []
             
-
             if local_path == '':
                 local_path_to_search = str(Path('.').resolve())
             else:
