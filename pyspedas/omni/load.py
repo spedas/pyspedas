@@ -35,7 +35,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     elif 'hour' in datatype:
         pathformat = 'hourly/%Y/omni2_h0_mrg1hr_%Y%m01_v??.cdf'
         get_ignore_data = True  # required to load these files
-        remote_names = yearlynames(file_format=pathformat, trange=trange, res=file_res)
+        remote_names = yearlynames(file_format=pathformat, trange=trange, resolution='half-year')
     else:
         logging.error('Invalid datatype: '+ datatype)
         return
