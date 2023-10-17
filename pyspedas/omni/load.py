@@ -2,7 +2,7 @@ import logging
 import warnings
 import astropy
 
-from pyspedas.utilities.dailynames import dailynames
+from pyspedas.utilities.dailynames import dailynames, yearlynames
 from pyspedas.utilities.download import download
 from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
@@ -31,16 +31,16 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     if 'min' in datatype:
         pathformat = level + '_' + datatype + '/%Y/omni_' + level + '_' + datatype + '_%Y%m01_v??.cdf'
+        remote_names = dailynames(file_format=pathformat, trange=trange, res=file_res)
     elif 'hour' in datatype:
         pathformat = 'hourly/%Y/omni2_h0_mrg1hr_%Y%m01_v??.cdf'
-        file_res = 24*3600*183.0  # 1 file every 6 months
         get_ignore_data = True  # required to load these files
+        remote_names = yearlynames(file_format=pathformat, trange=trange, res=file_res)
     else:
         logging.error('Invalid datatype: '+ datatype)
         return
 
     # find the full remote path names using the trange
-    remote_names = dailynames(file_format=pathformat, trange=trange, res=file_res)
 
     out_files = []
 
