@@ -84,3 +84,79 @@ def dailynames(directory='',
         files.append(directory + prefix + date + suffix)
 
     return files
+
+def yearlynames(
+    trange,
+    file_format="%Y%m%d",
+    resolution="year",
+    directory="",
+    prefix="",
+    suffix="",
+):
+    """
+    Creates a list of file names using a time range, resolution, and file format.
+
+    Parameters:
+        trange: list of str or list of datetime
+            Two-element list containing the start and end times for the file names.
+
+        resolution: str
+            Either 'year' or 'half-year' to determine the resolution.
+
+        file_format: str
+            Format of the file names using strftime directives.
+
+        directory: str
+            String containing the directory for the generated file names.
+
+
+
+        prefix: str
+            file name prefix.
+
+        suffix: str
+            file name suffix.
+
+    Returns:
+        List containing filenames.
+    """
+
+    if trange is None:
+        raise ValueError("No trange specified")
+
+    start_date = (
+        trange[0]
+        if isinstance(trange[0], datetime)
+        else datetime.strptime(trange[0], "%Y-%m-%d")
+    )
+    end_date = (
+        trange[1]
+        if isinstance(trange[1], datetime)
+        else datetime.strptime(trange[1], "%Y-%m-%d")
+    )
+
+    dates = []
+
+    if resolution == "half-year":
+        # Generate all the January 1st and July 1st dates within the range
+        potential_dates = [
+            datetime(year, month, 1)
+            for year in range(start_date.year, end_date.year + 1)
+            for month in [1, 7]
+        ]
+
+        # Filter out dates outside the range
+        dates = [date for date in potential_dates if start_date <= date <= end_date]
+    elif resolution == "year":
+        # Generate all the January 1st dates within the range
+        potential_dates = [
+            datetime(year, 1, 1) for year in range(start_date.year, end_date.year + 1)
+        ]
+
+        # Filter out dates outside the range
+        dates = [date for date in potential_dates if start_date <= date <= end_date]
+    else:
+        raise ValueError("Invalid resolution specified. Choose 'year' or 'half-year'.")
+
+    files = [directory + prefix + date.strftime(file_format) + suffix for date in dates]
+    return files
