@@ -109,8 +109,6 @@ def yearlynames(
         directory: str
             String containing the directory for the generated file names.
 
-
-
         prefix: str
             file name prefix.
 
@@ -138,23 +136,21 @@ def yearlynames(
     dates = []
 
     if resolution == "half-year":
+        # Adjust the start date to be 6 months prior to the specified start date
+        if start_date.month <= 6:
+            adjusted_start_date = datetime(start_date.year - 1, start_date.month + 6, 1)
+        else:
+            adjusted_start_date = datetime(start_date.year, start_date.month - 6, 1)
+        
+        print(adjusted_start_date)
+
         # Generate all the January 1st and July 1st dates within the range
-        potential_dates = [
-            datetime(year, month, 1)
-            for year in range(start_date.year, end_date.year + 1)
-            for month in [1, 7]
-        ]
-
+        potential_dates = [datetime(year, month, 1) for year in range(start_date.year, end_date.year + 1) for month in [1, 7]]
+        
         # Filter out dates outside the range
-        dates = [date for date in potential_dates if start_date <= date <= end_date]
+        dates = [date for date in potential_dates if adjusted_start_date < date <= end_date]
     elif resolution == "year":
-        # Generate all the January 1st dates within the range
-        potential_dates = [
-            datetime(year, 1, 1) for year in range(start_date.year, end_date.year + 1)
-        ]
-
-        # Filter out dates outside the range
-        dates = [date for date in potential_dates if start_date <= date <= end_date]
+        dates = [datetime(year, 1, 1) for year in range(start_date.year, end_date.year + 1)]
     else:
         raise ValueError("Invalid resolution specified. Choose 'year' or 'half-year'.")
 
