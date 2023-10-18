@@ -12,7 +12,7 @@
 The PySPEDAS project welcomes contributions from users, developers, and community members at any experience level.  We strive to create a welcoming, respectful, safe, and inclusive environment, as embodied in our Code of Conduct.
 
 __Impostor syndrome disclaimer__: Yes, this includes you! Even if you're new to the heliophysics field, new to Python programming, or just a little nervous about getting involved, we are grateful for any effort you are willing to
-undertake in order to make PySPEDAS a more powerful, easier to use, and better documented package. 
+undertake toward making PySPEDAS a more powerful, easier to use, and better documented package. 
 
 Contributions may take many forms other than coding or bug fixing!
 
