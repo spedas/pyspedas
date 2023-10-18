@@ -141,8 +141,6 @@ def yearlynames(
             adjusted_start_date = datetime(start_date.year - 1, start_date.month + 6, 1)
         else:
             adjusted_start_date = datetime(start_date.year, start_date.month - 6, 1)
-        
-        print(adjusted_start_date)
 
         # Generate all the January 1st and July 1st dates within the range
         potential_dates = [datetime(year, month, 1) for year in range(start_date.year, end_date.year + 1) for month in [1, 7]]
