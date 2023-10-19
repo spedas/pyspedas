@@ -91,9 +91,8 @@ def load_fdsn(trange=None, network=None, station=None):
         # Create new data for time, x, y and z
         # TODO: is there a better way to create a new time array?
         time = np.array([])
-        x = np.array([])
-        y = np.array([])
-        z = np.array([])
+        attributes = [('hx', 'bx'), ('hy', 'by'), ('hz', 'bz')]
+        variables = {'x': np.array([]), 'y': np.array([]), 'z':np.array([])}
 
         attr_dict = {}  # metadata
         units = set()  # basic units
@@ -140,28 +139,55 @@ def load_fdsn(trange=None, network=None, station=None):
                 else:
                     time = np.append(time, run_ts.dataset.time.to_numpy())
 
-                # TODO: can channels_recorded_magnetic not be hx, hy, hz? Just in case add the check
-                # TODO: add support for bx, by, bz
-                x = np.append(x, run_ts.dataset.hx.to_numpy())
-                y = np.append(y, run_ts.dataset.hy.to_numpy())
-                z = np.append(z, run_ts.dataset.hz.to_numpy())
+                # Check if all required attributes are present
+                all_attributes_present = all(
+                    hasattr(run_ts.dataset, attr_h) or hasattr(run_ts.dataset, attr_b)
+                    for attr_h, attr_b in attributes
+                )
+                if all_attributes_present:
+                    for (attr_h, attr_b), var_name in zip(attributes, variables.keys()):
+                        if hasattr(run_ts.dataset, attr_h):
+                            data = getattr(run_ts.dataset, attr_h)
+                        elif hasattr(run_ts.dataset, attr_b):
+                            data = getattr(run_ts.dataset, attr_b)
+                        else:
+                            pyspedas.logger.warning(f"Neither {attr_h} nor {attr_b} found in run dataset")
+                            continue
 
-                try:
-                    units.add(run_ts.dataset.hx.units)
-                    units.add(run_ts.dataset.hy.units)
-                    units.add(run_ts.dataset.hz.units)
-                except AttributeError:
-                    pyspedas.logger.warning("Problem with adding run dataset units")
+                        variables[var_name] = np.append(variables[var_name], data.to_numpy())
 
-                try:
-                    measurements_type.add(run_ts.dataset.hx.type)
-                    measurements_type.add(run_ts.dataset.hx.type)
-                    measurements_type.add(run_ts.dataset.hx.type)
-                except AttributeError:
-                    pyspedas.logger.warning("Problem with adding run dataset type")
+                        try:
+                            units.add(data.units)
+                            measurements_type.add(data.type)
+                        except AttributeError:
+                            pyspedas.logger.warning(f"Problem with adding {attr_h}/{attr_b} dataset units or type")
+
+                    # After the loop, you can reassign the modified arrays back to x, y, z
+                    # x, y, z = variables['x'], variables['y'], variables['z']
+                else:
+                    pyspedas.logger.warning("Some of the attributes are not present in run_ts dataset")
+                    continue
+
+                # x = np.append(x, run_ts.dataset.hx.to_numpy())
+                # y = np.append(y, run_ts.dataset.hy.to_numpy())
+                # z = np.append(z, run_ts.dataset.hz.to_numpy())
+                #
+                # try:
+                #     units.add(run_ts.dataset.hx.units)
+                #     units.add(run_ts.dataset.hy.units)
+                #     units.add(run_ts.dataset.hz.units)
+                # except AttributeError:
+                #     pyspedas.logger.warning("Problem with adding run dataset units")
+                #
+                # try:
+                #     measurements_type.add(run_ts.dataset.hx.type)
+                #     measurements_type.add(run_ts.dataset.hx.type)
+                #     measurements_type.add(run_ts.dataset.hx.type)
+                # except AttributeError:
+                #     pyspedas.logger.warning("Problem with adding run dataset type")
 
         # TODO: Should data be sorted before saving
-        data = {'x': time, 'y': np.vstack((x, y, z)).T}
+        data = {'x': time, 'y': np.vstack((variables['x'], variables['y'], variables['z'])).T}
         tplot_variable = 'fdsn_' + network + '_' + station
 
         # TODO: Add metadata
