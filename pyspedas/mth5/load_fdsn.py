@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import pandas as pd
+import pytplot
+
 import pyspedas
 from .config import CONFIG
 from pytplot import store_data, options
@@ -13,7 +15,7 @@ from pyspedas.mth5.utilities import mth5_time_str
 
 from datetime import datetime
 
-def load_fdsn(trange=None, network=None, station=None):
+def load_fdsn(trange=None, network=None, station=None, nodownload=False):
     """
     Load FDSN data using MTH5 interface.
 
@@ -64,27 +66,40 @@ def load_fdsn(trange=None, network=None, station=None):
     request_start = datetime.fromisoformat(request_df.start[0])
     request_end = datetime.fromisoformat(request_df.end[0])
 
-    # Initialize FDSN object
-    fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
-    try:
-        mth5_path = fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=mth5dir)
-    except Exception:
-        # This code is obsolete with updated MTH5
-        # Hande mth5 object initialization error. This error may occur if MTH5 file was not closed.
-        pyspedas.logger.error("Cannot initialize mth5 object")
-        mth5filename = fdsn_object.make_filename(request_df)
-        mth5file = os.path.join(mth5dir, mth5filename)
-        # attempt find the open file identifier and close it
-        if os.path.exists(mth5file):
-            # h5py must be installed as a requirement of MTH5
-            import h5py
-            fids = h5py.h5f.get_obj_ids(types=h5py.h5f.OBJ_FILE)
-            for fid in fids:
-                # Test if the open file handler is the one we want to close
-                if os.path.basename(fid.name.decode('utf8')) == mth5filename:
-                    h5py.File(fid).close()
-                    pyspedas.logger.info(f"mth5 file {mth5filename} object is now closed.")
-        raise
+    mth5_filename = f"{network}_{station}_{trange[0]}_{trange[1]}.h5".replace(":", "").replace("-", "")
+    mth5_pathfile = os.path.join(mth5dir, mth5_filename)
+
+    # Implementation of caching
+    if nodownload and os.path.isfile(mth5_pathfile):
+        mth5_path = mth5_pathfile
+    else:
+        # Initialize FDSN object
+        fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
+        try:
+            mth5_path = fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=mth5dir)
+            if os.path.isfile(mth5_pathfile):
+                pytplot.logger.info(f"Removing cached {mth5_pathfile}")
+                os.remove(mth5_pathfile)
+            pytplot.logger.info(f"Creating cached {mth5_pathfile}")
+            os.rename(mth5_path, mth5_pathfile)
+            mth5_path = mth5_pathfile
+        except Exception:
+            # This code is obsolete with updated MTH5
+            # Hande mth5 object initialization error. This error may occur if MTH5 file was not closed.
+            pyspedas.logger.error("Cannot initialize mth5 object")
+            mth5filename = fdsn_object.make_filename(request_df)
+            mth5file = os.path.join(mth5dir, mth5filename)
+            # attempt find the open file identifier and close it
+            if os.path.exists(mth5file):
+                # h5py must be installed as a requirement of MTH5
+                import h5py
+                fids = h5py.h5f.get_obj_ids(types=h5py.h5f.OBJ_FILE)
+                for fid in fids:
+                    # Test if the open file handler is the one we want to close
+                    if os.path.basename(fid.name.decode('utf8')) == mth5filename:
+                        h5py.File(fid).close()
+                        pyspedas.logger.info(f"mth5 file {mth5filename} object is now closed.")
+            raise
 
     # Using MTH5 as a context manager
     with MTH5() as mth5_object:
@@ -221,4 +236,4 @@ def load_fdsn(trange=None, network=None, station=None):
         options(tplot_variable, opt_dict=tplot_options)
 
         # It is crucial to close mth5 file
-        mth5_object.close_mth5()
+        # mth5_object.close_mth5()
