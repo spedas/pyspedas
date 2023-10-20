@@ -11,6 +11,8 @@ from mth5.mth5 import MTH5
 
 from pyspedas.mth5.utilities import mth5_time_str
 
+from datetime import datetime
+
 def load_fdsn(trange=None, network=None, station=None):
     """
     Load FDSN data using MTH5 interface.
@@ -58,11 +60,17 @@ def load_fdsn(trange=None, network=None, station=None):
         }
     )
 
+    # Create time variables that correspond to the request time period
+    request_start = datetime.fromisoformat(request_df.start[0])
+    request_end = datetime.fromisoformat(request_df.end[0])
+
     # Initialize FDSN object
     fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
     try:
         mth5_path = fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=mth5dir)
     except Exception:
+        # This code is obsolete with updated MTH5
+        # Hande mth5 object initialization error. This error may occur if MTH5 file was not closed.
         pyspedas.logger.error("Cannot initialize mth5 object")
         mth5filename = fdsn_object.make_filename(request_df)
         mth5file = os.path.join(mth5dir, mth5filename)
@@ -111,8 +119,17 @@ def load_fdsn(trange=None, network=None, station=None):
                 # Get the data
                 run_data = station_data.get_run(run_name=run_name)
 
+                # Check run time coverage
+                run_start =  datetime.fromisoformat(run_data.metadata.time_period.start).replace(tzinfo=None)
+                run_end = datetime.fromisoformat(run_data.metadata.time_period.end).replace(tzinfo=None)
+
+                # Skip processing if run is outside requested time range
+                if run_start > request_end or run_end < request_start:
+                    continue
+
                 # Get the run table summary
-                run_ts = run_data.to_runts()
+                # TODO: figure out why time cut does not work
+                run_ts = run_data.to_runts(start=request_df.start[0], end=request_df.end[0])
 
                 # Determine is we have all components
                 # can channels_recorded_magnetic be missing from the dataset?
