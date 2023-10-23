@@ -8,9 +8,6 @@ import sys
 import os
 import logging
 import pytplot
-from bokeh.io import output_file, show, output_notebook, save
-from . import HTMLPlotter
-from bokeh.embed import components
 from pytplot import tplot_utilities
 import tempfile
 from .MPLPlotter.tplot import tplot as mpl_tplot
@@ -205,59 +202,7 @@ def tplot(name,
             vert_spacing = 25 # Just a default that looks ok
 
     if bokeh:
-        layout = HTMLPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes,
-                                            slice=slice)
-        # Output types
-        if gui:
-            script, div = components(layout)
-            return script, div
-        elif nb:
-            output_notebook()
-            show(layout)
-            return
-        elif save_file is not None:
-            output_file(save_file, mode='inline')
-            save(layout)
-            return
-        elif qt:
-            try:
-                from PyQt5.QtWebKitWidgets import QWebView as WebView
-            except:
-                try:
-                    from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
-                except:
-                    app = webengine_hack()
-                    from PyQt5.QtWebEngineWidgets import QWebEngineView as WebView
-            available_qt_window = tplot_utilities.get_available_qt_window()
-            dir_path = tempfile.gettempdir()  # send to user's temp directory
-            output_file(os.path.join(dir_path, "temp.html"), mode='inline')
-            save(layout)
-            new_layout = WebView()
-            available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0] + 100,
-                                       pytplot.tplot_opt_glob['window_size'][1] + 100)
-            new_layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
-            dir_path = tempfile.gettempdir()  # send to user's temp directory
-            new_layout.setUrl(QtCore.QUrl.fromLocalFile(os.path.join(dir_path, "temp.html")))
-            available_qt_window.newlayout(new_layout)
-            available_qt_window.show()
-            available_qt_window.activateWindow()
-            if testing:
-                return
-            if not (hasattr(sys, 'ps1')) or not hasattr(QtCore, 'PYQT_VERSION'):
-                QtGui.QApplication.instance().exec_()
-            else:
-                try:
-                    magic = get_ipython().magic
-                    magic(u'%gui qt5')
-                except:
-                    pass
-            return
-        else:
-            dir_path = tempfile.gettempdir()  # send to user's temp directory
-            output_file(os.path.join(dir_path, "temp.html"), mode='inline')
-            if not testing:
-                show(layout)
-            return
+        logging.error("This version of pytplot no longer supports Bokeh plotting.")
     else:
         if save_png is not None:
             layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes, vert_spacing=vert_spacing)
