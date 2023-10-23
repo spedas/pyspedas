@@ -19,6 +19,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     def setUp(self):
         pass
 
+    # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
     def test_load_fdsn_h5_file_error(self):
         # Testing if the file can be created when error occurs
@@ -37,8 +38,8 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         )
 
         fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
-        # This will raise an error
         try:
+            # This will raise an error because the date format is wrong. But the h5 files will be created and open
             fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=CONFIG['local_data_dir'])
         except Exception as e:
             # Check if the type error is raised
