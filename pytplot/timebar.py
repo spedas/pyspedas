@@ -4,7 +4,6 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from . import tplot_utilities
-from bokeh.models import Span
 import pytplot
 import logging
 

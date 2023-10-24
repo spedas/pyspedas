@@ -4,11 +4,6 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 from _collections import OrderedDict
-bokeh_available = True
-try:
-    from . import HTMLPlotter
-except ImportError:
-    bokeh_available = False
 
 import os
 import sys
@@ -129,12 +124,6 @@ if using_graphics:
                    'qtTVarFigureSpec': QtPlotter.TVarFigureSpec,
                    'qtTVarFigureAlt': QtPlotter.TVarFigureAlt,
                    'qtTVarFigureMap': QtPlotter.TVarFigureMap}
-
-if bokeh_available:
-    bokeh_plotters = {'bkTVarFigure1D': HTMLPlotter.TVarFigure1D,
-                      'bkTVarFigureMap': HTMLPlotter.TVarFigureMap,
-                      'bkTVarFigureAlt': HTMLPlotter.TVarFigureAlt,
-                      'bkTVarFigureSpec': HTMLPlotter.TVarFigureSpec}
 
 from .store_data import store_data, store
 from .tplot import tplot
