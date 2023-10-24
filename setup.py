@@ -7,7 +7,7 @@ from codecs import open
 
 setup(
     name='pyspedas',
-    version='1.4.46',
+    version='1.4.47',
     description='Python Space Physics Environment Data Analysis Software (pySPEDAS)',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -28,7 +28,7 @@ setup(
     install_requires=['numpy>=1.19.5', 'requests', 'geopack>=1.0.10',
                       'cdflib<1.0.0', 'cdasws>=1.7.24', 'netCDF4>=1.6.2',
                       'pywavelets', 'astropy', 'hapiclient>=0.2.2',
-                      'pytplot-mpl-temp>=2.1.51', 'viresclient'],
+                      'pytplot-mpl-temp>=2.1.52', 'viresclient'],
     python_requires='>=3.8',
     include_package_data=True,
 )
