@@ -1,5 +1,5 @@
 from .load import load
-from .spec import bg_sub
+from .spec import ave_spec, average_event_spectrum, background_subtracted_spectrogram
 
 def sspc(trange=['2013-01-28', '2013-01-29'],
         probe='1A',
