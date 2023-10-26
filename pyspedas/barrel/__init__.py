@@ -21,11 +21,11 @@ def sspc(trange=['2013-01-28', '2013-01-29'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
-        no_update: bool
-            If set, only load data from your local cache
-
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        no_update: bool
+            If set, only load data from your local cache
 
     Returns:
         List of tplot variables created.
@@ -54,11 +54,11 @@ def mspc(trange=['2013-01-29','2013-01-30'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
-        no_update: bool
-            If set, only load data from your local cache
-
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        no_update: bool
+            If set, only load data from your local cache
 
     Returns:
         List of tplot variables created.
@@ -87,11 +87,11 @@ def fspc(trange=['2013-01-29','2013-01-30'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
-        no_update: bool
-            If set, only load data from your local cache
-
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        no_update: bool
+            If set, only load data from your local cache
 
     Returns:
         List of tplot variables created.
@@ -120,11 +120,11 @@ def rcnt(trange=['2013-01-29','2013-01-30'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
-        no_update: bool
-            If set, only load data from your local cache
-
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        no_update: bool
+            If set, only load data from your local cache
 
     Returns:
         List of tplot variables created.
@@ -153,11 +153,11 @@ def magn(trange=['2013-01-29','2013-01-30'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
-        no_update: bool
-            If set, only load data from your local cache
-
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        no_update: bool
+            If set, only load data from your local cache
 
     Returns:
         List of tplot variables created.
@@ -171,7 +171,7 @@ def ephm(trange=['2013-01-29','2013-01-30'],
         no_update=False,
         time_clip=False):
     """
-    This function loads the Ephemeris CDF files stored at CDAWeb for a specific payload
+    This function loads the Ephemeris CDF files stored at CDAWeb for a specific payload.
     
     Parameters:
         trange : list of str
@@ -186,17 +186,23 @@ def ephm(trange=['2013-01-29','2013-01-30'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
-        no_update: bool
-            If set, only load data from your local cache
-
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        no_update: bool
+            If set, only load data from your local cache
+        
+        dl_folder: str
+            Alternative name for the data folder in CDAWeb. Generally this is the same value as `datatype`
+            but Ephemeris files are currently stored in the `ephem` folder instead of `ephm` (except for 1N for some reason)
 
     Returns:
         List of tplot variables created.
 
     """
-    return load(datatype='ephm', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, dl_folder="ephem")
+    
+    dl_folder = "ephem" if probe.upper() != "1N" else "ephm"
+    return load(datatype='ephm', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, dl_folder=dl_folder)
 
 def hkpg(trange=['2013-01-29','2013-01-30'],
         probe='1A',
@@ -219,11 +225,11 @@ def hkpg(trange=['2013-01-29','2013-01-30'],
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
-        no_update: bool
-            If set, only load data from your local cache
-
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        no_update: bool
+            If set, only load data from your local cache
 
     Returns:
         List of tplot variables created.
