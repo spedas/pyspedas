@@ -165,7 +165,7 @@ jobs:
         echo Starting cotrans quaternion tests at `date`
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         echo Starting cotrans minvar tests at `date`
-        cverage run -a -m pyspedas.cotrans.tests.test_minvar
+        coverage run -a -m pyspedas.cotrans.tests.test_minvar
         echo Starting cluster tests at `date`
         coverage run -a -m pyspedas.cluster.tests.tests
         echo Starting csswe tests at `date`
