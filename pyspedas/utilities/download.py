@@ -400,7 +400,6 @@ def download(remote_path='',
                             out.append(file)
                 session.close()
                 continue
-
             resp_data = download_file(url=url, filename=filename, username=username, password=password, verify=verify,
                                       headers=headers, session=session, basic_auth=basic_auth)
 
@@ -412,7 +411,9 @@ def download(remote_path='',
         else:
             # download wasn't successful, search for local files
             logging.info('Searching for local files...')
-
+            
+            temp_out = []
+            
             if local_path == '':
                 local_path_to_search = str(Path('.').resolve())
             else:
@@ -427,13 +428,21 @@ def download(remote_path='',
                     matching_files = list(filter(reg_expression.match, filenames))
 
                 for file in matching_files:
-                    out.append(os.path.join(dirpath, file))
-
-            out = sorted(out)
-
+                    # out.append(os.path.join(dirpath, file))
+                    temp_out.append(os.path.join(dirpath, file))
+                                
+            # check if the file exists, and if so, set the last modification time in the header
+            if len(temp_out) == 0:
+                logging.info('No local files found for ' + url)
+                continue
+            temp_out = sorted(temp_out)
+            
             if last_version:
-                if len(out) > 1:
-                    out = [out[-1]]
+                out.append(temp_out[-1]) # append the latest version
+            else:
+                for file in temp_out:
+                    out.append(file)
+
 
     session.close()
     return out

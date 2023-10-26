@@ -16,11 +16,12 @@ from pyspedas.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.cotrans.fac_matrix_make import fac_matrix_make
 from pytplot import get_data, store_data, del_data
-from pyspedas import cotrans_get_coord, cotrans_set_coord
+from pyspedas import cotrans_get_coord, cotrans_set_coord, sm2mlt
 
 
 class CotransTestCases(unittest.TestCase):
     """Tests for cotrans."""
+
     def test_fac_matrix_make(self):
         doesntexist = fac_matrix_make('doesnt_exist')
 
@@ -37,11 +38,11 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(setcoord)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSE')
-        md = get_data('test_coord',metadata=True)
+        md = get_data('test_coord', metadata=True)
         md['data_att']['units'] = 'km'
         setcoord = cotrans_set_coord('test_coord', 'GSM')
         self.assertTrue(setcoord)
-        md_after = get_data('test_coord',metadata=True)
+        md_after = get_data('test_coord', metadata=True)
         after = cotrans_get_coord('test_coord')
         self.assertTrue(after == 'GSM')
         self.assertTrue(md_after['data_att']['units'] == 'km')
@@ -49,7 +50,7 @@ class CotransTestCases(unittest.TestCase):
 
     def test_get_set_coords(self):
         """ Test for pytplot.set_coords/get_coords """
-        from pytplot import set_coords,get_coords
+        from pytplot import set_coords, get_coords
 
         del_data()
         doesntexist = get_coords('test_coord')
@@ -62,11 +63,11 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(setcoord)
         after = get_coords('test_coord')
         self.assertTrue(after == 'GSE')
-        md = get_data('test_coord',metadata=True)
+        md = get_data('test_coord', metadata=True)
         md['data_att']['units'] = 'km'
         setcoord = set_coords('test_coord', 'GSM')
         self.assertTrue(setcoord)
-        md_after = get_data('test_coord',metadata=True)
+        md_after = get_data('test_coord', metadata=True)
         after = get_coords('test_coord')
         self.assertTrue(after == 'GSM')
         self.assertTrue(md_after['data_att']['units'] == 'km')
@@ -74,7 +75,7 @@ class CotransTestCases(unittest.TestCase):
 
     def test_get_set_units(self):
         """ Test for pytplot.set_coords/get_coords """
-        from pytplot import set_units,get_units, set_coords, get_coords
+        from pytplot import set_units, get_units, set_coords, get_coords
 
         del_data()
         doesntexist = get_units('test_units')
@@ -86,11 +87,11 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(setunits)
         after = get_units('test_units')
         self.assertTrue(after == 'Km')
-        set_coords('test_units','GEO')
+        set_coords('test_units', 'GEO')
         setunits = set_units('test_units', 'mm')
         self.assertTrue(setunits)
-        coords_after=get_coords('test_units')
-        units_after=get_units('test_units')
+        coords_after = get_coords('test_units')
+        units_after = get_units('test_units')
         self.assertTrue(coords_after == 'GEO')
         self.assertTrue(units_after == 'mm')
 
@@ -98,7 +99,7 @@ class CotransTestCases(unittest.TestCase):
         """Test themis.cotrans.dsl2gse."""
         del_data()
         # Try with missing variables. It should exit without problems.
-        dsl2gse('tha_fgl_dsl','tha_fgl_gse')
+        dsl2gse('tha_fgl_dsl', 'tha_fgl_gse')
         # Now load the needed variables.
         time_range = ['2017-03-23 00:00:00', '2017-03-23 23:59:59']
         pyspedas.themis.state(probe='a', trange=time_range,
@@ -154,7 +155,7 @@ class CotransTestCases(unittest.TestCase):
         # Metadata coordinate system is GEI, but requesting GSM->GEO transform.  This should generate an error message
         # and return failure.
         result = cotrans(name_in=name_in, name_out=name_out,
-                coord_in="gsm", coord_out="geo")
+                         coord_in="gsm", coord_out="geo")
         self.assertTrue(result == 0)
 
     def test_cotrans_igrf(self):
@@ -235,7 +236,7 @@ class CotransTestCases(unittest.TestCase):
         count = 0
         # Test non-existent systems.
         result = cotrans(name_out=name1, time_in=t, data_in=d,
-                coord_in="badcoord", coord_out="gei")
+                         coord_in="badcoord", coord_out="gei")
         self.assertTrue(result == 0)
         result = cotrans(name_out=name1, time_in=t, data_in=d,
                          coord_in="gei", coord_out="badcoord")
@@ -268,6 +269,26 @@ class CotransTestCases(unittest.TestCase):
                 self.assertTrue(abs(dd1[0]-dd2[0]) <= 1e-6)
                 self.assertTrue(abs(dd1[1]-dd2[1]) <= 1e-6)
                 self.assertTrue(abs(dd1[2]-dd2[2]) <= 1e-6)
+
+    def test_mlt(self):
+        '''Test sm2mlt.
+
+        Data is from goes18, 2023-01-01. [0, 100, 600, 1000]
+        '''
+
+        # SM coordinates and MLT values from IDL
+        sm_idl = [[33199.660, 25815.376, 2995.6487], [18814.747, 37614.243, 2990.7136],
+                  [-40428.563, -11607.452, 2995.3227], [15798.372, -38974.509, 2995.0028]]
+        mlt_idl = [14.524527, 16.228377, 1.0679544, 7.4710163]
+
+        x = [item[0] for item in sm_idl]
+        y = [item[1] for item in sm_idl]
+        z = [item[2] for item in sm_idl]
+
+        mlt_python = sm2mlt(x, y, z)
+
+        for i in range(4):
+            self.assertTrue(abs(mlt_idl[i]-mlt_python[i]) <= 1e-6)
 
 
 if __name__ == '__main__':

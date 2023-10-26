@@ -11,7 +11,7 @@ from pytplot import del_data
 
 @print_vars
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy',
-    level='l2', instrument='fgm', datatype='', varformat=None, varnames=[], suffix='',
+    level='l2', instrument='fgm', datatype='', varformat=None, exclude_format='*rdeltahalf*', varnames=[], suffix='',
     keep_flagged=False, get_support_data=True, time_clip=False, no_update=False,
     available=False, notplot=False, latest_version=False, major_version=False, 
     min_version=None, cdf_version=None, spdf=False, always_prompt=False, no_split_vars=False,
@@ -50,6 +50,11 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        exclude_format: str
+            Variables matching this pattern will not be processed while loading the CDFs.
+            Wildcard character "*" is allowed.  By default, variables matching '*rdeltahalf*'
+            will be excluded.
 
         varnames: list of str
             List of variable names to load (if not specified,
@@ -109,7 +114,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
         varformat_fetch = varformat
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument=instrument,
-            datatype=datatype, varformat=varformat_fetch, varnames=varnames, suffix=suffix, get_support_data=get_support_data,
+            datatype=datatype, varformat=varformat_fetch, exclude_format=exclude_format, varnames=varnames, suffix=suffix, get_support_data=get_support_data,
             time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, major_version=major_version, 
             min_version=min_version, cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
     

@@ -5,6 +5,7 @@ For more information, see:
 - [SOSMAG at the ESA Space Weather Service Network](https://swe.ssa.esa.int/sosmag)
 - [Space Weather Magnetometer Aboard GEO-KOMPSAT-2A](https://link.springer.com/article/10.1007/s11214-020-00742-2)
 
+
 The data is loaded using the ESA HAPI server (requires registration):
 - [ESA HAPI server](https://swe.ssa.esa.int/hapi)
 
