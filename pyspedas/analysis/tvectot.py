@@ -1,12 +1,12 @@
 from xarray_einstats import linalg
-from pytplot import split_vec, join_vec
+from pytplot import split_vec, join_vec, get_data, store_data, options
 
 def _tvectot(tvar: str, new_name: str, join_component: bool):
     data = get_data(tvar, xarray=True)
     new_data = linalg.norm(data, dims="v_dim")
     store_data(new_name, new_data, xarray=True)
     
-    if join_vec:
+    if join_component:
         join_vec(split_vec(tvar)+[new_name], new_name)
         options(new_name, 'legend_names', ['x', 'y', 'z', 'Magnitude'])
     else:
