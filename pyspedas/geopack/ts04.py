@@ -62,8 +62,8 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
             # skip if there are any NaNs in the input
             continue
 
-        # dipole B in GSM
-        b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.dip(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
+        # IGRF in GSM
+        b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.igrf_gsm(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
 
         # T96 dB in GSM
         dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t04.t04(par[idx, :], tilt, pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
