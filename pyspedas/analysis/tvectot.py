@@ -1,6 +1,6 @@
 from xarray_einstats import linalg
 from pytplot import split_vec, join_vec, get_data, store_data, options
-from typing import Union
+from typing import Union, List
 
 def _tvectot(tvar: str, new_name: str, join_component: bool):
     data = get_data(tvar, xarray=True)
@@ -14,7 +14,7 @@ def _tvectot(tvar: str, new_name: str, join_component: bool):
         options(new_name, 'legend_names', 'Magnitude')
     return new_name
 
-def tvectot(tvars: Union[str, list[str]], newnames: Union[str, list[str]] = None, suffix="_mag", join_component=False) -> Union[str , list[str]]:
+def tvectot(tvars: Union[str, List[str]], newnames: Union[str, List[str]] = None, suffix="_mag", join_component=False) -> Union[str , List[str]]:
     """
     Computes the magnitude of a vector time series.
 
