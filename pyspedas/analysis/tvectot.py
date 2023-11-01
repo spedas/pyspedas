@@ -1,11 +1,12 @@
-from xarray_einstats import linalg
+from numpy import linalg
 from pytplot import split_vec, join_vec, get_data, store_data, options
 from typing import Union, List
 
 def _tvectot(tvar: str, new_name: str, join_component: bool):
-    data = get_data(tvar, xarray=True)
-    new_data = linalg.norm(data, dims="v_dim")
-    store_data(new_name, new_data)
+    data = get_data(tvar)
+    md = get_data(tvar,metadata=True)
+    new_data = linalg.norm(data.y, axis=1)
+    store_data(new_name, data={'x':data.times,'y':new_data},attr_dict=md)
     
     if join_component:
         join_vec(split_vec(tvar)+[new_name], new_name)
