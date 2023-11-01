@@ -10,6 +10,7 @@ from .analysis.avg_data import avg_data
 from pytplot import clean_spikes
 from .analysis.deriv_data import deriv_data
 from .analysis.dpwrspc import dpwrspc
+from .analysis.tvectot import tvectot
 from pytplot import subtract_average
 from pytplot import subtract_median
 from pytplot import time_clip
