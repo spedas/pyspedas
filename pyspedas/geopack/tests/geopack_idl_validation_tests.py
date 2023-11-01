@@ -12,8 +12,8 @@ from pyspedas.geopack import tt01
 from pyspedas.geopack import tts04
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.geopack.get_w_params import get_w
-from pyspedas import tinterpol
-from pytplot import join_vec, store_data, get_data
+from pyspedas import tinterpol, tvectot
+from pytplot import join_vec, store_data, get_data, tkm2re, tplot_names
 
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 
@@ -123,14 +123,15 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         params[:,3] = self.zimf
         store_data('parmod',data={'x':[t1,t2],'y':params})
         tinterpol('parmod','tha_state_pos_gsm',method='nearest',newname='parmod_interp')
-        tplot(['parmod','parmod_interp'])
         tt96('tha_state_pos_gsm', parmod='parmod_interp')
+        tkm2re('tha_state_pos_gsm')
+        tvectot('tha_state_pos_gsm_re',join_component=True)
         py_b = get_data('tha_state_pos_gsm_bt96')
         idl_b = get_data('bt96')
         subtract('bt96','tha_state_pos_gsm_bt96','bt96_diff')
-        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff'])
+        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'],save_png='/Users/jwl/t96_diffs.png')
         tlimit(['2007-03-23/15:00','2007-03-23/17:00'])
-        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff'])
+        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'])
         tlimit(full=True)
         assert_allclose(py_b.y, idl_b.y, atol=0.5)
 
@@ -151,7 +152,9 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         py_b = get_data('tha_state_pos_gsm_bt01')
         idl_b = get_data('bt01')
         subtract('bt01','tha_state_pos_gsm_bt01','bt01_diff')
-        tplot(['bt01','tha_state_pos_gsm_bt01','bt01_diff'])
+        tkm2re('tha_state_pos_gsm')
+        tvectot('tha_state_pos_gsm_re',join_component=True)
+        tplot(['bt01','tha_state_pos_gsm_bt01','bt01_diff','tha_state_pos_gsm_re_tot'],save_png='/Users/jwl/t01_diffs')
         assert_allclose(py_b.y, idl_b.y, atol=0.5)
 
 
