@@ -22,8 +22,8 @@ def calculate_lshell(sc_pos):
         geopack.recalc(time)
 
         # Tracing the magnetic field line from the position to the equator
-        xf, yf, zf, xx, yy, zz  = geopack.trace(xi, yi, zi, dir=-1, rlim=60., r0=1.,
-                                                      parmod=2, exname='t89', inname='igrf')
+        xf, yf, zf, xx, yy, zz = geopack.trace(xi, yi, zi, dir=1, rlim=60., r0=1.,
+                                                      parmod=0, exname='t89', inname='igrf')
 
         # Calculating the L-shell value as the radial distance at the equator
         lshell = np.sqrt(xf ** 2 + yf ** 2 + zf ** 2)
