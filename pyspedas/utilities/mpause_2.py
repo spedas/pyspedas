@@ -8,10 +8,14 @@ def mpause_2(xmp=None, ymp_west=None, short=False, xmp_max=10.78):
 
     Parameters:
     ----------
-    xmp (array-like, optional): Spacecraft position, x component (defaults to a range if not provided).
-    ymp_west (deprecated, unused): This parameter is kept for compatibility with the IDL version, but it is unused.
-    short (bool, optional): If True, the function returns a shorter version of the magnetopause (defaults to False).
-    xmp_max (float, optional): Maximum value of xmp (defaults to 10.78, the value from the Fairfield paper).
+    xmp (array-like, optional):
+        Spacecraft position, x component (defaults to a range if not provided).
+    ymp_west (deprecated, unused):
+        This parameter is kept for compatibility with the IDL version, but it is unused.
+    short (bool, optional):
+        If True, the function returns a shorter version of the magnetopause (defaults to False).
+    xmp_max (float, optional):
+        Maximum value of xmp (defaults to 10.78, the value from the Fairfield paper).
 
     Returns:
     -------
@@ -62,8 +66,10 @@ def mpause_2(xmp=None, ymp_west=None, short=False, xmp_max=10.78):
         # Calculating the slopes for interpolation
         in15 = np.argmin(xmp[ige15])
         ww = -1 if in15 == len(xmp[ige15]) - 1 else 1
-        s_east = np.diff(ymp_east[ige15])[in15] / np.diff(xmp[ige15])[in15]
-        s_west = np.diff(ymp_west[ige15])[in15] / np.diff(xmp[ige15])[in15]
+        s_east = (ymp_east[ige15][in15 + ww] - ymp_east[ige15]
+                  [in15]) / (xmp[ige15][in15 + ww] - xmp[ige15][in15])
+        s_west = (ymp_west[ige15][in15 + ww] - ymp_west[ige15]
+                  [in15]) / (xmp[ige15][in15 + ww] - xmp[ige15][in15])
 
         # Interpolate for xmp < -15
         if np.any(ilt15):
