@@ -26,13 +26,22 @@ def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None):
             substitution or forward-filled values.
         new_tvar : str, optional
             The new tplot variable name to store the data into.  If None, then the data is overwritten.
-
+            THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten
     Returns:
         None
 
     Examples:
         >>> # TODO
     '''
+
+    #check for globbed or array input, and call recursively
+    tn = pytplot.tnames(tvar)
+    if len(tn) > 1:
+        for j in range(len(tn)):
+            pytplot.degap(tn[j], dt=dt, margin=margin, func=func)
+        return
+
+    #here we have 1 variable
 
     #fix from T.Hori, 2023-04-10, jimm02
     #    gap_size = np.diff(pytplot.data_quants[tvar].coords['time']) This is in Nanoseconds, and causes a type mismatch with dt+margin
