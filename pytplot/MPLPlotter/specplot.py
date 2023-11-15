@@ -6,7 +6,55 @@ from matplotlib.colors import LinearSegmentedColormap
 import warnings
 import pytplot
 import logging
+import numpy as np
+def specplot_resample(values, vdata, vdata_hi):
 
+    '''This resamples the data given by in the values array, defined
+       vdata, onto a higher resolution array given by the variable
+       vdata_hi. Values is assumed to be (ntimes, nv), vdata can be 1
+       or 2d.
+    '''
+    
+    ny = len(vdata_hi) #vdata_hi is 1d, the same for all time intervals
+    ntimes = values.shape[0]
+    out_values = np.zeros((ntimes, ny), dtype=values.dtype)
+
+    #need bin edges for V
+    if len(vdata.shape) == 1:
+        nv = vdata.shape[0]
+        vdata_bins = np.zeros((nv+1), dtype=vdata.dtype)
+        vdata_bins[0] = vdata[0] - (vdata[1]-vdata[0])/2.0
+        vdata_bins[1:nv] = (vdata[0:nv-1]+vdata[1:nv])/2.0
+        vdata_bins[nv] = vdata[nv-1]+(vdata[nv-1]-vdata[nv-2])/2.0
+    else: #2-d V
+        nv = vdata.shape[1]
+        vdata_bins = np.zeros((ntimes,nv+1), dtype=vdata.dtype)
+        vdata_bins[:,0] = vdata[:,0]-(vdata[:,1]-vdata[:,0])/2.0
+        vdata_bins[:,1:nv] = (vdata[:,0:nv-1]+vdata[:,1:nv])/2.0
+        vdata_bins[:,nv] = vdata[:,nv-1]+(vdata[:,nv-1]-vdata[:,nv-2])/2.0
+
+    for j in range(ntimes):
+        if len(vdata.shape) == 1:
+            vtmp = vdata_bins
+        else:
+            vtmp = vdata_bins[j, :]
+
+        for i in range(nv):
+            # cannot do ss_ini = np.where(vdata_hi >= vdata_bins[i] and vdata_hi < vdata_bins[i+1])
+            xxx = np.where(vdata_hi >= vtmp[i])
+            yyy = np.where(vdata_hi < vtmp[i+1])
+            if len(xxx[0]) > 0 and len(yyy[0]) > 0:
+                ss_ini = np.intersect1d(xxx[0], yyy[0])
+                out_values[j, ss_ini] = values[j, i]
+            else:
+                if len(xxx[0]) > 0 and len(yyy[0]) == 0:
+                    out_values[j, xxx[0]] = values[j, i]
+
+                if len(xxx[0]) == 0 and len(yyy[0]) > 0:
+                    out_values[j, yyy[0]] = values[j, i]
+    #Done
+
+    return out_values
 
 def specplot(var_data,
              var_times,
@@ -150,12 +198,21 @@ def specplot(var_data,
                 ycrange = [np.min(vdata), yrange[1]]
 
             zdata[zdata < 0.0] = 0.0
-            zdata[zdata == np.nan] = 0.0
+            zdata[zdata == np.nan] = 0.0 #does not work
 
-            interp_func = interp1d(vdata, zdata, axis=1, bounds_error=False)
-            out_vdata = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
-
-            out_values = interp_func(out_vdata)
+            #interp1d requires 1d vdata input
+            if len(vdata.shape) == 1:
+                interp_func = interp1d(vdata, zdata, axis=1, bounds_error=False)
+                out_vdata = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
+                out_values = interp_func(out_vdata)
+            else: #2d vdata
+                ntime_idxs = vdata.shape[0]
+                nynew = int(ny)
+                out_vdata = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
+                out_values = np.zeros((ntime_idxs, nynew), dtype=vdata.dtype)
+                for jm in range(len(time_idxs)):
+                    interp_func = interp1d(vdata[jm,:], zdata[jm,:], bounds_error=False)
+                    out_values[jm,:] = interp_func(out_vdata)
 
             if zlog == 'log':
                 out_values = 10**out_values
@@ -163,6 +220,26 @@ def specplot(var_data,
             if ylog == 'log':
                 out_vdata = 10**out_vdata
 
+
+#Resample to a higher resolution y grid, similar to interp, but only if y_no_resample is set
+    if yaxis_options.get('y_no_resample') is None or yaxis_options.get('y_no_resample') == 0:
+        if ylog == 'log':
+            vdata = np.log10(out_vdata)
+            ycrange = np.log10(yrange)
+        else:
+            vdata = out_vdata
+            ycrange = yrange
+        fig_size = fig.get_size_inches()*fig.dpi
+        ny = fig_size[1]
+        vdata1 = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
+
+        out_values1 = specplot_resample(out_values, vdata, vdata1)
+        out_values = out_values1
+        if ylog == 'log':
+            out_vdata = 10**vdata1
+        else:
+            out_vdata = vdata1
+    
     # check for NaNs in the v values
     nans_in_vdata = np.argwhere(np.isfinite(out_vdata) == False)
     if len(nans_in_vdata) > 0:

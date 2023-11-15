@@ -499,6 +499,8 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'x_interp_points':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['x_interp_points'] = value
+            if option == 'y_no_resample':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_no_resample'] = value
     return
 
 
