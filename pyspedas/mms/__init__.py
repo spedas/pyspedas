@@ -6,6 +6,7 @@ This module contains routines for loading MMS data
 from functools import wraps
 
 from .mec_ascii.state import mms_load_state
+from .mec_ascii.tetrahedron_qf import mms_load_tetrahedron_qf
 from .fgm.fgm import mms_load_fgm
 from .hpca.hpca import mms_load_hpca
 from .fpi.fpi import mms_load_fpi
