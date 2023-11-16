@@ -160,6 +160,7 @@ from .data_att_getters_setters import set_coords, get_coords, set_units, get_uni
 from .data_exists import data_exists
 from .link import link
 from pytplot.tplot_math import *
+from .tres import tres
 
 # set up logging/console output
 import logging
