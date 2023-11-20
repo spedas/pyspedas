@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pyspedas.mms import mms_load_state, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
+from pyspedas.mms import mms_load_state, mms_load_tetrahedron_qf, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
 from pytplot import data_exists
 from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
@@ -33,6 +33,18 @@ class StateLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_defeph_pos'))
         self.assertTrue(data_exists('mms1_defeph_vel'))
         tplot(['mms1_defeph_pos', 'mms1_defeph_vel'], display=False)
+
+    def test_load_tqf(self):
+        data = mms_load_tetrahedron_qf()
+        self.assertTrue(data_exists('mms_tetrahedron_qf'))
+        tplot('mms_tetrahedron_qf',display=False)
+
+    def test_load_tqf_no_update(self):
+        data = mms_load_tetrahedron_qf()  # Ensure that some data is downloaded
+        del_data('mms_tetrahedron_qf')    # Delete the tplot variable
+        data = mms_load_tetrahedron_qf(no_update=True)  # Ensure that it can be loaded from previously downloaded files
+        self.assertTrue(data_exists('mms_tetrahedron_qf'))
+        tplot('mms_tetrahedron_qf',display=False)
 
     def test_load_att_data(self):
         data = mms_load_state(trange=['2015-10-16', '2015-10-16/06:00'], datatypes=['spinras', 'spindec'])

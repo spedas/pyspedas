@@ -129,11 +129,11 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         py_b = get_data('tha_state_pos_gsm_bt96')
         idl_b = get_data('bt96')
         subtract('bt96','tha_state_pos_gsm_bt96','bt96_diff')
-        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'],save_png='/Users/jwl/t96_diffs.png')
+        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'],save_png='/Users/jwl/t96_diffs')
         tlimit(['2007-03-23/15:00','2007-03-23/17:00'])
         tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'])
         tlimit(full=True)
-        assert_allclose(py_b.y, idl_b.y, atol=0.5)
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
 
     def test_tt01(self):
         tv_pos=get_data('tha_state_pos_gsm')

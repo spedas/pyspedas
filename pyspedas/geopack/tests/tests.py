@@ -11,6 +11,8 @@ from pyspedas.geopack import tt01
 from pyspedas.geopack import tts04
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.geopack.get_w_params import get_w
+from pyspedas.geopack import trace_equator_89
+from pyspedas.geopack import trace_iono_89
 from pyspedas import tinterpol
 from pytplot import join_vec, store_data, get_data
 
@@ -102,6 +104,23 @@ class LoadTestCases(unittest.TestCase):
         invalidg = get_params('t01', g_variables='g_vars')
         notrange = get_w()  # no trange
         invalidtrange = get_w(trange=['2050-01-01', '2050-01-02'])
+
+    def test_t89_equ_n(self):
+        trace_equator_89(time_double('2007-03-23/00:00:00'),np.array([-2.0,0.0,1.0]),iopt=3)
+
+    def test_t89_equ_s(self):
+        trace_equator_89(time_double('2007-03-23/00:00:00'),np.array([-2.0,0.0,-1.0]),iopt=3)
+
+    def test_t89_iono_n_n(self):
+        trace_iono_89(time_double('2007-03-23/00:00:00'), np.array([-2.0,0.0,1.0]),iopt=3)
+
+    def test_t89_iono_n_s(self):
+        trace_iono_89(time_double('2007-03-23/00:00:00'), np.array([-2.0,0.0,1.0]),iopt=3,south=True)
+
+    def test_t89_iono_s_n(self):
+        trace_iono_89(time_double('2007-03-23/00:00:00'), np.array([-2.0,0.0,-1.0]),iopt=3)
+    def test_t89_iono_s_s(self):
+        trace_iono_89(time_double('2007-03-23/00:00:00'), np.array([-2.0,0.0,-1.0]),iopt=3, south=True)
 
 
 if __name__ == '__main__':
