@@ -35,11 +35,11 @@ def libs(function_name, package=None):
       continuing the search, except 'pytplot.QtPlotter'. pytplot.QtPlotter results in error during import and ignored
 
     Example Usage:
-    ```python
-    pyspedas.utilities.libs('fgm')
 
-    pyspedas.utilities.libs('fgm', package=pyspedas.mms)
-    ```
+    >>> from pyspedas import libs
+    >>> libs('fgm')
+    >>> libs('fgm', package=pyspedas.mms)
+
     """
 
     # Gate for no function_name
