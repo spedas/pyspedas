@@ -9,7 +9,7 @@ import pandas as pd
 import copy
 import datetime
 
-def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None):
+def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None, onenanpergap = False, twonanpergap = False):
     '''
     Fills gaps in the data either with NaNs or the last number.
 
@@ -26,7 +26,9 @@ def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None):
             substitution or forward-filled values.
         new_tvar : str, optional
             The new tplot variable name to store the data into.  If None, then the data is overwritten.
-            THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten
+            THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten.
+        onenanpergap = if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
+        twonanpergap = if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
     Returns:
         None
 
@@ -38,7 +40,7 @@ def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None):
     tn = pytplot.tnames(tvar)
     if len(tn) > 1:
         for j in range(len(tn)):
-            pytplot.degap(tn[j], dt=dt, margin=margin, func=func)
+            pytplot.degap(tn[j], dt=dt, margin=margin, func=func, onenanpergap=onenanpergap, twonanpergap=twonanpergap)
         return
 
     #here we have 1 variable
@@ -55,8 +57,25 @@ def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None):
 
     gap_index_locations = np.where(gap_size > dt+margin)
     values_to_add = np.array([])
-    for i in gap_index_locations[0]:
-        values_to_add = np.append(values_to_add, np.arange(new_tvar_index[i], new_tvar_index[i+1], dt))
+    if onenanpergap == True:
+        for i in gap_index_locations[0]:
+            values_to_add = np.append(values_to_add, new_tvar_index[i]+dt)
+    elif twonanpergap == True:
+        #add two NaN values between the two values, either at margin if it's nonzero, or at dt/2
+        #since the gap is greater than dt, this will work
+        if margin > 0.0:
+            if margin < dt/2.0:
+                dt_nan = margin
+            else:
+                dt_nan = dt/2.0
+        else:
+            dt_nan = dt/2.0
+        for i in gap_index_locations[0]:
+            values_to_add = np.append(values_to_add, new_tvar_index[i]+dt_nan)
+            values_to_add = np.append(values_to_add, new_tvar_index[i+1]-dt_nan)
+    else:  
+        for i in gap_index_locations[0]:
+            values_to_add = np.append(values_to_add, np.arange(new_tvar_index[i], new_tvar_index[i+1], dt))
 
     #new_index = np.sort(np.unique(np.concatenate((values_to_add, new_tvar_index))))
     new_index_float64 = np.sort(np.unique(np.concatenate((values_to_add, new_tvar_index))))
