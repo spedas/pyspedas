@@ -1,3 +1,4 @@
+import logging
 from pyspedas import time_double, time_string
 from pyspedas.mms import fgm, fpi, feeps, hpca, edp, eis
 from pyspedas.themis import gmag
@@ -50,16 +51,21 @@ def mms_overview_plot(
     --------
     None
 
-
     Examples:
     ---------
     from pyspedas.mms.mms_overview_plot import mms_overview_plot
-    mms_overview_plot(date='2023-03-23', probe='1', save_png=True, directory='C:\\work\\mms\\summary plots\\')
+    mms_overview_plot(date='2023-03-23', probe='1', save_png=True, display=False, directory='C:\\work\\mms\\summary plots\\')
+
+    Notes:
+    ------
+    It may need a long time to complete.
 
     Todo:
     -----
-    Implement time_clip. Currently, it is not working correctly for spectra.
-
+    1. Implement time_clip. Currently, it is not working correctly for spectra.
+    2. Fix legends. The option "legend_location"="spedas", does not work correctly, it hides part of the legend, both on screen and in the saved PNG file.
+    3. Implement thm_gen_multipngplot (6 hours, 2 hours).
+    4. Fix problems when data is missing.
     """
 
     # If trange is not specified, use date and duration
@@ -198,14 +204,14 @@ def mms_overview_plot(
     # Save plot
     fname = None
     if isinstance(t1, str):
-        t0 = time_string(time_double(t1), fmt="%Y-%m-%d")
+        t0 = time_string(time_double(t1), fmt="%Y_%m_%d")
     else:
-        t0 = time_string(t1, fmt="%Y-%m-%d")
+        t0 = time_string(t1, fmt="%Y_%m_%d")
     if save_png:
         if directory is None or directory == "":
             directory = "./"
         if filename is None or filename == "":
-            fname = directory + "/mms" + probe + "_" + t0 + ".png"
+            fname = directory + "/mms" + probe + "_" + t0
         else:
             fname = directory + filename
 
@@ -227,10 +233,13 @@ def mms_overview_plot(
         vars.insert(0, panel01)
 
     # time_clip(vars, time_start=trange[0], time_end=trange[1])
-    plot_title = "MMS-" + probe + " Overview"
+    plot_title = "MMS-" + probe + " Overview (" + t0.replace("_", "-") + ")"
     tplot_options("title", plot_title)
+    options(panel01, "name", plot_title)
     # tplot_options("wsize", [1400, 1000]) does not work
     tplot_options("show_all_axes", False)
     xsize = int(xsize / 100)
     ysize = int(ysize / 100)
+
     tplot(vars, save_png=fname, display=display, xsize=xsize, ysize=ysize)
+    logging.info("MMS overview plot completed.")
