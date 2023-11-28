@@ -51,16 +51,19 @@ def load_fdsn(trange=None, network=None, station=None, nodownload=False):
 
     # Get MTH5 file from the server
     # we use "*F*" channel instead of "*" to extract magnetic data
+    # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
     request_df = pd.DataFrame(
         {
             "network": [network],
             "station": [station],
             "location": ["--"],
             "channel": ["*F*"],
-            "start": [mth5_time_str(trange[0])], #  ["2019-11-14T00:00:00"],
-            "end":  [mth5_time_str(trange[1])] # ["2019-11-15T00:00:00"]
+            "start": [mth5_time_str(trange[0])],  # ["2019-11-14T00:00:00"],
+            "end":  [mth5_time_str(trange[1])]  # ["2019-11-15T00:00:00"]
         }
     )
+
+    # print(request_df)
 
     # Create time variables that correspond to the request time period
     request_start = datetime.fromisoformat(request_df.start[0])
