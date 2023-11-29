@@ -1,4 +1,7 @@
 # Import pyspedas tools into pyspedas namespace
+# These are imported as a convenience for pyspedas users.  For internal pyspedas development, it is
+# probably best to keep using the fully qualified module names.
+
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
 from .analysis.dpwrspc import dpwrspc
