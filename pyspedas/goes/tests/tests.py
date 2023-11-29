@@ -4,7 +4,7 @@ import unittest
 from pytplot import data_exists
 
 import pyspedas
-from pytplot import del_data
+from pytplot import del_data, tplot
 
 
 class LoadTestCases(unittest.TestCase):
