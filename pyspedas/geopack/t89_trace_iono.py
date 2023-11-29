@@ -17,7 +17,10 @@ def trace_to_iono(f, pos_init, max_distance=50.0, dt=1.0, south=False):
     """
 
     # Initialize the RK45 integrator
-    integrator = RK45(f, 0, pos_init, 10.0, max_step=dt)
+    # atol = .0008 Re corresponds to an error tolerance of about 5 km
+    # debug: set dt to np.inf for now to see what happens
+    dt = 0.05
+    integrator = RK45(f, 0, pos_init, 10.0, atol=.0008, rtol=2.0e-10, max_step=dt)
 
     #integrator.direction = -1.0
 
