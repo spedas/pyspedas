@@ -1,31 +1,16 @@
+# Import pyspedas tools into pyspedas namespace
 from .version import version
-from pytplot import data_exists
-from pytplot import tnames
-from pytplot import time_string, time_datetime
-from pytplot import time_float, time_double
 from .utilities.tcopy import tcopy
 from .utilities.libs import libs
-from pytplot import tkm2re
-
 from .analysis.avg_data import avg_data
-from pytplot import clean_spikes
 from .analysis.deriv_data import deriv_data
 from .analysis.dpwrspc import dpwrspc
 from .analysis.tvectot import tvectot
-from pytplot import subtract_average
-from pytplot import subtract_median
-from pytplot import time_clip
 from .analysis.tdeflag import tdeflag
 from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
-from pytplot import tnormalize
-from pytplot import tdotp
-from pytplot import tcrossp
-from pytplot import tsmooth
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
-from pytplot import cdf_to_tplot
-
 from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
 from .cotrans.cotrans_set_coord import cotrans_set_coord
@@ -34,6 +19,23 @@ from .cotrans.cart2spc import cart2spc
 from .cotrans.spc2cart import spc2cart
 from .cotrans.sm2mlt import sm2mlt
 
+# Import pytplot tools into pyspedas namespace
+from pytplot import tkm2re
+from pytplot import data_exists
+from pytplot import tnames, tplot_names
+from pytplot import time_string, time_datetime
+from pytplot import time_float, time_double
+from pytplot import clean_spikes
+from pytplot import subtract_average
+from pytplot import subtract_median
+from pytplot import time_clip
+from pytplot import tnormalize
+from pytplot import tdotp
+from pytplot import tcrossp
+from pytplot import tsmooth
+from pytplot import cdf_to_tplot, netcdf_to_tplot
+
+# Import routine names with mission prefixes into pyspedas namespace
 from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
     mms_load_edp, mms_load_eis, mms_load_feeps, \
     mms_load_hpca, mms_load_fpi, mms_load_aspoc, \
@@ -43,10 +45,10 @@ from .mms.feeps.mms_feeps_gpd import mms_feeps_gpd
 from .mms.eis.mms_eis_pad import mms_eis_pad
 from .mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
-
 from .maven import maven_load
 from .sosmag.load import sosmag_load
 
+# Make mission-specific namespaces available under pyspedas
 from . import erg
 from . import ulysses
 from . import mica
