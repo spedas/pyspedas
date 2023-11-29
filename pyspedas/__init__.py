@@ -1,7 +1,4 @@
 # Import pyspedas tools into pyspedas namespace
-from .version import version
-from .utilities.tcopy import tcopy
-from .utilities.libs import libs
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
 from .analysis.dpwrspc import dpwrspc
@@ -11,6 +8,7 @@ from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
+from .cdagui.cdagui import cdagui
 from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
 from .cotrans.cotrans_set_coord import cotrans_set_coord
@@ -18,22 +16,40 @@ from .cotrans.tvector_rotate import tvector_rotate
 from .cotrans.cart2spc import cart2spc
 from .cotrans.spc2cart import spc2cart
 from .cotrans.sm2mlt import sm2mlt
+from .cotrans.fac_matrix_make import fac_matrix_make
+from .cotrans.gsm2lmn import gsm2lmn
+from .cotrans.minvar import minvar
+from .cotrans.minvar_matrix_make import minvar_matrix_make
+from .cotrans.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq
+from .cotrans.tvector_rotate import tvector_rotate
+from .cotrans.xyz_to_polar import xyz_to_polar
+from .geopack.get_tsy_params import get_tsy_params
+from .geopack.get_w_params import get_w
+from .geopack.kp2iopt import kp2iopt
+from .geopack.t01 import t01, tt01
+from .geopack.t89 import t89, tt89
+from .geopack.t96 import t96, tt96
+from .geopack.ts04 import tts04
+from .hapi.hapi import hapi
+from .utilities.spice.time_ephemeris import time_ephemeris
+from .utilities.dailynames import dailynames
+from .utilities.datasets import find_datasets
+# Note: "download" and "download_file" might be problematic names to import, due to risk of conflict with other packages
+from .utilities.download import download, download_file, check_downloaded_file
+from .utilities.interpol import interpol
+from .utilities.leap_seconds import load_leap_table
+from .utilities.libs import libs
+from .utilities.mpause_2 import mpause_2
+from .utilities.mpause_t96 import mpause_t96
+from .utilities.tcopy import tcopy
+from .version import version
+
 
 # Import pytplot tools into pyspedas namespace
-from pytplot import tkm2re
-from pytplot import data_exists
-from pytplot import tnames, tplot_names
-from pytplot import time_string, time_datetime
-from pytplot import time_float, time_double
-from pytplot import clean_spikes
-from pytplot import subtract_average
-from pytplot import subtract_median
-from pytplot import time_clip
-from pytplot import tnormalize
-from pytplot import tdotp
-from pytplot import tcrossp
-from pytplot import tsmooth
-from pytplot import cdf_to_tplot, netcdf_to_tplot
+# Note to developers: Do not use these imports for pyspedas internals, or it will cause
+# circular dependencies.  Import directly from pytplot instead.
+
+from pytplot import *
 
 # Import routine names with mission prefixes into pyspedas namespace
 from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
