@@ -8,9 +8,9 @@ import logging
 import numpy as np
 from copy import deepcopy
 
-from pyspedas import tnormalize, tcrossp, tinterpol, deriv_data, cotrans, tvector_rotate
+from pyspedas import tinterpol, deriv_data, cotrans, tvector_rotate
 from pyspedas.themis import autoload_support
-from pytplot import data_exists, get_data, store_data, get_coords, set_coords
+from pytplot import data_exists, get_data, store_data, get_coords, set_coords, tnormalize, tcrossp
 
 def gse2sse(name_in: str, name_out: str, isssetogse: bool = False,
             variable_type: str = 'Other', ignore_input_coord: bool = False, rotation_only: bool = False) -> int:

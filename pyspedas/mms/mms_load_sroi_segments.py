@@ -3,7 +3,7 @@ import logging
 import requests
 import numpy as np
 from pytplot import store_data, options
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
 
 
 def get_mms_srois(start_time=None, end_time=None, sc_id=None):

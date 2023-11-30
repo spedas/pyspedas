@@ -1,4 +1,4 @@
-from pyspedas import tnames
+from pytplot import tnames
 from pytplot import options
 
 

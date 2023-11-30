@@ -2,7 +2,7 @@ import logging
 import numpy as np
 from fnmatch import fnmatch
 from pytplot import get_data, store_data, options
-from pyspedas import time_datetime
+from pytplot import time_datetime
 
 
 def mms_fpi_make_compressionlossbars(tname, lossy=False):

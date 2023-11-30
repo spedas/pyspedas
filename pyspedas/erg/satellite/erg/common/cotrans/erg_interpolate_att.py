@@ -1,5 +1,5 @@
 import numpy as np
-from pyspedas import tnames
+from pytplot import tnames
 from pytplot import tcrossp
 from pytplot import time_string
 from pytplot import get_data, get_timespan

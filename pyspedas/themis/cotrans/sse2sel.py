@@ -5,7 +5,7 @@ Notes:
 import logging
 import numpy as np
 import pytplot
-from pyspedas import tnormalize, tcrossp
+from pytplot import tnormalize, tcrossp
 from pyspedas.cotrans.tvector_rotate import tvector_rotate
 from pytplot import data_exists, get_coords, set_coords
 from pyspedas.cotrans.cotrans import cotrans

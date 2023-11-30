@@ -3,7 +3,7 @@ import logging
 import warnings
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
 from pyspedas.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.mms.mms_config import CONFIG
 from pyspedas.mms.mec_ascii.mms_get_local_state_files import mms_get_local_state_files

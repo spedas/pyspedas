@@ -4,7 +4,7 @@ import importlib.resources
 from typing import List, Dict
 
 import numpy as np
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
 from pytplot import get_timespan, store, get, store_data, get_data
 
 

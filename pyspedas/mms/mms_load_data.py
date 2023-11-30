@@ -6,7 +6,7 @@ import pkg_resources
 import numpy as np
 from pytplot import cdf_to_tplot
 from pytplot import time_clip as tclip
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
 from shutil import copyfileobj, copy

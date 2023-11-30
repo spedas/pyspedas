@@ -1,5 +1,5 @@
 import logging
-from pyspedas import time_double
+from pytplot import time_double
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from .mms_file_filter import mms_file_filter
