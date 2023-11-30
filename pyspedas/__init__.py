@@ -26,13 +26,14 @@ from .cotrans.minvar_matrix_make import minvar_matrix_make
 from .cotrans.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq
 from .cotrans.tvector_rotate import tvector_rotate
 from .cotrans.xyz_to_polar import xyz_to_polar
-from .geopack.get_tsy_params import get_tsy_params
-from .geopack.get_w_params import get_w
-from .geopack.kp2iopt import kp2iopt
-from .geopack.t01 import t01, tt01
-from .geopack.t89 import t89, tt89
-from .geopack.t96 import t96, tt96
-from .geopack.ts04 import tts04
+# Importing geopack causes IGRF coefficients to be loaded by the external geopack package, which may not be desired.
+#from .geopack.get_tsy_params import get_tsy_params
+#from .geopack.get_w_params import get_w
+#from .geopack.kp2iopt import kp2iopt
+#from .geopack.t01 import t01, tt01
+#from .geopack.t89 import t89, tt89
+#from .geopack.t96 import t96, tt96
+#from .geopack.ts04 import tts04
 from .hapi.hapi import hapi
 from .utilities.spice.time_ephemeris import time_ephemeris
 from .utilities.dailynames import dailynames
@@ -49,7 +50,7 @@ from .version import version
 
 
 # Import pytplot tools into pyspedas namespace
-# Note to developers: Do not use these imports for pyspedas internals, or it will cause
+# Note to developers: Do not use these imports for pyspedas internals, or it may cause
 # circular dependencies.  Import directly from pytplot instead.
 
 from pytplot import *
@@ -68,48 +69,49 @@ from .maven import maven_load
 from .sosmag.load import sosmag_load
 
 # Make mission-specific namespaces available under pyspedas
-from . import erg
-from . import ulysses
-from . import mica
-from . import goes
-from . import themis
-from . import omni
-from . import dscovr
-from . import psp
-from . import poes
-from . import rbsp
 from . import ace
-from . import wind
-from . import csswe
-from . import cluster
-from . import geotail
-from . import twins
-from . import stereo
-from . import image
-from . import polar
-from . import fast
-from . import equator_s
-from . import solo
-from . import secs
-from . import kyoto
-from . import swarm
-from . import vires
-from . import cnofs
-from . import lanl
-from . import st5
-from . import de2
 from . import akebono
-from . import soho
 from . import barrel
+from . import cluster
+from . import cnofs
+from . import csswe
+from . import de2
+from . import dscovr
 from . import elfin
+from . import equator_s
+from . import erg
+from . import fast
+from . import geotail
+from . import goes
+from . import image
+from . import kyoto
+from . import lanl
+from . import maven
+from . import mica
+from . import omni
+from . import poes
+from . import polar
+from . import psp
+from . import rbsp
+from . import secs
+from . import soho
+from . import solo
+from . import st5
+from . import stereo
+from . import swarm
+from . import themis
+from . import twins
+from . import ulysses
+from . import vires
+from . import wind
 
 # set up logging/console output
 import logging
 from os import environ
 
-logging_level = environ.get('PYTPLOT_LOGGING_LEVEL')
-logging_format = environ.get('PYTPLOT_LOGGING_FORMAT')
-logging_date_fmt = environ.get('PYTPLOT_LOGGING_DATE_FORMAT')
+logging_level = environ.get('PYSPEDAS_LOGGING_LEVEL')
+logging_format = environ.get('PYSPEDAS_LOGGING_FORMAT')
+logging_date_fmt = environ.get('PYSPEDAS_LOGGING_DATE_FORMAT')
 
 if logging_format is None:
     logging_format = '%(asctime)s: %(message)s'
