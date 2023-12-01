@@ -254,14 +254,23 @@ def load_fdsn(trange=None, network=None, station=None,
         tplot_variable = 'fdsn_' + network + '_' + station
 
         # TODO: Add metadata
+        # Handle legends
+        legend_names = ['x', 'y', 'z']
+        try:
+            legend_names = station_data.metadata.channels_recorded
+        except AttributeError:
+            # Also raise this exception if noexception flag is set
+            if not noexception:
+                raise
 
         # TODO: Clip time according to original times, add noclip parameter
 
         store_data(tplot_variable, data=data, attr_dict=attr_dict)
         tplot_options = {
             "name": f"FDSN: {network}, station: {station}",  # network and stations
-            "ytitle": f"{','.join(list(measurements_type))}",  # measurment
-            "ysubtitle": f"{','.join(list(units))}"  # units
+            "ytitle": f"{','.join(list(measurements_type))}",  # measurement
+            "ysubtitle": f"{','.join(list(units))}",  # units
+            "legend_names": legend_names
         }
 
         options(tplot_variable, opt_dict=tplot_options)
