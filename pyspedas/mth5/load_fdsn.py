@@ -1,4 +1,6 @@
 import os
+
+import mth5
 import numpy as np
 import pandas as pd
 import pytplot
@@ -15,7 +17,14 @@ from pyspedas.mth5.utilities import mth5_time_str
 
 from datetime import datetime
 
-def load_fdsn(trange=None, network=None, station=None, nodownload=False):
+def disable_loguru_warnings(record):
+    if record["extra"].get("no_warning"):
+        return record["level"].no != mth5.logger.level("WARNING").no
+    return True
+
+def load_fdsn(trange=None, network=None, station=None,
+              nodownload=False, noexception=False, print_request=False,
+              nowarnings=False):
     """
     Load FDSN data using MTH5 interface.
 
@@ -26,10 +35,20 @@ def load_fdsn(trange=None, network=None, station=None, nodownload=False):
             Network name.
         station : str
             Station name.
+        nodownload : bool
+            If h5 file is already created do not load another one.
+        noexception : bool
+            If true do not raise and Execution produced by FDSN
+        print_request : bool
+            Print request_df structure, which can be usefully for debuting the request
 
     Returns:
         List of tplot variables created.
     """
+
+    # mth5.logger.remove()
+    mth5.logger._core.extra["no_warning"] = nowarnings
+
 
     # If trange is not specified we don't know what to load
     if trange is None:
@@ -59,11 +78,11 @@ def load_fdsn(trange=None, network=None, station=None, nodownload=False):
             "location": ["--"],
             "channel": ["*F*"],
             "start": [mth5_time_str(trange[0])],  # ["2019-11-14T00:00:00"],
-            "end":  [mth5_time_str(trange[1])]  # ["2019-11-15T00:00:00"]
+            "end": [mth5_time_str(trange[1])]  # ["2019-11-15T00:00:00"]
         }
     )
 
-    # print(request_df)
+    if print_request: print(request_df)
 
     # Create time variables that correspond to the request time period
     request_start = datetime.fromisoformat(request_df.start[0])
@@ -102,6 +121,9 @@ def load_fdsn(trange=None, network=None, station=None, nodownload=False):
                     if os.path.basename(fid.name.decode('utf8')) == mth5filename:
                         h5py.File(fid).close()
                         pyspedas.logger.info(f"mth5 file {mth5filename} object is now closed.")
+
+            # Exit code by flag
+            if noexception: return
             raise
 
     # Using MTH5 as a context manager
@@ -118,7 +140,7 @@ def load_fdsn(trange=None, network=None, station=None, nodownload=False):
         # TODO: is there a better way to create a new time array?
         time = np.array([])
         attributes = [('hx', 'bx'), ('hy', 'by'), ('hz', 'bz')]
-        variables = {'x': np.array([]), 'y': np.array([]), 'z':np.array([])}
+        variables = {'x': np.array([]), 'y': np.array([]), 'z': np.array([])}
 
         attr_dict = {}  # metadata
         units = set()  # basic units
@@ -138,7 +160,7 @@ def load_fdsn(trange=None, network=None, station=None, nodownload=False):
                 run_data = station_data.get_run(run_name=run_name)
 
                 # Check run time coverage
-                run_start =  datetime.fromisoformat(run_data.metadata.time_period.start).replace(tzinfo=None)
+                run_start = datetime.fromisoformat(run_data.metadata.time_period.start).replace(tzinfo=None)
                 run_end = datetime.fromisoformat(run_data.metadata.time_period.end).replace(tzinfo=None)
 
                 # Skip processing if run is outside requested time range
@@ -161,7 +183,7 @@ def load_fdsn(trange=None, network=None, station=None, nodownload=False):
                     continue
 
                 # Check if the filters are available to calibrate data
-                if len(run_ts.filters)  == 0:
+                if len(run_ts.filters) == 0:
                     pyspedas.logger.warning("Filters were not added to run_ts")
                     continue
 

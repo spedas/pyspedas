@@ -22,15 +22,22 @@ try:
     import loguru, pyspedas
     from mth5 import config as mth5_logger_config
     from pyspedas import logging_level
+    from pyspedas.mth5.load_fdsn import disable_loguru_warnings
+
+    # This is how to disable all together
+    # import warnings
+    # warnings.filterwarnings('ignore')
 
     # TODO: terminate this code if handler logging_level is the same as in loguru
 
     mth5_logger_config['handlers'][0]['level'] = logging_level
+    mth5_logger_config['handlers'][0]["filter"] = disable_loguru_warnings
+    mth5_logger_config['extra']['no_warning'] = False
     if loguru.logger._core.handlers:
         handler_id = next(iter(loguru.logger._core.handlers.keys()))
         loguru.logger.remove(handler_id)
         loguru.logger.configure(**mth5_logger_config)
-        pyspedas.logging.info('loguru synchronized with pyspedas logging')
+        pyspedas.logging.debug('loguru synchronized with pyspedas logging')
 except:
     pyspedas.logging.error('loguru synchronization error')
     pass
