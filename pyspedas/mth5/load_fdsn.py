@@ -71,12 +71,18 @@ def load_fdsn(trange=None, network=None, station=None,
     # Get MTH5 file from the server
     # we use "*F*" channel instead of "*" to extract magnetic data
     # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
+    channel_band = ['M', 'L', 'V', 'U']
+    channel_orientation = ['N', 'V', 'Z']
+    channel_instrument = 'F'
+    # Create list of all combinations of channel_band, channel_instrument and channel_orientation
+    channel_list = ",".join([f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
+
     request_df = pd.DataFrame(
         {
             "network": [network],
             "station": [station],
             "location": ["--"],
-            "channel": ["*F*"],
+            "channel": [channel_list],
             "start": [mth5_time_str(trange[0])],  # ["2019-11-14T00:00:00"],
             "end": [mth5_time_str(trange[1])]  # ["2019-11-15T00:00:00"]
         }
