@@ -8,6 +8,7 @@ import itertools
 import pkgutil
 import sys
 import io
+from fnmatch import fnmatchcase
 
 import pytplot
 import pyspedas
@@ -21,7 +22,9 @@ def libs(function_name, package=None):
     callable function name.
 
     Parameters:
-    - function_name (str): The name or partial name of the function to search for.
+    - function_name (str): The name or partial name of the function to search for. If "*" or "?"
+      are found in the function name, a case-insensitive wildcard match is performed, otherwise
+      function_name is treated as a substring to match.
     - package (module, optional): The Python package in which to search for the function.
       Default is the pyspedas package. This should be a Python module object.
 
@@ -46,20 +49,41 @@ def libs(function_name, package=None):
     if not function_name:
         return
 
-    def list_functions(module, root, function_name, pacakge_obj):
+    # Using separate functions for the wildcard and substring matching eliminates a test and branch in the inner loop
+
+    def list_functions_substring(module, root, search_string, pacakge_obj):
         full_module_name = module.__name__
         for name, obj in inspect.getmembers(module):
-            if inspect.isfunction(obj) and (function_name in name) and (pacakge_obj.__name__ in obj.__module__):
+            if inspect.isfunction(obj) and (search_string in name) and (pacakge_obj.__name__ in obj.__module__):
                 full_name = full_module_name + '.' + name
                 source_file = inspect.getsourcefile(obj)
                 doc = inspect.getdoc(obj)
                 first_line_of_doc = doc.split('\n')[0] if doc else "No documentation"
                 print(f"Function: {full_name}\nLocation: {source_file}\nDocumentation: {first_line_of_doc}\n")
 
-    def traverse_modules(package, function_name, pacakge_obj):
+    def list_functions_wildcard(module, root, wildcard_pattern, pacakge_obj):
+        full_module_name = module.__name__
+        for name, obj in inspect.getmembers(module):
+            if inspect.isfunction(obj) and fnmatchcase(name.lower(), wildcard_pattern) and (pacakge_obj.__name__ in obj.__module__):
+                full_name = full_module_name + '.' + name
+                source_file = inspect.getsourcefile(obj)
+                doc = inspect.getdoc(obj)
+                first_line_of_doc = doc.split('\n')[0] if doc else "No documentation"
+                print(f"Function: {full_name}\nLocation: {source_file}\nDocumentation: {first_line_of_doc}\n")
+
+    def traverse_modules(package, function_name, package_obj):
         # Add the module itself
         walk_packages_iterator = pkgutil.walk_packages(path=package.__path__, prefix=package.__name__ + '.')
         combined_iterator = itertools.chain(((None, package.__name__, True),), walk_packages_iterator)
+
+        # Check for wildcard characters
+        if '*' in function_name or '?' in function_name:
+            wildcard=True
+            # There is no 'fnmatchnocase', so lowercase the search pattern and function names before comparing
+            wildcard_pattern = function_name.lower()
+        else:
+            wildcard=False
+            wildcard_pattern=''
 
         for _, modname, ispkg in combined_iterator:
             if ispkg and 'qtplotter' not in modname.lower():
@@ -71,12 +95,15 @@ def libs(function_name, package=None):
 
                 try:
                     module = importlib.import_module(modname)
-                    if not pacakge_obj:
-                        pacakge_obj = package
+                    if not package_obj:
+                        package_obj = package
 
                     # Restore the original stdout
                     sys.stdout = original_stdout
-                    list_functions(module, package, function_name, pacakge_obj)
+                    if not wildcard:
+                        list_functions_substring(module, package, function_name, package_obj)
+                    else:
+                        list_functions_wildcard(module, package, wildcard_pattern, package_obj)
                 except ImportError as e:
                     # Restore the original stdout
                     sys.stdout = original_stdout
