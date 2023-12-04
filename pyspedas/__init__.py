@@ -65,6 +65,9 @@ from .mms.feeps.mms_feeps_gpd import mms_feeps_gpd
 from .mms.eis.mms_eis_pad import mms_eis_pad
 from .mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from .mms.mms_overview_plot import mms_overview_plot
+from .mms.particles.mms_part_getspec import mms_part_getspec
+from .mms.particles.mms_part_slice2d import mms_part_slice2d
 from .maven import maven_load
 from .sosmag.load import sosmag_load
 
