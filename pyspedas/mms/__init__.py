@@ -44,6 +44,10 @@ def bss(*args, **kwargs):
 def state(*args, **kwargs):
     return mms_load_state(*args, **kwargs)
 
+@wraps(mms_load_tetrahedron_qf)
+def tetrahedron_qf(*args, **kwargs):
+    return mms_load_tetrahedron_qf(*args, **kwargs)
+
 @wraps(mms_load_fgm)
 def fgm(*args, **kwargs):
     return mms_load_fgm(*args, **kwargs)
