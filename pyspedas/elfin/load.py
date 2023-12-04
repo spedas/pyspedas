@@ -1,3 +1,5 @@
+import logging 
+
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pytplot import time_clip as tclip
@@ -63,7 +65,9 @@ def load(trange=['2020-11-5', '2020-11-6'],
 
     files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=True)
 
-    if files is not None:
+    if not files:
+        logging.error(f"ELFIN LOAD: NO CDF FILE FOUND! check file {remote_names}")
+    else:
         for file in files:
             out_files.append(file)
 
