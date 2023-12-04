@@ -80,7 +80,8 @@ def libs(function_name, package=None):
         if '*' in function_name or '?' in function_name:
             wildcard=True
             # There is no 'fnmatchnocase', so lowercase the search pattern and function names before comparing
-            wildcard_pattern = function_name.lower()
+            # We'll add implicit leading and trailing '*', so any substring match will appear in the list
+            wildcard_pattern = '*' + function_name.lower() + '*'
         else:
             wildcard=False
             wildcard_pattern=''
