@@ -145,6 +145,9 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'colormap_width':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['colormap_width'] = value
 
+            if option == 'second_axis_size':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['second_axis_size'] = value
+
             if option == 'spec':
                 _reset_plots(i)
                 if value:

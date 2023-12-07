@@ -499,8 +499,9 @@ def tplot(variables, var_label=None,
             xmargin = pytplot.tplot_opt_glob.get('xmargin')
             if xmargin is None:
                 fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
-            else:
-                second_axis_size = 0.0
+            
+            if plot_extras.get('second_axis_size') is not None:
+                second_axis_size = plot_extras['second_axis_size']
 
             box = this_axis.get_position()
             pad, width = 0.02, colormap_width
