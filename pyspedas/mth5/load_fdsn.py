@@ -72,10 +72,11 @@ def load_fdsn(trange=None, network=None, station=None,
     # we use "*F*" channel instead of "*" to extract magnetic data
     # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
     channel_band = ['M', 'L', 'V', 'U']
-    channel_orientation = ['N', 'V', 'Z']
+    channel_orientation = ['Z', 'N', 'E']
     channel_instrument = 'F'
     # Create list of all combinations of channel_band, channel_instrument and channel_orientation
     channel_list = ",".join([f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
+    # channel_list = "*F*"
 
     request_df = pd.DataFrame(
         {
@@ -114,6 +115,7 @@ def load_fdsn(trange=None, network=None, station=None,
         except Exception:
             # This code is obsolete with updated MTH5
             # Hande mth5 object initialization error. This error may occur if MTH5 file was not closed.
+            # TODO: Add PermissionError handling _ this is when the file is opened in another process...
             pyspedas.logger.error("Cannot initialize mth5 object")
             mth5filename = fdsn_object.make_filename(request_df)
             mth5file = os.path.join(mth5dir, mth5filename)
@@ -264,7 +266,7 @@ def load_fdsn(trange=None, network=None, station=None,
                 raise
 
         # TODO: Clip time according to original times, add noclip parameter
-
+        # TODO: Add check on data existence.
         store_data(tplot_variable, data=data, attr_dict=attr_dict)
         tplot_options = {
             "name": f"FDSN: {network}, station: {station}",  # network and stations
