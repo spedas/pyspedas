@@ -32,4 +32,3 @@ from .subtract_average import subtract_average
 from .time_clip import time_clip
 from .tkm2re import tkm2re
 from .makegap import makegap
-from .tdeflag import tdeflag
