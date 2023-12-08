@@ -20,6 +20,7 @@ def clip(tvar,ymin,ymax,new_tvar=None):
             Maximum value to keep (inclusive)
         newtvar : str
             Name of new tvar for clipped data storage.  If not specified, tvar will be replaced
+            THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten. 
 
     Returns:
         None
@@ -29,6 +30,14 @@ def clip(tvar,ymin,ymax,new_tvar=None):
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
         >>> pytplot.clip('d',2,6,'e')
     """
+
+    #check for globbed or array input, and call recursively
+    tn = pytplot.tnames(tvar)
+    if len(tn) > 1:
+        for j in range(len(tn)):
+            pytplot.clip(tn[j],ymin,ymax)
+        return
+
 
     a = copy.deepcopy(pytplot.data_quants[tvar].where(pytplot.data_quants[tvar] >= ymin))
     a = copy.deepcopy(a.where(a <= ymax))
