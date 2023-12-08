@@ -135,6 +135,16 @@ def mms_part_products(in_tvarname,
 
         zero_negative_values: bool
             Turn negative values to 0 after doing the photoelectron corrections (DES)
+
+        no_regrid: bool
+            Flag to disable reegridding
+
+        regrid: array of int
+            Array giving dimensions of regridded data
+            Default: [32,16]
+
+        vel_name: str
+            Name of tplot variable containing bulk velocity data
             
     Returns
     ----------
