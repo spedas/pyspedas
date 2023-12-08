@@ -54,7 +54,7 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
     tn = pytplot.tnames(tvar)
     if len(tn) > 1:
         for j in range(len(tn)):
-            pytplot.deflag(tn[j], flag, method = method)
+            pytplot.deflag(tn[j], flag, method = method, fillval=fillval)
         return
 
     #Now flag needs to be an array
