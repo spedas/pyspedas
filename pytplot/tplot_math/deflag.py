@@ -82,6 +82,7 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
 
         time = a[0]
         data = a[1]
+        # Added this to prevent error on !-d arrays (see below)
         data_dim = data.ndim
         new_time = []
         new_data = []
@@ -95,6 +96,8 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
 
         #Fill the new variable
         for j in range(len(time)):
+            # This used to be "if len(data[j]) > 1", which failed if data is 1-D so that data[j] is scalar
+            # Instead we go by the dimensions of the data array itself
             if data_dim > 1:
                 tj = np.sum(data[j])
             else:
