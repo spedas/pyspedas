@@ -13,7 +13,7 @@ import pytplot
 import numpy
 
 
-def tdeflag(names, method=None, new_names=None, suffix=None,
+def tdeflag(names, method="remove_nan", new_names=None, suffix=None,
             overwrite=None):
     """
     Remove NaNs from tplot variables.
