@@ -12,6 +12,7 @@ import pyspedas
 import pytplot
 import numpy
 
+# Added default method="remove_nan" (inadvertently committed under a different log message)
 
 def tdeflag(names, method="remove_nan", new_names=None, suffix=None,
             overwrite=None):
