@@ -8,7 +8,6 @@ Similar to tdeflag.pro in IDL SPEDAS, but now a wrapper for deflag.py
 
 """
 import logging
-import pyspedas
 import pytplot
 
 def tdeflag(names, flag=None, method='linear', new_names=None, suffix=None,
@@ -42,7 +41,7 @@ def tdeflag(names, flag=None, method='linear', new_names=None, suffix=None,
     None.
 
     """
-    old_names = pyspedas.tnames(names)
+    old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
         logging.error('tdeflag error: No pytplot names were provided.')
