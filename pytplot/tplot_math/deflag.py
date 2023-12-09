@@ -82,6 +82,7 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
 
         time = a[0]
         data = a[1]
+        data_dim = data.ndim
         new_time = []
         new_data = []
         
@@ -94,7 +95,7 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
 
         #Fill the new variable
         for j in range(len(time)):
-            if len(data[j]) > 1:
+            if data_dim > 1:
                 tj = np.sum(data[j])
             else:
                 tj = data[j]

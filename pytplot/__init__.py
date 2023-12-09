@@ -159,8 +159,16 @@ from .tplot_utilities import annotate
 from .data_att_getters_setters import set_coords, get_coords, set_units, get_units
 from .data_exists import data_exists
 from .link import link
-from pytplot.tplot_math import *
 from .tres import tres
+# Importing tdeflag here will cause a problem while the wrapper still exists in pyspedas.
+# So rather than import *, we will import everything except tdeflag from tplot_math.
+#from pytplot.tplot_math import *
+from .tplot_math import add_across, add, avg_res_data, clip, crop, deflag, degap, derive, divide, flatten
+from .tplot_math import interp_nan, tinterp, join_vec, multiply, resample, spec_mult, split_vec, subtract, pwr_spec
+from .tplot_math import clean_spikes, tsmooth, smooth, tdotp, tcrossp
+#from .tplot_math import tdeflag
+from .tplot_math import tnormalize, subtract_median, subtract_average, time_clip, tkm2re, makegap
+
 
 # set up logging/console output
 import logging
