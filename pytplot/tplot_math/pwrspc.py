@@ -12,6 +12,7 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
             The time array.
         quantity (array):
             The data array for which the power spectrum is to be computed.
+            Should be one dimensional and the same length as time.
         noline (bool):
             If True, straight line is not subtracted from the data.
         nohanning (bool):
@@ -47,15 +48,23 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
         >>> freq, power = pwrspc(time, quantity)
     """
 
-    t = np.array(time, dtype=np.float64) - time[0]
+    t = np.array(time, dtype=np.float64)
     x = np.array(quantity, dtype=np.float64)
 
+    # If the dimensions of the input arrays are not the same, and not one dimension, return
+    if t.ndim != 1 or x.ndim != 1 or len(t) != len(x) or len(t) < 1:
+        logging.error('Both input arrays should be one dimensional and of the same length.')
+        return None, None
+
+    # Subtract first point from time array
+    t -= t[0]
+
+    # Subtract straight line from data
     if not noline:
         slope, intercept, _, _, _ = linregress(t, x)
         x -= (slope * t + intercept)
 
     binsize = bin
-
     window = 0.0
     if not nohanning:
         window = np.hanning(len(x))
@@ -63,7 +72,7 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
 
     nt = len(t)
     if nt % 2 != 0:
-        logging.info('needs an even number of data points, dropping last point...')
+        logging.info('Needs an even number of data points, dropping last point...')
         t = t[:-1]
         x = x[:-1]
         nt -= 1
