@@ -29,3 +29,4 @@ from .tkm2re import tkm2re
 from .makegap import makegap
 from .tdeflag import tdeflag
 from .pwrspc import pwrspc
+from .tpwrspc import tpwrspc
