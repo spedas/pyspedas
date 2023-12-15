@@ -65,7 +65,7 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     logging.info('bign=', dbign)
 
     k = np.arange(0, dbign // 2 + 1)
-    tres = np.median(np.diff(t))
+    tres = float(np.median(np.diff(t)))
     fk = k / (dbign * tres)
 
     pwr = np.zeros(nt // 2 + 1)
