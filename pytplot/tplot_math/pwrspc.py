@@ -31,6 +31,14 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     Notes:
         This is similar to IDL pwrspc.pro routine.
 
+        A Hanning window is applied to the input data, and its power is divided out of the returned spectrum.
+        A straight line is subtracted from the data to reduce spurious power due to sawtooth behavior of a background.
+        Units are (units)^2 where units are the units of the input quantity. Frequency is in 1/time units.
+        Thus, the output represents the mean squared amplitude of the signal at each specific frequency.
+        The total (sum) power under the curve is equal to the mean (over time) power of the oscillation in the time domain.
+        If the keyword notperhz is True, then power is in units^2. If notperhz is False (default), power is in units^2/Hz.
+
+
     Example:
         >>> # Compute the power spectrum of a given time series
         >>> from pytplot import pwrspc
@@ -65,7 +73,7 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     logging.info('bign=', dbign)
 
     k = np.arange(0, dbign // 2 + 1)
-    tres = np.median(np.diff(t))
+    tres = float(np.median(np.diff(t)))
     fk = k / (dbign * tres)
 
     pwr = np.zeros(nt // 2 + 1)
