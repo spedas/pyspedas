@@ -27,29 +27,38 @@ class StateLoadTestCases(unittest.TestCase):
         data = mms_load_state(datatypes=['pos', 'vel'], no_update=True) # ensure the files are stored locally
         self.assertTrue(data_exists('mms1_defeph_pos'))
         self.assertTrue(data_exists('mms1_defeph_vel'))
+        self.assertTrue('mms1_defeph_pos' in data)
+        self.assertTrue('mms1_defeph_vel' in data)
 
     def test_load_eph_data(self):
         data = mms_load_state(datatypes=['pos', 'vel'])
         self.assertTrue(data_exists('mms1_defeph_pos'))
         self.assertTrue(data_exists('mms1_defeph_vel'))
         tplot(['mms1_defeph_pos', 'mms1_defeph_vel'], display=False)
+        self.assertTrue('mms1_defeph_pos' in data)
+        self.assertTrue('mms1_defeph_vel' in data)
+
 
     def test_load_tqf(self):
         data = mms_load_tetrahedron_qf()
         self.assertTrue(data_exists('mms_tetrahedron_qf'))
         tplot('mms_tetrahedron_qf',display=False)
+        self.assertTrue('mms_tetrahedron_qf' in data)
 
     def test_load_tqf_no_update(self):
         data = mms_load_tetrahedron_qf()  # Ensure that some data is downloaded
         del_data('mms_tetrahedron_qf')    # Delete the tplot variable
         data = mms_load_tetrahedron_qf(no_update=True)  # Ensure that it can be loaded from previously downloaded files
         self.assertTrue(data_exists('mms_tetrahedron_qf'))
+        self.assertTrue('mms_tetrahedron_qf' in data)
         tplot('mms_tetrahedron_qf',display=False)
 
     def test_load_att_data(self):
         data = mms_load_state(trange=['2015-10-16', '2015-10-16/06:00'], datatypes=['spinras', 'spindec'])
         self.assertTrue(data_exists('mms1_defatt_spinras'))
         self.assertTrue(data_exists('mms1_defatt_spindec'))
+        self.assertTrue('mms1_defatt_spinras' in data)
+        self.assertTrue('mms1_defatt_spindec' in data)
         tplot(['mms1_defatt_spinras', 'mms1_defatt_spindec'], display=False)
 
 

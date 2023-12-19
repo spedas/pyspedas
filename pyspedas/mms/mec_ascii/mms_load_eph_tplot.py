@@ -37,16 +37,23 @@ def mms_load_eph_tplot(filenames, level='def', probe='1', datatypes=['pos', 'vel
             vz_values.append(rows[7][time_idx])
             date_values.append(rows[0][time_idx])
 
+    return_vars = []
     if 'pos' in datatypes:
-        store_data(prefix + '_' + level + 'eph_pos' + suffix, data={'x': time_values, 'y': np.transpose(np.array([x_values, y_values, z_values]))})
-        tclip(prefix + '_' + level + 'eph_pos' + suffix, trange[0], trange[1], suffix='')
-        options(prefix + '_' + level + 'eph_pos' + suffix, 'ytitle', 'MMS'+str(probe)+' position')
-        options(prefix + '_' + level + 'eph_pos' + suffix, 'ysubtitle', '[km]')
-        options(prefix + '_' + level + 'eph_pos' + suffix, 'legend_names', ['X ECI', 'Y ECI', 'Z ECI'])
+        posvar = prefix + '_' + level + 'eph_pos' + suffix
+        store_data(posvar, data={'x': time_values, 'y': np.transpose(np.array([x_values, y_values, z_values]))})
+        tclip(posvar, trange[0], trange[1], suffix='')
+        options(posvar, 'ytitle', 'MMS'+str(probe)+' position')
+        options(posvar, 'ysubtitle', '[km]')
+        options(posvar, 'legend_names', ['X ECI', 'Y ECI', 'Z ECI'])
+        return_vars.append(posvar)
 
     if 'vel' in datatypes:
-        store_data(prefix + '_' + level + 'eph_vel' + suffix, data={'x': time_values, 'y': np.transpose(np.array([vx_values, vy_values, vz_values]))})
-        tclip(prefix + '_' + level + 'eph_vel' + suffix, trange[0], trange[1], suffix='')
-        options(prefix + '_' + level + 'eph_vel' + suffix, 'ytitle', 'MMS'+str(probe)+' velocity')
-        options(prefix + '_' + level + 'eph_vel' + suffix, 'ysubtitle', '[km/s]')
-        options(prefix + '_' + level + 'eph_vel' + suffix, 'legend_names', ['Vx ECI', 'Vy ECI', 'Vz ECI'])
+        velvar = prefix + '_'  + level + 'eph_vel' + suffix
+        store_data(velvar, data={'x': time_values, 'y': np.transpose(np.array([vx_values, vy_values, vz_values]))})
+        tclip(velvar, trange[0], trange[1], suffix='')
+        options(velvar, 'ytitle', 'MMS'+str(probe)+' velocity')
+        options(velvar, 'ysubtitle', '[km/s]')
+        options(velvar, 'legend_names', ['Vx ECI', 'Vy ECI', 'Vz ECI'])
+        return_vars.append(velvar)
+
+    return return_vars
