@@ -22,6 +22,10 @@ from .fsm.fsm import mms_load_fsm
 from .fgm.mms_curl import mms_curl
 from .fgm.mms_lingradest import mms_lingradest
 from .spd_mms_load_bss import spd_mms_load_bss
+from .cotrans.mms_cotrans_lmn import mms_cotrans_lmn
+from .cotrans.mms_cotrans_qrotate import mms_cotrans_qrotate
+from .cotrans.mms_cotrans_qtransformer import mms_cotrans_qtransformer
+from .cotrans.mms_qcotrans import mms_qcotrans
 
 '''
     the following wrappers allow users to import the load routines using 

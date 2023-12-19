@@ -59,7 +59,8 @@ from pytplot import *
 from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
     mms_load_edp, mms_load_eis, mms_load_feeps, \
     mms_load_hpca, mms_load_fpi, mms_load_aspoc, \
-    mms_load_dsp, mms_load_fsm, mms_load_state
+    mms_load_dsp, mms_load_fsm, mms_load_state, \
+    mms_qcotrans, mms_cotrans_lmn, mms_cotrans_qrotate, mms_cotrans_qtransformer
 from .mms.feeps.mms_feeps_pad import mms_feeps_pad
 from .mms.feeps.mms_feeps_gpd import mms_feeps_gpd
 from .mms.eis.mms_eis_pad import mms_eis_pad
