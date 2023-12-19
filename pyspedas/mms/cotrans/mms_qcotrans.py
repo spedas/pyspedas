@@ -55,11 +55,13 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
 
     Examples
     --------
-    >>> from pyspedas import mms # Import MMS namespace
-    >>> mms.mec()   # Load quaternions, positions, and velocity variables from MEC data, using default parameters
+    >>> from pyspedas import mms, mms_qcotrans # Import MMS namespace and mms_qcotrans routine
+    >>> from pytplot import tplot # Import tplot routine to plot results
+    >>> mms.mec()   # Load quaternions, positions, and velocity variables from MEC data, using default trange and datatypes
     >>> mms_qcotrans('mms1_mec_v_sm', 'mms1_mec_v_sm_2gse', out_coord='gse') # Transform SM velocity to GSE
     >>> mms_qcotrans('mms1_mec_r_sm', 'mms1_mec_r_sm_2gse', out_coord='gse') # Transform SM position to GSE
-')
+    >>> tplot(['mms1_mec_v_sm','mms1_mec_v_sm_2gse','mms1_mec_r_sm','mms1_mec_r_sm_2gse']) # Plot inputs and outputs
+
     """
     valid_probes = ['1', '2', '3', '4']
     valid_coords = ['bcs', 'dbcs', 'dmpa', 'smpa', 'dsl', 'ssl', 'gse', 'gse2000', 'gsm', 'sm', 'geo', 'eci', 'j2000']
