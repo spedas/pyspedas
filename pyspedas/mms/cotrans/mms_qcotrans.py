@@ -39,10 +39,12 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
             Names of output variables
 
         in_coord: str
-            Input coordinate system (e.g. 'bcs','gse','gse2000','gsm','sm','geo','eci')
+            Input coordinate system, valid options:
+            'bcs', 'dbcs', 'dmpa', 'smpa', 'dsl', 'ssl', 'gse', 'gse2000', 'gsm', 'sm', 'geo', 'eci', 'j2000'
 
         out_coord: str
-            Output coordinate system (e.g. 'bcs','gse','gse2000','gsm','sm','geo','eci')
+            Output coordinate system valid options:
+            'bcs', 'dbcs', 'dmpa', 'smpa', 'dsl', 'ssl', 'gse', 'gse2000', 'gsm', 'sm', 'geo', 'eci', 'j2000'
 
         probe: str
             MMS spacecraft # (must be 1, 2, 3, or 4)
@@ -51,6 +53,13 @@ def mms_qcotrans(in_name=None, out_name=None, in_coord=None, out_coord=None, pro
     --------
         List of variables created
 
+    Examples
+    --------
+    >>> from pyspedas import mms # Import MMS namespace
+    >>> mms.mec()   # Load quaternions, positions, and velocity variables from MEC data, using default parameters
+    >>> mms_qcotrans('mms1_mec_v_sm', 'mms1_mec_v_sm_2gse', out_coord='gse') # Transform SM velocity to GSE
+    >>> mms_qcotrans('mms1_mec_r_sm', 'mms1_mec_r_sm_2gse', out_coord='gse') # Transform SM position to GSE
+')
     """
     valid_probes = ['1', '2', '3', '4']
     valid_coords = ['bcs', 'dbcs', 'dmpa', 'smpa', 'dsl', 'ssl', 'gse', 'gse2000', 'gsm', 'sm', 'geo', 'eci', 'j2000']
