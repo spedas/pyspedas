@@ -1,6 +1,6 @@
 import cdflib
 import numpy as np
-from pyspedas import tnames
+from pytplot import tnames
 from pytplot import clip, get_data, options, ylim
 
 from ..load import load

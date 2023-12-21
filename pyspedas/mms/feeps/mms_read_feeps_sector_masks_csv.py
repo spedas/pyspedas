@@ -1,7 +1,7 @@
 import csv
 import os
 import numpy as np
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
 
 
 def mms_read_feeps_sector_masks_csv(trange):

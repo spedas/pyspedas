@@ -6,6 +6,7 @@ This module contains routines for loading MMS data
 from functools import wraps
 
 from .mec_ascii.state import mms_load_state
+from .mec_ascii.tetrahedron_qf import mms_load_tetrahedron_qf
 from .fgm.fgm import mms_load_fgm
 from .hpca.hpca import mms_load_hpca
 from .fpi.fpi import mms_load_fpi
@@ -21,6 +22,10 @@ from .fsm.fsm import mms_load_fsm
 from .fgm.mms_curl import mms_curl
 from .fgm.mms_lingradest import mms_lingradest
 from .spd_mms_load_bss import spd_mms_load_bss
+from .cotrans.mms_cotrans_lmn import mms_cotrans_lmn
+from .cotrans.mms_cotrans_qrotate import mms_cotrans_qrotate
+from .cotrans.mms_cotrans_qtransformer import mms_cotrans_qtransformer
+from .cotrans.mms_qcotrans import mms_qcotrans
 
 '''
     the following wrappers allow users to import the load routines using 
@@ -42,6 +47,10 @@ def bss(*args, **kwargs):
 @wraps(mms_load_state)
 def state(*args, **kwargs):
     return mms_load_state(*args, **kwargs)
+
+@wraps(mms_load_tetrahedron_qf)
+def tetrahedron_qf(*args, **kwargs):
+    return mms_load_tetrahedron_qf(*args, **kwargs)
 
 @wraps(mms_load_fgm)
 def fgm(*args, **kwargs):

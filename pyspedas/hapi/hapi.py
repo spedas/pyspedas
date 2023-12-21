@@ -1,7 +1,6 @@
 import logging
 import warnings
-from pyspedas import time_double
-from pytplot import get_data, store_data, options
+from pytplot import get_data, store_data, options, time_double
 import numpy as np
 
 try:

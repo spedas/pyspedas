@@ -1,6 +1,6 @@
 import numpy as np 
 from pytplot import get_data, store_data
-from pyspedas import tnames
+from pytplot import tnames
 from pytplot import data_exists
 
 

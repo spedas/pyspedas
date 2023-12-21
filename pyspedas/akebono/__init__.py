@@ -2,7 +2,7 @@ from .load import load
 import numpy as np
 import pandas as pd
 from pytplot import store_data, options
-from pyspedas import time_double
+from pytplot import time_double
 from pyspedas.cotrans.xyz_to_polar import xyz_to_polar
 
 

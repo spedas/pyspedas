@@ -10,6 +10,7 @@ def state(trange=['2007-03-23', '2007-03-24'],
           suffix='',
           get_support_data=False,
           varformat=None,
+          exclude_format=None,
           varnames=[],
           downloadonly=False,
           notplot=False,
@@ -43,6 +44,10 @@ def state(trange=['2007-03-23', '2007-03-24'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+
+        exclude_format: str
+            If specified, CDF variables matching this pattern will not be processed.
+            Wildcard character "*" is accepted.  By default, no variables are excluded.
 
         varnames: list of str
             List of variable names to load
@@ -82,7 +87,7 @@ def state(trange=['2007-03-23', '2007-03-24'],
 
     res = load(instrument='state', trange=trange, level=level, probe=probe,
                suffix=suffix, get_support_data=get_support_data,
-               varformat=varformat, varnames=varnames,
+               varformat=varformat, varnames=varnames, exclude_format = exclude_format,
                downloadonly=downloadonly, notplot=notplot,
                time_clip=time_clip, no_update=no_update)
     if get_support_data:

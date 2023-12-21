@@ -4,7 +4,7 @@ from pyspedas.mms.eis.mms_eis_spin_avg import mms_eis_spin_avg
 from pyspedas.mms.eis.mms_eis_set_metadata import mms_eis_set_metadata
 from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
-from pyspedas import tnames
+from pytplot import tnames
 
 
 @print_vars

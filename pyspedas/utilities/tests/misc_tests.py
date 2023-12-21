@@ -3,7 +3,8 @@ import unittest
 
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas import tcopy
-from pytplot import data_exists, tkm2re
+from pyspedas import themis
+from pytplot import data_exists, tkm2re, tplot
 from pytplot import get_data, store_data, options
 
 
@@ -65,6 +66,11 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(data_exists('another_test_km'))
         anerror = tkm2re('test_km', newname=['test1_km', 'test1_km'])
         self.assertTrue(anerror is None)
+
+#    def test_pseudovariables(self):
+#        themis.fgm(probe='c')
+#        store_data('comb',data=['thc_fge_dsl','thc_fge_btotal'])
+#        tplot('comb',save_png='test_combined.png')
 
 
 if __name__ == '__main__':

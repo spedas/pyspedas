@@ -9,3 +9,6 @@ include pyspedas/mms/feeps/sun/*.csv
 
 # include the image of Earth for MMS orbit plots
 include pyspedas/mms/mec/*.png
+
+# include elfin calibration data
+include pyspedas/elfin/epd/el*_epde_cal_data.txt

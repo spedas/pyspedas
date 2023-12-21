@@ -1,7 +1,7 @@
 import numpy as np
 
-from pyspedas import tnames, tcopy
-from pytplot import get_data, store_data
+from pyspedas import tcopy
+from pytplot import get_data, store_data, tnames
 
 from pyspedas.cotrans.cotrans import cotrans
 from pytplot import tnormalize

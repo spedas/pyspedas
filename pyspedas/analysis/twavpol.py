@@ -80,8 +80,7 @@ try:
     nansum = bn.nansum
 except ImportError:
     nansum = np.nansum
-from pytplot import get_data, store_data, options
-from pyspedas import tnames
+from pytplot import get_data, store_data, options, tnames
 
 # these routines require numpy v1.20.0 or later
 if np.__version__ < '1.20':

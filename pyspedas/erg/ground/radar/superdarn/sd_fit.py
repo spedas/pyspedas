@@ -5,7 +5,7 @@ import numpy as np
 
 from copy import deepcopy
 from pytplot import get_data, store_data, options, clip, ylim, zlim
-from pyspedas import tnames
+from pytplot import tnames
 
 from ....satellite.erg.load import load
 

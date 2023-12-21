@@ -11,6 +11,6 @@ def version():
     None.
 
     """
-    import pkg_resources
-    ver = pkg_resources.get_distribution("pyspedas").version
+    from importlib.metadata import version
+    ver = version("pyspedas")
     logging.info("pyspedas version: " + ver)

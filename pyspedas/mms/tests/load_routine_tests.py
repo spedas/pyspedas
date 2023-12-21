@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pyspedas.mms import mms_load_state, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
+from pyspedas.mms import mms_load_state, mms_load_tetrahedron_qf, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
 from pytplot import data_exists
 from pyspedas.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
@@ -8,6 +8,7 @@ from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
 from pyspedas import tdpwrspc
 import pyspedas
 from pytplot import get_data, del_data, tplot
+import logging
 
 
 class FSMLoadTestCases(unittest.TestCase):
@@ -26,17 +27,38 @@ class StateLoadTestCases(unittest.TestCase):
         data = mms_load_state(datatypes=['pos', 'vel'], no_update=True) # ensure the files are stored locally
         self.assertTrue(data_exists('mms1_defeph_pos'))
         self.assertTrue(data_exists('mms1_defeph_vel'))
+        self.assertTrue('mms1_defeph_pos' in data)
+        self.assertTrue('mms1_defeph_vel' in data)
 
     def test_load_eph_data(self):
         data = mms_load_state(datatypes=['pos', 'vel'])
         self.assertTrue(data_exists('mms1_defeph_pos'))
         self.assertTrue(data_exists('mms1_defeph_vel'))
         tplot(['mms1_defeph_pos', 'mms1_defeph_vel'], display=False)
+        self.assertTrue('mms1_defeph_pos' in data)
+        self.assertTrue('mms1_defeph_vel' in data)
+
+
+    def test_load_tqf(self):
+        data = mms_load_tetrahedron_qf()
+        self.assertTrue(data_exists('mms_tetrahedron_qf'))
+        tplot('mms_tetrahedron_qf',display=False)
+        self.assertTrue('mms_tetrahedron_qf' in data)
+
+    def test_load_tqf_no_update(self):
+        data = mms_load_tetrahedron_qf()  # Ensure that some data is downloaded
+        del_data('mms_tetrahedron_qf')    # Delete the tplot variable
+        data = mms_load_tetrahedron_qf(no_update=True)  # Ensure that it can be loaded from previously downloaded files
+        self.assertTrue(data_exists('mms_tetrahedron_qf'))
+        self.assertTrue('mms_tetrahedron_qf' in data)
+        tplot('mms_tetrahedron_qf',display=False)
 
     def test_load_att_data(self):
         data = mms_load_state(trange=['2015-10-16', '2015-10-16/06:00'], datatypes=['spinras', 'spindec'])
         self.assertTrue(data_exists('mms1_defatt_spinras'))
         self.assertTrue(data_exists('mms1_defatt_spindec'))
+        self.assertTrue('mms1_defatt_spinras' in data)
+        self.assertTrue('mms1_defatt_spindec' in data)
         tplot(['mms1_defatt_spinras', 'mms1_defatt_spindec'], display=False)
 
 
@@ -246,12 +268,29 @@ class FGMLoadTestCases(unittest.TestCase):
         self.assertTrue(d1.shape == d2.shape)
 
     def test_load_default_data(self):
-        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
+        data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'],available=True)
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
         self.assertTrue(data_exists('Epoch'))
         self.assertTrue(data_exists('Epoch_state'))
         tplot(['mms1_fgm_b_gse_srvy_l2'], display=False)
+
+    def test_load_default_data_exclude(self):
+        # Capture all log messages of level INFO or above
+        with self.assertLogs(level=logging.INFO) as captured:
+            # assertLogs fails if there are no log messages, so we make sure there's at least one
+            logging.info("Dummy log message")
+            data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'],exclude_format='*rdeltahalf*',available=True)
+            data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'],exclude_format='*rdeltahalf*')
+            self.assertTrue(data_exists('mms1_fgm_b_gse_srvy_l2'))
+            self.assertTrue(data_exists('Epoch'))
+            self.assertTrue(data_exists('Epoch_state'))
+            tplot(['mms1_fgm_b_gse_srvy_l2'], display=False)
+        # Assert that none of the log messages contain the string "rdeltahalf"
+        logging.info("Captured log messages:")
+        for rec in captured.records:
+            logging.info(rec.msg)
+            self.assertTrue("rdeltahalf" not in rec.msg)
 
     def test_load_spdf_data(self):
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], spdf=True)

@@ -17,6 +17,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          suffix='',
          get_support_data=False,
          varformat=None,
+         exclude_format=None,
          varnames=[],
          downloadonly=False,
          notplot=False,
@@ -162,7 +163,10 @@ def load(trange=['2013-11-5', '2013-11-6'],
             else:
                 pathformat = []
                 for site, in_greenland in zip(stations, greenland):
-                    if in_greenland:
+                    if site == 'idx':
+                        # THEMIS GMAG index files are only L1
+                        pathformat.append('thg/l1/mag/idx/%Y/thg_l1_idx_%Y%m%d_v??.cdf')
+                    elif in_greenland:
                         pathformat.append('thg/greenland_gmag/' + level
                                           + '/' + site + '/%Y/thg_' + level
                                           + '_mag_' + site + '_%Y%m%d_v??.cdf')
@@ -196,6 +200,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
                          suffix=suffix,
                          get_support_data=get_support_data,
                          varformat=varformat,
+                         exclude_format=exclude_format,
                          varnames=varnames,
                          notplot=notplot)
 

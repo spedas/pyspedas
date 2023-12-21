@@ -6,7 +6,7 @@ import pkg_resources
 import numpy as np
 from pytplot import cdf_to_tplot
 from pytplot import time_clip as tclip
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
 from shutil import copyfileobj, copy
@@ -20,7 +20,7 @@ from .mms_load_data_spdf import mms_load_data_spdf
 
 
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
-    instrument='fgm', datatype='', varformat=None, prefix='', suffix='', get_support_data=False, time_clip=False, 
+    instrument='fgm', datatype='', varformat=None, exclude_format=None, prefix='', suffix='', get_support_data=False, time_clip=False,
     no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
     major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False, varnames=[]):
     """
@@ -52,7 +52,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     if spdf:
         return mms_load_data_spdf(trange=trange, probe=probe, data_rate=data_rate, level=level, 
-                                  instrument=instrument, datatype=datatype, varformat=varformat, 
+                                  instrument=instrument, datatype=datatype, varformat=varformat, exclude_format=exclude_format,
                                   suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, 
                                   no_update=no_update, center_measurement=center_measurement, notplot=notplot, 
                                   latest_version=latest_version, major_version=major_version, 
@@ -195,7 +195,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             logging.info('No matching CDF versions found.')
             return
 
-        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat, varnames=varnames, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat,exclude_format=exclude_format, varnames=varnames, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
 
         if notplot:
             return new_variables

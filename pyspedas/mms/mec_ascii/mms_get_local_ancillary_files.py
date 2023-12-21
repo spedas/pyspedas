@@ -1,0 +1,74 @@
+import os
+import fnmatch
+import glob
+import logging
+import pandas as pd
+from pyspedas.mms.mms_config import CONFIG
+
+
+def mms_get_local_ancillary_files(filetype='tetrahedron_qf', trange=None):
+    """
+    Search for local ancillary files in case a list cannot be retrieved from the
+    remote server.  Returns a sorted list of file paths.
+    
+    Parameters:
+        trange : list of str
+            time range of interest [start time, end time] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+
+
+        filetype: str
+            state file type, e.g. 'tetrahedron_qf' (for tetrahedron quality factor)
+
+    Returns:
+        List of local files found matching the input parameters.
+
+    """
+    if trange is None:
+        logging.info('No trange specified in mms_get_local_ancillary_files')
+        return
+
+    # directory and file name search patterns
+    # For now
+    # -all ancillary data is in one directory:
+    #       mms\ancillary
+    # -assume file names are of the form:
+    #   SPACECRAFT_FILETYPE_startDate_endDate.version
+    #   where SPACECRAFT is [MMS1, MMS2, MMS3, MMS4] in uppercase
+    #   and FILETYPE is either DEFATT, PREDATT, DEFEPH, PREDEPH in uppercase
+    #   and start/endDate is YYYYDOY
+    #   and version is Vnn (.V00, .V01, etc..)
+    dir_pattern = os.sep.join([CONFIG['local_data_dir'], 'ancillary', 'mms', f'{filetype}'])
+    file_pattern = f'MMS_DEFQ_???????_???????.V??'
+
+    files_in_trange = []
+    out_files = []
+
+    files = glob.glob(os.sep.join([dir_pattern, file_pattern]))
+
+    for file in files:
+        filename = os.path.basename(file)
+        try:
+            date_parts = filename.split('_')
+            start_time_str = date_parts[2]
+            end_time_str = date_parts[3].split('.')[0]
+            
+            start_time = pd.to_datetime(start_time_str, format='%Y%j').timestamp()
+            end_time = pd.to_datetime(end_time_str, format='%Y%j').timestamp()
+            
+            if start_time < pd.Timestamp(trange[1]).timestamp() and end_time >= pd.Timestamp(trange[0]).timestamp():
+                files_in_trange.append(file)
+        except IndexError:
+            continue
+
+    # ensure only the latest version of each file is loaded
+    for file in files_in_trange:
+        this_file = file[0:-3] + 'V??'
+        versions = fnmatch.filter(files_in_trange, this_file)
+        if len(versions) > 1:
+            out_files.append(sorted(versions)[-1]) # only grab the latest version
+        else:
+            out_files.append(versions[0])
+
+    return list(set(out_files))

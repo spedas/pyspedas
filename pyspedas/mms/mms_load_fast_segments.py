@@ -3,7 +3,7 @@ import logging
 import numpy as np
 from scipy.io import readsav
 from pytplot import store_data, options
-from pyspedas import time_double
+from pytplot import time_double
 from pyspedas.utilities.download import download
 from pyspedas.mms.mms_config import CONFIG
 

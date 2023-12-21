@@ -72,7 +72,7 @@ def gmag(trange=['2007-03-23', '2007-03-24'],
     """
 
     if sites is None:
-        thm_sites = 'atha chbg ekat fsim fsmi fykn gbay glyn gill inuv kapu '\
+        thm_sites = 'idx atha chbg ekat fsim fsmi fykn gbay glyn gill inuv kapu '\
                      'kian kuuj mcgr nrsq pgeo pina rank snap snkq tpas whit '\
                      'yknf'.split(' ')
         tgo_sites = ['nal', 'lyr', 'hop', 'bjn', 'nor', 'sor', 'tro', 'and',

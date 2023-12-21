@@ -1,5 +1,5 @@
 from pytplot import options
-from pyspedas import tnames
+from pytplot import tnames
 
 
 def mms_edp_set_metadata(probe, data_rate, level, suffix=''):

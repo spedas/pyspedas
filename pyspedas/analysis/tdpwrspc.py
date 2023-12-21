@@ -11,8 +11,7 @@ Similar to tdpwrspc.pro in IDL SPEDAS.
 import logging
 import numpy as np
 from .dpwrspc import dpwrspc
-from pytplot import get_data, store_data, options, split_vec
-from pyspedas import time_double
+from pytplot import get_data, store_data, options, split_vec, time_double
 
 
 def tdpwrspc(varname, newname=None, nboxpoints=None, nshiftpoints=None,

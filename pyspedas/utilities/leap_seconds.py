@@ -3,7 +3,7 @@ import datetime
 import pandas as pd
 import numpy as np
 from pyspedas.utilities.download import download
-from pyspedas import time_double
+from pytplot import time_double
 
 
 def load_leap_table(reload=False):
