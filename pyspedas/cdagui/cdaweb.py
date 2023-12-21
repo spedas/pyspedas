@@ -10,11 +10,11 @@ import logging
 import os
 import re
 from cdasws import CdasWs
-from pytplot import cdf_to_tplot
+from pytplot import cdf_to_tplot, netcdf_to_tplot
 from pyspedas.utilities.download import download
 
 
-class CDAWeb():
+class CDAWeb:
     """Class for loading data from CDA web."""
 
     def __init__(self):
@@ -36,14 +36,14 @@ class CDAWeb():
         instruments = self.cdas.get_instrument_types()
         inames = []
         for instrument in instruments:
-            instr_name = instrument['Name'].strip()
+            instr_name = instrument["Name"].strip()
             if len(instr_name) > 1 and instr_name != "(null)":
                 inames.append(instr_name)
         return inames
 
     def clean_time_str(self, t):
         """Remove the time part from datetime variable."""
-        t0 = re.sub('T.+Z', '', t)
+        t0 = re.sub("T.+Z", "", t)
         return t0
 
     def get_datasets(self, mission_list, instrument_list):
@@ -51,10 +51,7 @@ class CDAWeb():
 
         Example: get_datasets(['ARTEMIS'],['Electric Fields (space)'])
         """
-        thisdict = {
-            "observatoryGroup": mission_list,
-            "instrumentType": instrument_list
-        }
+        thisdict = {"observatoryGroup": mission_list, "instrumentType": instrument_list}
         datasets = self.cdas.get_datasets(**thisdict)
         dnames = []
         for dataset in datasets:
@@ -65,7 +62,7 @@ class CDAWeb():
                 t2 = tinterval["End"].strip()
                 t1 = self.clean_time_str(t1)
                 t2 = self.clean_time_str(t2)
-                data_item += " (" + t1 + ' to ' + t2 + ")"
+                data_item += " (" + t1 + " to " + t2 + ")"
             dnames.append(data_item)
         return dnames
 
@@ -78,12 +75,12 @@ class CDAWeb():
         remote_url = []
 
         # Set times to cdas format
-        t0 = t0.strip().replace(' ', 'T', 1)
+        t0 = t0.strip().replace(" ", "T", 1)
         if len(t0) == 10:
             t0 += "T00:00:01Z"
         elif len(t0) > 10:
             t0 += "Z"
-        t1 = t1.strip().replace(' ', 'T', 1)
+        t1 = t1.strip().replace(" ", "T", 1)
         if len(t1) == 10:
             t1 += "T23:23:59Z"
         elif len(t1) > 10:
@@ -91,18 +88,28 @@ class CDAWeb():
 
         # For each dataset, find the url of files
         for d in dataset_list:
-            d0 = d.split(' ')
-            if (len(d0) > 0):
+            d0 = d.split(" ")
+            if len(d0) > 0:
                 status, result = self.cdas.get_data_file(d0[0], [], t0, t1)
-                if (status == 200 and (result is not None)):
-                    r = result.get('FileDescription')
-                    for f in r:
-                        remote_url.append(f.get('Name'))
+                if status == 200 and (result is not None):
+                    r = result.get("FileDescription")
+                    if r is not None:
+                        for f in r:
+                            remote_url.append(f.get("Name"))
         return remote_url
 
-    def cda_download(self, remote_files, local_dir, download_only=False,
-                     varformat=None, get_support_data=False, prefix='',
-                     suffix='', varnames=[], notplot=False):
+    def cda_download(
+        self,
+        remote_files,
+        local_dir,
+        download_only=False,
+        varformat=None,
+        get_support_data=False,
+        prefix="",
+        suffix="",
+        varnames=[],
+        notplot=False,
+    ):
         """Download cdf files.
 
         Load cdf files into pytplot variables (optional).
@@ -114,23 +121,30 @@ class CDAWeb():
         dcount = 0
         for remotef in remote_files:
             tplot_loaded = 0
-            f = remotef.strip().replace(remotehttp, '', 1)
+            f = remotef.strip().replace(remotehttp, "", 1)
             localf = local_dir + os.path.sep + f
             localfile = download(remote_file=remotef, local_file=localf)
             if localfile is None:
                 continue
             localfile = localfile[0]  # download returns an array
             count += 1
-            if localfile != '':
+            if localfile != "":
                 dcount += 1
                 if not download_only:
                     try:
-                        cvars = cdf_to_tplot(localfile,
-                                             suffix=suffix,
-                                             get_support_data=get_support_data,
-                                             varformat=varformat,
-                                             varnames=varnames,
-                                             notplot=notplot)
+                        if len(localfile) > 3 and (localfile[-3:] == ".nc"):
+                            cvars = netcdf_to_tplot(
+                                localfile, prefix=prefix, suffix=suffix
+                            )
+                        else:
+                            cvars = cdf_to_tplot(
+                                localfile,
+                                suffix=suffix,
+                                get_support_data=get_support_data,
+                                varformat=varformat,
+                                varnames=varnames,
+                                notplot=notplot,
+                            )
                         if cvars != [] and cvars is not None:
                             loaded_vars.extend(cvars)
                         tplot_loaded = 1
@@ -141,16 +155,20 @@ class CDAWeb():
                         logging.error(msg)
                         tplot_loaded = 0
             else:
-                logging.error(str(count) + '. There was a problem. Could not download \
-                      file: ' + remotef)
+                logging.error(
+                    str(count)
+                    + ". There was a problem. Could not download \
+                      file: "
+                    + remotef
+                )
                 tplot_loaded = -1
-                localfile = ''
+                localfile = ""
             result.append([remotef, localfile, tplot_loaded])
 
-        logging.info('Downloaded ' + str(dcount) + ' files.')
+        logging.info("Downloaded " + str(dcount) + " files.")
         if not download_only:
             loaded_vars = list(set(loaded_vars))
-            logging.info('tplot variables:')
+            logging.info("tplot variables:")
             for var in loaded_vars:
                 logging.info(var)
 

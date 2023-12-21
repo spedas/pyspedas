@@ -1,7 +1,7 @@
 import logging
 import requests
-from pyspedas import time_double
-from pyspedas import time_clip as tclip
+from pytplot import time_double
+from pytplot import time_clip as tclip
 from pyspedas.utilities.dailynames import dailynames
 from pytplot import store_data, options
 

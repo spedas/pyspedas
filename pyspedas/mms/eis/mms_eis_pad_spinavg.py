@@ -1,7 +1,7 @@
 import logging
 import warnings
 import numpy as np
-from pyspedas import tnames
+from pytplot import tnames
 from pytplot import get_data, store_data, options
 
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one

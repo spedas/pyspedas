@@ -52,10 +52,17 @@ def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 
     file_lras_out = file_lras_sorted[file_times_uniq[1]]
     file_ldecs_out = file_ldecs_sorted[file_times_uniq[1]]
 
+    return_vars = []
     if 'spinras' in datatypes:
-        store_data(prefix + '_' + level + 'att_spinras' + suffix, data={'x': file_times_uniq[0], 'y': file_lras_out})
-        tclip(prefix + '_' + level + 'att_spinras' + suffix, trange[0], trange[1], suffix='')
+        spinras_var = prefix + '_' + level + 'att_spinras' + suffix
+        store_data(spinras_var, data={'x': file_times_uniq[0], 'y': file_lras_out})
+        tclip(spinras_var, trange[0], trange[1], suffix='')
+        return_vars.append(spinras_var)
 
     if 'spindec' in datatypes:
-        store_data(prefix + '_' + level + 'att_spindec' + suffix, data={'x': file_times_uniq[0], 'y': file_ldecs_out})
-        tclip(prefix + '_' + level + 'att_spindec' + suffix, trange[0], trange[1], suffix='')
+        spindec_var = prefix + '_' + level + 'att_spindec' + suffix
+        store_data(spindec_var, data={'x': file_times_uniq[0], 'y': file_ldecs_out})
+        tclip(spindec_var, trange[0], trange[1], suffix='')
+        return_vars.append(spindec_var)
+
+    return return_vars

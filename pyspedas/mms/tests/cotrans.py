@@ -8,9 +8,11 @@ from pyspedas.mms.cotrans.mms_cotrans_lmn import mms_cotrans_lmn
 class CotransTestCases(unittest.TestCase):
     def test_qcotrans_sm_to_gse(self):
         pyspedas.mms.mec()
-        mms_qcotrans('mms1_mec_v_sm', 'mms1_mec_v_sm_2gse', out_coord='gse')
-        mms_qcotrans('mms1_mec_r_sm', 'mms1_mec_r_sm_2gse', out_coord='gse')
+        ret1 = mms_qcotrans('mms1_mec_v_sm', 'mms1_mec_v_sm_2gse', out_coord='gse')
+        ret2 = mms_qcotrans('mms1_mec_r_sm', 'mms1_mec_r_sm_2gse', out_coord='gse')
         self.assertTrue(data_exists('mms1_mec_v_sm_2gse'))
+        self.assertTrue('mms1_mec_v_sm_2gse' in ret1)
+        self.assertTrue('mms1_mec_r_sm_2gse' in ret2)
         self.assertTrue(data_exists('mms1_mec_r_sm_2gse'))
         mms_qcotrans(['mms1_mec_r_sm', 'mms1_mec_v_sm'], ['mms1_mec_r_sm_2gse', 'mms1_mec_v_sm_2gse'], out_coord=['gse', 'gse'])
 

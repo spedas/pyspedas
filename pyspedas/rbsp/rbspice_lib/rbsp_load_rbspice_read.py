@@ -1,6 +1,6 @@
 import logging
 from pytplot import get_data, store_data, options
-from pyspedas import tnames
+from pytplot import tnames
 
 
 def rbsp_load_rbspice_read(level='l3', probe='a', datatype='TOFxEH'):

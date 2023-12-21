@@ -10,7 +10,6 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         datatype='pef',
         level='l1',
         type_='nflux',
-        suffix='',
         get_support_data=False,
         varformat=None,
         varnames=[],
@@ -26,76 +25,70 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         Espec_LCfptol=None,
 ):
     """
-    This function loads data from the Energetic Particle Detector (EPD)
+    This function loads data from the Energetic Particle Detector (EPD) and process L1 and L2 data.
 
-    Parameters
+    Parameters for Load Routine
     ----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
-            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Time range of interest [starttime, endtime]. Format can be
+            ['YYYY-MM-DD','YYYY-MM-DD'] or ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: str
-            Spacecraft identifier ('a' or 'b')
+        probe: str, optional
+            Spacecraft identifier. Options are 'a' (default) and 'b'.
 
-        datatype: str
-            Data type; Valid options:
-                'pef' for L1 data
-                'pif' for L1 data
-                'pes' for L1 data
-                'pis' for L1 data
+        level: str, optional.
+            Data level. Options are 'l1' (default) and 'l2'.
 
-        level: str
-            Data level; options: 'l1' (default: l1)
-
-        type_ : str
-            Calibrated data type, one of ('raw', 'cps', 'nflux', 'eflux'). ('eflux' not fully tested)
-            Default: 'nflux'.
-
-        suffix: str
-            The tplot variable names will be given this suffix.  By default,
-            no suffix is added.
-
-        get_support_data: bool
-            Data with an attribute "VAR_TYPE" with a value of "support_data"
+        get_support_data: bool, optional
+            If True, data with an attribute "VAR_TYPE" with a value of "support_data"
             will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
-        varformat: str
+        varformat: str, optional
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
+            "*" is accepted. By default, all variables are loaded in.
 
-        varnames: list of str
-            List of variable names to load (if not specified,
-            all data variables are loaded)
+        varnames: list of str, optional
+            List of variable names to load. By default, all data variables are loaded.
 
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into
-            tplot variables
+        downloadonly: bool, optional
+            If True, only downloads the CDF files without loading them into tplot variables. 
+            Default is False.
 
-        notplot: bool
-            Return the data in hash tables instead of creating tplot variables
+        notplot: bool, optional
+            If True, returns data in hash tables instead of creating tplot variables. 
+            Default is False.
 
         no_update: bool
-            If set, only load data from your local cache
+            If True, loads data only from the local cache. Default is False. 
 
         time_clip: bool
-            Time clip the variables to exactly the range specified in the trange keyword
+            If True, clips the variables to the exact range specified in the trange. 
+            Default is True.
 
-        nspinsinsum : int, optional
-            Number of spins in sum which is needed by the calibration function.
+    Parameters for L1 data
+    ----------
+        datatype: str, optional. 
+            Data type of L1 data. Options are 'pef' (default), 'pif', 'pes', 'pis'. 
 
-        fullspin: bool
-            If true, generate full spin with l2 epd instead of half spin
-            Default is False
+        type_ : str, optional
+            Calibrated data type of L1 data. Options are 'raw', 'cps', 'nflux' (default), 'eflux'.
+
+        nspinsinsum: int, optional
+            Number of spins in sum which is needed by the L1 calibration function.
+    
+    Parameters for L2 data
+    ----------
+        fullspin: bool, optional.
+            If True, generate L2 full spin spectrogram. By default, L2 half spin spectrogram is generated.
 
         PAspec_energybins: list of tuple of int, optional
-            Specified the energy bins used for generating l2 pitch angle spectra. 
+            Specified the energy bins used for generating L2 pitch angle spectrogram. 
             Default is [(0,2),(3,5), (6,8), (9,15)]. If both 'PAspec_energybins' and 'PAspec_energies' 
-            are set, 'energybins' takes precedence
+            are set, 'energybins' takes precedence.
             
         PAspec_energies: list of tuple of float, optional
-            Specifies the energy range for each bin in the l2 pitch angle spectra.
+            Specifies the energy range for each bin in the L2 pitch angle spectrogram.
             Example: energies=[(50.,160.),(160.,345.),(345.,900.),(900.,7000.)]
             If both 'energybins' and 'energies' are set, 'energybins' takes precedence.
             Energy and energybin table:
@@ -118,13 +111,13 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
             15          5800+           6500.0
 
         Espec_LCfatol: float, optional
-            Tolerance angle for para and anti flux. A positive value makes the loss 
-            cone/antiloss cone smaller by this amount. 
+            Tolerance angle for para and anti flux in generating L2 energy spectrogram. 
+            A positive value makes the loss cone/antiloss cone smaller by this amount. 
             Default is 22.25 deg.
 
         Espec_LCfptol: float, optional
-            Tolerance angle for perp flux. A negative value means a wider angle for 
-            perp flux.
+            Tolerance angle for perp flux in generating L2 energy spectrogram. 
+            A negative value means a wider angle for perp flux.
             Default is -11 deg.
 
     Returns
@@ -134,24 +127,27 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
     """
     logging.info("ELFIN EPD: START LOADING.")
     
-    tvars = load(instrument='epd', probe=probe, trange=trange, level=level, datatype=datatype, suffix=suffix,
+    tvars = load(instrument='epd', probe=probe, trange=trange, level=level, datatype=datatype,
                  get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly,
                  notplot=notplot, time_clip=time_clip, no_update=no_update)
 
     logging.info("ELFIN EPD: LOADING END.")
-    if tvars is None or notplot or downloadonly:
+    if notplot or downloadonly:
+        return tvars
+    elif not tvars:
+        logging.error('ELFIN EPD: cannot load data.')
         return tvars
    
     CALIBRATED_TYPE_UNITS = {
         "raw": "counts/sector",
         "cps": "counts/s",
         "nflux": "#/(s-cm$^2$-str-MeV)",
-        "eflux": "keV/(s-cm$^2$-str-MeV)0",
+        "eflux": "keV/(s-cm$^2$-str-MeV)",
     }
 
     if type_ in ("cal", "calibrated") or type_ not in CALIBRATED_TYPE_UNITS.keys():
         type_ = "nflux"
-
+        
     if level == "l1":
         l1_tvars = epd_l1_postprocessing(tvars, trange=trange, type_=type_, nspinsinsum=nspinsinsum,
                                      unit=CALIBRATED_TYPE_UNITS[type_])

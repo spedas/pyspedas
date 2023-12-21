@@ -5,10 +5,14 @@ This function transforms MMS vector fields from GSM coordinates to LMN (boundary
 import numpy as np
 import logging
 from pytplot import get_data, store_data, options, get_coords
+import pyspedas
 from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.cotrans.gsm2lmn import gsm2lmn
-from pyspedas.mms import mec
 from pyspedas import tinterpol, omni
+# For some reason, the import below started picking up the module mec, rather than the wrapper mec() defined in mms/__init__.py.
+# Importing it as pyspedas.mms.mec seems to remove the ambiguity, but I wonder if something fishy is going on
+# with the imports in pyspedas, mms, and mms.mec.
+#from pyspedas.mms import mec
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
@@ -74,7 +78,7 @@ def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_ra
             return
 
     # load the spacecraft position data
-    mec_vars = mec(trange=[min(data_in.times), max(data_in.times)], probe=probe, data_rate=data_rate)
+    mec_vars = pyspedas.mms.mec(trange=[min(data_in.times), max(data_in.times)], probe=probe, data_rate=data_rate)
 
     # interpolate the position data to the input data
     tinterp_vars = tinterpol('mms'+probe+'_mec_r_gsm', name_in, newname='mms'+probe+'_mec_r_gsm_interp')

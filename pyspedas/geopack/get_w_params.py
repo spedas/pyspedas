@@ -4,10 +4,9 @@ import numpy as np
 import pandas as pd
 import zipfile
 from tempfile import mkdtemp
-from pyspedas import time_double
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pytplot import store_data
+from pytplot import store_data, time_double
 
 
 def get_w(trange=None, create_tvar=False, newname=None):

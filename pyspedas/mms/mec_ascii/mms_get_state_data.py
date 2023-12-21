@@ -3,7 +3,7 @@ import logging
 import warnings
 from shutil import copyfileobj, copy
 from tempfile import NamedTemporaryFile
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
 from pyspedas.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.mms.mms_config import CONFIG
 from pyspedas.mms.mec_ascii.mms_get_local_state_files import mms_get_local_state_files
@@ -137,9 +137,11 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                 out_files = mms_get_local_state_files(probe=probe_id, level=level, filetype=filetype, trange=[start_time_str, end_time_str])
 
             if filetype == 'eph':
-                mms_load_eph_tplot(sorted(out_files), level=level, probe=probe_id, datatypes=datatypes, suffix=suffix, trange=trange)
+                return_vars = mms_load_eph_tplot(sorted(out_files), level=level, probe=probe_id, datatypes=datatypes, suffix=suffix, trange=trange)
             elif filetype == 'att':
-                mms_load_att_tplot(sorted(out_files), level=level, probe=probe_id, datatypes=datatypes, suffix=suffix, trange=trange)
+                return_vars = mms_load_att_tplot(sorted(out_files), level=level, probe=probe_id, datatypes=datatypes, suffix=suffix, trange=trange)
 
     if not no_download:
         sdc_session.close()
+
+    return return_vars

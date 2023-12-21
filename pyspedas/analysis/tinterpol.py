@@ -9,8 +9,7 @@ Similar to tinterpol.pro in IDL SPEDAS.
 """
 import datetime
 import logging
-from pyspedas import tnames
-from pytplot import get_data, store
+from pytplot import get_data, store, tnames
 import numpy as np
 
 

@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from pyspedas import time_string, time_double, tnames
+from pytplot import time_string, time_double, tnames
 import pytplot
 
 

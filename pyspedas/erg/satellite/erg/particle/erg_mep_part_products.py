@@ -2,8 +2,8 @@ import numpy as np
 
 from copy import deepcopy
 
-from pyspedas import tnames, tinterpol
-from pytplot import time_double
+from pyspedas import tinterpol
+from pytplot import time_double, tnames
 from pytplot import time_string
 
 from pyspedas.particles.moments.spd_pgs_moments import spd_pgs_moments

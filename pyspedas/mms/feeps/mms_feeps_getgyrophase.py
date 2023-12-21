@@ -1,8 +1,8 @@
 import logging
 import numpy as np
-from pyspedas import mms, tinterpol, time_double
+from pyspedas import mms, tinterpol
 from pyspedas.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
-from pytplot import get, store, options
+from pytplot import get, store, options, time_double
 
 
 def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], probe='2', data_rate='brst', level='l2', datatype='electron'):
