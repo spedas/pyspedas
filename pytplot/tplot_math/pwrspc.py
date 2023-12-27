@@ -54,7 +54,7 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     # If the dimensions of the input arrays are not the same, and not one dimension, return
     if t.ndim != 1 or x.ndim != 1 or len(t) != len(x) or len(t) < 1:
         logging.error('Both input arrays should be one dimensional and of the same length.')
-        return None, None
+        return np.array(None), np.array(None)
 
     # Subtract first point from time array
     t -= t[0]
@@ -111,4 +111,4 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
 
     logging.info('dfreq=' + str(dfreq))
 
-    return freq, power
+    return np.array(freq), np.array(power)
