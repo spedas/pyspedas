@@ -1,6 +1,7 @@
 import logging
 import numpy as np
-from pytplot import tnames, get_data, pwrspc, store_data, options, time_string
+from pytplot import tnames, get_data, store_data, options
+from .pwrspc import pwrspc
 
 
 def tpwrspc(varname, newname=None, overwrite=False, noline=False, nohanning=False, bin=3, notperhz=False, trange=None, axis=0):

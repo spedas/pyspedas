@@ -79,7 +79,7 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
 
     xs2 = np.abs(np.fft.fft(x)) ** 2
     dbign = float(nt)
-    logging.info('bign=', dbign)
+    logging.info('bign=' + str(dbign))
 
     k = np.arange(0, dbign // 2 + 1)
     tres = float(np.median(np.diff(t)))
@@ -109,6 +109,6 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     if not notperhz:
         power /= dfreq
 
-    logging.info('dfreq=', dfreq)
+    logging.info('dfreq=' + str(dfreq))
 
     return freq, power
