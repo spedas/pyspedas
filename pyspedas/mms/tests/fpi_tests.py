@@ -95,7 +95,7 @@ class FPITestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist_flagbars'))
 
     def test_angle_angle(self):
-        mms_fpi_ang_ang('2015-10-16/13:06:30', data_rate='brst', save_png='mms1_fpi_ang_ang_brst', display=False)
+        mms_fpi_ang_ang('2015-10-16/13:06:59.985', species='e',data_rate='brst', save_png='mms1_fpi_ang_ang_brst', display=False)
         mms_fpi_ang_ang('2015-10-16/13:06:30', save_jpeg='mms1_fpi_ang_ang', display=False)
         mms_fpi_ang_ang('2015-10-16/13:06:30', probe='4', save_svg='mms4_fpi_ang_ang', display=False)
         mms_fpi_ang_ang('2015-10-16/13:06:30', probe='4', save_eps='mms4_fpi_ang_ang_viridis', cmap='viridis', display=False)
