@@ -2,7 +2,8 @@ import logging
 import pytplot
 import numpy as np
 
-def split_vec(tvar, new_name=None, columns='all', suffix=None):
+
+def split_vec(tvar, polar=False, new_name=None, columns='all', suffix=None):
     """
     Splits up 2D data into many 1D tplot variables.
 
@@ -12,6 +13,8 @@ def split_vec(tvar, new_name=None, columns='all', suffix=None):
     Parameters:
         tvar : str
             Name of tplot variable to split up
+        polar : bool, optional
+            If True, the input data is in polar coordinates. Suffix will be set to ['_mag', '_th', '_phi'].
         newtvars : int/list, optional
             The names of the new tplot variables. This must be the same length as the number of variables created.
         columns : list of ints, optional
@@ -40,6 +43,7 @@ def split_vec(tvar, new_name=None, columns='all', suffix=None):
     time = alldata[0]
     data = alldata[1]
     dim = data.shape
+    metadata = pytplot.get_data(tvar, metadata=True)
 
     # If already size one, simply return
     if len(dim) == 1:
@@ -53,36 +57,37 @@ def split_vec(tvar, new_name=None, columns='all', suffix=None):
             logging.error(f"split_vec error: number of columns ({vec_length}) is greater than the number of suffix entered")
     else:
         if vec_length == 3:
-            suffix = ["_x", "_y", "_z"]
+            if polar:
+                suffix = ['_mag', '_th', '_phi']
+            else:
+                suffix = ["_x", "_y", "_z"]
         else:
             suffix = []
             for i in range(vec_length):
                 suffix.append("_"+str(i))
 
-
     created_variables = []
 
-    #grab column data
+    # grab column data
     if columns == 'all':
         columns = range(vec_length)
 
     for i in columns:
 
-        #if not a list
-        if isinstance(i,list):
+        # if not a list
+        if isinstance(i, list):
             range_start = i[0]
             range_end = i[1]
         else:
             range_start = i
             range_end = i
-        split_col = list(range(range_start,range_end+1))
+        split_col = list(range(range_start, range_end+1))
         split_name = new_name + suffix[i]
         created_variables = created_variables + [split_name]
 
-        data_for_tplot = {'x':time, 'y':data[:,split_col].squeeze()}
+        data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze()}
 
-        if not pytplot.store_data(split_name,data=data_for_tplot):
+        if not pytplot.store_data(split_name, data=data_for_tplot, attr_dict=metadata):
             raise Exception(f"Failed to store {split_name} in pytplot.")
-
 
     return created_variables
