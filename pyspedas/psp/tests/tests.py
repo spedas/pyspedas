@@ -83,6 +83,10 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('psp_spc_vp_fit_RTN'))
         self.assertTrue(data_exists('psp_spc_np1_fit'))
 
+    def test_load_spc_data_varnames(self):
+        spc_vars = pyspedas.psp.spc(trange=['2018-11-5', '2018-11-6'], datatype='l3i', level='l3', varnames=['np_fit'])
+        self.assertTrue(data_exists('psp_spc_np_fit'))
+
     def test_load_spe_data(self):
         spe_vars = pyspedas.psp.spe(trange=['2018-11-5', '2018-11-6'], datatype='spa_sf1_32e', level='l2')
         self.assertTrue(data_exists('psp_spe_EFLUX'))
