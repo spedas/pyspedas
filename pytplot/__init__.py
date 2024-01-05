@@ -165,7 +165,7 @@ from .tres import tres
 #from pytplot.tplot_math import *
 from .tplot_math import add_across, add, avg_res_data, clip, crop, deflag, degap, derive, divide, flatten
 from .tplot_math import interp_nan, tinterp, join_vec, multiply, resample, spec_mult, split_vec, subtract, pwr_spec
-from .tplot_math import clean_spikes, tsmooth, smooth, tdotp, tcrossp, pwrspc, tpwrspc
+from .tplot_math import clean_spikes, tsmooth, smooth, tdotp, tcrossp, pwrspc, tpwrspc, dpwrspc, tdpwrspc
 #from .tplot_math import tdeflag
 from .tplot_math import tnormalize, subtract_median, subtract_average, time_clip, tkm2re, makegap
 
