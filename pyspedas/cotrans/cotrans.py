@@ -35,8 +35,10 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         Ignored if name_in is provided.
     coord_in: str
         Name of input coordinate system.
+        Valid options: "gse", "gsm", "sm", "gei", "geo", "mag", "j2000"
     coord_out: str
         Name of output coordinate system.
+        Valid options: "gse", "gsm", "sm", "gei", "geo", "mag", "j2000"
 
     Returns
     -------
