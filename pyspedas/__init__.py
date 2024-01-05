@@ -40,6 +40,7 @@ from .utilities.dailynames import dailynames
 from .utilities.datasets import find_datasets
 # Note: "download" and "download_file" might be problematic names to import, due to risk of conflict with other packages
 from .utilities.download import download, download_file, check_downloaded_file
+from .utilities.download_ftp import download_ftp
 from .utilities.interpol import interpol
 from .utilities.leap_seconds import load_leap_table
 from .utilities.libs import libs
