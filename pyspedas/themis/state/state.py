@@ -18,19 +18,22 @@ def state(trange=['2007-03-23', '2007-03-24'],
           time_clip=False,
           keep_spin=False):
     """
-    This function loads THEMIS state data
+    Load THEMIS state data
 
     Parameters:
         trange: list of str
             time range of interest [starttime, endtime] with the format
             ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2007-03-23', '2007-03-24']
 
         probe: str or list of str
             Spacecraft probe letter(s) ('a', 'b', 'c', 'd' and/or 'e')
+            Default: 'c'
 
         level: str
             Data type; Valid options: 'l1'
+            Default: 'l1'
 
         suffix: str
             The tplot variable names will be given this suffix.  By default,
@@ -38,8 +41,8 @@ def state(trange=['2007-03-23', '2007-03-24'],
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a
-            "VAR_TYPE" attribute of "data".
+            will be loaded into tplot.
+            Default: False
 
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
@@ -56,25 +59,35 @@ def state(trange=['2007-03-23', '2007-03-24'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into
             tplot variables
+            Default: false
 
         notplot: bool
             Return the data in hash tables instead of creating tplot variables
+            Default: false
 
         no_update: bool
             If set, only load data from your local cache
+            Default: false
 
         time_clip: bool
             Time clip the variables to exactly the range specified
             in the trange keyword
+            Default: false
 
         keep_spin: bool
             If True, do not delete the spin model tplot variables after the spin models are built.
 
+
     Returns:
         List of tplot variables created.
 
+    Example:
+        >>> import pyspedas
+        >>> pyspedas.themis.state(trange=['2007-03-23', '2007-03-24'], probe='a', varnames=['tha_pos_gse','tha_vel_gse'])
+        ['tha_pos_gse', 'tha_vel_gse']
+
     """
-    # If support data is being loaded, premptively delete the thx_spinras_correction and thx_spindec_correction
+    # If support data is being loaded, preemptively delete the thx_spinras_correction and thx_spindec_correction
     # variables, to avoid dangling corrections if they don't exist in this time interval.
     if get_support_data:
         for p in probe:
