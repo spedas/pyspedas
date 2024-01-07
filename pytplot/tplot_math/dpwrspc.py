@@ -99,8 +99,8 @@ def dpwrspc(
     if tend_idx - tbegin_idx < nboxpoints:
         logging.error("Not enough points for a calculation")
         return tdps0, fdps0, dps0
-    time = time[tbegin_idx : tend_idx + 1]
-    quantity = quantity[tbegin_idx : tend_idx + 1]
+    time = time[tbegin_idx: tend_idx + 1]
+    quantity = quantity[tbegin_idx: tend_idx + 1]
 
     # remove NaNs from the data
     where_finite = np.where(np.isnan(quantity) == False)
@@ -123,6 +123,8 @@ def dpwrspc(
     if len(okspec[0]) <= 0:
         logging.error("Not enough points for a calculation")
         return tdps0, fdps0, dps0
+    else:
+        nspectra = len(okspec[0])
 
     tdps = np.zeros(nspectra)
     nfreqs = int(int(nboxpnts / 2) / bin)
@@ -163,8 +165,8 @@ def dpwrspc(
                 logging.warning(
                     "dpwrspc: needs an even number of data points, dropping last point..."
                 )
-                t = t[0 : bign - 1]
-                x = x[0 : bign - 1]
+                t = t[0: bign - 1]
+                x = x[0: bign - 1]
                 bign = bign - 1
 
             n_tm = len(t)
@@ -177,7 +179,7 @@ def dpwrspc(
                 else:
                     tmsn = 100.0
 
-                tdiff = t[1:n_tm] - t[0 : n_tm - 1]
+                tdiff = t[1:n_tm] - t[0: n_tm - 1]
                 med_diff = np.median(tdiff)
 
                 idx = np.where(np.abs(tdiff / med_diff - 1) > 1.0 / tmsn)
@@ -191,7 +193,7 @@ def dpwrspc(
             # following Numerical recipes in Fortran, p. 421, sort of...
             # (actually following the IDL implementation)
             k = np.array(range(int(bign / 2) + 1))
-            tres = np.median(t[1 : len(t)] - t[0 : len(t) - 1])
+            tres = np.median(t[1: len(t)] - t[0: len(t) - 1])
             fk = k / (bign * tres)
 
             xs2 = np.abs(np.fft.fft(x)) ** 2
@@ -199,8 +201,8 @@ def dpwrspc(
             pwr = np.zeros(int(bign / 2 + 1))
             pwr[0] = xs2[0] / bign**2
             ptmp = 1 + np.array(range(int(bign / 2 - 1)))
-            pwr[1 : int(bign / 2)] = (
-                xs2[1 : int(bign / 2)] + xs2[bign - ptmp]
+            pwr[1: int(bign / 2)] = (
+                xs2[1: int(bign / 2)] + xs2[bign - ptmp]
             ) / bign**2
             pwr[int(bign / 2)] = xs2[int(bign / 2)] / bign**2
 
