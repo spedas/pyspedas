@@ -18,7 +18,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     no_update=False, available=False, notplot=False, no_flatfield_corrections=False, data_units=['count_rate', 'intensity'], 
     latest_version=False, major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False):
     """
-    Load data from the Fly's Eye Energetic Particle Sensor (FEEPS)
+    Load data from the MMS Fly's Eye Energetic Particle Sensor (FEEPS)
     
     Parameters
     ----------
@@ -26,60 +26,81 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2015-10-16','2015-10-17']
 
         probe : str or list of str
-            list of probes, valid values for MMS probes are ['1','2','3','4']. 
+            list of probes, valid values for MMS probes are ['1','2','3','4'].
+            Default: '1'
 
         data_rate : str or list of str
-            instrument data rates for FEEPS include ['brst', 'srvy']. The
-            default is 'srvy'.
+            instrument data rates for FEEPS include ['brst', 'srvy'].
+            Default: 'srvy'
 
         level : str
             indicates level of data processing. the default if no level is specified is 'l2'
+            Default: 'l2'
 
         datatype : str or list of str
             Valid datatypes for FEEPS are: 
                        L2, L1b: ['electron', 'ion']
                        L1a: ['electron-bottom', 'electron-top', 'ion-bottom', 'ion-top']
+            Default: 'electron'
+
+        data_units : str or list of str
+            Unit types to be loaded, options are 'count_rate', 'intensity'
+            Default: ['count_rate', 'intensity']
+
+        no_flatfield_corrections: bool
+            If True, no flatfield corrections are performed.
+            Default: False
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
-            "VAR_TYPE" attribute of "data".
+            will be loaded into tplot.
+            Default: True
 
         time_clip: bool
             Data will be clipped to the exact trange specified by the trange keyword.
+            Default: False
             
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
+            "*" is accepted.
+            Default: None (all variables are loaded)
 
         varnames: list of str
-            List of variable names to load (if not specified,
-            all data variables are loaded)
+            List of variable names to load. If list is empty or not specified,
+            all data variables are loaded.
+            Default: []
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
+            Default: None
 
         notplot: bool
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
             access to multidimensional data products)
+            Default: False
 
         available: bool
             If True, simply return the available data files (without downloading)
             for the requested parameters
+            Default: False
 
         no_update: bool
             Set this flag to preserve the original data. if not set and newer 
             data is found the existing data will be overwritten
+            Default: False
 
         cdf_version: str
             Specify a specific CDF version # to load (e.g., cdf_version='4.3.0')
+            Default: None
 
         min_version: str
             Specify a minimum CDF version # to load
+            Default: None
 
         latest_version: bool
             Only grab the latest CDF version in the requested time interval
@@ -97,6 +118,14 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
     Returns
     ---------
         List of tplot variables created.
+
+    Example:
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> feeps_data = pyspedas.mms.mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', datatype='electron')
+    >>> tplot(['mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin', 'mms1_epd_feeps_srvy_l2_electron_intensity_omni'])
+
+
 
     """
 
