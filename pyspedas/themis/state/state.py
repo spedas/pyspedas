@@ -36,8 +36,8 @@ def state(trange=['2007-03-23', '2007-03-24'],
             Default: 'l1'
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default,
-            no suffix is added.
+            The tplot variable names will be given this suffix.
+            Default: None
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -47,14 +47,16 @@ def state(trange=['2007-03-23', '2007-03-24'],
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+            Default: None (all variables are loaded)
 
         exclude_format: str
             If specified, CDF variables matching this pattern will not be processed.
-            Wildcard character "*" is accepted.  By default, no variables are excluded.
+            Wildcard character "*" is accepted.
+            Default: None
 
         varnames: list of str
-            List of variable names to load
-            (if not specified, all data variables are loaded)
+            List of variable names to load. If list is empty or unsoecified, all data variables are loaded
+            Default: [] (all variables are loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into
@@ -76,6 +78,7 @@ def state(trange=['2007-03-23', '2007-03-24'],
 
         keep_spin: bool
             If True, do not delete the spin model tplot variables after the spin models are built.
+            Default: False
 
 
     Returns:
@@ -83,8 +86,9 @@ def state(trange=['2007-03-23', '2007-03-24'],
 
     Example:
         >>> import pyspedas
+        >>> from pytplot import tplot
         >>> pyspedas.themis.state(trange=['2007-03-23', '2007-03-24'], probe='a', varnames=['tha_pos_gse','tha_vel_gse'])
-        ['tha_pos_gse', 'tha_vel_gse']
+        >>> tplot['tha_pos_gse', 'tha_vel_gse'])
 
     """
     # If support data is being loaded, preemptively delete the thx_spinras_correction and thx_spindec_correction
