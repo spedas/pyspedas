@@ -15,7 +15,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     available=False, notplot=False, latest_version=False, major_version=False, 
     min_version=None, cdf_version=None, spdf=False, always_prompt=False):
     """
-    Load data from the Fast Plasma Investigation (FPI)
+    Load data from the MMS Fast Plasma Investigation (FPI)
     
     Parameters
     ----------
@@ -23,16 +23,19 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2015-10-16', '2015-10-17']
 
         probe : str or list of str
-            list of probes, valid values for MMS probes are ['1','2','3','4']. 
+            list of probes, valid values for MMS probes are ['1','2','3','4'].
+            Default: '1'
 
         data_rate : str or list of str
-            instrument data rates for FPI include 'brst', 'fast'. The
-            default is 'srvy'.
+            instrument data rates for FPI include 'brst', 'fast'.
+            Default: 'fast'
 
         level : str
-            indicates level of data processing. the default if no level is specified is 'l2'
+            indicates level of data processing. Valid options: 'l2', 'ql'
+            Default: 'l2'
 
         datatype : str or list of str
             Valid datatypes for FPI are:
@@ -43,64 +46,83 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
-            "VAR_TYPE" attribute of "data".
+            will be loaded into tplot.
+            Default: False
 
         time_clip: bool
             Data will be clipped to the exact trange specified by the trange keyword.
+            Default: False
             
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
+            "*" is accepted.
+            Default: None (All variables are loaded)
 
         varnames: list of str
-            List of variable names to load (if not specified,
-            all data variables are loaded)
+            List of variable names to load. If list is empty or not specified,
+            all data variables are loaded
+            Default: [] (all variables are loaded)
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            The tplot variable names will be given this suffix.
+            Default: None
 
         center_measurement: bool
             If True, the CDF epoch variables are time-shifted to the middle
             of the accumulation interval by their DELTA_PLUS_VAR and
             DELTA_MINUS_VAR variable attributes
+            Default: False
 
         notplot: bool
             If True, then data are returned in a hash table instead of 
             being stored in tplot variables (useful for debugging, and
             access to multidimensional data products)
+            Default: False
 
         available: bool
             If True, simply return the available data files (without downloading)
             for the requested parameters
+            Default: False
 
         no_update: bool
             Set this flag to preserve the original data. if not set and newer 
             data is found the existing data will be overwritten
+            Default: False
 
         cdf_version: str
             Specify a specific CDF version # to load (e.g., cdf_version='4.3.0')
+            Default: None
 
         min_version: str
             Specify a minimum CDF version # to load
+            Default: None
 
         latest_version: bool
             Only grab the latest CDF version in the requested time interval
+            Default: False
 
         major_version: bool
             Only open the latest major CDF version (e.g., X in vX.Y.Z) in the requested time interval
+            Default: False
 
         always_prompt: bool
             Set this keyword to always prompt for the user's username and password;
             useful if you accidentally save an incorrect password, or if your SDC password has changed
+            Default: False
 
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
+            Default: False
             
     Returns
     -----------
         List of tplot variables created.
+
+    Example:
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> fpi_vars = pyspedas.mms.mms_load_fpi(trange=['2015-10-16', '2015-10-17'], datatype='dis-moms')
+    >>> tplot(['mms1_dis_bulkv_gse_fast', 'mms1_dis_numberdensity_fast'])
 
     """
     # different datatypes for burst mode files
