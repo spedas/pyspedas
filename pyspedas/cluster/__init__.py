@@ -1,6 +1,6 @@
 from .load import load
 from pyspedas.utilities.datasets import find_datasets
-
+from .load_csa import load_csa
 
 def fgm(trange=['2018-11-5', '2018-11-6'], 
         probe='1',

@@ -1,7 +1,8 @@
 import numpy as np
+import logging
 from .lingradest import lingradest
 from pyspedas import tinterpol
-from pytplot import get_data, store_data, time_double, time_string, time_clip, deflag, tnames, options, tplot_options
+from pytplot import get_data, store_data, time_double, time_string, time_clip, deflag, tnames, options, tplot_options, tsmooth
 
 def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     """
@@ -59,15 +60,25 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
 
     positions_df = []
     fields_df = []
+    fields_sm = []
     for i in range(4):
         positions_df.append(positions[i]+'_df')
         fields_df.append(fields[i]+'_df')
+        # Smoothing
+        # fields_sm.append(fields[i]+'_sm')
+        # No smoothing
+        fields_sm.append(fields[i]+'_df')
+
         deflag(positions[i], method='remove_nan', new_tvar=positions_df[i])
         deflag(fields[i], method='remove_nan', new_tvar=fields_df[i])
+        # We'll try smoothing the fields, too
+        #tsmooth(fields_df[i], width=10, median=True, new_names=fields_sm[i])
 
-    print(tnames('*_df'))
-    d=get_data(fields_df[1])
-    print(d.y[-1])
+
+    #print(tnames('*_df'))
+    #print(tnames('*_sm'))
+    d=get_data(fields_sm[1])
+    #print(d.y[-1])
     # Interpolate all deflagged positions and field measurements to the first probe's field measurement times
 
     # We need to find a time range that's contained in all the position and field variables, to
@@ -83,7 +94,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         tmin = np.max([tmin, dmin])
         tmax = np.min([tmax, dmax])
 
-        d = get_data(fields_df[i])
+        d = get_data(fields_sm[i])
         dmin = d.times[0]
         dmax = d.times[-1]
         tmin = np.max([tmin, dmin])
@@ -94,11 +105,11 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     tmax = tmax - .001
 
     # We'll interpolate everything to the first set of times, so we'll time_clip that one to the desired time range
-    time_clip(fields_df[0], tmin, tmax, new_names='f0_tc')
+    time_clip(fields_sm[0], tmin, tmax, new_names='f0_tc')
 
     # Now we can interpolate safely
     tinterpol(positions_df,'f0_tc',newname=['pos1_i','pos2_i','pos3_i','pos4_i'])
-    tinterpol(fields_df, 'f0_tc', newname=['b1_i','b2_i','b3_i','b4_i'])
+    tinterpol(fields_sm, 'f0_tc', newname=['b1_i','b2_i','b3_i','b4_i'])
     d1 = get_data('pos1_i')
     d2 = get_data('pos2_i')
     d3 = get_data('pos3_i')
@@ -120,9 +131,9 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     by1 = b1.y[:,1]
     bz1 = b1.y[:,2]
 
-    bx2 = b3.y[:,0]
-    by2 = b3.y[:,1]
-    bz2 = b3.y[:,2]
+    bx2 = b2.y[:,0]
+    by2 = b2.y[:,1]
+    bz2 = b2.y[:,2]
 
     bx3 = b3.y[:,0]
     by3 = b3.y[:,1]
@@ -232,24 +243,19 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         bzmin = np.min( (F1_obs[2],F2_obs[2],F3_obs[2],F4_obs[2]))
 
         tstring = time_string(times[i])
-        if (bxmax*bxmin < 0.0) and (bymax*bymin < 0.0) and (bzmax*bzmin < 1.0):
-            print("Null may be in tetrahedron at time ",tstring )
-            print("F1 obs:", F1_obs)
-            print("F2 obs:", F2_obs)
-            print("F3 obs:", F3_obs)
-            print("F4 obs:", F4_obs)
+        #if (bxmax*bxmin < 0.0) and (bymax*bymin < 0.0) and (bzmax*bzmin < 1.0):
+        #    print("Null may be in tetrahedron at time ",tstring )
+        #    print("F1 obs:", F1_obs)
+        #    print("F2 obs:", F2_obs)
+        #    print("F3 obs:", F3_obs)
+        #    print("F4 obs:", F4_obs)
+        #    print("r_null", r_null)
 
 
 
 
         # Get eigenvalues of J to characterize field topology near the null
-        try:
-            eigenvalues, eigevectors = np.linalg.eig(J)
-        except:
-            print('np.linalg.eig failed')
-            print('i=',i)
-            print('J',J)
-            return
+        eigenvalues, eigenvectors = np.linalg.eig(J)
         lambdas = eigenvalues
         l1_norm = np.linalg.norm(lambdas[0])
         l2_norm = np.linalg.norm(lambdas[1])
@@ -257,12 +263,9 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         eig_sum_norm = np.linalg.norm(lambdas[0] + lambdas[1] + lambdas[2])
         eig_max_norm = np.max((l1_norm,l2_norm,l3_norm))
 
-
         # div B should be close to 0 (exactly 0 in theory), so the difference from 0 is a measure of how
         # credible any null we've found might be.  We normalize it, dividing by the magnitude of the curl,
         # to get the statistic eta.  eta < 0.40 for a credible null.
-
-
         divB = lingrad_output['LD'][i]
         LCx = lingrad_output['LCxB'][i]
         LCy = lingrad_output['LCyB'][i]
@@ -293,4 +296,6 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     store_data('magnull_eta', data={'x':times, 'y':out_null_eta})
     store_data('magnull_xi', data={'x':times, 'y':out_null_xi})
 
+    return_vars = ['magnull_pos', 'magnull_null_bary_dist', 'magnull_eta', 'magnull_xi']
 
+    return return_vars
