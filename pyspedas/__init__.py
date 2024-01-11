@@ -11,6 +11,7 @@ from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
+from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote
 from .cdagui.cdagui import cdagui
 from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
