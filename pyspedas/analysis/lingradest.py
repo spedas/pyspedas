@@ -5,7 +5,7 @@ import numpy as np
 def lingradest(Bx1, Bx2, Bx3, Bx4,
                By1, By2, By3, By4,
                Bz1, Bz2, Bz3, Bz4,
-               R1, R2, R3, R4):
+               R1, R2, R3, R4, scale_factor=1000.0):
     """
     Calculate magnetic field gradients, divergence, curl, and field line
     curvature from 4-point observations
@@ -17,6 +17,9 @@ def lingradest(Bx1, Bx2, Bx3, Bx4,
 
         Coordinates: np.ndarrays
             Position vectors for the four probes
+
+        scale_factor:  Scaling divisor to apply to internal distance calculations
+        Default: 1000.0
 
     Method used
     ------------
@@ -31,6 +34,8 @@ def lingradest(Bx1, Bx2, Bx3, Bx4,
     Returns
     --------
         Dict containing:
+            Rbary, # position of barycenter
+            dR1, dR2, dR3, dR4, # Distance of barycenter from each probe
             Bxbc, Bybc, Bzbc, Bbc
             LGBx, LGBy, LGBz,
             LCxB, LCyB, LCzB, LD,
@@ -84,18 +89,18 @@ def lingradest(Bx1, Bx2, Bx3, Bx4,
     Ncurv_z = np.zeros(datarrLength)
 
     # distances in 1000 km!
-    r12 = (R2-R1)/1000.0
-    r13 = (R3-R1)/1000.0
-    r14 = (R4-R1)/1000.0
-    r21 = (R1-R2)/1000.0
-    r23 = (R3-R2)/1000.0
-    r24 = (R4-R2)/1000.0
-    r31 = (R1-R3)/1000.0
-    r32 = (R2-R3)/1000.0
-    r34 = (R4-R3)/1000.0
-    r41 = (R1-R4)/1000.0
-    r42 = (R2-R4)/1000.0
-    r43 = (R3-R4)/1000.0
+    r12 = (R2-R1)/scale_factor
+    r13 = (R3-R1)/scale_factor
+    r14 = (R4-R1)/scale_factor
+    r21 = (R1-R2)/scale_factor
+    r23 = (R3-R2)/scale_factor
+    r24 = (R4-R2)/scale_factor
+    r31 = (R1-R3)/scale_factor
+    r32 = (R2-R3)/scale_factor
+    r34 = (R4-R3)/scale_factor
+    r41 = (R1-R4)/scale_factor
+    r42 = (R2-R4)/scale_factor
+    r43 = (R3-R4)/scale_factor
 
     for i in range(datarrLength):
         # Tetrahedrom mesocentre coordinates
@@ -104,10 +109,10 @@ def lingradest(Bx1, Bx2, Bx3, Bx4,
         Rb[i, 2] = 0.25 * (R1[i, 2] + R2[i, 2] + R3[i, 2] + R4[i, 2])
 
         # Difference in 1000 km!
-        dR1[i, 0:3] = (Rb[i, 0:3] - R1[i, 0:3]) / 1000.0
-        dR2[i, 0:3] = (Rb[i, 0:3] - R2[i, 0:3]) / 1000.0
-        dR3[i, 0:3] = (Rb[i, 0:3] - R3[i, 0:3]) / 1000.0
-        dR4[i, 0:3] = (Rb[i, 0:3] - R4[i, 0:3]) / 1000.0
+        dR1[i, 0:3] = (Rb[i, 0:3] - R1[i, 0:3]) / scale_factor
+        dR2[i, 0:3] = (Rb[i, 0:3] - R2[i, 0:3]) / scale_factor
+        dR3[i, 0:3] = (Rb[i, 0:3] - R3[i, 0:3]) / scale_factor
+        dR4[i, 0:3] = (Rb[i, 0:3] - R4[i, 0:3]) / scale_factor
 
         k1[i, 0:3] = np.cross(r23[i, 0:3], r24[i, 0:3])
         k1[i, 0:3] = k1[i, 0:3] / (r21[i, 0] * k1[i, 0] + r21[i, 1] * k1[i, 1] + r21[i, 2] * k1[i, 2])
@@ -156,7 +161,9 @@ def lingradest(Bx1, Bx2, Bx3, Bx4,
 
     logging.info('Calculations completed')
 
-    return {'Bxbc': Bxbc, 'Bybc': Bybc, 'Bzbc': Bzbc, 'Bbc': Bbc,
+    return { 'Rbary': Rb, # Barycenter position
+             'dR1': dR1, 'dR2': dR2, 'dR3': dR3, 'dR4': dR4, # Probe to barycenter distances
+            'Bxbc': Bxbc, 'Bybc': Bybc, 'Bzbc': Bzbc, 'Bbc': Bbc,  # Field at barycenter
             'LGBx': LGBx, 'LGBy': LGBy, 'LGBz': LGBz,
             'LCxB': LCxB, 'LCyB': LCyB, 'LCzB': LCzB, 'LD': LD,
             'curv_x_B': curv_x_B, 'curv_y_B': curv_y_B, 'curv_z_B': curv_z_B, 'RcurvB': RcurvB}
