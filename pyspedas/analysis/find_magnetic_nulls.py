@@ -65,14 +65,14 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         positions_df.append(positions[i]+'_df')
         fields_df.append(fields[i]+'_df')
         # Smoothing
-        # fields_sm.append(fields[i]+'_sm')
+        fields_sm.append(fields[i]+'_sm')
         # No smoothing
-        fields_sm.append(fields[i]+'_df')
+        #fields_sm.append(fields[i]+'_df')
 
         deflag(positions[i], method='remove_nan', new_tvar=positions_df[i])
         deflag(fields[i], method='remove_nan', new_tvar=fields_df[i])
         # We'll try smoothing the fields, too
-        #tsmooth(fields_df[i], width=10, median=True, new_names=fields_sm[i])
+        tsmooth(fields_df[i], width=10, median=True, new_names=fields_sm[i])
 
 
     #print(tnames('*_df'))
