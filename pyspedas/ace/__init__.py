@@ -67,6 +67,11 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
     ----------
         List of tplot variables created.
 
+    Example:
+    ----------
+        >>> mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'])
+        >>> tplot(['BGSEc', 'Magnitude'])
+
     """
     tvars = load(instrument='fgm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
     
@@ -145,6 +150,11 @@ def swe(trange=['2018-11-5', '2018-11-6'],
     ----------
         List of tplot variables created.
 
+    Example:
+    ----------
+        >>> swe_vars = pyspedas.ace.swe(trange=['2018-11-5', '2018-11-6'])
+        >>> tplot(['Vp', 'Tpr'])
+
     """
     return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -210,6 +220,11 @@ def epam(trange=['2018-11-5', '2018-11-6'],
     Returns
     ----------
         List of tplot variables created.
+    
+    Example:
+    ----------
+        >>> epam_vars = pyspedas.ace.epam(trange=['2018-11-5', '2018-11-6'])
+        >>> tplot(['H_lo', 'Ion_very_lo', 'Ion_lo', 'Ion_mid', 'Ion_hi', 'Electron_lo', 'Electron_hi'])
 
     """
     return load(instrument='epm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
@@ -273,6 +288,11 @@ def cris(trange=['2018-11-5', '2018-11-6'],
     Returns
     ----------
         List of tplot variables created.
+
+    Example:
+    ----------
+        >>> cris_vars = pyspedas.ace.cris(trange=['2018-11-5', '2018-11-6'])
+        >>> tplot(['flux_B', 'flux_C', 'flux_N', 'flux_O', 'flux_F', 'flux_Ne'])
 
     """
     return load(instrument='cris', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
@@ -338,6 +358,11 @@ def sis(trange=['2018-11-5', '2018-11-6'],
     ----------
         List of tplot variables created.
 
+    Example:
+    ----------
+        >>> sis_vars = pyspedas.ace.sis(trange=['2018-11-5', '2018-11-6'])
+        >>> tplot(['H_lo', 'H_hi', 'CNO_lo', 'CNO_hi', 'Z_ge_10'])
+
     """
     return load(instrument='sis', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -400,6 +425,11 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
     ----------
         List of tplot variables created.
 
+    Example:
+    ----------
+        >>> uleis_vars = pyspedas.ace.uleis(trange=['2018-11-5', '2018-11-6'])
+        >>> tplot(['H_S1', 'H_S2', 'H_S3', 'H_S4', 'H_S5'])
+
     """
     return load(instrument='ule', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -461,6 +491,11 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
     Returns
     ----------
         List of tplot variables created.
+
+    Example:
+    ----------    
+        >>> sepica_vars = pyspedas.ace.sepica(trange=['2004-11-5', '2004-11-6'])
+        >>> tplot(['H1', 'H2', 'H3'])
 
     """
     return load(instrument='sep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
@@ -528,6 +563,11 @@ def swics(trange=['2018-11-5', '2018-11-6'],
     Returns
     ----------
         List of tplot variables created.
+
+    Example:
+    ---------- 
+        >>> swi_vars = pyspedas.ace.swics(trange=['2018-11-5', '2018-11-6'])
+        >>> tplot(['vHe2', 'vthHe2'])
 
     """
     return load(instrument='swics', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
