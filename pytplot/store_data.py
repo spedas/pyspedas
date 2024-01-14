@@ -154,6 +154,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         elif isinstance(times[0], str):
             times = [parse(time).replace(tzinfo=datetime.timezone.utc).timestamp() for time in times]
 
+    if len(values) == 0:
+        logging.warning('store_data: %s has empty y component, cannot create variable',name)
+        return False
+
     if len(times) != len(values):
         # This happens for a few MMS and other data sets. Rather than quitting immediately, go ahead and create
         # the variable, but give an informational message about the mismatch.  The fix would probably be for the
