@@ -4,6 +4,148 @@ from .lingradest import lingradest
 from pyspedas import tinterpol
 from pytplot import get_data, store_data, time_double, time_string, time_clip, deflag, tnames, options, tplot_options, tsmooth
 
+def null_type(lambdas_in):
+    """
+    Returns the topological type of a magnetic null, given the eigenvalues of the Jacobian matrix.
+
+    Parameters
+    ----------
+    lambdas_in: An array of 3 complex-valued eigenvalues of the Jacobian matrix,
+        in no particular order.
+
+    Returns
+    -------
+    An integer representing the null type:
+       0: Unknown/unable to characterize
+       1: X-type null
+       2: O-type null (island or plasmoid)
+       3: A-type (radial) null
+       4: B-type (radial) null
+       5: A_s-type (spiral) null
+       6: B_s-type (spiral) null
+
+    See Table 1, Fu et al 2015 for details
+
+    References:
+    Fu, H. S., A. Vaivads, Y. V. Khotyaintsev, V. Olshevsky, M. André, J. B. Cao, S. Y. Huang,
+    A. Retinò, and G. Lapenta (2015), How to find magnetic nulls and reconstruct field topology
+    with MMS data?. J. Geophys. Res. Space Physics, 120, 3758–3782. doi: 10.1002/2015JA021082.
+
+    Paschmann, G., Daly, P. (1998), Analysis Methods for Multi-Spacecraft Data, ISSR
+    """
+    # In theory, the eigenvectors should add up to 0, so they will either be all real, or one real
+    # with the other two being complex conjugates.   In practice, none of the components will be exactly
+    # zero. So we need to look at the real and imaginary parts of the eigenvalues, and apply some heuristics
+    # to see if any of them are small enough be treated as zeroes.
+
+    lambda1 = lambdas_in[0]
+    lambda2 = lambdas_in[1]
+    lambda3 = lambdas_in[2]
+
+
+    # We want to find the max and min (absolute value) norms, real, and imaginary parts,
+    # to decide later if 3-d type nulls should degenerate to 2-d type nulls
+
+    n1 = np.abs(lambda1)
+    n2 = np.abs(lambda2)
+    n3 = np.abs(lambda3)
+    nlist = np.array([n1,n3,n3])
+    n_max = np.max(nlist)
+    n_min = np.min(nlist)
+
+    re1 = np.abs(lambda1.real)
+    re2 = np.abs(lambda2.real)
+    re3 = np.abs(lambda2.real)
+    re_list = np.array([re1,re2,re3])
+    re_max = np.max(re_list)
+    re_min = np.min(re_list)
+
+    im1 = np.abs(lambda1.imag)
+    im2 = np.abs(lambda2.imag)
+    im3 = np.abs(lambda3.imag)
+    im_list = np.array([im1,im2,im3])
+    im_max = np.max(im_list)
+    im_min = np.min(im_list)
+
+
+    # Now we order by size of the norms
+    if (n1 <= n2) and (n2 <= n3):
+        s1 = lambda1
+        s2 = lambda2
+        s3 = lambda3
+    elif (n1 <= n3) and (n3 <= n2):
+        s1 = lambda1
+        s2 = lambda3
+        s3 = lambda2
+    elif (n2 <= n3) and (n3 <= n1):
+        s1 = lambda2
+        s2 = lambda3
+        s3 = lambda1
+    elif (n2 <= n1) and (n1 <= n3):
+        s1 = lambda2
+        s2 = lambda1
+        s3 = lambda3
+    elif (n3 <= n1) and (n1 <= n2):
+        s1 = lambda3
+        s2 = lambda1
+        s3 = lambda2
+    else:
+        s1 = lambda3
+        s2 = lambda2
+        s3 = lambda1
+
+    typecode = 0;  # Default to unclassified
+
+    # Now we can classify the null type.  It should be safe to use floating point eqyality to check
+    # the imaginary parts.  It is unlikely that any of the real parts or norms will be exactly 0,
+    # but see below where we check for some possibly degenerate cases.
+
+    if (s1.imag == 0.0) and (s2.imag == 0.0) and (s3.imag == 0.0):  # all eigenvalues pure real
+        if (s1.real == 0.0):  # smallest (absolute val) real is exactly 0
+            typecode = 1 # type X
+        elif (s3.real > 0.0): # largest (absolute val) real part is +ve
+            typecode = 3 # type A
+        else: # largest (abs) real part is -ve
+            typecode = 4  # type B
+    elif (n1 == 0.0): # one pure real == 0, other two imaginary
+        typecode = 2 # O-type
+    else:  # all eigenvalues nonzero, one pure real two imaginary
+        if (s1.imag == 0.0): # s1 is the pure real eigenvalue
+            if s1.real > 0.0:   # real eigenvalue is +ve
+                typecode = 5 # A_s
+            else:               # real eigenvalue is -ve
+                typecode = 6 # B_s
+        elif (s2.imag == 0.0): # s2 is the pure real eigenvalue
+            if s2.real > 0.0:   # real eigenvalue is +ve
+                typecode = 5 # A_s
+            else:               # real eigenvalue is -ve
+                typecode = 6 # B_s
+        else:   # s3 must be the pure real
+            if s3.real > 0.0:
+                typecode = 5 # A_s
+            else:
+                typecode = 6 # B_s
+
+    if typecode == 0:
+        print("Uncharacterized null, eigenvalues:")
+        print(s1)
+        print(s2)
+        print(s3)
+
+    # Now check to see if a 3-d null should degenerate to a 2-d type of null
+    # Type A and B nulls should degenerate to type X if min(norms) < .25*max(norms)
+    # Type A_s and B_s nulls should degenerate to type O if max(real) < 0.25*min(imag)
+
+    if (typecode == 3) or (typecode == 4): # Type A or B
+        if n_min < 0.25 * n_max:
+            typecode = 1 # degenerate to X-type
+    elif (typecode == 5) or (typecode == 6):  # Type A_s or B_s
+        if re_max < 0.25*im_min:
+            typecode = 2   # degenerate to O-type
+    return typecode
+
+typecode_strings = ['Unknown','X','O','A','B','A_s', 'B_s']
+
 def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     """
     Find magnetic null points, given a set of four-point magnetic field observations (e.g. MMS or CLUSTER) using the
@@ -167,6 +309,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     out_null_p4_dist = np.zeros((datapoint_count))
     out_null_eta = np.zeros((datapoint_count))
     out_null_xi = np.zeros((datapoint_count))
+    out_typecode = np.zeros((datapoint_count))
 
     for i in range(datapoint_count):
         Rbary = lingrad_output['Rbary'][i]
@@ -243,16 +386,6 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         bzmin = np.min( (F1_obs[2],F2_obs[2],F3_obs[2],F4_obs[2]))
 
         tstring = time_string(times[i])
-        #if (bxmax*bxmin < 0.0) and (bymax*bymin < 0.0) and (bzmax*bzmin < 1.0):
-        #    print("Null may be in tetrahedron at time ",tstring )
-        #    print("F1 obs:", F1_obs)
-        #    print("F2 obs:", F2_obs)
-        #    print("F3 obs:", F3_obs)
-        #    print("F4 obs:", F4_obs)
-        #    print("r_null", r_null)
-
-
-
 
         # Get eigenvalues of J to characterize field topology near the null
         eigenvalues, eigenvectors = np.linalg.eig(J)
@@ -262,6 +395,19 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         l3_norm = np.linalg.norm(lambdas[2])
         eig_sum_norm = np.linalg.norm(lambdas[0] + lambdas[1] + lambdas[2])
         eig_max_norm = np.max((l1_norm,l2_norm,l3_norm))
+        typecode = null_type(lambdas)
+        out_typecode[i] = typecode
+
+        #if (bxmax*bxmin < 0.0) and (bymax*bymin < 0.0) and (bzmax*bzmin < 1.0):
+        #
+        #    print("Null of type ",typecode_strings[typecode]," may be in tetrahedron at time ",tstring )
+        #   if times[i] > time_double('2003-08-17/16:41:55.43'):
+        #        typecode=null_type(lambdas)
+        #    print("F1 obs:", F1_obs)
+        #    print("F2 obs:", F2_obs)
+        #    print("F3 obs:", F3_obs)
+        #    print("F4 obs:", F4_obs)
+        #    print("r_null", r_null)
 
         # div B should be close to 0 (exactly 0 in theory), so the difference from 0 is a measure of how
         # credible any null we've found might be.  We normalize it, dividing by the magnitude of the curl,
@@ -295,7 +441,9 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     store_data('magnull_null_p4_dist',data={'x':times,'y':out_null_p4_dist})
     store_data('magnull_eta', data={'x':times, 'y':out_null_eta})
     store_data('magnull_xi', data={'x':times, 'y':out_null_xi})
+    store_data('null_type', data={'x':times, 'y':out_typecode})
+    print('Minimum typecode:',np.min(out_typecode))
 
-    return_vars = ['magnull_pos', 'magnull_null_bary_dist', 'magnull_eta', 'magnull_xi']
+    return_vars = ['magnull_pos', 'magnull_null_bary_dist', 'magnull_eta', 'magnull_xi', 'null_type']
 
     return return_vars

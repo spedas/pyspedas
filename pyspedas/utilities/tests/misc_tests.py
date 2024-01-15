@@ -67,10 +67,54 @@ class UtilTestCases(unittest.TestCase):
         anerror = tkm2re('test_km', newname=['test1_km', 'test1_km'])
         self.assertTrue(anerror is None)
 
+    def test_time_clip(self):
+        import pytplot
+        x=[1,2,3]
+        y=[2,4,6]
+        xfp = [1.0,2.0,3.0]
+        pytplot.store_data('fptest',data={'x':xfp,'y':y})
+        # Test warning for no data in time range
+        pytplot.time_clip('fptest',1.5,1.7)
+        # Single value in time range
+        pytplot.time_clip('fptest',1.5,2.5)
+        self.assertTrue(data_exists('fptest-tclip'))
+        pytplot.store_data('tst1',data={'x':x,'y':y})
+        pytplot.store_data('tst2',data={'x':x,'y':y})
+        # reversed time limits
+        pytplot.time_clip(['tst1','tst2'],10,1)
+        # data completely outside time limits
+        pytplot.time_clip(['tst1','tst2'],10,20)
+        # one point in limits
+        pytplot.time_clip('tst1',1.5,2.5)
+        self.assertTrue(data_exists('tst1-tclip'))
+        # overwrite
+        pytplot.del_data('tst1-tclip')
+        pytplot.time_clip('tst1',1.5,2.0,overwrite=True)
+        self.assertFalse(data_exists('tst1-tclip'))
+        pytplot.time_clip('tst1',1.5,2.5,new_names='tst1_new')
+        self.assertTrue(data_exists('tst1_new'))
+        pytplot.time_clip('tst1',1.5,2.5,new_names='',suffix='-tc1')
+        self.assertTrue(data_exists('tst1-tc1'))
+        pytplot.time_clip('tst1',1.5,2.5,new_names=[],suffix='-tc2')
+        self.assertTrue(data_exists('tst1-tc2'))
+        # new_names has different count than input names, default to suffix
+        pytplot.time_clip('tst1',1.5,2.5, new_names=['foo','bar'],suffix='-tc3')
+        self.assertTrue(data_exists('tst1-tc3'))
+        pytplot.time_clip('tst1',1.5,2.5,new_names=None, suffix='-tc4')
+        self.assertTrue(data_exists('tst1-tc4'))
+        # no such tplot name
+        pytplot.time_clip('bogus',1.5,2.5)
+        # empty input list
+        pytplot.time_clip([],1.5,2.5)
+
+
+
+
 #    def test_pseudovariables(self):
 #        themis.fgm(probe='c')
 #        store_data('comb',data=['thc_fge_dsl','thc_fge_btotal'])
 #        tplot('comb',save_png='test_combined.png')
+
 
 
 if __name__ == '__main__':
