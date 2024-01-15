@@ -37,10 +37,13 @@ def load(trange=None,
 
     out_files = []
     for prb in probe:
-        remote_path = (
-            str(level) + '/' + str(prb) + '/' + str(datatype) +
-            '/bar_' + str(prb) + '_' + str(level) + '_' + str(datatype) + '_%Y%m%d_' + str(version) + '.cdf'
-        )
+        if str(datatype) == 'ephm':
+            # SPDF has 'ephem' instead of 'ephm' for this data type
+            remote_path = (str(level) + '/' + str(prb) + '/' + 'ephem' +
+                       '/bar_' + str(prb) + '_' + str(level) + '_' + str(datatype) + '_%Y%m%d_' + str(version) + '.cdf')
+        else:
+            remote_path = (str(level) + '/' + str(prb) + '/' + str(datatype) +
+                '/bar_' + str(prb) + '_' + str(level) + '_' + str(datatype) + '_%Y%m%d_' + str(version) + '.cdf')
 
         remote_names = [name.lower() for name in dailynames(file_format=remote_path, trange=trange)]
 
