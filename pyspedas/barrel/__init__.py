@@ -17,6 +17,7 @@ def sspc(trange=['2013-01-28', '2013-01-29'],
             Default: ['2013-01-28', '2013-01-29']
 
         probe: str
+            Options: '1a...1v', '2a...2y', '3a...3g'
             Default: '1A'
 
         downloadonly: bool
@@ -64,6 +65,7 @@ def mspc(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
+            Options: '1a...1v', '2a...2y', '3a...3g'
             Default: '1A'
 
         downloadonly: bool
@@ -110,6 +112,7 @@ def fspc(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
+            Options: '1a...1v', '2a...2y', '3a...3g'
             Default: '1A'
 
         downloadonly: bool
@@ -157,6 +160,7 @@ def rcnt(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
+            Options: '1a...1v', '2a...2y', '3a...3g'
             Default: '1A'
 
         downloadonly: bool
@@ -203,6 +207,7 @@ def magn(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
+            Options: '1a...1v', '2a...2y', '3a...3g'
             Default: '1A'
 
         downloadonly: bool
@@ -249,6 +254,7 @@ def ephm(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
+            Options: '1a...1v', '2a...2y', '3a...3g'
             Default: '1A'
 
         downloadonly: bool
@@ -273,7 +279,7 @@ def ephm(trange=['2013-01-29','2013-01-30'],
         >>> import pyspdedas
         >>> from pytplot import tplot
         >>> pyspedas.barrel.ephm(trange=['2013-01-29','2013-01-30'], probe='1A')
-        >>> ##TODO
+        >>> tplot('brl1A_GPS_Lat')
     """
    
     return load(datatype='ephm', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
@@ -296,6 +302,7 @@ def hkpg(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
+            Options: '1a...1v', '2a...2y', '3a...3g'
             Default: '1A'
 
         downloadonly: bool
