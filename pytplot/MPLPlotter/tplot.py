@@ -257,7 +257,7 @@ def tplot(variables, var_label=None,
             zaxis_options = pseudo_zaxis_options
 
         line_opts = var_quants.attrs['plot_options']['line_opt']
-        if pseudo_line_options is not None:
+        if pseudo_line_options is not None and len(pseudo_line_options) > 0:
             line_opts = pseudo_line_options
 
         if line_opts is not None:
