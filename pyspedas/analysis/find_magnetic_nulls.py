@@ -179,7 +179,18 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
 
     Returns
     -------
-    A list of tplot variables describing the nulls found
+    A list of tplot variables describing the nulls found:
+    'null_pos': Position of the null point, in the same coordinate system as imput positions
+    'null_bary_dist': Distance between the null point and the barycenter of the tetrahedron
+    'null_bary_dist_types': A composite variable more suitable for plotting, with the null to barycenter distances,
+        superimposed with symbols representing the type of each null found
+    'null_sc_distances': The distances from the null to each of the four spacecraft
+    'null_fom': Figures of merit 'eta' and 'xi', roughly representing the confidence in the null location and null type.
+        Lower is better, with values less than 0.4 denoting fairly reliable detection and classification
+    'null_typecode': The type of each null point found, with values from 0-6. See classify_null_type() for interpretation.
+    'max_reconstruction_error': The maximum error out of the four s/c, when using the calculated Jacobian and field at the barycenter
+        to reconstruct the field vectors at each spacecraft.  Should be extremely close to zero.
+
 
     Method:
 
@@ -190,20 +201,31 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     B = B0 + JV
 
     where V is the position vector relative to the barycenter.  At a magnetic null V_null, all components of B are zero,
-    so we can solve for V, the location of the null.
+    so we have JV_null = -B0, which can be solved to get V_null.
 
     As long as the four field measurements all differ, a null point will always be found.   For it to be credible,
     it should be in the neighborhood where the linear gradient approximation is expected to be valid, i.e. some smallish multiple
     of the tetrahedron size.
 
     The topology of the field around the null can be inferred from the eigenvalues and eigenvectors of the
-    estimated Jacobian.
+    estimated Jacobian. See the classify_null_type() function for details.
+
+    References:
+    Fu, H. S., A. Vaivads, Y. V. Khotyaintsev, V. Olshevsky, M. André, J. B. Cao, S. Y. Huang,
+    A. Retinò, and G. Lapenta (2015), How to find magnetic nulls and reconstruct field topology
+    with MMS data?. J. Geophys. Res. Space Physics, 120, 3758–3782. doi: 10.1002/2015JA021082.
+
+    Paschmann, G., Daly, P. (1998), Analysis Methods for Multi-Spacecraft Data, ISSR
+
 
     Example:
     >>> import pyspedas
-    >>> from pytplot
-    >>> # load data and ephemeris
-    >>> pyspedas.find_magnetic_nulls_fote(positions=pos_variables, fields=mag_variables, smooth_fields=True)
+    >>> from pytplot import tplot
+    >>> data = pyspedas.mms.fgm(probe=[1, 2, 3, 4], trange=['2015-09-19/07:40', '2015-09-19/07:45'], data_rate='srvy', time_clip=True, varformat='*_gse_*', get_fgm_ephemeris=True)
+    >>> fields = ['mms'+prb+'_fgm_b_gse_srvy_l2' for prb in ['1', '2', '3', '4']]
+    >>> positions = ['mms'+prb+'_fgm_r_gse_srvy_l2' for prb in ['1', '2', '3', '4']]
+    >>> null_vars = pyspedas.find_magnetic_nulls_fote(fields=fields, positions=positions, smooth_fields=True,smooth_npts=10,smooth_median=True)
+    >>> tplot(null_vars)
     """
 
     # Input data needs to be sanitized, by removing any nans, and finding a time range common
