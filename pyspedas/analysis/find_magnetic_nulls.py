@@ -142,35 +142,16 @@ def classify_null_type(lambdas_in):
             typecode = 2   # degenerate to O-type
     return typecode
 
+
+# Define some stuff we'll use in debugging messages and plot options
+
 typecode_strings = ['Unknown','X','O','A','B','A_s', 'B_s']
 typecode_symbols = ['.','x','$o$','>','>','4','4']
 typecode_colors = ['k','k','k','r','b','r','b']
 
 def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, smooth_npts=10, smooth_median=True,scale_factor=1.0):
     """
-    Find magnetic null points, given a set of four-point magnetic field observations (e.g. MMS or CLUSTER) using the
-    First Order Taylor Expansion (FOTE) method.
-
-    This method uses tetrahedral interpolation to estimate the magnetic field (B0) and field gradients at the tetrahedron
-    barycenter. From the field gradients we can construct a Jacobian matrix (J).  The field in that region can be
-    expressed, to a first order approximation, as
-
-    B = B0 + JV
-
-    where V is the position vector relative to the barycenter.  At a magnetic null V_null, all components of B are zero,
-    so we have
-
-    [0] = B0 + JV_null
-
-    so that
-
-    V_null = J_inv[-B0]
-
-    As long as the four field measurements all differ, a null point will always be found.   For it to be credible,
-    it should be in the neighborhood where the linear gradient approximation is expected to be valid.
-
-    The topology of the field around the null can be inferred from the eigenvalues and eigenvectors of the
-    estimated Jacobian.
+    Find magnetic null points, using the First Order Taylor Exoansioh (FOTE) method, from a set of four-point magnetic field observations.
 
     Parameters
     -----------
@@ -193,19 +174,36 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
         Default: True
 
     scale_factor: float
-        The scale factor passed lingradest routine to scale some of the distances
+        The scale factor passed to the lingradest routine to scale some of the distances
         Default: 1.0
 
     Returns
     -------
     A list of tplot variables describing the nulls found
 
+    Method:
+
+    This routine uses tetrahedral interpolation to estimate the magnetic field (B0) and field gradients at the tetrahedron
+    barycenter. From the field gradients we can construct a Jacobian matrix (J).  The field in that region can be
+    expressed, to a first order approximation, as
+
+    B = B0 + JV
+
+    where V is the position vector relative to the barycenter.  At a magnetic null V_null, all components of B are zero,
+    so we can solve for V, the location of the null.
+
+    As long as the four field measurements all differ, a null point will always be found.   For it to be credible,
+    it should be in the neighborhood where the linear gradient approximation is expected to be valid, i.e. some smallish multiple
+    of the tetrahedron size.
+
+    The topology of the field around the null can be inferred from the eigenvalues and eigenvectors of the
+    estimated Jacobian.
 
     Example:
     >>> import pyspedas
     >>> from pytplot
     >>> # load data and ephemeris
-    >>> pyspedas.find_magnetic_nulls_fote(positions,fields, smooth_fields=True, smooth_npts=10, smooth_median=True)
+    >>> pyspedas.find_magnetic_nulls_fote(positions=pos_variables, fields=mag_variables, smooth_fields=True)
     """
 
     # Input data needs to be sanitized, by removing any nans, and finding a time range common
