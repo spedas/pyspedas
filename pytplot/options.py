@@ -218,6 +218,9 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'legend_frameon' or option == 'labels_frameon':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
 
+            if option == 'legend_ncols' or option == 'labels_ncols':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_ncols'] = value
+
             if option == 'xlog_slice':
                 if value:
                     pytplot.data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'log'
