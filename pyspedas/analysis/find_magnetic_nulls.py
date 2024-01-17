@@ -59,7 +59,14 @@ def classify_null_type(lambdas_in):
     im1 = np.abs(lambda1.imag)
     im2 = np.abs(lambda2.imag)
     im3 = np.abs(lambda3.imag)
-    im_list = np.array([im1,im2,im3])
+    # One of the eigenvalues is always pure real. So for this comparison, we only want to
+    # consider the ones that might have imaginary components.  If they're all real, it won't matter.
+    if (im1 == 0.0):
+        im_list = np.array([im2,im3])
+    elif (im2 == 0.0):
+        im_list = np.array([im1,im3])
+    else:
+        im_list = np.array([im1,im2])
     im_max = np.max(im_list)
     im_min = np.min(im_list)
 
@@ -136,7 +143,7 @@ def classify_null_type(lambdas_in):
     return typecode
 
 typecode_strings = ['Unknown','X','O','A','B','A_s', 'B_s']
-typecode_symbols = ['.','x','o','>','>','4','4']
+typecode_symbols = ['.','x','$o$','>','>','4','4']
 typecode_colors = ['k','k','k','r','b','r','b']
 
 def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, smooth_npts=10, smooth_median=True,scale_factor=1.0):
@@ -311,6 +318,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     out_null_eta = np.zeros((datapoint_count))
     out_null_xi = np.zeros((datapoint_count))
     out_typecode = np.zeros((datapoint_count))
+    out_max_reconstruction_error = np.zeros((datapoint_count))
 
     for i in range(datapoint_count):
         Rbary = lingrad_output['Rbary'][i]
@@ -385,6 +393,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
         F4_err_norm = np.linalg.norm(F4_err)
 
         max_reconstruction_error = np.max(np.array([F1_err_norm,F2_err_norm,F3_err_norm,F4_err_norm]))
+        out_max_reconstruction_error[i] = max_reconstruction_error
 
         # Look for opposite signs in each field component, necessary if null is within tetrahedron
         bxmax = np.max( (F1_obs[0],F2_obs[0],F3_obs[0],F4_obs[0]))
@@ -462,7 +471,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     set_units('null_bary_dist',pos_units)
     set_coords('null_bary_dist',pos_coords)
     options('null_bary_dist','yrange',[0.0, 1000.0])
-    options('null_bary_dist','ytitle','null dist')
+    options('null_bary_dist','ytitle','Null dist')
 
     # Create a set of variables with each null type, so we can plot each type with a different symbol
     symvars = ['null_bary_dist']
@@ -493,6 +502,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     options('null_bary_dist_types','legend_ncols',len((symvars)))
     options('null_bary_dist_types','legend_markerfirst',True)
     options('null_bary_dist_types','legend_markersize', 1)
+    options('null_bary_dist_types','ytitle','Null types')
     set_units('null_bary_dist_types',pos_units)
 
     # Distances from null to each probe
@@ -501,7 +511,9 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     set_units('null_sc_distances',pos_units)
     options('null_sc_distances','color',['k','r','g','b'])
     options('null_sc_distances', 'yrange', [0.0, 1000.0])
-    options('null_sc_distances','ytitle','null-sc dist')
+    options('null_sc_distances','ytitle','Null-sc dist')
+    options('null_sc_distances','legend_names',['P1','P2','P3','P4'])
+    options('null_sc_distances','legend_ncols',4)
 
     store_data('null_eta', data={'x':times, 'y':out_null_eta})
     options('null_eta','yrange',[0.0,2.0])
@@ -516,11 +528,18 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     options('null_fom','yrange',[0.0,2.0])
     options('null_fom','ytitle','Quality')
     options('null_fom','legend_names',[r'$\eta$',r'$\xi$'])
-    #options('null_fom','legend_location','upper right')
-    #options('null_fom','legend_markerfirst',True)
+    options('null_fom','legend_location','upper right')
+    options('null_fom','legend_markerfirst',True)
+
     #print('Minimum typecode:',np.min(out_typecode))
     store_data('null_typecode',{'x':times,'y':out_typecode})
+    options('null_typecode','ytitle','Null types')
     options('null_typecode','yrange',[0.0,7.0])
-    return_vars = ['null_pos', 'null_bary_dist', 'null_bary_dist_types', 'null_sc_distances', 'null_fom','null_typecode']
+
+    store_data('max_reconstruction_error',data={'x':times,'y':out_max_reconstruction_error})
+    options('max_reconstruction_error','ytitle','Max error')
+    set_units('max_reconstruction_error', field_units)
+
+    return_vars = ['null_pos', 'null_bary_dist', 'null_bary_dist_types', 'null_sc_distances', 'null_fom','null_typecode', 'max_reconstruction_error']
 
     return return_vars
