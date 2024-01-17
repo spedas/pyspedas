@@ -2,11 +2,12 @@ import numpy as np
 import logging
 from .lingradest import lingradest
 from pyspedas import tinterpol
-from pytplot import get_data, store_data, time_double, time_string, time_clip, deflag, tnames, options, tplot_options, tsmooth
+from pytplot import (get_data, store_data, time_double, time_string, time_clip, deflag, tnames,
+                     options, tplot_options, tsmooth, tplot, get_coords, get_units, set_coords, set_units)
 
-def null_type(lambdas_in):
+def classify_null_type(lambdas_in):
     """
-    Returns the topological type of a magnetic null, given the eigenvalues of the Jacobian matrix.
+    Determoine the topological type of a magnetic null, given the eigenvalues of the Jacobian matrix.
 
     Parameters
     ----------
@@ -33,15 +34,10 @@ def null_type(lambdas_in):
 
     Paschmann, G., Daly, P. (1998), Analysis Methods for Multi-Spacecraft Data, ISSR
     """
-    # In theory, the eigenvectors should add up to 0, so they will either be all real, or one real
-    # with the other two being complex conjugates.   In practice, none of the components will be exactly
-    # zero. So we need to look at the real and imaginary parts of the eigenvalues, and apply some heuristics
-    # to see if any of them are small enough be treated as zeroes.
 
     lambda1 = lambdas_in[0]
     lambda2 = lambdas_in[1]
     lambda3 = lambdas_in[2]
-
 
     # We want to find the max and min (absolute value) norms, real, and imaginary parts,
     # to decide later if 3-d type nulls should degenerate to 2-d type nulls
@@ -94,9 +90,9 @@ def null_type(lambdas_in):
         s2 = lambda2
         s3 = lambda1
 
-    typecode = 0;  # Default to unclassified
+    typecode = 0  # Default to unclassified
 
-    # Now we can classify the null type.  It should be safe to use floating point eqyality to check
+    # Now we can classify the null type.  It should be safe to use floating point equality to check
     # the imaginary parts.  It is unlikely that any of the real parts or norms will be exactly 0,
     # but see below where we check for some possibly degenerate cases.
 
@@ -126,11 +122,6 @@ def null_type(lambdas_in):
             else:
                 typecode = 6 # B_s
 
-    if typecode == 0:
-        print("Uncharacterized null, eigenvalues:")
-        print(s1)
-        print(s2)
-        print(s3)
 
     # Now check to see if a 3-d null should degenerate to a 2-d type of null
     # Type A and B nulls should degenerate to type X if min(norms) < .25*max(norms)
@@ -145,8 +136,10 @@ def null_type(lambdas_in):
     return typecode
 
 typecode_strings = ['Unknown','X','O','A','B','A_s', 'B_s']
+typecode_symbols = ['.','x','o','>','>','4','4']
+typecode_colors = ['k','k','k','r','b','r','b']
 
-def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
+def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, smooth_npts=10, smooth_median=True,scale_factor=1.0):
     """
     Find magnetic null points, given a set of four-point magnetic field observations (e.g. MMS or CLUSTER) using the
     First Order Taylor Expansion (FOTE) method.
@@ -181,6 +174,17 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     fields: list of str
         A 4-element list of tplot variable names representing the magnetic field measurements
 
+    smooth_fields: bool
+        If True, perform boxcar averaging on the fields
+        Default: True
+
+    smooth_npts: int
+        Number of points to use in the boxcar smoothing, if smoothing is enabled.
+
+    smooth_median: bool
+        If True and smoothing is enabled, use median filtering
+        Default: True
+
     scale_factor: float
         The scale factor passed lingradest routine to scale some of the distances
         Default: 1.0
@@ -194,33 +198,29 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     >>> import pyspedas
     >>> from pytplot
     >>> # load data and ephemeris
-    >>> pyspedas.find_magnetic_nulls_fote(positions,fields)
+    >>> pyspedas.find_magnetic_nulls_fote(positions,fields, smooth_fields=True, smooth_npts=10, smooth_median=True)
     """
 
-    # Input data needs to be sanitized, by removing any 'nans', and finding a time range common
+    # Input data needs to be sanitized, by removing any nans, and finding a time range common
     # to all the deflagged variables
 
     positions_df = []
     fields_df = []
     fields_sm = []
+
     for i in range(4):
         positions_df.append(positions[i]+'_df')
         fields_df.append(fields[i]+'_df')
-        # Smoothing
-        fields_sm.append(fields[i]+'_sm')
-        # No smoothing
-        #fields_sm.append(fields[i]+'_df')
+        if smooth_fields:
+            fields_sm.append(fields[i]+'_sm')
+        else:
+            fields_sm.append(fields[i]+'_df')
 
         deflag(positions[i], method='remove_nan', new_tvar=positions_df[i])
         deflag(fields[i], method='remove_nan', new_tvar=fields_df[i])
-        # We'll try smoothing the fields, too
-        tsmooth(fields_df[i], width=10, median=True, new_names=fields_sm[i])
+        if smooth_fields:
+            tsmooth(fields_df[i], width=smooth_npts, median=smooth_median, new_names=fields_sm[i])
 
-
-    #print(tnames('*_df'))
-    #print(tnames('*_sm'))
-    d=get_data(fields_sm[1])
-    #print(d.y[-1])
     # Interpolate all deflagged positions and field measurements to the first probe's field measurement times
 
     # We need to find a time range that's contained in all the position and field variables, to
@@ -252,6 +252,8 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     # Now we can interpolate safely
     tinterpol(positions_df,'f0_tc',newname=['pos1_i','pos2_i','pos3_i','pos4_i'])
     tinterpol(fields_sm, 'f0_tc', newname=['b1_i','b2_i','b3_i','b4_i'])
+
+    # Get the data arrays from the interpolated tplot variables
     d1 = get_data('pos1_i')
     d2 = get_data('pos2_i')
     d3 = get_data('pos3_i')
@@ -288,7 +290,6 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
     datapoint_count = len(bx1)
     times = b1.times
 
-    # Get the data arrays from the interpolated tplot variables
 
     # Call the lingradest routine to get the barycenter locations, field at barycenter, and field gradients at barycenter
 
@@ -326,22 +327,18 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         LGBx = lingrad_output['LGBx'][i]
         LGBy = lingrad_output['LGBy'][i]
         LGBz = lingrad_output['LGBz'][i]
-        J = np.stack((LGBx, LGBy, LGBz))  # Jacobian matrix (or its transpose?)
-        J_inv = np.linalg.inv(J)
+        J = np.stack((LGBx, LGBy, LGBz))  # Jacobian matrix
 
         # Solve for null position with respect to barycenter (maybe check for singular matrix first?)
 
         r_null = np.linalg.solve(J,b0_neg)
-        r_null_alt = np.matmul(J_inv,b0_neg)# Check that estimated field at null is near 0
         F_null = b0 + np.matmul(J,r_null)
-        F_null_alt = b0 + np.matmul(J,r_null_alt)
         r_null_bary_dist = np.linalg.norm(r_null)
         out_null_bary_dist[i] = r_null_bary_dist
 
         # Translate r_null to origin of probe coordinate system
         pos_null = r_null + Rbary
         out_pos_null[i,:] = pos_null[:]
-
 
         # Get distances from null to each probe in the tetrahedron
         p1_null = r1[i] - pos_null
@@ -352,6 +349,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         p3_null_dist = np.linalg.norm(p3_null)
         p4_null = r4[i] - pos_null
         p4_null_dist = np.linalg.norm(p4_null)
+        min_null_dist = np.min(np.array([p1_null_dist,p2_null_dist,p3_null_dist,p4_null_dist]))
 
         out_null_p1_dist[i] = p1_null_dist
         out_null_p2_dist[i] = p2_null_dist
@@ -359,7 +357,6 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         out_null_p4_dist[i] = p4_null_dist
 
         # Estimate field at each probe using the estimated linear gradient
-        # Might need to be negated for correct sense of distances?
         # These should all be quite close to the measured fields.
 
         dR1 = -1.0 * lingrad_output['dR1'][i]
@@ -376,6 +373,18 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         F2_obs = np.array([bx2[i],by2[i],bz2[i]])
         F3_obs = np.array([bx3[i],by3[i],bz3[i]])
         F4_obs = np.array([bx4[i],by4[i],bz4[i]])
+
+        F1_err = F1_est - F1_obs
+        F2_err = F2_est - F2_obs
+        F3_err = F3_est - F3_obs
+        F4_err = F4_est - F4_obs
+
+        F1_err_norm = np.linalg.norm(F1_err)
+        F2_err_norm = np.linalg.norm(F2_err)
+        F3_err_norm = np.linalg.norm(F3_err)
+        F4_err_norm = np.linalg.norm(F4_err)
+
+        max_reconstruction_error = np.max(np.array([F1_err_norm,F2_err_norm,F3_err_norm,F4_err_norm]))
 
         # Look for opposite signs in each field component, necessary if null is within tetrahedron
         bxmax = np.max( (F1_obs[0],F2_obs[0],F3_obs[0],F4_obs[0]))
@@ -395,19 +404,9 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         l3_norm = np.linalg.norm(lambdas[2])
         eig_sum_norm = np.linalg.norm(lambdas[0] + lambdas[1] + lambdas[2])
         eig_max_norm = np.max((l1_norm,l2_norm,l3_norm))
-        typecode = null_type(lambdas)
+        # Determine the toplogical type of the null by inspecting the eigenvalues
+        typecode = classify_null_type(lambdas)
         out_typecode[i] = typecode
-
-        #if (bxmax*bxmin < 0.0) and (bymax*bymin < 0.0) and (bzmax*bzmin < 1.0):
-        #
-        #    print("Null of type ",typecode_strings[typecode]," may be in tetrahedron at time ",tstring )
-        #   if times[i] > time_double('2003-08-17/16:41:55.43'):
-        #        typecode=null_type(lambdas)
-        #    print("F1 obs:", F1_obs)
-        #    print("F2 obs:", F2_obs)
-        #    print("F3 obs:", F3_obs)
-        #    print("F4 obs:", F4_obs)
-        #    print("r_null", r_null)
 
         # div B should be close to 0 (exactly 0 in theory), so the difference from 0 is a measure of how
         # credible any null we've found might be.  We normalize it, dividing by the magnitude of the curl,
@@ -430,20 +429,98 @@ def find_magnetic_nulls_fote(positions=None, fields=None, scale_factor=1.0):
         xi = eig_sum_norm/eig_max_norm
         out_null_xi[i] = xi
 
-    store_data('magnull_pos',data={'x':times,'y':out_pos_null})
-    store_data('magnull_pos_bary',data={'x':times,'y':out_pos_bary})
-    store_data('magnull_null_bary_dist',data={'x':times,'y':out_null_bary_dist})
-    options('magnull_null_bary_dist','yrange',[0.0, 5000.0])
-    print('Minimum null distance:',np.min(out_null_bary_dist))
-    store_data('magnull_null_p1_dist',data={'x':times,'y':out_null_p1_dist})
-    store_data('magnull_null_p2_dist',data={'x':times,'y':out_null_p2_dist})
-    store_data('magnull_null_p3_dist',data={'x':times,'y':out_null_p3_dist})
-    store_data('magnull_null_p4_dist',data={'x':times,'y':out_null_p4_dist})
-    store_data('magnull_eta', data={'x':times, 'y':out_null_eta})
-    store_data('magnull_xi', data={'x':times, 'y':out_null_xi})
-    store_data('null_type', data={'x':times, 'y':out_typecode})
-    print('Minimum typecode:',np.min(out_typecode))
+        show_in_box = False
+        if show_in_box and (bxmax*bxmin < 0.0) and (bymax*bymin < 0.0) and (bzmax*bzmin < 1.0):
+            print("Null of type ",typecode_strings[typecode]," may be in tetrahedron at time ",tstring )
+            if times[i] > time_double('2003-08-17/16:41:55.43'):
+                print("Jacobian:")
+                print(LGBx)
+                print(LGBy)
+                print(LGBz)
+                print("Eigenvalues:")
+                for l in lambdas: print(l)
+                print("Eigenvectors:")
+                for e in eigenvectors: print(e)
+                print("r_null", r_null)
+                print("Max reconstruction error:",max_reconstruction_error)
+                print("Distance from null to nearest spacecraft",min_null_dist)
+                print("eta:", eta)
+                print("xi",xi)
 
-    return_vars = ['magnull_pos', 'magnull_null_bary_dist', 'magnull_eta', 'magnull_xi', 'null_type']
+
+    # Now create output tplot variables and set some plot options
+
+    pos_coords = get_coords(positions[0])
+    pos_units = get_units(positions[0])
+    field_coords = get_coords(fields[0])
+    field_units = get_units(fields[0])
+    store_data('null_pos',data={'x':times,'y':out_pos_null})
+    set_units('null_pos',pos_units)
+    set_coords('null_pos',pos_coords)
+
+    store_data('null_bary_dist',data={'x':times,'y':out_null_bary_dist})
+    set_units('null_bary_dist',pos_units)
+    set_coords('null_bary_dist',pos_coords)
+    options('null_bary_dist','yrange',[0.0, 1000.0])
+    options('null_bary_dist','ytitle','null dist')
+
+    # Create a set of variables with each null type, so we can plot each type with a different symbol
+    symvars = ['null_bary_dist']
+    symvars_colors = ['k']
+    symvars_legends = ['Distance']
+    symvars_markers = ["none"]
+    all_idx=np.arange(len(out_typecode))
+    for i in range(7):
+        cond = out_typecode == i
+        idx = all_idx[cond]
+        if len(idx) > 0:
+            tvar = 'null_type'+str(i)
+            store_data(tvar,data={'x':times[idx],'y':out_null_bary_dist[idx]})
+            options(tvar, 'marker',typecode_symbols[i])
+            options(tvar,'markersize',10)
+            #options(tvar, 'color',typecode_colors[i])
+            options(tvar,'symbols',True)
+            symvars_colors.append(typecode_colors[i])
+            symvars_legends.append(typecode_strings[i])
+            symvars_markers.append(typecode_symbols[i])
+            symvars.append(tvar)
+    # Make a pseudovariable combining the different typecodes, so we get a line plot from magnull_null_bary_distance,
+    # and a scatter plot of the symbols showing the null classification types, all in one panel.
+    store_data('null_bary_dist_types',data=symvars)
+    options('null_bary_dist_types','color',symvars_colors)
+    options('null_bary_dist_types','legend_names',symvars_legends)
+    options('null_bary_dist_types','legend_location','upper right')
+    options('null_bary_dist_types','legend_ncols',len((symvars)))
+    options('null_bary_dist_types','legend_markerfirst',True)
+    options('null_bary_dist_types','legend_markersize', 1)
+    set_units('null_bary_dist_types',pos_units)
+
+    # Distances from null to each probe
+    p_distances = np.stack((out_null_p1_dist,out_null_p2_dist,out_null_p3_dist,out_null_p4_dist),axis=1)
+    store_data('null_sc_distances',data={'x':times,'y':p_distances})
+    set_units('null_sc_distances',pos_units)
+    options('null_sc_distances','color',['k','r','g','b'])
+    options('null_sc_distances', 'yrange', [0.0, 1000.0])
+    options('null_sc_distances','ytitle','null-sc dist')
+
+    store_data('null_eta', data={'x':times, 'y':out_null_eta})
+    options('null_eta','yrange',[0.0,2.0])
+    options('null_eta','ytitle',r"$\eta$")
+    store_data('null_xi', data={'x':times, 'y':out_null_xi})
+    options('null_xi','yrange',[0.0,2.0])
+    options('null_xi','ytitle',r'$\xi$')
+
+    merits = np.stack((out_null_eta,out_null_xi),axis=1)
+    store_data('null_fom', data={'x':times, 'y':merits})
+    options('null_fom','color',['k','m'])
+    options('null_fom','yrange',[0.0,2.0])
+    options('null_fom','ytitle','Quality')
+    options('null_fom','legend_names',[r'$\eta$',r'$\xi$'])
+    #options('null_fom','legend_location','upper right')
+    #options('null_fom','legend_markerfirst',True)
+    #print('Minimum typecode:',np.min(out_typecode))
+    store_data('null_typecode',{'x':times,'y':out_typecode})
+    options('null_typecode','yrange',[0.0,7.0])
+    return_vars = ['null_pos', 'null_bary_dist', 'null_bary_dist_types', 'null_sc_distances', 'null_fom','null_typecode']
 
     return return_vars
