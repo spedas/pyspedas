@@ -12,7 +12,7 @@ class MagNullTestCases(unittest.TestCase):
         fields = ['mms'+prb+'_fgm_b_gse_srvy_l2' for prb in ['1', '2', '3', '4']]
         positions = ['mms'+prb+'_fgm_r_gse_srvy_l2' for prb in ['1', '2', '3', '4']]
         #tplot(fields)
-        null_vars = pyspedas.find_magnetic_nulls_fote(fields=fields, positions=positions)
+        null_vars = pyspedas.find_magnetic_nulls_fote(fields=fields, positions=positions, smooth_fields=True,smooth_npts=10,smooth_median=True)
         tplot(null_vars)
 
     def test_find_magnetic_nulls_fote_cluster(self):
@@ -24,7 +24,7 @@ class MagNullTestCases(unittest.TestCase):
         positions = ['sc_pos_xyz_gse__C'+prb+'_CP_FGM_FULL' for prb in ['1', '2', '3', '4']]
         #tplot(fields)
         #tplot(positions)
-        null_vars = pyspedas.find_magnetic_nulls_fote(fields=fields, positions=positions)
+        null_vars = pyspedas.find_magnetic_nulls_fote(fields=fields, positions=positions, smooth_fields=True)
         tplot(null_vars)
 
 
