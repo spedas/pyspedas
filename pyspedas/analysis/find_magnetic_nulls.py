@@ -563,7 +563,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     #print('Minimum typecode:',np.min(out_typecode))
     store_data('null_typecode',{'x':times,'y':out_typecode})
     options('null_typecode','ytitle','Null types')
-    options('null_typecode','yrange',[0.0,7.0])
+    options('null_typecode','yrange',[0.0,11.0])
 
     store_data('max_reconstruction_error',data={'x':times,'y':out_max_reconstruction_error})
     options('max_reconstruction_error','ytitle','Max error')
