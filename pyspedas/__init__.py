@@ -73,6 +73,7 @@ from .mms.particles.mms_part_getspec import mms_part_getspec
 from .mms.particles.mms_part_slice2d import mms_part_slice2d
 from .maven import maven_load
 from .sosmag.load import sosmag_load
+from .noaa import noaa_load_kp
 
 # Make mission-specific namespaces available under pyspedas
 from . import ace

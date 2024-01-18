@@ -1,46 +1,90 @@
 from ftplib import FTP
 import os
+import time
+import logging
 
 
 def download_ftp(
     ftp_server,
-    ftp_path,
-    filename,
-    local_dir,
+    remote_path,
+    remote_file,
+    local_path,
+    local_file=None,
     username="anonymous",
     password="anonymous@",
+    force_download=False,
 ):
     """
     Download a file from an FTP server.
 
-    Parameters:
-        ftp_server (str):
-            FTP server address.
-        ftp_path (str):
-            Path on the FTP server where the file is located.
-        filename (str):
-            Name of the file to download.
-        local_dir (str):
-            Local directory to save the file.
-        username (str):
-            Username for the FTP server. Default is 'anonymous'.
-        password (str):
-            Password for the FTP server. Default is 'anonymous@'.
+    Parameters
+    ----------
+    ftp_server : str
+        FTP server name or IP address.
+    remote_path : str
+        Path on the FTP server where the file is located.
+    remote_file : str
+        Name of the file to download.
+    local_path : str
+        Local directory to save the file.
+    local_file : str, optional
+        Name of the file to save locally. Default is the same as the remote_file.
+    username : str, optional
+        Username for the FTP server. Default is 'anonymous'.
+    password : str, optional
+        Password for the FTP server. Default is 'anonymous@'.
+    force_download : bool, optional
+        Force the download even if the remote file is not newer than the local file.
+        Default is False.
 
-    Returns:
-        list of str:
-            List of files downloaded.
+    Returns
+    -------
+    list
+        A list containing the path of the downloaded file.
+
+    Raises
+    ------
+    Exception
+        If the remote file is not found on the FTP server.
+
     """
     return_files = []
-    with FTP(ftp_server) as ftp:
-        ftp.login(user=username, passwd=password)
-        ftp.cwd(ftp_path)  # Change to the directory containing the file
 
-        local_filename = os.path.join(local_dir, filename)
-        with open(local_filename, "wb") as local_file:
-            ftp.retrbinary("RETR " + filename, local_file.write)
+    try:
+        with FTP(ftp_server) as ftp:
+            ftp.login(user=username, passwd=password)
+            ftp.cwd(remote_path)  # Change to the directory containing the file
 
-        print(f"File '{filename}' downloaded successfully to '{local_dir}'")
-        return_files.append(local_filename)
+            if local_file is None:
+                local_file = os.path.join(local_path, remote_file)
+
+            # Check if remote file exists
+            if remote_file not in ftp.nlst():
+                msg = f"File '{remote_file}' was not found on the FTP server '{ftp_server}'"
+                raise Exception(msg)
+
+            # Get the modification time of the remote file
+            response = ftp.sendcmd("MDTM " + remote_file)
+            remote_mtime = time.mktime(time.strptime(response[4:], "%Y%m%d%H%M%S"))
+
+            # Get the modification time of the local file
+            local_mtime = (
+                os.path.getmtime(local_file) if os.path.exists(local_file) else 0
+            )
+
+            # Download the file if the remote file has been changed or if force_download is True
+            if force_download or remote_mtime > local_mtime:
+                with open(local_file, "wb") as local_file_r:
+                    ftp.retrbinary("RETR " + remote_file, local_file_r.write)
+                logging.warning(
+                    f"File '{local_file}' downloaded successfully to '{local_path}'"
+                )
+            else:
+                logging.warning(
+                    f"File '{remote_file}' has not been modified since last download"
+                )
+        return_files.append(local_file)
+    except Exception as e:
+        logging.error(e)
 
     return return_files
