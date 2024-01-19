@@ -24,6 +24,10 @@ def classify_null_type(lambdas_in):
        4: B-type (radial) null
        5: A_s-type (spiral) null
        6: B_s-type (spiral) null
+       7: X-type, degenerated from A type
+       8: X-type, degenerated from B type
+       9: O-type, degenerated from A_s type
+       10: O-type, degenerated from B_s type
 
     See Table 1, Fu et al 2015 for details
 
@@ -103,6 +107,11 @@ def classify_null_type(lambdas_in):
     # the imaginary parts.  It is unlikely that any of the real parts or norms will be exactly 0,
     # but see below where we check for some possibly degenerate cases.
 
+    # Note: this logic appears to classify everything, with no "unknown" type nulls.  But in
+    # Hu's paper, unknown type seems to happen fairly frequently. I suspect some of my typecode 5 and
+    # 6 classifications might become "unknown" if I also looked at the components of the complex eigenvalues,
+    # rather than just checking the sign of the pure real.
+
     if (s1.imag == 0.0) and (s2.imag == 0.0) and (s3.imag == 0.0):  # all eigenvalues pure real
         if (s1.real == 0.0):  # smallest (absolute val) real is exactly 0
             typecode = 1 # type X
@@ -136,18 +145,18 @@ def classify_null_type(lambdas_in):
 
     if (typecode == 3) or (typecode == 4): # Type A or B
         if n_min < 0.25 * n_max:
-            typecode = 1 # degenerate to X-type
+            typecode = typecode + 4 # degenerate to X-type
     elif (typecode == 5) or (typecode == 6):  # Type A_s or B_s
         if re_max < 0.25*im_min:
-            typecode = 2   # degenerate to O-type
+            typecode = typecode + 4   # degenerate to O-type
     return typecode
 
 
 # Define some stuff we'll use in debugging messages and plot options
 
-typecode_strings = ['Unknown','X','O','A','B','A_s', 'B_s']
-typecode_symbols = ['.','x','$o$','>','>','4','4']
-typecode_colors = ['k','k','k','r','b','r','b']
+typecode_strings = ['Unknown','X','O','A','B','A_s', 'B_s','X_a','X_b','O_a','O_b']
+typecode_symbols = ['.','x','$o$','4','4','>','>','x','x','$o$','$o$']
+typecode_colors = ['k','k','k','r','b','r','b','r','b','r','b']
 
 def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, smooth_npts=10, smooth_median=True,scale_factor=1.0):
     """
@@ -499,7 +508,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     symvars_legends = ['Distance']
     symvars_markers = ["none"]
     all_idx=np.arange(len(out_typecode))
-    for i in range(7):
+    for i in range(11):
         cond = out_typecode == i
         idx = all_idx[cond]
         if len(idx) > 0:
@@ -554,7 +563,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     #print('Minimum typecode:',np.min(out_typecode))
     store_data('null_typecode',{'x':times,'y':out_typecode})
     options('null_typecode','ytitle','Null types')
-    options('null_typecode','yrange',[0.0,7.0])
+    options('null_typecode','yrange',[0.0,11.0])
 
     store_data('max_reconstruction_error',data={'x':times,'y':out_max_reconstruction_error})
     options('max_reconstruction_error','ytitle','Max error')

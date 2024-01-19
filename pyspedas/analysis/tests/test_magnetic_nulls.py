@@ -73,7 +73,7 @@ class MagNullTestCases(unittest.TestCase):
         l3 = complex(0.89,0.0)
         lambdas = [l1,l2,l3]
         tc = pyspedas.classify_null_type(lambdas)
-        self.assertEqual(tc,1)
+        self.assertEqual(tc,7)
 
 
     def test_null_classification_b_degen(self):
@@ -83,7 +83,7 @@ class MagNullTestCases(unittest.TestCase):
         l3 = complex(-0.89,0.0)
         lambdas = [l1,l2,l3]
         tc = pyspedas.classify_null_type(lambdas)
-        self.assertEqual(tc,1)
+        self.assertEqual(tc,8)
 
 
     def test_null_classification_as_degen(self):
@@ -93,7 +93,7 @@ class MagNullTestCases(unittest.TestCase):
         l3 = complex(-0.1, -0.5)
         lambdas = [l1,l2,l3]
         tc = pyspedas.classify_null_type(lambdas)
-        self.assertEqual(tc,2)
+        self.assertEqual(tc,9)
 
 
     def test_null_classification_bs_degen(self):
@@ -103,7 +103,7 @@ class MagNullTestCases(unittest.TestCase):
         l3 = complex(0.1,-0.5)
         lambdas = [l1,l2,l3]
         tc = pyspedas.classify_null_type(lambdas)
-        self.assertEqual(tc,2)
+        self.assertEqual(tc,10)
 
 
     def test_find_magnetic_nulls_fote_mms(self):
