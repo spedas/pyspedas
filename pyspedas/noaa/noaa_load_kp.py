@@ -92,7 +92,7 @@ def load_kp_to_tplot(trange=[0, 0], files=[], datatype=[]):
         This function does not return a value but downloads and processes data.
         Data is saved in a tplot variable.
     """
-    vars: list[str] = []
+    vars = []
 
     if files is None or len(files) == 0:
         logging.error("No files specified")
