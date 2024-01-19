@@ -72,6 +72,12 @@ def download_ftp(
                 os.path.getmtime(local_file) if os.path.exists(local_file) else 0
             )
 
+            # Get the directory name from the file path
+            dir_name = os.path.dirname(local_file)
+
+            # Create the directory if it doesn't exist
+            os.makedirs(dir_name, exist_ok=True)
+
             # Download the file if the remote file has been changed or if force_download is True
             if force_download or remote_mtime > local_mtime:
                 with open(local_file, "wb") as local_file_r:
