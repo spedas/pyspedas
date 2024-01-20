@@ -69,6 +69,10 @@ class LoadTestCases(unittest.TestCase):
         whi_vars = pyspedas.cluster.whi()
         self.assertTrue(data_exists('E_pow_f5__C1_PP_WHI'))
 
-        
+    #def test_load_csa_mom_data(self):
+    #    data = pyspedas.cluster.load_csa(probes=['C1', 'C2', 'C3', 'C4'],
+    #                                     trange=['2003-08-17/16:40', '2003-08-17/16:45'],
+    #                                     datatypes='CP_CIS-HIA_ONBOARD_MOMENTS', time_clip=True)
+
 if __name__ == '__main__':
     unittest.main()
