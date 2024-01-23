@@ -2,17 +2,19 @@ from .load import load, loadr
 from .load_orbit import load_orbit
 
 
-def orbit(trange=['2013-11-5', '2013-11-6'],
-          probe='15',
-          prefix='',
-          suffix='',
-          downloadonly=False,
-          no_update=False,
-          notplot=False,
-          get_support_data=False,
-          varformat=None,
-          varnames=[],
-          time_clip=True):
+def orbit(
+    trange=["2013-11-5", "2013-11-6"],
+    probe="15",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    notplot=False,
+    get_support_data=False,
+    varformat=None,
+    varnames=[],
+    time_clip=True,
+):
     """
 
     This function loads GOES orbit data (probes 8-18)
@@ -51,23 +53,35 @@ def orbit(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load_orbit(trange=trange, probe=probe, varnames=varnames, varformat=varformat,
-                      prefix=prefix, suffix=suffix, downloadonly=downloadonly,
-                      no_update=no_update, time_clip=time_clip, notplot=notplot, get_support_data=get_support_data)
+    return load_orbit(
+        trange=trange,
+        probe=probe,
+        varnames=varnames,
+        varformat=varformat,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        no_update=no_update,
+        time_clip=time_clip,
+        notplot=notplot,
+        get_support_data=get_support_data,
+    )
 
 
-def fgm(trange=['2013-11-5', '2013-11-6'],
-        probe='15',
-        datatype='1min',
-        prefix='',
-        suffix='',
-        downloadonly=False,
-        no_update=False,
-        time_clip=False):
+def fgm(
+    trange=["2013-11-5", "2013-11-6"],
+    probe="15",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES Magnetometer  (probes 8-15)
 
@@ -104,22 +118,33 @@ def fgm(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, downloadonly=downloadonly,
-                time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="fgm",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def eps(trange=['2013-11-5', '2013-11-6'],
-        probe='12',
-        datatype='1min',
-        prefix='',
-        suffix='',
-        downloadonly=False,
-        no_update=False,
-        time_clip=False):
+def eps(
+    trange=["2013-11-5", "2013-11-6"],
+    probe="12",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES energetic particle sensor  (probes 8-15)
 
@@ -156,22 +181,33 @@ def eps(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='eps', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="eps",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def epead(trange=['2013-11-5', '2013-11-6'],
-          probe='15',
-          datatype='1min',
-          prefix='',
-          suffix='',
-          downloadonly=False,
-          no_update=False,
-          time_clip=False):
+def epead(
+    trange=["2013-11-5", "2013-11-6"],
+    probe="15",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES Electron, Proton, Alpha Detector  (probes 8-15)
 
@@ -208,22 +244,33 @@ def epead(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='epead', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="epead",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def maged(trange=['2013-11-5', '2013-11-6'],
-          probe='15',
-          datatype='1min',
-          prefix='',
-          suffix='',
-          downloadonly=False,
-          no_update=False,
-          time_clip=False):
+def maged(
+    trange=["2013-11-5", "2013-11-6"],
+    probe="15",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES Magnetospheric Electron Detector (probes 8-15)
 
@@ -260,22 +307,33 @@ def maged(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='maged', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="maged",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def magpd(trange=['2013-11-5', '2013-11-6'],
-          probe='15',
-          datatype='1min',
-          prefix='',
-          suffix='',
-          downloadonly=False,
-          no_update=False,
-          time_clip=False):
+def magpd(
+    trange=["2013-11-5", "2013-11-6"],
+    probe="15",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES Magnetospheric Proton Detector (probes 8-15)
 
@@ -312,22 +370,33 @@ def magpd(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='magpd', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="magpd",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def hepad(trange=['2013-11-5', '2013-11-6'],
-          probe='15',
-          datatype='1min',
-          prefix='',
-          suffix='',
-          downloadonly=False,
-          no_update=False,
-          time_clip=False):
+def hepad(
+    trange=["2013-11-5", "2013-11-6"],
+    probe="15",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES High energy Proton and Alpha Detector (probes 8-15)
 
@@ -364,22 +433,33 @@ def hepad(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='hepad', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="hepad",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def xrs(trange=['2013-11-5', '2013-11-6'],
-        probe='15',
-        datatype='1min',
-        prefix='',
-        suffix='',
-        downloadonly=False,
-        no_update=False,
-        time_clip=False):
+def xrs(
+    trange=["2013-11-5", "2013-11-6"],
+    probe="15",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES X-ray Sensor (probes 8-18)
 
@@ -416,22 +496,33 @@ def xrs(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='xrs', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="xrs",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def euvs(trange=['2023-01-30', '2023-01-31'],
-         probe='16',
-         datatype='1min',
-         prefix='',
-         suffix='',
-         downloadonly=False,
-         no_update=False,
-         time_clip=False):
+def euvs(
+    trange=["2023-01-30", "2023-01-31"],
+    probe="16",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES Extreme Ultraviolet Sensor (EUVS), (probes 16-18)
 
@@ -468,22 +559,33 @@ def euvs(trange=['2023-01-30', '2023-01-31'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='euvs', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="euvs",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def mag(trange=['2023-01-30', '2023-01-31'],
-        probe='16',
-        datatype='1min',
-        prefix='',
-        suffix='',
-        downloadonly=False,
-        no_update=False,
-        time_clip=False):
+def mag(
+    trange=["2023-01-30", "2023-01-31"],
+    probe="16",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES Magnetometer, (probes 16-18)
 
@@ -520,22 +622,33 @@ def mag(trange=['2023-01-30', '2023-01-31'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='mag', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="mag",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def mpsh(trange=['2023-01-30', '2023-01-31'],
-         probe='16',
-         datatype='1min',
-         prefix='',
-         suffix='',
-         downloadonly=False,
-         no_update=False,
-         time_clip=False):
+def mpsh(
+    trange=["2023-01-30", "2023-01-31"],
+    probe="16",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES Magnetospheric Particle Sensor (MPS-HI), (probes 16-18)
 
@@ -576,18 +689,29 @@ def mpsh(trange=['2023-01-30', '2023-01-31'],
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='mpsh', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="mpsh",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
 
 
-def sgps(trange=['2023-01-30', '2023-01-31'],
-         probe='16',
-         datatype='1min',
-         prefix='',
-         suffix='',
-         downloadonly=False,
-         no_update=False,
-         time_clip=False):
+def sgps(
+    trange=["2023-01-30", "2023-01-31"],
+    probe="16",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads data from the GOES Solar and Galactic Proton Sensor (SGPS), (probes 16-18)
 
@@ -624,9 +748,18 @@ def sgps(trange=['2023-01-30', '2023-01-31'],
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
+    -------
         List of tplot variables created. Or list of filenames downloaded.
 
     """
-    return load(instrument='sgps', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix,
-                downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(
+        instrument="sgps",
+        trange=trange,
+        probe=probe,
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+        downloadonly=downloadonly,
+        time_clip=time_clip,
+        no_update=no_update,
+    )
