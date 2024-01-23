@@ -42,7 +42,7 @@ def kp_return_fraction(value):
     return kp_lhs + kp_rhs / 3.0
 
 
-def convert_to_float_or_int(a: list[str], outtype="int"):
+def convert_to_float_or_int(a, outtype="int"):
     """
     Converts a list of strings to either float or int.
 
@@ -312,7 +312,7 @@ def noaa_load_kp(
     ['Kp', 'ap', 'Sol_Rot_Num', 'Sol_Rot_Day', 'Kp_Sum', 'ap_Mean', 'Cp', 'C9', 'Sunspot_Number', 'F10.7', 'Flux_Qualifier']
 
     """
-    vars: list[str] = []
+    vars = []
 
     if len(trange) == 2:
         trangestr = time_string(time_double(trange))

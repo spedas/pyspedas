@@ -5,7 +5,7 @@ pySPEDAS supports Windows, macOS and Linux.
 
 Requirements
 --------------
-Python 3.7 or later is required.
+Python 3.8 or later is required.
 
 We recommend Anaconda, which comes with a suite of packages useful for scientific data analysis. Step-by-step instructions for installing Anaconda can be found at: `Windows <https://docs.anaconda.com/anaconda/install/windows/>`_, `macOS <https://docs.anaconda.com/anaconda/install/mac-os/>`_, `Linux <https://docs.anaconda.com/anaconda/install/linux/>`_
 
