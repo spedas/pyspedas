@@ -198,6 +198,8 @@ jobs:
         coverage run -a -m pyspedas.analysis.tests.tests
         echo Starting analysis wavpol tests at `date`
         coverage run -a -m pyspedas.analysis.tests.test_twavpol
+        echo Starting analysis magnetic nulls tests at `date`
+        coverage run -a -m pyspedas.analysis.tests.test_magnetic_nulls
         echo Starting fast tests at `date`
         coverage run -a -m pyspedas.fast.tests.tests
         echo Starting omni tests at `date`

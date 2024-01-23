@@ -11,7 +11,7 @@ from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
-from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote
+from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
 from .cdagui.cdagui import cdagui
 from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
@@ -73,6 +73,7 @@ from .mms.particles.mms_part_getspec import mms_part_getspec
 from .mms.particles.mms_part_slice2d import mms_part_slice2d
 from .maven import maven_load
 from .sosmag.load import sosmag_load
+from .noaa import noaa_load_kp
 
 # Make mission-specific namespaces available under pyspedas
 from . import ace

@@ -11,7 +11,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          instrument='fgm',
          probe='c',
          level='l2',
-         datatype=None, # ASK data
+         datatype=None, # ASK data, ESD (3d L2 ESA)
          stations=None,  # ground mag and ASK data
          greenland=None,  # also for ground mag data
          suffix='',
@@ -34,6 +34,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.themis.fft
         pyspedas.themis.fbk
         pyspedas.themis.esa
+        pyspedas.themis.esd
         pyspedas.themis.sst
         pyspedas.themis.mom
         pyspedas.themis.gmom
@@ -136,6 +137,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
         elif instrument == 'esa':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
+                          + '_%Y%m%d_v??.cdf')
+        elif instrument == 'esd':
+            level = 'l2' #For all ESD data
+            pathformat = ('th' + prb + '/' + level + '/' + instrument
+                          + '/%Y/th' + prb + '_' + level + '_esa_' + datatype
                           + '_%Y%m%d_v??.cdf')
         elif instrument == 'sst':
             pathformat = ('th' + prb + '/' + level + '/' + instrument

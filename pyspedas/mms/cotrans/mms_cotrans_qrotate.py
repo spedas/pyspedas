@@ -9,12 +9,6 @@ import logging
 from pytplot import get_data, store_data, set_coords
 from pyspedas import tinterpol
 
-try:
-    import spacepy.coordinates as coord
-except ImportError:
-    logging.error('SpacePy must be installed to use this module.')
-    logging.error('Please install it using: pip install spacepy')
-
 
 def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
     """
@@ -37,23 +31,29 @@ def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
         inverse: bool:
             Flag to use the quaternionConjugate on the quaternion data prior to rotating
     """
+    try:
+        import spacepy.coordinates as coord
+    except ImportError:
+        logging.error("SpacePy must be installed to use this module.")
+        logging.error("Please install it using: pip install spacepy")
+
     data = get_data(in_name)
     metadata = get_data(in_name, metadata=True)
 
     q_data = get_data(q_name)
 
     if data is None:
-        logging.error(f'Problem reading input tplot variable: {in_name}')
+        logging.error(f"Problem reading input tplot variable: {in_name}")
         return
 
     if q_data is None:
-        logging.error(f'Problem reading quaternion variable: {q_name}')
+        logging.error(f"Problem reading quaternion variable: {q_name}")
         return
 
     if len(data.times) != len(q_data.times):
-        logging.info('Interpolating the data to the MEC quaternion time stamps.')
+        logging.info("Interpolating the data to the MEC quaternion time stamps.")
         tinterpol(in_name, q_name)
-        data = get_data(in_name + '-itrp')
+        data = get_data(in_name + "-itrp")
 
     if inverse:
         quaternion = coord.quaternionConjugate(q_data.y)
@@ -62,7 +62,8 @@ def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
 
     out_data = coord.quaternionRotateVector(quaternion, data.y)
 
-    saved = store_data(out_name, data={'x': data.times, 'y': out_data}, attr_dict=metadata)
+    saved = store_data(
+        out_name, data={"x": data.times, "y": out_data}, attr_dict=metadata
+    )
     if saved:
         set_coords(out_name, out_coord)
-

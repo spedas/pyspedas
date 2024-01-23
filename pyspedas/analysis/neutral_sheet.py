@@ -581,29 +581,43 @@ def tag14_equat_sheet(xgsm, ygsm, zgsm, psi, pdyn, byimf, bzimf):
 
 def neutral_sheet(time, pos, kp=None, model='themis', mlt=None, in_coord='gsm', sc2NS=False):
     """
-    Calculate the distance to the neutral sheet for a given time and position.
+    Calculate the GSM-z coordinate of the neutral sheet for a given time and position.
+
+    Each model may require a different subset of the parameters defined here.
 
     Parameters
     ----------
     time : datetime
         Time of interest.
+
     pos : array_like
         Position of interest.
+
     kp : array_like, optional
         Kp index.
+        Default: None
+
     model : str, optional
-        Neutral sheet model to use.
+        Neutral sheet model to use. Valid options are 'sm', 'themis', 'aen', 'den', 'fairfield', 'den_fairfield', 'lopez'
+        Default: 'themis'
+
     mlt : array_like, optional
         Magnetic local time.
+        Default: No
+
     in_coord : str, optional
         Coordinate system of the input position.
+        Default: 'gsm'
+
     sc2NS : Bool, optional
-        Flag to return spacecraft to neutral sheet distance.
+        Flag to return spacecraft to neutral sheet distance along z-axis, rather than z-coordinate of neutral sheet
+        Default: False
+
 
     Returns
     -------
     distance2NS : array_like
-        Distance to the neutral sheet.
+        Distance from the GSM XY plane (or input position, if sc2NS is True) to the neutral sheet
 
     """
 
