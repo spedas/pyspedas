@@ -25,73 +25,83 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         Espec_LCfptol=None,
 ):
     """
-    This function loads data from the Energetic Particle Detector (EPD) and process L1 and L2 data.
+    This function loads data from the ELFIN Energetic Particle Detector (EPD) and process L1 and L2 data.
 
     Parameters for Load Routine
     ----------
         trange : list of str
             Time range of interest [starttime, endtime]. Format can be
             ['YYYY-MM-DD','YYYY-MM-DD'] or ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2022-09-10', '2022-09-11']
 
         probe: str, optional
-            Spacecraft identifier. Options are 'a' (default) and 'b'.
+            Spacecraft identifier. Options are 'a' and 'b'.
+            Default: 'a'
 
         level: str, optional.
-            Data level. Options are 'l1' (default) and 'l2'.
+            Data level. Options are 'l1' and 'l2'
+            Default: 'l1'
 
         get_support_data: bool, optional
             If True, data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a
-            "VAR_TYPE" attribute of "data".
+            will be loaded into tplot.
+            Default: only loads in data with a "VAR_TYPE" attribute of "data".
 
         varformat: str, optional
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted. By default, all variables are loaded in.
+            "*" is accepted.
+            Default: all variables are loaded in.
 
         varnames: list of str, optional
-            List of variable names to load. By default, all data variables are loaded.
+            List of variable names to load.
+            Default: all data variables are loaded.
 
         downloadonly: bool, optional
             If True, only downloads the CDF files without loading them into tplot variables. 
-            Default is False.
+            Default: False.
 
         notplot: bool, optional
             If True, returns data in hash tables instead of creating tplot variables. 
-            Default is False.
+            Default: False.
 
         no_update: bool
-            If True, loads data only from the local cache. Default is False. 
+            If True, loads data only from the local cache.
+            Default: False.
 
         time_clip: bool
             If True, clips the variables to the exact range specified in the trange. 
-            Default is True.
+            Default: True.
 
     Parameters for L1 data
     ----------
         datatype: str, optional. 
-            Data type of L1 data. Options are 'pef' (default), 'pif', 'pes', 'pis'. 
+            Data type of L1 data. Options are 'pef' , 'pif', 'pes', 'pis'
+            Default: 'pef'
 
         type_ : str, optional
-            Calibrated data type of L1 data. Options are 'raw', 'cps', 'nflux' (default), 'eflux'.
+            Calibrated data type of L1 data. Options are 'raw', 'cps', 'nflux', 'eflux'
+            Default: 'nflux'
 
         nspinsinsum: int, optional
-            Number of spins in sum which is needed by the L1 calibration function.
+            Number of spins in sum which is needed by the L1 calibration function. Options are 16 or 32.
+            Default: 16
     
     Parameters for L2 data
     ----------
         fullspin: bool, optional.
-            If True, generate L2 full spin spectrogram. By default, L2 half spin spectrogram is generated.
+            If True, generate L2 full spin spectrogram.
+            Default: L2 half spin spectrogram is generated.
 
         PAspec_energybins: list of tuple of int, optional
-            Specified the energy bins used for generating L2 pitch angle spectrogram. 
-            Default is [(0,2),(3,5), (6,8), (9,15)]. If both 'PAspec_energybins' and 'PAspec_energies' 
-            are set, 'energybins' takes precedence.
+            Specified the energy bins used for generating L2 pitch angle spectrogram.
+            If both 'PAspec_energybins' and 'PAspec_energies' are set, 'energybins' takes precedence.
+            Default: [(0,2),(3,5), (6,8), (9,15)].
             
         PAspec_energies: list of tuple of float, optional
             Specifies the energy range for each bin in the L2 pitch angle spectrogram.
             Example: energies=[(50.,160.),(160.,345.),(345.,900.),(900.,7000.)]
             If both 'energybins' and 'energies' are set, 'energybins' takes precedence.
-            Energy and energybin table:
+            Default: Energy and energybin table
             channel     energy_range    energy_midbin
             0           50-80           63.2
             1           80-120          97.9
@@ -113,16 +123,28 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         Espec_LCfatol: float, optional
             Tolerance angle for para and anti flux in generating L2 energy spectrogram. 
             A positive value makes the loss cone/antiloss cone smaller by this amount. 
-            Default is 22.25 deg.
+            Default: 22.25 deg.
 
         Espec_LCfptol: float, optional
             Tolerance angle for perp flux in generating L2 energy spectrogram. 
             A negative value means a wider angle for perp flux.
-            Default is -11 deg.
+            Default: -11 deg.
 
     Returns
     ----------
         List of tplot variables created.
+
+    Examples
+    ----------
+        import pyspedas
+        from pytplot import tplot
+        elf_vars = pyspedas.elfin.epd(probe='b', trange=['2021-01-01', '2021-01-02'], datatype='pif')
+        tplot(['elb_pif_nflux', 'elb_pif_spinper'])
+
+        import pyspedas
+        from pytplot import tplot
+        elf_vars = pyspedas.elfin.epd(probe='a', trange=['2021-01-01', '2021-01-02'], level='l2')
+        tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', ela_pef_tspin'])
 
     """
     logging.info("ELFIN EPD: START LOADING.")
