@@ -20,7 +20,8 @@ def state(trange=['2007-03-23', '2007-03-24'],
     """
     Load THEMIS state data
 
-    Parameters:
+    Parameters
+    ----------
         trange: list of str
             time range of interest [starttime, endtime] with the format
             ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -81,10 +82,14 @@ def state(trange=['2007-03-23', '2007-03-24'],
             Default: False
 
 
-    Returns:
-        List of tplot variables created.
+    Returns
+    -------
+        List of str
+        List of tplot variables created
+        Empty list if no data loaded
 
-    Example:
+    Example
+    -------
         >>> import pyspedas
         >>> from pytplot import tplot
         >>> pyspedas.themis.state(trange=['2007-03-23', '2007-03-24'], probe='a', varnames=['tha_pos_gse','tha_vel_gse'])
