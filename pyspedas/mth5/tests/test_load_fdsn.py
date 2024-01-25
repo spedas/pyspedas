@@ -1,7 +1,8 @@
 import unittest
 import os
-import pyspedas
+import pyspedas, pytplot
 from mth5.clients.make_mth5 import FDSN
+from pyspedas.mth5.load_fdsn import load_fdsn
 import pandas as pd
 import h5py
 
@@ -18,6 +19,15 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
     def setUp(self):
         pass
+
+    def test_load_fdsn_example(self):
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+        load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+        load_fdsn(network="4P", station="GAW50", trange=[date_start, date_end])
+
+        self.assertTrue('fdsn_4P_REU49' in pytplot.tnames())
+        self.assertTrue('fdsn_4P_GAW50' in pytplot.tnames())
 
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
