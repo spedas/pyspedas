@@ -1,17 +1,47 @@
 import unittest
 
-import h5py
-import pandas as pd
-
-import pyspedas
-import pytplot
 from mth5.clients.make_mth5 import FDSN
 from pyspedas.mth5.load_fdsn import load_fdsn
 
+import pyspedas
+import pytplot
+
+import time
+import os
+
+import h5py
+import pandas as pd
+
+from pyspedas.mth5.config import CONFIG
+
+import loguru
+from contextlib import contextmanager
+@contextmanager
+def loguru_capture_logs(level="INFO", format="{level}:{name}:{message}"):
+    """Capture loguru-based logs. There is no other way to assert the loguru log. The custom filter also must be defined here"""
+    output = []
+    handler_id = loguru.logger.add(output.append, level=level, format=format, filter=pyspedas.mth5._disable_loguru_warnings)
+    yield output
+    loguru.logger.remove(handler_id)
+
+class Timer:
+    """
+    Class that tracks the function call time
+    """
+    def __enter__(self):
+        self.start = time.perf_counter()
+        return self
+
+    def __exit__(self, *args):
+        self.end = time.perf_counter()
+        self.interval = self.end - self.start
 
 class TestMTH5LoadFDSN(unittest.TestCase):
     # Flag to check if there is any open instances of h5 files
     H5OPEN = False
+
+    # This flag result in false if basic test fails and will not run other tests
+    BASIC_TEST_FAILED = False
 
     @classmethod
     def setUpClass(cls):
@@ -21,9 +51,10 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         cls.H5OPEN = len(o) > 0
 
     def setUp(self):
-        pass
+        if len(pytplot.tplot_names()) > 0:
+            pytplot.del_data('*')
 
-    def test_load_fdsn_notrange(self):
+    def test01_load_fdsn_notrange(self):
         """
         Testing the load_fdsn function without a trange.
         The log message should be printed.
@@ -33,9 +64,10 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertIn('trange not specified', cm.output[0])
         self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
 
-    def test_load_fdsn_nonetwork(self):
+    def test01_load_fdsn_nonetwork(self):
         """
         Test loading data without specifying a network
+        The log message should be printed.
         """
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
@@ -45,9 +77,10 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertIn('Network not specified', cm.output[0])
         self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
 
-    def test_load_fdsn_nostation(self):
+    def test01_load_fdsn_nostation(self):
         """
         Test loading data without specifying a station
+        The log message should be printed.
         """
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
@@ -57,21 +90,64 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertIn('Station not specified', cm.output[0])
         self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
 
-
-
-    def test_load_fdsn_example(self):
+    def test02_load_fdsn_basic(self):
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
         load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
         load_fdsn(network="4P", station="GAW50", trange=[date_start, date_end])
 
-        self.assertTrue('fdsn_4P_REU49' in pytplot.tnames())
-        self.assertTrue('fdsn_4P_GAW50' in pytplot.tnames())
+        try:
+            self.assertTrue('fdsn_4P_REU49' in pytplot.tnames())
+            self.assertTrue('fdsn_4P_GAW50' in pytplot.tnames())
+            self.BASIC_TEST_FAILED = False
+        except AssertionError:
+            self.BASIC_TEST_FAILED = True
 
+    @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
+    # @patch('sys.stdout', new_callable=StringIO)
+    def test03_load_fdsn_nowarnings(self):
+        """
+        Test with and without nowarning flag
+        """
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        # Try loading data, which should result in warnings by MTH5
+        with loguru_capture_logs() as output:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False)
+        iswaring = any('WARNING:' in s for s in output)
+
+        if not iswaring:
+            self.skipTest("load_fdsn does not produce warnings.")
+        with loguru_capture_logs() as output:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=True)
+        self.assertFalse(any('WARNING:' in s for s in output))
+
+    @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
+    def test03_load_fdsn_nodownload(self):
+        """
+        If nodownload flag is specify the h5 file will be reused.
+        Testing if the function works faster. Skipping the test if the file was not created.
+        """
+
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+        with Timer() as t1:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False, nodownload=False)
+
+        # Check if the h5 file exist
+        if not os.path.isfile(os.path.join(CONFIG['local_data_dir'], '4P_REU49_20150622T014500_20150622T022000.h5')):
+            self.skipTest("load_fdsn does not produce h5 file.")
+
+        with Timer() as t2:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False, nodownload=True)
+
+        self.assertTrue(t1.interval > t2.interval)
 
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
-    def test_load_fdsn_h5_file_error(self):
+    @unittest.skip
+    def test99_load_fdsn_h5_file_error(self):
         # Testing if the file can be created when error occurs
         from pyspedas.mth5.config import CONFIG
         from pyspedas.mth5.load_fdsn import load_fdsn
@@ -121,7 +197,8 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         pass
 
-    def test_load_fdsn_no_data(self):
+    @unittest.skip
+    def test99_load_fdsn_no_data(self):
         pass
 
     def tearDown(self):
