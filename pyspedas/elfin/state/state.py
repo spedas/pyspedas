@@ -1,6 +1,6 @@
 from pyspedas.elfin.load import load
 
-def state(trange=['2020-11-5/10:00', '2020-11-5/12:00'],
+def state(trange=['2022-08-19', '2022-08-19'],
           probe='a',
           datatype='defn',
           level='l1',
@@ -21,7 +21,7 @@ def state(trange=['2020-11-5/10:00', '2020-11-5/12:00'],
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: ['2020-11-5/10:00', '2020-11-5/12:00']
+            Default: ['2022-08-19', '2022-08-19']
 
         probe: str
             Spacecraft identifier ('a' or 'b')
@@ -88,7 +88,7 @@ def state(trange=['2020-11-5/10:00', '2020-11-5/12:00'],
     ----------
         import pyspedas
         from pytplot import tplot
-        state_vars = pyspedas.elfin.state(probe='a', trange=['2020-01-01', '2020-01-02'])
+        state_vars = pyspedas.elfin.state(probe='a', trange=['2022-08-19', '2022-08-19'])
         tplot(['ela_pos_gei', 'ela_att_gei', 'ela_att_spinper', 'ela_spin_sun_angle' ])
 
     """

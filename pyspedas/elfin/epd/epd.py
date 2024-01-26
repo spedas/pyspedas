@@ -5,7 +5,7 @@ import numpy as np
 from pyspedas.elfin.load import load
 from pyspedas.elfin.epd.postprocessing import epd_l1_postprocessing, epd_l2_postprocessing
 
-def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
+def elfin_load_epd(trange=['2022-08-19', '2022-08-19'],
         probe='a',
         datatype='pef',
         level='l1',
@@ -32,7 +32,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
         trange : list of str
             Time range of interest [starttime, endtime]. Format can be
             ['YYYY-MM-DD','YYYY-MM-DD'] or ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: ['2022-09-10', '2022-09-11']
+            Default: ['2022-08-19', '2022-08-19']
 
         probe: str, optional
             Spacecraft identifier. Options are 'a' and 'b'.
@@ -143,7 +143,7 @@ def elfin_load_epd(trange=['2020-11-01', '2020-11-02'],
 
         import pyspedas
         from pytplot import tplot
-        elf_vars = pyspedas.elfin.epd(probe='a', trange=['2021-01-01', '2021-01-02'], level='l2')
+        elf_vars = pyspedas.elfin.epd(probe='a', trange=['2022-08-19', '2022-08-19'], level='l2')
         tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', ela_pef_tspin'])
 
     """

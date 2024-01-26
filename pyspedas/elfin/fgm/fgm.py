@@ -1,7 +1,7 @@
 from .load import load
 
 
-def fgm(trange=['2020-10-01', '2020-10-02'],
+def fgm(trange=['2022-08-19', '2022-08-19'],
         probe='a',
         datatype='survey',
         level='l1',
@@ -22,7 +22,7 @@ def fgm(trange=['2020-10-01', '2020-10-02'],
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: ['2020-10-01', '2020-10-02']
+            Default: ['2022-08-19', '2022-08-19']
 
         probe: str
             Spacecraft identifier ('a' or 'b')
@@ -86,7 +86,7 @@ def fgm(trange=['2020-10-01', '2020-10-02'],
     ----------
         import pyspedas
         from pytplot import tplot
-        fgm_vars = pyspedas.elfin.fgm(probe='a', trange=['2020-01-01', '2020-01-02'])
+        fgm_vars = pyspedas.elfin.fgm(probe='a', trange=['2022-08-19', '2022-08-19'])
         tplot(['ela_fgs_fsp_res_ndw', 'ela_fgs_fsp_res_obw, 'ela_att_gei_fsp_interp'])
 
 

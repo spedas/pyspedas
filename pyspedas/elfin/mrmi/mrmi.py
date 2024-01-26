@@ -1,6 +1,6 @@
 from .load import load
 
-def mrmi(trange=['2020-11-5', '2020-11-6'],
+def mrmi(trange=['2022-08-19', '2022-08-19'],
          probe='a',
          datatype='mrmi',
          level='l1',
@@ -21,7 +21,7 @@ def mrmi(trange=['2020-11-5', '2020-11-6'],
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: ['2020-11-5', '2020-11-6']
+            Default: ['2022-08-19', '2022-08-19']]
 
         probe: str
             Spacecraft identifier ('a' or 'b')
@@ -79,7 +79,7 @@ def mrmi(trange=['2020-11-5', '2020-11-6'],
     ----------
         import pyspedas
         from pytplot import tplot
-        mrmi_vars = pyspedas.elfin.mrmi(probe='b', trange=['2020-01-01', '2020-01-02'])
+        mrmi_vars = pyspedas.elfin.mrmi(probe='b', trange=['2022-08-19', '2022-08-19']
         tplot('elb_mrmi')
 
     """
