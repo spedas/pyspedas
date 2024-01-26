@@ -1,10 +1,13 @@
 import unittest
-import os
-import pyspedas, pytplot
+
+import h5py
+import pandas as pd
+
+import pyspedas
+import pytplot
 from mth5.clients.make_mth5 import FDSN
 from pyspedas.mth5.load_fdsn import load_fdsn
-import pandas as pd
-import h5py
+
 
 class TestMTH5LoadFDSN(unittest.TestCase):
     # Flag to check if there is any open instances of h5 files
@@ -20,6 +23,42 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test_load_fdsn_notrange(self):
+        """
+        Testing the load_fdsn function without a trange.
+        The log message should be printed.
+        """
+        with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+            load_fdsn(network="4P", station="REU49")
+        self.assertIn('trange not specified', cm.output[0])
+        self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
+
+    def test_load_fdsn_nonetwork(self):
+        """
+        Test loading data without specifying a network
+        """
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+            load_fdsn(station='REU49', trange=[date_start, date_end])
+        self.assertIn('Network not specified', cm.output[0])
+        self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
+
+    def test_load_fdsn_nostation(self):
+        """
+        Test loading data without specifying a station
+        """
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+            load_fdsn(network='4P', trange=[date_start, date_end])
+        self.assertIn('Station not specified', cm.output[0])
+        self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
+
+
+
     def test_load_fdsn_example(self):
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
@@ -28,6 +67,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         self.assertTrue('fdsn_4P_REU49' in pytplot.tnames())
         self.assertTrue('fdsn_4P_GAW50' in pytplot.tnames())
+
 
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
@@ -86,6 +126,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
     def tearDown(self):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()

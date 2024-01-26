@@ -58,15 +58,15 @@ def load_fdsn(trange=None, network=None, station=None,
 
     # If trange is not specified we don't know what to load
     if trange is None:
-        pyspedas.logging.info("trange not specified")
+        pyspedas.logging.error("trange not specified")
         return
 
     if not network:
-        pyspedas.logging.info("Network not specified")
+        pyspedas.logging.error("Network not specified")
         return
 
     if not station:
-        pyspedas.logging.info("Station not specified")
+        pyspedas.logging.error("Station not specified")
         return
 
     # Determine where data will be stored
