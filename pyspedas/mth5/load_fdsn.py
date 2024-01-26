@@ -49,8 +49,8 @@ def load_fdsn(trange=None, network=None, station=None,
 
     Returns
     -------
-    list
-        List of tplot variables created.
+    None
+        Tplot variable is created is data is loaded successfully.
     """
 
     # mth5.logger.remove()
