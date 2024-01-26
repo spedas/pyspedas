@@ -17,10 +17,12 @@ from pyspedas.mth5.utilities import mth5_time_str
 
 from datetime import datetime
 
-def disable_loguru_warnings(record):
+
+def _disable_loguru_warnings(record):
     if record["extra"].get("no_warning"):
         return record["level"].no != mth5.logger.level("WARNING").no
     return True
+
 
 def load_fdsn(trange=None, network=None, station=None,
               nodownload=False, noexception=False, print_request=False,
@@ -28,7 +30,8 @@ def load_fdsn(trange=None, network=None, station=None,
     """
     Load FDSN data using MTH5 interface.
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             Time range of interest.
         network : str
@@ -38,17 +41,20 @@ def load_fdsn(trange=None, network=None, station=None,
         nodownload : bool
             If h5 file is already created do not load another one.
         noexception : bool
-            If true do not raise and Execution produced by FDSN
+            If true do not raise and Execution produced by FDSN.
         print_request : bool
-            Print request_df structure, which can be usefully for debuting the request
+            Print request_df structure, which can be usefully for debuting the request.
+        nowarnings : bool
+            If true, disable loguru warnings.
 
-    Returns:
+    Returns
+    -------
+    list
         List of tplot variables created.
     """
 
     # mth5.logger.remove()
     mth5.logger._core.extra["no_warning"] = nowarnings
-
 
     # If trange is not specified we don't know what to load
     if trange is None:
@@ -75,7 +81,8 @@ def load_fdsn(trange=None, network=None, station=None,
     channel_orientation = ['Z', 'N', 'E']
     channel_instrument = 'F'
     # Create list of all combinations of channel_band, channel_instrument and channel_orientation
-    channel_list = ",".join([f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
+    channel_list = ",".join(
+        [f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
     # channel_list = "*F*"
 
     request_df = pd.DataFrame(
