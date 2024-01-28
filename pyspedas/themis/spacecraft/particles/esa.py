@@ -1,6 +1,5 @@
-
 from pyspedas.themis.load import load
-
+import pytplot
 
 def esa(trange=['2007-03-23', '2007-03-24'],
         probe='c',
@@ -82,8 +81,16 @@ def esa(trange=['2007-03-23', '2007-03-24'],
         >>> tplot(['thd_peif_density', 'thd_peif_vthermal'])
 
     """
-    return load(instrument='esa', trange=trange, level=level,
-                suffix=suffix, get_support_data=get_support_data,
-                varformat=varformat, varnames=varnames,
-                downloadonly=downloadonly, notplot=notplot,
-                probe=probe, time_clip=time_clip, no_update=no_update)
+    outvars = load(instrument='esa', trange=trange, level=level,
+                   suffix=suffix, get_support_data=get_support_data,
+                   varformat=varformat, varnames=varnames,
+                   downloadonly=downloadonly, notplot=notplot,
+                   probe=probe, time_clip=time_clip, no_update=no_update)
+
+    #turn off auto Y resample
+    efluxv = pytplot.tnames('*_en_eflux') #resampling breaks the eflux plots
+    if len(efluxv) > 0:
+        for eflv in efluxv:
+            pytplot.options(eflv, 'y_no_resample', 1)
+            
+    return outvars

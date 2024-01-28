@@ -1,6 +1,5 @@
-
 from pyspedas.themis.load import load
-
+import pytplot
 
 def fbk(trange=['2007-03-23', '2007-03-24'],
         probe='c',
@@ -84,8 +83,20 @@ def fbk(trange=['2007-03-23', '2007-03-24'],
         >>> fbk_vars = pyspedas.themis.fbk(probe='d', trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['thd_fb_edc12', 'thd_fb_scm1'])
     """
-    return load(instrument='fbk', trange=trange, level=level,
-                suffix=suffix, get_support_data=get_support_data,
-                varformat=varformat, varnames=varnames,
-                downloadonly=downloadonly, notplot=notplot,
-                probe=probe, time_clip=time_clip, no_update=no_update)
+    outvars = load(instrument='fbk', trange=trange, level=level,
+                   suffix=suffix, get_support_data=get_support_data,
+                   varformat=varformat, varnames=varnames,
+                   downloadonly=downloadonly, notplot=notplot,
+                   probe=probe, time_clip=time_clip, no_update=no_update)
+
+    #turn off auto Y resample
+    scmv = pytplot.tnames('*_fb_s*')
+    if len(scmv) > 0:
+        for scv in scmv:
+            pytplot.options(scv, 'y_no_resample',1)
+    efiv = pytplot.tnames('*_fb_e*')
+    if len(efiv) > 0:
+        for efv in efiv:
+            pytplot.options(efv, 'y_no_resample',1)
+
+    return outvars
