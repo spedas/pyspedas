@@ -18,17 +18,24 @@ def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
     
     Parameters
     ----------
-    probe : str
-        RBSP spacecraft indicator [Options: 'a' (default), 'b']
-    datatype : str
-        RBSPICE data type ['EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH' (default),'TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'],
-        but change for different data levels.
-    level : str
-        data level ['l1','l2','l3' (default),'l3pap']
+    probe : str or list of str, default='a'
+        Spacecraft probe name: 'a' or 'b'
+
+    datatype: str, default='TOFxEH'
+        RBSPICE data type: 'EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH','TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'
+        Values depends on different data levels.
+
+    level : str, default='l3'
+        data level: 'l1','l2','l3'
 
     Returns
     -------
-    Tplot variables created
+    out : list
+        Tplot variables created
+
+    Examples
+    --------
+    This function is called within pyspedas.rbsp.rbspice
     """
     if probe is None:
         probe = 'a'

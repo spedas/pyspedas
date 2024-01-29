@@ -34,7 +34,7 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe : str or list of str, default='a'
-            Spacecraft probe name ('a' or 'b')
+            Spacecraft probe name: 'a' or 'b'
 
         datatype : str, default='magnetometer'
             Data type with options varying by data level.
@@ -150,13 +150,13 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe : str or list of str, default='a'
-            Spacecraft probe name ('a' or 'b')
+            Spacecraft probe name: 'a' or 'b'
 
         datatype: str, default='TOFxEH'
             Data type; Valid options are specific to different data levels.
 
         level : str, default='l3'
-            Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
+            Data level. Valid options: 'l1', 'l2', 'l3'
 
         suffix: str, optional
             The tplot variable names will be given this suffix.  By default, 
@@ -265,7 +265,7 @@ def efw(trange=['2015-11-5', '2015-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe : str or list of str, default='a'
-            Spacecraft probe name ('a' or 'b')
+            Spacecraft probe name: 'a' or 'b'
 
         datatype : str, default='spec'
             Data type. Valid options are specific to different data levels.
@@ -340,7 +340,7 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe : str or list of str, default='a'
-            Spacecraft probe name ('a' or 'b')
+            Spacecraft probe name: 'a' or 'b'
 
         datatype : str, default=''
             Data type. Valid options are specific to different data levels.
@@ -418,7 +418,7 @@ def hope(trange=['2015-11-5', '2015-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe : str or list of str, default='a'
-            Spacecraft probe name ('a' or 'b')
+            Spacecraft probe name: 'a' or 'b'
 
         datatype : str, default='moments'
             Data type. Valid options are specific to different data levels.
@@ -497,7 +497,7 @@ def rept(trange=['2015-11-5', '2015-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe : str or list of str, default='a'
-            Spacecraft probe name ('a' or 'b')
+            Spacecraft probe name: 'a' or 'b'
 
         datatype : str, default=''
             Data type. Valid options are specific to different data levels.
@@ -575,7 +575,7 @@ def rps(trange=['2015-11-5', '2015-11-6'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe : str or list of str, default='a'
-            Spacecraft probe name ('a' or 'b')
+            Spacecraft probe name: 'a' or 'b'
 
         datatype : str, default='rps-1min'
             Data type. Valid options are specific to different data levels.

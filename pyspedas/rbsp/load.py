@@ -42,13 +42,13 @@ def load(trange=['2018-11-5', '2018-11-6'],
         ['YYYY-MM-DD/hh:mm:ss', 'YYYY-MM-DD/hh:mm:ss']. Default is ['2018-11-5', '2018-11-6'].
 
     probe : str or list of str, default='a'
-        Spacecraft probe name ('a' or 'b').
+        Spacecraft probe name: 'a' or 'b'
 
     instrument : str, default='emfisis'
         Name of the instrument.
 
     level : str, default='l3'
-        Data level (options: 'l1', 'l2', 'l3', 'l4').
+        Data level
 
     datatype : str, default='magnetometer'
         Instrument-specific data type.
