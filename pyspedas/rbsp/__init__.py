@@ -118,6 +118,11 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
     -------
     tvars : dict or list
         List of created tplot variables or dict of data tables if notplot is True.
+
+    Examples
+    --------
+    >>> emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5/10:00', '2018-11-5/15:00'], datatype='magnetometer', level='l3', time_clip=True)
+    >>> tplot(['Mag', 'Magnitude'])
     """
     return load(instrument='emfisis', wavetype=wavetype, trange=trange, probe=probe, datatype=datatype, level=level, cadence=cadence, coord=coord, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -187,6 +192,16 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
     -------
     tvars : dict or list
         List of created tplot variables or dict of data tables if notplot is True.
+
+    Examples
+    --------
+    >>> rbspice_vars = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEH', level='l3')
+    >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_spin')
+
+    # Calculate the pitch angle distributions
+    >>> from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
+    >>> rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3')
+    >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad_spin')
     """
 
     # Valid names
@@ -292,6 +307,11 @@ def efw(trange=['2015-11-5', '2015-11-6'],
     -------
     tvars : dict or list
         List of created tplot variables or dict of data tables if notplot is True.
+
+    Examples
+    --------
+    >>> efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
+    >>> tplot(['efield_in_inertial_frame_spinfit_mgse', 'spacecraft_potential'])
     """
     return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -365,6 +385,11 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
     -------
     tvars : dict or list
         List of created tplot variables or dict of data tables if notplot is True.
+
+    Examples
+    --------
+    >>> mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
+    >>> tplot('I')
     """
     return load(instrument='mageis', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -438,7 +463,13 @@ def hope(trange=['2015-11-5', '2015-11-6'],
     -------
     tvars : dict or list
         List of created tplot variables or dict of data tables if notplot is True.
+
+    Examples
+    --------
+    >>> hope_vars = pyspedas.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='moments', level='l3', rel='rel04')
+    >>> tplot('Ion_density')
     """
+
     return load(instrument='hope', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 
@@ -511,7 +542,13 @@ def rept(trange=['2015-11-5', '2015-11-6'],
     -------
     tvars : dict or list
         List of created tplot variables or dict of data tables if notplot is True.
+
+    Examples
+    --------
+    >>> rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
+    >>> tplot('FEDU')
     """
+
     return load(instrument='rept', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 
@@ -580,6 +617,11 @@ def rps(trange=['2015-11-5', '2015-11-6'],
     -------
     tvars : dict or list
         List of created tplot variables or dict of data tables if notplot is True.
+
+    Examples
+    --------
+    >>> rps_vars = pyspedas.rbsp.rps(trange=['2018-11-5', '2018-11-6'], datatype='rps', level='l2')
+    >>> tplot('DOSE1')
     """
     return load(instrument='rps', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -600,5 +642,12 @@ def datasets(instrument=None, label=True):
     -------
     list of str
         List of available datasets for the specified instrument or for all instruments if no instrument is specified.
+
+    Examples
+    --------
+    >>> pyspedas.rbsp.find_datasets(instrument='REPT', label=True)
+    ...
+    RBSPA_REL03_ECT-REPT-SCI-L3: RBSP/ECT REPT Pitch Angle Resolved Electron and Proton Fluxes. Electron energies: 2 - 59.45 MeV. Proton energies: 21.25 - 0 MeV - D. Baker (University of Colorado at Boulder)
+    ...
     """
     return find_datasets(mission='Van Allen Probes (RBSP)', instrument=instrument, label=label)

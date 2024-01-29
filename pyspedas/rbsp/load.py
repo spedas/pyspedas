@@ -93,6 +93,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
     -------
     tvars : dict or list
         List of created tplot variables or dict of data tables if notplot is True.
+
+    Examples
+    --------
+    This function is not intended to be called directly.
     """
 
 
