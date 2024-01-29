@@ -28,25 +28,16 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
     
     Parameters
     ----------
-        trange : list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+        trange : list of str, default=['2018-11-5', '2018-11-6']
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: str or list of str
-            Spacecraft probe name ('a' or 'b'); default: a
+        probe : str or list of str, default='a'
+            Spacecraft probe name ('a' or 'b')
 
-        cadence: str
-            Data cadence (default: 4sec); other options: '1sec', 'hires'
-
-        coord: str
-            Data coordinate system (default: sm)
-
-        level: str
-            Data level; options: 'l1', 'l2', 'l3', l4'
-
-        datatype: str
-            Data type; valid options:
+        datatype : str, default='magnetometer'
+            Data type with options varying by data level.
             Level 1:
                 'magnetometer'
                 'hfr'
@@ -55,72 +46,78 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
                 'spaceweather'
                 'wfr'
                 'wna'
-
             Level 2:
                 'magnetometer'
                 'wfr'
                 'hfr'
                 'housekeeping'
-
             Level 3:
                 'magnetometer'
-
             Level 4:
                 'density'
                 'wna-survey'
 
-        wavetype: str
-            Type of level 2 waveform data; valid options:
+        level : str, default='l3'
+            Data level; options: 'l1', 'l2', 'l3', l4'
+
+        cadence : str, default='4sec'
+            Data cadence; options: '1sec', 'hires', '4sec'
+
+        coord : str, default='sm'
+            Data coordinate system
+
+        wavetype : str, default='waveform'
+            Type of level 2 waveform data with options:
                 For WFR data:
-                'waveform' (default)
-                'waveform-continuous-burst'
-                'spectral-matrix'
-                'spectral-matrix-diagonal'
-                'spectral-matrix-diagonal-merged'
-
+                    'waveform' (default)
+                    'waveform-continuous-burst'
+                    'spectral-matrix'
+                    'spectral-matrix-diagonal'
+                    'spectral-matrix-diagonal-merged'
                 For HFR data:
-                'waveform'
-                'spectra'
-                'spectra-burst'
-                'spectra-merged'
-
+                    'waveform'
+                    'spectra'
+                    'spectra-burst'
+                    'spectra-merged'
             For descriptions of these data, see:
                 https://emfisis.physics.uiowa.edu/data/L2_products
+                suffix: str
+                    The tplot variable names will be given this suffix.  By default,
+                    no suffix is added.
 
-        suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+        suffix : str, optional
+            Suffix for tplot variable names. By default, no suffix is added.
 
-        get_support_data: bool
+        get_support_data : bool, default=False
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
+            will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
-        varformat: str
+        varformat : str, optional
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        varnames: list of str
+        varnames: list of str, optional
             List of variable names to load (if not specified,
             all data variables are loaded)
 
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into 
+        downloadonly: bool, default=False
+            Set this flag to download the CDF files, but not load them into
             tplot variables
 
-        notplot: bool
+        notplot: bool, default=False
             Return the data in hash tables instead of creating tplot variables
 
-        no_update: bool
+        no_update: bool, default=False
             If set, only load data from your local cache
 
-        time_clip: bool
+        time_clip: bool, default=False
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
-        List of tplot variables created.
-
+    -------
+    tvars : dict or list
+        List of created tplot variables or dict of data tables if notplot is True.
     """
     return load(instrument='emfisis', wavetype=wavetype, trange=trange, probe=probe, datatype=datatype, level=level, cadence=cadence, coord=coord, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -142,27 +139,30 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
     
     Parameters
     ----------
-        trange : list of str
+        trange : list of str, default=['2018-11-5', '2018-11-6']
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: str or list of str
-            Spacecraft probe name ('a' or 'b'); default: a
+        probe : str or list of str, default='a'
+            Spacecraft probe name ('a' or 'b')
 
-        datatype: str
-            Data type (default: tofxeh); Valid options:
+        datatype: str, default='TOFxEH'
+            Data type; Valid options are specific to different data levels.
 
-        suffix: str
+        level : str, default='l3'
+            Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
+
+        suffix: str, optional
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
 
-        get_support_data: bool
+        get_support_data: bool, default=True
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
+            will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
-        varformat: str
+        varformat: str, optional
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
@@ -170,23 +170,23 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
             List of variable names to load (if not specified,
             all data variables are loaded)
 
-        downloadonly: bool
+        downloadonly: bool, default=False
             Set this flag to download the CDF files, but not load them into 
             tplot variables
 
-        notplot: bool
+        notplot: bool, default=False
             Return the data in hash tables instead of creating tplot variables
 
-        no_update: bool
+        no_update: bool, default=False
             If set, only load data from your local cache
 
-        time_clip: bool
+        time_clip: bool, default=False
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
-        List of tplot variables created.
-
+    -------
+    tvars : dict or list
+        List of created tplot variables or dict of data tables if notplot is True.
     """
 
     # Valid names
@@ -244,51 +244,54 @@ def efw(trange=['2015-11-5', '2015-11-6'],
     
     Parameters
     ----------
-        trange : list of str
+        trange : list of str, default=['2015-11-5', '2015-11-6']
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: str or list of str
-            Spacecraft probe name ('a' or 'b'); default: a
+        probe : str or list of str, default='a'
+            Spacecraft probe name ('a' or 'b')
 
-        datatype: str
-            Data type; Valid options:
+        datatype : str, default='spec'
+            Data type. Valid options are specific to different data levels.
 
-        suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+        level : str, default='l3'
+            Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
+
+        suffix: str, optional
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
 
-        get_support_data: bool
+        get_support_data: bool, default=False
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
+            will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
-        varformat: str
+        varformat: str, optional
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        varnames: list of str
+        varnames: list of str, optional
             List of variable names to load (if not specified,
             all data variables are loaded)
 
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into 
+        downloadonly: bool, default=False
+            Set this flag to download the CDF files, but not load them into
             tplot variables
 
-        notplot: bool
+        notplot: bool, default=False
             Return the data in hash tables instead of creating tplot variables
 
-        no_update: bool
+        no_update: bool, default=False
             If set, only load data from your local cache
 
-        time_clip: bool
+        time_clip: bool, default=False
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
-        List of tplot variables created.
-
+    -------
+    tvars : dict or list
+        List of created tplot variables or dict of data tables if notplot is True.
     """
     return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -311,51 +314,57 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
     
     Parameters
     ----------
-        trange : list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+        trange : list of str, default=['2015-11-5', '2015-11-6']
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: str or list of str
-            Spacecraft probe name ('a' or 'b'); default: a
+        probe : str or list of str, default='a'
+            Spacecraft probe name ('a' or 'b')
 
-        datatype: str
-            Data type; Valid options:
+        datatype : str, default=''
+            Data type. Valid options are specific to different data levels.
 
-        suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+        level : str, default='l3'
+            Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
+
+        rel : str, default='rel04'
+            Release version of the data.
+
+        suffix: str, optional
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
 
-        get_support_data: bool
+        get_support_data: bool, default=False
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
+            will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
-        varformat: str
+        varformat: str, optional
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        varnames: list of str
+        varnames: list of str, optional
             List of variable names to load (if not specified,
             all data variables are loaded)
 
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into 
+        downloadonly: bool, default=False
+            Set this flag to download the CDF files, but not load them into
             tplot variables
 
-        notplot: bool
+        notplot: bool, default=False
             Return the data in hash tables instead of creating tplot variables
 
-        no_update: bool
+        no_update: bool, default=False
             If set, only load data from your local cache
 
-        time_clip: bool
+        time_clip: bool, default=False
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
-        List of tplot variables created.
-
+    -------
+    tvars : dict or list
+        List of created tplot variables or dict of data tables if notplot is True.
     """
     return load(instrument='mageis', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -378,51 +387,57 @@ def hope(trange=['2015-11-5', '2015-11-6'],
     
     Parameters
     ----------
-        trange : list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+        trange : list of str, default=['2015-11-5', '2015-11-6']
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: str or list of str
-            Spacecraft probe name ('a' or 'b'); default: a
+        probe : str or list of str, default='a'
+            Spacecraft probe name ('a' or 'b')
 
-        datatype: str
-            Data type; Valid options:
+        datatype : str, default='moments'
+            Data type. Valid options are specific to different data levels.
 
-        suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+        level : str, default='l3'
+            Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
+
+        rel : str, default='rel04'
+            Release version of the data.
+
+        suffix: str, optional
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
 
-        get_support_data: bool
+        get_support_data: bool, default=False
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
+            will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
-        varformat: str
+        varformat: str, optional
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        varnames: list of str
+        varnames: list of str, optional
             List of variable names to load (if not specified,
             all data variables are loaded)
 
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into 
+        downloadonly: bool, default=False
+            Set this flag to download the CDF files, but not load them into
             tplot variables
 
-        notplot: bool
+        notplot: bool, default=False
             Return the data in hash tables instead of creating tplot variables
 
-        no_update: bool
+        no_update: bool, default=False
             If set, only load data from your local cache
 
-        time_clip: bool
+        time_clip: bool, default=False
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
-        List of tplot variables created.
-
+    -------
+    tvars : dict or list
+        List of created tplot variables or dict of data tables if notplot is True.
     """
     return load(instrument='hope', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -445,51 +460,57 @@ def rept(trange=['2015-11-5', '2015-11-6'],
     
     Parameters
     ----------
-        trange : list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+        trange : list of str, default=['2015-11-5', '2015-11-6']
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: str or list of str
-            Spacecraft probe name ('a' or 'b'); default: a
+        probe : str or list of str, default='a'
+            Spacecraft probe name ('a' or 'b')
 
-        datatype: str
-            Data type; Valid options:
+        datatype : str, default=''
+            Data type. Valid options are specific to different data levels.
 
-        suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+        level : str, default='l3'
+            Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
+
+        rel : str, default='rel03'
+            Release version of the data.
+
+        suffix: str, optional
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
 
-        get_support_data: bool
+        get_support_data: bool, default=False
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
+            will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
-        varformat: str
+        varformat: str, optional
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        varnames: list of str
+        varnames: list of str, optional
             List of variable names to load (if not specified,
             all data variables are loaded)
 
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into 
+        downloadonly: bool, default=False
+            Set this flag to download the CDF files, but not load them into
             tplot variables
 
-        notplot: bool
+        notplot: bool, default=False
             Return the data in hash tables instead of creating tplot variables
 
-        no_update: bool
+        no_update: bool, default=False
             If set, only load data from your local cache
 
-        time_clip: bool
+        time_clip: bool, default=False
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
-        List of tplot variables created.
-
+    -------
+    tvars : dict or list
+        List of created tplot variables or dict of data tables if notplot is True.
     """
     return load(instrument='rept', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
@@ -511,54 +532,73 @@ def rps(trange=['2015-11-5', '2015-11-6'],
     
     Parameters
     ----------
-        trange : list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+        trange : list of str, default=['2015-11-5', '2015-11-6']
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
-        probe: str or list of str
-            Spacecraft probe name ('a' or 'b'); default: a
+        probe : str or list of str, default='a'
+            Spacecraft probe name ('a' or 'b')
 
-        datatype: str
-            Data type; Valid options:
+        datatype : str, default='rps-1min'
+            Data type. Valid options are specific to different data levels.
 
-        suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+        level : str, default='l2'
+            Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
+
+        suffix: str, optional
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
 
-        get_support_data: bool
+        get_support_data: bool, default=False
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a 
+            will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
 
-        varformat: str
+        varformat: str, optional
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
 
-        varnames: list of str
+        varnames: list of str, optional
             List of variable names to load (if not specified,
             all data variables are loaded)
 
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into 
+        downloadonly: bool, default=False
+            Set this flag to download the CDF files, but not load them into
             tplot variables
 
-        notplot: bool
+        notplot: bool, default=False
             Return the data in hash tables instead of creating tplot variables
 
-        no_update: bool
+        no_update: bool, default=False
             If set, only load data from your local cache
 
-        time_clip: bool
+        time_clip: bool, default=False
             Time clip the variables to exactly the range specified in the trange keyword
 
     Returns
-    ----------
-        List of tplot variables created.
-
+    -------
+    tvars : dict or list
+        List of created tplot variables or dict of data tables if notplot is True.
     """
     return load(instrument='rps', trange=trange, probe=probe, datatype=datatype, level=level, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
 
 def datasets(instrument=None, label=True):
+    """
+    Retrieves available datasets for the specified instrument on the Van Allen Probes (RBSP) mission.
+
+    Parameters
+    ----------
+    instrument : str, optional
+        Name of the instrument for which to find datasets. If None, finds datasets for all instruments on the mission.
+
+    label : bool, default=True
+        If True, the function prints both the dataset ID and label. If False, only the dataset ID is printed.
+
+    Returns
+    -------
+    list of str
+        List of available datasets for the specified instrument or for all instruments if no instrument is specified.
+    """
     return find_datasets(mission='Van Allen Probes (RBSP)', instrument=instrument, label=label)
