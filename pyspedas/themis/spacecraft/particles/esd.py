@@ -1,9 +1,11 @@
+# Hacked from esa.py, for esd 3d L2 data files
 from pyspedas.themis.load import load
-import pytplot
 
-def fbk(trange=['2007-03-23', '2007-03-24'],
+
+def esd(trange=['2021-03-23', '2021-03-24'],
         probe='c',
-        level='l2',
+        level='l2', #Kept here, but 'l2' is hardcoded in load.py
+        datatype = 'peif', #ESD datatypes are in separate files
         suffix='',
         get_support_data=False,
         varformat=None,
@@ -13,26 +15,32 @@ def fbk(trange=['2007-03-23', '2007-03-24'],
         no_update=False,
         time_clip=False):
     """
-    This function loads THEMIS FBK data
+    This function loads Electrostatic Analyzer 3D  data distribution (ESD) data
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: ['2007-03-23', '2007-03-24']
+            Default: ['2021-03-23', '2021-03-24']
 
         probe: str or list of str
             Spacecraft probe letter(s) ('a', 'b', 'c', 'd' and/or 'e')
             Default: 'c'
 
         level: str
-            Data level; Valid options: 'l1', 'l2'
+            Data level; Valid options: 'l2', *** CURRENTLY NOT USED, 'l2' is hardcoded in pyspedas.themis.load
             Default: 'l2'
 
-        level: str
-            Data level; Valid options: 'l1', 'l2'
-            Default: 'l2'
+        datatype: str 
+                  'peif', full-mode ion (Default)
+                  'peef', full-mode electron
+                  'peir', reduced mode ion
+                  'peer', reduced mode electron
+                  'peib', burst-mode ion
+                  'peir', burst-mode electron
+            Default: 'peif'
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -75,28 +83,17 @@ def fbk(trange=['2007-03-23', '2007-03-24'],
         List of str
         List of tplot variables created
         Empty list if no data
-    
+
     Example
     -------
         import pyspedas
         from pytplot import tplot
-        >>> fbk_vars = pyspedas.themis.fbk(probe='d', trange=['2013-11-5', '2013-11-6'])
-        >>> tplot(['thd_fb_edc12', 'thd_fb_scm1'])
+        >>> esd_var = pyspedas.themis.esd(probe='a', trange=['2023-11-5', '2023-11-6'], datatype='peer')
+        >>> tplot(['eflux', 'data_quality'])
+
     """
-    outvars = load(instrument='fbk', trange=trange, level=level,
-                   suffix=suffix, get_support_data=get_support_data,
-                   varformat=varformat, varnames=varnames,
-                   downloadonly=downloadonly, notplot=notplot,
-                   probe=probe, time_clip=time_clip, no_update=no_update)
-
-    #turn off auto Y resample
-    scmv = pytplot.tnames('*_fb_s*')
-    if len(scmv) > 0:
-        for scv in scmv:
-            pytplot.options(scv, 'y_no_resample',1)
-    efiv = pytplot.tnames('*_fb_e*')
-    if len(efiv) > 0:
-        for efv in efiv:
-            pytplot.options(efv, 'y_no_resample',1)
-
-    return outvars
+    return load(instrument='esd', trange=trange, level=level, datatype=datatype,
+                suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, varnames=varnames,
+                downloadonly=downloadonly, notplot=notplot,
+                probe=probe, time_clip=time_clip, no_update=no_update)

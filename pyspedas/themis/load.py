@@ -11,7 +11,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          instrument='fgm',
          probe='c',
          level='l2',
-         datatype=None, # ASK data
+         datatype=None, # ASK data, ESD (3d L2 ESA)
          stations=None,  # ground mag and ASK data
          greenland=None,  # also for ground mag data
          suffix='',
@@ -34,6 +34,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.themis.fft
         pyspedas.themis.fbk
         pyspedas.themis.esa
+        pyspedas.themis.esd
         pyspedas.themis.sst
         pyspedas.themis.mom
         pyspedas.themis.gmom
@@ -49,6 +50,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     out_files = []
     file_resolution = 24*3600.0 # default to daily files
+    varformat_tmp = None #used for ASK data, when site is input, so that possible varformat input is not overwritten
 
     for prb in probe:
         if instrument == 'ask':
@@ -56,11 +58,16 @@ def load(trange=['2013-11-5', '2013-11-6'],
                 pathformat = ('thg/' + level + '/asi/ask/%Y/thg_' + level + '_ask'
                               + '_%Y%m%d_v01.cdf')
             else:
-                # individual station data should have hourly files
-                file_resolution = 3600.0
-                pathformat = ('thg/' + level + '/asi/' + stations + '/%Y/%m/'
-                              + 'thg_' + level + '_' + datatype + '_' + stations
-                              + '_%Y%m%d%H_v01.cdf')
+#This code block loads ASF data, not ask
+#                # individual station data should have hourly files
+#                file_resolution = 3600.0
+#                pathformat = ('thg/' + level + '/asi/' + stations + '/%Y/%m/'
+#                              + 'thg_' + level + '_' + datatype + '_' + stations
+#                              + '_%Y%m%d%H_v01.cdf')
+                pathformat = ('thg/' + level + '/asi/ask/%Y/thg_' + level + '_ask'
+                              + '_%Y%m%d_v01.cdf')
+                #Usurp varformat input to get the appropriate site variable
+                varformat_tmp = '*'+stations+'*'
         elif instrument == 'fgm':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
@@ -137,6 +144,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
                           + '_%Y%m%d_v??.cdf')
+        elif instrument == 'esd':
+            level = 'l2' #For all ESD data
+            pathformat = ('th' + prb + '/' + level + '/' + instrument
+                          + '/%Y/th' + prb + '_' + level + '_esa_' + datatype
+                          + '_%Y%m%d_v??.cdf')
         elif instrument == 'sst':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
@@ -196,13 +208,22 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files,
-                         suffix=suffix,
-                         get_support_data=get_support_data,
-                         varformat=varformat,
-                         exclude_format=exclude_format,
-                         varnames=varnames,
-                         notplot=notplot)
+    if varformat_tmp is None:
+        tvars = cdf_to_tplot(out_files,
+                             suffix=suffix,
+                             get_support_data=get_support_data,
+                             varformat=varformat,
+                             exclude_format=exclude_format,
+                             varnames=varnames,
+                             notplot=notplot)
+    else:
+        tvars = cdf_to_tplot(out_files,
+                             suffix=suffix,
+                             get_support_data=get_support_data,
+                             varformat=varformat_tmp,
+                             exclude_format=exclude_format,
+                             varnames=varnames,
+                             notplot=notplot)
 
     if notplot:
         return tvars

@@ -1,7 +1,7 @@
 from .load import load
 
 
-def fgm(trange=['2020-10-01', '2020-10-02'],
+def fgm(trange=['2022-08-19', '2022-08-19'],
         probe='a',
         datatype='survey',
         level='l1',
@@ -14,7 +14,7 @@ def fgm(trange=['2020-10-01', '2020-10-02'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the Fluxgate Magnetometer (FGM)
+    This function loads data from the ELFIN Fluxgate Magnetometer (FGM)
 
     Parameters
     ----------
@@ -22,50 +22,74 @@ def fgm(trange=['2020-10-01', '2020-10-02'],
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2022-08-19', '2022-08-19']
 
         probe: str
             Spacecraft identifier ('a' or 'b')
+            Default: 'a'
 
         datatype: str
             Data type; Valid options:
-                'fast', 'survey' for L1 data
+                'fast', 'survey' for L1 data. Only 'survey' data is available.
+            Default: 'survey'
 
         level: str
-            Data level; options: 'l1' (default: l1)
+            Data level; options: 'l1'
+            Default: l1
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default,
-            no suffix is added.
+            The tplot variable names will be given this suffix.
+            Default: no suffix is added.
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a
-            "VAR_TYPE" attribute of "data".
+            will be loaded into tplot.
+            Default: only loads in data with a "VAR_TYPE" attribute of "data".
 
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
+            "*" is accepted.
+            Default: all variables are loaded in.
 
         varnames: list of str
-            List of variable names to load (if not specified,
-            all data variables are loaded)
+            List of variable names to load
+            Default: all data variables are loaded
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into
             tplot variables
+            Default: False
 
         notplot: bool
             Return the data in hash tables instead of creating tplot variables
+            Default: False
 
         no_update: bool
             If set, only load data from your local cache
+            Default: False
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+            Default: False
 
     Returns
     ----------
         List of tplot variables created.
+            ela_fgs
+            ela_fgs_fsp_res_dmxl
+            ela_fgs_fsp_res_gei
+            ela_fgs_fsp_res_ndw
+            ela_att_gei_fsp_interp
+            ela_fgs_fsp_res_obw
+
+    Example
+    ----------
+        import pyspedas
+        from pytplot import tplot
+        fgm_vars = pyspedas.elfin.fgm(probe='a', trange=['2022-08-19', '2022-08-19'])
+        tplot(['ela_fgs_fsp_res_ndw', 'ela_fgs_fsp_res_obw, 'ela_att_gei_fsp_interp'])
+
+
 
     """
     tvars = load(instrument='fgm', probe=probe, trange=trange, level=level,
