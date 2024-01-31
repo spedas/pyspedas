@@ -20,19 +20,27 @@ def att(trange=['2017-04-01', '2017-04-02'],
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2017-04-01', '2017-04-02']
 
         level: str
-            Data level; Valid options:
+            Data level; Valid options: 'l2'
+            Default: 'l2'
 
         downloadonly: bool
             Set this flag to download the files, but not load them into
-            tplot variables
+            tplot variables. Default: False
 
         notplot: bool
-            Return the data in hash tables instead of creating tplot variables
+            Return the data in hash tables instead of creating tplot variables. Default: False
 
         no_update: bool
-            If set, only load data from your local cache
+            If set, only load data from your local cache. Default: False
+
+        uname: str
+            User name. Default: None
+
+        passwd: str
+            Password. Default: None
 
     Returns:
         None
