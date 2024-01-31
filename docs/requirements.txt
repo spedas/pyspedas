@@ -10,3 +10,4 @@ pytplot-mpl-temp>=2.2.5
 geopack>=1.0.9
 viresclient
 hapiclient
+sphinx-rtd-theme
