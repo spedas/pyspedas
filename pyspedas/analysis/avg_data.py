@@ -42,7 +42,8 @@ def avg_data(names, trange=[], res=None, width=None,
 
     Returns
     -------
-    None.
+    n_names: str/list of str
+        List of new pytplot names.
 
     """
     old_names = tnames(names)
@@ -201,3 +202,5 @@ def avg_data(names, trange=[], res=None, width=None,
         store_data(new, data=data_dict, attr_dict=metadata)
 
         logging.info('avg_data was applied to: ' + new)
+
+    return n_names
