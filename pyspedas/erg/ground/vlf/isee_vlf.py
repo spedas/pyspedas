@@ -24,7 +24,7 @@ def isee_vlf(
     cal_gain=False
 ):
     """
-    Load ISEE VLF radar data from ERG Science Center
+    Load ISEE VLF data from ERG Science Center
 
     Parameters
     ----------
