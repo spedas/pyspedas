@@ -127,7 +127,7 @@ tplot('erg_orb_l2_pos_gse')
 
 ```
 
-#### Electric Field Detector (PWE-EFD)
+#### Plasma Wave Experiment - Electric Field Detector (PWE-EFD)
 ```python
 import pyspedas
 from pytplot import tplot
@@ -137,7 +137,7 @@ tplot('erg_pwe_efd_l2_E_spin_Eu_dsi')
 
 ```
 
-#### High Frequency Analyzer (PWE-HFA)
+#### Plasma Wave Experiment - High Frequency Analyzer (PWE-HFA)
 ```python
 import pyspedas
 from pytplot import tplot
@@ -146,7 +146,7 @@ pwe_hfa_vars = pyspedas.erg.pwe_hfa(trange=['2017-03-27', '2017-03-28'])
 tplot('erg_pwe_hfa_l2_low_spectra_eu')
 ```
 
-#### Onboard Frequency Analyzer (PWE-OFA)
+#### Plasma Wave Experiment - Onboard Frequency Analyzer (PWE-OFA)
 ```python
 import pyspedas
 from pytplot import tplot
@@ -155,7 +155,7 @@ pwe_ofa_vars = pyspedas.erg.pwe_ofa(trange=['2017-03-27', '2017-03-28'])
 tplot('erg_pwe_ofa_l2_spec_E_spectra_132')
 
 ```
-#### Waveform Capture (PWE-WFC)
+#### Plasma Wave Experiment - Waveform Capture (PWE-WFC)
 ```python
 import pyspedas
 from pytplot import tplot
