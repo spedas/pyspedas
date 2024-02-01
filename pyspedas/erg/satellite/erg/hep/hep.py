@@ -46,7 +46,7 @@ def hep(trange=['2017-03-27', '2017-03-28'],
 
         varformat: str
             The CDF file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  Derault: None (all variables will be loaded).
+            "*" is accepted.  Default: None (all variables will be loaded).
 
         varnames: list of str
             List of variable names to load. Default: [] (all variables will be loadee)
