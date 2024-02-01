@@ -25,7 +25,8 @@ def lepi(trange=['2017-07-01', '2017-07-02'],
     """
     This function loads data from the LEP-i experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -86,8 +87,16 @@ def lepi(trange=['2017-07-01', '2017-07-02'],
         passwd: str
             Password. Default: None
 
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> lepi_vars = pyspedas.erg.lepi(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_lepi_l2_omniflux_FODO')
 
     """
     initial_notplot_flag = False

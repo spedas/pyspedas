@@ -27,7 +27,8 @@ def pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'],
     """
     This function loads data from the PWE experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -95,8 +96,16 @@ def pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'],
         passwd: str
             Password. Default: None
 
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> pwe_wfc_vars = pyspedas.erg.pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'])
+    >>> tplot('erg_pwe_wfc_l2_e_65khz_Ex_waveform')
 
     """
     initial_notplot_flag = False

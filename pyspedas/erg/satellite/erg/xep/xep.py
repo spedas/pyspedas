@@ -22,7 +22,8 @@ def xep(trange=['2017-06-01', '2017-06-02'],
     """
     This function loads data from the XEP-e experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -76,10 +77,18 @@ def xep(trange=['2017-06-01', '2017-06-02'],
             User name. Default: None
 
         passwd: str
-            Pasword. Default: None
+            Password. Default: None
 
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> xep_vars = pyspedas.erg.xep(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_xep_l2_FEDO_SSD')
 
     """
     initial_notplot_flag = False

@@ -22,7 +22,8 @@ def mepe(trange=['2017-03-27', '2017-03-28'],
     """
     This function loads data from the MEP-e experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -78,8 +79,16 @@ def mepe(trange=['2017-03-27', '2017-03-28'],
         passwd: str
             Password. Default: None
 
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> mepe_vars = pyspedas.erg.mepe(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_mepe_l2_omniflux_FEDO')
 
     """
     initial_notplot_flag = False

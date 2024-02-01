@@ -15,7 +15,8 @@ def att(trange=['2017-04-01', '2017-04-02'],
     """
     This function loads attitude data from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -42,8 +43,17 @@ def att(trange=['2017-04-01', '2017-04-02'],
         passwd: str
             Password. Default: None
 
-    Returns:
+    Returns
+    -------
         None
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> att_vars = pyspedas.erg.att(trange=['2017-04-01', '2017-04-02'])
+    >>> tplot(['erg_att_sprate', 'erg_att_spphase', 'erg_att_izras', 'erg_att_izdec', 'erg_att_gxras', 'erg_att_gxdec', 'erg_att_gzras', 'erg_att_gzdec'])
+
 
     """
     file_res = 24*3600.

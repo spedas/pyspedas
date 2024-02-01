@@ -26,7 +26,9 @@ def orb(trange=['2017-03-27', '2017-03-28'],
     """
     This function loads orbit data from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -91,8 +93,16 @@ def orb(trange=['2017-03-27', '2017-03-28'],
         passed: str
             Password. Default: None
 
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> orb_vars = pyspedas.erg.orb(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_orb_l2_pos_gse')
 
     """
     initial_notplot_flag = False

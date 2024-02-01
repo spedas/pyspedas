@@ -29,7 +29,8 @@ def lepe(trange=['2017-04-04', '2017-04-05'],
     """
     This function loads data from the LEP-e experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -95,8 +96,17 @@ def lepe(trange=['2017-04-04', '2017-04-05'],
             Password.  Default: None
 
 
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> lepe_vars = pyspedas.erg.lepe(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_lepe_l2_omniflux_FEDO')
+
 
     """
 

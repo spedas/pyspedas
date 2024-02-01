@@ -22,7 +22,8 @@ def pwe_ofa(trange=['2017-04-01', '2017-04-02'],
     """
     This function loads data from the PWE experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -79,8 +80,16 @@ def pwe_ofa(trange=['2017-04-01', '2017-04-02'],
         passwd: str
             Password. Default: None
 
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> pwe_ofa_vars = pyspedas.erg.pwe_ofa(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_pwe_ofa_l2_spec_E_spectra_132')
 
     """
     initial_notplot_flag = False

@@ -24,7 +24,8 @@ def mgf(trange=['2017-03-27', '2017-03-28'],
     """
     This function loads data from the MGF experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -81,8 +82,16 @@ def mgf(trange=['2017-03-27', '2017-03-28'],
         passwd: str
             Password. Default: None
 
-    Returns:
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> mgf_vars = pyspedas.erg.mgf(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_mgf_l2_mag_8sec_sm')
 
     """
     initial_notplot_flag = False
