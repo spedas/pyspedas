@@ -98,7 +98,11 @@ def dst(
         logging.error("trange keyword required to download data.")
         return
 
-    file_names = dailynames(file_format="%Y%m/index.html", trange=trange)
+    try:
+        file_names = dailynames(file_format="%Y%m/index.html", trange=trange)
+    except Exception as e:
+        logging.error("Error occurred while getting file names: " + str(e))
+        return
 
     times = []
     data = []
