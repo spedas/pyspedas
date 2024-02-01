@@ -22,7 +22,72 @@ def camera_omti_asi(
     time_clip=False,
     ror=True
 ):
+    """
+    Load data from OMTI all sky imagers
 
+    Parameters
+    ----------
+    trange: list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2020-08-01', '2020-08-02']
+
+    suffix: str
+            The tplot variable names will be given this suffix.  Default: ''
+
+    site: str or list of str
+            The site or list of sites to load.
+            Valid values: 'abu', 'ath', 'drw', 'eur', 'gak', 'hlk', 'hus', 'isg',
+            'ist', 'ith', 'kap', 'ktb','mgd', 'nai', 'nyr', 'ptk', 'rik', 'rsb',
+            'sgk', 'sta', 'syo', 'trs', 'yng', 'all'
+            Default: ['all']
+
+    wavelength: str, int, list of str, or list of int
+            Valid values: [5577, 5725, 6300, 7200, 7774]
+            Default: 5577
+
+    get_support_data: bool
+            If true, data with an attribute "VAR_TYPE" with a value of "support_data"
+            or 'data' will be loaded into tplot. Default: False
+
+    varformat: str
+            The CDF file variable formats to load into tplot.  Wildcard character
+            "*" is accepted.  Default: None (all variables will be loaded).
+
+    varnames: list of str
+            List of variable names to load. Default: [] (all variables will be loadee)
+
+    downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables. Default: False
+
+    notplot: bool
+            Return the data in hash tables instead of creating tplot variables. Default: False
+
+    no_update: bool
+            If set, only load data from your local cache. Default: False
+
+    uname: str
+            User name.  Default: None
+
+    passwd: str
+            Password. Default: None
+
+    time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword. Default: False
+
+    ror: bool
+            If set, print PI info and rules of the road. Default: True
+
+    Returns
+    -------
+
+    Examples
+    ________
+
+
+    """
     site_code_all = ['abu', 'ath', 'drw', 'eur', 'gak', 'hlk',
                      'hus', 'isg', 'ist', 'ith', 'kap', 'ktb',
                      'mgd', 'nai', 'nyr', 'ptk', 'rik', 'rsb',
