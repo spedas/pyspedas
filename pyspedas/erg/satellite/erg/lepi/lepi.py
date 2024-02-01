@@ -110,6 +110,8 @@ def lepi(trange=['2017-07-01', '2017-07-02'],
     loaded_data = load(pathformat=pathformat, trange=trange, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
 
+    flag_FPDO = False # In case it doesn't get set later
+
     if (len(loaded_data) > 0) and ror:
         try:
             if isinstance(loaded_data, list):
