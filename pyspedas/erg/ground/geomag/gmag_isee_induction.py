@@ -51,7 +51,7 @@ def gmag_isee_induction(
             "*" is accepted.  Default: None (all variables will be loaded).
 
     varnames: list of str
-            List of variable names to load. Default: [] (all variables will be loadee)
+            List of variable names to load. Default: [] (all variables will be loaded)
 
     downloadonly: bool
             Set this flag to download the CDF files, but not load them into
@@ -85,7 +85,10 @@ def gmag_isee_induction(
     Examples
     ________
 
-
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> ind_vars=pyspedas.erg.gmag_isee_induction(trange=['2020-08-01','2020-08-02'], site='all')
+    >>> tplot('isee_induction_db_dt_msr')
     """
 
     site_code_all = [

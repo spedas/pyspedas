@@ -60,7 +60,7 @@ def gmag_mm210(
             "*" is accepted.  Default: None (all variables will be loaded).
 
     varnames: list of str
-            List of variable names to load. Default: [] (all variables will be loadee)
+            List of variable names to load. Default: [] (all variables will be loaded)
 
     downloadonly: bool
             Set this flag to download the CDF files, but not load them into
@@ -89,7 +89,10 @@ def gmag_mm210(
 
     Examples
     ________
-
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> mm210_vars=pyspedas.erg.gmag_mm210(trange=["2005-01-01", "2005-01-02"],site='adl',datatype='1min')
+    >>> tplot('mm210_mag_adl_1min_hdz')
 
     """
 

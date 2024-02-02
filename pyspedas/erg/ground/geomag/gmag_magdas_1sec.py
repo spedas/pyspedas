@@ -55,7 +55,7 @@ def gmag_magdas_1sec(
             "*" is accepted.  Default: None (all variables will be loaded).
 
     varnames: list of str
-            List of variable names to load. Default: [] (all variables will be loadee)
+            List of variable names to load. Default: [] (all variables will be loaded)
 
     downloadonly: bool
             Set this flag to download the CDF files, but not load them into
@@ -84,7 +84,10 @@ def gmag_magdas_1sec(
 
     Examples
     ________
-
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> magdas_vars=pyspedas.erg.gmag_magdas_1sec(trange=["2010-01-01", "2010-01-02"],site='ama')
+    >>> tplot('magdas_mag_ama_1sec_hdz')
 
     """
 
