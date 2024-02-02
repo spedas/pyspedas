@@ -107,6 +107,8 @@ Medium-energy Particles – "normal mode" ion (MEP-i)
    :class: imgborder
 
 Medium-energy Particles - "time of flight mode" ion (MEP-i)
+------------------------------------------------------------
+
 .. autofunction:: pyspedas.erg.mepi_tof
 .. code-block:: python
 
@@ -136,26 +138,6 @@ Example
 .. image:: _static/erg_mgf.png
    :align: center
    :class: imgborder
-
-Orbit data (ORB)
---------------------------------
-.. autofunction:: pyspedas.erg.orb
-
-Example
-^^^^^^^^^
-
-.. code-block:: python
-
-    import pyspedas
-    from pytplot import tplot
-
-    orb_vars = pyspedas.erg.orb(trange=['2017-03-27', '2017-03-28'])
-    tplot('erg_orb_l2_pos_gse')
-
-.. image:: _static/erg_orb.png
-   :align: center
-   :class: imgborder
-
 
 Orbit data
 ------------------------------------------------
