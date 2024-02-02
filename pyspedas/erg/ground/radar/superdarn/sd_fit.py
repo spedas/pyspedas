@@ -77,7 +77,7 @@ def sd_fit(
             "*" is accepted.  Default: None (all variables will be loaded).
 
     varnames: list of str
-            List of variable names to load. Default: [] (all variables will be loadee)
+            List of variable names to load. Default: [] (all variables will be loaded)
 
     downloadonly: bool
             Set this flag to download the CDF files, but not load them into
