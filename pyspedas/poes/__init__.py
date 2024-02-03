@@ -4,7 +4,7 @@ from pyspedas.utilities.datasets import find_datasets
 
 def sem(trange=['2018-11-5', '2018-11-6'], 
         probe=['noaa19'],
-        datatype='*', 
+        datatype=None,
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -27,8 +27,8 @@ def sem(trange=['2018-11-5', '2018-11-6'],
             POES spacecraft name(s); e.g., metop1, metop2, noaa15, noaa16,
             noaa18, noaa19
 
-        datatype: str, default='*'
-            Data type; Valid options:
+        datatype: str, optional
+            This variable is unused. It is reserved for the future use.
 
         suffix: str, optional
             The tplot variable names will be given this suffix.  By default, 

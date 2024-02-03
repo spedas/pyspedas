@@ -37,7 +37,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
              Name of the instrument.
 
         datatype: str, default='*'
-            Data type; Valid options:
+            This variable is unused. It is reserved for the future use.
 
         suffix: str, optional
             The tplot variable names will be given this suffix.  By default,
