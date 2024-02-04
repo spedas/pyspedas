@@ -2,7 +2,7 @@ from .load import load, loadr
 from .load_orbit import load_orbit
 from functools import partial
 
-# Define an alias to the load function
+# Define alias to the load function
 orbit = load_orbit
 fgm = partial(load, instrument="fgm")
 eps = partial(load, instrument="eps")
