@@ -1,6 +1,6 @@
 from .gmag_isee_fluxgate import gmag_isee_fluxgate
 
-from typing import List, Union, Optional, Any
+from typing import List, Union, Optional, Dict, Any
 
 def gmag_stel_fluxgate(
     trange: List[str] = ['2020-08-01', '2020-08-02'],
@@ -17,7 +17,7 @@ def gmag_stel_fluxgate(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True
-) -> Union[dict, None, list[Union[str, Any]]]:
+) -> Union[Dict, None, List[Union[str, Any]]]:
     """
     Load data from STEL Fluxgate Magnetometers (wrapper for gmag_isee_fluxgate)
 
