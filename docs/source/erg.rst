@@ -244,3 +244,111 @@ Extremely High-energy electrons (XEP-e)
 .. image:: _static/erg_xep.png
    :align: center
    :class: imgborder
+
+
+OMTI ASI cameras
+----------------
+.. autofunction:: pyspedas.erg.camera_omti_asi
+
+.. code-block:: python
+
+    import pyspedas
+    omti_vars=pyspedas.erg.camera_omti_asi(site='ath', trange=['2020-01-20','2020-01-21'])
+    print(omti_vars)
+
+ISEE Fluxgate Magnetometers
+---------------------------
+.. autofunction:: pyspedas.erg.gmag_isee_fluxgate
+
+.. code-block:: python
+
+    import pyspedas
+    from pytplot import tplot
+    fluxgate_vars=pyspedas.erg.gmag_isee_fluxgate(trange=['2020-08-01','2020-08-02'], site='all')
+    tplot('isee_fluxgate_mag_ktb_1min_hdz')
+
+ISEE Induction Magnetometers
+-----------------------------
+.. autofunction:: pyspedas.erg.gmag_isee_induction
+
+.. code-block:: python
+
+    import pyspedas
+    from pytplot import tplot
+    ind_vars=pyspedas.erg.gmag_isee_induction(trange=['2020-08-01','2020-08-02'], site='all')
+    tplot('isee_induction_db_dt_msr')
+
+MAGDAS 1sec data
+-----------------
+.. autofunction:: pyspedas.erg.gmag_magdas_1sec
+
+.. code-block:: python
+
+    import pyspedas
+    from pytplot import tplot
+    magdas_vars=pyspedas.erg.gmag_magdas_1sec(trange=["2010-01-01", "2010-01-02"],site='ama')
+    tplot('magdas_mag_ama_1sec_hdz')
+
+
+MM210 data
+-----------
+.. autofunction:: pyspedas.erg.gmag_mm210
+
+.. code-block:: python
+
+    import pyspedas
+    from pytplot import tplot
+    mm210_vars=pyspedas.erg.gmag_mm210(trange=["2005-01-01", "2005-01-02"],site='adl',datatype='1min')
+    tplot('mm210_mag_adl_1min_hdz')
+
+STEL Fluxgate Magnetometers
+----------------------------
+.. autofunction:: pyspedas.erg.gmag_stel_fluxgate
+
+.. code-block:: python
+
+    import pyspedas
+    from pytplot import tplot
+    fluxgate_vars=pyspedas.erg.gmag_stel_fluxgate(trange=['2020-08-01','2020-08-02'], site='all')
+    tplot('isee_fluxgate_mag_ktb_1min_hdz')
+
+STEL Induction Magnetometers
+----------------------------
+.. autofunction:: pyspedas.erg.gmag_stel_induction
+
+.. code-block:: python
+
+    import pyspedas
+    from pytplot import tplot
+    ind_vars=pyspedas.erg.gmag_stel_induction(trange=['2020-08-01','2020-08-02'], site='all')
+    tplot('isee_induction_db_dt_msr')
+
+SuperDARN (radar)
+----------------------------
+.. autofunction:: pyspedas.erg.sd_fit
+
+.. code-block:: python
+
+    import pyspedas
+    sd_vars=pyspedas.erg.sd_fit(trange=['2018-10-14/00:00:00','2018-10-14/02:00:00'],site='ade')
+    print(sd_vars)
+
+ISEE BRIO (riometer)
+----------------------------
+.. autofunction:: pyspedas.erg.isee_brio
+
+.. code-block:: python
+
+    import pyspedas
+    brio_vars=pyspedas.erg.isee_brio(trange=['2020-08-01', '2020-08-02'],site='ath')
+    print(brio_vars)
+
+ISEE VLF
+----------------------------
+.. autofunction:: pyspedas.erg.isee_vlf
+
+.. code-block:: python
+
+    import pyspedas
+    vlf_vars=pyspedas.erg.isee_vlf(trange=['2017-03-30/12:00:00', '2017-03-30/15:00:00'],site='ath')
+    print(vlf_vars)
