@@ -7,22 +7,24 @@ from pytplot import get_data, store_data, options, clip, ylim, zlim
 from ...satellite.erg.load import load
 
 
+from typing import List, Optional, Union
+
 def isee_vlf(
-    trange=['2017-03-30/12:00:00', '2017-03-30/15:00:00'],
-    suffix='',
-    site='all',
-    get_support_data=False,
-    varformat=None,
-    varnames=[],
-    downloadonly=False,
-    notplot=False,
-    no_update=False,
-    uname=None,
-    passwd=None,
-    time_clip=False,
-    ror=True,
-    cal_gain=False
-):
+    trange: List[str] = ['2017-03-30/12:00:00', '2017-03-30/15:00:00'],
+    suffix: str = '',
+    site: Union[str, List[str]] = 'all',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True,
+    cal_gain: bool = False
+) -> None:
     """
     Load ISEE VLF data from ERG Science Center
 

@@ -6,22 +6,24 @@ from pytplot import get_data, store_data, options, clip, ylim
 from ...satellite.erg.load import load
 
 
+from typing import List, Union, Optional
+
 def camera_omti_asi(
-    trange=['2020-08-01', '2020-08-02'],
-    suffix='',
-    site='all',
-    wavelength=[5577],
-    get_support_data=False,
-    varformat=None,
-    varnames=[],
-    downloadonly=False,
-    notplot=False,
-    no_update=False,
-    uname=None,
-    passwd=None,
-    time_clip=False,
-    ror=True
-):
+    trange: List[str] = ['2020-08-01', '2020-08-02'],
+    suffix: str = '',
+    site: Union[str, List[str]] = 'all',
+    wavelength: Union[int, List[int], str, List[str]] = [5577],
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True
+) -> None:
     """
     Load data from OMTI all sky imagers
 
@@ -41,11 +43,11 @@ def camera_omti_asi(
             Valid values: 'abu', 'ath', 'drw', 'eur', 'gak', 'hlk', 'hus', 'isg',
             'ist', 'ith', 'kap', 'ktb','mgd', 'nai', 'nyr', 'ptk', 'rik', 'rsb',
             'sgk', 'sta', 'syo', 'trs', 'yng', 'all'
-            Default: ['all']
+            Default: 'all'
 
     wavelength: str, int, list of str, or list of int
             Valid values: [5577, 5725, 6300, 7200, 7774]
-            Default: 5577
+            Default: [5577]
 
     get_support_data: bool
             If true, data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -82,12 +84,13 @@ def camera_omti_asi(
 
     Returns
     -------
+    None
 
     Examples
     ________
 
     >>> import pyspedas
-    >>> omni_vars=pyspedas.erg.camera_omti_asi(site='ath',trange=['2020-01-20','2020-01-21'])
+    >>> omni_vars=pyspedas.erg.camera_omti_asi(site='ath', trange=['2020-01-20','2020-01-21'])
 
     """
     site_code_all = ['abu', 'ath', 'drw', 'eur', 'gak', 'hlk',

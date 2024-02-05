@@ -31,22 +31,24 @@ def get_pixel_cntr(tbl_array):
             cnttbl[i, j, 0] = pos_array[1]
     return cnttbl
 
+from typing import List, Optional, Union
+
 def sd_fit(
-    trange=['2018-10-18/00:00:00','2018-10-18/02:00:00'],
-    suffix='',
-    site='all',
-    get_support_data=False,
-    varformat=None,
-    varnames=[],
-    downloadonly=False,
-    notplot=False,
-    no_update=False,
-    uname=None,
-    passwd=None,
-    time_clip=False,
-    ror=True,
-    compact=False
-):
+    trange: List[str] = ['2018-10-18/00:00:00','2018-10-18/02:00:00'],
+    suffix: str = '',
+    site: Union[str, List[str]] = 'all',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True,
+    compact: bool = False
+) -> None:
     """
     Load SuperDARN data from ERG Science Center
 

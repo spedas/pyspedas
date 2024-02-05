@@ -1,22 +1,24 @@
 from .gmag_isee_induction import gmag_isee_induction
 
 
+from typing import List, Optional, Union
+
 def gmag_stel_induction(
-    trange=["2018-10-18/00:00:00", "2018-10-18/02:00:00"],
-    suffix="",
-    site="all",
-    get_support_data=False,
-    varformat=None,
-    varnames=[],
-    downloadonly=False,
-    notplot=False,
-    no_update=False,
-    uname=None,
-    passwd=None,
-    time_clip=False,
-    ror=True,
-    frequency_dependent=False,
-):
+    trange: List[str] = ["2018-10-18/00:00:00", "2018-10-18/02:00:00"],
+    suffix: str = "",
+    site: Union[str, List[str]] = "all",
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True,
+    frequency_dependent: bool = False,
+) -> None:
     """
     Load data from STEL Induction Magnetometers (wrapper for gmag_isee_induction)
 

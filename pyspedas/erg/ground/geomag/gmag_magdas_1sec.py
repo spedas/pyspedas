@@ -6,22 +6,24 @@ from pytplot import get_data, store_data, options, clip, ylim
 from ...satellite.erg.load import load
 
 
+from typing import List, Optional, Union
+
 def gmag_magdas_1sec(
-    trange=["2010-11-20/00:00:00", "2010-11-21/00:00:00"],
-    suffix="",
-    site="all",
-    datatype="1sec",
-    get_support_data=False,
-    varformat=None,
-    varnames=[],
-    downloadonly=False,
-    notplot=False,
-    no_update=False,
-    uname=None,
-    passwd=None,
-    time_clip=False,
-    ror=True,
-):
+    trange: List[str] = ["2010-11-20/00:00:00", "2010-11-21/00:00:00"],
+    suffix: str = "",
+    site: Union[str, List[str]] = "all",
+    datatype: Union[str, List[str]] = "1sec",
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True,
+) -> None:
     """
     Load MAGDAS 1sec data from ERG Science Center
 

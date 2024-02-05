@@ -6,22 +6,24 @@ from pytplot import get_data, store_data, options, clip, ylim
 from ...satellite.erg.load import load
 
 
+from typing import List, Union, Optional, Any
+
 def gmag_isee_fluxgate(
-    trange=['2020-08-01', '2020-08-02'],
-    suffix='',
-    site='all',
-    datatype='all',
-    get_support_data=False,
-    varformat=None,
-    varnames=[],
-    downloadonly=False,
-    notplot=False,
-    no_update=False,
-    uname=None,
-    passwd=None,
-    time_clip=False,
-    ror=True
-):
+    trange: List[str] = ['2020-08-01', '2020-08-02'],
+    suffix: str = '',
+    site: Union[str, List[str]] = 'all',
+    datatype: Union[str, List[str]] = 'all',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True
+) -> Union[dict, None, list[Union[str, Any]]]:
     """
     Load data from ISEE Fluxgate Magnetometers
 
