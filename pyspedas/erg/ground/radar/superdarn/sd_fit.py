@@ -109,7 +109,9 @@ def sd_fit(
 
     Examples
     ________
-
+    >>> import pyspedas
+    >>> sd_vars=pyspedas.erg.sd_fit(trange=['2018-10-14/00:00:00','2018-10-14/02:00:00'],site='ade')
+    >>> print(sd_vars)
 
     """
 
