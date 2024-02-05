@@ -48,7 +48,7 @@ def sd_fit(
     time_clip: bool = False,
     ror: bool = True,
     compact: bool = False
-) -> None:
+) -> List[str]:
     """
     Load SuperDARN data from ERG Science Center
 

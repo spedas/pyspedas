@@ -23,7 +23,7 @@ def gmag_mm210(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True
-) -> None:
+) -> List[str]:
     """
     Load mm210 data from ERG Science Center
 

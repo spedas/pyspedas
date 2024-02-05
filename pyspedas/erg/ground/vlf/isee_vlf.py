@@ -24,7 +24,7 @@ def isee_vlf(
     time_clip: bool = False,
     ror: bool = True,
     cal_gain: bool = False
-) -> None:
+) -> List[str]:
     """
     Load ISEE VLF data from ERG Science Center
 

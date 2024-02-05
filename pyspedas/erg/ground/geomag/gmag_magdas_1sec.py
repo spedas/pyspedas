@@ -23,7 +23,7 @@ def gmag_magdas_1sec(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True,
-) -> None:
+) -> List[str]:
     """
     Load MAGDAS 1sec data from ERG Science Center
 

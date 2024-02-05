@@ -23,7 +23,7 @@ def camera_omti_asi(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True
-) -> None:
+) -> List[str]:
     """
     Load data from OMTI all sky imagers
 

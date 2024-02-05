@@ -5,21 +5,25 @@ from pytplot import clip, options, store_data, ylim, zlim, get_data
 from ..load import load
 
 
-def hep(trange=['2017-03-27', '2017-03-28'],
-        datatype='omniflux',
-        level='l2',
-        suffix='',
-        get_support_data=True,
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        uname=None,
-        passwd=None,
-        time_clip=False,
-        ror=True,
-        version=None):
+from typing import List, Optional
+
+def hep(
+    trange: List[str] = ['2017-03-27', '2017-03-28'],
+    datatype: str = 'omniflux',
+    level: str = 'l2',
+    suffix: str = '',
+    get_support_data: bool = True,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True,
+    version: Optional[str] = None
+) -> List[str]:
     """
     This function loads data from the HEP experiment from the Arase mission
 

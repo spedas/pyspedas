@@ -9,23 +9,27 @@ from pytplot import time_double
 from ..load import load
 
 
-def lepe(trange=['2017-04-04', '2017-04-05'],
-         datatype='omniflux',
-         level='l2',
-         suffix='',
-         get_support_data=False,
-         varformat=None,
-         varnames=[],
-         downloadonly=False,
-         notplot=False,
-         no_update=False,
-         uname=None,
-         passwd=None,
-         time_clip=False,
-         ror=True,
-         version=None,
-         only_fedu=False,
-         et_diagram=False):
+from typing import List, Optional
+
+def lepe(
+    trange: List[str] = ['2017-04-04', '2017-04-05'],
+    datatype: str = 'omniflux',
+    level: str = 'l2',
+    suffix: str = '',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True,
+    version: Optional[str] = None,
+    only_fedu: bool = False,
+    et_diagram: bool = False
+) -> List[str]:
     """
     This function loads data from the LEP-e experiment from the Arase mission
 

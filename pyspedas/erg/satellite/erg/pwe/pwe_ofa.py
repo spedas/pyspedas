@@ -5,20 +5,24 @@ from pytplot import options, ylim, zlim, get_data
 from ..load import load
 
 
-def pwe_ofa(trange=['2017-04-01', '2017-04-02'],
-            datatype='spec',
-            level='l2',
-            suffix='',
-            get_support_data=False,
-            varformat=None,
-            varnames=[],
-            downloadonly=False,
-            notplot=False,
-            no_update=False,
-            uname=None,
-            passwd=None,
-            time_clip=False,
-            ror=True):
+from typing import List, Optional
+
+def pwe_ofa(
+    trange: List[str] = ['2017-04-01', '2017-04-02'],
+    datatype: str = 'spec',
+    level: str = 'l2',
+    suffix: str = '',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True
+) -> List[str]:
     """
     This function loads data from the PWE experiment from the Arase mission
 

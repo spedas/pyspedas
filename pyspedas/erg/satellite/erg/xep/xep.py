@@ -5,20 +5,24 @@ from pytplot import clip, options, store_data, ylim, zlim, get_data
 from ..load import load
 
 
-def xep(trange=['2017-06-01', '2017-06-02'],
-        datatype='omniflux',
-        level='l2',
-        suffix='',
-        get_support_data=False,
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        uname=None,
-        passwd=None,
-        time_clip=False,
-        ror=True):
+from typing import List, Optional
+
+def xep(
+    trange: List[str] = ['2017-06-01', '2017-06-02'],
+    datatype: str = 'omniflux',
+    level: str = 'l2',
+    suffix: str = '',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True
+) -> List[str]:
     """
     This function loads data from the XEP-e experiment from the Arase mission
 

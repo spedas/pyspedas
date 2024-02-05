@@ -24,7 +24,7 @@ def gmag_isee_induction(
     time_clip: bool = False,
     ror: bool = True,
     frequency_dependent: bool = False,
-) -> None:
+) -> List[str]:
     """
     Load data from ISEE Induction Magnetometers
 

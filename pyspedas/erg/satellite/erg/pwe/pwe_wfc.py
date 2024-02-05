@@ -7,23 +7,27 @@ from pytplot import clip, get_data, options, store_data, ylim, zlim
 from ..load import load
 
 
-def pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'],
-            datatype='waveform',
-            mode='65khz',
-            level='l2',
-            suffix='',
-            coord='sgi',
-            component='all',
-            get_support_data=False,
-            varformat=None,
-            varnames=[],
-            downloadonly=False,
-            notplot=False,
-            no_update=False,
-            uname=None,
-            passwd=None,
-            time_clip=False,
-            ror=True):
+from typing import List, Optional
+
+def pwe_wfc(
+    trange: List[str] = ['2017-04-01/12:00:00', '2017-04-01/13:00:00'],
+    datatype: str = 'waveform',
+    mode: str = '65khz',
+    level: str = 'l2',
+    suffix: str = '',
+    coord: str = 'sgi',
+    component: str = 'all',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True
+) -> List[str]:
     """
     This function loads data from the PWE experiment from the Arase mission
 

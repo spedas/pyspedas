@@ -18,7 +18,7 @@ def gmag_stel_induction(
     time_clip: bool = False,
     ror: bool = True,
     frequency_dependent: bool = False,
-) -> None:
+) -> List[str]:
     """
     Load data from STEL Induction Magnetometers (wrapper for gmag_isee_induction)
 
@@ -26,7 +26,7 @@ def gmag_stel_induction(
     ----------
     trange: list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-10-18/00:00:00', '2018-10-18/02:00:00']
 

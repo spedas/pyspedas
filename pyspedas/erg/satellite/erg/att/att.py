@@ -5,13 +5,17 @@ from pytplot import store_data
 from ..load import load
 
 
-def att(trange=['2017-04-01', '2017-04-02'],
-        level='l2',
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        uname=None,
-        passwd=None):
+from typing import List, Optional
+
+def att(
+    trange: List[str] = ['2017-04-01', '2017-04-02'],
+    level: str = 'l2',
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None
+) -> None:
     """
     This function loads attitude data from the Arase mission
 

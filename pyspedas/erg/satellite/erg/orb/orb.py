@@ -7,22 +7,26 @@ from ..load import load
 from .remove_duplicated_tframe import remove_duplicated_tframe
 
 
-def orb(trange=['2017-03-27', '2017-03-28'],
-        datatype='def',
-        level='l2',
-        model="op",
-        suffix='',
-        get_support_data=False,
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        uname=None,
-        passwd=None,
-        time_clip=False,
-        version=None,
-        ror=True):
+from typing import List, Optional
+
+def orb(
+    trange: List[str] = ['2017-03-27', '2017-03-28'],
+    datatype: str = 'def',
+    level: str = 'l2',
+    model: str = "op",
+    suffix: str = '',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    version: Optional[str] = None,
+    ror: bool = True
+) -> List[str]:
     """
     This function loads orbit data from the Arase mission
 

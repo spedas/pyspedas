@@ -23,7 +23,7 @@ def isee_brio(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True
-) -> None:
+) -> List[str]:
     """
     Load isee_brio riometer data from ERG Science Center
 
