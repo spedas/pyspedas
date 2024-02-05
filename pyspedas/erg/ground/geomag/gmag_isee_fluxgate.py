@@ -6,7 +6,7 @@ from pytplot import get_data, store_data, options, clip, ylim
 from ...satellite.erg.load import load
 
 
-from typing import List, Union, Optional, Any
+from typing import List, Union, Optional, Dict, Any
 
 def gmag_isee_fluxgate(
     trange: List[str] = ['2020-08-01', '2020-08-02'],
@@ -23,7 +23,7 @@ def gmag_isee_fluxgate(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True
-) -> Union[dict, None, list[Union[str, Any]]]:
+) -> Union[Dict, None, List[Union[str, Any]]]:
     """
     Load data from ISEE Fluxgate Magnetometers
 
