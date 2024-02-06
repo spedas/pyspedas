@@ -43,16 +43,10 @@ def specplot_resample(values, vdata, vdata_hi):
             # cannot do ss_ini = np.where(vdata_hi >= vdata_bins[i] and vdata_hi < vdata_bins[i+1])
             xxx = np.where(vdata_hi >= vtmp[i])
             yyy = np.where(vdata_hi < vtmp[i+1])
-            if len(xxx[0]) > 0 and len(yyy[0]) > 0:
+            # both have to be true
+            if xxx[0].size > 0 and yyy[0].size > 0:
                 ss_ini = np.intersect1d(xxx[0], yyy[0])
                 out_values[j, ss_ini] = values[j, i]
-            else:
-                if len(xxx[0]) > 0 and len(yyy[0]) == 0:
-                    out_values[j, xxx[0]] = values[j, i]
-
-                if len(xxx[0]) == 0 and len(yyy[0]) > 0:
-                    out_values[j, yyy[0]] = values[j, i]
-    #Done
 
     return out_values
 
