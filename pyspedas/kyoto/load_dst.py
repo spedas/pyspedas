@@ -4,6 +4,7 @@ from pytplot import time_double
 from pytplot import time_clip as tclip
 from pytplot import store_data, options
 from pyspedas.utilities.dailynames import dailynames
+import re
 
 
 def parse_html(html_text, year=None, month=None):
@@ -35,7 +36,8 @@ def parse_html(html_text, year=None, month=None):
     # loop over days
     for day_str in data_strs:
         # the first element of hourly_data is the day, the rest are the hourly Dst values
-        hourly_data = day_str.split()
+        #         hourly_data = day_str.split()
+        hourly_data = re.findall(r"[-+]?\d+", day_str)
         if len(hourly_data[1:]) != 24:
             continue
         for idx, dst_value in enumerate(hourly_data[1:]):
