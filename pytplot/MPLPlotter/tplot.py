@@ -249,11 +249,11 @@ def tplot(variables, var_label=None,
 
         # set some more plot options
         yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
-        if pseudo_yaxis_options is not None:
+        if pseudo_yaxis_options is not None and len(pseudo_yaxis_options) > 0:
             yaxis_options = pseudo_yaxis_options
 
         zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
-        if pseudo_zaxis_options is not None:
+        if pseudo_zaxis_options is not None and len(pseudo_zaxis_options) > 0:
             zaxis_options = pseudo_zaxis_options
 
         line_opts = var_quants.attrs['plot_options']['line_opt']
@@ -267,7 +267,7 @@ def tplot(variables, var_label=None,
                 this_axis.set_title(line_opts['title'])
 
         plot_extras = var_quants.attrs['plot_options']['extras']
-        if pseudo_extra_options is not None:
+        if pseudo_extra_options is not None and len(pseudo_extra_options) > 0:
             plot_extras = pseudo_extra_options
 
         ylog = yaxis_options['y_axis_type']
