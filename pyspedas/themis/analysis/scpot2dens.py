@@ -158,7 +158,7 @@ def scpot2dens(scpot, scptime, Te, Tetime, dens_e, dens_e_time, dens_i, dens_i_t
     from pyspedas.themis.analysis import scpot2dens
 
     # Define the time range for which to load the data
-    trange = ['2007-7-20']
+    trange = ['2007-7-20/17:00:00', '2007-7-20/17:20:00']
 
     # Load THEMIS ESA data for probe 'c' within the specified time range
     pyspedas.themis.esa(trange=trange,
