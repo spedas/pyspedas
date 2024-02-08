@@ -10,13 +10,23 @@ def rbsp_load_rbspice_read(level='l3', probe='a', datatype='TOFxEH'):
     
     Parameters
     ----------
-    level : str
-        data level ['l1','l2','l3' (default),'l3pap']
-    probe : str
-        RBSP spacecraft indicator [Options: 'a' (default), 'b']
-    datatype : str
-        RBSPICE data type ['EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH' (default),'TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'],
+    level : str, default='l3'
+        data level 'l1','l2','l3'
+
+    probe : str or list of str, default='a'
+        Spacecraft probe name: 'a' or 'b'
+
+    datatype : str, default='TOFxEH'
+        RBSPICE data type: 'EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH' (default),'TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'
         but change for different data levels.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    This function is called within pyspedas.rbsp.rbspice
     """
     if level != 'l1':
         units_label = '1/(cm^2-sr-s-keV)'

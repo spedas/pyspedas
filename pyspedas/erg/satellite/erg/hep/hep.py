@@ -5,74 +5,96 @@ from pytplot import clip, options, store_data, ylim, zlim, get_data
 from ..load import load
 
 
-def hep(trange=['2017-03-27', '2017-03-28'],
-        datatype='omniflux',
-        level='l2',
-        suffix='',
-        get_support_data=True,
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        uname=None,
-        passwd=None,
-        time_clip=False,
-        ror=True,
-        version=None):
+from typing import List, Optional
+
+def hep(
+    trange: List[str] = ['2017-03-27', '2017-03-28'],
+    datatype: str = 'omniflux',
+    level: str = 'l2',
+    suffix: str = '',
+    get_support_data: bool = True,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True,
+    version: Optional[str] = None
+) -> List[str]:
     """
     This function loads data from the HEP experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2017-03-27', '2017-03-28']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid 'l2' options: 'omniflux', '3dflux'   Valid 'l3' options: 'pa'
 
         level: str
-            Data level; Valid options:
+            Data level; Valid options: 'l2','l3'
+            Default: 'l2'
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default,
-            no suffix is added.
+            The tplot variable names will be given this suffix.  Default: ''
 
         get_support_data: bool
-            Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a
-            "VAR_TYPE" attribute of "data".
+            If true, data with an attribute "VAR_TYPE" with a value of "support_data"
+            or 'data' will be loaded into tplot. Default: True
 
         varformat: str
-            The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
+            The CDF file variable formats to load into tplot.  Wildcard character
+            "*" is accepted.  Default: None (all variables will be loaded).
 
         varnames: list of str
-            List of variable names to load (if not specified,
-            all data variables are loaded)
+            List of variable names to load. Default: [] (all variables will be loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into
-            tplot variables
+            tplot variables. Default: False
 
         notplot: bool
-            Return the data in hash tables instead of creating tplot variables
+            Return the data in hash tables instead of creating tplot variables. Default: False
 
         no_update: bool
-            If set, only load data from your local cache
+            If set, only load data from your local cache. Default: False
 
         time_clip: bool
-            Time clip the variables to exactly the range specified in the trange keyword
+            Time clip the variables to exactly the range specified in the trange keyword. Default: False
 
         ror: bool
-            If set, print PI info and rules of the road
+            If set, print PI info and rules of the road. Default: True
 
         version: str
             Set this value to specify the version of cdf files (such as "v01_02", "v01_03", ...)
+            Default: None
 
-    Returns:
+        uname: str
+            User name.  Default: None
+
+        passwd: str
+            Password. Default: None
+
+
+
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> hep_vars = pyspedas.erg.hep(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_hep_l2_FEDO_L')
+
 
     """
 

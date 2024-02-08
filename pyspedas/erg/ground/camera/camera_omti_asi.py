@@ -6,23 +6,94 @@ from pytplot import get_data, store_data, options, clip, ylim
 from ...satellite.erg.load import load
 
 
-def camera_omti_asi(
-    trange=['2020-08-01', '2020-08-02'],
-    suffix='',
-    site='all',
-    wavelength=[5577],
-    get_support_data=False,
-    varformat=None,
-    varnames=[],
-    downloadonly=False,
-    notplot=False,
-    no_update=False,
-    uname=None,
-    passwd=None,
-    time_clip=False,
-    ror=True
-):
+from typing import List, Union, Optional
 
+def camera_omti_asi(
+    trange: List[str] = ['2020-08-01', '2020-08-02'],
+    suffix: str = '',
+    site: Union[str, List[str]] = 'all',
+    wavelength: Union[int, List[int], str, List[str]] = [5577],
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True
+) -> List[str]:
+    """
+    Load data from OMTI all sky imagers
+
+    Parameters
+    ----------
+    trange: list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2020-08-01', '2020-08-02']
+
+    suffix: str
+            The tplot variable names will be given this suffix.  Default: ''
+
+    site: str or list of str
+            The site or list of sites to load.
+            Valid values: 'abu', 'ath', 'drw', 'eur', 'gak', 'hlk', 'hus', 'isg',
+            'ist', 'ith', 'kap', 'ktb','mgd', 'nai', 'nyr', 'ptk', 'rik', 'rsb',
+            'sgk', 'sta', 'syo', 'trs', 'yng', 'all'
+            Default: 'all'
+
+    wavelength: str, int, list of str, or list of int
+            Valid values: [5577, 5725, 6300, 7200, 7774]
+            Default: [5577]
+
+    get_support_data: bool
+            If true, data with an attribute "VAR_TYPE" with a value of "support_data"
+            or 'data' will be loaded into tplot. Default: False
+
+    varformat: str
+            The CDF file variable formats to load into tplot.  Wildcard character
+            "*" is accepted.  Default: None (all variables will be loaded).
+
+    varnames: list of str
+            List of variable names to load. Default: [] (all variables will be loaded)
+
+    downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables. Default: False
+
+    notplot: bool
+            Return the data in hash tables instead of creating tplot variables. Default: False
+
+    no_update: bool
+            If set, only load data from your local cache. Default: False
+
+    uname: str
+            User name.  Default: None
+
+    passwd: str
+            Password. Default: None
+
+    time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword. Default: False
+
+    ror: bool
+            If set, print PI info and rules of the road. Default: True
+
+    Returns
+    -------
+    None
+
+    Examples
+    ________
+
+    >>> import pyspedas
+    >>> omti_vars=pyspedas.erg.camera_omti_asi(site='ath', trange=['2020-01-20','2020-01-21'])
+    >>> print(omti_vars)
+
+    """
     site_code_all = ['abu', 'ath', 'drw', 'eur', 'gak', 'hlk',
                      'hus', 'isg', 'ist', 'ith', 'kap', 'ktb',
                      'mgd', 'nai', 'nyr', 'ptk', 'rik', 'rsb',

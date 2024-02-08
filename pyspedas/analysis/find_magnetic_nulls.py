@@ -7,7 +7,7 @@ from pytplot import (get_data, store_data, time_double, time_string, time_clip, 
 
 def classify_null_type(lambdas_in):
     """
-    Determoine the topological type of a magnetic null, given the eigenvalues of the Jacobian matrix.
+    Determine the topological type of a magnetic null, given the eigenvalues of the Jacobian matrix.
 
     Parameters
     ----------
@@ -160,7 +160,7 @@ typecode_colors = ['k','k','k','r','b','r','b','r','b','r','b']
 
 def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, smooth_npts=10, smooth_median=True,scale_factor=1.0):
     """
-    Find magnetic null points, using the First Order Taylor Exoansioh (FOTE) method, from a set of four-point magnetic field observations.
+    Find magnetic null points, using the First Order Taylor Expansion (FOTE) method, from a set of four-point magnetic field observations.
 
     Parameters
     -----------

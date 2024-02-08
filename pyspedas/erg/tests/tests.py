@@ -60,13 +60,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_pwe_ofa_l2_spec_E_spectra_132'))
         self.assertTrue(data_exists('erg_pwe_ofa_l2_spec_B_spectra_132'))
 
-    # test is failing as of 26 Jan 2022
-    # def test_load_pwe_efd_data(self):
-    #     pwe_vars = pyspedas.erg.pwe_efd()
-    #     self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Eu_dsi'))
-    #     self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Ev_dsi'))
-    #     self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Ev1_dsi'))
-    #     self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Eu2_dsi'))
+    def test_load_pwe_efd_data(self):
+        pwe_vars = pyspedas.erg.pwe_efd()
+        self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Eu_dsi'))
+        self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Ev_dsi'))
+        self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Ev1_dsi'))
+        self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Eu2_dsi'))
 
     def test_load_pwe_hfa_data(self):
         pwe_vars = pyspedas.erg.pwe_hfa()
