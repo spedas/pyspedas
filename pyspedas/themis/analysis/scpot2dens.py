@@ -207,7 +207,7 @@ def scpot2dens(scpot, scptime, Te, Tetime, dens_e, dens_e_time, dens_i, dens_i_t
 
     # Common bias change and offset matrix for probes 'a', 'b', 'd', and 'e'
     common_bias_change = [time_double('2001-1-1')]
-    common_offset_matrix = np.array([2.2, 2.0, np.nan, np.nan])
+    common_offset_matrix = np.array([[2.2, 2.0, np.nan, np.nan]])
 
     # Define bias changes and offset matrices for each probe with more compact representation
     bias_changes = {
