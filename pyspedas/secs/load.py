@@ -21,8 +21,6 @@ def load(trange = None, resolution=10, dtype = None, no_download = False, downlo
     to be called directly; instead, see the wrapper:
         pyspedas.secs.data
 
-    This function loads data from the ELFIN Fluxgate Magnetometer (FGM)
-
     Parameters
     ----------
         trange : list of str
