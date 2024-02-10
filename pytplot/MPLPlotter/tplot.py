@@ -23,16 +23,16 @@ munits.registry[datetime] = converter
 def tplot(variables, var_label=None,
                      xsize=None,
                      ysize=None,
-                     save_png='', 
-                     save_eps='', 
-                     save_svg='', 
+                     save_png='',
+                     save_eps='',
+                     save_svg='',
                      save_pdf='',
                      save_jpeg='',
                      dpi=None,
-                     display=True, 
-                     fig=None, 
-                     axis=None, 
-                     pseudo_plot_num=None, 
+                     display=True,
+                     fig=None,
+                     axis=None,
+                     pseudo_plot_num=None,
                      pseudo_right_axis=False,
                      pseudo_yaxis_options=None,
                      pseudo_zaxis_options=None,
@@ -99,7 +99,7 @@ def tplot(variables, var_label=None,
         else:
             # using previous axis
             axes = axis.twinx()
-    
+
     plot_title = pytplot.tplot_opt_glob['title_text']
     axis_font_size = pytplot.tplot_opt_glob.get('axis_font_size')
     vertical_spacing = pytplot.tplot_opt_glob.get('vertical_spacing')
@@ -119,20 +119,20 @@ def tplot(variables, var_label=None,
 
     if vertical_spacing is None:
         vertical_spacing = 0.07
-    
+
     fig.subplots_adjust(hspace=vertical_spacing)
-    
+
     for idx, variable in enumerate(variables):
         var_data_org = pytplot.get_data(variable, dt=True)
         var_metadata = pytplot.get_data(variable, metadata=True)
-        
+
         if var_data_org is None:
             logging.info('Variable not found: ' + variable)
             continue
 
         var_data = copy.deepcopy(var_data_org)
 
-        # plt.subplots returns a list of axes for multiple panels 
+        # plt.subplots returns a list of axes for multiple panels
         # but only a single axis for a single panel
         if num_panels == 1:
             this_axis = axes
@@ -188,10 +188,10 @@ def tplot(variables, var_label=None,
                     line_opts = var_quants.attrs['plot_options']['line_opt']
 
             for pseudo_idx, var in enumerate(pseudo_vars):
-                tplot(var, return_plot_objects=return_plot_objects, 
-                        xsize=xsize, ysize=ysize, save_png=save_png, 
-                        save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf, 
-                        fig=fig, axis=this_axis, display=False, 
+                tplot(var, return_plot_objects=return_plot_objects,
+                        xsize=xsize, ysize=ysize, save_png=save_png,
+                        save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf,
+                        fig=fig, axis=this_axis, display=False,
                         pseudo_plot_num=pseudo_idx, second_axis_size=0.1,
                         pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
                         pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
@@ -201,7 +201,7 @@ def tplot(variables, var_label=None,
         # set the figure title
         if idx == 0 and plot_title != '':
             this_axis.set_title(plot_title)
-        
+
         #if data_gap is an option for this variable, or if it's a add
         #gaps here; an individual gap setting should override the
         #global setting
@@ -276,11 +276,11 @@ def tplot(variables, var_label=None,
             this_axis.set_yscale('log')
         else:
             this_axis.set_yscale('linear')
-            
+
         ytitle = yaxis_options['axis_label']
         if ytitle == '':
             ytitle = variable
-        
+
         ysubtitle = ''
         if yaxis_options.get('axis_subtitle') is not None:
             ysubtitle = yaxis_options['axis_subtitle']
@@ -308,6 +308,10 @@ def tplot(variables, var_label=None,
             if not np.isfinite(yrange[1]):
                 yrange[1] = None
             this_axis.set_ylim(yrange)
+
+        ymajor_ticks = yaxis_options.get('y_major_ticks')
+        if ymajor_ticks is not None:
+            this_axis.set_yticks(ymajor_ticks)
 
         if style is None:
             ytitle_color = 'black'
@@ -375,7 +379,7 @@ def tplot(variables, var_label=None,
             plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num, time_idxs=time_idxs, style=style, var_metadata=var_metadata)
             if not plot_created:
                 continue
-            
+
         # apply any vertical/horizontal bars
         if pytplot.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
             time_bars = pytplot.data_quants[variable].attrs['plot_options']['time_bar']
@@ -523,7 +527,7 @@ def tplot(variables, var_label=None,
 
     if return_plot_objects:
         return fig, axes
-    
+
     if save_png is not None and save_png != '':
         plt.savefig(save_png + '.png', dpi=dpi)
 
