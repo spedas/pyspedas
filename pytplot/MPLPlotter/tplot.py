@@ -313,6 +313,10 @@ def tplot(variables, var_label=None,
         if ymajor_ticks is not None:
             this_axis.set_yticks(ymajor_ticks)
 
+        yminor_tick_interval = yaxis_options.get('y_minor_tick_interval')
+        if yminor_tick_interval is not None and ylog != 'log':
+            this_axis.yaxis.set_minor_locator(plt.MultipleLocator(yminor_tick_interval))
+
         if style is None:
             ytitle_color = 'black'
         else:
