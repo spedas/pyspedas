@@ -41,12 +41,18 @@ def specplot_resample(values, vdata, vdata_hi):
 
         for i in range(nv):
             # cannot do ss_ini = np.where(vdata_hi >= vdata_bins[i] and vdata_hi < vdata_bins[i+1])
-            xxx = np.where(vdata_hi >= vtmp[i])
-            yyy = np.where(vdata_hi < vtmp[i+1])
-            # both have to be true
-            if xxx[0].size > 0 and yyy[0].size > 0:
-                ss_ini = np.intersect1d(xxx[0], yyy[0])
-                out_values[j, ss_ini] = values[j, i]
+            if vtmp[i] < vtmp[i+1]: #increasing values
+                xxx = np.where(vdata_hi >= vtmp[i])
+                yyy = np.where(vdata_hi < vtmp[i+1])
+                if xxx[0].size > 0 and yyy[0].size > 0:
+                    ss_ini = np.intersect1d(xxx[0], yyy[0])
+                    out_values[j, ss_ini] = values[j, i]
+            elif vtmp[i] > vtmp[i+1]: #decreasing values, (e.g., THEMIS ESA)
+                xxx = np.where(vdata_hi >= vtmp[i+1])
+                yyy = np.where(vdata_hi < vtmp[i])
+                if xxx[0].size > 0 and yyy[0].size > 0:
+                    ss_ini = np.intersect1d(xxx[0], yyy[0])
+                    out_values[j, ss_ini] = values[j, i]
 
     return out_values
 
@@ -214,17 +220,30 @@ def specplot(var_data,
             if ylog == 'log':
                 out_vdata = 10**out_vdata
 
-
 #Resample to a higher resolution y grid, similar to interp, but only if y_no_resample is set
     if yaxis_options.get('y_no_resample') is None or yaxis_options.get('y_no_resample') == 0:
         if ylog == 'log':
+            #Account for negative or fill vaslues that are not NaN
+            vgt0 = np.where(out_vdata > 0)[0]
+            if vgt0.size == 0:
+                print('ERROR in specplot.py: no nonzero V values')
+            vmin = np.min(out_vdata[vgt0])
+
+            vlt0 = np.where(out_vdata <= 0)[0]
+            if vlt0.size > 0:
+                out_vdata[vlt0] = vmin
+
             vdata = np.log10(out_vdata)
+            
+            if yrange[0] <= 0:
+                yrange[0] = vmin
             ycrange = np.log10(yrange)
         else:
             vdata = out_vdata
             ycrange = yrange
+
         fig_size = fig.get_size_inches()*fig.dpi
-        ny = fig_size[1]
+        ny = fig_size[1]*5 #maybe this will work better
         vdata1 = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
 
         out_values1 = specplot_resample(out_values, vdata, vdata1)
@@ -239,6 +258,7 @@ def specplot(var_data,
     if len(nans_in_vdata) > 0:
         # to deal with NaNs in the energy table, we set those energies to 0
         # then apply a mask to the data values at these locations
+        #Allow for 1D vdata
         out_vdata_nonan = out_vdata.copy()
         times_with_nans = np.unique(nans_in_vdata[:, 0])
         for nan_idx in np.arange(0, len(times_with_nans)):
