@@ -18,7 +18,7 @@ import requests
 import tarfile
 import os
 from pathlib import Path
-
+from typing import List
 from pyspedas.cluster.config import CONFIG
 
 
@@ -55,16 +55,16 @@ def cl_format_time(s):
     return r
 
 
-def load_csa(trange=['2001-02-01', '2001-02-03'],
-             probes=['C1'],
-             datatypes=['CP_CIS-CODIF_HS_H1_MOMENTS'],
-             downloadonly=False,
-             time_clip=True,
-             suffix='',
-             get_support_data=False,
-             varformat=None,
-             varnames=[],
-             notplot=False):
+def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
+             probes:List[str]=['C1'],
+             datatypes:List[str]=['CP_CIS-CODIF_HS_H1_MOMENTS'],
+             downloadonly:bool=False,
+             time_clip:bool=True,
+             suffix:str='',
+             get_support_data:bool=False,
+             varformat:str=None,
+             varnames:List[str]=[],
+             notplot:bool=False) -> List[str]:
     """Load data using the Cluster Science Data archive.
 
     Parameters

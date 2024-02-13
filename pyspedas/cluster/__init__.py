@@ -1,18 +1,20 @@
 from .load import load
 from pyspedas.utilities.datasets import find_datasets
 from .load_csa import load_csa
+from typing import List, Union, Optional
 
-def fgm(trange=['2018-11-5', '2018-11-6'], 
-        probe='1',
-        datatype='up', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+
+def fgm(trange:List[str]=['2018-11-5', '2018-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str ='up',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Fluxgate Magnetometer
     
@@ -20,11 +22,11 @@ def fgm(trange=['2018-11-5', '2018-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
-        probe: list of str
+        probe: str or list of str
             List of probes to load.  Valid options: '1','2','3','4'
             Default: '1'
 
@@ -82,17 +84,17 @@ def fgm(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def aspoc(trange=['2003-11-5', '2003-11-6'],
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def aspoc(trange:List[str]=['2003-11-5', '2003-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Active Spacecraft Potential Control experiment
     
@@ -100,7 +102,7 @@ def aspoc(trange=['2003-11-5', '2003-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2003-11-5', '2003-11-6']
 
@@ -163,17 +165,17 @@ def aspoc(trange=['2003-11-5', '2003-11-6'],
     return load(instrument='aspoc', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def cis(trange=['2018-11-5', '2018-11-6'], 
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Ion Spectroscopy experiment
     
@@ -181,7 +183,7 @@ def cis(trange=['2018-11-5', '2018-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
@@ -244,17 +246,17 @@ def cis(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def dwp(trange=['2018-11-5', '2018-11-6'], 
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def dwp(trange:List[str]=['2018-11-5', '2018-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Digital Wave Processing instrument
     
@@ -263,7 +265,7 @@ def dwp(trange=['2018-11-5', '2018-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
@@ -326,17 +328,17 @@ def dwp(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='dwp', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def edi(trange=['2018-11-5', '2018-11-6'], 
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def edi(trange:List[str]=['2018-11-5', '2018-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Electron Drift Instrument
     
@@ -344,7 +346,7 @@ def edi(trange=['2018-11-5', '2018-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
@@ -406,17 +408,17 @@ def edi(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def efw(trange=['2018-11-5', '2018-11-6'], 
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def efw(trange:List[str]=['2018-11-5', '2018-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Electric Field and Wave experiment
     
@@ -424,7 +426,7 @@ def efw(trange=['2018-11-5', '2018-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
@@ -486,17 +488,17 @@ def efw(trange=['2018-11-5', '2018-11-6'],
     return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def peace(trange=['2016-11-5', '2016-11-6'], 
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def peace(trange:List[str]=['2016-11-5', '2016-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Plasma Electron and Current Experiment
     
@@ -504,7 +506,7 @@ def peace(trange=['2016-11-5', '2016-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
@@ -567,17 +569,17 @@ def peace(trange=['2016-11-5', '2016-11-6'],
     return load(instrument='peace', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def rapid(trange=['2016-11-5', '2016-11-6'], 
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Research with Adaptive Particle Imaging Detectors
     
@@ -585,7 +587,7 @@ def rapid(trange=['2016-11-5', '2016-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
@@ -648,17 +650,17 @@ def rapid(trange=['2016-11-5', '2016-11-6'],
     return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def staff(trange=['2012-11-5', '2012-11-6'], 
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def staff(trange:List[str]=['2012-11-5', '2012-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Spatio-Temporal Analysis of Field Fluctuation experiment
     
@@ -666,7 +668,7 @@ def staff(trange=['2012-11-5', '2012-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
@@ -729,17 +731,17 @@ def staff(trange=['2012-11-5', '2012-11-6'],
     return load(instrument='staff', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def wbd(trange=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
-        probe='1',
-        datatype='waveform', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='waveform',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Wide Band Data receiver
     
@@ -747,7 +749,7 @@ def wbd(trange=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2003-11-01/14:00:00','2003-11-01/14:05:00']
 
@@ -810,17 +812,17 @@ def wbd(trange=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
     return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
 
 
-def whi(trange=['2012-11-5', '2012-11-6'], 
-        probe='1',
-        datatype='pp', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def whi(trange:List[str]=['2012-11-5', '2012-11-6'],
+        probe:Union[str,List[str]]='1',
+        datatype:str='pp',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=False) -> List[str]:
     """
     Load data from the Cluster Waves of High Frequency and Sounder for Probing of Density by Relaxation instrument
     
@@ -828,7 +830,7 @@ def whi(trange=['2012-11-5', '2012-11-6'],
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
