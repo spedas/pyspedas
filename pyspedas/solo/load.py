@@ -26,6 +26,81 @@ def load(trange=['2020-06-01', '2020-06-02'],
         pyspedas.solo.rpw
         pyspedas.solo.swa
 
+    Parameters
+    ----------
+        trange : list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2020-06-01', '2020-06-02']
+
+        instrument: str
+            Spacecraft identifier ('mag', 'epd', 'rpw', 'swa')
+            Default: 'mag'
+
+        datatype: str
+            Valid options: 'rtn-normal'
+            Default: 'rtn_normal'
+
+        mode: str
+            Valid options: None
+            Default: None
+
+        level: str
+            Valid options: 'l2'
+            Default: 'l2'
+
+        suffix: str
+            The tplot variable names will be given this suffix.
+            Default: no suffix is added.
+
+        get_support_data: bool
+            Data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot.
+            Default: 'False', only loads in data with a "VAR_TYPE" attribute of "data".
+
+        varformat: str
+            The file variable formats to load into tplot.  Wildcard character
+            "*" is accepted.
+            Default: None, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load
+            Default: [], all data variables are loaded
+
+        downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables
+            Default: False
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+            Default: False
+
+        no_update: bool
+            If set, only load data from your local cache
+            Default: False
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+            Default: False
+
+    Returns
+    ----------
+        List of tplot variables created.
+
+    Example
+    ----------
+        import pyspedas
+        from pytplot import tplot
+        mag_solar_vars = pyspedas.solar.mag(trange=['2020-06-01', '2020-06-02'])
+
+        epd_solar_vars = pyspedas.solar.epd(trange=['2020-06-01', '2020-06-02'])
+
+        rpw_solar_vars = pyspedas.solar.rpw(trange=['2020-06-01', '2020-06-02'])
+
+        swa_solar_vars = pyspedas.solar.swa(trange=['2020-06-01', '2020-06-02'])
+
     """
 
     # Defaults for L2, L3 data

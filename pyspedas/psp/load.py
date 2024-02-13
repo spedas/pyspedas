@@ -22,7 +22,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
          password=None,
          last_version=False):
     """
-    This function loads Parker Solar Probe data into tplot variables; this function is not 
+    This function loads Parker Solar Probe (PSP) data into tplot variables; this function is not
     meant to be called directly; instead, see the wrappers: 
         psp.fields: FIELDS data
         psp.spc: Solar Probe Cup data
@@ -31,7 +31,93 @@ def load(trange=['2018-11-5', '2018-11-6'],
         psp.epihi: ISoIS/EPI-Hi data
         psp.epilo: ISoIS/EPI-Lo data
         psp.epi ISoIS/EPI (merged Hi-Lo) data
-    
+
+    Parameters
+    ----------
+        trange : list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2018-11-5', '2018-11-6']
+
+        instrument: str
+            Spacecraft identifier ('fields', 'spc', 'spe', 'spi', 'epihi', 'epilo', 'epi')
+            Default: 'fields'
+
+        datatype: str
+            Valid options: ['mag_RTN_4_Sa_per_Cyc',
+                            'mag_RTN',
+                            'mag_SC',
+                            'mag_SC_1min',
+                            'mag_SC_4_Sa_per_Cyc',
+                            'sqtn_rfs_V1V2']
+            Default: 'mag_RTN'
+
+        spectypes: str
+            Valid options: for DFB AC spectral data
+            Default: None
+
+        level: str
+            Valid options: 'l2'
+            Default: 'l2'
+
+        suffix: str
+            The tplot variable names will be given this suffix.
+            Default: no suffix is added.
+
+        get_support_data: bool
+            Data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot.
+            Default: 'False', only loads in data with a "VAR_TYPE" attribute of "data".
+
+        varformat: str
+            The file variable formats to load into tplot.  Wildcard character
+            "*" is accepted.
+            Default: None, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load
+            Default: [], all data variables are loaded
+
+        downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables
+            Default: False
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+            Default: False
+
+        no_update: bool
+            If set, only load data from your local cache
+            Default: False
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+            Default: False
+
+    Returns
+    ----------
+        List of tplot variables created.
+
+    Examples
+    ----------
+        import pyspedas
+        from pytplot import tplot
+        fields_psp_vars = pyspedas.psp.fields(trange=['2018-11-5', '2018-11-6'])
+
+        spc_psp_vars = pyspedas.psp.spc(trange=['2018-11-5', '2018-11-6'])
+
+        spe_psp_vars = pyspedas.psp.spe(trange=['2018-11-5', '2018-11-6'])
+
+        spi_psp_vars = pyspedas.psp.spi(trange=['2018-11-5', '2018-11-6'])
+
+        epihi_psp_vars = pyspedas.psp.epihi(trange=['2018-11-5', '2018-11-6'])
+
+        epilo_psp_vars = pyspedas.psp.epilo(trange=['2018-11-5', '2018-11-6'])
+
+        epi_psp_vars = pyspedas.psp.epi(trange=['2018-11-5', '2018-11-6'])
+
     """
     # remote path formats generally are going to be all lowercase except for
     # on the Berkeley FIELDS server
