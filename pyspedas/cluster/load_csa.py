@@ -6,7 +6,7 @@ This loading function uses the Cluster Science Archive:
 It is a web service, we create the query and the web service responds
 with a CDF file which is packaged as tar.gz.
 
-We download the tar.gr file directly, without using pyspedas.download().
+We download the tar.gz file directly, without using pyspedas.download().
 """
 import logging
 from pytplot import time_clip as tclip
