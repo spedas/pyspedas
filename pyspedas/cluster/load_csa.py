@@ -3,7 +3,7 @@ Load data from the Cluster Science Archive.
 
 This loading function uses the Cluster Science Archive:
     https://csa.esac.esa.int/
-It is a web service, we create the query and the web service responts
+It is a web service, we create the query and the web service responds
 with a CDF file which is packaged as tar.gz.
 
 We download the tar.gr file directly, without using pyspedas.download().
@@ -67,38 +67,78 @@ def load_csa(trange=['2001-02-01', '2001-02-03'],
              notplot=False):
     """Load data using the Cluster Science Data archive.
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             Time range [start, end].
+            Default: ['2001-02-01', '2001-02-03']
+
         probes : list of str
-            List of Cluster probes.
-            Use ['*'] to load all. See cl_master_probes().
+            List of Cluster probes. Valid options: 'C1','C2','C3','C4', '*' to load all probes
+            Default: ['C1']
+
         datatypes : list of str
-            List of Cluster data types.
-            Use ['*'] to load all. See cl_master_datatypes().
+            List of Cluster data types. Valid options: ['CE_WBD_WAVEFORM_CDF', 'CP_AUX_POSGSE_1M',
+              'CP_CIS-CODIF_HS_H1_MOMENTS', 'CP_CIS-CODIF_HS_He1_MOMENTS',
+              'CP_CIS-CODIF_HS_O1_MOMENTS', 'CP_CIS-CODIF_PAD_HS_H1_PF',
+              'CP_CIS-CODIF_PAD_HS_He1_PF', 'CP_CIS-CODIF_PAD_HS_O1_PF',
+              'CP_CIS-HIA_ONBOARD_MOMENTS', 'CP_CIS-HIA_PAD_HS_MAG_IONS_PF',
+              'CP_EDI_AEDC', 'CP_EDI_MP', 'CP_EDI_SPIN', 'CP_EFW_L2_E3D_INERT',
+              'CP_EFW_L2_P', 'CP_EFW_L2_V3D_INERT', 'CP_EFW_L3_E3D_INERT',
+              'CP_EFW_L3_P', 'CP_EFW_L3_V3D_INERT', 'CP_FGM_5VPS', 'CP_FGM_FULL',
+              'CP_FGM_SPIN', 'CP_PEA_MOMENTS', 'CP_PEA_PITCH_SPIN_DEFlux',
+              'CP_PEA_PITCH_SPIN_DPFlux', 'CP_PEA_PITCH_SPIN_PSD', 'CP_RAP_ESPCT6',
+              'CP_RAP_ESPCT6_R', 'CP_RAP_HSPCT', 'CP_RAP_HSPCT_R',
+              'CP_RAP_ISPCT_CNO', 'CP_RAP_ISPCT_He', 'CP_STA_CS_HBR',
+              'CP_STA_CS_NBR', 'CP_STA_CWF_GSE', 'CP_STA_CWF_HBR_ISR2',
+              'CP_STA_CWF_NBR_ISR2', 'CP_STA_PSD', 'CP_WBD_WAVEFORM',
+              'CP_WHI_ELECTRON_DENSITY', 'CP_WHI_NATURAL', 'JP_PMP', 'JP_PSE']
+            Default: ['CP_CIS-CODIF_HS_H1_MOMENTS']
+
         downloadonly: bool
             If true, do not use cdf_to_tplot.
+            Default: False
+
         time_clip: bool
             If true, apply time clip to data.
-        suffix: str (for pytplot)
-            The tplot variable names will be given this suffix.  By default,
-            no suffix is added.
-        get_support_data: bool (for pytplot)
-            Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a
-            "VAR_TYPE" attribute of "data".
-        varformat : str (for pytplot)
+            Default: False
+
+        suffix: str
+            The tplot variable names will be given this suffix.
+            Default: ''
+
+        get_support_data: bool
+            If True, data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot.
+            Default: False
+
+        varformat : str
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
-        varnames: str or list of str (for pytplot)
+            "*" is accepted.
+            Default: None (all variables will be loaded)
+
+        varnames: str or list of str
             Load these variables only. If [] or ['*'], then load everything.
-        notplot: bool (for pytplot)
+            Default: []
+
+        notplot: bool
             If True, then data are returned in a hash table instead of
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
+            Default: False
 
-    Returns:
-        List of tplot variables created (unless notplot keyword is used).
+    Returns
+    -------
+        list of str
+            List of tplot variables created (unless notplot keyword is used).
+
+    Examples
+    --------
+
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> fgm_vars = pyspedas.cluster.load_csa(trange=['2008-11-01','2008-11-02'],datatypes=['CP_FGM_FULL'])
+    >>> tplot(['B_vec_xyz_gse__C1_CP_FGM_FULL','B_mag__C1_CP_FGM_FULL'])
     """
     # Empty output in case of errors.
     tvars = []
