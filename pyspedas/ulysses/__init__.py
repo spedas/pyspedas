@@ -1,17 +1,18 @@
 from .load import load
 from pyspedas.utilities.datasets import find_datasets
 
+from typing import List, Union
 
-def vhm(trange=['2009-01-01', '2009-01-02'],
-        datatype='1min', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=True):
+def vhm(trange:List[str]=['2009-01-01', '2009-01-02'],
+        datatype:str='1min',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=True) -> List[str]:
     """
     Load data from the VHM/FGM experiment from the Ulysses mission
     
@@ -61,7 +62,7 @@ def vhm(trange=['2009-01-01', '2009-01-02'],
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
-            Default: False
+            Default: True
 
     Returns
     -------
@@ -77,16 +78,16 @@ def vhm(trange=['2009-01-01', '2009-01-02'],
     """
     return load(instrument='vhm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def swoops(trange=['2009-01-01', '2009-01-02'],
-        datatype='bai_m0', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def swoops(trange:List[str]=['2009-01-01', '2009-01-02'],
+        datatype:str='bai_m0',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=True) -> List[str]:
     """
     This function loads data from the SWOOPS experiment from the Ulysses mission
     
@@ -152,16 +153,16 @@ def swoops(trange=['2009-01-01', '2009-01-02'],
     """
     return load(instrument='swoops', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def swics(trange=['2009-01-01', '2009-01-02'],
-        datatype='scs_m1', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def swics(trange:List[str]=['2009-01-01', '2009-01-02'],
+        datatype:str='scs_m1',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=True) -> List[str]:
     """
     This function loads data from the SWICS experiment from the Ulysses mission
     
@@ -227,16 +228,16 @@ def swics(trange=['2009-01-01', '2009-01-02'],
     """
     return load(instrument='swics', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def urap(trange=['2003-01-01', '2003-01-02'],
-        datatype='pfrp_m0', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def urap(trange:List[str]=['2003-01-01', '2003-01-02'],
+        datatype:str='pfrp_m0',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=True) -> List[str]:
     """
     This function loads data from the URAP experiment from the Ulysses mission
     
@@ -303,16 +304,16 @@ def urap(trange=['2003-01-01', '2003-01-02'],
     """
     return load(instrument='urap', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def epac(trange=['1996-01-01', '1996-01-02'],
-        datatype='epac_m1', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def epac(trange:List[str]=['1996-01-01', '1996-01-02'],
+        datatype:str='epac_m1',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=True) -> List[str]:
     """
     This function loads data from the EPAC experiment from the Ulysses mission
     
@@ -325,7 +326,7 @@ def epac(trange=['1996-01-01', '1996-01-02'],
             Default: ['1996-01-01', '1996-01-02']
 
         datatype: str
-            Data type; Valid options: 'epac_br', 'epac_el', 'epac_er', 'epac_hr', 'epac_hs', epac_m1', 'epac_op',
+            Data type; Valid options: 'epac_br', 'epac_el', 'epac_er', 'epac_hr', 'epac_hs', 'epac_m1', 'epac_op',
             'epac_oz', epac_pr', 'epac_ps', 'epac_zr', epac_zs'
             Default: 'epac_m1'
 
@@ -380,16 +381,16 @@ def epac(trange=['1996-01-01', '1996-01-02'],
     """
     return load(instrument='epac', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def hiscale(trange=['2003-01-01', '2003-01-02'],
-        datatype='lmde_m1', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def hiscale(trange:List[str]=['2003-01-01', '2003-01-02'],
+        datatype:str='lmde_m1',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=True) -> List[str]:
     """
     This function loads data from the HI-SCALE experiment from the Ulysses mission
     
@@ -450,21 +451,21 @@ def hiscale(trange=['2003-01-01', '2003-01-02'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> vhm_vars = pyspedas.ulysses.vhm(trange=['2009-01-01', '2009-01-02'])
-    >>> tplot('B_MAG')
+    >>> hiscale_vars = pyspedas.ulysses.hiscale()
+    >>> tplot('Electrons')
     """
     return load(instrument='hiscale', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def cospin(trange=['2003-01-01', '2003-01-02'],
-        datatype='het', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def cospin(trange:List[str]=['2003-01-01', '2003-01-02'],
+        datatype:str='het',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=True) -> List[str]:
     """
     This function loads data from the COSPIN experiment from the Ulysses mission
     
@@ -530,16 +531,16 @@ def cospin(trange=['2003-01-01', '2003-01-02'],
     """
     return load(instrument='cospin', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def grb(trange=['2003-01-01', '2003-01-02'],
-        datatype='grb_m0', 
-        suffix='',  
-        get_support_data=False, 
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def grb(trange:List[str]=['2003-01-01', '2003-01-02'],
+        datatype:str='grb_m0',
+        suffix:str='',
+        get_support_data:bool=False,
+        varformat:str=None,
+        varnames:List[str]=[],
+        downloadonly:bool=False,
+        notplot:bool=False,
+        no_update:bool=False,
+        time_clip:bool=True) -> List[str]:
     """
     This function loads data from the GRB experiment from the Ulysses mission
     
