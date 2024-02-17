@@ -1,6 +1,7 @@
 from numpy import linalg
 from pytplot import split_vec, join_vec, get_data, store_data, options
 from typing import Union, List
+import logging
 
 def _tvectot(tvar: str, new_name: str, join_component: bool):
     data = get_data(tvar)
@@ -15,14 +16,15 @@ def _tvectot(tvar: str, new_name: str, join_component: bool):
         options(new_name, 'legend_names', 'Magnitude')
     return new_name
 
-def tvectot(tvars: Union[str, List[str]], newnames: Union[str, List[str]] = None, suffix="_mag", join_component=False) -> Union[str , List[str]]:
+def tvectot(tvars: Union[str, List[str]], newname=None, newnames: Union[str, List[str]] = None, suffix="_mag", join_component=False) -> Union[str , List[str]]:
     """
     Computes the magnitude of a vector time series.
 
     Parameters
     ----------
     - tvars : Names of the tplot variables.
-    - new_names: Names for the resultant magnitude tplot variables. If not provided, it appends the suffix to `tvars`.
+    - new_names: (Deprecated) Names for the resultant magnitude tplot variables. If not provided, it appends the suffix to `tvars`.
+    - newname: Names for the resultant magnitude tplot variables. If not provided, it appends the suffix to `tvars`.
     - suffix: The suffix to append to tensor_names to form new_names if new_names is not provided.
     - join_component: If True, the magnitude tplot variable is joined with the component tplot variables.
 
@@ -30,19 +32,25 @@ def tvectot(tvars: Union[str, List[str]], newnames: Union[str, List[str]] = None
     -------
     Names of the magnitude tplot variables.
     """
+
+    # newnames is deprecated in favor of newname
+    if newnames is not None:
+        logging.info("tvectot: The newnames parameter is deprecated. Please use newname instead.")
+        newname = newnames
+
     tvars_type = type(tvars)
     if tvars_type == str:
         tvars = [tvars]
     if join_vec:
         suffix = "_tot"
 
-    if newnames is None:
-        newnames = [tvar + suffix for tvar in tvars]
+    if newname is None:
+        newname = [tvar + suffix for tvar in tvars]
 
-    for tvar, newname in zip(tvars, newnames):
-        _tvectot(tvar, newname, join_component)
+    for tvar, newname_single in zip(tvars, newname):
+        _tvectot(tvar, newname_single, join_component)
     
     if tvars_type == str:
-        return newnames[0]
+        return newname[0]
     else:
-        return newnames
+        return newname

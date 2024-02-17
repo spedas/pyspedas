@@ -16,7 +16,7 @@ import pywt
 import pytplot
 
 
-def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
+def wavelet(names, newname=None, new_names=None, suffix='_pow', wavename='morl', scales=None,
             method='fft', sampling_period=1.0):
     """
     Find the wavelet transofrmation of a tplot variable.
@@ -25,7 +25,10 @@ def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
     ----------
     names: str/list of str
         List of pytplot names.
-    new_names: str/list of str, optional
+    newname: str/list of str, optional
+        List of new names for pytplot variables.
+        If not given, then a suffix is applied.
+    new_names: str/list of str, optional (Deprecated)
         List of new_names for pytplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
@@ -46,6 +49,11 @@ def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
     A list of pytplot variables that contain the wavelet power.
 
     """
+    # new_names is deprecated in favor of newname
+    if new_names is not None:
+        logging.info("wavelet: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
+
     varnames = pytplot.split_vec(names)
     powervar = []
 
@@ -59,8 +67,8 @@ def wavelet(names, new_names=None, suffix='_pow', wavename='morl', scales=None,
     for i, old in enumerate(varnames):
         old = varnames[i]
 
-        if (new_names is not None) and (len(new_names) == len(varnames)):
-            new = new_names[i]
+        if (newname is not None) and (len(newname) == len(varnames)):
+            new = newname[i]
         else:
             new = old + suffix
 

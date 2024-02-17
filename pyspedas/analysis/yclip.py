@@ -13,7 +13,7 @@ import pytplot
 import numpy as np
 
 
-def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
+def yclip(names, ymin, ymax, flag=None, newname=None, new_names=None, suffix=None,
           overwrite=None):
     """
     Clip data values.
@@ -29,7 +29,10 @@ def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
     flag: float, optional
         Values outside (ymin, ymax) are replaced with flag.
         Default is float('nan').
-    new_names: str/list of str, optional
+    newname: str/list of str, optional
+        List of new names for pytplot variables.
+        If not given, then a suffix is applied.
+    new_names: str/list of str, optional (Deprecated)
         List of new_names for pytplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
@@ -42,6 +45,11 @@ def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
     None.
 
     """
+    # new_names is deprecated in favor of newname
+    if new_names is not None:
+        logging.info("wavelet: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
+
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
@@ -56,10 +64,10 @@ def yclip(names, ymin, ymax, flag=None, new_names=None, suffix=None,
 
     if overwrite is not None:
         n_names = old_names
-    elif new_names is None:
+    elif newname is None:
         n_names = [s + suffix for s in old_names]
     else:
-        n_names = new_names
+        n_names = newname
 
     if isinstance(n_names, str):
         n_names = [n_names]

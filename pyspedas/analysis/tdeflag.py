@@ -14,7 +14,7 @@ import numpy
 
 # Added default method="remove_nan" (inadvertently committed under a different log message)
 
-def tdeflag(names, method="remove_nan", new_names=None, suffix=None,
+def tdeflag(names, method="remove_nan", newname=None, new_names=None, suffix=None,
             overwrite=None):
     """
     Remove NaNs from tplot variables.
@@ -40,7 +40,12 @@ def tdeflag(names, method="remove_nan", new_names=None, suffix=None,
     None.
 
     """
+    # new_tvar is deprecated in favor of newname
+    if new_names is not None:
+        logging.info("tdeflag: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
+
     logging.info("tdeflag has been moved to the pytplot.tplot_math module. Please update your imports!")
     logging.info("This version will eventually be removed.")
-    pytplot.tplot_math.tdeflag(names,method=method,new_names=new_names,
+    pytplot.tplot_math.tdeflag(names,method=method,new_names=newname,
                                suffix=suffix,overwrite=overwrite)
