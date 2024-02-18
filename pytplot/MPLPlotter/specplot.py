@@ -43,22 +43,17 @@ def specplot_resample(values, vdata, vdata_hi):
             # cannot do ss_ini = np.where(vdata_hi >= vdata_bins[i] and vdata_hi < vdata_bins[i+1])
             if vtmp[i] < vtmp[i+1]: #increasing values
                 xxx = np.where(vdata_hi >= vtmp[i])
-                yyy = np.where(vdata_hi < vtmp[i+1])  # But i+1 is out of bounds on the last iteration>
+                yyy = np.where(vdata_hi <= vtmp[i+1])  # But i+1 is out of bounds on the last iteration>
                 if xxx[0].size > 0 and yyy[0].size > 0:
                     ss_ini = np.intersect1d(xxx[0], yyy[0])
                     out_values[j, ss_ini] = values[j, i]
             elif vtmp[i] > vtmp[i+1]: #decreasing values, (e.g., THEMIS ESA)
                 xxx = np.where(vdata_hi >= vtmp[i+1])   # Same out of bounds issue here?
-                yyy = np.where(vdata_hi < vtmp[i])
+                yyy = np.where(vdata_hi <= vtmp[i])
                 if xxx[0].size > 0 and yyy[0].size > 0:
                     ss_ini = np.intersect1d(xxx[0], yyy[0])
                     out_values[j, ss_ini] = values[j, i]
 
-        # It looks like the above loop has some sort of fencepost error, where not all elements of out_values are set.
-        # For THEMIS keograms, it's the highest index of out_values[j,:].  Maybe the lowest index is wrong if the
-        # bin values are decreasing?  Set both just to be safe.
-        out_values[j,0] = values[j,0]
-        out_values[j,ny-1] = values[j,nv-1]
     return out_values
 
 
@@ -92,17 +87,10 @@ def specplot_resample_optimized(values, vdata, vdata_hi):
 
         for i in range(nv):
             # Directly compute the indices for the condition instead of using np.intersect1d
-            condition = (vdata_hi >= vtmp[i]) & (vdata_hi < vtmp[i + 1]) # But i+1 is out of bounds on the last iteration?
+            condition = (vdata_hi >= vtmp[i]) & (vdata_hi <= vtmp[i + 1]) # But i+1 is out of bounds on the last iteration?
             ss_ini = np.where(condition)[0]
             if ss_ini.size > 0:
                 out_values[j, ss_ini] = values[j, i]
-
-        # It looks like the above loop has some sort of fencepost error, where not all elements of out_values are set.
-        # For THEMIS keograms, it's the highest index of out_values[j,:].  Maybe the lowest index is wrong if the
-        # bin values are decreasing?  Set both just to be safe.
-
-        out_values[j,0] = values[j,0]
-        out_values[j,ny-1] = values[j,nv-1]
 
     return out_values
 
