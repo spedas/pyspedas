@@ -13,7 +13,7 @@ def mag(trange=['1983-02-16', '1983-02-17'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the Magnetometer (MAG)
+    This function loads data from the Magnetometer (MAG) for mission DE2
     
     Parameters
     ----------

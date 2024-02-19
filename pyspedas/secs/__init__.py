@@ -26,30 +26,56 @@ def data(trange=['2012-11-05/00:00:00', '2012-11-06/00:00:00'], resolution=10, d
 
     Parameters
     ----------
-        trange: list of str
+        trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: If not provided, current date or code will prompt for time range
 
-        resolution: the resolution of the data in seconds, the default is 10s.
+        resolution : str
+            Default: 10
 
         dtype: str
-            Data type; valid options: 'EICS' or 'SECS'
+            Data type; Valid options:
+                'EICS', 'SECA'
+            Default: ['eics', 'seca']
 
-        no_download: bool
-            Set this flag not to duplicately download the data files.
+        suffix: str
+            The tplot variable names will be given this suffix.
+            Default: no suffix is added.
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: no prefix is added.
+
+        get_stations: bool
+            Set this flag to return a list of SECS station names
+            Default:  False
 
         downloadonly: bool
-            Set this flag only download the data but not read.
+            Set this flag to download the CDF files, but not load them into
+            tplot variables
+            Default: False
 
-        out_type: str
-            Set the type of the return/output to be
-            'df' (pandas dataframe), 'np' (numpy array) or 'dc' (dictionary).
+        no_update: bool
+            If set, only load data from your local cache
+            Default: False
+
+        no_download: bool
+            If set, only load data from your local cache
+            Default: False
+
     Returns
     ----------
-        list of str of downloaded filenames (if downloadonly == True)
-        or
-        the data which is read from the downloaded files..
+        List of tplot variables created.
+
+    Example
+    ----------
+        import pyspedas
+        from pytplot import tplot
+        secs_vars = pyspedas.secs(dtype='eics', trange=['2018-02-01', '2018-02-02'])
+        tplot(['secs_eics_latlong', 'secs_eics_jxy'])
+
     """
     return load(trange = trange, resolution=resolution, dtype = dtype, no_download = no_download, downloadonly = downloadonly, out_type = out_type, save_pickle = save_pickle)
 

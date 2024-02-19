@@ -15,13 +15,14 @@ def reptile(trange=['2013-11-5', '2013-11-6'],
         time_clip=False):
     """
     This function loads data from the Relativistic Electron and Proton Telescope integrated little experiment (REPTile)
-    
+
     Parameters
     ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2013-11-5', '2013-11-6']
 
         datatype: str
             Data type; Valid options:
