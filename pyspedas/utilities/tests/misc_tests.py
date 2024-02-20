@@ -1,4 +1,4 @@
-"""Test fuctions in the utilites folder."""
+"""Test functions in the utilites folder."""
 import unittest
 
 from pyspedas.utilities.dailynames import dailynames
@@ -109,13 +109,14 @@ class UtilTestCases(unittest.TestCase):
 
 
 
-
-#    def test_pseudovariables(self):
-#        themis.fgm(probe='c')
-#        store_data('comb',data=['thc_fge_dsl','thc_fge_btotal'])
-#        tplot('comb',save_png='test_combined.png')
-
-
+    @unittest.skip('Skipping line plot pseudovariables test')
+    def test_line_pseudovariables(self):
+        themis.fgm(probe='c')
+        store_data('comb_3_1',data=['thc_fge_dsl','thc_fge_btotal'])
+        store_data('comb_1_3',data=['thc_fge_btotal','thc_fge_dsl'])
+        tplot(['thc_fge_dsl','thc_fge_btotal','comb_3_1','comb_1_3'])
+        tplot('comb_1_3')
+        tplot('comb_3_1') # only plots 1 trace JWL 2024-02-19
 
 if __name__ == '__main__':
     unittest.main()
