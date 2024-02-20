@@ -283,7 +283,7 @@ def specplot(var_data,
             ycrange = yrange
 
         fig_size = fig.get_size_inches()*fig.dpi
-        ny = fig_size[1]*5 #maybe this will work better
+        ny = fig_size[1]
         vdata1 = np.arange(0, ny, dtype=np.float64)*(ycrange[1]-ycrange[0])/(ny-1) + ycrange[0]
 
         out_values1 = specplot_resample(out_values, vdata, vdata1)
