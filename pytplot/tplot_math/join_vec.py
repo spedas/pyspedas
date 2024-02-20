@@ -7,10 +7,11 @@ import pytplot
 import pandas as pd
 import copy
 import xarray as xr
+import logging
 
 #JOIN TVARS
 #join TVars into single TVar with multiple columns
-def join_vec(tvars,new_tvar=None, merge=False):
+def join_vec(tvars, newname=None, new_tvar=None, merge=False):
     """
     Joins 1D tplot variables into one tplot variable.
 
@@ -20,7 +21,9 @@ def join_vec(tvars,new_tvar=None, merge=False):
     Parameters:
         tvars : list of str
             Name of tplot variables to join together
-        new_tvar : str, optional
+        new_tvar : str, optional (Deprecated)
+            The name of the new tplot variable. If not specified, a name will be assigned.
+        newname : str, optional
             The name of the new tplot variable. If not specified, a name will be assigned.
         merge : bool, optional
             Whether or not to merge the created variable into an older variable
@@ -35,15 +38,19 @@ def join_vec(tvars,new_tvar=None, merge=False):
         >>> pytplot.join_vec(['d','e','g'],'deg')
         >>> print(pytplot.data_quants['deg'].values)
     """
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("join_vec: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
 
     if not isinstance(tvars, list):
         tvars = [tvars]
-    if new_tvar is None:
-        new_tvar = '-'.join(tvars)+'_joined'
+    if newname is None:
+        newname = '-'.join(tvars)+'_joined'
 
     to_merge=False
-    if new_tvar in pytplot.data_quants.keys() and merge:
-        prev_data_quant = pytplot.data_quants[new_tvar]
+    if newname in pytplot.data_quants.keys() and merge:
+        prev_data_quant = pytplot.data_quants[newname]
         to_merge = True
 
     for i,val in enumerate(tvars):
@@ -61,14 +68,14 @@ def join_vec(tvars,new_tvar=None, merge=False):
             df = pd.concat([df,d],axis=1)
 
     if s is None:
-        pytplot.store_data(new_tvar,data={'x': df.index,'y': df.values})
+        pytplot.store_data(newname,data={'x': df.index,'y': df.values})
     else:
-        pytplot.store_data(new_tvar, data={'x': df.index, 'y': df.values, 'v': s.values})
+        pytplot.store_data(newname, data={'x': df.index, 'y': df.values, 'v': s.values})
 
     if to_merge is True:
-        cur_data_quant = pytplot.data_quants[new_tvar]
-        plot_options = copy.deepcopy(pytplot.data_quants[new_tvar].attrs)
-        pytplot.data_quants[new_tvar] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
-        pytplot.data_quants[new_tvar].attrs = plot_options
+        cur_data_quant = pytplot.data_quants[newname]
+        plot_options = copy.deepcopy(pytplot.data_quants[newname].attrs)
+        pytplot.data_quants[newname] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
+        pytplot.data_quants[newname].attrs = plot_options
 
-    return new_tvar
+    return newname

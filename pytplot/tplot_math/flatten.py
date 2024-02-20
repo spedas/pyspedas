@@ -5,8 +5,9 @@
 
 import pytplot
 import copy
+import logging
 
-def flatten(tvar,range=None,new_tvar=None):
+def flatten(tvar,range=None,newname=None,new_tvar=None):
     """
     Divides the column by an average over specified time
 
@@ -18,7 +19,9 @@ def flatten(tvar,range=None,new_tvar=None):
             Name of first tplot variable.
         range : [int, int], optional
             The time range to average over.  The default is the whole range.
-        new_tvar : str
+        new_tvar : str (Deprecated)
+            Name of new tvar for added data.  If not set, then a name is made up.
+        newname : str
             Name of new tvar for added data.  If not set, then a name is made up.
 
     Returns:
@@ -30,10 +33,14 @@ def flatten(tvar,range=None,new_tvar=None):
         >>> pytplot.flatten('d',[8,14],'d_flatten')
         >>> print(pytplot.data_quants['d_flatten'].values)
     """
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("flatten: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
 
 
-    if new_tvar is None:
-        new_tvar = tvar + "_flattened"
+    if newname is None:
+        newname = tvar + "_flattened"
 
     if 'spec_bins' in pytplot.data_quants[tvar].coords:
         df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
@@ -65,9 +72,9 @@ def flatten(tvar,range=None,new_tvar=None):
             df[i] = df[i]/((df.loc[start_t:end_t])[i]).mean()
 
     if s is not None:
-        pytplot.store_data(new_tvar,data = {'x':df.index,'y':df.values, 'v': s.values})
-        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        pytplot.store_data(newname,data = {'x':df.index,'y':df.values, 'v': s.values})
+        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     else:
-        pytplot.store_data(new_tvar, data={'x': df.index, 'y': df.values})
-        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        pytplot.store_data(newname, data={'x': df.index, 'y': df.values})
+        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     return

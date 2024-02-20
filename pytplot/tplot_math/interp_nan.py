@@ -5,8 +5,9 @@
 
 import pytplot
 import copy
+import logging
 
-def interp_nan(tvar, new_tvar=None, s_limit=None):
+def interp_nan(tvar, newname=None, new_tvar=None, s_limit=None):
     """
     Interpolates the tplot variable through NaNs in the data.  This is basically just a wrapper for xarray's interpolate_na function.
 
@@ -18,7 +19,9 @@ def interp_nan(tvar, new_tvar=None, s_limit=None):
             Name of tplot variable.
         s_limit : int or float, optional
             The maximum size of the gap in seconds to not interpolate over.  I.e. if there are too many NaNs in a row, leave them there.
-        new_tvar : str
+        new_tvar : str (Deprecated)
+            Name of new tvar for added data.  If not set, then the original tvar is replaced.
+        newname : str
             Name of new tvar for added data.  If not set, then the original tvar is replaced.
 
     Returns:
@@ -30,15 +33,19 @@ def interp_nan(tvar, new_tvar=None, s_limit=None):
         >>> pytplot.interp_nan('e','e_nonan',s_limit=5)
         >>> print(pytplot.data_quants['e_nonan'].values)
     """
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("interp_nan: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
 
     x = pytplot.data_quants[tvar].interpolate_na(dim='time', limit=s_limit)
     x.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
-    if new_tvar is None:
+    if newname is None:
         pytplot.data_quants[tvar] = x
         x.name = tvar
     else:
-        pytplot.data_quants[new_tvar] = x
-        pytplot.data_quants[new_tvar].name = new_tvar
+        pytplot.data_quants[newname] = x
+        pytplot.data_quants[newname].name = newname
 
 

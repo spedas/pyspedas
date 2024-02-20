@@ -10,7 +10,7 @@ Similar to tdeflag.pro in IDL SPEDAS, but now a wrapper for deflag.py
 import logging
 import pytplot
 
-def tdeflag(names, flag=None, method='linear', new_names=None, suffix=None,
+def tdeflag(names, flag=None, method='linear', newname=None, new_names=None, suffix=None,
             overwrite=None, fillval=None):
     """
     Replaces FLAGs in arrays with interpolated or other values.
@@ -27,8 +27,12 @@ def tdeflag(names, flag=None, method='linear', new_names=None, suffix=None,
         'replace' replaces flagged value with a fill value, which can be set using the 
                   keyword 'fillval' (default is to use NaN)
         Option 'remove_nan' removes time intervals with NaN values
-    new_names: str/list of str, optional
+    new_names: str/list of str, optional (Deprecated)
         List of new_names for pytplot variables.
+        If '', then pytplot variables are replaced.
+        If not given, then a suffix is applied.
+    newname: str/list of str, optional
+        List of new names for pytplot variables.
         If '', then pytplot variables are replaced.
         If not given, then a suffix is applied.
     suffix: str, optional
@@ -41,6 +45,11 @@ def tdeflag(names, flag=None, method='linear', new_names=None, suffix=None,
     None.
 
     """
+    # new_names is deprecated in favor of newname
+    if new_names is not None:
+        logging.info("tdeflag: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
+
     old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
@@ -52,17 +61,17 @@ def tdeflag(names, flag=None, method='linear', new_names=None, suffix=None,
 
     if overwrite is not None:
         n_names = old_names
-    elif new_names is None:
+    elif newname is None:
         n_names = [s + suffix for s in old_names]
     else:
-        n_names = new_names
+        n_names = newname
 
     if isinstance(n_names, str):
         n_names = [n_names]
 
     if len(n_names) != len(old_names):
         n_names = [s + suffix for s in old_names]
-        logging.info('input new_names has incorrect number of elements')
+        logging.info('input newname has incorrect number of elements')
 
     for i in range(len(old_names)):
         pytplot.deflag(old_names[i], flag, new_tvar=n_names[i], method=method, fillval=fillval)

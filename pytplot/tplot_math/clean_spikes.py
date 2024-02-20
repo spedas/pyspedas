@@ -13,7 +13,7 @@ from .tsmooth import tsmooth
 from .subtract_average import subtract_average
 
 def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
-                 new_names=None, suffix=None, overwrite=None):
+                 new_names=None,newname=None, suffix=None, overwrite=None):
     """
     Clean spikes from data.
 
@@ -21,7 +21,10 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     ----------
     names: str/list of str
         List of pytplot names.
-    new_names: str/list of str, optional
+    new_names: str/list of str, optional (Deprecated)
+        List of new_names for pytplot variables.
+        If not given, then a suffix is applied.
+    newname: str/list of str, optional
         List of new_names for pytplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
@@ -41,6 +44,11 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     None.
 
     """
+    # new_names is deprecated in favor of newname
+    if new_names is not None:
+        logging.info("clean_spikes: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
+
     old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
@@ -52,10 +60,10 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
 
     if overwrite is not None:
         n_names = old_names
-    elif new_names is None:
+    elif newname is None:
         n_names = [s + suffix for s in old_names]
     else:
-        n_names = new_names
+        n_names = newname
 
     if isinstance(n_names, str):
         n_names = [n_names]

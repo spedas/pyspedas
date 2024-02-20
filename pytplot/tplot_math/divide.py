@@ -6,8 +6,9 @@
 import pytplot
 import numpy as np
 import copy
+import logging
 
-def divide(tvar1,tvar2,new_tvar=None):
+def divide(tvar1,tvar2,newname=None, new_tvar=None):
     """
     Divides two tplot variables.  Will interpolate if the two are not on the same time cadence.
 
@@ -16,7 +17,9 @@ def divide(tvar1,tvar2,new_tvar=None):
             Name of first tplot variable.
         tvar2 : int/float
             Name of second tplot variable
-        new_tvar : str
+        new_tvar : str (Deprecated)
+            Name of new tvar for divided data.  If not set, then the data in tvar1 is replaced.
+        newname : str
             Name of new tvar for divided data.  If not set, then the data in tvar1 is replaced.
 
     Returns:
@@ -27,6 +30,11 @@ def divide(tvar1,tvar2,new_tvar=None):
         >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
         >>> pytplot.divide('a','c','a_over_c')
         """
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("divide: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
+
     # interpolate tvars
     tv2 = pytplot.tplot_math.tinterp(tvar1, tvar2)
     # separate and divide data
@@ -34,15 +42,15 @@ def divide(tvar1,tvar2,new_tvar=None):
     data2 = pytplot.data_quants[tv2].values
     data = data1 / data2
     # store divided data
-    if new_tvar is None:
+    if newname is None:
         pytplot.data_quants[tvar1].values = data
         return tvar1
     if 'spec_bins' in pytplot.data_quants[tvar1].coords:
-        pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data,
+        pytplot.store_data(newname, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data,
                                            'v': pytplot.data_quants[tvar1].coords['spec_bins'].values})
-        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
+        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
     else:
-        pytplot.store_data(new_tvar, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
-        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
+        pytplot.store_data(newname, data={'x': pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
+        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
 
     return new_tvar

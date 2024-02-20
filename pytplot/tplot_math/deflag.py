@@ -8,7 +8,7 @@ import copy
 import numpy as np
 import logging
 
-def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
+def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
     """
     Replaces FLAGs in arrays with interpolated or other values.
     Optionally removes NaN values from a variable
@@ -28,10 +28,15 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
             (or Inf) will be removed.
             'replace' replaces flagged value with a fill value, which
                   can be set using the keyword 'fillval' (default is to use NaN)
-        new_tvar : str
+        new_tvar : str (Deprecated)
             Name of new tvar for deflagged data storage.  
             If not specified, then the data in tvar1 will be replaced.
             THIS is not an option for multiple variable input, for 
+            multiple or pseudo variables, the data is overwritten.
+        newname : str
+            Name of new tvar for deflagged data storage.
+            If not specified, then the data in tvar1 will be replaced.
+            THIS is not an option for multiple variable input, for
             multiple or pseudo variables, the data is overwritten.
     Restrictions:
        DEGAP only works for 1 or 2-d data arrays; ntimes or (ntimes, nspectral_bins)
@@ -44,6 +49,11 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,4],[4,90],[5,5],[6,6],[7,7]]})
         >>> pytplot.deflag('d',[100,90,7,2,57],'e')
     """
+
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("deflag: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
 
     #for linear method, and flag of NaN, or none, interp_nan an be called
 #    if (flag == None or np.isnan(flag)) and method == 'linear':
@@ -108,16 +118,16 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
                 if alen == 3 and append_v:
                     new_v.append(v[j])
 
-        if new_tvar is None:
+        if newname is None:
             if alen == 2:
                 pytplot.store_data(tvar, data={'x': new_time, 'y': new_data})
             else:
                 pytplot.store_data(tvar, data={'x': new_time, 'y': new_data, 'v':new_v})
         else:
             if alen == 2:
-                pytplot.store_data(new_tvar, data={'x': new_time, 'y': new_data})
+                pytplot.store_data(newname, data={'x': new_time, 'y': new_data})
             else:
-                pytplot.store_data(new_tvar, data={'x': new_time, 'y': new_data, 'v':new_v})
+                pytplot.store_data(newname, data={'x': new_time, 'y': new_data, 'v':new_v})
             pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     elif method == 'repeat' or method == 'linear' or method == 'replace':
         a = copy.deepcopy(pytplot.get_data(tvar))
@@ -185,32 +195,32 @@ def deflag(tvar,flag=None,new_tvar=None,method=None,fillval=None):
                 else:
                     print("No Flagged_data")
 
-        if new_tvar is None:
+        if newname is None:
             if alen == 2:
                 pytplot.store_data(tvar, data={'x': time, 'y': data})
             else:
                 pytplot.store_data(tvar, data={'x': time, 'y': data, 'v':v})
         else:
             if alen == 2:
-                pytplot.store_data(new_tvar, data={'x': time, 'y': data})
+                pytplot.store_data(newname, data={'x': time, 'y': data})
             else:
-                pytplot.store_data(new_tvar, data={'x': time, 'y': data, 'v':v})
-                pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+                pytplot.store_data(newname, data={'x': time, 'y': data, 'v':v})
+                pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     else: #any other option includes method=None, replace flags with NaN
         nf = len(flag)
         a = copy.deepcopy(pytplot.data_quants[tvar].where(pytplot.data_quants[tvar]!=flag[0]))
         if nf > 1:
             for j in range(nf):
                 a = copy.deepcopy(a.where(a!=flag[j]))
-        if new_tvar is None:
+        if newname is None:
             a.name = tvar
             pytplot.data_quants[tvar] = a
         else:
             if 'spec_bins' in a.coords:
-                pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
-                pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+                pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+                pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
             else:
-                pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values})
-                pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+                pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values})
+                pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
     return

@@ -1,9 +1,9 @@
 import logging
 import pytplot
 import numpy as np
+import logging
 
-
-def split_vec(tvar, polar=False, new_name=None, columns='all', suffix=None):
+def split_vec(tvar, polar=False, newname=None, new_name=None, columns='all', suffix=None):
     """
     Splits up 2D data into many 1D tplot variables.
 
@@ -15,7 +15,9 @@ def split_vec(tvar, polar=False, new_name=None, columns='all', suffix=None):
             Name of tplot variable to split up
         polar : bool, optional
             If True, the input data is in polar coordinates. Suffix will be set to ['_mag', '_th', '_phi'].
-        newtvars : int/list, optional
+        new_name : int/list, optional (Deprecated)
+            The names of the new tplot variables. This must be the same length as the number of variables created.
+        newname : int/list, optional
             The names of the new tplot variables. This must be the same length as the number of variables created.
         columns : list of ints, optional
             The specific column numbers to grab from the data.  The default is to split all columns.
@@ -28,6 +30,10 @@ def split_vec(tvar, polar=False, new_name=None, columns='all', suffix=None):
         >>> pytplot.tplot_math.split_vec('b',['b1','b2','b3'],[0,[1,3],4])
         >>> print(pytplot.data_quants['b2'].values)
     """
+    # new_name is deprecated in favor of newname
+    if new_name is not None:
+        logging.info("split_vec: The new_name parameter is deprecated. Please use newname instead.")
+        newname = new_name
 
     # Make sure the tvar is found
     if tvar not in pytplot.data_quants:
@@ -35,8 +41,8 @@ def split_vec(tvar, polar=False, new_name=None, columns='all', suffix=None):
         return
 
     # Give a default to the new name
-    if new_name is None:
-        new_name = tvar
+    if newname is None:
+        newname = tvar
 
     # Gather data from the tvar
     alldata = pytplot.get_data(tvar)
@@ -82,7 +88,7 @@ def split_vec(tvar, polar=False, new_name=None, columns='all', suffix=None):
             range_start = i
             range_end = i
         split_col = list(range(range_start, range_end+1))
-        split_name = new_name + suffix[i]
+        split_name = newname + suffix[i]
         created_variables = created_variables + [split_name]
 
         data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze()}
