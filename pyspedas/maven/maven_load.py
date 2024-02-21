@@ -3,38 +3,79 @@ from dateutil.parser import parse
 import os
 
 import pytplot
-from .download_files_utilities import set_new_data_root_dir, get_root_data_dir, create_dir_if_needed
-from .download_files_utilities import get_orbit_files, get_filenames, get_new_files, get_file_from_site
-from .download_files_utilities import display_progress
-from .file_regex import kp_regex, l2_regex
+from .download_files_utilities import (
+    set_new_data_root_dir,
+    get_root_data_dir,
+    create_dir_if_needed,
+    get_orbit_files,
+    get_filenames,
+    get_new_files,
+    get_file_from_site,
+    display_progress,
+)
+from .file_regex import maven_kp_l2_regex  # kp_regex, l2_regex
 from .orbit_time import orbit_time
 from .maven_kp_to_tplot import maven_kp_to_tplot
 
-def maven_filenames(filenames=None,
-                    instruments=None,
-                    level='l2',
-                    insitu=True,
-                    iuvs=False,
-                    start_date='2014-01-01',
-                    end_date='2020-01-01',
-                    update_prefs=False,
-                    only_update_prefs=False,
-                    local_dir=None):
-    '''
-    This function queries the MAVEN SDC API, and will return a list of files that match the inputs above.
-    '''
+
+def maven_filenames(
+    filenames=None,
+    instruments=None,
+    level="l2",
+    insitu=True,
+    iuvs=False,
+    start_date="2014-01-01",
+    end_date="2014-01-02",
+    update_prefs=False,
+    only_update_prefs=False,
+    local_dir=None,
+):
+    """
+    This function queries the MAVEN SDC API, and will return a list of files that match the given parameters.
+
+    Parameters
+    ----------
+    filenames : list of str, optional
+        Predefined list of filenames. If provided, other parameters are ignored. Defaults to None.
+    instruments : list of str, optional
+        List of instrument names. Defaults to None.
+    level : str, optional
+        Data level. Defaults to 'l2'.
+    insitu : bool, optional
+        If True, insitu files will be used. Defaults to True.
+    iuvs : bool, optional
+        If True, iuvs files will be used. Defaults to False.
+        When True, file_extension=tab is added to the query.
+    start_date : str/int, optional
+        Start date in 'YYYY-MM-DD' format, or the orbit number. Defaults to '2014-01-01'.
+    end_date : str/int, optional
+        End date in 'YYYY-MM-DD' format, or the orbit number. Defaults to '2014-01-02'.
+    update_prefs : bool, optional
+        If True, updates preferences. Defaults to False.
+    only_update_prefs : bool, optional
+        If True, only updates preferences and does not return filenames. Defaults to False.
+    local_dir : str, optional
+        Local directory to use. Defaults to None.
+
+    Returns
+    -------
+    list of str
+        List of MAVEN filenames.
+    """
 
     # Check for orbit num rather than time string
     if isinstance(start_date, int) and isinstance(end_date, int):
-        logging.info("Orbit numbers specified, checking for updated orbit # file from naif.jpl.nasa.gov")
+        logging.info(
+            "Orbit numbers specified, checking for updated orbit # file from naif.jpl.nasa.gov"
+        )
         get_orbit_files()
         start_date, end_date = orbit_time(start_date, end_date)
         start_date = parse(start_date)
         end_date = parse(end_date)
         start_date = start_date.replace(hour=0, minute=0, second=0)
-        end_date = end_date.replace(day=end_date.day+1, hour=0, minute=0, second=0)
-        start_date = start_date.strftime('%Y-%m-%d')
-        end_date = end_date.strftime('%Y-%m-%d')
+        end_date = end_date.replace(day=end_date.day + 1, hour=0, minute=0, second=0)
+        start_date = start_date.strftime("%Y-%m-%d")
+        end_date = end_date.strftime("%Y-%m-%d")
 
     # Update the preference directory
     if update_prefs or only_update_prefs:
@@ -44,26 +85,26 @@ def maven_filenames(filenames=None,
 
     # Check for public vs private access
     # Hard code in access as public for now
-    public=True
-    '''
+    public = True
+    """
     public = get_access()
     if not public:
         get_uname_and_password()
-    '''
+    """
     # If no instruments are specified, default to the KP data set
     if instruments is None:
-        instruments = ['kp']
+        instruments = ["kp"]
         if insitu:
-            level = 'insitu'
+            level = "insitu"
         if iuvs:
-            level = 'iuvs'
+            level = "iuvs"
 
-    if level == 'kp':
-        instruments = ['kp']
+    if level == "kp":
+        instruments = ["kp"]
         if insitu:
-            level = 'insitu'
+            level = "insitu"
         if iuvs:
-            level = 'iuvs'
+            level = "iuvs"
 
     # Set data download location
     if local_dir is None:
@@ -82,13 +123,15 @@ def maven_filenames(filenames=None,
             query_args.append("file=" + filenames)
         query_args.append("start_date=" + start_date)
         query_args.append("end_date=" + end_date)
-        if level == 'iuvs':
+        if level == "iuvs":
             query_args.append("file_extension=tab")
 
-        data_dir = os.path.join(mvn_root_data_dir, 'maven', 'data', 'sci', instrument, level)
-        
-        query = '&'.join(query_args)
-        
+        data_dir = os.path.join(
+            mvn_root_data_dir, "maven", "data", "sci", instrument, level
+        )
+
+        query = "&".join(query_args)
+
         s = get_filenames(query, public)
 
         if not s:
@@ -96,56 +139,133 @@ def maven_filenames(filenames=None,
             maven_files[instrument] = []
             continue
 
-        s = s.split(',')
+        s = s.split(",")
 
         maven_files[instrument] = [s, data_dir, public]
 
     # Grab KP data too, there is a lot of good ancillary info in here
-    if instruments != 'kp':
-        instrument='kp'
+    if instruments != "kp":
+        instrument = "kp"
         # Build the query to the website
         query_args = []
         query_args.append("instrument=kp")
         query_args.append("level=insitu")
         query_args.append("start_date=" + start_date)
         query_args.append("end_date=" + end_date)
-        data_dir = os.path.join(mvn_root_data_dir, 'maven', 'data', 'sci', 'kp', 'insitu')
-        query = '&'.join(query_args)
+        data_dir = os.path.join(
+            mvn_root_data_dir, "maven", "data", "sci", "kp", "insitu"
+        )
+        query = "&".join(query_args)
         s = get_filenames(query, public)
         if not s:
             logging.error("No files found for {}.".format(instrument))
             maven_files[instrument] = []
         else:
-            s = s.split(',')
+            s = s.split(",")
             maven_files[instrument] = [s, data_dir, public]
 
     return maven_files
 
 
-def load_data(filenames=None,
-              instruments=None,
-              level='l2',
-              type=None,
-              insitu=True,
-              iuvs=False,
-              start_date='2014-01-01',
-              end_date='2020-01-01',
-              update_prefs=False,
-              only_update_prefs=False,
-              local_dir=None,
-              list_files=False,
-              new_files=True,
-              exclude_orbit_file=False,
-              download_only=False,
-              varformat=None,
-              varnames=[],
-              prefix='',
-              suffix='',
-              get_support_data=False,
-              get_metadata=False,
-              auto_yes=False):
+def load_data(
+    filenames=None,
+    instruments=None,
+    level="l2",
+    type=None,
+    insitu=True,
+    iuvs=False,
+    start_date="2014-01-01",
+    end_date="2014-01-02",
+    update_prefs=False,
+    only_update_prefs=False,
+    local_dir=None,
+    list_files=False,
+    new_files=True,
+    exclude_orbit_file=False,
+    download_only=False,
+    varformat=None,
+    varnames=[],
+    prefix="",
+    suffix="",
+    get_support_data=False,
+    get_metadata=False,
+    auto_yes=False,
+):
     """
     This function downloads MAVEN data loads it into tplot variables, if applicable.
+
+    Parameters
+    ----------
+    filenames : list of str, optional
+        Predefined list of filenames. If provided, other parameters are ignored. Defaults to None.
+    instruments : list of str, optional
+        List of instrument names. Defaults to None.
+        Accepted values are any combination of: sta, swi, swe, lpw, euv, ngi, iuv, mag, sep, rse
+    level : str, optional
+        Data level. Defaults to 'l2'. Currently unused, only l2 data can be loaded.
+    type : str, optional
+        Type of data to load. Defaults to None.
+
+        The observation/file type of the instruments to load.  If None, all file types are loaded.
+        Otherwise, a file will only be loaded into tplot if its descriptor matches one of the strings in this field.
+
+        Accepted values are:
+        =================== ====================================
+        Instrument           Level 2 Observation Type/File Type
+        =================== ====================================
+        EUV                 bands
+        LPW                 lpiv, lpnt, mrgscpot, we12, we12burstlf, we12bursthf, we12burstmf, wn, wspecact, wspecpas
+        STATIC              2a, c0, c2, c4, c6, c8, ca, cc, cd, ce, cf, d0, d1, d4, d6, d7, d8, d9, da, db
+        SEP                 s1-raw-svy-full, s1-cal-svy-full, s2-raw-svy-full, s2-cal-svy-full
+        SWEA                arc3d, arcpad, svy3d, svypad, svyspec
+        SWIA                coarsearc3d, coarsesvy3d, finearc3d, finesvy3d, onboardsvymom, onboardsvyspec
+        MAG                 ss, pc, pl, ss1s, pc1s, pl1s
+        =================== =====================================
+    insitu : bool, optional
+        If True, only insitu files will be used. Defaults to True.
+    iuvs : bool, optional
+        If True, iuvs files will be used. Defaults to False.
+        When True, file_extension=tab is added to the query.
+    start_date : str/int, optional
+        Start date in 'YYYY-MM-DD' format, or the orbit number. Defaults to '2014-01-01'.
+    end_date : str/int, optional
+        End date in 'YYYY-MM-DD' format, or the orbit number. Defaults to '2014-01-02'.
+    update_prefs : bool, optional
+        If True, updates preferences. Defaults to False.
+    only_update_prefs : bool, optional
+        If True, only updates preferences and does not return data. Defaults to False.
+    local_dir : str, optional
+        Local directory to use. Defaults to None.
+    list_files : bool, optional
+        If True, lists files without loading data. Defaults to False.
+    new_files : bool, optional
+        If True, get new files. Defaults to True.
+    exclude_orbit_file : bool, optional
+        If True, will not download the latest orbit table. Defaults to False.
+        Currently unused.
+    download_only : bool, optional
+        If True, only downloads files without loading data. Defaults to False.
+    varformat : str, optional
+        Variable format. Defaults to None.
+        The file variable formats to load into tplot. Wildcard character
+        "*" is accepted.  By default, all variables are loaded in.
+    varnames : list of str, optional
+        List of variable names to load. Defaults to [].
+    prefix : str, optional
+        Prefix to append to variable names. Defaults to ''.
+    suffix : str, optional
+        Suffix to append to variable names. Defaults to ''.
+    get_support_data : bool, optional
+        If True, retrieves support data. Defaults to False.
+    get_metadata : bool, optional
+        If True, retrieves metadata. Defaults to False.
+    auto_yes : bool, optional
+        If True, automatically answers 'yes' to prompts. Defaults to False.
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
     """
 
     if not isinstance(instruments, list) and instruments is not None:
@@ -157,12 +277,24 @@ def load_data(filenames=None,
     if not isinstance(filenames, list) and filenames is not None:
         filenames = [filenames]
 
+    kp_regex, l2_regex = maven_kp_l2_regex()
+
     # 1. Get a list of MAVEN files queries from the above seach parameters
-    maven_files = maven_filenames(filenames, instruments, level, insitu, iuvs, start_date, end_date, update_prefs,
-                                  only_update_prefs, local_dir)
+    maven_files = maven_filenames(
+        filenames,
+        instruments,
+        level,
+        insitu,
+        iuvs,
+        start_date,
+        end_date,
+        update_prefs,
+        only_update_prefs,
+        local_dir,
+    )
 
     # If we are not asking for KP data, this flag ensures only ancillary data is loaded in from the KP files
-    if level != 'kp':
+    if level != "kp":
         ancillary_only = True
     else:
         ancillary_only = False
@@ -185,7 +317,7 @@ def load_data(filenames=None,
             # Add to list of files to load
             for f in s:
                 # Filter by type
-                if type != [None] and instr != 'kp':
+                if type != [None] and instr != "kp":
                     file_type_match = False
                     desc = l2_regex.match(f).group("description")
                     for t in type:
@@ -195,8 +327,8 @@ def load_data(filenames=None,
                         continue
 
                 # Check if the files are KP data
-                if instr == 'kp':
-                    full_path = create_dir_if_needed(f, data_dir, 'insitu')
+                if instr == "kp":
+                    full_path = create_dir_if_needed(f, data_dir, "insitu")
                 else:
                     full_path = create_dir_if_needed(f, data_dir, level)
                 bn_files_to_load.append(f)
@@ -208,29 +340,34 @@ def load_data(filenames=None,
                 return
 
             if new_files:
-                if instr == 'kp':
-                    s = get_new_files(bn_files_to_load, data_dir, instr, 'insitu')
+                if instr == "kp":
+                    s = get_new_files(bn_files_to_load, data_dir, instr, "insitu")
                 else:
                     s = get_new_files(bn_files_to_load, data_dir, instr, level)
             if len(s) == 0:
                 continue
-            logging.info("Your request will download a total of: "+str(len(s))+" files for instrument "+str(instr))
-            logging.info('Would you like to proceed with the download? ')
+            logging.info(
+                "Your request will download a total of: "
+                + str(len(s))
+                + " files for instrument "
+                + str(instr)
+            )
+            logging.info("Would you like to proceed with the download? ")
             valid_response = False
             cancel = False
             if auto_yes:
                 valid_response = True
             while not valid_response:
-                response = (input('(y/n) >  '))
-                if response == 'y' or response == 'Y':
+                response = input("(y/n) >  ")
+                if response == "y" or response == "Y":
                     valid_response = True
                     cancel = False
-                elif response == 'n' or response == 'N':
-                    logging.error('Cancelled download. Returning...')
+                elif response == "n" or response == "N":
+                    logging.error("Cancelled download. Returning...")
                     valid_response = True
                     cancel = True
                 else:
-                    logging.error('Invalid input.  Please answer with y or n.')
+                    logging.error("Invalid input.  Please answer with y or n.")
 
             if cancel:
                 continue
@@ -238,15 +375,13 @@ def load_data(filenames=None,
             i = 0
             display_progress(i, len(s))
             for f in s:
-                i = i+1
-                if instr == 'kp':
-                    full_path = create_dir_if_needed(f, data_dir, 'insitu')
+                i = i + 1
+                if instr == "kp":
+                    full_path = create_dir_if_needed(f, data_dir, "insitu")
                 else:
                     full_path = create_dir_if_needed(f, data_dir, level)
                 get_file_from_site(f, public, full_path)
                 display_progress(i, len(s))
-
-
 
     # 2. Load files into tplot
 
@@ -256,9 +391,9 @@ def load_data(filenames=None,
             files_to_load = [item for sublist in files_to_load for item in sublist]
 
         # Only load in files into tplot if we actually downloaded CDF files
-        cdf_files = [f for f in files_to_load if '.cdf' in f]
-        sts_files = [f for f in files_to_load if '.sts' in f]
-        kp_files = [f for f in files_to_load if '.tab' in f]
+        cdf_files = [f for f in files_to_load if ".cdf" in f]
+        sts_files = [f for f in files_to_load if ".sts" in f]
+        kp_files = [f for f in files_to_load if ".tab" in f]
 
         loaded_tplot_vars = []
         if not download_only:
@@ -266,30 +401,50 @@ def load_data(filenames=None,
             for f in cdf_files:
                 # Loop through CDF files
                 desc = l2_regex.match(os.path.basename(f)).group("description")
-                if desc != '' and suffix == '':
-                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames, string_encoding='utf-8',
-                                                                 get_support_data=get_support_data, prefix=prefix,
-                                                                 get_metadata=get_metadata, suffix=desc, merge=True)
+                if desc != "" and suffix == "":
+                    created_vars = pytplot.cdf_to_tplot(
+                        f,
+                        varformat=varformat,
+                        varnames=varnames,
+                        string_encoding="utf-8",
+                        get_support_data=get_support_data,
+                        prefix=prefix,
+                        get_metadata=get_metadata,
+                        suffix=desc,
+                        merge=True,
+                    )
                 else:
-                    created_vars = pytplot.cdf_to_tplot(f, varformat=varformat, varnames=varnames, string_encoding='utf-8',
-                                                                  get_support_data=get_support_data, prefix=prefix,
-                                                                  get_metadata=get_metadata, suffix=suffix, merge=True)
+                    created_vars = pytplot.cdf_to_tplot(
+                        f,
+                        varformat=varformat,
+                        varnames=varnames,
+                        string_encoding="utf-8",
+                        get_support_data=get_support_data,
+                        prefix=prefix,
+                        get_metadata=get_metadata,
+                        suffix=suffix,
+                        merge=True,
+                    )
 
                 # Specifically for SWIA and SWEA data, make sure the plots have log axes and are spectrograms
                 instr = l2_regex.match(os.path.basename(f)).group("instrument")
                 if instr in ["swi", "swe"]:
-                    pytplot.options(created_vars, 'spec', 1)
+                    pytplot.options(created_vars, "spec", 1)
                 loaded_tplot_vars.append(created_vars)
 
             for f in sts_files:
                 # Loop through STS (Mag) files
                 desc = l2_regex.match(os.path.basename(f)).group("description")
-                if desc != '' and suffix == '':
-                    loaded_tplot_vars.append(pytplot.sts_to_tplot(f, prefix=prefix,
-                                                                      suffix=desc, merge=True))
+                if desc != "" and suffix == "":
+                    loaded_tplot_vars.append(
+                        pytplot.sts_to_tplot(f, prefix=prefix, suffix=desc, merge=True)
+                    )
                 else:
-                    loaded_tplot_vars.append(pytplot.sts_to_tplot(f, prefix=prefix,
-                                                                  suffix=suffix, merge=True))
+                    loaded_tplot_vars.append(
+                        pytplot.sts_to_tplot(
+                            f, prefix=prefix, suffix=suffix, merge=True
+                        )
+                    )
 
                 # Remove the Decimal Day column, not really useful
                 for tvar in loaded_tplot_vars:
@@ -298,36 +453,49 @@ def load_data(filenames=None,
                         del tvar
 
             # Flatten out the list and only grab the unique tplot variables
-            flat_list = list(set([item for sublist in loaded_tplot_vars for item in sublist]))
+            flat_list = list(
+                set([item for sublist in loaded_tplot_vars for item in sublist])
+            )
 
             # Load in KP data specifically for all of the Ancillary data (position, attitude, Ls, etc)
             if kp_files != []:
-                kp_data_loaded = maven_kp_to_tplot(filename=kp_files, ancillary_only=ancillary_only, instruments=instruments)
+                kp_data_loaded = maven_kp_to_tplot(
+                    filename=kp_files,
+                    ancillary_only=ancillary_only,
+                    instruments=instruments,
+                )
 
                 # Link all created KP data to the ancillary KP data
                 for tvar in kp_data_loaded:
-                    pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type='alt')
-                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type='x')
-                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type='y')
-                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type='z')
-                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
-                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
-                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
-                    pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
-                    pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
-                
+                    pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type="alt")
+                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type="x")
+                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type="y")
+                    pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type="z")
+                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type="geo_x")
+                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type="geo_y")
+                    pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type="geo_z")
+                    pytplot.link(
+                        tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type="lon"
+                    )
+                    pytplot.link(
+                        tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type="lat"
+                    )
+
             # Link all created tplot variables to the corresponding KP data
             for tvar in flat_list:
-                pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type='alt')
-                pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type='x')
-                pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type='y')
-                pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type='z')
-                pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
-                pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
-                pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
-                pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
-                pytplot.link(tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
-
+                pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type="alt")
+                pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type="x")
+                pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type="y")
+                pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type="z")
+                pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type="geo_x")
+                pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type="geo_y")
+                pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type="geo_z")
+                pytplot.link(
+                    tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type="lon"
+                )
+                pytplot.link(
+                    tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type="lat"
+                )
 
             # Return list of unique KP data
             return flat_list
