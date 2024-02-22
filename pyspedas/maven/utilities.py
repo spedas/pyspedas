@@ -518,6 +518,7 @@ def get_latest_iuvs_files_from_date_range(date1, date2):
 
     from datetime import timedelta
 
+    kp_regex, l2_regex = maven_kp_l2_regex()
     mvn_root_data_dir = utils.get_root_data_dir()
     maven_data_dir = os.path.join(
         mvn_root_data_dir, "maven", "data", "sci", "kp", "iuvs"
