@@ -30,6 +30,7 @@ Load Routines
    solo
    st5
    stereo
+   swarm
    themis
    twins
    ulysses
