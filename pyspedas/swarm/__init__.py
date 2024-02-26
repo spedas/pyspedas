@@ -9,39 +9,42 @@ def mag(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
         varnames=[],
         time_clip=False):
     """
-    This function loads data from the Vector Field Magnetometer (VFM)
-    
+    Loads data from the Vector Field Magnetometer (VFM).
+
     Parameters
     ----------
-        trange : list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
-            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-
-        probe: str or list of str
-            Swarm spacecraft ID ('a', 'b' and/or 'c')
-
-        datatype: str
-            Data type; Valid options:
-                'hr', 'lr'
-
-        level: str
-            Data level; options: 'l1b'
-
-        suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
-
-        varnames: list of str
-            List of variable names to load (if not specified,
-            all data variables are loaded)
-
-        time_clip: bool
-            Time clip the variables to exactly the range specified in the trange keyword
+    trange : list of str, default=['2017-03-27/06:00', '2017-03-27/08:00']
+        Time range of interest [starttime, endtime] with the format
+        'YYYY-MM-DD' or 'YYYY-MM-DD/hh:mm:ss'.
+    probe : str or list of str, default='a'
+        Swarm spacecraft ID ('a', 'b', and/or 'c').
+    datatype : str, default='hr'
+        Data type; valid options: 'hr' (high resolution), 'lr' (low resolution).
+    level : str, default='l1b'
+        Data level; options: 'l1b'.
+    suffix : str, optional
+        The tplot variable names will be given this suffix. By default, no suffix is added.
+    varnames : list of str, optional
+        List of variable names to load. If not specified, all data variables are loaded.
+    time_clip : bool, default=False
+        Time clip the variables to exactly the range specified in the trange keyword.
 
     Returns
-    ----------
+    -------
+    out_vars : list of str
         List of tplot variables created.
 
+    Examples
+    --------
+    To load and plot Magnetometer (MAG) data from the Swarm mission for probe 'c' over a specific time range, you can use the following commands:
+
+    >>> import pyspedas
+    >>> from pytplot import tplot
+
+    # Load MAG data for probe 'c'
+    >>> mag_vars = pyspedas.swarm.mag(probe='c', trange=['2017-03-27/06:00', '2017-03-27/08:00'], datatype='hr')
+
+    # Plot the loaded MAG data
+    >>> tplot('swarmc_B_VFM')
     """
     return load(instrument='mag', trange=trange, probe=probe, level=level, datatype=datatype, suffix=suffix, varnames=varnames, time_clip=time_clip)
