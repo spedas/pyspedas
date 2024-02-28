@@ -1,7 +1,7 @@
 from cdasws import CdasWs
 
 
-def find_datasets(mission=None, instrument=None, label=False):
+def find_datasets(mission=None, instrument=None, label=False, quiet=False):
     """
     Find datasets from the Coordinated Data Analysis System (CDAS) based on mission and/or instrument criteria.
 
@@ -16,31 +16,41 @@ def find_datasets(mission=None, instrument=None, label=False):
         The name of the instrument to filter the datasets. If None, datasets are not filtered by instrument.
     label : bool, default=False
         If True, the function prints both the dataset ID and label. If False, only the dataset ID is printed.
+    quiet: bool, default=False
+        If True, suppresses printing of dataset IDs (and labels) found
 
     Returns
     -------
-    None
-        This function does not return any value. It prints the dataset IDs, and optionally labels, to the console.
+    list of str
+        List of datasets found
 
     Examples
     --------
+    >>> from pyspedas import find_datasets
     >>> find_datasets(mission='MMS', instrument='FGM')
     MMS1_FGM_BRST_L2
     MMS1_FGM_SRVY_L2
     ...
 
-    >>> find_datasets(mission='MMS', label=True)
-    MMS1_ASPOC_SRVY_L2: Level 2 Active Spacecraft Potential Control Survey Data - K. Torkar, R. Nakamura (IWF)
-    ...
+    # Suppress printed output
+    >>> from pyspedas import find_datasets
+    >>> mms_list = find_datasets(mission='MMS', quiet=True)
+    >>> print(mms_list[0:3])
+
     """
 
     cdas = CdasWs()
     datasets = cdas.get_datasets(observatoryGroup=mission)
+    output_list = []
     for index, dataset in enumerate(datasets):
         if instrument is not None:
             if instrument.upper() not in dataset['Id']:
                 continue
         if label:
-            print(dataset['Id'] + ': ' + dataset['Label'])
+            if not quiet:
+                print(dataset['Id'] + ': ' + dataset['Label'])
         else:
-            print(dataset['Id'])
+            if not quiet:
+                print(dataset['Id'])
+        output_list.append(dataset['Id'])
+    return output_list
