@@ -1,14 +1,15 @@
 import unittest
-from pyspedas.hapi.hapi import hapi
-from pytplot import data_exists
+from pyspedas import hapi
+from pytplot import data_exists, del_data
 
 
 class HAPITests(unittest.TestCase):
     def test_print_servers(self):
         hapi(trange=['2003-10-20', '2003-11-30'])
 
-    def test_print_catalog(self):
-        hapi(server='https://cdaweb.gsfc.nasa.gov/hapi', catalog=True)
+    def test_return_catalog(self):
+        id_list = hapi(server='https://cdaweb.gsfc.nasa.gov/hapi', catalog=True, quiet=True)
+        self.assertTrue('MMS1_EDI_BRST_L2_EFIELD' in id_list)
 
     def test_dataset_not_specified(self):
         # dataset not specified
@@ -26,6 +27,7 @@ class HAPITests(unittest.TestCase):
                       dataset='MMS4_EDP_SRVY_L2_HFESP')
 
     def test_cdaweb_omni(self):
+        del_data()
         h_vars = hapi(trange=['2003-10-20', '2003-11-30'],
                       server='https://cdaweb.gsfc.nasa.gov/hapi',
                       dataset='OMNI_HRO2_1MIN')
