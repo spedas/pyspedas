@@ -4,9 +4,11 @@ import numpy as np
 from pytplot import get_data, store_data, options, clip, ylim
 
 from ...satellite.erg.load import load
+from ...satellite.erg.get_gatt_ror import get_gatt_ror
 
 
 from typing import List, Optional, Union
+
 
 def gmag_magdas_1sec(
     trange: List[str] = ["2010-11-20/00:00:00", "2010-11-21/00:00:00"],
@@ -185,21 +187,7 @@ def gmag_magdas_1sec(
                 loaded_data += loaded_data_temp
             if (len(loaded_data_temp) > 0) and ror:
                 try:
-                    if isinstance(loaded_data_temp, list):
-                        if downloadonly:
-                            cdf_file = cdflib.CDF(loaded_data_temp[-1])
-                            gatt = cdf_file.globalattsget()
-                        else:
-                            gatt = get_data(loaded_data_temp[-1], metadata=True)["CDF"][
-                                "GATT"
-                            ]
-                    elif isinstance(loaded_data_temp, dict):
-                        gatt = loaded_data_temp[list(loaded_data_temp.keys())[-1]][
-                            "CDF"
-                        ]["GATT"]
-                    print(
-                        "**************************************************************************"
-                    )
+                    gatt = get_gatt_ror(downloadonly, loaded_data)
                     print(gatt["Logical_source_description"])
                     print("")
                     print(f'Information about {gatt["Station_code"]}')

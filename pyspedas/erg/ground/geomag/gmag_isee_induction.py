@@ -5,9 +5,11 @@ from copy import deepcopy
 from pytplot import get_data, store_data, options, clip, ylim
 
 from ...satellite.erg.load import load
+from ...satellite.erg.get_gatt_ror import get_gatt_ror
 
 
 from typing import List, Optional, Union
+
 
 def gmag_isee_induction(
     trange: List[str] = ["2018-10-18/00:00:00", "2018-10-18/02:00:00"],
@@ -169,18 +171,7 @@ def gmag_isee_induction(
             loaded_data += loaded_data_temp
         if (len(loaded_data_temp) > 0) and ror:
             try:
-                if isinstance(loaded_data_temp, list):
-                    if downloadonly:
-                        cdf_file = cdflib.CDF(loaded_data_temp[-1])
-                        gatt = cdf_file.globalattsget()
-                    else:
-                        gatt = get_data(loaded_data_temp[-1], metadata=True)["CDF"][
-                            "GATT"
-                        ]
-                elif isinstance(loaded_data_temp, dict):
-                    gatt = loaded_data_temp[list(loaded_data_temp.keys())[-1]]["CDF"][
-                        "GATT"
-                    ]
+                gatt = get_gatt_ror(downloadonly, loaded_data)
                 print(
                     "**************************************************************************"
                 )

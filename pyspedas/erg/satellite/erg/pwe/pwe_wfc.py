@@ -5,6 +5,7 @@ from pytplot import time_float
 from pytplot import clip, get_data, options, store_data, ylim, zlim
 
 from ..load import load
+from ..get_gatt_ror import get_gatt_ror
 
 
 from typing import List, Optional
@@ -133,7 +134,7 @@ def pwe_wfc(
                 prefix = 'erg_pwe_wfc_' + level + '_' + com + '_' + mode + '_'
                 pathformat = 'satellite/erg/pwe/wfc/'+level+'/'+datatype+'/%Y/%m/erg_pwe_wfc_' + \
                     level+'_'+com+'_'+datatype+'_'+mode+'_'+coord+'_%Y%m%d%H_v??_??.cdf'
-                loaded_data.append(load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+                loaded_data.extend(load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                                    varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd))
                 if com == 'e':
                     tplot_name_list += [prefix +
@@ -152,7 +153,7 @@ def pwe_wfc(
                 prefix = 'erg_pwe_wfc_' + level + '_' + com + '_' + mode + '_'
                 pathformat = 'satellite/erg/pwe/wfc/'+level+'/'+datatype+'/%Y/%m/erg_pwe_wfc_' + \
                     level+'_'+com+'_'+datatype+'_'+mode+'_%Y%m%d%H_v??_??.cdf'
-                loaded_data.append(load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+                loaded_data.extend(load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                                    varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd))
                 prefix_list.append(prefix)
                 component_suffix_list.append(com.upper() + '_spectra')
@@ -160,14 +161,7 @@ def pwe_wfc(
     if (len(loaded_data) > 0) and ror:
 
         try:
-            if isinstance(loaded_data, list):
-                if downloadonly:
-                    cdf_file = cdflib.CDF(loaded_data[-1][-1])
-                    gatt = cdf_file.globalattsget()
-                elif notplot:
-                    gatt = loaded_data[-1][list(loaded_data[-1].keys())[-1]]['CDF']['GATT']
-                else:
-                    gatt = get_data(loaded_data[-1][-1], metadata=True)['CDF']['GATT']
+            gatt = get_gatt_ror(downloadonly, loaded_data)
 
 
             # --- print PI info and rules of the road
