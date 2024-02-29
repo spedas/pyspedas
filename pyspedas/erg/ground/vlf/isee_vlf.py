@@ -144,7 +144,10 @@ def isee_vlf(
             loaded_data += loaded_data_temp
         if (len(loaded_data_temp) > 0) and ror:
             try:
-                gatt = get_gatt_ror(downloadonly, loaded_data)
+                # Most of the load routines use the last variable loaded to get the ROR metadata, but in this
+                # case, it seems to want the first variable instead.  So we'll only pass that one.
+
+                gatt = get_gatt_ror(downloadonly, [loaded_data[0]])
                 print(
                     "**************************************************************************"
                 )

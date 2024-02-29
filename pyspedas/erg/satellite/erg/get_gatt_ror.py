@@ -22,7 +22,7 @@ def get_gatt_ror(downloadonly, loaded_data):
                 'PI_affiliation':'Error_retrieving',
                 "PI_AFFILIATION":"Error_retrieving",
                 'LINK':'Error_retrieving',
-                "TEXT":"Error_retrieving",
+                "TEXT":["Error_retrieving"],
                 "LINK_TEXT":"Error_retriving",
                 "HTTP_LINK":"Error_retrieving",
                 "Rules_of_use":"Error_retrieving",
