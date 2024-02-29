@@ -1,21 +1,30 @@
 
 import os
 import unittest
-from pytplot import data_exists
+from pytplot import data_exists, del_data
 
 import pyspedas
 
 class LoadTestCases(unittest.TestCase):
+    def test_load_att_data(self):
+        del_data()
+        att_vars = pyspedas.erg.att()
+        self.assertTrue(data_exists('erg_att_sprate'))
+        self.assertTrue(data_exists('erg_att_spphase'))
+
     def test_load_hep_data(self):
+        del_data()
         hep_vars = pyspedas.erg.hep()
         self.assertTrue(data_exists('erg_hep_l2_FEDO_L'))
         self.assertTrue(data_exists('erg_hep_l2_FEDO_H'))
 
     def test_load_xep_data(self):
+        del_data()
         xep_vars = pyspedas.erg.xep()
         self.assertTrue(data_exists('erg_xep_l2_FEDO_SSD'))
 
     def test_load_orb_data(self):
+        del_data()
         orb_vars = pyspedas.erg.orb()
         self.assertTrue(data_exists('erg_orb_l2_pos_gse'))
         self.assertTrue(data_exists('erg_orb_l2_pos_gsm'))
@@ -25,30 +34,36 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_orb_l2_vel_sm'))
 
     def test_load_l3_orb_data(self):
+        del_data()
         orb_vars = pyspedas.erg.orb(level='l3')
         self.assertTrue(data_exists('erg_orb_l3_pos_eq_op'))
         self.assertTrue(data_exists('erg_orb_l3_pos_iono_north_op'))
         self.assertTrue(data_exists('erg_orb_l3_pos_iono_south_op'))
 
     def test_load_mgf_data(self):
+        del_data()
         mgf_vars = pyspedas.erg.mgf(time_clip=True)
         self.assertTrue(data_exists('erg_mgf_l2_mag_8sec_sm'))
 
     def test_load_lepe_data(self):
+        del_data()
         lepe_vars = pyspedas.erg.lepe()
         self.assertTrue(data_exists('erg_lepe_l2_omniflux_FEDO'))
 
     def test_load_lepi_data(self):
+        del_data()
         lepi_vars = pyspedas.erg.lepi()
         self.assertTrue(data_exists('erg_lepi_l2_omniflux_FPDO'))
         self.assertTrue(data_exists('erg_lepi_l2_omniflux_FHEDO'))
         self.assertTrue(data_exists('erg_lepi_l2_omniflux_FODO'))
 
     def test_load_mepe_data(self):
+        del_data()
         mepe_vars = pyspedas.erg.mepe()
         self.assertTrue(data_exists('erg_mepe_l2_omniflux_FEDO'))
 
     def test_load_mepi_data(self):
+        del_data()
         mepi_vars = pyspedas.erg.mepi_nml()
         self.assertTrue(data_exists('erg_mepi_l2_omniflux_epoch_tof'))
         mepi_vars = pyspedas.erg.mepi_tof()
@@ -56,11 +71,13 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_mepi_l2_tofflux_FODU'))
 
     def test_load_pwe_ofa_data(self):
+        del_data()
         pwe_vars = pyspedas.erg.pwe_ofa()
         self.assertTrue(data_exists('erg_pwe_ofa_l2_spec_E_spectra_132'))
         self.assertTrue(data_exists('erg_pwe_ofa_l2_spec_B_spectra_132'))
 
     def test_load_pwe_efd_data(self):
+        del_data()
         pwe_vars = pyspedas.erg.pwe_efd()
         self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Eu_dsi'))
         self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Ev_dsi'))
@@ -68,13 +85,20 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Eu2_dsi'))
 
     def test_load_pwe_hfa_data(self):
+        del_data()
         pwe_vars = pyspedas.erg.pwe_hfa()
         self.assertTrue(data_exists('erg_pwe_hfa_l2_low_spectra_eu'))
         self.assertTrue(data_exists('erg_pwe_hfa_l2_low_spectra_ev'))
         self.assertTrue(data_exists('erg_pwe_hfa_l2_low_spectra_esum'))
         self.assertTrue(data_exists('erg_pwe_hfa_l2_low_spectra_er'))
 
+    def test_load_pwe_wfc_data(self):
+        del_data()
+        pwe_vars = pyspedas.erg.pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'])
+        self.assertTrue(data_exists('erg_pwe_wfc_l2_e_65khz_Ex_waveform'))
+
     def test_downloadonly(self):
+        del_data()
         files = pyspedas.erg.mgf(downloadonly=True, trange=['2017-03-27', '2017-03-28'])
         self.assertTrue(os.path.exists(files[0]))
 
