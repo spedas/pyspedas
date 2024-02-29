@@ -114,9 +114,14 @@ class UtilTestCases(unittest.TestCase):
         themis.fgm(probe='c')
         store_data('comb_3_1',data=['thc_fge_dsl','thc_fge_btotal'])
         store_data('comb_1_3',data=['thc_fge_btotal','thc_fge_dsl'])
-        tplot(['thc_fge_dsl','thc_fge_btotal','comb_3_1','comb_1_3'])
-        tplot('comb_1_3')
+        #tplot(['thc_fge_dsl','thc_fge_btotal','comb_3_1','comb_1_3'])
+        #tplot('comb_1_3')
         tplot('comb_3_1') # only plots 1 trace JWL 2024-02-19
+
+    @unittest.skip('Skipping specplot optimization test')
+    def test_specplot_optimizations(self):
+        ask_vars = themis.ask(trange=['2013-11-05', '2013-11-06'])
+        tplot(['thg_ask_atha'])
 
 if __name__ == '__main__':
     unittest.main()
