@@ -1,4 +1,3 @@
-import cdflib
 from pytplot import clip, options, ylim, zlim, get_data
 
 from ..load import load

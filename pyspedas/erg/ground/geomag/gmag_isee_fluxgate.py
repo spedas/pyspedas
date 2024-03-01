@@ -1,4 +1,3 @@
-import cdflib
 import numpy as np
 
 from pytplot import get_data, store_data, options, clip, ylim
