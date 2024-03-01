@@ -24,6 +24,51 @@ def _disable_loguru_warnings(record):
     return True
 
 
+def _request_df_from_input(trange, network, station):
+    """
+    Create a request_df from input parameters.
+
+    Parameters
+    ----------
+        trange : list of str
+            Time range of interest.
+        network : str
+            Network name.
+        station : str
+            Station name.
+
+    Returns
+    -------
+    request_df : pandas.DataFrame
+        Request dataframe.
+    """
+
+    # Get MTH5 file from the server
+    # we use "*F*" channel instead of "*" to extract magnetic data
+    # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
+    channel_band = ['M', 'L', 'V', 'U']
+    channel_orientation = ['Z', 'N', 'E']
+    channel_instrument = 'F'
+    # Create list of all combinations of channel_band, channel_instrument and channel_orientation
+    channel_list = ",".join(
+        [f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
+    # channel_list = "*F*"
+
+    # Create request_df from input parameters
+    request_df = pd.DataFrame(
+        {
+            "network": [network],
+            "station": [station],
+            "location": ["--"],
+            "channel": [channel_list],
+            "start": [mth5_time_str(trange[0])],  # ["2019-11-14T00:00:00"],
+            "end": [mth5_time_str(trange[1])]  # ["2019-11-15T00:00:00"]
+        }
+    )
+
+    return request_df
+
+
 def load_fdsn(trange=None, network=None, station=None,
               nodownload=False, noexception=False, print_request=False,
               nowarnings=False):
@@ -71,32 +116,8 @@ def load_fdsn(trange=None, network=None, station=None,
         pyspedas.logging.error("Station not specified")
         return
 
-    # Determine where data will be stored
-    mth5dir = CONFIG['local_data_dir']
-    # if os.environ.get('SPEDAS_DATA_DIR'):
-    #     mth5dir = os.environ['SPEDAS_DATA_DIR']
-
-    # Get MTH5 file from the server
-    # we use "*F*" channel instead of "*" to extract magnetic data
-    # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
-    channel_band = ['M', 'L', 'V', 'U']
-    channel_orientation = ['Z', 'N', 'E']
-    channel_instrument = 'F'
-    # Create list of all combinations of channel_band, channel_instrument and channel_orientation
-    channel_list = ",".join(
-        [f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
-    # channel_list = "*F*"
-
-    request_df = pd.DataFrame(
-        {
-            "network": [network],
-            "station": [station],
-            "location": ["--"],
-            "channel": [channel_list],
-            "start": [mth5_time_str(trange[0])],  # ["2019-11-14T00:00:00"],
-            "end": [mth5_time_str(trange[1])]  # ["2019-11-15T00:00:00"]
-        }
-    )
+    # Handle request_df
+    request_df = _request_df_from_input(trange, network, station)
 
     if print_request:
         print(request_df)
@@ -104,6 +125,11 @@ def load_fdsn(trange=None, network=None, station=None,
     # Create time variables that correspond to the request time period
     request_start = datetime.fromisoformat(request_df.start[0])
     request_end = datetime.fromisoformat(request_df.end[0])
+
+    # Determine where data will be stored
+    mth5dir = CONFIG['local_data_dir']
+    # if os.environ.get('SPEDAS_DATA_DIR'):
+    #     mth5dir = os.environ['SPEDAS_DATA_DIR']
 
     mth5_filename = f"{network}_{station}_{trange[0]}_{trange[1]}.h5".replace(":", "").replace("-", "")
     mth5_pathfile = os.path.join(mth5dir, mth5_filename)
