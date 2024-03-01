@@ -144,6 +144,18 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         self.assertTrue(t1.interval > t2.interval)
 
+    def test04_load_fdsn_samedates(self):
+        """
+              If dates are the same, tplot variable should not be created.
+              load_fdsn should return none
+        """
+
+        date_start = '2015-06-22T01:45:00'
+        date_end = date_start
+
+        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+        self.assertIsNone(tvar)
+
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
     @unittest.skip

@@ -206,7 +206,7 @@ def load_fdsn(trange=None, network=None, station=None,
                 run_end = datetime.fromisoformat(run_data.metadata.time_period.end).replace(tzinfo=None)
 
                 # Skip processing if run is outside requested time range
-                if run_start > request_end or run_end < request_start:
+                if run_start > request_end or run_end < request_start or request_end <= request_start:
                     continue
 
                 # Get the run table summary
