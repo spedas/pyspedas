@@ -117,32 +117,30 @@ def load_fdsn(trange=None, network=None, station=None,
         try:
             mth5_path = fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=mth5dir)
             if os.path.isfile(mth5_pathfile):
-                pytplot.logger.info(f"Removing cached {mth5_pathfile}")
+                pytplot.logger.info(f"Deleting cached {mth5_pathfile}")
                 os.remove(mth5_pathfile)
             pytplot.logger.info(f"Creating cached {mth5_pathfile}")
             os.rename(mth5_path, mth5_pathfile)
             mth5_path = mth5_pathfile
         except Exception as e:
-            # This code is obsolete with updated MTH5
-            # Hande mth5 object initialization error. This error may occur if MTH5 file was not closed.
-            # TODO: Add PermissionError handling _ this is when the file is opened in another process...
+            # Hande mth5 object initialization error.
             pyspedas.logger.error(f"Cannot initialize mth5 object: {e}")
-            mth5filename = fdsn_object.make_filename(request_df)
-            mth5file = os.path.join(mth5dir, mth5filename)
-            # attempt find the open file identifier and close it
-            if os.path.exists(mth5file):
-                # h5py must be installed as a requirement of MTH5
-                import h5py
-                fids = h5py.h5f.get_obj_ids(types=h5py.h5f.OBJ_FILE)
-                for fid in fids:
-                    # Test if the open file handler is the one we want to close
-                    if os.path.basename(fid.name.decode('utf8')) == mth5filename:
-                        h5py.File(fid).close()
-                        pyspedas.logger.info(f"mth5 file {mth5filename} object is now closed.")
+
+            # # Check if file was the cache file was created
+            # if 'mth5_path' in locals() and os.path.isfile(mth5_path):
+            #     pytplot.logger.info(f"Cache was created and will be deleted: {mth5_path}")
+            #     os.remove(mth5_path)
 
             # Exit code by flag
-            if noexception: return
+            if noexception:
+                return
             raise
+        finally:
+            mth5_tmp = fdsn_object.make_filename(request_df)
+            mth5_file = os.path.join(mth5dir, mth5_tmp)
+            if os.path.isfile(mth5_file):
+                pytplot.logger.info(f"Deleting mth5 temporary h5 file {mth5_tmp}")
+                os.remove(mth5_file)
 
     # Using MTH5 as a context manager
     with MTH5() as mth5_object:
@@ -160,8 +158,7 @@ def load_fdsn(trange=None, network=None, station=None,
         attributes = [('hx', 'bx'), ('hy', 'by'), ('hz', 'bz')]
         variables = {'x': np.array([]), 'y': np.array([]), 'z': np.array([])}
 
-        attr_dict = {}  # metadata
-        attr_dict['filename'] = mth5_path  # Add filename
+        attr_dict = {'filename': mth5_path}  # metadata with filename
         units = set()  # basic units
         measurements_type = set()  # basic type of measurements
 
@@ -271,7 +268,8 @@ def load_fdsn(trange=None, network=None, station=None,
         legend_names = ['x', 'y', 'z']
         try:
             legend_names = station_data.metadata.channels_recorded
-        except AttributeError:
+        except AttributeError or UnboundLocalError:
+            pyspedas.logger.error("station_data was not defined correctly")
             # Also raise this exception if noexception flag is set
             if not noexception:
                 raise
