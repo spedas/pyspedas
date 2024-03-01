@@ -1,9 +1,8 @@
-import cdflib
 import numpy as np
 from pytplot import clip, options, store_data, ylim, zlim, get_data
 
 from ..load import load
-
+from ..get_gatt_ror import get_gatt_ror
 
 from typing import List, Optional
 
@@ -112,15 +111,7 @@ def xep(
     if (len(loaded_data) > 0) and ror:
 
         try:
-            if isinstance(loaded_data, list):
-                if downloadonly:
-                    cdf_file = cdflib.CDF(loaded_data[-1])
-                    gatt = cdf_file.globalattsget()
-                else:
-                    gatt = get_data(loaded_data[-1], metadata=True)['CDF']['GATT']
-            elif isinstance(loaded_data, dict):
-                gatt = loaded_data[list(loaded_data.keys())[-1]]['CDF']['GATT']
-
+            gatt = get_gatt_ror(downloadonly, loaded_data)
             # --- print PI info and rules of the road
 
             print(' ')
