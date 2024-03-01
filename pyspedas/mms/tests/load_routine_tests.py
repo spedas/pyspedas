@@ -38,6 +38,19 @@ class StateLoadTestCases(unittest.TestCase):
         self.assertTrue('mms1_defeph_pos' in data)
         self.assertTrue('mms1_defeph_vel' in data)
 
+    def test_load_eph_multiprobe_data(self):
+        data = mms_load_state(datatypes=['pos', 'vel'],probe=['1','2','3','4'])
+        self.assertTrue(data_exists('mms1_defeph_pos'))
+        self.assertTrue(data_exists('mms1_defeph_vel'))
+        tplot(['mms1_defeph_pos', 'mms1_defeph_vel'], display=False)
+        self.assertTrue('mms1_defeph_pos' in data)
+        self.assertTrue('mms1_defeph_vel' in data)
+        self.assertTrue('mms2_defeph_pos' in data)
+        self.assertTrue('mms2_defeph_vel' in data)
+        self.assertTrue('mms3_defeph_pos' in data)
+        self.assertTrue('mms3_defeph_vel' in data)
+        self.assertTrue('mms4_defeph_pos' in data)
+        self.assertTrue('mms4_defeph_vel' in data)
 
     def test_load_tqf(self):
         data = mms_load_tetrahedron_qf()
