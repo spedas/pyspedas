@@ -156,6 +156,25 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
         self.assertIsNone(tvar)
 
+    @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
+    def test05_load_fdsn_timeclip(self):
+        """
+        Test if the time is cliped correctly.
+        """
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nodownload=True)
+        time, data = pytplot.get_data(tvar)
+
+        t1 = pytplot.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
+        t2 = pytplot.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')
+        self.assertTrue(t1 == date_start)
+        self.assertTrue(t2 == date_end)
+
+
+
+
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
     @unittest.skip

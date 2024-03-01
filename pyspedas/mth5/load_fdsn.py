@@ -179,7 +179,6 @@ def load_fdsn(trange=None, network=None, station=None,
         # # print(surveys)
 
         # Create new data for time, x, y and z
-        # TODO: is there a better way to create a new time array?
         time = np.array([])
         attributes = [('hx', 'bx'), ('hy', 'by'), ('hz', 'bz')]
         variables = {'x': np.array([]), 'y': np.array([]), 'z': np.array([])}
@@ -210,7 +209,7 @@ def load_fdsn(trange=None, network=None, station=None,
                     continue
 
                 # Get the run table summary
-                # TODO: figure out why time cut does not work
+                # Time clips according to original times
                 run_ts = run_data.to_runts(start=request_df.start[0], end=request_df.end[0])
 
                 # Determine is we have all components
@@ -289,7 +288,6 @@ def load_fdsn(trange=None, network=None, station=None,
         data = {'x': time, 'y': np.vstack((variables['x'], variables['y'], variables['z'])).T}
         tplot_variable = 'fdsn_' + network + '_' + station
 
-        # TODO: Add metadata
         # Handle legends
         legend_names = ['x', 'y', 'z']
         try:
@@ -300,7 +298,6 @@ def load_fdsn(trange=None, network=None, station=None,
             if not noexception:
                 raise
 
-        # TODO: Clip time according to original times, add noclip parameter
         tplot_variable_created = False
         try:
             store_data(tplot_variable, data=data, attr_dict=attr_dict)
