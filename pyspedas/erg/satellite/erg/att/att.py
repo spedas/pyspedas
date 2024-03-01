@@ -15,7 +15,7 @@ def att(
     no_update: bool = False,
     uname: Optional[str] = None,
     passwd: Optional[str] = None
-) -> None:
+) -> List[str]:
     """
     This function loads attitude data from the Arase mission
 
@@ -49,7 +49,8 @@ def att(
 
     Returns
     -------
-        None
+        list of str
+            List of tplot variables loaded
 
     Examples
     --------
@@ -124,4 +125,4 @@ def att(
         store_data('erg_att_gzdec', data={
             'x': time_float_array, 'y': GZ_Delta_float_array})
 
-    return None
+    return ['erg_att_sprate','erg_att_spphase','erg_att_izras','erg_att_gxras','erg_att_gxdec','erg_att_gzras','erg_att_gzdec']
