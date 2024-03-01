@@ -53,6 +53,8 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
     if not no_download:
         sdc_session, user = mms_login_lasp(always_prompt=always_prompt)
 
+    return_vars = []
+
     for probe_id in probe:
         # probe will need to be a string from now on
         probe_id = str(probe_id)
@@ -137,9 +139,9 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                 out_files = mms_get_local_state_files(probe=probe_id, level=level, filetype=filetype, trange=[start_time_str, end_time_str])
 
             if filetype == 'eph':
-                return_vars = mms_load_eph_tplot(sorted(out_files), level=level, probe=probe_id, datatypes=datatypes, suffix=suffix, trange=trange)
+                return_vars += mms_load_eph_tplot(sorted(out_files), level=level, probe=probe_id, datatypes=datatypes, suffix=suffix, trange=trange)
             elif filetype == 'att':
-                return_vars = mms_load_att_tplot(sorted(out_files), level=level, probe=probe_id, datatypes=datatypes, suffix=suffix, trange=trange)
+                return_vars += mms_load_att_tplot(sorted(out_files), level=level, probe=probe_id, datatypes=datatypes, suffix=suffix, trange=trange)
 
     if not no_download:
         sdc_session.close()
