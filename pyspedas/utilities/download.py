@@ -13,7 +13,7 @@ from tempfile import NamedTemporaryFile
 from html.parser import HTMLParser
 from netCDF4 import Dataset
 from cdflib import CDF
-
+from time import sleep
 
 # the following is used to parse the links from an HTML index file
 class LinkParser(HTMLParser):
@@ -309,6 +309,10 @@ def download(remote_path='',
     out = []
     index_table = {}
 
+    # To avoid hammering the remote server with repeated failing requests, if we have a problem with an index
+    # URL we'll add it to bad_index_set and skip it if it comes up again.
+    bad_index_set = set()
+
     if not isinstance(remote_file, list):
         remote_file = [remote_file]
 
@@ -339,6 +343,9 @@ def download(remote_path='',
             if ('?' in url or '*' in url or regex) and (not no_download and not no_wildcards):
                 if index_table.get(url_base) is not None:
                     links = index_table[url_base]
+                elif url_base in bad_index_set:
+                    logging.info('Skipping remote index: ' + url_base + ' (previous attempt failed)')
+                    continue
                 else:
                     logging.info('Downloading remote index: ' + url_base)
 
@@ -351,14 +358,23 @@ def download(remote_path='',
                             else:
                                 html_index = session.get(url_base, verify=verify, headers=headers, auth=(username, password))
                         except requests.exceptions.ConnectionError:
+                            # Add this index to bad_index_set and cool down a bit
+                            bad_index_set.add(url_base)
+                            sleep(2)
                             continue
 
                     if html_index.status_code == 404:
                         logging.error('Remote index not found: ' + url_base)
+                        # Add this index to bad_index_set and cool down a bit
+                        bad_index_set.add(url_base)
+                        sleep(2)
                         continue
 
                     if html_index.status_code == 401 or html_index.status_code == 403:
                         logging.error('Unauthorized: ' + url_base)
+                        # Add this index to bad_index_set and cool down a bit
+                        bad_index_set.add(url_base)
+                        sleep(2)
                         continue
 
                     # grab the links
