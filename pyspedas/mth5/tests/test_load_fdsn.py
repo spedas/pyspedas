@@ -172,7 +172,34 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertTrue(t1 == date_start)
         self.assertTrue(t2 == date_end)
 
+    def test06_load_fdsn_wrong_network_station(self):
+        """
+            Test incorrect input. load_fdsn should return raise an error and the temporary files should not exist
+        """
 
+        def test_network_station_error(network, station):
+            date_start = '2015-06-22T01:45:00'
+            date_end = '2015-06-22T02:20:00'
+
+            with self.assertRaises(Exception):
+                load_fdsn(network=network, station=station, trange=[date_start, date_end])
+
+            tmp_file = os.path.join(CONFIG['local_data_dir'], f'{network}_{station}.h5')
+            self.assertFalse(os.path.isfile(tmp_file))
+
+            with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+                try:
+                    load_fdsn(network=network, station=station, trange=[date_start, date_end])
+                except:
+                    pass
+            self.assertIn('Cannot initialize mth5 object', cm.output[0])
+            self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
+
+        # incorrect network
+        test_network_station_error(network="4P_", station="REU49")
+
+        # incorrect station
+        test_network_station_error(network="4P", station="REU49_")
 
 
     # This test seems to be obsolete

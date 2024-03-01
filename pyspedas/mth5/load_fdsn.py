@@ -150,7 +150,7 @@ def load_fdsn(trange=None, network=None, station=None,
             mth5_path = mth5_pathfile
         except Exception as e:
             # Hande mth5 object initialization error.
-            pyspedas.logger.error(f"Cannot initialize mth5 object: {e}")
+            pyspedas.logger.error(f"Cannot initialize mth5 object:\n{e}")
 
             # # Check if file was the cache file was created
             # if 'mth5_path' in locals() and os.path.isfile(mth5_path):
