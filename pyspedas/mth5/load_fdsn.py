@@ -38,19 +38,21 @@ def load_fdsn(trange=None, network=None, station=None,
             Network name.
         station : str
             Station name.
-        nodownload : bool
+        nodownload : bool, default=False
             If h5 file is already created do not load another one.
-        noexception : bool
+        noexception : bool, default=False
             If true do not raise and Execution produced by FDSN.
-        print_request : bool
+        print_request : bool, default=False
             Print request_df structure, which can be usefully for debuting the request.
-        nowarnings : bool
+        nowarnings : bool, default=False
             If true, disable loguru warnings.
+        filename : bool, default=False
+            If true, return filename as a second return parameter
 
     Returns
     -------
-    None
-        Tplot variable is created is data is loaded successfully.
+    tplot_variable: str or None
+        Tplot variable name. Tplot variable is created if data is loaded successfully, None otherwise.
     """
 
     # mth5.logger.remove()
@@ -96,7 +98,8 @@ def load_fdsn(trange=None, network=None, station=None,
         }
     )
 
-    if print_request: print(request_df)
+    if print_request:
+        print(request_df)
 
     # Create time variables that correspond to the request time period
     request_start = datetime.fromisoformat(request_df.start[0])
@@ -119,11 +122,11 @@ def load_fdsn(trange=None, network=None, station=None,
             pytplot.logger.info(f"Creating cached {mth5_pathfile}")
             os.rename(mth5_path, mth5_pathfile)
             mth5_path = mth5_pathfile
-        except Exception:
+        except Exception as e:
             # This code is obsolete with updated MTH5
             # Hande mth5 object initialization error. This error may occur if MTH5 file was not closed.
             # TODO: Add PermissionError handling _ this is when the file is opened in another process...
-            pyspedas.logger.error("Cannot initialize mth5 object")
+            pyspedas.logger.error(f"Cannot initialize mth5 object: {e}")
             mth5filename = fdsn_object.make_filename(request_df)
             mth5file = os.path.join(mth5dir, mth5filename)
             # attempt find the open file identifier and close it
@@ -158,6 +161,7 @@ def load_fdsn(trange=None, network=None, station=None,
         variables = {'x': np.array([]), 'y': np.array([]), 'z': np.array([])}
 
         attr_dict = {}  # metadata
+        attr_dict['filename'] = mth5_path  # Add filename
         units = set()  # basic units
         measurements_type = set()  # basic type of measurements
 
@@ -273,16 +277,25 @@ def load_fdsn(trange=None, network=None, station=None,
                 raise
 
         # TODO: Clip time according to original times, add noclip parameter
-        # TODO: Add check on data existence.
-        store_data(tplot_variable, data=data, attr_dict=attr_dict)
-        tplot_options = {
-            "name": f"FDSN: {network}, station: {station}",  # network and stations
-            "ytitle": f"{','.join(list(measurements_type))}",  # measurement
-            "ysubtitle": f"{','.join(list(units))}",  # units
-            "legend_names": legend_names
-        }
+        tplot_variable_created = False
+        try:
+            store_data(tplot_variable, data=data, attr_dict=attr_dict)
+            tplot_variable_created = True
+        except IndexError:
+            pyspedas.logger.error(f"Cannot create empty tplot variabe {tplot_variable}")
+        except Exception as E:
+            pyspedas.logger.error(f"Unexpected error {E} while creating tplot variable {tplot_variable}")
+            if not noexception:
+                raise
 
-        options(tplot_variable, opt_dict=tplot_options)
+        if tplot_variable_created:
+            tplot_options = {
+                "name": f"FDSN: {network}, station: {station}",  # network and stations
+                "ytitle": f"{','.join(list(measurements_type))}",  # measurement
+                "ysubtitle": f"{','.join(list(units))}",  # units
+                "legend_names": legend_names
+            }
 
-        # It is crucial to close mth5 file
-        # mth5_object.close_mth5()
+            options(tplot_variable, opt_dict=tplot_options)
+
+            return tplot_variable
