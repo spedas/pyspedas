@@ -14,7 +14,7 @@ import pyspedas
 import pytplot
 
 
-def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None):
+def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None, edge_order=1):
     """
     Compute the derivative.
 
@@ -69,6 +69,8 @@ def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None)
 
     for i, old in enumerate(old_names):
         data = pytplot.get_data(old)
-        data_grad = np.gradient(data.y, data.times, axis = 0)
+        data_grad = np.gradient(data.y, data.times, axis = 0, edge_order=edge_order)
         pytplot.store_data(n_names[i], data={'x': data.times, 'y': data_grad})
         logging.info('deriv_data was applied to: ' + n_names[i])
+
+    return n_names
