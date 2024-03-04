@@ -89,10 +89,16 @@ def specplot_resample_optimized(values, vdata, vdata_hi):
 
         for i in range(nv):
             # Directly compute the indices for the condition instead of using np.intersect1d
-            condition = (vdata_hi >= vtmp[i]) & (vdata_hi <= vtmp[i + 1])
-            ss_ini = np.where(condition)[0]
-            if ss_ini.size > 0:
-                out_values[j, ss_ini] = values[j, i]
+            if vtmp[i] < vtmp[i + 1]:  # increasing values
+                condition = (vdata_hi >= vtmp[i]) & (vdata_hi <= vtmp[i + 1])
+                ss_ini = np.where(condition)[0]
+                if ss_ini.size > 0:
+                    out_values[j, ss_ini] = values[j, i]
+            elif vtmp[i] > vtmp[i + 1]:  # decreasing values, (e.g., THEMIS ESA)
+                condition = (vdata_hi >= vtmp[i+1]) & (vdata_hi <= vtmp[i])
+                ss_ini = np.where(condition)[0]
+                if ss_ini.size > 0:
+                    out_values[j, ss_ini] = values[j, i]
 
     return out_values
 
@@ -118,26 +124,31 @@ def specplot_resample_monotonic(values, vdata, vdata_hi):
             vdata[:, nv - 1] + (vdata[:, nv - 1] - vdata[:, nv - 2]) / 2.0
         )
 
-    # Determine if vdata_hi is increasing or decreasing
-    increasing = vdata_hi[1] > vdata_hi[0]
-
+    # Note that vdata_hi is always monotonically increasing, but
+    # vdata_bins can be monotonically decreasing
+    
     for j in range(ntimes):
-        bin_start_idx = 0  # Initialize bin start index
-        for i in range(nv):
-            if len(vdata.shape) == 1:
-                vtmp = vdata_bins
-            else:
-                vtmp = vdata_bins[j, :]
+        if len(vdata.shape) == 1:
+            vtmp = vdata_bins
+        else:
+            vtmp = vdata_bins[j, :]
 
+        bin_start_idx = 0  # Initialize bin start index
+        bin_end_idx = ny-1
+        for i in range(nv):
             # Find the start and end of the current bin in vdata_hi
-            # The assumption that vdata_hi is monotonically increasing or decreasing allows us to break early
-            # from the inner loop (k) as soon as we find that an element falls outside the current bin, knowing
-            # that no further elements can belong to this bin.
-            for k in range(bin_start_idx, ny):
-                if increasing:
-                    # For increasing vdata_hi, check if within bin range
+            # The assumption that vdata_hi is monotonically increasing
+            # or decreasing allows us to break early from the inner
+            # loop (k) as soon as we find that an element falls
+            # outside the current bin, knowing that no further
+            # elements can belong to this bin.
+            if vtmp[i] < vtmp[i + 1]:  # increasing bin values
+                for k in range(bin_start_idx, ny):
+                    # Check if within bin range, count until
+                    # either the next value is out of range or
+                    # there are no more values
                     if vdata_hi[k] >= vtmp[i] and (
-                        k == ny - 1 or vdata_hi[k + 1] >= vtmp[i + 1]
+                            k == ny - 1 or vdata_hi[k + 1] >= vtmp[i + 1]
                     ):
                         bin_end_idx = (
                             k + 1 if k != ny - 1 else ny
@@ -145,20 +156,21 @@ def specplot_resample_monotonic(values, vdata, vdata_hi):
                         out_values[j, bin_start_idx:bin_end_idx] = values[j, i]
                         bin_start_idx = bin_end_idx  # Update for next bin
                         break
-                else:
-                    # For decreasing vdata_hi, similar logic in reverse
+            elif vtmp[i] > vtmp[i+1]: # For decreasing vtmp, similar logic in reverse
+                for k in range(bin_end_idx, 0, -1):
                     if vdata_hi[k] <= vtmp[i] and (
-                        k == ny - 1 or vdata_hi[k + 1] <= vtmp[i + 1]
+                            k ==  0 or vdata_hi[k - 1] <= vtmp[i+1]
                     ):
-                        bin_end_idx = k + 1 if k != ny - 1 else ny
-                        out_values[j, bin_start_idx:bin_end_idx] = values[j, i]
-                        bin_start_idx = bin_end_idx
-                        break
-
+                            bin_start_idx = k -1 if k != 0 else 0
+                            out_values[j, bin_start_idx:bin_end_idx] = values[j, i]
+                            bin_end_idx = bin_start_idx
+                            break
+                
     return out_values
 
 
-specplot_resample = specplot_resample_optimized
+#specplot_resample = specplot_resample_optimized
+specplot_resample = specplot_resample_monotonic
 
 
 def specplot(
@@ -197,6 +209,21 @@ def specplot(
     else:
         zsubtitle = ""
 
+
+    #set -1.e31 fill values to NaN, jmjm, 2024-02-29
+    ytp = np.where(var_data.y==-1.e31,np.nan,var_data.y)
+    var_data.y[:,:] = ytp[:,:]
+    vtp = np.where(var_data.v==-1.e31,np.nan,var_data.v)
+    if len(vtp.shape) == 1:
+        var_data.v[:] = vtp[:]
+    else:
+        var_data.v[:,:] = vtp[:,:]
+
+    #could also have a fill in yrange
+    #    if yrange[0] == -1e31: #This does not work sometimes?
+    if yrange[0] < -0.9e31:
+        yrange[0] = np.nanmin(var_data.y)
+    
     if zlog == "log":
         # gracefully handle the case of all NaNs in the data, but log scale set
         if np.isnan(var_data.y).all():
@@ -350,13 +377,13 @@ def specplot(
             if ylog == "log":
                 out_vdata = 10**out_vdata
 
-    # Resample to a higher resolution y grid, similar to interp, but only if y_no_resample is set
+    # Resample to a higher resolution y grid, similar to interp, but only if y_no_resample is not set
     if (
         yaxis_options.get("y_no_resample") is None
         or yaxis_options.get("y_no_resample") == 0
     ):
         if ylog == "log":
-            # Account for negative or fill vaslues that are not NaN
+            # Account for negative or fill values that are not NaN
             vgt0 = np.where(out_vdata > 0)[0]
             if vgt0.size == 0:
                 print("ERROR in specplot.py: no nonzero V values")
@@ -381,7 +408,6 @@ def specplot(
             np.arange(0, ny, dtype=np.float64) * (ycrange[1] - ycrange[0]) / (ny - 1)
             + ycrange[0]
         )
-
         out_values1 = specplot_resample(out_values, vdata, vdata1)
         out_values = out_values1
         if ylog == "log":
@@ -391,21 +417,37 @@ def specplot(
 
     # check for NaNs in the v values
     nans_in_vdata = np.argwhere(np.isfinite(out_vdata) == False)
+    
     if len(nans_in_vdata) > 0:
-        # to deal with NaNs in the energy table, we set those energies to 0
-        # then apply a mask to the data values at these locations
-        # Allow for 1D vdata
+        # to deal with NaNs in the energy table, we set those energies
+        # to the min value for that time (not zero, as this will be
+        # bad for log plots) then apply a mask to the data values at
+        # these locations 
         out_vdata_nonan = out_vdata.copy()
-        times_with_nans = np.unique(nans_in_vdata[:, 0])
-        for nan_idx in np.arange(0, len(times_with_nans)):
-            this_time_idx = times_with_nans[nan_idx]
-            out_vdata_nonan[
-                this_time_idx, ~np.isfinite(out_vdata[this_time_idx, :])
-            ] = 0
+        if len(out_vdata.shape) == 1:
+            keep = np.where(np.isfinite(out_vdata) == True)
+            vmin = np.min(out_vdata[keep[0]])
+            out_vdata_nonan[~np.isfinite(out_vdata)] = vmin
+            #create a masked array to use
+            masked = np.ma.masked_where(~np.isfinite(out_values), out_values)
+            for nan_idx in range(out_values.shape[0]):
+                midx = np.ma.masked_where(~np.isfinite(out_vdata), out_values[nan_idx,:])
+                masked[nan_idx,:] = midx
+        else:
+            times_with_nans = np.unique(nans_in_vdata[:, 0])
+            for nan_idx in np.arange(0, len(times_with_nans)):
+                this_time_idx = times_with_nans[nan_idx]
+                #Get the min value for non-nan
+                keep = np.where(np.isfinite(out_vdata[this_time_idx, :]) == True)
+                if keep[0].size > 0:
+                    vmin = np.min(out_vdata[this_time_idx, keep[0]])
+                    out_vdata_nonan[this_time_idx, ~np.isfinite(out_vdata[this_time_idx, :])] = vmin
+                else:
+                    out_vdata_nonan[this_time_idx, ~np.isfinite(out_vdata[this_time_idx, :])] = yrange[0]
 
-        masked = np.ma.masked_where(~np.isfinite(out_vdata), out_values)
-        out_vdata = out_vdata_nonan
-        out_values = masked
+            masked = np.ma.masked_where(~np.isfinite(out_vdata), out_values)
+            out_vdata = out_vdata_nonan
+            out_values = masked
 
     # check for negatives if zlog is requested
     if zlog == "log":
