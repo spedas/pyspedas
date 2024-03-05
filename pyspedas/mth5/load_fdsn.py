@@ -266,24 +266,6 @@ def load_fdsn(trange=None, network=None, station=None,
                     pyspedas.logger.warning("Some of the attributes are not present in run_ts dataset")
                     continue
 
-                # x = np.append(x, run_ts.dataset.hx.to_numpy())
-                # y = np.append(y, run_ts.dataset.hy.to_numpy())
-                # z = np.append(z, run_ts.dataset.hz.to_numpy())
-                #
-                # try:
-                #     units.add(run_ts.dataset.hx.units)
-                #     units.add(run_ts.dataset.hy.units)
-                #     units.add(run_ts.dataset.hz.units)
-                # except AttributeError:
-                #     pyspedas.logger.warning("Problem with adding run dataset units")
-                #
-                # try:
-                #     measurements_type.add(run_ts.dataset.hx.type)
-                #     measurements_type.add(run_ts.dataset.hx.type)
-                #     measurements_type.add(run_ts.dataset.hx.type)
-                # except AttributeError:
-                #     pyspedas.logger.warning("Problem with adding run dataset type")
-
         # TODO: Should data be sorted before saving
         data = {'x': time, 'y': np.vstack((variables['x'], variables['y'], variables['z'])).T}
         tplot_variable = 'fdsn_' + network + '_' + station
