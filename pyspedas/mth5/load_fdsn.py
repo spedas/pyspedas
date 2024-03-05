@@ -23,6 +23,27 @@ def _disable_loguru_warnings(record):
         return record["level"].no != mth5.logger.level("WARNING").no
     return True
 
+def _list_of_channels():
+    """
+        Generates a list of channel names based on predefined bands, orientations, and a single instrument type.
+
+        Returns
+        -------
+        str
+            A string containing channel names, each separated by a comma. T
+
+        Examples
+        --------
+        >>> _list_of_channels()
+        'MFZ,MFN,MFE,LFZ,LFN,LFE,VFZ,VFN,VFE,UFZ,UFN,UFE'
+        """
+    channel_band = ['M', 'L', 'V', 'U']
+    channel_orientation = ['Z', 'N', 'E']
+    channel_instrument = 'F'
+    # Create list of all combinations of channel_band, channel_instrument and channel_orientation
+    channel_list = ",".join(
+        [f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
+    return channel_list
 
 def _request_df_from_input(trange, network, station):
     """
@@ -46,12 +67,7 @@ def _request_df_from_input(trange, network, station):
     # Get MTH5 file from the server
     # we use "*F*" channel instead of "*" to extract magnetic data
     # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
-    channel_band = ['M', 'L', 'V', 'U']
-    channel_orientation = ['Z', 'N', 'E']
-    channel_instrument = 'F'
-    # Create list of all combinations of channel_band, channel_instrument and channel_orientation
-    channel_list = ",".join(
-        [f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
+    channel_list = _list_of_channels()
     # channel_list = "*F*"
 
     # Create request_df from input parameters
@@ -67,6 +83,7 @@ def _request_df_from_input(trange, network, station):
     )
 
     return request_df
+
 
 
 def load_fdsn(trange=None, network=None, station=None,

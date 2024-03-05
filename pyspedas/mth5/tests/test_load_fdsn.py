@@ -2,6 +2,10 @@ import unittest
 
 from mth5.clients.make_mth5 import FDSN
 from pyspedas.mth5.load_fdsn import load_fdsn
+from pyspedas.mth5.load_fdsn import _list_of_channels
+
+# This one is unused
+from pyspedas.mth5.config import CONFIG
 
 import pyspedas
 import pytplot
@@ -207,8 +211,6 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     @unittest.skip
     def test99_load_fdsn_h5_file_error(self):
         # Testing if the file can be created when error occurs
-        from pyspedas.mth5.config import CONFIG
-        from pyspedas.mth5.load_fdsn import load_fdsn
 
         request_df = pd.DataFrame(
             {
@@ -262,6 +264,31 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     def tearDown(self):
         pass
 
+class TestListOfChannels(unittest.TestCase):
+    def test01_list_of_channels_type(self):
+        """
+        Test that the _list_of_channels function returns a string.
+        """
+        result = _list_of_channels()
+        self.assertIsInstance(result, str)
+
+    def test02_list_of_channels_divisible_by_three(self):
+        """
+        Test that the number of channel names (elements) in the list is divisible by 3.
+        """
+        result = _list_of_channels()
+        channel_list = result.split(',')
+        self.assertEqual(len(channel_list) % 3, 0)
+
+    def test03_list_of_channels_contains_F(self):
+        """
+        Test that all channel names in the list have "F" in the middle.
+        """
+        result = _list_of_channels()
+        channel_list = result.split(',')
+        for channel in channel_list:
+            # Assuming the format is always one character for band, 'F' for instrument, and one character for orientation
+            self.assertTrue(channel[1] == 'F')
 
 if __name__ == '__main__':
     unittest.main()
