@@ -106,7 +106,7 @@ def datasets(trange=None, network=None, station=None):
                 else:
                     pyspedas.logger.error("Server returned status code:", response.status)
         except (urllib.error.HTTPError, urllib.error.URLError) as e:
-            if e.code == 404:
+            if hasattr(e, 'code') and e.code == 404:
                 # No data
                 return None
             else:

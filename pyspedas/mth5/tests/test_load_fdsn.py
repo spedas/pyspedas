@@ -1,8 +1,12 @@
 import unittest
+from unittest.mock import patch, MagicMock, mock_open
+import urllib.error
+import socket
 
 from mth5.clients.make_mth5 import FDSN
 from pyspedas.mth5.load_fdsn import load_fdsn
 from pyspedas.mth5.utilities import _list_of_fdsn_channels
+from pyspedas.mth5.utilities import datasets
 
 # This one is unused
 from pyspedas.mth5.config import CONFIG
@@ -20,18 +24,23 @@ from pyspedas.mth5.config import CONFIG
 
 import loguru
 from contextlib import contextmanager
+
+
 @contextmanager
 def loguru_capture_logs(level="INFO", format="{level}:{name}:{message}"):
     """Capture loguru-based logs. There is no other way to assert the loguru log. The custom filter also must be defined here"""
     output = []
-    handler_id = loguru.logger.add(output.append, level=level, format=format, filter=pyspedas.mth5._disable_loguru_warnings)
+    handler_id = loguru.logger.add(output.append, level=level, format=format,
+                                   filter=pyspedas.mth5._disable_loguru_warnings)
     yield output
     loguru.logger.remove(handler_id)
+
 
 class Timer:
     """
     Class that tracks the function call time
     """
+
     def __enter__(self):
         self.start = time.perf_counter()
         return self
@@ -39,6 +48,7 @@ class Timer:
     def __exit__(self, *args):
         self.end = time.perf_counter()
         self.interval = self.end - self.start
+
 
 class TestMTH5LoadFDSN(unittest.TestCase):
     # Flag to check if there is any open instances of h5 files
@@ -49,6 +59,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        # TODO: H5OPEN - is not evaluated correctly. The  @unittest.skipIf decorator evaluates the condition at import time
         # Test if there is any open instances of h5 files
         # This case may not work because tests are executed in a different console where h5 reference may not exist.
         o = h5py.h5f.get_obj_ids(types=h5py.h5f.OBJ_FILE)
@@ -107,6 +118,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         except AssertionError:
             self.BASIC_TEST_FAILED = True
 
+    # TODO: this should not work, because BASIC_TEST_FAILED should be evaluated before the call of the test...
     @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
     # @patch('sys.stdout', new_callable=StringIO)
     def test03_load_fdsn_nowarnings(self):
@@ -205,7 +217,6 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         # incorrect station
         test_network_station_error(network="4P", station="REU49_")
 
-
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
     @unittest.skip
@@ -264,6 +275,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     def tearDown(self):
         pass
 
+
 class TestListOfChannels(unittest.TestCase):
     def test01_list_of_channels_type(self):
         """
@@ -289,6 +301,131 @@ class TestListOfChannels(unittest.TestCase):
         for channel in channel_list:
             # Assuming the format is always one character for band, 'F' for instrument, and one character for orientation
             self.assertTrue(channel[1] == 'F')
+
+
+class TestDatasetsFunction(unittest.TestCase):
+    # Mock data of the responce
+    mock_data = """Network|Station|Location|Channel|Latitude|Longitude|Elevation|Depth|Azimuth|Dip|SensorDescription|Scale|ScaleFreq|ScaleUnits|SampleRate|StartTime|EndTime
+4P|ALW48||LFE|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
+4P|ALW48||LFN|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
+4P|ALW48||LFZ|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
+"""
+
+    # Set to True if we can get to https://service.iris.edu
+    PING_IRIS = False
+
+    @classmethod
+    def setUpClass(cls):
+        host = "service.iris.edu"
+        try:
+            # Create a socket object
+            with socket.create_connection((host, 443), timeout=5) as sock:
+                # If the connection was successful, close it and return accessible
+                cls.PING_IRIS = True
+        except socket.error as e:
+            print(e)
+            pass
+
+    def test01_datasets_no_trange(self):
+        """Test datasets function with no trange."""
+        result = datasets()
+        self.assertIsNone(result)
+
+    @patch('urllib.request.urlopen')
+    @patch('pyspedas.logger.error')  # Assuming pyspedas.logger.error is the correct path
+    def test02_datasets_network_failure(self, mock_logger_error, mock_urlopen):
+        """Test datasets function with a network failure."""
+        # Simulate an HTTPError, which is a subclass of URLError and has a 'code' attribute.
+        url = 'http://example.com'
+        error_message = 'Test Error'
+        mock_urlopen.side_effect = urllib.error.HTTPError(url, 500, error_message, None, None)
+
+        result = datasets(["2019-11-14", "2019-11-15"])
+        mock_logger_error.assert_called_once()
+        self.assertTrue(any("HTTP or URL Error" in call_args[0][0] for call_args in mock_logger_error.call_args_list))
+
+        self.assertEqual(result, {})
+
+    @patch('urllib.request.urlopen')
+    def test02_datasets_no_data(self, mock_urlopen):
+        """Test datasets function with no data returned from network."""
+        mock_response = MagicMock()
+        mock_response.status = 404
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+        result = datasets(["2019-11-14", "2019-11-15"])
+        self.assertEqual(result, {})
+
+    @patch('urllib.request.urlopen')
+    def test04_datasets_valid_data(self, mock_urlopen):
+        """Test datasets function with valid data."""
+
+        mock_response = MagicMock()
+        mock_response.status = 200
+        mock_response.read.return_value = self.mock_data.encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        expected = {'4P': {'ALW48': {('2015-06-18T15:00:36.0000', '2015-07-09T13:45:10.0000'): ['LFE', 'LFN', 'LFZ']}}}
+
+        result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48")
+        self.assertEqual(result, expected)
+
+    @patch('urllib.request.urlopen')
+    def test05_datasets_incorrect_data(self, mock_urlopen):
+        """Test datasets function with data which does not have all 3 channels."""
+        mock_data = self.mock_data.splitlines()
+        mock_data[-2] = "4P|ALW48||UFZ|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000"
+        mock_data = "\n".join(mock_data)
+
+        #         """Network|Station|Location|Channel|Latitude|Longitude|Elevation|Depth|Azimuth|Dip|SensorDescription|Scale|ScaleFreq|ScaleUnits|SampleRate|StartTime|EndTime
+        # 4P|ALW48||LFE|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
+        # 4P|ALW48||LFN|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
+        # 4P|ALW48||UFZ|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
+        # """
+        mock_response = MagicMock()
+        mock_response.status = 200
+        mock_response.read.return_value = mock_data.encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        expected = {}
+
+        result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48")
+        self.assertEqual(result, expected)
+
+    @patch('urllib.request.urlopen')
+    def test06_url_construction_with_network(self, mock_urlopen):
+        """Test the URL construction when a specific network is provided."""
+        datasets(["2015-06-22", "2015-06-23"], network="4P")
+        # Extract the URL passed to urlopen
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertIn("net=4P", called_url)
+
+    @patch('urllib.request.urlopen')
+    def test06_url_construction_with_station(self, mock_urlopen):
+        """Test the URL construction when a specific station is provided."""
+        datasets(["2015-06-22", "2015-06-23"], station="ALW48")
+        # Extract the URL passed to urlopen
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertIn("sta=ALW48", called_url)
+
+    @patch('urllib.request.urlopen')
+    def test06_url_construction_with_network_and_station(self, mock_urlopen):
+        """Test the URL construction when both network and station are provided."""
+        datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48")
+        # Extract the URL passed to urlopen
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertIn("net=4P", called_url)
+        self.assertIn("sta=ALW48", called_url)
+
+    def test07_datasets_realcall(self):
+        """Test datasets function with actual internet connection."""
+        # Dynamically decide to skip the test based on the runtime condition
+        if not self.PING_IRIS:
+            self.skipTest("Cannot reach iris website")
+
+        expected = {'4P': {'ALW48': {('2015-06-18T15:00:36.0000', '2015-07-09T13:45:10.0000'): ['LFE', 'LFN', 'LFZ']}}}
+        result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48")
+        self.assertEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
