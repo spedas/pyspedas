@@ -2,7 +2,7 @@ import unittest
 
 from mth5.clients.make_mth5 import FDSN
 from pyspedas.mth5.load_fdsn import load_fdsn
-from pyspedas.mth5.load_fdsn import _list_of_channels
+from pyspedas.mth5.utilities import _list_of_fdsn_channels
 
 # This one is unused
 from pyspedas.mth5.config import CONFIG
@@ -269,14 +269,14 @@ class TestListOfChannels(unittest.TestCase):
         """
         Test that the _list_of_channels function returns a string.
         """
-        result = _list_of_channels()
+        result = _list_of_fdsn_channels()
         self.assertIsInstance(result, str)
 
     def test02_list_of_channels_divisible_by_three(self):
         """
         Test that the number of channel names (elements) in the list is divisible by 3.
         """
-        result = _list_of_channels()
+        result = _list_of_fdsn_channels()
         channel_list = result.split(',')
         self.assertEqual(len(channel_list) % 3, 0)
 
@@ -284,7 +284,7 @@ class TestListOfChannels(unittest.TestCase):
         """
         Test that all channel names in the list have "F" in the middle.
         """
-        result = _list_of_channels()
+        result = _list_of_fdsn_channels()
         channel_list = result.split(',')
         for channel in channel_list:
             # Assuming the format is always one character for band, 'F' for instrument, and one character for orientation
