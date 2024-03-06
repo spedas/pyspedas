@@ -8,102 +8,13 @@ import pytplot
 import logging
 
 
+
 def specplot_resample(values, vdata, vdata_hi):
-    """This resamples the data given by in the values array, defined
-    vdata, onto a higher resolution array given by the variable
-    vdata_hi. Values is assumed to be (ntimes, nv), vdata can be 1
-    or 2d.
+    """Specplot energy bin resampling
+
+    Allows for monotonically increasing or decreasing bin values, and bins that change over time.
+    Performance optimized by ChatGPT.
     """
-
-    ny = len(vdata_hi)  # vdata_hi is 1d, the same for all time intervals
-    ntimes = values.shape[0]
-    out_values = np.zeros((ntimes, ny), dtype=values.dtype)
-
-    # need bin edges for V
-    if len(vdata.shape) == 1:
-        nv = vdata.shape[0]
-        vdata_bins = np.zeros((nv + 1), dtype=vdata.dtype)
-        vdata_bins[0] = vdata[0] - (vdata[1] - vdata[0]) / 2.0
-        vdata_bins[1:nv] = (vdata[0 : nv - 1] + vdata[1:nv]) / 2.0
-        vdata_bins[nv] = vdata[nv - 1] + (vdata[nv - 1] - vdata[nv - 2]) / 2.0
-    else:  # 2-d V
-        nv = vdata.shape[1]
-        vdata_bins = np.zeros((ntimes, nv + 1), dtype=vdata.dtype)
-        vdata_bins[:, 0] = vdata[:, 0] - (vdata[:, 1] - vdata[:, 0]) / 2.0
-        vdata_bins[:, 1:nv] = (vdata[:, 0 : nv - 1] + vdata[:, 1:nv]) / 2.0
-        vdata_bins[:, nv] = (
-            vdata[:, nv - 1] + (vdata[:, nv - 1] - vdata[:, nv - 2]) / 2.0
-        )
-
-    for j in range(ntimes):
-        if len(vdata.shape) == 1:
-            vtmp = vdata_bins
-        else:
-            vtmp = vdata_bins[j, :]
-
-        for i in range(nv):
-            # cannot do ss_ini = np.where(vdata_hi >= vdata_bins[i] and vdata_hi < vdata_bins[i+1])
-            if vtmp[i] < vtmp[i + 1]:  # increasing values
-                xxx = np.where(vdata_hi >= vtmp[i])
-                yyy = np.where(vdata_hi <= vtmp[i + 1])
-                if xxx[0].size > 0 and yyy[0].size > 0:
-                    ss_ini = np.intersect1d(xxx[0], yyy[0])
-                    out_values[j, ss_ini] = values[j, i]
-            elif vtmp[i] > vtmp[i + 1]:  # decreasing values, (e.g., THEMIS ESA)
-                xxx = np.where(vdata_hi >= vtmp[i + 1])
-                yyy = np.where(vdata_hi <= vtmp[i])
-                if xxx[0].size > 0 and yyy[0].size > 0:
-                    ss_ini = np.intersect1d(xxx[0], yyy[0])
-                    out_values[j, ss_ini] = values[j, i]
-
-    return out_values
-
-
-def specplot_resample_optimized(values, vdata, vdata_hi):
-    """Optimized by ChatGPT"""
-    ny = len(vdata_hi)  # vdata_hi is 1d, the same for all time intervals
-    ntimes = values.shape[0]
-    out_values = np.zeros((ntimes, ny), dtype=values.dtype)
-
-    # Need bin edges for V
-    if len(vdata.shape) == 1:
-        nv = vdata.shape[0]
-        vdata_bins = np.zeros((nv + 1), dtype=vdata.dtype)
-        vdata_bins[0] = vdata[0] - (vdata[1] - vdata[0]) / 2.0
-        vdata_bins[1:nv] = (vdata[:-1] + vdata[1:]) / 2.0
-        vdata_bins[nv] = vdata[-1] + (vdata[-1] - vdata[-2]) / 2.0
-    else:  # 2-d V
-        nv = vdata.shape[1]
-        vdata_bins = np.zeros((ntimes, nv + 1), dtype=vdata.dtype)
-        vdata_bins[:, 0] = vdata[:, 0] - (vdata[:, 1] - vdata[:, 0]) / 2.0
-        vdata_bins[:, 1:nv] = (vdata[:, :-1] + vdata[:, 1:nv]) / 2.0
-        vdata_bins[:, nv] = (
-            vdata[:, nv - 1] + (vdata[:, nv - 1] - vdata[:, nv - 2]) / 2.0
-        )
-
-    for j in range(ntimes):
-        if len(vdata.shape) == 1:
-            vtmp = vdata_bins
-        else:
-            vtmp = vdata_bins[j, :]
-
-        for i in range(nv):
-            # Directly compute the indices for the condition instead of using np.intersect1d
-            if vtmp[i] < vtmp[i + 1]:  # increasing values
-                condition = (vdata_hi >= vtmp[i]) & (vdata_hi <= vtmp[i + 1])
-                ss_ini = np.where(condition)[0]
-                if ss_ini.size > 0:
-                    out_values[j, ss_ini] = values[j, i]
-            elif vtmp[i] > vtmp[i + 1]:  # decreasing values, (e.g., THEMIS ESA)
-                condition = (vdata_hi >= vtmp[i+1]) & (vdata_hi <= vtmp[i])
-                ss_ini = np.where(condition)[0]
-                if ss_ini.size > 0:
-                    out_values[j, ss_ini] = values[j, i]
-
-    return out_values
-
-def specplot_resample_monotonic(values, vdata, vdata_hi):
-    """Optimized even harder by ChatGPT"""
     ny = len(vdata_hi)  # vdata_hi is 1d, the same for all time intervals
     ntimes = values.shape[0]
     out_values = np.zeros((ntimes, ny), dtype=values.dtype)
@@ -168,9 +79,6 @@ def specplot_resample_monotonic(values, vdata, vdata_hi):
                 
     return out_values
 
-
-#specplot_resample = specplot_resample_optimized
-specplot_resample = specplot_resample_monotonic
 
 
 def specplot(
