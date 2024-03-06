@@ -9,27 +9,56 @@ def tpwrspc(varname, newname=None, overwrite=False, noline=False, nohanning=Fals
     This function is a wrapper for pwrspc.
     It applies pwrspc to a pytplot variable and stores the result in a new pytplot variable.
 
-    Parameters:
-        varname (str):
+    Parameters
+    ----------
+        varname: str
             Name of the tplot variable.
-        newname (str, optional):
-            New name for the output tplot variable.
-        overwrite (bool):
+
+        newname: str, optional
+            New name for the output tplot variable. If not set, default output variable will be
+            Default: None
+
+        overwrite: bool, optional
             If True, overwrite the existing tplot variable.
             If True, then the newname keyword has no effect.
-        noline, nohanning, bin, notperhz (optional):
-            Power spectrum computation options.
-            Same as in the pwrspc function.
-        trange (list, optional):
-            Time range for the data extraction.
-        axis (int, optional):
-            If the input variable is multi-dimensional, this specifies the axis to operate along.
-            Default is the first axis.
+            Default: False
 
-    Returns:
-        newname (string)
+        noline: bool, optional
+            If True, straight line is not subtracted from the data.
+            Default: False
+
+        nohanning: bool, optional
+            If True, no Hanning window is applied to the data.
+            Default: False
+        
+        bin: int, optional
+            Bin size for binning the data. 
+            Default: 3
+
+        notperhz: bool, optional
+            If True, the output units are the square of the input units.
+            Default: False
+
+        trange: list, optional
+            Time range for the data extraction.
+            Default: None
+
+        axis: int, optional
+            If the input variable is multi-dimensional, this specifies the axis to operate along.
+            Default: 0, first axis.
+
+    Returns
+    ----------
+        newname: str, string
             Name of the new tplot variable created by this function.
             The output variable contains a single data point, frequency as v, and power as y.
+    
+    Examples
+    ----------
+        >>> import pytplot
+        >>> import numpy as np
+        >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
+        >>> pytplot.get_data('a_pwrspc')
     """
 
     # Check if the variable exists

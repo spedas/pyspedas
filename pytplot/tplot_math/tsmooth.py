@@ -26,12 +26,17 @@ def smooth(data, width=10, preserve_nans=None):
     width : float, optional
         Data window to use for smoothing. The default is 10.
     preserve_nans : bool, optional
-        If None, then replace NaNs.
+        If None, then replace NaNs. The default is None.
 
     Returns
     -------
     result : list of floats
         Smoothed data.
+    
+    Example
+    -------
+        >>> import pytplot
+        >>> print(pytplot.smooth(np.random.random(100)))
 
     """
     result = data.copy()
@@ -60,7 +65,7 @@ def smooth(data, width=10, preserve_nans=None):
 def tsmooth(names, width=10, median=None, preserve_nans=None,
             new_names=None, suffix=None, overwrite=None):
     """
-    Smooths data.
+    Smooths a tplot variable.
 
     Parameters
     ----------
@@ -69,21 +74,31 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
     width: int, optional
         Data window to use for smoothing. The default is 10.
     median: bool, optional
-        Apply the median as well.
+        Apply the median as well. The default is None.
     preserve_nans: bool, optional
-        If None, then replace NaNs.
+        If None, then replace NaNs. The default is None.
     new_names: str/list of str, optional
         List of new_names for pytplot variables.
-        If not given, then a suffix is applied.
+        If not given, then a suffix is applied. 
+        The default is None.
     suffix: str, optional
         A suffix to apply. Default is '-s'.
+        The default is None.
     overwrite: bool, optional
         Replace the existing tplot name.
+        The default is None.
 
     Returns
     -------
     None.
 
+    Example
+    -------
+        >>> import pytplot
+        >>> import numpy as np
+        >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
+        >>> pytplot.tsmooth('a')
+        >>> print(pytplot.data_quants['a-s'].data)
     """
     old_names = pytplot.tnames(names)
 
