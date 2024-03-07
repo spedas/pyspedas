@@ -36,6 +36,7 @@ def smooth(data, width=10, preserve_nans=None):
     Example
     -------
         >>> import pytplot
+        >>> import numpy as np
         >>> print(pytplot.smooth(np.random.random(100)))
 
     """

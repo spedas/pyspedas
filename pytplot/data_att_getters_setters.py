@@ -5,10 +5,11 @@ from pytplot import get_data
 def get_any(name,tag_name):
     """
 
-    This function returns an arbitrary value from the data_att dictionary of a tplot variable.
+    This function returns an arbitrary value from the data_att dictionary within the metdata of a tplot variable.
     It is intended to be called by other tag-specific getters and setters.
 
     Parameters:
+    ----------
         name: str
             name of the tplot variable
 
@@ -16,11 +17,21 @@ def get_any(name,tag_name):
             The name of the attribute to be returned
 
     Notes:
+    ----------
         The metadata values are stored in the variable's metadata at:
             metadata['data_att'][tag_name]
 
     Returns:
+    ----------
         Contents of specified tag name in the data_att structure, or None if not present.
+
+    Examples:
+    ----------
+        >>> import pytplot
+        >>> from pyspedas import themis
+        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pytplot.get_any('tha_pos', 'coord_sys')
+
     """
     metadata = get_data(name, metadata=True)
     if metadata is None:
@@ -35,12 +46,14 @@ def get_any(name,tag_name):
 
 
 def set_any(name, tag_name, tag_value):
+
     """
 
-    This function sets an arbitrary attribute in the data_att dictionary of a tplot variable.
+    This function sets an arbitrary attribute in the data_att dictionary within the metadata of a tplot variable.
     It is intended to be called by other tag-specific getters and setters.
 
     Parameters:
+    ----------
         name: str
             name of the tplot variable
 
@@ -51,11 +64,21 @@ def set_any(name, tag_name, tag_value):
             The value of the attribute to be stored
 
     Notes:
+    ----------
         The metadata values are stored in the variable's metadata at:
             metadata['data_att'][tag_name]
 
     Returns:
+    ----------
         Contents of specified tag name in the data_att structure, or None if not present.
+
+    Examples:
+    ----------
+        >>> import pytplot
+        >>> from pyspedas import themis
+        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pytplot.set_any('tha_pos', 'coord_sys', 'GSE')
+
     """
     # check that the variable exists
     data = get_data(name)
@@ -83,19 +106,30 @@ def get_coords(name):
     This function returns the coordinate system of a tplot variable
 
     Parameters:
+    ----------
         name: str
             name of the tplot variable
 
     Notes:
+    ----------
         The coordinate system is stored in the variable's metadata at:
             metadata['data_att']['coord_sys']
 
         See cotrans_set_coord to update the coordinate system
 
     Returns:
+    ----------
         Coordinate system of the tplot variable
         or
         None if the coordinate system isn't set
+
+    Examples:
+    ----------
+        >>> import pytplot
+        >>> from pyspedas import themis
+        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pytplot.get_coords('tha_pos')
+
     """
 
     return get_any(name,'coord_sys')
@@ -106,6 +140,7 @@ def set_coords(name, coords):
     and axis labels if they include the coordinate system.
 
     Parameters:
+    ----------
         name: str
             name of the tplot variable
 
@@ -113,13 +148,22 @@ def set_coords(name, coords):
             Abbreviated name of the coordinate system (upper case recommended)
 
     Notes:
+    ----------
         The coordinate system is stored in the variable's metadata at:
             metadata['data_att']['coord_sys']
 
         See get_coord to return the coordinate system
 
     Returns:
+    ----------
         bool: True/False depending on if the operation was successful
+
+    Examples:
+    ----------
+        >>> import pytplot
+        >>> from pyspedas import themis
+        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pytplot.set_coords('tha_pos', 'GEI')
     """
 
     # check that the variable exists
@@ -156,19 +200,29 @@ def get_units(name):
     This function returns the units of a tplot variable
 
     Parameters:
+    ----------
         name: str
             name of the tplot variable
 
     Notes:
+    ----------
         The units string is stored in the variable's metadata at:
             metadata['data_att']['units']
 
         See set_units to update the coordinate system
 
     Returns:
+    ----------
         Units of the tplot variable
         or
         None if the coordinate system isn't set
+
+    Examples:
+    ----------
+        >>> import pytplot
+        >>> from pyspedas import themis
+        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pytplot.get_units('tha_pos')
     """
 
     return get_any(name,'units')
@@ -179,6 +233,7 @@ def set_units(name, units):
     and axis labels if they include the units.
 
     Parameters:
+    ----------
         name: str
             name of the tplot variable
 
@@ -186,13 +241,22 @@ def set_units(name, units):
             Units
 
     Notes:
+    ----------
         The units are stored in the variable's metadata at:
             metadata['data_att']['units']
 
         See get_units to return the units
 
     Returns:
+    ----------
         bool: True/False depending on if the operation was successful
+
+    Examples:
+    ----------
+        >>> import pytplot
+        >>> from pyspedas import themis
+        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pytplot.set_units('tha_pos', 're')
     """
 
     # check that the variable exists
