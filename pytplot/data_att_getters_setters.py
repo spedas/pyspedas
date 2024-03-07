@@ -30,7 +30,7 @@ def get_any(name,tag_name):
         >>> import pytplot
         >>> from pyspedas import themis
         >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
-        >>> pytplot.get_any('tha_pos', 'coord_sys')
+        >>> pytplot.data_att_getters_setters.get_any('tha_pos', 'coord_sys')
 
     """
     metadata = get_data(name, metadata=True)
@@ -77,7 +77,7 @@ def set_any(name, tag_name, tag_value):
         >>> import pytplot
         >>> from pyspedas import themis
         >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
-        >>> pytplot.set_any('tha_pos', 'coord_sys', 'GSE')
+        >>> pytplot.data_att_getters_setters.set_any('tha_pos', 'coord_sys', 'GSE')
 
     """
     # check that the variable exists
