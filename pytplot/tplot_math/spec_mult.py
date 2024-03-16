@@ -1,23 +1,37 @@
+"""
+Multiplies data by stored spectrogram bins, creates new tplot variable
+
+Notes
+-----
+Similar to spec_mult.pro in IDL SPEDAS.
+
+"""
+
 import pytplot
 import pandas as pd
 import copy
 import logging
 
-def spec_mult(tvar,newname=None, new_tvar=None):
+def spec_mult(
+        tvar,
+        newname=None,
+        new_tvar=None
+):
+
     """
     Multiplies the data by the stored spectrogram bins and created a new tplot variable
 
-    .. note::
-        This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
+    Note::
+        This analysis routine assumes the data is no more than 2 dimensions.
+        If there are more, they may become flattened!
 
     Parameters:
         tvar : str
             Name of tplot variable
-        times : int/list
-            Desired times for interpolation.
-        new_tvar : str (Deprecated)
-            Name of new tvar in which to store interpolated data.  If none is specified, a name will be created.
         newname : str
+            Name of new tvar in which to store interpolated data.
+            Default: If none is specified, a name will be created of the form tvar_specmult.
+        new_tvar : str (Deprecated)
             Name of new tvar in which to store interpolated data.  If none is specified, a name will be created.
 
     Returns:

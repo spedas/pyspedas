@@ -1,26 +1,49 @@
+"""
+Splits up 2D data into many 1D tplot variables.
+
+Notes
+-----
+Similar to split_vec.pro in IDL SPEDAS.
+
+"""
+
 import logging
 import pytplot
 import numpy as np
 import logging
 
-def split_vec(tvar, polar=False, newname=None, new_name=None, columns='all', suffix=None):
+def split_vec(
+        tvar,
+        polar=False,
+        newname=None,
+        new_name=None,
+        columns='all',
+        suffix=None
+):
     """
-    Splits up 2D data into many 1D tplot variables.
-
-    .. note::
-        This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
+    Splits up 2D data into many 1D tplot variables. Takes a stored tplot vector like Vp
+    and stores tplot variables Vp_x, Vp_y, Vp_z
 
     Parameters:
         tvar : str
             Name of tplot variable to split up
         polar : bool, optional
-            If True, the input data is in polar coordinates. Suffix will be set to ['_mag', '_th', '_phi'].
+            If True, the input data is in polar coordinates.
+            Suffix will be set to ['_mag', '_th', '_phi'].
+            Default: False
         new_name : int/list, optional (Deprecated)
-            The names of the new tplot variables. This must be the same length as the number of variables created.
+            The names of the new tplot variables.
+            This must be the same length as the number of variables created.
         newname : int/list, optional
-            The names of the new tplot variables. This must be the same length as the number of variables created.
+            The names of the new tplot variables.
+            This must be the same length as the number of variables created.
+            Default: None
         columns : list of ints, optional
-            The specific column numbers to grab from the data.  The default is to split all columns.
+            The specific column numbers to grab from the data.
+            Default: 'all' (splits all columns)
+        suffix: str
+            Suffix str to be added to end of tplot variable name
+            Default: None
 
     Returns:
         None

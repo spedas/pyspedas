@@ -10,12 +10,19 @@ import logging
 import pytplot
 
 
-def time_clip(names, time_start, time_end, new_names=None, suffix='-tclip',
-              overwrite=False):
+def time_clip(
+        names,
+        time_start,
+        time_end,
+        new_names=None,
+        suffix='-tclip',
+        overwrite=False
+):
     """
     Clip data from time_start to time_end.
 
-    Parameters:
+    Parameters
+    ----------
     names: str/list of str
         List of pytplot names.
     time_start : float
@@ -24,7 +31,7 @@ def time_clip(names, time_start, time_end, new_names=None, suffix='-tclip',
         End time.
     new_names: str/list of str, optional
         List of new_names for pytplot variables.
-        If not given, then a suffix is applied or the variables are overwritten
+        Default: None. If not given, then a suffix is applied or the variables are overwritten
     suffix: str, optional
         A suffix to apply.
         Default: '-tclip'

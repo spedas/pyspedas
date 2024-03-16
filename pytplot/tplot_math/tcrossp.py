@@ -2,25 +2,27 @@ import numpy as np
 from pytplot import get_data, store_data
 
 
-def tcrossp(v1, v2, newname=None, return_data=False):
+def tcrossp(
+        v1,
+        v2,
+        newname=None,
+        return_data=False
+):
     """
-    Calculates the cross product of two tplot varibles
-
-    Input
-    -------
-        v1: str
-            First tplot variable
-
-        v2: str
-            Second tplot variable
+    Calculates the cross product of two tplot variables
 
     Parameters
-    -----------
-        newname: str
-            Name of the output variable
-
-        return_data: bool
-            Returns the data as an ndarray instead of creating a tplot variable
+    -------
+    v1: str
+        First tplot variable
+    v2: str
+        Second tplot variable
+    newname: str, optional
+        Name of the output variable
+        Default: None
+    return_data: bool
+        Returns the data as an ndarray instead of creating a tplot variable
+        Default: False
 
     Returns
     --------

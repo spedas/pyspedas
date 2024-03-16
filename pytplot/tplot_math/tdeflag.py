@@ -10,8 +10,15 @@ Similar to tdeflag.pro in IDL SPEDAS, but now a wrapper for deflag.py
 import logging
 import pytplot
 
-def tdeflag(names, flag=None, method='linear', newname=None, new_names=None, suffix=None,
-            overwrite=None, fillval=None):
+def tdeflag(names,
+            flag=None,
+            method='linear',
+            newname=None,
+            new_names=None,
+            suffix=None,
+            overwrite=None,
+            fillval=None
+):
     """
     Replaces FLAGs in arrays with interpolated or other values.
 
@@ -20,25 +27,28 @@ def tdeflag(names, flag=None, method='linear', newname=None, new_names=None, suf
     names: str/list of str
         List of pytplot names.
     method: str, optional
-        Method to apply. Default is 'linear'
+        Method to apply.
         If None,then flagged values are replaced with NaN
         Other options 'repeat' (repeat last good value), 
         'linear' (interpolate linearly over gap).
         'replace' replaces flagged value with a fill value, which can be set using the 
                   keyword 'fillval' (default is to use NaN)
         Option 'remove_nan' removes time intervals with NaN values
+        Default: 'linear'
     new_names: str/list of str, optional (Deprecated)
         List of new_names for pytplot variables.
         If '', then pytplot variables are replaced.
-        If not given, then a suffix is applied.
+        Default: None.
     newname: str/list of str, optional
         List of new names for pytplot variables.
         If '', then pytplot variables are replaced.
-        If not given, then a suffix is applied.
+        Default: None. If not specified then a suffix is applied.
     suffix: str, optional
-        A suffix to apply. Default is '-deflag'.
+        A suffix to apply.
+        Default: '-deflag'.
     overwrite: bool, optional
         Replace the existing tplot name.
+        Default: None
 
     Returns
     -------
