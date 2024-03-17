@@ -1,13 +1,9 @@
-# Copyright 2020 Regents of the University of Colorado. All Rights Reserved.
-# Released under the MIT license.
-# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
-# Verify current version before use at: https://github.com/MAVENSDC/Pytplot
-
 import pytplot
 import copy
 import logging
 
-def flatten(tvar,range=None,newname=None,new_tvar=None):
+
+def flatten(tvar, range=None, newname=None, new_tvar=None):
     """
     Divides the column by an average over specified time
 
@@ -19,9 +15,9 @@ def flatten(tvar,range=None,newname=None,new_tvar=None):
             Name of first tplot variable.
         range : [int, int], optional
             The time range to average over.  The default is the whole range.
-        new_tvar : str (Deprecated)
-            Name of new tvar for added data.  If not set, then a name is made up.
         newname : str
+            Name of new tvar for added data.  If not set, then a name is made up.
+        new_tvar : str (Deprecated)
             Name of new tvar for added data.  If not set, then a name is made up.
 
     Returns:
@@ -35,24 +31,27 @@ def flatten(tvar,range=None,newname=None,new_tvar=None):
     """
     # new_tvar is deprecated in favor of newname
     if new_tvar is not None:
-        logging.info("flatten: The new_tvar parameter is deprecated. Please use newname instead.")
+        logging.info(
+            "flatten: The new_tvar parameter is deprecated. Please use newname instead."
+        )
         newname = new_tvar
-
 
     if newname is None:
         newname = tvar + "_flattened"
 
-    if 'spec_bins' in pytplot.data_quants[tvar].coords:
+    if "spec_bins" in pytplot.data_quants[tvar].coords:
         df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
     else:
-        df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar, no_spec_bins=True)
-        s=None
+        df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+            tvar, no_spec_bins=True
+        )
+        s = None
 
     if range is None:
         pass
 
     time = df.index
-    #if time given not an index, choose closest time
+    # if time given not an index, choose closest time
     if range is None:
         df_index = list(df.columns)
         # divide by column average
@@ -67,14 +66,18 @@ def flatten(tvar,range=None,newname=None,new_tvar=None):
             end_t = time[tdiff.argmin()]
         df_index = list(df.columns)
 
-        #divide by specified time average
+        # divide by specified time average
         for i in df_index:
-            df[i] = df[i]/((df.loc[start_t:end_t])[i]).mean()
+            df[i] = df[i] / ((df.loc[start_t:end_t])[i]).mean()
 
     if s is not None:
-        pytplot.store_data(newname,data = {'x':df.index,'y':df.values, 'v': s.values})
-        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        pytplot.store_data(newname, data={"x": df.index, "y": df.values, "v": s.values})
+        pytplot.data_quants[newname].attrs = copy.deepcopy(
+            pytplot.data_quants[tvar].attrs
+        )
     else:
-        pytplot.store_data(newname, data={'x': df.index, 'y': df.values})
-        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        pytplot.store_data(newname, data={"x": df.index, "y": df.values})
+        pytplot.data_quants[newname].attrs = copy.deepcopy(
+            pytplot.data_quants[tvar].attrs
+        )
     return
