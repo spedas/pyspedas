@@ -16,14 +16,14 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False):
     Parameters:
         name : str 
             Name of the tplot variable
-        xarray : bool
+        xarray : bool, optional
             Keep the variable as an xarray object
-        metadata : bool
+        metadata : bool, optional
             Return the metadata of the object (the attr dictionary) instead of the actual data
-        dt: bool
+        dt: bool, optional
             Return the times as np.datetime64[ns] objects instead of unix times
             (significantly faster)
-        units: bool
+        units: bool, optional
             Attach the astropy units to the data and dependencioes prior to returning
          
     Returns: tuple of data/dimensions/metadata stored in pytplot
@@ -42,6 +42,7 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False):
         >>> y_data = [1,2,3,4,5]
         >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
         >>> time, data = pytplot.get_data("Variable1")
+        >>> metadata = pytplot.get_data("Variable1", metadata=True)
 
     """
 
