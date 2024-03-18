@@ -187,6 +187,9 @@ def tplot(variables, var_label=None,
                     zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
                     line_opts = var_quants.attrs['plot_options']['line_opt']
 
+            if idx > 0:
+                pytplot.tplot_opt_glob['title_text'] = ''
+
             for pseudo_idx, var in enumerate(pseudo_vars):
                 tplot(var, return_plot_objects=return_plot_objects,
                         xsize=xsize, ysize=ysize, save_png=save_png,
@@ -196,11 +199,19 @@ def tplot(variables, var_label=None,
                         pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
                         pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
                         pseudo_right_axis=pseudo_right_axis)
+            
+            if idx > 0:
+                pytplot.tplot_opt_glob['title_text'] = plot_title
+
             continue
 
         # set the figure title
         if idx == 0 and plot_title != '':
-            this_axis.set_title(plot_title)
+            if 'title_size' in pytplot.tplot_opt_glob:
+                title_size = pytplot.tplot_opt_glob['title_size']
+                this_axis.set_title(plot_title, fontsize=title_size)
+            else:
+                this_axis.set_title(plot_title)
 
         #if data_gap is an option for this variable, or if it's a add
         #gaps here; an individual gap setting should override the
@@ -496,6 +507,9 @@ def tplot(variables, var_label=None,
             xmargin = pytplot.tplot_opt_glob.get('xmargin')
             if xmargin is None:
                 fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
+            
+            if plot_extras.get('second_axis_size') is not None:
+                second_axis_size = plot_extras['second_axis_size']
 
             box = this_axis.get_position()
             pad, width = 0.02, colormap_width
