@@ -10,12 +10,19 @@ import logging
 import pytplot
 
 
-def time_clip(names, time_start, time_end, new_names=None, suffix=None,
-              overwrite=None):
+def time_clip(
+        names,
+        time_start,
+        time_end,
+        new_names=None,
+        suffix='-tclip',
+        overwrite=False
+):
     """
     Clip data from time_start to time_end.
 
-    Parameters:
+    Parameters
+    ----------
     names: str/list of str
         List of pytplot names.
     time_start : float
@@ -24,30 +31,32 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
         End time.
     new_names: str/list of str, optional
         List of new_names for pytplot variables.
-        If '', then pytplot variables are replaced.
-        If not given, then a suffix is applied.
+        Default: None. If not given, then a suffix is applied or the variables are overwritten
     suffix: str, optional
-        A suffix to apply. Default is '-m'.
+        A suffix to apply.
+        Default: '-tclip'
     overwrite: bool, optional
-        Replace the existing tplot name.
+        If true, overwrite the existing tplot variable.
+        Default: False
 
     Returns
     -------
     None.
 
     """
+    if len(names) < 1:
+        logging.warning('time_clip: no pytplot variables specified')
+        return
+
     old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
-        logging.error('Time clip error: No pytplot names were provided.')
+        logging.warning('time_clip: No pytplot variables matching '+str(names))
         return
 
-    if suffix is None:
-        suffix = '-tclip'
-
-    if overwrite is not None:
+    if overwrite:
         n_names = old_names
-    elif new_names is None:
+    elif (new_names is None) or (len(new_names) < 1) or (new_names == ''):
         n_names = [s + suffix for s in old_names]
     else:
         n_names = new_names
@@ -56,7 +65,12 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
         n_names = [n_names]
 
     if len(n_names) != len(old_names):
+        logging.warning('time_clip: new_names and old_names have different lengths, using suffixes instead')
         n_names = [s + suffix for s in old_names]
+
+    if time_start > time_end:
+        logging.error('time_clip: Start time '+str(time_start)+' is larger than end time ' + str(time_end))
+        return
 
     for j in range(len(old_names)):
         if old_names[j] != n_names[j]:
@@ -75,23 +89,19 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
         index_end = len(time)
 
         if index_end < 1:
-            logging.error('Time clip found empty list.')
+            logging.info('time_clip found empty data for variable '+old_names[j])
             continue
 
         new_time = pytplot.time_float(time)
         new_time_start = pytplot.time_float(time_start)
         new_time_end = pytplot.time_float(time_end)
 
-        if new_time_start > new_time_end:
-            logging.error('Error: Start time is larger than end time.')
-            continue
-
         if (new_time_start > new_time[-1]) or (new_time_end < new_time[0]):
-            logging.error('Time clip returns empty data.')
+            logging.warning('time_clip: '+ old_names[j] + ' has no data in requested range')
             continue
 
         if (new_time_start <= new_time[0]) and (new_time_end >= new_time[-1]):
-            logging.info('Time clip returns full data set.')
+            logging.debug('Time clip returns full data set for variable '+old_names[j])
             continue
 
         for i in range(index_end):
@@ -104,6 +114,10 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
                 found_end = i
                 break
         index_end = found_end
+
+        if index_start == index_end:
+            logging.warning('time_clip: ' + old_names[j] + ' has no data in requested range')
+            continue
 
         tmp_q = pytplot.data_quants[n_names[j]]
 
@@ -179,8 +193,9 @@ def time_clip(names, time_start, time_end, new_names=None, suffix=None,
                     'x': time[index_start:index_end],
                     'y': data[index_start:index_end]},
                     attr_dict=metadata)
-        except:
+        except Exception as e:
             logging.error('Problem time clipping: ' + n_names[j])
+            logging.error('Exception:'+str(e))
             continue
 
-        logging.info('Time clip was applied to: ' + n_names[j])
+        logging.debug('Time clip was applied to: ' + n_names[j])

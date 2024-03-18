@@ -1,8 +1,9 @@
 import pytplot
 import numpy as np
 import copy
+import logging
 
-def avg_res_data(tvar,res,new_tvar=None):
+def avg_res_data(tvar,res,newname=None,new_tvar=None):
     """
     Averages the variable over a specified period of time.
 
@@ -11,7 +12,9 @@ def avg_res_data(tvar,res,new_tvar=None):
             Name of tplot variable.
         res : int/float
             The new data resolution
-        new_tvar : str
+        new_tvar : str (Deprecated)
+            Name of new tvar for averaged data.  If not set, then the data in tvar is replaced.
+        newname : str
             Name of new tvar for averaged data.  If not set, then the data in tvar is replaced.
 
     Returns:
@@ -24,20 +27,25 @@ def avg_res_data(tvar,res,new_tvar=None):
         >>> print(pytplot.data_quants['d'].values)
     """
 
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("avg_res_data: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
+
     tvar_new = pytplot.data_quants[tvar].coarsen(time=res, boundary='trim').mean()
     tvar_new.name = pytplot.data_quants[tvar].name
     tvar_new.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
-    if new_tvar is None:
-        pytplot.data_quants[tvar] = tvar_new
+    if newname is None:
+        pytplot.data_quants[tvar] = newname
     else:
         if 'spec_bins' in pytplot.data_quants[tvar].coords:
-            pytplot.store_data(new_tvar, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values,
+            pytplot.store_data(newname, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values,
                                                'v': tvar_new.coords['spec_bins'].values})
         else:
-            pytplot.store_data(new_tvar, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values})
+            pytplot.store_data(newname, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values})
 
-        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
     return
 

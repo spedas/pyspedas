@@ -13,7 +13,7 @@ def del_data(name=None):
     This function will delete tplot variables that are already stored in memory.  
     
     Parameters:
-        name : str 
+        name : str, optional 
             Name of the tplot variable to be deleted.  If no name is provided, then 
             all tplot variables will be deleted.  
          

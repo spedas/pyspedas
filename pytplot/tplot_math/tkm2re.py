@@ -6,27 +6,35 @@ def tkm2re(name, km=False, newname=None, suffix=''):
     """
     Converts a tplot variable to Re or Km
 
-    Input
-    ------
+    Parameters
+    -----------
         name: str or list of str
             Names of tplot variables to convert
 
-    Parameters
-    -----------
-        km: bool
-            Flag to convert Re to Km
+        km: bool, optional
+            If True, convert Re to Km. If False, convert Km to Re.
+            Default: False
 
-        newname: str or list of str
+        newname: str or list of str, optional
             Output variable names; if not set, the names of the
             input variables are used + '_re' or '_km'
+            Default: None
 
-        suffix: str
+        suffix: str, optional
             Specify to append a suffix to each variable 
             (only valid if newname is not specified)
+            Default: ''
 
     Returns
     --------
         List of the tplot variables created
+
+    Examples
+    --------
+        >>> import pytplot
+        >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+        >>> pytplot.tkm2re('a', km = True)
+        >>> print(pytplot.data_quants['a_km'].data)
 
     """
     km_in_re = 6371.2

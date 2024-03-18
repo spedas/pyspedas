@@ -63,7 +63,7 @@ def makegap(var_data, dt = None, margin = 0.0, func='nan'):
         elif len(var_data) == 5: #has v1, v2, v3
             pytplot.store_data('makegap_tmp', data = {'x':x, 'y':var_data.y, 'v1':var_data[2], 'v2':var_data[3], 'v3':var_data[3]})
     #Now, degap the variable
-    pytplot.degap('makegap_tmp', dt = dt, margin = margin, func = func)
+    pytplot.degap('makegap_tmp', dt = dt, margin = margin, func = func, twonanpergap = True)
     #and return the getdata result
     var_data_out = pytplot.get_data('makegap_tmp', dt = True)
     pytplot.del_data('makegap_tmp')

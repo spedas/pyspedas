@@ -6,8 +6,9 @@
 import pytplot
 import numpy as np
 import copy
+import logging
 
-def add_across(tvar,column_range=None,new_tvar=None):
+def add_across(tvar,column_range=None,newname=None,new_tvar=None):
     """
     Adds across columns in the tplot variable
 
@@ -20,7 +21,9 @@ def add_across(tvar,column_range=None,new_tvar=None):
         column_range: list of ints
             The columns to add together.  For example, if [1,4] is given here, columns 1, 2, 3, and 4 will be added together.
             If not set, then every column is added.
-        new_tvar : str
+        newname : str
+            Name of new tvar for averaged data.  If not set, then the variable is replaced
+        new_tvar : str (Deprecated)
             Name of new tvar for averaged data.  If not set, then the variable is replaced
 
     Returns:
@@ -34,9 +37,15 @@ def add_across(tvar,column_range=None,new_tvar=None):
 
         >>> #Add across specific columns in the data
         >>> pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
-        >>> pytplot.add_across('b',column_range=[[1,2],[3,4]],new_tvar='b_aap')
+        >>> pytplot.add_across('b',column_range=[[1,2],[3,4]],newname='b_aap')
         >>> print(pytplot.data_quants['b_aap'].data)
     """
+
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("add_across: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
+
     # separate and add data
 
     if 'spec_bins' in pytplot.data_quants[tvar].coords:
@@ -99,9 +108,9 @@ def add_across(tvar,column_range=None,new_tvar=None):
 
     #store added data
     if s is None:
-        pytplot.store_data(new_tvar,data={'x':time, 'y':np.transpose(data)})
+        pytplot.store_data(newname,data={'x':time, 'y':np.transpose(data)})
     else:
-        pytplot.store_data(new_tvar, data={'x': time, 'y':np.transpose(data), 'v': np.transpose(spec_data)})
+        pytplot.store_data(newname, data={'x': time, 'y':np.transpose(data), 'v': np.transpose(spec_data)})
 
     #pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 

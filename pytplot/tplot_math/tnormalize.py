@@ -6,24 +6,30 @@ def tnormalize(variable, newname=None, return_data=False):
     """
     Normalize all the vectors stored in a tplot variable
 
-    Input
+    Parameters
     ----------
         variable: str or np.ndarray
             tplot variable (or numpy array) containing the vectors to be normalized
 
-    Parameters
-    ----------
-        newname: str
-            name of the output variable; default: variable_normalized
+        newname: str, optional
+            name of the output variable; If not set, output name will be variable + '_normalize'
+            Default: None
 
-        return_data: bool
-            return the normalized vectors instead of creating a tplot variable
+        return_data: bool, optional
+            If true, return the normalized vectors instead of creating a tplot variable
+            Default: False
     
     Returns
     ----------
-
         name of the tplot variable created or normalized vectors if return_data
         is set
+    
+    Examples
+    ----------
+        >>> import pytplot
+        >>> pytplot.store_data('a', data={'x':[1, 2, 3], 'y':[[1,2,3],[4,5,6],[7,8,9]]})
+        >>> pytplot.tnormalize('a')
+        >>> print(pytplot.data_quants['a_normalized'].data)
 
     """
     metadata_in = {}

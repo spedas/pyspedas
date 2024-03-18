@@ -55,6 +55,9 @@ def lineplot(var_data,
     legend_edgecolor = yaxis_options.get('legend_edgecolor')
     legend_facecolor = yaxis_options.get('legend_facecolor')
     legend_frameon = yaxis_options.get('legend_frameon')
+    legend_ncols = yaxis_options.get('legend_ncols')
+    if legend_ncols is None:
+        legend_ncols = 1
 
     if legend_markersize is None:
         legend_markersize = 4
@@ -193,7 +196,7 @@ def lineplot(var_data,
     if labels is not None:
         legend = this_axis.legend(loc=legend_location, fontsize=legend_size, shadow=legend_shadow, title=legend_title,
                          labelcolor=legend_color, markerfirst=legend_markerfirst, markerscale=legend_markerscale,
-                         facecolor=legend_facecolor, edgecolor=legend_edgecolor, frameon=legend_frameon,
+                         facecolor=legend_facecolor, edgecolor=legend_edgecolor, frameon=legend_frameon, ncols=legend_ncols,
                          title_fontsize=legend_titlesize, bbox_to_anchor=bbox_to_anchor)
         try:
             handles = legend.legend_handles

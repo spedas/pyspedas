@@ -8,8 +8,9 @@ import numpy as np
 from scipy import interpolate
 from scipy.interpolate import interp1d
 import copy
-                              
-def resample(tvar,times,new_tvar=None):
+import logging
+
+def resample(tvar,times,newname=None, new_tvar=None):
     """
     Linearly interpolates data to user-specified values.  To interpolate one tplot variable to another, use tinterp.
 
@@ -21,7 +22,9 @@ def resample(tvar,times,new_tvar=None):
             Name of tvar whose data will be interpolated to specified times.
         times : int/list
             Desired times for interpolation.
-        new_tvar : str
+        new_tvar : str (Deprecated)
+            Name of new tvar in which to store interpolated data.  If none is specified, tvar will be overwritten
+        newname : str
             Name of new tvar in which to store interpolated data.  If none is specified, tvar will be overwritten
 
     Returns:
@@ -32,16 +35,20 @@ def resample(tvar,times,new_tvar=None):
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
         >>> pytplot.tplot_resample('d',[3,4,5,6,7,18],'d_resampled')
     """
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("resample: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
 
     x = pytplot.data_quants[tvar].interp(time=times)
 
-    if new_tvar is None:
+    if newname is None:
         x.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
         pytplot.data_quants[tvar] = x
         x.name = tvar
     else:
-        pytplot.data_quants[new_tvar] = copy.deepcopy(x)
-        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
-        pytplot.data_quants[new_tvar].name = new_tvar
+        pytplot.data_quants[newname] = copy.deepcopy(x)
+        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        pytplot.data_quants[newname].name = newname
 
     return

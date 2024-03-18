@@ -1,8 +1,3 @@
-# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
-# Released under the MIT license.
-# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
-# Verify current version before use at: https://github.com/MAVENSDC/Pytplot
-
 from .add_across import add_across
 from .add import add
 from .avg_res_data import avg_res_data
@@ -32,3 +27,8 @@ from .subtract_average import subtract_average
 from .time_clip import time_clip
 from .tkm2re import tkm2re
 from .makegap import makegap
+from .tdeflag import tdeflag
+from .pwrspc import pwrspc
+from .tpwrspc import tpwrspc
+from .dpwrspc import dpwrspc
+from .tdpwrspc import tdpwrspc

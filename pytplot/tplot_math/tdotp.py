@@ -1,25 +1,35 @@
+"""
+Calculates dot product of two tplot variables.
+
+Notes
+-----
+Similar to tdotp.pro in IDL SPEDAS.
+
+"""
 import logging
 from pytplot import get_data, store_data
 
 
-def tdotp(variable1, variable2, newname=None):
+def tdotp(
+        variable1,
+        variable2,
+        newname=None
+):
     """
         Routine to calculate the dot product of two tplot variables 
         containing arrays of vectors and storing the results in a 
         tplot variable
 
-    Input
-    -------
-        variable1: str
-            First tplot variable
-
-        variable2: str
-            Second tplot variable
-
     Parameters
     -----------
+       variable1: str
+            First tplot variable
+        variable2: str
+            Second tplot variable
         newname: str
             Name of the output variable
+            Default: None. If newname is not specified a new tplot variable will be created
+                with the name variable1_dot_variable2
             
     Returns
     --------

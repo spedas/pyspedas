@@ -78,9 +78,11 @@ def options(name, option=None, value=None, opt_dict=None):
         border              bool         Turns on or off the top/right axes that would create a box around the plot
         var_label_ticks     int          Sets the number of ticks if this variable is displayed as an alternative x axis
 
-        data_gap            numerical    If there is a gap in the data larger than this number in seconds, then insert 
-                                         NaNs. This is similar to using the degap procedure on the variable, but is 
+        data_gap            numerical    If there is a gap in the data larger than this number in seconds, then insert
+                                         NaNs. This is similar to using the degap procedure on the variable, but is
                                          applied at plot-time, and does not persist in the variable data.
+        y_major_ticks       list         A list of values that will be used to set the major ticks on the y axis.
+        y_minor_tick_interval numerical  The interval between minor ticks on the y axis.
         =================== ==========   =====
     Returns:
         None
@@ -221,6 +223,9 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'legend_frameon' or option == 'labels_frameon':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
 
+            if option == 'legend_ncols' or option == 'labels_ncols':
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_ncols'] = value
+
             if option == 'xlog_slice':
                 if value:
                     pytplot.data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'log'
@@ -318,7 +323,7 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'elinewidth':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['elinewidth'] = value
-                
+
             if option == 'marker_size':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker_size'] = value
 
@@ -371,6 +376,20 @@ def options(name, option=None, value=None, opt_dict=None):
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
                 # track whether the yrange option was set by the user
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range_user'] = True
+
+            if option == 'y_major_ticks':
+                # check whether the value is 1D array-like
+                if isinstance(value, (list, np.ndarray)):
+                    pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_major_ticks'] = value
+                else:
+                    logging.warning('y_major_ticks must be a 1D array-like object')
+
+            if option == 'y_minor_tick_interval':
+                # check whether the value is a number
+                if isinstance(value, (int, float)):
+                    pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_minor_tick_interval'] = value
+                else:
+                    logging.warning('y_minor_tick_interval must be a number')
 
             if option == 'zrange' or option == 'z_range':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]

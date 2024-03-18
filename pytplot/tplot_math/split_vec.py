@@ -1,21 +1,49 @@
+"""
+Splits up 2D data into many 1D tplot variables.
+
+Notes
+-----
+Similar to split_vec.pro in IDL SPEDAS.
+
+"""
+
 import logging
 import pytplot
 import numpy as np
+import logging
 
-def split_vec(tvar, new_name=None, columns='all', suffix=None):
+def split_vec(
+        tvar,
+        polar=False,
+        newname=None,
+        new_name=None,
+        columns='all',
+        suffix=None
+):
     """
-    Splits up 2D data into many 1D tplot variables.
-
-    .. note::
-        This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
+    Splits up 2D data into many 1D tplot variables. Takes a stored tplot vector like Vp
+    and stores tplot variables Vp_x, Vp_y, Vp_z
 
     Parameters:
         tvar : str
             Name of tplot variable to split up
-        newtvars : int/list, optional
-            The names of the new tplot variables. This must be the same length as the number of variables created.
+        polar : bool, optional
+            If True, the input data is in polar coordinates.
+            Suffix will be set to ['_mag', '_th', '_phi'].
+            Default: False
+        new_name : int/list, optional (Deprecated)
+            The names of the new tplot variables.
+            This must be the same length as the number of variables created.
+        newname : int/list, optional
+            The names of the new tplot variables.
+            This must be the same length as the number of variables created.
+            Default: None
         columns : list of ints, optional
-            The specific column numbers to grab from the data.  The default is to split all columns.
+            The specific column numbers to grab from the data.
+            Default: 'all' (splits all columns)
+        suffix: str
+            Suffix str to be added to end of tplot variable name
+            Default: None
 
     Returns:
         None
@@ -25,6 +53,10 @@ def split_vec(tvar, new_name=None, columns='all', suffix=None):
         >>> pytplot.tplot_math.split_vec('b',['b1','b2','b3'],[0,[1,3],4])
         >>> print(pytplot.data_quants['b2'].values)
     """
+    # new_name is deprecated in favor of newname
+    if new_name is not None:
+        logging.info("split_vec: The new_name parameter is deprecated. Please use newname instead.")
+        newname = new_name
 
     # Make sure the tvar is found
     if tvar not in pytplot.data_quants:
@@ -32,14 +64,15 @@ def split_vec(tvar, new_name=None, columns='all', suffix=None):
         return
 
     # Give a default to the new name
-    if new_name is None:
-        new_name = tvar
+    if newname is None:
+        newname = tvar
 
     # Gather data from the tvar
     alldata = pytplot.get_data(tvar)
     time = alldata[0]
     data = alldata[1]
     dim = data.shape
+    metadata = pytplot.get_data(tvar, metadata=True)
 
     # If already size one, simply return
     if len(dim) == 1:
@@ -53,36 +86,37 @@ def split_vec(tvar, new_name=None, columns='all', suffix=None):
             logging.error(f"split_vec error: number of columns ({vec_length}) is greater than the number of suffix entered")
     else:
         if vec_length == 3:
-            suffix = ["_x", "_y", "_z"]
+            if polar:
+                suffix = ['_mag', '_th', '_phi']
+            else:
+                suffix = ["_x", "_y", "_z"]
         else:
             suffix = []
             for i in range(vec_length):
                 suffix.append("_"+str(i))
 
-
     created_variables = []
 
-    #grab column data
+    # grab column data
     if columns == 'all':
         columns = range(vec_length)
 
     for i in columns:
 
-        #if not a list
-        if isinstance(i,list):
+        # if not a list
+        if isinstance(i, list):
             range_start = i[0]
             range_end = i[1]
         else:
             range_start = i
             range_end = i
-        split_col = list(range(range_start,range_end+1))
-        split_name = new_name + suffix[i]
+        split_col = list(range(range_start, range_end+1))
+        split_name = newname + suffix[i]
         created_variables = created_variables + [split_name]
 
-        data_for_tplot = {'x':time, 'y':data[:,split_col].squeeze()}
+        data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze()}
 
-        if not pytplot.store_data(split_name,data=data_for_tplot):
+        if not pytplot.store_data(split_name, data=data_for_tplot, attr_dict=metadata):
             raise Exception(f"Failed to store {split_name} in pytplot.")
-
 
     return created_variables

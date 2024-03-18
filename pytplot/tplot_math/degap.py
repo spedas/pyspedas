@@ -8,9 +8,10 @@ import numpy as np
 import pandas as pd
 import copy
 import datetime
+import logging
 
-def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None, onenanpergap = False, twonanpergap = False):
-    '''
+def degap(tvar,dt = None, margin = 0.25, func='nan', newname=None, new_tvar = None, onenanpergap = False, twonanpergap = False):
+    """
     Fills gaps in the data either with NaNs or the last number.
 
     Parameters:
@@ -24,17 +25,27 @@ def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None, onenanperg
         func : str, optional
             Either 'nan' or 'ffill', which overrides normal interpolation with NaN
             substitution or forward-filled values.
-        new_tvar : str, optional
+        new_tvar : str, optional (Deprecated)
             The new tplot variable name to store the data into.  If None, then the data is overwritten.
             THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten.
-        onenanpergap = if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
-        twonanpergap = if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
+        newname : str, optional
+            The new tplot variable name to store the data into.  If None, then the data is overwritten.
+            THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten.
+        onenanpergap : bool
+            if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
+        twonanpergap : bool
+            if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
     Returns:
         None
 
     Examples:
         >>> # TODO
-    '''
+    """
+
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("degap: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
 
     #check for globbed or array input, and call recursively
     tn = pytplot.tnames(tvar)
@@ -89,16 +100,16 @@ def degap(tvar,dt = None, margin = 0.25, func='nan', new_tvar = None, onenanperg
 
     a = pytplot.data_quants[tvar].reindex({'time': new_index}, method=method)
 
-    if new_tvar is None:
+    if newname is None:
         a.name = tvar
         a.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
         pytplot.data_quants[tvar] = copy.deepcopy(a)
     else:
         if 'spec_bins' in a.coords:
-            pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
-            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+            pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+            pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
         else:
-            pytplot.store_data(new_tvar, data={'x': a.coords['time'], 'y': a.values})
-            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+            pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values})
+            pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
     return

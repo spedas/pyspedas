@@ -6,15 +6,18 @@
 import pytplot
 import numpy as np
 import copy
+import logging
 
-def derive(tvar,new_tvar=None):
+def derive(tvar,newname=None, new_tvar=None):
     """
     Takes the derivative of the tplot variable.
 
     Parameters:
         tvar : str
             Name of tplot variable.
-        new_tvar : str
+        new_tvar : str (Deprecated)
+            Name of new tplot variable.  If not set, then the data in tvar is replaced.
+        newname : str
             Name of new tplot variable.  If not set, then the data in tvar is replaced.
 
     Returns:
@@ -25,9 +28,13 @@ def derive(tvar,new_tvar=None):
         >>> pytplot.derive('b','dbdt')
         >>> print(pytplot.data_quants['dbdt'].values)
     """
+    # new_tvar is deprecated in favor of newname
+    if new_tvar is not None:
+        logging.info("derive: The new_tvar parameter is deprecated. Please use newname instead.")
+        newname = new_tvar
 
     a = pytplot.data_quants[tvar].differentiate('time')
-    if new_tvar is None:
+    if newname is None:
         a.name = tvar
         a.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
         pytplot.data_quants[tvar] = a
@@ -37,7 +44,7 @@ def derive(tvar,new_tvar=None):
             if coord != 'time' and coord != 'spec_bins':
                 data[coord] = a.coords[coord].values
 
-        pytplot.store_data(new_tvar, data=data)
-        pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        pytplot.store_data(newname, data=data)
+        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
     return

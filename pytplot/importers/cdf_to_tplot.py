@@ -293,6 +293,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         # the new way:
                         # store and cache the datetime objects directly
                         # and delay conversion to unix times until get_data is called
+                        # Cluster apparently uses (-1.0e-31) as time tag fill values??  Better check...
+                        if xdata[0] < 0.0:
+                            logging.warning("CDF time tag %e for variable %s cannot be converted to datetime, skipping",xdata[0],var)
+                            continue
                         xdata = np.array(cdflib.cdfepoch.to_datetime(xdata))
                         if isinstance(delta_time, np.ndarray) or isinstance(delta_time, list):
                             delta_t = np.array([timedelta(seconds=dtime) for dtime in delta_time])
@@ -327,7 +331,13 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         # NaN is only valid for floating point data
                         # but we still need to handle FILLVAL's for
                         # integer data, so we'll just set those to 0
-                        ydata[ydata == var_atts["FILLVAL"]] = 0
+                        cond = ydata == var_atts["FILLVAL"]
+                        # Cluster sets FILLVAL attributes on scalar quantities (!) so we need to chack...
+                        if np.isscalar(ydata):
+                            if cond:
+                                ydata = 0
+                        else:
+                            ydata[cond] = 0
 
                 tplot_data = {'x': xdata, 'y': ydata}
 
