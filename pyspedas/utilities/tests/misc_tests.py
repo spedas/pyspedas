@@ -123,5 +123,18 @@ class UtilTestCases(unittest.TestCase):
         ask_vars = themis.ask(trange=['2013-11-05', '2013-11-06'])
         tplot(['thg_ask_atha'])
 
+    @unittest.skip('Skipping pseudovars plot title test')
+    def test_pseudovars_title(self):
+        import pyspedas
+        from pytplot import store_data, tplot, tplot_options
+        pyspedas.themis.state()
+        store_data('ps1', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
+        store_data('ps2', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
+        store_data('ps3', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
+        tplot_options('title', 'plot title')
+        plotvars = ['thc_pos', 'ps1', 'thc_vel', 'ps2', 'thc_pos_gse', 'ps3']
+        tplot(plotvars)
+
+
 if __name__ == '__main__':
     unittest.main()
