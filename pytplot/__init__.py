@@ -136,6 +136,8 @@ from pytplot.exporters.tplot_save import tplot_save
 from .tplot_names import tplot_names
 from .tnames import tnames
 from pytplot.importers.tplot_restore import tplot_restore
+from .is_pseudovariable import is_pseudovariable
+from .count_traces import count_traces
 from .get_timespan import get_timespan
 from .tplot_options import tplot_options
 from .tplot_rename import tplot_rename
