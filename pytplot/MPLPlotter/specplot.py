@@ -121,11 +121,29 @@ def specplot(
     #set -1.e31 fill values to NaN, jmjm, 2024-02-29
     ytp = np.where(var_data.y==-1.e31,np.nan,var_data.y)
     var_data.y[:,:] = ytp[:,:]
-    vtp = np.where(var_data.v==-1.e31,np.nan,var_data.v)
-    if len(vtp.shape) == 1:
-        var_data.v[:] = vtp[:]
-    else:
-        var_data.v[:,:] = vtp[:,:]
+    if hasattr(var_data, 'v'):
+        vtp = np.where(var_data.v==-1.e31,np.nan,var_data.v)
+        if len(vtp.shape) == 1:
+            var_data.v[:] = vtp[:]
+        else:
+            var_data.v[:,:] = vtp[:,:]
+    #for v1,v2 too
+    if hasattr(var_data, 'v1'):
+        if 'spec_dim_to_plot' in plot_extras:
+            if plot_extras['spec_dim_to_plot'] == 'v1':
+                vtp = np.where(var_data.v1==-1.e31,np.nan,var_data.v1)
+                if len(vtp.shape) == 1:
+                    var_data.v1[:] = vtp[:]
+                else:
+                    var_data.v1[:,:] = vtp[:,:]
+    if hasattr(var_data, 'v2'):
+        if 'spec_dim_to_plot' in plot_extras:
+            if plot_extras['spec_dim_to_plot'] == 'v2':
+                vtp = np.where(var_data.v2==-1.e31,np.nan,var_data.v2)
+                if len(vtp.shape) == 1:
+                    var_data.v2[:] = vtp[:]
+                else:
+                    var_data.v2[:,:] = vtp[:,:]
 
     #could also have a fill in yrange
     #    if yrange[0] == -1e31: #This does not work sometimes?
@@ -172,10 +190,20 @@ def specplot(
     spec_options["cmap"] = cmap
 
     out_values = var_data.y[time_idxs, :]
-
+    #allow use of v1, v2, jmm, 2024-03-20
     if len(var_data) == 3:
         out_vdata = var_data.v
+    elif len(var_data) == 4:
+        if hasattr(var_data, 'v1'):
+            if 'spec_dim_to_plot' in plot_extras:
+                if plot_extras['spec_dim_to_plot'] == 'v1':
+                    out_vdata = var_data.v1
+        if hasattr(var_data, 'v2'):
+            if 'spec_dim_to_plot' in plot_extras:
+                if plot_extras['spec_dim_to_plot'] == 'v2':
+                    out_vdata = var_data.v2
     else:
+        breakpoint()
         logging.warning("Too many dimensions on the variable: " + variable)
         return
 
