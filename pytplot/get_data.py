@@ -9,7 +9,7 @@ import logging
 from astropy import units as u
 
 
-def get_data(name, xarray=False, metadata=False, dt=False, units=False):
+def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_quant_in=None):
     """
     This function extracts the data from the tplot Variables stored in memory.
     
@@ -46,11 +46,15 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False):
 
     """
 
-    if name not in pytplot.data_quants.keys():
-        logging.info("The name " + str(name) + " is currently not in pytplot")
-        return
+    #check for an input data_quant object
+    if data_quant_in is not None:
+        temp_data_quant = data_quant_in
+    else:
+        if name not in pytplot.data_quants.keys():
+            logging.info("The name " + str(name) + " is currently not in pytplot")
+            return
     
-    temp_data_quant = pytplot.data_quants[name]
+        temp_data_quant = pytplot.data_quants[name]
 
     if isinstance(temp_data_quant, dict):
         # non-record varying variables are stored as dicts
