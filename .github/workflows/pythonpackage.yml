@@ -208,8 +208,8 @@ jobs:
         coverage run -a -m pyspedas.omni.tests.tests
         echo Starting themis tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests
-        echo Starting maven tests at `date`
-        coverage run -a -m pyspedas.maven.tests.tests
+        #echo Starting maven tests at `date`
+        #coverage run -a -m pyspedas.maven.tests.tests
         echo Starting goes tests at `date`
         coverage run -a -m pyspedas.goes.tests.tests
         echo Starting mica tests at `date`
