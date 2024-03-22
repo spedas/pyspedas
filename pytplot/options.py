@@ -259,6 +259,8 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'nodata':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
 
+            # Obsolete? (except for value='none'?) JWL 2024-03-21
+            # These don't seem to be the correct format for matplotlib parameterized line styles.
             if option == 'line_style' or option == 'linestyle':
                 if value == 0 or value == 'solid_line':
                     to_be = []
@@ -275,12 +277,10 @@ def options(name, option=None, value=None, opt_dict=None):
                 else:
                     to_be=value
 
+                # This does not appear to be used by tplot. JWL 2024-03-21
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style'] = to_be
 
-                if isinstance(value, list):
-                    pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = value
-                else:
-                    pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = [value]
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = _convert_to_matplotlib_linestyle(value)
 
                 if(value == 6 or value == 'none'):
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
@@ -583,3 +583,22 @@ def _reset_plots(name):
     pytplot.data_quants[name].attrs['plot_options']['extras']['alt'] = 0
     pytplot.data_quants[name].attrs['plot_options']['extras']['map'] = 0
     pytplot.data_quants[name].attrs['plot_options']['extras']['plotter'] = None
+
+def _convert_to_matplotlib_linestyle(linestyle):
+    if not isinstance(linestyle,list):
+        linestyle = [linestyle]
+    converted_linestyles = []
+    for ls in linestyle:
+        if ls == 'solid_line':
+            converted_linestyles.append('solid')
+        elif ls == 'dot':
+            converted_linestyles.append('dotted')
+        elif ls == 'dash':
+            converted_linestyles.append('dashed')
+        elif ls == 'dash_dot':
+            converted_linestyles.append('dashdot')
+        else:
+            converted_linestyles.append(ls)
+    return converted_linestyles
+
+
