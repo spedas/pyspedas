@@ -21,26 +21,26 @@ munits.registry[datetime] = converter
 
 
 def tplot(variables, var_label=None,
-                     xsize=None,
-                     ysize=None,
-                     save_png='',
-                     save_eps='',
-                     save_svg='',
-                     save_pdf='',
-                     save_jpeg='',
-                     dpi=None,
-                     display=True,
-                     fig=None,
-                     axis=None,
-                     pseudo_plot_num=None,
-                     pseudo_right_axis=False,
-                     pseudo_yaxis_options=None,
-                     pseudo_zaxis_options=None,
-                     pseudo_line_options=None,
-                     pseudo_extra_options=None,
-                     second_axis_size=0.0,
-                     slice=False,
-                     return_plot_objects=False):
+          xsize=None,
+          ysize=None,
+          save_png='',
+          save_eps='',
+          save_svg='',
+          save_pdf='',
+          save_jpeg='',
+          dpi=None,
+          display=True,
+          fig=None,
+          axis=None,
+          running_trace_count=None,
+          pseudo_right_axis=False,
+          pseudo_yaxis_options=None,
+          pseudo_zaxis_options=None,
+          pseudo_line_options=None,
+          pseudo_extra_options=None,
+          second_axis_size=0.0,
+          slice=False,
+          return_plot_objects=False):
     """
     This function creates tplot windows using matplotlib as a backend.
     """
@@ -93,7 +93,7 @@ def tplot(variables, var_label=None,
         fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes})
         fig.set_size_inches(xsize, ysize)
     else:
-        if pseudo_plot_num == 0 or pseudo_right_axis == False:
+        if running_trace_count == 0 or pseudo_right_axis == False:
             # setting up first axis
             axes = axis
         else:
@@ -192,18 +192,25 @@ def tplot(variables, var_label=None,
                     zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
                     line_opts = var_quants.attrs['plot_options']['line_opt']
 
+            # Prevent plot titles from showing up on each pseudovariable panel
             if idx > 0:
                 pytplot.tplot_opt_glob['title_text'] = ''
 
+            traces_processed = 0
             for pseudo_idx, var in enumerate(pseudo_vars):
+                # We're plotting a pseudovariable.  Iterate over the sub-variables, keeping track of how many
+                # traces have been plotted so far, so we can correctly match option values to traces. The pseudovariable
+                # y_axis, z_axis, line and extra options are passed as parameters so they can be merged with the
+                # sub-variable options, with any pseudovar options overriding the sub-variable options.
                 tplot(var, return_plot_objects=return_plot_objects,
-                        xsize=xsize, ysize=ysize, save_png=save_png,
-                        save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf,
-                        fig=fig, axis=this_axis, display=False,
-                        pseudo_plot_num=pseudo_idx, second_axis_size=0.1,
-                        pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
-                        pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
-                        pseudo_right_axis=pseudo_right_axis)
+                      xsize=xsize, ysize=ysize, save_png=save_png,
+                      save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf,
+                      fig=fig, axis=this_axis, display=False,
+                      running_trace_count=traces_processed, second_axis_size=0.1,
+                      pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
+                      pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
+                      pseudo_right_axis=pseudo_right_axis)
+                traces_processed += pytplot.count_traces(var)
             
             if idx > 0:
                 pytplot.tplot_opt_glob['title_text'] = plot_title
@@ -266,15 +273,18 @@ def tplot(variables, var_label=None,
         # set some more plot options
         yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
         if pseudo_yaxis_options is not None and len(pseudo_yaxis_options) > 0:
-            yaxis_options = pseudo_yaxis_options
+            merged_yaxis_options = yaxis_options | pseudo_yaxis_options
+            yaxis_options = merged_yaxis_options
 
         zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
         if pseudo_zaxis_options is not None and len(pseudo_zaxis_options) > 0:
-            zaxis_options = pseudo_zaxis_options
+            merged_zaxis_options = zaxis_options | pseudo_zaxis_options
+            zaxis_options = merged_zaxis_options
 
         line_opts = var_quants.attrs['plot_options']['line_opt']
         if pseudo_line_options is not None and len(pseudo_line_options) > 0:
-            line_opts = pseudo_line_options
+            merged_line_opts = line_opts | pseudo_line_options
+            line_opts = merged_line_opts
 
         if line_opts is not None:
             if 'name' in line_opts:
@@ -284,7 +294,8 @@ def tplot(variables, var_label=None,
 
         plot_extras = var_quants.attrs['plot_options']['extras']
         if pseudo_extra_options is not None and len(pseudo_extra_options) > 0:
-            plot_extras = pseudo_extra_options
+            merged_plot_extras = plot_extras | pseudo_extra_options
+            plot_extras = merged_plot_extras
 
         ylog = yaxis_options['y_axis_type']
 
@@ -396,7 +407,7 @@ def tplot(variables, var_label=None,
                 continue
         else:
             # create line plots
-            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, pseudo_plot_num=pseudo_plot_num, time_idxs=time_idxs, style=style, var_metadata=var_metadata)
+            plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, running_trace_count=running_trace_count, time_idxs=time_idxs, style=style, var_metadata=var_metadata)
             if not plot_created:
                 continue
 
@@ -500,7 +511,7 @@ def tplot(variables, var_label=None,
                 continue
 
             # add the color bar
-            if pseudo_plot_num == 0:
+            if running_trace_count == 0:
                 # there's going to be a second axis, so we need to make sure there's room for it
                 second_axis_size = 0.07
 
