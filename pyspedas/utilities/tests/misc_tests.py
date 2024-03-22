@@ -107,34 +107,5 @@ class UtilTestCases(unittest.TestCase):
         # empty input list
         pytplot.time_clip([],1.5,2.5)
 
-
-
-    @unittest.skip('Skipping line plot pseudovariables test')
-    def test_line_pseudovariables(self):
-        themis.fgm(probe='c')
-        store_data('comb_3_1',data=['thc_fge_dsl','thc_fge_btotal'])
-        store_data('comb_1_3',data=['thc_fge_btotal','thc_fge_dsl'])
-        #tplot(['thc_fge_dsl','thc_fge_btotal','comb_3_1','comb_1_3'])
-        #tplot('comb_1_3')
-        tplot('comb_3_1') # only plots 1 trace JWL 2024-02-19
-
-    @unittest.skip('Skipping specplot optimization test')
-    def test_specplot_optimizations(self):
-        ask_vars = themis.ask(trange=['2013-11-05', '2013-11-06'])
-        tplot(['thg_ask_atha'])
-
-    @unittest.skip('Skipping pseudovars plot title test')
-    def test_pseudovars_title(self):
-        import pyspedas
-        from pytplot import store_data, tplot, tplot_options
-        pyspedas.themis.state()
-        store_data('ps1', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
-        store_data('ps2', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
-        store_data('ps3', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
-        tplot_options('title', 'plot title')
-        plotvars = ['thc_pos', 'ps1', 'thc_vel', 'ps2', 'thc_pos_gse', 'ps3']
-        tplot(plotvars)
-
-
 if __name__ == '__main__':
     unittest.main()
