@@ -6,7 +6,7 @@ from pyspedas import themis
 from pytplot import store_data, options, timespan, tplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = True
+global_display = False
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
