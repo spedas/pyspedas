@@ -158,6 +158,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.download_tests
         echo Starting utilities misc tests at `date`
         coverage run -a -m pyspedas.utilities.tests.misc_tests
+        echo Starting plotting tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.plot_tests
         echo Starting utilities time_tests tests at `date`
         coverage run -a -m pyspedas.utilities.tests.time_tests
         echo Starting cotrans tests at `date`
