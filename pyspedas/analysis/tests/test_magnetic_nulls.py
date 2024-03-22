@@ -4,6 +4,9 @@ import pyspedas
 from pytplot import data_exists, tplot, get_data
 import numpy as np
 
+# Set this to False for Github CI testing, True to show the plots for interactive use
+global_display=False
+
 class MagNullTestCases(unittest.TestCase):
 
 
@@ -111,7 +114,7 @@ class MagNullTestCases(unittest.TestCase):
         fields = ['mms'+prb+'_fgm_b_gse_srvy_l2' for prb in ['1', '2', '3', '4']]
         positions = ['mms'+prb+'_fgm_r_gse_srvy_l2' for prb in ['1', '2', '3', '4']]
         null_vars = pyspedas.find_magnetic_nulls_fote(fields=fields, positions=positions, smooth_fields=True,smooth_npts=10,smooth_median=True)
-        #tplot(null_vars)
+        tplot(null_vars,save_png='magnetic_null_vars',display=global_display)
         # We reconstruct the field vectors at the s/c positions using the Jacobian and the field value at the tetrahedron
         # barycenter.  The max difference between the observations and the reconstructed values for each time step
         # should be extremely close to zero, so that's what we'll use for our test.
@@ -124,7 +127,7 @@ class MagNullTestCases(unittest.TestCase):
         fields = ['B_vec_xyz_gse__C'+prb+'_CP_FGM_FULL' for prb in ['1', '2', '3', '4']]
         positions = ['sc_pos_xyz_gse__C'+prb+'_CP_FGM_FULL' for prb in ['1', '2', '3', '4']]
         null_vars = pyspedas.find_magnetic_nulls_fote(fields=fields, positions=positions, smooth_fields=True)
-        #tplot(null_vars)
+        tplot(null_vars,display=global_display,save_png='cluster_null_vars')
         d=get_data('max_reconstruction_error')
         np.testing.assert_allclose(d.y,0.0,atol=1.0e-10)
 
