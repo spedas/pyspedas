@@ -109,6 +109,25 @@ class PlotTestCases(unittest.TestCase):
         tplot(['erg_hep_l2_FEDO_L', 'erg_hep_l2_FEDO_H'], display=global_display, save_png='ERG_test')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_maven_specplot(self):
+        from pyspedas.maven.spdf import load
+        sta_vars = load(trange=['2020-12-30', '2020-12-31'], instrument='static', datatype='c0-64e2m')
+        print(sta_vars)
+        timespan('2020-12-30',1,'days')
+        # This variable contains all zeroes, and is set to plot with log scaling
+        tplot('bkg',display=global_display,save_png='MAVEN_test')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    @unittest.skip(reason="Failing until we establish a default for spec_dim_to_plot")
+    def test_maven_fluxes_specplot(self):
+        from pyspedas.maven.spdf import load
+        swe_vars = load(trange=['2014-10-18', '2014-10-19'], instrument='swea')
+        print(swe_vars)
+        tplot('diff_en_fluxes')
+        timespan('2014-10-18',1,'days')
+        # This variable contains all zeroes, and is set to plot with log scaling
+        tplot('diff_en_fluxes',display=global_display,save_png='MAVEN_fluxes_test')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_pseudovars_title(self):
         import pyspedas
