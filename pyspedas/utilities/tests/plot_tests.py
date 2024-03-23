@@ -123,7 +123,6 @@ class PlotTestCases(unittest.TestCase):
         from pyspedas.maven.spdf import load
         swe_vars = load(trange=['2014-10-18', '2014-10-19'], instrument='swea')
         print(swe_vars)
-        tplot('diff_en_fluxes')
         timespan('2014-10-18',1,'days')
         # This variable contains all zeroes, and is set to plot with log scaling
         tplot('diff_en_fluxes',display=global_display,save_png='MAVEN_fluxes_test')
