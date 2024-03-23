@@ -76,7 +76,13 @@ def specplot_resample(values, vdata, vdata_hi):
                             out_values[j, bin_start_idx:bin_end_idx] = values[j, i]
                             bin_end_idx = bin_start_idx
                             break
-                
+
+        # It looks like the above loop has some sort of fencepost error, where not all elements of out_values are set.
+        # For THEMIS keograms, it's the highest index of out_values[j,:].  Maybe the lowest index is wrong if the
+        # bin values are decreasing?  Set both just to be safe.
+        out_values[j, 0] = values[j, 0]
+        out_values[j, ny - 1] = values[j, nv - 1]
+
     return out_values
 
 
