@@ -133,6 +133,8 @@ def specplot(
             var_data.v[:] = vtp[:]
         else:
             var_data.v[:,:] = vtp[:,:]
+        vmin = np.nanmin(var_data.v)
+        vmax = np.nanmax(var_data.v)
     #for v1,v2 too
     if hasattr(var_data, 'v1'):
         if 'spec_dim_to_plot' in plot_extras:
@@ -142,6 +144,8 @@ def specplot(
                     var_data.v1[:] = vtp[:]
                 else:
                     var_data.v1[:,:] = vtp[:,:]
+                vmin = np.nanmin(var_data.v1)
+                vmax = np.nanmax(var_data.v1)
     if hasattr(var_data, 'v2'):
         if 'spec_dim_to_plot' in plot_extras:
             if plot_extras['spec_dim_to_plot'] == 'v2':
@@ -150,12 +154,16 @@ def specplot(
                     var_data.v2[:] = vtp[:]
                 else:
                     var_data.v2[:,:] = vtp[:,:]
+                vmin = np.nanmin(var_data.v2)
+                vmax = np.nanmax(var_data.v2)
 
     #could also have a fill in yrange
     #    if yrange[0] == -1e31: #This does not work sometimes?
     if yrange[0] < -0.9e31:
-        yrange[0] = np.nanmin(var_data.y)
-    
+        yrange[0] = vmin
+    if yrange[1] < -0.9e31:
+        yrange[1] = vmax
+
     if zlog == "log":
         # gracefully handle the case of all NaNs in the data, but log scale set
         if np.isnan(var_data.y).all():
@@ -166,7 +174,7 @@ def specplot(
         elif not np.any(var_data.y):
             # properly handle all 0s in the data
             spec_options["norm"] = mpl.colors.LogNorm(
-                vmin=np.nanmin(var_data.v), vmax=np.nanmax(var_data.v)
+                vmin=np.nanmin(var_data.y), vmax=np.nanmax(var_data.y)
             )
         else:
             spec_options["norm"] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
