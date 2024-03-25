@@ -120,6 +120,13 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         pytplot.data_quants[name].name = name
         pytplot.data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
         pytplot.data_quants[name].attrs['plot_options']['overplots_mpl'] = base_data
+        # These sets of options should default to the sub-variables' options, not simply
+        # copied from the first variable in the list.   These options can be still be set
+        # on the pseudovariable, and they will override the sub-variable options.
+        pytplot.data_quants[name].attrs['plot_options']['yaxis_opt'] = {}
+        pytplot.data_quants[name].attrs['plot_options']['zaxis_opt'] = {}
+        pytplot.data_quants[name].attrs['plot_options']['line_opt'] = {}
+        pytplot.data_quants[name].attrs['plot_options']['extras'] = {}
         return True
 
     # if the data table doesn't contain an 'x', assume this is a non-record varying variable

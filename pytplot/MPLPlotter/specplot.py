@@ -76,7 +76,13 @@ def specplot_resample(values, vdata, vdata_hi):
                             out_values[j, bin_start_idx:bin_end_idx] = values[j, i]
                             bin_end_idx = bin_start_idx
                             break
-                
+
+        # It looks like the above loop has some sort of fencepost error, where not all elements of out_values are set.
+        # For THEMIS keograms, it's the highest index of out_values[j,:].  Maybe the lowest index is wrong if the
+        # bin values are decreasing?  Set both just to be safe.
+        out_values[j, 0] = values[j, 0]
+        out_values[j, ny - 1] = values[j, nv - 1]
+
     return out_values
 
 
@@ -121,28 +127,57 @@ def specplot(
     #set -1.e31 fill values to NaN, jmjm, 2024-02-29
     ytp = np.where(var_data.y==-1.e31,np.nan,var_data.y)
     var_data.y[:,:] = ytp[:,:]
-    vtp = np.where(var_data.v==-1.e31,np.nan,var_data.v)
-    if len(vtp.shape) == 1:
-        var_data.v[:] = vtp[:]
-    else:
-        var_data.v[:,:] = vtp[:,:]
+    if hasattr(var_data, 'v'):
+        vtp = np.where(var_data.v==-1.e31,np.nan,var_data.v)
+        if len(vtp.shape) == 1:
+            var_data.v[:] = vtp[:]
+        else:
+            var_data.v[:,:] = vtp[:,:]
+        vmin = np.nanmin(var_data.v)
+        vmax = np.nanmax(var_data.v)
+    #for v1,v2 too
+    if hasattr(var_data, 'v1'):
+        if 'spec_dim_to_plot' in plot_extras:
+            if plot_extras['spec_dim_to_plot'] == 'v1':
+                vtp = np.where(var_data.v1==-1.e31,np.nan,var_data.v1)
+                if len(vtp.shape) == 1:
+                    var_data.v1[:] = vtp[:]
+                else:
+                    var_data.v1[:,:] = vtp[:,:]
+                vmin = np.nanmin(var_data.v1)
+                vmax = np.nanmax(var_data.v1)
+    if hasattr(var_data, 'v2'):
+        if 'spec_dim_to_plot' in plot_extras:
+            if plot_extras['spec_dim_to_plot'] == 'v2':
+                vtp = np.where(var_data.v2==-1.e31,np.nan,var_data.v2)
+                if len(vtp.shape) == 1:
+                    var_data.v2[:] = vtp[:]
+                else:
+                    var_data.v2[:,:] = vtp[:,:]
+                vmin = np.nanmin(var_data.v2)
+                vmax = np.nanmax(var_data.v2)
 
     #could also have a fill in yrange
     #    if yrange[0] == -1e31: #This does not work sometimes?
     if yrange[0] < -0.9e31:
-        yrange[0] = np.nanmin(var_data.y)
-    
+        yrange[0] = vmin
+    if yrange[1] < -0.9e31:
+        yrange[1] = vmax
+
     if zlog == "log":
+        zmin = np.nanmin(var_data.y)
+        zmax = np.nanmax(var_data.y)
         # gracefully handle the case of all NaNs in the data, but log scale set
-        if np.isnan(var_data.y).all():
-            # no need to set a log scale if all the data values are NaNs
+        # all 0 is also a problem, causes a crash later when creating the colorbar
+        if np.isnan(var_data.y).all() or not np.any(var_data.y):
+            # no need to set a log scale if all the data values are NaNs, or all zeroes
             spec_options["norm"] = None
             spec_options["vmin"] = zrange[0]
             spec_options["vmax"] = zrange[1]
         elif not np.any(var_data.y):
-            # properly handle all 0s in the data
+            # properly handle all 0s in the data   dead code now?
             spec_options["norm"] = mpl.colors.LogNorm(
-                vmin=np.nanmin(var_data.v), vmax=np.nanmax(var_data.v)
+                vmin=zmin, vmax=zmax
             )
         else:
             spec_options["norm"] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
@@ -172,10 +207,20 @@ def specplot(
     spec_options["cmap"] = cmap
 
     out_values = var_data.y[time_idxs, :]
-
+    #allow use of v1, v2, jmm, 2024-03-20
     if len(var_data) == 3:
         out_vdata = var_data.v
+    elif len(var_data) == 4:
+        if hasattr(var_data, 'v1'):
+            if 'spec_dim_to_plot' in plot_extras:
+                if plot_extras['spec_dim_to_plot'] == 'v1':
+                    out_vdata = var_data.v1
+        if hasattr(var_data, 'v2'):
+            if 'spec_dim_to_plot' in plot_extras:
+                if plot_extras['spec_dim_to_plot'] == 'v2':
+                    out_vdata = var_data.v2
     else:
+        breakpoint()
         logging.warning("Too many dimensions on the variable: " + variable)
         return
 

@@ -75,9 +75,12 @@ def options(name, option=None, value=None, opt_dict=None):
                                      that dimension.  See examples for how it works.
     border              bool         Turns on or off the top/right axes that would create a box around the plot
     var_label_ticks     int          Sets the number of ticks if this variable is displayed as an alternative x axis
+
     data_gap            numerical    If there is a gap in the data larger than this number in seconds, then insert
                                      NaNs. This is similar to using the degap procedure on the variable, but is
                                      applied at plot-time, and does not persist in the variable data.
+    y_major_ticks       list         A list of values that will be used to set the major ticks on the y axis.
+    y_minor_tick_interval numerical  The interval between minor ticks on the y axis.
     =================== ==========   =====
 
     Returns
@@ -143,6 +146,9 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'colormap_width':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['colormap_width'] = value
+
+            if option == 'second_axis_size':
+                pytplot.data_quants[i].attrs['plot_options']['extras']['second_axis_size'] = value
 
             if option == 'spec':
                 _reset_plots(i)
@@ -253,6 +259,8 @@ def options(name, option=None, value=None, opt_dict=None):
             if option == 'nodata':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
 
+            # Obsolete? (except for value='none'?) JWL 2024-03-21
+            # These don't seem to be the correct format for matplotlib parameterized line styles.
             if option == 'line_style' or option == 'linestyle':
                 if value == 0 or value == 'solid_line':
                     to_be = []
@@ -269,12 +277,10 @@ def options(name, option=None, value=None, opt_dict=None):
                 else:
                     to_be=value
 
+                # This does not appear to be used by tplot. JWL 2024-03-21
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style'] = to_be
 
-                if isinstance(value, list):
-                    pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = value
-                else:
-                    pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = [value]
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = _convert_to_matplotlib_linestyle(value)
 
                 if(value == 6 or value == 'none'):
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
@@ -317,7 +323,7 @@ def options(name, option=None, value=None, opt_dict=None):
 
             if option == 'elinewidth':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['elinewidth'] = value
-                
+
             if option == 'marker_size':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker_size'] = value
 
@@ -370,6 +376,20 @@ def options(name, option=None, value=None, opt_dict=None):
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
                 # track whether the yrange option was set by the user
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range_user'] = True
+
+            if option == 'y_major_ticks':
+                # check whether the value is 1D array-like
+                if isinstance(value, (list, np.ndarray)):
+                    pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_major_ticks'] = value
+                else:
+                    logging.warning('y_major_ticks must be a 1D array-like object')
+
+            if option == 'y_minor_tick_interval':
+                # check whether the value is a number
+                if isinstance(value, (int, float)):
+                    pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_minor_tick_interval'] = value
+                else:
+                    logging.warning('y_minor_tick_interval must be a number')
 
             if option == 'zrange' or option == 'z_range':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
@@ -563,3 +583,22 @@ def _reset_plots(name):
     pytplot.data_quants[name].attrs['plot_options']['extras']['alt'] = 0
     pytplot.data_quants[name].attrs['plot_options']['extras']['map'] = 0
     pytplot.data_quants[name].attrs['plot_options']['extras']['plotter'] = None
+
+def _convert_to_matplotlib_linestyle(linestyle):
+    if not isinstance(linestyle,list):
+        linestyle = [linestyle]
+    converted_linestyles = []
+    for ls in linestyle:
+        if ls == 'solid_line':
+            converted_linestyles.append('solid')
+        elif ls == 'dot':
+            converted_linestyles.append('dotted')
+        elif ls == 'dash':
+            converted_linestyles.append('dashed')
+        elif ls == 'dash_dot':
+            converted_linestyles.append('dashdot')
+        else:
+            converted_linestyles.append(ls)
+    return converted_linestyles
+
+

@@ -9,21 +9,21 @@ import logging
 from astropy import units as u
 
 
-def get_data(name, xarray=False, metadata=False, dt=False, units=False):
+def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_quant_in=None):
     """
     This function extracts the data from the tplot Variables stored in memory.
     
     Parameters:
         name : str 
             Name of the tplot variable
-        xarray : bool
+        xarray : bool, optional
             Keep the variable as an xarray object
-        metadata : bool
+        metadata : bool, optional
             Return the metadata of the object (the attr dictionary) instead of the actual data
-        dt: bool
+        dt: bool, optional
             Return the times as np.datetime64[ns] objects instead of unix times
             (significantly faster)
-        units: bool
+        units: bool, optional
             Attach the astropy units to the data and dependencioes prior to returning
          
     Returns: tuple of data/dimensions/metadata stored in pytplot
@@ -42,14 +42,19 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False):
         >>> y_data = [1,2,3,4,5]
         >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
         >>> time, data = pytplot.get_data("Variable1")
+        >>> metadata = pytplot.get_data("Variable1", metadata=True)
 
     """
 
-    if name not in pytplot.data_quants.keys():
-        logging.info("The name " + str(name) + " is currently not in pytplot")
-        return
+    #check for an input data_quant object
+    if data_quant_in is not None:
+        temp_data_quant = data_quant_in
+    else:
+        if name not in pytplot.data_quants.keys():
+            logging.info("The name " + str(name) + " is currently not in pytplot")
+            return
     
-    temp_data_quant = pytplot.data_quants[name]
+        temp_data_quant = pytplot.data_quants[name]
 
     if isinstance(temp_data_quant, dict):
         # non-record varying variables are stored as dicts

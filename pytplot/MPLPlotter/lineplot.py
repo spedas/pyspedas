@@ -9,10 +9,41 @@ def lineplot(var_data,
              line_opts,
              yaxis_options,
              plot_extras,
-             pseudo_plot_num=None,
+             running_trace_count=None,
              time_idxs=None,
              style=None,
              var_metadata=None):
+    """
+    Generate a matplotlib line plot from a tplot variable
+
+    Parameters
+    ----------
+        var_data: np.ndarray
+            The data to be plotted (may have multiple traces)
+        var_times:
+            Array of datetime objects to use for x axis
+        this_axis:
+            The current axis (plot panel) we're working with
+        line_opts: dict
+            A dictionary of line options
+        yaxis_options: dict
+            A dictionary of y axis options
+        plot_extras: dict
+            A dictionary of 'extra' options (colors, etc)
+        running_trace_count:
+            If not Null, an integer representing the number of traces already processed in this pseudovariable. Defaults to None.
+        time_idxs: np.ndarray
+            If provided, an integer array specifying the subset of time indices to be plotted. Defaults to None.
+        style:
+            A matplotlib style to be used in the plot. Defaults to None.
+        var_metadata: dict
+            The metadata dictionary associated with this tplot variable (used as a fallback for trace labels). Defaults to None.
+
+    Returns
+    -------
+        True
+
+    """
     alpha = plot_extras.get('alpha')
 
     if len(var_data.y.shape) == 1:
@@ -22,8 +53,7 @@ def lineplot(var_data,
 
     if yaxis_options.get('legend_names') is not None:
         labels = yaxis_options['legend_names']
-        if pseudo_plot_num is not None and pseudo_plot_num < len(labels):
-            labels = [yaxis_options['legend_names'][pseudo_plot_num]]
+        labels = get_trace_options(labels, running_trace_count, num_lines)
 
         if labels[0] is None:
             labels = None
@@ -65,45 +95,34 @@ def lineplot(var_data,
     if legend_size is None:
         legend_size = pytplot.tplot_opt_glob.get('charsize')
 
-    markers = get_options(line_opts, 'marker', pseudo_plot_num=pseudo_plot_num)
+    markers = None
+    if line_opts.get('marker') is not None:
+        markers = line_opts['marker']
+        markers = get_trace_options(markers, running_trace_count, num_lines, repeat=True)
 
-    # set up line colors
     colors = None
     if plot_extras.get('line_color') is not None:
         colors = plot_extras['line_color']
-        if pseudo_plot_num is not None and pseudo_plot_num < len(colors):
-            colors = [plot_extras['line_color'][pseudo_plot_num]]
-
-        # check the color size vs. the size of the data
-        # colors should already be an array at this point
-        colors = np.array(colors)
-        if len(colors.shape) == 1:
-            if len(colors) != num_lines:
-                logging.info('Incorrect number of line colors specified; expected: ' + str(num_lines) + '; got: ' + str(len(colors)))
-                return
-        else:
-            # time varying symbol colors, not supported yet
-            if colors.shape[1] != num_lines:
-                logging.info('Incorrect number of line colors specified; expected: ' + str(num_lines) + '; got: ' + str(colors.shape[1]))
-                return
     else:
         if style is None:
-            if num_lines == 3:
+            if num_lines == 1:
+                colors = ['k']
+            elif num_lines == 2:
+                colors = ['r', 'g']
+            elif num_lines == 3:
                 colors = ['b', 'g', 'r']
             elif num_lines == 4:
                 colors = ['b', 'g', 'r', 'k']
             else:
                 colors = ['k', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
-
-            if num_lines >= len(colors):
-                colors = colors*num_lines
+    colors = get_trace_options(colors, running_trace_count, num_lines, repeat=True)
 
     # line thickness
-    thick = get_options(line_opts, 'line_width', pseudo_plot_num=pseudo_plot_num)
-    if thick is None:
+    if line_opts.get('line_width') is not None:
+        thick = line_opts['line_width']
+    else:
         thick = [0.5]
-    if num_lines >= len(thick):
-        thick = thick*num_lines
+    thick = get_trace_options(thick, running_trace_count, num_lines, repeat=True)
 
     # line style
     if line_opts.get('line_style_name') is not None:
@@ -123,13 +142,9 @@ def lineplot(var_data,
                 line_style.append('dashdot')
             else:
                 line_style.append(linestyle)
-        if pseudo_plot_num is not None and pseudo_plot_num < len(line_style):
-            line_style = [line_opts['line_style_name'][pseudo_plot_num]]
     else:
         line_style = ['solid']
-
-    if num_lines >= len(line_style):
-        line_style = line_style*num_lines
+    line_style = get_trace_options(line_style, running_trace_count, num_lines, repeat=True)
 
     symbols = False
     if line_opts.get('symbols') is not None:
@@ -139,8 +154,15 @@ def lineplot(var_data,
     # create the plot
     line_options = {'alpha': alpha}
 
-    marker_every = get_options(line_opts, 'markevery', pseudo_plot_num=pseudo_plot_num)
-    marker_sizes = get_options(line_opts, 'marker_size', pseudo_plot_num=pseudo_plot_num)
+    marker_every = None
+    if line_opts.get('markevery') is not None:
+        marker_every = line_opts['markevery']
+        marker_every = get_trace_options(marker_every, running_trace_count, num_lines, repeat=True)
+
+    marker_sizes = None
+    if line_opts.get('marker_size') is not None:
+        marker_sizes = line_opts('marker_size')
+        marker_sizes = get_trace_options(marker_sizes, running_trace_count, num_lines, repeat=True)
 
     # check for error data first
     if 'dy' in var_data._fields:
@@ -207,14 +229,73 @@ def lineplot(var_data,
 
     return True
 
+def get_trace_options(parent_array, start_trace=None, num_traces=1, repeat=False, fill=False, fillval=None):
+    """ Get options for a set of traces from a parent array, extending or slicing as necessary to handle pseudovariable options
 
-def get_options(options, option, pseudo_plot_num=None):
-    if options.get(option) is not None:
-        plot_options = options[option]
-        if not isinstance(plot_options, list):
-            plot_options = [options[option]]
-        if pseudo_plot_num is not None and pseudo_plot_num < len(plot_options):
-            plot_options = [plot_options[pseudo_plot_num]]
+    Parameters
+    -----------
+        parent_array: str or list of str
+            An array of option values to select from
+        start_trace: int
+            If set, we are processing a pseuodovariable, and this is the count of line traces processed so far for
+            previous sub-variables in the current pseuodovariable.
+
+            If parent_array is long enough (e.g. if set on the pseudovariable and intended to cover the complete
+            set of traces), we take a slice from start_trace with num_traces entries.  If it matches
+            the number of traces requested (e.g. parent array comes from this subvariable), we take it as-is.
+            If there are fewer entries than num_traces (e.g. a single value intended to apply to all traces),
+            we repeat parent_array or add fill until there are enough values to take a slice from start_trace.
+
+            If None, we're just processing a regular variable, so we take values starting at zero (extending or filling
+            as necessary)
+            Default: None
+        num_traces: int
+            The number of traces in the current (sub-)variable.
+        repeat: bool
+            If True, extend the parent array by repetition if necessary. Defaults to False.
+        fill: bool
+            If True, extend the parent array by adding fill values. Defaults to False.
+        fillval: Any
+            If fill=True, values to append to parent_array to make enough entries. Defaults to None.
+
+    Returns:
+    --------
+        list of option values with num_traces entries
+
+    """
+    if not isinstance(parent_array,list):
+        parent_array=[parent_array]
+    parent_length = len(parent_array)
+    output_array = parent_array
+    if start_trace is not None:
+        end_trace = start_trace + num_traces
+        if parent_length >= start_trace+num_traces:
+            output_array = parent_array[start_trace:end_trace]
+        elif parent_length == num_traces:
+            output_array = parent_array
+        else:
+            if repeat:
+                expansion_factor = int((end_trace/parent_length + 1))
+                expanded_array = np.tile(parent_array,expansion_factor)
+                output_array = expanded_array[start_trace:end_trace]
+            elif fill:
+                output_array = parent_array
+                missing=num_traces-parent_length
+                output_array.extend(np.tile([fillval],missing))
+            else:
+                logging.warning("Length of trace options (%d) smaller than number of traces (%d)",parent_length, num_traces)
     else:
-        plot_options = None
-    return plot_options
+        if len(parent_array) >= num_traces:
+            output_array = parent_array[0:num_traces]
+        else:
+            if repeat:
+                expansion_factor = int(num_traces/parent_length + 1)
+                expanded_array = np.tile(parent_array,expansion_factor)
+                output_array = expanded_array[0:num_traces]
+            elif fill:
+                output_array = parent_array
+                missing = num_traces - parent_length
+                output_array.extend(np.tile([fillval], missing))
+            else:
+                logging.warning("Length of trace options (%d) smaller than number of traces (%d)",parent_length, num_traces)
+    return output_array

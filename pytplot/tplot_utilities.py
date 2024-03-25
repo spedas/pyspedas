@@ -89,8 +89,7 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
         new_tplot_opt_glob['title_text'] = value
     
     elif option == 'title_size':
-        str_size = str(value) + 'pt'
-        new_tplot_opt_glob['title_size'] = str_size
+        new_tplot_opt_glob['title_size'] = value
         
     elif option == 'wsize':
         new_tplot_opt_glob['window_size'] = value

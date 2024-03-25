@@ -109,7 +109,7 @@ static_tavg_window = None  # 2D window showing averaged y and z data for a speci
 tplot_opt_glob = dict(tools="xpan,crosshair,reset",
                       min_border_top=12, min_border_bottom=12,
                       title_align='center', window_size=[800, 800],
-                      title_size='12pt', title_text='', crosshair=True,
+                      title_size='12', title_text='', crosshair=True,
                       data_gap=0, black_background=False, axis_font_size=12, axis_tick_num=[(0, 1000000000), (3, 1),],
                       y_axis_zoom=False)
 lim_info = {}
@@ -136,6 +136,8 @@ from pytplot.exporters.tplot_save import tplot_save
 from .tplot_names import tplot_names
 from .tnames import tnames
 from pytplot.importers.tplot_restore import tplot_restore
+from .is_pseudovariable import is_pseudovariable
+from .count_traces import count_traces
 from .get_timespan import get_timespan
 from .tplot_options import tplot_options
 from .tplot_rename import tplot_rename

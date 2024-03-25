@@ -156,21 +156,21 @@ def tplot(name,
 
     if qt == False and bokeh == False:
         return mpl_tplot(name, var_label=var_label,
-                               xsize=xsize, 
-                               ysize=ysize, 
-                               save_png=save_png, 
-                               save_eps=save_eps, 
-                               save_svg=save_svg, 
-                               save_pdf=save_pdf,
-                               save_jpeg=save_jpeg,
-                               dpi=dpi,
-                               display=display, 
-                               fig=fig, 
-                               axis=axis,
-                               slice=slice,
-                               pseudo_plot_num=pseudo_plot_num, 
-                               second_axis_size=second_axis_size,
-                               return_plot_objects=return_plot_objects)
+                         xsize=xsize,
+                         ysize=ysize,
+                         save_png=save_png,
+                         save_eps=save_eps,
+                         save_svg=save_svg,
+                         save_pdf=save_pdf,
+                         save_jpeg=save_jpeg,
+                         dpi=dpi,
+                         display=display,
+                         fig=fig,
+                         axis=axis,
+                         slice=slice,
+                         running_trace_count=pseudo_plot_num,
+                         second_axis_size=second_axis_size,
+                         return_plot_objects=return_plot_objects)
 
     if interactive:
         slice=True
