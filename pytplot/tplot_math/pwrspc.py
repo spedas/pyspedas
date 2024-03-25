@@ -43,9 +43,10 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     Example:
         >>> # Compute the power spectrum of a given time series
         >>> from pytplot import pwrspc
-        >>> time = [1, 2, 3, 4, 5]
-        >>> quantity = [1, 2, 3, 4, 5]
+        >>> time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        >>> quantity = [1,2,3,1,2,3,1,2,3,1]
         >>> freq, power = pwrspc(time, quantity)
+        >>> print(freq, power)
     """
 
     t = np.array(time, dtype=np.float64)
@@ -53,7 +54,9 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
 
     # If the dimensions of the input arrays are not the same, and not one dimension, return
     if t.ndim != 1 or x.ndim != 1 or len(t) != len(x) or len(t) < 1:
-        logging.error('Both input arrays should be one dimensional and of the same length.')
+        logging.error(
+            "Both input arrays should be one dimensional and of the same length."
+        )
         return np.array(None), np.array(None)
 
     # Subtract first point from time array
@@ -62,7 +65,7 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     # Subtract straight line from data
     if not noline:
         slope, intercept, _, _, _ = linregress(t, x)
-        x -= (slope * t + intercept)
+        x -= slope * t + intercept
 
     binsize = bin
     window = 0.0
@@ -72,14 +75,14 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
 
     nt = len(t)
     if nt % 2 != 0:
-        logging.info('Needs an even number of data points, dropping last point...')
+        logging.info("Needs an even number of data points, dropping last point...")
         t = t[:-1]
         x = x[:-1]
         nt -= 1
 
     xs2 = np.abs(np.fft.fft(x)) ** 2
     dbign = float(nt)
-    logging.info('bign=' + str(dbign))
+    logging.info("bign=" + str(dbign))
 
     k = np.arange(0, dbign // 2 + 1)
     tres = float(np.median(np.diff(t)))
@@ -87,12 +90,12 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
 
     pwr = np.zeros(nt // 2 + 1)
     pwr[0] = xs2[0] / dbign**2
-    pwr[1:nt // 2] = (xs2[1:nt // 2] + xs2[nt:nt // 2:-1]) / dbign**2
+    pwr[1 : nt // 2] = (xs2[1 : nt // 2] + xs2[nt : nt // 2 : -1]) / dbign**2
     pwr[-1] = xs2[-1] / dbign**2
 
     if not nohanning:
-        wss = dbign * np.sum(window ** 2)
-        pwr = pwr*dbign**2/wss
+        wss = dbign * np.sum(window**2)
+        pwr = pwr * dbign**2 / wss
 
     dfreq = binsize * (fk[1] - fk[0])
     npwr = len(pwr) - 1
@@ -109,6 +112,6 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     if not notperhz:
         power /= dfreq
 
-    logging.info('dfreq=' + str(dfreq))
+    logging.info("dfreq=" + str(dfreq))
 
     return np.array(freq), np.array(power)
