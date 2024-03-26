@@ -11,98 +11,108 @@ from copy import deepcopy
 
 def options(name, option=None, value=None, opt_dict=None):
     """
-    This function allows the user to set a large variety of options for individual plots.
+    Allows the user to set a large variety of options for individual plots.
 
-    Parameters:
-        name : str
-            Name or number of the tplot variable
-        option : str
-            The name of the option.  See section below.
-        value : str/int/float/list
-            The value of the option.  See section below.
-        opt_dict : dict
-            This can be a dictionary of option:value pairs.  Option and value
-            will not be needed if this dictionary item is supplied.
+    Parameters
+    ----------
+    name : str
+        Name or number of the tplot variable.
+    option : str, optional
+        The name of the option. See the options section below.
+    value : str, int, float, list, optional
+        The value of the option. See the options section below.
+    opt_dict : dict, optional
+        This can be a dictionary of option-value pairs. 'option' and 'value'
+        will not be needed if this dictionary item is supplied.
 
-    Options:
-        =================== ==========   =====
-        Options             Value type   Notes
-        =================== ==========   =====
-        Color               str/list     red, green, blue, etc.  Also takes in RGB tuples, i.e. (0,255,0) for green
-        Colormap            str/list     https://matplotlib.org/examples/color/colormaps_reference.html.
-        Spec                int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
-        Alt                 int          1 sets the Tplot Variable to altitude plot mode, 0 reverts.
-        Map                 int          1 sets the Tplot Variable to latitude/longitude mode, 0 reverts.
-        link                list         Allows a user to reference one tplot variable to another.
-        ylog                int          1 sets the y axis to log scale, 0 reverts.
-        zlog                int          1 sets the z axis to log scale, 0 reverts (spectrograms only).
-        legend_names        list         A list of strings that will be used to identify the lines.
-        xlog_slice          bool         Sets x axis on slice plot to log scale if True.
-        ylog                bool         Set y axis on main plot window to log scale if True.
-        ylog_slice          bool         Sets y axis on slice plot to log scale if True.
-        zlog                bool         Sets z axis on main plot window to log scale if True.
-        line_style          str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
-        char_size           int          Defines character size for plot labels, etc.
-        name                str          The title of the plot.
-        panel_size          flt          Number between (0,1], representing the percent size of the plot.
-        basemap             str          Full path and name of a background image for "Map" plots.
-        alpha               flt          Number between [0,1], gives the transparency of the plot lines.
-        thick               flt          Sets plot line width.
-        yrange              flt list     Two numbers that give the y axis range of the plot.
-        zrange              flt list     Two numbers that give the z axis range of the plot.
-        xrange_slice        flt list     Two numbers that give the x axis range of spectrogram slicing plots.
-        yrange_slice        flt list     Two numbers that give the y axis range of spectrogram slicing plots.
-        ytitle              str          Title shown on the y axis.  Use backslash for new lines.
-        ztitle              str          Title shown on the z axis.  Spec plots only.  Use backslash for new lines.
-        ysubtitle           str          Subtitle shown on the y axis.
-        zsubtitle           str          Subtitle shown on the z axis.  Spec plots only.
-        plotter             str          Allows a user to implement their own plotting script in place of the ones
-                                         herein.
-        crosshair_x         str          Title for x-axis crosshair.
-        crosshair_y         str          Title for y-axis crosshair.
-        crosshair_z         str          Title for z-axis crosshair.
-        static              str          Datetime string that gives desired time to plot y and z values from a spec
-                                         plot.
-        static_tavg         str          Datetime string that gives desired time-averaged y and z values to plot
-                                         from a spec plot.
-        t_average           int          Seconds around which the cursor is averaged when hovering over spectrogram
-                                         plots.
-        spec_plot_dim       int/str      If variable has more than two dimensions, this sets which dimension the v
+    Options
+    -------
+    ======================  ===========  ===============================================================================
+    Options                 Value type   Notes
+    ======================  ===========  ===============================================================================
+    Color                   str/list     red, green, blue, etc. Also takes in RGB tuples, i.e. (0,255,0) for green
+    Colormap                str/list     https://matplotlib.org/examples/color/colormaps_reference.html.
+    Spec                    int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
+    Alt                     int          1 sets the Tplot Variable to altitude plot mode, 0 reverts.
+    Map                     int          1 sets the Tplot Variable to latitude/longitude mode, 0 reverts.
+    link                    list         Allows a user to reference one tplot variable to another.
+    ylog                    int          1 sets the y axis to log scale, 0 reverts.
+    zlog                    int          1 sets the z axis to log scale, 0 reverts (spectrograms only).
+    legend_names            list         A list of strings that will be used to identify the lines.
+    xlog_slice              bool         Sets x axis on slice plot to log scale if True.
+    ylog                    bool         Set y axis on main plot window to log scale if True.
+    ylog_slice              bool         Sets y axis on slice plot to log scale if True.
+    zlog                    bool         Sets z axis on main plot window to log scale if True.
+    line_style              str          scatter (to make scatter plots), or solid_line, dot, dash,
+                                         dash_dot, dash_dot_dot_dot, long_dash.
+    char_size               int          Defines character size for plot labels, etc.
+    name                    str          The title of the plot.
+    panel_size              flt          Number between (0,1], representing the percent size of the plot.
+    basemap                 str          Full path and name of a background image for "Map" plots.
+    alpha                   flt          Number between [0,1], gives the transparency of the plot lines.
+    thick                   flt          Sets plot line width.
+    yrange                  flt/list     Two numbers that give the y axis range of the plot.
+    zrange                  flt/list     Two numbers that give the z axis range of the plot.
+    xrange_slice            flt/list     Two numbers that give the x axis range of spectrogram slicing plots.
+    yrange_slice            flt/list     Two numbers that give the y axis range of spectrogram slicing plots.
+    ytitle                  str          Title shown on the y axis. Use backslash for new lines.
+    ztitle                  str          Title shown on the z axis. Spec plots only. Use backslash for new lines.
+    ysubtitle               str          Subtitle shown on the y axis.
+    zsubtitle               str          Subtitle shown on the z axis. Spec plots only.
+    plotter                 str          Allows a user to implement their own plotting script in place of the ones herein.
+    crosshair_x             str          Title for x-axis crosshair.
+    crosshair_y             str          Title for y-axis crosshair.
+    crosshair_z             str          Title for z-axis crosshair.
+    static                  str          Datetime string that gives desired time to plot y and z values from a spec plot.
+    static_tavg             str          Datetime string that gives desired time-averaged y and z values to plot from a
+                                         spec plot.
+    t_average               int          Seconds around which the cursor is averaged when hovering over spectrogram plots.
+    spec_plot_dim           int/str      If variable has more than two dimensions, this sets which dimension the "v"
                                          variable will display on the y axis in spectrogram plots.
                                          All other dimensions are summed into this one, unless "spec_slices_to_use"
                                          is also set for this variable.
-        spec_dim_to_plot    int/str      Same as spec_plot_dim, just with a slightly more descriptive name
-        spec_slices_to_use  str          Must be a dictionary of coordinate:values.  If a variable has more than two
+    spec_dim_to_plot        int/str      Same as spec_plot_dim, just with a slightly more descriptive name.
+    spec_slices_to_use      str          Must be a dictionary of coordinate:values. If a variable has more than two
                                          dimensions, spectrogram plots will plot values at that particular slice of
-                                         that dimension.  See examples for how it works.
-        border              bool         Turns on or off the top/right axes that would create a box around the plot
-        var_label_ticks     int          Sets the number of ticks if this variable is displayed as an alternative x axis
-
-        data_gap            numerical    If there is a gap in the data larger than this number in seconds, then insert
+                                         that dimension. See examples for how it works.
+    border                  bool         Turns on or off the top/right axes that would create a box around the plot.
+    var_label_ticks         int          Sets the number of ticks if this variable is displayed as an alternative x axis.
+    data_gap                numerical    If there is a gap in the data larger than this number in seconds, then insert
                                          NaNs. This is similar to using the degap procedure on the variable, but is
                                          applied at plot-time, and does not persist in the variable data.
-        y_major_ticks       list         A list of values that will be used to set the major ticks on the y axis.
-        y_minor_tick_interval numerical  The interval between minor ticks on the y axis.
-        =================== ==========   =====
-    Returns:
-        None
+    y_major_ticks           list         A list of values that will be used to set the major ticks on the y axis.
+    y_minor_tick_interval   numerical    The interval between minor ticks on the y axis.
+    =====================   ===========  ===============================================================================
 
-    Examples:
-        >>> # Change the y range of Variable1
-        >>> import pytplot
-        >>> x_data = [1,2,3,4,5]
-        >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> pytplot.options('Variable1', 'yrange', [2,4])
+    Returns
+    -------
+    None
 
-        >>> # Change Variable1 to use a log scale
-        >>> pytplot.options('Variable1', 'ylog', 1)
+    Examples
+    --------
+    >>> # Change the y range of Variable1
+    >>> import pytplot
+    >>> x_data = [1,2,3,4,5]
+    >>> y_data = [1,2,3,4,5]
+    >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+    >>> pytplot.options('Variable1', 'yrange', [2,4])
 
-        >>> # Set the spectrogram plots to show dimension 'v2' at slice 'v1' = 0
-        >>> pytplot.options("Variable2", "spec_dim_to_plot", 'v2')
-        >>> pytplot.options("Variable2", "spec_slices_to_use", {'v1': 0})
+    >>> # Change Variable1 to use a log scale
+    >>> pytplot.options('Variable1', 'ylog', 1)
+    >>> pytplot.tplot('Variable1')
 
-    """
+    >>> # Multi-dimensional variable
+    >>> y_data = np.random.rand(5, 4, 3)
+    >>> v1_data = [0, 1, 3, 4]
+    >>> v2_data = [1, 2, 3]
+    >>> pytplot.store_data("Variable2", data={'x': x_data, 'y': y_data, 'v1': v1_data, 'v2': v2_data})
+    >>> # Set the spectrogram plots to show dimension 'v2' at slice 'v1' = 0
+    >>> pytplot.options('Variable2', 'spec', 1)
+    >>> pytplot.options("Variable2", "spec_dim_to_plot", 'v2')
+    >>> pytplot.options("Variable2", "spec_slices_to_use", {'v1': 0})
+    >>> pytplot.tplot('Variable2')
+
+"""
 
     if isinstance(name, int):
         name = list(pytplot.data_quants.keys())[name]

@@ -9,29 +9,31 @@ import logging
 
 def get_ylimits(name, trg=None):
     """
-    This function will get extract the y-limits from the Tplot Variables stored in memory.  
-    
-    Parameters:
-        name : str 
-            Name of the tplot variable
-        trg : list, optional
-            The time range that you would like to look in
-         
-    Returns:
-        ymin : float
-            The minimum value of y
-        ymax : float
-            The maximum value of y
-            
-    Examples:
-        >>> # Retrieve the y-limits from Variable 1
-        >>> import pytplot
-        >>> x_data = [1,2,3,4,5]
-        >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> y1, y2 = pytplot.get_ylimits("Variable1")
+    Extracts the y-limits from the Tplot Variables stored in memory.
 
+    Parameters
+    ----------
+    name : str
+        Name of the tplot variable.
+    trg : list, optional
+        The time range to look in.
+
+    Returns
+    -------
+    ymin : int, float, numeric type of pytplot data
+        The minimum value of y.
+    ymax : int, float, numeric type of pytplot data
+        The maximum value of y.
+
+    Examples
+    --------
+    >>> import pytplot
+    >>> x_data = [1, 2, 3, 4, 5]
+    >>> y_data = [1, 2, 3, 4, 5]
+    >>> pytplot.store_data("Variable1", data={'x': x_data, 'y': y_data})
+    >>> y1, y2 = pytplot.get_ylimits("Variable1")
     """
+
     if isinstance(name, int):
         name = list(pytplot.data_quants.keys())[name-1]
     if not isinstance(name, list):
@@ -51,7 +53,7 @@ def get_ylimits(name, trg=None):
         if trg is not None:
             y = y.sel(time=slice(trg[0], trg[1]))
 
-        ymin = y.min(skipna=True)
-        ymax = y.max(skipna=False)
+        ymin = y.min(skipna=True).values.item()
+        ymax = y.max(skipna=False).values.item()
 
     return ymin, ymax
