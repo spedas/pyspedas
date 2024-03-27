@@ -715,7 +715,11 @@ def reduce_spec_dataset(tplot_dataset=None, name=None):
     else:
         return
 
-    coordinate_to_plot = da.attrs['plot_options']['extras']['spec_dim_to_plot']
+    if da.attrs['plot_options']['extras'].get('spec_dim_to_plot', None) is not None:
+        coordinate_to_plot = da.attrs['plot_options']['extras']['spec_dim_to_plot']
+    else:
+        # If not found, default to v2 (to match behavior in options.py when setting "spec" option)
+        coordinate_to_plot = "v2"
 
     dim_to_plot = coordinate_to_plot + '_dim'
 
