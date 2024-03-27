@@ -34,7 +34,7 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
         >>> pytplot.store_data("a", data={"x": time, "y": y})
         >>> a = pytplot.get_data("a")
         >>> print(a)
-        >>> b = makegap(a)
+        >>> b = pytplot.makegap(a)
         >>> print(b)
 
     """
@@ -51,7 +51,8 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
     # gap_index_locations = np.where(gap_size > dt0)
 
     # First create a temporary tplot variable for the data, times need to be in unix time
-    x = pytplot.time_float(var_data.times)
+    #x = pytplot.time_float(var_data.times)
+    x = np.int64(var_data.times)/1e9
     if var_data.y.ndim == 1:
         pytplot.store_data("makegap_tmp", data={"x": x, "y": var_data.y})
     else:  # multiple dimensions
