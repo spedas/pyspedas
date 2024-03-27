@@ -101,6 +101,40 @@ def specplot(
     time_idxs=None,
     style=None,
 ):
+    """
+    Plot a tplot variable as a spectrogram
+
+    Parameters
+    ----------
+    var_data: dict
+        A tplot dictionary containing the data to be plotted
+    var_times: array of datetime objects
+        An array of datetime objects specifying the time axis
+    this_axis
+        The matplotlib object for the panel currently being plotted
+    yaxis_options: dict
+        A dictionary containing the Y axis options to be used for this variable
+    zaxis_options: dict
+        A dictionary containing the Z axis (spectrogram values) options to be used for this variable
+    plot_extras: dict
+        A dictionary containing additional plot options for this variable
+    colorbars: dict
+        The data structure that contains information (for all variables) for creating colorbars.
+    axis_font_size: int
+        The font size in effect for this axis (used to create colorbars)
+    fig: matplotlib.figure.Figure
+        A matplotlib figure object to be used for this plot
+    variable: str
+        The name of the tplot variable to be plotted (used for log messages)
+    time_idxs: array of int
+        The indices of the subset of times to use for this plot. Defaults to None (plot all timestamps).
+    style
+        A matplotlib style object to be used for this plot. Defaults to None.
+
+    Returns
+    -------
+        True
+    """
     alpha = plot_extras.get("alpha")
     spec_options = {"shading": "auto", "alpha": alpha}
     ztitle = zaxis_options["axis_label"]
@@ -209,7 +243,12 @@ def specplot(
     out_values = var_data.y[time_idxs, :]
     #allow use of v1, v2, jmm, 2024-03-20
     if len(var_data) == 3:
-        out_vdata = var_data.v
+        if hasattr(var_data,'v'):
+            out_vdata = var_data.v
+        elif hasattr(var_data,'v1'):
+            out_vdata = var_data.v1
+        else:
+            logging.warning("Multidimensional variable %s has no v or v1 attribute",variable)
     elif len(var_data) == 4:
         if hasattr(var_data, 'v1'):
             if 'spec_dim_to_plot' in plot_extras:
