@@ -33,6 +33,8 @@ def tplot(variables, var_label=None,
           fig=None,
           axis=None,
           running_trace_count=None,
+          trace_count_thisvar=None,
+          pseudo_idx=None,
           pseudo_right_axis=False,
           pseudo_yaxis_options=None,
           pseudo_zaxis_options=None,
@@ -89,15 +91,28 @@ def tplot(variables, var_label=None,
             else:
                 ysize = 5
 
+    # The logic here for handling the 'right_axis' option is pretty convoluted, and makes a number of assumptions
+    # that may not be warranted: mainly that right_axis will only be set on pseudovariables, and that if
+    # set, the first sub-variable gets the left axis and all other sub-variables get a newly twinx-ed right axis.
+    # "right axis" implies there will only be at most two Y axes. What if more scales are needed?
+    # There also seems to be some conflation of the set of axes for the whole stack of plots, versus
+    # the single (left or possibly right) axis for the variable currently being rendered.
+    #
+    # This whole concept is kind of a mess at the moment.  For now, we'll make it work for the
+    # most likely use case, plotting a single spectrum variable followed by a single line variable
+    # (for example, an energy spectrum plus spacecraft potential).  JWL 2024-03-26
+
     if fig is None and axis is None:
         fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes})
         fig.set_size_inches(xsize, ysize)
     else:
-        if running_trace_count == 0 or pseudo_right_axis == False:
+        # fig and axis have been passed as parameters, most likely a recursive tplot call to render
+        # a pseudovariable
+        if pseudo_idx == 0 or pseudo_right_axis == False:
             # setting up first axis
             axes = axis
-        else:
-            # using previous axis
+        elif pseudo_idx > 0 and pseudo_right_axis:
+            # generate and use the right axis?  probably still wrong...
             axes = axis.twinx()
 
     plot_title = pytplot.tplot_opt_glob['title_text']
@@ -202,15 +217,19 @@ def tplot(variables, var_label=None,
                 # traces have been plotted so far, so we can correctly match option values to traces. The pseudovariable
                 # y_axis, z_axis, line and extra options are passed as parameters so they can be merged with the
                 # sub-variable options, with any pseudovar options overriding the sub-variable options.
+                trace_count_thisvar = pytplot.count_traces(var)
                 tplot(var, return_plot_objects=return_plot_objects,
                       xsize=xsize, ysize=ysize, save_png=save_png,
                       save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf,
                       fig=fig, axis=this_axis, display=False,
-                      running_trace_count=traces_processed, second_axis_size=0.1,
+                      running_trace_count=traces_processed,
+                      trace_count_thisvar=trace_count_thisvar,
+                      pseudo_idx=pseudo_idx,
+                      second_axis_size=0.1,
                       pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
                       pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
                       pseudo_right_axis=pseudo_right_axis)
-                traces_processed += pytplot.count_traces(var)
+                traces_processed += trace_count_thisvar
             
             if idx > 0:
                 pytplot.tplot_opt_glob['title_text'] = plot_title
