@@ -191,6 +191,15 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 logging.warning("Unable to get variable attributes for %s in file %s, skipping", var, mastercdf)
                 continue
 
+            if 'VIRTUAL' in var_atts:
+                this_virtual = var_atts['VIRTUAL'].lower()
+                if this_virtual=="true":
+                    logging.debug("Skipping virtual variable %s",var)
+                    continue
+            elif 'FUNCT' in var_atts and 'COMPONENT_0' in var_atts:
+                logging.info("Variable %s not marked as VIRTUAL, but has FUNCT and COMPONENT_0 attributes; skipping", var)
+                continue
+
             if 'VAR_TYPE' in var_atts:
                 this_var_type = var_atts['VAR_TYPE'].lower()
             elif 'PARAMETER_TYPE' in var_atts:
