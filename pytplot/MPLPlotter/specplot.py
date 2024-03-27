@@ -203,16 +203,18 @@ def specplot(
         zmax = np.nanmax(var_data.y)
         # gracefully handle the case of all NaNs in the data, but log scale set
         # all 0 is also a problem, causes a crash later when creating the colorbar
-        if np.isnan(var_data.y).all() or not np.any(var_data.y):
+        if np.isnan(var_data.y).all():
             # no need to set a log scale if all the data values are NaNs, or all zeroes
             spec_options["norm"] = None
             spec_options["vmin"] = zrange[0]
             spec_options["vmax"] = zrange[1]
+            logging.info("Variable %s contains all-NaN data", variable)
         elif not np.any(var_data.y):
-            # properly handle all 0s in the data   dead code now?
-            spec_options["norm"] = mpl.colors.LogNorm(
-                vmin=zmin, vmax=zmax
-            )
+            # properly handle all 0s in the data
+            spec_options["norm"] = None
+            spec_options["vmin"] = zrange[0]
+            spec_options["vmax"] = zrange[1]
+            logging.info("Variable %s contains all-zero data", variable)
         else:
             spec_options["norm"] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
     else:
