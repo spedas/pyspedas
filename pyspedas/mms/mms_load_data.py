@@ -163,8 +163,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 fsrc.close()
                                 ftmp.close()
                                 os.unlink(ftmp.name)  # delete the temporary file
-                        except requests.exceptions.ConnectionError:
+                        except requests.exceptions.ConnectionError as e:
                             # No/bad internet connection; try loading the files locally
+                            print(e)
                             logging.error('No internet connection!')
 
                     if not file_found:
