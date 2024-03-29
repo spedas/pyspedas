@@ -1,4 +1,4 @@
-from pyspedas import time_string
+from pytplot import time_string
 from pyspedas.particles.spd_units_string import spd_units_string
 
 

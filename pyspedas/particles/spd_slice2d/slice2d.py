@@ -15,7 +15,7 @@ from .slice2d_2di import slice2d_2di
 from .slice2d_smooth import slice2d_smooth
 from .slice2d_subtract import slice2d_subtract
 
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
 
 
 def slice2d(dists,

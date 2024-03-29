@@ -40,9 +40,14 @@ def get_filenames(query, public):
         handler = urllib.request.HTTPBasicAuthHandler(p)
         opener = urllib.request.build_opener(handler)
         urllib.request.install_opener(opener)
+        logging.debug("get_filenames() making request to private URL: %s", private_url)
         page = urllib.request.urlopen(private_url)
+        logging.debug("get_filenames() finished request to private URL: %s", private_url)
+
     else:
+        logging.debug("get_filenames() making request to public URL: %s", public_url)
         page = urllib.request.urlopen(public_url)
+        logging.debug("get_filenames() finished request to public URL: %s", public_url)
 
     return page.read().decode("utf-8")
 
@@ -83,9 +88,13 @@ def get_file_from_site(filename, public, data_dir):
         handler = urllib.request.HTTPBasicAuthHandler(p)
         opener = urllib.request.build_opener(handler)
         urllib.request.install_opener(opener)
+        logging.debug("get_file_from_site making request to private url: %s", private_url)
         page = urllib.request.urlopen(private_url)
+        logging.debug("get_file_from_site finished request to private url: %s", private_url)
     else:
+        logging.debug("get_file_from_site making request to public url: %s", public_url)
         page = urllib.request.urlopen(public_url)
+        logging.debug("get_file_from_site finished request to public url: %s", public_url)
 
     with open(os.path.join(data_dir, filename), "wb") as code:
         code.write(page.read())
@@ -106,7 +115,9 @@ def get_orbit_files():
 
     orbit_files_url = "http://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/spk/"
     pattern = "maven_orb_rec(\.orb|.{17}\.orb)"
+    logging.debug("get_orbit_files() making request to URL %s", orbit_files_url)
     page = urllib.request.urlopen(orbit_files_url)
+    logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url)
     page_string = str(page.read())
     toolkit_path = CONFIG["local_data_dir"]
 
@@ -117,7 +128,9 @@ def get_orbit_files():
 
     for matching_pattern in re.findall(pattern, page_string):
         filename = "maven_orb_rec" + matching_pattern
+        logging.debug("get_orbit_files() making request to URL %s", orbit_files_url + filename)
         o_file = urllib.request.urlopen(orbit_files_url + filename)
+        logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url + filename)
         with open(os.path.join(orbit_files_path, filename), "wb") as code:
             code.write(o_file.read())
 

@@ -1,7 +1,6 @@
 import logging
 import numpy as np
-from pytplot import get_data
-from pyspedas import time_string
+from pytplot import get_data, time_string
 
 
 def tplot_average(tvar, trange, quiet=False):
