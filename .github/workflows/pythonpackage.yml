@@ -130,6 +130,8 @@ jobs:
         #coverage run -a -m pyspedas.mms.tests.events
         #echo Starting mms orbit_plots tests at `date`
         #coverage run -a -m pyspedas.mms.tests.orbit_plots
+        #echo Starting mms overview_plots tests at `date`
+        #coverage run -a -m pyspedas.mms.tests.overview_plots
         #echo Starting mms neutral sheet tests at `date`
         #coverage run -a -m pyspedas.mms.tests.neutral_sheet
         #echo Starting mms ql_lib_sitl tests at `date`
