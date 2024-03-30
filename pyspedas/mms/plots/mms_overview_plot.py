@@ -1,8 +1,8 @@
 import logging
-from pyspedas import time_double, time_string
+import pyspedas
 from pyspedas.mms import fgm, fpi, feeps, hpca, edp, eis
 from pyspedas.themis import gmag
-from pytplot import options, tplot_options, store_data, tplot, tnames
+from pytplot import options, tplot_options, store_data, tplot, tnames, time_double, time_string
 
 
 def mms_overview_plot(
@@ -11,12 +11,14 @@ def mms_overview_plot(
     duration="1",
     probe="1",
     skip_ae_idx=False,
-    save_png=False,
-    directory="",
-    filename="",
+    save_png='',
+    save_eps='',
+    save_svg='',
+    save_pdf='',
+    save_jpeg='',
     display=True,
-    xsize=1000,
-    ysize=1400,
+    xsize=10,
+    ysize=14,
 ):
     """
     Generate an overview plot for MMS data.
@@ -33,19 +35,23 @@ def mms_overview_plot(
         MMS probe number (1-4).
     skip_ae_idx: bool, optional
         Whether to skip plotting the AE index panel.
-    save_png: bool, optional
-        Whether to save the plot as a PNG file.
-    directory: str, optional
-        Directory to save the plot. If not specified, the plot will not be saved.
-    filename: str, optional
-        Name of the PNG file to save (without the "png" extension). If not specified, a default name will be used.
+    save_png: str, optional
+        .Filename to save plot as PNG
+    save_eps: str, optional
+        .Filename to save plot as EPS
+    save_svg: str, optional
+        .Filename to save plot as SVG
+    save_pdf: str, optional
+        .Filename to save plot as PDF
+    save_jpeg: str, optional
+        .Filename to save plot as JPEG
     display: bool, optional
         If True, then this function will display the plotted tplot variables. Necessary to make this optional
         so we can avoid it in a headless server environment.
     xsize: int, optional
-        Size of the x-axis of the plot window in pixels. Default is 1000.
+        Size of the x-axis of the plot window in inches. Default is 10.
     ysize: int, optional
-        Size of the y-axis of the plot window in pixels. Default is 1400.
+        Size of the y-axis of the plot window in inches. Default is 14.
 
     Returns:
     --------
@@ -53,8 +59,8 @@ def mms_overview_plot(
 
     Examples:
     ---------
-    from pyspedas.mms.mms_overview_plot import mms_overview_plot
-    mms_overview_plot(date='2023-03-23', probe='1', save_png=True, display=False, directory='C:\\work\\mms\\summary plots\\')
+    from pyspedas import mms_overview_plot
+    mms_overview_plot(date='2023-03-23', probe='1', save_png="c:\\work\\mms\\summary_plots\mms_overview", display=False)
 
     Notes:
     ------
@@ -207,13 +213,6 @@ def mms_overview_plot(
         t0 = time_string(time_double(t1), fmt="%Y_%m_%d")
     else:
         t0 = time_string(t1, fmt="%Y_%m_%d")
-    if save_png:
-        if directory is None or directory == "":
-            directory = "./"
-        if filename is None or filename == "":
-            fname = directory + "/mms" + probe + "_" + t0
-        else:
-            fname = directory + filename
 
     # Full plot
     vars = [
@@ -238,8 +237,8 @@ def mms_overview_plot(
     options(panel01, "name", plot_title)
     # tplot_options("wsize", [1400, 1000]) does not work
     tplot_options("show_all_axes", False)
-    xsize = int(xsize / 100)
-    ysize = int(ysize / 100)
+    xsize = int(xsize)
+    ysize = int(ysize)
 
-    tplot(vars, save_png=fname, display=display, xsize=xsize, ysize=ysize)
+    tplot(vars, save_png=save_png,save_eps=save_eps,save_svg=save_svg,save_pdf=save_pdf,save_jpeg=save_jpeg, display=display, xsize=xsize, ysize=ysize)
     logging.info("MMS overview plot completed.")
