@@ -1,6 +1,6 @@
 import logging
 import pyspedas
-from pyspedas import time_double
+from pytplot import time_double
 from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
 from pyspedas.mms.hpca.mms_get_hpca_dist import mms_get_hpca_dist
 from pyspedas.particles.spd_slice2d.slice2d import slice2d
