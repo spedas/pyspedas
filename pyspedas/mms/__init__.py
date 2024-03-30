@@ -40,6 +40,14 @@ from .cotrans.mms_qcotrans import mms_qcotrans
             >>> fgm_data = pyspedas.mms.fgm(...)
 '''
 
+# Some of these wrappers shadow MMS module names in a way that seems too fragile -- adding an apparently unrelated
+# import in the "wrong" place can start triggering errors like "module fgm is not callable".  It might be better and
+# more robust to rename the instrument directories so they don't conflict with the wrapper names.  Also,
+# perhaps these wrapper names should be the "real" names, with the longer names mms_load_fgm, mms_load_state, etc.
+# as wrappers or aliases rather than the other way around.   At least in PyCharm, hovering over a call to fgm() to
+# see the argument list only shows the *args and **kwargs parameters, which is not terribly useful.
+# JWL 2024-03-29
+
 @wraps(spd_mms_load_bss)
 def bss(*args, **kwargs):
     return spd_mms_load_bss(*args, **kwargs)
