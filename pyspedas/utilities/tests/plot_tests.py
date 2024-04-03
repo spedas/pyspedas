@@ -234,6 +234,26 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_psp_flux_plot(self):
+        import pyspedas
+        import pytplot
+        import numpy as np
+        # import matplotlib.pyplot as plt
+        from pytplot import tplot
+        spi_vars = pyspedas.psp.spi(trange=['2022-12-12/00:00', '2022-12-12/23:59'], datatype='sf00_l3_mom', level='l3',
+                                    time_clip=True)
+        time = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['time'].values
+        # print(time)
+        energy_channel = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['spec_bins'].values
+        # print(energy_channel)
+        ec = energy_channel[0, :]
+        energy_flux = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].values
+        # print(energy_flux)
+        e_flux = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['v'].values
+        energy_flux[energy_flux == 0] = np.nan
+        pytplot.store_data('E_Flux', data={'x': time.T, 'y': energy_flux, 'v': energy_channel})
+        pytplot.options('E_Flux', opt_dict={'Spec': 1, 'zlog': 1, 'Colormap': 'jet', 'ylog': 1})
+        tplot('E_Flux',display=global_display, save_png='psp_E_Flux')
 
 if __name__ == '__main__':
     unittest.main()
