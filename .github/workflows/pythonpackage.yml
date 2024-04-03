@@ -124,39 +124,39 @@ jobs:
         coverage run -a -m pyspedas.sosmag.tests.tests
         echo Starting hapi tests at `date`
         coverage run -a -m pyspedas.hapi.tests.tests
-        #echo Starting mms cotrans tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.cotrans
-        #echo Starting mms events tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.events
-        #echo Starting mms orbit_plots tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.orbit_plots
-        #echo Starting mms overview_plots tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.overview_plots
-        #echo Starting mms neutral sheet tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.neutral_sheet
-        #echo Starting mms ql_lib_sitl tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
-        #echo Starting mms_part_getspec tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.mms_part_getspec
-        #echo Starting mms load routine tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.load_routine_tests
-        #echo Starting mms feeps tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.feeps
-        #echo Starting mms eis tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.eis
-        #echo Starting mms fpi tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.fpi_tests
-        #echo Starting mms file_filter tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.file_filter
-        #echo Starting mms data_rate_segments tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.data_rate_segments
-        #echo Starting mms curlometer tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.curlometer
-        #echo Starting mms wavpol tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.wavpol
-        #echo Starting mms slice2d tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.slice2d
-        #echo Starting dscovr tests at `date`
+        echo Starting mms cotrans tests at `date`
+        coverage run -a -m pyspedas.mms.tests.cotrans
+        echo Starting mms events tests at `date`
+        coverage run -a -m pyspedas.mms.tests.events
+        echo Starting mms orbit_plots tests at `date`
+        coverage run -a -m pyspedas.mms.tests.orbit_plots
+        echo Starting mms overview_plots tests at `date`
+        coverage run -a -m pyspedas.mms.tests.overview_plots
+        echo Starting mms neutral sheet tests at `date`
+        coverage run -a -m pyspedas.mms.tests.neutral_sheet
+        echo Starting mms ql_lib_sitl tests at `date`
+        coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
+        echo Starting mms_part_getspec tests at `date`
+        coverage run -a -m pyspedas.mms.tests.mms_part_getspec
+        echo Starting mms load routine tests at `date`
+        coverage run -a -m pyspedas.mms.tests.load_routine_tests
+        echo Starting mms feeps tests at `date`
+        coverage run -a -m pyspedas.mms.tests.feeps
+        echo Starting mms eis tests at `date`
+        coverage run -a -m pyspedas.mms.tests.eis
+        echo Starting mms fpi tests at `date`
+        coverage run -a -m pyspedas.mms.tests.fpi_tests
+        echo Starting mms file_filter tests at `date`
+        coverage run -a -m pyspedas.mms.tests.file_filter
+        echo Starting mms data_rate_segments tests at `date`
+        coverage run -a -m pyspedas.mms.tests.data_rate_segments
+        echo Starting mms curlometer tests at `date`
+        coverage run -a -m pyspedas.mms.tests.curlometer
+        echo Starting mms wavpol tests at `date`
+        coverage run -a -m pyspedas.mms.tests.wavpol
+        echo Starting mms slice2d tests at `date`
+        coverage run -a -m pyspedas.mms.tests.slice2d
+        echo Starting dscovr tests at `date`
         coverage run -a -m pyspedas.dscovr.tests.tests
         echo Starting utilities download tests at `date`
         coverage run -a -m pyspedas.utilities.tests.download_tests
@@ -204,16 +204,16 @@ jobs:
         coverage run -a -m pyspedas.analysis.tests.tests
         echo Starting analysis wavpol tests at `date`
         coverage run -a -m pyspedas.analysis.tests.test_twavpol
-        #echo Starting analysis magnetic nulls tests at `date`
-        #coverage run -a -m pyspedas.analysis.tests.test_magnetic_nulls
+        echo Starting analysis magnetic nulls tests at `date`
+        coverage run -a -m pyspedas.analysis.tests.test_magnetic_nulls
         echo Starting fast tests at `date`
         coverage run -a -m pyspedas.fast.tests.tests
         echo Starting omni tests at `date`
         coverage run -a -m pyspedas.omni.tests.tests
         echo Starting themis tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests
-        #echo Starting maven tests at `date`
-        #coverage run -a -m pyspedas.maven.tests.tests
+        echo Starting maven tests at `date`
+        coverage run -a -m pyspedas.maven.tests.tests
         echo Starting goes tests at `date`
         coverage run -a -m pyspedas.goes.tests.tests
         echo Starting mica tests at `date`
