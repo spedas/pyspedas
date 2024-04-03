@@ -158,7 +158,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
         cdf_file = cdflib.CDF(filename)
         cdf_file.string_encoding = string_encoding
         cdf_info = cdf_file.cdf_info()
-        all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
+        all_cdf_variables = cdf_info.rVariables+ cdf_info.zVariables
         logging.debug("all_cdf_variables: " + str(all_cdf_variables))
         if not mastercdf_flag:
             # If not using a master CDF, each CDF is its own master
@@ -244,7 +244,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     continue
 
                 data_type_description \
-                    = cdf_file.varinq(x_axis_var)['Data_Type_Description']
+                    = cdf_file.varinq(x_axis_var).Data_Type_Description
 
                 if epoch_cache.get(filename + x_axis_var) is None:
                     delta_plus_var = 0.0
@@ -306,7 +306,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         if xdata[0] < 0.0:
                             logging.warning("CDF time tag %e for variable %s cannot be converted to datetime, skipping",xdata[0],var)
                             continue
-                        xdata = np.array(cdflib.cdfepoch.to_datetime(xdata))
+                        xdata = np.array(cdfepoch.to_datetime(xdata))
                         if isinstance(delta_time, np.ndarray) or isinstance(delta_time, list):
                             delta_t = np.array([timedelta(seconds=dtime) for dtime in delta_time])
                         else:
@@ -325,18 +325,18 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     logging.info('No ydata for variable %s', var)
                     continue
                 if "FILLVAL" in var_atts:
-                    if (var_properties['Data_Type_Description'] ==
+                    if (var_properties.Data_Type_Description ==
                             'CDF_FLOAT' or
-                            var_properties['Data_Type_Description'] ==
+                            var_properties.Data_Type_Description ==
                             'CDF_REAL4' or
-                            var_properties['Data_Type_Description'] ==
+                            var_properties.Data_Type_Description ==
                             'CDF_DOUBLE' or
-                            var_properties['Data_Type_Description'] ==
+                            var_properties.Data_Type_Description ==
                             'CDF_REAL8'):
 
                         if ydata[ydata == var_atts["FILLVAL"]].size != 0:
                             ydata[ydata == var_atts["FILLVAL"]] = np.nan
-                    elif var_properties['Data_Type_Description'][:7] == 'CDF_INT':
+                    elif var_properties.Data_Type_Description[:7] == 'CDF_INT':
                         # NaN is only valid for floating point data
                         # but we still need to handle FILLVAL's for
                         # integer data, so we'll just set those to 0
