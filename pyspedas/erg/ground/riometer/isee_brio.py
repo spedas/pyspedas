@@ -165,7 +165,7 @@ def isee_brio(
                 print("Rules of the Road for ISEE Riometer Data:")
                 print("")
                 print(gatt["TEXT"])
-                print({gatt["LINK_TEXT"]})
+                print(gatt["LINK_TEXT"])
                 print(
                     "**************************************************************************"
                 )
@@ -181,7 +181,7 @@ def isee_brio(
                     file_name = file_name[0]
                 cdf_file = cdflib.CDF(file_name)
                 cdf_info = cdf_file.cdf_info()
-                all_cdf_variables = cdf_info["rVariables"] + cdf_info["zVariables"]
+                all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
                 for t_plot_name in loaded_data_temp:
                     get_data_vars = get_data(t_plot_name)
                     if get_data_vars is None:
@@ -219,19 +219,19 @@ def isee_brio(
                                         var_properties = cdf_file.varinq(param)
                                         if (
                                             (
-                                                var_properties["Data_Type_Description"]
+                                                var_properties.Data_Type_Description
                                                 == "CDF_FLOAT"
                                             )
                                             or (
-                                                var_properties["Data_Type_Description"]
+                                                var_properties.Data_Type_Description
                                                 == "CDF_REAL4"
                                             )
                                             or (
-                                                var_properties["Data_Type_Description"]
+                                                var_properties.Data_Type_Description
                                                 == "CDF_DOUBLE"
                                             )
                                             or (
-                                                var_properties["Data_Type_Description"]
+                                                var_properties.Data_Type_Description
                                                 == "CDF_REAL8"
                                             )
                                         ):

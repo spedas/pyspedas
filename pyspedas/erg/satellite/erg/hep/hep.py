@@ -140,7 +140,7 @@ def hep(
             print(gatt["LOGICAL_SOURCE_DESCRIPTION"])
             print('')
             print('PI: ', gatt['PI_NAME'])
-            print("Affiliation: "+gatt["PI_AFFILIATION"])
+            print("Affiliation: ",gatt["PI_AFFILIATION"])
             print('')
             print('- The rules of the road (RoR) common to the ERG project:')
             print(
