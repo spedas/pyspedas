@@ -1,12 +1,12 @@
 sphinx>=1.7.5
 numpy>=1.20.0
 requests
-cdflib<1.0.0
+cdflib >= 1.2.0
 cdasws>=1.7.24
 netCDF4
 pywavelets
 astropy
-pytplot-mpl-temp>=2.2.9
+pytplot-mpl-temp>=2.2.10
 geopack>=1.0.9
 viresclient
 hapiclient
