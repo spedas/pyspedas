@@ -41,6 +41,9 @@ def mms_part_des_photoelectrons(dist_var):
         logging.error('Problem extracting the energy table name from the DF metadata')
         return
 
+    # Workaround for cdflib globalattsget() bug
+    if isinstance(table_name,list):
+        table_names = table_name[0]
     stepper_id = table_name.replace('.txt', '').split('energies_des_')[-1]
 
     # we'll need the data rate

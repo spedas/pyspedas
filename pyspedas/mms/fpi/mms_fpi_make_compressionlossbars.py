@@ -68,6 +68,8 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
 
     if not lossy:
         file_id = metadata['CDF']['GATT']['Logical_file_id']
+        if isinstance(file_id, list):  # Workaroud for cdflib bug in globalattsget
+            file_id = file_id[0]
         version = file_id.split('_v')[1].split('.')
         if version[0] == '2':
             if version[1] == '1':
