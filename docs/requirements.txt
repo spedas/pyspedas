@@ -6,7 +6,7 @@ cdasws>=1.7.24
 netCDF4
 pywavelets
 astropy
-pytplot-mpl-temp>=2.2.10
+pytplot-mpl-temp>=2.2.11
 geopack>=1.0.9
 viresclient
 hapiclient
