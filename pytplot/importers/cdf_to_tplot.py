@@ -94,6 +94,13 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     output_table = {}
     metadata = {}
 
+    new_cdflib = False
+    if cdflib.__version__ > "0.4.9":
+        new_cdflib = True
+        logging.info("Using new version of cdflib")
+    else:
+        new_cdflib = False
+
     if not isinstance(varnames, list):
         varnames = [varnames]
 
@@ -147,7 +154,11 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
         master_cdf_file = cdflib.CDF(mastercdf)
         master_cdf_file.string_encoding = string_encoding
         master_cdf_info = master_cdf_file.cdf_info()
-        master_cdf_variables = master_cdf_info['rVariables'] + master_cdf_info['zVariables']
+        if new_cdflib:
+            master_cdf_variables = master_cdf_info.rVariables + master_cdf_info.zVariables
+        else:
+            master_cdf_variables = master_cdf_info['rVariables'] + master_cdf_info['zVariables']
+
         logging.debug("master_cdf_variables: " + str(master_cdf_variables))
     else:
         mastercdf_flag = False
@@ -158,7 +169,11 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
         cdf_file = cdflib.CDF(filename)
         cdf_file.string_encoding = string_encoding
         cdf_info = cdf_file.cdf_info()
-        all_cdf_variables = cdf_info.rVariables+ cdf_info.zVariables
+        if new_cdflib:
+            all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
+        else:
+            all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
+
         logging.debug("all_cdf_variables: " + str(all_cdf_variables))
         if not mastercdf_flag:
             # If not using a master CDF, each CDF is its own master
@@ -243,8 +258,13 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
 
                     continue
 
-                data_type_description \
-                    = cdf_file.varinq(x_axis_var).Data_Type_Description
+                if new_cdflib:
+                    data_type_description \
+                        = cdf_file.varinq(x_axis_var).Data_Type_Description
+                else:
+                    data_type_description \
+                        = cdf_file.varinq(x_axis_var)["Data_Type_Description"]
+
 
                 if epoch_cache.get(filename + x_axis_var) is None:
                     delta_plus_var = 0.0
@@ -325,18 +345,19 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     logging.info('No ydata for variable %s', var)
                     continue
                 if "FILLVAL" in var_atts:
-                    if (var_properties.Data_Type_Description ==
-                            'CDF_FLOAT' or
-                            var_properties.Data_Type_Description ==
-                            'CDF_REAL4' or
-                            var_properties.Data_Type_Description ==
-                            'CDF_DOUBLE' or
-                            var_properties.Data_Type_Description ==
-                            'CDF_REAL8'):
+                    if new_cdflib:
+                        thisvar_dtd = var_properties.Data_Type_Description
+                    else:
+                        thisvar_dtd = var_properties["Data_Type_Description"]
+
+                    if (thisvar_dtd == 'CDF_FLOAT' or
+                            thisvar_dtd == 'CDF_REAL4' or
+                            thisvar_dtd == 'CDF_DOUBLE' or
+                            thisvar_dtd == 'CDF_REAL8'):
 
                         if ydata[ydata == var_atts["FILLVAL"]].size != 0:
                             ydata[ydata == var_atts["FILLVAL"]] = np.nan
-                    elif var_properties.Data_Type_Description[:7] == 'CDF_INT':
+                    elif thisvar_dtd[:7] == 'CDF_INT':
                         # NaN is only valid for floating point data
                         # but we still need to handle FILLVAL's for
                         # integer data, so we'll just set those to 0
