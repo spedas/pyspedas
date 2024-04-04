@@ -14,7 +14,7 @@ def rfs_variables_to_load(files):
     file = files[0]
     cdf_file = cdflib.CDF(file)
     cdf_info = cdf_file.cdf_info()
-    variables = cdf_info['rVariables'] + cdf_info['zVariables']
+    variables = cdf_info.rVariables + cdf_info.zVariables
     for variable in variables:
         if variable[0:7] != 'psp_fld':
             continue

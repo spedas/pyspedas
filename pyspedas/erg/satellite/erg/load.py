@@ -67,7 +67,7 @@ def load(trange=['2017-03-27', '2017-03-28'],
         if len(out_files) > 0:
             cdf_file = cdflib.CDF(out_files[-1])
             cdf_info = cdf_file.cdf_info()
-            all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
+            all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
             gatt = cdf_file.globalattsget()
             for var in all_cdf_variables:
                 t_plot_name = prefix + var + suffix

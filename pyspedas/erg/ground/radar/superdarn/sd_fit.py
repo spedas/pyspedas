@@ -736,7 +736,7 @@ def sd_fit(
                         cdf_file = cdflib.CDF(file_name)
                         cdf_info = cdf_file.cdf_info()
                         all_cdf_variables = (
-                            cdf_info["rVariables"] + cdf_info["zVariables"]
+                            cdf_info.rVariables + cdf_info.zVariables
                         )
                         timevn = fnmatch.filter(all_cdf_variables, "Epoch_?")
                         ptblvn = fnmatch.filter(all_cdf_variables, "position_tbl_?")
