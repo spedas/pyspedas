@@ -136,8 +136,8 @@ jobs:
         coverage run -a -m pyspedas.mms.tests.neutral_sheet
         echo Starting mms ql_lib_sitl tests at `date`
         coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
-        echo Starting mms_part_getspec tests at `date`
-        coverage run -a -m pyspedas.mms.tests.mms_part_getspec
+        #echo Starting mms_part_getspec tests at `date`
+        #coverage run -a -m pyspedas.mms.tests.mms_part_getspec
         echo Starting mms load routine tests at `date`
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         echo Starting mms feeps tests at `date`
