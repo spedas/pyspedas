@@ -86,8 +86,13 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
     if metadata is None:
         return
 
-    # Workaround for cdflib globalattsget bug
-    if metadata['CDF']['GATT']['Data_type'][0][-4:] == 'moms' or level == 'ql':
+
+    # Workaround for cdflib globalattsget() bug
+    md_dt = metadata['CDF']['GATT']['Data_type']
+    if isinstance(md_dt, list):
+        md_dt = md_dt[0]
+
+    if md_dt[-4:] == 'moms' or level == 'ql':
         labels_full=['Contact FPI team','Saturation','SCpot>20V','no SCpot','>10% Cold','>25% Hot','High Mach#','Low Density','Onboard Mag','L2pre Mag','Photoelectrons','Compression', 'Spintones', 'Radiation']
 
         flags = ['{0:014b}'.format(flag) for flag in data.y]
@@ -221,8 +226,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
                     tname + '_flagbars_main',
                     tname + '_flagbars_others',
                     tname + '_flagbars_mini']
-    # Workaround for cdflib globalattsget() bug
-    elif metadata['CDF']['GATT']['Data_type'][0][-4:] == 'dist':
+    elif md_dt[-4:] == 'dist':
         flags = ['{0:014b}'.format(flag) for flag in data.y]
         flagline = np.zeros((len(data.times), 2))
         for i in [0, 1]:

@@ -19,11 +19,17 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('ted_ele_tel0_low_eflux'))
         m = get_data('ted_ele_tel0_low_eflux', metadata=True)
         # Workaround for cdflib globalattsget bug
-        self.assertTrue(m['CDF']['GATT']['Source_name'][0] == 'MetOp1')
+        md_sn = m['CDF']['GATT']['Source_name']
+        if isinstance(md_sn,list):
+            md_sn = md_sn[0]
+        self.assertTrue(md_sn == 'MetOp1')
         sem_vars = pyspedas.poes.sem(probe='metop2', time_clip=True)
         m = get_data('ted_ele_tel0_low_eflux', metadata=True)
         # workaround for cdflib globalattsget bug
-        self.assertTrue(m['CDF']['GATT']['Source_name'][0] == 'MetOp2')
+        md_sn = m['CDF']['GATT']['Source_name']
+        if isinstance(md_sn,list):
+            md_sn = md_sn[0]
+        self.assertTrue(md_sn == 'MetOp2')
 
     def test_downloadonly(self):
         files = pyspedas.poes.sem(downloadonly=True, probe='noaa19')
