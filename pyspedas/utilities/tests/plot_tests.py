@@ -6,7 +6,7 @@ from pyspedas import themis
 from pytplot import store_data, options, timespan, tplot, tplot_options
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = False
+global_display = True
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -253,7 +253,10 @@ class PlotTestCases(unittest.TestCase):
         energy_flux[energy_flux == 0] = np.nan
         pytplot.store_data('E_Flux', data={'x': time.T, 'y': energy_flux, 'v': energy_channel})
         pytplot.options('E_Flux', opt_dict={'Spec': 1, 'zlog': 1, 'Colormap': 'jet', 'ylog': 1})
+        timespan('2022-12-12',1,'days')
+        tplot_options('title', 'Parker Solar Probe E_flux')
         tplot('E_Flux',display=global_display, save_png='psp_E_Flux')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
 if __name__ == '__main__':
     unittest.main()

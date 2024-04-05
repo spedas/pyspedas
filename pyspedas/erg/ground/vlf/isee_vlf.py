@@ -162,7 +162,7 @@ def isee_vlf(
                 print("")
                 for gatt_text in gatt["TEXT"]:
                     print(gatt_text)
-                print({gatt["LINK_TEXT"]})
+                print(gatt["LINK_TEXT"])
                 print(
                     "**************************************************************************"
                 )

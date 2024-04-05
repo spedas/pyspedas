@@ -139,7 +139,7 @@ def lepi(
             print('Information about ERG LEPi')
             print('')
             print('PI: ', gatt['PI_NAME'])
-            print("Affiliation: "+gatt["PI_AFFILIATION"])
+            print("Affiliation: ", gatt["PI_AFFILIATION"])
             print('')
             print('RoR of ERG project common: https://ergsc.isee.nagoya-u.ac.jp/data_info/rules_of_the_road.shtml.en')
             print(
