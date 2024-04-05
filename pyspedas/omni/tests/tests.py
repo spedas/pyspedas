@@ -3,13 +3,19 @@ import unittest
 from pytplot import data_exists, del_data
 import pyspedas
 
-
 class LoadTestCases(unittest.TestCase):
     def test_utc_timestamp_regression(self):
         varname = 'BX_GSE'
         del_data('*')
         data_omni = pyspedas.omni.data(trange=['2010-01-01/00:00:00', '2010-01-02/00:00:00'],notplot=True,varformat=varname,time_clip=True)
-        self.assertTrue(str(data_omni[varname]['x'][0]) == '2010-01-01 00:00:00')
+        ts=data_omni[varname]['x'][0]
+        # Depending on the version of cdflib in use, ts might be a datetime.datetime, or np.datetime64.  The string representations
+        # are slightly different: "2010-01-01 00:00:00" vs "2010-01-01T00:00:00.000000".  So we replace "T" with " " and
+        # discard any fractional part before comparing.
+        ds=str(ts)
+        ds2=ds.replace("T"," ")
+        nofrac,frac=ds2.split(".")
+        self.assertTrue(nofrac == '2010-01-01 00:00:00')
 
     def test_load_hro2_data(self):
         del_data('*')
