@@ -63,9 +63,9 @@ jobs:
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude 'erg'
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
         # exit-zero treats all errors as warnings. 
-        flake8 . --count --exit-zero --max-complexity=10 --statistics # --max-line-length=127 --exclude 'erg'
+        flake8 . --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
     - name: Test with unittest
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
       env:
@@ -136,8 +136,8 @@ jobs:
         coverage run -a -m pyspedas.mms.tests.neutral_sheet
         echo Starting mms ql_lib_sitl tests at `date`
         coverage run -a -m pyspedas.mms.tests.ql_l1b_sitl_tests
-        #echo Starting mms_part_getspec tests at `date`
-        #coverage run -a -m pyspedas.mms.tests.mms_part_getspec
+        echo Starting mms_part_getspec tests at `date`
+        coverage run -a -m pyspedas.mms.tests.mms_part_getspec
         echo Starting mms load routine tests at `date`
         coverage run -a -m pyspedas.mms.tests.load_routine_tests
         echo Starting mms feeps tests at `date`
