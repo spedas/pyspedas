@@ -33,7 +33,7 @@ setup(
         "requests",
         "geopack>=1.0.10",
         "scipy",
-        "cdflib<1.0.0",
+        "cdflib",
         "cdasws>=1.7.24",
         "netCDF4>=1.6.2",
         "pywavelets",
