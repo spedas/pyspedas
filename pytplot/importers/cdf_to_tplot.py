@@ -6,17 +6,10 @@
 
 import cdflib
 import logging
-
-# If the user has astropy installed, use the cdflib's CDFAstropy class for time conversion
-# (Converting to unix time is much, much faster this way)
-try:
-    from cdflib.epochs_astropy import CDFAstropy as cdfepoch
-except:
-    from cdflib.epochs import CDFepoch as cdfepoch
-
 import re
 import numpy as np
 import xarray as xr
+import datetime
 from datetime import timedelta
 from pytplot.store_data import store_data
 from pytplot.tplot import tplot
@@ -97,9 +90,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     new_cdflib = False
     if cdflib.__version__ > "0.4.9":
         new_cdflib = True
-        logging.info("Using new version of cdflib")
+        logging.info("Using new version of cdflib (%s)", cdflib.__version__)
     else:
         new_cdflib = False
+        logging.info("Using old version of cdflib (%s)", cdflib.__version__)
 
     if not isinstance(varnames, list):
         varnames = [varnames]
@@ -326,11 +320,20 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         if xdata[0] < 0.0:
                             logging.warning("CDF time tag %e for variable %s cannot be converted to datetime, skipping",xdata[0],var)
                             continue
-                        xdata = np.array(cdfepoch.to_datetime(xdata))
-                        if isinstance(delta_time, np.ndarray) or isinstance(delta_time, list):
-                            delta_t = np.array([timedelta(seconds=dtime) for dtime in delta_time])
+                        xdata = np.array(cdflib.cdfepoch.to_datetime(xdata))
+                        if isinstance(xdata[0],datetime.datetime):
+                            # old cdflib < 1.0.0 returns datetime.datetime objects
+                            if isinstance(delta_time, np.ndarray) or isinstance(delta_time, list):
+                                delta_t = np.array([timedelta(seconds=dtime) for dtime in delta_time])
+                            else:
+                                delta_t = timedelta(seconds=delta_time)
                         else:
-                            delta_t = timedelta(seconds=delta_time)
+                            # new cdflib >= 1.0.0 returns np.datetime64 objects
+                            if isinstance(delta_time, np.ndarray) or isinstance(delta_time, list):
+                                delta_t = np.array([np.timedelta64(int(dtime*1e9),'ns') for dtime in delta_time])
+                            else:
+                                delta_t = np.timedelta64(int(delta_time*1e9),'ns')
+
                         epoch_cache[filename + x_axis_var] = xdata + delta_t
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
