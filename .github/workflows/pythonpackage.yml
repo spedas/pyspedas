@@ -101,6 +101,7 @@ jobs:
         PYTPLOT_LOGGING_LEVEL: error
       run: |
         # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
+        echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
         # echo Starting akebono tests at `date`
         # coverage run -a -m pyspedas.akebono.tests.tests
