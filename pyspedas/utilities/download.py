@@ -5,7 +5,7 @@ import requests
 import logging
 import fnmatch
 import datetime
-import pkg_resources
+from importlib.metadata import version, PackageNotFoundError
 
 from pathlib import Path
 from shutil import copyfileobj, copy
@@ -301,9 +301,9 @@ def download(remote_path='',
 
     if headers.get('User-Agent') is None:
         try:
-            release_version = pkg_resources.get_distribution("pyspedas").version
-        except pkg_resources.DistributionNotFound:
-            release_version = 'bleeding edge'
+            release_version = version("pyspedas")
+        except PackageNotFoundError:
+            release_version = "bleeding edge"
         headers['User-Agent'] = 'pySPEDAS ' + release_version
 
     out = []

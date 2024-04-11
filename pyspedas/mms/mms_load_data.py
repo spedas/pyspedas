@@ -2,7 +2,7 @@ import os
 import requests
 import logging
 import warnings
-import pkg_resources
+from importlib.metadata import version, PackageNotFoundError
 import numpy as np
 from pytplot import cdf_to_tplot
 from pytplot import time_clip as tclip
@@ -60,9 +60,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     headers = {}
     try:
-        release_version = pkg_resources.get_distribution("pyspedas").version
-    except pkg_resources.DistributionNotFound:
-        release_version = 'bleeding edge'
+        release_version = version("pyspedas")
+    except PackageNotFoundError:
+        release_version = "bleeding edge"
     headers['User-Agent'] = 'pySPEDAS ' + release_version
 
     user = None
