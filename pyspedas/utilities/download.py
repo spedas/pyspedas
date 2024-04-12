@@ -120,7 +120,7 @@ def download_file(url=None,
     # check if the file exists, and if so, set the last modification time in the header
     # this allows you to avoid re-downloading files that haven't changed
     if os.path.exists(filename):
-        mod_tm = (datetime.datetime.utcfromtimestamp(os.path.getmtime(filename))).strftime('%a, %d %b %Y %H:%M:%S GMT')
+        mod_tm = (datetime.datetime.fromtimestamp(os.path.getmtime(filename),datetime.timezone.utc)).strftime('%a, %d %b %Y %H:%M:%S GMT')
         headers['If-Modified-Since'] = mod_tm
 
     with warnings.catch_warnings():
