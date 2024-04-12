@@ -4,11 +4,12 @@ from pyspedas.mms.mms_load_sroi_segments import mms_load_sroi_segments, get_mms_
 from pyspedas.mms.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.mms.mms_load_brst_segments import mms_load_brst_segments
 from pyspedas.mms.mms_update_brst_intervals import mms_update_brst_intervals
-from pytplot import data_exists
+from pytplot import data_exists, del_data
 
 
 class SegmentTestCases(unittest.TestCase):
     def test_sroi(self):
+        del_data("*")
         sroi = mms_load_sroi_segments(trange=['2019-10-01', '2019-11-01'])
         self.assertTrue(data_exists('mms1_bss_sroi'))
         self.assertTrue(len(sroi[0]) == 28)
@@ -24,6 +25,7 @@ class SegmentTestCases(unittest.TestCase):
         none = get_mms_srois(start_time=1569849345.0, end_time=1569849345.0)
 
     def test_brst(self):
+        del_data("*")
         brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'])
         self.assertTrue(len(brst[0]) == 53)
         self.assertTrue(brst[0][0] == 1444975174.0)
@@ -39,6 +41,7 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms_bss_burst_sdc'))
 
     def test_update_brst_intervals(self):
+        del_data("*")
         intervals = mms_update_brst_intervals()
         self.assertTrue('start_times' in intervals)
         self.assertTrue('end_times' in intervals)
@@ -46,6 +49,7 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(intervals['end_times'][0] == 1430879715.0)
 
     def test_fast(self):
+        del_data("*")
         fast = mms_load_fast_segments(trange=['2015-10-01', '2015-11-01'])
         self.assertTrue(data_exists('mms_bss_fast'))
         self.assertTrue(len(fast[0]) == 35)
@@ -55,6 +59,7 @@ class SegmentTestCases(unittest.TestCase):
         none = mms_load_fast_segments()
 
     def test_spd_mms_load_bss(self):
+        del_data("*")
         spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'])
         self.assertTrue(data_exists('mms_bss_fast'))
         self.assertTrue(data_exists('mms_bss_burst'))
@@ -63,8 +68,9 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_bss_sroi'))
 
     def test_spd_mms_load_bss_err(self):
+        del_data("*")
         spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'], datatype='brst', include_labels=True)
-        self.assertTrue(~data_exists('mms_bss_fast'))
+        self.assertFalse(data_exists('mms_bss_fast'))
 
 
 if __name__ == '__main__':
