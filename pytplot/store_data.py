@@ -231,7 +231,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     coordinate_list = sorted(list(data.keys()))
     dimension_list = [d + '_dim' for d in coordinate_list]
 
-    temp = xr.DataArray(values, dims=['time']+dimension_list,
+    # Ignore warnings about cdflib non-nanosecond precision timestamps for now
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore",message="^.*non-nanosecond precision.*$")
+        temp = xr.DataArray(values, dims=['time']+dimension_list,
                             coords={'time': ('time', times)})
 
     if spec_bins_exist:
