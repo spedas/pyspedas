@@ -13,7 +13,7 @@ For a comparison to IDL, see: http://spedas.org/wiki/index.php?title=Cotrans
 """
 import numpy as np
 import logging
-from datetime import datetime
+import datetime
 from pyspedas.cotrans.igrf import set_igrf_params
 from pyspedas.cotrans.j2000 import set_j2000_params
 
@@ -41,7 +41,7 @@ def get_time_parts(time_in):
         Seconds and milliseconds.
 
     """
-    tnp = np.vectorize(datetime.utcfromtimestamp)(time_in[:])
+    tnp = np.vectorize(datetime.datetime.fromtimestamp)(time_in[:],datetime.timezone.utc)
     iyear = np.array([tt.year for tt in tnp])
     idoy = np.array([tt.timetuple().tm_yday for tt in tnp])
     ih = np.array([tt.hour for tt in tnp])
