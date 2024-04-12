@@ -51,6 +51,7 @@ def tdotp(
         newname = variable1 + '_dot_' + variable2
 
     # calculate the dot product
+    # Note: "dims" is deprecated in favor of "dim", but we'll keep this version for a few more xarray minor releases
     out = data1.dot(data2, dims='v_dim')
 
     # save the output
