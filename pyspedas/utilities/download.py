@@ -57,8 +57,8 @@ def check_downloaded_file(filename):
                 logging.info("Cannot open netCDF file: " + filename)
                 result = False
         else:
-            # The file is not CDF or netCDF, print a warning and return true
-            logging.info("The file is not CDF or netCDF. Filename: " + filename)
+            # The file is not CDF or netCDF, issue a debug-level log message and return true
+            logging.debug("The file is not CDF or netCDF. Filename: " + filename)
             result = True
 
     return result
