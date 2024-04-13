@@ -8,7 +8,7 @@ from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
 from pytplot import tcrossp
 from pytplot import tdotp
 from pytplot import tnormalize
-from pytplot import get_data, store_data, replace_data
+from pytplot import get_data, store_data, replace_data, time_string
 
 import numpy as np
 
@@ -74,7 +74,7 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('aabb')
         self.assertTrue(len(d[1]) == 6)
         subtract_median(['test', 'aabb'], new_names='aaabbb')
-        subtract_median('test1', overwrite=1)
+        subtract_median('test1', overwrite=True)
         subtract_average('test', new_names="testtest")
         subtract_average(['test-m', 'test'], new_names="testtest2")
 
@@ -92,7 +92,7 @@ class AnalysisTestCases(BaseTestCase):
         subtract_average('test1', new_names='aabb')
         d = get_data('aabb')
         subtract_average(['test', 'aabb'], new_names='aaabbb')
-        subtract_average('test1', overwrite=1)
+        subtract_average('test1', overwrite=True)
         subtract_average('test1', new_names="testtest")
         subtract_average(['test1', 'test'], new_names="testtest2")
         self.assertTrue(len(d[1]) == 6)
@@ -107,7 +107,7 @@ class AnalysisTestCases(BaseTestCase):
         dd = np.nan_to_num(d[1], nan=-99.)
         yclip('test', 0.0, 12.0, new_names='name-clip')
         yclip(['test', 'name-clip'], 0.0, 12.0, new_names='name1-clip')
-        yclip('test', 0.0, 12.0, overwrite=1)
+        yclip('test', 0.0, 12.0, overwrite=True)
         yclip('test', 0.0, 12.0, new_names="testtest")
         yclip(['test', 'test-clip'], 0.0, 12.0, new_names="testtest2")
         self.assertTrue((dd == [3., 5., 8., -99., -99., 1.]).all())
@@ -126,7 +126,7 @@ class AnalysisTestCases(BaseTestCase):
         time_clip('test', 1577308800, 1577598800, new_names='name-clip')
         time_clip(['test', 'name-clip'], 1577308800, 1577598800,
                   new_names='name1-ci')
-        time_clip('test', 1577308800, 1577598800, overwrite=1)
+        time_clip('test', 1577308800, 1577598800, overwrite=True)
         time_clip('test', 1577308800, 1577598800, new_names="testtest")
         time_clip(['test', 'test1'], 1577308800, 1577598800,
                   new_names="testtest2")
@@ -174,7 +174,7 @@ class AnalysisTestCases(BaseTestCase):
         d2 = get_data('test1-despike')
         clean_spikes('test', new_names='test_desp', nsmooth=3, sub_avg=True)
         clean_spikes(['test', 'test1'], new_names='test1-desp')
-        clean_spikes('test1', overwrite=1)
+        clean_spikes('test1', overwrite=True)
         self.assertTrue(len(d2[1]) == 6)
 
     def test_tdeflag(self):
@@ -185,7 +185,7 @@ class AnalysisTestCases(BaseTestCase):
         replace_data('test', dn)
         tdeflag('test')
         d = get_data('test-deflag')
-        tdeflag('test', overwrite=1)
+        tdeflag('test', overwrite=True)
         tdeflag('test', new_names="testtest")
         tdeflag(['test', 'test-deflag'], new_names="testtest2")
         # Length should be two less, because NaNs were removed.
@@ -196,7 +196,7 @@ class AnalysisTestCases(BaseTestCase):
         deriv_data('aaabbbccc')  # Test non-existent name
         deriv_data('test')
         d = get_data('test-der')
-        deriv_data('test', overwrite=1)
+        deriv_data('test', overwrite=True)
         deriv_data('test', new_names="testtest")
         deriv_data(['test', 'test-der'], new_names="testtest2")
         self.assertTrue((d[1] == [2., 2.5, 5.,   6., -7., -19.]).all())
@@ -216,7 +216,7 @@ class AnalysisTestCases(BaseTestCase):
         self.assertTrue(y == ry)
         tsmooth('test')
         d = get_data('test-s')
-        tsmooth('test', overwrite=1)
+        tsmooth('test', overwrite=True)
         tsmooth('test', new_names="testtest")
         tsmooth(['test', 'test-s'], new_names="testtest2")
         self.assertTrue(d[1].tolist() == [3.,  5.,  8., 15., 20.,  1.])
@@ -236,9 +236,23 @@ class AnalysisTestCases(BaseTestCase):
         tinterpol('test1', 'test')
         tinterpol('test1', 'doesnt_exist')
         tinterpol('test2', 'test', newname='')
-        tinterpol('test2', [1, 2, 3, 4, 5, 6])
+        tinterpol('test2', [1, 2, 3, 4, 5, 6], newname='pyarray_float')
+        tinterpol('test2', np.array([1, 2, 3, 4, 5, 6]), newname='nparray_float')
+        tinterpol('test2', time_string([1,2,3,4,5,6]), newname='pyarray_str')
+        tinterpol('test2', np.array(time_string([1,2,3,4,5,6])), newname='nparray_str')
+        bad_datatype = {}
+        tinterpol('test2', [bad_datatype], newname='nparray_bad_datatype')
+
         d = get_data('test1-itrp')
         self.assertTrue(d[1][1] == 20.)
+        d2 = get_data('pyarray_float')
+        self.assertTrue(abs(d2[1][1][0] - 5.80645161) < 1e-6)
+        d3 = get_data('nparray_float')
+        self.assertTrue(abs(d3[1][1][0] - 5.80645161) < 1e-6)
+        d4 = get_data('pyarray_str')
+        self.assertTrue(abs(d3[1][1][0] - 5.80645161) < 1e-6)
+        d5 = get_data('nparray_str')
+        self.assertTrue(abs(d3[1][1][0] - 5.80645161) < 1e-6)
 
 
 if __name__ == '__main__':
