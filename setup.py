@@ -39,7 +39,7 @@ setup(
         "pywavelets",
         "astropy",
         "hapiclient>=0.2.2",
-        "pytplot-mpl-temp>=2.2.13",
+        "pytplot-mpl-temp>=2.2.15",
         "viresclient",
     ],
     python_requires=">=3.9",
