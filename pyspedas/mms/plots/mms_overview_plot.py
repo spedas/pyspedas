@@ -20,7 +20,7 @@ def mms_overview_plot(
     xsize=10,
     ysize=14,
 ):
-    """
+    r"""
     Generate an overview plot for MMS data.
 
     Parameters:
