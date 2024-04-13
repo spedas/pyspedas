@@ -21,7 +21,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
     ----------
     names: str/list of str
         List of variables to interpolate.
-    interp_to: str
+    interp_to: str,list, ndarray
         String containing the variable
             containing the time stamps to interpolate to
     method: str, optional
@@ -81,9 +81,25 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
         xdata = get_data(name, xarray=True)
         metadata = get_data(name, metadata=True)
 
-        if not isinstance(interp_to_times[0], datetime.datetime) and not isinstance(interp_to_times[0], np.datetime64):
-            interp_to_times = [datetime.datetime.utcfromtimestamp(time) for time in interp_to_times]
-        xdata_interpolated = xdata.interp({'time': interp_to_times},
+        if isinstance(interp_to_times[0],(datetime.datetime,np.datetime64)):
+            # Timezone-naive datetime or np.datetime64, use as-is
+            interp_to_datetimes = interp_to_times
+        elif isinstance(interp_to_times[0],(int,float,np.integer,np.float64)):
+            # Assume seconds since Unix epoch, convert to np.datetime64 with nanosecond precision
+            if isinstance(interp_to_times,np.ndarray):
+                interp_to_datetimes = np.array(interp_to_times*1e09,dtype='datetime64[ns]')
+            else:
+                # We need to convert input to a numpy array before scaling to nanoseconds
+                interp_to_datetimes = np.array(np.array(interp_to_times)*1e9,dtype='datetime64[ns]')
+        elif isinstance(interp_to_times[0],str):
+            # Interpret strings as timestamps, convert to np.datetime64 with nanosecond precision
+            interp_to_datetimes = np.array(interp_to_times,dtype='datetime64[ns]')
+        else:
+            # Give up for any other type
+            logging.error('tinterpol: Unable to convert type %s to timestamp.',type(interp_to_times[0]))
+            return
+
+        xdata_interpolated = xdata.interp({'time': interp_to_datetimes},
                                           method=method)
 
         if 'spec_bins' in xdata.coords:
