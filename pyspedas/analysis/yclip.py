@@ -47,7 +47,7 @@ def yclip(names, ymin, ymax, flag=None, newname=None, new_names=None, suffix=Non
     """
     # new_names is deprecated in favor of newname
     if new_names is not None:
-        logging.info("wavelet: The new_names parameter is deprecated. Please use newname instead.")
+        logging.info("yclip: The new_names parameter is deprecated. Please use newname instead.")
         newname = new_names
 
     old_names = pyspedas.tnames(names)
