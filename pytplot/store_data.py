@@ -151,16 +151,46 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     else:
         err_values = None
 
-    # Convert input time representation to datetime objects, if needed
+    # Convert input time representation to np.datetime64 objects, if needed
     if isinstance(times, pd.core.series.Series):
-        times = times.to_numpy()  # if it is pandas series, convert to numpy array
-    if not isinstance(times[0], datetime.datetime) and not isinstance(times[0], np.datetime64):
-        if isinstance(times[0], float) or isinstance(times[0], np.float64):
-            times = [datetime.datetime.utcfromtimestamp(time) if np.isfinite(time) else datetime.datetime.utcfromtimestamp(0) for time in times]
-        elif isinstance(times[0], int) or isinstance(times[0], np.integer):
-            times = [datetime.datetime.utcfromtimestamp(float(time)) for time in times]
-        elif isinstance(times[0], str):
-            times = [parse(time).replace(tzinfo=datetime.timezone.utc).timestamp() for time in times]
+        datetimes = times.to_numpy()  # if it is pandas series, convert to numpy array
+    elif isinstance(times[0],(datetime.datetime,np.datetime64)):
+        # Timezone-naive datetime or np.datetime64, use as-is, but we might have to convert the container to a numpy array
+        if isinstance(times,np.ndarray):
+            datetimes = times
+        else:
+            datetimes = np.array(times)
+    elif isinstance(times[0],(int,np.integer)):
+        # Assume seconds since Unix epoch, convert to np.datetime64 with nanosecond precision
+        if isinstance(times,np.ndarray):
+            datetimes = np.array(times*1e09,dtype='datetime64[ns]')
+        else:
+            # We need to convert input to a numpy array before scaling to nanoseconds
+            datetimes = np.array(np.array(times)*1e9,dtype='datetime64[ns]')
+    elif isinstance(times[0],(float,np.float64)):
+        # Assume seconds since Unix epoch, convert to np.datetime64 with nanosecond precision
+        # If any values are NaN, replace with 0
+        cond = np.logical_not(np.isfinite(times))
+        if isinstance(times,np.ndarray):
+            times[cond]=0.0
+            datetimes = np.array(times*1e09,dtype='datetime64[ns]')
+        else:
+            # We need to convert input to a numpy array before scaling to nanoseconds
+            nptimes=np.array(times)
+            nptimes[cond] = 0.0
+            datetimes = np.array(np.array(times)*1e9,dtype='datetime64[ns]')
+    elif isinstance(times[0],str):
+        # Interpret strings as timestamps, convert to np.datetime64 with nanosecond precision
+        datetimes = np.array(times,dtype='datetime64[ns]')
+    else:
+        # Hope it's convertable to a numpy array!  This case will get hit for an xarray DataArray.
+        datetimes = np.array(times)
+        #logging.error('store_data: Unable to convert type %s to timestamp.',type(times[0]))
+        #return False
+
+    times = datetimes
+
+    # At this point, times should be a numpy array of datetime or np.datetime64 objects
 
     if len(values) == 0:
         logging.warning('store_data: %s has empty y component, cannot create variable',name)
@@ -173,7 +203,9 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         # attribute.
         logging.info("%s: lengths of x (%d) and y (%d) do not match! Mislabeled NRV variable?",name,len(times),len(values))
 
-    times = np.array(times)
+    if not isinstance(times,np.ndarray):
+        logging.warning("store_data: times was not converted to a numpy array. This should not happen.")
+        times = np.array(times)
 
     # assumes monotonically increasing time series
     if isinstance(times[0], datetime.datetime):
