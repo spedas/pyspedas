@@ -35,7 +35,7 @@ def dens_pot(scpot, offset, pder_calc=False):
     References
     ----------
     Based on IDL function THM_SCPOT2DENS.PRO by M.Feuerstein, 5/18/2009.
-    SPEDAS\projects\themis\common\thm_scpot2dens.pro
+    SPEDAS/projects/themis/common/thm_scpot2dens.pro
     """
 
     delta = offset - scpot
@@ -185,7 +185,7 @@ def scpot2dens(scpot, scptime, Te, Tetime, dens_e, dens_e_time, dens_i, dens_i_t
     References
     ----------
     Based on IDL function THM_SCPOT2DENS.PRO by W.M.Feuerstein, 2009-05-18, with updates and bug fixes in subsequent versions.
-    SPEDAS\projects\themis\common\thm_scpot2dens.pro
+    SPEDAS/projects/themis/common/thm_scpot2dens.pro
     """
 
     # Probe validation and selection
