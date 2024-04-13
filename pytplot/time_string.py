@@ -39,7 +39,7 @@ def time_string_one(float_time=None, fmt=None):
     if float_time is None:
         str_time = datetime.now().strftime(fmt)
     else:
-        str_time = datetime.utcfromtimestamp(float_time).strftime(fmt)
+        str_time = datetime.fromtimestamp(float_time,timezone.utc).strftime(fmt)
 
     return str_time
 
