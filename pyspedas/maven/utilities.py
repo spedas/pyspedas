@@ -492,7 +492,7 @@ def get_latest_files_from_date_range(date1, date2):
                 c_max_v = re.search(r"v\d{2}", c_insitu_file).group(0)
                 # Get max revision
                 c_max_r = max(
-                    [re.search("rr\d{2}", k).group(0) for k in c_insitu if c_max_v in k]
+                    [re.search(r"r\d{2}", k).group(0) for k in c_insitu if c_max_v in k]
                 )
                 # Get most recent insitu file (based on max version, and then max revision values)
                 most_recent_c_insitu = [
@@ -648,7 +648,7 @@ def get_header_info(filename):
         icol = -2  # Counting header lines detailing column names
         iname = 1  # for counting seven lines with name info
         ncol = -1  # Dummy value to allow reading of early headerlines?
-        col_regex = "#\s(.{16}){%3d}" % ncol  # needed for column names
+        col_regex = r"#\s(.{16}){%3d}" % ncol  # needed for column names
         crustal = False
         if "crustal" in filename:
             crustal = True
@@ -657,15 +657,15 @@ def get_header_info(filename):
             # Define the proper indices change depending on the file type and row
             i = [2, 2, 1] if crustal else [1, 1, 1]
             if re.search("Number of parameter columns", line):
-                ncol = int(re.split("\s{3}", line)[i[0]])
+                ncol = int(re.split(r"\s{3}", line)[i[0]])
                 # needed for column names
                 col_regex = (
-                    "#\s(.{16}){%2d}" % ncol if crustal else "#\s(.{16}){%3d}" % ncol
+                    r"#\s(.{16}){%2d}" % ncol if crustal else r"#\s(.{16}){%3d}" % ncol
                 )
             elif re.search("Line on which data begins", line):
-                nhead_test = int(re.split("\s{3}", line)[i[1]]) - 1
+                nhead_test = int(re.split(r"\s{3}", line)[i[1]]) - 1
             elif re.search("Number of lines", line):
-                ndata = int(re.split("\s{3}", line)[i[2]])
+                ndata = int(re.split(r"\s{3}", line)[i[2]])
             elif re.search("PARAMETER", line):
                 read_param_list = True
                 param_head = iline
