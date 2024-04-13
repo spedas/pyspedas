@@ -261,20 +261,20 @@ def tplot(variables, var_label=None,
             x_range_stop = x_range[1]
 
             if isinstance(x_range_start, int):
-                x_range_start = datetime.utcfromtimestamp(x_range_start)
+                x_range_start = datetime.fromtimestamp(x_range_start,timezone.utc)
             elif isinstance(x_range_start, float):
                 if np.isfinite(x_range_start):
-                    x_range_start = datetime.utcfromtimestamp(x_range_start)
+                    x_range_start = datetime.fromtimestamp(x_range_start,timezone.utc)
                 else:
-                    x_range_start = datetime.utcfromtimestamp(0)
+                    x_range_start = datetime.fromtimestamp(0,timezone.utc)
 
             if isinstance(x_range_stop, int):
-                x_range_stop = datetime.utcfromtimestamp(x_range_stop)
+                x_range_stop = datetime.fromtimestamp(x_range_stop)
             elif isinstance(x_range_stop, float):
                 if np.isfinite(x_range_stop):
-                    x_range_stop = datetime.utcfromtimestamp(x_range_stop)
+                    x_range_stop = datetime.fromtimestamp(x_range_stop,timezone.utc)
                 else:
-                    x_range_stop = datetime.utcfromtimestamp(0)
+                    x_range_stop = datetime.fromtimestamp(0,timezone.utc)
 
             x_range = np.array([x_range_start, x_range_stop],dtype='datetime64[ns]')
             this_axis.set_xlim(x_range)
@@ -455,8 +455,8 @@ def tplot(variables, var_label=None,
                 if highlight_interval['edgecolor'] is not None or highlight_interval['facecolor'] is not None:
                     del hightlight_opts['color']
 
-                this_axis.axvspan(mdates.date2num(datetime.utcfromtimestamp(highlight_interval['location'][0])),
-                                  mdates.date2num(datetime.utcfromtimestamp(highlight_interval['location'][1])),
+                this_axis.axvspan(mdates.date2num(datetime.fromtimestamp(highlight_interval['location'][0], timezone.utc)),
+                                  mdates.date2num(datetime.fromtimestamp(highlight_interval['location'][1], timezone.utc)),
                                   **hightlight_opts)
 
         # add annotations
@@ -651,7 +651,7 @@ def mouse_move_slice(event, slice_axes, slice_plot):
     if y_label is not None:
         slice_axes.set_ylabel(y_label)
 
-    title = datetime.utcfromtimestamp(data.times[idx]).strftime('%Y-%m-%d %H:%M:%S.%f')
+    title = datetime.fromtimestamp(data.times[idx], timezone.utc).strftime('%Y-%m-%d %H:%M:%S.%f')
 
     x_label = yaxis_options.get('axis_label')
     if x_label is not None:

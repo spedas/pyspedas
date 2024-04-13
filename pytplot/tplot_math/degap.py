@@ -118,9 +118,9 @@ def degap(
     new_index = np.array(
         [
             (
-                datetime.datetime.utcfromtimestamp(t)
+                datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
                 if np.isfinite(t)
-                else datetime.datetime.utcfromtimestamp(0)
+                else datetime.datetime.fromtimestamp(0, datetime.timezone.utc)
             )
             for t in new_index_float64
         ]
