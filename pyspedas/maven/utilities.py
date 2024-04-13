@@ -475,10 +475,10 @@ def get_latest_files_from_date_range(date1, date2):
             if insitu:
                 # Get max version
                 insitu_file = max(insitu.keys(), key=(lambda k: insitu[k][0]))
-                max_v = re.search("v\d{2}", insitu_file).group(0)
+                max_v = re.search(r"v\d{2}", insitu_file).group(0)
                 # Get max revision
                 max_r = max(
-                    [re.search("r\d{2}", k).group(0) for k in insitu if max_v in k]
+                    [re.search(r"r\d{2}", k).group(0) for k in insitu if max_v in k]
                 )
                 # Get most recent insitu file (based on max version, and then max revision values)
                 most_recent_insitu = [
@@ -489,10 +489,10 @@ def get_latest_files_from_date_range(date1, date2):
             if c_insitu:
                 # Get max version
                 c_insitu_file = max(c_insitu.keys(), key=(lambda k: c_insitu[k][0]))
-                c_max_v = re.search("v\d{2}", c_insitu_file).group(0)
+                c_max_v = re.search(r"v\d{2}", c_insitu_file).group(0)
                 # Get max revision
                 c_max_r = max(
-                    [re.search("r\d{2}", k).group(0) for k in c_insitu if c_max_v in k]
+                    [re.search("rr\d{2}", k).group(0) for k in c_insitu if c_max_v in k]
                 )
                 # Get most recent insitu file (based on max version, and then max revision values)
                 most_recent_c_insitu = [
@@ -621,22 +621,6 @@ def get_l2_files_from_date(date1, instrument):
 
     filenames = sorted(filenames)
     return filenames
-
-
-def get_header_info(filename):
-    """
-    Extracts header information from a file.
-
-    Parameters:
-        filename (str): The path to the file.
-
-    Returns:
-        tuple: A tuple containing two lists - `names` and `inst`.
-            - `names` (list): A list of column names extracted from the header.
-            - `inst` (list): A list of instrument names extracted from the header.
-    """
-
-    # Rest of the code...
 
 
 def get_header_info(filename):
