@@ -80,10 +80,12 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_3dp_varformat_alternation(self):
         tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_plsp', time_clip=True,
-                                         notplot=True, addmaster=True,varformat='MOM\.P\.FLUX|MOM\.P\.VELOCITY|MOM\.P\.PTENS')
+                                         notplot=True, addmaster=True,varformat=r'MOM\.P\.FLUX|MOM\.P\.VELOCITY|MOM\.P\.PTENS')
         self.assertTrue('wi_3dp_plsp_MOM.P.FLUX' in tdp_vars)
         self.assertTrue('wi_3dp_plsp_MOM.P.VELOCITY' in tdp_vars)
         self.assertTrue('wi_3dp_plsp_MOM.P.PTENS' in tdp_vars)
+        # Make sure we only got what we asked for
+        self.assertFalse('wi_3dp_plsp_FLUX' in tdp_vars)
 
     def test_load_3dp_sfpd_data(self):
         tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_sfpd', time_clip=True,
