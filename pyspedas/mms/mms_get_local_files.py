@@ -58,7 +58,7 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
     #   -assume file names are of the form:
     #      spacecraft_instrument_rate_level[_datatype]_YYYYMMDD[hhmmss]_version.cdf
 
-    file_name = 'mms'+probe+'_'+instrument+'_'+data_rate+'_'+level+'(_)?.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
+    file_name = 'mms'+probe+'_'+instrument+'_'+data_rate+'_'+level+r'(_)?.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
 
     days = rrule(DAILY, dtstart=parse(parse(trange[0]).strftime('%Y-%m-%d')), until=parse(trange[1])-timedelta(seconds=1))
 
