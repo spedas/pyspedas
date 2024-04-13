@@ -22,7 +22,7 @@ def mms_files_in_interval(in_files, trange):
     ---------
         List of hash tables containing file names, sizes and their time tags
     """
-    file_name = 'mms.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
+    file_name = r'mms.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
 
     file_times = []
 

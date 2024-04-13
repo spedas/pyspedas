@@ -100,7 +100,7 @@ def read_data_files(out_files = None, dtype = None, out_type = 'np', save_pickle
             colnames = ['latitude', 'longitude', 'J']
         data_all = []
         for idx, file in enumerate(file_names_arr_Dir):
-            df = pd.read_csv(file, header=None, sep='\s+', skiprows=0, names=colnames)
+            df = pd.read_csv(file, header=None, sep=r'\s+', skiprows=0, names=colnames)
             df['datetime'] = file[-19:-4]
             data_all.append(df)
         output = pd.concat(data_all, axis=0, ignore_index=True)
