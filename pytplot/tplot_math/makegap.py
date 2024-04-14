@@ -4,14 +4,15 @@ import numpy as np
 
 def makegap(var_data, dt=None, margin=0.0, func="nan"):
     """
-    Fills gaps in the data either with NaNs or the last number.  This
+    Fill gaps in the data either with NaNs or the last number.  This
     is identical to degap, except operates directly on the data and
     time arrays, rather than the tplot variable. This is intended for
     use with the data_gap option. This version actually puts the data
     into a temporary tplot variable, and call degap, then extracts
     that data into the proper form.
 
-    Parameters:
+    Parameters
+    ----------
         var_data : float
             The data for the tplot variable, a structure that contains at least, tags for 'y' and 'times'
         dt : int/float
@@ -24,8 +25,9 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
             Either 'nan' or 'ffill', which overrides normal interpolation with NaN
             substitution or forward-filled values.
 
-    Returns:
-        None
+    Returns
+    -------
+        A tuple returned by calling get_data() on the degapped temp variable
 
     Examples:
         >>> import pytplot
