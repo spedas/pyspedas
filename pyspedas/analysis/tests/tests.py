@@ -105,11 +105,11 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test-clip')
         # Replace nan with -99.0
         dd = np.nan_to_num(d[1], nan=-99.)
-        yclip('test', 0.0, 12.0, new_names='name-clip')
-        yclip(['test', 'name-clip'], 0.0, 12.0, new_names='name1-clip')
+        yclip('test', 0.0, 12.0, newname='name-clip')
+        yclip(['test', 'name-clip'], 0.0, 12.0, newname='name1-clip')
         yclip('test', 0.0, 12.0, overwrite=True)
-        yclip('test', 0.0, 12.0, new_names="testtest")
-        yclip(['test', 'test-clip'], 0.0, 12.0, new_names="testtest2")
+        yclip('test', 0.0, 12.0, newname="testtest")
+        yclip(['test', 'test-clip'], 0.0, 12.0, newname="testtest2")
         self.assertTrue((dd == [3., 5., 8., -99., -99., 1.]).all())
 
     def test_timeclip(self):
