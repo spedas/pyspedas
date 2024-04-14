@@ -10,7 +10,7 @@ def _tvectot(tvar: str, new_name: str, join_component: bool):
     store_data(new_name, data={'x':data.times,'y':new_data},attr_dict=md)
     
     if join_component:
-        join_vec(split_vec(tvar)+[new_name], new_name)
+        join_vec(split_vec(tvar)+[new_name], newname=new_name)
         options(new_name, 'legend_names', ['x', 'y', 'z', 'Magnitude'])
     else:
         options(new_name, 'legend_names', 'Magnitude')
@@ -23,7 +23,7 @@ def tvectot(tvars: Union[str, List[str]], newname=None, newnames: Union[str, Lis
     Parameters
     ----------
     - tvars : Names of the tplot variables.
-    - new_names: (Deprecated) Names for the resultant magnitude tplot variables. If not provided, it appends the suffix to `tvars`.
+    - newnames: (Deprecated) Names for the resultant magnitude tplot variables. If not provided, it appends the suffix to `tvars`.
     - newname: Names for the resultant magnitude tplot variables. If not provided, it appends the suffix to `tvars`.
     - suffix: The suffix to append to tensor_names to form new_names if new_names is not provided.
     - join_component: If True, the magnitude tplot variable is joined with the component tplot variables.
