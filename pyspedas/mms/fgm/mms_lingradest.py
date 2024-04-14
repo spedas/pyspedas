@@ -83,7 +83,7 @@ def mms_lingradest(fields=None, positions=None, suffix=''):
     store_data('By' + suffix, data={'x': B1.times, 'y': output['Bybc']})
     store_data('Bz' + suffix, data={'x': B1.times, 'y': output['Bzbc']})
 
-    join_vec(['Bt'+suffix, 'Bx'+suffix, 'By'+suffix, 'Bz'+suffix], new_tvar='Bbc' + suffix)
+    join_vec(['Bt'+suffix, 'Bx'+suffix, 'By'+suffix, 'Bz'+suffix], newname='Bbc' + suffix)
 
     # B-field gradients
     store_data('gradBx' + suffix, data={'x': B1.times, 'y': output['LGBx']})
@@ -100,7 +100,7 @@ def mms_lingradest(fields=None, positions=None, suffix=''):
 
     store_data('divB_nT/1000km' + suffix, data={'x': B1.times, 'y': output['LD']})
 
-    join_vec(['absCB'+suffix, 'CxB'+suffix, 'CyB'+suffix, 'CzB'+suffix], new_tvar='curlB_nT/1000km' + suffix)
+    join_vec(['absCB'+suffix, 'CxB'+suffix, 'CyB'+suffix, 'CzB'+suffix], newname='curlB_nT/1000km' + suffix)
 
     # jx in nA/m^2
     store_data('jx' + suffix, data={'x': B1.times, 'y': 0.8 * output['LCxB']})
@@ -109,12 +109,12 @@ def mms_lingradest(fields=None, positions=None, suffix=''):
     # jz in nA/m^2
     store_data('jz' + suffix, data={'x': B1.times, 'y': 0.8 * output['LCzB']})
 
-    join_vec(['jx'+suffix, 'jy'+suffix, 'jz'+suffix], new_tvar='jtotal' + suffix)
+    join_vec(['jx'+suffix, 'jy'+suffix, 'jz'+suffix], newname='jtotal' + suffix)
 
     store_data('curvx' + suffix, data={'x': B1.times, 'y': output['curv_x_B']})
     store_data('curvy' + suffix, data={'x': B1.times, 'y': output['curv_y_B']})
     store_data('curvz' + suffix, data={'x': B1.times, 'y': output['curv_z_B']})
 
-    join_vec(['curvx'+suffix,  'curvy'+suffix,  'curvz'+suffix], new_tvar='curvB' + suffix)
+    join_vec(['curvx'+suffix,  'curvy'+suffix,  'curvz'+suffix], newname='curvB' + suffix)
 
     store_data('Rc_1000km' + suffix, data={'x': B1.times, 'y': output['RcurvB']})
