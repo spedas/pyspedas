@@ -14,24 +14,26 @@ import xarray as xr
 from pytplot import tplot_utilities as utilities
 import copy
 import warnings
-from dateutil.parser import parse
+
 tplot_num = 1
 
 
 def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     
     """
-    This function creates a "Tplot Variable" based on the inputs, and
+    Create a "Tplot Variable" (similar to the IDL SPEDAS concept) based on the inputs, and
     stores this data in memory.  Tplot Variables store all of the information
     needed to generate a plot.  
     
-    Parameters:
+    Parameters
+    ----------
         name : str 
             Name of the tplot variable that will be created
         data : dict
             A python dictionary object.  
             
-            'x' should be a 1-dimensional array that represents the data's x axis.  Typically this data is time,
+            'x' should be a 1-dimensional array that represents the data's x axis.  If x is a numeric type, it is interpreted
+            as seconds since the Unix epoch.  x can also be passed as Pandas Series object, datetime.datetime, numpy.datetime64, or strings.
             represented in seconds since epoch (January 1st 1970)
             
             'y' should be the data values. This can be 2 dimensions if multiple lines or a spectrogram are desired.
@@ -42,8 +44,6 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             'v1/v2/v3/etc' are also optional, and are only used for to spectrogram plots.  These will act as the coordinates
             for 'y' if 'y' has numerous dimensions.  By default, 'v2' is plotted in spectrogram plots.
 
-            'x' and 'y' can be any data format that can be read in by the pandas module.  Python lists, numpy arrays,
-            or any pandas data type will all work.
         delete : bool, optional
             If True, deletes the tplot variable matching the "name" parameter
             Default: False
@@ -58,8 +58,9 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         If you want to combine multiple tplot variables into one, simply supply the list of tplot variables to the
         "data" parameter.  This will cause the data to overlay when plotted.
         
-    Returns:
-        None
+    Returns
+    -------
+        bool True if successful, False otherwise
         
     Examples:
         >>> # Store a single line
@@ -68,7 +69,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         >>> y_data = [1,2,3,4,5]
         >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
     
-        >>> # Store a two lines
+        >>> # Store two lines
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
         >>> pytplot.store_data("Variable2", data={'x':x_data, 'y':y_data})
@@ -112,7 +113,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     # If the data is a list instead of a dictionary, user is looking to overplot
     if isinstance(data, list):
-        base_data = _get_base_tplot_vars(data)
+        base_data = _get_base_tplot_vars(name,data)
+        if len(base_data) == 0:
+            logging.warning("store_data: None of the base variables exist to construct pseudovariable %s",name)
+            return False
         # Copying the first variable to use all of its plot options
         # However, we probably want each overplot to retain its original plot option
         pytplot.data_quants[name] = copy.deepcopy(pytplot.data_quants[base_data[0]])
@@ -160,33 +164,21 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             datetimes = times
         else:
             datetimes = np.array(times)
-    elif isinstance(times[0],(int,np.integer)):
+    elif isinstance(times[0],(int,np.integer,float,np.float64)):
         # Assume seconds since Unix epoch, convert to np.datetime64 with nanosecond precision
-        if isinstance(times,np.ndarray):
-            datetimes = np.array(times*1e09,dtype='datetime64[ns]')
-        else:
-            # We need to convert input to a numpy array before scaling to nanoseconds
-            datetimes = np.array(np.array(times)*1e9,dtype='datetime64[ns]')
-    elif isinstance(times[0],(float,np.float64)):
-        # Assume seconds since Unix epoch, convert to np.datetime64 with nanosecond precision
-        # If any values are NaN, replace with 0
+        # Make sure we have a numpy array
+        if not isinstance(times,np.ndarray):
+            times=np.array(times)
+        # Replace any NaN or inf values with 0
         cond = np.logical_not(np.isfinite(times))
-        if isinstance(times,np.ndarray):
-            times[cond]=0.0
-            datetimes = np.array(times*1e09,dtype='datetime64[ns]')
-        else:
-            # We need to convert input to a numpy array before scaling to nanoseconds
-            nptimes=np.array(times)
-            nptimes[cond] = 0.0
-            datetimes = np.array(np.array(times)*1e9,dtype='datetime64[ns]')
+        times[cond] = 0
+        datetimes = np.array(times*1e09,dtype='datetime64[ns]')
     elif isinstance(times[0],str):
         # Interpret strings as timestamps, convert to np.datetime64 with nanosecond precision
         datetimes = np.array(times,dtype='datetime64[ns]')
     else:
         # Hope it's convertable to a numpy array!  This case will get hit for an xarray DataArray.
         datetimes = np.array(times)
-        #logging.error('store_data: Unable to convert type %s to timestamp.',type(times[0]))
-        #return False
 
     times = datetimes
 
@@ -209,6 +201,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     # assumes monotonically increasing time series
     if isinstance(times[0], datetime.datetime):
+        # This may be dead code now?
         trange = [times[0].replace(tzinfo=datetime.timezone.utc).timestamp(),
                   times[-1].replace(tzinfo=datetime.timezone.utc).timestamp()]
     elif isinstance(times[0], np.datetime64):
@@ -337,13 +330,15 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     return True
 
 
-def _get_base_tplot_vars(data):
+def _get_base_tplot_vars(name,data):
     base_vars = []
     if not isinstance(data, list):
         data = [data]
     for var in data:
-        if isinstance(pytplot.data_quants[var].data, list):
-            base_vars += _get_base_tplot_vars(pytplot.data_quants[var].data)
+        if var not in pytplot.data_quants:
+            logging.warning('store_data: Pseudovariable %s component %s not found, skipping', name, var)
+        elif isinstance(pytplot.data_quants[var].data, list):
+            base_vars += _get_base_tplot_vars(name,pytplot.data_quants[var].data)
         else:
             base_vars += [var]
     return base_vars
@@ -378,10 +373,9 @@ def _check_spec_bins_ordering(times, spec_bins):
 
 def store(name, data=None, delete=False, newname=None, metadata={}):
     """
-    This function creates a "Tplot Variable" based on the inputs, and
-    stores this data in memory.  Tplot Variables store all of the information
-    needed to generate a plot.
-
+    Create tplot variables. This is a wrapper for store_data, with the only apparent
+    difference being that 'attr_dict' in store_data is replaced with 'metadata' in store().
+    This wrapper will likely be removed in a future release.
     Parameters:
         name : str
             Name of the tplot variable that will be created
@@ -405,7 +399,7 @@ def store(name, data=None, delete=False, newname=None, metadata={}):
             Deletes the tplot variable matching the "name" parameter
         newname: str
             Renames TVar to new name
-        attr_dict: dict
+        metadata: dict
             A dictionary object of attributes (these do not affect routines in pytplot, this is merely to keep metadata alongside the file)
 
     .. note::
