@@ -29,8 +29,8 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     ----------
         name : str 
             Name of the tplot variable that will be created
-        data : dict
-            A python dictionary object.  
+        data : dict or list[str]
+            A python dictionary object for creating a single variable, or a list of base variables to combine them into a 'pseudovariable'
             
             'x' should be a 1-dimensional array that represents the data's x axis.  If x is a numeric type, it is interpreted
             as seconds since the Unix epoch.  x can also be passed as Pandas Series object, datetime.datetime, numpy.datetime64, or strings.
