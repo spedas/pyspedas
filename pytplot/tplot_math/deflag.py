@@ -59,7 +59,7 @@ def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
 
     #for linear method, and flag of NaN, or none, interp_nan an be called
 #    if (flag == None or np.isnan(flag)) and method == 'linear':
-#        interp_nan(tvar, new_tvar=new_tvar)
+#        interp_nan(tvar, newname=newname)
 #        return
     
     #check for globbed or array input, and call recursively
@@ -130,7 +130,7 @@ def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
                 pytplot.store_data(newname, data={'x': new_time, 'y': new_data})
             else:
                 pytplot.store_data(newname, data={'x': new_time, 'y': new_data, 'v':new_v})
-            pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+            pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     elif method == 'repeat' or method == 'linear' or method == 'replace':
         a = copy.deepcopy(pytplot.get_data(tvar))
         time = a[0]
