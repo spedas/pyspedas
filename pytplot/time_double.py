@@ -1,3 +1,6 @@
+"""
+Transform strings to datetime decimals.
+"""
 from dateutil import parser
 from datetime import datetime, timezone
 import numpy as np
