@@ -22,7 +22,7 @@ def mms_load_eph_tplot(filenames, level='def', probe='1', datatypes=['pos', 'vel
 
     for file in filenames:
         logging.info('Loading ' + file)
-        rows = pd.read_csv(file, delim_whitespace=True, header=None, skiprows=14)
+        rows = pd.read_csv(file, sep=r'\s+', header=None, skiprows=14)
         times = rows.shape[0]
         for time_idx in range(0, times):
             # these files can overlap, so avoid duplicates

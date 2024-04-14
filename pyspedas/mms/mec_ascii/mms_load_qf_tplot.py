@@ -17,7 +17,7 @@ def mms_load_qf_tplot(filenames, suffix='', trange=None):
 
     for file in filenames:
         logging.info('Loading ' + file)
-        rows = pd.read_csv(file, delim_whitespace=True, header=None, skiprows=11)
+        rows = pd.read_csv(file, sep=r'\s+', header=None, skiprows=11)
         times = rows.shape[0]
         for time_idx in range(0, times):
             # these files can overlap, so avoid duplicates

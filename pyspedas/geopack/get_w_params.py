@@ -51,7 +51,7 @@ def get_w(trange=None, create_tvar=False, newname=None):
             with zipfile.ZipFile(file[0], 'r') as zip_ref:
                 zip_ref.extractall(tmpdir)
 
-        rows = pd.read_csv(tmpdir + '/' + year + '_OMNI_5m_with_TS05_variables.dat', delim_whitespace=True, header=None)
+        rows = pd.read_csv(tmpdir + '/' + year + '_OMNI_5m_with_TS05_variables.dat', sep=r'\s+', header=None)
 
         # extract the W variables
         w1 = rows.to_numpy()[:, -6]
