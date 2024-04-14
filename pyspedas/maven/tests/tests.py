@@ -5,7 +5,7 @@ from pyspedas import maven
 from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files
 import time
 
-sleep_time=5
+sleep_time=10
 
 class OrbitTestCases(unittest.TestCase):
     def test_get_merge_orbit_files(self):
