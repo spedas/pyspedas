@@ -3,7 +3,7 @@ import unittest
 
 
 from pyspedas import themis
-from pytplot import store_data, options, timespan, tplot, tplot_options
+from pytplot import store_data, options, timespan, tplot, tplot_options, degap
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
 global_display = False
@@ -197,6 +197,11 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=ESA, middle=combined, bottom=SST')
         tplot(vars, save_png='test_pseudo_spectra_disjoint_energies', display=global_display)
 
+        tplot_options('title','Original burst variable')
+        tplot('tha_peib_en_eflux',display=global_display)
+        degap('tha_peib_en_eflux',dt=4.0)
+        tplot_options('title','Degapped burst variable')
+        tplot('tha_peib_en_eflux',display=global_display)
         # Make a combined variable with full & burst data (same energy ranges, intermittent burst data at higher cadence)
         store_data('esa_srvy_burst', ['tha_peif_en_eflux', 'tha_peib_en_eflux'])
         zlim('tha_peif_en_eflux', 1.0e3, 1.0e7)
