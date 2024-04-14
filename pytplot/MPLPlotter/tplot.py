@@ -256,27 +256,21 @@ def tplot(variables, var_label=None,
 
         # set the x-axis range, if it was set with xlim or tlimit
         if pytplot.tplot_opt_glob.get('x_range') is not None:
-            x_range = pytplot.tplot_opt_glob['x_range']
+            x_range = pytplot.tplot_opt_glob['x_range']  # Seconds since epoch
             x_range_start = x_range[0]
             x_range_stop = x_range[1]
 
-            if isinstance(x_range_start, int):
-                x_range_start = datetime.fromtimestamp(x_range_start,timezone.utc)
-            elif isinstance(x_range_start, float):
-                if np.isfinite(x_range_start):
-                    x_range_start = datetime.fromtimestamp(x_range_start,timezone.utc)
-                else:
-                    x_range_start = datetime.fromtimestamp(0,timezone.utc)
+            # Check for NaN or inf in x_range
+            if not np.isfinite(x_range_start):
+                logging.warning('tplot: x_range start is not finite, replacing with 0')
+                x_range_start = 0
 
-            if isinstance(x_range_stop, int):
-                x_range_stop = datetime.fromtimestamp(x_range_stop)
-            elif isinstance(x_range_stop, float):
-                if np.isfinite(x_range_stop):
-                    x_range_stop = datetime.fromtimestamp(x_range_stop,timezone.utc)
-                else:
-                    x_range_stop = datetime.fromtimestamp(0,timezone.utc)
+            if not np.isfinite(x_range_stop):
+                logging.warning('tplot: x_range end is not finite, replacing with 0')
+                x_range_stop = 0
 
-            x_range = np.array([x_range_start, x_range_stop],dtype='datetime64[ns]')
+            # Convert to np.datetime64 with nanosecond precision
+            x_range = np.array(np.array([x_range_start*1e9, x_range_stop*1e9]),dtype='datetime64[ns]')
             this_axis.set_xlim(x_range)
             time_idxs = np.argwhere((var_data.times >= x_range[0]) & (var_data.times <= x_range[1])).flatten()
             if len(time_idxs) == 0:
