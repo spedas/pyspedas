@@ -172,8 +172,8 @@ class AnalysisTestCases(BaseTestCase):
         store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
         clean_spikes('test1', nsmooth=3)
         d2 = get_data('test1-despike')
-        clean_spikes('test', new_names='test_desp', nsmooth=3, sub_avg=True)
-        clean_spikes(['test', 'test1'], new_names='test1-desp')
+        clean_spikes('test', newname='test_desp', nsmooth=3, sub_avg=True)
+        clean_spikes(['test', 'test1'], newname='test1-desp')
         clean_spikes('test1', overwrite=True)
         self.assertTrue(len(d2[1]) == 6)
 
