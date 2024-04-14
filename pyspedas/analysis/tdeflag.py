@@ -26,7 +26,11 @@ def tdeflag(names, method="remove_nan", newname=None, new_names=None, suffix=Non
     method: str, optional
         Method to apply. Default is 'remove_nan.
         Other options 'repeat' (repeat last good value).
-    new_names: str/list of str, optional
+    newname: str/list of str, optional
+        List of new_names for pytplot variables.
+        If '', then pytplot variables are replaced.
+        If not given, then a suffix is applied.
+    new_names: str/list of str, optional (Deprecated)
         List of new_names for pytplot variables.
         If '', then pytplot variables are replaced.
         If not given, then a suffix is applied.
@@ -47,5 +51,5 @@ def tdeflag(names, method="remove_nan", newname=None, new_names=None, suffix=Non
 
     logging.info("tdeflag has been moved to the pytplot.tplot_math module. Please update your imports!")
     logging.info("This version will eventually be removed.")
-    pytplot.tplot_math.tdeflag(names,method=method,new_names=newname,
+    pytplot.tplot_math.tdeflag(names,method=method,newname=newname,
                                suffix=suffix,overwrite=overwrite)
