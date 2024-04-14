@@ -14,7 +14,7 @@ def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
     Optionally removes NaN values from a variable
 
     Parameters:
-        tvar1 : str
+        tvar: str
             Name of tplot variable to use for data clipping.
         flag : int,list
             Flagged data will be converted to NaNs.
@@ -38,6 +38,8 @@ def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
             If not specified, then the data in tvar1 will be replaced.
             THIS is not an option for multiple variable input, for
             multiple or pseudo variables, the data is overwritten.
+        fillval: int, float (optional)
+            Value to use as replacement when method='replace'
     Restrictions:
        DEGAP only works for 1 or 2-d data arrays; ntimes or (ntimes, nspectral_bins)
 
@@ -47,7 +49,7 @@ def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
     Examples:
         >>> # Remove any instances of [100,90,7,2,57] from 'd', store in 'e'.
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,4],[4,90],[5,5],[6,6],[7,7]]})
-        >>> pytplot.deflag('d',[100,90,7,2,57],'e')
+        >>> pytplot.deflag('d',[100,90,7,2,57],newname='e')
     """
 
     # new_tvar is deprecated in favor of newname
