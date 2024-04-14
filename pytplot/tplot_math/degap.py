@@ -1,8 +1,6 @@
 import pytplot
 import numpy as np
-import pandas as pd
 import copy
-import datetime
 import logging
 
 
@@ -19,7 +17,8 @@ def degap(
     """
     Fills gaps in the data either with NaNs or the last number.
 
-    Parameters:
+    Parameters
+    ----------
         tvar : str
             Name of tplot variable to modify
         dt : int/float
@@ -40,11 +39,13 @@ def degap(
             if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
         twonanpergap : bool
             if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
-    Returns:
+    Returns
+    -------
         None
             Creates a new tplot variable with the degap data
 
-    Examples:
+    Examples
+    --------
         >>> import pytplot
         >>> time = [pytplot.time_float("2020-01-01") + i for i in [1, 2, 3, 4, 5, 6, 9, 10, 11]]
         >>> y = [1, 2, 3, 4, 5, 6, 9, 10, 11]
@@ -115,22 +116,20 @@ def degap(
     new_index_float64 = np.sort(
         np.unique(np.concatenate((values_to_add, new_tvar_index)))
     )
-    new_index = np.array(
-        [
-            (
-                datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
-                if np.isfinite(t)
-                else datetime.datetime.fromtimestamp(0, datetime.timezone.utc)
-            )
-            for t in new_index_float64
-        ]
-    )
 
     if func == "nan":
         method = None
     if func == "ffill":
         method = "ffill"
 
+    # Replace any NaN or inf time values with 0.0  (Is this needed? It seems like it could result in non-monotonic times)
+    cond=np.logical_not(np.isfinite(new_index_float64))
+    new_index_float64[cond]=0.0
+
+    # Convert back to datetime64 (nanoseconds since epoch)
+    new_index=np.array(new_index_float64*1e9,dtype='datetime64[ns]')
+
+    # This can fail if the stored quantities are np.datetime64 and new_index is something else, like datetime.datetime
     a = pytplot.data_quants[tvar].reindex({"time": new_index}, method=method)
 
     if newname is None:
