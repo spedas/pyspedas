@@ -186,8 +186,8 @@ class AnalysisTestCases(BaseTestCase):
         tdeflag('test')
         d = get_data('test-deflag')
         tdeflag('test', overwrite=True)
-        tdeflag('test', new_names="testtest")
-        tdeflag(['test', 'test-deflag'], new_names="testtest2")
+        tdeflag('test', newname="testtest")
+        tdeflag(['test', 'test-deflag'], newname="testtest2")
         # Length should be two less, because NaNs were removed.
         self.assertTrue(len(d[1]) == len_dn - 2)
 
