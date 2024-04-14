@@ -142,17 +142,17 @@ class AnalysisTestCases(BaseTestCase):
         avg_data('test', width=2, overwrite=True)  # Test overwrite
         store_data('test', data={'x': [1., 2., 3., 4., 5., 6.],
                                  'y': [3., 5., 8., -4., 20., 1.]})
-        avg_data('test', width=2, newnames='aabb')  # Test new_names
+        avg_data('test', width=2, newname='aabb')  # Test new_names
         d = get_data('aabb')
         # Test multiple names
-        avg_data(['test', 'aabb'], newnames='aaabbb', width=2)
+        avg_data(['test', 'aabb'], newname='aaabbb', width=2)
         dt = [1., 12., 13., 14., 15., 16.]
         dn = [[3., 5., 8.], [15., 20., 1.], [3., 5., 8.], [15., 20., 1.],
               [23., 15., 28.], [15., 20., 1.]]
         dv = dn
         store_data('test1', data={'x': dt, 'y': dn, 'v': dv})
         avg_data('test1', width=2)  # Test 3-d data
-        avg_data('test1', newnames='test2', res=2.)  # Test a reasonable resolution
+        avg_data('test1', newname='test2', res=2.)  # Test a reasonable resolution
         avg_data('test1', res=-1.)  # Test res error
         avg_data('test1', res=1.e8)  # Test res error
         d2 = get_data('test2')
