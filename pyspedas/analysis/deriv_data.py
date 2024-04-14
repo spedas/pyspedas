@@ -32,7 +32,8 @@ def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None,
         A suffix to apply. Default is '-avg'.
     overwrite: bool, optional
         Replace the existing tplot name.
-
+    edge_order: int, optional
+        A value passed to np.gradient that specifies how boundaries are treated
 
     Returns
     -------
