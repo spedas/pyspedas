@@ -13,7 +13,7 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
 
     Parameters
     ----------
-        var_data : float
+        var_data : named tuple
             The data for the tplot variable, a structure that contains at least, tags for 'y' and 'times'
         dt : int/float
             Step size of the data in seconds, default is to use the median time interval
