@@ -33,7 +33,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
         ‘next’ simply return the previous or next value of the point) or
         as an integer specifying the order of the spline interpolator to use.
     newname: str/list of str, optional
-        List of new_names for pytplot variables.
+        List of new names for pytplot variables.
         If '', then pytplot variables are replaced.
         If not given, then a suffix is applied.
     suffix: str, optional
