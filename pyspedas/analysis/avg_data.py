@@ -8,7 +8,7 @@ Creates a new pytplot variable as the time average of original.
 """
 import logging
 import numpy as np
-from pytplot import store_data, get_data, tnames, time_float
+from pytplot import store_data, get_data, tplot_names, time_float
 
 
 def avg_data(names, trange=[], res=None, width=None,
@@ -55,7 +55,7 @@ def avg_data(names, trange=[], res=None, width=None,
         logging.info("avg_data: The new_names parameter is deprecated. Please use newname instead.")
         newname = new_names
 
-    old_names = tnames(names)
+    old_names = tplot_names(names)
 
     if names is None or len(old_names) < 1:
         logging.error('avg_data error: No pytplot names were provided.')
