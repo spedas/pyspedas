@@ -123,7 +123,7 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
             names_to_join = []
             for c in cn:
                 names_to_join.append(prefix+c+suffix)
-            pytplot.join_vec(names_to_join, vn, merge=True)
+            pytplot.join_vec(names_to_join, newname=vn, merge=True)
             stored_variables.append(vn)
             pytplot.del_data(names_to_join)
         else:
