@@ -132,7 +132,7 @@ def gse2sse(name_in: str, name_out: str, isssetogse: bool = False,
         tinterpol(lun_pos_gse_name,name_in,newname='gse2sse_offset')
         gse2sse_offset_data = get_data('gse2sse_offset')
     elif variable_type.lower() == "vel" and not rotation_only:
-        deriv_data(lun_pos_gse_name,new_names='gse2sse_lun_vel')
+        deriv_data(lun_pos_gse_name,newname='gse2sse_lun_vel')
         tinterpol('gse2sse_lun_vel',name_in,newname='gse2sse_offset')
         gse2sse_offset_data = get_data('gse2sse_offset')
     else:

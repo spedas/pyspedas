@@ -197,8 +197,8 @@ class AnalysisTestCases(BaseTestCase):
         deriv_data('test')
         d = get_data('test-der')
         deriv_data('test', overwrite=True)
-        deriv_data('test', new_names="testtest")
-        deriv_data(['test', 'test-der'], new_names="testtest2")
+        deriv_data('test', newname="testtest")
+        deriv_data(['test', 'test-der'], newname="testtest2")
         self.assertTrue((d[1] == [2., 2.5, 5.,   6., -7., -19.]).all())
 
     def test_tsmooth(self):
