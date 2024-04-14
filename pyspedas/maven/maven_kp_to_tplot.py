@@ -552,7 +552,7 @@ def tplot_varcreate(insitu):
             "mvn_kp::spacecraft::t32",
             "mvn_kp::spacecraft::t33",
         ],
-        "mvn_kp::geo_to_mso_matrix",
+        newname="mvn_kp::geo_to_mso_matrix",
     )
 
     pytplot.del_data(
@@ -581,7 +581,7 @@ def tplot_varcreate(insitu):
             "mvn_kp::spacecraft::spacecraft_t32",
             "mvn_kp::spacecraft::spacecraft_t33",
         ],
-        "mvn_kp::spacecraft_to_mso_matrix",
+        newname="mvn_kp::spacecraft_to_mso_matrix",
     )
 
     pytplot.del_data(
