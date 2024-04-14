@@ -26,6 +26,8 @@ def tdeflag(names,
     ----------
     names: str/list of str
         List of pytplot names.
+    flag: float, int, or list
+        Value or values to be treated as flags
     method: str, optional
         Method to apply.
         If None,then flagged values are replaced with NaN
@@ -35,20 +37,22 @@ def tdeflag(names,
                   keyword 'fillval' (default is to use NaN)
         Option 'remove_nan' removes time intervals with NaN values
         Default: 'linear'
-    new_names: str/list of str, optional (Deprecated)
-        List of new_names for pytplot variables.
-        If '', then pytplot variables are replaced.
-        Default: None.
     newname: str/list of str, optional
         List of new names for pytplot variables.
         If '', then pytplot variables are replaced.
         Default: None. If not specified then a suffix is applied.
+    new_names: str/list of str, optional (Deprecated)
+        List of new_names for pytplot variables.
+        If '', then pytplot variables are replaced.
+        Default: None.
     suffix: str, optional
         A suffix to apply.
         Default: '-deflag'.
     overwrite: bool, optional
         Replace the existing tplot name.
         Default: None
+    fillval: int, float (optional)
+        Value to use as replacement if method='replace'
 
     Returns
     -------
@@ -84,5 +88,5 @@ def tdeflag(names,
         logging.info('input newname has incorrect number of elements')
 
     for i in range(len(old_names)):
-        pytplot.deflag(old_names[i], flag, new_tvar=n_names[i], method=method, fillval=fillval)
+        pytplot.deflag(old_names[i], flag, newname=n_names[i], method=method, fillval=fillval)
         logging.info('tdeflag was applied to: ' + n_names[i])
