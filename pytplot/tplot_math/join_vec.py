@@ -12,32 +12,6 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
     Joins 1D tplot variables into one tplot variable.
 
     .. note::
-        This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
-
-    Parameters:
-        tvars : list of str
-            Name of tplot variables to join together
-        new_tvar : str, optional (Deprecated)
-            The name of the new tplot variable. If not specified, a name will be assigned.
-        newname : str, optional
-            The name of the new tplot variable. If not specified, a name will be assigned.
-        merge : bool, optional
-            Whether or not to merge the created variable into an older variable
-
-    Returns:
-        None
-
-    Examples:
-        >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
-        >>> pytplot.store_data('e', data={'x':[2,5,8,11,14,17,21], 'y':[[np.nan,1,1],[np.nan,2,3],[4,np.nan,47],[4,np.nan,5],[5,5,99],[6,6,25],[7,np.nan,-5]]})
-        >>> pytplot.store_data('g', data={'x':[0,4,8,12,16,19,21], 'y':[[8,1,1],[100,2,3],[4,2,47],[4,39,5],[5,5,99],[6,6,25],[7,-2,-5]]})
-        >>> pytplot.join_vec(['d','e','g'],'deg')
-        >>> print(pytplot.data_quants['deg'].values)
-    """
-    """
-    Joins 1D tplot variables into one tplot variable.
-
-    .. note::
         This analysis routine assumes the data is no more than 2 dimensions. If there are more, they may become flattened!
 
     Parameters
@@ -63,7 +37,7 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
     >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
     >>> pytplot.store_data('e', data={'x':[2,5,8,11,14,17,21], 'y':[[np.nan,1,1],[np.nan,2,3],[4,np.nan,47],[4,np.nan,5],[5,5,99],[6,6,25],[7,np.nan,-5]]})
     >>> pytplot.store_data('g', data={'x':[0,4,8,12,16,19,21], 'y':[[8,1,1],[100,2,3],[4,2,47],[4,39,5],[5,5,99],[6,6,25],[7,-2,-5]]})
-    >>> pytplot.join_vec(['d','e','g'],'deg')
+    >>> pytplot.join_vec(['d','e','g'],newname='deg')
     >>> print(pytplot.data_quants['deg'].values)
     """
     # new_tvar is deprecated in favor of newname
