@@ -81,13 +81,13 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
 
         # Perform subtract_average or just copy the values
         if sub_avg:
-            subtract_average(new, new_names=tmp)
+            subtract_average(new, newname=tmp)
         else:
             pytplot.tplot_copy(new, tmp)
 
         # Find spikes
         tmps = tmp + '-s'
-        tsmooth(tmp, new_names=tmps, width=nsmooth)
+        tsmooth(tmp, newname=tmps, width=nsmooth)
         ds0 = pytplot.get_data(tmps)  # smoothed out values
         ds = ds0[1]
         dor0 = pytplot.get_data(tmp)  # original values
