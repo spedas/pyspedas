@@ -91,16 +91,16 @@ class UtilTestCases(unittest.TestCase):
         pytplot.del_data('tst1-tclip')
         pytplot.time_clip('tst1',1.5,2.0,overwrite=True)
         self.assertFalse(data_exists('tst1-tclip'))
-        pytplot.time_clip('tst1',1.5,2.5,new_names='tst1_new')
+        pytplot.time_clip('tst1',1.5,2.5,newname='tst1_new')
         self.assertTrue(data_exists('tst1_new'))
-        pytplot.time_clip('tst1',1.5,2.5,new_names='',suffix='-tc1')
+        pytplot.time_clip('tst1',1.5,2.5,newname='',suffix='-tc1')
         self.assertTrue(data_exists('tst1-tc1'))
-        pytplot.time_clip('tst1',1.5,2.5,new_names=[],suffix='-tc2')
+        pytplot.time_clip('tst1',1.5,2.5,newname=[],suffix='-tc2')
         self.assertTrue(data_exists('tst1-tc2'))
-        # new_names has different count than input names, default to suffix
-        pytplot.time_clip('tst1',1.5,2.5, new_names=['foo','bar'],suffix='-tc3')
+        # newname has different count than input names, default to suffix
+        pytplot.time_clip('tst1',1.5,2.5, newname=['foo','bar'],suffix='-tc3')
         self.assertTrue(data_exists('tst1-tc3'))
-        pytplot.time_clip('tst1',1.5,2.5,new_names=None, suffix='-tc4')
+        pytplot.time_clip('tst1',1.5,2.5,newname=None, suffix='-tc4')
         self.assertTrue(data_exists('tst1-tc4'))
         # no such tplot name
         pytplot.time_clip('bogus',1.5,2.5)
