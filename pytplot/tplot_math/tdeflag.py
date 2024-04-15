@@ -56,7 +56,8 @@ def tdeflag(names,
 
     Returns
     -------
-    None.
+    list of str
+        List of pytplot variables created or altered by tdeflag
 
     """
     # new_names is deprecated in favor of newname
@@ -68,7 +69,7 @@ def tdeflag(names,
 
     if len(old_names) < 1:
         logging.error('tdeflag error: No pytplot names were provided.')
-        return
+        return None
 
     if suffix is None:
         suffix = '-deflag'
@@ -90,3 +91,5 @@ def tdeflag(names,
     for i in range(len(old_names)):
         pytplot.deflag(old_names[i], flag, newname=n_names[i], method=method, fillval=fillval)
         logging.info('tdeflag was applied to: ' + n_names[i])
+
+    return n_names
