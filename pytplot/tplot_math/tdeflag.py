@@ -42,7 +42,7 @@ def tdeflag(names,
         If '', then pytplot variables are replaced.
         Default: None. If not specified then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
-        List of new_names for pytplot variables.
+        List of new names for pytplot variables.
         If '', then pytplot variables are replaced.
         Default: None.
     suffix: str, optional
