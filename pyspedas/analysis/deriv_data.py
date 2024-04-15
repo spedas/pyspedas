@@ -23,10 +23,10 @@ def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None,
     names: str/list of str
         List of pytplot names.
     newname: str/list of str, optional
-        List of new_names for pytplot variables.
+        List of new names for pytplot variables.
         If not given, then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
-        List of new_names for pytplot variables.
+        List of new names for pytplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply. Default is '-avg'.
