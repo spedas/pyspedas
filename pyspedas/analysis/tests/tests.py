@@ -70,13 +70,13 @@ class AnalysisTestCases(BaseTestCase):
               [23., 15., 28.], [15., 20., float('nan')]]
         store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
         subtract_median('aaabbbcc')
-        subtract_median('test1', new_names='aabb')
+        subtract_median('test1', newname='aabb')
         d = get_data('aabb')
         self.assertTrue(len(d[1]) == 6)
-        subtract_median(['test', 'aabb'], new_names='aaabbb')
+        subtract_median(['test', 'aabb'], newname='aaabbb')
         subtract_median('test1', overwrite=True)
-        subtract_average('test', new_names="testtest")
-        subtract_average(['test-m', 'test'], new_names="testtest2")
+        subtract_average('test', newname="testtest")
+        subtract_average(['test-m', 'test'], newname="testtest2")
 
     def test_subtract_average(self):
         """Test subtract_average."""
@@ -89,12 +89,12 @@ class AnalysisTestCases(BaseTestCase):
               [23., 15., 28.], [15., 20., float('nan')]]
         store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
         subtract_average('aaabbbcc')
-        subtract_average('test1', new_names='aabb')
+        subtract_average('test1', newname='aabb')
         d = get_data('aabb')
-        subtract_average(['test', 'aabb'], new_names='aaabbb')
+        subtract_average(['test', 'aabb'], newname='aaabbb')
         subtract_average('test1', overwrite=True)
-        subtract_average('test1', new_names="testtest")
-        subtract_average(['test1', 'test'], new_names="testtest2")
+        subtract_average('test1', newname="testtest")
+        subtract_average(['test1', 'test'], newname="testtest2")
         self.assertTrue(len(d[1]) == 6)
 
     def test_yclip(self):
@@ -123,13 +123,13 @@ class AnalysisTestCases(BaseTestCase):
         time_clip('test1', 1577112800, 1577608800)
         d = get_data('test1-tclip')
         dd = d[1]
-        time_clip('test', 1577308800, 1577598800, new_names='name-clip')
+        time_clip('test', 1577308800, 1577598800, newname='name-clip')
         time_clip(['test', 'name-clip'], 1577308800, 1577598800,
-                  new_names='name1-ci')
+                  newname='name1-ci')
         time_clip('test', 1577308800, 1577598800, overwrite=True)
-        time_clip('test', 1577308800, 1577598800, new_names="testtest")
+        time_clip('test', 1577308800, 1577598800, newname="testtest")
         time_clip(['test', 'test1'], 1577308800, 1577598800,
-                  new_names="testtest2")
+                  newname="testtest2")
         time_clip('test1', 1677112800, 1577608800)
         self.assertTrue((dd == [3., 5., 8., 15.]).all())
 
@@ -217,8 +217,8 @@ class AnalysisTestCases(BaseTestCase):
         tsmooth('test')
         d = get_data('test-s')
         tsmooth('test', overwrite=True)
-        tsmooth('test', new_names="testtest")
-        tsmooth(['test', 'test-s'], new_names="testtest2")
+        tsmooth('test', newname="testtest")
+        tsmooth(['test', 'test-s'], newname="testtest2")
         self.assertTrue(d[1].tolist() == [3.,  5.,  8., 15., 20.,  1.])
 
     def test_tinterpol(self):
