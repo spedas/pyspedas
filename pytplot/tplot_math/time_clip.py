@@ -14,6 +14,7 @@ def time_clip(
         names,
         time_start,
         time_end,
+        newname=None,
         new_names=None,
         suffix='-tclip',
         overwrite=False
@@ -29,8 +30,11 @@ def time_clip(
         Start time.
     time_end : float
         End time.
-    new_names: str/list of str, optional
-        List of new_names for pytplot variables.
+    newname: str/list of str, optional
+        List of new names for pytplot variables.
+        Default: None. If not given, then a suffix is applied or the variables are overwritten
+    new_names: str/list of str, optional (Deprecated)
+        List of new names for pytplot variables.
         Default: None. If not given, then a suffix is applied or the variables are overwritten
     suffix: str, optional
         A suffix to apply.
@@ -41,12 +45,18 @@ def time_clip(
 
     Returns
     -------
-    None.
+    list of str
+        Returns a list of pytplot variables created or changed
 
     """
     if len(names) < 1:
         logging.warning('time_clip: no pytplot variables specified')
         return
+
+    # new_names is deprecated
+    if new_names is not None:
+        logging.info("time_clip: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
 
     old_names = pytplot.tnames(names)
 
@@ -56,10 +66,10 @@ def time_clip(
 
     if overwrite:
         n_names = old_names
-    elif (new_names is None) or (len(new_names) < 1) or (new_names == ''):
+    elif (newname is None) or (len(newname) < 1) or (newname == ''):
         n_names = [s + suffix for s in old_names]
     else:
-        n_names = new_names
+        n_names = newname
 
     if isinstance(n_names, str):
         n_names = [n_names]
@@ -199,3 +209,5 @@ def time_clip(
             continue
 
         logging.debug('Time clip was applied to: ' + n_names[j])
+
+    return n_names

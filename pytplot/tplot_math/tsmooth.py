@@ -64,7 +64,7 @@ def smooth(data, width=10, preserve_nans=None):
 
 
 def tsmooth(names, width=10, median=None, preserve_nans=None,
-            new_names=None, suffix=None, overwrite=None):
+            newname=None, new_names=None, suffix=None, overwrite=None):
     """
     Smooths a tplot variable.
 
@@ -78,9 +78,13 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         Apply the median as well. The default is None.
     preserve_nans: bool, optional
         If None, then replace NaNs. The default is None.
-    new_names: str/list of str, optional
-        List of new_names for pytplot variables.
+    newname: str/list of str, optional
+        List of new names for pytplot variables.
         If not given, then a suffix is applied. 
+        The default is None.
+    new_names: str/list of str, optional (deprecated)
+        List of new names for pytplot variables.
+        If not given, then a suffix is applied.
         The default is None.
     suffix: str, optional
         A suffix to apply. Default is '-s'.
@@ -91,7 +95,8 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
 
     Returns
     -------
-    None.
+    list of str
+        Returns list of tplot variables created or changed
 
     Example
     -------
@@ -107,15 +112,20 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         logging.error('tsmooth error: No pytplot names were provided.')
         return
 
+    # new_names is deprecated
+    if new_names is not None:
+        logging.info("tsmooth: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
+
     if suffix is None:
         suffix = '-s'
 
     if overwrite is not None:
         n_names = old_names
-    elif new_names is None:
+    elif newname is None:
         n_names = [s + suffix for s in old_names]
     else:
-        n_names = new_names
+        n_names = newname
 
     if isinstance(n_names, str):
         n_names = [n_names]
@@ -142,3 +152,5 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         pytplot.data_quants[new].values = data
 
         logging.info('tsmooth was applied to: ' + new)
+
+    return n_names
