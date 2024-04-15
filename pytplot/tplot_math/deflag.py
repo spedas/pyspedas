@@ -41,7 +41,7 @@ def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
         fillval: int, float (optional)
             Value to use as replacement when method='replace'
     Restrictions:
-       DEGAP only works for 1 or 2-d data arrays; ntimes or (ntimes, nspectral_bins)
+       deflag only works for 1 or 2-d data arrays; ntimes or (ntimes, nspectral_bins)
 
     Returns:
         None
