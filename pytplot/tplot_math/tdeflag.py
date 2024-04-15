@@ -12,7 +12,7 @@ import pytplot
 
 def tdeflag(names,
             flag=None,
-            method='linear',
+            method='remove_nan',
             newname=None,
             new_names=None,
             suffix=None,
@@ -36,7 +36,7 @@ def tdeflag(names,
         'replace' replaces flagged value with a fill value, which can be set using the 
                   keyword 'fillval' (default is to use NaN)
         Option 'remove_nan' removes time intervals with NaN values
-        Default: 'linear'
+        Default: 'remove_nan'
     newname: str/list of str, optional
         List of new names for pytplot variables.
         If '', then pytplot variables are replaced.
