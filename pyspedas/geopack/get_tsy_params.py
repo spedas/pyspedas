@@ -1,8 +1,8 @@
 import logging
 import numpy as np
-from pyspedas import tinterpol, tdeflag
+from pyspedas import tinterpol
 from pyspedas.geopack.get_w_params import get_w
-from pytplot import get_data, store_data
+from pytplot import get_data, store_data, tdeflag
 
 
 def get_tsy_params(dst_tvar,
