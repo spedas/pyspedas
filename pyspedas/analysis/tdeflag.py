@@ -27,11 +27,11 @@ def tdeflag(names, method="remove_nan", newname=None, new_names=None, suffix=Non
         Method to apply. Default is 'remove_nan.
         Other options 'repeat' (repeat last good value).
     newname: str/list of str, optional
-        List of new_names for pytplot variables.
+        List of new names for pytplot variables.
         If '', then pytplot variables are replaced.
         If not given, then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
-        List of new_names for pytplot variables.
+        List of new names for pytplot variables.
         If '', then pytplot variables are replaced.
         If not given, then a suffix is applied.
     suffix: str, optional
