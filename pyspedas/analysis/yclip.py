@@ -33,7 +33,7 @@ def yclip(names, ymin, ymax, flag=None, newname=None, new_names=None, suffix=Non
         List of new names for pytplot variables.
         If not given, then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
-        List of new_names for pytplot variables.
+        List of new names for pytplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply. Default is '-clip'.

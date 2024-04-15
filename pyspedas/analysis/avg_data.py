@@ -30,10 +30,10 @@ def avg_data(names, trange=[], res=None, width=None,
     width: int, optional
         Number of values for the averaging window.
         If res is set, then width is ignored.
-    new_names: str/list of str, optional (Deprecated)
-        List of new_names for pytplot variables.
-        If not given, then a suffix is applied.
     newname: str/list of str, optional
+        List of new names for pytplot variables.
+        If not given, then a suffix is applied.
+    new_names: str/list of str, optional (Deprecated)
         List of new names for pytplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
