@@ -6,6 +6,7 @@ import numpy
 
 def subtract_average(
         names,
+        newname=None,
         new_names=None,
         suffix=None,
         overwrite=None,
@@ -18,8 +19,11 @@ def subtract_average(
     ----------
     names: str/list of str
         List of pytplot names.
-    new_names: str/list of str, optional
-        List of new_names for pytplot variables.
+    newname: str/list of str, optional
+        List of new names for pytplot variables.
+        Default: None. If not given, then a suffix is applied.
+    new_names: str/list of str, optional (Deprecated)
+        List of new names for pytplot variables.
         Default: None. If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply.
@@ -34,9 +38,16 @@ def subtract_average(
 
     Returns
     -------
-    None.
+    list of str
+        List of new tplot variables created
 
     """
+
+    # new_names is deprecated in favor of newname
+    if new_names is not None:
+        logging.info("subtract_average: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
+
     old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
@@ -51,10 +62,10 @@ def subtract_average(
 
     if overwrite is not None:
         n_names = old_names
-    elif new_names is None:
+    elif newname is None:
         n_names = [s + suffix for s in old_names]
     else:
-        n_names = new_names
+        n_names = newname
 
     if isinstance(n_names, str):
         n_names = [n_names]
@@ -90,3 +101,5 @@ def subtract_average(
         pytplot.data_quants[new].values = data
 
         logging.info('Subtract ' + ptype + ' was applied to: ' + new)
+
+    return n_names
