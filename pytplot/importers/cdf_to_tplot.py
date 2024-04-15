@@ -90,10 +90,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     new_cdflib = False
     if cdflib.__version__ > "0.4.9":
         new_cdflib = True
-        logging.info("Using new version of cdflib (%s)", cdflib.__version__)
+        logging.debug("Using new version of cdflib (%s)", cdflib.__version__)
     else:
         new_cdflib = False
-        logging.info("Using old version of cdflib (%s)", cdflib.__version__)
+        logging.debug("Using old version of cdflib (%s)", cdflib.__version__)
 
     if not isinstance(varnames, list):
         varnames = [varnames]
