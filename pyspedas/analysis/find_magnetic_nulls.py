@@ -255,7 +255,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
         deflag(positions[i], method='remove_nan', newname=positions_df[i])
         deflag(fields[i], method='remove_nan', newname=fields_df[i])
         if smooth_fields:
-            tsmooth(fields_df[i], width=smooth_npts, median=smooth_median, new_names=fields_sm[i])
+            tsmooth(fields_df[i], width=smooth_npts, median=smooth_median, newname=fields_sm[i])
 
     # Interpolate all deflagged positions and field measurements to the first probe's field measurement times
 
@@ -283,7 +283,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     tmax = tmax - .001
 
     # We'll interpolate everything to the first set of times, so we'll time_clip that one to the desired time range
-    time_clip(fields_sm[0], tmin, tmax, new_names='f0_tc')
+    time_clip(fields_sm[0], tmin, tmax, newname='f0_tc')
 
     # Now we can interpolate safely
     tinterpol(positions_df,'f0_tc',newname=['pos1_i','pos2_i','pos3_i','pos4_i'])
