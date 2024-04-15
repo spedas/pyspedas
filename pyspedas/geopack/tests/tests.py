@@ -14,7 +14,7 @@ from pyspedas.geopack.get_w_params import get_w
 from pyspedas.geopack import trace_equator_89
 from pyspedas.geopack import trace_iono_89
 from pyspedas import tinterpol
-from pytplot import join_vec, store_data, get_data
+from pytplot import join_vec, store_data, get_data, tdeflag
 
 trange = ['2015-10-16', '2015-10-17']
 
@@ -55,27 +55,31 @@ class LoadTestCases(unittest.TestCase):
     def test_tt96(self):
         mec_vars = pyspedas.mms.mec(trange=trange)
         params = get_params('t96')
+        # This interpolation can result in NaNs in the position variable, so they need to be cleaned
         tinterpol('mms1_mec_r_gsm', 'proton_density')
-        tt96('mms1_mec_r_gsm-itrp', parmod=params)
-        self.assertTrue(data_exists('mms1_mec_r_gsm-itrp_bt96'))
+        tdeflag('mms1_mec_r_gsm-itrp',newname='mms1_clean')
+        tt96('mms1_clean', parmod=params)
+        self.assertTrue(data_exists('mms1_clean_bt96'))
 
     def test_tt01(self):
         mec_vars = pyspedas.mms.mec(trange=trange)
         params = get_params('t01')
+        # This can yield nans in the interpolated position variable for times outside the range of proton_density
         tinterpol('mms1_mec_r_gsm', 'proton_density')
-        tt01('mms1_mec_r_gsm-itrp', parmod=params)
-        self.assertTrue(data_exists('mms1_mec_r_gsm-itrp_bt01'))
-        mec = get_data('mms1_mec_r_gsm-itrp')
+        tdeflag('mms1_mec_r_gsm-itrp',newname='mms1_clean')
+        tt01('mms1_clean', parmod=params)
+        self.assertTrue(data_exists('mms1_clean_bt01'))
+        mec = get_data('mms1_clean')
         gvars = np.zeros((len(mec.times), 2))
         gvars[:, 0] = np.repeat(6.0, len(mec.times))
         gvars[:, 1] = np.repeat(10.0, len(mec.times))
         store_data('g_variables', data={'x': mec.times, 'y': gvars})
         params = get_params('t01', g_variables='g_variables')
-        tt01('mms1_mec_r_gsm-itrp', parmod=params)
-        self.assertTrue(data_exists('mms1_mec_r_gsm-itrp_bt01'))
+        tt01('mms1_clean', parmod=params)
+        self.assertTrue(data_exists('mms1_clean_bt01'))
         params = get_params('t01', g_variables=gvars)
-        tt01('mms1_mec_r_gsm-itrp', parmod=params)
-        self.assertTrue(data_exists('mms1_mec_r_gsm-itrp_bt01'))
+        tt01('mms1_clean', parmod=params)
+        self.assertTrue(data_exists('mms1_clean'))
 
     def test_tts04(self):
         mec_vars = pyspedas.mms.mec(trange=trange)
