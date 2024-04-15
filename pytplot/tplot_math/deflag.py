@@ -28,15 +28,15 @@ def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
             (or Inf) will be removed.
             'replace' replaces flagged value with a fill value, which
                   can be set using the keyword 'fillval' (default is to use NaN)
-        new_tvar : str (Deprecated)
-            Name of new tvar for deflagged data storage.  
-            If not specified, then the data in tvar1 will be replaced.
-            THIS is not an option for multiple variable input, for 
-            multiple or pseudo variables, the data is overwritten.
         newname : str
             Name of new tvar for deflagged data storage.
             If not specified, then the data in tvar1 will be replaced.
             THIS is not an option for multiple variable input, for
+            multiple or pseudo variables, the data is overwritten.
+        new_tvar : str (Deprecated)
+            Name of new tvar for deflagged data storage.  
+            If not specified, then the data in tvar1 will be replaced.
+            THIS is not an option for multiple variable input, for 
             multiple or pseudo variables, the data is overwritten.
         fillval: int, float (optional)
             Value to use as replacement when method='replace'
