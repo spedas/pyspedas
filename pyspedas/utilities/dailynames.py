@@ -19,22 +19,29 @@ def dailynames(directory='',
     Parameters:
         directory: str
             String containing the directory for the generated file names
+            Default: ''. If directory is not specified the names will be written
+            to the current working directory
 
         trange: list of str, list of datetime or list of floats
             Two-element list containing the start and end times for the file names
+            Default: Current date. If the date range is not specified the routine will
+            use the current date.
 
         res: float
-            File name resolution in seconds (default: 24*3600., i.e., daily)
+            File name resolution in seconds
+            Default: 24*3600., i.e., daily)
 
         file_format: str
             Format of the file names using strftime directives; for reference: https://strftime.org
-            (default: %Y%m%d, i.e., daily)
+            Default: %Y%m%d, i.e., daily
 
         prefix: str
             file name prefix
+            Default: ''
 
         suffix: str
             file name suffix
+            Default: ''
 
     Returns:
         List containing filenames
