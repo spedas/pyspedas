@@ -83,7 +83,7 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
-    "pytplot": ("https://pytplot.readthedocs.io/en/latest/", None),
+    "pytplot": ("https://pytplot.readthedocs.io/en/matplotlib-backend/", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
