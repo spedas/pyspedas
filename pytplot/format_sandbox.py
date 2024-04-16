@@ -36,6 +36,7 @@ def format_sandbox(option, value):
         y_axis_zoom       bool         Set True if the mouse wheel should zoom in on the y axis as well as the x on plots.
         ================  ==========   =====
 
+    Notes:
         ==============================   ==========   =====
         Obsolete/Unimplemented Options   Value type   Notes
         ==============================   ==========   =====
