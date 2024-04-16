@@ -79,27 +79,27 @@ def options(name, option=None, value=None, opt_dict=None):
         None
 
     Examples:
-    >>> # Change the y range of Variable1
-    >>> import pytplot
-    >>> x_data = [1,2,3,4,5]
-    >>> y_data = [1,2,3,4,5]
-    >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-    >>> pytplot.options('Variable1', 'yrange', [2,4])
+        >>> # Change the y range of Variable1
+        >>> import pytplot
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [1,2,3,4,5]
+        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pytplot.options('Variable1', 'yrange', [2,4])
 
-    >>> # Change Variable1 to use a log scale
-    >>> pytplot.options('Variable1', 'ylog', 1)
-    >>> pytplot.tplot('Variable1')
+        >>> # Change Variable1 to use a log scale
+        >>> pytplot.options('Variable1', 'ylog', 1)
+        >>> pytplot.tplot('Variable1')
 
-    >>> # Multi-dimensional variable
-    >>> y_data = np.random.rand(5, 4, 3)
-    >>> v1_data = [0, 1, 3, 4]
-    >>> v2_data = [1, 2, 3]
-    >>> pytplot.store_data("Variable2", data={'x': x_data, 'y': y_data, 'v1': v1_data, 'v2': v2_data})
-    >>> # Set the spectrogram plots to show dimension 'v2' at slice 'v1' = 0
-    >>> pytplot.options('Variable2', 'spec', 1)
-    >>> pytplot.options("Variable2", "spec_dim_to_plot", 'v2')
-    >>> pytplot.options("Variable2", "spec_slices_to_use", {'v1': 0})
-    >>> pytplot.tplot('Variable2')
+        >>> # Multi-dimensional variable
+        >>> y_data = np.random.rand(5, 4, 3)
+        >>> v1_data = [0, 1, 3, 4]
+        >>> v2_data = [1, 2, 3]
+        >>> pytplot.store_data("Variable2", data={'x': x_data, 'y': y_data, 'v1': v1_data, 'v2': v2_data})
+        >>> # Set the spectrogram plots to show dimension 'v2' at slice 'v1' = 0
+        >>> pytplot.options('Variable2', 'spec', 1)
+        >>> pytplot.options("Variable2", "spec_dim_to_plot", 'v2')
+        >>> pytplot.options("Variable2", "spec_slices_to_use", {'v1': 0})
+        >>> pytplot.tplot('Variable2')
 
     """
 
