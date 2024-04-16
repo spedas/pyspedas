@@ -77,7 +77,7 @@ def tdpwrspc(
         >>> import numpy as np
         >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
         >>> pytplot.get_data('a_pwrspc')
-        >>> pytplot.tpwrspc('a_pwrspc')
+        >>> pytplot.tdpwrspc('a_pwrspc')
 
     """
     if newname is None:
