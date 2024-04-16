@@ -101,7 +101,7 @@ def options(name, option=None, value=None, opt_dict=None):
     >>> pytplot.options("Variable2", "spec_slices_to_use", {'v1': 0})
     >>> pytplot.tplot('Variable2')
 
-"""
+    """
 
     if isinstance(name, int):
         name = list(pytplot.data_quants.keys())[name]
