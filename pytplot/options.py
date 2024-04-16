@@ -25,8 +25,8 @@ def options(name, option=None, value=None, opt_dict=None):
         This can be a dictionary of option-value pairs. 'option' and 'value'
         will not be needed if this dictionary item is supplied.
 
-    Options
-    -------
+    Notes
+    -----
 
     **Option**            | **Type**   | **Notes**
 --------------------------|------------|-------------------------------------------------------------------------------------
