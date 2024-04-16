@@ -113,7 +113,9 @@ def get_tsy_params(dst_tvar,
             return
         else:
             if isinstance(g_variables, str):
-                g_data = get_data(g_variables)
+                tdeflag(g_variables, method='remove_nan', overwrite=True)
+                tinterpol(g_variables, Np_tvar, newname=g_variables+'_interp')
+                g_data = get_data(g_variables+'_interp')
 
                 if g_data is None:
                     logging.error('Problem reading G variable: ' + g_variables)
@@ -144,6 +146,8 @@ def get_tsy_params(dst_tvar,
                             np.zeros(len(dst_data.y))))
     elif model == 'ts04':
         params = get_w(trange=[np.nanmin(Np_data.times), np.nanmax(Np_data.times)], create_tvar=True)
+        # Better deflag, just in case...
+        tdeflag(params, method='remove_nan',overwrite=True)
         # interpolate the inputs to the Np timestamps
         tinterpol(params, Np_tvar, newname=params+'_interp')
         w_data = get_data(params+'_interp')
