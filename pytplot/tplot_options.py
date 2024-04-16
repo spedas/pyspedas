@@ -29,7 +29,6 @@ def tplot_options(option, value):
         x_range                 | [flt, flt] | The min and max x_range (usually time) to be plotted on all Spec/1D plots
         vertical_spacing        | flt        | The space (in inches) between two plots
         axis_font_size          | int        | The font size of the axis ticks.  Default is 10.
-        **Not Yet Implemented** |  **Type**  | **Notes**
         wsize                   | [flt, flt] | [height, width], size of the plot window in inches (not yet implemented)
         title_align             | flt        | Offset position (in inches) of the title (not yet implemented)
         alt_range               | [flt, flt] | The min and max altitude to be plotted on all alt plots (not yet implemented)
@@ -43,17 +42,15 @@ def tplot_options(option, value):
         yaxis_width             | int        | The number of pixels wide of the y axis (not yet implemented)
         y_axis_zoom             | bool       | Set True if the mouse wheel should zoom in on the y axis as well as the x on plots (not yet implemented)
     
-    Returns:
+    Returns
+    -------
         None
     
-    Examples:
+    Examples
+    --------
         >>> # Set the plot title
         >>> import pytplot
         >>> pytplot.tplot_options('title', 'SWEA Data for Orbit 1563')
-        
-        >>> # Set the window size 
-        >>> pytplot.tplot_options('wsize', [1000,500])
-        
     
     """
     
