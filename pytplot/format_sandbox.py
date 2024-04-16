@@ -26,15 +26,20 @@ def format_sandbox(option, value):
         x_range           [flt, flt]   The min and max x_range (usually time) to be plotted on all Spec/1D plots
         data_gap          int          Number of seconds with consecutive nan values allowed before no interp should occur
         roi               [str, str]   Times between which there's a region of interest for a user
-        crosshair         bool         Option allowing crosshairs and crosshair legend
-        vertical_spacing  int          The space in pixels between two plots
-        show_all_axes     bool         Whether or not to just use one axis at the bottom of the plot
-        black_background  bool         Whether or not to make plot backgrounds black w/ white text
-        axis_font_size    int          The font size of the axis ticks.  Default is 10.
-        axis_tick_num     [tuples]     A list of tuples that determines how many ticks appear.  See pyqtgraph textFillLimits
-        yaxis_width       int          The number of pixels wide of the y axis
-        y_axis_zoom       bool         Set True if the mouse wheel should zoom in on the y axis as well as the x on plots.
-        ================  ==========   =====
+
+
+        ================      ==========   =====
+        Not Yet Implemented   Value type   Notes
+        ================      ==========   =====
+        crosshair             bool         Option allowing crosshairs and crosshair legend
+        vertical_spacing      int          The space in pixels between two plots
+        show_all_axes         bool         Whether or not to just use one axis at the bottom of the plot
+        black_background      bool         Whether or not to make plot backgrounds black w/ white text
+        axis_font_size        int          The font size of the axis ticks.  Default is 10.
+        axis_tick_num         [tuples]     A list of tuples that determines how many ticks appear.  See pyqtgraph textFillLimits
+        yaxis_width           int          The number of pixels wide of the y axis
+        y_axis_zoom           bool         Set True if the mouse wheel should zoom in on the y axis as well as the x on plots.
+        ================      ==========   =====
 
     Returns:
         None
