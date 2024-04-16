@@ -12,7 +12,7 @@ def tplot_options(option, value):
             The value of the option.  See section below.  
             
     Options:
-       ==================  ==========   =====
+        ==================  ==========   =====
         Option              Value type   Notes
         ==================  ==========   =====
         title               str          Title of the the entire plot (above any panel titles)
