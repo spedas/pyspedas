@@ -42,6 +42,7 @@ def spec_mult(
         >>> pytplot.spec_mult('h','h_specmult')
         >>> print(pytplot.data_quants['h_specmult'].data)
     """
+
     # new_tvar is deprecated in favor of newname
     if new_tvar is not None:
         logging.info("spec_mult: The new_tvar parameter is deprecated. Please use newname instead.")
