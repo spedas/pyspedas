@@ -27,7 +27,8 @@ def add(tvar1,tvar2,newname=None, new_tvar=None):
     Examples:
         >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
         >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
-        >>> pytplot.add('a','c','a+c')
+        >>> pytplot.add('a','c',newname='a+c')
+        >>> pytplot.get_data('a+c')
     """
 
     # new_tvar is deprecated in favor of newname

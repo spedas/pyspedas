@@ -33,6 +33,7 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
         >>> Make any values below 2 and above 6 equal to NaN.
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,100],[4,4],[5,5],[6,6],[7,7]]})
         >>> pytplot.clip('d',2,6,'e')
+        >>> print(pytplot.data_quants['e'].data)
     """
 
     # new_tvar is deprecated in favor of newname
