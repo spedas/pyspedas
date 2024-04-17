@@ -39,7 +39,7 @@ def spec_mult(
 
     Examples:
         >>> pytplot.store_data('h', data={'x':[0,4,8,12,16,19,21], 'y':[[8,1,1],[100,2,3],[4,2,47],[4,39,5],[5,5,99],[6,6,25],[7,-2,-5]],'v':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
-        >>> pytplot.spec_mult('h','h_specmult')
+        >>> pytplot.spec_mult('h')
         >>> print(pytplot.data_quants['h_specmult'].data)
     """
 

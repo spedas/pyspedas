@@ -50,8 +50,10 @@ def split_vec(
 
     Examples:
         >>> pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
-        >>> pytplot.tplot_math.split_vec('b',['b1','b2','b3'],[0,[1,3],4])
-        >>> print(pytplot.data_quants['b2'].values)
+        >>> pytplot.tplot_math.split_vec('b')
+        >>> print(pytplot.data_quants['b_0'].values)
+        >>> print(pytplot.data_quants['b_1'].values)
+        >>> print(pytplot.data_quants['b_5'].values)
     """
     # new_name is deprecated in favor of newname
     if new_name is not None:
