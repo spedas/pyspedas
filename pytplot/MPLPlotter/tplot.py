@@ -576,19 +576,29 @@ def tplot(variables, var_label=None,
         return fig, axes
 
     if save_png is not None and save_png != '':
-        plt.savefig(save_png + '.png', dpi=dpi)
+        if not save_png.endswith('.png'):
+            save_png += '.png'
+        plt.savefig(save_png, dpi=dpi)
 
     if save_eps is not None and save_eps != '':
-        plt.savefig(save_eps + '.eps', dpi=dpi)
+        if not save_eps.endswith('.eps'):
+            save_eps += '.eps'
+        plt.savefig(save_eps, dpi=dpi)
 
     if save_svg is not None and save_svg != '':
-        plt.savefig(save_svg + '.svg', dpi=dpi)
+        if not save_svg.endswith('.svg'):
+            save_svg += '.svg'
+        plt.savefig(save_svg, dpi=dpi)
 
     if save_pdf is not None and save_pdf != '':
-        plt.savefig(save_pdf + '.pdf', dpi=dpi)
+        if not save_pdf.endswith('.pdf'):
+            save_pdf += '.pdf'
+        plt.savefig(save_pdf, dpi=dpi)
 
     if save_jpeg is not None and save_jpeg != '':
-        plt.savefig(save_jpeg + '.jpeg', dpi=dpi)
+        if not save_jpeg.endswith('.jpeg'):
+            save_jpeg += '.jpeg'
+        plt.savefig(save_jpeg, dpi=dpi)
 
     if slice:
         slice_fig, slice_axes = plt.subplots(nrows=1)
