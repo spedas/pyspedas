@@ -43,8 +43,8 @@ def subtract_average(
 
     Examples:
         >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-        >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
-        >>> pytplot.subtract_average('a','c','a-c')
+        >>> pytplot.subtract_average('a')
+        >>> pytplot.tplot(['a','a-d'])
 
     """
 
@@ -87,6 +87,9 @@ def subtract_average(
             pytplot.tplot_copy(old, new)
 
         data = pytplot.data_quants[new].values
+        # Subtracting the average will fail if data is not a floating point type
+        if data.dtype.kind != 'f':
+            data=numpy.float64(data)
         dim = data.shape
         if median:
             if len(dim) == 1:
