@@ -42,9 +42,9 @@ def subtract_average(
         List of new tplot variables created
 
     Examples:
-        >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-        >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
-        >>> pytplot.subtract_average('a','c','a-c')
+        >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1.,2.,3.,4.,5.]})
+        >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1.,4.,1.,7.,1.,9.,1.]})
+        >>> pytplot.tplot_math.subtract_average('a')
 
     """
 
