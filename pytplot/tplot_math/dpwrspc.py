@@ -77,6 +77,13 @@ def dpwrspc(
     dps: array of float
         The power spectrum, (units of quantity)^2/frequency_units.
 
+    Example:
+        >>> # Compute the power spectrum of a given time series
+        >>> import numpy as np
+        >>> from pytplot import tplot_math
+        >>> time = range(3000)
+        >>> quantity = np.random.random(3000)
+        >>> power = pytplot.tplot_math.dpwrspc(time, quantity)
     """
     tdps, fdps, dps = np.array(-1.0), np.array(-1.0), np.array(-1.0)
     tdps0, fdps0, dps0 = np.array(-1.0), np.array(-1.0), np.array(-1.0)

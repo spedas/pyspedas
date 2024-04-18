@@ -73,12 +73,12 @@ def tdpwrspc(
 
     Example
     -------
+        >>> # Compute the power spectrum of a given time series
         >>> import pytplot
         >>> import numpy as np
-        >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
-        >>> pytplot.get_data('a_pwrspc')
-        >>> pytplot.tdpwrspc('a_pwrspc')
-
+        >>> from pytplot import tplot_math
+        >>> pytplot.store_data('a', data={'x': range(3000), 'y': np.random.random(3000)})
+        >>> pytplot.tplot_math.tdpwrspc('a')
     """
     if newname is None:
         newname = varname + "_dpwrspc"
