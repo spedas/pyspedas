@@ -30,13 +30,13 @@ def tcrossp(
 
     Example:
         >>> # Compute the cross product of two time series
-        >>> from pytplot import tcrossp
-        >>> x1 = [0, 4, 8, 12, 16]
-        >>> x2 = [0, 4, 8, 12, 16, 19, 21]
+        >>> import pytplot
+        >>> x1 = [0, 4, 8]
+        >>> x2 = [0, 4, 8]
         >>> time1 = [pytplot.time_float("2020-01-01") + i for i in x1]
         >>> time2 = [pytplot.time_float("2020-01-01") + i for i in x2]
-        >>> pytplot.store_data("a", data={"x": time1, "y": [1, 2, 3, 4, 5]})
-        >>> pytplot.store_data("c", data={"x": time2, "y": [1, 4, 1, 7, 1, 9, 1]})
+        >>> pytplot.store_data("a", data={"x": time1, "y": [[1, 2, 3],[2, 3, 4],[3, 4, 5]]})
+        >>> pytplot.store_data("c", data={"x": time2, "y": [[1, 4, 1],[2, 5, 2],[3, 5, 3]]})
         >>> n = pytplot.tcrossp("a", "c", newname="a_cross_c")
         >>> print('new tplot variable:', n)
         >>> ac = pytplot.get_data(n)
