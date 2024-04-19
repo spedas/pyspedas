@@ -1,4 +1,4 @@
 PyTplot
 ========================
 
-:ref: pytplot:<`Math Routines`>
+:ref: pytplot:`Math Routines`
