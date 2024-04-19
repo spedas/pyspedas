@@ -1,11 +1,3 @@
-"""
-Calculates dot product of two tplot variables.
-
-Notes
------
-Similar to tdotp.pro in IDL SPEDAS.
-
-"""
 import logging
 from pytplot import get_data, store_data
 
