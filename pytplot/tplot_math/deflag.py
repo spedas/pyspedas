@@ -8,7 +8,14 @@ import copy
 import numpy as np
 import logging
 
-def deflag(tvar,flag=None,newname=None,new_tvar=None,method=None,fillval=None):
+def deflag(
+        tvar,
+        flag=None,
+        newname=None,
+        new_tvar=None,
+        method=None,
+        fillval=None
+):
     """
     Replaces FLAGs in arrays with interpolated or other values.
     Optionally removes NaN values from a variable
