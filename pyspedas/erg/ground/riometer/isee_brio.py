@@ -107,6 +107,12 @@ def isee_brio(
 
     site_code = list(set(site_code).intersection(site_code_all))
 
+    new_cdflib = False
+    if cdflib.__version__ > "0.4.9":
+        new_cdflib = True
+    else:
+        new_cdflib = False
+
     prefix = "iseetmp_"
     if notplot:
         loaded_data = {}
@@ -181,7 +187,10 @@ def isee_brio(
                     file_name = file_name[0]
                 cdf_file = cdflib.CDF(file_name)
                 cdf_info = cdf_file.cdf_info()
-                all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
+                if new_cdflib:
+                    all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
+                else:
+                    all_cdf_variables = cdf_info["rVariables"] + cdf_info["zVariables"]
                 for t_plot_name in loaded_data_temp:
                     get_data_vars = get_data(t_plot_name)
                     if get_data_vars is None:
@@ -217,23 +226,15 @@ def isee_brio(
                                     ):  # removing "FILLVAL", like 999.9000 or 0.0.
                                         # removing process of cdf_to_tplot.py may be not working well.
                                         var_properties = cdf_file.varinq(param)
+                                        if new_cdflib:
+                                            dtdesc = var_properties.Data_Type_Description
+                                        else:
+                                            dtdesc = var_properties["Data_Type_Description"]
                                         if (
-                                            (
-                                                var_properties.Data_Type_Description
-                                                == "CDF_FLOAT"
-                                            )
-                                            or (
-                                                var_properties.Data_Type_Description
-                                                == "CDF_REAL4"
-                                            )
-                                            or (
-                                                var_properties.Data_Type_Description
-                                                == "CDF_DOUBLE"
-                                            )
-                                            or (
-                                                var_properties.Data_Type_Description
-                                                == "CDF_REAL8"
-                                            )
+                                            (dtdesc == "CDF_FLOAT")
+                                            or (dtdesc == "CDF_REAL4")
+                                            or (dtdesc == "CDF_DOUBLE")
+                                            or (dtdesc == "CDF_REAL8")
                                         ):
                                             if isinstance(var_atts["FILLVAL"], str):
                                                 fill_value = float(var_atts["FILLVAL"])
