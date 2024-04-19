@@ -65,11 +65,14 @@ def tdpwrspc(
 
     Example
     -------
+
         >>> import pytplot
         >>> import numpy as np
         >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
         >>> pytplot.get_data('a_pwrspc')
         >>> pytplot.tdpwrspc('a_pwrspc')
+
+    """
 
     logging.warning(
         "This function has now been deprecated. Please use pytplot.tplot_math.tdpwrspc instead."
