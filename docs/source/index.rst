@@ -49,6 +49,7 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
    geopack
    coords
    utilities
+   pytplot
 
 .. |build| image:: https://github.com/spedas/pyspedas/workflows/build/badge.svg
 .. |coverage| image:: https://coveralls.io/repos/github/spedas/pyspedas/badge.svg
