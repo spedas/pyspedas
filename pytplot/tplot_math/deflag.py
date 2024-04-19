@@ -1,8 +1,3 @@
-# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
-# Released under the MIT license.
-# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
-# Verify current version before use at: https://github.com/MAVENSDC/Pytplot
-
 import pytplot
 import copy
 import numpy as np
@@ -54,8 +49,9 @@ def deflag(
         None
 
     Examples:
-        >>> # Remove any instances of [100,90,7,2,57] from 'd', store in 'e'.
+
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,4],[4,90],[5,5],[6,6],[7,7]]})
+        >>> # Remove any instances of [100,90,7,2,57] from 'd', store in 'e'.
         >>> pytplot.deflag('d',[100,90,7,2,57],newname='e')
 
     """
