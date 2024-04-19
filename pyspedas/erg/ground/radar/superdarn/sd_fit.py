@@ -178,6 +178,13 @@ def sd_fit(
         site_code = valid_sites
     site_code = list(set(site_code).intersection(valid_sites))
 
+
+    new_cdflib = False
+    if cdflib.__version__ > "0.4.9":
+        new_cdflib = True
+    else:
+        new_cdflib = False
+
     if notplot:
         loaded_data = {}
     else:
@@ -735,9 +742,11 @@ def sd_fit(
                     for file_name in datfiles:
                         cdf_file = cdflib.CDF(file_name)
                         cdf_info = cdf_file.cdf_info()
-                        all_cdf_variables = (
-                            cdf_info.rVariables + cdf_info.zVariables
-                        )
+                        if new_cdflib:
+                            all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
+                        else:
+                            all_cdf_variables = cdf_info["rVariables"] + cdf_info["zVariables"]
+
                         timevn = fnmatch.filter(all_cdf_variables, "Epoch_?")
                         ptblvn = fnmatch.filter(all_cdf_variables, "position_tbl_?")
                         timevn.sort()
