@@ -85,6 +85,12 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test-d')
         self.assertTrue((np.round(d[1].tolist()) == [-6., -4., -1.,
                          6., 11., -8.]).all())
+        # Test with integer data
+        # int_data=[1,2,3,4,5,6]
+        # store_data('test-int',data={'x':d[0],'y':int_data})
+        # subtract_average('test-int')
+        # d=get_data('test-int-d')
+        #self.assertEqual(d.y[0],-2.5)
         dn = [[3., 5., 8.], [15., 20., 1.], [3., 5., 8.], [15., 20., 1.],
               [23., 15., 28.], [15., 20., float('nan')]]
         store_data('test1', data={'x': [1., 2., 3., 4., 5., 6.], 'y': dn})
