@@ -57,6 +57,7 @@ def deflag(
         >>> # Remove any instances of [100,90,7,2,57] from 'd', store in 'e'.
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1],[2,2],[100,4],[4,90],[5,5],[6,6],[7,7]]})
         >>> pytplot.deflag('d',[100,90,7,2,57],newname='e')
+
     """
 
     # new_tvar is deprecated in favor of newname
