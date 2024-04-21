@@ -48,6 +48,18 @@ def time_clip(
     list of str
         Returns a list of pytplot variables created or changed
 
+    Example
+    -------
+        >>> # Clip time
+        >>> x1 = [0, 4, 8, 12, 16]
+        >>> time1 = [pytplot.time_float("2020-01-01") + i for i in x1]
+        >>> pytplot.store_data("a", data={"x": time1, "y": [[1, 2, 3],[2, 3, 4],[3, 4, 5],[4, 5, 6],[5, 6,7]]})
+        >>> time_start=time1[0]
+        >>> time_end=time1[2]
+        >>> pytplot.time_clip('a',time_start,time_end)
+        >>> ac = pytplot.get_data('a-tclip')
+        >>> print(ac)
+
     """
     if len(names) < 1:
         logging.warning('time_clip: no pytplot variables specified')
