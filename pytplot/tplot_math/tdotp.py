@@ -27,7 +27,8 @@ def tdotp(
     --------
         Name of the tplot variable
 
-    Example:
+    Examples
+    --------
 
         >>> # Compute the dot products of a given time series
         >>> import pytplot

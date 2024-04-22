@@ -40,7 +40,9 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
         If the keyword notperhz is True, then power is in units^2. If notperhz is False (default), power is in units^2/Hz.
 
 
-    Example:
+    Examples
+    --------
+
         >>> # Compute the power spectrum of a given time series
         >>> from pytplot import pwrspc
         >>> time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]

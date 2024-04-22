@@ -23,7 +23,9 @@ def derive(tvar,newname=None, new_tvar=None):
     Returns:
         None
 
-    Examples:
+    Examples
+    --------
+
         >>> pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
         >>> pytplot.derive('b','dbdt')
         >>> print(pytplot.data_quants['dbdt'].values)

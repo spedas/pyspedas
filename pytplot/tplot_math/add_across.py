@@ -29,7 +29,9 @@ def add_across(tvar,column_range=None,newname=None,new_tvar=None):
     Returns:
         None
 
-    Examples:
+    Examples
+    --------
+
         >>> #Add across every column in the data
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
         >>> pytplot.add_across('d',newname='d_aa')

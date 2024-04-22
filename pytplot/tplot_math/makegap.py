@@ -29,7 +29,9 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
     -------
         A tuple returned by calling get_data() on the degapped temp variable
 
-    Examples:
+    Examples
+    --------
+
         >>> import pytplot
         >>> time = [pytplot.time_float("2020-01-01") + i for i in [1, 2, 3, 4, 5, 6, 9, 10, 11]]
         >>> y = [1, 2, 3, 4, 5, 6, 9, 10, 11]

@@ -28,7 +28,9 @@ def tcrossp(
     --------
         Name of the tplot variable
 
-    Example:
+    Example
+    -------
+
         >>> # Compute the cross product of two time series
         >>> import pytplot
         >>> x1 = [0, 4, 8]
