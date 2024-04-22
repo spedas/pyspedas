@@ -4,9 +4,7 @@ from pytplot import get_data, store_data
 
 def tdotp(variable1, variable2, newname=None):
     """
-    Routine to calculate the dot product of two tplot variables
-    containing arrays of vectors and storing the results in a
-    tplot variable
+    Calculate the sample-by-sample dot product of two tplot variables
 
     Parameters
     -----------
