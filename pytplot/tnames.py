@@ -24,6 +24,13 @@ def tnames(pattern=None):
     name_list : list of str
         List of pytplot variables.
 
+    Examples
+    -------
+        >>> import pytplot
+        >>> from pyspedas.themis import fgm 
+        >>> fgm(trange=['2007-03-23','2007-03-24'], probe='a')
+        >>> pytplot.tnames('tha_fgs*')
+        >>> pytplot.tnames('th?_fgs_gsm')
     """
     name_list = list()
     all_names = tplot_names(quiet=True)

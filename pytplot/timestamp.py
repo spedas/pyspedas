@@ -19,9 +19,9 @@ def timestamp(val):
         None
 
     Examples
-         # Turn on the timestamp
-         import pytplot
-         pytplot.timestamp('on')
+         >>> # Turn on the timestamp
+         >>> import pytplot
+         >>> pytplot.timestamp('on')
     """
 
     if val == 'on':
