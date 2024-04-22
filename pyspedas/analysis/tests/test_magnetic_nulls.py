@@ -121,7 +121,6 @@ class MagNullTestCases(unittest.TestCase):
         d=get_data('max_reconstruction_error')
         np.testing.assert_allclose(d.y,0.0,atol=1.0e-10)
 
-    """
     def test_find_magnetic_nulls_fote_cluster(self):
         data = pyspedas.cluster.load_csa(probes=['C1','C2','C3','C4'],trange=['2003-08-17/16:40', '2003-08-17/16:45'],datatypes='CP_FGM_FULL', time_clip=True)
         #tplot_names()
@@ -131,7 +130,7 @@ class MagNullTestCases(unittest.TestCase):
         tplot(null_vars,display=global_display,save_png='cluster_null_vars')
         d=get_data('max_reconstruction_error')
         np.testing.assert_allclose(d.y,0.0,atol=1.0e-10)
-        """
+
 
 
 

@@ -12,14 +12,14 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('CP_FGM_SPIN' in dtypes)
         self.assertTrue('C1' in probes)
 
-    # def test_load_fgm_data_csa(self):
-    #    mag_vars = load_csa(datatypes=['CP_FGM_SPIN'], probes=None)  # returns empty list
-    #    mag_vars = load_csa(datatypes=None)  # returns empty list
-    #    mag_vars = load_csa(datatypes='CP_FGM_SPIN', probes='*')
-    #    mag_vars = load_csa(datatypes=['CP_FGM_SPIN'], notplot=True)
-    #    self.assertTrue(data_exists('B_vec_xyz_gse__C1_CP_FGM_SPIN'))
-    #    self.assertTrue(data_exists('B_mag__C1_CP_FGM_SPIN'))
-    #    self.assertTrue(data_exists('sc_pos_xyz_gse__C1_CP_FGM_SPIN'))
+    def test_load_fgm_data_csa(self):
+        mag_vars = load_csa(datatypes=['CP_FGM_SPIN'], probes=None)  # returns empty list
+        mag_vars = load_csa(datatypes=None)  # returns empty list
+        mag_vars = load_csa(datatypes='CP_FGM_SPIN', probes='*')
+        mag_vars = load_csa(datatypes=['CP_FGM_SPIN'], notplot=True)
+        self.assertTrue(data_exists('B_vec_xyz_gse__C1_CP_FGM_SPIN'))
+        self.assertTrue(data_exists('B_mag__C1_CP_FGM_SPIN'))
+        self.assertTrue(data_exists('sc_pos_xyz_gse__C1_CP_FGM_SPIN'))
 
     def test_load_fgm_data(self):
         mag_vars = pyspedas.cluster.fgm(time_clip=True)
@@ -69,10 +69,12 @@ class LoadTestCases(unittest.TestCase):
         whi_vars = pyspedas.cluster.whi()
         self.assertTrue(data_exists('E_pow_f5__C1_PP_WHI'))
 
-    #def test_load_csa_mom_data(self):
-    #    data = pyspedas.cluster.load_csa(probes=['C1', 'C2', 'C3', 'C4'],
-    #                                     trange=['2003-08-17/16:40', '2003-08-17/16:45'],
-    #                                     datatypes='CP_CIS-HIA_ONBOARD_MOMENTS', time_clip=True)
+    def test_load_csa_mom_data(self):
+        mom_data = pyspedas.cluster.load_csa(probes=['C1', 'C2', 'C3', 'C4'],
+                                         trange=['2003-08-17/16:40', '2003-08-17/16:45'],
+                                         datatypes='CP_CIS-HIA_ONBOARD_MOMENTS', time_clip=True)
+        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
+        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
 
 if __name__ == '__main__':
     unittest.main()
