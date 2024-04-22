@@ -58,6 +58,7 @@ def tpwrspc(varname, newname=None, overwrite=False, noline=False, nohanning=Fals
         >>> import pytplot
         >>> import numpy as np
         >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
+        >>> pytplot.tpwrspc('a')
         >>> pytplot.get_data('a_pwrspc')
     """
 
