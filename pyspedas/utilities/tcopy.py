@@ -53,6 +53,12 @@ def tcopy(names_in, names_out=None, suffix=None):
     -------
     None.
 
+    Examples
+    -------
+        >>> import pyspedas
+        >>> pyspedas.themis.fgm(trange=['2007-03-23','2007-03-24'], probe='a')
+        >>> pyspedas.tcopy('tha_fgs_btotal', names_out='thx_fgs_btotal')
+        >>> pyspedas.tcopy('tha_fgs_gsm', suffix='_copy')
     """
     names_in = pyspedas.tnames(names_in)
     if len(names_in) < 1:
