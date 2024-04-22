@@ -9,7 +9,9 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
     Replaces FLAGs in arrays with interpolated or other values.
     Optionally removes NaN values from a variable
 
-    Parameters:
+    Parameters
+    ----------
+
         tvar: str
             Name of tplot variable to use for data clipping.
         flag : int,list
@@ -36,10 +38,15 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
             multiple or pseudo variables, the data is overwritten.
         fillval: int, float (optional)
             Value to use as replacement when method='replace'
-    Restrictions:
+
+    Notes
+    -----
+
        deflag only works for 1 or 2-d data arrays; ntimes or (ntimes, nspectral_bins)
 
-    Returns:
+    Returns
+    -------
+
         None
 
     Examples
