@@ -3,7 +3,7 @@ This function has now been deprecated. Please use pytplot.tplot_math.dpwrspc ins
 
 """
 import logging
-from pytplot import tplot_math
+from pytplot import dpwrspc as pytplot_dpwrspc
 
 def dpwrspc(
     time,
