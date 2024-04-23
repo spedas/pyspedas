@@ -3,8 +3,7 @@ This function has now been deprecated. Please use pytplot.tplot_math.dpwrspc ins
 
 """
 import logging
-from pytplot import dpwrspc as pytplot_dpwrspc
-
+from pytplot import tplot_math
 
 def dpwrspc(
     time,
@@ -73,14 +72,12 @@ def dpwrspc(
         The power spectrum, (units of quantity)^2/frequency_units.
 
     Example:
-
         >>> # Compute the power spectrum of a given time series
         >>> import numpy as np
         >>> from pytplot import tplot_math
         >>> time = range(3000)
         >>> quantity = np.random.random(3000)
         >>> power = pytplot.tplot_math.dpwrspc(time, quantity)
-
     """
 
     logging.warning(
