@@ -16,10 +16,17 @@ import pywt
 import pytplot
 
 
-def wavelet(names, newname=None, new_names=None, suffix='_pow', wavename='morl', scales=None,
-            method='fft', sampling_period=1.0):
+def wavelet(
+    names,
+    newname=None,
+    new_names=None,
+    suffix='_pow',
+    wavename='morl',
+    scales=None,
+    method='fft',
+    sampling_period=1.0):
     """
-    Find the wavelet transofrmation of a tplot variable.
+    Find the wavelet transformation of a tplot variable.
 
     Parameters
     ----------
@@ -27,27 +34,58 @@ def wavelet(names, newname=None, new_names=None, suffix='_pow', wavename='morl',
         List of pytplot names.
     newname: str/list of str, optional
         List of new names for pytplot variables.
-        If not given, then a suffix is applied.
+        Default: If not given, then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
         List of new names for pytplot variables.
-        If not given, then a suffix is applied.
+        Default: If not given, then a suffix is applied.
     suffix: str, optional
-        A suffix to apply. Default is '_pow'.
+        A suffix to apply.
+        Default: '_pow'.
     wavename: str, optional
-        The name of the continous wavelet function to apply.
+        The name of the continuous wavelet function to apply.
         Examples: 'gaus1', 'morl', 'cmorlB-C'.
+        Default: 'morl'
     scales: list of float, optional
         The wavelet scales to use.
+        Default: None
     method: str, optional
         Either ‘fft’ for  frequency domain convolution,
         or 'conv' for numpy.convolve.
+        Default: 'fft'
     sampling_period: float, optional
         The sampling period for the frequencies output.
+        Default: 1.0
 
     Returns
     -------
     A list of pytplot variables that contain the wavelet power.
 
+    Example
+    -------
+        >>> import numpy as np
+        >>> import pytplot
+        >>> from pyspedas import time_float
+        >>> from pyspedas.analysis.wavelet import wavelet
+
+        >>> # Create a tplot variable that contains a wave.
+        >>> t = np.arange(4000.)
+        >>> y = np.sin(2*np.pi*t/32.)
+        >>> y2 = np.sin(2*np.pi*t/64.)
+        >>> y[1000:3000] = y2[1000:3000]
+        >>> var = 'sin_wav'
+        >>> time = time_float('2010-01-01') + 10*t
+        >>> pytplot.store_data(var, data={'x':time, 'y':y})
+
+        >>> # Gaussian Derivative wavelets transformation.
+        >>> powervar = wavelet(var, wavename='gaus1')
+        >>> pvar = powervar[0]
+
+        >>> # Define plotting parameters and plot.
+        >>> pytplot.options(pvar, 'colormap', 'jet')
+        >>> pytplot.ylim(pvar, 0.001, 0.1)
+        >>> pytplot.options(pvar, 'ylog', True)
+        >>> pytplot.options(pvar, 'ytitle', pvar)
+        >>> pytplot.tplot([var, pvar])
     """
     # new_names is deprecated in favor of newname
     if new_names is not None:
