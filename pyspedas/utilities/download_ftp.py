@@ -28,14 +28,13 @@ def download_ftp(
     local_path : str
         Local directory to save the file.
     local_file : str, optional
-        Name of the file to save locally. Default is the same as the remote_file.
+        Name of the file to save locally. If not provided, the name of the remote file is used.
     username : str, optional
         Username for the FTP server. Default is 'anonymous'.
     password : str, optional
         Password for the FTP server. Default is 'anonymous@'.
     force_download : bool, optional
-        Force the download even if the remote file is not newer than the local file.
-        Default is False.
+        Force the download even if the remote file is not newer than the local file. Default is False.
 
     Returns
     -------
@@ -47,6 +46,16 @@ def download_ftp(
     Exception
         If the remote file is not found on the FTP server.
 
+    Examples
+    --------
+    >>> from pyspedas import download_ftp
+    >>> ftp_site = "ftp.gfz-potsdam.de"
+    >>> kp_dir = "/pub/home/obs/kp-ap/wdc/yearly/"
+    >>> remote_file = "kp2012.wdc"
+    >>> local_dir = "/tmp/"
+    >>> files = download_ftp(ftp_site, kp_dir, remote_file, local_dir)
+    >>> print(files)
+    ['/tmp/kp2012.wdc']
     """
     return_files = []
 
@@ -83,7 +92,7 @@ def download_ftp(
                 with open(local_file, "wb") as local_file_r:
                     ftp.retrbinary("RETR " + remote_file, local_file_r.write)
                 logging.warning(
-                    f"File '{local_file}' downloaded successfully to '{local_path}'"
+                    f"File '{remote_file}' downloaded successfully to '{local_file}'"
                 )
             else:
                 logging.warning(
