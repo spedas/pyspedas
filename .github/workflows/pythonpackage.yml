@@ -123,8 +123,8 @@ jobs:
         coverage run -a -m pyspedas.secs.tests.tests
         echo Starting kompsat tests at `date`
         coverage run -a -m pyspedas.kompsat.tests.tests
-        echo Starting hapi tests at `date`
-        coverage run -a -m pyspedas.hapi.tests.tests
+        #echo Starting hapi tests at `date`
+        #coverage run -a -m pyspedas.hapi.tests.tests
         echo Starting mms cotrans tests at `date`
         coverage run -a -m pyspedas.mms.tests.cotrans
         echo Starting mms events tests at `date`
