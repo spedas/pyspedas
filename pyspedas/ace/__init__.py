@@ -20,12 +20,14 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
     ----------
 
         trange : list of str
+
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
         datatype: str
+
             Data type; Valid options:
                 h0: 16-Second Level 2 Data
                 h1: 4-Minute Level 2 Data
@@ -33,7 +35,8 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
                 h3: (default) 1-Second Level 2 Data
                 k0: 5-Minute Key Parameters [PRELIM]
                 k1: 16-Second Key Parameters [PRELIM]
-                k2: 1-Hour Key Parameters [PRELIM] 
+                k2: 1-Hour Key Parameters [PRELIM]
+
             Default: 'h3'
 
         suffix: str
@@ -216,12 +219,15 @@ def epam(trange=['2018-11-5', '2018-11-6'],
             Default: ['2018-11-5', '2018-11-6']
 
         datatype: str
+
             Data type; Valid options:
+
                 h1: 5-Minute Level 2 Data
                 h2: 1-Hour Level 2 Data
                 h3: 12-second Level 2 Data
                 k0: (default) 5-Minute Key Parameters
                 k1: 1-Hour Key Parameters
+
             Default: 'k0'
 
         suffix: str
@@ -303,8 +309,10 @@ def cris(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+
                 h2: (default) 1-Hour Level 2 Data
                 h3: Daily-averaged Level 2 Data
+
             Default: 'h2'
 
         suffix: str
@@ -386,9 +394,11 @@ def sis(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+
                 h1: 256-sec Level 2 Data
                 h2: 1-Hour Level 2 Data
                 k0: 1-Hour Key Parameters
+
             Default: 'k0'
 
         suffix: str
@@ -470,7 +480,9 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+
                 h2: 1-Hour Level 2 Data
+
             Default; 'h2'
 
         suffix: str
@@ -552,7 +564,9 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
 
         datatype: str
             Data type; Valid options:
+
                 h2: 1-Hour Level 2 Data
+
             Defalut: 'h2'
 
         suffix: str
@@ -631,12 +645,14 @@ def swics(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
             Data type; Valid options:
+
                 sw2_h3: (default) SWICS 2.0 Solar Wind 2-Hour Level 2 Data
                 swi_h2: SWICS 1.1 Solar Wind 1-Hour Level 2 Data
                 swi_h3: SWICS 1.1 Solar Wind 2-Hour Level 2 Data
                 swi_h4: SWICS 1.1 Solar Wind 1-Day Level 2 Data 
                 swi_h5: SWICS 1.1 Solar Wind 2-Hour Level 2 Q-state distributions 
                 swi_h6: Solar Wind Protons 12-min Level 2 Data
+
             Default: 'sw2_h3'
 
         suffix: str
