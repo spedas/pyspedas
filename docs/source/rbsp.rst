@@ -46,7 +46,7 @@ Example
 
 
 Radiation Belt Storm Probes Ion Composition Experiment (RBSPICE)
-----------------------------------------------------------
+-----------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.rbspice
 
 Example
@@ -68,9 +68,9 @@ Example
    :align: center
    :class: imgborder
 
-.. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad
+.. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad.rbsp_rbspice_pad
 
-.. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg
+.. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg.rbsp_rbspice_pad_spinavg
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - MagEIS
 --------------------------------------------------------------------------

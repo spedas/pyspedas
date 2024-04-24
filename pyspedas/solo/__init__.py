@@ -106,10 +106,11 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the Radio and Plasma Waves (RPW) instrument
+    Loads data from the Radio and Plasma Waves (RPW) instrument
     
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -189,6 +190,7 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
 
     Returns
     ----------
+
         List of tplot variables created.
 
     """

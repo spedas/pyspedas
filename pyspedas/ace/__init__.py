@@ -121,17 +121,21 @@ def swe(trange=['2018-11-5', '2018-11-6'],
     ----------
 
         trange : list of str
+
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2018-11-5', '2018-11-6']
 
         datatype: str
+
             Data type; Valid options:
+
                 h0: (default) 64-Second Level 2 Data
                 h2: 1-Hour Level 2 Data
                 k0: 5-Minute Key Parameters [PRELIM] 
                 k1: 1-Hour Key Parameters [PRELIM]
+
             Default: 'h0'
 
         suffix: str
