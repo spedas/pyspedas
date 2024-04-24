@@ -17,7 +17,7 @@ def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=N
     Calculates spin-averaged pitch angle distributions using data from the
     RBSP Radiation Belt Storm Probes Ion Composition Experiment (RBSPICE)
     
-        Parameters
+    Parameters
     ----------
     probe : str or list of str, default='a'
         Spacecraft probe name: 'a' or 'b'

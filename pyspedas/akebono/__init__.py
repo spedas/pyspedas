@@ -30,7 +30,9 @@ def pws(trange=['2012-10-01', '2012-10-02'],
 
         datatype: str
             Data type; Valid options:
+
                 'ne', 'npw-ds', 'npw-py', 'spw'
+
             Default: 'ne'
 
         level: str

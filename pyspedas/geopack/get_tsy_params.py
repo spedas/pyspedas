@@ -61,6 +61,7 @@ def get_tsy_params(dst_tvar,
         Name of the tplot variable containing the parameters. 
 
         The parameters are:
+
             (1) solar wind pressure pdyn (nanopascals),
             (2) dst (nanotesla),
             (3) byimf,

@@ -20,7 +20,7 @@ def sem(trange=['2018-11-5', '2018-11-6'],
     ----------
         trange : list of str, default=['2018-11-5', '2018-11-6']
             time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
 
         probe: str or list of str, default=['noaa19']

@@ -119,6 +119,7 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
         datatype: str
             Data type; Valid options:
             Level 1:
+
                 'hfr-surv', 'lfr-surv-asm', 'lfr-surv-bp1', 'lfr-surv-bp2',
                 'lfr-surv-cwf', 'lfr-surv-swf', 'tds-surv-hist1d', 'tds-surv-hist2d',
                 'tds-surv-mamp', 'tds-surv-rswf', 'tds-surv-stat', 'tds-surv-tswf',
@@ -126,10 +127,13 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
                 (see below for definitions)
 
             Level 2:
+
               High Frequency Receiver (HFR):
+
                 'hfr-surv': High Frequency Receiver (HFR) Data in Survey Mode 
 
               Low Frequency Receiver (LFR):
+
                 'lfr-surv-asm': Averaged Spectral Matrix (ASM) Data in Survey Mode
                 'lfr-surv-bp1': Basic Parameters Set 1 (BP1) Data in Survey Mode
                 'lfr-surv-bp2': Basic Parameter Set 2 (BP2) Data in Survey Mode 
@@ -139,6 +143,7 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
                 'lfr-surv-swf-e': Snapshot Electric Waveform (SWF-E) in Survey Mode
 
               Time Domain Sampler (TDS):
+
                 'tds-surv-hist1d': Histogram Set 1 (HIST1D) Data in Survey Mode
                 'tds-surv-hist2d': Histogram Set 2 (HIST2D) Data in Survey Mode
                 'tds-surv-mamp': Maximum Amplitude (MAMP) Data in Survey Mode
@@ -148,7 +153,8 @@ def rpw(trange=['2020-06-15', '2020-06-16'],
                 'tds-surv-tswf-b': Triggered Snapshot Magnetic Waveform (TSWF-B) in Survey Mode
                 'tds-surv-tswf-e': Triggered Snapshot Electric Waveform (TSWF-E) in Survey Mode
 
-            Level 3:                
+            Level 3:
+
                 'bia-density': Plasma density derived from probe-to-spacecraft potential and electron plasma frequency
                 'bia-density-10-seconds': same as above, but median value over 10 s interval
                 'bia-efield-10-seconds': Electric field vector in SRF. Median value over 10 s interval

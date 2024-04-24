@@ -41,13 +41,16 @@ def gmag_mm210(
 
     site: str or list of str
             The site or list of sites to load.
-            Valid values: 'tik', 'zgn', 'yak', 'irt', 'ppi', 'bji',
+            Valid values:
+
+                    'tik', 'zgn', 'yak', 'irt', 'ppi', 'bji',
                     'lnp', 'mut', 'ptn', 'wtk', 'lmt', 'kat',
                     'ktn', 'chd', 'zyk', 'mgd', 'ptk', 'msr',
                     'rik', 'onw', 'kag', 'ymk', 'cbi', 'gua',
                     'yap', 'kor', 'ktb', 'bik', 'wew', 'daw',
                     'wep', 'bsv', 'dal', 'can', 'adl', 'kot',
                     'cst', 'ewa', 'asa', 'mcq', 'all'
+
             Default: ['all']
 
     datatype: str or list of str

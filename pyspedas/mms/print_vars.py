@@ -4,7 +4,9 @@ from pyspedas.mms.mms_config import CONFIG
 
 # the following decorator prints the loaded tplot variables after each load routine call
 def print_vars(func):
+    """ Decorator for printing variables """
     def wrapper(*args, **kwargs):
+        """ Internal wrapper function for decorator """
         variables = func(*args, **kwargs)
         if variables is None:
             return None

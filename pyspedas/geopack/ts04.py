@@ -20,6 +20,7 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
     -----------
         parmod: ndarray
             10-element array (vs. time):
+
                 (1) solar wind pressure pdyn (nanopascals),
                 (2) dst (nanotesla),
                 (3) byimf,

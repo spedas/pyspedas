@@ -20,9 +20,11 @@ def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
     -----------
         iopt: int
             Specifies the ground disturbance level:
+
+                =========  ======== =======  =======  =======  =======  =======
                 iopt= 1       2        3        4        5        6      7
-                           correspond to:
                 kp=  0,0+  1-,1,1+  2-,2,2+  3-,3,3+  4-,4,4+  5-,5,5+  &gt =6-
+                =========  ======== =======  =======  =======  =======  =======
 
         suffix: str
             Suffix to append to the tplot output variable
