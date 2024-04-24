@@ -66,7 +66,6 @@ def get_tsy_params(dst_tvar,
             (3) byimf,
             (4) bzimf (nanotesla)
             (5-10) indices w1 - w6, calculated as time integrals from the beginning of a storm
-                see the reference (3) below, for a detailed definition of those variables
 
     """
     model = model.lower()
