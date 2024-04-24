@@ -28,7 +28,7 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
 
-            Data type; Valid options:
+            Data type; Valid options::
                 h0: 16-Second Level 2 Data
                 h1: 4-Minute Level 2 Data
                 h2: 1-Hour Level 2 Data
@@ -80,12 +80,13 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
     Returns
     ----------
 
-        List of tplot variables created.
+        list of str
+            A list of the tplot variables created.
 
     Examples
     ----------
 
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['BGSEc', 'Magnitude'])
@@ -132,7 +133,7 @@ def swe(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
 
-            Data type; Valid options:
+            Data type; Valid options::
 
                 h0: (default) 64-Second Level 2 Data
                 h2: 1-Hour Level 2 Data
@@ -182,12 +183,13 @@ def swe(trange=['2018-11-5', '2018-11-6'],
     Returns
     ----------
 
-        List of tplot variables created.
+        list of str
+            A list of the tplot variables created.
 
     Examples
     ----------
 
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> swe_vars = pyspedas.ace.swe(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['Vp', 'Tpr'])
@@ -220,7 +222,7 @@ def epam(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str
 
-            Data type; Valid options:
+            Data type; Valid options::
 
                 h1: 5-Minute Level 2 Data
                 h2: 1-Hour Level 2 Data
@@ -271,12 +273,13 @@ def epam(trange=['2018-11-5', '2018-11-6'],
     Returns
     ----------
 
-        List of tplot variables created.
+        list of str
+            List of the tplot variables created.
     
     Examples
     ----------
 
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> epam_vars = pyspedas.ace.epam(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['H_lo', 'Ion_very_lo', 'Ion_lo', 'Ion_mid', 'Ion_hi', 'Electron_lo', 'Electron_hi'])
@@ -308,7 +311,7 @@ def cris(trange=['2018-11-5', '2018-11-6'],
             Default:['2018-11-5', '2018-11-6']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
 
                 h2: (default) 1-Hour Level 2 Data
                 h3: Daily-averaged Level 2 Data
@@ -356,12 +359,13 @@ def cris(trange=['2018-11-5', '2018-11-6'],
     Returns
     ----------
 
-        List of tplot variables created.
+        list of str
+            List of the tplot variables created.
 
     Examples
     ----------
 
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> cris_vars = pyspedas.ace.cris(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['flux_B', 'flux_C', 'flux_N', 'flux_O', 'flux_F', 'flux_Ne'])
@@ -393,7 +397,7 @@ def sis(trange=['2018-11-5', '2018-11-6'],
             Default: ['2018-11-5', '2018-11-6']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
 
                 h1: 256-sec Level 2 Data
                 h2: 1-Hour Level 2 Data
@@ -441,13 +445,13 @@ def sis(trange=['2018-11-5', '2018-11-6'],
 
     Returns
     --------
-
-        List of tplot variables created.
+        list of str
+            A list of the tplot variables created.
 
     Examples
     ----------
 
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> sis_vars = pyspedas.ace.sis(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['H_lo', 'H_hi', 'CNO_lo', 'CNO_hi', 'Z_ge_10'])
@@ -479,7 +483,7 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
             Default: ['2018-11-5', '2018-11-6']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
 
                 h2: 1-Hour Level 2 Data
 
@@ -526,12 +530,13 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
     Returns
     ----------
 
-        List of tplot variables created.
+        list of str
+            A list of the tplot variables created.
 
     Examples
     ----------
 
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> uleis_vars = pyspedas.ace.uleis(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['H_S1', 'H_S2', 'H_S3', 'H_S4', 'H_S5'])
@@ -563,7 +568,7 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
             Default: ['2004-11-5', '2004-11-6']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
 
                 h2: 1-Hour Level 2 Data
 
@@ -609,7 +614,8 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
 
     Returns
     ----------
-        List of tplot variables created.
+        list of str
+            A list of the tplot variables created.
 
     Example:
     ---------- 
@@ -644,7 +650,7 @@ def swics(trange=['2018-11-5', '2018-11-6'],
             Default: ['2018-11-5', '2018-11-6']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
 
                 sw2_h3: (default) SWICS 2.0 Solar Wind 2-Hour Level 2 Data
                 swi_h2: SWICS 1.1 Solar Wind 1-Hour Level 2 Data
@@ -695,7 +701,8 @@ def swics(trange=['2018-11-5', '2018-11-6'],
 
     Returns
     ----------
-        List of tplot variables created.
+        list of str
+            A list of the tplot variables created.
 
     Example:
     ---------- 

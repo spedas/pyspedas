@@ -62,6 +62,7 @@ def loadr(
 
     Notes
     -----
+
     Information: https://www.ngdc.noaa.gov/stp/satellite/goes-r.html
     Data: https://data.ngdc.noaa.gov/platforms/solar-space-observing-satellites/goes/
     Path: goesNN/l2/data/instrument/YYYY/MM/file.nc
@@ -70,7 +71,9 @@ def loadr(
     GOES-EAST (GOES-16, 2017-)
     GOES-WEST (GOES-17, 2018-2022; GOES-18, 2023-)
 
-    Instruments:    euvs (hi, full, 1min, euvs-l2-avg1m_science/2021/05/sci_euvs-l2-avg1m_g16_d20210530_v1-0-3.nc)
+    Instruments:
+
+                    euvs (hi, full, 1min, euvs-l2-avg1m_science/2021/05/sci_euvs-l2-avg1m_g16_d20210530_v1-0-3.nc)
                     euvs (low, avg, 1day, euvs-l2-avg1d_science/2021/06/sci_euvs-l2-avg1d_g16_d20210630_v1-0-3.nc)
                     xrs  (hi, full, 1sec, xrsf-l2-flx1s_science/2022/08/sci_xrsf-l2-flx1s_g16_d20220830_v2-1-0.nc)
                     xrs  (low, avg, 1min, xrsf-l2-avg1m_science/2021/06/sci_xrsf-l2-avg1m_g16_d20210630_v2-1-0.nc)
@@ -90,20 +93,22 @@ def loadr(
     MAG: Full resolution magnetic field readings in different coordinate systems
     MAG: Averages of 10 Hz magnetometer field readings
     SEISS (Space Environment In Situ Suite): 1-min and 5-min averages for the Magnetospheric Particle Sensors (MPS-HI and MPS-LO)
-            and for the Solar and Galactic Proton Sensor (SGPS)
+    and for the Solar and Galactic Proton Sensor (SGPS)
 
     Wrappers:
+
         pyspedas.goes.euvs
         pyspedas.goes.xrs
         pyspedas.goes.mag
         pyspedas.goes.mpsh
         pyspedas.goes.sgps
 
-    Example
-    -------
-        from pyspedas.goes import load
-        trange = ['2023-01-01', '2023-01-02']
-        load(trange=trange, probe='16', instrument='mag', datatype='1min', time_clip=True)
+    Examples
+    --------
+
+       >>> from pyspedas.goes import load
+       >>> trange = ['2023-01-01', '2023-01-02']
+       >>> load(trange=trange, probe='16', instrument='mag', datatype='1min', time_clip=True)
 
     """
     goes_path_dir = (
@@ -267,6 +272,7 @@ def load(
 
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -276,20 +282,21 @@ def load(
             GOES spacecraft #, e.g., probe=15
 
         instrument: str
-            name of the instrument
-            (for GOES 8-15: fgm, eps, epead, maged, magpd, hepad, xrs)
-            (for GOES-R 16-18: euvs, xrs, mag, mpsh, sgps)
+            name of the instrument::
+
+                (for GOES 8-15: fgm, eps, epead, maged, magpd, hepad, xrs)
+                (for GOES-R 16-18: euvs, xrs, mag, mpsh, sgps)
 
         datatype: str
-            Data type; usually instrument resolution, depends on the instrument
-            Default is 1min
-            (valid for GOES 8-15: hi, low, full, avg, 1min, 5min)
-            (valid for GOES-R 16-18: hi, low, full, avg, and other options)
+            Data type; usually instrument resolution, depends on the instrument (default '1min')::
+
+                (valid for GOES 8-15: hi, low, full, avg, 1min, 5min)
+                (valid for GOES-R 16-18: hi, low, full, avg, and other options)
 
         prefix: str
             The tplot variable names will be given this prefix.
             By default, no prefix is added.
-            If 'probename' then the name will be used, for example g16.
+            If prefix is 'probename' then the name will be used, for example g16.
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -312,7 +319,8 @@ def load(
     Notes
     -----
     This function loads data from the GOES mission; this function is not meant
-    to be called directly; instead, see the wrappers:
+    to be called directly; instead, see the wrappers::
+
         pyspedas.goes.fgm
         pyspedas.goes.eps
         pyspedas.goes.epead

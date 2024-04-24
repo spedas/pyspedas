@@ -31,7 +31,7 @@ def get_tsy_params(dst_tvar,
 
         Np_tvar: str
             tplot variable containing the solar wind 
-            ion density (cm**-3)
+            ion density (`cm**-3`)
 
         Vp_tvar: str
             tplot variable containing the proton velocity
@@ -57,9 +57,13 @@ def get_tsy_params(dst_tvar,
 
     Returns
     --------
+
         Name of the tplot variable containing the parameters. 
 
-        The parameters are:
+    Notes
+    -----
+
+        The parameters are::
 
             (1) solar wind pressure pdyn (nanopascals),
             (2) dst (nanotesla),

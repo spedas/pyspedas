@@ -19,7 +19,7 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
     Parameters
     -----------
         parmod: ndarray
-            10-element array (vs. time):
+            10-element array (vs. time)::
 
                 (1) solar wind pressure pdyn (nanopascals),
                 (2) dst (nanotesla),
@@ -32,7 +32,9 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
 
     Returns
     --------
-        Name of the tplot variable containing the model data
+        str
+            Name of the tplot variable containing the model data
+
     """
     pos_data = get_data(pos_var_gsm)
 
