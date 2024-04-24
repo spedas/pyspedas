@@ -29,6 +29,7 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         datatype: str
 
             Data type; Valid options::
+
                 h0: 16-Second Level 2 Data
                 h1: 4-Minute Level 2 Data
                 h2: 1-Hour Level 2 Data

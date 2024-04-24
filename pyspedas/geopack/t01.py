@@ -18,7 +18,8 @@ def tt01(pos_var_gsm, parmod=None, suffix=''):
     Parameters
     -----------
         parmod: ndarray
-            10-element array (vs. time), but only the first 6 elements are used
+            10-element array (vs. time), but only the first 6 elements are used::
+
                 (1) solar wind pressure pdyn (nanopascals),
                 (2) dst (nanotesla)
                 (3) byimf (nanotesla)
