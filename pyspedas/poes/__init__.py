@@ -41,7 +41,7 @@ def sem(trange=['2018-11-5', '2018-11-6'],
 
         varformat: str, default=False
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
+            `*` is accepted.  By default, all variables are loaded in.
 
         varnames: list of str, optional
             List of variable names to load (if not specified,

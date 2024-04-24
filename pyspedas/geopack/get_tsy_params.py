@@ -43,8 +43,7 @@ def get_tsy_params(dst_tvar,
     -----------
         newname: str
             name of the output variable; default: t96_par,
-            't01_par' or 'ts04_par', depending on the 
-            model
+            't01_par' or 'ts04_par', depending on the model
 
         speed: bool
             Flag to indicate Vp_tvar is speed, and not velocity
