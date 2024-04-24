@@ -23,7 +23,7 @@ Example
 
 
 Comprehensive Suprathermal and Energetic Particle Analyzer (COSTEP)
-----------------------------------------------------------
+--------------------------------------------------------------------
 .. autofunction:: pyspedas.soho.costep
 
 Example
@@ -42,7 +42,7 @@ Example
 
 
 Energetic and Relativistic Nuclei and Electron experiment (ERNE)
-----------------------------------------------------------
+-----------------------------------------------------------------
 .. autofunction:: pyspedas.soho.erne
 
 Example

@@ -4,7 +4,7 @@ The routines in this module can be used to load and process data (in case of RBS
 
 
 Electric and Magnetic Field Instrument Suite and Integrated Science (EMFISIS)
-----------------------------------------------------------
+-------------------------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.emfisis
 
 Example
@@ -73,7 +73,7 @@ Example
 .. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - MagEIS
-----------------------------------------------------------
+--------------------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.mageis
 
 Example
@@ -94,7 +94,7 @@ Example
 
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - HOPE
-----------------------------------------------------------
+------------------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.hope
 
 Example
@@ -114,7 +114,7 @@ Example
 
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - REPT
-----------------------------------------------------------
+------------------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.rept
 
 Example

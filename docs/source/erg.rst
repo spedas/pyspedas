@@ -6,6 +6,7 @@ the ERG Science Center: https://ergsc.isee.nagoya-u.jp
 Attitude Data
 -------------
 .. autofunction:: pyspedas.erg.att
+
 Example
 ^^^^^^^^^
 
@@ -92,7 +93,7 @@ Medium-energy Particles - electrons (MEP-e)
 
 
 Medium-energy Particles – "normal mode" ion (MEP-i)
-------------------------------------------------
+----------------------------------------------------
 .. autofunction:: pyspedas.erg.mepi_nml
 
 .. code-block:: python
@@ -142,6 +143,7 @@ Example
 Orbit data
 ------------------------------------------------
 .. autofunction:: pyspedas.erg.orb
+
 Example
 ^^^^^^^^^
 
@@ -160,6 +162,7 @@ Plasma Wave Experiment - Electric Field Detector (PWE-EFD)
 --------------------------------------------------------------
 
 .. autofunction:: pyspedas.erg.pwe_efd
+
 Example
 ^^^^^^^^^
 
@@ -181,6 +184,7 @@ Plasma Wave Experiment - High Frequency Analyzer (PWE-HFA)
 --------------------------------------------------------------
 
 .. autofunction:: pyspedas.erg.pwe_hfa
+
 Example
 ^^^^^^^^^
 
@@ -198,6 +202,7 @@ Example
 Plasma Wave Experiment - Onboard Frequency Analyzer (PWE-OFA)
 --------------------------------------------------------------
 .. autofunction:: pyspedas.erg.pwe_ofa
+
 Example
 ^^^^^^^^^
 
@@ -215,6 +220,7 @@ Example
 Plasma Wave Experiment - Waveform Capture (PWE-WFC)
 --------------------------------------------------------------
 .. autofunction:: pyspedas.erg.pwe_wfc
+
 Example
 ^^^^^^^^^
 

@@ -14,10 +14,11 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the ACE Fluxgate Magnetometer
+    Loads data from the ACE Fluxgate Magnetometer
     
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -75,10 +76,12 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
 
     Returns
     ----------
+
         List of tplot variables created.
 
-    Example:
+    Examples
     ----------
+
         >>> import pyspdedas
         >>> from pytplot import tplot
         >>> mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'])
@@ -112,10 +115,11 @@ def swe(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the ACE Solar Wind Electron, Proton and Alpha Monitor (SWEPAM)
+    Load data from the ACE Solar Wind Electron, Proton and Alpha Monitor (SWEPAM)
     
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -170,10 +174,12 @@ def swe(trange=['2018-11-5', '2018-11-6'],
 
     Returns
     ----------
+
         List of tplot variables created.
 
-    Example:
+    Examples
     ----------
+
         >>> import pyspdedas
         >>> from pytplot import tplot
         >>> swe_vars = pyspedas.ace.swe(trange=['2018-11-5', '2018-11-6'])
@@ -194,10 +200,11 @@ def epam(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the ACE Electron Proton Alpha Monitor (EPAM)
+    Load data from the ACE Electron Proton Alpha Monitor (EPAM)
     
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -253,10 +260,12 @@ def epam(trange=['2018-11-5', '2018-11-6'],
 
     Returns
     ----------
+
         List of tplot variables created.
     
-    Example:
+    Examples
     ----------
+
         >>> import pyspdedas
         >>> from pytplot import tplot
         >>> epam_vars = pyspedas.ace.epam(trange=['2018-11-5', '2018-11-6'])
@@ -277,10 +286,11 @@ def cris(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the ACE Cosmic Ray Isotope Spectrometer (CRIS)
+    Load data from the ACE Cosmic Ray Isotope Spectrometer (CRIS)
     
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -333,10 +343,12 @@ def cris(trange=['2018-11-5', '2018-11-6'],
 
     Returns
     ----------
+
         List of tplot variables created.
 
-    Example:
+    Examples
     ----------
+
         >>> import pyspdedas
         >>> from pytplot import tplot
         >>> cris_vars = pyspedas.ace.cris(trange=['2018-11-5', '2018-11-6'])
@@ -357,10 +369,11 @@ def sis(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the ACE Solar Isotope Spectrometer (SIS)
+    Load data from the ACE Solar Isotope Spectrometer (SIS)
     
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -413,11 +426,13 @@ def sis(trange=['2018-11-5', '2018-11-6'],
             Default: False
 
     Returns
-    ----------
+    --------
+
         List of tplot variables created.
 
-    Example:
+    Examples
     ----------
+
         >>> import pyspdedas
         >>> from pytplot import tplot
         >>> sis_vars = pyspedas.ace.sis(trange=['2018-11-5', '2018-11-6'])
@@ -438,10 +453,11 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the ACE Ultra Low Energy Isotope Spectrometer (ULEIS)
+    Load data from the ACE Ultra Low Energy Isotope Spectrometer (ULEIS)
     
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -493,10 +509,12 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
 
     Returns
     ----------
+
         List of tplot variables created.
 
-    Example:
+    Examples
     ----------
+
         >>> import pyspdedas
         >>> from pytplot import tplot
         >>> uleis_vars = pyspedas.ace.uleis(trange=['2018-11-5', '2018-11-6'])
@@ -517,10 +535,11 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the ACE Solar Energetic Particle Ionic Charge Analyzer (SEPICA)
+    Load data from the ACE Solar Energetic Particle Ionic Charge Analyzer (SEPICA)
     
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 

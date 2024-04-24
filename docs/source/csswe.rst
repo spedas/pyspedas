@@ -4,7 +4,7 @@ The routines in this module can be used to load data from the Colorado Student S
 
 
 Relativistic Electron and Proton Telescope integrated little experiment (REPTile)
-----------------------------------------------------------
+----------------------------------------------------------------------------------
 .. autofunction:: pyspedas.csswe.reptile
 
 Example

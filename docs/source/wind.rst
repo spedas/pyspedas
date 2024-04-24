@@ -84,7 +84,7 @@ Example
 
 
 Solar Wind and Suprathermal Ion Composition Experiment (SMS)
-----------------------------------------------------------
+-------------------------------------------------------------
 .. autofunction:: pyspedas.wind.sms
 
 Example

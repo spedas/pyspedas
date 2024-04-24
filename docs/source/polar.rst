@@ -130,7 +130,7 @@ Example
 
 
 Charge and Mass Magnetospheric Ion Composition Experiment (CAMMICE)
-----------------------------------------------------------
+---------------------------------------------------------------------
 .. autofunction:: pyspedas.polar.cammice
 
 Example
@@ -151,7 +151,7 @@ Example
 
 
 Comprehensive Energetic Particle-Pitch Angle Distribution (CEPPAD)
-----------------------------------------------------------
+--------------------------------------------------------------------
 .. autofunction:: pyspedas.polar.ceppad
 
 Example
