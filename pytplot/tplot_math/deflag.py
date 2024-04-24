@@ -16,15 +16,13 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
         flag : int,list
             Flagged data will be converted to NaNs.
         method : str, optional
-            Method to apply. Default is None, 
-            If None,then flagged values are replaced with NaN
-            Other options 'repeat' (repeat last good value),
-                          'linear' (interpolate linearly over gap).
-            If set to 'remove_nan', then NaN values are removed. If the data 
-            has more than one dimension, then any time interval with a NaN 
-            (or Inf) will be removed.
-            'replace' replaces flagged value with a fill value, which
-                  can be set using the keyword 'fillval' (default is to use NaN)
+            Method to apply. Valid options:
+
+                'repeat': Repeat last good value
+                'linear': Interpolate linearly over gap
+                'replace': Replace flagged values with fillval, or NaN if fillval not specified
+                'remove_nan': Remove timestamps and values with a NaN in any dimension
+
         newname : str
             Name of new tvar for deflagged data storage.
             If not specified, then the data in tvar1 will be replaced.

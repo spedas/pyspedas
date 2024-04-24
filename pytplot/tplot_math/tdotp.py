@@ -14,12 +14,11 @@ def tdotp(variable1, variable2, newname=None):
         Second tplot variable
     newname: str
         Name of the output variable
-        Default: None. If newname is not specified a new tplot variable will be created
-            with the name variable1_dot_variable2
+        Default: variable1_dot_variable2
             
     Returns
     --------
-        Name of the tplot variable
+        Name of the tplot variable created
 
     Examples
     --------
