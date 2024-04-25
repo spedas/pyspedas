@@ -1,8 +1,7 @@
 from pyspedas.mms.mec_ascii.mms_get_state_data import mms_get_state_data
-from pyspedas.mms.print_vars import print_vars
 
 
-@print_vars
+
 def mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', level='def',
     datatypes=['pos', 'vel'], no_update=False, pred_or_def=True, suffix=''):
     """
@@ -44,9 +43,12 @@ def mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', level='def',
 
     Returns
     --------
-        List of tplot variables created.
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> pos_data = pyspedas.mms.mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', datatypes='pos', level='def')

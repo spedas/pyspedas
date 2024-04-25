@@ -7,12 +7,11 @@ from pyspedas.mms.feeps.mms_feeps_remove_bad_data import mms_feeps_remove_bad_da
 from pyspedas.mms.feeps.mms_feeps_remove_sun import mms_feeps_remove_sun
 from pyspedas.mms.feeps.mms_feeps_omni import mms_feeps_omni
 from pyspedas.mms.feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
-from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import time_clip as tclip
 
 
-@print_vars
+
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='electron', varformat=None, varnames=[], get_support_data=True, suffix='', time_clip=False,
     no_update=False, available=False, notplot=False, no_flatfield_corrections=False, data_units=['count_rate', 'intensity'], 
@@ -41,9 +40,11 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             Default: 'l2'
 
         datatype : str or list of str
-            Valid datatypes for FEEPS are: 
+            Valid datatypes for FEEPS are::
+
                        L2, L1b: ['electron', 'ion']
                        L1a: ['electron-bottom', 'electron-top', 'ion-bottom', 'ion-top']
+
             Default: 'electron'
 
         data_units : str or list of str
@@ -116,10 +117,13 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             If True, download the data from the SPDF instead of the SDC
 
     Returns
-    ---------
-        List of tplot variables created.
+    --------
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> feeps_data = pyspedas.mms.mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', datatype='electron')

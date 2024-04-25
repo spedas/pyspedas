@@ -5,7 +5,6 @@ from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.hpca.mms_hpca_set_metadata import mms_hpca_set_metadata
 from pyspedas.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
 from pyspedas.mms.hpca.mms_hpca_energies import mms_hpca_energies
-from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import get_data, store_data, get
 
@@ -13,7 +12,7 @@ logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
 
-@print_vars
+
 def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='moments', get_support_data=True, time_clip=False, no_update=False,
     varformat=None, varnames=[], suffix='', center_measurement=False, available=False, notplot=False, 
@@ -117,10 +116,13 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             Default: False
             
     Returns
-    -----------
-        List of tplot variables created.
+    --------
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> mom_vars = pyspedas.mms.mms_load_hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')

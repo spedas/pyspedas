@@ -1,8 +1,7 @@
 from pyspedas.mms.mms_load_data import mms_load_data
-from pyspedas.mms.print_vars import print_vars
 
 
-@print_vars
+
 def mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06;01'], probe='1', data_rate='brst',
     level='l3', datatype='8khz', get_support_data=False, time_clip=False, no_update=False, 
     available=False, varformat=None, varnames=[], notplot=False, suffix='', latest_version=False, 
@@ -101,10 +100,13 @@ def mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06;01'], probe='1', dat
             Default: False
 
     Returns
-    -----------
-        List of tplot variables created.
+    -------
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> fsm_data = pyspedas.mms.mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06:01'])

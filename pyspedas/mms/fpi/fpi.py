@@ -3,12 +3,10 @@ from pyspedas.mms.fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
 from pyspedas.mms.fpi.mms_load_fpi_calc_pad import mms_load_fpi_calc_pad
 from pyspedas.mms.fpi.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
 from pyspedas.mms.fpi.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
-from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import tplot_rename, del_data
 
 
-@print_vars
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',
     level='l2', datatype='*', varformat=None, varnames=[], suffix='',
     get_support_data=False, time_clip=False, no_update=False, center_measurement=False,
@@ -115,10 +113,13 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             Default: False
             
     Returns
-    -----------
-        List of tplot variables created.
+    -------
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> fpi_vars = pyspedas.mms.mms_load_fpi(trange=['2015-10-16', '2015-10-17'], datatype='dis-moms')
