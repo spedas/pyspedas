@@ -11,9 +11,10 @@ Each of the MMS load routines has a short name, which is just the instrument nam
 
 Fluxgate Magnetometer (FGM)
 -----------------------------
-.. autofunction:: pyspedas.mms.mms_load_fgm
-
 Short name: pyspedas.mms.fgm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_fgm
 
 FGM Example
 ^^^^^^^^^^^^
@@ -31,9 +32,11 @@ FGM Example
 
 Search-coil Magnetometer (SCM)
 --------------------------------
+Short name: pyspedas.mms.scm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_scm
 
-Short name: pyspedas.mms.scm
 
 SCM Example
 ^^^^^^^^^^^^
@@ -51,9 +54,11 @@ SCM Example
 
 Level 3 FGM+SCM Data (FSM)
 -----------------------------
+Short name: pyspedas.mms.fsm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_fsm
 
-Short name: pyspedas.mms.fsm
 
 FSM Example
 ^^^^^^^^^^^^^^^
@@ -71,9 +76,11 @@ FSM Example
 
 Electric field Double Probe (EDP)
 -----------------------------------
+Short name: pyspedas.mms.edp
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.edp
 
-Short name: pyspedas.mms.mms_load_edp
 
 EDP Example
 ^^^^^^^^^^^^^^^
@@ -91,9 +98,11 @@ EDP Example
 
 Electron Drift Instrument (EDI)
 ---------------------------------
+Short name: pyspedas.mms.edi
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_edi
 
-Short name: pyspedas.mms.edi
 
 EDI Example
 ^^^^^^^^^^^^^^^
@@ -111,9 +120,11 @@ EDI Example
 
 Fly's Eye Energetic Particle Sensor (FEEPS)
 --------------------------------------------
+Short name: pyspedas.mms.feeps
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_feeps
 
-Short name: pyspedas.mms.feeps
 
 FEEPS Example
 ^^^^^^^^^^^^^^^
@@ -131,9 +142,11 @@ FEEPS Example
 
 Energetic Ion Spectrometer (EIS)
 -----------------------------------
+Short name: pyspedas.mms.eis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_eis
 
-Short name: pyspedas.mms.esi
 
 EIS Example
 ^^^^^^^^^^^^^^^
@@ -151,9 +164,11 @@ EIS Example
 
 Active Spacecraft Potential Control (ASPOC)
 --------------------------------------------
+Short name: pyspedas.mms.aspoc
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_aspoc
 
-Short name: pyspedas.mms.aspoc
 
 ASPOC Example
 ^^^^^^^^^^^^^^^
@@ -171,9 +186,11 @@ ASPOC Example
 
 Fast Plasma Investigation (FPI)
 --------------------------------
+Short name: pyspedas.mms.fpi
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_fpi
 
-Short name: pyspedas.mms.fpi
 
 FPI Example
 ^^^^^^^^^^^^^^^
@@ -191,6 +208,9 @@ FPI Example
 
 Hot Plasma Composition Analyzer (HPCA)
 ---------------------------------------
+Short name: pyspedas.mms.hpca
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_hpca
 
 Short name: pyspedas.mms.hpca
@@ -209,11 +229,12 @@ HPCA Example
    :align: center
    :class: imgborder
 
-Short name: pyspedas.mms.mms_load_mec
-
-Magnetic Ephemeris Coordinates (MEC)
+Mission Ephemeris Coordinates (MEC)
 -------------------------------------
-.. autofunction:: pyspedas.mms.mec
+Short name: pyspedas.mms.mec
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_mec
 
 MEC Example
 ^^^^^^^^^^^^^^^
@@ -229,9 +250,13 @@ MEC Example
    :align: center
    :class: imgborder
 
+Attitude and Ephemeris (STATE)
+-------------------------------
+Short name: pyspedas.mms.state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.mms_load_state
 
-Short name: pyspedas.mms.state
 
 State Example
 ^^^^^^^^^^^^^^^
@@ -250,9 +275,10 @@ State Example
 
 Tetrahedron Quality Factor
 --------------------------------
-.. autofunction:: pyspedas.mms.mms_load_tetrahedron_qf
-
 Short name: pyspedas.mms.tetrahedron_qf
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_tetrahedron_qf
 
 Tetrahedron QF Example
 ^^^^^^^^^^^^^^^^^^^^^^
