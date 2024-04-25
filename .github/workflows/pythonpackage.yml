@@ -105,6 +105,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
         # echo Starting akebono tests at `date`
         # coverage run -a -m pyspedas.akebono.tests.tests
+        echo Starting CDAWeb tests at `date`
+        coverage run -a -m pyspedas.cdagui.tests.tests
         echo Starting barrel tests at `date`
         coverage run -a -m pyspedas.barrel.tests.tests
         echo Starting soho tests at `date`
