@@ -20,7 +20,7 @@ import os
 import time
 import tkinter as tk
 from tkinter import messagebox, filedialog
-from cdaweb import CDAWeb
+from .cdaweb import CDAWeb
 from config import CONFIG
 
 
