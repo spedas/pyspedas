@@ -15,14 +15,22 @@ from pyspedas.utilities.download import download
 
 
 class CDAWeb:
-    """Class for loading data from CDA web."""
+    """ Get information and download files from CDAWeb using cdasws."""
 
     def __init__(self):
         """Initialize."""
         self.cdas = CdasWs()
 
     def get_observatories(self):
-        """Return a list of missions."""
+        """Return a list of strings CDAWeb uses to designate missions or mission groups
+
+        Examples
+        --------
+
+        >>> from pyspedas import CDAWeb
+        >>> cdaweb_obj = CDAWeb()
+        >>> obs_names = cdaweb_obj.get_observatories()
+        """
         observatories = self.cdas.get_observatory_groups()
         onames = []
         for mission in observatories:
@@ -32,7 +40,15 @@ class CDAWeb:
         return onames
 
     def get_instruments(self):
-        """Return a list of instrument types."""
+        """Return a list of strings CDAWeb uses to designate instrument or dataset types.
+
+        Examples
+        --------
+
+        >>> from pyspedas import CDAWeb
+        >>> cdaweb_obj = CDAWeb()
+        >>> obs_names = cdaweb_obj.get_instruments()
+        """
         instruments = self.cdas.get_instrument_types()
         inames = []
         for instrument in instruments:
@@ -47,9 +63,27 @@ class CDAWeb:
         return t0
 
     def get_datasets(self, mission_list, instrument_list):
-        """Return a list of datasets given the missions and instruments.
+        """Return a list of datasets recognized by CDAWeb, given lists of missions and instruments.
 
-        Example: get_datasets(['ARTEMIS'],['Electric Fields (space)'])
+        Parameters
+        ----------
+        mission_list: list of str
+            List of mission names, as obtained from get_observatories()
+        instrument_list: list of str
+            List of instrument names, as obtained from get_instruments()
+
+        Returns
+        -------
+        list of str
+            A list of available datasets for the given missions and instruments.
+
+        Examples
+        --------
+
+        >>> from pyspedas import CDAWeb
+        >>> cdaweb_obj = CDAWeb()
+        >>> dataset_list = cdaweb_obj.get_datasets(['ARTEMIS'],['Electric Fields (space)'])
+
         """
         thisdict = {"observatoryGroup": mission_list, "instrumentType": instrument_list}
         datasets = self.cdas.get_datasets(**thisdict)
@@ -71,6 +105,27 @@ class CDAWeb:
 
         Example: get_files(['THB_L2_FIT (2007-02-26 to 2020-01-17)'],
             '2010-01-01 00:00:00', '2010-01-10 00:00:00')
+
+        Parameters
+        ----------
+        dataset_list: list of str
+            A list of dataset names, as obtained from get_datasets()
+        t0: str
+            Start time for data to be retrieved
+        t1: str
+            End time for data to be retrieved
+
+        Returns
+        -------
+        list of str
+            A list of URLs for the given dataset and time range
+
+        Examples
+        --------
+
+        >>> from pyspedas import CDAWeb
+        >>> cdaweb_obj = CDAWeb()
+        >>> urllist = cdaweb_obj.get_filenames(['THB_L2_FIT (2007-02-26 to 2020-01-17)'], '2010-01-01 00:00:00', '2010-01-10 00:00:00')
         """
         remote_url = []
 
@@ -110,9 +165,44 @@ class CDAWeb:
         varnames=[],
         notplot=False,
     ):
-        """Download cdf files.
+        """Download data files and (by default) load the data into tplot variables
 
-        Load cdf files into pytplot variables (optional).
+        Parameters
+        ----------
+        remote_files : list of str
+            List of remote file URLs, as obtained from get_datasets()
+        local_dir : str
+            Local directory to save the data in
+        download_only : bool
+            If True, download the data, but do not load it into tplot variables
+        varformat: str
+            If set, specifies a pattern for which CDF or NetCDF variables to load
+        get_support_data: bool
+            If True, load CDF variables marked as 'support_data'
+        prefix: str
+            If set, prepend this string to the variable name when creating the tplot variables
+        suffix: str
+            If set, append this string to the variable name when creating the tplot variables
+        varnames: list of str
+            If set, specifies a list of variables to load from the data files
+        notplot: bool
+            If True, return data directly as tplot data structures, rather than a list of tplot names
+
+        Returns
+        -------
+        list
+            A list with entries for each input URL, with each entry being a list containing the URL, the local file name for
+            that URL, and an integer status for converting the data to tplot variables
+
+        Examples
+        --------
+
+        >>> from pyspedas import CDAWeb
+        >>> from pytplot import tplot
+        >>> cdaweb_obj = CDAWeb()
+        >>> urllist = cdaweb_obj.get_filenames(['THB_L2_FIT (2007-02-26 to 2020-01-17)'], '2010-01-01 00:00:00', '2010-01-10 00:00:00')
+        >>> result = cdaweb_obj.cda_download(urllist,local_dir="/tmp")
+        >>> tplot('thb_fgs_gsm')
         """
         result = []
         loaded_vars = []
@@ -139,6 +229,7 @@ class CDAWeb:
                         else:
                             cvars = cdf_to_tplot(
                                 localfile,
+                                prefix=prefix,
                                 suffix=suffix,
                                 get_support_data=get_support_data,
                                 varformat=varformat,
