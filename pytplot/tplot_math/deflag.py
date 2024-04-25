@@ -16,7 +16,7 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
         flag : int,list
             Flagged data will be converted to NaNs.
         method : str, optional
-            Method to apply. Valid options:
+            Method to apply. Valid options::
 
                 'repeat': Repeat last good value
                 'linear': Interpolate linearly over gap
@@ -26,7 +26,7 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
         newname : str
             Name of new tvar for deflagged data storage.
             If not specified, then the data in tvar1 will be replaced.
-            THIS is not an option for multiple variable input, for
+            This is not an option for multiple variable input, for
             multiple or pseudo variables, the data is overwritten.
         new_tvar : str (Deprecated)
             Name of new tvar for deflagged data storage.  

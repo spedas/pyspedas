@@ -19,7 +19,7 @@ def tcrossp(
         Second tplot variable
     newname: str, optional
         Name of the output variable
-        Default: None
+        Default: v1_cross_v2
     return_data: bool
         Returns the data as an ndarray instead of creating a tplot variable
         Default: False
