@@ -252,7 +252,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
 
                     continue
 
-                if x_axis_var not in load_cdf_variables:
+                if x_axis_var not in master_cdf_variables:
                     logging.warning('Variable %s timestamp variable %s not found, skipping', var, x_axis_var)
                     continue
 
