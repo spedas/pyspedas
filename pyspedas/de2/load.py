@@ -6,7 +6,7 @@ from pytplot import cdf_to_tplot
 from .config import CONFIG
 
 
-def load(trange=['1983-02-10', '1983-02-11'],
+def load(trange=['1983-02-16', '1983-02-17'], 
          instrument='mag',
          datatype='',
          suffix='', 
@@ -38,7 +38,9 @@ def load(trange=['1983-02-10', '1983-02-11'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2020-11-5/10:00', '2020-11-5/12:00']
 
-        instrument : instruments include
+        instrument : str
+            Valid options are::
+
             'mag'
             'nacs'
             'rpa'
@@ -46,9 +48,10 @@ def load(trange=['1983-02-10', '1983-02-11'],
             'wats'
             'vefi'
             'lang'
+
             Default: 'mag'
 
-         datatype : see if statements below in main code
+        datatype : see if statements below in main code
             Default: ''
 
         suffix: str
@@ -92,17 +95,22 @@ def load(trange=['1983-02-10', '1983-02-11'],
 
     Example
     ----------
-        import pyspedas
-        from pytplot import tplot
-        pyspedas.de2.load(instrument='mag', trange=['2020-11-5/10:00', '2020-11-5/12:00'])
-        tplot()
+        >>> import pyspedas
+        >>> from pytplot import tplot
+        >>> pyspedas.de2.load(instrument='mag', trange=['2020-11-5/10:00', '2020-11-5/12:00'])
+        >>> tplot()
 
-        import pyspedas
-        from pytplot import tplot
-        mag_vars = pyspedas.de2.mag(trange=['1983-02-10', '1983-02-11'])
-        tplot(['bx', 'by', 'bz'])
+        >>> import pyspedas
+        >>> from pytplot import tplot
+        >>> mag_vars = pyspedas.de2.mag(trange=['1983-02-16', '1983-02-17'])
+        >>> tplot(['bx', 'by', 'bz'])
 
     """
+
+    mastercdf = None
+    addmaster = False
+    masterpath = 'https://cdaweb.gsfc.nasa.gov/pub/software/cdawlib/0MASTERS/'
+    local_master_dir = CONFIG['local_data_dir']+'de2_masters/'
 
     if instrument == 'mag':
         pathformat = 'magnetic_electric_fields_vefi_magb/'+datatype+'_vefimagb_cdaweb/%Y/de2_'+datatype+'_vefimagb_%Y%m%d_v??.cdf'
@@ -113,6 +121,8 @@ def load(trange=['1983-02-10', '1983-02-11'],
     elif instrument == 'fpi':
         pathformat = 'neutral_gas_fpi/de2_neutral8s_fpi/%Y/de2_neutral'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
     elif instrument == 'idm':
+        masterfile = 'de2_vion250ms_idm_00000000_v01.cdf'
+        addmaster = True
         pathformat = 'plasma_idm/vion250ms_cdaweb/%Y/de2_vion'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
     elif instrument == 'wats':
         pathformat = 'neutral_gas_wats/wind2s_wats_cdaweb/%Y/de2_wind'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
@@ -121,6 +131,10 @@ def load(trange=['1983-02-10', '1983-02-11'],
     elif instrument == 'lang':
         pathformat = 'plasma_lang/plasma500ms_lang_cdaweb/%Y/de2_plasma'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
 
+    if addmaster:
+        mastercdf = download(remote_file=masterfile,remote_path=masterpath,local_path=local_master_dir,no_download=no_update)
+    else:
+        mastercdf = [None]
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange)
 
@@ -136,7 +150,7 @@ def load(trange=['1983-02-10', '1983-02-11'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, mastercdf=mastercdf[0], suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars
