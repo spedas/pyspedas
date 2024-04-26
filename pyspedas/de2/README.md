@@ -23,7 +23,7 @@ from pytplot import tplot
 #### Magnetometer (MAG)
 
 ```python
-mag_vars = pyspedas.de2.mag(trange=['1983-02-16', '1983-02-17'])
+mag_vars = pyspedas.de2.mag(trange=['1983-02-10', '1983-02-11'])
 
 tplot(['bx', 'by', 'bz'])
 ```
@@ -32,7 +32,7 @@ tplot(['bx', 'by', 'bz'])
 #### Neutral Atmosphere Composition Spectrometer (NACS)
 
 ```python
-nacs_vars = pyspedas.de2.nacs(trange=['1983-02-16', '1983-02-17'])
+nacs_vars = pyspedas.de2.nacs(trange=['1983-02-10', '1983-02-11'])
 
 tplot(['O_density', 'N_density'])
 ```
@@ -41,7 +41,7 @@ tplot(['O_density', 'N_density'])
 #### Retarding Potential Analyzer (RPA)
 
 ```python
-rpa_vars = pyspedas.de2.rpa(trange=['1983-02-16', '1983-02-17'])
+rpa_vars = pyspedas.de2.rpa(trange=['1983-02-10', '1983-02-11'])
 
 tplot(['ionDensity', 'ionTemperature'])
 ```
@@ -50,7 +50,7 @@ tplot(['ionDensity', 'ionTemperature'])
 #### Fabry-Pérot Interferometer (FPI)
 
 ```python
-fpi_vars = pyspedas.de2.fpi(trange=['1983-02-16', '1983-02-17'])
+fpi_vars = pyspedas.de2.fpi(trange=['1983-02-10', '1983-02-11'])
 
 tplot('TnF')
 ```
@@ -59,7 +59,7 @@ tplot('TnF')
 #### Ion Drift Meter (IDM)
 
 ```python
-idm_vars = pyspedas.de2.idm(trange=['1983-02-16', '1983-02-17'])
+idm_vars = pyspedas.de2.idm(trange=['1983-02-10', '1983-02-11'])
 
 tplot(['ionVelocityZ', 'ionVelocityY'])
 ```
@@ -68,7 +68,7 @@ tplot(['ionVelocityZ', 'ionVelocityY'])
 #### Wind and Temperature Spectrometer (WATS)
 
 ```python
-wats_vars = pyspedas.de2.wats(trange=['1983-02-16', '1983-02-17'])
+wats_vars = pyspedas.de2.wats(trange=['1983-02-10', '1983-02-11'])
 
 tplot(['density', 'Tn'])
 ```
@@ -77,7 +77,7 @@ tplot(['density', 'Tn'])
 #### Vector Electric Field Instrument (VEFI)
 
 ```python
-vefi_vars = pyspedas.de2.vefi(trange=['1983-02-16', '1983-02-17'])
+vefi_vars = pyspedas.de2.vefi(trange=['1983-02-10', '1983-02-11'])
 
 tplot(['spectA', 'spectB', 'spectC'])
 ```
@@ -86,7 +86,7 @@ tplot(['spectA', 'spectB', 'spectC'])
 #### Langmuir Probe Instrument (LANG)
 
 ```python
-lang_vars = pyspedas.de2.lang(trange=['1983-02-16', '1983-02-17'])
+lang_vars = pyspedas.de2.lang(trange=['1983-02-10', '1983-02-11'])
 
 tplot(['plasmaDensity', 'electronTemp'])
 ```

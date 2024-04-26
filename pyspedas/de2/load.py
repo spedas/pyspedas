@@ -6,7 +6,7 @@ from pytplot import cdf_to_tplot
 from .config import CONFIG
 
 
-def load(trange=['1983-02-16', '1983-02-17'], 
+def load(trange=['1983-02-10', '1983-02-11'],
          instrument='mag',
          datatype='',
          suffix='', 
@@ -99,7 +99,7 @@ def load(trange=['1983-02-16', '1983-02-17'],
 
         import pyspedas
         from pytplot import tplot
-        mag_vars = pyspedas.de2.mag(trange=['1983-02-16', '1983-02-17'])
+        mag_vars = pyspedas.de2.mag(trange=['1983-02-10', '1983-02-11'])
         tplot(['bx', 'by', 'bz'])
 
     """
