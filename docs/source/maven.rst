@@ -139,8 +139,9 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pytplot import tplot, options
    euv_vars = pyspedas.maven.euv(trange=['2014-10-18', '2014-10-19'])
+   options('mvn_euv_calib_bands_bands','ylog',0)
    tplot('mvn_euv_calib_bands_bands')
 
 .. image:: _static/maven_euv.png
