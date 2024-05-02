@@ -1,4 +1,5 @@
 import unittest
+import sys
 from unittest.mock import patch, MagicMock
 
 
@@ -8,6 +9,13 @@ class TestImportErrorHandling(unittest.TestCase):
         # Mocking only the logging part of pyspedas to capture logging outputs
         self.logging_patch = patch('pyspedas.logging.error', new_callable=MagicMock)
         self.mock_logging_error = self.logging_patch.start()
+
+        # Clear any existing modules
+        if 'pyspedas' in sys.modules:
+            del sys.modules['pyspedas']
+
+        if 'mth5' in sys.modules:
+            del sys.modules['mth5']
 
     def tearDown(self):
         self.logging_patch.stop()
