@@ -1,14 +1,13 @@
 import logging
 import pandas as pd
 import numpy as np
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import store_data
 
 
 def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 'spindec'], suffix='', trange=None):
     """
     Helper routine for loading state data (ASCII files from the SDC); not meant to be called directly; see pyspedas.mms.state instead
-    
     """
     prefix = 'mms' + probe
 
@@ -20,7 +19,7 @@ def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 
     logging.info('Loading attitude files can take some time; please be patient...')
     for file in filenames:
         logging.info('Loading ' + file)
-        rows = pd.read_csv(file, delim_whitespace=True, header=None, skiprows=49)
+        rows = pd.read_csv(file, sep=r'\s+', header=None, skiprows=49)
 
         times = rows.shape[0]-1
         time_values = np.empty(times)
@@ -53,11 +52,17 @@ def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 
     file_lras_out = file_lras_sorted[file_times_uniq[1]]
     file_ldecs_out = file_ldecs_sorted[file_times_uniq[1]]
 
+    return_vars = []
     if 'spinras' in datatypes:
-        store_data(prefix + '_' + level + 'att_spinras' + suffix, data={'x': file_times_uniq[0], 'y': file_lras_out})
-        tclip(prefix + '_' + level + 'att_spinras' + suffix, trange[0], trange[1], suffix='')
+        spinras_var = prefix + '_' + level + 'att_spinras' + suffix
+        store_data(spinras_var, data={'x': file_times_uniq[0], 'y': file_lras_out})
+        tclip(spinras_var, trange[0], trange[1], suffix='')
+        return_vars.append(spinras_var)
 
     if 'spindec' in datatypes:
-        store_data(prefix + '_' + level + 'att_spindec' + suffix, data={'x': file_times_uniq[0], 'y': file_ldecs_out})
-        tclip(prefix + '_' + level + 'att_spindec' + suffix, trange[0], trange[1], suffix='')
+        spindec_var = prefix + '_' + level + 'att_spindec' + suffix
+        store_data(spindec_var, data={'x': file_times_uniq[0], 'y': file_ldecs_out})
+        tclip(spindec_var, trange[0], trange[1], suffix='')
+        return_vars.append(spindec_var)
 
+    return return_vars

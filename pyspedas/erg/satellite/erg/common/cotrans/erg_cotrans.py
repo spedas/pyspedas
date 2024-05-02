@@ -10,8 +10,8 @@
 Main routine for coordinate transformation is erg_cotrans().
 """
 
-from pyspedas import tnames, tcopy
-
+from pyspedas import tcopy
+from pytplot import tnames
 from .dsi2j2000 import dsi2j2000
 from .sga2sgi import sga2sgi
 from .sgi2dsi import sgi2dsi

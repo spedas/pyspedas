@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mag_vars = pyspedas.de2.mag(trange=['1983-02-16', '1983-02-17'])
+   mag_vars = pyspedas.de2.mag(trange=['1983-02-10', '1983-02-11'])
    tplot(['bx', 'by', 'bz'])
 
 .. image:: _static/de2_mag.png
@@ -33,7 +33,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   nacs_vars = pyspedas.de2.nacs(trange=['1983-02-16', '1983-02-17'])
+   nacs_vars = pyspedas.de2.nacs(trange=['1983-02-10', '1983-02-11'])
    tplot(['O_density', 'N_density'])
 
 .. image:: _static/de2_nacs.png
@@ -52,7 +52,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   rpa_vars = pyspedas.de2.rpa(trange=['1983-02-16', '1983-02-17'])
+   rpa_vars = pyspedas.de2.rpa(trange=['1983-02-10', '1983-02-11'])
    tplot(['ionDensity', 'ionTemperature'])
 
 .. image:: _static/de2_rpa.png
@@ -71,7 +71,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   fpi_vars = pyspedas.de2.fpi(trange=['1983-02-16', '1983-02-17'])
+   fpi_vars = pyspedas.de2.fpi(trange=['1983-02-10', '1983-02-11'])
    tplot('TnF')
 
 .. image:: _static/de2_fpi.png
@@ -90,7 +90,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   idm_vars = pyspedas.de2.idm(trange=['1983-02-16', '1983-02-17'])
+   idm_vars = pyspedas.de2.idm(trange=['1983-02-10', '1983-02-11'])
    tplot(['ionVelocityZ', 'ionVelocityY'])
 
 .. image:: _static/de2_idm.png
@@ -109,7 +109,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   wats_vars = pyspedas.de2.wats(trange=['1983-02-16', '1983-02-17'])
+   wats_vars = pyspedas.de2.wats(trange=['1983-02-10', '1983-02-11'])
    tplot(['density', 'Tn'])
 
 .. image:: _static/de2_wats.png
@@ -128,7 +128,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   vefi_vars = pyspedas.de2.vefi(trange=['1983-02-16', '1983-02-17'])
+   vefi_vars = pyspedas.de2.vefi(trange=['1983-02-10', '1983-02-11'])
    tplot(['spectA', 'spectB', 'spectC'])
 
 .. image:: _static/de2_vefi.png
@@ -147,7 +147,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   lang_vars = pyspedas.de2.lang(trange=['1983-02-16', '1983-02-17'])
+   lang_vars = pyspedas.de2.lang(trange=['1983-02-10', '1983-02-11'])
    tplot(['plasmaDensity', 'electronTemp'])
 
 .. image:: _static/de2_lang.png

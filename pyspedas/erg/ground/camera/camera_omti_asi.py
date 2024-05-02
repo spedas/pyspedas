@@ -4,25 +4,96 @@ import numpy as np
 from pytplot import get_data, store_data, options, clip, ylim
 
 from ...satellite.erg.load import load
+from ...satellite.erg.get_gatt_ror import get_gatt_ror
 
+from typing import List, Union, Optional
 
 def camera_omti_asi(
-    trange=['2020-08-01', '2020-08-02'],
-    suffix='',
-    site='all',
-    wavelength=[5577],
-    get_support_data=False,
-    varformat=None,
-    varnames=[],
-    downloadonly=False,
-    notplot=False,
-    no_update=False,
-    uname=None,
-    passwd=None,
-    time_clip=False,
-    ror=True
-):
+    trange: List[str] = ['2020-08-01', '2020-08-02'],
+    suffix: str = '',
+    site: Union[str, List[str]] = 'all',
+    wavelength: Union[int, List[int], str, List[str]] = [5577],
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True
+) -> List[str]:
+    """
+    Load data from OMTI all sky imagers
 
+    Parameters
+    ----------
+    trange: list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2020-08-01', '2020-08-02']
+
+    suffix: str
+            The tplot variable names will be given this suffix.  Default: ''
+
+    site: str or list of str
+            The site or list of sites to load.
+            Valid values: 'abu', 'ath', 'drw', 'eur', 'gak', 'hlk', 'hus', 'isg',
+            'ist', 'ith', 'kap', 'ktb','mgd', 'nai', 'nyr', 'ptk', 'rik', 'rsb',
+            'sgk', 'sta', 'syo', 'trs', 'yng', 'all'
+            Default: 'all'
+
+    wavelength: str, int, list of str, or list of int
+            Valid values: [5577, 5725, 6300, 7200, 7774]
+            Default: [5577]
+
+    get_support_data: bool
+            If true, data with an attribute "VAR_TYPE" with a value of "support_data"
+            or 'data' will be loaded into tplot. Default: False
+
+    varformat: str
+            The CDF file variable formats to load into tplot.  Wildcard character
+            "*" is accepted.  Default: None (all variables will be loaded).
+
+    varnames: list of str
+            List of variable names to load. Default: [] (all variables will be loaded)
+
+    downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables. Default: False
+
+    notplot: bool
+            Return the data in hash tables instead of creating tplot variables. Default: False
+
+    no_update: bool
+            If set, only load data from your local cache. Default: False
+
+    uname: str
+            User name.  Default: None
+
+    passwd: str
+            Password. Default: None
+
+    time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword. Default: False
+
+    ror: bool
+            If set, print PI info and rules of the road. Default: True
+
+    Returns
+    -------
+    None
+
+    Examples
+    ________
+
+    >>> import pyspedas
+    >>> omti_vars=pyspedas.erg.camera_omti_asi(site='ath', trange=['2020-01-20','2020-01-21'])
+    >>> print(omti_vars)
+
+    """
     site_code_all = ['abu', 'ath', 'drw', 'eur', 'gak', 'hlk',
                      'hus', 'isg', 'ist', 'ith', 'kap', 'ktb',
                      'mgd', 'nai', 'nyr', 'ptk', 'rik', 'rsb',
@@ -49,7 +120,12 @@ def camera_omti_asi(
     
     site_code = list(set(site_code).intersection(site_code_all))
 
-    
+    new_cdflib = False
+    if cdflib.__version__ > "0.4.9":
+        new_cdflib = True
+    else:
+        new_cdflib = False
+
     if notplot:
         loaded_data = {}
     else:
@@ -70,14 +146,7 @@ def camera_omti_asi(
                 loaded_data += loaded_data_temp
             if (len(loaded_data_temp) > 0) and ror:
                 try:
-                    if isinstance(loaded_data_temp, list):
-                        if downloadonly:
-                            cdf_file = cdflib.CDF(loaded_data_temp[-1])
-                            gatt = cdf_file.globalattsget()
-                        else:
-                            gatt = get_data(loaded_data_temp[-1], metadata=True)['CDF']['GATT']
-                    elif isinstance(loaded_data_temp, dict):
-                        gatt = loaded_data_temp[list(loaded_data_temp.keys())[-1]]['CDF']['GATT']
+                    gatt = get_gatt_ror(downloadonly, loaded_data)
                     print('**************************************************************************')
                     print(gatt["Logical_source_description"])
                     print('')
@@ -137,20 +206,27 @@ def camera_omti_asi(
                                 file_name = file_name[0]
                         cdf_file = cdflib.CDF(file_name)
                         cdf_info = cdf_file.cdf_info()
-                        all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
+
+                        if new_cdflib:
+                            all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
+                        else:
+                            all_cdf_variables = cdf_info["rVariables"] + cdf_info["zVariables"]
+
                         if 'image_raw' in all_cdf_variables:
                             var_string = 'image_raw'
                             var_properties = cdf_file.varinq(var_string)
-                            if 'Data_Type_Description' in var_properties:
-                                original_datatype_string = var_properties['Data_Type_Description']
-                                if original_datatype_string == 'CDF_INT4':
-                                    image_y_transpose = image_y_transpose.astype(np.int32)
-                                elif original_datatype_string == 'CDF_UINT1':
-                                    image_y_transpose = image_y_transpose.astype(np.uint8)
-                                elif original_datatype_string == 'CDF_UINT2':
-                                    image_y_transpose = image_y_transpose.astype(np.uint16)
-                                elif original_datatype_string == 'CDF_UINT4':
-                                    image_y_transpose = image_y_transpose.astype(np.uint32)
+                            if new_cdflib:
+                                original_datatype_string = var_properties.Data_Type_Description
+                            else:
+                                original_datatype_string = var_properties["Data_Type_Description"]
+                            if original_datatype_string == 'CDF_INT4':
+                                image_y_transpose = image_y_transpose.astype(np.int32)
+                            elif original_datatype_string == 'CDF_UINT1':
+                                image_y_transpose = image_y_transpose.astype(np.uint8)
+                            elif original_datatype_string == 'CDF_UINT2':
+                                image_y_transpose = image_y_transpose.astype(np.uint16)
+                            elif original_datatype_string == 'CDF_UINT4':
+                                image_y_transpose = image_y_transpose.astype(np.uint32)
 
                         get_metadata_vars = get_data(current_tplot_name, metadata=True)
                         store_data(current_tplot_name,

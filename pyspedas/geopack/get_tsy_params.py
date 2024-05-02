@@ -1,8 +1,8 @@
 import logging
 import numpy as np
-from pyspedas import tinterpol, tdeflag
+from pyspedas import tinterpol
 from pyspedas.geopack.get_w_params import get_w
-from pytplot import get_data, store_data
+from pytplot import get_data, store_data, tdeflag
 
 
 def get_tsy_params(dst_tvar,
@@ -31,7 +31,7 @@ def get_tsy_params(dst_tvar,
 
         Np_tvar: str
             tplot variable containing the solar wind 
-            ion density (cm**-3)
+            ion density (`cm**-3`)
 
         Vp_tvar: str
             tplot variable containing the proton velocity
@@ -43,8 +43,7 @@ def get_tsy_params(dst_tvar,
     -----------
         newname: str
             name of the output variable; default: t96_par,
-            't01_par' or 'ts04_par', depending on the 
-            model
+            't01_par' or 'ts04_par', depending on the model
 
         speed: bool
             Flag to indicate Vp_tvar is speed, and not velocity
@@ -58,15 +57,19 @@ def get_tsy_params(dst_tvar,
 
     Returns
     --------
+
         Name of the tplot variable containing the parameters. 
 
-        The parameters are:
+    Notes
+    -----
+
+        The parameters are::
+
             (1) solar wind pressure pdyn (nanopascals),
             (2) dst (nanotesla),
             (3) byimf,
             (4) bzimf (nanotesla)
             (5-10) indices w1 - w6, calculated as time integrals from the beginning of a storm
-                see the reference (3) below, for a detailed definition of those variables
 
     """
     model = model.lower()
@@ -113,7 +116,9 @@ def get_tsy_params(dst_tvar,
             return
         else:
             if isinstance(g_variables, str):
-                g_data = get_data(g_variables)
+                tdeflag(g_variables, method='remove_nan', overwrite=True)
+                tinterpol(g_variables, Np_tvar, newname=g_variables+'_interp')
+                g_data = get_data(g_variables+'_interp')
 
                 if g_data is None:
                     logging.error('Problem reading G variable: ' + g_variables)
@@ -144,6 +149,8 @@ def get_tsy_params(dst_tvar,
                             np.zeros(len(dst_data.y))))
     elif model == 'ts04':
         params = get_w(trange=[np.nanmin(Np_data.times), np.nanmax(Np_data.times)], create_tvar=True)
+        # Better deflag, just in case...
+        tdeflag(params, method='remove_nan',overwrite=True)
         # interpolate the inputs to the Np timestamps
         tinterpol(params, Np_tvar, newname=params+'_interp')
         w_data = get_data(params+'_interp')

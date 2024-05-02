@@ -3,7 +3,7 @@ import datetime
 import pandas as pd
 import numpy as np
 from pyspedas.utilities.download import download
-from pyspedas import time_double
+from pytplot import time_double
 
 
 def load_leap_table(reload=False):
@@ -38,9 +38,9 @@ def load_leap_table(reload=False):
                               remote_file='CDFLeapSeconds.txt',
                               local_path=table_dir)
 
-    cols = ['Year', 'Month', 'Day', 'LS', 'Drift']
+    cols = ['Year', 'Month', 'Day', 'LS', 'Drift1','Drift2']
     table = pd.read_csv(table_file,
-                        delim_whitespace=True,
+                        sep=r'\s+',
                         dtype=str,
                         names=cols,
                         comment=';',

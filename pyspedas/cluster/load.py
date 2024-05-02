@@ -1,23 +1,87 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
-
+from typing import List, Union
 from .config import CONFIG
 
-def load(trange=['2018-11-5', '2018-11-6'], 
-         probe='1',
-         instrument='fgm',
-         datatype='up', 
-         suffix='', 
-         get_support_data=False, 
-         varformat=None, 
-         varnames=[],
-         downloadonly=False,
-         notplot=False,
-         no_update=False,
-         time_clip=False):
+def load(trange:List[str]=['2018-11-5', '2018-11-6'],
+         probe:Union[str,List[str]]='1',
+         instrument:str='fgm',
+         datatype:str='up',
+         suffix:str='',
+         get_support_data:bool=False,
+         varformat:str=None,
+         varnames:List[str]=[],
+         downloadonly:bool=False,
+         notplot:bool=False,
+         no_update:bool=False,
+         time_clip:bool=False) -> List[str]:
     """
+    Load data from Cluster instruments
+
+    Parameters
+    ----------
+        trange : list of str
+            time range of interest [starttime, endtime] with the format
+            ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2018-11-5', '2018-11-6']
+
+        probe: list of str
+            List of probes to load.  Valid options: '1','2','3','4'
+            Default: '1'
+
+        instrument: str
+            Instrument to load.
+            Default: 'fgm;
+
+        datatype: str
+            Data type; Valid options:
+            Default: 'up'
+
+        suffix: str
+            The tplot variable names will be given this suffix.
+            Default: ''
+
+        get_support_data: bool
+            If True, Data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot.
+
+        varformat: str
+            The file variable formats to load into tplot.  Wildcard character
+            "*" is accepted. If empty or None, all variables will be loaded.
+            Default: None (all variables loaded)
+
+        varnames: list of str
+            List of CDF variable names to load (if empty or not specified,
+            all data variables are loaded)
+            Default: [] (all variables loaded)
+
+        downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables
+            Default: False
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+            Default: False
+
+        no_update: bool
+            If set, only load data from your local cache
+            Default: False
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+            Default: False
+
+    Returns
+    -------
+        list of str
+            List of tplot variables created.
+
+    Notes
+    -----
     This function loads data from the Cluster mission; this function is not meant 
     to be called directly; instead, see the wrappers:
         pyspedas.cluster.fgm

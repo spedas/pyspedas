@@ -358,10 +358,10 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     FAC_loc = False
     if FAC_loc: # for 2008-02-29 and 2008-02-22 events' field aligned current locations:
         import pandas as pd
-        event_df_a = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step1_nosubSQ_V2.txt', delimiter="\s+")
-        event_df_b = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step2_nosubSQ_V2.txt', delimiter="\s+")
-        event_df_c = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step3_nosubSQ_V2.txt', delimiter="\s+")
-        event_df_d = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step4_nosubSQ_V2.txt', delimiter="\s+")
+        event_df_a = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step1_nosubSQ_V2.txt', delimiter=r"\s+")
+        event_df_b = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step2_nosubSQ_V2.txt', delimiter=r"\s+")
+        event_df_c = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step3_nosubSQ_V2.txt', delimiter=r"\s+")
+        event_df_d = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step4_nosubSQ_V2.txt', delimiter=r"\s+")
         #print('cp00!')
         #print(dtime)
         #print(event_df.loc[0,'time'])

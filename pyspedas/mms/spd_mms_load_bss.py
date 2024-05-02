@@ -1,5 +1,5 @@
 import logging
-from pyspedas import time_double
+from pytplot import time_double
 from pyspedas.mms.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.mms.mms_load_sroi_segments import mms_load_sroi_segments
 from pyspedas.mms.mms_load_brst_segments import mms_load_brst_segments

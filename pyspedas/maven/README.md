@@ -2,6 +2,16 @@
 ## Mars Atmosphere and Volatile Evolution (MAVEN)
 The routines in this module can be used to load data from the MAVEN mission. 
 
+There are two locations for MAVEN data files:
+
+- MAVEN SDC at Colorado: https://lasp.colorado.edu/maven/sdc/public/data/ 
+- SPDF: https://spdf.gsfc.nasa.gov/pub/data/maven/
+
+For more information on MAVEN, see:
+
+https://lasp.colorado.edu/maven/sdc/public/
+
+
 ### Instruments
 - Magnetometer (MAG)
 - Solar Wind Electron Analyzer (SWEA)
@@ -10,6 +20,10 @@ The routines in this module can be used to load data from the MAVEN mission.
 - Solar Energetic Particle (SEP)
 - Langmuir Probe and Waves (LPW) 
 - Extreme Ultraviolet Monitor (EUV)
+
+Files with data from multiple instruments:
+- kp (Key Parameters) files
+
 
 ### Examples
 Get started by importing pyspedas and tplot; these are required to load and plot the data:

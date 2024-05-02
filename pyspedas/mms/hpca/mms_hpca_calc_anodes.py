@@ -1,5 +1,6 @@
-from pyspedas import tnames
+from pytplot import tnames
 from pytplot import options, get_data, store_data
+
 
 def mms_hpca_elevations():
     anode_theta = [123.75000, 101.25000, 78.750000, 56.250000, 33.750000, 
@@ -9,19 +10,23 @@ def mms_hpca_elevations():
     anode_theta[6:14] = [anode_val+180. for anode_val in anode_theta[6:14]]
     return anode_theta
 
+
 def mms_hpca_anodes(fov=[0, 360]):
     anodes = mms_hpca_elevations()
     return [i for i, anode in enumerate(anodes) if anode >= float(fov[0]) and anode <= float(fov[1])]
+
 
 def mms_hpca_sum_fov(times, data, angles, energies, fov=[0, 360], anodes=None):
     anodes_in_fov = mms_hpca_anodes(fov=fov)
     data_within_fov = data[:,anodes_in_fov,:]
     return data_within_fov.sum(axis=1)
 
+
 def mms_hpca_avg_fov(times, data, angles, energies, fov=[0, 360], anodes=None):
     anodes_in_fov = mms_hpca_anodes(fov=fov)
     data_within_fov = data[:,anodes_in_fov,:]
     return data_within_fov.mean(axis=1)
+
 
 def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
     """
@@ -87,4 +92,3 @@ def mms_hpca_calc_anodes(fov=[0, 360], probe='1', suffix=''):
             options(var+fov_str, 'Colormap', 'spedas')
             output_vars.append(var+fov_str)
     return output_vars
-

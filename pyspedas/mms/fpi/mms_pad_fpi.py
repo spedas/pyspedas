@@ -31,7 +31,129 @@ def mms_pad_fpi(dists,
                 oclreal=False,
                 norm=False):
     """
+    Calculate the pitch-angle distribution (angle vs energy plot) and energy spectrum
+    in the omni, para, perp, and anti-para directions using MMS FPI data.
+    Also returns the one-count-level.
 
+    Parameters
+    ------------
+        dists : list of dicts
+            List of dictionaries containing the FPI particle distribution data.
+        time : str or float, optional
+            Time at which the pad will be computed.
+        window : float, optional
+            Length in seconds from TIME over which data will be averaged.
+        center_time : bool, optional
+            Flag denoting that TIME should be the midpoint for the window instead of the beginning.
+        trange : list, optional
+            Two-element time range over which data will be averaged.
+        samples : int or float, optional
+            Number of nearest samples to TIME to average.
+        mag_data : str, optional
+            Name of tplot variable containing magnetic field data or 3-vector.
+            This will be used for pitch-angle calculation and must be in the
+            same coordinates as the particle data.
+        vel_data : str, optional
+            Name of tplot variable containing the bulk velocity data or 3-vector.
+            This will be used for pitch-angle calculation and must be in the
+            same coordinates as the particle data.
+        nbin : int, optional
+            Number of bins in the pitch-angle direction.
+        da : float, optional
+            Pitch angle range for the "para" spectrum, default = 45.0.
+        da2 : float, optional
+            Pitch angle range for the "anti-para" spectrum, default = 45.0.
+        pr___0 : list or tuple, optional
+            Pitch angle range for the "para" spectrum, default = [0, 45].
+        pr__90 : list or tuple, optional
+            Pitch angle range for the "perp" spectrum, default = [45, 135].
+        pr_180 : list or tuple, optional
+            Pitch angle range for the "anti-para" spectrum, default = [135, 180].
+        subtract_bulk : bool, optional
+            Set True to subtract bulk velocity from velocity data.
+        units : str, optional
+            Units for both the pitch-angle-distribution (pad) and energy spectrum.
+            Options are 'eflux' [eV/(cm!U2!N s sr eV)] or 'df_km' [s!U3!N / km!U6!N'].
+            The default is 'eflux'.
+        oclreal : bool, optional
+            Set True to return the real one-count level
+        norm : bool, optional
+            Set True for normalizing the data at each energy bin.
+
+    Returns
+    --------
+        results : dict
+            A dictionary containing the following results:
+            - trange : list
+                Two-element time range over which data was averaged.
+            - egy : array-like
+                Energy values in eV.
+            - pa : array-like
+                Pitch angle values in degrees.
+            - data : array-like, shape (Nenergy, Npitch)
+                Pitch-angle distribution (angle vs energy plot).
+            - datanorm : array-like, shape (Nenergy, Npitch)
+                Normalized pitch-angle distribution (angle vs energy plot).
+            - numSlices : int
+                Number of slices in the data.
+            - nbin : int
+                Number of pitch angle bins.
+            - units : str
+                Units of the returned data.
+            - subtract_bulk : bool
+                True if bulk velocity was subtracted from velocity data.
+            - egyrange : list
+                Energy range of the data.
+            - spec___0 : array-like
+                Energy spectrum in the "para" direction.
+            - spec__90 : array-like
+                Energy spectrum in the "perp" direction.
+            - spec_180 : array-like
+                Energy spectrum in the "anti-para" direction.
+            - spec_omn : array-like
+                Energy spectrum in the omni direction.
+            - cnts___0 : array-like
+                One-count-level data in the "para" direction.
+            - cnts__90 : array-like
+                One-count-level data in the "perp" direction.
+            - cnts_180 : array-like
+                One-count-level data in the "anti-para" direction.
+            - cnts_omn : array-like
+                One-count-level data in the omni direction.
+            - oclv___0 : array-like
+                One-count-level data in the "para" direction.
+            - oclv__90 : array-like
+                One-count-level data in the "perp" direction.
+            - oclv_180 : array-like
+                One-count-level data in the "anti-para" direction.
+            - oclv_omn : array-like
+                One-count-level data in the omni direction.
+            - eror___0 : array-like
+                Error data in the "para" direction.
+            - eror__90 : array-like
+                Error data in the "perp" direction.
+            - eror_180 : array-like
+                Error data in the "anti-para" direction.
+            - eror_omn : array-like
+                Error data in the omni direction.
+            - vbulk_para : float
+                Bulk velocity in the "para" direction.
+            - vbulk_perp_abs : float
+                Absolute value of bulk velocity in the "perp" direction.
+            - vbulk_vxb : float
+                Velocity of the cross product of magnetic field and bulk velocity.
+            - vbulk_exb : float
+                Velocity of the cross product of electric field and magnetic field.
+            - bnrm : float
+                Average magnetic field magnitude.
+            - Vbulk : float
+                Bulk velocity magnitude.
+            - bfield : float
+                Magnetic field magnitude.
+            - species : str
+                Name of the particle species.
+            - pa_azpol : array-like, shape (Npitch, 2)
+                Pitch angle values in degrees in azimuthal and polar coordinates.
     """
 
     dr = np.pi/180.0

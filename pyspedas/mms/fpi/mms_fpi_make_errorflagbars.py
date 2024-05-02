@@ -1,6 +1,7 @@
 import numpy as np
 from pytplot import get_data, store_data, options
 
+
 def mms_fpi_make_errorflagbars(tname, level='l2'):
     """
     This procedure creates FPI error flag bars for plotting
@@ -76,7 +77,6 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
     -----------
         List containing the names of the created tplot variables
     """
-
     instrument = tname.split('_')[1].upper()
     data_rate = tname.split('_')[3].capitalize()
 
@@ -86,7 +86,13 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
     if metadata is None:
         return
 
-    if metadata['CDF']['GATT']['Data_type'][-4:] == 'moms' or level == 'ql':
+
+    # Workaround for cdflib globalattsget() bug
+    md_dt = metadata['CDF']['GATT']['Data_type']
+    if isinstance(md_dt, list):
+        md_dt = md_dt[0]
+
+    if md_dt[-4:] == 'moms' or level == 'ql':
         labels_full=['Contact FPI team','Saturation','SCpot>20V','no SCpot','>10% Cold','>25% Hot','High Mach#','Low Density','Onboard Mag','L2pre Mag','Photoelectrons','Compression', 'Spintones', 'Radiation']
 
         flags = ['{0:014b}'.format(flag) for flag in data.y]
@@ -220,7 +226,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
                     tname + '_flagbars_main',
                     tname + '_flagbars_others',
                     tname + '_flagbars_mini']
-    elif metadata['CDF']['GATT']['Data_type'][-4:] == 'dist':
+    elif md_dt[-4:] == 'dist':
         flags = ['{0:014b}'.format(flag) for flag in data.y]
         flagline = np.zeros((len(data.times), 2))
         for i in [0, 1]:

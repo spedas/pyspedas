@@ -21,11 +21,11 @@ import pyspedas.cotrans.cotrans
 # -- Project information -----------------------------------------------------
 
 project = 'PySPEDAS'
-copyright = '2018-2022, UC Regents, unless otherwise indicated'
+copyright = '2018-2024, UC Regents, unless otherwise indicated'
 author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
-release = '1.3'
+release = '1.5.12'
 
 
 # -- General configuration ---------------------------------------------------
@@ -33,7 +33,7 @@ release = '1.3'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.napoleon', 'sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.intersphinx']
 
 # Napoleon settings
 napoleon_numpy_docstring = True
@@ -83,7 +83,7 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
-    "pytplot": ("https://pytplot.readthedocs.io/en/latest/", None),
+    "pytplot": ("https://pytplot.readthedocs.io/en/matplotlib-backend/", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,

@@ -19,20 +19,22 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
     Parameters
     -----------
         parmod: ndarray
-            10-element array (vs. time):
+            10-element array (vs. time)::
+
                 (1) solar wind pressure pdyn (nanopascals),
                 (2) dst (nanotesla),
                 (3) byimf,
                 (4) bzimf (nanotesla)
                 (5-10) indices w1 - w6, calculated as time integrals from the beginning of a storm
-                    see the reference (3) below, for a detailed definition of those variables
 
         suffix: str
             Suffix to append to the tplot output variable
 
     Returns
     --------
-        Name of the tplot variable containing the model data
+        str
+            Name of the tplot variable containing the model data
+
     """
     pos_data = get_data(pos_var_gsm)
 
@@ -62,8 +64,8 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
             # skip if there are any NaNs in the input
             continue
 
-        # dipole B in GSM
-        b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.dip(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
+        # IGRF in GSM
+        b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.igrf_gsm(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
 
         # T96 dB in GSM
         dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t04.t04(par[idx, :], tilt, pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])

@@ -30,7 +30,8 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
     """
     This function creates MMS orbit plots
     
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
             time range of interest [starttime, endtime] with the format 
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
@@ -97,7 +98,7 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
             whether to display the plot using matplotlib's `show()` function (default: True)
 
     """
-    spacecraft_colors = [(0,0,0), (213/255,94/255,0), (0,158/255,115/255), (86/255,180/255,233/255)]
+    spacecraft_colors = [(0, 0, 0), (213/255, 94/255, 0), (0, 158/255, 115/255), (86/255, 180/255, 233/255)]
 
     mec_vars = mms_load_mec(trange=trange, data_rate=data_rate, probe=probes, varformat='*_r_' + coord, time_clip=True)
 
@@ -163,19 +164,29 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
             return fig, axis
 
         if save_png is not None and save_png != '':
-            plt.savefig(save_png + '.png', dpi=dpi)
+            if not save_png.endswith('.png'):
+                save_png += '.png'
+            plt.savefig(save_png, dpi=dpi)
 
         if save_eps is not None and save_eps != '':
-            plt.savefig(save_eps + '.eps', dpi=dpi)
+            if not save_eps.endswith('.eps'):
+                save_eps += '.eps'
+            plt.savefig(save_eps, dpi=dpi)
 
         if save_svg is not None and save_svg != '':
-            plt.savefig(save_svg + '.svg', dpi=dpi)
+            if not save_svg.endswith('.svg'):
+                save_svg += '.svg'
+            plt.savefig(save_svg, dpi=dpi)
 
         if save_pdf is not None and save_pdf != '':
-            plt.savefig(save_pdf + '.pdf', dpi=dpi)
+            if not save_pdf.endswith('.pdf'):
+                save_pdf += '.pdf'
+            plt.savefig(save_pdf, dpi=dpi)
 
         if save_jpeg is not None and save_jpeg != '':
-            plt.savefig(save_jpeg + '.jpeg', dpi=dpi)
+            if not save_jpeg.endswith('.jpeg'):
+                save_jpeg += '.jpeg'
+            plt.savefig(save_jpeg, dpi=dpi)
 
         if display:
             plt.show()

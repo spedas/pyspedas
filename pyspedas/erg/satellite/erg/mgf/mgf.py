@@ -1,78 +1,101 @@
-import cdflib
 import numpy as np
 from pytplot import clip, get_data, options, ylim
 
 from ..load import load
+from ..get_gatt_ror import get_gatt_ror
 
 
-def mgf(trange=['2017-03-27', '2017-03-28'],
-        datatype='8sec',
-        level='l2',
-        suffix='',
-        get_support_data=False,
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        uname=None,
-        passwd=None,
-        time_clip=False,
-        ror=True,
-        coord='dsi',
-        version=None):
+from typing import List, Optional
+
+def mgf(
+    trange: List[str] = ['2017-03-27', '2017-03-28'],
+    datatype: str = '8sec',
+    level: str = 'l2',
+    suffix: str = '',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    ror: bool = True,
+    coord: str = 'dsi',
+    version: Optional[str] = None
+) -> List[str]:
     """
     This function loads data from the MGF experiment from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2017-03-27', '2017-03-28']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options: '128hz', '256hz', '64hz', '8sec'
 
         level: str
-            Data level; Valid options:
+            Data level; Valid options: 'l2'  Default: 'l2'
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default,
-            no suffix is added.
+            The tplot variable names will be given this suffix.  Default: None
 
         get_support_data: bool
-            Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a
-            "VAR_TYPE" attribute of "data".
+            If true, data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot. Default: False
 
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
+            "*" is accepted.  Default: None (all variables loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into
-            tplot variables
+            tplot variables. Default: False
 
         notplot: bool
             Return the data in hash tables instead of creating tplot variables
+            Default: False
 
         no_update: bool
             If set, only load data from your local cache
+            Default: False
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+            Default: False
 
         ror: bool
             If set, print PI info and rules of the road
+            Default: True
 
         coord: str
-            "sm", "dsi", "gse", "gsm", "sgi"
+            Valid values: "sm", "dsi", "gse", "gsm", "sgi"
+            Default: 'dsi'
 
         version: str
             Set this value to specify the version of cdf files (such as "v03.03", "v03.04", ...)
 
-    Returns:
+        uname: str
+            User name. Default: None
+
+        passwd: str
+            Password. Default: None
+
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> mgf_vars = pyspedas.erg.mgf(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_mgf_l2_mag_8sec_sm')
 
     """
     initial_notplot_flag = False
@@ -112,14 +135,7 @@ def mgf(trange=['2017-03-27', '2017-03-28'],
     if (len(loaded_data) > 0) and ror:
 
         try:
-            if isinstance(loaded_data, list):
-                if downloadonly:
-                    cdf_file = cdflib.CDF(loaded_data[-1])
-                    gatt = cdf_file.globalattsget()
-                else:
-                    gatt = get_data(loaded_data[-1], metadata=True)['CDF']['GATT']
-            elif isinstance(loaded_data, dict):
-                gatt = loaded_data[list(loaded_data.keys())[-1]]['CDF']['GATT']
+            gatt = get_gatt_ror(downloadonly, loaded_data)
 
             # --- print PI info and rules of the road
             print(' ')
@@ -130,7 +146,7 @@ def mgf(trange=['2017-03-27', '2017-03-28'],
             print('Information about ERG MGF')
             print('')
             print('PI: ', gatt['PI_NAME'])
-            print("Affiliation: "+gatt["PI_AFFILIATION"])
+            print("Affiliation: ", gatt["PI_AFFILIATION"])
             print('')
             print('RoR of ERG project common: https://ergsc.isee.nagoya-u.ac.jp/data_info/rules_of_the_road.shtml.en')
             print(

@@ -1,6 +1,6 @@
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 import pyspedas
 
 
@@ -26,10 +26,10 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('TnF'))
 
     # issue with the CDFs here, 2Nov2022
-    # def test_load_idm_data(self):
-    #     out_vars = pyspedas.de2.idm()
-    #     self.assertTrue(data_exists('ionVelocityY'))
-    #     self.assertTrue(data_exists('ionVelocityZ'))
+    def test_load_idm_data(self):
+        out_vars = pyspedas.de2.idm()
+        self.assertTrue(data_exists('ionVelocityY'))
+        self.assertTrue(data_exists('ionVelocityZ'))
 
     def test_load_wats_data(self):
         out_vars = pyspedas.de2.wats()

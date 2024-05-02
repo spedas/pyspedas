@@ -1,9 +1,6 @@
-
 import logging
-from copy import deepcopy
 import numpy as np
-from pyspedas import time_double
-from pytplot import get_data
+from pytplot import get_data, time_double
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)

@@ -1,15 +1,14 @@
-
 import logging
 import numpy as np
-from pytplot import get_data, store_data, options
-from ...utilities.tnames import tnames
+from pytplot import get_data, store_data, options, tnames
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
+
 def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_units='flux', data_rate='srvy', level='l2'):
     """
-    This function will calculate the omni-directional EIS spectrograms, and is automatically called from mms_load_eis
+    This function will calculate the omnidirectional EIS spectrograms, and is automatically called from mms_load_eis
     
     Parameters
     ----------
@@ -34,8 +33,8 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
         level: str
             data level ['l1a','l1b','l2pre','l2' (default)]
 
-
-    Returns:
+    Returns
+    ---------
         Name of tplot variable created.
     """
     

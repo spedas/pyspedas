@@ -1,20 +1,22 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import netcdf_to_tplot
 
 from .config import CONFIG
 
 
-def loadr(trange=['2023-01-01', '2032-01-02'],
-          probe='16',
-          instrument='mag',
-          datatype='1min',
-          prefix='',
-          suffix='',
-          downloadonly=False,
-          no_update=False,
-          time_clip=False):
+def loadr(
+    trange=["2023-01-01", "2032-01-02"],
+    probe="16",
+    instrument="mag",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads GOES-R L2 data (GOES-16, GOES-17, GOES-18)
 
@@ -60,6 +62,7 @@ def loadr(trange=['2023-01-01', '2032-01-02'],
 
     Notes
     -----
+
     Information: https://www.ngdc.noaa.gov/stp/satellite/goes-r.html
     Data: https://data.ngdc.noaa.gov/platforms/solar-space-observing-satellites/goes/
     Path: goesNN/l2/data/instrument/YYYY/MM/file.nc
@@ -68,7 +71,9 @@ def loadr(trange=['2023-01-01', '2032-01-02'],
     GOES-EAST (GOES-16, 2017-)
     GOES-WEST (GOES-17, 2018-2022; GOES-18, 2023-)
 
-    Instruments:    euvs (hi, full, 1min, euvs-l2-avg1m_science/2021/05/sci_euvs-l2-avg1m_g16_d20210530_v1-0-3.nc)
+    Instruments:
+
+                    euvs (hi, full, 1min, euvs-l2-avg1m_science/2021/05/sci_euvs-l2-avg1m_g16_d20210530_v1-0-3.nc)
                     euvs (low, avg, 1day, euvs-l2-avg1d_science/2021/06/sci_euvs-l2-avg1d_g16_d20210630_v1-0-3.nc)
                     xrs  (hi, full, 1sec, xrsf-l2-flx1s_science/2022/08/sci_xrsf-l2-flx1s_g16_d20220830_v2-1-0.nc)
                     xrs  (low, avg, 1min, xrsf-l2-avg1m_science/2021/06/sci_xrsf-l2-avg1m_g16_d20210630_v2-1-0.nc)
@@ -88,24 +93,28 @@ def loadr(trange=['2023-01-01', '2032-01-02'],
     MAG: Full resolution magnetic field readings in different coordinate systems
     MAG: Averages of 10 Hz magnetometer field readings
     SEISS (Space Environment In Situ Suite): 1-min and 5-min averages for the Magnetospheric Particle Sensors (MPS-HI and MPS-LO)
-            and for the Solar and Galactic Proton Sensor (SGPS)
+    and for the Solar and Galactic Proton Sensor (SGPS)
 
     Wrappers:
+
         pyspedas.goes.euvs
         pyspedas.goes.xrs
         pyspedas.goes.mag
         pyspedas.goes.mpsh
         pyspedas.goes.sgps
 
-    Example
-    -------
-        from pyspedas.goes import load
-        trange = ['2023-01-01', '2023-01-02']
-        load(trange=trange, probe='16', instrument='mag', datatype='1min', time_clip=True)
+    Examples
+    --------
+
+       >>> from pyspedas.goes import load
+       >>> trange = ['2023-01-01', '2023-01-02']
+       >>> load(trange=trange, probe='16', instrument='mag', datatype='1min', time_clip=True)
 
     """
-    goes_path_dir = 'https://data.ngdc.noaa.gov/platforms/solar-space-observing-satellites/goes/'
-    time_var = 'time'  # name of the time variable in the netcdf files
+    goes_path_dir = (
+        "https://data.ngdc.noaa.gov/platforms/solar-space-observing-satellites/goes/"
+    )
+    time_var = "time"  # name of the time variable in the netcdf files
     out_files = []
     tvars = []
 
@@ -113,34 +122,96 @@ def loadr(trange=['2023-01-01', '2032-01-02'],
         probe = [probe]
 
     for prb in probe:
-        remote_path = 'goes' + str(prb) + '/l2/data/'
+        remote_path = "goes" + str(prb) + "/l2/data/"
 
-        if instrument == 'euvs':
-            if datatype in ['full', 'hi', '1min', 'avg1m']:  # high resolution 1 min
-                pathformat = [remote_path + 'euvs-l2-avg1m_science/%Y/%m/sci_euvs-l2-avg1m_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
+        if instrument == "euvs":
+            if datatype in ["full", "hi", "1min", "avg1m"]:  # high resolution 1 min
+                pathformat = [
+                    remote_path
+                    + "euvs-l2-avg1m_science/%Y/%m/sci_euvs-l2-avg1m_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
             else:  # low resolution 1 day, smaller files
-                pathformat = [remote_path + 'euvs-l2-avg1d_science/%Y/%m/sci_euvs-l2-avg1d_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
-        elif instrument == 'xrs':
-            if datatype in ['full', 'hi', '1sec', 'flx1s']:  # high resolution 1 sec
-                pathformat = [remote_path + 'xrsf-l2-flx1s_science/%Y/%m/sci_xrsf-l2-flx1s_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
+                pathformat = [
+                    remote_path
+                    + "euvs-l2-avg1d_science/%Y/%m/sci_euvs-l2-avg1d_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
+        elif instrument == "xrs":
+            if datatype in ["full", "hi", "1sec", "flx1s"]:  # high resolution 1 sec
+                pathformat = [
+                    remote_path
+                    + "xrsf-l2-flx1s_science/%Y/%m/sci_xrsf-l2-flx1s_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
             else:  # low resolution 1 min, smaller files
-                pathformat = [remote_path + 'xrsf-l2-avg1m_science/%Y/%m/sci_xrsf-l2-avg1m_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
-        elif instrument == 'mag':
-            if datatype in ['full', 'hi', '0.1sec', 'hires']:  # high resolution 0.1 sec
-                pathformat = [remote_path + 'magn-l2-hires/%Y/%m/dn_magn-l2-hires_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
+                pathformat = [
+                    remote_path
+                    + "xrsf-l2-avg1m_science/%Y/%m/sci_xrsf-l2-avg1m_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
+        elif instrument == "mag":
+            if datatype in ["full", "hi", "0.1sec", "hires"]:  # high resolution 0.1 sec
+                pathformat = [
+                    remote_path
+                    + "magn-l2-hires/%Y/%m/dn_magn-l2-hires_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
             else:  # low resolution 1 min, smaller files
-                pathformat = [remote_path + 'magn-l2-avg1m/%Y/%m/dn_magn-l2-avg1m_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
-        elif instrument == 'mpsh':
-            time_var = 'L2_SciData_TimeStamp'
-            if datatype in ['full', 'hi', '1min', 'avg1m', '1m']:  # high resolution 1 min
-                pathformat = [remote_path + 'mpsh-l2-avg1m/%Y/%m/sci_mpsh-l2-avg1m_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
+                pathformat = [
+                    remote_path
+                    + "magn-l2-avg1m/%Y/%m/dn_magn-l2-avg1m_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
+        elif instrument == "mpsh":
+            time_var = "L2_SciData_TimeStamp"
+            if datatype in [
+                "full",
+                "hi",
+                "1min",
+                "avg1m",
+                "1m",
+            ]:  # high resolution 1 min
+                pathformat = [
+                    remote_path
+                    + "mpsh-l2-avg1m/%Y/%m/sci_mpsh-l2-avg1m_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
             else:  # low resolution 5 min, smaller files
-                pathformat = [remote_path + 'mpsh-l2-avg5m/%Y/%m/sci_mpsh-l2-avg5m_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
-        elif instrument == 'sgps':
-            if datatype in ['full', 'hi', '1min', 'avg1m', '1m']:  # high resolution 1 min
-                pathformat = [remote_path + 'sgps-l2-avg1m/%Y/%m/sci_sgps-l2-avg1m_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
+                pathformat = [
+                    remote_path
+                    + "mpsh-l2-avg5m/%Y/%m/sci_mpsh-l2-avg5m_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
+        elif instrument == "sgps":
+            if datatype in [
+                "full",
+                "hi",
+                "1min",
+                "avg1m",
+                "1m",
+            ]:  # high resolution 1 min
+                pathformat = [
+                    remote_path
+                    + "sgps-l2-avg1m/%Y/%m/sci_sgps-l2-avg1m_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
             else:  # low resolution 5 min, smaller files
-                pathformat = [remote_path + 'sgps-l2-avg5m/%Y/%m/sci_sgps-l2-avg5m_g' + str(prb) + '_d%Y%m%d_v?-?-?.nc']
+                pathformat = [
+                    remote_path
+                    + "sgps-l2-avg5m/%Y/%m/sci_sgps-l2-avg5m_g"
+                    + str(prb)
+                    + "_d%Y%m%d_v?-?-?.nc"
+                ]
 
         # find the full remote path names using the trange
         if not isinstance(pathformat, list):
@@ -150,7 +221,12 @@ def loadr(trange=['2023-01-01', '2032-01-02'],
         for path in pathformat:
             remote_names.extend(dailynames(file_format=path, trange=trange))
 
-        files = download(remote_file=remote_names, remote_path=goes_path_dir, local_path=CONFIG['local_data_dir'], no_download=no_update)
+        files = download(
+            remote_file=remote_names,
+            remote_path=goes_path_dir,
+            local_path=CONFIG["local_data_dir"],
+            no_download=no_update,
+        )
 
         if files is not None:
             for file in files:
@@ -158,11 +234,13 @@ def loadr(trange=['2023-01-01', '2032-01-02'],
 
         tvars_local = []
         if len(files) > 0 and downloadonly is False:
-            if prefix == 'probename':
-                prefix_local = 'g' + str(prb) + '_'
+            if prefix == "probename":
+                prefix_local = "g" + str(prb) + "_"
             else:
                 prefix_local = prefix
-            tvars_local = netcdf_to_tplot(files, prefix=prefix_local, suffix=suffix, merge=True, time=time_var)
+            tvars_local = netcdf_to_tplot(
+                files, prefix=prefix_local, suffix=suffix, merge=True, time=time_var
+            )
 
         if len(tvars_local):
             tvars.extend(tvars_local)
@@ -173,25 +251,28 @@ def loadr(trange=['2023-01-01', '2032-01-02'],
 
     if time_clip:
         for new_var in tvars:
-            tclip(new_var, trange[0], trange[1], suffix='')
+            tclip(new_var, trange[0], trange[1], suffix="")
 
     return tvars
 
 
-def load(trange=['2013-11-05', '2013-11-06'],
-         probe='15',
-         instrument='fgm',
-         datatype='1min',
-         prefix='',
-         suffix='',
-         downloadonly=False,
-         no_update=False,
-         time_clip=False):
+def load(
+    trange=["2013-11-05", "2013-11-06"],
+    probe="15",
+    instrument="fgm",
+    datatype="1min",
+    prefix="",
+    suffix="",
+    downloadonly=False,
+    no_update=False,
+    time_clip=False,
+):
     """
     This function loads GOES L2 data
 
     Parameters
     ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
@@ -201,20 +282,21 @@ def load(trange=['2013-11-05', '2013-11-06'],
             GOES spacecraft #, e.g., probe=15
 
         instrument: str
-            name of the instrument
-            (for GOES 8-15: fgm, eps, epead, maged, magpd, hepad, xrs)
-            (for GOES-R 16-18: euvs, xrs, mag, mpsh, sgps)
+            name of the instrument::
+
+                (for GOES 8-15: fgm, eps, epead, maged, magpd, hepad, xrs)
+                (for GOES-R 16-18: euvs, xrs, mag, mpsh, sgps)
 
         datatype: str
-            Data type; usually instrument resolution, depends on the instrument
-            Default is 1min
-            (valid for GOES 8-15: hi, low, full, avg, 1min, 5min)
-            (valid for GOES-R 16-18: hi, low, full, avg, and other options)
+            Data type; usually instrument resolution, depends on the instrument (default '1min')::
+
+                (valid for GOES 8-15: hi, low, full, avg, 1min, 5min)
+                (valid for GOES-R 16-18: hi, low, full, avg, and other options)
 
         prefix: str
             The tplot variable names will be given this prefix.
             By default, no prefix is added.
-            If 'probename' then the name will be used, for example g16.
+            If prefix is 'probename' then the name will be used, for example g16.
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -237,7 +319,8 @@ def load(trange=['2013-11-05', '2013-11-06'],
     Notes
     -----
     This function loads data from the GOES mission; this function is not meant
-    to be called directly; instead, see the wrappers:
+    to be called directly; instead, see the wrappers::
+
         pyspedas.goes.fgm
         pyspedas.goes.eps
         pyspedas.goes.epead
@@ -266,105 +349,130 @@ def load(trange=['2013-11-05', '2013-11-06'],
             probe_s.append(str(prb))
 
     if len(probe_r):
-        tvars_r = loadr(trange=trange,
-                        probe=probe_r,
-                        instrument=instrument,
-                        datatype=datatype,
-                        prefix=prefix,
-                        suffix=suffix,
-                        downloadonly=downloadonly,
-                        no_update=no_update,
-                        time_clip=time_clip)
+        tvars_r = loadr(
+            trange=trange,
+            probe=probe_r,
+            instrument=instrument,
+            datatype=datatype,
+            prefix=prefix,
+            suffix=suffix,
+            downloadonly=downloadonly,
+            no_update=no_update,
+            time_clip=time_clip,
+        )
         if downloadonly:
             out_files_r = tvars_r
 
     # Continue with loading GOES (1-15) data
     for prb in probe_s:
-        avg_path = 'avg/%Y/%m/goes' + str(prb) + '/netcdf/' + 'g' + str(prb)
-        full_path = 'full/%Y/%m/goes' + str(prb) + '/netcdf/' + 'g' + str(prb)
+        avg_path = "avg/%Y/%m/goes" + str(prb) + "/netcdf/" + "g" + str(prb)
+        full_path = "full/%Y/%m/goes" + str(prb) + "/netcdf/" + "g" + str(prb)
 
-        if instrument == 'fgm':
-            if datatype == '512ms' or datatype == 'full':  # full, unaveraged data
-                pathformat = full_path + '_magneto_512ms_%Y%m%d_%Y%m%d.nc'
-            elif datatype == '5min':  # 5 min averages
-                pathformat = avg_path + '_magneto_5m_%Y%m01_%Y%m??.nc'
+        if instrument == "fgm":
+            if datatype == "512ms" or datatype == "full":  # full, unaveraged data
+                pathformat = full_path + "_magneto_512ms_%Y%m%d_%Y%m%d.nc"
+            elif datatype == "5min":  # 5 min averages
+                pathformat = avg_path + "_magneto_5m_%Y%m01_%Y%m??.nc"
             else:  # 1 min averages, goes13, goes15 only contain 1m averages
-                pathformat = avg_path + '_magneto_1m_%Y%m01_%Y%m??.nc'
-        elif instrument == 'eps':
+                pathformat = avg_path + "_magneto_1m_%Y%m01_%Y%m??.nc"
+        elif instrument == "eps":
             # energetic particle sensor -- only valid for GOES-08 through GOES-12, only averaged data available
-            if datatype == '1min' or datatype == 'full':
-                pathformat = avg_path + '_eps_1m_%Y%m01_%Y%m??.nc'
+            if datatype == "1min" or datatype == "full":
+                pathformat = avg_path + "_eps_1m_%Y%m01_%Y%m??.nc"
             else:  # 'low' or 5min
-                pathformat = avg_path + '_eps_5m_%Y%m01_%Y%m??.nc'
-        elif instrument == 'epead':
+                pathformat = avg_path + "_eps_5m_%Y%m01_%Y%m??.nc"
+        elif instrument == "epead":
             # electron, proton, alpha detector -- only valid on GOES-13, 14, 15
-            if datatype == '1min':
-                pathformat = ['_epead_e13ew_1m_%Y%m01_%Y%m??.nc',
-                              '_epead_p17ew_1m_%Y%m01_%Y%m??.c',
-                              '_epead_a16ew_1m_%Y%m01_%Y%m??.nc']
+            if datatype == "1min":
+                pathformat = [
+                    "_epead_e13ew_1m_%Y%m01_%Y%m??.nc",
+                    "_epead_p17ew_1m_%Y%m01_%Y%m??.c",
+                    "_epead_a16ew_1m_%Y%m01_%Y%m??.nc",
+                ]
                 pathformat = [avg_path + s for s in pathformat]
-            elif datatype == '5min' or datatype == 'low':
-                pathformat = ['_epead_e13ew_5m_%Y%m01_%Y%m??.nc',
-                              '_epead_p17ew_5m_%Y%m01_%Y%m??.c',
-                              '_epead_a16ew_5m_%Y%m01_%Y%m??.nc']
+            elif datatype == "5min" or datatype == "low":
+                pathformat = [
+                    "_epead_e13ew_5m_%Y%m01_%Y%m??.nc",
+                    "_epead_p17ew_5m_%Y%m01_%Y%m??.c",
+                    "_epead_a16ew_5m_%Y%m01_%Y%m??.nc",
+                ]
                 pathformat = [avg_path + s for s in pathformat]
             else:  # full
-                pathformat = ['_epead_a16e_32s_%Y%m%d_%Y%m%d.nc',
-                              '_epead_a16w_32s_%Y%m%d_%Y%m%d.nc',
-                              '_epead_e1ew_4s_%Y%m%d_%Y%m%d.nc',
-                              '_epead_e2ew_16s_%Y%m%d_%Y%m%d.nc',
-                              '_epead_e3ew_16s_%Y%m%d_%Y%m%d.nc',
-                              '_epead_p1ew_8s_%Y%m%d_%Y%m%d.nc',
-                              '_epead_p27e_32s_%Y%m%d_%Y%m%d.nc',
-                              '_epead_p27w_32s_%Y%m%d_%Y%m%d.nc']
+                pathformat = [
+                    "_epead_a16e_32s_%Y%m%d_%Y%m%d.nc",
+                    "_epead_a16w_32s_%Y%m%d_%Y%m%d.nc",
+                    "_epead_e1ew_4s_%Y%m%d_%Y%m%d.nc",
+                    "_epead_e2ew_16s_%Y%m%d_%Y%m%d.nc",
+                    "_epead_e3ew_16s_%Y%m%d_%Y%m%d.nc",
+                    "_epead_p1ew_8s_%Y%m%d_%Y%m%d.nc",
+                    "_epead_p27e_32s_%Y%m%d_%Y%m%d.nc",
+                    "_epead_p27w_32s_%Y%m%d_%Y%m%d.nc",
+                ]
                 pathformat = [full_path + s for s in pathformat]
-        elif instrument == 'maged':
+        elif instrument == "maged":
             # magnetospheric electron detector -- only valid on GOES 13, 14, 15
-            if datatype == '1min':
-                pathformat = avg_path + '_maged_19me15_1m_%Y%m01_%Y%m??.nc'
-            elif datatype == '5min' or datatype == 'low':
-                pathformat = avg_path + '_maged_19me15_5m_%Y%m01_%Y%m??.nc'
+            if datatype == "1min":
+                pathformat = avg_path + "_maged_19me15_1m_%Y%m01_%Y%m??.nc"
+            elif datatype == "5min" or datatype == "low":
+                pathformat = avg_path + "_maged_19me15_5m_%Y%m01_%Y%m??.nc"
             else:  # full
-                channels = ['me1', 'me2', 'me3', 'me4', 'me5']
-                resolution = ['2', '2', '4', '16', '32']
+                channels = ["me1", "me2", "me3", "me4", "me5"]
+                resolution = ["2", "2", "4", "16", "32"]
                 pathformat = []
                 for idx, channel in enumerate(channels):
-                    pathformat.append('_maged_19' + channel + '_' + resolution[idx] + 's_%Y%m%d_%Y%m%d.nc')
+                    pathformat.append(
+                        "_maged_19"
+                        + channel
+                        + "_"
+                        + resolution[idx]
+                        + "s_%Y%m%d_%Y%m%d.nc"
+                    )
                 pathformat = [full_path + s for s in pathformat]
-        elif instrument == 'magpd':
+        elif instrument == "magpd":
             # magnetospheric proton detector -- only valid on GOES 13, 14, 15
-            if datatype == '1min' or datatype == 'low':
-                pathformat = avg_path + '_magpd_19mp15_1m_%Y%m01_%Y%m??.nc'
+            if datatype == "1min" or datatype == "low":
+                pathformat = avg_path + "_magpd_19mp15_1m_%Y%m01_%Y%m??.nc"
             else:  # full
-                channels = ['mp1', 'mp2', 'mp3', 'mp4', 'mp5']
-                resolution = ['16', '16', '16', '32', '32']
+                channels = ["mp1", "mp2", "mp3", "mp4", "mp5"]
+                resolution = ["16", "16", "16", "32", "32"]
                 pathformat = []
                 for idx, channel in enumerate(channels):
-                    pathformat.append('_magpd_19' + channel + '_'+resolution[idx] + 's_%Y%m%d_%Y%m%d.nc')
+                    pathformat.append(
+                        "_magpd_19"
+                        + channel
+                        + "_"
+                        + resolution[idx]
+                        + "s_%Y%m%d_%Y%m%d.nc"
+                    )
                 pathformat = [full_path + s for s in pathformat]
-        elif instrument == 'hepad':
+        elif instrument == "hepad":
             # high energy proton and alpha detector -- valid for GOES 08-15
-            if datatype == '1min':
-                pathformat = ['_hepad_ap_1m_%Y%m01_%Y%m??.nc',
-                              '_hepad_s15_1m_%Y%m01_%Y%m??.nc']
+            if datatype == "1min":
+                pathformat = [
+                    "_hepad_ap_1m_%Y%m01_%Y%m??.nc",
+                    "_hepad_s15_1m_%Y%m01_%Y%m??.nc",
+                ]
                 pathformat = [avg_path + s for s in pathformat]
-            elif datatype == '5min' or datatype == 'low':
-                pathformat = ['_hepad_ap_5m_%Y%m01_%Y%m??.nc',
-                              '_hepad_s15_5m_%Y%m01_%Y%m??.nc']
+            elif datatype == "5min" or datatype == "low":
+                pathformat = [
+                    "_hepad_ap_5m_%Y%m01_%Y%m??.nc",
+                    "_hepad_s15_5m_%Y%m01_%Y%m??.nc",
+                ]
                 pathformat = [avg_path + s for s in pathformat]
             else:
-                pathformat = ['_hepad_ap_32s_%Y%m%d_%Y%m%d.nc',
-                              '_hepad_s15_4s_%Y%m%d_%Y%m%d.nc']
+                pathformat = [
+                    "_hepad_ap_32s_%Y%m%d_%Y%m%d.nc",
+                    "_hepad_s15_4s_%Y%m%d_%Y%m%d.nc",
+                ]
                 pathformat = [full_path + s for s in pathformat]
-        elif instrument == 'xrs':
+        elif instrument == "xrs":
             # x-ray sensor -- valid for GOES 08-15
-            if datatype == '1min':
-                pathformat = avg_path + '_xrs_1m_%Y%m01_%Y%m??.nc'
-            elif datatype == '5min' or datatype == 'low':
-                pathformat = avg_path + '_xrs_5m_%Y%m01_%Y%m??.nc'
+            if datatype == "1min":
+                pathformat = avg_path + "_xrs_1m_%Y%m01_%Y%m??.nc"
+            elif datatype == "5min" or datatype == "low":
+                pathformat = avg_path + "_xrs_5m_%Y%m01_%Y%m??.nc"
             else:
-                pathformat = ['_xrs_2s_%Y%m%d_%Y%m%d.nc',
-                              '_xrs_3s_%Y%m%d_%Y%m%d.nc']
+                pathformat = ["_xrs_2s_%Y%m%d_%Y%m%d.nc", "_xrs_3s_%Y%m%d_%Y%m%d.nc"]
                 pathformat = [full_path + s for s in pathformat]
 
         # find the full remote path names using the trange
@@ -375,18 +483,25 @@ def load(trange=['2013-11-05', '2013-11-06'],
         for path in pathformat:
             remote_names.extend(dailynames(file_format=path, trange=trange))
 
-        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+        files = download(
+            remote_file=remote_names,
+            remote_path=CONFIG["remote_data_dir"],
+            local_path=CONFIG["local_data_dir"],
+            no_download=no_update,
+        )
         if files is not None:
             for file in files:
                 out_files.append(file)
 
         tvars_local = []
         if len(files) > 0 and downloadonly is False:
-            if prefix == 'probename':
-                prefix_local = 'g' + str(prb) + '_'
+            if prefix == "probename":
+                prefix_local = "g" + str(prb) + "_"
             else:
                 prefix_local = prefix
-            tvars_local = netcdf_to_tplot(files, prefix=prefix_local, suffix=suffix, merge=True, time='time_tag')
+            tvars_local = netcdf_to_tplot(
+                files, prefix=prefix_local, suffix=suffix, merge=True, time="time_tag"
+            )
 
         if len(tvars_local) > 0:
             tvars.extend(tvars_local)
@@ -398,7 +513,7 @@ def load(trange=['2013-11-05', '2013-11-06'],
 
     if time_clip:
         for new_var in tvars:
-            tclip(new_var, trange[0], trange[1], suffix='')
+            tclip(new_var, trange[0], trange[1], suffix="")
 
     if len(tvars_r):
         tvars.extend(tvars_r)  # append GOES-R variables

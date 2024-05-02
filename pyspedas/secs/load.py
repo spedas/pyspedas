@@ -6,7 +6,7 @@ import os
 import numpy as np
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 
 from .config import CONFIG
 import zipfile
@@ -20,6 +20,58 @@ def load(trange = None, resolution=10, dtype = None, no_download = False, downlo
     This function loads SECS/EICS data; this function is not meant
     to be called directly; instead, see the wrapper:
         pyspedas.secs.data
+
+    Parameters
+    ----------
+        trange : list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: If not provided, current date or code will prompt for time range
+
+        resolution : str
+            Default: 10
+
+        dtype: str
+            Data type; Valid options:
+                'EICS', 'SECA'
+            Default: ['eics', 'seca']
+
+        suffix: str
+            The tplot variable names will be given this suffix.
+            Default: no suffix is added.
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: no prefix is added.
+
+        get_stations: bool
+            Set this flag to return a list of SECS station names
+            Default:  False
+
+        downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables
+            Default: False
+
+        no_update: bool
+            If set, only load data from your local cache
+            Default: False
+
+        no_download: bool
+            If set, only load data from your local cache
+            Default: False
+
+    Returns
+    ----------
+        List of tplot variables created.
+
+    Example
+    ----------
+        import pyspedas
+        from pytplot import tplot
+        secs_vars = pyspedas.secs(dtype='eics', trange=['2018-02-01', '2018-02-02'])
+        tplot(['secs_eics_latlong', 'secs_eics_jxy'])
 
     """
 

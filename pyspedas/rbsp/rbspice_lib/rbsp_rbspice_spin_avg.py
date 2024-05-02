@@ -1,7 +1,15 @@
 import logging
 import numpy as np
 from pytplot import get_data, store_data, options
-from pyspedas import tnames
+from pytplot import tnames
+
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except ImportError:
+    nanmean = np.nanmean
 
 
 def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
@@ -10,16 +18,23 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
     
     Parameters
     ----------
-    probe : str
-        RBSP spacecraft indicator [Options: 'a' (default), 'b']
-    datatype : str
-        RBSPICE data type ['TOFxEH' (default),'TOFxEnonH']
-    level : str
-        data level ['l1','l2','l3' (default),'l3pap']
+    probe : str or list of str, default='a'
+        Spacecraft probe name: 'a' or 'b'
+
+    datatype: str, default='TOFxEH'
+        desired data type: 'TOFxEH', 'TOFxEnonH'
+
+    level : str, default='l3'
+        data level: 'l1','l2','l3'
 
     Returns
     --------
-    Tplot variables created
+    out, list
+        Tplot variables created
+
+    Examples
+    --------
+    This function is called within pyspedas.rbsp.rbspice
     """
     if probe is None:
         probe = 'a'
@@ -89,7 +104,7 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
             spin_sum_flux = np.zeros((len(spin_starts), len(flux_data.v)))
             current_start = 0
             for spin_idx in range(len(spin_starts)):
-                spin_sum_flux[spin_idx, :] = np.nanmean(flux_data.y[current_start:spin_starts[spin_idx]+1, :], axis=0)
+                spin_sum_flux[spin_idx, :] = nanmean(flux_data.y[current_start:spin_starts[spin_idx]+1, :], axis=0)
                 current_start = spin_starts[spin_idx]+1
             sp = '_spin'
             if var_data[n][-4:] == 'omni':

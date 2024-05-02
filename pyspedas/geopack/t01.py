@@ -18,7 +18,8 @@ def tt01(pos_var_gsm, parmod=None, suffix=''):
     Parameters
     -----------
         parmod: ndarray
-            10-element array (vs. time), but only the first 6 elements are used
+            10-element array (vs. time), but only the first 6 elements are used::
+
                 (1) solar wind pressure pdyn (nanopascals),
                 (2) dst (nanotesla)
                 (3) byimf (nanotesla)
@@ -57,8 +58,8 @@ def tt01(pos_var_gsm, parmod=None, suffix=''):
     for idx, time in enumerate(pos_data.times):
         tilt = geopack.recalc(time)
 
-        # dipole B in GSM
-        b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.dip(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
+        # IGRF B in GSM
+        b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.igrf_gsm(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
 
         # T96 dB in GSM
         dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t01.t01(par[idx, :], tilt, pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])

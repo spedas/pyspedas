@@ -1,20 +1,22 @@
-
 import csv
 import os
 import numpy as np
-from pyspedas import time_double, time_string
+from pytplot import time_double, time_string
+
 
 def mms_read_feeps_sector_masks_csv(trange):
     """
     This function returns the FEEPS sectors to mask due to sunlight contamination
     
-    Parameters:
+    Parameters
+    -----------
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
+            time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             
-    Returns:
+    Returns
+    -----------
         Hash table containing the sectors to mask for each spacecraft and sensor ID
 
     """
@@ -28,7 +30,8 @@ def mms_read_feeps_sector_masks_csv(trange):
              1538697600.0000000, # 10/5/2018
              1642032000.0000000, # 1/13/2022
              1651795200.0000000, # 5/6/2022
-             1660521600.0000000] # 8/15/2022
+             1660521600.0000000, # 8/15/2022
+             1706832000.0000000] # 02/02/2024
 
     # find the file closest to the start time
     nearest_date = dates[(np.abs(np.array(dates)-time_double(trange[0]))).argmin()]

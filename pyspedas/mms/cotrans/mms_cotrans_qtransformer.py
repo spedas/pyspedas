@@ -12,7 +12,7 @@ It also takes an optional argument:
 probe: the spacecraft probe number (default is '1')
 The function returns the name of the output tplot variable.
 """
-from pytplot import tplot_copy
+from pytplot import tplot_copy, get
 from .mms_cotrans_qrotate import mms_cotrans_qrotate
 
 
@@ -50,10 +50,16 @@ def mms_cotrans_qtransformer(in_name, out_name, in_coord, out_coord, probe='1'):
 
     if in_coord == 'eci':
         q_name = 'mms' + probe + '_mec_quat_eci_to_' + out_coord
+        q_data = get(q_name)
+        if q_data is None:
+            return
         mms_cotrans_qrotate(in_name, q_name, out_name, out_coord)
         recursive_in_coord = out_coord
     else:
         q_name = 'mms' + probe + '_mec_quat_eci_to_' + in_coord
+        q_data = get(q_name)
+        if q_data is None:
+            return
         mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=True)
         recursive_in_coord = 'eci'
 

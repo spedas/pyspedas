@@ -2,6 +2,7 @@
    sphinx-quickstart on Fri Sep 10 21:11:38 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
+
 :tocdepth: 3
 
 PySPEDAS Documentation
@@ -46,9 +47,11 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
 
    projects
    analysis
+   cdaweb
    geopack
    coords
    utilities
+   pytplot
 
 .. |build| image:: https://github.com/spedas/pyspedas/workflows/build/badge.svg
 .. |coverage| image:: https://coveralls.io/repos/github/spedas/pyspedas/badge.svg

@@ -1,13 +1,14 @@
-
 from pytplot import options
-from pyspedas import tnames
+from pytplot import tnames
+
 
 def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):
     """
     This function sets the plot metadata for HPCA data products, and is meant 
     to be called from the HPCA load routine
 
-    Parameters:
+    Parameters
+    ------------
         fov : list of int
             field of view, in angles, from 0-360
 
@@ -17,7 +18,8 @@ def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):
         suffix: str
             suffix of the loaded data
 
-    Returns:
+    Returns
+    ------------
         None
     """
     prefix = 'mms'+str(probe)
@@ -55,5 +57,3 @@ def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):
         if var == prefix+'_hpca_heplusplus_scalar_temperature'+suffix: options(var, 'ytitle', 'He++ temp')
         if var == prefix+'_hpca_oplus_scalar_temperature'+suffix: options(var, 'ytitle', 'O+ temp')
         if var == prefix+'_hpca_oplusplus_scalar_temperature'+suffix: options(var, 'ytitle', 'O++ temp')
-
-

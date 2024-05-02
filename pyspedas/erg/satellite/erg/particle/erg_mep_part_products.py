@@ -2,9 +2,9 @@ import numpy as np
 
 from copy import deepcopy
 
-from pyspedas import tnames, tinterpol
-from pyspedas.utilities.time_double import time_double
-from pyspedas.utilities.time_string import time_string
+from pyspedas import tinterpol
+from pytplot import time_double, tnames
+from pytplot import time_string
 
 from pyspedas.particles.moments.spd_pgs_moments import spd_pgs_moments
 from pyspedas.particles.spd_part_products.spd_pgs_regrid import spd_pgs_regrid

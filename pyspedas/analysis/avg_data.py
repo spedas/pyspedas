@@ -8,12 +8,11 @@ Creates a new pytplot variable as the time average of original.
 """
 import logging
 import numpy as np
-from pyspedas import tnames, time_float
-from pytplot import store_data, get_data
+from pytplot import store_data, get_data, tnames, time_float
 
 
 def avg_data(names, trange=[], res=None, width=None,
-             new_names=None, suffix=None, overwrite=False):
+             newname=None, new_names=None, suffix=None, overwrite=False):
     """
     Get a new tplot variable with averaged data.
 
@@ -31,8 +30,11 @@ def avg_data(names, trange=[], res=None, width=None,
     width: int, optional
         Number of values for the averaging window.
         If res is set, then width is ignored.
-    new_names: str/list of str, optional
-        List of new_names for pytplot variables.
+    newname: str/list of str, optional
+        List of new names for pytplot variables.
+        If not given, then a suffix is applied.
+    new_names: str/list of str, optional (Deprecated)
+        List of new names for pytplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply.
@@ -43,9 +45,16 @@ def avg_data(names, trange=[], res=None, width=None,
 
     Returns
     -------
-    None.
+    n_names: str/list of str
+        List of new pytplot names.
 
     """
+
+    # new_tvar is deprecated in favor of newname
+    if new_names is not None:
+        logging.info("avg_data: The new_names parameter is deprecated. Please use newname instead.")
+        newname = new_names
+
     old_names = tnames(names)
 
     if names is None or len(old_names) < 1:
@@ -57,10 +66,10 @@ def avg_data(names, trange=[], res=None, width=None,
 
     if overwrite:
         n_names = old_names
-    elif new_names is None:
+    elif newname is None:
         n_names = [s + suffix for s in old_names]
     else:
-        n_names = new_names
+        n_names = newname
 
     if isinstance(n_names, str):
         n_names = [n_names]
@@ -202,3 +211,5 @@ def avg_data(names, trange=[], res=None, width=None,
         store_data(new, data=data_dict, attr_dict=metadata)
 
         logging.info('avg_data was applied to: ' + new)
+
+    return n_names

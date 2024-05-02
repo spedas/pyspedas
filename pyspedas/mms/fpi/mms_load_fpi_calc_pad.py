@@ -1,5 +1,6 @@
-from pyspedas import tnames
+from pytplot import tnames
 from pytplot import get_data, store_data, options
+
 
 def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', suffix='', autoscale=True):
     """
@@ -31,7 +32,8 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
         autoscale: bool
             If set, use the default zrange; otherwise, use the min and max of the data for the zrange
 
-    Returns:
+    Returns
+    ----------
         List of tplot variables created.
 
     """

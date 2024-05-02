@@ -1,6 +1,6 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 
 from .config import CONFIG
@@ -30,7 +30,87 @@ def load(trange=['1983-02-16', '1983-02-17'],
         pyspedas.de2.vefi
         pyspedas.de2.lang
 
+    Parameters
+    ----------
+        trange : list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2020-11-5/10:00', '2020-11-5/12:00']
+
+        instrument : str
+            Valid options are::
+
+            'mag'
+            'nacs'
+            'rpa'
+            'idm'
+            'wats'
+            'vefi'
+            'lang'
+
+            Default: 'mag'
+
+        datatype : see if statements below in main code
+            Default: ''
+
+        suffix: str
+            The tplot variable names will be given this suffix.
+            Default: no suffix is added
+
+        get_support_data: bool
+            Data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot.
+            Default: only loads in data with a "VAR_TYPE" attribute of "data".
+
+        varformat: str
+            The file variable formats to load into tplot.  Wildcard character
+            "*" is accepted.
+            Default: all variables are loaded in
+
+        varnames: list of str
+            List of variable names to load
+            Default: all data variables are loaded
+
+        downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables
+            Default: False
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+            Default: False
+
+        no_update: bool
+            If set, only load data from your local cache
+            Default: False
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+            Default: False
+
+     Returns
+    ----------
+        List of tplot variables created.
+
+    Example
+    ----------
+        >>> import pyspedas
+        >>> from pytplot import tplot
+        >>> pyspedas.de2.load(instrument='mag', trange=['2020-11-5/10:00', '2020-11-5/12:00'])
+        >>> tplot()
+
+        >>> import pyspedas
+        >>> from pytplot import tplot
+        >>> mag_vars = pyspedas.de2.mag(trange=['1983-02-16', '1983-02-17'])
+        >>> tplot(['bx', 'by', 'bz'])
+
     """
+
+    mastercdf = None
+    addmaster = False
+    masterpath = 'https://cdaweb.gsfc.nasa.gov/pub/software/cdawlib/0MASTERS/'
+    local_master_dir = CONFIG['local_data_dir']+'de2_masters/'
 
     if instrument == 'mag':
         pathformat = 'magnetic_electric_fields_vefi_magb/'+datatype+'_vefimagb_cdaweb/%Y/de2_'+datatype+'_vefimagb_%Y%m%d_v??.cdf'
@@ -41,6 +121,8 @@ def load(trange=['1983-02-16', '1983-02-17'],
     elif instrument == 'fpi':
         pathformat = 'neutral_gas_fpi/de2_neutral8s_fpi/%Y/de2_neutral'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
     elif instrument == 'idm':
+        masterfile = 'de2_vion250ms_idm_00000000_v01.cdf'
+        addmaster = True
         pathformat = 'plasma_idm/vion250ms_cdaweb/%Y/de2_vion'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
     elif instrument == 'wats':
         pathformat = 'neutral_gas_wats/wind2s_wats_cdaweb/%Y/de2_wind'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
@@ -49,6 +131,10 @@ def load(trange=['1983-02-16', '1983-02-17'],
     elif instrument == 'lang':
         pathformat = 'plasma_lang/plasma500ms_lang_cdaweb/%Y/de2_plasma'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
 
+    if addmaster:
+        mastercdf = download(remote_file=masterfile,remote_path=masterpath,local_path=local_master_dir,no_download=no_update)
+    else:
+        mastercdf = [None]
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange)
 
@@ -64,7 +150,7 @@ def load(trange=['1983-02-16', '1983-02-17'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, mastercdf=mastercdf[0], suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars

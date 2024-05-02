@@ -8,6 +8,7 @@
 
 The Python-based Space Physics Environment Data Analysis Software (PySPEDAS) framework supports multi-mission, multi-instrument retrieval, analysis, and visualization of heliophysics time series data.
 
+
 ## Projects Supported
 - [Advanced Composition Explorer (ACE)](https://pyspedas.readthedocs.io/en/latest/ace.html)
 - [Akebono](https://pyspedas.readthedocs.io/en/latest/akebono.html)
@@ -43,11 +44,13 @@ The Python-based Space Physics Environment Data Analysis Software (PySPEDAS) fra
 - [Van Allen Probes (RBSP)](https://pyspedas.readthedocs.io/en/latest/rbsp.html)
 - [Wind](https://pyspedas.readthedocs.io/en/latest/wind.html)
 
+
 ## Requirements
 
-Python 3.7+ is required.  
+Python 3.9+ is required.
 
 We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a suite of packages useful for scientific data analysis. Step-by-step instructions for installing Anaconda can be found at: [Windows](https://docs.anaconda.com/anaconda/install/windows/), [macOS](https://docs.anaconda.com/anaconda/install/mac-os/), [Linux](https://docs.anaconda.com/anaconda/install/linux/)
+
 
 ## Installation
 
@@ -100,11 +103,13 @@ To upgrade to the latest version of PySPEDAS:
 pip install pyspedas --upgrade
 ```
 
+
 ## Local Data Directories
 
 The recommended way of setting your local data directory is to set the `SPEDAS_DATA_DIR` environment variable. `SPEDAS_DATA_DIR` acts as a root data directory for all missions, and will also be used by IDL (if you’re running a recent copy of the bleeding edge).
 
 Mission specific data directories (e.g., `MMS_DATA_DIR` for MMS, `THM_DATA_DIR` for THEMIS) can also be set, and these will override `SPEDAS_DATA_DIR`
+
 
 ## Usage
 
@@ -115,7 +120,7 @@ import pyspedas
 from pytplot import tplot
 ```
 
-You can load data into tplot variables by calling `pyspedas.mission.instrument()`, e.g., 
+You can load data into tplot variables by calling `pyspedas.mission.instrument()`, e.g.,
 
 To load and plot 1 day of THEMIS FGM data for probe 'd':
 ```python
@@ -147,7 +152,7 @@ stereo_files = pyspedas.stereo.mag(trange=['2013-11-1', '2013-11-6'], downloadon
 
 ### Standard Options
 - `trange`: two-element list specifying the time range of interest. This keyword accepts a wide range of formats
-- `time_clip`: if set, clip the variables to the exact time range specified by the `trange` keyword 
+- `time_clip`: if set, clip the variables to the exact time range specified by the `trange` keyword
 - `suffix`: string specifying a suffix to append to the loaded variables
 - `varformat`: string specifying which CDF variables to load; accepts the wild cards * and ?
 - `varnames`: string specifying which CDF variables to load (exact names)
@@ -156,8 +161,10 @@ stereo_files = pyspedas.stereo.mag(trange=['2013-11-1', '2013-11-6'], downloadon
 - `no_update`: if set, only load the data from the local cache
 - `notplot`: if set, load the variables into dictionaries containing numpy arrays (instead of creating the tplot variables)
 
+
 ## Examples
 Please see the following notebooks for examples of using PySPEDAS
+
 ### PyTplot Basics
 - [Introduction to PyTplot](https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/notebooks/Introduction_to_PyTplot.ipynb)
 
@@ -200,9 +207,10 @@ Additional examples of loading and plotting data can be found in the documentati
 
 
 ## Documentation
-For more information, please see our HTML documentation at: 
+For more information, please see our HTML documentation at:
 
 https://pyspedas.readthedocs.io/
+
 
 ## Getting Help
 To find the options supported, call `help` on the instrument function you're interested in:
@@ -212,16 +220,25 @@ help(pyspedas.themis.fgm)
 
 You can ask questions by creating an issue or by joining the [SPEDAS mailing list](http://spedas.org/mailman/listinfo/spedas-list_spedas.org).
 
+
+## PyTplot
+
+Pytplot is a separate project, that replicates the IDL "tplot" functionality. Pyspedas uses a modified version of pytplot with matplotlib as the plotting library.
+
+
 ## Contributing
 We welcome contributions to PySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
+
 
 ## Plug-in Development
 An introduction to PySPEDAS plug-in development can be found here:
 
 [Introduction to PySPEDAS plug-in development](https://github.com/spedas/pyspedas/tree/master/docs/pyspedas_plugin_development.pdf)
 
+
 ## Code of Conduct
 In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation. To learn more, please see our [Code of Conduct](https://github.com/spedas/pyspedas/blob/master/CODE_OF_CONDUCT.md).
+
 
 ## Additional Information
 
@@ -229,7 +246,7 @@ For examples of pyspedas, see: https://github.com/spedas/pyspedas_examples
 
 For MMS examples, see: https://github.com/spedas/mms-examples
 
-For pytplot, see: https://github.com/MAVENSDC/PyTplot
+For pytplot (matplotlib version), see: https://github.com/MAVENSDC/PyTplot/tree/matplotlib-backend
 
 For cdflib, see: https://github.com/MAVENSDC/cdflib
 

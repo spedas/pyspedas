@@ -1,10 +1,8 @@
-
 import logging
 from time import time
-
-from pyspedas import time_double, mms
+from pyspedas import mms
 from pyspedas.mms.particles.mms_part_products import mms_part_products
-
+from pytplot import time_double
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 
@@ -49,17 +47,19 @@ def mms_part_getspec(instrument='fpi',
             'df_cm'  -  s^3 / cm^6
             'df_km'  -  s^3 / km^6
 
+            Default: 'eflux'
+
         species: str
-            Specify the species of the input tplot variable
+            Specify the species of the input tplot variable (Default: 'e')
 
         data_rate: str
-            Data rate of the input data
+            Data rate of the input data (Default: 'fast')
 
         instrument: str
             Instrument (FPI or HPCA)
 
         probe: int or str
-            Spacecraft probe #
+            Spacecraft probe # (Default: 1)
 
         output: str or list of str
             Output variables; options: 
@@ -69,6 +69,7 @@ def mms_part_getspec(instrument='fpi',
                 'pa': pitch-angle spectrograms
                 'gyro': gyro-phase spectrograms
                 'moments': plasma moments
+                Default: ['energy', 'theta', 'phi', 'pa', 'gyro']
 
         energy: list of float
             Energy range [min, max], in eV
@@ -93,13 +94,14 @@ def mms_part_getspec(instrument='fpi',
             Tplot variable containing spacecraft position for
             FAC transformations
 
-        sc_pot_name: str
-            Tplot variable containing spacecraft potential data
-            for moments corrections
+        sc_pot_data_rate: str
+            Data rate to use when loading the spacecraft potential data ('fast', 'srvy' or 'brst')
+            If not given, defaults to value of 'data_rate'.
 
         fac_type: str
-            Field aligned coordinate system variant; default: 'mphigeo'
+            Field aligned coordinate system variant;
             options: 'phigeo', 'mphigeo', 'xgse'
+            Default: 'mphigeo'
 
         correct_photoelectrons: bool
             Flag to correct FPI data for photoelectrons 
@@ -114,6 +116,13 @@ def mms_part_getspec(instrument='fpi',
         zero_negative_values: bool
             Turn negative values to 0 after doing the photoelectron corrections (DES)
 
+        regrid: array of int
+            Dimensions for regridded data array (see no_regrid flag below)
+            Default: [32,16]
+
+        no_regrid: bool
+            Flag to disable regridding of data array
+
     Returns
     ----------
         Creates tplot variables containing spectrograms and moments
@@ -123,9 +132,8 @@ def mms_part_getspec(instrument='fpi',
     start_time = time()
 
     if trange is None:
-        # test data for development
-        trange = ['2015-10-16/13:06', '2015-10-16/13:07']
-        # data_rate = 'brst'
+        logging.error('Time range not specified; please specify time range using the trange keyword.')
+        return
 
     if mag_data_rate is None:
         if data_rate == 'brst':

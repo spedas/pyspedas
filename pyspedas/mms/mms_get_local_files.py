@@ -4,20 +4,18 @@ import re
 import shutil
 from .mms_config import CONFIG
 from .mms_files_in_interval import mms_files_in_interval
-
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
-
 from datetime import timedelta
 
 
 def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, mirror=False):
-
     """
     Search for local MMS files in case a list cannot be retrieved from the
     remote server.  
     
-    Parameters:
+    Parameters
+    ------------
         probe: str
             probe #, e.g., '4' for MMS4
 
@@ -39,10 +37,10 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
         mirror: bool
             if True, copy files from network mirror to local data directory
 
-    Returns:
+    Returns
+    ---------
         List of file paths.
     """
-
     files_out = []
 
     if mirror:
@@ -60,7 +58,7 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
     #   -assume file names are of the form:
     #      spacecraft_instrument_rate_level[_datatype]_YYYYMMDD[hhmmss]_version.cdf
 
-    file_name = 'mms'+probe+'_'+instrument+'_'+data_rate+'_'+level+'(_)?.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
+    file_name = 'mms'+probe+'_'+instrument+'_'+data_rate+'_'+level+r'(_)?.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
 
     days = rrule(DAILY, dtstart=parse(parse(trange[0]).strftime('%Y-%m-%d')), until=parse(trange[1])-timedelta(seconds=1))
 
@@ -115,7 +113,8 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
         # need to copy files from network mirror to local data directory
         for file in local_files:
             local_file = file.replace(mirror_dir, local_dir)
-            if CONFIG['debug_mode']: logging.info('Copying ' + file + ' to ' + local_file)
+            if CONFIG['debug_mode']:
+                logging.info('Copying ' + file + ' to ' + local_file)
             shutil.copyfile(file, local_file)
             local_files_copied.append(local_file)
         local_files = local_files_copied

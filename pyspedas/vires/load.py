@@ -1,6 +1,6 @@
 import logging
 from viresclient import SwarmRequest
-from pyspedas import time_datetime
+from pytplot import time_datetime
 from pytplot import store_data, options
 
 

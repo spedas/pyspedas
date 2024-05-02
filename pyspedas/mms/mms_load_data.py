@@ -2,11 +2,11 @@ import os
 import requests
 import logging
 import warnings
-import pkg_resources
+from importlib.metadata import version, PackageNotFoundError
 import numpy as np
 from pytplot import cdf_to_tplot
-from ..analysis.time_clip import time_clip as tclip
-from pyspedas import time_double, time_string
+from pytplot import time_clip as tclip
+from pytplot import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
 from shutil import copyfileobj, copy
@@ -20,16 +20,14 @@ from .mms_load_data_spdf import mms_load_data_spdf
 
 
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
-    instrument='fgm', datatype='', varformat=None, prefix='', suffix='', get_support_data=False, time_clip=False, 
+    instrument='fgm', datatype='', varformat=None, exclude_format=None, prefix='', suffix='', get_support_data=False, time_clip=False,
     no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
     major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False, varnames=[]):
     """
     This function loads MMS data into pyTplot variables
 
-    This function is not meant to be called directly. Please see the individual load routines for documentation and use. 
-
+    This function is not meant to be called directly. Please see the individual load routines for documentation and use.
     """
-
     if not isinstance(probe, list): probe = [probe]
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(level, list): level = [level]
@@ -46,7 +44,6 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         trange[0] = time_string(trange[0])
     if isinstance(trange[1], float):
         trange[1] = time_string(trange[1])
-        
 
     download_only = CONFIG['download_only']
 
@@ -55,7 +52,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     if spdf:
         return mms_load_data_spdf(trange=trange, probe=probe, data_rate=data_rate, level=level, 
-                                  instrument=instrument, datatype=datatype, varformat=varformat, 
+                                  instrument=instrument, datatype=datatype, varformat=varformat, exclude_format=exclude_format,
                                   suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, 
                                   no_update=no_update, center_measurement=center_measurement, notplot=notplot, 
                                   latest_version=latest_version, major_version=major_version, 
@@ -63,9 +60,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     headers = {}
     try:
-        release_version = pkg_resources.get_distribution("pyspedas").version
-    except pkg_resources.DistributionNotFound:
-        release_version = 'bleeding edge'
+        release_version = version("pyspedas")
+    except PackageNotFoundError:
+        release_version = "bleeding edge"
     headers['User-Agent'] = 'pySPEDAS ' + release_version
 
     user = None
@@ -104,7 +101,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                     if CONFIG['debug_mode']: logging.info('Fetching: ' + url)
 
-                    if no_download == False:
+                    if not no_download:
                         # query list of available files
                         try:
                             with warnings.catch_warnings():
@@ -165,8 +162,10 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 file_found = True
                                 fsrc.close()
                                 ftmp.close()
-                        except requests.exceptions.ConnectionError:
+                                os.unlink(ftmp.name)  # delete the temporary file
+                        except requests.exceptions.ConnectionError as e:
                             # No/bad internet connection; try loading the files locally
+                            print(e)
                             logging.error('No internet connection!')
 
                     if not file_found:
@@ -193,16 +192,16 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         out_files = sorted(out_files)
 
         filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
-        if filtered_out_files == []:
+        if not filtered_out_files:
             logging.info('No matching CDF versions found.')
             return
 
-        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat, varnames=varnames, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat,exclude_format=exclude_format, varnames=varnames, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
 
         if notplot:
             return new_variables
 
-        if new_variables == []:
+        if not new_variables:
             logging.warning('No data loaded.')
             return
 
@@ -213,8 +212,3 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
         return new_variables
     else:
         return out_files
-
-
-
-
-

@@ -3,31 +3,58 @@ import numpy as np
 import scipy
 from pytplot import get_data, store_data, options
 
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except ImportError:
+    nanmean = np.nanmean
+
 
 def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=None, energy=[0, 1000], bin_size=15., scopes=None):
     """
-    Calculates spin-averaged PADs for the RBSPICE instrument
+    Calculates spin-averaged pitch angle distributions using data from the
+    RBSP Radiation Belt Storm Probes Ion Composition Experiment (RBSPICE)
     
     Parameters
     ----------
-    probe : str
-        RBSP spacecraft indicator [Options: 'a' (default), 'b']
-    datatype : str
-        desired data type [Options: 'TOFxEH' (default), 'TOFxEnonH']
-    level : str
-        data level ['l1','l2','l3' (default),'l3pap']
-    species : str
-        desired ion species [Options: 'proton' (default), 'helium', 'oxygen']
-    energy : list
-        user-defined energy range to include in the calculation in keV [default = [0,1000]]
-    bin_size : float
-        desired size of the pitch angle bins in degrees [default = 15]
-    scopes : list
+    probe : str or list of str, default='a'
+        Spacecraft probe name: 'a' or 'b'
+
+    datatype: str, default='TOFxEH'
+        desired data type: 'TOFxEH', 'TOFxEnonH'
+
+    level : str, default='l3'
+        data level: 'l1','l2','l3'
+
+    species : str, default='proton'
+        desired ion species: 'proton' , 'helium', 'oxygen'
+
+    energy : list, default=[0,1000]
+        user-defined energy range to include in the calculation in keV
+
+    bin_size : float, default = 15.
+        desired size of the pitch angle bins in degrees
+
+    scopes : list, optional
         string array of telescopes to be included in PAD [0-5, default is all]
+
 
     Returns
     --------
-    Tplot variables created
+    out : list
+        Tplot variables created
+
+    Examples
+    --------
+    >>> rbspice_vars = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEH', level='l3')
+    >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_spin')
+
+    # Calculate the pitch angle distributions
+    >>> from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad_spinavg
+    >>> rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3')
+    >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad_spin')
     """
     if level != 'l1':
         units_label = '1/(cm^2-sr-s-keV)'
@@ -85,7 +112,7 @@ def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=N
         # loop through the spins for this telescope
         for spin_idx in range(len(spin_starts)):
             # loop over energies
-            spin_sum_flux[spin_idx,:] = np.nanmean(pad_data.y[current_start:spin_starts[spin_idx]+1,:], axis=0)
+            spin_sum_flux[spin_idx,:] = nanmean(pad_data.y[current_start:spin_starts[spin_idx]+1,:], axis=0)
             spin_times[spin_idx] = pad_data.times[current_start]
             # rebin the data before storing it
             # the idea here is, for bin_size = 15 deg, rebin the data from center points to:

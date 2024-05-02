@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from pyspedas import time_string, time_double, tnames
+from pytplot import time_string, time_double, tnames
 import pytplot
 
 
@@ -8,7 +8,8 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
     """
     This function removes bad eyes, bad lowest energy channels based on data from Drew Turner
     
-    Parameters:
+    Parameters
+    ------------
         probe: str
             probe #, e.g., '4' for MMS4
 
@@ -26,7 +27,8 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
 
         trange: list of str or list of float
             Time range
-    Returns:
+    Returns
+    ------------
         None
     """
     if trange is None:
@@ -63,40 +65,45 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
 
     # top electrons
     for bad_var in bad_data['top']:
-        if bad_var in [6, 7, 8]: continue # ion eyes
+        if bad_var in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom electrons
     for bad_var in bad_data['bottom']:
-        if bad_var in [6, 7, 8]: continue # ion eyes
+        if bad_var in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_counts_sensorid_'+str(bad_var)+suffix))
 
     # top ions
     for bad_var in bad_data['top']:
-        if bad_var not in [6, 7, 8]: continue # ion eyes
+        if bad_var not in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom ions
     for bad_var in bad_data['bottom']:
-        if bad_var not in [6, 7, 8]: continue # ion eyes
+        if bad_var not in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_counts_sensorid_'+str(bad_var)+suffix))
 
     for bad_var in bad_vars:
-        if bad_var == []: continue
-        bad_var_data = pytplot.get_data(bad_var[0])
+        if not bad_var:
+            continue
+        bad_var_data = pytplot.get(bad_var[0])
 
         if bad_var_data is not None:
             times, data, energies = bad_var_data
             data[:] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
+            pytplot.store(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
     # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 2. BAD LOWEST E-CHANNELS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     # ; Next, these eyes have bad first channels (i.e., lowest energy channel, E-channel 0 in IDL indexing).  
@@ -163,132 +170,147 @@ def mms_feeps_remove_bad_data(probe='1', data_rate='srvy', datatype='electron', 
 
     # top electrons
     for bad_var in bad_ch0['top']:
-        if bad_var in [6, 7, 8]: continue # ion eyes
+        if bad_var in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom electrons
     for bad_var in bad_ch0['bottom']:
-        if bad_var in [6, 7, 8]: continue # ion eyes
+        if bad_var in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_counts_sensorid_'+str(bad_var)+suffix))
 
     # top ions
     for bad_var in bad_ch0['top']:
-        if bad_var not in [6, 7, 8]: continue # ion eyes
+        if bad_var not in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom ions
     for bad_var in bad_ch0['bottom']:
-        if bad_var not in [6, 7, 8]: continue # ion eyes
+        if bad_var not in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_counts_sensorid_'+str(bad_var)+suffix))
-
 
     #### bottom 2 channels
 
     # top electrons
     for bad_var in bad_ch1['top']:
-        if bad_var in [6, 7, 8]: continue # ion eyes
+        if bad_var in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom electrons
     for bad_var in bad_ch1['bottom']:
-        if bad_var in [6, 7, 8]: continue # ion eyes
+        if bad_var in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_counts_sensorid_'+str(bad_var)+suffix))
 
     # top ions
     for bad_var in bad_ch1['top']:
-        if bad_var not in [6, 7, 8]: continue # ion eyes
+        if bad_var not in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom ions
     for bad_var in bad_ch1['bottom']:
-        if bad_var not in [6, 7, 8]: continue # ion eyes
+        if bad_var not in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars_both_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_counts_sensorid_'+str(bad_var)+suffix))
 
-
     #### bottom 3 channels
-
     # top electrons
     for bad_var in bad_ch2['top']:
-        if bad_var in [6, 7, 8]: continue # ion eyes
+        if bad_var in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom electrons
     for bad_var in bad_ch2['bottom']:
-        if bad_var in [6, 7, 8]: continue # ion eyes
+        if bad_var in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_electron_bottom_counts_sensorid_'+str(bad_var)+suffix))
 
     # top ions
     for bad_var in bad_ch2['top']:
-        if bad_var not in [6, 7, 8]: continue # ion eyes
+        if bad_var not in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_top_counts_sensorid_'+str(bad_var)+suffix))
 
     # bottom ions
     for bad_var in bad_ch2['bottom']:
-        if bad_var not in [6, 7, 8]: continue # ion eyes
+        if bad_var not in [6, 7, 8]:
+            continue  # ion eyes
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_count_rate_sensorid_'+str(bad_var)+suffix))
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_intensity_sensorid_'+str(bad_var)+suffix))
         bad_vars_3_chans.append(tnames('mms'+str(probe)+'_epd_feeps_'+data_rate_level+'_ion_bottom_counts_sensorid_'+str(bad_var)+suffix))
 
     # set the first energy channel to NaN
     for bad_var in bad_vars:
-        if bad_var == []: continue
-        bad_var_data = pytplot.get_data(bad_var[0])
+        if not bad_var:
+            continue
+        bad_var_data = pytplot.get(bad_var[0])
         if bad_var_data is not None:
             times, data, energies = bad_var_data
 
             # check if the energy table contains all nans
-            if np.isnan(np.sum(energies)): continue
+            if np.isnan(np.sum(energies)):
+                continue
 
             data[:, 0] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
+            pytplot.store(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
     # set the first and second energy channels to NaN
     for bad_var in bad_vars_both_chans:
-        if bad_var == []: continue
-        bad_var_data = pytplot.get_data(bad_var[0])
+        if not bad_var:
+            continue
+        bad_var_data = pytplot.get(bad_var[0])
         if bad_var_data is not None:
             times, data, energies = bad_var_data
 
             # check if the energy table contains all names
-            if np.isnan(np.sum(energies)): continue
+            if np.isnan(np.sum(energies)):
+                continue
 
             data[:, 0] = np.nan
             data[:, 1] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
+            pytplot.store(bad_var[0], data={'x': times, 'y': data, 'v': energies})
 
     # set the bottom 3 energy channels to NaN
     for bad_var in bad_vars_3_chans:
-        if bad_var == []: continue
-        bad_var_data = pytplot.get_data(bad_var[0])
+        if not bad_var:
+            continue
+        bad_var_data = pytplot.get(bad_var[0])
         if bad_var_data is not None:
             times, data, energies = bad_var_data
 
             # check if the energy table contains all names
-            if np.isnan(np.sum(energies)): continue
+            if np.isnan(np.sum(energies)):
+                continue
 
             data[:, 0] = np.nan
             data[:, 1] = np.nan
             data[:, 2] = np.nan
-            pytplot.store_data(bad_var[0], data={'x': times, 'y': data, 'v': energies})
+            pytplot.store(bad_var[0], data={'x': times, 'y': data, 'v': energies})

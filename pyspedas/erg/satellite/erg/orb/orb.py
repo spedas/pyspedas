@@ -1,78 +1,112 @@
-import cdflib
 import numpy as np
-from pyspedas import tnames
+from pytplot import tnames
 from pytplot import clip, get_data, options, ylim
 
 from ..load import load
 from .remove_duplicated_tframe import remove_duplicated_tframe
+from ..get_gatt_ror import get_gatt_ror
 
 
-def orb(trange=['2017-03-27', '2017-03-28'],
-        datatype='def',
-        level='l2',
-        model="op",
-        suffix='',
-        get_support_data=False,
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        uname=None,
-        passwd=None,
-        time_clip=False,
-        version=None,
-        ror=True):
+from typing import List, Optional
+
+def orb(
+    trange: List[str] = ['2017-03-27', '2017-03-28'],
+    datatype: str = 'def',
+    level: str = 'l2',
+    model: str = "op",
+    suffix: str = '',
+    get_support_data: bool = False,
+    varformat: Optional[str] = None,
+    varnames: List[str] = [],
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None,
+    time_clip: bool = False,
+    version: Optional[str] = None,
+    ror: bool = True
+) -> List[str]:
     """
     This function loads orbit data from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
+
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2017-03-27', '2017-03-28']
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid 'l2' options: "pre", "spre", "mpre", "lpre", "def"
+            Default: 'def'
 
         level: str
-            Data level; Valid options:
+            Data level; Valid options: 'l2', 'l3'
+            Default: 'l2'
+
+        model: str
+            Field model to use for 'l3' data.  Valid options: 'op', 't89', 'ts04'
+            Default: 'op'
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default,
-            no suffix is added.
+            The tplot variable names will be given this suffix.  Default: None
 
         get_support_data: bool
-            Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a
-            "VAR_TYPE" attribute of "data".
+            If True, data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot.  Default: False
 
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
+            Default: None (all variables loaded)
 
         varnames: list of str
-            List of variable names to load (if not specified,
-            all data variables are loaded)
+            List of variable names to load. If list is empty or not specified,
+            all data variables are loaded.  Default: [] (all variables loaded)
 
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into
             tplot variables
+            Default: False
 
         notplot: bool
             Return the data in hash tables instead of creating tplot variables
+            Default: False
 
         no_update: bool
             If set, only load data from your local cache
+            Default: False
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+            Default: False
 
         version: str
             Set this value to specify the version of cdf files (such as "v03")
+            Default: False
 
-    Returns:
+        ror: bool
+            If true, print PI info and rules of the road.  Default: True
+
+        uname: str
+            User name. Default: None
+
+        passed: str
+            Password. Default: None
+
+    Returns
+    -------
         List of tplot variables created.
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> orb_vars = pyspedas.erg.orb(trange=['2017-03-27', '2017-03-28'])
+    >>> tplot('erg_orb_l2_pos_gse')
 
     """
     initial_notplot_flag = False
@@ -110,14 +144,7 @@ def orb(trange=['2017-03-27', '2017-03-28'],
     if (len(loaded_data) > 0) and ror:
 
         try:
-            if isinstance(loaded_data, list):
-                if downloadonly:
-                    cdf_file = cdflib.CDF(loaded_data[-1])
-                    gatt = cdf_file.globalattsget()
-                else:
-                    gatt = get_data(loaded_data[-1], metadata=True)['CDF']['GATT']
-            elif isinstance(loaded_data, dict):
-                gatt = loaded_data[list(loaded_data.keys())[-1]]['CDF']['GATT']
+            gatt = get_gatt_ror(downloadonly, loaded_data)
             # --- print PI info and rules of the road
 
             print(' ')

@@ -1,12 +1,13 @@
 sphinx>=1.7.5
 numpy>=1.20.0
 requests
-cdflib>=0.3.20
+cdflib
 cdasws>=1.7.24
 netCDF4
 pywavelets
 astropy
-https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip
+pytplot-mpl-temp>=2.2.23
 geopack>=1.0.9
 viresclient
 hapiclient
+sphinx-rtd-theme

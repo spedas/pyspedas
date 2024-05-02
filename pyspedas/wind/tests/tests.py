@@ -1,7 +1,7 @@
 import os
 import logging
 import unittest
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 import pyspedas
 
 
@@ -80,10 +80,12 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_3dp_varformat_alternation(self):
         tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_plsp', time_clip=True,
-                                         notplot=True, addmaster=True,varformat='MOM\.P\.FLUX|MOM\.P\.VELOCITY|MOM\.P\.PTENS')
+                                         notplot=True, addmaster=True,varformat=r'MOM\.P\.FLUX|MOM\.P\.VELOCITY|MOM\.P\.PTENS')
         self.assertTrue('wi_3dp_plsp_MOM.P.FLUX' in tdp_vars)
         self.assertTrue('wi_3dp_plsp_MOM.P.VELOCITY' in tdp_vars)
         self.assertTrue('wi_3dp_plsp_MOM.P.PTENS' in tdp_vars)
+        # Make sure we only got what we asked for
+        self.assertFalse('wi_3dp_plsp_FLUX' in tdp_vars)
 
     def test_load_3dp_sfpd_data(self):
         tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_sfpd', time_clip=True,
@@ -106,34 +108,42 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_mfi_data(self):
         mfi_vars = pyspedas.wind.mfi(trange=['2013-11-5', '2013-11-6'], time_clip=True)
-        self.assertTrue(data_exists('BGSE'))
+        self.assertTrue('BGSE' in mfi_vars)
 
     def test_load_swe_data(self):
         swe_vars = pyspedas.wind.swe(trange=['2013-11-5', '2013-11-6'])
-        self.assertTrue(data_exists('N_elec'))
-        self.assertTrue(data_exists('T_elec'))
-        self.assertTrue(data_exists('W_elec'))
+        self.assertTrue('N_elec' in swe_vars)
+        self.assertTrue('T_elec' in swe_vars)
+        self.assertTrue('W_elec' in swe_vars)
 
     def test_load_waves_data(self):
-        swe_vars = pyspedas.wind.waves(trange=['2013-11-5', '2013-11-6'])
-        self.assertTrue(data_exists('E_VOLTAGE_RAD1'))
-        self.assertTrue(data_exists('E_VOLTAGE_RAD2'))
-        self.assertTrue(data_exists('E_VOLTAGE_TNR'))
+        wav_vars = pyspedas.wind.waves(trange=['2013-11-5', '2013-11-6'])
+        self.assertTrue('E_VOLTAGE_RAD1' in wav_vars)
+        self.assertTrue('E_VOLTAGE_RAD2' in wav_vars)
+        self.assertTrue('E_VOLTAGE_TNR' in wav_vars)
 
-    def test_load_orbit_data(self):
+    def test_load_orbit_pre_data(self):
         orb_vars = pyspedas.wind.orbit(trange=['2013-11-5', '2013-11-6'])
-        self.assertTrue(data_exists('GSM_POS'))
-        self.assertTrue(data_exists('GSM_VEL'))
-        self.assertTrue(data_exists('SUN_VECTOR'))
-        self.assertTrue(data_exists('GCI_POS'))
-        self.assertTrue(data_exists('GCI_VEL'))
+        self.assertTrue('GSM_POS' in orb_vars)
+        self.assertTrue('GSM_VEL' in orb_vars)
+        self.assertTrue('SUN_VECTOR' in orb_vars)
+        self.assertTrue('GCI_POS' in orb_vars)
+        self.assertTrue('GCI_VEL' in orb_vars)
+
+    def test_load_orbit_def_data(self):
+        orb_vars = pyspedas.wind.orbit(trange=['1997-06-5', '1997-06-6'],datatype='def_or')
+        self.assertTrue('GSM_POS' in orb_vars)
+        self.assertTrue('GSM_VEL' in orb_vars)
+        self.assertTrue('SUN_VECTOR' in orb_vars)
+        self.assertTrue('GCI_POS' in orb_vars)
+        self.assertTrue('GCI_VEL' in orb_vars)
 
     def test_load_sms_data(self):
         sms_vars = pyspedas.wind.sms()
-        self.assertTrue(data_exists('Alpha_vel'))
-        self.assertTrue(data_exists('C/O_ratio'))
-        self.assertTrue(data_exists('C_ion_temp'))
-        self.assertTrue(data_exists('O_ion_temp'))
+        self.assertTrue('Alpha_vel' in sms_vars)
+        self.assertTrue('C/O_ratio' in sms_vars)
+        self.assertTrue('C_ion_temp' in sms_vars)
+        self.assertTrue('O_ion_temp' in sms_vars)
 
 
 if __name__ == '__main__':

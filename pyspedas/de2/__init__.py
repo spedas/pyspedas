@@ -2,7 +2,7 @@ from .load import load
 from pyspedas.utilities.datasets import find_datasets
 
 
-def mag(trange=['1983-02-16', '1983-02-17'],
+def mag(trange=['1983-02-10', '1983-02-11'],
         datatype='62ms',
         suffix='',  
         get_support_data=False, 
@@ -13,7 +13,7 @@ def mag(trange=['1983-02-16', '1983-02-17'],
         no_update=False,
         time_clip=False):
     """
-    This function loads data from the Magnetometer (MAG)
+    This function loads data from the Magnetometer (MAG) for mission DE2
     
     Parameters
     ----------
@@ -149,7 +149,7 @@ def nacs_postprocessing(variables):
     return variables
 
 
-def rpa(trange=['1983-02-16', '1983-02-17'],
+def rpa(trange=['1983-02-10', '1983-02-11'],
         datatype='ion2s',
         suffix='',  
         get_support_data=False, 
@@ -223,7 +223,7 @@ def rpa_postprocessing(variables):
     return variables
 
 
-def fpi(trange=['1983-02-16', '1983-02-17'],
+def fpi(trange=['1983-02-10', '1983-02-11'],
         datatype='8s',
         suffix='',  
         get_support_data=False, 
@@ -297,7 +297,7 @@ def fpi_postprocessing(variables):
     return variables
 
 
-def idm(trange=['1983-02-16', '1983-02-17'],
+def idm(trange=['1983-02-10', '1983-02-11'],
         datatype='250ms',
         suffix='',  
         get_support_data=False, 
@@ -370,7 +370,7 @@ def idm_postprocessing(variables):
     return variables
 
 
-def wats(trange=['1983-02-16', '1983-02-17'],
+def wats(trange=['1983-02-10', '1983-02-11'],
         datatype='2s', 
         suffix='',  
         get_support_data=False, 
@@ -444,7 +444,7 @@ def wats_postprocessing(variables):
     return variables
 
 
-def vefi(trange=['1983-02-16', '1983-02-17'],
+def vefi(trange=['1983-02-10', '1983-02-11'],
         datatype='ac500ms',
         suffix='',  
         get_support_data=False, 
@@ -518,7 +518,7 @@ def vefi_postprocessing(variables):
     return variables
 
 
-def lang(trange=['1983-02-16', '1983-02-17'],
+def lang(trange=['1983-02-10', '1983-02-11'],
         datatype='500ms',
         suffix='',  
         get_support_data=False, 

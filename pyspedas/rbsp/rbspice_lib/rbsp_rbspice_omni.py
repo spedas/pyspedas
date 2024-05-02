@@ -1,7 +1,15 @@
 import logging
 import numpy as np
 from pytplot import get_data, store_data, options
-from pyspedas import tnames
+from pytplot import tnames
+
+# use nanmean from bottleneck if it's installed, otherwise use the numpy one
+# bottleneck nanmean is ~2.5x faster
+try:
+    import bottleneck as bn
+    nanmean = bn.nanmean
+except ImportError:
+    nanmean = np.nanmean
 
 
 def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
@@ -10,17 +18,24 @@ def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
     
     Parameters
     ----------
-    probe : str
-        RBSP spacecraft indicator [Options: 'a' (default), 'b']
-    datatype : str
-        RBSPICE data type ['EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH' (default),'TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'],
-        but change for different data levels.
-    level : str
-        data level ['l1','l2','l3' (default),'l3pap']
+    probe : str or list of str, default='a'
+        Spacecraft probe name: 'a' or 'b'
+
+    datatype: str, default='TOFxEH'
+        RBSPICE data type: 'EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH','TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'
+        Values depends on different data levels.
+
+    level : str, default='l3'
+        data level: 'l1','l2','l3'
 
     Returns
     -------
-    Tplot variables created
+    out : list
+        Tplot variables created
+
+    Examples
+    --------
+    This function is called within pyspedas.rbsp.rbspice
     """
     if probe is None:
         probe = 'a'
@@ -71,7 +86,7 @@ def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
             flux_omni = np.zeros((len(d.times),len(d.y[0, :, 0])))
             for k in range(len(d.times)):
                 for l in range(len(d.y[0, :, 0])):
-                    flux_omni[k, l] = np.nanmean(d.y[k, l, :])
+                    flux_omni[k, l] = nanmean(d.y[k, l, :])
             newname = prefix+species+'_omni'
             store_data(newname, data={'x': d.times, 'y': flux_omni, 'v': d_for_en_table.v})
             options(newname, 'ylog', True)

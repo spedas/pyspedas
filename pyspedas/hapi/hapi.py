@@ -1,17 +1,12 @@
 import logging
 import warnings
-from pyspedas import time_double
-from pytplot import get_data, store_data, options
+from pytplot import get_data, store_data, options, time_double
 import numpy as np
-
-try:
-    from hapiclient import hapi as load_hapi
-except ImportError:
-    logging.error('hapiclient not found; install with: "pip install hapiclient"')
+from hapiclient import hapi as load_hapi
 
 
 def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
-         prefix='', catalog=False):
+         prefix='', catalog=False, quiet=False):
     """
     Loads data from a HAPI server into pytplot variables
 
@@ -29,19 +24,40 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         parameters: str or list of str
             Parameters in the dataset to load; default
             is to load them all
+            Default: '' (load all parameters)
 
         prefix: str
             Prefix to append to the tplot variables
+            Default: ''
 
         suffix: str
             Suffix to append to the tplot variables
+            Default: ''
 
         catalog: bool
             If True, returns the server's catalog of datasets
+            Default: False
+
+        quiet: bool
+            If True, suppress printing the catalog ids retrieved
+            Default: False
 
     Returns
     -------
-        List of tplot variables created.
+        list of str
+            List of catalog ids retrieved or tplot variables created.
+
+    Examples
+    --------
+    Print catalog from CDAWeb HAPI server
+    >>> import pyspedas
+    >>> cat_entries = pyspedas.hapi(server='https://cdaweb.gsfc.nasa.gov/hapi', catalog=True)
+
+    Load OMNI data from CDAWeg HAPI server
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> h_vars = pyspedas.hapi(trange=['2003-10-20', '2003-11-30'],server='https://cdaweb.gsfc.nasa.gov/hapi',dataset='OMNI_HRO2_1MIN')
+    >>> tplot(['BX_GSE','BY_GSE','BZ_GSE'])
     """
 
     if server is None:
@@ -56,15 +72,20 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     if catalog:
         catalog = load_hapi(server)
         items = []
+        id_list = []
         if 'catalog' in catalog.keys():
             items = catalog['catalog']
-        logging.info('Available datasets: ')
+        if not quiet:
+            print('Available datasets: ')
         for item in items:
             if 'title' in item.keys():
-                logging.info(item['id'] + ': ' + item['title'])
+                if not quiet:
+                    print(item['id'] + ': ' + item['title'])
             else:
-                logging.info(item['id'])
-        return
+                if not quiet:
+                    print(item['id'])
+            id_list.append(item['id'])
+        return id_list
 
     if dataset is None:
         logging.error('Error, no dataset specified; please see the catalog for a list of available data sets.')

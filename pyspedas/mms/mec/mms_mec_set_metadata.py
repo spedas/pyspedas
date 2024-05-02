@@ -1,5 +1,6 @@
 from pytplot import options
-from pyspedas import tnames
+from pytplot import tnames
+
 
 def mms_mec_set_metadata(probe, data_rate, level, suffix=''):
     """
@@ -22,7 +23,8 @@ def mms_mec_set_metadata(probe, data_rate, level, suffix=''):
             no suffix is added.
 
     """
-    if not isinstance(probe, list): probe = [probe]
+    if not isinstance(probe, list):
+        probe = [probe]
 
     instrument = 'mec'
 

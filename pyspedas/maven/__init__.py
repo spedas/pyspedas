@@ -1,200 +1,676 @@
-"""
-This module contains routines for loading MAVEN data.
-"""
-
 from .maven_load import load_data
 import pyspedas.maven.spdf as spdf_load
 
 
-def maven_load(filenames=None,
-               instruments=None,
-               level='l2',
-               type=None,
-               insitu=True,
-               iuvs=False,
-               start_date='2014-01-01',
-               end_date='2020-01-01',
-               update_prefs=False,
-               only_update_prefs=False,
-               local_dir=None,
-               list_files=False,
-               new_files=True,
-               exclude_orbit_file=False,
-               download_only=False,
-               varformat=None,
-               varnames=[],
-               prefix='',
-               suffix='',
-               get_support_data=False,
-               get_metadata=False,
-               auto_yes=False):
+maven_load = load_data
+
+
+def kp(
+    trange=["2016-01-01", "2016-01-02"],
+    datatype=None,
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+    insitu=True,
+    iuvs=False,
+    spdf=False,
+):
     """
-    Main function for downloading MAVEN data and loading it into tplot variables (if CDF or STS data type).
-    This function will also load in MAVEN KP data for position information, and read those into tplot as well
+    Load MAVEN KP (Key Parameters) data.
 
     Parameters:
-        filenames: str/list of str ['yyyy-mm-dd']
-            List of files to load
-        instruments: str/list of str
-            Instruments from which you want to download data.
-            Accepted values are any combination of: sta, swi, swe, lpw, euv, ngi, iuv, mag, sep, rse
-        type: str/list of str
-            The observation/file type of the instruments to load.  If None, all file types are loaded.
-            Otherwise, a file will only be loaded into tplot if its descriptor matches one of the strings in this field.
-            See the instrument SIS for more detail on types.
-            Accepted values are:
-            =================== ====================================
-            Instrument           Level 2 Observation Type/File Type
-            =================== ====================================
-            EUV                 bands
-            LPW                 lpiv, lpnt, mrgscpot, we12, we12burstlf, we12bursthf, we12burstmf, wn, wspecact, wspecpas
-            STATIC              2a, c0, c2, c4, c6, c8, ca, cc, cd, ce, cf, d0, d1, d4, d6, d7, d8, d9, da, db
-            SEP                 s1-raw-svy-full, s1-cal-svy-full, s2-raw-svy-full, s2-cal-svy-full
-            SWEA                arc3d, arcpad, svy3d, svypad, svyspec
-            SWIA                coarsearc3d, coarsesvy3d, finearc3d, finesvy3d, onboardsvymom, onboardsvyspec
-            MAG                 ss, pc, pl, ss1s, pc1s, pl1s
-            =================== =====================================
-        level: str
-            Currently unused, defaults to using Level 2 data
-        list_files: bool (True/False0
-            If true, lists the files instead of downloading them.
-        insitu: bool (True/False)
-            If true, specifies only insitu files.
-        iuvs: bool (True/False)
-            If true,
-        new_files: bool (True/False)
-            Checks downloaded files and only downloads those that haven't already been downloaded.
-        start_date: str
-            String that is the start date for downloading data (YYYY-MM-DD), or the orbit number
-        end_date: str
-            String that is the end date for downloading data (YYYY-MM-DD), or the orbit number
-        update_prefs: bool (True/False)
-            If true, updates where you want to store data locally
-        only_update_prefs: bool (True/False)
-            If true, *only* updates where to store dat alocally, doesn't download files.
-        exclude_orbit_file: bool (True/False)
-            If true, won't download the latest orbit tables.
-        local_dir: str
-            If indicated, specifies where to download files for a specific implementation of this function.
-        download_only: bool (True/False)
-            If True then files are downloaded only,
-            if False then CDF files are also loaded into pytplot using cdf_to_tplot.
-        varformat : str
-            The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.  By default, all variables are loaded in.
-        prefix: str
-            The tplot variable names will be given this prefix.
-            By default, no prefix is added.
-        suffix: str
-            The tplot variable names will be given this suffix.
-            By default, no suffix is added.
-        get_support_data: bool
-            Data with an attribute "VAR_TYPE" with a value of "support_data"
-            will be loaded into tplot.  By default, only loads in data with a
-            "VAR_TYPE" attribute of "data".
-        auto_yes : bool
-            If this is True, there will be no prompt asking if you'd like to download files.
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    datatype : str, optional
+        Type of data to load. Default is None.
+    varformat : str, optional
+        Format of the variable names. Default is None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+    insitu : bool, optional
+        Flag indicating whether to load insitu data. Default is True.
+    iuvs : bool, optional
+        Flag indicating whether to load IUVS data. Default is False.
+    spdf : bool, optional
+        Flag indicating whether to use the SPDF library for loading data. Default is False.
+
+    Returns:
+    -------
+    dict
+        Dictionary of loaded data variables.
+
     """
-    tvars = load_data(filenames=filenames, instruments=instruments, level=level, type=type, insitu=insitu, iuvs=iuvs,
-                      start_date=start_date, end_date=end_date, update_prefs=update_prefs,
-                      only_update_prefs=only_update_prefs, local_dir=local_dir, list_files=list_files,
-                      new_files=new_files, exclude_orbit_file=exclude_orbit_file, download_only=download_only,
-                      varformat=varformat, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                      get_metadata=get_metadata, auto_yes=auto_yes, varnames=varnames)
-    return tvars
 
-
-def kp(trange=['2016-01-01', '2016-01-02'], datatype=None, varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, insitu=True, iuvs=False, varnames=[], spdf=False):
     if spdf:
         if datatype is None:
-            datatype = 'kp-4sec'
-        return spdf_load.kp(trange=trange, datatype=datatype, varformat=varformat, get_support_data=get_support_data)
-    return maven_load(start_date=trange[0], end_date=trange[1], type=datatype, level='kp', varformat=varformat, varnames=varnames, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, insitu=insitu, iuvs=iuvs)
+            datatype = "kp-4sec"
+        return spdf_load.kp(
+            trange=trange,
+            datatype=datatype,
+            varformat=varformat,
+            get_support_data=get_support_data,
+        )
+    return maven_load(
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level="kp",
+        varformat=varformat,
+        varnames=varnames,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        insitu=insitu,
+        iuvs=iuvs,
+    )
 
 
-def mag(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False,
-        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+def mag(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype=None,
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+    spdf=False,
+):
+    """
+    Function to retrieve Magnetometer (MAG) data from the MAVEN mission.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level to retrieve. Defaults to "l2".
+    datatype : str, optional
+        Data type to retrieve. Defaults to None.
+    varformat : str, optional
+        Variable format. Defaults to None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+    spdf : bool, optional
+        Flag indicating whether to use the SPDF library for loading data. Default is False.
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+
     if spdf:
         if datatype is None:
-            datatype = 'sunstate-1sec'
-        return spdf_load.mag(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
-                             downloadonly=downloadonly, varnames=varnames)
+            datatype = "sunstate-1sec"
+        return spdf_load.mag(
+            trange=trange,
+            level=level,
+            datatype=datatype,
+            varformat=varformat,
+            get_support_data=get_support_data,
+            downloadonly=downloadonly,
+            varnames=varnames,
+        )
     if datatype is None:
-        datatype = 'ss'
-    return maven_load(instruments='mag', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+        datatype = "ss"
+    return maven_load(
+        instruments="mag",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def sta(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False,
-        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+def sta(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype=None,
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+    spdf=False,
+):
+    """
+    Function to load MAVEN STA data.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level. Defaults to "l2".
+    datatype : str, optional
+        Data type. Defaults to None.
+    varformat : str, optional
+        Variable format. Defaults to None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+    spdf : bool, optional
+        Whether to use the SPDF library for loading data. Defaults to False.
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+
     if spdf:
         if datatype is None:
-            datatype = 'c0-64e2m'
-        return spdf_load.static(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
-                             downloadonly=downloadonly, varnames=varnames)
+            datatype = "c0-64e2m"
+        return spdf_load.static(
+            trange=trange,
+            level=level,
+            datatype=datatype,
+            varformat=varformat,
+            get_support_data=get_support_data,
+            downloadonly=downloadonly,
+            varnames=varnames,
+        )
     if datatype is None:
-        datatype = '2a'
-    return maven_load(instruments='sta', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_metadata=True, get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+        datatype = "2a"
+    return maven_load(
+        instruments="sta",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_metadata=True,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def swea(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='svyspec', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+def swea(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype="svyspec",
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+    spdf=False,
+):
+    """
+    Load MAVEN Solar Wind Electron Analyzer (SWEA) data.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level. Defaults to "l2".
+    datatype : str, optional
+        Data type. Defaults to "svyspec".
+    varformat : str, optional
+        Variable format. Defaults to None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+    spdf : bool, optional
+        Whether to use the SPDF library for data loading. Defaults to False.
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+
     if spdf:
-        return spdf_load.swea(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
-                             downloadonly=downloadonly, varnames=varnames)
-    return maven_load(instruments='swe', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+        return spdf_load.swea(
+            trange=trange,
+            level=level,
+            datatype=datatype,
+            varformat=varformat,
+            get_support_data=get_support_data,
+            downloadonly=downloadonly,
+            varnames=varnames,
+        )
+    return maven_load(
+        instruments="swe",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def swia(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='onboardsvyspec', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+def swia(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype="onboardsvyspec",
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+    spdf=False,
+):
+    """
+    Load MAVEN Solar Wind Ion Analyzer (SWIA) data.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level to load. Default is "l2".
+    datatype : str, optional
+        Data type to load. Default is "onboardsvyspec".
+    varformat : str, optional
+        Variable format. Default is None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Default is True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+    spdf : bool, optional
+        Whether to use the SPDF library for loading the data. Default is False.
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
     if spdf:
-        return spdf_load.swia(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
-                             downloadonly=downloadonly, varnames=varnames)
-    return maven_load(instruments='swi', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+        return spdf_load.swia(
+            trange=trange,
+            level=level,
+            datatype=datatype,
+            varformat=varformat,
+            get_support_data=get_support_data,
+            downloadonly=downloadonly,
+            varnames=varnames,
+        )
+    return maven_load(
+        instruments="swi",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def sep(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='s2-cal-svy-full', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[], spdf=False):
+def sep(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype="s2-cal-svy-full",
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+    spdf=False,
+):
+    """
+    Loads MAVEN Solar Energetic Particle (SEP) data.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level. Defaults to "l2".
+    datatype : str, optional
+        Data type. Defaults to "s2-cal-svy-full".
+    varformat : str, optional
+        Variable format. Defaults to None.
+    get_support_data : bool, optional
+        Whether to download support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer 'yes' to all prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+    spdf : bool, optional
+        Whether to use the SPDF library for loading the data. Defaults to False.
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+
     if spdf:
-        return spdf_load.sep(trange=trange, level=level, datatype=datatype, varformat=varformat, get_support_data=get_support_data,
-                             downloadonly=downloadonly, varnames=varnames)
-    return maven_load(instruments='sep', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+        return spdf_load.sep(
+            trange=trange,
+            level=level,
+            datatype=datatype,
+            varformat=varformat,
+            get_support_data=get_support_data,
+            downloadonly=downloadonly,
+            varnames=varnames,
+        )
+    return maven_load(
+        instruments="sep",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def rse(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
-    return maven_load(instruments='rse', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+def rse(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype=None,
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+):
+    """
+    Load MAVEN RSE data for the specified time range and parameters.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level. Defaults to "l2".
+    datatype : str, optional
+        Data type. Defaults to None.
+    varformat : str, optional
+        Variable format. Defaults to None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+
+    return maven_load(
+        instruments="rse",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def lpw(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='lpiv', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
-    return maven_load(instruments='lpw', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+def lpw(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype="lpiv",
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+):
+    """
+    Load LPW (Langmuir Probe and Waves) data from the MAVEN mission.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str
+        Data level to retrieve (e.g., "l1", "l2", "l3").
+    datatype : str
+        Type of data to retrieve (e.g., "lpiv", "lpwt").
+    varformat : str
+        Format of the variable names.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+    return maven_load(
+        instruments="lpw",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def euv(trange=['2016-01-01', '2016-01-02'], level='l2', datatype='bands', varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
-    return maven_load(instruments='euv', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+def euv(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype="bands",
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+):
+    """
+    Load EUV data from the MAVEN mission.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level. Defaults to "l2".
+    datatype : str, optional
+        Data type. Defaults to "bands".
+    varformat : str, optional
+        Variable format. Defaults to None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer yes to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+
+    return maven_load(
+        instruments="euv",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def iuv(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
-    return maven_load(instruments='iuv', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+def iuv(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype=None,
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+):
+    """
+    Load MAVEN IUV data.
+
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level. Defaults to "l2".
+    datatype : str, optional
+        Data type. Defaults to None.
+    varformat : str, optional
+        Variable format. Defaults to None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
+
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+
+    return maven_load(
+        instruments="iuv",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )
 
 
-def ngi(trange=['2016-01-01', '2016-01-02'], level='l2', datatype=None, varformat=None, get_support_data=False, 
-        auto_yes=True, downloadonly=False, varnames=[]):
-    return maven_load(instruments='ngi', start_date=trange[0], end_date=trange[1], type=datatype, level=level, varformat=varformat, 
-        get_support_data=get_support_data, auto_yes=auto_yes, download_only=downloadonly, varnames=varnames)
+def ngi(
+    trange=["2016-01-01", "2016-01-02"],
+    level="l2",
+    datatype=None,
+    varformat=None,
+    get_support_data=False,
+    auto_yes=True,
+    downloadonly=False,
+    varnames=[],
+):
+    """
+    Load NGI data from the MAVEN mission.
 
+    Parameters
+    ----------
+    trange : list, optional
+        Time range of the data in the format ["start_date", "end_date"].
+        Defaults to ["2016-01-01", "2016-01-02"].
+    level : str, optional
+        Data level. Defaults to "l2".
+    datatype : str, optional
+        Data type. Defaults to None.
+    varformat : str, optional
+        Variable format. Defaults to None.
+    get_support_data : bool, optional
+        Whether to retrieve support data. Defaults to False.
+    auto_yes : bool, optional
+        Whether to automatically answer "yes" to prompts. Defaults to True.
+    downloadonly : bool, optional
+        Whether to only download the data without loading it. Defaults to False.
+    varnames : list, optional
+        List of variable names to load. Defaults to [].
 
-
+    Returns
+    -------
+    dict
+        Dictionary of loaded data variables.
+    """
+    return maven_load(
+        instruments="ngi",
+        start_date=trange[0],
+        end_date=trange[1],
+        type=datatype,
+        level=level,
+        varformat=varformat,
+        get_support_data=get_support_data,
+        auto_yes=auto_yes,
+        download_only=downloadonly,
+        varnames=varnames,
+    )

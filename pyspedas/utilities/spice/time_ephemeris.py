@@ -1,7 +1,7 @@
 import datetime
 import logging
 import numpy as np
-from pyspedas import time_double
+from pytplot import time_double
 from pyspedas.utilities.interpol import interpol
 
 

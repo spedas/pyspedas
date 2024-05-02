@@ -1,6 +1,6 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 
 from .config import CONFIG
@@ -31,6 +31,76 @@ def load(trange=['1997-01-03', '1997-01-04'],
         pyspedas.polar.vis
         pyspedas.polar.pixie
         pyspedas.polar.orbit
+
+    Parameters
+    ----------
+        trange : list of str
+            time range of interest [starttime, endtime] with the format
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
+            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['1997-01-03', '1997-01-04']
+
+        instrument: str
+            Spacecraft identifier ('mfe', 'efi', 'pwi', 'hydra', 'tide', 'timas',
+                'cammice', 'ceppad', 'uvi', 'vis', 'pixie', 'orbit')
+            Default: 'mfe'
+
+        datatype: str
+            Valid options: 'k0'
+            Default: 'k0'
+
+        suffix: str
+            The tplot variable names will be given this suffix.
+            Default: no suffix is added.
+
+        get_support_data: bool
+            Data with an attribute "VAR_TYPE" with a value of "support_data"
+            will be loaded into tplot.
+            Default: 'False', only loads in data with a "VAR_TYPE" attribute of "data".
+
+        varformat: str
+            The file variable formats to load into tplot.  Wildcard character
+            "*" is accepted.
+            Default: None, all variables are loaded in.
+
+        varnames: list of str
+            List of variable names to load
+            Default: [], all data variables are loaded
+
+        downloadonly: bool
+            Set this flag to download the CDF files, but not load them into
+            tplot variables
+            Default: False
+
+        notplot: bool
+            Return the data in hash tables instead of creating tplot variables
+            Default: False
+
+        no_update: bool
+            If set, only load data from your local cache
+            Default: False
+
+        time_clip: bool
+            Time clip the variables to exactly the range specified in the trange keyword
+            Default: False
+
+    Returns
+    ----------
+        List of tplot variables created.
+
+    Example
+    ----------
+        import pyspedas
+        from pytplot import tplot
+        mfe_polar_vars = pyspedas.polar.mfe(trange=['1997-01-03', '1997-01-04'])
+
+        efi_polar_vars = pyspedas.polar.efi(trange=['1997-01-03', '1997-01-04'])
+
+        pwi_polar_vars = pyspedas.polar.pwi(trange=['1997-01-03', '1997-01-04'])
+
+        tide_polar_vars = pyspedas.polar.tide(trange=['1997-01-03', '1997-01-04'])
+
+        orbit_polar_vars = pyspedas.polar.orbit(trange=['1997-01-03', '1997-01-04'])
 
     """
 

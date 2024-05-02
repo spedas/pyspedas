@@ -1,41 +1,64 @@
 import pandas as pd
-from pyspedas.utilities.time_double import time_float
+from pytplot import time_float
 from pytplot import store_data
 
 from ..load import load
 
 
-def att(trange=['2017-04-01', '2017-04-02'],
-        level='l2',
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        uname=None,
-        passwd=None):
+from typing import List, Optional
+
+def att(
+    trange: List[str] = ['2017-04-01', '2017-04-02'],
+    level: str = 'l2',
+    downloadonly: bool = False,
+    notplot: bool = False,
+    no_update: bool = False,
+    uname: Optional[str] = None,
+    passwd: Optional[str] = None
+) -> List[str]:
     """
     This function loads attitude data from the Arase mission
 
-    Parameters:
+    Parameters
+    ----------
         trange : list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
+            Default: ['2017-04-01', '2017-04-02']
 
         level: str
-            Data level; Valid options:
+            Data level; Valid options: 'l2'
+            Default: 'l2'
 
         downloadonly: bool
             Set this flag to download the files, but not load them into
-            tplot variables
+            tplot variables. Default: False
 
         notplot: bool
-            Return the data in hash tables instead of creating tplot variables
+            Return the data in hash tables instead of creating tplot variables. Default: False
 
         no_update: bool
-            If set, only load data from your local cache
+            If set, only load data from your local cache. Default: False
 
-    Returns:
-        None
+        uname: str
+            User name. Default: None
+
+        passwd: str
+            Password. Default: None
+
+    Returns
+    -------
+        list of str
+            List of tplot variables loaded
+
+    Examples
+    --------
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> att_vars = pyspedas.erg.att(trange=['2017-04-01', '2017-04-02'])
+    >>> tplot(['erg_att_sprate', 'erg_att_spphase', 'erg_att_izras', 'erg_att_izdec', 'erg_att_gxras', 'erg_att_gxdec', 'erg_att_gzras', 'erg_att_gzdec'])
+
 
     """
     file_res = 24*3600.
@@ -102,4 +125,4 @@ def att(trange=['2017-04-01', '2017-04-02'],
         store_data('erg_att_gzdec', data={
             'x': time_float_array, 'y': GZ_Delta_float_array})
 
-    return None
+    return ['erg_att_sprate','erg_att_spphase','erg_att_izras','erg_att_gxras','erg_att_gxdec','erg_att_gzras','erg_att_gzdec']

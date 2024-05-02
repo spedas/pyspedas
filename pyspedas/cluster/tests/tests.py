@@ -1,6 +1,6 @@
 import os
 import unittest
-from pyspedas.utilities.data_exists import data_exists
+from pytplot import data_exists
 import pyspedas
 from pyspedas.cluster.load_csa import load_csa, cl_master_probes, cl_master_datatypes
 
@@ -69,6 +69,12 @@ class LoadTestCases(unittest.TestCase):
         whi_vars = pyspedas.cluster.whi()
         self.assertTrue(data_exists('E_pow_f5__C1_PP_WHI'))
 
-        
+    def test_load_csa_mom_data(self):
+        mom_data = pyspedas.cluster.load_csa(probes=['C1', 'C2', 'C3', 'C4'],
+                                         trange=['2003-08-17/16:40', '2003-08-17/16:45'],
+                                         datatypes='CP_CIS-HIA_ONBOARD_MOMENTS', time_clip=True)
+        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
+        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+
 if __name__ == '__main__':
     unittest.main()

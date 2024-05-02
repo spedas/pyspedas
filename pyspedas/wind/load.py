@@ -1,7 +1,7 @@
 import os
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.analysis.time_clip import time_clip as tclip
+from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 
 from .config import CONFIG
@@ -19,7 +19,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          no_update=False,
          berkeley=False,
          time_clip=False,
-         addmaster=False):
+         addmaster=True):
     """
     This function loads data from the WIND mission; this function is not meant 
     to be called directly; instead, see the wrappers:
@@ -51,10 +51,10 @@ def load(trange=['2013-11-5', '2013-11-6'],
         masterfile = 'wi_' + datatype + '_sms_00000000_v01.cdf'
     elif instrument == 'waves':
         pathformat = 'waves/wav_'+datatype+'/%Y/wi_'+datatype+'_wav_%Y%m%d_v??.cdf'
-        masterfile = 'wi_' + datatype + '_waves_00000000_v01.cdf'
+        masterfile = 'wi_' + datatype + '_wav_00000000_v01.cdf'
     elif instrument == 'orbit':
         pathformat = 'orbit/'+datatype+'/%Y/wi_'+datatype.split('_')[1]+'_'+datatype.split('_')[0]+'_%Y%m%d_v??.cdf'
-        masterfile = 'wi_' + datatype + '_orbit_00000000_v01.cdf'
+        masterfile = 'wi_' + datatype.split('_')[1]+'_'+datatype.split('_')[0] + '_00000000_v01.cdf'
     elif instrument == '3dp':
         prefix = 'wi_' + datatype + '_'
         if datatype == '3dp_emfits_e0':

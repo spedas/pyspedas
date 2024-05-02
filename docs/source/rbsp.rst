@@ -1,10 +1,10 @@
 Van Allen Probes (RBSP)
 ========================================================================
-The routines in this module can be used to load data from the Van Allen Probes (RBSP) mission.
+The routines in this module can be used to load and process data (in case of RBSPICE) from the Van Allen Probes (RBSP) mission.
 
 
 Electric and Magnetic Field Instrument Suite and Integrated Science (EMFISIS)
-----------------------------------------------------------
+-------------------------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.emfisis
 
 Example
@@ -46,7 +46,7 @@ Example
 
 
 Radiation Belt Storm Probes Ion Composition Experiment (RBSPICE)
-----------------------------------------------------------
+-----------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.rbspice
 
 Example
@@ -68,10 +68,12 @@ Example
    :align: center
    :class: imgborder
 
+.. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad.rbsp_rbspice_pad
 
+.. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg.rbsp_rbspice_pad_spinavg
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - MagEIS
-----------------------------------------------------------
+--------------------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.mageis
 
 Example
@@ -92,7 +94,7 @@ Example
 
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - HOPE
-----------------------------------------------------------
+------------------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.hope
 
 Example
@@ -112,7 +114,7 @@ Example
 
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - REPT
-----------------------------------------------------------
+------------------------------------------------------------------------
 .. autofunction:: pyspedas.rbsp.rept
 
 Example

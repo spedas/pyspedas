@@ -2,7 +2,7 @@ import logging
 import numpy as np
 from fnmatch import fnmatch
 from pytplot import get_data, store_data, options
-from pyspedas import time_datetime
+from pytplot import time_datetime
 
 
 def mms_fpi_make_compressionlossbars(tname, lossy=False):
@@ -35,7 +35,6 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
         List of the tplot variables created.
 
     """
-
     if fnmatch(tname, 'mms?_dis*'):
         instrument = 'DIS'
     elif fnmatch(tname, 'mms?_des*'):
@@ -69,6 +68,8 @@ def mms_fpi_make_compressionlossbars(tname, lossy=False):
 
     if not lossy:
         file_id = metadata['CDF']['GATT']['Logical_file_id']
+        if isinstance(file_id, list):  # Workaround for cdflib bug in globalattsget
+            file_id = file_id[0]
         version = file_id.split('_v')[1].split('.')
         if version[0] == '2':
             if version[1] == '1':

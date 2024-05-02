@@ -1,13 +1,10 @@
-"""Test fuctions in the utilites folder."""
+"""Test functions in the utilites folder."""
 import unittest
 
 from pyspedas.utilities.dailynames import dailynames
-from pyspedas import tcopy, tkm2re
-from pyspedas.utilities.data_exists import data_exists
-from pyspedas.utilities.time_string import (time_string, time_datetime,
-                                            time_string_one)
-from pyspedas.utilities.time_double import (time_float_one, time_float,
-                                            time_double)
+from pyspedas import tcopy
+from pyspedas import themis
+from pytplot import data_exists, tkm2re, tplot
 from pytplot import get_data, store_data, options
 
 
@@ -70,6 +67,45 @@ class UtilTestCases(unittest.TestCase):
         anerror = tkm2re('test_km', newname=['test1_km', 'test1_km'])
         self.assertTrue(anerror is None)
 
+    def test_time_clip(self):
+        import pytplot
+        x=[1,2,3]
+        y=[2,4,6]
+        xfp = [1.0,2.0,3.0]
+        pytplot.store_data('fptest',data={'x':xfp,'y':y})
+        # Test warning for no data in time range
+        pytplot.time_clip('fptest',1.5,1.7)
+        # Single value in time range
+        pytplot.time_clip('fptest',1.5,2.5)
+        self.assertTrue(data_exists('fptest-tclip'))
+        pytplot.store_data('tst1',data={'x':x,'y':y})
+        pytplot.store_data('tst2',data={'x':x,'y':y})
+        # reversed time limits
+        pytplot.time_clip(['tst1','tst2'],10,1)
+        # data completely outside time limits
+        pytplot.time_clip(['tst1','tst2'],10,20)
+        # one point in limits
+        pytplot.time_clip('tst1',1.5,2.5)
+        self.assertTrue(data_exists('tst1-tclip'))
+        # overwrite
+        pytplot.del_data('tst1-tclip')
+        pytplot.time_clip('tst1',1.5,2.0,overwrite=True)
+        self.assertFalse(data_exists('tst1-tclip'))
+        pytplot.time_clip('tst1',1.5,2.5,newname='tst1_new')
+        self.assertTrue(data_exists('tst1_new'))
+        pytplot.time_clip('tst1',1.5,2.5,newname='',suffix='-tc1')
+        self.assertTrue(data_exists('tst1-tc1'))
+        pytplot.time_clip('tst1',1.5,2.5,newname=[],suffix='-tc2')
+        self.assertTrue(data_exists('tst1-tc2'))
+        # newname has different count than input names, default to suffix
+        pytplot.time_clip('tst1',1.5,2.5, newname=['foo','bar'],suffix='-tc3')
+        self.assertTrue(data_exists('tst1-tc3'))
+        pytplot.time_clip('tst1',1.5,2.5,newname=None, suffix='-tc4')
+        self.assertTrue(data_exists('tst1-tc4'))
+        # no such tplot name
+        pytplot.time_clip('bogus',1.5,2.5)
+        # empty input list
+        pytplot.time_clip([],1.5,2.5)
 
 if __name__ == '__main__':
     unittest.main()

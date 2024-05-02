@@ -1,26 +1,24 @@
 import logging
-from pyspedas import time_double
+from pytplot import time_double
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from .mms_file_filter import mms_file_filter
 from .mms_get_local_files import mms_get_local_files
 from pytplot import cdf_to_tplot
-from pyspedas.analysis.time_clip import time_clip as tclip
-
+from pytplot import time_clip as tclip
 from .mms_config import CONFIG
 
 CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/mms/'
 
 
 def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
-    instrument='fgm', datatype='', varformat=None, suffix='', get_support_data=False, time_clip=False, 
+    instrument='fgm', datatype='', varformat=None, exclude_format=None, suffix='', get_support_data=False, time_clip=False,
     no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
     major_version=False, min_version=None, cdf_version=None, varnames=[]):
     """
     This function loads MMS data from NASA SPDF into pyTplot variables
 
-    This function is not meant to be called directly. Please see the individual load routines for documentation and use. 
-
+    This function is not meant to be called directly. Please see the individual load routines for documentation and use.
     """
 
     tvars_created = []
@@ -85,11 +83,11 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
                         for file in files:
                             out_files.append(file)
 
-                    if out_files == []:
+                    if not out_files:
                         logging.info('Searching for local files...')
                         out_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
 
-                        if out_files == [] and CONFIG['mirror_data_dir'] != None:
+                        if not out_files and CONFIG['mirror_data_dir'] != None:
                             # check for network mirror; note: network mirrors are assumed to be read-only
                             # and we always copy the files from the mirror to the local data directory
                             # before trying to load into tplot variables
@@ -100,7 +98,7 @@ def mms_load_data_spdf(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate
 
                     filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
         
-                    tvars = cdf_to_tplot(filtered_out_files, varformat=varformat, varnames=varnames, get_support_data=get_support_data, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+                    tvars = cdf_to_tplot(filtered_out_files, varformat=varformat, exclude_format=exclude_format, varnames=varnames, get_support_data=get_support_data, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
                     if tvars is not None:
                         tvars_created.extend(tvars)
 
