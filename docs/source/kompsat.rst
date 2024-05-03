@@ -36,11 +36,6 @@ Magnetic Field Data with 1-16Hz from SOSMAG on GEO-KOMPSAT-2A in geostationary o
 1-minute averaging proton flux data from the particle detector on GEO-KOMPSAT-2A in geostationary orbit at 128.2E.
 
 
-Load function (SOSMAG and particle )
-----------------------------------------------------------
-.. autofunction:: pyspedas.kompsat.load
-
-
 Example
 ----------------------------------------------------------
 .. code-block:: python
@@ -52,21 +47,28 @@ Example
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")
     tplot(var_names)
 
-.. image:: _static/kompsat_mag.png
-   :align: center
-   :class: imgborder
+    .. image:: _static/kompsat_mag.png
+    :align: center
+    :class: imgborder
 
     # Load electron data and plot it
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
     options(var_names, 'ysubtitle', '')  # remove subtitles (units) 
     tplot(var_names)
 
-.. image:: _static/kompsat_e.png
-   :align: center
-   :class: imgborder
+    .. image:: _static/kompsat_e.png
+    :align: center
+    :class: imgborder
 
     # Load proton data and plot it
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
     options(var_names, 'ysubtitle', '')  # remove subtitles (units) 
     tplot(var_names)
+
+
+
+Load function (SOSMAG and particle )
+----------------------------------------------------------
+.. autofunction:: pyspedas.kompsat.load
+
 
