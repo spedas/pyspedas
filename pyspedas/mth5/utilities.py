@@ -3,7 +3,7 @@ import csv
 import pyspedas
 from io import StringIO
 from collections import defaultdict
-from pyspedas.utilities.time_string import time_datetime
+from pytplot import time_datetime
 
 
 def _list_of_fdsn_channels():
