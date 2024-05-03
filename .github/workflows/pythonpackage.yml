@@ -32,6 +32,7 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
+          pip install mth5
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest' && (github.ref == 'refs/heads/master'  || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis')
     - name: Install dependencies (Windows)
@@ -44,6 +45,7 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
+          pip install mth5
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'windows-latest' && github.ref == 'refs/heads/master'
     - name: Install dependencies (macOS)
@@ -56,6 +58,7 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
+          pip install mth5
           python -m pyspedas.mms.tests.setup_tests
       if: matrix.os == 'macos-latest' && github.ref == 'refs/heads/master'
     - name: Lint with flake8
