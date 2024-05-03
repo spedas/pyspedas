@@ -52,6 +52,9 @@ Example
     :align: center
     :class: imgborder
 
+
+Example
+----------------------------------------------------------
 .. code-block:: python
     # Load electron data and plot it
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
@@ -62,6 +65,9 @@ Example
     :align: center
     :class: imgborder
 
+
+Example
+----------------------------------------------------------
 .. code-block:: python
     # Load proton data and plot it
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
