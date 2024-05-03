@@ -53,9 +53,8 @@ Example
     :class: imgborder
 
 
-Example
-----------------------------------------------------------
 .. code-block:: python
+
     # Load electron data and plot it
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
     options(var_names, 'ysubtitle', '')  # remove subtitles (units) 
@@ -66,9 +65,8 @@ Example
     :class: imgborder
 
 
-Example
-----------------------------------------------------------
 .. code-block:: python
+
     # Load proton data and plot it
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
     options(var_names, 'ysubtitle', '')  # remove subtitles (units) 
