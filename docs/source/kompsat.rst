@@ -40,6 +40,7 @@ Example
 ----------------------------------------------------------
 .. code-block:: python
 
+    # Import from pyspedas and pytplot
     import pyspedas
     from pytplot import tplot, options
 
@@ -47,23 +48,30 @@ Example
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")
     tplot(var_names)
 
-    .. image:: _static/kompsat_mag.png
+.. image:: _static/kompsat_mag.png
     :align: center
     :class: imgborder
 
+.. code-block:: python
     # Load electron data and plot it
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
     options(var_names, 'ysubtitle', '')  # remove subtitles (units) 
     tplot(var_names)
 
-    .. image:: _static/kompsat_e.png
+.. image:: _static/kompsat_e.png
     :align: center
     :class: imgborder
 
+.. code-block:: python
     # Load proton data and plot it
     var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
     options(var_names, 'ysubtitle', '')  # remove subtitles (units) 
     tplot(var_names)
+
+.. image:: _static/kompsat_p.png
+    :align: center
+    :class: imgborder
+
 
 
 
