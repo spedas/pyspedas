@@ -740,31 +740,35 @@ def load(
 
     Examples
     --------
-    from pytplot import tplot
-    from pyspedas import kompsat_load
+    >>> from pytplot import tplot
+    >>> from pyspedas import kompsat_load
 
-    # Plot L2 magnetometer data
-    var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")
-    tplot(var_names)
+    >>> # Plot L2 magnetometer data
+    >>> var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")
+    >>> tplot(var_names)
 
-    # Plot electron data
-    var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
-    tplot(var_names)
+    >>> # Plot electron data
+    >>> var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
+    >>> tplot(var_names)
 
-    # Plot proton data
-    var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
-    tplot(var_names)
+    >>> # Plot proton data
+    >>> var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
+    >>> tplot(var_names)
 
     Notes
     -----
     Data links that can be tested on a browser:
 
     SOSMAG data:
+
     https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_recalib&time.min=2021-01-31T01:00:00.000Z&time.max=2021-01-31T01:01:00.000Z&format=json
+
     https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_1m&time.min=2021-01-31T01:00:00.000Z&time.max=2021-01-31T01:01:00.000Z&format=json
 
     Particle data:
+
     https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/kma_gk2a_ksem_pd_p_l1&time.min=2024-03-31T01:00:00.000Z&time.max=2024-03-31T02:00:00.000Z&format=json
+
     https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/kma_gk2a_ksem_pd_e_l1&time.min=2024-03-31T01:00:00.000Z&time.max=2024-03-31T02:00:00.000Z&format=json
     """
     var_names = []
