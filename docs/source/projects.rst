@@ -17,6 +17,7 @@ Load Routines
    geotail
    goes
    image
+   kompsat
    kyoto
    lanl
    maven

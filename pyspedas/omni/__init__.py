@@ -19,33 +19,37 @@ def data(trange=['2013-11-5', '2013-11-6'],
 
     Parameters
     ----------
-    trange : list of str, default=['2013-11-5', '2013-11-6']
+    trange : list of str
         Time range of interest specified as ['starttime', 'endtime'] with the format
         'YYYY-MM-DD' or 'YYYY-MM-DD/hh:mm:ss' to specify more or less than a day.
-    datatype : str, default='1min'
+        Default: ['2013-11-5', '2013-11-6']
+    datatype : str
         Data type; valid options: '1min', '5min', 'hourly' (1 hour).
-    level : str, default='hro2'
+        Default: '1min'
+    level : str
         Data level; valid options: 'hro', 'hro2'.
+        default='hro2'
     suffix : str, optional
         Suffix for the tplot variable names.
-    get_support_data : bool, default=False
+    get_support_data : bool
         If True, loads data with "VAR_TYPE" attribute value "support_data" into tplot.
-        By default, only loads data with a "VAR_TYPE" attribute of "data".
-    get_ignore_data : bool, default=False
+        Default: False
+    get_ignore_data : bool
         If True, ignores loading certain data. This parameter is not documented in the original function signature.
+        Default: False
     varformat : str, optional
-        The file variable formats to load into tplot. Wildcard character "*" is accepted.
-        By default, all variables are loaded.
+        If specified, variables matching this wildcard pattern will be loaded from the CDFs
+        Default: all variables are loaded.
     varnames : list of str, optional
         List of variable names to load. If not specified, all data variables are loaded.
-    downloadonly : bool, default=False
-        If True, downloads the CDF files but does not load them into tplot variables.
-    notplot : bool, default=False
-        If True, returns the data in hash tables instead of creating tplot variables.
-    no_update : bool, default=False
-        If True, loads data only from the local cache.
-    time_clip : bool, default=True
-        If True, clips the variables to exactly the range specified in the trange parameter.
+    downloadonly : bool
+        If True, downloads the CDF files but does not load them into tplot variables. Default: False
+    notplot : bool
+        If True, returns the data in hash tables instead of creating tplot variables. Default: False
+    no_update : bool
+        If True, loads data only from the local cache. Default: False.
+    time_clip : bool
+        If True, clips the variables to exactly the range specified in the trange parameter. Default: True
 
     Returns
     -------
@@ -54,8 +58,12 @@ def data(trange=['2013-11-5', '2013-11-6'],
 
     Examples
     --------
+
+    >>> import pyspedas
+    >>> from pytplot import tplot
     >>> # This example will load 5-minute resolution data for the specified time range.
     >>> pyspedas.omni.data(trange=['2020-01-01', '2020-01-02'], datatype='5min', level='hro2')
+    >>> tplot(['BX_GSE', 'BY_GSE', 'BZ_GSE', 'flow_speed', 'Vx', 'Vy', 'Vz', 'SYM_H'])
     """
     return load(trange=trange, level=level, datatype=datatype, suffix=suffix, 
                 get_support_data=get_support_data, get_ignore_data=get_ignore_data,varformat=varformat, 

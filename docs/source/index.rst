@@ -52,6 +52,7 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
    coords
    utilities
    pytplot
+   contributing
 
 .. |build| image:: https://github.com/spedas/pyspedas/workflows/build/badge.svg
 .. |coverage| image:: https://coveralls.io/repos/github/spedas/pyspedas/badge.svg
