@@ -1,9 +1,9 @@
-# Make sure that download folder exists
 import os
 import logging
 import pyspedas
-from .config import CONFIG
+from pyspedas.mth5.config import CONFIG
 
+# Make sure that download folder exists
 if not os.path.exists(CONFIG['local_data_dir']):
     os.makedirs(CONFIG['local_data_dir'])
 
@@ -14,7 +14,8 @@ del os, CONFIG
 try:
     import mth5
     del mth5, pyspedas
-except ImportError:
+
+except (ImportError, ModuleNotFoundError):
     logging.error(f'MTH5 must be installed to use module {__name__}.')
     logging.error('Please install it using: pip install mth5')
     raise
