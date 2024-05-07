@@ -69,8 +69,8 @@ Example
    # Get the data arrays and metadata dictionary for v2_B1
    b1_dat = get_data('v2_B1')
    b1_md = get_data('b2_B1', metadata=True)
-   time_array = b1.times
-   data_array = b1.y
+   time_array = b1_dat.times
+   data_array = b1_dat.y
 
 
 
