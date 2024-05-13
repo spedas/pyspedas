@@ -13,6 +13,7 @@ Load Routines
    de2
    dscovr
    equator-s
+   elfin
    fast
    geotail
    goes
