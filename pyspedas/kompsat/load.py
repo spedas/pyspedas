@@ -572,8 +572,8 @@ def particle_to_tplot(
                 "3800",
             ]
             for i in range(0, len(flux_start) - 1):
-                flux_bands.append(flux_start[i] + "_" + flux_start[i + 1])
-            flux_bands.append("2000_3800")  # Last band is 2000-3800 keV
+                flux_bands.append(flux_start[i] + "-" + flux_start[i + 1] + " keV")
+            flux_bands.append("2000_3800 keV")  # Last band is 2000-3800 keV
         else:
             # Proton flux 'p_flux'
             # Data fields: [1 - 11]
@@ -592,7 +592,7 @@ def particle_to_tplot(
                 "6000",
             ]
             for i in range(0, len(flux_start) - 1):
-                flux_bands.append(flux_start[i] + "_" + flux_start[i + 1])
+                flux_bands.append(flux_start[i] + "-" + flux_start[i + 1] + " keV")
 
         for i in range(1, 11):
             yd = np.array(d[:, i], dtype=float)
@@ -605,7 +605,7 @@ def particle_to_tplot(
             store_data(var_name0, data={"x": td, "y": yd}, attr_dict=attr_dict)
             options(var_name0, "legend_names", pname + " (" + flux_bands[i - 1] + ")")
             options(var_name0, "ytitle", pname)
-            options(var_name0, "ysubtitle", "[keV]")
+            options(var_name0, "ysubtitle", "[cm^-2 sr^-1 s^-1 keV^-1]")
             options(var_name0, "coord_sys", "gse")
             options(var_name0, "units", "cm^-2 sr^-1 s^-1 keV^-1")
             var_names.append(var_name0)
@@ -740,31 +740,35 @@ def load(
 
     Examples
     --------
-    from pytplot import tplot
-    from pyspedas import kompsat_load
+    >>> from pytplot import tplot
+    >>> from pyspedas import kompsat_load
 
-    # Plot L2 magnetometer data
-    var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")
-    tplot(var_names)
+    >>> # Plot L2 magnetometer data
+    >>> var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")
+    >>> tplot(var_names)
 
-    # Plot electron data
-    var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
-    tplot(var_names)
+    >>> # Plot electron data
+    >>> var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
+    >>> tplot(var_names)
 
-    # Plot proton data
-    var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
-    tplot(var_names)
+    >>> # Plot proton data
+    >>> var_names = kompsat_load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
+    >>> tplot(var_names)
 
     Notes
     -----
     Data links that can be tested on a browser:
 
     SOSMAG data:
+
     https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_recalib&time.min=2021-01-31T01:00:00.000Z&time.max=2021-01-31T01:01:00.000Z&format=json
+
     https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_1m&time.min=2021-01-31T01:00:00.000Z&time.max=2021-01-31T01:01:00.000Z&format=json
 
     Particle data:
+
     https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/kma_gk2a_ksem_pd_p_l1&time.min=2024-03-31T01:00:00.000Z&time.max=2024-03-31T02:00:00.000Z&format=json
+
     https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/kma_gk2a_ksem_pd_e_l1&time.min=2024-03-31T01:00:00.000Z&time.max=2024-03-31T02:00:00.000Z&format=json
     """
     var_names = []

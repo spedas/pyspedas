@@ -17,11 +17,13 @@ Load Routines
    geotail
    goes
    image
+   kompsat
    kyoto
    lanl
    maven
    mica
    mms
+   mth5
    omni
    poes
    polar

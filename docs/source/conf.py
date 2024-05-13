@@ -25,7 +25,7 @@ copyright = '2018-2024, UC Regents, unless otherwise indicated'
 author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
-release = '1.5.11'
+release = '1.5.12'
 
 
 # -- General configuration ---------------------------------------------------
@@ -33,7 +33,7 @@ release = '1.5.11'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.napoleon', 'sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.napoleon', 'sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.intersphinx']
 
 # Napoleon settings
 napoleon_numpy_docstring = True

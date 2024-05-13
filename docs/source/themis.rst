@@ -1,5 +1,5 @@
 Time History of Events and Macroscale Interactions during Substorms (THEMIS)
-========================================================================
+==============================================================================
 The routines in this module can be used to load data from the Time History of Events and Macroscale Interactions during Substorms (THEMIS) mission.
 
 

@@ -1,8 +1,6 @@
 from pyspedas.mms.mms_load_data import mms_load_data
-from pyspedas.mms.print_vars import print_vars
 
 
-@print_vars
 def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='', varformat=None, varnames=[], get_support_data=False, suffix='', time_clip=False, no_update=False,
     available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
@@ -99,9 +97,12 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
     Returns
     --------
-        List of tplot variables created.
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Examples
+    ---------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> asp_data = pyspedas.mms.mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1')

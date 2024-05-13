@@ -6,6 +6,7 @@ the ERG Science Center: https://ergsc.isee.nagoya-u.jp
 Attitude Data
 -------------
 .. autofunction:: pyspedas.erg.att
+
 Example
 ^^^^^^^^^
 
@@ -67,7 +68,7 @@ Example
     import pyspedas
     from pytplot import tplot
 
-    lepi_vars = pyspedas.erg.lepi(trange=['2017-03-27', '2017-03-28'])
+    lepi_vars = pyspedas.erg.lepi(trange=['2017-04-09', '2017-04-10'])
     tplot('erg_lepi_l2_omniflux_FODO')
 
 .. image:: _static/erg_lepi.png
@@ -92,7 +93,7 @@ Medium-energy Particles - electrons (MEP-e)
 
 
 Medium-energy Particles – "normal mode" ion (MEP-i)
-------------------------------------------------
+----------------------------------------------------
 .. autofunction:: pyspedas.erg.mepi_nml
 
 .. code-block:: python
@@ -114,7 +115,7 @@ Medium-energy Particles - "time of flight mode" ion (MEP-i)
 
     import pyspedas
     from pytplot import tplot
-    pyspedas.erg.mepi_nml(trange=['2017-03-27', '2017-03-28'])
+    pyspedas.erg.mepi_tof(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_mepi_l2_omniflux_FODO')
 
 .. image:: _static/erg_mepi_tof.png
@@ -142,6 +143,7 @@ Example
 Orbit data
 ------------------------------------------------
 .. autofunction:: pyspedas.erg.orb
+
 Example
 ^^^^^^^^^
 
@@ -160,6 +162,7 @@ Plasma Wave Experiment - Electric Field Detector (PWE-EFD)
 --------------------------------------------------------------
 
 .. autofunction:: pyspedas.erg.pwe_efd
+
 Example
 ^^^^^^^^^
 
@@ -181,6 +184,7 @@ Plasma Wave Experiment - High Frequency Analyzer (PWE-HFA)
 --------------------------------------------------------------
 
 .. autofunction:: pyspedas.erg.pwe_hfa
+
 Example
 ^^^^^^^^^
 
@@ -198,6 +202,7 @@ Example
 Plasma Wave Experiment - Onboard Frequency Analyzer (PWE-OFA)
 --------------------------------------------------------------
 .. autofunction:: pyspedas.erg.pwe_ofa
+
 Example
 ^^^^^^^^^
 
@@ -215,6 +220,7 @@ Example
 Plasma Wave Experiment - Waveform Capture (PWE-WFC)
 --------------------------------------------------------------
 .. autofunction:: pyspedas.erg.pwe_wfc
+
 Example
 ^^^^^^^^^
 
@@ -267,6 +273,11 @@ ISEE Fluxgate Magnetometers
     fluxgate_vars=pyspedas.erg.gmag_isee_fluxgate(trange=['2020-08-01','2020-08-02'], site='all')
     tplot('isee_fluxgate_mag_ktb_1min_hdz')
 
+
+.. image:: _static/erg_isee_fluxgate.png
+   :align: center
+   :class: imgborder
+
 ISEE Induction Magnetometers
 -----------------------------
 .. autofunction:: pyspedas.erg.gmag_isee_induction
@@ -277,6 +288,10 @@ ISEE Induction Magnetometers
     from pytplot import tplot
     ind_vars=pyspedas.erg.gmag_isee_induction(trange=['2020-08-01','2020-08-02'], site='all')
     tplot('isee_induction_db_dt_msr')
+
+.. image:: _static/erg_isee_induction.png
+   :align: center
+   :class: imgborder
 
 MAGDAS 1sec data
 -----------------
@@ -290,6 +305,10 @@ MAGDAS 1sec data
     tplot('magdas_mag_ama_1sec_hdz')
 
 
+.. image:: _static/erg_magdas_1sec.png
+   :align: center
+   :class: imgborder
+
 MM210 data
 -----------
 .. autofunction:: pyspedas.erg.gmag_mm210
@@ -301,6 +320,11 @@ MM210 data
     mm210_vars=pyspedas.erg.gmag_mm210(trange=["2005-01-01", "2005-01-02"],site='adl',datatype='1min')
     tplot('mm210_mag_adl_1min_hdz')
 
+
+.. image:: _static/erg_gmag_mm210.png
+   :align: center
+   :class: imgborder
+
 STEL Fluxgate Magnetometers
 ----------------------------
 .. autofunction:: pyspedas.erg.gmag_stel_fluxgate
@@ -309,8 +333,12 @@ STEL Fluxgate Magnetometers
 
     import pyspedas
     from pytplot import tplot
-    fluxgate_vars=pyspedas.erg.gmag_stel_fluxgate(trange=['2020-08-01','2020-08-02'], site='all')
+    fluxgate_vars=pyspedas.erg.gmag_stel_fluxgate(trange=['2020-08-01','2020-08-02'], site='ktb')
     tplot('isee_fluxgate_mag_ktb_1min_hdz')
+
+.. image:: _static/erg_stel_fluxgate.png
+   :align: center
+   :class: imgborder
 
 STEL Induction Magnetometers
 ----------------------------
@@ -320,8 +348,12 @@ STEL Induction Magnetometers
 
     import pyspedas
     from pytplot import tplot
-    ind_vars=pyspedas.erg.gmag_stel_induction(trange=['2020-08-01','2020-08-02'], site='all')
+    ind_vars=pyspedas.erg.gmag_stel_induction(trange=['2020-08-01','2020-08-02'], site='msr')
     tplot('isee_induction_db_dt_msr')
+
+.. image:: _static/erg_stel_induction.png
+   :align: center
+   :class: imgborder
 
 SuperDARN (radar)
 ----------------------------

@@ -3,13 +3,11 @@ from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
 from pyspedas.mms.fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
 from pyspedas.mms.fgm.mms_split_fgm_data import mms_split_fgm_data
-from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import data_exists
 from pytplot import del_data
 
 
-@print_vars
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy',
     level='l2', instrument='fgm', datatype='', varformat=None, exclude_format='*rdeltahalf*', varnames=[], suffix='',
     keep_flagged=False, get_support_data=True, time_clip=False, no_update=False,
@@ -123,10 +121,13 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             Default: False
             
     Returns
-    ----------
-        List of tplot variables created.
+    -------
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> fgm_vars = pyspedas.mms.mms_load_fgm(trange=['2015-10-16', '2015-10-17'])

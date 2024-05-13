@@ -1,10 +1,9 @@
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.edp.mms_edp_set_metadata import mms_edp_set_metadata
-from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
 
-@print_vars
+
 def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce',
         varformat=None, varnames=[], get_support_data=False, suffix='', time_clip=True, no_update=False,
         available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
@@ -104,9 +103,12 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
     Returns
     --------
-        List of tplot variables created.
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> edp_vars = pyspedas.mms.mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1')

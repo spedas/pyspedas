@@ -172,7 +172,7 @@ Example
 
 
 Spatio-Temporal Analysis of Field Fluctuation experiment (STAFF)
-----------------------------------------------------------
+-----------------------------------------------------------------
 .. autofunction:: pyspedas.cluster.staff
 
 Example
@@ -214,7 +214,7 @@ Example
 
 
 Waves of High Frequency and Sounder for Probing of Density by Relaxation (WHISPER)
-----------------------------------------------------------
+-----------------------------------------------------------------------------------
 .. autofunction:: pyspedas.cluster.whi
 
 Example

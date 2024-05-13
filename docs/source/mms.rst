@@ -7,9 +7,14 @@ Magnetospheric Multiscale (MMS)
 ====================================
 The routines in this module can be used to load data from the Magnetospheric Multiscale (MMS) mission.
 
+Each of the MMS load routines has a short name, which is just the instrument name without the mms_load prefix.
+
 Fluxgate Magnetometer (FGM)
 -----------------------------
-.. autofunction:: pyspedas.mms.fgm
+Short name: pyspedas.mms.fgm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_fgm
 
 FGM Example
 ^^^^^^^^^^^^
@@ -27,7 +32,11 @@ FGM Example
 
 Search-coil Magnetometer (SCM)
 --------------------------------
-.. autofunction:: pyspedas.mms.scm
+Short name: pyspedas.mms.scm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_scm
+
 
 SCM Example
 ^^^^^^^^^^^^
@@ -45,7 +54,11 @@ SCM Example
 
 Level 3 FGM+SCM Data (FSM)
 -----------------------------
-.. autofunction:: pyspedas.mms.fsm
+Short name: pyspedas.mms.fsm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_fsm
+
 
 FSM Example
 ^^^^^^^^^^^^^^^
@@ -63,7 +76,11 @@ FSM Example
 
 Electric field Double Probe (EDP)
 -----------------------------------
+Short name: pyspedas.mms.edp
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: pyspedas.mms.edp
+
 
 EDP Example
 ^^^^^^^^^^^^^^^
@@ -81,7 +98,11 @@ EDP Example
 
 Electron Drift Instrument (EDI)
 ---------------------------------
-.. autofunction:: pyspedas.mms.edi
+Short name: pyspedas.mms.edi
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_edi
+
 
 EDI Example
 ^^^^^^^^^^^^^^^
@@ -99,7 +120,11 @@ EDI Example
 
 Fly's Eye Energetic Particle Sensor (FEEPS)
 --------------------------------------------
-.. autofunction:: pyspedas.mms.feeps
+Short name: pyspedas.mms.feeps
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_feeps
+
 
 FEEPS Example
 ^^^^^^^^^^^^^^^
@@ -117,7 +142,11 @@ FEEPS Example
 
 Energetic Ion Spectrometer (EIS)
 -----------------------------------
-.. autofunction:: pyspedas.mms.eis
+Short name: pyspedas.mms.eis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_eis
+
 
 EIS Example
 ^^^^^^^^^^^^^^^
@@ -135,7 +164,11 @@ EIS Example
 
 Active Spacecraft Potential Control (ASPOC)
 --------------------------------------------
-.. autofunction:: pyspedas.mms.aspoc
+Short name: pyspedas.mms.aspoc
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_aspoc
+
 
 ASPOC Example
 ^^^^^^^^^^^^^^^
@@ -153,7 +186,11 @@ ASPOC Example
 
 Fast Plasma Investigation (FPI)
 --------------------------------
-.. autofunction:: pyspedas.mms.fpi
+Short name: pyspedas.mms.fpi
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_fpi
+
 
 FPI Example
 ^^^^^^^^^^^^^^^
@@ -171,7 +208,12 @@ FPI Example
 
 Hot Plasma Composition Analyzer (HPCA)
 ---------------------------------------
-.. autofunction:: pyspedas.mms.hpca
+Short name: pyspedas.mms.hpca
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_hpca
+
+Short name: pyspedas.mms.hpca
 
 HPCA Example
 ^^^^^^^^^^^^^^^
@@ -187,9 +229,12 @@ HPCA Example
    :align: center
    :class: imgborder
 
-Magnetic Ephemeris Coordinates (MEC)
+Mission Ephemeris Coordinates (MEC)
 -------------------------------------
-.. autofunction:: pyspedas.mms.mec
+Short name: pyspedas.mms.mec
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_mec
 
 MEC Example
 ^^^^^^^^^^^^^^^
@@ -205,7 +250,13 @@ MEC Example
    :align: center
    :class: imgborder
 
-.. autofunction:: pyspedas.mms.state
+Attitude and Ephemeris (STATE)
+-------------------------------
+Short name: pyspedas.mms.state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_state
+
 
 State Example
 ^^^^^^^^^^^^^^^
@@ -218,5 +269,27 @@ State Example
    tplot(['mms1_defeph_pos', 'mms1_defeph_vel'])
 
 .. image:: _static/mms_state.png
+   :align: center
+   :class: imgborder
+
+
+Tetrahedron Quality Factor
+--------------------------------
+Short name: pyspedas.mms.tetrahedron_qf
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mms.mms_load_tetrahedron_qf
+
+Tetrahedron QF Example
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+   import pyspedas
+   from pytplot import tplot
+   pyspedas.mms.tetrahedron_qf(trange=['2020-12-16', '2020-12-17'])
+   tplot(['mms_tetrahedron_qf'])
+
+.. image:: _static/mms_tetrahedron_qf.png
    :align: center
    :class: imgborder

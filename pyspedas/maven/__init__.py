@@ -296,7 +296,7 @@ def swia(
     """
     Load MAVEN Solar Wind Ion Analyzer (SWIA) data.
 
-    Parameters:
+    Parameters
     ----------
     trange : list, optional
         Time range of the data in the format ["start_date", "end_date"].
@@ -318,7 +318,7 @@ def swia(
     spdf : bool, optional
         Whether to use the SPDF library for loading the data. Default is False.
 
-    Returns:
+    Returns
     -------
     dict
         Dictionary of loaded data variables.

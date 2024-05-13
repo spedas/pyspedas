@@ -12,6 +12,7 @@ from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
 from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
 from .cdagui.cdagui import cdagui
+from .cdagui.cdaweb import CDAWeb
 from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
 from .cotrans.cotrans_set_coord import cotrans_set_coord

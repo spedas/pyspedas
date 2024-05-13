@@ -1,10 +1,9 @@
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.edi.mms_edi_set_metadata import mms_edi_set_metadata
-from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
 
-@print_vars
+
 def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy', level='l2', datatype='efield',
         varformat=None, varnames=[], get_support_data=False, suffix='', time_clip=False, no_update=False,
         available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
@@ -16,9 +15,9 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
     ----------
         trange : list of str
             time range of interest [start time, end time] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
+            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: ['2016-10-16', '2016-10']
+            Default: ['2015-10-16', '2015-10-17']
 
         probe : str or list of str
             list of probes, valid values for MMS probes are ['1','2','3','4'].
@@ -46,10 +45,8 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
             Default: False
             
         varformat: str
-            The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.
+            The file variable formats to load into tplot.  Wildcard characters ``* and ?`` are accepted.
             Default: None (all variables are loaded)
-
 
         varnames: list of str
             List of variable names to load If list is empty or not specified,
@@ -77,11 +74,11 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
             Default: False
 
         cdf_version: str
-            Specify a specific CDF version # to load (e.g., cdf_version='4.3.0')
+            Specify a specific CDF version number to load (e.g., cdf_version='4.3.0')
             Default: None
 
         min_version: str
-            Specify a minimum CDF version # to load
+            Specify a minimum CDF version number to load
             Default: None
 
         latest_version: bool
@@ -103,9 +100,12 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
 
     Returns
     --------
-        List of tplot variables created.
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> edi_vars = pyspedas.mms.mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1')

@@ -131,7 +131,7 @@ To generate the "parmod" variable using Dst and solar wind data, use the `get_ts
 .. autofunction:: pyspedas.geopack.get_tsy_params.get_tsy_params
 
 get_tsy_params Example
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
    

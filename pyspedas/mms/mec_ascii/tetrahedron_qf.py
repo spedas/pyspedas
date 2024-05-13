@@ -1,8 +1,7 @@
 from pyspedas.mms.mec_ascii.mms_get_tetrahedron_qf import mms_get_tetrahedron_qf
-from pyspedas.mms.print_vars import print_vars
 
 
-@print_vars
+
 def mms_load_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_update=False, suffix=''):
     """
     Load the MMS tetrahedron quality factor data from the ASCII files
@@ -28,9 +27,12 @@ def mms_load_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_update=False
 
     Returns
     --------
-        List of tplot variables created.
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> qf_vars = pyspedas.mms.mms_load_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'])

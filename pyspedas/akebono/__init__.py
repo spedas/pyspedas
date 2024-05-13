@@ -30,7 +30,9 @@ def pws(trange=['2012-10-01', '2012-10-02'],
 
         datatype: str
             Data type; Valid options:
+
                 'ne', 'npw-ds', 'npw-py', 'spw'
+
             Default: 'ne'
 
         level: str
@@ -304,11 +306,11 @@ def orb(trange=['2012-10-01', '2012-10-02'],
         List of tplot variables created.
 
     Example:
-    ---------- 
+    ----------
         >>> import pyspedas
-        >>> from pytplot import tplot  
-        >>> rdm_vars = pyspedas.akebono.rdm(trange=['2012-10-01', '2012-10-02'])
-        >>> tplot('akb_rdm_FEIO')
+        >>> from pytplot import tplot
+        >>> orb_vars = pyspedas.akebono.orb(trange=['2012-10-01', '2012-10-02'])
+        >>> tplot(['akb_orb_geo', 'akb_orb_MLT'])
 
     """
     files = load(instrument='orb', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

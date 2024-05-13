@@ -16,10 +16,7 @@ def mpa(
     time_clip=False,
 ):
     """
-    This function loads data from the Magnetospheric Plasma Analyzer (MPA)
-    Loads LANL data for the specified instrument and probe.
-
-    Can load data from two instruments, the Magnetospheric Plasma Analyzer (mpa) and the Synchronous Orbit Particle Analyzer (spa).
+    Load data from the LANL Magnetospheric Plasma Analyzer (MPA)
 
     Parameters
     ----------
@@ -94,10 +91,7 @@ def spa(
     time_clip=False,
 ):
     """
-    This function loads data from the Synchronous Orbit Particle Analyzer (SPA)
-    Loads LANL data for the specified instrument and probe.
-
-    Can load data from two instruments, the Magnetospheric Plasma Analyzer (mpa) and the Synchronous Orbit Particle Analyzer (spa).
+    Load data from the LANL Synchronous Orbit Particle Analyzer (SPA)
 
     Parameters
     ----------

@@ -86,11 +86,11 @@ def lepe(
             Default: None
 
         only_fedu: bool
-            If set, not make erg_lepe_l3_pa_enech_??(??:01,01,..32)_FEDU Tplot Variables
+            If set, not make erg_lepe_l3_pa_enech ??(??:01,01,..32)_FEDU Tplot Variables
             Default: False
 
         et_diagram: bool
-            If set, make erg_lepe_l3_pa_pabin_??(??:01,01,..16)_FEDU Tplot Variables
+            If set, make erg_lepe_l3_pa_pabin ??(??:01,01,..16)_FEDU Tplot Variables
             Default: False
 
         uname: str

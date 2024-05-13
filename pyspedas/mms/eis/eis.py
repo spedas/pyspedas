@@ -2,12 +2,11 @@ from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.eis.mms_eis_omni import mms_eis_omni
 from pyspedas.mms.eis.mms_eis_spin_avg import mms_eis_spin_avg
 from pyspedas.mms.eis.mms_eis_set_metadata import mms_eis_set_metadata
-from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import tnames
 
 
-@print_vars
+
 def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', datatype='extof',
         varformat=None, varnames=[], get_support_data=True, suffix='', time_clip=False, no_update=False,
         available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
@@ -104,10 +103,13 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             Default: False
 
     Returns
-    ----------
-        List of tplot variables created.
+    -------
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> eis_vars = pyspedas.mms.mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', datatype=['phxtof', 'extof'])

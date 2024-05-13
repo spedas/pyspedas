@@ -1,10 +1,9 @@
 from pyspedas.mms.mms_load_data import mms_load_data
 from pyspedas.mms.scm.mms_scm_set_metadata import mms_scm_set_metadata
-from pyspedas.mms.print_vars import print_vars
 from pyspedas.mms.mms_config import CONFIG
 
 
-@print_vars
+
 def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='', varformat=None, varnames=[], suffix='', get_support_data=False,
     time_clip=True, no_update=False, available=False, notplot=False, latest_version=False, 
@@ -102,9 +101,12 @@ def mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
 
     Returns
     ---------
-        List of tplot variables created.
+        list of str
+            List of tplot variables created.
 
-    Example:
+    Example
+    -------
+
         >>> import pyspedas
         >>> from pytplot import tplot
         >>> scm_vars = pyspedas.mms.mms_load_scm(trange=['2015-10-16', '2015-10-17'])

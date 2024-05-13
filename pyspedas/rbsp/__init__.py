@@ -25,6 +25,8 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
 
     For information on the EMFISIS data products, see:
         https://emfisis.physics.uiowa.edu/data/level_descriptions
+        https://emfisis.physics.uiowa.edu/data/L2_products
+
     
     Parameters
     ----------
@@ -39,6 +41,7 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
         datatype : str, default='magnetometer'
             Data type with options varying by data level.
             Level 1:
+
                 'magnetometer'
                 'hfr'
                 'housekeeping'
@@ -46,14 +49,20 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
                 'spaceweather'
                 'wfr'
                 'wna'
+
             Level 2:
+
                 'magnetometer'
                 'wfr'
                 'hfr'
                 'housekeeping'
+
             Level 3:
+
                 'magnetometer'
+
             Level 4:
+
                 'density'
                 'wna-survey'
 
@@ -68,22 +77,21 @@ def emfisis(trange=['2018-11-5', '2018-11-6'],
 
         wavetype : str, default='waveform'
             Type of level 2 waveform data with options:
+
                 For WFR data:
+
                     'waveform' (default)
                     'waveform-continuous-burst'
                     'spectral-matrix'
                     'spectral-matrix-diagonal'
                     'spectral-matrix-diagonal-merged'
+
                 For HFR data:
+
                     'waveform'
                     'spectra'
                     'spectra-burst'
                     'spectra-merged'
-            For descriptions of these data, see:
-                https://emfisis.physics.uiowa.edu/data/L2_products
-                suffix: str
-                    The tplot variable names will be given this suffix.  By default,
-                    no suffix is added.
 
         suffix : str, optional
             Suffix for tplot variable names. By default, no suffix is added.
