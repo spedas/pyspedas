@@ -15,7 +15,7 @@ MTH5 package is not included as a default dependency in PySPEDAS. To use this mo
 
 Load FDSN data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.mth5.load_fdsn
+.. autofunction:: pyspedas.mth5.load_fdsn.load_fdsn
 
 Example
 ^^^^^^^^^
