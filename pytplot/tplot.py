@@ -82,48 +82,36 @@ def tplot(name,
         var_label : str, optional
             The name of the tplot variable you would like as
             a second x axis.
-        slice : bool, optional
-            If True, a secondary interactive plot will be generated next to spectrogram plots.
-            Mousing over the spectrogram will display a slice of data from that time on the
-            interactive chart.
-        combine_axes : bool, optional
-            If True, the axes are combined so that they all display the same x range.  This also enables
-            scrolling/zooming/panning on one plot to affect all of the other plots simultaneously.
-        nb : bool, optional
-            If True, the plot will be displayed inside of a current Jupyter notebook session.
-        save_file : str, optional
-            A full file name and path.
-            If this option is set, the plot will be automatically saved to the file name provided in an HTML format.
-            The plots can then be opened and viewed on any browser without any requirements.
-        bokeh : bool, optional
-            If True, plots data using bokeh
-            Else (bokeh=False or omitted), plots data using PyQtGraph
-        extra_functions: func, optional
-            This is an extra function that gets called just prior to the data being plotted.  This is useful if you'd
-            like to build your own Qt display that reacts to the mouse movement.  Built in displays can be found in the
-            AncillaryPlots folder.
-        extra_function_args: list of tuples, optional
-            These are the arguments to give your extra_functions
-        vert_spacing: int
-            Thes distance in pixels you'd like the plots to be
-        gui : bool, optional
-            If True, then this function will output the 2 HTML components of the generated plots as string variables.
-            This is useful if you are embedded the plots in your own GUI.  For more information, see
-            http://bokeh.pydata.org/en/latest/docs/user_guide/embed.html
-        qt : bool, optional
-            If True, then this function will display the plot inside of the Qt window.  From this window, you
-            can choose to export the plots as either an HTML file, or as a PNG.
+        xsize: float, optional
+            Plot size in the horizontal direction (in inches)
+        ysize: float, optional
+            Plot size in the vertical direction (in inches)
+        dpi: float, optional
+            The resolution of the plot in dots per inch
         save_png : str, optional
             A full file name and path.
             If this option is set, the plot will be automatically saved to the file name provided in a PNG format.
+        save_eps : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in a EPS format.
+        save_jpeg : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in a JPEG format.
+        save_pdf : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in a PDF format.
+        save_svg : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in a SVG format.
         display: bool, optional
             If True, then this function will display the plotted tplot variables. Necessary to make this optional
             so we can avoid it in a headless server environment.
-        testing: bool, optional
-            If True, doesn't run the '(hasattr(sys, 'ps1'))' line that makes plots interactive - i.e., avoiding issues
+        return_plot_objects: bool, optional
+            If true, returns the matplotlib fig and axes objects for further manipulation.
 
     Returns:
-        None
+        Any
+        Returns matplotlib fig and axes objects, if return_plot_objects==True
 
     Examples:
         >>> #Plot a single line in bokeh
@@ -147,11 +135,6 @@ def tplot(name,
         >>> pytplot.options("Variable3", 'spec', 1)
         >>> pytplot.tplot(["Variable2", "Variable3"], var_label='Variable1')
 
-        >>> #Plot all 3 tplot variables, sending the output to an HTML file
-        >>> pytplot.tplot(["Variable1", "Variable2", "Variable3"], save_file='C:/temp/pytplot_example.html')
-
-        >>> #Plot all 3 tplot variables, sending the HTML output to a pair of strings
-        >>> div, component = pytplot.tplot(["Variable1", "Variable2", "Variable3"], gui=True)
     """
 
     if qt == False and bokeh == False:
