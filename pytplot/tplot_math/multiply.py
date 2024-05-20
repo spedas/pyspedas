@@ -7,7 +7,8 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
     """
     Multiplies two tplot variables.  Will interpolate if the two are not on the same time cadence.
 
-    Parameters:
+    Parameters
+    ----------
         tvar1 : str
             Name of first tplot variable.
         tvar2 : int/float
@@ -17,10 +18,12 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
         new_tvar : str (Deprecated)
             Name of new tplot variable.  If not set, then the data in tvar1 is replaced.
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> x1 = [0, 4, 8, 12, 16]
         >>> x2 = [0, 4, 8, 12, 16, 19, 21]
         >>> time1 = [pytplot.time_float("2020-01-01") + i for i in x1]

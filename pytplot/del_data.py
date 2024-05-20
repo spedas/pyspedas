@@ -12,15 +12,18 @@ def del_data(name=None):
     """
     This function will delete tplot variables that are already stored in memory.  
     
-    Parameters:
+    Parameters
+    ----------
         name : str, optional 
             Name of the tplot variable to be deleted.  If no name is provided, then 
             all tplot variables will be deleted.  
          
-    Returns:
+    Returns
+    -------
         None
         
-    Examples:
+    Examples
+    --------
         >>> # Delete Variable 1
         >>> import pytplot
         >>> pytplot.del_data("Variable1")

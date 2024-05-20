@@ -24,7 +24,8 @@ def split_vec(
     Splits up 2D data into many 1D tplot variables. Takes a stored tplot vector like Vp
     and stores tplot variables Vp_x, Vp_y, Vp_z
 
-    Parameters:
+    Parameters
+    ----------
         tvar : str
             Name of tplot variable to split up
         polar : bool, optional
@@ -45,10 +46,12 @@ def split_vec(
             Suffix str to be added to end of tplot variable name
             Default: None
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
         >>> pytplot.tplot_math.split_vec('b')
         >>> print(pytplot.data_quants['b_0'].values)

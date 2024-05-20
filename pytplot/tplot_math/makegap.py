@@ -27,6 +27,7 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
 
     Returns
     -------
+    tuple
         A tuple returned by calling get_data() on the degapped temp variable
 
     Examples

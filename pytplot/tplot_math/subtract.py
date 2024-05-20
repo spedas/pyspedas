@@ -16,7 +16,8 @@ def subtract(
     """
     Subtracts two tplot variables.  Will interpolate if the two are not on the same time cadence.
 
-    Parameters:
+    Parameters
+    ----------
         tvar1 : str
             Name of first tplot variable.
         tvar2 : int/float
@@ -27,10 +28,12 @@ def subtract(
         new_tvar : str (Deprecated)
             Name of new tvar for added data.  If not set, then the data in tvar1 is replaced.
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
         >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
         >>> pytplot.subtract('a','c',new_tvar='a-c')

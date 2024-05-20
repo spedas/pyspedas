@@ -12,7 +12,7 @@ from pytplot import tplot_names
 
 def tnames(pattern=None):
     """
-    Find pytplot names.
+    Find pytplot names matching a wildcard pattern.
 
     Parameters
     ----------

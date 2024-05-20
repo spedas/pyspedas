@@ -6,13 +6,15 @@ def tplot_options(option, value):
     """
     This function allows the user to set GLOBAL options for the generated plots.
     
-    Parameters:
+    Parameters
+    ----------
         option : str
             The name of the option.  See section below  
         value : str/int/float/list
             The value of the option.  See section below.  
             
-    Options:
+    Options
+    -------
         ==================  ==========   =====
         Option              Value type   Notes
         ==================  ==========   =====
@@ -26,7 +28,8 @@ def tplot_options(option, value):
         ==================  ==========   =====
 
 
-    Options:
+    Options
+    -------
         ============================  ==========   =====
         Obsolete/Not Yet Implemented  Value type   Notes
         ============================  ==========   =====
@@ -44,10 +47,12 @@ def tplot_options(option, value):
         y_axis_zoom                   bool         Set True if the mouse wheel should zoom in on the y axis as well as the x on plots (not yet implemented)
         ============================  ==========   =====
 
-    Returns:
+    Returns
+    -------
         None
     
-    Examples:
+    Examples
+    --------
         >>> # Set the plot title
         >>> import pytplot
         >>> pytplot.tplot_options('title', 'SWEA Data for Orbit 1563')

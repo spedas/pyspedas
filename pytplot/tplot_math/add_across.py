@@ -15,7 +15,8 @@ def add_across(tvar,column_range=None,newname=None,new_tvar=None):
     .. note::
         This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
 
-    Parameters:
+    Parameters
+    ----------
         tvar : str
             Name of tplot variable.
         column_range: list of ints
@@ -26,7 +27,8 @@ def add_across(tvar,column_range=None,newname=None,new_tvar=None):
         new_tvar : str (Deprecated)
             Name of new tvar for averaged data.  If not set, then the variable is replaced
 
-    Returns:
+    Returns
+    -------
         None
 
     Examples

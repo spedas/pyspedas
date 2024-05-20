@@ -10,7 +10,8 @@ def xlim(min, max):
     """
     This function will set the x axis range for all time series plots
     
-    Parameters:
+    Parameters
+    ----------
         min : flt
             The time to start all time series plots.  Can be given in seconds since epoch, or as a string
             in the format "YYYY-MM-DD HH:MM:SS"
@@ -18,10 +19,12 @@ def xlim(min, max):
             The time to end all time series plots.  Can be given in seconds since epoch, or as a string
             in the format "YYYY-MM-DD HH:MM:SS" 
             
-    Returns:
+    Returns
+    -------
         None
     
     Examples:
+    ---------
         >>> # Set the timespan to be 2017-07-17 00:00:00 plus 1 day
         >>> import pytplot
         >>> pytplot.xlim(1500249600, 1500249600 + 86400)

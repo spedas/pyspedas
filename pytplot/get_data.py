@@ -13,7 +13,8 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
     """
     This function extracts the data from the tplot Variables stored in memory.
     
-    Parameters:
+    Parameters
+    ----------
         name : str 
             Name of the tplot variable
         xarray : bool, optional
@@ -26,16 +27,33 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
         units: bool, optional
             Attach the astropy units to the data and dependencioes prior to returning
          
-    Returns: tuple of data/dimensions/metadata stored in pytplot
-        time_val : numpy array of seconds since 1970
-        data_val : n-dimensional array of data
-        spec_bins_val (if exists) : spectral bins if the plot is a spectrogram
-        v1_val (if exists) : numpy array of v1 dimension coordinates
-        v2_val {if exists} : numpy array of v2 dimension coordinates
-        v3_val (if exists) : numpy array of v3 dimension coordinates
+    Returns
+    --------
+    times: ndarray[float]
+        numpy array of seconds since 1970
+    y: ndarray
+        n-dimensional numpy array of the data values
+    v: ndarray
+        If exists, an array of bin values for 1-D data types
+    spec_bins: ndarray
+        If exists, an array of the spectrogram bins for the bin values
+    v1: ndarray
+        If exists, numpy array of the v1 dimension coordinates
+    v2: ndarray
+        If exists, numpy array of the v2 dimension coordinates
+    v3: ndarray
+        If exists, numpy array of the v3 dimension coordinates
 
-            
-    Examples:
+
+
+    Notes:
+    ------
+
+    If metadata==True, the return value is a dict containing variable attributes and plot options.
+    Otherwise, the return value is a named tuple with the fields described above.
+
+    Examples
+    --------
         >>> # Retrieve the data from Variable 1
         >>> import pytplot
         >>> x_data = [1,2,3,4,5]

@@ -11,16 +11,19 @@ def tplot_rename(old_name, new_name):
     """
     This function will rename tplot variables that are already stored in memory.  
     
-    Parameters:
+    Parameters
+    ----------
         old_name : str 
             Old name of the Tplot Variable
         new_name : str
             New name of the Tplot Variable
          
-    Returns:
+    Returns
+    -------
         None
         
-    Examples:
+    Examples
+    --------
         >>> # Rename Variable 1 to Variable 2
         >>> import pytplot
         >>> pytplot.tplot_rename("Variable1", "Variable2")

@@ -69,13 +69,15 @@ def dpwrspc(
 
     Returns
     -------
-    tdps: array of float
-        The time array for the dynamic power spectrum, the center time of the
-        interval used for the spectrum.
-    fdps: array of float
-        The frequency array (units =1/time units).
-    dps: array of float
-        The power spectrum, (units of quantity)^2/frequency_units.
+    tuple
+
+        tdps: array of float
+            The time array for the dynamic power spectrum, the center time of the
+            interval used for the spectrum.
+        fdps: array of float
+            The frequency array (units =1/time units).
+        dps: array of float
+            The power spectrum, (units of quantity)^2/frequency_units.
 
     Examples
     --------

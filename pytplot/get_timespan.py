@@ -11,17 +11,21 @@ def get_timespan(name):
     """
     This function extracts the time span from the Tplot Variables stored in memory.  
     
-    Parameters:
+    Parameters
+    ----------
         name : str 
             Name of the tplot variable
          
-    Returns:
+    Returns
+    -------
+    list of float
         time_begin : float
             The beginning of the time series
         time_end : float
             The end of the time series
             
-    Examples:
+    Examples
+    --------
         >>> # Retrieve the time span from Variable 1
         >>> import pytplot
         >>> x_data = [1,2,3,4,5]

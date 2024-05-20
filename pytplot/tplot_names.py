@@ -9,15 +9,18 @@ def tplot_names(quiet=False):
     """
     This function will print out and return a list of all current Tplot Variables stored in the memory.  
     
-    Parameters:
+    Parameters
+    ----------
         quiet : bool
             If True, does not print out the variables (only returns the list variables)
          
-    Returns:
-        list : list of str
+    Returns
+    -------
+        list of str
             A list of all Tplot Variables stored in the memory
             
-    Examples:
+    Examples
+    --------
         >>> import pytplot
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]

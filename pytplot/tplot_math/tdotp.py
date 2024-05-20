@@ -18,6 +18,7 @@ def tdotp(variable1, variable2, newname=None):
             
     Returns
     --------
+    str
         Name of the tplot variable created
 
     Examples

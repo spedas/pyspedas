@@ -12,7 +12,8 @@ def derive(tvar,newname=None, new_tvar=None):
     """
     Takes the derivative of the tplot variable.
 
-    Parameters:
+    Parameters
+    ----------
         tvar : str
             Name of tplot variable.
         new_tvar : str (Deprecated)
@@ -20,7 +21,8 @@ def derive(tvar,newname=None, new_tvar=None):
         newname : str
             Name of new tplot variable.  If not set, then the data in tvar is replaced.
 
-    Returns:
+    Returns
+    -------
         None
 
     Examples

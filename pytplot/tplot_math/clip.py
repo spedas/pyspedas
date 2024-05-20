@@ -12,7 +12,8 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
     """
     Change out-of-bounds data to NaN.
 
-    Parameters:
+    Parameters
+    ----------
         tvar1 : str
             Name of tvar to use for data clipping.
         ymin : int/float
@@ -26,7 +27,8 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
             Name of new tvar for clipped data storage.  If not specified, tvar will be replaced
             THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten.
 
-    Returns:
+    Returns
+    -------
         None
 
     Examples

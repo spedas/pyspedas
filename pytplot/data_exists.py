@@ -6,14 +6,14 @@ def data_exists(tvar):
     """
     Checks if a tplot variable exists
 
-    Parameter
+    Parameters
     ----------
     tvar: str
         Name of tplot variable to check
 
-    Return
-    ----------
-    bool:
+    Returns
+    --------
+    bool
         Retrun True if tplot variable exists.
 
     Example

@@ -9,7 +9,8 @@ def ylim(name, min, max):
     """
     This function will set the y axis range displayed for a specific tplot variable.
     
-    Parameters:
+    Parameters
+    ----------
         name : str
             The name of the tplot variable that you wish to set y limits for.  
         min : flt
@@ -17,10 +18,12 @@ def ylim(name, min, max):
         max : flt
             The end of the y axis.   
             
-    Returns:
+    Returns
+    -------
         None
     
-    Examples:
+    Examples
+    --------
         >>> # Change the y range of Variable1 
         >>> import pytplot
         >>> x_data = [1,2,3,4,5]

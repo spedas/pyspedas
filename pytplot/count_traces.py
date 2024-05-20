@@ -7,18 +7,18 @@ def count_traces(tvar):
     """
     Count the total number of line traces in a variable or list of variables
 
-    Parameter
+    Parameters
     ----------
     tvar: str or list of str
         tplot variables with traces to be counted
 
-    Return
-    ----------
-    int:
+    Returns
+    -------
+    int
         Number of traces found in the input variables.  Spectrograms are not counted.
 
-    Example
-    ----------
+    Examples
+    --------
         >>> import pytplot
         >>> pytplot.store_data('a', data={'x': range(10), 'y': range(10)})
         >>> pytplot.store_data('b', data={'x': range(10), 'y': range(10)})

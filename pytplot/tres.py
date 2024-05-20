@@ -13,20 +13,24 @@ def tres(tplot_var):
     of the differences between time values from the data points, e.g., median(d.x[1:*]-d.x). 
     Can be used for multiple variables.
 
-    Parameters:
+    Parameters
+    ----------
     - tplot_var (int or str or list): A tplot variable name or number, or a list of such names.
 
-    Returns:
+    Returns
+    -------
     - delta_t (float or list): The time resolution, a median value. If the data variable 
         does not exist, or does not return a median, then the result is -1. If multiple 
         tplot variables are provided, returns a list of median values.
 
-    Examples:
-    - import pyspeds
-      import pytplot
-      fgm_vars = pyspedas.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
-      dt = pytplot.tres('thd_fgs_gse')
-      dts = pytplot.tres(fgm_vars)
+    Examples
+    --------
+    >>> import pyspedas
+    >>> import pyspedas
+    >>> import pytplot
+    >>> fgm_vars = pyspedas.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
+    >>> dt = pytplot.tres('thd_fgs_gse')
+    >>> dts = pytplot.tres(fgm_vars)
 
     """
     if isinstance(tplot_var, int):

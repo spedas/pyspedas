@@ -35,7 +35,8 @@ def subtract_median(
     list of str
         Returns a list of new pytplot variables created
 
-    Examples:
+    Examples
+    --------
         >>> from pytplot import subtract_median
         >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1.,2.,3.,4.,5.]})
         >>> pytplot.tplot_math.subtract_median('a')

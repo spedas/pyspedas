@@ -60,9 +60,11 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         
     Returns
     -------
-        bool True if successful, False otherwise
+        bool
+            True if successful, False otherwise
         
-    Examples:
+    Examples
+    --------
         >>> # Store a single line
         >>> import pytplot
         >>> x_data = [1,2,3,4,5]

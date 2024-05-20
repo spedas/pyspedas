@@ -7,7 +7,8 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
     """
     Averages the variable over a specified period of time.
 
-    Parameters:
+    Parameters
+    ----------
         tvar1 : str
             Name of tplot variable.
         res : int/float
@@ -17,7 +18,8 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
         newname : str
             Name of new tvar for averaged data.  If not set, then the data in tvar is replaced.
 
-    Returns:
+    Returns
+    -------
         None
 
     Examples

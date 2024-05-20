@@ -12,7 +12,8 @@ def zlim(name, min, max):
     This is only used for spec plots, where the z axis represents the magnitude of the values
     in each bin.  
     
-    Parameters:
+    Parameters
+    ----------
         name : str
             The name of the tplot variable that you wish to set z limits for.  
         min : flt
@@ -20,10 +21,12 @@ def zlim(name, min, max):
         max : flt
             The end of the z axis.   
             
-    Returns:
+    Returns
+    -------
         None
     
-    Examples:
+    Examples
+    --------
         >>> # Change the z range of Variable1 
         >>> import pytplot
         >>> x_data = [1,2,3]

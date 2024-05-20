@@ -48,13 +48,13 @@ def tpwrspc(varname, newname=None, overwrite=False, noline=False, nohanning=Fals
             Default: 0, first axis.
 
     Returns
-    ----------
-        newname: str, string
+    --------
+    str
             Name of the new tplot variable created by this function.
             The output variable contains a single data point, frequency as v, and power as y.
     
     Examples
-    ----------
+    --------
         >>> import pytplot
         >>> import numpy as np
         >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})

@@ -7,7 +7,8 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     """
     Compute the power spectrum of a given time series.
 
-    Parameters:
+    Parameters
+    ----------
         time (array):
             The time array.
         quantity (array):
@@ -22,8 +23,10 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
         notperhz (bool):
             If True, the output units are the square of the input units.
 
-    Returns:
-        tuple: Tuple containing:
+    Returns
+    -------
+    tuple
+        Tuple containing:
             - freq (array):
                 The frequency array.
             - power (array):

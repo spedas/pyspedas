@@ -30,7 +30,7 @@ def smooth(data, width=10, preserve_nans=None):
 
     Returns
     -------
-    result : list of floats
+    list of float
         Smoothed data.
     
     Example

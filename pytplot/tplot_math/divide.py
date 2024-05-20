@@ -12,7 +12,8 @@ def divide(tvar1,tvar2,newname=None, new_tvar=None):
     """
     Divides two tplot variables.  Will interpolate if the two are not on the same time cadence.
 
-    Parameters:
+    Parameters
+    ----------
         tvar1 : str
             Name of first tplot variable.
         tvar2 : int/float
@@ -22,7 +23,8 @@ def divide(tvar1,tvar2,newname=None, new_tvar=None):
         newname : str
             Name of new tvar for divided data.  If not set, then the data in tvar1 is replaced.
 
-    Returns:
+    Returns
+    -------
         None
 
     Examples

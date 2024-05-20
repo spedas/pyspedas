@@ -12,7 +12,7 @@ def tcrossp(
     Calculates the cross product of two tplot variables
 
     Parameters
-    -------
+    ----------
     v1: str
         First tplot variable
     v2: str
@@ -26,10 +26,11 @@ def tcrossp(
 
     Returns
     --------
-        Name of the tplot variable
+    str
+        Name of the tplot variable created
 
-    Example
-    -------
+    Examples
+    --------
 
         >>> # Compute the cross product of two time series
         >>> import pytplot

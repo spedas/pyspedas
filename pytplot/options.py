@@ -7,7 +7,8 @@ from pytplot import tplot_utilities as utilities
 def options(name, option=None, value=None, opt_dict=None):
     """ Set a large variety of options for individual plots.
 
-    Parameters:
+    Parameters
+    ----------
         name : str
             Name or number of the tplot variable.
         option : str, optional
@@ -18,7 +19,8 @@ def options(name, option=None, value=None, opt_dict=None):
             This can be a dictionary of option-value pairs. 'option' and 'value'
             will not be needed if this dictionary item is supplied.
 
-    Options:
+    Options
+    -------
         ======================  ===========  ===============================================================================
         Options                 Value type   Notes
         ======================  ===========  ===============================================================================
@@ -75,10 +77,12 @@ def options(name, option=None, value=None, opt_dict=None):
         ======================  ===========  ===============================================================================
 
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> # Change the y range of Variable1
         >>> import pytplot
         >>> x_data = [1,2,3,4,5]

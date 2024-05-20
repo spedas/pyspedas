@@ -17,7 +17,8 @@ def pwr_spec(tvar, nbp=256, nsp=128, newname=None):
     """
     Calculates the power spectrum of a line, and adds a tplot variable for this new spectrogram
 
-    Parameters:
+    Parameters
+    ----------
         tvar : str
             Name of tvar to use
         nbp : int, optional
@@ -27,10 +28,12 @@ def pwr_spec(tvar, nbp=256, nsp=128, newname=None):
         newname : str, optional
             The name of the new tplot variable created,
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> import pytplot
         >>> import math
         >>> time = [pytplot.time_float("2020-01-01") + i for i in range(10000)]

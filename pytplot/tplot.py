@@ -73,11 +73,12 @@ def tplot(name,
           second_axis_size=0.0,
           return_plot_objects=False):
     """
-    This is the function used to display the tplot variables stored in memory.
-    The default output is to show the plots stacked on top of one another inside of a qt window
+    This is the function used to display the tplot variables stored in memory.  It is a wrapper that
+    calls a matplotlib-specific version of tplot.
 
-    Parameters:
-        name : str / list
+    Parameters
+    ----------
+        name : str or list of str
             List of tplot variables that will be plotted
         var_label : str, optional
             The name of the tplot variable you would like as
@@ -109,11 +110,13 @@ def tplot(name,
         return_plot_objects: bool, optional
             If true, returns the matplotlib fig and axes objects for further manipulation.
 
-    Returns:
+    Returns
+    -------
         Any
-        Returns matplotlib fig and axes objects, if return_plot_objects==True
+            Returns matplotlib fig and axes objects, if return_plot_objects==True
 
-    Examples:
+    Examples
+    --------
         >>> #Plot a single line in bokeh
         >>> import pytplot
         >>> x_data = [2,3,4,5,6]

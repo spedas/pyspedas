@@ -12,6 +12,7 @@ def timestamp(val):
     This function will turn on a time stamp that shows up at the bottom of every generated plot.
 
     Parameters
+    ----------
         val  str
             A string that can either be 'on' or 'off'.
 
@@ -19,6 +20,7 @@ def timestamp(val):
         None
 
     Examples
+    --------
          >>> # Turn on the timestamp
          >>> import pytplot
          >>> pytplot.timestamp('on')

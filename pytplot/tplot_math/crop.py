@@ -10,7 +10,8 @@ def crop(tvar1,tvar2, replace=True):
     """
     Crops both tplot variable so that their times are the same.  This is done automatically by other processing routines if times do not match up.
 
-    Parameters:
+    Parameters
+    -----------
         tvar1 : str
             Name of the first tplot variable
         tvar2 : str
@@ -18,7 +19,8 @@ def crop(tvar1,tvar2, replace=True):
         replace : bool, optional
             If true, the data in the original tplot variables are replaced.  Otherwise, new variables are created.
 
-    Returns:
+    Returns
+    -------
         None
 
 

@@ -13,16 +13,19 @@ def tplot_copy(old_name, new_name):
     """
     This function will copy a tplot variables that is already stored in memory.
 
-    Parameters:
+    Parameters
+    ----------
         name : str
             Old name of the Tplot Variable
         new_name : str
             Name of the copied Tplot Variable
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> # Copy Variable 1 into a new Variable 2
         >>> import pytplot
         >>> pytplot.tplot_copy("Variable1", "Variable2")

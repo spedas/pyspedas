@@ -10,7 +10,8 @@ def flatten(tvar, range=None, newname=None, new_tvar=None):
     .. note::
         This analysis routine assumes the data is no more than 2 dimensions.  If there are more, they may become flattened!
 
-    Parameters:
+    Parameters
+    ----------
         tvar : str
             Name of first tplot variable.
         range : [int, int], optional
@@ -20,10 +21,12 @@ def flatten(tvar, range=None, newname=None, new_tvar=None):
         new_tvar : str (Deprecated)
             Name of new tvar for added data.  If not set, then a name is made up.
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> # Divide each column by the average of the data between times 8 and 14
         >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
         >>> pytplot.flatten('d',[8,14],'d_flatten')

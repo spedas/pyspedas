@@ -8,7 +8,8 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
     This function will add a vertical bar to all time series plots.  This is useful if you
     want to bring attention to a specific time.
 
-    Parameters:
+    Parameters
+    ----------
         t : float/list
             The time in seconds since Jan 01 1970 to place the vertical bar.  If a list of numbers are supplied,
             multiple bars will be created.  If "databar" is set, then "t" becomes the point on the y axis to
@@ -28,10 +29,12 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
         dash : bool
             If set to True, the bar is dashed rather than solid
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> # Place a green time bar at 2017-07-17 00:00:00
         >>> import pytplot
         >>> pytplot.timebar(1500249600, color='green')

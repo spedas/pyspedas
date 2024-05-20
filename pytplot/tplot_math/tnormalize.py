@@ -20,12 +20,12 @@ def tnormalize(variable, newname=None, return_data=False):
             Default: False
     
     Returns
-    ----------
-        name of the tplot variable created or normalized vectors if return_data
-        is set
+    -------
+        str or ndarray of float
+            name of the tplot variable created or normalized vectors if return_data is set
     
     Examples
-    ----------
+    ---------
         >>> import pytplot
         >>> pytplot.store_data('a', data={'x':[1, 2, 3], 'y':[[1,2,3],[4,5,6],[7,8,9]]})
         >>> pytplot.tnormalize('a')

@@ -25,7 +25,8 @@ def spec_mult(
         This analysis routine assumes the data is no more than 2 dimensions.
         If there are more, they may become flattened!
 
-    Parameters:
+    Parameters
+    ----------
         tvar : str
             Name of tplot variable
         newname : str
@@ -34,10 +35,12 @@ def spec_mult(
         new_tvar : str (Deprecated)
             Name of new tvar in which to store interpolated data.  If none is specified, a name will be created.
 
-    Returns:
+    Returns
+    -------
         None
 
-    Examples:
+    Examples
+    --------
         >>> pytplot.store_data('h', data={'x':[0,4,8,12,16,19,21], 'y':[[8,1,1],[100,2,3],[4,2,47],[4,39,5],[5,5,99],[6,6,25],[7,-2,-5]],'v':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
         >>> pytplot.spec_mult('h')
         >>> print(pytplot.data_quants['h_specmult'].data)
