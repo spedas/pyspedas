@@ -27,7 +27,7 @@ def kp2iopt(kp, varname=None, plus1=False):
 
     Returns:
     -------
-    iopt : array-like
+    array-like
         IOPT values suitable for passing to the GEOPACK T89 tracing and modeling routines. Represented
         as double precision floating point for compatibility with GEOPACK library calling sequences,
         but may or may not be rounded to integer values depending on whether the kp_plus1 keyword is specified.

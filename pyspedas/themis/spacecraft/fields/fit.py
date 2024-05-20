@@ -69,14 +69,14 @@ def fit(trange=['2007-03-23', '2007-03-24'],
 
     Returns
     -------
-        List of str
+    List of str
         List of tplot variables created
         Empty list if no data
     
     Example
     -------
-        import pyspedas
-        from pytplot import tplot
+        >>> import pyspedas
+        >>> from pytplot import tplot
         >>> fit_vars = pyspedas.themis.fit(probe='d', trange=['2013-11-05', '2013-11-06'])
         >>> tplot(['thd_fgs_gse', 'thd_efs_dot0_gse'])
 

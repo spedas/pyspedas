@@ -57,7 +57,7 @@ def get_tsy_params(dst_tvar,
 
     Returns
     --------
-
+    str
         Name of the tplot variable containing the parameters. 
 
     Notes

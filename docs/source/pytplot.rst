@@ -1,7 +1,13 @@
 PyTplot
 =======
 
+Tplot Variables
+----------------
 
+.. autofunction:: pytplot.get_data
+.. autofunction:: pytplot.store_data
+.. autofunction:: pytplot.tplot_names
+.. autofunction:: pytplot.tnames
 
 Arithmetic
 ----------
