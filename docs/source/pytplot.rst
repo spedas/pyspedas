@@ -1,6 +1,14 @@
 PyTplot
 =======
 
+PyTplot (as implemented by the pytplot-matplotlib-temp PyPI package) can be thought of as a companion package to PySPEDAS.  (In the future,
+pyspedas will absorb the PyTplot tools and it will no longer have this
+external dependency.
+
+Some of the most useful and frequently used pytplot utilities are
+documented below:
+
+
 Tplot Variables
 ----------------
 

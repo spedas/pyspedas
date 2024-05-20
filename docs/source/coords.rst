@@ -1,6 +1,29 @@
 Coordinate Systems
 ====================================
 
+PySPEDAS can transform between many of the standard coordinate systems used in heliophysics:
+
+* GSE (Geocentric Solar Ecliptic)
+* GSM (Geocentric Solar Magnetic)
+* GEI (Geocentric Equatorial Inertial)
+* SM (Solar Magnetic)
+* GEO (Geographic)
+* J2000
+
+There are also routines for working with other specialized coordinate systems
+
+* FAC (Field alignned coordinates)
+* LMN (Boundary-aligned coordinates)
+
+Some individual projects may include additional coordinate trasformation routines
+for systems used by those missions.  For example, the THEMIS module includes some additional
+transforms for:
+
+* DSL (Despun Solar Spinaxis)
+* SSL (Spinning Solar SpinAxis)
+* SSL (Selenocentric Solar Ecliptic)
+* SEL (Selenographic)
+
 Transformations
 ------------------------------------
 .. autofunction:: pyspedas.cotrans
@@ -33,6 +56,10 @@ Getting/Setting the Coordinate System
 
 Support Routines
 ------------------------
+
+The routines listed here are generally not called directly
+by users. They are listed here for completeness.
+
 .. autofunction:: pyspedas.cotrans.cotrans_lib.get_time_parts
 .. autofunction:: pyspedas.cotrans.cotrans_lib.csundir_vect
 .. autofunction:: pyspedas.cotrans.cotrans_lib.cdipdir
