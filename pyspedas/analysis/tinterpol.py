@@ -40,30 +40,30 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     Examples
     --------
-        import numpy as np
-        import pytplot
-        import pyspedas
+        >>> import numpy as np
+        >>> import pytplot
+        >>> import pyspedas
 
-        # Create some time series data
-        times = np.array(['2002-02-03T04:05:00', '2002-02-03T04:05:05', '2002-02-03T04:05:10'], dtype='datetime64')
-        data = np.array([0.0, 5.0, 10.0])
+        >>> # Create some time series data
+        >>> times = np.array(['2002-02-03T04:05:00', '2002-02-03T04:05:05', '2002-02-03T04:05:10'], dtype='datetime64')
+        >>> data = np.array([0.0, 5.0, 10.0])
 
-        # Store the data in pytplot
-        pytplot.store_data('variable1', data={'x': times, 'y': data})
+        >>> # Store the data in pytplot
+        >>> pytplot.store_data('variable1', data={'x': times, 'y': data})
 
-        # Create some new times to interpolate to
-        new_times = np.array(['2002-02-03T04:05:07', '2002-02-03T04:05:08', '2002-02-03T04:05:09'], dtype='datetime64')
-        new_data = np.array([11.0, 12.0, 13.0])
+        >>> # Create some new times to interpolate to
+        >>> new_times = np.array(['2002-02-03T04:05:07', '2002-02-03T04:05:08', '2002-02-03T04:05:09'], dtype='datetime64')
+        >>> new_data = np.array([11.0, 12.0, 13.0])
 
-        # Store the new times in pytplot, the new_data will be ignored
-        pytplot.store_data('variable2', data={'x': new_times, 'y': new_data})
+        >>> # Store the new times in pytplot, the new_data will be ignored
+        >>> pytplot.store_data('variable2', data={'x': new_times, 'y': new_data})
 
-        # Interpolate 'variable1' to the new times using the default linear method
-        pyspedas.tinterpol(names='variable1', interp_to='variable2')
+        >>> # Interpolate 'variable1' to the new times using the default linear method
+        >>> pyspedas.tinterpol(names='variable1', interp_to='variable2')
 
-        # The interpolated data is now stored in 'variable1-itrp'
-        interpolated_data = pytplot.get_data('variable1-itrp')
-        print(interpolated_data)
+        >>> # The interpolated data is now stored in 'variable1-itrp'
+        >>> interpolated_data = pytplot.get_data('variable1-itrp')
+        >>> print(interpolated_data)
     """
     if not isinstance(names, list):
         names = [names]

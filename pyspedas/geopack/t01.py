@@ -17,8 +17,9 @@ def tt01(pos_var_gsm, parmod=None, suffix=''):
 
     Parameters
     -----------
-        parmod: ndarray
-            10-element array (vs. time), but only the first 6 elements are used::
+        parmod: string
+            A tplot variable containing a 10-element model parameter array (vs. time).  The timestamps should match the input position variable.
+            Only the first 6 elements are used::
 
                 (1) solar wind pressure pdyn (nanopascals),
                 (2) dst (nanotesla)
@@ -32,7 +33,8 @@ def tt01(pos_var_gsm, parmod=None, suffix=''):
 
     Returns
     --------
-        Name of the tplot variable containing the model data
+        str
+            Name of the tplot variable containing the model data
     """
     pos_data = get_data(pos_var_gsm)
 
