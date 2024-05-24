@@ -276,12 +276,14 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     username=username, password=password, basic_auth=True,last_version=last_version
                 )
                 # change prefix back to string without * in tplot variables
-                prefix = 'psp_spc_' 
+                if instrument == 'spc':
+                    prefix = 'psp_spc_' 
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
                                 local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
                 # change prefix back to string without * in tplot variables
-                prefix = 'psp_spc_'
+                if instrument == 'spc':
+                    prefix = 'psp_spc_'
         
 
     if files is not None:
