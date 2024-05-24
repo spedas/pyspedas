@@ -221,9 +221,11 @@ def load(trange=['2018-11-5', '2018-11-6'],
             # unpublished data
             # spc pre-public data is prepended by "spp", not "psp"
             # The psp_ files are located in the same directory after public release
-            # but in that case users can just use the public (spdf) option. 
-            prefix = 'spp_spc_'
-            pathformat = 'sweap/spc/' + level + '/%Y/%m/spp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
+            # using the wildcard *, this covers either situation and also works
+            # in the case that you need to pull both released and
+            # unreleased data in the same code
+            prefix = '*_spc_'
+            pathformat = 'sweap/spc/' + level + '/%Y/%m/*_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
     elif instrument == 'spe':
         prefix = 'psp_spe_'
         pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_v??.cdf'
