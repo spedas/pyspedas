@@ -1,7 +1,7 @@
 Getting Started
 ====================================
 
-pySPEDAS supports Windows, macOS and Linux. 
+PySPEDAS supports Windows, macOS and Linux.
 
 Requirements
 --------------
