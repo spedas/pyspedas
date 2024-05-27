@@ -82,7 +82,12 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore", category=ResourceWarning)
                     http_request = sdc_session.get(url, verify=True)
-                    http_json = http_request.json()
+                    if http_request.status_code != 200:
+                        logging.warning("Request to MMS SDC returned HTTP status code %d")
+                        logging.warning("Text: %s", http_request.test)
+                        logging.warning("URL: %s", url)
+                    else:
+                        http_json = http_request.json()
 
                 # since predicted doesn't support start_date/end_date, we'll need to parse the correct dates
                 if level != 'def':
