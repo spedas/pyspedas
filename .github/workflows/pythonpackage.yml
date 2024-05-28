@@ -21,7 +21,6 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
     - name: Install dependencies (Linux)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
@@ -34,7 +33,7 @@ jobs:
           pip install basemap
           pip install mth5
           python -m pyspedas.mms.tests.setup_tests
-      if: matrix.os == 'ubuntu-latest' && (github.ref == 'refs/heads/master'  || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis')
+      if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
@@ -47,7 +46,7 @@ jobs:
           pip install basemap
           pip install mth5
           python -m pyspedas.mms.tests.setup_tests
-      if: matrix.os == 'windows-latest' && github.ref == 'refs/heads/master'
+      if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
@@ -60,9 +59,8 @@ jobs:
           pip install basemap
           pip install mth5
           python -m pyspedas.mms.tests.setup_tests
-      if: matrix.os == 'macos-latest' && github.ref == 'refs/heads/master'
+      if: matrix.os == 'macos-latest'
     - name: Lint with flake8
-      if: github.ref == 'refs/heads/master'
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
@@ -70,7 +68,7 @@ jobs:
         # exit-zero treats all errors as warnings. 
         flake8 . --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
     - name: Test with unittest
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
+      if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         SPEDAS_DATA_DIR: data
