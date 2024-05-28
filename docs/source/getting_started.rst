@@ -27,7 +27,7 @@ To upgrade to the latest version of pySPEDAS, include the '--upgrade' option whe
 
 Local Data Directories
 ------------------------
-By default, the data are stored in your pyspedas directory in a folder named 'pydata'. The recommended way of setting your local data directory is to set the **SPEDAS_DATA_DIR** environment variable. **SPEDAS_DATA_DIR** acts as a root data directory for all missions, and will also be used by IDL (if you’re running a recent copy of the bleeding edge).
+By default, the data is stored in your pyspedas directory in a folder named 'pydata'. The recommended way of setting your local data directory is to set the **SPEDAS_DATA_DIR** environment variable. **SPEDAS_DATA_DIR** acts as a root data directory for all missions, and will also be used by IDL (if you’re running a recent copy of the bleeding edge).
 
 Mission specific data directories (e.g., **MMS_DATA_DIR** for MMS, **THM_DATA_DIR** for THEMIS) can also be set, and these will override **SPEDAS_DATA_DIR**.
 
