@@ -84,7 +84,7 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                     http_request = sdc_session.get(url, verify=True)
                     if http_request.status_code != 200:
                         logging.warning("Request to MMS SDC returned HTTP status code %d")
-                        logging.warning("Text: %s", http_request.test)
+                        logging.warning("Text: %s", http_request.text)
                         logging.warning("URL: %s", url)
                     else:
                         http_json = http_request.json()
