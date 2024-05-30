@@ -108,9 +108,10 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 warnings.simplefilter("ignore", category=ResourceWarning)
                                 http_request = sdc_session.get(url, verify=True, headers=headers)
                                 if http_request.status_code != 200:
-                                    logging.warning("Request to MMS SDC returned HTTP status code %d")
+                                    logging.warning("Request to MMS SDC returned HTTP status code %d", http_request.status_code)
                                     logging.warning("Text: %s", http_request.text)
                                     logging.warning("URL: %s", url)
+                                    continue
                                 else:
                                     http_json = http_request.json()
 

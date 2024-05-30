@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch, Mock
 import numpy as np
 from pyspedas.mms import mms_load_state, mms_load_tetrahedron_qf, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
 from pytplot import data_exists
@@ -9,6 +10,7 @@ from pyspedas import tdpwrspc
 import pyspedas
 from pytplot import get_data, del_data, tplot
 import logging
+import requests
 
 
 class FSMLoadTestCases(unittest.TestCase):
@@ -38,6 +40,24 @@ class StateLoadTestCases(unittest.TestCase):
         self.assertTrue('mms1_defeph_pos' in data)
         self.assertTrue('mms1_defeph_vel' in data)
 
+    @patch('requests.Session.get')
+    def test_load_eph_data_sdc_503_response(self, mock_get):
+        # Create a mock response object with a 503 status code
+        mock_response = Mock()
+        mock_response.status_code = 503
+        mock_response.text = "Service Unavailable"
+
+        # Set the mock object to be returned by sdc_session.get()
+        mock_get.return_value = mock_response
+
+        # Run the function and verify that the logging warnings were called
+        with self.assertLogs(level='WARNING') as log:
+            mms_load_state(datatypes=['pos', 'vel'])
+            self.assertIn("Request to MMS SDC returned HTTP status code 503", log.output[0])
+            self.assertIn("Text: Service Unavailable", log.output[1])
+            self.assertIn("URL:", log.output[2])
+
+
     def test_load_eph_multiprobe_data(self):
         data = mms_load_state(datatypes=['pos', 'vel'],probe=['1','2','3','4'])
         self.assertTrue(data_exists('mms1_defeph_pos'))
@@ -57,6 +77,23 @@ class StateLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms_tetrahedron_qf'))
         tplot('mms_tetrahedron_qf',display=False)
         self.assertTrue('mms_tetrahedron_qf' in data)
+
+    @patch('requests.Session.get')
+    def test_load_tqf_sdc_503_response(self, mock_get):
+        # Create a mock response object with a 503 status code
+        mock_response = Mock()
+        mock_response.status_code = 503
+        mock_response.text = "Service Unavailable"
+
+        # Set the mock object to be returned by sdc_session.get()
+        mock_get.return_value = mock_response
+
+        # Run the function and verify that the logging warnings were called
+        with self.assertLogs(level='WARNING') as log:
+            data = mms_load_tetrahedron_qf()
+            self.assertIn("Request to MMS SDC returned HTTP status code 503", log.output[0])
+            self.assertIn("Text: Service Unavailable", log.output[1])
+            self.assertIn("URL:", log.output[2])
 
     def test_load_tqf_no_update(self):
         data = mms_load_tetrahedron_qf()  # Ensure that some data is downloaded
@@ -324,6 +361,24 @@ class FGMLoadTestCases(unittest.TestCase):
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
         tplot(['mms1_fgm_b_gse_brst_l2'], display=False)
+
+    @patch('requests.Session.get')
+    def test_load_fgm_sdc_503_response(self, mock_get):
+        # Create a mock response object with a 503 status code
+        mock_response = Mock()
+        mock_response.status_code = 503
+        mock_response.text = "Service Unavailable"
+
+        # Set the mock object to be returned by sdc_session.get()
+        mock_get.return_value = mock_response
+
+        # Run the function and verify that the logging warnings were called
+        with self.assertLogs(level='WARNING') as log:
+            data = mms_load_fgm()
+            self.assertIn("Request to MMS SDC returned HTTP status code 503", log.output[0])
+            self.assertIn("Text: Service Unavailable", log.output[1])
+            self.assertIn("URL:", log.output[2])
+
 
     def test_load_data_no_update(self):
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00']) # make sure the files exist locally
