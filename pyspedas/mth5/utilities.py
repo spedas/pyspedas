@@ -104,13 +104,13 @@ def datasets(trange=None, network=None, station=None):
                 if response.status == 200:
                     return response.read().decode('utf-8')  # Or any other processing
                 else:
-                    pyspedas.logger.error("Server returned status code:", response.status)
+                    pyspedas.logger.error("Server returned status code: %d", response.status)
         except (urllib.error.HTTPError, urllib.error.URLError) as e:
             if hasattr(e, 'code') and e.code == 404:
                 # No data
                 return None
             else:
-                pyspedas.logger.error("HTTP or URL Error encountered:", e)
+                pyspedas.logger.error("HTTP or URL Error encountered: %s", e)
         return None  # or an appropriate fallback value/error indicator
 
     t1 = mth5_time_str(trange[0])  # ["2019-11-14T00:00:00"],
