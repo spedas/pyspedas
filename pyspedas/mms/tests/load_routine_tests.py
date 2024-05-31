@@ -10,7 +10,6 @@ from pyspedas import tdpwrspc
 import pyspedas
 from pytplot import get_data, del_data, tplot
 import logging
-import requests
 
 
 class FSMLoadTestCases(unittest.TestCase):

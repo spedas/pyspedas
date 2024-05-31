@@ -1,4 +1,0 @@
-Interpolation
-====================================
-
-.. autofunction:: pyspedas.tinterpol 

@@ -9,7 +9,7 @@ Analysis Tools
    tcrossp
    tdotp 
    tdpwrspc
-   tinterpol
+   interpolation
    tnormalize
    subtract_average
    subtract_median
