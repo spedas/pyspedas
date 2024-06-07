@@ -13,18 +13,21 @@ Some key points that apply to most or all of these load routines:
 * By default, PySPEDAS contacts the data server to get a list of filenames to fulfill the request,
   and compares the modification times on the server and locally cached files to determine
   whether the files need to be downloaded.
+
     * Specify **no_update=True** in the parameter list to bypass the data server, and only use
       locally cached files.  This is useful when internet services is slow or unavailable.
 
 * The time range for data to be loaded is specified via the **trange** parameter, which should be a list ``[start_time end_time]``
   The start and end times can be specified as:
+
     * Strings, with somewhat flexible formatting:
 
         * "2007-03-23" (corresponds to time 00:00:00 on that date)
         * "2021-01-01/01:23:45.678"
     * Python or Numpy datetime objects
     * Numeric values corresponding to Unix timestamps (seconds since 1970-01-01/00:00:00)
-  The start and end times should be supplied in the same format.
+
+    The start and end times should be supplied in the same format.
 
 * For data sets supplied in CDF format, the following parameters may be supported:
 
@@ -80,6 +83,7 @@ Some key points that apply to most or all of these load routines:
    elfin
    fast
    geotail
+   geomagnetic_indices
    goes
    image
    kompsat
