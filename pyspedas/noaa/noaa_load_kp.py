@@ -293,10 +293,24 @@ def noaa_load_kp(
     local_kp_dir : str
         Directory where data is saved locally.
     datatype : list of str, optional
-        Type of index to load. Default is an empty list, which loads all available data.
+        Type of index to load. Default is an empty list, which loads all available data. Valid values::
+
+            "Kp",
+            "ap",
+            "Sol_Rot_Num",
+            "Sol_Rot_Day",
+            "Kp_Sum",
+            "ap_Mean",
+            "Cp",
+            "C9",
+            "Sunspot_Number",
+            "F10.7",
+            "Flux_Qualifier",
+
     gfz : bool, optional
-        Load data from ftp://ftp.gfz-potsdam.de instead of NOAA.
-        This is the default behavior if the end time is on or after 2018. Default is False.
+        Load data from the German Research Centre for Geosciences, ftp://ftp.gfz-potsdam.de instead of NOAA.
+        This is the default behavior if the end time is on or after 2018. Default is False. If this source
+        is used, the Sunspot_Number, F10.7, and Flux_Qualifier datatypes will not be available.
 
     Returns
     -------
