@@ -1,5 +1,5 @@
-Geomagnetic, Solar Wind, and Magnetospheric Indices
-========================================================================
+Geomagnetic, Solar Wind, and Magnetospheric Indices (Kp, Dst, OMNIweb, etc)
+===========================================================================
 The routines described in this section can be used to load several sets of geomagnetic and space weather indices.
 
 
@@ -38,13 +38,9 @@ Example
 .. image:: _static/kyoto_dst.png
    :align: center
 
-OMNI Solar Wind and magnetospheric data
-========================================================================
-The routines in this module can be used to load data from the OMNIweb data set.
-
-
-Load all available OMNI variables
-----------------------------------
+OMNI Solar Wind and magnetospheric indices
+-------------------------------------------
+The pyspedas.omni.data() routine can be used to load variables from the OMNIweb data set.
 
 .. autofunction:: pyspedas.omni.data
 
