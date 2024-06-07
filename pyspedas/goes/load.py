@@ -386,14 +386,14 @@ def load(
             if datatype == "1min":
                 pathformat = [
                     "_epead_e13ew_1m_%Y%m01_%Y%m??.nc",
-                    "_epead_p17ew_1m_%Y%m01_%Y%m??.c",
+                    "_epead_p17ew_1m_%Y%m01_%Y%m??.nc",
                     "_epead_a16ew_1m_%Y%m01_%Y%m??.nc",
                 ]
                 pathformat = [avg_path + s for s in pathformat]
             elif datatype == "5min" or datatype == "low":
                 pathformat = [
                     "_epead_e13ew_5m_%Y%m01_%Y%m??.nc",
-                    "_epead_p17ew_5m_%Y%m01_%Y%m??.c",
+                    "_epead_p17ew_5m_%Y%m01_%Y%m??.nc",
                     "_epead_a16ew_5m_%Y%m01_%Y%m??.nc",
                 ]
                 pathformat = [avg_path + s for s in pathformat]
