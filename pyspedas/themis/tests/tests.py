@@ -49,6 +49,20 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.themis.state(varnames=['thc_pos'])
         self.assertTrue(data_exists('thc_pos'))
 
+    def test_load_state_support_data(self):
+        """Load state."""
+        state_vars = pyspedas.themis.state(probe='a',trange=['2023-03-23','2023-03-24'], get_support_data=True)
+        self.assertTrue('tha_spinras' in state_vars)
+        self.assertTrue(data_exists('tha_spinras'))
+
+    def test_load_state_support_data_multiprobe(self):
+        """Load state."""
+        state_vars = pyspedas.themis.state(probe=['a','b'],trange=['2023-03-23','2023-03-24'], get_support_data=True)
+        self.assertTrue('tha_spinras' in state_vars)
+        self.assertTrue(data_exists('tha_spinras'))
+        self.assertTrue('thb_spinras' in state_vars)
+        self.assertTrue(data_exists('thb_spinras'))
+
     def test_load_sst_data(self):
         """Load SST."""
         pyspedas.themis.sst(varnames=['thc_psif_en_eflux'])
