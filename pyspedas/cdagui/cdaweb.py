@@ -6,6 +6,7 @@ For cdasws documentation, see:
     https://cdaweb.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
 
 """
+
 import logging
 import os
 import re
@@ -15,7 +16,7 @@ from pyspedas.utilities.download import download
 
 
 class CDAWeb:
-    """ Get information and download files from CDAWeb using cdasws."""
+    """Get information and download files from CDAWeb using cdasws."""
 
     def __init__(self):
         """Initialize."""
@@ -164,29 +165,32 @@ class CDAWeb:
         suffix="",
         varnames=[],
         notplot=False,
+        merge=True,
     ):
         """Download data files and (by default) load the data into tplot variables
 
         Parameters
         ----------
         remote_files : list of str
-            List of remote file URLs, as obtained from get_datasets()
+            List of remote file URLs, as obtained from function get_datasets().
         local_dir : str
-            Local directory to save the data in
+            Local directory to save the data in.
         download_only : bool
-            If True, download the data, but do not load it into tplot variables
+            If True, download the data, but do not load it into tplot variables.
         varformat: str
-            If set, specifies a pattern for which CDF or NetCDF variables to load
+            If set, specifies a pattern for which CDF or NetCDF variables to load.
         get_support_data: bool
-            If True, load CDF variables marked as 'support_data'
+            If True, load CDF variables marked as 'support_data'.
         prefix: str
-            If set, prepend this string to the variable name when creating the tplot variables
+            If set, prepend this string to the variable name when creating the tplot variables.
         suffix: str
-            If set, append this string to the variable name when creating the tplot variables
+            If set, append this string to the variable name when creating the tplot variables.
         varnames: list of str
-            If set, specifies a list of variables to load from the data files
+            If set, specifies a list of variables to load from the data files.
         notplot: bool
-            If True, return data directly as tplot data structures, rather than a list of tplot names
+            If True, return data directly as tplot data structures, rather than a list of tplot names.
+        merge: bool
+            If True, merge the data from different files into a single tplot variable.
 
         Returns
         -------
@@ -224,7 +228,10 @@ class CDAWeb:
                     try:
                         if len(localfile) > 3 and (localfile[-3:] == ".nc"):
                             cvars = netcdf_to_tplot(
-                                localfile, prefix=prefix, suffix=suffix
+                                localfile,
+                                prefix=prefix,
+                                suffix=suffix,
+                                merge=merge,
                             )
                         else:
                             cvars = cdf_to_tplot(
@@ -235,6 +242,7 @@ class CDAWeb:
                                 varformat=varformat,
                                 varnames=varnames,
                                 notplot=notplot,
+                                merge=merge,
                             )
                         if cvars != [] and cvars is not None:
                             loaded_vars.extend(cvars)
