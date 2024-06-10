@@ -35,7 +35,7 @@ class cdaWindow:
         default_start_time = "2023-01-01 00:00:00"
         default_end_time = "2023-01-01 23:59:59"
         download_box = tk.IntVar()
-        clip_box = tk.IntVar()
+        clip_box = tk.IntVar(value=1)  # start with time clip on
         default_dir = CONFIG["local_data_dir"]
         default_status = "Status: Ready!"
 
