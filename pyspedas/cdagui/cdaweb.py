@@ -11,7 +11,7 @@ import logging
 import os
 import re
 from cdasws import CdasWs
-from pytplot import cdf_to_tplot, netcdf_to_tplot
+from pytplot import cdf_to_tplot, netcdf_to_tplot, time_clip as tclip
 from pyspedas.utilities.download import download
 
 
@@ -166,6 +166,8 @@ class CDAWeb:
         varnames=[],
         notplot=False,
         merge=True,
+        trange=["", ""],
+        time_clip=False,
     ):
         """Download data files and (by default) load the data into tplot variables
 
@@ -191,6 +193,10 @@ class CDAWeb:
             If True, return data directly as tplot data structures, rather than a list of tplot names.
         merge: bool
             If True, merge the data from different files into a single tplot variable.
+        trange: list of str
+            If set, clip the time range of the data to these values.
+        time_clip: bool
+            If True, clip the time range of the data to the values in trange.
 
         Returns
         -------
@@ -265,10 +271,18 @@ class CDAWeb:
             result.append([remotef, localfile, tplot_loaded])
 
         logging.info("Downloaded " + str(dcount) + " files.")
+
         if not download_only:
             loaded_vars = list(set(loaded_vars))
             logging.info("tplot variables:")
             for var in loaded_vars:
                 logging.info(var)
+
+            if time_clip:
+                if trange[0] != "" and trange[1] != "":
+                    for var in loaded_vars:
+                        tclip(var, trange[0], trange[1], suffix="", overwrite=True)
+                else:
+                    logging.warning("Warning: No trange specified for time_clip")
 
         return result
