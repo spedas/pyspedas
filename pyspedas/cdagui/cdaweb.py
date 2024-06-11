@@ -166,7 +166,7 @@ class CDAWeb:
         varnames=[],
         notplot=False,
         merge=True,
-        trange=["", ""],
+        trange=None,
         time_clip=False,
     ):
         """Download data files and (by default) load the data into tplot variables
@@ -278,11 +278,10 @@ class CDAWeb:
             for var in loaded_vars:
                 logging.info(var)
 
-            if time_clip:
-                if trange[0] != "" and trange[1] != "":
-                    for var in loaded_vars:
-                        tclip(var, trange[0], trange[1], suffix="", overwrite=True)
-                else:
+            if time_clip and trange is not None:
+                for var in loaded_vars:
+                    tclip(var, trange[0], trange[1], suffix="", overwrite=True)
+            elif time_clip:
                     logging.warning("Warning: No trange specified for time_clip")
 
         return result
