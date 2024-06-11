@@ -13,7 +13,16 @@ def change_time_to_unix_time(time_var):
     '''
     Convert the variable to seconds since epoch.
     '''
-    units = time_var.units
+    # Capitalization of variable attributes may vary...
+    if hasattr(time_var, 'units'):
+        units = time_var.units
+    elif hasattr(time_var, 'Units'):
+        units = time_var.Units
+    elif hasattr(time_var,'UNITS'):
+        units = time_var.UNITS
+    # ICON uses nonstandard units strings
+    if units == 'ms':
+        units = 'milliseconds since 1970-01-01 00:00:00'
     dates = num2date(time_var[:], units=units)
     unix_times = list()
     for date in dates:
@@ -147,9 +156,10 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
                         time_var = vfile[this_time]
                         unix_times = change_time_to_unix_time(time_var)
                         times_dict[this_time] = unix_times
-                    except:
+                    except Exception as e:
                         # In this case, we could not handle the time, print an error
                         logging.error("Could not process time variable '" + this_time + "' for the netcdf variable: '" + var + "'")
+                        logging.error("Exception details: " + str(e))
                         continue
 
                 if var not in masked_vars:
