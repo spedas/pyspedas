@@ -279,6 +279,9 @@ class CDAWeb:
                 logging.info(var)
 
             if time_clip and trange is not None:
+                if trange[0] >= trange[1]:
+                    logging.warning("trange values equal or out of order, no time clipping performed")
+                    return result
                 for var in loaded_vars:
                     tclip(var, trange[0], trange[1], suffix="", overwrite=True)
             elif time_clip:
