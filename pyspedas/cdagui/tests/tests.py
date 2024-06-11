@@ -25,20 +25,11 @@ class CDAWebTests(unittest.TestCase):
                                            "1979-01-01", "1979-01-02")
         self.assertTrue('https://cdaweb.gsfc.nasa.gov/sp_phys/data/voyager/voyager2/magnetic_fields_cdaweb/mag_2s/1979/voyager2_2s_mag_19790101_v01.cdf' in urllist)
 
-
     def test_load_merge(self):
         del_data('*')
         # Create the CDAWeb interface object
         cdaweb_obj = CDAWeb()
 
-        # This mission and instrument are selected from the lists returned by
-        # the cdaweb_obj.get_observatories() and cdaweb.get_instruments() methods.
-        mission_list = ['Voyager']
-        instrument_list = ['Plasma and Solar Wind']
-
-        # Get a list of CDAWeb datasets for Voyager magnetometer data
-        dataset_list = cdaweb_obj.get_datasets(mission_list, instrument_list)
-        print(dataset_list)
         # We'll pick one of available data sets and load it into tplot variables
         dataset = 'VOYAGER2_COHO1HR_MERGED_MAG_PLASMA'
         start_time = '2009-01-01 00:00:00'
@@ -60,10 +51,6 @@ class CDAWebTests(unittest.TestCase):
     def test_load_time_clip(self):
         del_data('*')
         cdaweb_obj = CDAWeb()
-        mission_list = ['New Horizons']
-        # instrument_list = ['Plasma and Solar Wind']
-        instrument_list = ['Particles (space)']
-        dataset_list = cdaweb_obj.get_datasets(mission_list, instrument_list)
 
         dataset = 'NEW_HORIZONS_SWAP_VALIDSUM (2008-10-10 to 2023-07-31)'
         start_time = '2014-10-10 00:00:00'
@@ -79,12 +66,66 @@ class CDAWebTests(unittest.TestCase):
         self.assertTrue(dat.times[0] >= time_double(start_time))
         self.assertTrue(dat.times[-1] <= time_double(end_time))
 
+    def test_load_time_clip_no_trange(self):
+        del_data('*')
+        cdaweb_obj = CDAWeb()
+
+        dataset = 'NEW_HORIZONS_SWAP_VALIDSUM (2008-10-10 to 2023-07-31)'
+        start_time = '2014-10-10 00:00:00'
+        end_time = '2014-11-10 00:00:00'
+
+        # Get the URLs for the available data in this time range
+        urllist = cdaweb_obj.get_filenames([dataset], start_time, end_time)
+        with self.assertLogs(level='WARNING') as logs:
+            cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='nh_', time_clip=True)
+        got_trange_warning = False
+        for o in logs.output:
+            if "No trange specified" in o:
+                got_trange_warning = True
+        self.assertTrue(got_trange_warning)
+
+    def test_load_time_clip_empty_trange(self):
+        del_data('*')
+        cdaweb_obj = CDAWeb()
+
+        dataset = 'NEW_HORIZONS_SWAP_VALIDSUM (2008-10-10 to 2023-07-31)'
+        start_time = '2014-10-10 00:00:00'
+        end_time = '2014-11-10 00:00:00'
+
+        # Get the URLs for the available data in this time range
+        urllist = cdaweb_obj.get_filenames([dataset], start_time, end_time)
+        with self.assertLogs(level='WARNING') as logs:
+            cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='nh_', trange=[start_time, start_time],  time_clip=True)
+        got_trange_warning = False
+        for o in logs.output:
+            if "equal" in o:
+                got_trange_warning = True
+        self.assertTrue(got_trange_warning)
+
+    def test_load_time_clip_backward_trange(self):
+        del_data('*')
+        cdaweb_obj = CDAWeb()
+
+        dataset = 'NEW_HORIZONS_SWAP_VALIDSUM (2008-10-10 to 2023-07-31)'
+        start_time = '2014-10-10 00:00:00'
+        end_time = '2014-11-10 00:00:00'
+
+        # Get the URLs for the available data in this time range
+        urllist = cdaweb_obj.get_filenames([dataset], start_time, end_time)
+        with self.assertLogs(level='WARNING') as logs:
+            cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='nh_', trange=[end_time, start_time],  time_clip=True)
+        got_trange_warning = False
+        for o in logs.output:
+            if "out of order" in o:
+                got_trange_warning = True
+        self.assertTrue(got_trange_warning)
+
     def test_load_data_prefix(self):
         del_data('*')
         cdaweb_obj = CDAWeb()
         urllist = cdaweb_obj.get_filenames(['VOYAGER2_2S_MAG (1977-08-24 to 1991-01-01)'],
                                            "1979-01-01", "1979-01-02")
-        cdaweb_obj.cda_download(urllist, "cdaweb/", prefix = 'v2_')
+        cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='v2_')
         self.assertTrue(data_exists('v2_B1'))
 
 
