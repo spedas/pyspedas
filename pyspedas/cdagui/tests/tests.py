@@ -1,6 +1,6 @@
 import unittest
 from pyspedas import CDAWeb
-from pytplot import data_exists, del_data, get_data, time_double
+from pytplot import data_exists, del_data, get_data, time_double, tplot_names, tplot
 
 
 class CDAWebTests(unittest.TestCase):
@@ -47,6 +47,37 @@ class CDAWebTests(unittest.TestCase):
         dat = get_data('v2_protonDensity')
         # Files are monthly; we should have over a year of data.
         self.assertTrue((dat.times[-1] - dat.times[0])/86400.0 > 395.0)
+
+    def test_load_icon_netcdf(self):
+        del_data('*')
+        # Create the CDAWeb interface object
+        import pyspedas
+
+        cdaweb_obj = pyspedas.CDAWeb()
+
+        time0 = '2021-01-15T14:05:52'
+        time1 = '2021-01-15T15:08:57'
+
+        urllist = cdaweb_obj.get_filenames(['ICON_L2-2_MIGHTI_VECTOR-WIND-GREEN (2019-12-06 to 2022-11-25)'], time0,
+                                           time1)
+        result = cdaweb_obj.cda_download(urllist, "cdaweb/")
+        self.assertTrue(data_exists('ICON_L22_Fringe_Amplitude'))
+
+    def test_load_goes_netcdf(self):
+        del_data('*')
+        # Create the CDAWeb interface object
+        import pyspedas
+
+        cdaweb_obj = pyspedas.CDAWeb()
+
+        time0 = '2021-01-15T14:05:52'
+        time1 = '2021-01-15T15:08:57'
+
+        urllist = cdaweb_obj.get_filenames(['DN_MAGN-L2-HIRES_G17 (2018-08-01 to 2023-03-14)'], time0,
+                                           time1)
+        result = cdaweb_obj.cda_download(urllist, "cdaweb/")
+        self.assertTrue(data_exists('b_gse'))
+
 
     def test_load_time_clip(self):
         del_data('*')
