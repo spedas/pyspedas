@@ -1,6 +1,3 @@
-import warnings
-import astropy
-
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pytplot import time_clip as tclip
@@ -66,13 +63,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if downloadonly:
         return out_files
 
-    with warnings.catch_warnings():
-        # for some reason, ACE CDFs throw ERFA warnings (likely while converting
-        # times inside astropy); we're ignoring these here
-        # see: https://github.com/astropy/astropy/issues/9603
-        warnings.simplefilter('ignore', astropy.utils.exceptions.ErfaWarning)
-        tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
-    
+    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat,
+                         varnames=varnames, notplot=notplot)
     if notplot:
         return tvars
 
