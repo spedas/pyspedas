@@ -15,6 +15,7 @@ from pytplot import time_double
 from pytplot import cdf_to_tplot
 
 import requests
+import sys
 import tarfile
 import os
 from pathlib import Path
@@ -210,7 +211,10 @@ def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
     # Extract the tar archive.
     tar = tarfile.open(out_gz, "r:gz")
     f = tar.getnames()
-    tar.extractall(path=local_path)
+    if sys.version_info >= (3, 12):
+        tar.extractall(path=local_path, filter='fully_trusted')
+    else:
+        tar.extractall(path=local_path)
     tar.close()
     # Remove the tar.gz file but keep the extracted.
     os.remove(out_gz)
