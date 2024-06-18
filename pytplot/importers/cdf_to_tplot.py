@@ -320,6 +320,12 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         # the new way:
                         # store and cache the datetime objects directly
                         # and delay conversion to unix times until get_data is called
+
+                        # Cluster uses multidimensional DEPEND_0 values on some "caveat" and "dsettings" variables. This will cause the
+                        # xdata[0] < 0.0 test to crash
+                        if len(xdata.shape) > 1:
+                            logging.warning("CDF DEPEND_0 attribute %s for variable %s is multidimensional with shape %s, skipping", var_atts['DEPEND_0'], var, str(xdata.shape),)
+                            continue
                         # Cluster apparently uses (-1.0e-31) as time tag fill values??  Better check...
                         if xdata[0] < 0.0:
                             logging.warning("CDF time tag %e for variable %s cannot be converted to datetime, skipping",xdata[0],var)
