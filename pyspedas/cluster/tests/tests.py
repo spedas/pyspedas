@@ -549,7 +549,6 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL' in jp_data)
         self.assertTrue(data_exists('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL'))
 
-    counts_GDU1_PA_90__C1_CP_EDI_AEDCcfc
     # 404 error, no data?
     @unittest.skip
     def test_load_csa_JP_PSE_data(self):
