@@ -114,6 +114,16 @@ jobs:
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
         echo Starting barrel tests at `date`
         coverage run -a -m pyspedas.barrel.tests.tests
+        echo Starting elfin epd_l1 tests at `date`
+        coverage run -a -m pyspedas.elfin.tests.test_epd_l1
+        echo Starting elfin epd_l2 tests at `date`
+        coverage run -a -m pyspedas.elfin.tests.test_epd_l2
+        # echo Starting elfin state tests at `date`      
+        # coverage run -a -m pyspedas.elfin.tests.test_state
+        # echo Starting elfin tests at `date`      
+        # coverage run -a -m pyspedas.elfin.tests.tests
+        # echo Starting elfin epd calibration tests at `date`      
+        # coverage run -a -m pyspedas.elfin.tests.test_epd_calibration
         echo Starting soho tests at `date`
         coverage run -a -m pyspedas.soho.tests.tests
         echo Starting de2 tests at `date`
@@ -174,6 +184,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.plot_tests
         echo Starting utilities time_tests tests at `date`
         coverage run -a -m pyspedas.utilities.tests.time_tests
+        echo Starting utilities libs_tests tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.libs_tests
         echo Starting cotrans tests at `date`
         coverage run -a -m pyspedas.cotrans.tests.cotrans
         echo Starting cotrans quaternion tests at `date`
