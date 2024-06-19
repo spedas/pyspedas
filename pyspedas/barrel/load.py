@@ -5,7 +5,8 @@ from pytplot import cdf_to_tplot
 
 from .config import CONFIG
 
-def load(trange=None, 
+
+def load(trange=None,
          probe='1A',
          datatype='sspc', 
          level='l2',
@@ -40,10 +41,12 @@ def load(trange=None,
         if str(datatype) == 'ephm':
             # SPDF has 'ephem' instead of 'ephm' for this data type
             remote_path = (str(level) + '/' + str(prb) + '/' + 'ephem' +
-                       '/bar_' + str(prb) + '_' + str(level) + '_' + str(datatype) + '_%Y%m%d_' + str(version) + '.cdf')
+                           '/bar_' + str(prb) + '_' + str(level) + '_' +
+                           str(datatype) + '_%Y%m%d_' + str(version) + '.cdf')
         else:
             remote_path = (str(level) + '/' + str(prb) + '/' + str(datatype) +
-                '/bar_' + str(prb) + '_' + str(level) + '_' + str(datatype) + '_%Y%m%d_' + str(version) + '.cdf')
+                           '/bar_' + str(prb) + '_' + str(level) + '_' + str(datatype) +
+                           '_%Y%m%d_' + str(version) + '.cdf')
 
         remote_names = [name.lower() for name in dailynames(file_format=remote_path, trange=trange)]
 
@@ -58,9 +61,9 @@ def load(trange=None,
     if downloadonly:
         return out_files
 
-    #Convert the cdf files to tvars.
+    # Convert the cdf files to tvars.
     # Make sure each of the variables is prefixed with the flight ID
-    tvars=[]
+    tvars = []
     for file in out_files:
         p_start = file.find("bar_")
         p_end = file.find("_", p_start + len("bar_"))
