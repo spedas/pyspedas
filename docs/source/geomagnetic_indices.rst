@@ -21,6 +21,26 @@ Example
    :align: center
    :class: imgborder
 
+
+Kyoto AE
+---------
+.. autofunction:: pyspedas.kyoto.load_ae
+
+Example
+^^^^^^^
+
+.. code-block:: python
+   
+   import pyspedas
+   from pytplot import tplot
+   ae_vars = pyspedas.kyoto.load_ae(trange=['2018-11-5', '2018-11-6'])
+   tplot(ae_vars)
+
+.. image:: _static/kyoto_ae.png
+   :align: center
+   :class: imgborder
+
+
 NOAA/GFZ Kp and other geomagnetic Indices
 -----------------------------------------
 .. autofunction:: pyspedas.noaa_load_kp
