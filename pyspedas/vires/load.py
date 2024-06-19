@@ -14,6 +14,14 @@ def load(trange=None,
     """
 
     """
+    from .config import CONFIG
+
+    if CONFIG['access_token'] == '':
+        logging.error('Invalid access token')
+        return
+    else:
+        access_token = CONFIG['access_token']
+
     if trange is None:
         logging.error('No time range specified')
         return
@@ -30,7 +38,7 @@ def load(trange=None,
         if not isinstance(models, list):
             models = [models]
 
-    request = SwarmRequest()
+    request = SwarmRequest(url="https://vires.services/ows", token=access_token)
     if isinstance(collection, list):
         request.set_collection(*collection)
     else:
