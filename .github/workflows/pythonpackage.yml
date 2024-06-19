@@ -74,6 +74,7 @@ jobs:
       if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
         SPEDAS_DATA_DIR: data
         ACE_DATA_DIR: ace_data/
         BARREL_DATA_DIR: barrel_data/
