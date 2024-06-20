@@ -128,8 +128,8 @@ jobs:
         coverage run -a -m pyspedas.elfin.tests.test_epd_l2
         # echo Starting elfin state tests at `date`      
         # coverage run -a -m pyspedas.elfin.tests.test_state
-        # echo Starting elfin tests at `date`      
-        # coverage run -a -m pyspedas.elfin.tests.tests
+        echo Starting elfin tests at `date`      
+        coverage run -a -m pyspedas.elfin.tests.tests
         # echo Starting elfin epd calibration tests at `date`      
         # coverage run -a -m pyspedas.elfin.tests.test_epd_calibration
         echo Starting soho tests at `date`
