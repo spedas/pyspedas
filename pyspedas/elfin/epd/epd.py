@@ -28,7 +28,7 @@ def elfin_load_epd(trange=['2022-08-19', '2022-08-19'],
     This function loads data from the ELFIN Energetic Particle Detector (EPD) and process L1 and L2 data.
 
     Parameters for Load Routine
-    ----------
+    ---------------------------
         trange : list of str
             Time range of interest [starttime, endtime]. Format can be
             ['YYYY-MM-DD','YYYY-MM-DD'] or ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
@@ -73,7 +73,7 @@ def elfin_load_epd(trange=['2022-08-19', '2022-08-19'],
             Default: True.
 
     Parameters for L1 data
-    ----------
+    ----------------------
         datatype: str, optional. 
             Data type of L1 data. Options are 'pef' , 'pif', 'pes', 'pis'
             Default: 'pef'
@@ -87,7 +87,7 @@ def elfin_load_epd(trange=['2022-08-19', '2022-08-19'],
             Default: 16
     
     Parameters for L2 data
-    ----------
+    ----------------------
         fullspin: bool, optional.
             If True, generate L2 full spin spectrogram.
             Default: L2 half spin spectrogram is generated.
@@ -131,20 +131,22 @@ def elfin_load_epd(trange=['2022-08-19', '2022-08-19'],
             Default: -11 deg.
 
     Returns
-    ----------
-        List of tplot variables created.
+    -------
+        list of str
+            List of tplot variables created.
 
     Examples
-    ----------
-        import pyspedas
-        from pytplot import tplot
-        elf_vars = pyspedas.elfin.epd(probe='b', trange=['2021-01-01', '2021-01-02'], datatype='pif')
-        tplot(['elb_pif_nflux', 'elb_pif_spinper'])
+    --------
 
-        import pyspedas
-        from pytplot import tplot
-        elf_vars = pyspedas.elfin.epd(probe='a', trange=['2022-08-19', '2022-08-19'], level='l2')
-        tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', ela_pef_tspin'])
+        >>> import pyspedas
+        >>> from pytplot import tplot
+        >>> elf_vars = pyspedas.elfin.epd(probe='b', trange=['2021-01-01', '2021-01-02'], datatype='pif')
+        >>> tplot(['elb_pif_nflux', 'elb_pif_spinper'])
+
+        >>> import pyspedas
+        >>> from pytplot import tplot
+        >>> elf_vars = pyspedas.elfin.epd(probe='a', trange=['2022-08-19', '2022-08-19'], level='l2')
+        >>> tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', ela_pef_tspin'])
 
     """
     logging.info("ELFIN EPD: START LOADING.")
