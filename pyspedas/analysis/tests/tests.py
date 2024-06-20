@@ -4,11 +4,11 @@ import unittest
 from pytplot import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
                       yclip, time_clip, deriv_data, tdeflag, clean_spikes,
-                      tinterpol, tvectot)
+                      tinterpol, tvectot, wavelet, time_domain_filter)
 from pytplot import tcrossp
 from pytplot import tdotp
 from pytplot import tnormalize
-from pytplot import get_data, store_data, replace_data, time_string
+from pytplot import get_data, store_data, replace_data, time_string, time_float, data_exists
 
 import numpy as np
 
@@ -220,6 +220,38 @@ class AnalysisTestCases(BaseTestCase):
         self.assertTrue(data_exists('tha_pos_total'))
         tvectot('tha_pos',suffix='_rtot')
         self.assertTrue(data_exists('tha_pos_rtot'))
+
+    def test_wavelet(self):
+        # Create a tplot variable that contains a wave.
+        t = np.arange(4000.)
+        y = np.sin(2*np.pi*t/32.)
+        y2 = np.sin(2*np.pi*t/64.)
+        y[1000:3000] = y2[1000:3000]
+        var = 'sin_wav'
+        time = time_float('2010-01-01') + 10*t
+        store_data(var, data={'x':time, 'y':y})
+
+        # Gaussian Derivative wavelets transformation.
+        powervar = wavelet(var, wavename='gaus1')
+        pvar = powervar[0]
+        self.assertTrue(data_exists(pvar))
+
+    def test_time_domain_filter(self):
+        # Create a tplot variable that contains a wave.
+        t = np.arange(4000.)
+        y = np.sin(2*np.pi*t/32.)
+        y2 = np.sin(2*np.pi*t/64.)
+        y[1000:3000] = y2[1000:3000]
+        dat = np.zeros((4000,3))
+        dat[:,0] = y
+        dat[:,1] = y
+        dat[:,2] = y
+        var = 'sin_wav'
+        time = time_float('2010-01-01') + 10*t
+        output = time_domain_filter(dat,time,16.0, 48.0)
+        self.assertEqual(output.shape[0], dat.shape[0])
+        self.assertEqual(output.shape[1], dat.shape[1])
+
 
     def test_tsmooth(self):
         """Test smooth."""
