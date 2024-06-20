@@ -93,6 +93,21 @@ mms_part_slice2d
 
 .. autofunction:: pyspedas.mms.mms_part_slice2d
 
+Magnetic Null Finding
+---------------------
+
+For missions such as MMS or Cluster, with at least four spacecraft in a relatively close tetrahedron-like configuration,
+measuring the magnetic field simultaneously at four distinct locations allows the calculation of
+field gradients in each field component along the X, Y, and Z directions (in other words, a Jacobian matrix).
+This information is sufficient to find the location of magnetic null points (where all three field components
+are zero), and infer the topology of the magnetic field at the null point.
+
+.. autofunction:: pyspedas.find_magnetic_nulls_fote
+
+.. autofunction:: pyspedas.classify_null_type
+
+.. autofunction:: pyspedas.lingradest
+
 Other analysis tools
 ---------------------
 
