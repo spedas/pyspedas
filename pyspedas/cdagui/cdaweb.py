@@ -13,7 +13,7 @@ import re
 from cdasws import CdasWs
 from pytplot import cdf_to_tplot, netcdf_to_tplot, time_clip as tclip
 from pyspedas.utilities.download import download
-
+from config import CONFIG
 
 class CDAWeb:
     """Get information and download files from CDAWeb using cdasws."""
@@ -157,7 +157,7 @@ class CDAWeb:
     def cda_download(
         self,
         remote_files,
-        local_dir,
+        local_dir=None,
         download_only=False,
         varformat=None,
         get_support_data=False,
@@ -217,6 +217,8 @@ class CDAWeb:
         result = []
         loaded_vars = []
         remotehttp = "https://cdaweb.gsfc.nasa.gov/sp_phys/data"
+        if local_dir is None:
+            local_dir = CONFIG['local_data_dir']
         count = 0
         dcount = 0
         for remotef in remote_files:
