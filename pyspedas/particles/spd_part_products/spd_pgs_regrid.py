@@ -6,7 +6,20 @@ from astropy.coordinates import spherical_to_cartesian
 
 def spd_pgs_regrid(data, regrid_dimen):
     """
+    Regrid a data dictionary
 
+    Parameters
+    ----------
+    data: dict
+        The dictionary containing the input data
+
+    regrid_dimen: list of int
+        The lengths of the new angle and energy arrays to compute
+
+    Returns
+    -------
+    dict
+        A dictionary containing the regridded data
     """
     if len(regrid_dimen) != 2:
         logging.error('Invalid regrid dimensions; the dimensions should be [n_phi, n_theta]')

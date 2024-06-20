@@ -9,11 +9,11 @@ def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=
     """
     Create tplot variable with standard spectrogram settings
 
-    Input:
+    Parameters
+    ----------
         name: str
             Name of the new tplot variable to create
 
-    Parameters:
         x: numpy.ndarray
             X-axis values (time)
 
@@ -35,7 +35,9 @@ def spd_pgs_make_tplot(name, x=None, y=None, z=None, units='', ylog=False, zlog=
         colorbar: str
             PyTplot 'Colormap' option (default: 'spedas')
 
-    Returns:
+    Returns
+    -------
+    str
         String containing new variable name
 
     """
