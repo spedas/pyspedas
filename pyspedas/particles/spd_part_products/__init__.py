@@ -1,8 +1,2 @@
 from .spd_pgs_do_fac import spd_pgs_do_fac
-from .spd_pgs_limit_range import spd_pgs_limit_range
-from .spd_pgs_make_e_spec import spd_pgs_make_e_spec
-from .spd_pgs_make_phi_spec import spd_pgs_make_phi_spec
-from .spd_pgs_make_theta_spec import spd_pgs_make_theta_spec
-from .spd_pgs_make_tplot import spd_units_string, spd_pgs_make_tplot
-from .spd_pgs_progress_update import spd_pgs_progress_update
 from .spd_pgs_regrid import spd_pgs_regrid
