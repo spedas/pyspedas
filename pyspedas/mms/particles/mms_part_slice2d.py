@@ -4,7 +4,7 @@ from pytplot import time_double
 from pyspedas.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
 from pyspedas.mms.hpca.mms_get_hpca_dist import mms_get_hpca_dist
 from pyspedas.particles.spd_slice2d.slice2d import slice2d
-from pyspedas.particles.spd_slice2d.slice2d_plot import plot
+from pyspedas.particles.spd_slice2d.slice2d_plot import slice2d_plot
 
 
 def mms_part_slice2d(trange=None,
@@ -278,6 +278,6 @@ def mms_part_slice2d(trange=None,
     if return_slice:
         return the_slice
 
-    plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
+    slice2d_plot(the_slice, xrange=xrange, yrange=yrange, zrange=zrange, save_png=save_png, save_svg=save_svg,
          save_pdf=save_pdf, save_eps=save_eps, save_jpeg=save_jpeg, display=display, dpi=dpi, plotsize=plotsize,
          contours=contours, colormap=cmap, title=title)
