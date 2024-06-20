@@ -4,6 +4,8 @@ import unittest
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas import tcopy
 from pyspedas import themis
+from pyspedas import cotrans
+from pyspedas import mpause_2, mpause_t96
 from pytplot import data_exists, tkm2re, tplot
 from pytplot import get_data, store_data, options
 
@@ -106,6 +108,42 @@ class UtilTestCases(unittest.TestCase):
         pytplot.time_clip('bogus',1.5,2.5)
         # empty input list
         pytplot.time_clip([],1.5,2.5)
+
+    def test_mpause_t96(self):
+        trange = ['2023-03-24', '2023-03-25']
+        # THEMIS orbits come from the 'state' datatype
+        # We will use GSE coordinates for the plots we'll make.
+        themis.state(probe='a', trange=trange, varformat='*_pos_gse')
+        cotrans('tha_pos_gse', name_out='tha_pos_gsm', coord_in='GSE', coord_out='GSM')
+        posdat = get_data('tha_pos_gsm')
+        re = 6378.0
+        pos_gsm = posdat.y / re
+        xmgnp, ymgnp, zmgnp, id, distan = mpause_t96(
+            pd=14.0, xgsm=pos_gsm[:, 0], ygsm=pos_gsm[:, 1], zgsm=pos_gsm[:, 2])
+        self.assertEqual(len(xmgnp), 90)
+        self.assertEqual(id.min(), -1)
+        self.assertEqual(id.max(), 1)
+        self.assertTrue(distan.min() < 0.01)
+        self.assertTrue(distan.max() > 10.0)
+        self.assertEqual(len(id), len(posdat.times))
+
+    def test_mpause_2(self):
+        trange = ['2023-03-24', '2023-03-25']
+        # THEMIS orbits come from the 'state' datatype
+        # We will use GSE coordinates for the plots we'll make.
+        themis.state(probe='a', trange=trange, varformat='*_pos_gse')
+        cotrans('tha_pos_gse', name_out='tha_pos_gsm', coord_in='GSE', coord_out='GSM')
+        posdat = get_data('tha_pos_gsm')
+        re = 6378.0
+        pos_gsm = posdat.y / re
+        xmp, ymp  = mpause_2()
+        self.assertEqual(len(xmp),2000)
+        self.assertEqual(len(ymp), 2000)
+        self.assertTrue(xmp.min() < -299.0)
+        self.assertTrue(xmp.max() > 10.77)
+        self.assertTrue(ymp.min() < -68.0)
+        self.assertTrue(ymp.max() > 77.8)
+
 
 if __name__ == '__main__':
     unittest.main()
