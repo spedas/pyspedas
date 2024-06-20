@@ -34,6 +34,10 @@ from .cotrans.xyz_to_polar import xyz_to_polar
 #from .geopack.t96 import t96, tt96
 #from .geopack.ts04 import tts04
 from .hapi.hapi import hapi
+from .particles.moments import moments_3d, moments_3d_omega_weights, spd_pgs_moments, spd_pgs_moments_tplot
+from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_limit_range, spd_pgs_make_e_spec
+from .particles.spd_part_products import spd_pgs_make_phi_spec, spd_pgs_make_theta_spec, spd_pgs_make_tplot
+from .particles.spd_part_products import spd_pgs_progress_update, spd_units_string, spd_pgs_regrid
 from .utilities.spice.time_ephemeris import time_ephemeris
 from .utilities.dailynames import dailynames
 from .utilities.datasets import find_datasets
