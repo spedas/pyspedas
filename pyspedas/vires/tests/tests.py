@@ -7,8 +7,9 @@ class LoadTestCases(unittest.TestCase):
     def test_get_collections(self):
         from pyspedas.vires.config import CONFIG
         self.assertNotEqual(CONFIG['access_token'],'')
-        collections = SwarmRequest(url="https://vires.services/ows",token=CONFIG['access_token']).available_collections()
-        print(collections)
+        collections = SwarmRequest(url="https://vires.services/ows",token=CONFIG['access_token']).available_collections(details=False)
+        self.assertTrue('SW_OPER_MAGA_LR_1B' in collections['MAG'])
+        self.assertTrue('SW_OPER_MODC_SC_1B' in collections['MOD_SC'])
 
     def test_load_mag_data(self):
         vires_vars = pyspedas.vires.load(trange=['2014-01-01T00:00', '2014-01-01T01:00'],
