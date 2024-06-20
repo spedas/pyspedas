@@ -63,6 +63,21 @@ class CDAWebTests(unittest.TestCase):
         result = cdaweb_obj.cda_download(urllist, "cdaweb/")
         self.assertTrue(data_exists('ICON_L22_Fringe_Amplitude'))
 
+    def test_load_icon_netcdf_default_dir(self):
+        del_data('*')
+        # Create the CDAWeb interface object
+        import pyspedas
+
+        cdaweb_obj = pyspedas.CDAWeb()
+
+        time0 = '2021-01-15T14:05:52'
+        time1 = '2021-01-15T15:08:57'
+
+        urllist = cdaweb_obj.get_filenames(['ICON_L2-2_MIGHTI_VECTOR-WIND-GREEN (2019-12-06 to 2022-11-25)'], time0,
+                                           time1)
+        result = cdaweb_obj.cda_download(urllist)
+        self.assertTrue(data_exists('ICON_L22_Fringe_Amplitude'))
+
     def test_load_goes_netcdf(self):
         del_data('*')
         # Create the CDAWeb interface object
