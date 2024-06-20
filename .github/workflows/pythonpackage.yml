@@ -260,6 +260,8 @@ jobs:
         coverage run -a -m pyspedas.swarm.tests.tests
         echo Starting themis_check_args tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
+        echo Starting themis autoload support tests at `date`
+        coverage run -a -m pyspedas.themis.tests.autoload_support_tests
         echo Starting themis cal_fit tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_cal_fit
         echo Starting themis dsl_cotrans tests at `date`
