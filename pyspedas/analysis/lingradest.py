@@ -10,30 +10,35 @@ def lingradest(Bx1, Bx2, Bx3, Bx4,
     Calculate magnetic field gradients, divergence, curl, and field line
     curvature from 4-point observations
 
-    Input
-    ------
-        B-field components: np.ndarrays
-            Components of the B-field from the four probes
+    Parameters
+    ----------
+    Bx1, Bx2, Bx3, Bx4 : ndarray
+    By1, By2, By3, By4 : ndarray
+    Bz1, Bz2, Bz3, Bz4 : ndarray
 
-        Coordinates: np.ndarrays
-            Position vectors for the four probes
+            Components of the B-field from the four probes versus time
 
-        scale_factor:  Scaling divisor to apply to internal distance calculations
-        Default: 1000.0
+    R1, R2, R3, R4: ndarray
 
-    Method used
-    ------------
-        Linear Gradient/Curl Estimator technique
-        see Chanteur, ISSI, 1998, Ch. 11
+            Position vectors for the four probes versus time
+
+    scale_factor: float
+        Scaling divisor to apply to internal distance calculations. Default: 1000.0
+
+    References
+    -----------
+
+    Linear Gradient/Curl Estimator technique: see Chanteur, ISSI, 1998, Ch. 11
 
     Notes
     ------
-        Based on the IDL version (lingradest.pro), which was
-        originally designed for Cluster by A. Runov (2003)
+    Based on the IDL version (lingradest.pro), which was originally designed for Cluster by A. Runov (2003)
 
     Returns
     --------
-        Dict containing:
+    dict
+        A dictionary containing::
+
             Rbary, # position of barycenter
             dR1, dR2, dR3, dR4, # Distance of barycenter from each probe
             Bxbc, Bybc, Bzbc, Bbc

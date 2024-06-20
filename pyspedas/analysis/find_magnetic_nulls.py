@@ -16,7 +16,9 @@ def classify_null_type(lambdas_in):
 
     Returns
     -------
-    An integer representing the null type:
+    int
+        An integer representing the null type::
+
        0: Unknown/unable to characterize
        1: X-type null
        2: O-type null (island or plasmoid)
@@ -31,7 +33,8 @@ def classify_null_type(lambdas_in):
 
     See Table 1, Fu et al 2015 for details
 
-    References:
+    References
+    ----------
     Fu, H. S., A. Vaivads, Y. V. Khotyaintsev, V. Olshevsky, M. André, J. B. Cao, S. Y. Huang,
     A. Retinò, and G. Lapenta (2015), How to find magnetic nulls and reconstruct field topology
     with MMS data?. J. Geophys. Res. Space Physics, 120, 3758–3782. doi: 10.1002/2015JA021082.
@@ -188,20 +191,23 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
 
     Returns
     -------
-    A list of tplot variables describing the nulls found:
-    'null_pos': Position of the null point, in the same coordinate system as imput positions
-    'null_bary_dist': Distance between the null point and the barycenter of the tetrahedron
-    'null_bary_dist_types': A composite variable more suitable for plotting, with the null to barycenter distances,
-        superimposed with symbols representing the type of each null found
-    'null_sc_distances': The distances from the null to each of the four spacecraft
-    'null_fom': Figures of merit 'eta' and 'xi', roughly representing the confidence in the null location and null type.
-        Lower is better, with values less than 0.4 denoting fairly reliable detection and classification
-    'null_typecode': The type of each null point found, with values from 0-6. See classify_null_type() for interpretation.
-    'max_reconstruction_error': The maximum error out of the four s/c, when using the calculated Jacobian and field at the barycenter
-        to reconstruct the field vectors at each spacecraft.  Should be extremely close to zero.
+    list of str
+        A list of tplot variables describing the nulls found::
+
+            'null_pos': Position of the null point, in the same coordinate system as imput positions
+            'null_bary_dist': Distance between the null point and the barycenter of the tetrahedron
+            'null_bary_dist_types': A composite variable more suitable for plotting, with the null to barycenter distances,
+                  superimposed with symbols representing the type of each null found
+            'null_sc_distances': The distances from the null to each of the four spacecraft
+            'null_fom': Figures of merit 'eta' and 'xi', roughly representing the confidence in the null location and null type.
+                  Lower is better, with values less than 0.4 denoting fairly reliable detection and classification
+            'null_typecode': The type of each null point found, with values from 0-6. See classify_null_type() for interpretation.
+            'max_reconstruction_error': The maximum error out of the four s/c, when using the calculated Jacobian and field
+                  at the barycenter to reconstruct the field vectors at each spacecraft.  Should be extremely close to zero.
 
 
-    Method:
+    Notes
+    ------
 
     This routine uses tetrahedral interpolation to estimate the magnetic field (B0) and field gradients at the tetrahedron
     barycenter. From the field gradients we can construct a Jacobian matrix (J).  The field in that region can be
@@ -219,7 +225,9 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     The topology of the field around the null can be inferred from the eigenvalues and eigenvectors of the
     estimated Jacobian. See the classify_null_type() function for details.
 
-    References:
+    References
+    -----------
+
     Fu, H. S., A. Vaivads, Y. V. Khotyaintsev, V. Olshevsky, M. André, J. B. Cao, S. Y. Huang,
     A. Retinò, and G. Lapenta (2015), How to find magnetic nulls and reconstruct field topology
     with MMS data?. J. Geophys. Res. Space Physics, 120, 3758–3782. doi: 10.1002/2015JA021082.
@@ -227,7 +235,9 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     Paschmann, G., Daly, P. (1998), Analysis Methods for Multi-Spacecraft Data, ISSR
 
 
-    Example:
+    Example
+    -------
+
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> data = pyspedas.mms.fgm(probe=[1, 2, 3, 4], trange=['2015-09-19/07:40', '2015-09-19/07:45'], data_rate='srvy', time_clip=True, varformat='*_gse_*', get_fgm_ephemeris=True)
