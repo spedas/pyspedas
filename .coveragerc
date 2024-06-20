@@ -6,16 +6,4 @@ omit =
   */bin/*
   */docs/*
   */QtPlotter/*
-  */pyspedas/utilities/data_exists.py
-  */pyspedas/utilities/time_double.py
-  */pyspedas/utilities/time_string.py
-  */pyspedas/utilities/tkm2re.py
-  */pyspedas/utilities/tnames.py
-  */pyspedas/analysis/clean_spikes.py
-  */pyspedas/analysis/subtract_average.py
-  */pyspedas/analysis/subtract_median.py
-  */pyspedas/analysis/tcross.py
-  */pyspedas/analysis/tdotp.py
-  */pyspedas/analysis/time_clip.py
-  */pyspedas/analysis/tnormalize.py
-  */pyspedas/analysis/tsmooth.py
+  */pyspedas/cdagui/cdagui.py
