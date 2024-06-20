@@ -4,7 +4,7 @@ import unittest
 from pytplot import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
                       yclip, time_clip, deriv_data, tdeflag, clean_spikes,
-                      tinterpol)
+                      tinterpol, tvectot)
 from pytplot import tcrossp
 from pytplot import tdotp
 from pytplot import tnormalize
@@ -207,6 +207,20 @@ class AnalysisTestCases(BaseTestCase):
         deriv_data(['test', 'test-der'], newname="testtest2")
         self.assertTrue((d[1] == [2., 2.5, 5.,   6., -7., -19.]).all())
 
+    def test_tvectot(self):
+        from pyspedas.themis import state
+        from pytplot import data_exists
+        state(probe='a')
+        tvectot('tha_pos', join_component=True)
+        self.assertTrue(data_exists('tha_pos_tot'))
+        d = get_data('tha_pos_tot')
+        s = d.y.shape[1]
+        self.assertEqual(s,4)
+        tvectot('tha_pos',newname='tha_pos_total')
+        self.assertTrue(data_exists('tha_pos_total'))
+        tvectot('tha_pos',suffix='_rtot')
+        self.assertTrue(data_exists('tha_pos_rtot'))
+
     def test_tsmooth(self):
         """Test smooth."""
         tsmooth('aaabbbccc')  # Test non-existent name
@@ -259,6 +273,7 @@ class AnalysisTestCases(BaseTestCase):
         self.assertTrue(abs(d3[1][1][0] - 5.80645161) < 1e-6)
         d5 = get_data('nparray_str')
         self.assertTrue(abs(d3[1][1][0] - 5.80645161) < 1e-6)
+
 
 
 if __name__ == '__main__':
