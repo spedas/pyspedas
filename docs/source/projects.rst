@@ -106,4 +106,5 @@ Some key points that apply to most or all of these load routines:
    twins
    ulysses
    rbsp
+   vires
    wind
