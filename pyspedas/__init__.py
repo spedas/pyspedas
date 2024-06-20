@@ -4,9 +4,7 @@
 
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
-from .analysis.dpwrspc import dpwrspc
 from .analysis.tvectot import tvectot
-from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
