@@ -42,6 +42,41 @@ class SECSTestCases(unittest.TestCase):
                    s_loc=False,
                    quiver_scale=30)
 
+    def test_load_secs_dc(self):
+        trange = ['2017-03-27', '2017-03-28']
+        d = pyspedas.secs.data(trange=trange,
+                               resolution=10,
+                               dtype='SECS',
+                               no_download=False,
+                               downloadonly=False,
+                               out_type='dc')
+
+    def test_load_eics_dc(self):
+        trange = ['2017-03-27', '2017-03-28']
+        d = pyspedas.secs.data(trange=trange,
+                               resolution=10,
+                               dtype='EICS',
+                               no_download=False,
+                               downloadonly=False,
+                               out_type='dc')
+
+    def test_load_secs_np(self):
+        trange = ['2017-03-27', '2017-03-28']
+        d = pyspedas.secs.data(trange=trange,
+                               resolution=10,
+                               dtype='SECS',
+                               no_download=False,
+                               downloadonly=False,
+                               out_type='np')
+
+    def test_load_eics_np(self):
+        trange = ['2017-03-27', '2017-03-28']
+        d = pyspedas.secs.data(trange=trange,
+                               resolution=10,
+                               dtype='EICS',
+                               no_download=False,
+                               downloadonly=False,
+                               out_type='np')
 
 if __name__ == '__main__':
     unittest.main()
