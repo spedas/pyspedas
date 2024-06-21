@@ -51,26 +51,33 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("f_ion_flux_tot_s2-cal-svy-full"))
         time.sleep(sleep_time)
 
-    # def test_load_lpw_data(self):
-    #    data = maven.lpw()
-    #    self.assertTrue(data_exists('mvn_lpw_lp_iv_l2_lpiv'))
+    def test_load_lpw_data(self):
+        data = maven.lpw()
+        self.assertTrue(data_exists('mvn_lpw_lp_iv_l2_lpiv'))
+        time.sleep(sleep_time)
 
     def test_load_euv_data(self):
         data = maven.euv()
         self.assertTrue(data_exists("mvn_euv_calib_bands_bands"))
         time.sleep(sleep_time)
 
-    # def test_load_rse_data(self):
-    #     data = maven.rse()
-    #     self.assertTrue(data_exists(''))
+    @unittest.skip
+    def test_load_rse_data(self):
+        data = maven.rse()
+        self.assertTrue(data_exists(''))
+        time.sleep(sleep_time)
 
-    # def test_load_iuv_data(self):
-    #     data = maven.iuv()
-    #     self.assertTrue(data_exists(''))
+    @unittest.skip
+    def test_load_iuv_data(self):
+        data = maven.iuv()
+        self.assertTrue(data_exists(''))
+        time.sleep(sleep_time)
 
-    # def test_load_ngi_data(self):
-    #     data = maven.ngi()
-    #     self.assertTrue(data_exists(''))
+    @unittest.skip
+    def test_load_ngi_data(self):
+        data = maven.ngi()
+        self.assertTrue(data_exists(''))
+        time.sleep(sleep_time)
 
 
 if __name__ == "__main__":
