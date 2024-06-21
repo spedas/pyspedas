@@ -14,13 +14,18 @@ and generate a token.
 PySPEDAS will first check for a VIRES_TOKEN environment variable containing the access token;
 if not found, it will attempt to open the user's .viresclient.ini file and read it from there.
 
+VIRES Python Client Documentation
+---------------------------------
+
+For more information about the VIRES client used by PySPEDAS, and its usage with SWARM data,
+please see https://viresclient.readthedocs.io
 
 Loading data
 ------------
 .. autofunction:: pyspedas.vires.load
 
-Example: Show available collections
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Example: Show available collections using VIRES client call
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
