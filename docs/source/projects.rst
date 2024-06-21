@@ -79,9 +79,9 @@ Some key points that apply to most or all of these load routines:
    csswe
    de2
    dscovr
+   elfin
    equator-s
    erg
-   elfin
    fast
    geotail
    geomagnetic_indices
@@ -94,6 +94,7 @@ Some key points that apply to most or all of these load routines:
    mica
    mms
    mth5
+   noaa
    omni
    poes
    polar
