@@ -6,6 +6,7 @@ from pyspedas import tcopy
 from pyspedas import themis
 from pyspedas import cotrans
 from pyspedas import mpause_2, mpause_t96
+from pyspedas import find_datasets
 from pytplot import data_exists, tkm2re, tplot
 from pytplot import get_data, store_data, options
 
@@ -144,6 +145,20 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(ymp.min() < -68.0)
         self.assertTrue(ymp.max() > 77.8)
 
+    def test_find_datasets_quiet(self):
+        ds = find_datasets(mission='MMS', instrument='FGM', quiet=True)
+        self.assertTrue('MMS1_FGM_BRST_L2' in ds)
+        self.assertTrue('MMS2_FGM_BRST_L2' in ds)
+
+    def test_find_datasets_nolabel(self):
+        ds = find_datasets(mission='MMS', instrument='FGM')
+        self.assertTrue('MMS1_FGM_BRST_L2' in ds)
+        self.assertTrue('MMS2_FGM_BRST_L2' in ds)
+
+    def test_find_datasets_label(self):
+        ds = find_datasets(mission='MMS', instrument='FGM',label=True)
+        self.assertTrue('MMS1_FGM_BRST_L2' in ds)
+        self.assertTrue('MMS2_FGM_BRST_L2' in ds)
 
 if __name__ == '__main__':
     unittest.main()
