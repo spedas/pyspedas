@@ -35,8 +35,3 @@ else:
     except configparser.NoSectionError:
         logging.warning('Unable to load VIRES access token from VIRES_TOKEN environment variable or token file %s.', token_file)
         logging.warning('Visit https://viresclient.readthedocs.io/en/latest/access_token.html to learn how to set up an account and generate an access token.')
-
-# cc = ClientConfig()
-# cc.set_site_config("https://vires.services/ows", token=CONFIG['access_token'])
-# cc.default_url = "https://vires.services/ows"
-# cc.save()
