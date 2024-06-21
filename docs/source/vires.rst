@@ -17,7 +17,7 @@ if not found, it will attempt to open the user's .viresclient.ini file and read 
 
 Loading data
 ------------
-.. autofunction:: pyspedas.vires.data
+.. autofunction:: pyspedas.vires.load
 
 Example: Show available collections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
