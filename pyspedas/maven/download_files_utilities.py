@@ -357,6 +357,8 @@ def get_year_month_day_from_sci_file(f):
     """
     kp_regex, l2_regex = maven_kp_l2_regex()
     m = l2_regex.match(f)
+    if m is None:
+        logging.error('l2_regex match failed for filename %s', f)
     year = m.group("year")
     month = m.group("month")
     day = m.group("day")
