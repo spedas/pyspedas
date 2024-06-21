@@ -17,10 +17,10 @@ Each Payload returns seven datatypes::
     - Housekeeping (hkpg)
 
 
-Ballon identifiers
+Balloon identifiers
 -------------------
 
-Ballons have a two-digit, alphanumeric identifier. The first digit is a number indicating campagin, the second is a letter indiating the flight.
+Balloons have a two-digit, alphanumeric identifier. The first digit is a number indicating campaign, the second is a letter indicating the flight.
 There have been seven BARREL campaigns, each with anywhere between 1 and 20 flights::
 
     - 1a - 2013-01-28 - 2013-02-14
