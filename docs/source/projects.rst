@@ -99,6 +99,7 @@ Some key points that apply to most or all of these load routines:
    poes
    polar
    psp
+   rbsp
    soho
    solo
    st5
@@ -107,6 +108,5 @@ Some key points that apply to most or all of these load routines:
    themis
    twins
    ulysses
-   rbsp
    vires
    wind
