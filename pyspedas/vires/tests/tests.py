@@ -1,7 +1,7 @@
 import unittest
 import pyspedas
 from viresclient import SwarmRequest
-from pytplot import data_exists
+from pytplot import data_exists, del_data
 
 class LoadTestCases(unittest.TestCase):
     def test_get_collections(self):
@@ -25,6 +25,17 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('Latitude'))
         self.assertTrue(data_exists('B_NEC'))
 
+    def test_load_no_trange(self):
+        del_data('*')
+        vires_vars = pyspedas.vires.load(collection="SW_OPER_MAGA_LR_1B",
+                                       measurements=["F", "B_NEC"],
+                                       models=["CHAOS-Core"],
+                                       sampling_step="PT10S",
+                                       auxiliaries=["QDLat", "QDLon"])
+        self.assertTrue(vires_vars is None)
+        self.assertFalse(data_exists('Longitude'))
+        self.assertFalse(data_exists('Latitude'))
+        self.assertFalse(data_exists('B_NEC'))
 
 if __name__ == '__main__':
     unittest.main()
