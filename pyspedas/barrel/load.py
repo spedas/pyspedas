@@ -19,7 +19,8 @@ def load(trange=None,
          time_clip=False):
     """
     This function loads data from the BARREL mission; this function is not meant 
-    to be called directly; instead, see the wrappers:
+    to be called directly; instead, see the wrappers::
+
         pyspedas.barrel.sspc
         pyspedas.barrel.mspc
         pyspedas.barrel.fspc

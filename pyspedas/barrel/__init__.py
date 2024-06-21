@@ -17,7 +17,16 @@ def sspc(trange=['2013-01-28', '2013-01-29'],
             Default: ['2013-01-28', '2013-01-29']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -65,7 +74,16 @@ def mspc(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -112,7 +130,16 @@ def fspc(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -160,7 +187,16 @@ def rcnt(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -206,8 +242,16 @@ def magn(trange=['2013-01-29','2013-01-30'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2013-01-29','2013-01-30']
 
-        probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -254,7 +298,16 @@ def ephm(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -302,7 +355,16 @@ def hkpg(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool

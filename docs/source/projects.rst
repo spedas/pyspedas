@@ -73,13 +73,14 @@ Some key points that apply to most or all of these load routines:
 
    ace
    akebono
-   erg
+   barrel
    cluster
    cnofs
    csswe
    de2
    dscovr
    equator-s
+   erg
    elfin
    fast
    geotail
