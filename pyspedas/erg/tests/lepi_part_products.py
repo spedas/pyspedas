@@ -39,10 +39,22 @@ class LoadTestCases(unittest.TestCase):
         vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
         pos_vn = 'erg_orb_l2_pos_gse'
-
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepi_l2_3dflux_FPDU', mag_name=mag_vn, pos_name=pos_vn, outputs='pa', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
         tplot( 'erg_lepi_l2_3dflux_FPDU_pa', display=display, save_png='erg_lepi_pa.png' )
+
+    def test_lepi_gyro(self):
+        del_data('*')
+        # Load LEP-i Lv.2 3-D flux data
+        timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
+        pyspedas.erg.lepi( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        vars = pyspedas.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
+        vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
+        mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
+        pos_vn = 'erg_orb_l2_pos_gse'
+        # Calculate and plot energy spectrum
+        vars = erg_lep_part_products( 'erg_lepi_l2_3dflux_FPDU', mag_name=mag_vn, pos_name=pos_vn, outputs='gyro', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
+        tplot( 'erg_lepi_l2_3dflux_FPDU_gyro', display=display, save_png='erg_lepi_gyro.png' )
 
     def test_lepi_moments(self):
         del_data('*')
