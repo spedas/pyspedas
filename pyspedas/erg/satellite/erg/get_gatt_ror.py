@@ -10,7 +10,11 @@ def get_gatt_ror(downloadonly, loaded_data):
                 cdf_file = cdflib.CDF(loaded_data[-1])
                 gatt = cdf_file.globalattsget()
             else:
-                gatt = get_data(loaded_data[-1], metadata=True)['CDF']['GATT']
+                md = get_data(loaded_data[-1], metadata=True)
+                if type(md) is not dict:
+                    # If the last variable doesn't work, try the first variable
+                    md = get_data(loaded_data[0], metadata=True)
+                gatt = md['CDF']['GATT']
         elif isinstance(loaded_data, dict):
             gatt = loaded_data[list(loaded_data.keys())[-1]]['CDF']['GATT']
         return gatt
