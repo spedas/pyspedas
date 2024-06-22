@@ -254,8 +254,12 @@ jobs:
         coverage run -a -m pyspedas.erg.tests.tests
         echo Starting erg ground data tests at `date`
         coverage run -a -m pyspedas.erg.tests.ground_tests
-        echo Starting erg particle tests at `date`
-        coverage run -a -m pyspedas.erg.tests.particle_tests
+        echo Starting erg mepe particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.mepe_part_products
+        echo Starting erg mepi particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.mepi_part_products
+        echo Starting erg lepi particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.lepi_part_products
         echo Starting solo tests at `date`
         coverage run -a -m pyspedas.solo.tests.tests
         echo Starting kyoto tests at `date`
