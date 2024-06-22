@@ -1,7 +1,7 @@
 
 import os
 import unittest
-from pytplot import data_exists, del_data
+from pytplot import data_exists, del_data, tplot_names
 
 import pyspedas
 
@@ -21,6 +21,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_hep_l2_FEDO_H'))
         self.assertTrue('erg_hep_l2_FEDO_L' in hep_vars)
         self.assertTrue('erg_hep_l2_FEDO_H' in hep_vars)
+
+    def test_load_hep_3dflux(self):
+        del_data()
+        hep_vars = pyspedas.erg.hep(datatype='3dflux')
+        print(hep_vars)
+        tplot_names()
 
     def test_load_xep_data(self):
         del_data()
@@ -66,6 +72,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_lepe_l2_omniflux_FEDO'))
         self.assertTrue('erg_lepe_l2_omniflux_FEDO' in lepe_vars)
 
+    def test_load_lepe_3dflux(self):
+        del_data()
+        lepe_vars = pyspedas.erg.lepe(datatype='3dflux')
+        print(lepe_vars)
+        tplot_names()
+
     def test_load_lepi_data(self):
         del_data()
         lepi_vars = pyspedas.erg.lepi()
@@ -81,6 +93,12 @@ class LoadTestCases(unittest.TestCase):
         mepe_vars = pyspedas.erg.mepe()
         self.assertTrue(data_exists('erg_mepe_l2_omniflux_FEDO'))
         self.assertTrue('erg_mepe_l2_omniflux_FEDO' in mepe_vars)
+
+    def test_load_mepe_3dflux(self):
+        del_data()
+        mepe_vars = pyspedas.erg.mepe(datatype='3dflux')
+        print(mepe_vars)
+        tplot_names()
 
     def test_load_mepi_data(self):
         del_data()
