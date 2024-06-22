@@ -230,10 +230,11 @@ def lepe(
             tplot_variables = []
             other_variables_dict = {}
             if prefix + 'FEDU' + suffix in loaded_data:
-                trange_double = time_double(trange)
+                trange_double = np.array(time_double(trange))
+                trange_dt64 = (trange_double*1.0e6).astype('datetime64[us]')
                 time_array = np.array(loaded_data[prefix + 'FEDU' + suffix]['x'])
-                inside_indices_array = np.argwhere( (trange_double[0] < time_array)
-                             & (trange_double[1] > time_array))
+                inside_indices_array = np.argwhere( (trange_dt64[0] < time_array)
+                             & (trange_dt64[1] > time_array))
                 inside_indices_list = inside_indices_array[:, 0].tolist()
                 store_data(prefix + 'FEDU' + suffix,
                            data={'x': time_array[inside_indices_list],
