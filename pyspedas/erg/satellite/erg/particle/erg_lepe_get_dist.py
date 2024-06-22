@@ -122,7 +122,7 @@ def erg_lepe_get_dist(tname,
     ;; Shuffle the original data array [time,energy, anode, spin phase] to
     ;; be energy-azimuth(spin phase)-elevation-time.
     """
-    dist['data'] = data_in[1][[index]].transpose([1, 3, 2, 0])
+    dist['data'] = data_in[1][index].transpose([1, 3, 2, 0])
     dist['bins'] = np.ones(shape=np.insert(dim_array, dim_array.shape[0],
                                            n_times), dtype='int8')
     # must be set or data will be consider invalid
