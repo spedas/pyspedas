@@ -130,9 +130,9 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         py_b = get_data('tha_state_pos_gsm_bt96')
         idl_b = get_data('bt96')
         subtract('bt96','tha_state_pos_gsm_bt96','bt96_diff')
-        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'], display=display, save_png='/Users/jwl/t96_diffs')
+        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'], display=display, save_png='t96_diffs')
         tlimit(['2007-03-23/15:00','2007-03-23/17:00'])
-        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'], display=display,)
+        tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'], display=display)
         tlimit(full=True)
         # assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
 
@@ -156,7 +156,7 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         subtract('bt01','tha_state_pos_gsm_bt01','bt01_diff')
         tkm2re('tha_state_pos_gsm')
         tvectot('tha_state_pos_gsm_re',join_component=True)
-        tplot(['bt01','tha_state_pos_gsm_bt01','bt01_diff','tha_state_pos_gsm_re_tot'], display=display,save_png='/Users/jwl/t01_diffs')
+        tplot(['bt01','tha_state_pos_gsm_bt01','bt01_diff','tha_state_pos_gsm_re_tot'], display=display,save_png='t01_diffs')
         # assert_allclose(py_b.y, idl_b.y, atol=0.5)
 
 
