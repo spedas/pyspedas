@@ -228,6 +228,8 @@ jobs:
         coverage run -a -m pyspedas.polar.tests.tests
         echo Starting geopack tests at `date`
         coverage run -a -m pyspedas.geopack.tests.tests
+        echo Starting geopack-IDL validation tests at `date`
+        coverage run -a -m pyspedas.geopack.tests.geopack_idl_validation_tests
         echo Starting geotail tests at `date`
         coverage run -a -m pyspedas.geotail.tests.tests
         echo Starting analysis tests at `date`
