@@ -123,6 +123,9 @@ def get_orbit_files():
 
     orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
 
+    if not os.path.exists(toolkit_path):
+        os.mkdir(toolkit_path)
+
     if not os.path.exists(orbit_files_path):
         os.mkdir(orbit_files_path)
 
@@ -168,7 +171,7 @@ def merge_orbit_files():
 
     sorted_files = [x for (y, x) in sorted(zip(orb_dates, orb_files))]
 
-    with open(os.path.join(toolkit_path, "maven_orb_rec.orb"), "w") as code:
+    with open(os.path.join(orbit_files_path, "maven_orb_rec.orb"), "w") as code:
         skip_2_lines = False
         for o_file in sorted_files:
             with open(o_file) as f:

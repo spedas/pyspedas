@@ -1,6 +1,6 @@
 import os
 import unittest
-from pytplot import data_exists
+from pytplot import data_exists, tplot_names
 from pyspedas import maven
 from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files
 import time
@@ -9,13 +9,11 @@ sleep_time=10
 
 class OrbitTestCases(unittest.TestCase):
     def test_get_merge_orbit_files(self):
+        from pyspedas.maven.config import CONFIG
         get_orbit_files()
         merge_orbit_files()
-        self.assertTrue(
-            os.path.join(
-                os.path.join(os.path.dirname(__file__), ".."), "maven_orb_rec.orb"
-            )
-        )
+        orbfilepath = os.path.join(CONFIG['local_data_dir'],"orbitfiles", "maven_orb_rec.orb")
+        self.assertTrue(os.path.exists(orbfilepath))
 
 
 class LoadTestCases(unittest.TestCase):
@@ -24,9 +22,23 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("mvn_kp::spacecraft::geo_x"))
         time.sleep(sleep_time)
 
+    def test_load_kp_spdf_data(self):
+        data = maven.kp(spdf=True)
+        self.assertTrue(data_exists("LPW_Electron_density"))
+        time.sleep(sleep_time)
+
+    def test_load_kp_iuvs_data(self):
+        data = maven.kp(iuvs=True)
+        self.assertTrue(data_exists("mvn_kp::spacecraft::geo_x"))
+        time.sleep(sleep_time)
 
     def test_load_mag_data(self):
         data = maven.mag(datatype="ss1s")
+        self.assertTrue(data_exists("OB_B"))
+        time.sleep(sleep_time)
+
+    def test_load_mag_byorbit_data(self):
+        data = maven.mag(trange=[500,501], datatype="ss1s")
         self.assertTrue(data_exists("OB_B"))
         time.sleep(sleep_time)
 

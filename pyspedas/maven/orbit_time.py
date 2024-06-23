@@ -1,6 +1,7 @@
 import logging
 import os
 
+from .config import CONFIG
 
 def month_to_num(month_string):
     """
@@ -67,7 +68,10 @@ def orbit_time(begin_orbit, end_orbit=None):
         A list containing the beginning and ending time in the format [begin_time, end_time].
         If the orbit numbers are not found, [None, None] will be returned.
     """
-    orb_file = os.path.join(os.path.dirname(__file__), "maven_orb_rec.orb")
+
+    toolkit_path = CONFIG["local_data_dir"]
+    orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
+    orb_file = os.path.join(orbit_files_path, "maven_orb_rec.orb")
 
     with open(orb_file, "r") as f:
         if end_orbit is None:
@@ -97,5 +101,6 @@ def orbit_time(begin_orbit, end_orbit=None):
                 begin_time = time[orbit_num.index(begin_orbit)]
                 end_time = time[orbit_num.index(end_orbit) + 1]
         except ValueError:
+            logging.warning('Problem getting begin and end times for orbits %d and %d', begin_orbit, end_orbit+1)
             return [None, None]
     return [begin_time, end_time]
