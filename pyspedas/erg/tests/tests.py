@@ -14,6 +14,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('erg_att_sprate' in att_vars)
         self.assertTrue('erg_att_spphase' in att_vars)
 
+
     def test_load_hep_data(self):
         del_data()
         hep_vars = pyspedas.erg.hep()
@@ -25,14 +26,24 @@ class LoadTestCases(unittest.TestCase):
     def test_load_hep_3dflux(self):
         del_data()
         hep_vars = pyspedas.erg.hep(datatype='3dflux')
-        print(hep_vars)
-        tplot_names()
+        self.assertTrue(data_exists('erg_hep_l2_FEDU_L'))
+        self.assertTrue(data_exists('erg_hep_l2_FEDU_H'))
+        self.assertTrue('erg_hep_l2_FEDU_L' in hep_vars)
+        self.assertTrue('erg_hep_l2_FEDU_H' in hep_vars)
 
-    def test_load_xep_data(self):
+    def test_load_hep_l3_data(self):
         del_data()
-        xep_vars = pyspedas.erg.xep()
-        self.assertTrue(data_exists('erg_xep_l2_FEDO_SSD'))
-        self.assertTrue('erg_xep_l2_FEDO_SSD' in xep_vars)
+        hep_vars = pyspedas.erg.hep(level='l3')
+        self.assertTrue(data_exists('erg_hep_l3_FEDU_L_paspec_ene00'))
+        self.assertTrue(data_exists('erg_hep_l3_FEDU_H'))
+        self.assertTrue('erg_hep_l3_FEDU_L_paspec_ene00' in hep_vars)
+        self.assertTrue('erg_hep_l3_FEDU_H' in hep_vars)
+
+
+    def test_load_xep_l3_data(self):
+        del_data()
+        # There are no XEP L3 products yet, but we can at least get some code coverage
+        xep_vars = pyspedas.erg.xep(level='l3')
 
     def test_load_orb_data(self):
         del_data()
@@ -76,7 +87,20 @@ class LoadTestCases(unittest.TestCase):
         del_data()
         lepe_vars = pyspedas.erg.lepe(datatype='3dflux')
         print(lepe_vars)
-        tplot_names()
+        # No tplot variables, just a list with strings and dicts
+        self.assertTrue('erg_lepe_l2_3dflux_FEDU' in lepe_vars)
+
+
+    def test_load_lepe_l3_data(self):
+        del_data()
+        lepe_vars = pyspedas.erg.lepe(level='l3', et_diagram=True)
+        self.assertTrue(data_exists('erg_lepe_l3_pa_FEDU'))
+        self.assertTrue('erg_lepe_l3_pa_FEDU' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l3_pa_enech_01_FEDU'))
+        self.assertTrue('erg_lepe_l3_pa_enech_01_FEDU' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l3_pa_pabin_01_FEDU'))
+        self.assertTrue('erg_lepe_l3_pa_pabin_01_FEDU' in lepe_vars)
+
 
     def test_load_lepi_data(self):
         del_data()
@@ -88,28 +112,72 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('erg_lepi_l2_omniflux_FHEDO' in lepi_vars)
         self.assertTrue('erg_lepi_l2_omniflux_FODO' in lepi_vars)
 
+    def test_load_lepi_3dflux_data(self):
+        del_data()
+        lepi_vars = pyspedas.erg.lepi(datatype='3dflux')
+        self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU'))
+        self.assertTrue(data_exists('erg_lepi_l2_3dflux_FHEDU'))
+        self.assertTrue('erg_lepi_l2_3dflux_FPDU' in lepi_vars)
+        self.assertTrue('erg_lepi_l2_3dflux_FHEDU' in lepi_vars)
+
+    def test_load_lepi_l3_data(self):
+        del_data()
+        lepi_vars = pyspedas.erg.lepi(level='l3')
+        self.assertTrue(data_exists('erg_lepi_l3_pa_FPDU'))
+        self.assertTrue('erg_lepi_l3_pa_FPDU' in lepi_vars)
+        self.assertTrue(data_exists('erg_lepi_l3_pa_pabin_01_FPDU'))
+        self.assertTrue('erg_lepi_l3_pa_pabin_01_FPDU' in lepi_vars)
+
     def test_load_mepe_data(self):
         del_data()
         mepe_vars = pyspedas.erg.mepe()
         self.assertTrue(data_exists('erg_mepe_l2_omniflux_FEDO'))
         self.assertTrue('erg_mepe_l2_omniflux_FEDO' in mepe_vars)
 
+    def test_load_mepe_l3_data(self):
+        del_data()
+        mepe_vars = pyspedas.erg.mepe(level='l3')
+        self.assertTrue(data_exists('erg_mepe_l3_3dflux_FEDU'))
+        self.assertTrue('erg_mepe_l3_3dflux_FEDU' in mepe_vars)
+
     def test_load_mepe_3dflux(self):
         del_data()
         mepe_vars = pyspedas.erg.mepe(datatype='3dflux')
-        print(mepe_vars)
-        tplot_names()
+        self.assertTrue(data_exists('erg_mepe_l2_3dflux_FEDU'))
+        self.assertTrue('erg_mepe_l2_3dflux_FEDU' in mepe_vars)
 
-    def test_load_mepi_data(self):
+    def test_load_mepi_nml_data(self):
         del_data()
         mepi_vars = pyspedas.erg.mepi_nml()
         self.assertTrue(data_exists('erg_mepi_l2_omniflux_epoch_tof'))
         self.assertTrue('erg_mepi_l2_omniflux_epoch_tof' in mepi_vars)
+
+    def test_load_mepi_nml_3dflux_data(self):
+        del_data()
+        mepi_vars = pyspedas.erg.mepi_nml(datatype='3dflux')
+        self.assertTrue(data_exists('erg_mepi_l2_3dflux_FPDU'))
+        self.assertTrue('erg_mepi_l2_3dflux_FPDU' in mepi_vars)
+
+    def test_load_mepi_tof_data(self):
+        del_data()
         mepi_vars = pyspedas.erg.mepi_tof()
         self.assertTrue(data_exists('erg_mepi_l2_tofflux_FPDU'))
         self.assertTrue(data_exists('erg_mepi_l2_tofflux_FODU'))
         self.assertTrue('erg_mepi_l2_tofflux_FPDU' in mepi_vars)
         self.assertTrue('erg_mepi_l2_tofflux_FODU' in mepi_vars)
+
+    def test_load_mepi_nml_l3_3dflux_data(self):
+        del_data()
+        mepi_vars = pyspedas.erg.mepi_nml(level='l3', datatype='3dflux')
+        self.assertTrue(data_exists('erg_mepi_l3_3dflux_FPDU'))
+        self.assertTrue('erg_mepi_l3_3dflux_FPDU' in mepi_vars)
+
+    def test_load_mepi_nml_l3_pa_data(self):
+        del_data()
+        mepi_vars = pyspedas.erg.mepi_nml(level='l3', datatype='pa')
+        self.assertTrue(data_exists('erg_mepi_l3_pa_FPDU'))
+        self.assertTrue('erg_mepi_l3_pa_FPDU' in mepi_vars)
+
 
     def test_load_pwe_ofa_data(self):
         del_data()
@@ -123,13 +191,25 @@ class LoadTestCases(unittest.TestCase):
         del_data()
         pwe_vars = pyspedas.erg.pwe_efd()
         self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Eu_dsi'))
-        self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Ev_dsi'))
-        self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Ev1_dsi'))
-        self.assertTrue(data_exists('erg_pwe_efd_l2_E_spin_Eu2_dsi'))
         self.assertTrue('erg_pwe_efd_l2_E_spin_Eu_dsi' in pwe_vars)
-        self.assertTrue('erg_pwe_efd_l2_E_spin_Ev_dsi' in pwe_vars)
-        self.assertTrue('erg_pwe_efd_l2_E_spin_Ev1_dsi' in pwe_vars)
-        self.assertTrue('erg_pwe_efd_l2_E_spin_Eu2_dsi' in pwe_vars)
+
+    def test_load_pwe_efd_e64hz_data(self):
+        del_data()
+        pwe_vars = pyspedas.erg.pwe_efd(datatype='E64Hz')
+        self.assertTrue(data_exists('erg_pwe_efd_l2_E64Hz_dsi_Ex_waveform'))
+        self.assertTrue('erg_pwe_efd_l2_E64Hz_dsi_Ex_waveform' in pwe_vars)
+
+    def test_load_pwe_efd_pot_data(self):
+        del_data()
+        pwe_vars = pyspedas.erg.pwe_efd(datatype='pot')
+        self.assertTrue(data_exists('erg_pwe_efd_l2_pot_Vu1'))
+        self.assertTrue('erg_pwe_efd_l2_pot_Vu1' in pwe_vars)
+
+    def test_load_pwe_efd_spec_data(self):
+        del_data()
+        pwe_vars = pyspedas.erg.pwe_efd(datatype='spec')
+        self.assertTrue(data_exists('erg_pwe_efd_l2_spec_spectra'))
+        self.assertTrue('erg_pwe_efd_l2_spec_spectra' in pwe_vars)
 
     def test_load_pwe_hfa_data(self):
         del_data()
@@ -148,6 +228,12 @@ class LoadTestCases(unittest.TestCase):
         pwe_vars = pyspedas.erg.pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'])
         self.assertTrue(data_exists('erg_pwe_wfc_l2_e_65khz_Ex_waveform'))
         self.assertTrue('erg_pwe_wfc_l2_e_65khz_Ex_waveform' in pwe_vars)
+
+    def test_load_pwe_wfc_spec_data(self):
+        del_data()
+        pwe_vars = pyspedas.erg.pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'], datatype='spec')
+        self.assertTrue(data_exists('erg_pwe_wfc_l2_e_65khz_E_spectra'))
+        self.assertTrue('erg_pwe_wfc_l2_e_65khz_E_spectra' in pwe_vars)
 
     def test_downloadonly(self):
         del_data()
