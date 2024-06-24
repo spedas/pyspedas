@@ -15,14 +15,22 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(len(sroi[0]) == 28)
         self.assertTrue(sroi[0][0] == 1569849345.0)
         self.assertTrue(sroi[1][0] == 1569923029.0)
-        # error, no trange specified
-        sroi = mms_load_sroi_segments()
-        # error, start time not specified
-        none = get_mms_srois(end_time=1569849345.0)
-        # error, end time not specified
-        none = get_mms_srois(start_time=1569849345.0)
-        # error, probe not specified
-        none = get_mms_srois(start_time=1569849345.0, end_time=1569849345.0)
+        with self.assertLogs(level='ERROR') as log:
+            # error, no trange specified
+            sroi = mms_load_sroi_segments()
+            self.assertIn("Error; no trange specified.", log.output[0])
+
+            # error, start time not specified
+            none = get_mms_srois(end_time=1569849345.0)
+            self.assertIn("Error, start time not specified", log.output[1])
+
+            # error, end time not specified
+            none = get_mms_srois(start_time=1569849345.0)
+            self.assertIn("Error, end time not specified", log.output[2])
+
+            # error, probe not specified
+            none = get_mms_srois(start_time=1569849345.0, end_time=1569849345.0)
+            self.assertIn("Error, sc_id not specified", log.output[3])
 
     def test_brst(self):
         del_data("*")
@@ -31,8 +39,10 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(brst[0][0] == 1444975174.0)
         self.assertTrue(brst[1][0] == 1444975244.0)
         self.assertTrue(data_exists('mms_bss_burst'))
-        # error, no trange specified
-        brst = mms_load_brst_segments()
+        with self.assertLogs(level='ERROR') as log:
+            # error, no trange specified
+            brst = mms_load_brst_segments()
+            self.assertIn("Error; no trange specified.", log.output[0])
         # download from spedas.org
         brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'], sdc=False, suffix='_sdc')
         self.assertTrue(len(brst[0]) == 53)
@@ -55,8 +65,10 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(len(fast[0]) == 35)
         self.assertTrue(fast[0][0] == 1443504404.0)
         self.assertTrue(fast[1][0] == 1443554774.0)
-        # error, no trange specified
-        none = mms_load_fast_segments()
+        with self.assertLogs(level='ERROR') as log:
+            # error, no trange specified
+            none = mms_load_fast_segments()
+            self.assertIn("Error; no trange specified.", log.output[0])
 
     def test_spd_mms_load_bss(self):
         del_data("*")
@@ -69,8 +81,10 @@ class SegmentTestCases(unittest.TestCase):
 
     def test_spd_mms_load_bss_err(self):
         del_data("*")
-        spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'], datatype='brst', include_labels=True)
-        self.assertFalse(data_exists('mms_bss_fast'))
+        with self.assertLogs(level='ERROR') as log:
+            spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'], datatype='brst', include_labels=True)
+            self.assertFalse(data_exists('mms_bss_fast'))
+            self.assertIn("Unsupported datatype: brst; valid options: \"fast\" and \"burst\"", log.output[0])
 
 
 if __name__ == '__main__':
