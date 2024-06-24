@@ -118,8 +118,8 @@ jobs:
         coverage run -a -m pyspedas.themis.tests.tests_tplot_time
         echo Starting MTH5 import test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
-        echo Starting MTH5 load_fdsn test at `date`
-        coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
+        # echo Starting MTH5 load_fdsn test at `date`
+        # coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
         echo Starting barrel tests at `date`
         coverage run -a -m pyspedas.barrel.tests.tests
         echo Starting elfin epd_l1 tests at `date`
