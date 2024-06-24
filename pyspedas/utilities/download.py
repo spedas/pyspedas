@@ -122,6 +122,7 @@ def download_file(
     session=None,
     basic_auth=False,
     nbr_tries=0,
+    text_only=False,
 ):
     """
     Download a file and return its local path; this function is primarily meant to be called by the download function.
@@ -146,6 +147,10 @@ def download_file(
         Flag to indicate that the remote server uses basic authentication instead of digest authentication.
     nbr_tries : int, optional
         Counts how many times we tried to download the file. Default is 0.
+    text_only : bool, optional
+        Flag to indicate that only the text of the session.get object should be saved.
+        This is useful for downloading HTML files.
+
 
     Returns
     -------
@@ -221,7 +226,10 @@ def download_file(
         ftmp = NamedTemporaryFile(delete=False)
 
         with open(ftmp.name, "wb") as f:
-            copyfileobj(fsrc.raw, f)
+            if text_only:
+                f.write(fsrc.text.encode("utf-8"))
+            else:
+                copyfileobj(fsrc.raw, f)
 
         # make sure the directory exists
         if (
@@ -258,6 +266,7 @@ def download_file(
             session=session_original,
             basic_auth=basic_auth,
             nbr_tries=nbr_tries,
+            text_only=text_only,
         )
 
     # If the file again cannot be opened, we give up.
@@ -287,6 +296,7 @@ def download(
     basic_auth=False,
     regex=False,
     no_wildcards=False,
+    text_only=False,
 ):
     """
     Download one or more remote files and return their local paths.
@@ -321,6 +331,9 @@ def download(
         Flag to allow regular expressions in the file name matching, instead of unix style matching.
     no_wildcards : bool, optional
         Flag to assume no wild cards in the requested url/filename.
+    text_only : bool, optional
+        Flag to indicate that only the text of the session.get object should be saved.
+        This is useful for downloading HTML files.
 
     Returns
     -------
@@ -496,6 +509,7 @@ def download(
                         headers=headers,
                         session=session,
                         basic_auth=basic_auth,
+                        text_only=text_only,
                     )
                     if resp_data is not None:
                         for file in resp_data:
@@ -511,6 +525,7 @@ def download(
                 headers=headers,
                 session=session,
                 basic_auth=basic_auth,
+                text_only=text_only,
             )
 
         if resp_data is not None:
