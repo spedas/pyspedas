@@ -1,13 +1,11 @@
 import logging
-import requests
-from pytplot import time_double
-from pytplot import time_clip as tclip
-from pytplot import store_data, options
-from pyspedas.utilities.dailynames import dailynames
 import re
+from pytplot import time_double, store_data, options, time_clip as tclip
+from pyspedas import download, dailynames
+from pyspedas.kyoto.kyoto_config import CONFIG
 
 
-def parse_html(html_text, year=None, month=None):
+def parse_dst_html(html_text, year=None, month=None):
     """
     Parses the HTML content to extract relevant information.
 
@@ -53,9 +51,14 @@ def parse_html(html_text, year=None, month=None):
 
 def dst(
     trange=None,
+    datatypes=["final", "provisional", "realtime"],
     time_clip=True,
     remote_data_dir="http://wdc.kugi.kyoto-u.ac.jp/",
+    prefix="",
     suffix="",
+    no_download=False,
+    local_data_dir="",
+    download_only=False,
 ):
     """
     Loads Dst index data from the Kyoto servers.
@@ -80,98 +83,112 @@ def dst(
     list
         List of tplot variables created.
 
+    Notes
+    -----
+    There are three types of Dst data available: final, provisional, and realtime.
+    Usually, only one type is available for a particular month.
+    is function tries to download final data, if this is not available then
+    it downloads provisional data, and if this is not available then it downloads
+    realtime data.
+
     Examples
     --------
     >>> from pyspedas.kyoto import dst
     >>> dst_data = dst(trange=['2015-01-01', '2015-01-02'])
     >>> print(dst_data)
     kyoto_dst
-
-    Acknowledgment
-    --------------
-        The DST data are provided by the World Data Center for Geomagnetism, Kyoto, and
-        are not for redistribution (http://wdc.kugi.kyoto-u.ac.jp/). Furthermore, we thank
-        the geomagnetic observatories (Kakioka [JMA], Honolulu and San Juan [USGS], Hermanus
-        [RSA], Alibag [IIG]), NiCT, INTERMAGNET, and many others for their cooperation to
-        make the Dst index available.
     """
 
-    if trange is None:
-        logging.error("trange keyword required to download data.")
-        return
+    vars = []  # list of tplot variables created
+
+    if trange is None or len(trange) != 2:
+        logging.error("Keyword trange with two datetimes is required to download data.")
+        return vars
+    if trange[0] >= trange[1]:
+        logging.error("Invalid time range. End time must be greater than start time.")
+        return vars
+
+    if local_data_dir == "":
+        local_data_dir = CONFIG["local_data_dir"]
+    if local_data_dir[-1] != "/":
+        local_data_dir += "/"
+
+    if remote_data_dir == "":
+        remote_data_dir = CONFIG["remote_data_dir_dst"]
 
     try:
         file_names = dailynames(file_format="%Y%m/index.html", trange=trange)
     except Exception as e:
         logging.error("Error occurred while getting file names: " + str(e))
-        return
+        return vars
+
+    # Keep unique files names only
+    file_names = list(set(file_names))
+
+    ack = """
+            ******************************
+            The DST data are provided by the World Data Center for Geomagnetism, Kyoto, and
+            are not for redistribution (http://wdc.kugi.kyoto-u.ac.jp/). Furthermore, we thank
+            the geomagnetic observatories (Kakioka [JMA], Honolulu and San Juan [USGS], Hermanus
+            [RSA], Alibag [IIG]), NiCT, INTERMAGNET, and many others for their cooperation to
+            make the Dst index available.
+            ******************************
+        """
 
     times = []
     data = []
-    datatype = ""
+    datatypes = ["final", "provisional", "realtime"]
 
     # Final files
-    for filename in file_names:
-        html_text = requests.get(remote_data_dir + "dst_final/" + filename).text
-        file_times, file_data = parse_html(
-            html_text, year=filename[:4], month=filename[4:6]
-        )
-        times.extend(file_times)
-        data.extend(file_data)
-        if len(file_times) != 0:
-            datatype = "Final"
+    for datatype in datatypes:
 
-    # Provisional files
-    for filename in file_names:
-        html_text = requests.get(remote_data_dir + "dst_provisional/" + filename).text
-        file_times, file_data = parse_html(
-            html_text, year=filename[:4], month=filename[4:6]
-        )
-        times.extend(file_times)
-        data.extend(file_data)
-        if len(file_times) != 0:
-            datatype = "Provisional"
+        for filename in file_names:
+            yyyymm = ""
+            if len(filename) > 6:
+                yyyymm = filename[:6]
+            url = remote_data_dir + "dst_" + datatype + "/" + filename
+            local_path = local_data_dir + "dst_" + datatype + "/" + yyyymm + "/"
+            fname = download(
+                url, local_path=local_path, no_download=no_download, text_only=True
+            )
 
-    # Real Time files
-    for filename in file_names:
-        html_text = requests.get(remote_data_dir + "dst_realtime/" + filename).text
-        file_times, file_data = parse_html(
-            html_text, year=filename[:4], month=filename[4:6]
-        )
-        times.extend(file_times)
-        data.extend(file_data)
-        if len(file_times) != 0:
-            datatype = "Real Time"
+            if download_only:
+                continue  # skip to the next file
+
+            if fname is None or len(fname) < 1:
+                logging.error("Error occurred while downloading: " + url)
+                continue  # skip to the next file
+            try:
+                with open(fname[0], "r") as file:
+                    html_text = file.read()
+                file_times, file_data = parse_dst_html(
+                    html_text, year=filename[:4], month=filename[4:6]
+                )
+                times.extend(file_times)
+                data.extend(file_data)
+            except Exception as e:
+                logging.error(
+                    "Error occurred while parsing " + filename + ": " + str(e)
+                )
+                continue  # skip to the next file
+
+        # At this point, we have all data for one datatype
+        # If we have data, we can break the loop, otherwise we try other datatypes
+        if len(times) != 0:
+            break
 
     if len(times) == 0:
         logging.error("No data found.")
-        return
+        return vars
 
-    store_data("kyoto_dst" + suffix, data={"x": times, "y": data})
+    varname = prefix + "kyoto_dst" + suffix
+    store_data(varname, data={"x": times, "y": data})
+    options(varname, "ytitle", "Dst (" + datatype + ")")
+    vars.append(varname)
 
     if time_clip:
-        tclip("kyoto_dst" + suffix, trange[0], trange[1], suffix="")
+        tclip(varname, trange[0], trange[1], overwrite=True)
 
-    options("kyoto_dst" + suffix, "ytitle", "Dst (" + datatype + ")")
+    logging.info(ack)
 
-    logging.info(
-        "**************************************************************************************"
-    )
-    logging.info(
-        "The DST data are provided by the World Data Center for Geomagnetism, Kyoto, and"
-    )
-    logging.info(
-        " are not for redistribution (http://wdc.kugi.kyoto-u.ac.jp/). Furthermore, we thank"
-    )
-    logging.info(
-        " the geomagnetic observatories (Kakioka [JMA], Honolulu and San Juan [USGS], Hermanus"
-    )
-    logging.info(
-        " [RSA], Alibag [IIG]), NiCT, INTERMAGNET, and many others for their cooperation to"
-    )
-    logging.info(" make the Dst index available.")
-    logging.info(
-        "**************************************************************************************"
-    )
-
-    return "kyoto_dst" + suffix
+    return vars

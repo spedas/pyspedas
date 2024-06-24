@@ -2,6 +2,7 @@ import os
 
 CONFIG = {
     "remote_data_dir_ae": "https://wdc.kugi.kyoto-u.ac.jp/ae_provisional/",
+    "remote_data_dir_dst": "http://wdc.kugi.kyoto-u.ac.jp/",
     "local_data_dir": "pydata/geom_indices/kyoto/",
 }
 
