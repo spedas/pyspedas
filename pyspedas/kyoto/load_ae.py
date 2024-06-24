@@ -150,6 +150,9 @@ def load_ae(
             logging.error("Error occurred while getting file names: " + str(e))
             continue  # skip to the next datatype
 
+        # Keep unique files names only
+        file_names = list(set(file_names))
+
         times = []
         data = []
 
@@ -161,16 +164,16 @@ def load_ae(
             url = remote_data_dir + filename
             # Use a local path similar to IDL SPEDAS
             local_path = local_data_dir + datatype + "/" + yyyymm + "/"
-            filename = download(url, local_path=local_path, no_download=no_download)
+            fname = download(url, local_path=local_path, no_download=no_download)
 
             if download_only:
                 continue  # skip to the next file
 
-            if filename is None or len(filename) < 1:
+            if fname is None or len(fname) < 1:
                 logging.error("Error occurred while downloading: " + url)
                 continue  # skip to the next file
             try:
-                with open(filename[0], "r") as file:
+                with open(fname[0], "r") as file:
                     html_text = file.read()
                 file_times, file_data = parse_ae_html(html_text)
                 times.extend(file_times)
