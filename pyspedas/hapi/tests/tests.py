@@ -5,7 +5,9 @@ from pytplot import data_exists, del_data
 
 class HAPITests(unittest.TestCase):
     def test_print_servers(self):
-        hapi(trange=['2003-10-20', '2003-11-30'])
+        with self.assertLogs(level='ERROR') as log: 
+            hapi(trange=['2003-10-20', '2003-11-30'])
+            self.assertIn("No server specified; example servers include:", log.output[0])
 
     def test_return_catalog(self):
         id_list = hapi(server='https://cdaweb.gsfc.nasa.gov/hapi', catalog=True, quiet=True)
@@ -13,13 +15,17 @@ class HAPITests(unittest.TestCase):
 
     def test_dataset_not_specified(self):
         # dataset not specified
-        h_vars = hapi(trange=['2003-10-20', '2003-11-30'],
-                      server='https://cdaweb.gsfc.nasa.gov/hapi')
+        with self.assertLogs(level='ERROR') as log:
+            h_vars = hapi(trange=['2003-10-20', '2003-11-30'],
+                        server='https://cdaweb.gsfc.nasa.gov/hapi')
+            self.assertIn("Error, no dataset specified; please see the catalog for a list of available data sets.", log.output[0])
 
     def test_trange_not_specified(self):
         # trange not specified
-        h_vars = hapi(dataset='OMNI_HRO2_1MIN',
-                      server='https://cdaweb.gsfc.nasa.gov/hapi')
+        with self.assertLogs(level='ERROR') as log:
+            h_vars = hapi(dataset='OMNI_HRO2_1MIN',
+                        server='https://cdaweb.gsfc.nasa.gov/hapi')
+            self.assertIn("Error, no trange specified", log.output[0])
 
     def test_cdaweb_mms_spec(self):
         h_vars = hapi(trange=['2019-10-16', '2019-10-17'],
