@@ -208,19 +208,28 @@ def gmag_isee_induction(
 
                 if frequency_dependent:
                     meta_data_var = get_data(tplot_name, metadata=True)
+                    new_cdflib = False
+                    if cdflib.__version__ > "0.4.9":
+                        new_cdflib = True
+                    else:
+                        new_cdflib = False
 
                     if meta_data_var is not None:
                         cdf_file = cdflib.CDF(meta_data_var["CDF"]["FILENAME"])
-                        cdfcont = cdf_file.varget("frequency", inq=True)
+                        if new_cdflib:
+                            cdfcont = cdf_file.varinq("frequency")
+                        else:
+                            cdfcont = cdf_file.varget("frequency", inq=True)
                         ffreq = cdf_file.varget("frequency")
                         ssensi = cdf_file.varget("sensitivity")
                         pphase = cdf_file.varget("phase_difference")
                         frequency_dependent_structure[site_input][
                             "site_code"
                         ] = site_input
-                        frequency_dependent_structure[site_input]["nfreq"] = (
-                            cdfcont["max_records"] + 1
-                        )
+                        if new_cdflib:
+                            frequency_dependent_structure[site_input]["nfreq"] = cdfcont.Last_Rec + 1
+                        else:
+                            frequency_dependent_structure[site_input]["nfreq"] = cdfcont["max_records"] + 1
                         frequency_dependent_structure[site_input]["frequency"][
                             0 : ffreq.shape[0]
                         ] = deepcopy(ffreq)
