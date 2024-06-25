@@ -208,7 +208,7 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
                 logging.warning("and no Parameter criterion given")
         else:
             # We have a two-element Time list: parse it
-            if not isinstance(type(time[0]), type(time[1])):
+            if type(time[0]) !=  type(time[1]):
                 if parameter is not None:
                     logging.warning("*****WARNING*****")
                     logging.warning("Both elements of time must be same type")
@@ -841,88 +841,6 @@ def get_values_from_list(the_list, location):
     else:
         testing = testing[location]
         return testing
-
-
-def orbit_time(begin_orbit, end_orbit=None):
-    """
-    Calculate the time range corresponding to the given orbit number(s).
-
-    Parameters:
-        begin_orbit (int): The starting orbit number.
-        end_orbit (int, optional): The ending orbit number. If not provided, the time range for the single orbit specified by `begin_orbit` will be returned.
-
-    Returns:
-        list: A list containing the begin and end times of the specified orbit range. If the orbit numbers are not found, the list will contain `None` values.
-
-    """
-    orb_file = os.path.join(os.path.dirname(__file__), "maven_orb_rec.orb")
-
-    with open(orb_file, "r") as f:
-        if end_orbit is None:
-            end_orbit = begin_orbit
-        orbit_num = []
-        time = []
-        f.readline()
-        f.readline()
-        for line in f:
-            line = line[0:28]
-            line = line.split(" ")
-            line = [x for x in line if x != ""]
-            orbit_num.append(int(line[0]))
-            time.append(
-                line[1] + "-" + month_to_num(line[2]) + "-" + line[3] + "T" + line[4]
-            )
-        try:
-            if orbit_num.index(begin_orbit) > len(time) or orbit_num.index(
-                end_orbit
-            ) + 1 > len(time):
-                logging.warning(
-                    "Orbit numbers not found.  Please choose a number between 1 and %s.",
-                    orbit_num[-1],
-                )
-                return [None, None]
-            else:
-                begin_time = time[orbit_num.index(begin_orbit)]
-                end_time = time[orbit_num.index(end_orbit) + 1]
-        except ValueError:
-            return [None, None]
-    return [begin_time, end_time]
-
-
-def month_to_num(month_string):
-    """
-    Converts a three-letter month abbreviation to its corresponding two-digit number representation.
-
-    Args:
-        month_string (str): The three-letter month abbreviation (e.g., "JAN", "FEB", etc.).
-
-    Returns:
-        str: The two-digit number representation of the month (e.g., "01", "02", etc.).
-    """
-    if month_string == "JAN":
-        return "01"
-    if month_string == "FEB":
-        return "02"
-    if month_string == "MAR":
-        return "03"
-    if month_string == "APR":
-        return "04"
-    if month_string == "MAY":
-        return "05"
-    if month_string == "JUN":
-        return "06"
-    if month_string == "JUL":
-        return "07"
-    if month_string == "AUG":
-        return "08"
-    if month_string == "SEP":
-        return "09"
-    if month_string == "OCT":
-        return "10"
-    if month_string == "NOV":
-        return "11"
-    if month_string == "DEC":
-        return "12"
 
 
 def mvn_kp_sc_traj_xyz(
