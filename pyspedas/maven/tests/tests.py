@@ -7,6 +7,8 @@ from pyspedas.maven.maven_kp_to_tplot import maven_kp_to_tplot
 import time
 import collections
 from pyspedas.maven.config import CONFIG
+from datetime import datetime
+
 
 sleep_time=10
 
@@ -46,8 +48,8 @@ class LoadTestCases(unittest.TestCase):
         time.sleep(sleep_time)
 
     def test_kp_utilities(self):
-        from pyspedas.maven.utilities import param_list, param_range, range_select, get_inst_obs_labels
-        from pyspedas.maven.utilities import find_param_from_index
+        from pyspedas.maven.kp_utilities import param_list, param_range, range_select, get_inst_obs_labels
+        from pyspedas.maven.kp_utilities import find_param_from_index
         kp = get_kp_dict()
         self.assertTrue(type(kp) is collections.OrderedDict)
         param_list = param_list(kp)
@@ -65,9 +67,13 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(param == 'LPW.ELECTRON_DENSITY')
 
     def test_load_mag_data(self):
+        from pyspedas.maven.utilities import get_l2_files_from_date
         del_data('*')
         data = maven.mag(datatype="ss1s")
         self.assertTrue(data_exists("OB_B"))
+        dt = datetime.strptime("2016-01-01/12:00:00","%Y-%m-%d/%H:%M:%S")
+        files = get_l2_files_from_date(dt,'mag')
+        self.assertTrue(len(files) > 0)
         time.sleep(sleep_time)
 
     def test_load_mag_byorbit_data(self):
