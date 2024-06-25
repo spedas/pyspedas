@@ -1,6 +1,6 @@
-from load import load
+from pyspedas.elfin.load import load
 
-def eng(trange=['2022-08-19', '2022-08-19'],
+def eng_load(trange=['2022-08-19', '2022-08-19'],
         probe='a',
         datatype='eng_datatype',
         level='l1',

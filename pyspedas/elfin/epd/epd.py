@@ -5,7 +5,7 @@ import numpy as np
 from pyspedas.elfin.load import load
 from pyspedas.elfin.epd.postprocessing import epd_l1_postprocessing, epd_l2_postprocessing
 
-def elfin_load_epd(trange=['2022-08-19', '2022-08-19'],
+def epd_load(trange=['2022-08-19', '2022-08-19'],
         probe='a',
         datatype='pef',
         level='l1',
