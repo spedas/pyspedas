@@ -7,3 +7,5 @@ omit =
   */docs/*
   */QtPlotter/*
   */pyspedas/cdagui/cdagui.py
+  */pyspedas/maven/interp_utilities.py
+  */pyspedas/maven/list_utilities.py
