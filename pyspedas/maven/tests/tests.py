@@ -6,14 +6,16 @@ from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit
 from pyspedas.maven.maven_kp_to_tplot import maven_kp_to_tplot
 import time
 import collections
+from pyspedas.maven.config import CONFIG
 
 sleep_time=10
 
 def get_kp_dict():
     data = maven.kp()
-    return maven_kp_to_tplot(filename=['maven_data/maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r01.tab',
-                                       'maven_data/maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r01.tab'],
-                                        notplot=True)
+    local_data_dir = CONFIG['local_data_dir']
+    fn = [os.path.join(local_data_dir, 'maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r01.tab'),
+          os.path.join(local_data_dir, 'maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r01.tab')]
+    return maven_kp_to_tplot(filename=fn, notplot=True)
 
 class OrbitTestCases(unittest.TestCase):
     def test_get_merge_orbit_files(self):
