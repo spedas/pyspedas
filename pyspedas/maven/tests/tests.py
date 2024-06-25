@@ -3,9 +3,17 @@ import unittest
 from pytplot import data_exists, tplot_names, del_data
 from pyspedas import maven
 from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files
+from pyspedas.maven.maven_kp_to_tplot import maven_kp_to_tplot
 import time
+import collections
 
 sleep_time=10
+
+def get_kp_dict():
+    data = maven.kp()
+    return maven_kp_to_tplot(filename=['maven_data/maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r01.tab',
+                                       'maven_data/maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r01.tab'],
+                                        notplot=True)
 
 class OrbitTestCases(unittest.TestCase):
     def test_get_merge_orbit_files(self):
@@ -34,6 +42,25 @@ class LoadTestCases(unittest.TestCase):
         data = maven.kp(iuvs=True)
         self.assertTrue(data_exists("mvn_kp::spacecraft::geo_x"))
         time.sleep(sleep_time)
+
+    def test_kp_utilities(self):
+        from pyspedas.maven.utilities import param_list, param_range, range_select, get_inst_obs_labels
+        from pyspedas.maven.utilities import find_param_from_index
+        kp = get_kp_dict()
+        self.assertTrue(type(kp) is collections.OrderedDict)
+        param_list = param_list(kp)
+        self.assertTrue(len(param_list) > 0)
+        print(param_list)
+        param_range = param_range(kp)
+        result = range_select(kp, [2440, 2445], [5], [1e9], [-1e9])
+        self.assertTrue(len(result) > 0)
+        result = range_select(kp, [2440, "2020/04/01"], [5], [1e9], [-1e9])
+        print(len(result))
+        labels = get_inst_obs_labels(kp, 'LPW.EWAVE_LOW_FREQ')
+        self.assertTrue('LPW' in labels)
+        self.assertTrue('EWAVE_LOW_FREQ' in labels)
+        param = find_param_from_index(kp, 5)
+        self.assertTrue(param == 'LPW.ELECTRON_DENSITY')
 
     def test_load_mag_data(self):
         del_data('*')
