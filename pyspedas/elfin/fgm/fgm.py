@@ -1,7 +1,6 @@
-from .load import load
+from pyspedas.elfin.load import load
 
-
-def fgm(trange=['2022-08-19', '2022-08-19'],
+def fgm_load(trange=['2022-08-19', '2022-08-19'],
         probe='a',
         datatype='survey',
         level='l1',

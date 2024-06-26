@@ -74,6 +74,7 @@ def csundir_vect(time_in):
         Inclination of Earth's axis (radians).
 
     """
+    breakpoint()
     iyear, idoy, ih, im, isec = get_time_parts(time_in)
 
     # Julian day and greenwich mean sideral time

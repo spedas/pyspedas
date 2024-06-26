@@ -1,6 +1,6 @@
-from .load import load
+from pyspedas.elfin.load import load
 
-def mrmi(trange=['2022-08-19', '2022-08-19'],
+def mrmi_load(trange=['2022-08-19', '2022-08-19'],
          probe='a',
          datatype='mrmi',
          level='l1',

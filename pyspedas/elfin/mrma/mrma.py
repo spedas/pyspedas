@@ -1,6 +1,6 @@
-from .load import load
+from pyspedas.elfin.load import load
 
-def mrma(trange=['2022-08-19', '2022-08-19'],
+def mrma_load(trange=['2022-08-19', '2022-08-19'],
          probe='a',
          datatype='mrma',
          level='l1',

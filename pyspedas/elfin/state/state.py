@@ -1,6 +1,6 @@
 from pyspedas.elfin.load import load
 
-def state(trange=['2022-08-19', '2022-08-19'],
+def state_load(trange=['2022-08-19', '2022-08-19'],
           probe='a',
           datatype='defn',
           level='l1',
