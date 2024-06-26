@@ -70,6 +70,8 @@ class TestELFStateValidation(unittest.TestCase):
         assert_array_almost_equal(elf_vel_gei.y, self.elf_vel_gei.y, decimal=4)
         assert_array_almost_equal(elf_att_gei.y, self.elf_att_gei.y, decimal=2)
         assert_allclose(elf_att_solution.times, self.elf_att_solution.y, rtol=1e-3)
+        # Jiashu says the default for this variable has changed, so we can leave this
+        # assertion commented out.
         # assert_array_equal(elf_att_flag.y, self.elf_att_flag.y)
         assert_allclose(elf_att_spinper.y, self.elf_att_spinper.y, rtol=1e-2)
         assert_allclose(elf_spin_orbnorm.y, self.elf_spin_orbnorm.y, rtol=1e-2)
