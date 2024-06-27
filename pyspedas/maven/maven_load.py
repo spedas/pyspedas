@@ -327,12 +327,19 @@ def load_data(
                         continue
 
                 # Check if the files are KP data
-                if instr == "kp":
-                    full_path = create_dir_if_needed(f, data_dir, "insitu")
-                else:
-                    full_path = create_dir_if_needed(f, data_dir, level)
-                bn_files_to_load.append(f)
-                files_to_load.append(os.path.join(full_path, f))
+                try:
+                    if instr == "kp":
+                        full_path = create_dir_if_needed(f, data_dir, "insitu")
+                    else:
+                        full_path = create_dir_if_needed(f, data_dir, level)
+                    bn_files_to_load.append(f)
+                    files_to_load.append(os.path.join(full_path, f))
+                except Exception as e:
+                    # todo: better handling of rse .tab files 
+                    # rse files are .tab files (TAB delimited text files) that currently cannot be loaded into tplot 
+                    # for now, we need to skip these files
+                    logging.error("Cannot handle file: " + f)
+                    continue
 
             if list_files:
                 for f in s:
