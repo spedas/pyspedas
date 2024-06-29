@@ -335,8 +335,8 @@ def load_data(
                     bn_files_to_load.append(f)
                     files_to_load.append(os.path.join(full_path, f))
                 except Exception as e:
-                    # todo: better handling of rse .tab files 
-                    # rse files are .tab files (TAB delimited text files) that currently cannot be loaded into tplot 
+                    # todo: better handling of rse .tab files
+                    # rse files are .tab files (TAB delimited text files) that currently cannot be loaded into tplot
                     # for now, we need to skip these files
                     logging.error("Cannot handle file: " + f)
                     continue
@@ -359,11 +359,14 @@ def load_data(
                 + " files for instrument "
                 + str(instr)
             )
+            logging.info("Files: ")
+            logging.info(s)
             logging.info("Would you like to proceed with the download? ")
             valid_response = False
             cancel = False
             if auto_yes:
                 valid_response = True
+                logging.info("- Auto yes")
             while not valid_response:
                 response = input("(y/n) >  ")
                 if response == "y" or response == "Y":
@@ -382,6 +385,7 @@ def load_data(
             i = 0
             display_progress(i, len(s))
             for f in s:
+                logging.info("File:" + str(f))
                 i = i + 1
                 if instr == "kp":
                     full_path = create_dir_if_needed(f, data_dir, "insitu")
@@ -472,6 +476,8 @@ def load_data(
                     instruments=instruments,
                 )
 
+                logging.info("Kp data loaded:")
+                logging.info(kp_data_loaded)
                 # Link all created KP data to the ancillary KP data
                 for tvar in kp_data_loaded:
                     pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type="alt")
@@ -503,6 +509,9 @@ def load_data(
                 pytplot.link(
                     tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type="lat"
                 )
+
+            logging.info("Maven data list:")
+            logging.info(flat_list)
 
             # Return list of unique KP data
             return flat_list
