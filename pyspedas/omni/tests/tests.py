@@ -39,13 +39,13 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_hro_5min_data(self):
         del_data('*')
-        omni_vars = pyspedas.omni.data(level='hro', datatype='5min')
-        self.assertTrue(data_exists('BX_GSE'))
-        self.assertTrue(data_exists('BY_GSE'))
-        self.assertTrue(data_exists('BZ_GSE'))
-        self.assertTrue(data_exists('BY_GSM'))
-        self.assertTrue(data_exists('BZ_GSM'))
-        self.assertTrue(data_exists('proton_density'))
+        omni_vars = pyspedas.omni.data(level='hro', datatype='5min', prefix='omni_', suffix='_test')
+        self.assertTrue(data_exists('omni_BX_GSE_test'))
+        self.assertTrue(data_exists('omni_BY_GSE_test'))
+        self.assertTrue(data_exists('omni_BZ_GSE_test'))
+        self.assertTrue(data_exists('omni_BY_GSM_test'))
+        self.assertTrue(data_exists('omni_BZ_GSM_test'))
+        self.assertTrue(data_exists('omni_proton_density_test'))
 
     def test_load_hro_hour_data(self):
         del_data('*')
