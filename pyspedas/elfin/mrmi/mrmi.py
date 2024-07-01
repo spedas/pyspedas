@@ -28,8 +28,10 @@ def mrmi_load(trange=['2022-08-19', '2022-08-19'],
             Default: 'a'
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
+
                 'mrmi' for L1 data
+
             Default: 'mrmi'
 
         level: str

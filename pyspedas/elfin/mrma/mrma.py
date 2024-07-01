@@ -28,8 +28,10 @@ def mrma_load(trange=['2022-08-19', '2022-08-19'],
             Default: 'a'
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
+
                 'mrma' for L1 data
+
             Default: 'mrma'
 
         level: str

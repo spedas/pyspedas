@@ -28,9 +28,12 @@ def state_load(trange=['2022-08-19', '2022-08-19'],
             Default: 'a'
 
         datatype: str
-            Data type; Valid options:
+            Data type.
+            Valid options::
+
                 'defn'
                 'pred'
+
             Default: 'defn'
 
         level: str
@@ -74,7 +77,9 @@ def state_load(trange=['2022-08-19', '2022-08-19'],
 
     Returns
     ----------
-        List of tplot variables created.
+    list of str
+        List of tplot variables created::
+
             ela_pos_gei
             ela_vel_gei
             ela_att_gei
@@ -85,11 +90,12 @@ def state_load(trange=['2022-08-19', '2022-08-19'],
             ela_spin_sun_angle
 
     Example
-    ----------
-        import pyspedas
-        from pytplot import tplot
-        state_vars = pyspedas.elfin.state(probe='a', trange=['2022-08-19', '2022-08-19'])
-        tplot(['ela_pos_gei', 'ela_att_gei', 'ela_att_spinper', 'ela_spin_sun_angle' ])
+    -------
+
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> state_vars = pyspedas.elfin.state(probe='a', trange=['2022-08-19', '2022-08-19'])
+    >>> tplot(['ela_pos_gei', 'ela_att_gei', 'ela_att_spinper', 'ela_spin_sun_angle' ])
 
     """
 

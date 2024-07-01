@@ -28,8 +28,10 @@ def fgm_load(trange=['2022-08-19', '2022-08-19'],
             Default: 'a'
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
+
                 'fast', 'survey' for L1 data. Only 'survey' data is available.
+
             Default: 'survey'
 
         level: str

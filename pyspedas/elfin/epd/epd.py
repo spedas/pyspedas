@@ -78,7 +78,7 @@ def epd_load(trange=['2022-08-19', '2022-08-19'],
             Data type of L1 data. Options are 'pef' , 'pif', 'pes', 'pis'
             Default: 'pef'
 
-        type_ : str, optional
+        type: str, optional
             Calibrated data type of L1 data. Options are 'raw', 'cps', 'nflux', 'eflux'
             Default: 'nflux'
 
@@ -101,24 +101,26 @@ def epd_load(trange=['2022-08-19', '2022-08-19'],
             Specifies the energy range for each bin in the L2 pitch angle spectrogram.
             Example: energies=[(50.,160.),(160.,345.),(345.,900.),(900.,7000.)]
             If both 'energybins' and 'energies' are set, 'energybins' takes precedence.
-            Default: Energy and energybin table
-            channel     energy_range    energy_midbin
-            0           50-80           63.2
-            1           80-120          97.9
-            2           120-160         138.5
-            3           160-210         183.3
-            4           210-270         238.1
-            5           270-345         305.2
-            6           345-430         385.1
-            7           430-630         520.4
-            8           630-900         752.9
-            9           900-1300        1081.6
-            10          1300-1800       1529.7
-            11          1800-2500       2121.3
-            12          2500-3350       2893.9
-            13          3350-4150       3728.6
-            14          4150-5800       4906.1
-            15          5800+           6500.0
+            Default:
+            Energy and energybin table::
+
+                channel     energy_range    energy_midbin
+                0           50-80           63.2
+                1           80-120          97.9
+                2           120-160         138.5
+                3           160-210         183.3
+                4           210-270         238.1
+                5           270-345         305.2
+                6           345-430         385.1
+                7           430-630         520.4
+                8           630-900         752.9
+                9           900-1300        1081.6
+                10          1300-1800       1529.7
+                11          1800-2500       2121.3
+                12          2500-3350       2893.9
+                13          3350-4150       3728.6
+                14          4150-5800       4906.1
+                15          5800+           6500.0
 
         Espec_LCfatol: float, optional
             Tolerance angle for para and anti flux in generating L2 energy spectrogram. 
