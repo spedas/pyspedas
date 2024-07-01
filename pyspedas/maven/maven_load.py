@@ -136,12 +136,16 @@ def maven_filenames(
 
         if not s:
             logging.error("No files found for {}.".format(instrument))
-            maven_files[instrument] = []
+            if instrument not in maven_files:
+               maven_files[instrument] = []
             continue
 
         s = s.split(",")
 
-        maven_files[instrument] = [s, data_dir, public]
+        if instrument not in maven_files:
+            maven_files[instrument] = [s, data_dir, public]
+        else:
+            maven_files[instrument].extend([s, data_dir, public])
 
     # Grab KP data too, there is a lot of good ancillary info in here
     if instruments != "kp":
@@ -159,10 +163,14 @@ def maven_filenames(
         s = get_filenames(query, public)
         if not s:
             logging.error("No files found for {}.".format(instrument))
-            maven_files[instrument] = []
+            if instrument not in maven_files:
+                maven_files[instrument] = []
         else:
             s = s.split(",")
-            maven_files[instrument] = [s, data_dir, public]
+            if instrument not in maven_files:
+                maven_files[instrument] = [s, data_dir, public]
+            else:
+                maven_files[instrument].extend([s, data_dir, public])
 
     return maven_files
 
