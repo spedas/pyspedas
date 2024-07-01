@@ -4,6 +4,7 @@ from pytplot import data_exists, tplot_names, del_data
 from pyspedas import maven
 from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files
 from pyspedas.maven.maven_kp_to_tplot import maven_kp_to_tplot
+from pyspedas.maven.utilities import get_latest_iuvs_files_from_date_range
 import time
 import collections
 from pyspedas.maven.config import CONFIG
@@ -56,8 +57,13 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_kp_iuvs_data(self):
         del_data("*")
-        data = maven.kp(iuvs=True)
+        data = maven.kp(trange=["2016-01-18","2016-01-19"],iuvs=True)
         self.assertTrue(data_exists("mvn_kp::spacecraft::geo_x"))
+        dt1 = datetime.strptime("2016-01-18", "%Y-%m-%d")
+        dt2 = datetime.strptime("2016-01-19", "%Y-%m-%d")
+        fnames = get_latest_iuvs_files_from_date_range(dt1,dt2)
+        self.assertTrue(len(fnames) > 0)
+        self.assertTrue("mvn_kp_iuvs_occ-02533_20160118T125134_v13_r01.tab" in fnames[0])
         time.sleep(sleep_time)
 
     def test_kp_utilities(self):
@@ -104,7 +110,17 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_sta_data(self):
         del_data("*")
+        # No datatype means "load everything"
         data = maven.sta()
+        self.assertTrue(data_exists("hkp_raw_2a-hkp"))
+        self.assertTrue(data_exists("hkp_2a-hkp"))
+        self.assertTrue(data_exists("data_d0-32e4d16a8m"))
+        self.assertTrue(data_exists("theta_d1-32e4d16a8m"))
+        time.sleep(sleep_time)
+
+    def test_load_sta_hkp_data(self):
+        del_data("*")
+        data = maven.sta(datatype=["2a"])
         self.assertTrue(data_exists("hkp_raw_2a-hkp"))
         self.assertTrue(data_exists("hkp_2a-hkp"))
         time.sleep(sleep_time)
