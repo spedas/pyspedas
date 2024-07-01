@@ -6,11 +6,11 @@ from .utilities import maven_param_list
 from .utilities import remove_inst_tag
 from .utilities import (
     get_latest_files_from_date_range,
-    read_iuvs_file,
     get_latest_iuvs_files_from_date_range,
 )
 from .utilities import get_header_info
 from .orbit_time import orbit_time
+from .read_iuvs_file import read_iuvs_file
 import pytplot
 from _collections import OrderedDict
 import builtins
@@ -529,7 +529,13 @@ def maven_kp_to_tplot(
     if not kp_iuvs:
         return tplot_varcreate(kp_insitu)
     else:
-        return kp_insitu, kp_iuvs
+        # return kp_insitu, kp_iuvs
+        insitu_vars = tplot_varcreate(kp_insitu)
+        # The kp_iuvs structure can't be converted using tplot_varcreate.  Not clear
+        # what needs to be done in order to use them. We'll punt on it for now and just
+        # return the insitu variables.
+        # iuvs_vars = tplot_varcreate(kp_iuvs)
+        return insitu_vars
 
 
 def tplot_varcreate(insitu):
