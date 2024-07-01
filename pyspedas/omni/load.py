@@ -10,6 +10,7 @@ from .config import CONFIG
 def load(trange=['2013-11-5', '2013-11-6'],
          datatype='1min',
          level='hro2',
+         prefix='',
          suffix='', 
          get_support_data=False,
          get_ignore_data=False,         
@@ -34,6 +35,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
         Data type; valid options: '1min', '5min', 'hourly'.
     level : str, default='hro2'
         Data level; valid options: 'hro', 'hro2'.
+    prefix : str, optional
+        Prefix for the tplot variable names. By default, no prefix is added.
     suffix : str, optional
         Suffix for the tplot variable names. By default, no suffix is added.
     get_support_data : bool, default=False
@@ -94,7 +97,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, get_ignore_data=get_ignore_data,
+    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, get_support_data=get_support_data, get_ignore_data=get_ignore_data,
                          varformat=varformat, varnames=varnames, notplot=notplot)
 
     if notplot:

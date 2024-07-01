@@ -5,6 +5,7 @@ from pyspedas.utilities.datasets import find_datasets
 def data(trange=['2013-11-5', '2013-11-6'],
         datatype='1min',
         level='hro2',
+        prefix='',
         suffix='',  
         get_support_data=False, 
         get_ignore_data=False,
@@ -29,6 +30,8 @@ def data(trange=['2013-11-5', '2013-11-6'],
     level : str
         Data level; valid options: 'hro', 'hro2'.
         default='hro2'
+    prefix : str, optional
+        Prefix for the tplot variable names. By default, no prefix is added.
     suffix : str, optional
         Suffix for the tplot variable names.
     get_support_data : bool
@@ -65,7 +68,7 @@ def data(trange=['2013-11-5', '2013-11-6'],
     >>> pyspedas.omni.data(trange=['2020-01-01', '2020-01-02'], datatype='5min', level='hro2')
     >>> tplot(['BX_GSE', 'BY_GSE', 'BZ_GSE', 'flow_speed', 'Vx', 'Vy', 'Vz', 'SYM_H'])
     """
-    return load(trange=trange, level=level, datatype=datatype, suffix=suffix, 
+    return load(trange=trange, level=level, datatype=datatype, prefix=prefix, suffix=suffix, 
                 get_support_data=get_support_data, get_ignore_data=get_ignore_data,varformat=varformat, 
                 varnames=varnames, downloadonly=downloadonly, notplot=notplot, 
                 time_clip=time_clip, no_update=no_update)
