@@ -11,7 +11,8 @@ def mag(trange=['1983-02-10', '1983-02-11'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Magnetometer (MAG) for mission DE2
     
@@ -61,7 +62,7 @@ def mag(trange=['1983-02-10', '1983-02-11'],
 
     """
 
-    tvars = load(instrument='mag', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='mag', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
@@ -85,7 +86,8 @@ def nacs(trange=['1983-02-01', '1983-02-02'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Neutral Atmosphere Composition Spectrometer (NACS)
     
@@ -129,12 +131,17 @@ def nacs(trange=['1983-02-01', '1983-02-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    tvars= load(instrument='nacs', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars= load(instrument='nacs', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
@@ -158,7 +165,8 @@ def rpa(trange=['1983-02-10', '1983-02-11'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Retarding Potential Analyzer (RPA)
     
@@ -202,12 +210,17 @@ def rpa(trange=['1983-02-10', '1983-02-11'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    tvars= load(instrument='rpa', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars= load(instrument='rpa', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
     if tvars is None or notplot or downloadonly:
@@ -232,7 +245,8 @@ def fpi(trange=['1983-02-10', '1983-02-11'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Fabry-Pérot Interferometer (FPI)
     
@@ -277,12 +291,17 @@ def fpi(trange=['1983-02-10', '1983-02-11'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    tvars = load(instrument='fpi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='fpi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
@@ -306,7 +325,8 @@ def idm(trange=['1983-02-10', '1983-02-11'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Ion Drift Meter (IDM)
     
@@ -350,12 +370,16 @@ def idm(trange=['1983-02-10', '1983-02-11'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    tvars = load(instrument='idm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='idm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
@@ -379,7 +403,8 @@ def wats(trange=['1983-02-10', '1983-02-11'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Wind and Temperature Spectrometer (WATS)
     
@@ -424,12 +449,16 @@ def wats(trange=['1983-02-10', '1983-02-11'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    tvars = load(instrument='wats', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='wats', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
@@ -453,7 +482,8 @@ def vefi(trange=['1983-02-10', '1983-02-11'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Vector Electric Field Instrument (VEFI)
     
@@ -498,12 +528,16 @@ def vefi(trange=['1983-02-10', '1983-02-11'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    tvars = load(instrument='vefi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='vefi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
@@ -527,7 +561,8 @@ def lang(trange=['1983-02-10', '1983-02-11'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Langmuir Probe Instrument (LANG)
     
@@ -571,12 +606,16 @@ def lang(trange=['1983-02-10', '1983-02-11'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    tvars = load(instrument='lang', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='lang', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
