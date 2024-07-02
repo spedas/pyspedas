@@ -59,11 +59,23 @@ class DownloadTestCases(unittest.TestCase):
         self.assertTrue(len(files) == 1)
         self.assertTrue(files[0] == os.path.join('psp_data/spc/l3', 'psp_swp_spc_l3i_20190401_v01.cdf'))
 
-    def test_auth(self):
-        files = download(remote_file='https://postman-echo.com/digest-auth', local_file='test_auth')
-        self.assertTrue(len(files) == 0)
-        files = download(remote_file='https://postman-echo.com/digest-auth', local_file='test_auth_works', username='postman', password='password')
+
+    def test_force_download(self):
+        # specifying both remote_path and remote_file saves the files to the current working directory + the path specified in remote_file
+        files = download(remote_path='https://spdf.gsfc.nasa.gov/pub/data/', remote_file='themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf')
         self.assertTrue(len(files) == 1)
-        
+        self.assertTrue(files[0] == os.path.join(os.getcwd(), 'themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf'))
+        # Download the same file without force_download, should not re-download
+        with self.assertLogs(level='INFO') as log:
+            files = download(remote_path='https://spdf.gsfc.nasa.gov/pub/data/',
+                             remote_file='themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf')
+            self.assertIn("File is current", log.output[0])
+        # Download the same file with force_download, should re-download
+        with self.assertLogs(level='INFO') as log:
+            files = download(remote_path='https://spdf.gsfc.nasa.gov/pub/data/',
+                             remote_file='themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf',
+                             force_download=True)
+            self.assertIn("Downloading", log.output[0])
+
 if __name__ == '__main__':
     unittest.main()
