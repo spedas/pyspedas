@@ -34,6 +34,7 @@ def gmag(
     sites=None,
     group=None,
     level="l2",
+    prefix="",
     suffix="",
     get_support_data=False,
     varformat=None,
@@ -42,6 +43,7 @@ def gmag(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Load ground magnetometer data from the THEMIS mission.
@@ -59,6 +61,8 @@ def gmag(
         the 'sites' parameter will be ignored. Default is None.
     level : str, optional
         Data level to load. Default is "l2".
+    prefix : str, optional
+        Prefix to append to the variable names. Default is "".
     suffix : str, optional
         Suffix to append to the variable names. Default is "".
     get_support_data : bool, optional
@@ -77,6 +81,9 @@ def gmag(
     time_clip : bool, optional
         Flag indicating whether to clip the data to the specified time range.
         Default is False.
+    force_download: bool, optional
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -279,6 +286,7 @@ def gmag(
         instrument="gmag",
         trange=trange,
         level=level,
+        prefix=prefix,
         suffix=suffix,
         get_support_data=get_support_data,
         varformat=varformat,
@@ -289,6 +297,7 @@ def gmag(
         greenland=greenland,
         time_clip=time_clip,
         no_update=no_update,
+        force_download=force_download,
     )
 
 
