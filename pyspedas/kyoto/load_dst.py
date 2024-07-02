@@ -59,6 +59,7 @@ def dst(
     no_download=False,
     local_data_dir="",
     download_only=False,
+    force_download=False,
 ):
     """
     Loads Dst index data from the Kyoto servers.
@@ -77,10 +78,13 @@ def dst(
     suffix : str, optional
         The tplot variable names will be given this suffix.
         By default, no suffix is added.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
-    list
+    list of str
         List of tplot variables created.
 
     Notes
@@ -149,7 +153,7 @@ def dst(
             url = remote_data_dir + "dst_" + datatype + "/" + filename
             local_path = local_data_dir + "dst_" + datatype + "/" + yyyymm + "/"
             fname = download(
-                url, local_path=local_path, no_download=no_download, text_only=True
+                url, local_path=local_path, no_download=no_download, text_only=True, force_download=force_download,
             )
 
             if download_only:

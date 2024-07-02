@@ -57,6 +57,7 @@ def load_ae(
     no_download=False,
     local_data_dir="",
     download_only=False,
+    force_download=False
 ):
     """
     Downloads and loads provisional index data from the Kyoto World Data Center for Geomagnetism.
@@ -90,6 +91,9 @@ def load_ae(
     download_only : bool, optional
         If True, only download the data, do not load it.
         Default: False.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -164,7 +168,7 @@ def load_ae(
             url = remote_data_dir + filename
             # Use a local path similar to IDL SPEDAS
             local_path = local_data_dir + datatype + "/" + yyyymm + "/"
-            fname = download(url, local_path=local_path, no_download=no_download)
+            fname = download(url, local_path=local_path, no_download=no_download, force_download=force_download)
 
             if download_only:
                 continue  # skip to the next file
