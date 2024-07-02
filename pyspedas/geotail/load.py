@@ -15,7 +15,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads data from the Geotail mission; this function is not meant 
     to be called directly; instead, see the wrappers:
@@ -77,43 +78,47 @@ def load(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     Example
     ----------
-        import pyspedas
-        from pytplot import tplot
-        mgf_vars = pyspedas.geotail.mgf(trange=['2018-11-5', '2018-11-6'])
-        tplot(['IB', 'IB_vector'])
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> mgf_vars = pyspedas.geotail.mgf(trange=['2018-11-5', '2018-11-6'])
+    >>> tplot(['IB', 'IB_vector'])
 
-        import pyspedas
-        from pytplot import tplot
-        efd_vars = pyspedas.geotail.efd(trange=['2018-11-5', '2018-11-6'])
-        tplot(['Es', 'Ss', 'Bs', 'Vs', 'Ew', 'Sw', 'Bw', 'Vw'])
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> efd_vars = pyspedas.geotail.efd(trange=['2018-11-5', '2018-11-6'])
+    >>> tplot(['Es', 'Ss', 'Bs', 'Vs', 'Ew', 'Sw', 'Bw', 'Vw'])
 
-        import pyspedas
-        from pytplot import tplot
-        lep_vars = pyspedas.geotail.lep(trange=['2018-11-5/05:00', '2018-11-5/06:00'], time_clip=True)
-        tplot(['N0', 'V0'])
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> lep_vars = pyspedas.geotail.lep(trange=['2018-11-5/05:00', '2018-11-5/06:00'], time_clip=True)
+    >>> tplot(['N0', 'V0'])
 
-        import pyspedas
-        from pytplot import tplot
-        cpi_vars = pyspedas.geotail.cpi(trange=['2018-11-5/15:00', '2018-11-5/18:00'], time_clip=True)
-        tplot(['SW_P_Den', 'SW_P_AVGE', 'SW_V', 'HP_P_Den'])
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> cpi_vars = pyspedas.geotail.cpi(trange=['2018-11-5/15:00', '2018-11-5/18:00'], time_clip=True)
+    >>> tplot(['SW_P_Den', 'SW_P_AVGE', 'SW_V', 'HP_P_Den'])
 
-        import pyspedas
-        from pytplot import tplot
-        epic_vars = pyspedas.geotail.epic(trange=['2018-11-5', '2018-11-6'])
-        tplot('IDiffI_I')
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> epic_vars = pyspedas.geotail.epic(trange=['2018-11-5', '2018-11-6'])
+    >>> tplot('IDiffI_I')
 
-        import pyspedas
-        from pytplot import tplot
-        pwi_vars = pyspedas.geotail.pwi(trange=['2018-11-5/06:00', '2018-11-5/07:00'], time_clip=True)
-        tplot(['MCAE_AVE', 'MCAB_AVE'])
-
-        _images/geotail_efd.png
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> pwi_vars = pyspedas.geotail.pwi(trange=['2018-11-5/06:00', '2018-11-5/07:00'], time_clip=True)
+    >>> tplot(['MCAE_AVE', 'MCAB_AVE'])
 
     """
 
@@ -139,7 +144,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)
