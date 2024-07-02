@@ -16,7 +16,8 @@ def load(trange=None,
          notplot=False,
          downloadonly=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads data from the BARREL mission; this function is not meant 
     to be called directly; instead, see the wrappers::
@@ -52,7 +53,7 @@ def load(trange=None,
         remote_names = [name.lower() for name in dailynames(file_format=remote_path, trange=trange)]
 
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
-                         local_path=CONFIG['local_data_dir'], no_download=no_update)
+                         local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
         if files is not None:
             for file in files:
                 out_files.append(file)
