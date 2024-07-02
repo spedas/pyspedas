@@ -11,7 +11,8 @@ def mag(trange=['2018-10-16', '2018-10-17'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads DSCOVR Fluxgate Magnetometer data
     
@@ -56,12 +57,18 @@ def mag(trange=['2018-10-16', '2018-10-17'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='mag', prefix='dsc_'+datatype+'_mag_', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='mag', prefix='dsc_'+datatype+'_mag_', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def fc(trange=['2018-10-16', '2018-10-17'], 
        datatype='h1', 
@@ -72,7 +79,8 @@ def fc(trange=['2018-10-16', '2018-10-17'],
        downloadonly=False,
        notplot=False,
        no_update=False,
-       time_clip=False):
+       time_clip=False,
+       force_download=False):
     """
     This function loads DSCOVR Faraday Cup data
     
@@ -117,23 +125,29 @@ def fc(trange=['2018-10-16', '2018-10-17'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='faraday_cup', prefix='dsc_'+datatype+'_fc_', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='faraday_cup', prefix='dsc_'+datatype+'_fc_', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def orb(trange=['2018-10-16', '2018-10-17'], 
-       datatype='orbit', 
-       suffix='',  
-       get_support_data=False, 
-       varformat=None,
-       varnames=[],
-       downloadonly=False,
-       notplot=False,
-       no_update=False,
-       time_clip=False):
+        datatype='orbit',
+        suffix='',
+        get_support_data=False,
+        varformat=None,
+        varnames=[],
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False,
+        force_download=False):
     """
     This function loads DSCOVR Ephemeris data
     
@@ -174,23 +188,29 @@ def orb(trange=['2018-10-16', '2018-10-17'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='pre_or', prefix='dsc_orbit_', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='pre_or', prefix='dsc_orbit_', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def att(trange=['2018-10-16', '2018-10-17'], 
-       datatype='orbit', 
-       suffix='',  
-       get_support_data=False, 
-       varformat=None,
-       varnames=[],
-       downloadonly=False,
-       notplot=False,
-       no_update=False,
-       time_clip=False):
+        datatype='orbit',
+        suffix='',
+        get_support_data=False,
+        varformat=None,
+        varnames=[],
+        downloadonly=False,
+        notplot=False,
+        no_update=False,
+        time_clip=False,
+        force_download=False):
     """
     This function loads DSCOVR Attitude data
     
@@ -231,6 +251,11 @@ def att(trange=['2018-10-16', '2018-10-17'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
@@ -238,7 +263,12 @@ def att(trange=['2018-10-16', '2018-10-17'],
     """
     return load(instrument='def_at', prefix='dsc_att_', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
-def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False, suffix='', no_update=False, time_clip=False):
+def all(trange=['2018-10-16', '2018-10-17'],
+        downloadonly=False,
+        suffix='',
+        no_update=False,
+        time_clip=False,
+        force_download=False):
     """
     This function loads all DSCOVR data
     
@@ -259,15 +289,20 @@ def all(trange=['2018-10-16', '2018-10-17'], downloadonly=False, suffix='', no_u
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    att_vars = att(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
-    orb_vars = orb(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
-    mag_vars = mag(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
-    fc_vars = fc(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    att_vars = att(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
+    orb_vars = orb(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
+    mag_vars = mag(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
+    fc_vars = fc(trange=trange, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
     return att_vars + orb_vars + mag_vars + fc_vars
 
 

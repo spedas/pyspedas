@@ -1,17 +1,18 @@
 from pyspedas.elfin.load import load
 
 def mrma_load(trange=['2022-08-19', '2022-08-19'],
-         probe='a',
-         datatype='mrma',
-         level='l1',
-         suffix='',
-         get_support_data=False,
-         varformat=None,
-         varnames=[],
-         downloadonly=False,
-         notplot=False,
-         no_update=False,
-         time_clip=False):
+             probe='a',
+             datatype='mrma',
+             level='l1',
+             suffix='',
+             get_support_data=False,
+             varformat=None,
+             varnames=[],
+             downloadonly=False,
+             notplot=False,
+             no_update=False,
+             time_clip=False,
+            force_download=False):
     """
     This function loads data from the ELFIN Magneto Resistive Magnetometer (MRMa)
 
@@ -73,21 +74,26 @@ def mrma_load(trange=['2022-08-19', '2022-08-19'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     Example
     ----------
-        import pyspedas
-        from pytplot import tplot
-        mrma_vars = pyspedas.elfin.mrma(probe='a', trange=['2022-08-19', '2022-08-19'])
-        tplot('ela_mrma')
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> mrma_vars = pyspedas.elfin.mrma(probe='a', trange=['2022-08-19', '2022-08-19'])
+    >>> tplot('ela_mrma')
 
     """
     tvars = load(instrument='mrma', probe=probe, trange=trange, level=level, datatype=datatype, suffix=suffix,
                  get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly,
-                 notplot=notplot, time_clip=time_clip, no_update=no_update)
+                 notplot=notplot, time_clip=time_clip, no_update=no_update,force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars

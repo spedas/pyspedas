@@ -23,7 +23,7 @@ def epd_load(trange=['2022-08-19', '2022-08-19'],
         PAspec_energybins=None,
         Espec_LCfatol=None,
         Espec_LCfptol=None,
-):
+        force_download=False):
     """
     This function loads data from the ELFIN Energetic Particle Detector (EPD) and process L1 and L2 data.
 
@@ -71,6 +71,11 @@ def epd_load(trange=['2022-08-19', '2022-08-19'],
         time_clip: bool
             If True, clips the variables to the exact range specified in the trange. 
             Default: True.
+
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
 
     Parameters for L1 data
     ----------------------
@@ -148,14 +153,14 @@ def epd_load(trange=['2022-08-19', '2022-08-19'],
         >>> import pyspedas
         >>> from pytplot import tplot
         >>> elf_vars = pyspedas.elfin.epd(probe='a', trange=['2022-08-19', '2022-08-19'], level='l2')
-        >>> tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', ela_pef_tspin'])
+        >>> tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', 'ela_pef_tspin'])
 
     """
     logging.info("ELFIN EPD: START LOADING.")
     
     tvars = load(instrument='epd', probe=probe, trange=trange, level=level, datatype=datatype,
                  get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly,
-                 notplot=notplot, time_clip=time_clip, no_update=no_update)
+                 notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download,)
 
     logging.info("ELFIN EPD: LOADING END.")
     if notplot or downloadonly:

@@ -56,6 +56,10 @@ def mag(trange=['1983-02-10', '1983-02-11'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
