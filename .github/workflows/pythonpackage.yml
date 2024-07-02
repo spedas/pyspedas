@@ -108,18 +108,22 @@ jobs:
         # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
-        echo Starting akebono tests at `date`
-        coverage run -a -m pyspedas.akebono.tests.tests
         echo Starting VIRES client tests at `date`
         coverage run -a -m pyspedas.vires.tests.tests
-        echo Starting CDAWeb tests at `date`
-        coverage run -a -m pyspedas.cdagui.tests.tests
-        echo Starting themis tplot_time  tests at `date`
-        coverage run -a -m pyspedas.themis.tests.tests_tplot_time
+        #echo Starting secs tests at `date`
+        #coverage run -a -m pyspedas.secs.tests.tests
         echo Starting MTH5 import test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
+        echo Starting maven tests at `date`
+        coverage run -a -m pyspedas.maven.tests.tests
+        echo Starting akebono tests at `date`
+        coverage run -a -m pyspedas.akebono.tests.tests
+        echo Starting CDAWeb tests at `date`
+        coverage run -a -m pyspedas.cdagui.tests.tests
+        echo Starting themis tplot_time  tests at `date`
+        coverage run -a -m pyspedas.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
         coverage run -a -m pyspedas.barrel.tests.tests
         echo Starting elfin epd_l1 tests at `date`
@@ -144,8 +148,6 @@ jobs:
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         echo Starting cnofs tests at `date`
         coverage run -a -m pyspedas.cnofs.tests.tests
-        #echo Starting secs tests at `date`
-        #coverage run -a -m pyspedas.secs.tests.tests
         echo Starting kompsat tests at `date`
         coverage run -a -m pyspedas.kompsat.tests.tests
         echo Starting hapi tests at `date`
@@ -244,8 +246,6 @@ jobs:
         coverage run -a -m pyspedas.omni.tests.tests
         echo Starting themis tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests
-        echo Starting maven tests at `date`
-        coverage run -a -m pyspedas.maven.tests.tests
         echo Starting goes tests at `date`
         coverage run -a -m pyspedas.goes.tests.tests
         echo Starting mica tests at `date`
