@@ -59,6 +59,7 @@ def sd_fit(
     time_clip: bool = False,
     ror: bool = True,
     compact: bool = False,
+    force_download: bool = False,
 ) -> List[str]:
     """
     Load SuperDARN data from ERG Science Center
@@ -116,6 +117,10 @@ def sd_fit(
 
     compact: bool
             If True, leave only minimal set of the variables. Default: False
+
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -215,6 +220,7 @@ def sd_fit(
             no_update=no_update,
             uname=uname,
             passwd=passwd,
+            force_download=force_download,
         )
         if notplot:
             loaded_data.update(loaded_data_temp)

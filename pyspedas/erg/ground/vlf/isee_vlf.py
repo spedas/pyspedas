@@ -26,7 +26,8 @@ def isee_vlf(
     time_clip: bool = False,
     ror: bool = True,
     cal_gain: bool = False,
-) -> List[str]:
+    force_download: bool = False,
+):
     """
     Load ISEE VLF data from ERG Science Center
 
@@ -80,6 +81,10 @@ def isee_vlf(
 
     cal_gain: bool
         If True, use calibration parameters in the CDF file to apply a gain calibration.
+        Default: False
+
+    force_download: bool
+        Download file even if local version is more recent than server version
         Default: False
 
     Returns
@@ -136,6 +141,7 @@ def isee_vlf(
             no_update=no_update,
             uname=uname,
             passwd=passwd,
+            force_download=force_download,
         )
 
         if notplot:

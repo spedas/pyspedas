@@ -21,7 +21,8 @@ def gmag_isee_fluxgate(
     uname: Optional[str] = None,
     passwd: Optional[str] = None,
     time_clip: bool = False,
-    ror: bool = True
+    ror: bool = True,
+    force_download=False,
 ) -> Union[Dict, None, List[Union[str, Any]]]:
     """
     Load data from ISEE Fluxgate Magnetometers
@@ -78,6 +79,10 @@ def gmag_isee_fluxgate(
 
     ror: bool
             If set, print PI info and rules of the road. Default: True
+
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -152,7 +157,7 @@ def gmag_isee_fluxgate(
                                 +'/%Y/isee_fluxgate_'+fres+'_'+site_input+'_%Y%m%d_v??.cdf'
             
             loaded_data_temp = load(pathformat=pathformat, file_res=file_res, trange=trange, datatype=datatype, prefix=prefix, suffix='_'+site_input+suffix, get_support_data=get_support_data,
-                            varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+                            varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
             
             if notplot:
                 loaded_data.update(loaded_data_temp)

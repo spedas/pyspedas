@@ -28,7 +28,8 @@ def lepe(
     ror: bool = True,
     version: Optional[str] = None,
     only_fedu: bool = False,
-    et_diagram: bool = False
+    et_diagram: bool = False,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads data from the LEP-e experiment from the Arase mission
@@ -99,6 +100,10 @@ def lepe(
         passwd: str
             Password.  Default: None
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
 
     Returns
     -------
@@ -138,7 +143,7 @@ def lepe(
         pathformat += version + '.cdf'
 
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
 
     if (len(loaded_data) > 0) and ror:

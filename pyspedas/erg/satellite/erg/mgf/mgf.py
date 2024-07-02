@@ -23,7 +23,8 @@ def mgf(
     time_clip: bool = False,
     ror: bool = True,
     coord: str = 'dsi',
-    version: Optional[str] = None
+    version: Optional[str] = None,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads data from the MGF experiment from the Arase mission
@@ -86,6 +87,10 @@ def mgf(
         passwd: str
             Password. Default: None
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     -------
         List of tplot variables created.
@@ -127,7 +132,7 @@ def mgf(
         pathformat += version + '.cdf'
 
     loaded_data = load(pathformat=pathformat, file_res=file_res, trange=trange, level=level, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                       varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+                       varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
     if (loaded_data is None) or (loaded_data == []):
         return loaded_data

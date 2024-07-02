@@ -18,6 +18,7 @@ def gmag_stel_induction(
     time_clip: bool = False,
     ror: bool = True,
     frequency_dependent: bool = False,
+    force_download: bool = False,
 ) -> List[str]:
     """
     Load data from STEL Induction Magnetometers (wrapper for gmag_isee_induction)
@@ -75,6 +76,10 @@ def gmag_stel_induction(
             If set, load frequency dependent data.
             Default: False
 
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
+
     Returns
     -------
 
@@ -103,4 +108,5 @@ def gmag_stel_induction(
         time_clip=time_clip,
         ror=ror,
         frequency_dependent=frequency_dependent,
+        force_download=force_download,
     )

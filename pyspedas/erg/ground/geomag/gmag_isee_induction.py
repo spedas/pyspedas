@@ -26,6 +26,7 @@ def gmag_isee_induction(
     time_clip: bool = False,
     ror: bool = True,
     frequency_dependent: bool = False,
+    force_download: bool = False,
 ) -> List[str]:
     """
     Load data from ISEE Induction Magnetometers
@@ -82,6 +83,10 @@ def gmag_isee_induction(
     frequency_dependent: bool
             If set, load frequency dependent data.
             Default: False
+
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -163,6 +168,7 @@ def gmag_isee_induction(
             no_update=no_update,
             uname=uname,
             passwd=passwd,
+            force_download=force_download
         )
 
         if notplot:

@@ -26,7 +26,8 @@ def pwe_wfc(
     uname: Optional[str] = None,
     passwd: Optional[str] = None,
     time_clip: bool = False,
-    ror: bool = True
+    ror: bool = True,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads data from the PWE experiment from the Arase mission
@@ -100,6 +101,10 @@ def pwe_wfc(
         passwd: str
             Password. Default: None
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     -------
         List of tplot variables created.
@@ -134,7 +139,7 @@ def pwe_wfc(
                 pathformat = 'satellite/erg/pwe/wfc/'+level+'/'+datatype+'/%Y/%m/erg_pwe_wfc_' + \
                     level+'_'+com+'_'+datatype+'_'+mode+'_'+coord+'_%Y%m%d%H_v??_??.cdf'
                 loaded_data.extend(load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                                   varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd))
+                                   varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download))
                 if com == 'e':
                     tplot_name_list += [prefix +
                                         'Ex_waveform', prefix + 'Ey_waveform']
@@ -153,7 +158,7 @@ def pwe_wfc(
                 pathformat = 'satellite/erg/pwe/wfc/'+level+'/'+datatype+'/%Y/%m/erg_pwe_wfc_' + \
                     level+'_'+com+'_'+datatype+'_'+mode+'_%Y%m%d%H_v??_??.cdf'
                 loaded_data.extend(load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                                   varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd))
+                                   varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download))
                 prefix_list.append(prefix)
                 component_suffix_list.append(com.upper() + '_spectra')
 

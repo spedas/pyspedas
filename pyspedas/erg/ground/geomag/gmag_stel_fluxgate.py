@@ -16,7 +16,8 @@ def gmag_stel_fluxgate(
     uname: Optional[str] = None,
     passwd: Optional[str] = None,
     time_clip: bool = False,
-    ror: bool = True
+    ror: bool = True,
+    force_download: bool = False,
 ) -> Union[Dict, None, List[Union[str, Any]]]:
     """
     Load data from STEL Fluxgate Magnetometers (wrapper for gmag_isee_fluxgate)
@@ -74,6 +75,10 @@ def gmag_stel_fluxgate(
     ror: bool
             If set, print PI info and rules of the road. Default: True
 
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
+
     Returns
     -------
 
@@ -102,4 +107,5 @@ def gmag_stel_fluxgate(
         passwd=passwd,
         time_clip=time_clip,
         ror=ror,
+        force_download=force_download,
     )
