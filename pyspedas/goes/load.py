@@ -16,6 +16,7 @@ def loadr(
     downloadonly=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     This function loads GOES-R L2 data (GOES-16, GOES-17, GOES-18)
@@ -55,6 +56,11 @@ def loadr(
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
 
     Returns
     -------
@@ -226,6 +232,7 @@ def loadr(
             remote_path=goes_path_dir,
             local_path=CONFIG["local_data_dir"],
             no_download=no_update,
+            force_download=force_download
         )
 
         if files is not None:
@@ -266,6 +273,7 @@ def load(
     downloadonly=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     This function loads GOES L2 data
@@ -311,6 +319,10 @@ def load(
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
 
     Returns
     -------
@@ -359,6 +371,7 @@ def load(
             downloadonly=downloadonly,
             no_update=no_update,
             time_clip=time_clip,
+            force_download=force_download,
         )
         if downloadonly:
             out_files_r = tvars_r
@@ -488,6 +501,7 @@ def load(
             remote_path=CONFIG["remote_data_dir"],
             local_path=CONFIG["local_data_dir"],
             no_download=no_update,
+            force_download=force_download,
         )
         if files is not None:
             for file in files:
