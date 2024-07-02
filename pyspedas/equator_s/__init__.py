@@ -11,7 +11,8 @@ def mam(trange=['1998-04-06', '1998-04-07'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Fluxgate magnetometer
     
@@ -55,12 +56,17 @@ def mam(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     """
-    return load(instrument='mam', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='mam', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def edi(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
@@ -71,7 +77,8 @@ def edi(trange=['1998-04-06', '1998-04-07'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Electron beam sensing instrument
     
@@ -115,12 +122,17 @@ def edi(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     """
-    return load(instrument='edi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='edi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def esa(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
@@ -131,7 +143,8 @@ def esa(trange=['1998-04-06', '1998-04-07'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Electrostatic analyzer (3DA)
 
@@ -177,12 +190,17 @@ def esa(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     """
-    return load(instrument='3da', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='3da', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def epi(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
@@ -193,7 +211,8 @@ def epi(trange=['1998-04-06', '1998-04-07'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Solid state detector
     
@@ -237,12 +256,17 @@ def epi(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     """
-    return load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def ici(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
@@ -253,7 +277,8 @@ def ici(trange=['1998-04-06', '1998-04-07'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Time-of-fight spectrometer
     
@@ -297,12 +322,17 @@ def ici(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     """
-    return load(instrument='ici', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='ici', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def pcd(trange=['1998-04-06', '1998-04-07'],
         datatype='pp',
@@ -313,7 +343,8 @@ def pcd(trange=['1998-04-06', '1998-04-07'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Ion emitter 
     
@@ -357,12 +388,17 @@ def pcd(trange=['1998-04-06', '1998-04-07'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     """
-    return load(instrument='pcd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='pcd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def sfd(trange=['1998-01-26', '1998-01-27'],
         datatype='sp',
@@ -373,7 +409,8 @@ def sfd(trange=['1998-01-26', '1998-01-27'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Scintillating fiber detector
     
@@ -417,12 +454,17 @@ def sfd(trange=['1998-01-26', '1998-01-27'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
     """
-    return load(instrument='sfd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='sfd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def datasets(instrument=None, label=True):
