@@ -14,7 +14,8 @@ def fgm(trange:List[str]=['2018-11-5', '2018-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Fluxgate Magnetometer
     
@@ -69,6 +70,11 @@ def fgm(trange:List[str]=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -81,7 +87,7 @@ def fgm(trange:List[str]=['2018-11-5', '2018-11-6'],
     >>> fgm_vars = pyspedas.cluster.fgm(trange=['2018-11-5', '2018-11-6'],probe=['1','2'])
 
     """
-    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def aspoc(trange:List[str]=['2003-11-5', '2003-11-6'],
@@ -94,7 +100,8 @@ def aspoc(trange:List[str]=['2003-11-5', '2003-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Active Spacecraft Potential Control experiment
     
@@ -149,6 +156,11 @@ def aspoc(trange:List[str]=['2003-11-5', '2003-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -162,7 +174,7 @@ def aspoc(trange:List[str]=['2003-11-5', '2003-11-6'],
     >>> tplot(['I_ion__C1_PP_ASP','I_ion__C2_PP_ASP'])
 
     """
-    return load(instrument='aspoc', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='aspoc', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
@@ -175,7 +187,8 @@ def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Ion Spectroscopy experiment
     
@@ -230,6 +243,11 @@ def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -243,7 +261,7 @@ def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
     >>> tplot(['N_p__C1_PP_CIS','N_O1__C1_PP_CIS','N_He1__C1_PP_CIS','N_He2__C1_PP_CIS','N_HIA__C1_PP_CIS'])
 
     """
-    return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def dwp(trange:List[str]=['2018-11-5', '2018-11-6'],
@@ -256,7 +274,8 @@ def dwp(trange:List[str]=['2018-11-5', '2018-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Digital Wave Processing instrument
     
@@ -312,6 +331,11 @@ def dwp(trange:List[str]=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -325,7 +349,7 @@ def dwp(trange:List[str]=['2018-11-5', '2018-11-6'],
     >>> tplot(['Correl_freq__C1_PP_DWP','Correl_P__C1_PP_DWP'])
 
     """
-    return load(instrument='dwp', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='dwp', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def edi(trange:List[str]=['2018-11-5', '2018-11-6'],
@@ -338,7 +362,8 @@ def edi(trange:List[str]=['2018-11-5', '2018-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Electron Drift Instrument
     
@@ -393,6 +418,11 @@ def edi(trange:List[str]=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -405,7 +435,7 @@ def edi(trange:List[str]=['2018-11-5', '2018-11-6'],
     >>> edi_vars = pyspedas.cluster.edi(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
     >>> tplot(['V_ed_xyz_gse__C1_PP_EDI','V_ed_xyz_gse__C1_PP_EDI'])
     """
-    return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def efw(trange:List[str]=['2018-11-5', '2018-11-6'],
@@ -418,7 +448,8 @@ def efw(trange:List[str]=['2018-11-5', '2018-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Electric Field and Wave experiment
     
@@ -473,6 +504,11 @@ def efw(trange:List[str]=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -485,7 +521,7 @@ def efw(trange:List[str]=['2018-11-5', '2018-11-6'],
     >>> efw_vars = pyspedas.cluster.efw(trange=['2003-11-01','2003-11-02'],probe=['2'])
     >>> tplot('E_pow_f1__C2_PP_EFW')
     """
-    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def peace(trange:List[str]=['2016-11-5', '2016-11-6'],
@@ -498,7 +534,8 @@ def peace(trange:List[str]=['2016-11-5', '2016-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Plasma Electron and Current Experiment
     
@@ -553,6 +590,11 @@ def peace(trange:List[str]=['2016-11-5', '2016-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -566,7 +608,7 @@ def peace(trange:List[str]=['2016-11-5', '2016-11-6'],
     >>> tplot([ 'N_e_den__C1_PP_PEA', 'V_e_xyz_gse__C1_PP_PEA', 'N_e_den__C2_PP_PEA', 'V_e_xyz_gse__C2_PP_PEA'])
 
     """
-    return load(instrument='peace', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='peace', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
@@ -579,7 +621,8 @@ def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Research with Adaptive Particle Imaging Detectors
     
@@ -634,6 +677,11 @@ def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -647,7 +695,7 @@ def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
     >>> tplot([ 'J_e_lo__C1_PP_RAP', 'J_e_hi__C1_PP_RAP', 'J_e_lo__C2_PP_RAP', 'J_e_hi__C2_PP_RAP'])
 
     """
-    return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def staff(trange:List[str]=['2012-11-5', '2012-11-6'],
@@ -660,7 +708,8 @@ def staff(trange:List[str]=['2012-11-5', '2012-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Spatio-Temporal Analysis of Field Fluctuation experiment
     
@@ -715,6 +764,11 @@ def staff(trange:List[str]=['2012-11-5', '2012-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -728,7 +782,7 @@ def staff(trange:List[str]=['2012-11-5', '2012-11-6'],
     >>> tplot(['B_par_f1__C1_PP_STA', 'B_perp_f1__C1_PP_STA', 'B_par_f1__C2_PP_STA', 'B_perp_f1__C2_PP_STA'])
 
     """
-    return load(instrument='staff', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='staff', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
@@ -741,7 +795,8 @@ def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Wide Band Data receiver
     
@@ -796,6 +851,11 @@ def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -809,7 +869,7 @@ def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
     >>> # Note lack of probe IDs in the variables loaded -- only load one probe at a time
     >>> tplot('WBD_Elec')
     """
-    return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def whi(trange:List[str]=['2012-11-5', '2012-11-6'],
@@ -822,7 +882,8 @@ def whi(trange:List[str]=['2012-11-5', '2012-11-6'],
         downloadonly:bool=False,
         notplot:bool=False,
         no_update:bool=False,
-        time_clip:bool=False) -> List[str]:
+        time_clip:bool=False,
+        force_download=False) -> List[str]:
     """
     Load data from the Cluster Waves of High Frequency and Sounder for Probing of Density by Relaxation instrument
     
@@ -877,6 +938,11 @@ def whi(trange:List[str]=['2012-11-5', '2012-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     -------
         list of str
@@ -890,7 +956,7 @@ def whi(trange:List[str]=['2012-11-5', '2012-11-6'],
     >>> tplot(['N_e_res__C1_PP_WHI','E_pow_f4__C1_PP_WHI','N_e_res__C2_PP_WHI','E_pow_f4__C2_PP_WHI'])
 
     """
-    return load(instrument='whi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip)
+    return load(instrument='whi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
 def datasets(instrument=None, label=True):
