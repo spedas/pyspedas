@@ -73,7 +73,7 @@ def mag(trange=['2006-06-01', '2006-06-02'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> mag_vars = pyspedas.st5.mag(trange=['2006-06-01', '2006-06-02'])
         >>> tplot(['B_SM', 'SC_POS_SM'])

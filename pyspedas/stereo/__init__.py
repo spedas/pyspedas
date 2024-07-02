@@ -72,7 +72,7 @@ def het(trange=['2013-11-5', '2013-11-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> sit_vars = pyspedas.stereo.het(trange=['2013-1-5', '2013-1-6'])
         >>> tplot(sit_vars)
@@ -154,7 +154,7 @@ def let(trange=['2013-11-5', '2013-11-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> sit_vars = pyspedas.stereo.let(trange=['2013-1-5', '2013-1-6'])
         >>> tplot(sit_vars)
@@ -236,7 +236,7 @@ def sit(trange=['2013-11-5', '2013-11-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> sit_vars = pyspedas.stereo.sit(trange=['2013-1-5', '2013-1-6'])
         >>> tplot(sit_vars)
@@ -318,7 +318,7 @@ def sept(trange=['2013-11-5', '2013-11-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> sept_vars = pyspedas.stereo.sept(trange=['2013-1-5', '2013-1-6'])
         >>> tplot(sit_vars)
@@ -480,7 +480,7 @@ def swea(trange=['2013-1-5', '2013-1-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> swea_vars = pyspedas.stereo.swea(trange=['2013-1-5', '2013-1-6'])
         >>> tplot(sit_vars)
@@ -562,7 +562,7 @@ def mag(trange=['2013-11-5', '2013-11-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> mag_vars = pyspedas.stereo.mag(trange=['2013-1-5', '2013-1-6'])
         >>> tplot('BFIELD')
@@ -642,7 +642,7 @@ def plastic(trange=['2013-11-5', '2013-11-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> plastic_vars = pyspedas.stereo.plastic(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['proton_number_density', 'proton_bulk_speed', 'proton_temperature', 'proton_thermal_speed'])
@@ -722,7 +722,7 @@ def waves(trange=['2013-11-5', '2013-11-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> hfr_vars = pyspedas.stereo.waves(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['PSD_FLUX'])
@@ -796,7 +796,7 @@ def beacon(trange=['2013-11-5', '2013-11-6'],
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> beacon_vars = pyspedas.stereo.beacon(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['MAGBField'])
