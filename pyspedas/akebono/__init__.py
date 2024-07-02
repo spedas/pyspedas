@@ -16,7 +16,8 @@ def pws(trange=['2012-10-01', '2012-10-02'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the ACE Plasma Waves and Sounder experiment (PWS)
     
@@ -77,6 +78,11 @@ def pws(trange=['2012-10-01', '2012-10-02'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
@@ -89,7 +95,7 @@ def pws(trange=['2012-10-01', '2012-10-02'],
         >>> tplot(['akb_pws_RX1', 'akb_pws_RX2'])
 
     """
-    tvars = load(instrument='pws', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='pws', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
@@ -112,7 +118,8 @@ def rdm(trange=['2012-10-01', '2012-10-02'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the ACE Radiation Moniter (RDM)
     
@@ -162,6 +169,11 @@ def rdm(trange=['2012-10-01', '2012-10-02'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
@@ -174,7 +186,7 @@ def rdm(trange=['2012-10-01', '2012-10-02'],
         >>> tplot('akb_rdm_FEIO')
 
     """
-    files = load(instrument='rdm', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    files = load(instrument='rdm', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if files is None or notplot or downloadonly:
         return files
@@ -251,7 +263,8 @@ def orb(trange=['2012-10-01', '2012-10-02'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the ACE Akebono orbit data (orb)
     
@@ -301,6 +314,11 @@ def orb(trange=['2012-10-01', '2012-10-02'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
@@ -313,7 +331,7 @@ def orb(trange=['2012-10-01', '2012-10-02'],
         >>> tplot(['akb_orb_geo', 'akb_orb_MLT'])
 
     """
-    files = load(instrument='orb', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    files = load(instrument='orb', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if files is None or notplot or downloadonly:
         return files
