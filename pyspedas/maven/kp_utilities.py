@@ -30,10 +30,7 @@ def param_list(kp):
             param_list_.append("#%3d %s" % (index, base_tag))
             index += 1
         else:
-            logging.warning("*****WARNING*****")
-            logging.warning("Returning INCOMPLETE Parameter List")
-            logging.warning("Base tag neither DataFrame nor Series")
-            logging.warning("Plese check read_insitu_file definition")
+            logging.warning("Warning: unexpected value type %s for tag %s",str(type(kp[base_tag])), base_tag)
 
     return param_list_
 
@@ -56,51 +53,26 @@ def param_range(kp, iuvs=None):
     """
 
     # First, the case where insitu data are provided
-    logging.warning("The loaded insitu KP data set contains data between")
-    logging.warning(
-        "   %s and %s" % (np.array(kp["TimeString"])[0], np.array(kp["TimeString"])[-1])
-    )
-    logging.warning("Equivalently, this corresponds to orbits")
-    logging.warning(
-        "   %6d and %6d." % (np.array(kp["Orbit"])[0], np.array(kp["Orbit"])[-1])
-    )
-
-    #  Next, the case where IUVS data are provided
-    iuvs_data = False
-    iuvs_tags = [
-        "CORONA_LO_HIGH",
-        "CORONA_LO_LIMB",
-        "CORONA_LO_DISK",
-        "CORONA_E_HIGH",
-        "CORONA_E_LIMB",
-        "CORONA_E_DISK",
-        "APOAPSE",
-        "PERIAPSE",
-        "STELLAR_OCC",
-    ]
-    if kp.keys() in iuvs_tags:
-        logging.warning("The loaded IUVS KP data set contains data between orbits")
-        logging.warning(
-            "   %6d and %6d." % (np.array(kp["Orbit"])[0], np.array(kp["Orbit"])[-1])
-        )
+    logging.info("The loaded insitu KP data set contains data between %s and %s (orbits %d and %d)",
+                 np.array(kp["TimeString"])[0],
+                       np.array(kp["TimeString"])[-1],
+                       np.array(kp["Orbit"])[0],
+                       np.array(kp["Orbit"])[-1])
 
     #  Finally, the case where both insitu and IUVS are provided
     if iuvs is not None:
-        logging.warning("The loaded IUVS KP data set contains data between orbits")
-        logging.warning(
-            "   %6d and %6d."
-            % (np.array(iuvs["Orbit"])[0], np.array(iuvs["Orbit"])[-1])
-        )
+        logging.info("The loaded IUVS KP data set contains data between %s and %s (orbits %d and %d)",
+                     np.array(iuvs["TimeString"])[0],
+                     np.array(iuvs["TimeString"])[-1],
+                     np.array(iuvs["Orbit"])[0],
+                     np.array(iuvs["Orbit"])[-1])
+
         insitu_min, insitu_max = (np.nanmin([kp["Orbit"]]), np.nanmax([kp["Orbit"]]))
         if (
             np.nanmax([iuvs["Orbit"]]) < insitu_min
             or np.nanmin([iuvs["Orbit"]]) > insitu_max
         ):
-            logging.warning("*** WARNING ***")
-            logging.warning("There is NO overlap between the supplied insitu and IUVS")
-            logging.warning("  data structures.  We cannot guarantee your safety ")
-            logging.warning("  should you attempt to display these IUVS data against")
-            logging.warning("  these insitu-supplied emphemeris data.")
+            logging.warning("Warning: No overlap between supplied insitu and IUVS data structures.")
     return  # No information to return
 
 
@@ -151,39 +123,55 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
         # Need to check whether one or several Parameters given
         inst = []
         obs = []
-        if isinstance(parameter, int) or isinstance(parameter, str):
-            # First, verify that at least one bound exists
-            if minimum is None and maximum is None:
-                insufficient_input_range_select()
-                logging.warning("No bounds set for parameter: %s" % parameter)
-                return kp
-            elif minimum is None:
-                # Range only bounded above
-                minimum = -np.Infinity
-            elif maximum is None:
-                # range only bounded below
-                maximum = np.Infinity
+        # parameter is not None in this case
+        if not isinstance(parameter, list):
+            if isinstance(parameter,str) or isinstance(parameter,int):
+                parameter = [parameter]
             else:
-                # Range bounded on both ends
-                pass
-            a, b = get_inst_obs_labels(kp, parameter)
-            inst.append(a)
-            obs.append(b)
-            nparam = 1  # necc?
-        elif type(parameter) is list:
-            nparam = len(parameter)
-            for param in parameter:
-                a, b = get_inst_obs_labels(kp, param)
-                inst.append(a)
-                obs.append(b)
-        else:
-            logging.warning("*****ERROR*****")
-            logging.warning("Cannot identify given parameter: %s" % parameter)
-            logging.warning("Suggest using param_list(kp) to identify Parameter")
-            logging.warning("by index or by name")
+                logging.warning("*****ERROR*****")
+                logging.warning("Cannot identify given parameter: %s" % parameter)
+                logging.warning("Suggest using param_list(kp) to identify Parameter")
+                logging.warning("by index or by name")
+                logging.warning("Returning complete original data dictionary")
+                return kp
+        if minimum is None and maximum is None:
+            insufficient_input_range_select()
+            logging.warning("No bounds set for parameter(S)")
             logging.warning("Returning complete original data dictionary")
             return kp
 
+        if minimum is None:
+            minimum = np.repeat(-np.Infinity, len(parameter))
+        elif not isinstance(minimum, list):
+            minimum = [minimum]
+        if maximum is None:
+            maximum = np.repeat(np.Infinity, len(parameter))
+        elif not isinstance(maximum, list):
+            maximum = [maximum]
+
+        if (len(parameter) != len(minimum)) or (len(parameter) != len(maximum)):
+            logging.warning("*****ERROR*****")
+            logging.warning("---range_select---")
+            logging.warning("Number of minima and maxima provided")
+            logging.warning("MUST match number of Parameters provided")
+            logging.warning("You provided %4d Parameters" % len(parameter))
+            logging.warning("             %4d minima" % len(minimum))
+            logging.warning("         and %4d maxima" % len(maximum))
+            logging.warning("Returning complete original data dictionary")
+            return kp
+
+        for param in parameter:
+            if not (isinstance(param, int) or isinstance(param, str)):
+                logging.warning("*****ERROR*****")
+                logging.warning("Cannot identify given parameter: %s" % param)
+                logging.warning("Suggest using param_list(kp) to identify Parameter")
+                logging.warning("by index or by name")
+                logging.warning("Returning complete original data dictionary")
+                return kp
+            else:
+                a, b = get_inst_obs_labels(kp, param)
+                inst.append(a)
+                obs.append(b)
     # Should I move this below the Time conditional and move
     # Baselining of Filter List to above time
 
@@ -197,12 +185,19 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
                 logging.warning("of either strings (yyyy-mm-dd hh:mm:ss) ")
                 logging.warning("or orbits.  Since a Parameter *was* provided,")
                 logging.warning("I will filter on that, but ignore the time input.")
+                inst = []
+                obs = []
+                for param in parameter:
+                    a, b = get_inst_obs_labels(kp, param)
+                    inst.append(a)
+                    obs.append(b)
+
             else:
                 # Cannot proceed with filtering
                 insufficient_input_range_select()
-                logging.warning("Time malformed must be either a string of format")
-                logging.warning("yyyy-mm-ddThh:mm:ss or integer orbit)")
-                logging.warning("and no Parameter criterion given")
+                logging.warning("Time is not a 2-element list of strings or orbit numbers, no parameter given.")
+                logging.warning("Returning complete original data dictionary")
+                return kp
         else:
             # We have a two-element Time list: parse it
             if type(time[0]) !=  type(time[1]):
@@ -242,16 +237,12 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
                 # Time provided as other than string or Integer
                 if parameter is not None:
                     logging.warning("*****WARNING*****")
-                    logging.warning("Both elements of time must be same type")
-                    logging.warning("Only strings of format yyyy-mm-dd hh:mm:ss")
-                    logging.warning("or integers (orbit numbers) are allowed.")
+                    logging.warning("Times must be strings or integer or orbit numbers")
                     logging.warning("Ignoring time inputs; will filter ONLY")
                     logging.warning("on Parameter inputs.")
                 else:
                     logging.warning("*****ERROR*****")
-                    logging.warning("Both elements of Time must be same type")
-                    logging.warning("Only Strings of format yyyy-mm-dd hh:mm:ss")
-                    logging.warning("or integers (orbit numbers) are allowed.")
+                    logging.warning("Times must be either strings or integer orbit numbers.")
                     logging.warning("Returning original unchanged data dictionary")
                     return kp
             # Now, we apply the Parameter selection
@@ -266,17 +257,51 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
                     logging.warning("Applying only Time filtering")
                     parameter = None
                 elif minimum is None:
-                    minimum = -np.Infinity  # Unbounded below
+                    minimum = [-np.Infinity]  # Unbounded below
                 elif maximum is None:
-                    maximum = np.Infinity  # Unbounded above
+                    maximum = [np.Infinity]  # Unbounded above
                 else:
                     pass  # Range fully bounded
-                a, b = get_inst_obs_labels(kp, parameter)
-                inst.append(a)
-                obs.append(b)
-                nparam = 1  # necessary?
+                if not isinstance(minimum, list):
+                    minimum = [minimum]
+                if not isinstance(maximum, list):
+                    maximum = [maximum]
+                if len(minimum) != 1 or len(maximum) != 1:
+                    logging.warning("*****ERROR*****")
+                    logging.warning("---range_select---")
+                    logging.warning("Number of minima and maxima provided")
+                    logging.warning("MUST match number of Parameters provided")
+                    logging.warning("You provided %4d Parameters" % 1)
+                    logging.warning("             %4d minima" % len(minimum))
+                    logging.warning("         and %4d maxima" % len(maximum))
+                    logging.warning("Filtering only on Time")
+                    parameter = None
+                else:
+                    if parameter is not None:
+                        a, b = get_inst_obs_labels(kp, parameter)
+                        inst.append(a)
+                        obs.append(b)
+                        nparam = 1  # necessary?
             elif type(parameter) is list:
-                if len(parameter) != len(minimum) or len(parameter) != len(maximum):
+                if minimum is None and maximum is None:
+                    insufficient_input_range_select()
+                    logging.warning("No bounds set for parameter list")
+                    logging.warning("Applying only Time filtering")
+                    parameter = None
+                    lmin = 0
+                    lmax = 0
+                elif minimum is None:
+                    minimum = np.repeat(-np.Infinity,len(parameter))
+                    lmin = len(parameter)
+                    lmax = len(maximum)
+                elif maximum is None:
+                    maximum = np.repeat(np.Infinity, len(parameter))
+                    lmin = len(minimum)
+                    lmax = len(parameter)
+                else:
+                    lmin = len(minimum)
+                    lmax = len(maximum)
+                if (parameter is not None) and (len(parameter) != lmin or len(parameter) != lmax):
                     logging.warning("*****ERROR*****")
                     logging.warning("---range_select---")
                     logging.warning("Number of minima and maxima provided")
@@ -286,7 +311,7 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
                     logging.warning("         and %4d maxima" % len(maximum))
                     logging.warning("Filtering only on Time")
                     parameter = None
-                else:
+                elif parameter is not None:
                     nparam = len(parameter)
                     for param in parameter:
                         a, b = get_inst_obs_labels(kp, param)
@@ -358,14 +383,14 @@ def get_inst_obs_labels(kp, name):
             logging.warning("*****ERROR*****")
             logging.warning("%s is an invalid parameter" % name)
             logging.warning("If only one value is provided, it must be an integer")
-            return
+            return [],[]
     else:
         logging.warning("*****ERROR*****")
         logging.warning("%s is not a valid parameter" % name)
         logging.warning("because it has %1d elements" % len(tags))
         logging.warning('Only 1 integer or string of form "a.b" are allowed.')
         logging.warning("Please use .param_list attribute to find valid parameters")
-        return
+        return [],[]
 
 
 def find_param_from_index(kp, index):
