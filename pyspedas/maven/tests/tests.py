@@ -66,6 +66,39 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue("mvn_kp_iuvs_occ-02533_20160118T125134_v13_r01.tab" in fnames[0])
         time.sleep(sleep_time)
 
+    def test_kp_param_errors(self):
+        from pyspedas.maven.kp_utilities import param_list, param_range, range_select
+        # bad value in kp dict
+        kp = {}
+        kp["foo"] = "bar"
+        with self.assertLogs(level="WARNING") as log:
+            param_list = param_list(kp)
+            self.assertTrue("unexpected value type" in log.output[0])
+        kp_insitu = {}
+        kp_iuvs = {}
+        kp_insitu["TimeString"] = ["1970-01-01", "1970-01-02"]
+        kp_insitu["Orbit"] = [0,1]
+        param_range(kp_insitu)
+
+        kp_iuvs["TimeString"] = ["1971-01-01", "1971-01-02"]
+        kp_iuvs["Orbit"] = [10, 11]
+        with self.assertLogs(level="WARNING") as log:
+            param_range(kp_insitu, kp_iuvs)
+            self.assertTrue("No overlap" in log.output[0])
+
+        with self.assertLogs(level="WARNING") as log:
+            range_select(kp_iuvs)
+            self.assertTrue("*****ERROR*****" in log.output[0])
+            i = len(log.output)
+            range_select(kp_iuvs,parameter=0)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            range_select(kp_iuvs,time=["1970-01-01"])
+            i = len(log.output)
+            range_select(kp_iuvs, time=["1970-01-01", 0])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+
     def test_kp_utilities(self):
         from pyspedas.maven.kp_utilities import (
             param_list,
@@ -77,19 +110,168 @@ class LoadTestCases(unittest.TestCase):
 
         kp = get_kp_dict()
         self.assertTrue(type(kp) is collections.OrderedDict)
+
         param_list = param_list(kp)
         self.assertTrue(len(param_list) > 0)
         print(param_list)
+
         param_range = param_range(kp)
         result = range_select(kp, [2440, 2445], [5], [1e9], [-1e9])
         self.assertTrue(len(result) > 0)
-        result = range_select(kp, [2440, "2020/04/01"], [5], [1e9], [-1e9])
-        print(len(result))
+        result = range_select(kp, ["2016-01-01 00:00:00","2016-01-02 00:00:00"], [5], [1e9], [-1e9])
+        self.assertTrue(len(result) > 0)
         labels = get_inst_obs_labels(kp, "LPW.EWAVE_LOW_FREQ")
         self.assertTrue("LPW" in labels)
         self.assertTrue("EWAVE_LOW_FREQ" in labels)
         param = find_param_from_index(kp, 5)
         self.assertTrue(param == "LPW.ELECTRON_DENSITY")
+        # no min
+        result = range_select(kp, ["2016-01-01 00:00:00","2016-01-02 00:00:00"], parameter=[5], maximum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # no max
+        result = range_select(kp, ["2016-01-01 00:00:00","2016-01-02 00:00:00"], parameter=[5], minimum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # no time, param as list with int
+        result = range_select(kp, parameter=[5], minimum=[-1e9], maximum=[1e9])
+        # no time, param as list with int
+        result = range_select(kp, parameter=[5], minimum=[-1e9], maximum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # no time, param as list with string
+        result = range_select(kp, parameter=["LPW.ELECTRON_DENSITY"], minimum=[-1e9], maximum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # no time, param as list with string and int
+        result = range_select(kp, parameter=["LPW.ELECTRON_DENSITY",6], minimum=[-1e9, -1e9], maximum=[1e9,1e9])
+        self.assertTrue(len(result) > 0)
+        # no time, parameter as scalar int
+        result = range_select(kp, parameter=5, minimum=[-1e9], maximum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # no time, parameter as scalar string
+        result = range_select(kp, parameter="LPW.ELECTRON_DENSITY", minimum=[-1e9], maximum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # no time, parameter, min, max as scalars
+        result = range_select(kp, parameter="LPW.ELECTRON_DENSITY", minimum=-1e9, maximum=1e9)
+        self.assertTrue(len(result) > 0)
+        # no time, scalar param, minimum=None
+        result = range_select(kp, parameter=5, maximum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # no time, scalar param, maximum=None
+        result = range_select(kp, parameter=5, maximum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # times, scalar param, scalar max/min
+        result = range_select(kp, time=[2440,2441], parameter=5, minimum=-1e9, maximum=[1e9])
+        self.assertTrue(len(result) > 0)
+        # times, scalar param, no min
+        result = range_select(kp, time=[2440, 2441], parameter=5, maximum=[1e9])
+        # times, scalar param, no max
+        result = range_select(kp, time=[2440, 2441], parameter=5, minimum = [1e9])
+
+        with self.assertLogs(level="WARNING") as log:
+            # mismatched time types
+            result = range_select(kp, [2440, "2020/04/01"], [5], [1e9], [-1e9])
+            self.assertTrue("*****WARNING*****" in log.output[0])
+            i = len(log.output)
+            # only one time
+            result = range_select(kp, [2440], [5], [1e9], [-1e9])
+            self.assertTrue("*****WARNING*****" in log.output[i])
+            i = len(log.output)
+            # parameter but no max/min
+            result = range_select(kp, ["2016-01-01 00:00:00","2016-01-02 00:00:00"], parameter=[5])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # len(min) doesn't match param
+            result = range_select(kp, ["2016-01-01 00:00:00","2016-01-02 00:00:00"], parameter=[5], minimum=[-1e9,-1e9], maximum=[1e9])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # len(max) doesn't match param
+            result = range_select(kp, ["2016-01-01 00:00:00","2016-01-02 00:00:00"], parameter=[5], minimum=[-1e9], maximum=[1e9, 1e9])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            self.assertTrue(len(result) > 0)
+            # len(min) doesn't match param, no max
+            result = range_select(kp, ["2016-01-01 00:00:00","2016-01-02 00:00:00"], parameter=[5], minimum=[-1e9,-1e9])
+            self.assertTrue(len(result) > 0)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # len(max) doesn't match param, no min
+            result = range_select(kp, ["2016-01-01 00:00:00","2016-01-02 00:00:00"], parameter=[5], maximum=[1e9, 1e9])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # no time, param as list with string, int, and float
+            result = range_select(kp, parameter=["LPW.ELECTRON_DENSITY", 6, 1.2], minimum=[-1e9, -1e9, -1e9], maximum=[1e9, 1e9, 1e9])
+            self.assertTrue(len(result) > 0)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # no time, param as scalar float
+            result = range_select(kp, parameter=1.2, minimum=[-1e9], maximum=[1e9])
+            self.assertTrue(len(result) > 0)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # no time, no param
+            result = range_select(kp, minimum=[-1e9], maximum=[1e9])
+            self.assertTrue(len(result) > 0)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # no time, scalar param, no bounds
+            result = range_select(kp, parameter=5)
+            self.assertTrue(len(result) > 0)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # no time, len(min) doesn't match param
+            result = range_select(kp, parameter=[5], minimum=[-1e9,-1e9], maximum=[1e9])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # no time, len(max) doesn't match param
+            result = range_select(kp,  parameter=[5], minimum=[-1e9], maximum=[1e9, 1e9])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            self.assertTrue(len(result) > 0)
+            # no time, len(min) doesn't match param, no max
+            result = range_select(kp,  parameter=[5], minimum=[-1e9,-1e9])
+            self.assertTrue(len(result) > 0)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # no time, len(max) doesn't match param, no min
+            result = range_select(kp, parameter=[5], maximum=[1e9, 1e9])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # only one time, no param
+            result = range_select(kp, [2440])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # Malformed times, no parameter
+            result = range_select(kp, [{}, {}])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # Malformed times, parameter given
+            result = range_select(kp, [{}, {}], parameter=[5], minimum=[-1e9], maximum=[1e9])
+            self.assertTrue("*****WARNING*****" in log.output[i])
+            i = len(log.output)
+            # times, scalar param, len(min) doesn't match param
+            result = range_select(kp, time=[2440, 2441], parameter=5, minimum=[-1e9, -1e9], maximum=[1e9])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # times, scalar param, len(max) doesn't match param
+            result = range_select(kp, time=[2440, 2441], parameter=5, minimum=[-1e9], maximum=[1e9, 1e9])
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # times, scalar param, no bounds
+            result = range_select(kp, time=[2440, 2441], parameter=5)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # invalid parameter value
+            a,b = get_inst_obs_labels(kp, "foo")
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # too many components
+            a,b = get_inst_obs_labels(kp, "foo.bar.baz")
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+            # Invalid numeric index
+            ind = find_param_from_index(kp,999)
+            self.assertTrue("*****ERROR*****" in log.output[i])
+            i = len(log.output)
+
+
 
     def test_load_mag_data(self):
         from pyspedas.maven.utilities import get_l2_files_from_date
