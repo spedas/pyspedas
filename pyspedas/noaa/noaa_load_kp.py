@@ -88,10 +88,6 @@ def load_kp_to_tplot(
         Time range to load data for. Should be a list of two strings.
     datatype : list of str, optional
         Type of index to load. Default is an empty list, which loads all available data.
-    gfz : bool, optional
-        If this is False (default), load data from ftp://ftp.ngdc.noaa.gov.
-        If this is True, load data from ftp://ftp.gfz-potsdam.de instead of NOAA.
-        If the end time is on or after 2018, this is automatically set to True.
 
     Returns
     -------
@@ -295,6 +291,7 @@ def noaa_load_kp(
     prefix="",
     suffix="",
     time_clip=True,
+    force_download=False,
 ):
     """
     Load index data into appropriate variables. If data doesn't exist locally,
@@ -324,11 +321,19 @@ def noaa_load_kp(
             "Sunspot_Number",
             "F10.7",
             "Flux_Qualifier",
-
     gfz : bool, optional
         Load data from the German Research Centre for Geosciences, ftp://ftp.gfz-potsdam.de instead of NOAA.
         This is the default behavior if the end time is on or after 2018. Default is False. If this source
         is used, the Sunspot_Number, F10.7, and Flux_Qualifier datatypes will not be available.
+    prefix: str, optional
+        If provided, specifies a string to be prepended to tplot variable names
+    suffix: str, optional
+        If provided, specifies a string to be appended to tplot variable names
+    time_clip: bool, optional
+        If True, data will be time clipped to the exact time range requested
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -399,7 +404,7 @@ def noaa_load_kp(
     files = []
     # In this case, filesnames are just the year (2020, 2021, etc.)
     for yearstr in remote_names:
-        dfile = download_ftp(kp_mirror, remote_kp_dir, yearstr, file_prefix)
+        dfile = download_ftp(kp_mirror, remote_kp_dir, yearstr, file_prefix, force_download=force_download)
         if len(dfile) > 0:
             files.append(dfile[0])
 
