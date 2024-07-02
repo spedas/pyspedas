@@ -317,10 +317,14 @@ def load_data(
     # Loop through all instruments, download files locally if needed
     for instr in maven_files.keys():
         bn_files_to_load = []
-        if maven_files[instr]:
-            s = maven_files[instr][0]
-            data_dir = maven_files[instr][1]
-            public = maven_files[instr][2]
+        # There might be more than one set of files to load for this instrument (e.g. kp with iuvs)
+        maven_file_list = maven_files[instr]
+        while(len(maven_file_list) > 0):
+            s = maven_file_list[0]
+            data_dir = maven_file_list[1]
+            public = maven_file_list[2]
+            # Strip off these three entries, in case there's more to process next iteration
+            maven_file_list = maven_file_list[3:]
 
             # Add to list of files to load
             for f in s:
