@@ -5,17 +5,18 @@ from pytplot import cdf_to_tplot
 
 from .config import CONFIG
 
-def load(trange=['2013-11-5', '2013-11-6'], 
+def load(trange=['2013-11-5', '2013-11-6'],
          instrument='fgm',
-         datatype='k0', 
-         suffix='', 
-         get_support_data=False, 
+         datatype='k0',
+         suffix='',
+         get_support_data=False,
          varformat=None,
          downloadonly=False,
          notplot=False,
          no_update=False,
          varnames=[],
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads data from the ACE mission; this function is not meant 
     to be called directly; instead, see the wrappers:
@@ -53,7 +54,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)

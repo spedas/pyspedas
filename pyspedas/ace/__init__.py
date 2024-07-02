@@ -12,7 +12,8 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     Loads data from the ACE Fluxgate Magnetometer
     
@@ -78,6 +79,10 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
 
@@ -93,7 +98,9 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['BGSEc', 'Magnitude'])
 
     """
-    tvars = load(instrument='fgm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(trange=trange, instrument='fgm', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+                 varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update,
+                 varnames=varnames, time_clip=time_clip, force_download=force_download)
     
     if tvars is None or notplot or downloadonly:
         return tvars
@@ -118,7 +125,8 @@ def swe(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     Load data from the ACE Solar Wind Electron, Proton and Alpha Monitor (SWEPAM)
     
@@ -181,6 +189,11 @@ def swe(trange=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
 
@@ -196,7 +209,9 @@ def swe(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['Vp', 'Tpr'])
 
     """
-    return load(instrument='swe', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(trange=trange, instrument='swe', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
+                time_clip=time_clip, force_download=force_download)
 
 
 def epam(trange=['2018-11-5', '2018-11-6'],
@@ -208,7 +223,8 @@ def epam(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     Load data from the ACE Electron Proton Alpha Monitor (EPAM)
     
@@ -271,6 +287,11 @@ def epam(trange=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
 
@@ -286,7 +307,9 @@ def epam(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['H_lo', 'Ion_very_lo', 'Ion_lo', 'Ion_mid', 'Ion_hi', 'Electron_lo', 'Electron_hi'])
 
     """
-    return load(instrument='epm', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(trange=trange, instrument='epm', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
+                time_clip=time_clip, force_download=force_download)
 
 
 def cris(trange=['2018-11-5', '2018-11-6'],
@@ -298,7 +321,8 @@ def cris(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     Load data from the ACE Cosmic Ray Isotope Spectrometer (CRIS)
     
@@ -357,6 +381,11 @@ def cris(trange=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
 
@@ -372,7 +401,9 @@ def cris(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['flux_B', 'flux_C', 'flux_N', 'flux_O', 'flux_F', 'flux_Ne'])
 
     """
-    return load(instrument='cris', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(trange=trange, instrument='cris', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
+                time_clip=time_clip, force_download=force_download)
 
 
 def sis(trange=['2018-11-5', '2018-11-6'],
@@ -384,7 +415,8 @@ def sis(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     Load data from the ACE Solar Isotope Spectrometer (SIS)
     
@@ -444,6 +476,11 @@ def sis(trange=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     --------
         list of str
@@ -458,7 +495,9 @@ def sis(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['H_lo', 'H_hi', 'CNO_lo', 'CNO_hi', 'Z_ge_10'])
 
     """
-    return load(instrument='sis', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(trange=trange, instrument='sis', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
+                time_clip=time_clip, force_download=force_download)
 
 
 def uleis(trange=['2018-11-5', '2018-11-6'],
@@ -470,7 +509,8 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     Load data from the ACE Ultra Low Energy Isotope Spectrometer (ULEIS)
     
@@ -528,6 +568,11 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default; False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
 
@@ -543,7 +588,9 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['H_S1', 'H_S2', 'H_S3', 'H_S4', 'H_S5'])
 
     """
-    return load(instrument='ule', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(trange=trange, instrument='ule', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
+                time_clip=time_clip, force_download=force_download)
 
 
 def sepica(trange=['2004-11-5', '2004-11-6'],
@@ -555,7 +602,8 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     Load data from the ACE Solar Energetic Particle Ionic Charge Analyzer (SEPICA)
     
@@ -613,6 +661,11 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         list of str
@@ -626,7 +679,9 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
         >>> tplot(['H1', 'H2', 'H3'])
 
     """
-    return load(instrument='sep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(trange=trange, instrument='sep', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
+                time_clip=time_clip, force_download=force_download)
 
 
 def swics(trange=['2018-11-5', '2018-11-6'],
@@ -638,7 +693,8 @@ def swics(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Solar Wind Ion Composition Spectrometer (SWICS)
     
@@ -700,6 +756,11 @@ def swics(trange=['2018-11-5', '2018-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         list of str
@@ -713,7 +774,9 @@ def swics(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['vHe2', 'vthHe2'])
 
     """
-    return load(instrument='swics', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(trange=trange, instrument='swics', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+                varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
+                time_clip=time_clip, force_download=force_download)
 
 
 def datasets(instrument=None, label=True):
