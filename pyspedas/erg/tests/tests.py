@@ -45,6 +45,19 @@ class LoadTestCases(unittest.TestCase):
         # There are no XEP L3 products yet, but we can at least get some code coverage
         xep_vars = pyspedas.erg.xep(level='l3')
 
+    def test_load_xep_l2_omniflux_data(self):
+        del_data()
+        xep_vars = pyspedas.erg.xep(level='l2')
+        self.assertTrue('erg_xep_l2_FEDO_SSD' in xep_vars)
+        self.assertTrue(data_exists('erg_xep_l2_FEDO_SSD'))
+
+
+    def test_load_xep_l2_2dflux_data(self):
+        del_data()
+        xep_vars = pyspedas.erg.xep(level='l2', datatype='2dflux')
+        self.assertTrue('erg_xep_l2_FEDU_SSD' in xep_vars)
+        self.assertTrue(data_exists('erg_xep_l2_FEDU_SSD'))
+
     def test_load_orb_data(self):
         del_data()
         orb_vars = pyspedas.erg.orb()
