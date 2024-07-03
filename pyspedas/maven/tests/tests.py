@@ -55,7 +55,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("LPW_Electron_density"))
         time.sleep(sleep_time)
 
-    def test_load_kp_iuvs_data(self):
+    def test_load_kp_iuvs_occ_data(self):
         del_data("*")
         data = maven.kp(trange=["2016-01-18","2016-01-19"],iuvs=True)
         self.assertTrue(data_exists("mvn_kp::spacecraft::geo_x"))
@@ -64,6 +64,30 @@ class LoadTestCases(unittest.TestCase):
         fnames = get_latest_iuvs_files_from_date_range(dt1,dt2)
         self.assertTrue(len(fnames) > 0)
         self.assertTrue("mvn_kp_iuvs_occ-02533_20160118T125134_v13_r01.tab" in fnames[0])
+        time.sleep(sleep_time)
+
+    def test_load_kp_iuvs_periapse_data(self):
+        del_data("*")
+        data = maven.kp(trange=["2015-03-07","2015-03-08"],iuvs=True)
+        self.assertTrue(data_exists("mvn_kp::spacecraft::geo_x"))
+        dt1 = datetime.strptime("2015-03-07", "%Y-%m-%d")
+        dt2 = datetime.strptime("2015-03-08", "%Y-%m-%d")
+        # fnames = get_latest_iuvs_files_from_date_range(dt1,dt2)
+        # print(fnames)
+        #self.assertTrue(len(fnames) > 0)
+        #self.assertTrue("mvn_kp_iuvs_00850_20150308T221253_v13_r01.tab" in fnames[0])
+        time.sleep(sleep_time)
+
+    def test_load_kp_iuvs_corona_data(self):
+        del_data("*")
+        data = maven.kp(trange=["2016-01-14","2016-01-15"],iuvs=True)
+        self.assertTrue(data_exists("mvn_kp::spacecraft::geo_x"))
+        dt1 = datetime.strptime("2016-01-07", "%Y-%m-%d")
+        dt2 = datetime.strptime("2016-01-08", "%Y-%m-%d")
+        # fnames = get_latest_iuvs_files_from_date_range(dt1,dt2)
+        # print(fnames)
+        #self.assertTrue(len(fnames) > 0)
+        #self.assertTrue("mvn_kp_iuvs_00850_20150308T221253_v13_r01.tab" in fnames[0])
         time.sleep(sleep_time)
 
     def test_kp_param_errors(self):
