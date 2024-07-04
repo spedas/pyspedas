@@ -7,7 +7,7 @@ from pyspedas.erg import erg_lep_part_products
 import pyspedas
 import pytplot
 
-display=True
+display=False
 
 class LoadTestCases(unittest.TestCase):
 
