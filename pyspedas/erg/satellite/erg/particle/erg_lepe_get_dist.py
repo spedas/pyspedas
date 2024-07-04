@@ -116,7 +116,7 @@ def erg_lepe_get_dist(tname,
     ;; Then, fill in arrays in the data structure
     ;;   dim[ nenergy, nspinph(azimuth), nanode(elevation), ntime]
     """
-    dist['time'] = data_in[0][[index]]
+    dist['time'] = data_in[0][index]
     dist['end_time'] = dist['time'] + integ_time  # ;; currently hard-coded
     """
     ;; Shuffle the original data array [time,energy, anode, spin phase] to
@@ -141,7 +141,7 @@ def erg_lepe_get_dist(tname,
     ;; Default unit of v in F?DU tplot variables [keV/q] should be
     ;; converted to [eV] by multiplying (1000 * charge number).
     """
-    e0_array_raw = data_in[2][[index]]# ;; [time, 32]
+    e0_array_raw = data_in[2][index]# ;; [time, 32]
     e0_array = e0_array_raw.T
     energy_reform = np.reshape(e0_array, [dim_array[0], 1, 1, n_times])
     energy_rebin1 = np.repeat(energy_reform, dim_array[2],
