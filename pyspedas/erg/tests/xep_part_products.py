@@ -23,6 +23,18 @@ class LoadTestCases(unittest.TestCase):
         # Doesn't make any tplot variables...not supported in xep_part_products?
         tplot( 'erg_xep_l2_FEDU_SSD_theta', display=display, save_png='erg_xep_theta.png' )
 
+    def test_xep_gyro(self):
+        del_data('*')
+        # Load XEP-e Lv.2 3-D flux data
+        timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
+        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        # Calculate and plot energy spectrum
+        vars = erg_xep_part_products( 'erg_xep_l2_FEDU_SSD', outputs='theta', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
+        print(vars)
+        tplot_names()
+        # Doesn't make any tplot variables...not supported in xep_part_products?
+        tplot( 'erg_xep_l2_FEDU_SSD_gyro', display=display, save_png='erg_xep_gyro.png' )
+
     def test_xep_phi(self):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
@@ -47,6 +59,20 @@ class LoadTestCases(unittest.TestCase):
         # Calculate and plot energy spectrum
         vars = erg_xep_part_products( 'erg_xep_l2_FEDU_SSD', mag_name=mag_vn, pos_name=pos_vn, outputs='pa', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
         tplot( 'erg_xep_l2_FEDU_SSD_pa', display=display, save_png='erg_xep_pa.png' )
+
+    def test_xep_gyro(self):
+        del_data('*')
+        # Load XEP-e Lv.2 3-D flux data
+        timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
+        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        vars = pyspedas.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
+        vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
+        mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
+        pos_vn = 'erg_orb_l2_pos_gse'
+
+        # Calculate and plot energy spectrum
+        vars = erg_xep_part_products( 'erg_xep_l2_FEDU_SSD', mag_name=mag_vn, pos_name=pos_vn, outputs='gyro', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
+        tplot( 'erg_xep_l2_FEDU_SSD_gyro', display=display, save_png='erg_xep_gyro.png' )
 
     @unittest.skip
     def test_xep_moments(self):
