@@ -324,50 +324,10 @@ def erg_hep_part_products(
                             relativistic=relativistic)
         out_vars.append(output_tplot_name)
 
-
     if 'fac_energy' in outputs_lc:
-
         output_tplot_name = in_tvarname+'_energy_mag' + suffix
         erg_pgs_make_tplot(output_tplot_name, x=times_array, y=out_fac_energy_y, z=out_fac_energy, units=units, ylog=True, ytitle=dist['data_name'] + ' \\ energy (eV)',
                             relativistic=relativistic, ysubtitle=ysubtitle)
         out_vars.append(output_tplot_name)
-
-    
-    #  ;;Sort a data array by energy for (fac-)energy spectra
-    if ('erg_lepe_' in in_tvarname)  and (made_et_spec):
-        if 'energy' in outputs_lc:
-            t_plot_name = in_tvarname+'_energy' + suffix
-            get_data_energy = get_data(t_plot_name)
-            energy_meta_data = get_data(t_plot_name, metadata=True)
-        elif 'fac_energy' in outputs_lc:
-            t_plot_name = in_tvarname+'_energy_mag' + suffix
-            get_data_energy = get_data(t_plot_name)
-            energy_meta_data = get_data(t_plot_name, metadata=True)
-        
-        if get_data_energy is not None:
-            
-            arange_time_indices = np.arange(get_data_energy[0].size)
-            time_indices_repeat = np.repeat(np.array([arange_time_indices]).T, get_data_energy[1].shape[1], axis=1)
-            time_indices_repeat_reshape =  time_indices_repeat.reshape((time_indices_repeat.size, 1))
-            
-            if get_data_energy[2].ndim == 1:
-                arg_sort_axis_1 = np.repeat(np.argsort([get_data_energy[2]], axis=1), get_data_energy[0].size, axis=0)
-            elif get_data_energy[2].ndim == 2:
-                arg_sort_axis_1=np.argsort(get_data_energy[2], axis=1)
-
-            arg_sort_axis_1_reshape = arg_sort_axis_1.reshape((arg_sort_axis_1.size, 1))
-
-            indices_array =np.concatenate([time_indices_repeat_reshape, arg_sort_axis_1_reshape], axis=1)
-            indices_list_0 = indices_array[:,0].tolist()
-            indices_list_1 = indices_array[:,1].tolist()
-            y_new_1d = get_data_energy[1][indices_list_0 , indices_list_1 ]
-            y_new_2d = y_new_1d.reshape(get_data_energy[1].shape)
-            v_new_1d = get_data_energy[2][indices_list_0 , indices_list_1]
-            v_new_2d = v_new_1d.reshape(get_data_energy[2].shape)
-
-            store_data(t_plot_name, data={'x':get_data_energy[0],
-                                          'y':y_new_2d,
-                                          'v':v_new_2d},
-                        attr_dict=energy_meta_data)
 
     return out_vars
