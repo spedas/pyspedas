@@ -21,6 +21,16 @@ class LoadTestCases(unittest.TestCase):
         tplot_names()
         tplot( 'erg_hep_l2_FEDU_L_theta', display=display, save_png='erg_hep_theta.png' )
 
+    def test_hep_theta_trange(self):
+        del_data('*')
+        # Load HEP-e Lv.2 3-D flux data
+        timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
+        pyspedas.erg.hep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        # Calculate and plot energy spectrum
+        vars = erg_hep_part_products( 'erg_hep_l2_FEDU_L',trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'], outputs='theta' )
+        tplot_names()
+        tplot( 'erg_hep_l2_FEDU_L_theta', display=display, save_png='erg_hep_theta_trange.png' )
+
     def test_hep_phi(self):
         del_data('*')
         # Load HEP-e Lv.2 3-D flux data

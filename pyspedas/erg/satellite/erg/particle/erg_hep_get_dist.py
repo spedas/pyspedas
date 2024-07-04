@@ -342,7 +342,7 @@ def erg_hep_get_dist(tname,
 
 
 
-    phissi = angarr[:, 1, :] - (90. + 21.6)  #;; [ (time), (azm)]
+    phissi = angarr[index, 1, :] - (90. + 21.6)  #;; [ (time), (azm)]
     spinper_rebin = np.repeat(spinper.reshape(n_times, 1), 16, axis=1)
     spinph_ofst = rel_sct_time / spinper_rebin * 360.
     phi0_1_reform = np.reshape(phissi.T, [1, 1, dim_array[2], n_times])
@@ -368,7 +368,7 @@ def erg_hep_get_dist(tname,
     del phi0  # ;; Clean huge arrays
     dist['n_phi'] = dim_array[1]
     #  ;; elevation angle
-    elev = angarr[:, 0, :]  # ;; [ (time), (Az.ch)]
+    elev = angarr[index, 0, :]  # ;; [ (time), (Az.ch)]
     elev_reform = np.reshape(elev.T, [1, 1, dim_array[2], n_times])
     elev_rebin1 = np.repeat(elev_reform, dim_array[1],
                              axis=1)  # repeated across spin phase(azimuth)
