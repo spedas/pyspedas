@@ -53,6 +53,12 @@ class NSTests(unittest.TestCase):
         model = neutral_sheet(pos_data.times, pos_data.y, model='den_fairfield')
         self.assertTrue(isinstance(model, np.ndarray))
 
+    def test_tag14(self):
+        model = neutral_sheet(pos_data.times, pos_data.y, model='tag14', sc2NS=True)
+        self.assertTrue(isinstance(model, np.ndarray))
+        model = neutral_sheet(pos_data.times, pos_data.y, model='tag14')
+        self.assertTrue(isinstance(model, np.ndarray))
+
     def test_invalid_model(self):
         with self.assertLogs(level='ERROR') as log:
             model = neutral_sheet(pos_data.times, pos_data.y, model='ff', sc2NS=True)
