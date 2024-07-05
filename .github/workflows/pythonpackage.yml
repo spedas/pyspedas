@@ -256,6 +256,8 @@ jobs:
         coverage run -a -m pyspedas.ulysses.tests.tests
         echo Starting erg tests at `date`
         coverage run -a -m pyspedas.erg.tests.tests
+        echo Starting erg cotrans tests at `date`
+        coverage run -a -m pyspedas.erg.tests.cotrans_tests
         echo Starting erg ground data tests at `date`
         coverage run -a -m pyspedas.erg.tests.ground_tests
         echo Starting erg mepe particle tests at `date`
