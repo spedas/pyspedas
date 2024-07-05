@@ -154,6 +154,8 @@ jobs:
         coverage run -a -m pyspedas.hapi.tests.tests
         echo Starting noaa tests at `date`
         coverage run -a -m pyspedas.noaa.tests.tests
+        echo Starting particles tests at `date`
+        coverage run -a -m pyspedas.particles.tests.tests
         echo Starting mms cotrans tests at `date`
         coverage run -a -m pyspedas.mms.tests.cotrans
         echo Starting mms events tests at `date`
