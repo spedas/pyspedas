@@ -5,7 +5,7 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pytplot import cdf_to_tplot
 
-from .config import CONFIG
+from pyspedas.erg.config import CONFIG
 
 def load(trange=['2017-03-27', '2017-03-28'],
          pathformat=None,
