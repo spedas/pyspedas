@@ -78,8 +78,9 @@ def tplot(name,
 
     Parameters
     ----------
-        name : str or list of str
-            List of tplot variables that will be plotted
+        name : str or list of str, required
+            List of tplot variables that will be plotted.
+            If this is empty, nothing will be plotted.
         var_label : str, optional
             The name of the tplot variable you would like as
             a second x axis.
@@ -139,6 +140,13 @@ def tplot(name,
         >>> pytplot.tplot(["Variable2", "Variable3"], var_label='Variable1')
 
     """
+    # If no tplot names were provided, exit
+    if name is None or len(name) < 1:
+        logging.error("No tplot variables were provided.")
+        return
+    elif not isinstance(name, list):
+        name = [name] # If only one name was provided, put it in a list
+    num_plots = len(name)
 
     if qt == False and bokeh == False:
         return mpl_tplot(name, var_label=var_label,
@@ -164,13 +172,8 @@ def tplot(name,
     if not pytplot.using_graphics and save_file is None:
         print("Qt was not successfully imported.  Specify save_file to save the file as a .html file.")
         return
-    # Check a bunch of things
-    if not isinstance(name, list):
-        name = [name]
-        num_plots = 1
-    else:
-        num_plots = len(name)
 
+    # Check a bunch of things
     for i in range(num_plots):
         if isinstance(name[i], int):
             name[i] = list(pytplot.data_quants.keys())[name[i]]
