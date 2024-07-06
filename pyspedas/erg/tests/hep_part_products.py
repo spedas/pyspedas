@@ -33,6 +33,17 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_hep_l2_FEDU_L_theta'))
         tplot( 'erg_hep_l2_FEDU_L_theta', display=display, save_png='erg_hep_theta_trange.png' )
 
+    def test_hep_theta_limit_phi(self):
+        del_data('*')
+        # Load LEP-e Lv.2 3-D flux data
+        timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
+        pyspedas.erg.hep( trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'], datatype='3dflux' )
+        # Calculate and plot energy spectrum
+        vars = erg_hep_part_products( 'erg_hep_l2_FEDU_L', outputs='theta', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], phi_in=[0., 180.0] )
+        tplot( 'erg_hep_l2_FEDU_L_theta', display=display, save_png='erg_hep_theta_limit_phi.png' )
+        self.assertTrue(data_exists('erg_hep_l2_FEDU_L_theta'))
+        self.assertTrue('erg_hep_l2_FEDU_L_theta' in vars)
+
     def test_hep_phi(self):
         del_data('*')
         # Load HEP-e Lv.2 3-D flux data
@@ -137,6 +148,26 @@ class LoadTestCases(unittest.TestCase):
         tplot( 'erg_hep_l2_FEDU_L_energy', display=display, save_png='erg_hep_en_spec.png' )
         self.assertTrue('erg_hep_l2_FEDU_L_energy' in vars)
         self.assertTrue(data_exists('erg_hep_l2_FEDU_L_energy'))
+
+    def test_hep_energy_limit_gyro(self):
+        del_data('*')
+        # Load LEP-e Lv.2 3-D flux data
+        timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
+        pyspedas.erg.hep(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux')
+        vars = pyspedas.erg.mgf(
+            trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
+        vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
+        mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
+        pos_vn = 'erg_orb_l2_pos_gse'
+        # Calculate the pitch angle distribution
+        vars = erg_hep_part_products('erg_hep_l2_FEDU_L', outputs='energy', gyro=[0., 180.],
+                                     fac_type='xdsi',
+                                     mag_name=mag_vn, pos_name=pos_vn,
+                                     trange=['2017-04-05 21:45:00', '2017-04-05 22:45:00'])
+        print(vars)
+        tplot( 'erg_hep_l2_FEDU_L_energy_mag', display=display, save_png='erg_hep_energy_limit_gyro.png' )
+        self.assertTrue(data_exists('erg_hep_l2_FEDU_L_energy_mag'))
+        self.assertTrue('erg_hep_l2_FEDU_L_energy_mag' in vars)
 
     def test_hep_pad(self):
         del_data('*')
