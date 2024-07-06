@@ -20,6 +20,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('erg_att_sprate' in att_vars)
         self.assertTrue('erg_att_spphase' in att_vars)
 
+    def test_load_att_data_notplot(self):
+        del_data()
+        att_dict = pyspedas.erg.att(notplot=True)
+        self.assertTrue('erg_att_sprate' in att_dict)
+        self.assertTrue('erg_att_spphase' in att_dict)
+
 
     def test_load_hep_data(self):
         del_data()
@@ -67,6 +73,22 @@ class LoadTestCases(unittest.TestCase):
     def test_load_orb_data(self):
         del_data()
         orb_vars = pyspedas.erg.orb()
+        self.assertTrue(data_exists('erg_orb_l2_pos_gse'))
+        self.assertTrue(data_exists('erg_orb_l2_pos_gsm'))
+        self.assertTrue(data_exists('erg_orb_l2_pos_sm'))
+        self.assertTrue(data_exists('erg_orb_l2_vel_gse'))
+        self.assertTrue(data_exists('erg_orb_l2_vel_gsm'))
+        self.assertTrue(data_exists('erg_orb_l2_vel_sm'))
+        self.assertTrue('erg_orb_l2_pos_gse' in orb_vars)
+        self.assertTrue('erg_orb_l2_pos_gsm' in orb_vars)
+        self.assertTrue('erg_orb_l2_pos_sm' in orb_vars)
+        self.assertTrue('erg_orb_l2_vel_gse' in orb_vars)
+        self.assertTrue('erg_orb_l2_vel_gsm' in orb_vars)
+        self.assertTrue('erg_orb_l2_vel_sm' in orb_vars)
+
+    def test_load_orb_pre_data(self):
+        del_data()
+        orb_vars = pyspedas.erg.orb(datatype='pre')
         self.assertTrue(data_exists('erg_orb_l2_pos_gse'))
         self.assertTrue(data_exists('erg_orb_l2_pos_gsm'))
         self.assertTrue(data_exists('erg_orb_l2_pos_sm'))
