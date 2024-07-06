@@ -2,7 +2,7 @@ import os
 import unittest
 from pytplot import data_exists, tplot_names, del_data
 from pyspedas import maven
-from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files
+from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files, get_file_from_site
 from pyspedas.maven.maven_kp_to_tplot import maven_kp_to_tplot
 from pyspedas.maven.utilities import get_latest_iuvs_files_from_date_range
 import time
@@ -295,7 +295,15 @@ class LoadTestCases(unittest.TestCase):
             self.assertTrue("*****ERROR*****" in log.output[i])
             i = len(log.output)
 
-
+    def test_get_file_from_site_private(self):
+        f = 'mvn_mag_l2_2016002ss1s_20160102_v01_r01.xml'
+        public=False
+        full_path='maven_data/maven/data/sci/mag/l2/2016/01'
+        # We don't have credentials to the private site yet, so this will fail.
+        try:
+            get_file_from_site(f, public, full_path)
+        except Exception as e:
+            pass
 
     def test_load_mag_data(self):
         from pyspedas.maven.utilities import get_l2_files_from_date
@@ -307,6 +315,16 @@ class LoadTestCases(unittest.TestCase):
         files = get_l2_files_from_date(dt, "mag")
         self.assertTrue(len(files) > 0)
         time.sleep(sleep_time)
+
+    def test_load_mag_data_private(self):
+        from pyspedas.maven.utilities import get_l2_files_from_date
+
+        del_data("*")
+        # We don't have credentials to the private site yet, so this is expected to fail
+        try:
+            data = maven.mag(datatype="ss1s", public=False)
+        except Exception as e:
+            pass
 
     def test_load_mag_byorbit_data(self):
         del_data("*")
