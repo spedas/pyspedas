@@ -1,7 +1,13 @@
 
 import os
 import unittest
-from pytplot import data_exists, del_data, tplot_names
+from pytplot import data_exists, del_data, tplot_names, get_data
+from pyspedas.erg.satellite.erg.particle.erg_lepi_get_dist import erg_lepi_get_dist
+from pyspedas.erg.satellite.erg.particle.erg_mepi_get_dist import erg_mepi_get_dist
+from pyspedas.erg.satellite.erg.particle.erg_lepe_get_dist import erg_lepe_get_dist
+from pyspedas.erg.satellite.erg.particle.erg_mepe_get_dist import erg_mepe_get_dist
+from pyspedas.erg.satellite.erg.particle.erg_hep_get_dist import erg_hep_get_dist
+from pyspedas.erg.satellite.erg.particle.erg_xep_get_dist import erg_xep_get_dist
 
 import pyspedas
 
@@ -132,6 +138,142 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FHEDU'))
         self.assertTrue('erg_lepi_l2_3dflux_FPDU' in lepi_vars)
         self.assertTrue('erg_lepi_l2_3dflux_FHEDU' in lepi_vars)
+
+
+    def test_load_mepi_get_dist(self):
+        del_data()
+        mepi_vars = pyspedas.erg.mepi_nml(datatype='3dflux')
+        print(mepi_vars)
+        base = "erg_mepi_l2_3dflux_"
+        for species in ['FPDU', 'FHEDU', 'FODU']:
+            var = base + species
+            vardat = get_data(var)
+            varmeta = get_data(var, metadata=True)
+            t = vardat[0]
+            dist = erg_mepi_get_dist(var, single_time="2017-07-01 00:00:00", species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_mepi_get_dist(var, index=[0], species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_mepi_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_mepi_get_dist(var, trange=[t[0,], t[-1]], species=None)
+            self.assertTrue(len(dist['time']) == len(t))
+
+        self.assertTrue(data_exists('erg_mepi_l2_3dflux_FPDU'))
+        self.assertTrue(data_exists('erg_mepi_l2_3dflux_FHEDU'))
+        self.assertTrue('erg_mepi_l2_3dflux_FPDU' in mepi_vars)
+        self.assertTrue('erg_mepi_l2_3dflux_FHEDU' in mepi_vars)
+
+    def test_load_lepi_get_dist(self):
+        del_data()
+        lepi_vars = pyspedas.erg.lepi(datatype='3dflux')
+        print(lepi_vars)
+        base = "erg_lepi_l2_3dflux_"
+        for species in ['FPDU', 'FHEDU', 'FODU']:
+            var = base + species
+            vardat = get_data(var)
+            varmeta = get_data(var, metadata=True)
+            t = vardat[0]
+            dist = erg_lepi_get_dist(var, single_time="2017-07-01 00:00:00", species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_lepi_get_dist(var, index=[0], species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_lepi_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_lepi_get_dist(var, trange=[t[0,], t[-1]], species=None)
+            self.assertTrue(len(dist['time']) == len(t))
+
+        self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU'))
+        self.assertTrue(data_exists('erg_lepi_l2_3dflux_FHEDU'))
+        self.assertTrue('erg_lepi_l2_3dflux_FPDU' in lepi_vars)
+        self.assertTrue('erg_lepi_l2_3dflux_FHEDU' in lepi_vars)
+
+    def test_load_lepe_get_dist(self):
+        del_data()
+        lepe_vars = pyspedas.erg.lepe(datatype='3dflux')
+        base = "erg_lepe_l2_3dflux_"
+        for species in ['FEDU']:
+            var = base + species
+            vardat = get_data(var)
+            varmeta = get_data(var, metadata=True)
+            t = vardat[0]
+            dist = erg_lepe_get_dist(var, single_time="2017-04-04 00:00:00", species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_lepe_get_dist(var, index=[0], species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_lepe_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_lepe_get_dist(var, trange=[t[0,], t[-1]], species=None)
+            self.assertTrue(len(dist['time']) == len(t))
+        self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU'))
+        self.assertTrue('erg_lepe_l2_3dflux_FEDU' in lepe_vars)
+
+    def test_load_mepe_get_dist(self):
+        del_data()
+        mepe_vars = pyspedas.erg.mepe(datatype='3dflux')
+        base = "erg_mepe_l2_3dflux_"
+        for species in ['FEDU']:
+            var = base + species
+            vardat = get_data(var)
+            varmeta = get_data(var, metadata=True)
+            t = vardat[0]
+            dist = erg_mepe_get_dist(var, single_time="2017-03-27 00:00:00", species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_mepe_get_dist(var, index=[0], species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_mepe_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_mepe_get_dist(var, trange=[t[0,], t[-1]], species=None)
+            self.assertTrue(len(dist['time']) == len(t))
+        self.assertTrue(data_exists('erg_mepe_l2_3dflux_FEDU'))
+        self.assertTrue('erg_mepe_l2_3dflux_FEDU' in mepe_vars)
+
+    def test_load_hep_get_dist(self):
+        del_data()
+        hep_vars = pyspedas.erg.hep(datatype='3dflux')
+        print(hep_vars)
+        base = "erg_hep_l2_"
+        for species in ['FEDU_L', 'FEDU_H']:
+            var = base + species
+            vardat = get_data(var)
+            varmeta = get_data(var, metadata=True)
+            t = vardat[0]
+            dist = erg_hep_get_dist(var, single_time="2017-03-27 00:00:00", species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_hep_get_dist(var, index=[0], species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_hep_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_hep_get_dist(var, trange=[t[0,], t[-1]], species=None)
+            # This assertion doesn't necessarily hold for HEP.  Something to do with
+            # availability of support data?
+            # self.assertTrue(len(dist['time']) == len(t))
+        self.assertTrue(data_exists('erg_hep_l2_FEDU_L'))
+        self.assertTrue('erg_hep_l2_FEDU_L' in hep_vars)
+
+    def test_load_xep_get_dist(self):
+        del_data()
+        xep_vars = pyspedas.erg.xep(datatype='2dflux')
+        print(xep_vars)
+        base = "erg_xep_l2_"
+        for species in ['FEDU_SSD']:
+            var = base + species
+            vardat = get_data(var)
+            varmeta = get_data(var, metadata=True)
+            t = vardat[0]
+            dist = erg_xep_get_dist(var, single_time="2017-06-01 00:00:00", species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_xep_get_dist(var, index=[0], species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_xep_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_xep_get_dist(var, trange=[t[0,], t[-1]], species=None)
+            # This assertion doesn't necessarily hold for HEP.  Something to do with
+            # availability of support data?
+            # self.assertTrue(len(dist['time']) == len(t))
+        self.assertTrue(data_exists('erg_xep_l2_FEDU_SSD'))
+        self.assertTrue('erg_xep_l2_FEDU_SSD' in xep_vars)
+
 
     def test_load_lepi_l3_data(self):
         del_data()
