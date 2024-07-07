@@ -30,6 +30,13 @@ def erg_lepe_get_dist(tname,
         print(f'Variable: {tname} not found!')
         return 0
     level = level.lower()
+
+    #  If index is provided, ensure it's a list
+
+    if index is not None and not isinstance(index, list) and not isinstance(index, np.ndarray):
+        index = [index]
+
+
     """
     ;; Extract some information from a tplot variable name
     ;; e.g., erg_lepi_l2_3dflux_FPDU

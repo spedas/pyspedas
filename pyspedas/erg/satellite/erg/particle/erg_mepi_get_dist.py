@@ -53,6 +53,12 @@ def erg_mepi_get_dist(tname,
         print(f'ERROR: given an invalid tplot variable: {input_name}')
         return 0
 
+    #  If index is provided, ensure it's a list
+
+    if index is not None and not isinstance(index, list) and not isinstance(index, np.ndarray):
+        index = [index]
+
+
     # ;; Get a reference to data and metadata
 
     data_in = get_data(input_name)
