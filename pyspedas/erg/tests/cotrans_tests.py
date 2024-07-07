@@ -6,7 +6,13 @@ from pytplot import tplot_names, get_data, data_exists, store_data
 import numpy as np
 from numpy.testing import assert_allclose
 
+
+
 class MyTestCase(unittest.TestCase):
+
+    # Note: the SGA and SGI axis directions in the attitude files are not necessarily reliable!
+    # In this example, there are cases where SGA-X and SGI-Z are parallel or nearly so, when
+    # they should be close to perpendicular.  This eventually leads to NaNs in the cotrans output.
     def test_cotrans(self):
         mgf_vars=mgf()
         # Clean NaNs from input data
