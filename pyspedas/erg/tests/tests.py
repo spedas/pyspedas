@@ -8,7 +8,7 @@ from pyspedas.erg.satellite.erg.particle.erg_lepe_get_dist import erg_lepe_get_d
 from pyspedas.erg.satellite.erg.particle.erg_mepe_get_dist import erg_mepe_get_dist
 from pyspedas.erg.satellite.erg.particle.erg_hep_get_dist import erg_hep_get_dist
 from pyspedas.erg.satellite.erg.particle.erg_xep_get_dist import erg_xep_get_dist
-
+import numpy as np
 import pyspedas
 
 class LoadTestCases(unittest.TestCase):
@@ -181,6 +181,8 @@ class LoadTestCases(unittest.TestCase):
             self.assertTrue(len(dist['time']) == 1)
             dist = erg_mepi_get_dist(var, index=[0,1,2], species=None)
             self.assertTrue(len(dist['time']) == 3)
+            dist = erg_mepi_get_dist(var, index=np.array([0,1,2]), species=None)
+            self.assertTrue(len(dist['time']) == 3)
             dist = erg_mepi_get_dist(var, trange=[t[0,], t[-1]], species=None)
             self.assertTrue(len(dist['time']) == len(t))
 
@@ -207,6 +209,8 @@ class LoadTestCases(unittest.TestCase):
             self.assertTrue(len(dist['time']) == 1)
             dist = erg_lepi_get_dist(var, index=[0,1,2], species=None)
             self.assertTrue(len(dist['time']) == 3)
+            dist = erg_lepi_get_dist(var, index=np.array([0,1,2]), species=None)
+            self.assertTrue(len(dist['time']) == 3)
             dist = erg_lepi_get_dist(var, trange=[t[0,], t[-1]], species=None)
             self.assertTrue(len(dist['time']) == len(t))
 
@@ -232,6 +236,8 @@ class LoadTestCases(unittest.TestCase):
             self.assertTrue(len(dist['time']) == 1)
             dist = erg_lepe_get_dist(var, index=[0,1,2], species=None)
             self.assertTrue(len(dist['time']) == 3)
+            dist = erg_lepe_get_dist(var, index=np.array([0,1,2]), species=None)
+            self.assertTrue(len(dist['time']) == 3)
             dist = erg_lepe_get_dist(var, trange=[t[0,], t[-1]], species=None)
             self.assertTrue(len(dist['time']) == len(t))
         self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU'))
@@ -253,6 +259,8 @@ class LoadTestCases(unittest.TestCase):
             dist = erg_mepe_get_dist(var, index=0, species=None)
             self.assertTrue(len(dist['time']) == 1)
             dist = erg_mepe_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_mepe_get_dist(var, index=np.array([0,1,2]), species=None)
             self.assertTrue(len(dist['time']) == 3)
             dist = erg_mepe_get_dist(var, trange=[t[0,], t[-1]], species=None)
             self.assertTrue(len(dist['time']) == len(t))
@@ -276,6 +284,8 @@ class LoadTestCases(unittest.TestCase):
             dist = erg_hep_get_dist(var, index=0, species=None)
             self.assertTrue(len(dist['time']) == 1)
             dist = erg_hep_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_hep_get_dist(var, index=np.array([0,1,2]), species=None)
             self.assertTrue(len(dist['time']) == 3)
             dist = erg_hep_get_dist(var, trange=[t[0,], t[-1]], species=None)
             # This assertion doesn't necessarily hold for HEP.  Something to do with
@@ -301,6 +311,8 @@ class LoadTestCases(unittest.TestCase):
             dist = erg_xep_get_dist(var, index=0, species=None)
             self.assertTrue(len(dist['time']) == 1)
             dist = erg_xep_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_xep_get_dist(var, index=np.array([0,1,2]), species=None)
             self.assertTrue(len(dist['time']) == 3)
             dist = erg_xep_get_dist(var, trange=[t[0,], t[-1]], species=None)
             # This assertion doesn't necessarily hold for HEP.  Something to do with
