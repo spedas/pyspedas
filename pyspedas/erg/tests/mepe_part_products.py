@@ -41,7 +41,7 @@ class LoadTestCases(unittest.TestCase):
         # Calculate and plot energy spectrum
         vars = erg_mep_part_products( 'erg_mepe_l2_3dflux_FEDU', outputs='phi', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
         tplot( 'erg_mepe_l2_3dflux_FEDU_phi', display=display, save_png='erg_mepe_phi.png' )
-        self.assertTrue('erg_mepe_l2_3dflux_FEDU_pfhi' in vars)
+        self.assertTrue('erg_mepe_l2_3dflux_FEDU_phi' in vars)
         self.assertTrue(data_exists('erg_mepe_l2_3dflux_FEDU_phi'))
 
 
@@ -86,7 +86,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_mep_part_products( 'erg_mepe_l2_3dflux_FEDU', mag_name=mag_vn, pos_name=pos_vn, outputs='moments', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_mepe_moments.png' )
         self.assertTrue('erg_mepe_l2_3dflux_FEDU_density' in vars)
         self.assertTrue(data_exists('erg_mepe_l2_3dflux_FEDU_density'))
@@ -102,7 +101,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_mep_part_products( 'erg_mepe_l2_3dflux_FEDU', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_moments', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_mepe_fac_moments.png' )
         self.assertTrue('erg_mepe_l2_3dflux_FEDU_density_mag' in vars)
         self.assertTrue(data_exists('erg_mepe_l2_3dflux_FEDU_density_mag'))
@@ -118,7 +116,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_mep_part_products( 'erg_mepe_l2_3dflux_FEDU', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_energy', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_mepe_fac_energy.png' )
         self.assertTrue('erg_mepe_l2_3dflux_FEDU_energy_mag' in vars)
         self.assertTrue(data_exists('erg_mepe_l2_3dflux_FEDU_energy_mag'))
