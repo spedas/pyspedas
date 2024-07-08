@@ -17,11 +17,12 @@ To start the gui from the command line, use:
     python pyspedas/cdagui/cdagui.py
 """
 
+import logging
 import os
 import time
 import tkinter as tk
 from tkinter import messagebox, filedialog
-from .cdaweb import CDAWeb
+from pyspedas.cdagui.cdaweb import CDAWeb
 from config import CONFIG
 
 
@@ -207,46 +208,17 @@ class cdaWindow:
                 trange=trange,
                 time_clip=time_clip,
             )
+            no_of_files, no_of_variables, loaded_vars = result
 
             # Show a message about the results
-            filelen = len(result)
-            if filelen < 1:
-                msg = "No files were downloaded."
-                messagebox.showerror(msgtitle, msg)
-                status("")  # Reset status
-                return []
-
-            else:
-                file_result = result
-                count_no_downloads = 0
-                count_tplot_problem = 0
-                count_tplot = 0
-                for item in result:
-                    if len(item) != 3:
-                        continue
-                    if item[2] == -1:
-                        count_no_downloads += 1
-                    elif item[2] == 0 and not download_only:
-                        count_tplot_problem += 1
-                    elif item[2] == 1:
-                        count_tplot += 1
-                msg = "Results:"
-                msg += "\n"
-                msg += "\nFiles to download: " + str(filelen)
-                msg += "\nFiles that could not be downloaded: " + str(
-                    count_no_downloads
-                )
-                if not download_only:
-                    msg += "\n"
-                    msg += "\nFiles loaded to pytplot: " + str(count_tplot)
-                    msg += "\nFiles that could not be loaded to pytplot: " + str(
-                        count_tplot_problem
-                    )
-                # Show final message with results
-                messagebox.showinfo(msgtitle, msg)
-
+            logging.info(loaded_vars)
+            msg = "Results:\n"
+            msg += "\nDownloaded files: " + str(no_of_files)
+            msg += "\ntplot variables created: " + str(no_of_variables)
+            messagebox.showinfo(msgtitle, msg)
+            
             status("")  # Reset status
-            return file_result
+            return loaded_vars
 
         # Create the main window
         window = master
