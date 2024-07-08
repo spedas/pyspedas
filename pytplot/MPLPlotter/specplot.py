@@ -7,15 +7,21 @@ import warnings
 import pytplot
 import logging
 
-def get_bin_boundaries(bins):
+def get_bin_boundaries(bins, ylog):
     """
 
     Parameters
     ----------
-    bins
+    bins: np.ndarray
+    Array of Y bin center values
+
+    ylog: str
+    If "log", use log space to get lowest bin boundary to avoid a lower limit == 0.0
 
     Returns
     -------
+    np.ndarray of float
+    Array of bin boundaries computed from the bin centers
 
     """
     nbins = len(bins)
@@ -45,7 +51,14 @@ def get_bin_boundaries(bins):
     finite_bins = np.copy(bins[idx_finite])
     edge_count = good_bin_count+1
     goodbins = np.zeros(edge_count, dtype=np.float64)
-    goodbins[0] = finite_bins[0] - (finite_bins[1] - finite_bins[0]) / 2.0
+
+    if ylog == "log":
+        goodbins[0] = 10**(np.log(finite_bins[0]) - (np.log(finite_bins[1]) - np.log(finite_bins[0])) / 2.0)
+    else:
+        goodbins[0] = finite_bins[0] - (finite_bins[1] - finite_bins[0]) / 2.0
+
+    # Perhaps the rest of the bin boundaries should also be calculated in log space if
+    # ylog == "log"?
     goodbins[1:edge_count-1] = (finite_bins[:-1] + finite_bins[1:]) / 2.0
     goodbins[edge_count-1] = finite_bins[-1] + (finite_bins[-1] - finite_bins[-2]) / 2.0
     if leading_nan_count > 0:
@@ -75,7 +88,7 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
     # If the nans are in the middle with good bins on either side....hahaha good luck!
     # Prepare bin edges
     if len(vdata.shape) == 1:
-        vdata_bins = get_bin_boundaries(vdata)
+        vdata_bins = get_bin_boundaries(vdata, ylog=ylog)
         bin_boundaries_set = vdata_bins
         nv = len(vdata)
     else:  # 2-d V
@@ -90,7 +103,7 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
 
         # The sentinal value is there because arrays with nans will not compare equal
         sentinel = 1e31
-        vdata_bins[0,:] = get_bin_boundaries(vdata[0,:])
+        vdata_bins[0,:] = get_bin_boundaries(vdata[0,:], ylog=ylog)
         pbins = vdata_bins[0,:]
         bin_boundaries_set = set(pbins)
         p = np.copy(vdata[0,:])
@@ -103,7 +116,7 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
             if np.any(diff):
                 # bin values have changed, recalculate boundaries and add to running set
                 #print(k)
-                u = get_bin_boundaries(vdata[k,:])
+                u = get_bin_boundaries(vdata[k,:],ylog=ylog)
                 pbins = u
                 vdata_bins[k,:] = u
                 uset = set(u)
@@ -609,7 +622,7 @@ def specplot(
                 out_vdata = 10**out_vdata
 
     # Resample to a higher resolution y grid, similar to interp, but only if y_no_resample is not set
-    if ( False and
+    if (False and
          ((yaxis_options.get("y_no_resample") is None
         or yaxis_options.get("y_no_resample") == 0))
     ):
