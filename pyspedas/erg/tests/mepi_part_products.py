@@ -86,7 +86,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_mep_part_products( 'erg_mepi_l2_3dflux_FPDU', mag_name=mag_vn, pos_name=pos_vn, outputs='moments', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_mepi_moments.png' )
         self.assertTrue('erg_mepi_l2_3dflux_FPDU_density' in vars)
         self.assertTrue(data_exists('erg_mepi_l2_3dflux_FPDU_density'))
@@ -102,7 +101,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_mep_part_products( 'erg_mepi_l2_3dflux_FPDU', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_moments', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_mepi_fac_moments.png' )
         self.assertTrue('erg_mepi_l2_3dflux_FPDU_density_mag' in vars)
         self.assertTrue(data_exists('erg_mepi_l2_3dflux_FPDU_density_mag'))
@@ -118,7 +116,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_mep_part_products( 'erg_mepi_l2_3dflux_FPDU', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_energy', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_mepi_fac_energy.png' )
         self.assertTrue('erg_mepi_l2_3dflux_FPDU_energy_mag' in vars)
         self.assertTrue(data_exists('erg_mepi_l2_3dflux_FPDU_energy_mag'))

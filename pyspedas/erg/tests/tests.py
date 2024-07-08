@@ -128,7 +128,6 @@ class LoadTestCases(unittest.TestCase):
     def test_load_lepe_3dflux(self):
         del_data()
         lepe_vars = pyspedas.erg.lepe(datatype='3dflux')
-        print(lepe_vars)
         # No tplot variables, just a list with strings and dicts
         self.assertTrue('erg_lepe_l2_3dflux_FEDU' in lepe_vars)
 
@@ -166,7 +165,6 @@ class LoadTestCases(unittest.TestCase):
     def test_load_mepi_get_dist(self):
         del_data()
         mepi_vars = pyspedas.erg.mepi_nml(datatype='3dflux')
-        print(mepi_vars)
         base = "erg_mepi_l2_3dflux_"
         for species in ['FPDU', 'FHEDU', 'FODU']:
             var = base + species
@@ -194,7 +192,6 @@ class LoadTestCases(unittest.TestCase):
     def test_load_lepi_get_dist(self):
         del_data()
         lepi_vars = pyspedas.erg.lepi(datatype='3dflux')
-        print(lepi_vars)
         base = "erg_lepi_l2_3dflux_"
         for species in ['FPDU', 'FHEDU', 'FODU']:
             var = base + species
@@ -270,7 +267,6 @@ class LoadTestCases(unittest.TestCase):
     def test_load_hep_get_dist(self):
         del_data()
         hep_vars = pyspedas.erg.hep(datatype='3dflux')
-        print(hep_vars)
         base = "erg_hep_l2_"
         for species in ['FEDU_L', 'FEDU_H']:
             var = base + species
@@ -297,7 +293,6 @@ class LoadTestCases(unittest.TestCase):
     def test_load_xep_get_dist(self):
         del_data()
         xep_vars = pyspedas.erg.xep(datatype='2dflux')
-        print(xep_vars)
         base = "erg_xep_l2_"
         for species in ['FEDU_SSD']:
             var = base + species

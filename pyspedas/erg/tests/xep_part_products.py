@@ -64,7 +64,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_xep_part_products( 'erg_xep_l2_FEDU_SSD', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_energy', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_xep_fac_energy.png' )
         self.assertTrue('erg_xep_l2_FEDU_SSD_energy_mag' in vars)
         self.assertTrue(data_exists('erg_xep_l2_FEDU_SSD_energy_mag'))

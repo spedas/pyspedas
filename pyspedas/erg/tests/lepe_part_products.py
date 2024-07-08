@@ -97,7 +97,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepe_l2_3dflux_FEDU', mag_name=mag_vn, pos_name=pos_vn, outputs='moments', trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_lepe_moments.png' )
         self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU_density'))
         self.assertTrue('erg_lepe_l2_3dflux_FEDU_density' in vars)
@@ -113,7 +112,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepe_l2_3dflux_FEDU', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_moments', trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_lepe_fac_moments.png' )
         self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU_density_mag'))
         self.assertTrue('erg_lepe_l2_3dflux_FEDU_density_mag' in vars)
@@ -176,7 +174,6 @@ class LoadTestCases(unittest.TestCase):
                                      fac_type='xdsi',
                                      mag_name=mag_vn, pos_name=pos_vn,
                                      trange=['2017-04-05 21:45:00', '2017-04-05 22:45:00'])
-        print(vars)
         tplot( 'erg_lepe_l2_3dflux_FEDU_energy_mag', display=display, save_png='erg_lepe_energy_limit_gyro.png' )
         self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU_energy_mag'))
         self.assertTrue('erg_lepe_l2_3dflux_FEDU_energy_mag' in vars)

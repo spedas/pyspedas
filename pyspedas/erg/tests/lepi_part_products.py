@@ -97,7 +97,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepi_l2_3dflux_FPDU', mag_name=mag_vn, pos_name=pos_vn, outputs='moments', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_lepi_moments.png' )
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU_density'))
         self.assertTrue('erg_lepi_l2_3dflux_FPDU_density' in vars)
@@ -113,7 +112,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepi_l2_3dflux_FPDU', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_moments', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_lepi_fac_moments.png' )
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU_density_mag'))
         self.assertTrue('erg_lepi_l2_3dflux_FPDU_density_mag' in vars)
@@ -129,7 +127,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepi_l2_3dflux_FPDU', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_energy', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
-        print(vars)
         tplot(vars, display=display, save_png='erg_lepi_fac_energy.png' )
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU_energy_mag'))
         self.assertTrue('erg_lepi_l2_3dflux_FPDU_energy_mag' in vars)
@@ -177,7 +174,6 @@ class LoadTestCases(unittest.TestCase):
                                      fac_type='xdsi',
                                      mag_name=mag_vn, pos_name=pos_vn,
                                      trange=['2017-04-05 21:45:00', '2017-04-05 22:45:00'])
-        print(vars)
         tplot( 'erg_lepi_l2_3dflux_FPDU_energy_mag', display=display, save_png='erg_lepi_energy_limit_gyro.png' )
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU_energy_mag'))
         self.assertTrue('erg_lepi_l2_3dflux_FPDU_energy_mag' in vars)

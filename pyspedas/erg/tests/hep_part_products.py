@@ -84,8 +84,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_hep_part_products( 'erg_hep_l2_FEDU_L', mag_name=mag_vn, pos_name=pos_vn, outputs='moments' )
-        print(vars)
-        # This call doesn't seem to produce any tplot variables
         tplot(vars, display=display, save_png='erg_hep_moments.png')
         self.assertTrue('erg_hep_l2_FEDU_L_density' in vars)
         self.assertTrue(data_exists('erg_hep_l2_FEDU_L_density'))
@@ -101,8 +99,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_hep_part_products( 'erg_hep_l2_FEDU_L', mag_name=mag_vn, pos_name=pos_vn, outputs='fac_moments')
-        print(vars)
-        # This test doesn't seem to produce any tplot variables
         tplot(vars, display=display, save_png='erg_hep_fac_moments.png' )
         self.assertTrue('erg_hep_l2_FEDU_L_density_mag' in vars)
         self.assertTrue(data_exists('erg_hep_l2_FEDU_L_density_mag'))
@@ -133,7 +129,6 @@ class LoadTestCases(unittest.TestCase):
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
         vars = erg_hep_part_products( 'erg_hep_l2_FEDU_L', mag_name=mag_vn, pos_name=pos_vn, outputs='gyro' )
-        print(vars)
         tplot(vars, display=display, save_png='erg_hep_gyro.png' )
         self.assertTrue('erg_hep_l2_FEDU_L_gyro' in vars)
         self.assertTrue(data_exists('erg_hep_l2_FEDU_L_gyro'))
@@ -164,7 +159,6 @@ class LoadTestCases(unittest.TestCase):
                                      fac_type='xdsi',
                                      mag_name=mag_vn, pos_name=pos_vn,
                                      trange=['2017-04-05 21:45:00', '2017-04-05 22:45:00'])
-        print(vars)
         tplot( 'erg_hep_l2_FEDU_L_energy_mag', display=display, save_png='erg_hep_energy_limit_gyro.png' )
         self.assertTrue(data_exists('erg_hep_l2_FEDU_L_energy_mag'))
         self.assertTrue('erg_hep_l2_FEDU_L_energy_mag' in vars)
