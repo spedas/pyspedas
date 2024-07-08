@@ -6,7 +6,7 @@ from pyspedas import themis
 from pytplot import store_data, options, timespan, tplot, tplot_options, degap
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = False
+global_display = True
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -95,6 +95,14 @@ class PlotTestCases(unittest.TestCase):
         tplot('thg_ask_atha', save_png='thg_ask_atha_no_resample',display=global_display)
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    def test_mms_epsd_specplot(self):
+        from pytplot import options
+        from pyspedas import mms_load_dsp
+        timespan('2015-08-01',1,'days')
+        # Logarithmic Y scale with lowest bin boundary = 0.0 by linear extrapolation from bin centers
+        data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype=['epsd', 'bpsd'], level='l2', data_rate='fast')
+        tplot(['mms1_dsp_epsd_omni', 'mms1_dsp_bpsd_omni'], display=global_display)
 
     def test_elfin_specplot(self):
         import pyspedas
