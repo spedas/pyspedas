@@ -2,7 +2,7 @@ import logging
 from pyspedas.kyoto import dst as load_dst, load_ae
 from pyspedas.themis.ground.gmag import gmag as thm_gmag
 from pyspedas.noaa.noaa_load_kp import noaa_load_kp
-from pyspedas.omni.load import load as omni_load
+from pyspedas.omni import data as omni_load
 from pytplot import time_clip as tclip
 
 
@@ -159,7 +159,7 @@ def load_geomagnetic_indices(
                 else:
                     vars.extend(noaa_vars)
             else:
-                noaa_load_kp(
+                noaa_vars = noaa_load_kp(
                     trange=trange,
                     datatype=datatypes,
                     prefix=nprefix,
@@ -215,7 +215,12 @@ def load_geomagnetic_indices(
                     "ASY_H",
                 ]
             else:
-                odatatypes = datatypes
+                odatatypes = ['IMF', 'PLS', 'IMF_PTS', 'PLS_PTS', 'percent_interp', 'Timeshift',
+                    'RMS_Timeshift', 'RMS_phase', 'Time_btwn_obs', 'F', 'BX_GSE', 'BY_GSE', 'BZ_GSE',
+                    'BY_GSM', 'BZ_GSM', 'RMS_SD_B', 'RMS_SD_fld_vec', 'flow_speed', 'Vx',  'Vy', 'Vz',
+                    'proton_density', 'T','NaNp_Ratio', 'Pressure', 'E', 'Beta', 'Mach_num', 'Mgs_mach_num',
+                    'x', 'y', 'z', 'BSN_x', 'BSN_y', 'BSN_z', 'AE_INDEX', 'AL_INDEX', 'AU_INDEX', 'SYM_D',
+                     'SYM_H', 'ASY_D','ASY_H']
             omni_vars = omni_load(
                 trange=trange,
                 prefix=oprefix,
