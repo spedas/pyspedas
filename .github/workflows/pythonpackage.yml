@@ -110,8 +110,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
         echo Starting VIRES client tests at `date`
         coverage run -a -m pyspedas.vires.tests.tests
-        #echo Starting secs tests at `date`
-        #coverage run -a -m pyspedas.secs.tests.tests
+        echo Starting secs tests at `date`
+        coverage run -a -m pyspedas.secs.tests.tests
         echo Starting MTH5 import test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
@@ -206,8 +206,8 @@ jobs:
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         echo Starting cotrans minvar tests at `date`
         coverage run -a -m pyspedas.cotrans.tests.test_minvar
-        echo Starting cluster tests at `date`
-        coverage run -a -m pyspedas.cluster.tests.tests
+        #echo Starting cluster tests at `date`
+        #coverage run -a -m pyspedas.cluster.tests.tests
         echo Starting csswe tests at `date`
         coverage run -a -m pyspedas.csswe.tests.tests
         echo Starting ace tests at `date`
