@@ -1,8 +1,12 @@
 
 import os
 import unittest
-from pytplot import data_exists, del_data, timespan,tplot, tplot_names
+from pytplot import data_exists, del_data, timespan,tplot, tplot_names, get_data
 from pyspedas.erg import erg_hep_part_products
+from pyspedas.erg.satellite.erg.particle.erg_hep_get_dist import erg_hep_get_dist
+from pyspedas.erg.satellite.erg.particle.erg_pgs_make_e_spec import erg_pgs_make_e_spec
+from pyspedas.erg.satellite.erg.particle.erg_pgs_make_theta_spec import erg_pgs_make_theta_spec
+from pyspedas.erg.satellite.erg.particle.erg_pgs_make_phi_spec import erg_pgs_make_phi_spec
 
 import pyspedas
 import pytplot
@@ -10,6 +14,26 @@ import pytplot
 display=False
 
 class LoadTestCases(unittest.TestCase):
+
+
+    def test_part_products_utilities(self):
+        del_data()
+        hep_vars = pyspedas.erg.hep(datatype='3dflux')
+        base = "erg_hep_l2_"
+        for species in ['FEDU_L', 'FEDU_H']:
+            var = base + species
+            vardat = get_data(var)
+            varmeta = get_data(var, metadata=True)
+            t = vardat[0]
+            dist = erg_hep_get_dist(var, index=[0,1,2], species=None)
+            theta_y, theta_v = erg_pgs_make_theta_spec(dist, resolution=dist['n_theta'],no_ang_weighting=False)
+            self.assertTrue(len(theta_y) > 0)
+            self.assertTrue(len(theta_v) > 0)
+            self.assertTrue(len(theta_y) == len(theta_v))
+            phi_y, phi_v = erg_pgs_make_phi_spec(dist, resolution=dist['n_phi'],no_ang_weighting=False)
+            self.assertTrue(len(phi_y) > 0)
+            self.assertTrue(len(phi_v) > 0)
+            self.assertTrue(len(phi_y) == len(phi_v))
 
     def test_hep_theta(self):
         del_data('*')
@@ -130,6 +154,21 @@ class LoadTestCases(unittest.TestCase):
         # Calculate and plot energy spectrum
         vars = erg_hep_part_products( 'erg_hep_l2_FEDU_L', mag_name=mag_vn, pos_name=pos_vn, outputs='gyro' )
         tplot(vars, display=display, save_png='erg_hep_gyro.png' )
+        self.assertTrue('erg_hep_l2_FEDU_L_gyro' in vars)
+        self.assertTrue(data_exists('erg_hep_l2_FEDU_L_gyro'))
+
+    def test_hep_gyro_muconv(self):
+        del_data('*')
+        # Load HEP-e Lv.2 3-D flux data
+        timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
+        pyspedas.erg.hep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        vars = pyspedas.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
+        vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
+        mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
+        pos_vn = 'erg_orb_l2_pos_gse'
+        # Calculate and plot energy spectrum
+        vars = erg_hep_part_products( 'erg_hep_l2_FEDU_L', mag_name=mag_vn, pos_name=pos_vn, outputs='gyro' , muconv=True)
+        tplot(vars, display=display, save_png='erg_hep_gyro_muconv.png' )
         self.assertTrue('erg_hep_l2_FEDU_L_gyro' in vars)
         self.assertTrue(data_exists('erg_hep_l2_FEDU_L_gyro'))
 
