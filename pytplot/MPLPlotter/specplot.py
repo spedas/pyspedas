@@ -28,7 +28,23 @@ def get_bin_boundaries(bins, ylog):
     # Bin boundaries need to be floating point, even if the original bin values are
     # integers.
     outbins = np.zeros(nbins+1,dtype=np.float64)
-    idx_finite = np.where(np.isfinite(bins))
+
+    # If we're working in log space, do the transform before filtering for finite values.
+    # THEMIS ESA can have 0.0 bin centers with log scaling!
+
+
+    if ylog == "log":
+        clean_bins = bins
+        zero_idx = np.where(bins == 0.0)
+        if len(zero_idx[0]) > 0:
+            clean_bins[zero_idx] = np.nan
+            clean_bins[zero_idx] = np.nanmin(clean_bins)/2.0
+        working_bins = np.log10(clean_bins)
+        # Replace 0 boundaries with
+    else:
+        working_bins = bins
+
+    idx_finite = np.where(np.isfinite(working_bins))
 
     if type(idx_finite) is tuple:
         idx_finite = idx_finite[0]
@@ -48,17 +64,11 @@ def get_bin_boundaries(bins, ylog):
         logging.warning("get_bin_boundaries: may contain nans between finite values. leading nans: %d, trailing_nans: %d, finite vals: %d",
                         leading_nan_count, trailing_nan_count, good_bin_count)
 
-    finite_bins = np.copy(bins[idx_finite])
+    finite_bins = np.copy(working_bins[idx_finite])
     edge_count = good_bin_count+1
     goodbins = np.zeros(edge_count, dtype=np.float64)
 
-    if ylog == "log":
-        goodbins[0] = 10**(np.log(finite_bins[0]) - (np.log(finite_bins[1]) - np.log(finite_bins[0])) / 2.0)
-    else:
-        goodbins[0] = finite_bins[0] - (finite_bins[1] - finite_bins[0]) / 2.0
-
-    # Perhaps the rest of the bin boundaries should also be calculated in log space if
-    # ylog == "log"?
+    goodbins[0] = finite_bins[0] - (finite_bins[1] - finite_bins[0]) / 2.0
     goodbins[1:edge_count-1] = (finite_bins[:-1] + finite_bins[1:]) / 2.0
     goodbins[edge_count-1] = finite_bins[-1] + (finite_bins[-1] - finite_bins[-2]) / 2.0
     if leading_nan_count > 0:
@@ -66,6 +76,9 @@ def get_bin_boundaries(bins, ylog):
     outbins[leading_nan_count:leading_nan_count+edge_count] = goodbins[:]
     if trailing_nan_count > 0:
         outbins[leading_nan_count+edge_count:nbins+2] = np.nan
+
+    if ylog=="log":
+        outbins = 10.0**outbins
 
     return outbins
 
@@ -506,7 +519,6 @@ def specplot(
                 if plot_extras['spec_dim_to_plot'] == 'v2':
                     out_vdata = var_data.v2
     else:
-        breakpoint()
         logging.warning("Too many dimensions on the variable: " + variable)
         return
 
@@ -518,6 +530,12 @@ def specplot(
     # and regrids it to the new y bin count (out_values)
 
     out_values, out_vdata = specplot_make_1d_ybins(out_values, out_vdata, ylog)
+    # If the user set a yrange with the 'options' command, nothing is needed here
+    # since tplot takes care of it.   If not, set it here to the min/max finite bin
+    # boundaries.  If left unspecified, pcolormesh might do something weird to the y limits.
+    if yaxis_options.get('y_range_user') is None:
+        this_axis.set_ylim([np.nanmin(out_vdata), np.nanmax(out_vdata)])
+
 
     # automatic interpolation options
     if yaxis_options.get("x_interp") is not None:
@@ -699,11 +717,15 @@ def specplot(
     # check for negatives if zlog is requested
     if zlog == "log":
         out_values[out_values < 0.0] = 0.0
-
+    ylim_before = this_axis.get_ylim()
     # create the spectrogram (ignoring warnings)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         im = this_axis.pcolormesh(var_times, out_vdata.T, out_values.T, **spec_options)
+    ylim_after = this_axis.get_ylim()
+
+    #logging.info("ylim before pcolormesh: %s ",str(ylim_before))
+    #logging.info("ylim after pcolormesh: %s", str(ylim_after))
 
     # store everything needed to create the colorbars
     colorbars[variable] = {}
