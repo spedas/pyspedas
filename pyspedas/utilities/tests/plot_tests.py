@@ -3,10 +3,10 @@ import unittest
 
 
 from pyspedas import themis
-from pytplot import store_data, options, timespan, tplot, tplot_options, degap
+from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = False
+global_display = True
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -28,6 +28,7 @@ class PlotTestCases(unittest.TestCase):
 
     def test_pseudovar_color_options(self):
         themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
         store_data('test_pseudo_colors',data=['thc_fge_dsl','thc_fge_btotal'])
         # Set the color option on the pseudovariable (4 traces total, so 4 colors)
         options('test_pseudo_colors','color',['k','r','g','b'])
@@ -37,9 +38,11 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', 'Trace colors all black')
         tplot('test_pseudo_colors', save_png='test_pseudo_colors_allsamecolor', display=global_display)
         tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_var_line_options(self):
         themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
         options('thc_fgs_dsl','line_style',['solid','dot','dash'])
         tplot_options('title', 'Line styles solid, dot, dash')
         tplot('thc_fgs_dsl',save_png='test_linestyle_3styles',display=global_display)
@@ -47,13 +50,16 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', 'Line styles all dot')
         tplot('thc_fgs_dsl',save_png='test_linestyle_allsame',display=global_display)
         tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_is_pseudovar(self):
         from pytplot import is_pseudovariable
         themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
         store_data('test_pseudo_colors',data=['thc_fge_dsl','thc_fge_btotal'])
         self.assertTrue(is_pseudovariable('test_pseudo_colors'))
         self.assertFalse(is_pseudovariable('thc_fgs_dsl'))
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_count_traces(self):
         from pytplot import count_traces
@@ -69,10 +75,12 @@ class PlotTestCases(unittest.TestCase):
         tr_pseudo_spec=count_traces('test_pseudo_colors')
         self.assertEqual(tr_pseudo_spec,1)
         tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
 
     def test_pseudovar_line_options(self):
         themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
         store_data('test_pseudo_lineopts',data=['thc_fge_dsl','thc_fge_btotal'])
         # Set the line_style on the pseudovariable (4 traces total, so 4 styles)
         options('test_pseudo_lineopts','line_style',['dot','dash','solid','dash_dot'])
@@ -83,6 +91,7 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', 'Pseudovar line styles all dot')
         tplot('test_pseudo_lineopts', save_png='test_pseudo_lineopts_allsame',display=global_display)
         tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_specplot_optimizations(self):
         ask_vars = themis.ask(trange=['2013-11-05', '2013-11-06'])
@@ -96,13 +105,22 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_themis_peef_bins(self):
+        themis.esa(probe='a',trange=['2016-12-11','2016-12-12'])
+        timespan('2016-12-11',1,'days')
+        options('tha_peef_en_eflux','yrange', [1000,3000])
+        tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux',display=global_display)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
     def test_mms_epsd_specplot(self):
         from pytplot import options
         from pyspedas import mms_load_dsp
         timespan('2015-08-01',1,'days')
         # Logarithmic Y scale with lowest bin boundary = 0.0 by linear extrapolation from bin centers
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype=['epsd', 'bpsd'], level='l2', data_rate='fast')
-        tplot(['mms1_dsp_epsd_omni', 'mms1_dsp_bpsd_omni'], display=global_display)
+        # options('mms1_dsp_epsd_omni','yrange',[8.0,130000.0])
+        tplot(['mms1_dsp_epsd_omni', 'mms1_dsp_bpsd_omni'], save_png='mms1_epsd_omni', display=global_display)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_elfin_specplot(self):
         import pyspedas
@@ -222,6 +240,7 @@ class PlotTestCases(unittest.TestCase):
         vars = ['tha_peif_en_eflux', 'esa_srvy_burst', 'tha_peib_en_eflux']
         tplot_options('title', 'Combining full & burst cadence with same energies: top=fast, middle=combined, bot=burst')
         tplot(vars, save_png='test_pseudo_spectra_full_burst',display=global_display)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
         # Zoom in o a burst interval
         timespan('2007-03-23/12:20', 10, 'minutes')
