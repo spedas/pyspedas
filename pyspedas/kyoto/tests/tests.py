@@ -1,6 +1,6 @@
 import unittest
 import pyspedas
-from pytplot import data_exists, del_data, get_data
+from pytplot import data_exists, del_data, get_data, tplot_names
 import numpy as np
 
 
@@ -48,6 +48,31 @@ class LoadTestCases(unittest.TestCase):
         dst_min=np.min(kd.y)
         self.assertTrue(dst_min < -100.0)
 
+    def test_load_geomagnetic_indices(self):
+        del_data('*')
+        geom_ind_vars = pyspedas.kyoto.load_geomagnetic_indices(trange=["2015-03-16", "2015-03-19"])
+        self.assertTrue(data_exists("kyoto_ae"))
+        self.assertTrue(data_exists("thg_idx_al"))
+        self.assertTrue(data_exists("noaa_Kp"))
+        self.assertTrue(data_exists("gfz_Kp"))
+        self.assertTrue(data_exists("omni_Pressure"))
+        self.assertTrue("kyoto_ae" in geom_ind_vars)
+        self.assertTrue("thg_idx_al" in geom_ind_vars)
+        self.assertTrue("noaa_Kp" in geom_ind_vars)
+        self.assertTrue("gfz_Kp" in geom_ind_vars)
+        self.assertTrue("omni_Pressure" in geom_ind_vars)
+
+    def test_load_geomagnetic_indices_omni_load_all(self):
+        del_data('*')
+        geom_ind_vars = pyspedas.kyoto.load_geomagnetic_indices(missions=["omni"], omni_load_all=True,trange=["2015-03-16", "2015-03-19"])
+        self.assertTrue(data_exists("omni_BY_GSE"))
+        self.assertTrue("omni_BY_GSE" in geom_ind_vars)
+
+    def test_load_geomagnetic_indices_datatype(self):
+        del_data('*')
+        geom_ind_vars = pyspedas.kyoto.load_geomagnetic_indices(trange=["2015-03-16", "2015-03-19"], datatypes=['dst'])
+        self.assertTrue(data_exists("kyoto_dst"))
+        self.assertTrue("kyoto_dst" in geom_ind_vars)
 
     def test_errors(self):
         pyspedas.kyoto.dst(trange=None)
