@@ -9,3 +9,4 @@ omit =
   */pyspedas/cdagui/cdagui.py
   */pyspedas/maven/interp_utilities.py
   */pyspedas/maven/list_utilities.py
+  */pyspedas/maven/read_iuvs_file_unused_modes.py
