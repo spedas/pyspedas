@@ -86,6 +86,7 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
         logging.error("Invalid filenames input. Must be string or list of strings.")
         return stored_variables
 
+    filenames = sorted(list(set(filenames)))
     for filename in filenames:
 
         # Read file
@@ -181,7 +182,9 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
                 # Store the data, and merge variables if that was requested.
                 var_name = prefix + var + suffix
                 to_merge = False
-                if (var_name in pytplot.data_quants.keys() and (merge == True)):
+                # Merge only if the variable has been saved already in the current group of files.
+                # Otherwise, the tplot variable will be replaced. 
+                if (var_name in stored_variables) and (var_name in pytplot.data_quants.keys() and (merge == True)):
                     prev_data_quant = pytplot.data_quants[var_name]
                     to_merge = True
 
