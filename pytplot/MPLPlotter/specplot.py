@@ -7,12 +7,12 @@ import warnings
 import pytplot
 import logging
 
-def get_bin_boundaries(bins, ylog):
+def get_bin_boundaries(bin_centers, ylog):
     """
 
     Parameters
     ----------
-    bins: np.ndarray
+    bin_centers: np.ndarray
     Array of Y bin center values
 
     ylog: str
@@ -24,7 +24,7 @@ def get_bin_boundaries(bins, ylog):
     Array of bin boundaries computed from the bin centers
 
     """
-    nbins = len(bins)
+    nbins = len(bin_centers)
     # Bin boundaries need to be floating point, even if the original bin values are
     # integers.
     outbins = np.zeros(nbins+1,dtype=np.float64)
@@ -34,15 +34,15 @@ def get_bin_boundaries(bins, ylog):
 
 
     if ylog == "log":
-        clean_bins = bins
-        zero_idx = np.where(bins == 0.0)
+        clean_bins = bin_centers
+        zero_idx = np.where(bin_centers == 0.0)
         if len(zero_idx[0]) > 0:
             clean_bins[zero_idx] = np.nan
             clean_bins[zero_idx] = np.nanmin(clean_bins)/2.0
         working_bins = np.log10(clean_bins)
         # Replace 0 boundaries with
     else:
-        working_bins = bins
+        working_bins = bin_centers
 
     idx_finite = np.where(np.isfinite(working_bins))
 
@@ -103,18 +103,18 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
     if len(vdata.shape) == 1:
         vdata_bins = get_bin_boundaries(vdata, ylog=ylog)
         bin_boundaries_set = vdata_bins
-        nv = len(vdata)
+        input_bin_center_count = len(vdata)
     else:  # 2-d V
-        nv = vdata.shape[1]
-        vdata_bins = np.zeros((ntimes, nv + 1), dtype=np.float64)
+        input_bin_center_count = vdata.shape[1]
+        vdata_bins = np.zeros((ntimes, input_bin_center_count + 1), dtype=np.float64)
         # vdata_bins[:, 0] = vdata[:, 0] - (vdata[:, 1] - vdata[:, 0]) / 2.0
-        # vdata_bins[:, 1:nv] = (vdata[:, :-1] + vdata[:, 1:nv]) / 2.0
-        #vdata_bins[:, nv] = (
-        #        vdata[:, nv - 1] + (vdata[:, nv - 1] - vdata[:, nv - 2]) / 2.0
+        # vdata_bins[:, 1:input_bin_center_count] = (vdata[:, :-1] + vdata[:, 1:input_bin_center_count]) / 2.0
+        #vdata_bins[:, input_bin_center_count] = (
+        #        vdata[:, input_bin_center_count - 1] + (vdata[:, input_bin_center_count - 1] - vdata[:, input_bin_center_count - 2]) / 2.0
         #)
         #print("Making 2d bin edge set")
 
-        # The sentinal value is there because arrays with nans will not compare equal
+        # The sentinel value is there because arrays with nans will not compare equal
         sentinel = 1e31
         vdata_bins[0,:] = get_bin_boundaries(vdata[0,:], ylog=ylog)
         pbins = vdata_bins[0,:]
@@ -142,20 +142,20 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
 
     vdata_unsorted = np.array(list(bin_boundaries_set))
 
-    # Clean nans and sentinal values (e.g. may be present in FAST y bin values)
+    # Clean nans and sentinel values (e.g. may be present in FAST y bin values)
     vdata_finite = [val for val in vdata_unsorted if np.isfinite(val)]
 
     # Sort in ascending order
-    vdata_hi = np.sort(vdata_finite)
+    output_bin_boundaries = np.sort(vdata_finite)
 
-    ny = len(vdata_hi)
+    output_bin_boundary_len = len(output_bin_boundaries)
 
     # It is possible (e.g. ELFIN) that some bin boundaries are very close, but not equal
     # (less than a pixel high).  We might want to thin out any bin boundaries within
     # "epsilon" of the previous bin.
 
-    ymax=vdata_hi[ny-1]
-    ymin=vdata_hi[0]
+    ymax=output_bin_boundaries[output_bin_boundary_len-1]
+    ymin=output_bin_boundaries[0]
     yrange = ymax-ymin
 
     # With the default min_ratio, epsilon is about one pixel in the y direction for a typical plot size and dpi
@@ -165,14 +165,14 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
         epsilon = (np.log10(ymax)-np.log10(ymin)) * min_ratio
     else:
         epsilon = (ymax-ymin)*min_ratio
-    diff=vdata_hi[1:]-vdata_hi[:ny-1]
+    diff=output_bin_boundaries[1:]-output_bin_boundaries[:output_bin_boundary_len-1]
 
-    # logging.info("Specplot 1-D y bins before thinning: array size %d, yrange %f, smallest difference %f, epsilon %f,  ratio %f",len(vdata_hi),yrange,np.min(diff),epsilon, (ymax-ymin)/np.min(diff))
+    # logging.info("Specplot 1-D y bins before thinning: array size %d, yrange %f, smallest difference %f, epsilon %f,  ratio %f",len(output_bin_boundaries),yrange,np.min(diff),epsilon, (ymax-ymin)/np.min(diff))
 
-    last_val = vdata_hi[0]
-    thinned_list = [vdata_hi[0]]
-    for i in range(ny):
-        val = vdata_hi[i]
+    last_val = output_bin_boundaries[0]
+    thinned_list = [output_bin_boundaries[0]]
+    for i in range(output_bin_boundary_len):
+        val = output_bin_boundaries[i]
         if ylog == "log":
             diff = np.log10(val) - np.log10(last_val)
         else:
@@ -181,89 +181,87 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
             thinned_list.append(val)
             last_val = val
 
-    vdata_hi = np.array(thinned_list)
+    output_bin_boundaries = np.array(thinned_list)
 
-    ny = len(vdata_hi)
+    output_bin_boundary_len = len(output_bin_boundaries)
     # There could be NaNs (e.g. FAST)
-    ymax=vdata_hi[ny-1]
-    ymin=vdata_hi[0]
+    ymax=output_bin_boundaries[output_bin_boundary_len-1]
+    ymin=output_bin_boundaries[0]
     yrange = ymax-ymin
-    diff=vdata_hi[1:]-vdata_hi[:ny-1]
+    diff=output_bin_boundaries[1:]-output_bin_boundaries[:output_bin_boundary_len-1]
 
-    # logging.info("Specplot 1-D y bins after thinning: array size %d, yrange %f, smallest difference %f, epsilon %f,  ratio %f",len(vdata_hi),yrange,np.min(diff),epsilon, (ymax-ymin)/np.min(diff))
+    # logging.info("Specplot 1-D y bins after thinning: array size %d, yrange %f, smallest difference %f, epsilon %f,  ratio %f",len(output_bin_boundaries),yrange,np.min(diff),epsilon, (ymax-ymin)/np.min(diff))
 
-    out_values = np.zeros((ntimes, ny), dtype=values.dtype)
+    # The output value array should have a y dimension one less than the bin boundary count
+    out_values = np.zeros((ntimes, output_bin_boundary_len), dtype=values.dtype)
 
-    # Note that vdata_hi is always monotonically increasing, but
+    # Note that output_bin_boundaries is always monotonically increasing, but
     # vdata_bins can be monotonically decreasing
 
-    for j in range(ntimes):
+    for time_index in range(ntimes):
         if len(vdata.shape) == 1:
-            vtmp = vdata_bins
+            input_bin_centers = vdata_bins
         else:
-            vtmp = vdata_bins[j, :]
+            input_bin_centers = vdata_bins[time_index, :]
 
-        #if j==66:
-        #    print("j==66")
-
-        bin_start_idx = 0  # Initialize bin start index
-        bin_end_idx = ny - 1
-        for i in range(nv):
-            # Find the start and end of the current bin in vdata_hi
-            # The assumption that vdata_hi is monotonically increasing
+        output_bin_start_idx = 0  # Initialize bin start index
+        output_bin_end_idx = output_bin_boundary_len - 1
+        for i in range(input_bin_center_count):
+            # Find the start and end of the current bin in output_bin_boundaries
+            # The assumption that output_bin_boundaries is monotonically increasing
             # or decreasing allows us to break early from the inner
             # loop (k) as soon as we find that an element falls
             # outside the current bin, knowing that no further
             # elements can belong to this bin.
 
-            # print("vdata_hi:")
-            # print(vdata_hi)
-            # print("vtmp:")
-            # print(vtmp)
+            # print("output_bin_boundaries:")
+            # print(output_bin_boundaries)
+            # print("input_bin_centers:")
+            # print(input_bin_centers)
 
-            # TODO: vdata bins may contain nans. What if we're unlucky and the first two bin valuyes are nan?
+            # TODO: input_bin_centers may contain nans. What if we're unlucky and the first two bin valuyes are nan?
             # Also, can it ever happen that consecutive bin values are equal?  Then both branches of
             # the test will be equal.
 
-            if vtmp[i] < vtmp[i + 1]:  # increasing bin values
-                for k in range(bin_start_idx, ny):
+            if input_bin_centers[i] < input_bin_centers[i + 1]:  # increasing bin values
+                for k in range(output_bin_start_idx, output_bin_boundary_len):
                     # Check if within bin range, count until
                     # either the next value is out of range or
                     # there are no more values
-                    if vdata_hi[k] >= vtmp[i] and (
-                            k == ny - 1 or vdata_hi[k + 1] >= vtmp[i + 1]
+                    if output_bin_boundaries[k] >= input_bin_centers[i] and (
+                            k == output_bin_boundary_len - 1 or output_bin_boundaries[k + 1] >= input_bin_centers[i + 1]
                     ):
-                        bin_end_idx = (
-                            k + 1 if k != ny - 1 else ny
+                        output_bin_end_idx = (
+                            k + 1 if k != output_bin_boundary_len - 1 else output_bin_boundary_len
                         )  # Handle last element edge case
 
-                        #print("bin_start_idx, bin_end_idx, vdata_hi[start],vdata_hi[end], i, vtmp[i],vtmp[i+1]" )
-                        #print(bin_start_idx, bin_end_idx, vdata_hi[bin_start_idx],vdata_hi[bin_end_idx], i,vtmp[i], vtmp[i+1])
-                        #logging.info("k: %d i: %d vdata_hi[k]: %f vtmp[i]: %f vtmp[i+1]:%f values[%d,%d] = %f",k,i,vdata_hi[k],vtmp[i], vtmp[i+1],j,i,values[j,i])
+                        #print("output_bin_start_idx, output_bin_end_idx, output_bin_boundaries[start],output_bin_boundaries[end], i, input_bin_centers[i],input_bin_centers[i+1]" )
+                        #print(output_bin_start_idx, output_bin_end_idx, output_bin_boundaries[output_bin_start_idx],output_bin_boundaries[output_bin_end_idx], i,input_bin_centers[i], input_bin_centers[i+1])
+                        #logging.info("k: %d i: %d output_bin_boundaries[k]: %f input_bin_centers[i]: %f input_bin_centers[i+1]:%f values[%d,%d] = %f",k,i,output_bin_boundaries[k],input_bin_centers[i], input_bin_centers[i+1],time_index,i,values[time_index,i])
 
-                        out_values[j, bin_start_idx:bin_end_idx+1] = values[j, i]
-                        bin_start_idx = bin_end_idx  # Update for next bin
+                        out_values[time_index, output_bin_start_idx:output_bin_end_idx+1] = values[time_index, i]
+                        output_bin_start_idx = output_bin_end_idx  # Update for next bin
                         break
-            elif vtmp[i] > vtmp[i + 1]:  # For decreasing vtmp, similar logic in reverse
-                for k in range(bin_end_idx, 0, -1): # highest to lowest index in vdata_hi
-                    if vdata_hi[k] <= vtmp[i] and (
-                            k == 0 or vdata_hi[k - 1] <= vtmp[i + 1]
+            elif input_bin_centers[i] > input_bin_centers[i + 1]:  # For decreasing input_bin_centers, similar logic in reverse
+                for k in range(output_bin_end_idx, 0, -1): # highest to lowest index in output_bin_boundaries
+                    if output_bin_boundaries[k] <= input_bin_centers[i] and (
+                            k == 0 or output_bin_boundaries[k - 1] <= input_bin_centers[i + 1]
                     ):
-                        bin_start_idx = k - 1 if k != 0 else 0
-                        #print("bin_start_idx, bin_end_idx, vdata_hi[start],vdata_hi[end], i, vtmp[i],vtmp[i+1]" )
-                        #print(bin_start_idx, bin_end_idx, vdata_hi[bin_start_idx],vdata_hi[bin_end_idx], i,vtmp[i], vtmp[i+1])
-                        #logging.info("k: %d i: %d vdata_hi[k]: %f vtmp[i]: %f vtmp[i+1]:%f values[%d,%d] = %f",k,i,vdata_hi[k],vtmp[i], vtmp[i+1],j,i,values[j,i])
-                        out_values[j, bin_start_idx+1:bin_end_idx+1] = values[j, i]
-                        bin_end_idx = bin_start_idx
+                        output_bin_start_idx = k - 1 if k != 0 else 0
+                        #print("output_bin_start_idx, output_bin_end_idx, output_bin_boundaries[start],output_bin_boundaries[end], i, input_bin_centers[i],input_bin_centers[i+1]" )
+                        #print(output_bin_start_idx, output_bin_end_idx, output_bin_boundaries[output_bin_start_idx],output_bin_boundaries[output_bin_end_idx], i,input_bin_centers[i], input_bin_centers[i+1])
+                        #logging.info("k: %d i: %d output_bin_boundaries[k]: %f input_bin_centers[i]: %f input_bin_centers[i+1]:%f values[%d,%d] = %f",k,i,output_bin_boundaries[k],input_bin_centers[i], input_bin_centers[i+1],time_index,i,values[time_index,i])
+                        out_values[time_index, output_bin_start_idx+1:output_bin_end_idx+1] = values[time_index, i]
+                        output_bin_end_idx = output_bin_start_idx
                         break
-        # print(out_values[j,:])
+        # print(out_values[time_index,:])
         # It looks like the above loop has some sort of fencepost error, where not all elements of out_values are set.
-        # For THEMIS keograms, it's the highest index of out_values[j,:].  Maybe the lowest index is wrong if the
-        # bin values are decreasing?  Set both just to be safe.
-        # out_values[j, 0] = values[j, 0]
-        # out_values[j, ny - 1] = values[j, nv - 1]
+        # For THEMIS keograms, it's the highest index of out_values[time_index,:].  Maybe the lowest index is wrong if the
+        # bin values are decreasing?  Set both time_indexust to be safe.
+        # out_values[time_index, 0] = values[time_index, 0]
+        # out_values[time_index, output_bin_boundary_len - 1] = values[time_index, input_bin_center_count - 1]
 
-    return out_values, vdata_hi
+    return out_values, output_bin_boundaries
 
 
 def specplot_resample(values, vdata, vdata_hi):
