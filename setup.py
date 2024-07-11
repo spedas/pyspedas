@@ -29,7 +29,7 @@ setup(
     },
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
-        "numpy>=1.19.5",
+        "numpy>=1.20.0",
         "requests",
         "geopack>=1.0.10",
         "scipy",

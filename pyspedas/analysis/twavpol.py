@@ -82,13 +82,6 @@ except ImportError:
     nansum = np.nansum
 from pytplot import get_data, store_data, options, tnames
 
-# these routines require numpy v1.20.0 or later
-if np.__version__ < '1.20':
-    logging.error('Error: numpy 1.20.0 or later is required for wave polarization calculations. ')
-    logging.error('Please update numpy with: pip install numpy --upgrade')
-    breakpoint()
-
-
 def atan2c(zx, zy):
     """Define arctan2 with complex numbers."""
     if np.isreal(zx) and np.isreal(zy):
