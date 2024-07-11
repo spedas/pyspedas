@@ -10,19 +10,19 @@ from netCDF4 import Dataset, num2date
 
 
 def change_time_to_unix_time(time_var):
-    '''
+    """
     Convert the variable to seconds since epoch.
-    '''
+    """
     # Capitalization of variable attributes may vary...
-    if hasattr(time_var, 'units'):
+    if hasattr(time_var, "units"):
         units = time_var.units
-    elif hasattr(time_var, 'Units'):
+    elif hasattr(time_var, "Units"):
         units = time_var.Units
-    elif hasattr(time_var,'UNITS'):
+    elif hasattr(time_var, "UNITS"):
         units = time_var.UNITS
     # ICON uses nonstandard units strings
-    if units == 'ms':
-        units = 'milliseconds since 1970-01-01 00:00:00'
+    if units == "ms":
+        units = "milliseconds since 1970-01-01 00:00:00"
     dates = num2date(time_var[:], units=units)
     unix_times = list()
     for date in dates:
@@ -31,50 +31,58 @@ def change_time_to_unix_time(time_var):
     return unix_times
 
 
-def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=False, strict_time=True):
-    '''
+def netcdf_to_tplot(
+    filenames, time="", prefix="", suffix="", plot=False, merge=False, strict_time=True
+):
+    """
     Create tplot variables from netCDF files.
 
-    Parameters:
-        filenames : str/list of str
-            The file names and full paths of netCDF files.
-        time: str
-            This is not used any more. Remains here for backward compatibility.
-            Currently, the name of the time variable is found in the netcdf variables themselves.
-        prefix: str
-            The tplot variable names will be given this prefix.
-            By default, no prefix is added.
-        suffix: str
-            The tplot variable names will be given this suffix.
-            By default, no suffix is added.
-        plot: bool
-            The data is plotted immediately after being generated.  All tplot
-            variables generated from this function will be on the same plot.
-            By default, a plot is not created.
-        merge: bool
-            If True, then data from different netCDF files will be merged into
-            a single pytplot variable.
-        strict_time: bool
-            If True (default), variables will be loaded into tplot variables only if
-            their data length matches the time lenght.
-            If False, all variables will be loaded. This is useful because some
-            variables may contain general information, like satelite longitude.
+    Parameters
+    ----------
+    filenames : str or list of str
+        The file names and full paths of netCDF files.
+    time : str, optional
+        This is not used anymore. Remains here for backward compatibility.
+        Currently, the name of the time variable is found in the netCDF variables themselves.
+    prefix : str, optional
+        The tplot variable names will be given this prefix.
+        By default, no prefix is added.
+    suffix : str, optional
+        The tplot variable names will be given this suffix.
+        By default, no suffix is added.
+    plot : bool, optional
+        If True, the data is plotted immediately after being generated. All tplot
+        variables generated from this function will be on the same plot.
+        By default, a plot is not created.
+    merge : bool, optional
+        If True, then data from 'filenames' will be merged into existing tplot variables.
+        If False (default), then data from 'filenames' will overwrite existing tplot variables.
+        Data in 'filenames' will always be merged/combined by themselves.
+    strict_time : bool, optional
+        If True (default), variables will be loaded into tplot variables only if
+        their data length matches the time length.
+        If False, all variables will be loaded. This is useful because some
+        variables may contain general information, like satellite longitude.
 
-    Returns:
+    Returns
+    -------
+    stored_variables : list of str
         List of tplot variables created.
 
-    Examples:
-        >>> #Create tplot variables from a GOES netCDF file
-        >>> import pytplot
-        >>> file = "/Users/user_name/goes_files/g15_epead_a16ew_1m_20171201_20171231.nc"
-        >>> pytplot.netcdf_to_tplot(file, prefix='mvn_')
+    Examples
+    --------
+    Create tplot variables from a GOES netCDF file:
 
-        >>> #Add a prefix, and plot immediately.
-        >>> import pytplot
-        >>> file = "/Users/user_name/goes_files/g15_epead_a16ew_1m_20171201_20171231.nc"
-        >>> pytplot.netcdf_to_tplot(file, prefix='goes_prefix_', plot=True)
+    >>> import pytplot
+    >>> file = "/Users/user_name/goes_files/g15_epead_a16ew_1m_20171201_20171231.nc"
+    >>> pytplot.netcdf_to_tplot(file, prefix='mvn_')
 
-    '''
+    Add a prefix, and plot immediately:
+
+    >>> import pytplot
+    >>> file = "/Users/user_name/goes_files/g15_epead_a16ew_1m_20171201_20171231.nc"
+    >>> pytplot.netcdf_to_tplot(file, prefix='goes_prefix_', plot=True)
+    """
 
     stored_variables = []
 
@@ -109,10 +117,12 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
         for var in vars_and_atts.keys():
             reg_var = vfile.variables[var]
             try:
-                var_fill_value = vars_and_atts[var]['missing_value']
+                var_fill_value = vars_and_atts[var]["missing_value"]
                 if np.isnan(var_fill_value) != True:
                     # We want to force missing values to be nan so that plots don't look strange
-                    var_mask = np.ma.masked_where(reg_var == np.float32(var_fill_value), reg_var)
+                    var_mask = np.ma.masked_where(
+                        reg_var == np.float32(var_fill_value), reg_var
+                    )
                     var_filled = np.ma.filled(var_mask, np.nan)
                     masked_vars[var] = var_filled
                 elif np.isnan(var_fill_value) == True:
@@ -137,10 +147,10 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
                 if this_time not in vars_and_atts.keys():
                     # For GOES satelites, sometimes we get 'record' as time dependance.
                     # In that case, we can try 'time' and 'time_tag' as alternatives.
-                    if 'time' in vars_and_atts.keys():
-                        this_time = 'time'
-                    elif 'time_tag' in vars_and_atts.keys():
-                        this_time = 'time_tag'
+                    if "time" in vars_and_atts.keys():
+                        this_time = "time"
+                    elif "time_tag" in vars_and_atts.keys():
+                        this_time = "time_tag"
 
                 if this_time not in vars_and_atts.keys():
                     # If this_time does not exist, we can't save this as tplot variable.
@@ -159,7 +169,13 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
                         times_dict[this_time] = unix_times
                     except Exception as e:
                         # In this case, we could not handle the time, print an error
-                        logging.error("Could not process time variable '" + this_time + "' for the netcdf variable: '" + var + "'")
+                        logging.error(
+                            "Could not process time variable '"
+                            + this_time
+                            + "' for the netcdf variable: '"
+                            + var
+                            + "'"
+                        )
                         logging.error("Exception details: " + str(e))
                         continue
 
@@ -182,13 +198,15 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
                 # Store the data, and merge variables if that was requested.
                 var_name = prefix + var + suffix
                 to_merge = False
-                # Merge only if the variable has been saved already in the current group of files.
-                # Otherwise, the tplot variable will be replaced. 
-                if (var_name in stored_variables) and (var_name in pytplot.data_quants.keys() and (merge == True)):
+                # Merge if the variable has been saved already in the current group of files.
+                # Also merge when the variable is already in tplot and merge is True.
+                if (var_name in stored_variables) or (
+                    var_name in pytplot.data_quants.keys() and (merge == True)
+                ):
                     prev_data_quant = pytplot.data_quants[var_name]
                     to_merge = True
 
-                tplot_data = {'x': unix_times, 'y': this_masked_var}
+                tplot_data = {"x": unix_times, "y": this_masked_var}
                 store_data(var_name, tplot_data)
                 if var_name not in stored_variables:
                     stored_variables.append(var_name)
@@ -197,7 +215,9 @@ def netcdf_to_tplot(filenames, time='', prefix='', suffix='', plot=False, merge=
                     cur_data_quant = pytplot.data_quants[var_name]
                     plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs)
                     merged_data = [prev_data_quant, cur_data_quant]
-                    pytplot.data_quants[var_name] = xr.concat(merged_data, dim='time').sortby('time')
+                    pytplot.data_quants[var_name] = xr.concat(
+                        merged_data, dim="time"
+                    ).sortby("time")
                     pytplot.data_quants[var_name].attrs = plot_options
 
     # If we are interested in seeing a quick plot of the variables, do it
