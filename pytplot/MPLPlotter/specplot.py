@@ -37,7 +37,8 @@ def get_bin_boundaries(bin_centers, ylog=False):
 
     nbins = len(bin_centers)
     # Bin boundaries need to be floating point, even if the original bin values are
-    # integers.  Initialize to all nans.
+    # integers.  Initialize to all nans. Since the outputs are boundaries, not centers,
+    # there is an extra element in the output array.
     outbins = np.zeros(nbins+1,dtype=np.float64)
     outbins[:] = np.nan
 
@@ -46,22 +47,25 @@ def get_bin_boundaries(bin_centers, ylog=False):
 
 
     if ylog:
+        # There might be bin centers equal to 0.0.  Clean those up first, then
+        # convert to log space
         clean_bins = bin_centers
         zero_idx = np.where(bin_centers == 0.0)
         if len(zero_idx[0]) > 0:
             clean_bins[zero_idx] = np.nan
             clean_bins[zero_idx] = np.nanmin(clean_bins)/2.0
         working_bins = np.log10(clean_bins)
-        # Replace 0 boundaries with
     else:
         working_bins = bin_centers
 
+    # Check for all nans, or only one finite value
     idx_finite = np.where(np.isfinite(working_bins))
 
     if type(idx_finite) is tuple:
         idx_finite = idx_finite[0]
 
     if len(idx_finite) == 0:
+        # Return all nans, indeterminate direction
         return outbins, 0
     elif len(idx_finite) == 1:
         idx = idx_finite[0]
@@ -74,9 +78,12 @@ def get_bin_boundaries(bin_centers, ylog=False):
             outbins[idx+1] = bin_centers[idx] + 1.0
         logging.warning("get_bin_boundaries: only one finite bin detected at index %d", idx)
         logging.warning("bin center: %f   bin boundaries: [%f, %f]",bin_centers[idx],outbins[idx], outbins[idx+1])
+        # Return boundaries around the single finite bin, direction is increasing
         return outbins, 1
 
-    # We have at least two finite bins
+    # The usual case: we have at least two finite bins
+    # Are they in increasing or decreasing order?
+
     if working_bins[idx_finite[0]] > working_bins[idx_finite[-1]]:
         direction = -1
     elif working_bins[idx_finite[0]] < working_bins[idx_finite[-1]]:
@@ -96,6 +103,7 @@ def get_bin_boundaries(bin_centers, ylog=False):
         logging.warning("get_bin_boundaries: may contain nans between finite values. Total bin count: %d,  leading nans: %d, trailing_nans: %d, finite vals: %d",
                         nbins, leading_nan_count, trailing_nan_count, good_bin_count)
 
+    # Now compute bin boundaries from all the finite bin centers
     finite_bins = np.copy(working_bins[idx_finite])
     edge_count = good_bin_count+1
     goodbins = np.zeros(edge_count, dtype=np.float64)
@@ -103,12 +111,15 @@ def get_bin_boundaries(bin_centers, ylog=False):
     goodbins[0] = finite_bins[0] - (finite_bins[1] - finite_bins[0]) / 2.0
     goodbins[1:edge_count-1] = (finite_bins[:-1] + finite_bins[1:]) / 2.0
     goodbins[edge_count-1] = finite_bins[-1] + (finite_bins[-1] - finite_bins[-2]) / 2.0
+
+    # Deal with any possible leading or trailing nans
     if leading_nan_count > 0:
         outbins[0:leading_nan_count] = np.nan
     outbins[leading_nan_count:leading_nan_count+edge_count] = goodbins[:]
     if trailing_nan_count > 0:
         outbins[leading_nan_count+edge_count:nbins+2] = np.nan
 
+    # Go back to linear space
     if ylog:
         outbins = 10.0**outbins
 
@@ -164,6 +175,8 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
         bin_boundaries_set = set(pbins)
         p = np.copy(vdata[0,:])
         p[np.where(~np.isfinite(p))] = sentinel
+        # Now that everything is initialized, go through each time index
+        # and maintain a set of all the bin boundaries seen so far.
         for i in range(ntimes-1):
             k = i+1
             t=np.copy(vdata[k,:])
@@ -206,6 +219,7 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
         if ind_count > 0:
             logging.warning("specplot_make_1d_ybins: Direction of increasee of input bin centers was indeterminate (all-nan, all-same, or non-monotonic) at %d of %d time indices.", ind_count, ntimes)
 
+    # Convert the bin boundary set back to an array
     #logging.info("Done finding bin boundaries, sorting")
     vdata_unsorted = np.array(list(bin_boundaries_set))
 
@@ -265,13 +279,16 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
         fill = np.nan
     else:
         fill = 0
-    # This is the new way of doing it.
+
+    # Now we rebin the input data array into the output array, using both the original
+    # and combined bin boundaries.
+
     # The output value array should have a y dimension one less than the bin boundary count
     out_values = np.zeros((ntimes, output_bin_boundary_len - 1), dtype=values.dtype)
     out_values[:,:] = fill
 
     # Note that output_bin_boundaries is always monotonically increasing, but
-    # vdata_bins can be monotonically decreasing
+    # vdata_bins (the original inputs) can be monotonically decreasing
 
     for time_index in range(ntimes):
         if len(vdata.shape) == 1:
@@ -644,18 +661,15 @@ def specplot(
             if zlog == "log":
                 out_values = 10**out_values
 
-            # TODO: We'll need to recompute the boundaries on the time axis. We
-            # need them to be boundaries, not center values!
-            # convert back to datetime64 objects
-            var_times = np.array(out_times * 1e9, dtype="datetime64[ns]")
+            # Convert time bin centers to bin boundaries
+            result = get_bin_boundaries(out_times, ylog=False)
+            # Convert unix times back to np.datetime64[ns] objects
+            unix_time_boundaries_int64 = np.int64(result[0]*1e9)
+            time_boundaries = np.array(unix_time_boundaries_int64, dtype="datetime64[ns]")
 
     if yaxis_options.get("y_interp") is not None:
         y_interp = yaxis_options["y_interp"]
 
-        # TODO: This needs to use the resampled data and bin boundary arrays from
-        # the call to specplot_make_1d_ybins above.
-        # pcolormesh needs bin boundaries (with one extra element), not bin centers!
-        # interpolate along the y-axis
         if y_interp:
             if yaxis_options.get("y_interp_points") is not None:
                 ny = yaxis_options["y_interp_points"]
@@ -681,20 +695,27 @@ def specplot(
             zdata[zdata < 0.0] = 0.0
             zdata[zdata == np.nan] = 0.0  # does not work
 
+            # vdata was calculated from 1-D bin boundaries, not bin centers.
+            # We need to go to bin centers for interpolation
+            uppers = vdata[1:]
+            lowers = vdata[0:-1]
+            centers = (uppers+lowers)/2.0
+
             # interp1d requires 1d vdata input
-            if len(vdata.shape) == 1:
-                interp_func = interp1d(vdata, zdata, axis=1, bounds_error=False)
-                out_vdata = (
+            if len(centers.shape) == 1:
+                interp_func = interp1d(centers, zdata, axis=1, bounds_error=False)
+                out_vdata_centers = (
                     np.arange(0, ny, dtype=np.float64)
                     * (ycrange[1] - ycrange[0])
                     / (ny - 1)
                     + ycrange[0]
                 )
-                out_values = interp_func(out_vdata)
-            else:  # 2d vdata
-                ntime_idxs = vdata.shape[0]
+                out_values = interp_func(out_vdata_centers)
+            else:  # 2d vdata, possibly no longer needed with specplot_make_1d_ybins?
+                logging.warning("specplot: Y bin data should be 1-dimensional at this point!")
+                ntime_idxs = centers.shape[0]
                 nynew = int(ny)
-                out_vdata = (
+                out_vdata_centers = (
                     np.arange(0, ny, dtype=np.float64)
                     * (ycrange[1] - ycrange[0])
                     / (ny - 1)
@@ -703,21 +724,28 @@ def specplot(
                 out_values = np.zeros((ntime_idxs, nynew), dtype=vdata.dtype)
                 for jm in range(len(time_idxs)):
                     interp_func = interp1d(
-                        vdata[jm, :], zdata[jm, :], bounds_error=False
+                        centers[jm, :], zdata[jm, :], bounds_error=False
                     )
-                    out_values[jm, :] = interp_func(out_vdata)
+                    out_values[jm, :] = interp_func(out_vdata_centers)
+
+            # Now we'll from bin centers back to bin boundaries for pcolormesh
+            # We're still in linear space at this point
+            result = get_bin_boundaries(out_vdata_centers, ylog=False)
+            rebinned_boundaries = result[0]
 
             if zlog == "log":
                 out_values = 10**out_values
 
             if ylog == "log":
-                out_vdata = 10**out_vdata
+                out_vdata = 10**rebinned_boundaries
 
     # Resample to a higher resolution y grid, similar to interp, but only if y_no_resample is not set
     if (False and
          ((yaxis_options.get("y_no_resample") is None
         or yaxis_options.get("y_no_resample") == 0))
     ):
+        # Should this part be moved outside this conditional?
+        # Or is it no longer needed, with specplot_make_1d_ybins
         if ylog == "log":
             # Account for negative or fill values that are not NaN
             vgt0 = np.where(out_vdata > 0)[0]
@@ -755,7 +783,7 @@ def specplot(
             out_vdata = vdata1
 
     # check for NaNs in the v values
-    # TODO: is this still necessary?
+    # is this still necessary?
     nans_in_vdata = np.argwhere(np.isfinite(out_vdata) == False)
     
     if len(nans_in_vdata) > 0:
