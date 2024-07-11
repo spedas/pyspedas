@@ -166,7 +166,7 @@ class CDAWeb:
         suffix="",
         varnames=[],
         notplot=False,
-        merge=True,
+        merge=False,
         trange=None,
         time_clip=False,
         force_download=False,
@@ -194,7 +194,8 @@ class CDAWeb:
         notplot: bool
             If True, return data directly as tplot data structures, rather than a list of tplot names.
         merge: bool
-            If True, merge the data from different files into a single tplot variable.
+            If True, merge the data with existing tplot variables.
+            If False (the default), overwrite existing tplot variables.
         trange: list of str
             If set, clip the time range of the data to these values.
         time_clip: bool
