@@ -1,17 +1,19 @@
 """Test plotting functions (mostly for pseudovariables)"""
 import unittest
-
+import numpy as np
 
 from pyspedas import themis
-from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names
+from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data
+import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = True
+global_display = False
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
 
     def test_line_pseudovariables(self):
+        del_data("*")
         # Test that tplot variables with different number of traces can be combined into a pseudovariable and plotted correctly.
         # Both plots should have 4 properly labeled traces.
         themis.fgm(probe='c', trange=default_trange)
@@ -27,6 +29,7 @@ class PlotTestCases(unittest.TestCase):
 
 
     def test_pseudovar_color_options(self):
+        del_data("*")
         themis.fgm(probe='c',trange=default_trange)
         timespan('2007-03-23', 1, 'days')
         store_data('test_pseudo_colors',data=['thc_fge_dsl','thc_fge_btotal'])
@@ -41,6 +44,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_var_line_options(self):
+        del_data("*")
         themis.fgm(probe='c',trange=default_trange)
         timespan('2007-03-23', 1, 'days')
         options('thc_fgs_dsl','line_style',['solid','dot','dash'])
@@ -53,6 +57,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_is_pseudovar(self):
+        del_data("*")
         from pytplot import is_pseudovariable
         themis.fgm(probe='c',trange=default_trange)
         timespan('2007-03-23', 1, 'days')
@@ -62,6 +67,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_count_traces(self):
+        del_data("*")
         from pytplot import count_traces
         themis.fgm(probe='c',trange=default_trange)
         store_data('test_pseudo_colors',data=['thc_fge_dsl','thc_fge_btotal'])
@@ -79,6 +85,7 @@ class PlotTestCases(unittest.TestCase):
 
 
     def test_pseudovar_line_options(self):
+        del_data("*")
         themis.fgm(probe='c',trange=default_trange)
         timespan('2007-03-23', 1, 'days')
         store_data('test_pseudo_lineopts',data=['thc_fge_dsl','thc_fge_btotal'])
@@ -94,6 +101,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_specplot_optimizations(self):
+        del_data("*")
         ask_vars = themis.ask(trange=['2013-11-05', '2013-11-06'])
         timespan('2013-11-05',1,'days')
         # Should plot without errors, show something other than all-blue or vertical lines
@@ -106,13 +114,56 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_themis_peef_bins(self):
+        del_data("*")
         themis.esa(probe='a',trange=['2016-12-11','2016-12-12'])
         timespan('2016-12-11',1,'days')
         options('tha_peef_en_eflux','yrange', [1000,3000])
+        tplot_options('title', 'Logarithmic bin boundaries: should be a boundary just below the tick mark at y=2000 eV')
         tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_themis_peef_bins_interp_x(self):
+        del_data("*")
+        themis.esa(probe='a',trange=['2016-12-11','2016-12-12'])
+        timespan('2016-12-11',1,'hours')
+        options('tha_peef_en_eflux','yrange', [1000,3000])
+        options('tha_peef_en_eflux', 'x_interp',1)
+        options('tha_peef_en_eflux', 'x_interp_points', 500)
+        tplot_options('title', 'Interpolated along time axis')
+        tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux_interp_x',display=global_display)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        options('tha_peef_en_eflux', 'x_interp',0) # reset for other tests
+
+
+    def test_themis_peef_bins_interp_y(self):
+        del_data("*")
+        themis.esa(probe='a',trange=['2016-12-11','2016-12-12'])
+        timespan('2016-12-11',1,'hours')
+        options('tha_peef_en_eflux','yrange', [1000,3000])
+        options('tha_peef_en_eflux', 'y_interp',1)
+        options('tha_peef_en_eflux', 'Y_interp_points', 200)
+        tplot_options('title', 'Interpolated along y axis')
+        tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux_interp_y',display=global_display)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        options('tha_peef_en_eflux', 'y_interp',0) # reset for other tests
+
+    def test_themis_peef_bins_interp_both(self):
+        del_data("*")
+        themis.esa(probe='a',trange=['2016-12-11','2016-12-12'])
+        timespan('2016-12-11',1,'hours')
+        options('tha_peef_en_eflux','yrange', [1000,3000])
+        options('tha_peef_en_eflux', 'x_interp',1)
+        options('tha_peef_en_eflux', 'x_interp_points', 500)
+        options('tha_peef_en_eflux', 'y_interp',1)
+        options('tha_peef_en_eflux', 'Y_interp_points', 200)
+        tplot_options('title', 'Interpolated along both x and y axes')
+        tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux_interp_both',display=global_display)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        options('tha_peef_en_eflux', '_interp',0) # reset for other tests
+        options('tha_peef_en_eflux', 'y_interp',0) # reset for other tests
+
     def test_mms_epsd_specplot(self):
+        del_data("*")
         from pytplot import options
         from pyspedas import mms_load_dsp
         timespan('2015-08-01',1,'days')
@@ -123,6 +174,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_elfin_specplot(self):
+        del_data("*")
         import pyspedas
         # ELFIN data with V values that oscillate, the original problem that resulted in the resample, this is an angular distrubtion
         timespan('2021-07-14/11:55',10,'minutes')
@@ -133,6 +185,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
     def test_fast_specplot(self):
+        del_data("*")
         import pyspedas
         # FAST TEAMS has fill values -1e31 in V, tod is an energy distribution, the bottom two are pitch angle distributions
         teams_vars = pyspedas.fast.teams(['1998-09-05', '1998-09-06'])
@@ -143,6 +196,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
     def test_themis_esa_specplot(self):
+        del_data("*")
         import pyspedas
         # THEMIS ESA has monotonically decreasing energies, time varying energies, and also has fill
         esa_vars = pyspedas.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
@@ -153,6 +207,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_erg_specplot(self):
+        del_data("*")
         import pyspedas
         # ERG specplots, only vertical lines on the bottom panel for original resample...
         pyspedas.erg.hep(trange=['2017-03-27', '2017-03-28'])
@@ -163,6 +218,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_maven_specplot(self):
+        del_data("*")
         from pyspedas.maven.spdf import load
         sta_vars = load(trange=['2020-12-30', '2020-12-31'], instrument='static', datatype='c0-64e2m')
         print(sta_vars)
@@ -175,6 +231,7 @@ class PlotTestCases(unittest.TestCase):
 
     #@unittest.skip(reason="Failing until we establish a default for spec_dim_to_plot")
     def test_maven_fluxes_specplot(self):
+        del_data("*")
         from pyspedas.maven.spdf import load
         swe_vars = load(trange=['2014-10-18', '2014-10-19'], instrument='swea')
         print(swe_vars)
@@ -195,6 +252,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_pseudovars_title(self):
+        del_data("*")
         import pyspedas
         from pytplot import store_data
         pyspedas.themis.state(probe='c',trange=default_trange)
@@ -209,6 +267,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_pseudovars_spectra(self):
+        del_data("*")
         import pyspedas
         from pytplot import zlim, ylim, timespan
 
@@ -250,6 +309,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_pseudo_spectra_plus_line(self):
+        del_data("*")
         import pyspedas
         pyspedas.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
         pyspedas.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
@@ -267,6 +327,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_psp_flux_plot(self):
+        del_data("*")
         import pyspedas
         import pytplot
         import numpy as np
@@ -289,6 +350,7 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', 'Parker Solar Probe E_flux')
         tplot('E_Flux',display=global_display, save_png='psp_E_Flux')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
 
 if __name__ == '__main__':
     unittest.main()
