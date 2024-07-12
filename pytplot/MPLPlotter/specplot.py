@@ -340,85 +340,6 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
 
     return out_values, output_bin_boundaries
 
-
-def specplot_resample(values, vdata, vdata_hi):
-    """Specplot energy bin resampling
-
-    Allows for monotonically increasing or decreasing bin values, and bins that change over time.
-    Performance optimized by ChatGPT.
-    """
-    ny = len(vdata_hi)  # vdata_hi is 1d, the same for all time intervals
-    ntimes = values.shape[0]
-    out_values = np.zeros((ntimes, ny), dtype=values.dtype)
-
-    # Prepare bin edges
-    if len(vdata.shape) == 1:
-        nv = vdata.shape[0]
-        vdata_bins = np.zeros(nv + 1, dtype=vdata.dtype)
-        vdata_bins[0] = vdata[0] - (vdata[1] - vdata[0]) / 2.0
-        vdata_bins[1:nv] = (vdata[:-1] + vdata[1:]) / 2.0
-        vdata_bins[nv] = vdata[-1] + (vdata[-1] - vdata[-2]) / 2.0
-    else:  # 2-d V
-        nv = vdata.shape[1]
-        vdata_bins = np.zeros((ntimes, nv + 1), dtype=vdata.dtype)
-        vdata_bins[:, 0] = vdata[:, 0] - (vdata[:, 1] - vdata[:, 0]) / 2.0
-        vdata_bins[:, 1:nv] = (vdata[:, :-1] + vdata[:, 1:nv]) / 2.0
-        vdata_bins[:, nv] = (
-            vdata[:, nv - 1] + (vdata[:, nv - 1] - vdata[:, nv - 2]) / 2.0
-        )
-
-    # Note that vdata_hi is always monotonically increasing, but
-    # vdata_bins can be monotonically decreasing
-    
-    for j in range(ntimes):
-        if len(vdata.shape) == 1:
-            vtmp = vdata_bins
-        else:
-            vtmp = vdata_bins[j, :]
-
-        bin_start_idx = 0  # Initialize bin start index
-        bin_end_idx = ny-1
-        for i in range(nv):
-            # Find the start and end of the current bin in vdata_hi
-            # The assumption that vdata_hi is monotonically increasing
-            # or decreasing allows us to break early from the inner
-            # loop (k) as soon as we find that an element falls
-            # outside the current bin, knowing that no further
-            # elements can belong to this bin.
-            if vtmp[i] < vtmp[i + 1]:  # increasing bin values
-                for k in range(bin_start_idx, ny):
-                    # Check if within bin range, count until
-                    # either the next value is out of range or
-                    # there are no more values
-                    if vdata_hi[k] >= vtmp[i] and (
-                            k == ny - 1 or vdata_hi[k + 1] >= vtmp[i + 1]
-                    ):
-                        bin_end_idx = (
-                            k + 1 if k != ny - 1 else ny
-                        )  # Handle last element edge case
-                        out_values[j, bin_start_idx:bin_end_idx] = values[j, i]
-                        bin_start_idx = bin_end_idx  # Update for next bin
-                        break
-            elif vtmp[i] > vtmp[i+1]: # For decreasing vtmp, similar logic in reverse
-                for k in range(bin_end_idx, 0, -1):
-                    if vdata_hi[k] <= vtmp[i] and (
-                            k ==  0 or vdata_hi[k - 1] <= vtmp[i+1]
-                    ):
-                            bin_start_idx = k -1 if k != 0 else 0
-                            out_values[j, bin_start_idx:bin_end_idx] = values[j, i]
-                            bin_end_idx = bin_start_idx
-                            break
-
-        # It looks like the above loop has some sort of fencepost error, where not all elements of out_values are set.
-        # For THEMIS keograms, it's the highest index of out_values[j,:].  Maybe the lowest index is wrong if the
-        # bin values are decreasing?  Set both just to be safe.
-        out_values[j, 0] = values[j, 0]
-        out_values[j, ny - 1] = values[j, nv - 1]
-
-    return out_values
-
-
-
 def specplot(
     var_data,
     var_times,
@@ -490,46 +411,10 @@ def specplot(
     else:
         zsubtitle = ""
 
-
+    # Clean up any fill values in data array
     #set -1.e31 fill values to NaN, jmjm, 2024-02-29
     ytp = np.where(var_data.y==-1.e31,np.nan,var_data.y)
     var_data.y[:,:] = ytp[:,:]
-    if hasattr(var_data, 'v'):
-        vtp = np.where(var_data.v==-1.e31,np.nan,var_data.v)
-        if len(vtp.shape) == 1:
-            var_data.v[:] = vtp[:]
-        else:
-            var_data.v[:,:] = vtp[:,:]
-        vmin = np.nanmin(var_data.v)
-        vmax = np.nanmax(var_data.v)
-    #for v1,v2 too
-    if hasattr(var_data, 'v1'):
-        if 'spec_dim_to_plot' in plot_extras:
-            if plot_extras['spec_dim_to_plot'] == 'v1':
-                vtp = np.where(var_data.v1==-1.e31,np.nan,var_data.v1)
-                if len(vtp.shape) == 1:
-                    var_data.v1[:] = vtp[:]
-                else:
-                    var_data.v1[:,:] = vtp[:,:]
-                vmin = np.nanmin(var_data.v1)
-                vmax = np.nanmax(var_data.v1)
-    if hasattr(var_data, 'v2'):
-        if 'spec_dim_to_plot' in plot_extras:
-            if plot_extras['spec_dim_to_plot'] == 'v2':
-                vtp = np.where(var_data.v2==-1.e31,np.nan,var_data.v2)
-                if len(vtp.shape) == 1:
-                    var_data.v2[:] = vtp[:]
-                else:
-                    var_data.v2[:,:] = vtp[:,:]
-                vmin = np.nanmin(var_data.v2)
-                vmax = np.nanmax(var_data.v2)
-
-    #could also have a fill in yrange
-    #    if yrange[0] == -1e31: #This does not work sometimes?
-    if yrange[0] < -0.9e31:
-        yrange[0] = vmin
-    if yrange[1] < -0.9e31:
-        yrange[1] = vmax
 
     if zlog == "log":
         zmin = np.nanmin(var_data.y)
@@ -577,6 +462,8 @@ def specplot(
 
     out_values = var_data.y[time_idxs, :]
     input_times = var_data.times[time_idxs]
+
+    # Figure out which attribute to use for Y bin centers
     #allow use of v1, v2, jmm, 2024-03-20
     if len(var_data) == 3:
         if hasattr(var_data,'v'):
@@ -597,6 +484,13 @@ def specplot(
     else:
         logging.warning("Too many dimensions on the variable: " + variable)
         return
+
+    # Clean up any fill values in bin center array
+    vtp = np.where(out_vdata == -1.e31, np.nan, out_vdata)
+    if len(vtp.shape) == 1:
+        out_vdata[:] = vtp[:]
+    else:
+        out_vdata[:, :] = vtp[:, :]
 
     if len(out_vdata.shape) > 1:
         # time varying 'v', need to limit the values to those within the requested time range
@@ -623,6 +517,18 @@ def specplot(
     if ylog == 'log':
         assert(np.all(out_vdata > 0.0)) # bin boundaries all positive if log scaling
 
+    # Get min and max bin boundaries
+    vmin = np.min(out_vdata)
+    vmax = np.max(out_vdata)
+
+    #could also have a fill in yrange
+    #    if yrange[0] == -1e31: #This does not work sometimes?
+    if yrange[0] < -0.9e31:
+        yrange[0] = vmin
+    if yrange[1] < -0.9e31:
+        yrange[1] = vmax
+
+
     #logging.info("Starting specplot time boundary processing")
     input_unix_times = np.int64(input_times) / 1e9
     result = get_bin_boundaries(input_unix_times)
@@ -636,7 +542,7 @@ def specplot(
     # since tplot takes care of it.   If not, set it here to the min/max finite bin
     # boundaries.  If left unspecified, pcolormesh might do something weird to the y limits.
     if yaxis_options.get('y_range_user') is None:
-        this_axis.set_ylim([np.nanmin(out_vdata), np.nanmax(out_vdata)])
+        this_axis.set_ylim([vmin, vmax])
 
 
     # automatic interpolation options
@@ -717,34 +623,16 @@ def specplot(
             lowers = vdata[0:-1]
             centers = (uppers+lowers)/2.0
 
-            # interp1d requires 1d vdata input
-            if len(centers.shape) == 1:
-                interp_func = interp1d(centers, zdata, axis=1, bounds_error=False)
-                out_vdata_centers = (
-                    np.arange(0, ny, dtype=np.float64)
-                    * (ycrange[1] - ycrange[0])
-                    / (ny - 1)
-                    + ycrange[0]
-                )
-                out_values = interp_func(out_vdata_centers)
-            else:  # 2d vdata, possibly no longer needed with specplot_make_1d_ybins?
-                logging.warning("specplot: Y bin data should be 1-dimensional at this point!")
-                ntime_idxs = centers.shape[0]
-                nynew = int(ny)
-                out_vdata_centers = (
-                    np.arange(0, ny, dtype=np.float64)
-                    * (ycrange[1] - ycrange[0])
-                    / (ny - 1)
-                    + ycrange[0]
-                )
-                out_values = np.zeros((ntime_idxs, nynew), dtype=vdata.dtype)
-                for jm in range(len(time_idxs)):
-                    interp_func = interp1d(
-                        centers[jm, :], zdata[jm, :], bounds_error=False
-                    )
-                    out_values[jm, :] = interp_func(out_vdata_centers)
+            interp_func = interp1d(centers, zdata, axis=1, bounds_error=False)
+            out_vdata_centers = (
+                np.arange(0, ny, dtype=np.float64)
+                * (ycrange[1] - ycrange[0])
+                / (ny - 1)
+                + ycrange[0]
+            )
+            out_values = interp_func(out_vdata_centers)
 
-            # Now we'll from bin centers back to bin boundaries for pcolormesh
+            # Now we'll convert from bin centers back to bin boundaries for pcolormesh
             # We're still in linear space at this point
             result = get_bin_boundaries(out_vdata_centers, ylog=False)
             rebinned_boundaries = result[0]
@@ -754,84 +642,6 @@ def specplot(
 
             if ylog == "log":
                 out_vdata = 10**rebinned_boundaries
-
-    # Resample to a higher resolution y grid, similar to interp, but only if y_no_resample is not set
-    if (False and
-         ((yaxis_options.get("y_no_resample") is None
-        or yaxis_options.get("y_no_resample") == 0))
-    ):
-        # Should this part be moved outside this conditional?
-        # Or is it no longer needed, with specplot_make_1d_ybins
-        if ylog == "log":
-            # Account for negative or fill values that are not NaN
-            vgt0 = np.where(out_vdata > 0)[0]
-            if vgt0.size == 0:
-                logging.warning("ERROR in specplot.py: ylog scaling, but no nonnegative V values")
-            vmin = np.min(out_vdata[vgt0])
-
-            vlt0 = np.where(out_vdata <= 0)[0]
-            if vlt0.size > 0:
-                out_vdata[vlt0] = vmin
-
-            vdata = np.log10(out_vdata)
-
-            if yrange[0] <= 0:
-                yrange[0] = vmin
-            ycrange = np.log10(yrange)
-        else:
-            vdata = out_vdata
-            ycrange = yrange
-
-        fig_size = fig.get_size_inches() * fig.dpi
-        ny = fig_size[1]
-        vdata1 = (
-            np.arange(0, ny, dtype=np.float64) * (ycrange[1] - ycrange[0]) / (ny - 1)
-            + ycrange[0]
-        )
-        out_values1 = specplot_resample(out_values, vdata, vdata1)
-        #out_values2, vdata2 = specplot_make_1d_ybins(out_values, vdata)
-        #ny = len(vdata2)
-
-        out_values = out_values1
-        if ylog == "log":
-            out_vdata = 10**vdata1
-        else:
-            out_vdata = vdata1
-
-    # check for NaNs in the v values
-    # is this still necessary?
-    nans_in_vdata = np.argwhere(np.isfinite(out_vdata) == False)
-    
-    if len(nans_in_vdata) > 0:
-        # to deal with NaNs in the energy table, we set those energies
-        # to the min value for that time (not zero, as this will be
-        # bad for log plots) then apply a mask to the data values at
-        # these locations 
-        out_vdata_nonan = out_vdata.copy()
-        if len(out_vdata.shape) == 1:
-            keep = np.where(np.isfinite(out_vdata) == True)
-            vmin = np.min(out_vdata[keep[0]])
-            out_vdata_nonan[~np.isfinite(out_vdata)] = vmin
-            #create a masked array to use
-            masked = np.ma.masked_where(~np.isfinite(out_values), out_values)
-            for nan_idx in range(out_values.shape[0]):
-                midx = np.ma.masked_where(~np.isfinite(out_vdata), out_values[nan_idx,:])
-                masked[nan_idx,:] = midx
-        else:
-            times_with_nans = np.unique(nans_in_vdata[:, 0])
-            for nan_idx in np.arange(0, len(times_with_nans)):
-                this_time_idx = times_with_nans[nan_idx]
-                #Get the min value for non-nan
-                keep = np.where(np.isfinite(out_vdata[this_time_idx, :]) == True)
-                if keep[0].size > 0:
-                    vmin = np.min(out_vdata[this_time_idx, keep[0]])
-                    out_vdata_nonan[this_time_idx, ~np.isfinite(out_vdata[this_time_idx, :])] = vmin
-                else:
-                    out_vdata_nonan[this_time_idx, ~np.isfinite(out_vdata[this_time_idx, :])] = yrange[0]
-
-            masked = np.ma.masked_where(~np.isfinite(out_vdata), out_values)
-            out_vdata = out_vdata_nonan
-            out_values = masked
 
     # check for negatives if zlog is requested
     if zlog == "log":
