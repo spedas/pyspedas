@@ -6,6 +6,7 @@ from matplotlib.colors import LinearSegmentedColormap
 import warnings
 import pytplot
 import logging
+from copy import copy
 
 def get_bin_boundaries(bin_centers, ylog=False):
     """ Calculate a list of bin boundaries from a 1-D array of bin center values.
@@ -47,9 +48,10 @@ def get_bin_boundaries(bin_centers, ylog=False):
 
 
     if ylog:
-        # There might be bin centers equal to 0.0.  Clean those up first, then
-        # convert to log space
-        clean_bins = bin_centers
+        # There might be bin centers equal to 0.0 (e.g. THEMIS ESA).  Replace them with half the next larger
+        # bin center.  Any bin centers less than zero will get turned to NaNs when we take logs
+        # (and the corresponding data bins effectively removed).
+        clean_bins = copy(bin_centers)
         zero_idx = np.where(bin_centers == 0.0)
         if len(zero_idx[0]) > 0:
             clean_bins[zero_idx] = np.nan
@@ -601,14 +603,28 @@ def specplot(
         out_vdata = out_vdata[time_idxs, :]
 
     # This call flattens any time-varying bin boundaries into a 1-d list (out_vdata)
-    # and regrids it to the new y bin count (out_values)
+    # and regrids the data array to the new y bin count (out_values)
 
     #logging.info("Starting specplot processing")
 
     out_values, out_vdata = specplot_make_1d_ybins(out_values, out_vdata, ylog)
 
+    # At this point, out_vdata, the array of bin boundaries, is guaranteed to be
+    # 1-dimensional, in ascending order, with all finite values. It has one more element
+    # than the Y dimension of out_values.  The Y dimension of out_values may have changed
+    # as a result of flattening a 2-D out_vdata input.
+    # If ylog=='log', all values in out_vdata will be strictly positive.
+
+    assert(len(out_vdata.shape) == 1) # bin boundaries are 1-D
+    assert(len(out_values.shape) == 2) # output array is 2-D
+    assert(out_vdata.shape[0] == out_values.shape[1]+1) # bin boundaries have one more element in Y dimension
+    assert(np.isfinite(out_vdata.all())) # no nans in bin boundaries
+    assert(out_vdata[-1] > out_vdata[0]) # bin boundaries in ascending order
+    if ylog == 'log':
+        assert(np.all(out_vdata > 0.0)) # bin boundaries all positive if log scaling
+
     #logging.info("Starting specplot time boundary processing")
-    input_unix_times = np.int64(var_data.times[time_idxs]) / 1e9
+    input_unix_times = np.int64(input_times) / 1e9
     result = get_bin_boundaries(input_unix_times)
     # For pcolormesh, we also want bin boundaries (not center values) on the time axis
     time_boundaries_dbl = result[0]
