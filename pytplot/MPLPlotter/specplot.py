@@ -260,7 +260,7 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
             diff = np.log10(val) - np.log10(last_val)
         else:
             diff = val-last_val
-        if abs(val-last_val) > epsilon:
+        if abs(diff) > epsilon:
             thinned_list.append(val)
             last_val = val
 
@@ -391,9 +391,18 @@ def specplot(
     alpha = plot_extras.get("alpha")
     spec_options = {"shading": "auto", "alpha": alpha}
     ztitle = zaxis_options["axis_label"]
-    zlog = zaxis_options["z_axis_type"]
-    ylog = yaxis_options["y_axis_type"]
-    #logging.info("ylog is " + str(ylog))
+
+    zlog_str = zaxis_options["z_axis_type"]
+    ylog_str = yaxis_options["y_axis_type"]
+    # Convert zlog_str and ylog_str to bool
+    ylog = False
+    zlog = False
+    if "log" in ylog_str.lower():
+        ylog = True
+    if "log" in zlog_str.lower():
+        zlog = True
+    #logging.info("ylog_str is " + str(ylog_str))
+    #logging.info("zlog_str is " + str(zlog_str))
 
     yrange = yaxis_options["y_range"]
     if not np.isfinite(yrange[0]):
@@ -416,7 +425,7 @@ def specplot(
     ytp = np.where(var_data.y==-1.e31,np.nan,var_data.y)
     var_data.y[:,:] = ytp[:,:]
 
-    if zlog == "log":
+    if zlog:
         zmin = np.nanmin(var_data.y)
         zmax = np.nanmax(var_data.y)
         # gracefully handle the case of all NaNs in the data, but log scale set
@@ -460,66 +469,66 @@ def specplot(
 
     spec_options["cmap"] = cmap
 
-    out_values = var_data.y[time_idxs, :]
+    input_zdata = var_data.y[time_idxs, :]
     input_times = var_data.times[time_idxs]
 
     # Figure out which attribute to use for Y bin centers
     #allow use of v1, v2, jmm, 2024-03-20
     if len(var_data) == 3:
         if hasattr(var_data,'v'):
-            out_vdata = var_data.v
+            input_bin_centers = var_data.v
         elif hasattr(var_data,'v1'):
-            out_vdata = var_data.v1
+            input_bin_centers = var_data.v1
         else:
             logging.warning("Multidimensional variable %s has no v or v1 attribute",variable)
     elif len(var_data) == 4:
         if hasattr(var_data, 'v1'):
             if 'spec_dim_to_plot' in plot_extras:
                 if plot_extras['spec_dim_to_plot'] == 'v1':
-                    out_vdata = var_data.v1
+                    input_bin_centers = var_data.v1
         if hasattr(var_data, 'v2'):
             if 'spec_dim_to_plot' in plot_extras:
                 if plot_extras['spec_dim_to_plot'] == 'v2':
-                    out_vdata = var_data.v2
+                    input_bin_centers = var_data.v2
     else:
         logging.warning("Too many dimensions on the variable: " + variable)
         return
 
     # Clean up any fill values in bin center array
-    vtp = np.where(out_vdata == -1.e31, np.nan, out_vdata)
+    vtp = np.where(input_bin_centers == -1.e31, np.nan, input_bin_centers)
     if len(vtp.shape) == 1:
-        out_vdata[:] = vtp[:]
+        input_bin_centers[:] = vtp[:]
     else:
-        out_vdata[:, :] = vtp[:, :]
+        input_bin_centers[:, :] = vtp[:, :]
 
-    if len(out_vdata.shape) > 1:
+    if len(input_bin_centers.shape) > 1:
         # time varying 'v', need to limit the values to those within the requested time range
-        out_vdata = out_vdata[time_idxs, :]
+        input_bin_centers = input_bin_centers[time_idxs, :]
 
     # This call flattens any time-varying bin boundaries into a 1-d list (out_vdata)
-    # and regrids the data array to the new y bin count (out_values)
+    # and regrids the data array to the new y bin count (regridded_zdata)
 
     #logging.info("Starting specplot processing")
 
-    out_values, out_vdata = specplot_make_1d_ybins(out_values, out_vdata, ylog)
+    regridded_zdata, bin_boundaries_1d = specplot_make_1d_ybins(input_zdata, input_bin_centers, ylog)
 
-    # At this point, out_vdata, the array of bin boundaries, is guaranteed to be
+    # At this point, bin_boundaries_1d, the array of bin boundaries, is guaranteed to be
     # 1-dimensional, in ascending order, with all finite values. It has one more element
-    # than the Y dimension of out_values.  The Y dimension of out_values may have changed
+    # than the Y dimension of regridded_zdata.  The Y dimension of regridded_zdata may have changed
     # as a result of flattening a 2-D out_vdata input.
-    # If ylog=='log', all values in out_vdata will be strictly positive.
+    # If ylog==True, all values in bin_boundaries_1d will be strictly positive.
 
-    assert(len(out_vdata.shape) == 1) # bin boundaries are 1-D
-    assert(len(out_values.shape) == 2) # output array is 2-D
-    assert(out_vdata.shape[0] == out_values.shape[1]+1) # bin boundaries have one more element in Y dimension
-    assert(np.isfinite(out_vdata.all())) # no nans in bin boundaries
-    assert(out_vdata[-1] > out_vdata[0]) # bin boundaries in ascending order
-    if ylog == 'log':
-        assert(np.all(out_vdata > 0.0)) # bin boundaries all positive if log scaling
+    assert(len(bin_boundaries_1d.shape) == 1) # bin boundaries are 1-D
+    assert(len(regridded_zdata.shape) == 2) # output array is 2-D
+    assert(bin_boundaries_1d.shape[0] == regridded_zdata.shape[1]+1) # bin boundaries have one more element in Y dimension
+    assert(np.isfinite(bin_boundaries_1d.all())) # no nans in bin boundaries
+    assert(bin_boundaries_1d[-1] > bin_boundaries_1d[0]) # bin boundaries in ascending order
+    if ylog:
+        assert(np.all(bin_boundaries_1d > 0.0)) # bin boundaries all positive if log scaling
 
     # Get min and max bin boundaries
-    vmin = np.min(out_vdata)
-    vmax = np.max(out_vdata)
+    vmin = np.min(bin_boundaries_1d)
+    vmax = np.max(bin_boundaries_1d)
 
     #could also have a fill in yrange
     #    if yrange[0] == -1e31: #This does not work sometimes?
@@ -557,10 +566,10 @@ def specplot(
                 fig_size = fig.get_size_inches() * fig.dpi
                 nx = fig_size[0]
 
-            if zlog == "log":
-                zdata = np.log10(out_values)
+            if zlog:
+                zdata = np.log10(regridded_zdata)
             else:
-                zdata = out_values
+                zdata = regridded_zdata
 
             zdata[zdata < 0.0] = 0.0
             zdata[zdata == np.nan] = 0.0
@@ -578,10 +587,10 @@ def specplot(
                 / (nx - 1)
                 + spec_unix_times[0]
             )
-            out_values = interp_func(out_times)
+            regridded_zdata = interp_func(out_times)
 
-            if zlog == "log":
-                out_values = 10**out_values
+            if zlog:
+                regridded_zdata = 10**regridded_zdata
 
             # Convert time bin centers to bin boundaries
             result = get_bin_boundaries(out_times, ylog=False)
@@ -599,16 +608,16 @@ def specplot(
                 fig_size = fig.get_size_inches() * fig.dpi
                 ny = fig_size[1]
 
-            if zlog == "log":
-                zdata = np.log10(out_values)
+            if zlog:
+                zdata = np.log10(regridded_zdata)
             else:
-                zdata = out_values
+                zdata = regridded_zdata
 
-            if ylog == "log":
-                vdata = np.log10(out_vdata)
+            if ylog:
+                vdata = np.log10(bin_boundaries_1d)
                 ycrange = np.log10(yrange)
             else:
-                vdata = out_vdata
+                vdata = bin_boundaries_1d
                 ycrange = yrange
 
             if not np.isfinite(ycrange[0]):
@@ -630,29 +639,29 @@ def specplot(
                 / (ny - 1)
                 + ycrange[0]
             )
-            out_values = interp_func(out_vdata_centers)
+            regridded_zdata = interp_func(out_vdata_centers)
 
             # Now we'll convert from bin centers back to bin boundaries for pcolormesh
             # We're still in linear space at this point
             result = get_bin_boundaries(out_vdata_centers, ylog=False)
             rebinned_boundaries = result[0]
 
-            if zlog == "log":
-                out_values = 10**out_values
+            if zlog:
+                regridded_zdata = 10**regridded_zdata
 
-            if ylog == "log":
-                out_vdata = 10**rebinned_boundaries
+            if ylog:
+                bin_boundaries_1d = 10**rebinned_boundaries
 
     # check for negatives if zlog is requested
-    if zlog == "log":
-        out_values[out_values < 0.0] = 0.0
+    if zlog:
+        regridded_zdata[regridded_zdata < 0.0] = 0.0
 
     ylim_before = this_axis.get_ylim()
     # create the spectrogram (ignoring warnings)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         #logging.info("Starting pcolormesh")
-        im = this_axis.pcolormesh(time_boundaries, out_vdata.T, out_values.T, **spec_options)
+        im = this_axis.pcolormesh(time_boundaries, bin_boundaries_1d.T, regridded_zdata.T, **spec_options)
         #logging.info("Done with pcolormesh")
     ylim_after = this_axis.get_ylim()
 
