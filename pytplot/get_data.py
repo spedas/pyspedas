@@ -87,6 +87,7 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
     error = temp_data_quant.attrs['plot_options']['error']
 
     if not dt:
+        # TODO: Is this always at ns resolution?  ERG LEPE CDFs seem to be in microseconds
         times = np.int64(temp_data_quant.time.values)/1e9
         #times = np.array([int(time)/1e9 for time in temp_data_quant.time.values])
         #times = np.array([(time - np.datetime64('1970-01-01T00:00:00'))/np.timedelta64(1, 's') for time in temp_data_quant.time.values])
