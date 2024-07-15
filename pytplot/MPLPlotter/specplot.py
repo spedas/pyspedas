@@ -8,7 +8,7 @@ import pytplot
 import logging
 from copy import copy
 
-def get_bin_boundaries(bin_centers, ylog=False):
+def get_bin_boundaries(bin_centers:np.ndarray, ylog:bool = False):
     """ Calculate a list of bin boundaries from a 1-D array of bin center values.
 
     Parameters
@@ -16,8 +16,8 @@ def get_bin_boundaries(bin_centers, ylog=False):
     bin_centers: np.ndarray
     Array of Y bin center values
 
-    ylog: bool or str
-    If True or "log", compute the bin boundaries in log space
+    ylog: bool
+    If True, compute the bin boundaries in log space
 
     Returns
     -------
@@ -28,13 +28,6 @@ def get_bin_boundaries(bin_centers, ylog=False):
         Flag increasing or decreasing bin order: +1 increasing, -1 decreasing, 0 indeterminate
 
     """
-
-    # Ensure ylog is boolean
-    if isinstance(ylog, str):
-        if ylog=="log":
-            ylog = True
-        else:
-            ylog = False
 
     nbins = len(bin_centers)
     # Bin boundaries need to be floating point, even if the original bin values are
@@ -129,8 +122,36 @@ def get_bin_boundaries(bin_centers, ylog=False):
 
 
 
-def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
+def specplot_make_1d_ybins(values: np.ndarray, vdata:np.ndarray, ylog:bool, min_ratio:float = 0.001):
     """ Convert 2-D Y-bin arrays of bin center values to a 1-D array and rebin the data array
+
+    Parameters
+    ----------
+    values : np.ndarray
+    A 2-D array of values to be plotted as a spectrogram
+
+    vdata: np.ndarray
+    A 1-d or 2-D array of values representing center values of Y axis bins.
+    If 1-d, bin centers are constant, otherwise they are assumed to be time-varying.
+
+    ylog: bool
+    If True, compute the bin boundaries in log space
+
+    min_ratio: float
+    Specifies a threshold for determining whether adjacent bins should be combined in a
+    "thinning" process.  The default value of .001 represents a 1-pixel difference in
+    where the bin boundaries are rendered if the Y axis is 1000 pixels high.
+
+    Returns
+    -------
+    tuple
+    regridded_zdata:np.ndarray
+        The result of regridding the values array with the new, potentially differwnt bin boundaries
+    bin_boundaries_1d:np.ndarray
+        The new bin boundaries
+
+    Notes
+    -----
 
     We find the union of all the bin boundaries for time-varying bins, and use that
     instead of an arbitrary high-resolution grid as the resampling target y-values.
@@ -244,7 +265,7 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
     # With the default min_ratio, epsilon is about one pixel in the y direction for a typical plot size and dpi
     # If min_ratio is 0, the effect is that no bin boundaries will be discarded.
 
-    if ylog == "log":
+    if ylog:
         epsilon = (np.log10(ymax)-np.log10(ymin)) * min_ratio
     else:
         epsilon = (ymax-ymin)*min_ratio
@@ -256,7 +277,7 @@ def specplot_make_1d_ybins(values, vdata, ylog, min_ratio=0.001):
     thinned_list = [output_bin_boundaries[0]]
     for i in range(output_bin_boundary_len):
         val = output_bin_boundaries[i]
-        if ylog == "log":
+        if ylog:
             diff = np.log10(val) - np.log10(last_val)
         else:
             diff = val-last_val
