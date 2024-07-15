@@ -114,8 +114,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M' in pos_data)
         self.assertTrue(data_exists('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_HS_H1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -123,11 +122,9 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_H1_MOMENTS'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('density__C1_CP_CIS_CODIF_HS_H1_MOMENTS' in mom_data)
+        self.assertTrue(data_exists('density__C1_CP_CIS_CODIF_HS_H1_MOMENTS'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
     def test_load_csa_CP_CIS_CODIF_HS_He1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -135,11 +132,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_He1_MOMENTS'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('density__C1_CP_CIS_CODIF_HS_He1_MOMENTS' in mom_data)
+        self.assertTrue(data_exists('density__C1_CP_CIS_CODIF_HS_He1_MOMENTS'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_HS_O1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -147,11 +143,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_O1_MOMENTS'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('density__C1_CP_CIS_CODIF_HS_O1_MOMENTS' in mom_data)
+        self.assertTrue(data_exists('density__C1_CP_CIS_CODIF_HS_O1_MOMENTS'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_PAD_HS_H1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -159,11 +154,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_H1_PF'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_H1_PF' in mom_data)
+        self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_H1_PF'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_PAD_HS_He1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -171,11 +165,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_He1_PF'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_He1_PF' in mom_data)
+        self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_He1_PF'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_PAD_HS_O1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -183,11 +176,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_O1_PF'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_O1_PF' in mom_data)
+        self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_O1_PF'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_HIA_ONBOARD_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -198,10 +190,8 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
         self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
 
-    # Problem at CSA serving CIS data
     # This test uses a different time range from test_load_csa_CP_CIS_HIA_ONBOARD_MOMENTS_data,
     # and loads for all four probes.
-    @unittest.skip
     def test_load_csa_mom_data(self):
         del_data('*')
         mom_data = pyspedas.cluster.load_csa(probes=['C1', 'C2', 'C3', 'C4'],
@@ -210,8 +200,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
         self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_HIA_PAD_HS_MAG_IONS_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -219,8 +208,8 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-HIA_PAD_HS_MAG_IONS_PF'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_HIA_PAD_HS_MAG_IONS_PF' in mom_data)
+        self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_HIA_PAD_HS_MAG_IONS_PF'))
 
     # data is all fill?
     @unittest.skip
