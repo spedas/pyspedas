@@ -456,6 +456,31 @@ class TestDatasetsFunction(unittest.TestCase):
         result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48")
         self.assertEqual(result, expected)
 
+    @patch('urllib.request.urlopen')
+    def test08_datasets_USAarea(self, mock_urlopen):
+        """Test datasets function with USAarea set to True or False."""
+        mock_response = MagicMock()
+        mock_response.status = 200
+        mock_response.read.return_value = self.mock_data.encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48", USAarea=True)
+
+        # Extract the URL passed to urlopen
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertIn("maxlat=49", called_url)
+        self.assertIn("minlon=-127", called_url)
+        self.assertIn("maxlon=-59", called_url)
+        self.assertIn("minlat=24", called_url)
+
+        result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48")
+
+        # Extract the URL passed to urlopen
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertNotIn("maxlat", called_url)
+        self.assertNotIn("minlon", called_url)
+        self.assertNotIn("maxlon", called_url)
+        self.assertNotIn("minlat", called_url)
 
 if __name__ == '__main__':
     unittest.main()
