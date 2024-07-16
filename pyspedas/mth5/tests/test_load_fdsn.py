@@ -245,6 +245,35 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         expected_columns = ['network', 'station', 'start', 'end']
         self.assertTrue(all(col in printed_df for col in expected_columns))
 
+    @patch('mth5.clients.make_mth5.FDSN.make_mth5_from_fdsn_client')
+    def test08_request_df_parameter(self, mock_make_mth5):
+        """Test the request_df parameter with a custom DataFrame."""
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        custom_request_df = pd.DataFrame({
+            "network": ["4P"],
+            "station": ["REU49"],
+            "location": ["--"],
+            "channel": ["*F*"],
+            "start": [date_start],
+            "end": [date_end]
+        })
+
+        def side_effect(*args, **kwargs):
+            raise SystemExit("make_mth5_from_fdsn_client called, exiting test.")
+
+        mock_make_mth5.side_effect = side_effect
+
+        with self.assertRaises(SystemExit) as cm:
+            load_fdsn(trange=[date_start, date_end], network="4P", station="REU49", request_df=custom_request_df)
+
+        # Verify that the reason for exit is the make_mth5_from_fdsn_client call
+        self.assertEqual(str(cm.exception), "make_mth5_from_fdsn_client called, exiting test.")
+
+        # Verify that make_mth5_from_fdsn_client was called with the custom DataFrame
+        # mock_make_mth5.assert_called_once_with(custom_request_df, interact=False, path=CONFIG['local_data_dir'])
+        self.assertTrue(any(call_args[0][0].equals(custom_request_df) for call_args in mock_make_mth5.call_args_list))
 
 
     # This test seems to be obsolete
