@@ -6,6 +6,7 @@ omit =
   */bin/*
   */docs/*
   */QtPlotter/*
+  */AncillaryPlots/*
   */pyspedas/cdagui/cdagui.py
   */pyspedas/maven/interp_utilities.py
   */pyspedas/maven/list_utilities.py

@@ -281,6 +281,7 @@ class PlotTestCases(unittest.TestCase):
         # Make a combined variable with both ESA and SST spectral data (disjoint energy ranges)
         store_data('combined_spec', ['tha_peif_en_eflux', 'tha_psif_en_eflux'])
         options('tha_peif_en_eflux', 'y_no_resample', 1)
+        options('combined_spec','y_range',[5.0, 7e+06])
         vars = ['tha_peif_en_eflux', 'combined_spec', 'tha_psif_en_eflux']
         tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=ESA, middle=combined, bottom=SST')
         tplot(vars, save_png='test_pseudo_spectra_disjoint_energies', display=global_display)
@@ -306,10 +307,10 @@ class PlotTestCases(unittest.TestCase):
 
         # Zoom in o a burst interval
         timespan('2007-03-23/12:20', 10, 'minutes')
-        tplot_options('title', '')
-        tplot(vars, save_png='test_pseudo_spectra_full_burst_zoomed',display=global_display)
         tplot_options('title', 'Combined full and burst cadence with same energies (zoomed in) top=fast, mid=combined, bot=burst')
+        tplot(vars, save_png='test_pseudo_spectra_full_burst_zoomed',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        tplot_options('title', '')
 
     def test_pseudo_spectra_plus_line(self):
         del_data("*")

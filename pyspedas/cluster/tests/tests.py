@@ -1,6 +1,6 @@
 import os
 import unittest
-from pytplot import data_exists, del_data
+from pytplot import data_exists, del_data, tplot_names, tplot
 import pyspedas
 from pyspedas.cluster.load_csa import cl_master_probes, cl_master_datatypes
 
@@ -93,17 +93,15 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('E_pow_f5__C1_PP_WHI'))
         self.assertTrue('E_pow_f5__C1_PP_WHI' in whi_vars)
 
-    # 404, no data?
-    @unittest.skip
     def test_load_csa_CE_WBD_WAVEFORM_CDF_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        trange = ['2012-11-06T02:19:00Z', '2012-11-06T02:19:59Z']
         wbd_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CE_WBD_WAVEFORM_CDF'], time_clip=True)
         print(wbd_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in wbd_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('WBD_Elec' in wbd_data)
+        self.assertTrue(data_exists('WBD_Elec'))
 
     def test_load_csa_CP_AUX_POSGSE_1M_data(self):
         del_data('*')
@@ -211,11 +209,9 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_HIA_PAD_HS_MAG_IONS_PF' in mom_data)
         self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_HIA_PAD_HS_MAG_IONS_PF'))
 
-    # data is all fill?
-    @unittest.skip
     def test_load_csa_CP_EDI_AEDC_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        trange = ['2005-08-01T00:00:00Z', '2005-08-02T00:00:00Z']
         edi_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EDI_AEDC'], time_clip=True)
@@ -362,17 +358,15 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('Data__C1_CP_PEA_PITCH_SPIN_PSD' in pea_data)
         self.assertTrue(data_exists('Data__C1_CP_PEA_PITCH_SPIN_PSD'))
 
-    # 404 error, no data available?
-    @unittest.skip
     def test_load_csa_CP_RAP_ESPCT6_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2008-02-03T00:00:00Z', '2008-02-05T00:00:00Z']
         rap_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
-                                             datatypes=['CP_CP_RAP_ESPCT6'], time_clip=True)
+                                             datatypes=['CP_RAP_ESPCT6'], time_clip=True)
         print(rap_data)
-        self.assertTrue('Data_Density__C1_CP_PEA_MOMENTS' in rap_data)
-        self.assertTrue(data_exists('Data_Density__C1_CP_PEA_MOMENTS'))
+        self.assertTrue('Electron_Dif_flux__C1_CP_RAP_ESPCT6' in rap_data)
+        self.assertTrue(data_exists('Electron_Dif_flux__C1_CP_RAP_ESPCT6'))
 
     # multidimensional DEPEND_0 array for dsettings/caveat variables
     def test_load_csa_CP_RAP_ESPCT6_R_data(self):
@@ -482,7 +476,8 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
 
     # no errors, but no variables loaded?
-    @unittest.skip
+    # It looks like some spectral variable in the CDF are missing a DEPEND_2? attribute,
+    # possibly for a real/imaginary array dimension
     def test_load_csa_CP_STA_PSD_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
@@ -490,32 +485,28 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_STA_PSD'], time_clip=True)
         print(sta_data)
-        self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in sta_data)
-        self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
+        #self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in sta_data)
+        #self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
 
-    # 404 error, no data?
-    @unittest.skip
     def test_load_csa_CP_WBD_WAVEFORM_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2001-02-04T13:40:00Z', '2001-02-04T13:49:59Z']
         wbd_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_WBD_WAVEFORM'], time_clip=True)
         print(wbd_data)
-        self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in wbd_data)
-        self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
+        self.assertTrue('E__C1_CP_WBD_WAVEFORM' in wbd_data)
+        self.assertTrue(data_exists('E__C1_CP_WBD_WAVEFORM'))
 
-    # 404 error, no data?
-    @unittest.skip
     def test_load_csa_CP_WHI_ELECTRON_DENSITY_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2018-01-12T00:00:00Z', '2018-01-13T00:00:00Z']
         whi_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_WHI_ELECTRON_DENSITY'], time_clip=True)
         print(whi_data)
-        self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in whi_data)
-        self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
+        self.assertTrue('Electron_Density__C1_CP_WHI_ELECTRON_DENSITY' in whi_data)
+        self.assertTrue(data_exists('Electron_Density__C1_CP_WHI_ELECTRON_DENSITY'))
 
     def test_load_csa_CP_CP_WHI_NATURAL_data(self):
         del_data('*')
@@ -530,7 +521,7 @@ class LoadTestCases(unittest.TestCase):
     @unittest.skip
     def test_load_csa_JP_PMP_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2017-01-01T00:00:00Z', '2017-02-01T00:00:00Z']
         jp_data = pyspedas.cluster.load_csa(probes=['C1'],
                                             trange=trange,
                                             datatypes=['JP_PMP'], time_clip=True)
@@ -542,7 +533,7 @@ class LoadTestCases(unittest.TestCase):
     @unittest.skip
     def test_load_csa_JP_PSE_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2017-01-01T00:00:00Z', '2018-01-02T00:00:00Z']
         jp_data = pyspedas.cluster.load_csa(probes=['C1'],
                                             trange=trange,
                                             datatypes=['JP_PSE'], time_clip=True)
