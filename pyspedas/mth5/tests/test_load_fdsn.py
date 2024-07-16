@@ -16,6 +16,7 @@ import pytplot
 
 import time
 import os
+import io
 
 import h5py
 import pandas as pd
@@ -175,7 +176,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
     def test05_load_fdsn_timeclip(self):
         """
-        Test if the time is cliped correctly.
+        Test if the time is clipped correctly.
         """
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
@@ -216,6 +217,35 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         # incorrect station
         test_network_station_error(network="4P", station="REU49_")
+
+    # Mock FDSN and MTH so we do not make unnessesary calls
+    @patch('mth5.clients.make_mth5.FDSN.__init__', return_value=None)
+    @patch('mth5.mth5.MTH5.__init__', return_value=None)
+    def test07_print_request(self, mock_FDSN, mock_MTH5):
+        """Test the print_request parameter and ensure print output is correct."""
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        # Terminate function after print is complete
+        def side_effect(*args, **kwargs):
+            raise SystemExit("Exiting test.")
+
+        # Assign the side effect to the mock objects
+        mock_FDSN.side_effect = side_effect
+        mock_MTH5.side_effect = side_effect
+
+        # Capture the printed output
+        printed_output = io.StringIO()
+        with self.assertRaises(SystemExit) as cm:
+            with patch('sys.stdout', new=printed_output):
+                load_fdsn(trange=[date_start, date_end], network="4P", station="REU49", print_request=True)
+
+        # Check the content of the print output
+        printed_df = printed_output.getvalue()
+        expected_columns = ['network', 'station', 'start', 'end']
+        self.assertTrue(all(col in printed_df for col in expected_columns))
+
+
 
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")

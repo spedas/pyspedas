@@ -116,7 +116,7 @@ def load_fdsn(trange=None, network=None, station=None,
     request_df = _request_df_from_input(trange, network, station)
 
     if print_request:
-        print(request_df)
+        print(request_df.to_string())
 
     # Create time variables that correspond to the request time period
     request_start = datetime.fromisoformat(request_df.start[0])
