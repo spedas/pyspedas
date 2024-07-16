@@ -92,34 +92,34 @@ def load_fdsn(trange=None, network=None, station=None,
 
     Parameters
     ----------
-        trange : list of str
-            Time range of interest.
-        network : str
-            Network name.
-        station : str
-            Station name.
-        nodownload : bool, default=False
-            If h5 file is already created do not load another one.
-        noexception : bool, default=False
-            If true do not raise and Execution produced by FDSN.
-        print_request : bool, default=False
-            Print request_df structure, which can be usefully for debuting the request.
-        nowarnings : bool, default=False
-            If true, disable loguru warnings.
-        filename : bool, default=False
-            If true, return filename as a second return parameter
-        request_df : pandas.DataFrame, optional
-            Custom request_df dataframe for the `make_mth5_from_fdsn_client` method of the `FDSN` class.
-            This parameter is optional, and it is not advised to use it unless the user knows exactly what to do.
-            request_df must contain the following:
-                - One `station`, one `network`, and one `location` as a list.
-                - A list of 3 strings for `channels`.
-                - The `start` and `end` date fields must contain a list of one string.
-            See `pyspedas.mth5.load_fdsn._request_df_from_input` implementation for reference.
+    trange : list of str
+        Time range of interest.
+    network : str
+        Network name.
+    station : str
+        Station name.
+    nodownload : bool, default=False
+        If h5 file is already created do not load another one.
+    noexception : bool, default=False
+        If true, do not raise an exception produced by FDSN.
+    print_request : bool, default=False
+        Print request_df structure, which can be useful for debugging the request.
+    nowarnings : bool, default=False
+        If true, disable loguru warnings.
+    request_df : pandas.DataFrame, optional
+        Custom request_df dataframe for the `make_mth5_from_fdsn_client` method of the `FDSN` class.
+        This parameter is optional, and it is not advised to use it unless the user knows exactly what to do.
+        request_df must contain the following:
+
+        - One `station`, one `network`, and one `location` as a list.
+        - A list of 3 strings for `channels`.
+        - The `start` and `end` date fields must contain a list of one string.
+
+        See `pyspedas.mth5.load_fdsn._request_df_from_input` implementation for reference.
 
     Returns
     -------
-    tplot_variable: str or None
+    tplot_variable : str or None
         Tplot variable name. Tplot variable is created if data is loaded successfully, None otherwise.
     """
 
@@ -332,5 +332,9 @@ def load_fdsn(trange=None, network=None, station=None,
             }
 
             options(tplot_variable, opt_dict=tplot_options)
+
+            # TODO: For potential future implementation
+            #     filename : bool, default=False
+            #         If true, return filename as a second return parameter
 
             return tplot_variable

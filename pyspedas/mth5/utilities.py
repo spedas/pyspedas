@@ -66,8 +66,9 @@ def datasets(trange=None, network=None, station=None, USAarea=False):
         The station code to filter the datasets. If None (default), no station filter is applied.
     USAarea : bool, optional
         If True, restricts the search to the geographical boundaries (box) of the USA:
-            - Latitude: 24 to 49 degrees
-            - Longitude: -127 to -59 degrees
+
+        - Latitude: 24 to 49 degrees
+        - Longitude: -127 to -59 degrees
 
     Returns
     -------
