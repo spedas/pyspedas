@@ -63,6 +63,27 @@ def _request_df_from_input(trange, network, station):
 
     return request_df
 
+
+def _validate_date_format(date_string):
+    """
+    Validate if a date string is in the correct format.
+
+    Parameters
+    ----------
+    date_string : str
+        The date string to validate. Expected format: YYYY-MM-DDThh:mm:ss.
+
+    Raises
+    ------
+    ValueError
+        If the date string is not in the expected format.
+    """
+    try:
+        datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        raise ValueError(f"Invalid date format: {date_string}. Expected format: YYYY-MM-DDThh:mm:ss")
+
+
 def load_fdsn(trange=None, network=None, station=None,
               nodownload=False, noexception=False, print_request=False,
               nowarnings=False, request_df=None):
@@ -132,6 +153,10 @@ def load_fdsn(trange=None, network=None, station=None,
     # Create time variables that correspond to the request time period
     request_start = datetime.fromisoformat(request_df.start[0])
     request_end = datetime.fromisoformat(request_df.end[0])
+
+    # Validate time period
+    _validate_date_format(request_df.start[0])
+    _validate_date_format(request_df.end[0])
 
     # Determine where data will be stored
     mth5dir = CONFIG['local_data_dir']

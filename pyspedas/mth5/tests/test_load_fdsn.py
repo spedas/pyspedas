@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock, mock_open
 import urllib.error
+from urllib.error import URLError, HTTPError
 import socket
 
 from mth5.clients.make_mth5 import FDSN
@@ -25,6 +26,10 @@ from pyspedas.mth5.config import CONFIG
 
 import loguru
 from contextlib import contextmanager
+
+# Handling exceptions of bad data input
+from obspy.clients.fdsn.header import FDSNBadRequestException
+from obspy.clients.fdsn.header import FDSNNoServiceException
 
 
 @contextmanager
@@ -275,6 +280,48 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         # mock_make_mth5.assert_called_once_with(custom_request_df, interact=False, path=CONFIG['local_data_dir'])
         self.assertTrue(any(call_args[0][0].equals(custom_request_df) for call_args in mock_make_mth5.call_args_list))
 
+    def test09_invalid_date_or_data(self):
+        """Test the function with invalid date formats in trange."""
+        invalid_date_start = '2015-06-22'
+        invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should results in Exception
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        with self.assertRaises(FDSNBadRequestException) as cm:
+            load_fdsn(trange=[invalid_date_start, invalid_date_end], network="4P", station="REU49")
+
+        # Verify the exception type
+        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
+
+        with self.assertRaises(FDSNBadRequestException) as cm:
+            load_fdsn(trange=[date_start, date_end], network="4P", station="NON_EXISTENT")
+
+        # Verify the exception type
+        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
+
+        with self.assertRaises(FDSNBadRequestException) as cm:
+            load_fdsn(trange=[date_start, date_end], network="NON_EXISTENT", station="REU49")
+
+        # Verify the exception type
+        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
+
+    # TODO: FOR SOME REASON, this test must be called before test02_load_fdsn_basic. Otherwise it does not work.
+    @patch('urllib.request.OpenerDirector.open')
+    def test02__connection_errors(self, mock_open):
+        """Test the function handling of network connection issues."""
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        # Simulate a no internet connection
+        mock_open.side_effect = URLError("Network unreachable")
+
+        with self.assertRaises(Exception) as cm:
+            load_fdsn(trange=[date_start, date_end], network="4P", station="REU49")
+            print(cm.exception)
+
+        # Verify the exception type and message for URLError
+        self.assertTrue(isinstance(cm.exception, FDSNNoServiceException) or isinstance(cm.exception, URLError))
+        # self.assertTrue(isinstance(cm.exception, URLError))
 
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
@@ -510,6 +557,7 @@ class TestDatasetsFunction(unittest.TestCase):
         self.assertNotIn("minlon", called_url)
         self.assertNotIn("maxlon", called_url)
         self.assertNotIn("minlat", called_url)
+
 
 if __name__ == '__main__':
     unittest.main()
