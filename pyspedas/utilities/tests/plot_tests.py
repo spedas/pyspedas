@@ -77,6 +77,10 @@ class PlotTestCases(unittest.TestCase):
         self.assertEqual(tr_fge,3)
         self.assertEqual(tr_btotal,1)
         self.assertEqual(tr_pseudo,4)
+        # We need to ensure thc_fge_dsl has a 'v' component, so we can pretend this variable is a spectrogram
+        fgs_data = pytplot.get_data('thc_fge_dsl')
+        fgs_meta = pytplot.get_data('thc_fge_dsl', metadata=True)
+        store_data('thc_fge_dsl',data={'x':fgs_data.times, 'y':fgs_data.y, 'v':[0, 1, 2]})
         options('thc_fge_dsl','spec',1)
         tr_pseudo_spec=count_traces('test_pseudo_colors')
         self.assertEqual(tr_pseudo_spec,1)
