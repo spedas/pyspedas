@@ -418,29 +418,31 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('Helium_Dif_flux__C1_CP_RAP_ISPCT_He' in rap_data)
         self.assertTrue(data_exists('Helium_Dif_flux__C1_CP_RAP_ISPCT_He'))
 
-    # time array all fill?
+    # This date returns data, but it's large enough (tens of megabytes that there's a significant
+    # chance of the server not completing the request.
     @unittest.skip
     def test_load_csa_CP_STA_CS_HBR_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2001-01-31T00:00:00Z', '2001-01-31T23:59:59Z']
         sta_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CS_HBR'], time_clip=True)
         print(sta_data)
-        self.assertTrue('Data_Density__C1_CP_PEA_MOMENTS' in sta_data)
-        self.assertTrue(data_exists('Data_Density__C1_CP_PEA_MOMENTS'))
+        self.assertTrue('Complex_Spectrum__C1_CP_STA_CS_HBR' in sta_data)
+        self.assertTrue(data_exists('Complex_Spectrum__C1_CP_STA_CS_HBR'))
 
-    # time array all fill?
+    # This date returns data, but it's large enough (tens of megabytes that there's a significant
+    # chance of the server not completing the request.
     @unittest.skip
     def test_load_csa_CP_STA_CS_NBR_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2001-01-31T00:00:00Z', '2001-01-31T23:59:59Z']
         sta_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CS_NBR'], time_clip=True)
         print(sta_data)
-        self.assertTrue('Data_Density__C1_CP_PEA_MOMENTS' in sta_data)
-        self.assertTrue(data_exists('Data_Density__C1_CP_PEA_MOMENTS'))
+        self.assertTrue('Complex_Spectrum__C1_CP_STA_CS_NBR' in sta_data)
+        self.assertTrue(data_exists('Complex_Spectrum__C1_CP_STA_CS_NBR'))
 
     def test_load_csa_CP_STA_CWF_GSE_data(self):
         del_data('*')
@@ -475,9 +477,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in sta_data)
         self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
 
-    # no errors, but no variables loaded?
-    # It looks like some spectral variable in the CDF are missing a DEPEND_2? attribute,
-    # possibly for a real/imaginary array dimension
+    # Spectrogram variables have string-valued DEPEND_2, which is not ISTP compliant.
     def test_load_csa_CP_STA_PSD_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
@@ -517,29 +517,25 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL' in whi_data)
         self.assertTrue(data_exists('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL'))
 
-    # 404 error, no data?
-    @unittest.skip
-    def test_load_csa_JP_PMP_data(self):
+    def test_load_csa_JP_AUX_PMP_data(self):
         del_data('*')
         trange = ['2017-01-01T00:00:00Z', '2017-02-01T00:00:00Z']
         jp_data = pyspedas.cluster.load_csa(probes=['C1'],
                                             trange=trange,
-                                            datatypes=['JP_PMP'], time_clip=True)
+                                            datatypes=['JP_AUX_PMP'], time_clip=True)
         print(jp_data)
-        self.assertTrue('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL' in jp_data)
-        self.assertTrue(data_exists('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL'))
+        self.assertTrue('L_value__C1_JP_AUX_PMP' in jp_data)
+        self.assertTrue(data_exists('L_value__C1_JP_AUX_PMP'))
 
-    # 404 error, no data?
-    @unittest.skip
     def test_load_csa_JP_PSE_data(self):
         del_data('*')
         trange = ['2017-01-01T00:00:00Z', '2018-01-02T00:00:00Z']
         jp_data = pyspedas.cluster.load_csa(probes=['C1'],
                                             trange=trange,
-                                            datatypes=['JP_PSE'], time_clip=True)
+                                            datatypes=['JP_AUX_PSE'], time_clip=True)
         print(jp_data)
-        self.assertTrue('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL' in jp_data)
-        self.assertTrue(data_exists('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL'))
+        self.assertTrue('sc_r1_xyz_gse__C1_JP_AUX_PSE' in jp_data)
+        self.assertTrue(data_exists('sc_r1_xyz_gse__C1_JP_AUX_PSE'))
 
 
 if __name__ == '__main__':
