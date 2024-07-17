@@ -39,7 +39,7 @@ def cl_master_datatypes():
           'CP_RAP_ISPCT_CNO', 'CP_RAP_ISPCT_He', 'CP_STA_CS_HBR',
           'CP_STA_CS_NBR', 'CP_STA_CWF_GSE', 'CP_STA_CWF_HBR_ISR2',
           'CP_STA_CWF_NBR_ISR2', 'CP_STA_PSD', 'CP_WBD_WAVEFORM',
-          'CP_WHI_ELECTRON_DENSITY', 'CP_WHI_NATURAL', 'JP_PMP', 'JP_PSE']
+          'CP_WHI_ELECTRON_DENSITY', 'CP_WHI_NATURAL', 'JP_AUX_PMP', 'JP_AUX_PSE']
     return md
 
 
@@ -93,7 +93,7 @@ def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
               'CP_RAP_ISPCT_CNO', 'CP_RAP_ISPCT_He', 'CP_STA_CS_HBR',
               'CP_STA_CS_NBR', 'CP_STA_CWF_GSE', 'CP_STA_CWF_HBR_ISR2',
               'CP_STA_CWF_NBR_ISR2', 'CP_STA_PSD', 'CP_WBD_WAVEFORM',
-              'CP_WHI_ELECTRON_DENSITY', 'CP_WHI_NATURAL', 'JP_PMP', 'JP_PSE']
+              'CP_WHI_ELECTRON_DENSITY', 'CP_WHI_NATURAL', 'JP_AUX_PMP', 'JP_AUX_PSE']
             Default: ['CP_CIS-CODIF_HS_H1_MOMENTS']
 
         downloadonly: bool
