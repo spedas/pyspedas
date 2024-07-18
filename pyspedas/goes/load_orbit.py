@@ -18,49 +18,41 @@ def load_orbit(
     notplot=False,
     no_update=False,
     time_clip=True,
+    force_download=False,
 ):
     """
-    This function loads GOES orbit data from SPDF:
+    Load GOES orbit data from SPDF.
 
+    Fetches GOES orbit data from the Space Physics Data Facility (SPDF) website:
     https://spdf.gsfc.nasa.gov/pub/data/goes/goes#/orbit/YYYY/
 
     Parameters
     ----------
-        trange : list of str
-            time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
-            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-
-        probe: str/int or list of strs/ints
-            GOES spacecraft #, e.g., probe=15
-
-        prefix: str
-            The tplot variable names will be given this prefix.
-            By default, no prefix is added.
-            If 'probename' then the name will be used, for example g16.
-
-        suffix: str
-            The tplot variable names will be given this suffix.
-            By default, no suffix is added.
-
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into
-            tplot variables
-
-        notplot: bool
-            If set, load the data into dictionaries containing the numpy objects instead
-            of creating tplot variables
-
-        no_update: bool
-            If set, only load data from your local cache
-
-        time_clip: bool
-            Time clip the variables to exactly the range specified in the trange keyword
+    trange : list of str
+        Time range of interest ['YYYY-MM-DD', 'YYYY-MM-DD'].
+        Or, to specify more or less than a day: ['YYYY-MM-DD hh:mm:ss', 'YYYY-MM-DD hh:mm:ss'].
+    probe : str or int or list of str or int
+        GOES spacecraft number(s), e.g., probe=15.
+    prefix : str, optional
+        Prefix to add to the tplot variable names.
+        By default, the added prefix is 'g[probe]_orbit_'.
+    suffix : str, optional
+        Suffix to add to the tplot variable names. By default, no suffix is added.
+    downloadonly : bool, optional
+        If True, downloads the CDF files without loading them into tplot variables. Default is False.
+    notplot : bool, optional
+        If True, loads the data into dictionaries containing the numpy objects instead of creating tplot variables. Default is False.
+    no_update : bool, optional
+        If True, only loads data from the local cache. Default is False.
+    time_clip : bool, optional
+        If True, clips the variables to exactly the range specified in the trange keyword. Default is False.
+    force_download : bool, optional
+        If True, downloads the file even if a newer version exists locally. Default is False.
 
     Returns
     -------
-        List of tplot variables created. Or list of filenames downloaded.
-
+    list of str
+        List of tplot variables created or list of filenames downloaded.
     """
     remote_data_dir = "https://spdf.gsfc.nasa.gov/pub/data/goes/"
     out_files = []  # list of local files downloaded
@@ -87,6 +79,7 @@ def load_orbit(
             remote_path=remote_data_dir,
             local_path=CONFIG["local_data_dir"],
             no_download=no_update,
+            force_download=force_download,
         )
 
         out_files_local = []
@@ -99,8 +92,9 @@ def load_orbit(
 
         tvars_local = []
         if not downloadonly:
-            if prefix == "probename":
-                prefix_local = "g" + str(prb) + "_"
+            if prefix is None or prefix == "" or prefix == "probename":
+                # Example of prefix: g15_orbit_
+                prefix_local = "g" + str(prb) + "_" + "orbit_"
             else:
                 prefix_local = prefix
 
@@ -115,9 +109,8 @@ def load_orbit(
             )
             tvars.extend(tvars_local)
 
-        if time_clip:
-            for new_var in tvars_local:
-                tclip(new_var, trange[0], trange[1], suffix="")
+            if time_clip:
+                tclip(tvars_local, trange[0], trange[1], suffix="")
 
     if downloadonly:
         return out_files
