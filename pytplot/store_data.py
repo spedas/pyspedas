@@ -220,7 +220,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         if 'v' in data:
             spec_bins = data['v']
             spec_bins_dimension = 'v'
-        else:
+        elif ("v1" in data) and ("v2" in data) and ("v3" in data):
+            spec_bins = data['v2']
+            spec_bins_dimension = 'v2'
+        elif ("v1" in data) and ("v2" in data):
             spec_bins = data['v2']
             spec_bins_dimension = 'v2'
 
@@ -230,8 +233,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             except:
                 if spec_bins_dimension=='v':
                     spec_bins = np.arange(1, len(values[0])+1)
-                else:
+                elif spec_bins_dimension=="v2":
                     spec_bins = np.arange(1, len(values[0][0]) + 1)
+                elif spec_bins_dimension=="v3":
+                    spec_bins = np.arange(1, len(values[0][0][0]) + 1)
                 spec_bins = pd.DataFrame(spec_bins)
 
 
@@ -285,9 +290,15 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
                 temp.coords[d] = (('time', d+'_dim'), d_dimension.values)
             else:
                 d_dimension = d_dimension.transpose()
-                temp.coords[d] = (d+'_dim', np.squeeze(d_dimension.values))
-        except:
+                squeezed_array = np.squeeze(d_dimension.values)# np.squeeze() does something funny here if this dimension has length 1, causing a ValueError exception
+                if d_dimension.size == 1:
+                    logging.warning("Dimension %s of variable %s has length 1",d,name)
+                    temp.coords[d] = (d+'_dim', d_dimension.values[0])
+                else:
+                    temp.coords[d] = (d+'_dim', squeezed_array)
+        except ValueError as err:
             logging.warning("Could not create coordinate %s_dim for variable %s",d, name)
+            logging.warning("ValueError exception text: %s", str(err))
 
     # Set up Attributes Dictionaries
     xaxis_opt = dict(axis_label='Time')
