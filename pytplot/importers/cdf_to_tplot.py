@@ -384,6 +384,18 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
 
                 tplot_data = {'x': xdata, 'y': ydata}
 
+                # We want to know if this is a spectrogram or not.  If not, don't make
+                # "v", "v1", "v2" entries. Technically, a vector quantity should have a DEPEND_1
+                # with numeric values.  Most of the time, they are provided as strings, or simply
+                # omitted.  But if we made a "v" variable for it, it would break a lot of code
+                # that only expects to get (times, data) back from a get_data call on a non-spectral variable.
+
+                is_spectrogram = False
+                if 'DISPLAY_TYPE' in var_atts:
+                    disp_type = var_atts['DISPLAY_TYPE'].lower()
+                    if "spect" in disp_type:
+                        is_spectrogram = True
+
                 # Data may depend on other data in the CDF.
                 depend_1 = None
                 depend_2 = None
@@ -405,7 +417,8 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             depend_2 = np.array(master_cdf_file.varget(var_atts["DEPEND_2"]))
                             # Ignore the depend types if they are strings
                             if depend_2.dtype.type is np.str_:
-                                depend_2 = None
+                                logging.warning("Variable %s DEPEND_2 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_2"])
+                                depend_2 = np.arange(ydata.shape[2])
                         except ValueError:
                             logging.warning('Unable to get DEPEND_2 variable %s while processing %s',
                                             var_atts["DEPEND_2"], var)
@@ -416,13 +429,26 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             depend_3 = np.array(master_cdf_file.varget(var_atts["DEPEND_3"]))
                             # Ignore the depend types if they are strings
                             if depend_3.dtype.type is np.str_:
-                                depend_3 = None
+                                logging.warning("Variable %s DEPEND_3 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_3"])
+                                depend_3 = np.arange(ydata.shape[3])
                         except ValueError:
                             logging.warning('Unable to get DEPEND_3 variable %s while processing %s',
                                             var_atts["DEPEND_3"], var)
                             pass
 
                 nontime_varying_depends = []
+
+                # Fill in any missing depend_n values
+                ndims = len(ydata.shape)
+                if ndims >= 2 and depend_1 is None:
+                    # This is so common, we won't bother logging it
+                    depend_1 = np.arange(ydata.shape[1])
+                if ndims >= 3 and depend_2 is None:
+                    logging.warning("Variable %s has %d dimensions, but no DEPEND_2, adding index range for dimension 2", var_name, ndims )
+                    depend_2 = np.arange(ydata.shape[2])
+                if ndims >= 4 and depend_3 is None:
+                    logging.warning("Variable %s has %d dimensions, but no DEPEND_3, adding index range for dimension 3", var_name, ndims )
+                    depend_3 = np.arange(ydata.shape[3])
 
                 if depend_1 is not None and depend_2 is not None and depend_3 is not None:
                     tplot_data['v1'] = depend_1
@@ -443,7 +469,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         nontime_varying_depends.append('v1')
                     if len(depend_2.shape) == 1:
                         nontime_varying_depends.append('v2')
-                elif depend_1 is not None:
+                elif depend_1 is not None and is_spectrogram:
                     tplot_data['v'] = depend_1
                     if len(depend_1.shape) == 1:
                         nontime_varying_depends.append('v')
@@ -595,6 +621,8 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 attr_dict["CDF"]["VATT"]['labels'] = attr_dict["CDF"]["VATT"]['labels'].split('\\N')
             store_data(var_name, data=output_table[var_name], attr_dict=attr_dict)
         except (TypeError, ValueError) as err:
+            logging.warning("Exception of type %s raised during store_data call for variable %s", str(type(err)), var_name)
+            logging.warning("Exception message: %s",str(err))
             continue
 
         if var_name not in stored_variables:
