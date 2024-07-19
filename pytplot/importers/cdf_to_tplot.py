@@ -411,6 +411,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             ydata[cond] = 0
 
                 # Check dimensions of ydata to see if a leading time dimension has been lost
+                # This seems to happen with some Cluster CDFs, at least the ones served by CSA,
+                # if a variable only has a single timestamp. For example, the CP_CIS-HIA_ONBOARD_MOMENTS datatype, as seen
+                # in test_load_csa_mom_data.
+
                 num_times = len(xdata)
                 if num_times == 1:
                     ydims = ydata.shape
