@@ -220,6 +220,9 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         trange = [times[0], times[-1]]
 
     # Figure out the 'v' data
+    # This seems to be conflating specplot bins with general DEPEND_N attributes.
+    # Maybe only do this stuff if it's marked as a spectrum?  But what if it's from
+    # a NetCDF rather than a CDF?
     spec_bins_exist = False
     if 'v' in data or 'v1' in data or 'v2' in data or 'v3' in data:
         # Generally the data is 1D, but occasionally
@@ -250,10 +253,14 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
         if len(spec_bins.columns) != 1:
             # The spec_bins are time varying
+            # Or maybe they're just DEPEND_N and nothing to do with spectra?
             spec_bins_time_varying = True
             if len(spec_bins) != len(times):
-                logging.error("store_data: Length of v (%d) and x (%d) do not match.  Cannot create tplot variable %s.",len(spec_bins),len(times),name)
-                return
+                # Maybe it's not a spectrum at all?
+                # Cluster pressure tensor variablea havw a DEPEND_1 that's 2-D, 1x3 [['x','y','z']]
+                logging.error("store_data: Length of spec_bins (%d) and times (%d) do not match for variable %s.",len(spec_bins),len(times),name)
+                spec_bins = None
+                spec_bins_exist = False
         else:
             spec_bins = spec_bins.transpose()
             spec_bins_time_varying = False
@@ -344,7 +351,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         temp.attrs['plot_options']['extras'] = extras
         temp.attrs['plot_options']['create_time'] = create_time
         temp.attrs['plot_options']['links'] = links
-        temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
+        #temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
         temp.attrs['plot_options']['overplots'] = []
         temp.attrs['plot_options']['interactive_xaxis_opt'] = {}
         temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
