@@ -99,7 +99,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         return False
 
     if data is None and newname is None:
-        logging.error('Please provide data.')
+        logging.error('store_data: Neither data array nor newname supplied, nothing to do.')
         return False
 
     # If newname is specified, we are just renaming the variable
@@ -152,7 +152,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         err_values = np.array(data.pop('dy'))
 
         if len(err_values) != len(times):
-            logging.warning('Warning: %s: length of error values (%d) does not match length of time values (%d)',name,len(err_values),
+            logging.warning('store_data: Warning: %s: length of error values (%d) does not match length of time values (%d)',name,len(err_values),
                             len(times))
     else:
         err_values = None
@@ -186,6 +186,14 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     # At this point, times should be a numpy array of datetime or np.datetime64 objects
 
+    if len(values.shape) == 0:
+        # This can happen for Cluster variables with only a single sample, as they can
+        # be incorrectly marked as NRV and lose their leading (time) dimension.
+        logging.warning("store_data: Data array for %s appears to be a zero-dimensional array; converting to 1-D array.",name)
+        if len(times) == 1:
+            logging.warning("store_data: This is possibly due to the leading array dimension being lost in a scalar variable with a single timestamp.")
+        values = np.array([values])
+
     if len(values) == 0:
         logging.warning('store_data: %s has empty y component, cannot create variable',name)
         return False
@@ -195,7 +203,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         # the variable, but give an informational message about the mismatch.  The fix would probably be for the
         # data provider to mark the variable as non-record-variant, and avoid giving it a DEPEND_0 or DEPEND_TIME
         # attribute.
-        logging.info("%s: lengths of x (%d) and y (%d) do not match! Mislabeled NRV variable?",name,len(times),len(values))
+        logging.info("store_data: %s: lengths of x (%d) and y (%d) do not match! Mislabeled NRV variable?",name,len(times),len(values))
 
     if not isinstance(times,np.ndarray):
         logging.warning("store_data: times was not converted to a numpy array. This should not happen.")
@@ -244,7 +252,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             # The spec_bins are time varying
             spec_bins_time_varying = True
             if len(spec_bins) != len(times):
-                logging.error("Length of v (%d) and x (%d) do not match.  Cannot create tplot variable %s.",len(spec_bins),len(times),name)
+                logging.error("store_data: Length of v (%d) and x (%d) do not match.  Cannot create tplot variable %s.",len(spec_bins),len(times),name)
                 return
         else:
             spec_bins = spec_bins.transpose()
@@ -266,8 +274,14 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     # Ignore warnings about cdflib non-nanosecond precision timestamps for now
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore",message="^.*non-nanosecond precision.*$")
-        temp = xr.DataArray(values, dims=['time']+dimension_list,
-                            coords={'time': ('time', times)})
+        try:
+            temp = xr.DataArray(values, dims=['time']+dimension_list,
+                                coords={'time': ('time', times)})
+        except ValueError as err:
+            logging.warning("store_data: ValueError trying to set xarray coordinates for variable %s: %s", name, str(err))
+            if len(times) == 1:
+                logging.warning("store_data: This is possibly due to the leading data dimension being lost in an array-valued or vector-valued variable with a single timestamp.")
+            return
 
     if spec_bins_exist:
         try:
@@ -276,7 +290,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             else:
                 temp.coords['spec_bins'] = (spec_bins_dimension+'_dim', np.squeeze(spec_bins.values))
         except ValueError:
-            logging.warning('Conflicting size for at least one dimension for variable %s', name)
+            logging.warning('store_data: conflicting size for at least one dimension for variable %s', name)
 
     for d in coordinate_list:
         if data[d] is None:
@@ -285,20 +299,20 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             d_dimension = pd.DataFrame(data[d])
             if len(d_dimension.columns) != 1:
                 if len(d_dimension) != len(times):
-                    logging.warning("Length of %s (%d) and time (%d) do not match.  Cannot create coordinate for %s.",d,len(d_dimension),len(times),name)
+                    logging.warning("store_data: Length of %s (%d) and time (%d) do not match.  Cannot create coordinate for %s.",d,len(d_dimension),len(times),name)
                     continue
                 temp.coords[d] = (('time', d+'_dim'), d_dimension.values)
             else:
                 d_dimension = d_dimension.transpose()
                 squeezed_array = np.squeeze(d_dimension.values)# np.squeeze() does something funny here if this dimension has length 1, causing a ValueError exception
                 if d_dimension.size == 1:
-                    logging.warning("Dimension %s of variable %s has length 1",d,name)
+                    logging.warning("store_data: Dimension %s of variable %s has length 1",d,name)
                     temp.coords[d] = (d+'_dim', d_dimension.values[0])
                 else:
                     temp.coords[d] = (d+'_dim', squeezed_array)
         except ValueError as err:
-            logging.warning("Could not create coordinate %s_dim for variable %s",d, name)
-            logging.warning("ValueError exception text: %s", str(err))
+            logging.warning("store_data: Could not create coordinate %s_dim for variable %s",d, name)
+            logging.warning("store_data: ValueError exception text: %s", str(err))
 
     # Set up Attributes Dictionaries
     xaxis_opt = dict(axis_label='Time')
