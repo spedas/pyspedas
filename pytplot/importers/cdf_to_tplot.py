@@ -220,6 +220,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
 
             if this_var_type in var_type:
                 var_properties = master_cdf_file.varinq(var)
+                var_properties_data_cdf = cdf_file.varinq(var)
 
                 # Find data name and if it is already in stored variables
                 if 'TPLOT_NAME' in var_atts:
@@ -227,10 +228,35 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 else:
                     var_name = prefix + var + suffix
 
+                # Is this variable marked as non-record-variant?  This may
+                # differ between the data and master CDFs.
+
+                if new_cdflib:
+                    rec_vary_data \
+                        = var_properties_data_cdf.Rec_Vary
+                    rec_vary_master \
+                        = var_properties.Rec_Vary
+                else:
+                    rec_vary_data \
+                        = var_properties_data_cdf["Rec_Vary"]
+                    rec_vary_master \
+                        = var_properties["Rec_Vary"]
+                if (rec_vary_master != rec_vary_data):
+                    logging.warning("Master and data CDFs have different values for Rec_Vary property on variable %s, using %s from master CDF.", var, rec_vary_master)
+                rec_vary = rec_vary_master
+
+                nrv_has_times = False
                 if "DEPEND_TIME" in var_atts:
                     x_axis_var = var_atts["DEPEND_TIME"]
+                    if not rec_vary:
+                        logging.warning("Variable %s is marked non-record-variant, but has DEPEND_TIME attribute",var)
+                        nrv_has_times = True
                 elif "DEPEND_0" in var_atts:
                     x_axis_var = var_atts["DEPEND_0"]
+                    if not rec_vary:
+                        logging.warning("Variable %s is marked non-record-variant, but has DEPEND_0 attribute",var)
+                        nrv_has_times = True
+
                 else:
                     # non-record varying variables (NRVs)
                     # added by egrimes, 13Jan2021
@@ -238,6 +264,8 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     logging.debug(
                         'No DEPEND_TIME or DEPEND_0 attributes found for variable %s, filename %s assuming non-record-variant',
                         var, filename)
+                    if rec_vary:
+                        logging.warning("Variable %s is marked as record-variant, but no DEPEND_TIME or DEPEND_0 attributes found. Treating as NRV.",var)
                     try:
                         ydata = cdf_file.varget(var)
                     except:
@@ -375,12 +403,23 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         # but we still need to handle FILLVAL's for
                         # integer data, so we'll just set those to 0
                         cond = ydata == var_atts["FILLVAL"]
-                        # Cluster sets FILLVAL attributes on scalar quantities (!) so we need to chack...
+                        # Cluster sets FILLVAL attributes on scalar quantities (!) so we need to check...
                         if np.isscalar(ydata):
                             if cond:
                                 ydata = 0
                         else:
                             ydata[cond] = 0
+
+                # Check dimensions of ydata to see if a leading time dimension has been lost
+                num_times = len(xdata)
+                if num_times == 1:
+                    ydims = ydata.shape
+                    if len(ydims) == 0:
+                        logging.warning("Restoring missing time dimension for scalar-valued variable %s", var)
+                        ydata = ydata.reshape(1)
+                    elif ydims[0] != 1:
+                        logging.warning("Restoring missing time dimension for array-valued variable %s", var)
+                        ydata = ydata.reshape(1,*ydims)
 
                 tplot_data = {'x': xdata, 'y': ydata}
 
@@ -418,11 +457,14 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             # Ignore the depend types if they are strings
                             if depend_2.dtype.type is np.str_:
                                 logging.warning("Variable %s DEPEND_2 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_2"])
-                                depend_2 = np.arange(ydata.shape[2])
+                                if len(ydata.shape) >= 3:
+                                    depend_2 = np.arange(ydata.shape[2])
+                                else:
+                                    logging.warning("Variable %s has DEPEND_2 attribute %s, but only %d dimensions (including time)", var, var_atts["DEPEND_2"], len(ydata.shape))
+                                    depend_2 = None
                         except ValueError:
                             logging.warning('Unable to get DEPEND_2 variable %s while processing %s',
                                             var_atts["DEPEND_2"], var)
-                            pass
                 if "DEPEND_3" in var_atts:
                     if var_atts["DEPEND_3"] in master_cdf_variables:
                         try:
@@ -434,7 +476,6 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         except ValueError:
                             logging.warning('Unable to get DEPEND_3 variable %s while processing %s',
                                             var_atts["DEPEND_3"], var)
-                            pass
 
                 nontime_varying_depends = []
 
