@@ -264,7 +264,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     logging.debug(
                         'No DEPEND_TIME or DEPEND_0 attributes found for variable %s, filename %s assuming non-record-variant',
                         var, filename)
-                    if rec_vary:
+                    if rec_vary and ('Epoch' not in var):
                         logging.warning("Variable %s is marked as record-variant, but no DEPEND_TIME or DEPEND_0 attributes found. Treating as NRV.",var)
                     try:
                         ydata = cdf_file.varget(var)
@@ -449,7 +449,8 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             depend_1 = np.array(master_cdf_file.varget(var_atts["DEPEND_1"]))
                             # Ignore the depend types if they are strings
                             if depend_1.dtype.type is np.str_:
-                                depend_1 = None
+                                #depend_1 = None
+                                pass
                         except ValueError:
                             logging.warning('Unable to get DEPEND_1 variable %s while processing %s',
                                             var_atts["DEPEND_1"], var)
@@ -460,9 +461,11 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             depend_2 = np.array(master_cdf_file.varget(var_atts["DEPEND_2"]))
                             # Ignore the depend types if they are strings
                             if depend_2.dtype.type is np.str_:
-                                logging.warning("Variable %s DEPEND_2 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_2"])
+                                #logging.warning("Variable %s DEPEND_2 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_2"])
                                 if len(ydata.shape) >= 3:
-                                    depend_2 = np.arange(ydata.shape[2])
+                                    # depend_2 = np.arange(ydata.shape[2])
+                                    # depend_2 = None
+                                    pass
                                 else:
                                     logging.warning("Variable %s has DEPEND_2 attribute %s, but only %d dimensions (including time)", var, var_atts["DEPEND_2"], len(ydata.shape))
                                     depend_2 = None
@@ -475,8 +478,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             depend_3 = np.array(master_cdf_file.varget(var_atts["DEPEND_3"]))
                             # Ignore the depend types if they are strings
                             if depend_3.dtype.type is np.str_:
-                                logging.warning("Variable %s DEPEND_3 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_3"])
-                                depend_3 = np.arange(ydata.shape[3])
+                                #logging.warning("Variable %s DEPEND_3 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_3"])
+                                #depend_3 = np.arange(ydata.shape[3])
+                                #depend_3 = None
+                                pass
                         except ValueError:
                             logging.warning('Unable to get DEPEND_3 variable %s while processing %s',
                                             var_atts["DEPEND_3"], var)
@@ -487,13 +492,16 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 ndims = len(ydata.shape)
                 if ndims >= 2 and depend_1 is None:
                     # This is so common, we won't bother logging it
-                    depend_1 = np.arange(ydata.shape[1])
+                    # depend_1 = np.arange(ydata.shape[1])
+                    pass
                 if ndims >= 3 and depend_2 is None:
-                    logging.warning("Variable %s has %d dimensions, but no DEPEND_2, adding index range for dimension 2", var_name, ndims )
-                    depend_2 = np.arange(ydata.shape[2])
+                    #logging.warning("Variable %s has %d dimensions, but no DEPEND_2, adding index range for dimension 2", var_name, ndims )
+                    #depend_2 = np.arange(ydata.shape[2])
+                    pass
                 if ndims >= 4 and depend_3 is None:
-                    logging.warning("Variable %s has %d dimensions, but no DEPEND_3, adding index range for dimension 3", var_name, ndims )
-                    depend_3 = np.arange(ydata.shape[3])
+                    #logging.warning("Variable %s has %d dimensions, but no DEPEND_3, adding index range for dimension 3", var_name, ndims )
+                    #depend_3 = np.arange(ydata.shape[3])
+                    pass
 
                 if depend_1 is not None and depend_2 is not None and depend_3 is not None:
                     tplot_data['v1'] = depend_1
@@ -514,7 +522,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         nontime_varying_depends.append('v1')
                     if len(depend_2.shape) == 1:
                         nontime_varying_depends.append('v2')
-                elif depend_1 is not None and is_spectrogram:
+                elif depend_1 is not None:
                     tplot_data['v'] = depend_1
                     if len(depend_1.shape) == 1:
                         nontime_varying_depends.append('v')
