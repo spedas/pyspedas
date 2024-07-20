@@ -7,14 +7,17 @@ def spd_pgs_do_fac(data_in, mat):
     """
     Applies field aligned coordinate transformation to input data
 
-    Input:
+    Parameters
+    ----------
         data_in: dict
             Particle data structure to be rotated
 
         mat: numpy.ndarray
             The 3x3 field-aligned rotation matrix to apply to the data
 
-    Returns:
+    Returns
+    -------
+    dict
         Rotated particle data structure
     """
 

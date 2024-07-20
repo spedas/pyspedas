@@ -28,7 +28,8 @@ def lepe(
     ror: bool = True,
     version: Optional[str] = None,
     only_fedu: bool = False,
-    et_diagram: bool = False
+    et_diagram: bool = False,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads data from the LEP-e experiment from the Arase mission
@@ -99,6 +100,10 @@ def lepe(
         passwd: str
             Password.  Default: None
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
 
     Returns
     -------
@@ -138,7 +143,7 @@ def lepe(
         pathformat += version + '.cdf'
 
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
 
     if (len(loaded_data) > 0) and ror:
@@ -180,8 +185,11 @@ def lepe(
     if (isinstance(loaded_data, dict)) and (len(loaded_data) > 0):
         if (level == 'l2') and (datatype == 'omniflux'):
             tplot_variables = []
-            v_array = (loaded_data[prefix + 'FEDO' + suffix]['v'][:, 0, :] +
-                       loaded_data[prefix + 'FEDO' + suffix]['v'][:, 1, :]) / 2.
+            v_keyname = 'v'
+            if v_keyname not in loaded_data[prefix + 'FEDO' + suffix]:
+                v_keyname = 'v1'
+            v_array = (loaded_data[prefix + 'FEDO' + suffix][v_keyname][:, 0, :] +
+                       loaded_data[prefix + 'FEDO' + suffix][v_keyname][:, 1, :]) / 2.
             # change minus values to NaN
             v_array = np.where(v_array < 0., np.nan, v_array)
             all_nan_v_indices_array = np.where(
@@ -230,16 +238,20 @@ def lepe(
             tplot_variables = []
             other_variables_dict = {}
             if prefix + 'FEDU' + suffix in loaded_data:
-                trange_double = time_double(trange)
+                trange_double = np.array(time_double(trange))
+                trange_dt64 = (trange_double*1.0e6).astype('datetime64[us]')
                 time_array = np.array(loaded_data[prefix + 'FEDU' + suffix]['x'])
-                inside_indices_array = np.argwhere( (trange_double[0] < time_array)
-                             & (trange_double[1] > time_array))
+                inside_indices_array = np.argwhere( (trange_dt64[0] < time_array)
+                             & (trange_dt64[1] > time_array))
                 inside_indices_list = inside_indices_array[:, 0].tolist()
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[prefix + 'FEDU' + suffix]:
+                    v_keyname = 'v1'
                 store_data(prefix + 'FEDU' + suffix,
                            data={'x': time_array[inside_indices_list],
                                  'y': loaded_data[prefix + 'FEDU' + suffix]['y'][inside_indices_list],
-                                 'v1': (loaded_data[prefix + 'FEDU' + suffix]['v'][inside_indices_list][:, 0, :]
-                                        + loaded_data[prefix + 'FEDU' + suffix]['v'][inside_indices_list][:, 1, :]) / 2.,  # arithmetic mean
+                                 'v1': (loaded_data[prefix + 'FEDU' + suffix][v_keyname][inside_indices_list][:, 0, :]
+                                        + loaded_data[prefix + 'FEDU' + suffix][v_keyname][inside_indices_list][:, 1, :]) / 2.,  # arithmetic mean
                                  'v2': ['01', '02', '03', '04', '05', 'A', 'B', '18', '19', '20', '21', '22'],
                                  'v3': [i for i in range(16)]},
                        attr_dict={'CDF':loaded_data[prefix + 'FEDU' + suffix]['CDF']})

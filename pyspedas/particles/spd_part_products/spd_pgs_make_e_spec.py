@@ -13,11 +13,14 @@ def spd_pgs_make_e_spec(data_in):
     """
     Builds energy spectrogram from the particle data structure
     
-    Input:
+    Parameters
+    ----------
         data_in: dict
             Particle data structure
 
-    Returns:
+    Returns
+    -------
+    tuple
         Tuple containing: (energy values for the y-axis, spectrogram values)
 
     """

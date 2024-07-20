@@ -66,5 +66,5 @@ if os.environ.get('SPEDAS_DATA_DIR'):
     CONFIG['local_data_dir'] = os.sep.join(
         [os.environ['SPEDAS_DATA_DIR'], 'barrel'])
 
-if os.environ.get('GOES_DATA_DIR'):
+if os.environ.get('BARREL_DATA_DIR'):
     CONFIG['local_data_dir'] = os.environ['BARREL_DATA_DIR']

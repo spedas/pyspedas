@@ -14,6 +14,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          datatype=None, # ASK data, ESD (3d L2 ESA)
          stations=None,  # ground mag and ASK data
          greenland=None,  # also for ground mag data
+         prefix='',
          suffix='',
          get_support_data=False,
          varformat=None,
@@ -22,7 +23,9 @@ def load(trange=['2013-11-5', '2013-11-6'],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False,
+         ):
     """
     This function loads data from the THEMIS mission;
     this function is not meant to be called directly;
@@ -198,7 +201,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
                              remote_path=CONFIG['remote_data_dir'],
                              local_path=CONFIG['local_data_dir'],
                              no_download=no_update,
-                             last_version=True)
+                             last_version=True,
+                             force_download=force_download,)
             if files is not None:
                 for file in files:
                     out_files.append(file)
@@ -210,6 +214,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     if varformat_tmp is None:
         tvars = cdf_to_tplot(out_files,
+                             prefix=prefix,
                              suffix=suffix,
                              get_support_data=get_support_data,
                              varformat=varformat,
@@ -218,6 +223,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
                              notplot=notplot)
     else:
         tvars = cdf_to_tplot(out_files,
+                             prefix=prefix,
                              suffix=suffix,
                              get_support_data=get_support_data,
                              varformat=varformat_tmp,

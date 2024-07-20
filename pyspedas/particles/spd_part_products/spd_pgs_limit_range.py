@@ -4,11 +4,11 @@ def spd_pgs_limit_range(data, phi=None, theta=None, energy=None):
     Applies phi, theta, and energy limits to data structure(s) by
     turning off the corresponding bin flags.
 
-    Input:
+    Parameters
+    ----------
         data: dict
             Particle data structure
 
-    Parameters:
         phi: np.ndarray
             Minimum and maximum values for phi
 
@@ -18,7 +18,9 @@ def spd_pgs_limit_range(data, phi=None, theta=None, energy=None):
         energy: np.ndarray
             Minimum and maximum values for energy
 
-    Returns:
+    Returns
+    -------
+    dict
         Data structure with limits applied (to the bins array)
     """
 

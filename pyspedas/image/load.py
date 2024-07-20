@@ -18,6 +18,7 @@ def load(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Load IMAGE data.
@@ -47,6 +48,9 @@ def load(
         Flag indicating whether to skip updating the data files. Defaults to False.
     time_clip : bool, optional
         Flag indicating whether to clip the loaded data to the specified time range. Defaults to False.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -146,6 +150,7 @@ def load(
         remote_path=CONFIG["remote_data_dir"],
         local_path=CONFIG["local_data_dir"],
         no_download=no_update,
+        force_download=force_download,
     )
     if files is not None:
         for file in files:

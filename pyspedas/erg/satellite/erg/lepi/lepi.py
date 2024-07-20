@@ -24,7 +24,8 @@ def lepi(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True,
-    version: Optional[str] = None
+    version: Optional[str] = None,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads data from the LEP-i experiment from the Arase mission
@@ -91,6 +92,10 @@ def lepi(
         passwd: str
             Password. Default: None
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     -------
         List of tplot variables created.
@@ -121,7 +126,7 @@ def lepi(
         pathformat += version + '.cdf'
 
     loaded_data = load(pathformat=pathformat, trange=trange, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
     flag_FPDO = False # In case it doesn't get set later
 

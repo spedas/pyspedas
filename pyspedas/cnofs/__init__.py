@@ -10,7 +10,8 @@ def cindi(trange=['2013-11-5', '2013-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Coupled Ion-Neutral Dynamics Investigation (CINDI)
     
@@ -56,19 +57,24 @@ def cindi(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> cindi_vars = pyspedas.cnofs.cindi(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['ionVelocityX', 'ionVelocityY', 'ionVelocityZ'])
 
     """
-    return load(instrument='cindi', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='cindi', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def plp(trange=['2013-11-5', '2013-11-6'],
@@ -79,7 +85,8 @@ def plp(trange=['2013-11-5', '2013-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Planar Langmuir Probe (PLP)
     
@@ -126,18 +133,23 @@ def plp(trange=['2013-11-5', '2013-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword.
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> plp_vars = pyspedas.cnofs.plp(trange=['2010-11-5', '2010-11-6'])
         >>> tplot('Ni')
     """
-    return load(instrument='plp', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='plp', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def vefi(trange=['2010-11-5', '2010-11-6'],
@@ -149,7 +161,8 @@ def vefi(trange=['2010-11-5', '2010-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Vector Electric Field Instrument (VEFI)
     
@@ -200,6 +213,11 @@ def vefi(trange=['2010-11-5', '2010-11-6'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
@@ -207,12 +225,12 @@ def vefi(trange=['2010-11-5', '2010-11-6'],
         
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> vefi_vars = pyspedas.cnofs.vefi(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['E_meridional', 'E_zonal'])
     """
-    return load(instrument='vefi', datatype=datatype, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='vefi', datatype=datatype, trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def datasets(instrument=None, label=True):

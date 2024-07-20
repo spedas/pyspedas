@@ -6,7 +6,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from .slice2d_getinfo import slice2d_getinfo
 
 
-def plot(
+def slice2d_plot(
     the_slice,
     xrange=None,
     yrange=None,

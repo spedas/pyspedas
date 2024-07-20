@@ -8,7 +8,7 @@ from codecs import open
 
 setup(
     name="pyspedas",
-    version="1.5.12",
+    version="1.5.16",
     description="Python Space Physics Environment Data Analysis Software (pySPEDAS)",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -29,7 +29,7 @@ setup(
     },
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
-        "numpy>=1.19.5",
+        "numpy>=1.20.0",
         "requests",
         "geopack>=1.0.10",
         "scipy",
@@ -39,7 +39,7 @@ setup(
         "pywavelets",
         "astropy",
         "hapiclient>=0.2.2",
-        "pytplot-mpl-temp>=2.2.23",
+        "https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip",
         "viresclient",
     ],
     python_requires=">=3.9",

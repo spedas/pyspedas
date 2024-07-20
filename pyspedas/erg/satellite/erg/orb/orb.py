@@ -25,7 +25,8 @@ def orb(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     version: Optional[str] = None,
-    ror: bool = True
+    ror: bool = True,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads orbit data from the Arase mission
@@ -97,6 +98,10 @@ def orb(
         passed: str
             Password. Default: None
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     -------
         List of tplot variables created.
@@ -139,7 +144,7 @@ def orb(
         pathformat += version + '.cdf'
 
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, version=version)
+                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, version=version, force_download=force_download)
 
     if (len(loaded_data) > 0) and ror:
 

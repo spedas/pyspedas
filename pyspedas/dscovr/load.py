@@ -16,7 +16,8 @@ def load(trange=['2018-10-16', '2018-10-17'],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads DSCOVR data into tplot variables; this function is not 
     meant to be called directly; instead, see the wrappers: 
@@ -86,16 +87,22 @@ def load(trange=['2018-10-16', '2018-10-17'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
    Returns
     ----------
+    list of str
         List of tplot variables created.
 
     Example
     ----------
-        import pyspedas
-        from pytplot import tplot
-        mag_vars = pyspedas.dscovr.mag(trange=['2018-11-5', '2018-11-6'])
-        tplot('dsc_h0_mag_B1GSE')
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> mag_vars = pyspedas.dscovr.mag(trange=['2018-11-5', '2018-11-6'])
+    >>> tplot('dsc_h0_mag_B1GSE')
 
     """
 
@@ -119,7 +126,7 @@ def load(trange=['2018-10-16', '2018-10-17'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)

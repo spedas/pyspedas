@@ -112,9 +112,9 @@ def load(trange=['2020-06-01', '2020-06-02'],
 
     if level == 'll02':
         science_or_low_latency = 'low_latency'
-        date_format = '%Y%m%dt%H%M??-*'
+        date_format = '%Y%m%dt??????-*'
         cdf_version = '???'
-        res = 60.0
+        res = 86400.0
 
     if instrument == 'mag':
         if level == 'll02':
@@ -130,15 +130,15 @@ def load(trange=['2020-06-01', '2020-06-02'],
             if datatype == 'pas-eflux' or datatype == 'pas-grnd-mom' or datatype == 'pas-vdf':
                 pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
             else:
-                date_format = '%Y%m%dt%H%M??-*'
-                res = 60.0
+                date_format = '%Y%m%dt??????-*'
+                res = 86400.0
                 pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
         elif level == 'l1':
             if datatype == 'his-pha' or datatype == 'his-sensorrates' or datatype == 'pas-3d' or datatype == 'pas-cal' or datatype == 'pas-mom':
                 pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
             else:
-                date_format = '%Y%m%dt%H%M??-*'
-                res = 60.0
+                date_format = '%Y%m%dt??????-*'
+                res = 86400.0
                 pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'
         elif level == 'l3':
             pathformat = instrument+'/'+science_or_low_latency+'/'+level+'/'+datatype+'/%Y/solo_'+level+'_'+instrument+'-'+datatype+'_'+date_format+'_v'+cdf_version+'.cdf'

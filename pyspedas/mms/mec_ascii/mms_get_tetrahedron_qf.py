@@ -57,7 +57,13 @@ def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=Fals
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=ResourceWarning)
             http_request = sdc_session.get(url, verify=True)
-            http_json = http_request.json()
+            if http_request.status_code != 200:
+                logging.warning("Request to MMS SDC returned HTTP status code %d",http_request.status_code)
+                logging.warning("Text: %s", http_request.text)
+                logging.warning("URL: %s", url)
+                return
+            else:
+                http_json = http_request.json()
 
         files_in_interval = http_json['files']
 

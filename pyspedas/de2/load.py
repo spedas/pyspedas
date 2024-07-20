@@ -16,7 +16,8 @@ def load(trange=['1983-02-16', '1983-02-17'],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads data from the DE2 mission; this function is not meant 
     to be called directly; instead, see the wrappers:
@@ -89,6 +90,11 @@ def load(trange=['1983-02-16', '1983-02-17'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
      Returns
     ----------
         List of tplot variables created.
@@ -132,7 +138,7 @@ def load(trange=['1983-02-16', '1983-02-17'],
         pathformat = 'plasma_lang/plasma500ms_lang_cdaweb/%Y/de2_plasma'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
 
     if addmaster:
-        mastercdf = download(remote_file=masterfile,remote_path=masterpath,local_path=local_master_dir,no_download=no_update)
+        mastercdf = download(remote_file=masterfile,remote_path=masterpath,local_path=local_master_dir,no_download=no_update, force_download=force_download)
     else:
         mastercdf = [None]
     # find the full remote path names using the trange
@@ -140,7 +146,7 @@ def load(trange=['1983-02-16', '1983-02-17'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)

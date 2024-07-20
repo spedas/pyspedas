@@ -25,7 +25,8 @@ def interpol(
     -------
     Interpolated data
 
-    Example:
+    Examples
+    --------
         >>> import pytplot
         >>> import pyspedas
         >>> x1 = [0, 4, 8, 12]

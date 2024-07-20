@@ -16,11 +16,13 @@ To open the GUI window:
 To start the gui from the command line, use:
     python pyspedas/cdagui/cdagui.py
 """
+
+import logging
 import os
 import time
 import tkinter as tk
 from tkinter import messagebox, filedialog
-from .cdaweb import CDAWeb
+from pyspedas.cdagui.cdaweb import CDAWeb
 from config import CONFIG
 
 
@@ -34,6 +36,7 @@ class cdaWindow:
         default_start_time = "2023-01-01 00:00:00"
         default_end_time = "2023-01-01 23:59:59"
         download_box = tk.IntVar()
+        clip_box = tk.IntVar(value=1)  # start with time clip on
         default_dir = CONFIG["local_data_dir"]
         default_status = "Status: Ready!"
 
@@ -53,7 +56,12 @@ class cdaWindow:
         def select_dir():
             # Button: Select dir
             initial_dir = str(dir_entry.get())
-            path = filedialog.askdirectory(parent=window, initialdir=initial_dir, title="Please select a directory", mustexist=True)
+            path = filedialog.askdirectory(
+                parent=window,
+                initialdir=initial_dir,
+                title="Please select a directory",
+                mustexist=True,
+            )
             if os.path.exists(path):
                 dir_entry.delete(0, tk.END)
                 dir_entry.insert(0, path)
@@ -86,16 +94,26 @@ class cdaWindow:
             sel_i = list(instrument_list.curselection())
             sel_i_val = [instrument_list.get(index) for index in sel_i]
             if len(sel_g_val) < 1:
-                messagebox.showerror(msgtitle, "Please select one or more Mission Groups!")
+                messagebox.showerror(
+                    msgtitle, "Please select one or more Mission Groups!"
+                )
             elif len(sel_i_val) < 1:
-                messagebox.showerror(msgtitle, "Please select one or more Instrument Types!")
+                messagebox.showerror(
+                    msgtitle, "Please select one or more Instrument Types!"
+                )
             else:
-                label_groups.config(text="Selected Mission Groups: [" + ",".join(sel_g_val) + "]")
-                label_instruments.config(text="Selected Instrument Types: [" + ",".join(sel_i_val) + "]")
+                label_groups.config(
+                    text="Selected Mission Groups: [" + ",".join(sel_g_val) + "]"
+                )
+                label_instruments.config(
+                    text="Selected Instrument Types: [" + ",".join(sel_i_val) + "]"
+                )
 
                 datasets = cda.get_datasets(sel_g_val, sel_i_val)
                 if len(datasets) < 1:
-                    messagebox.showerror(msgtitle, "No datasets found for these parameters!")
+                    messagebox.showerror(
+                        msgtitle, "No datasets found for these parameters!"
+                    )
                 else:
                     for i in datasets:
                         dataset_list.insert(tk.END, str(i))
@@ -160,7 +178,9 @@ class cdaWindow:
             sel_f = list(file_list.curselection())
             sel_f_val = [file_list.get(index) for index in sel_f]
             if len(sel_f_val) < 1:
-                messagebox.showerror(msgtitle, "Please select one or more files to download!")
+                messagebox.showerror(
+                    msgtitle, "Please select one or more files to download!"
+                )
                 status("")  # Reset status
                 return []
 
@@ -168,6 +188,10 @@ class cdaWindow:
                 download_only = True
             else:
                 download_only = False
+            if clip_box.get() == 1:
+                time_clip = True
+            else:
+                time_clip = False
 
             local_dir = str(dir_entry.get())
             if len(local_dir) < 1:
@@ -176,45 +200,25 @@ class cdaWindow:
 
             # Get the files, and/or the tplot variables
             # sesults is a list [remote filename, local filename, status]
-            result = cda.cda_download(sel_f_val, local_dir, download_only)
+            trange = [str(start_time.get()), str(end_time.get())]
+            result = cda.cda_download(
+                sel_f_val,
+                local_dir,
+                download_only=download_only,
+                trange=trange,
+                time_clip=time_clip,
+            )
+            no_of_files, no_of_variables, loaded_vars = result
 
             # Show a message about the results
-            filelen = len(result)
-            if filelen < 1:
-                msg = "No files were downloaded."
-                messagebox.showerror(msgtitle, msg)
-                status("")  # Reset status
-                return []
-
-            else:
-                file_result = result
-                count_no_downloads = 0
-                count_tplot_problem = 0
-                count_tplot = 0
-                for item in result:
-                    if len(item) != 3:
-                        continue
-                    if item[2] == -1:
-                        count_no_downloads += 1
-                    elif item[2] == 0 and not download_only:
-                        count_tplot_problem += 1
-                    elif item[2] == 1:
-                        count_tplot += 1
-                msg = "Results:"
-                msg += "\n"
-                msg += "\nFiles to download: " + str(filelen)
-                msg += ("\nFiles that could not be downloaded: "
-                        + str(count_no_downloads))
-                if not download_only:
-                    msg += "\n"
-                    msg += ("\nFiles loaded to pytplot: " + str(count_tplot))
-                    msg += ("\nFiles that could not be loaded to pytplot: "
-                            + str(count_tplot_problem))
-                # Show final message with results
-                messagebox.showinfo(msgtitle, msg)
-
+            logging.info(loaded_vars)
+            msg = "Results:\n"
+            msg += "\nDownloaded files: " + str(no_of_files)
+            msg += "\ntplot variables created: " + str(no_of_variables)
+            messagebox.showinfo(msgtitle, msg)
+            
             status("")  # Reset status
-            return file_result
+            return loaded_vars
 
         # Create the main window
         window = master
@@ -239,7 +243,12 @@ class cdaWindow:
 
         # Row 0 - just a label
         window.grid_rowconfigure(0, weight=0)
-        label00 = tk.Label(window, text="Download Data from CDAWeb", bg="#AFEEEE", font=("Helvetica", 10, "bold"))
+        label00 = tk.Label(
+            window,
+            text="Download Data from CDAWeb",
+            bg="#AFEEEE",
+            font=("Helvetica", 10, "bold"),
+        )
         label00.grid(row=0, columnspan=2, sticky="new")
 
         # Row 1, 2 - Mission Groups and Instrument Types
@@ -253,7 +262,9 @@ class cdaWindow:
         cell20 = tk.Frame(window)
         cell20.grid(row=2, column=0, sticky="nsew")
         mission_list = tk.Listbox(cell20, selectmode=tk.MULTIPLE, exportselection=False)
-        mission_list.pack(side=tk.TOP, fill=tk.BOTH, padx=5, pady=5, ipadx=5, ipady=5, expand=True)
+        mission_list.pack(
+            side=tk.TOP, fill=tk.BOTH, padx=5, pady=5, ipadx=5, ipady=5, expand=True
+        )
         cdagroups = cda.get_observatories()
         # cdagroups = [i for i in range(200)]
         for g in cdagroups:
@@ -265,8 +276,12 @@ class cdaWindow:
 
         cell21 = tk.Frame(window)
         cell21.grid(row=2, column=1, sticky="nsew")
-        instrument_list = tk.Listbox(cell21, selectmode=tk.MULTIPLE, exportselection=False)
-        instrument_list.pack(side=tk.TOP, fill=tk.BOTH, padx=5, pady=5, ipadx=5, ipady=5, expand=True)
+        instrument_list = tk.Listbox(
+            cell21, selectmode=tk.MULTIPLE, exportselection=False
+        )
+        instrument_list.pack(
+            side=tk.TOP, fill=tk.BOTH, padx=5, pady=5, ipadx=5, ipady=5, expand=True
+        )
         cdainstr = cda.get_instruments()
         # cdainstr = [i for i in range(200)]
         for i in cdainstr:
@@ -282,7 +297,13 @@ class cdaWindow:
         label30 = tk.Label(window, text=msg)
         label30.grid(row=3, column=0, sticky="nse")
 
-        button31 = tk.Button(window, text="1. Find Datasets", bg="#AFEEAF", command=find_datasets, width=30)
+        button31 = tk.Button(
+            window,
+            text="1. Find Datasets",
+            bg="#AFEEAF",
+            command=find_datasets,
+            width=30,
+        )
         button31.grid(row=3, column=1, sticky="nsw")
 
         # Row 4 - Dataset labels
@@ -292,9 +313,13 @@ class cdaWindow:
         for i in range(3):
             cell40.grid_rowconfigure(i, weight=1)
         cell40.grid_columnconfigure(0, weight=1)
-        label_groups = tk.Label(cell40, text="Selected Mission Groups:", justify="left", anchor="w")
+        label_groups = tk.Label(
+            cell40, text="Selected Mission Groups:", justify="left", anchor="w"
+        )
         label_groups.grid(row=0, sticky="new")
-        label_instruments = tk.Label(cell40, text="Selected Instrument Types:", justify="left", anchor="w")
+        label_instruments = tk.Label(
+            cell40, text="Selected Instrument Types:", justify="left", anchor="w"
+        )
         label_instruments.grid(row=1, sticky="new")
         label_2 = tk.Label(cell40, text="Datasets:", justify="left", anchor="w")
         label_2.grid(row=2, sticky="new")
@@ -303,7 +328,9 @@ class cdaWindow:
         cell50 = tk.Frame(window)
         cell50.grid(row=5, columnspan=2, sticky="nsew")
         dataset_list = tk.Listbox(cell50, selectmode=tk.MULTIPLE, exportselection=False)
-        dataset_list.pack(side=tk.TOP, fill=tk.BOTH, padx=5, pady=5, ipadx=5, ipady=5, expand=True)
+        dataset_list.pack(
+            side=tk.TOP, fill=tk.BOTH, padx=5, pady=5, ipadx=5, ipady=5, expand=True
+        )
         scrollbar50 = tk.Scrollbar(dataset_list, orient="vertical")
         scrollbar50.pack(side=tk.RIGHT, fill=tk.BOTH)
         dataset_list.config(yscrollcommand=scrollbar50.set)
@@ -311,7 +338,12 @@ class cdaWindow:
 
         # Row 6, 7 - Date Time
         window.grid_rowconfigure(6, weight=0)
-        label60 = tk.Label(window, text="Date and Time (format: YYYY-MM-DD[ HH:MM:SS])", justify="left", anchor="w")
+        label60 = tk.Label(
+            window,
+            text="Date and Time (format: YYYY-MM-DD[ HH:MM:SS])",
+            justify="left",
+            anchor="w",
+        )
         label60.grid(row=6, columnspan=2, sticky="new")
 
         window.grid_rowconfigure(7, weight=0)
@@ -345,7 +377,13 @@ class cdaWindow:
         label80 = tk.Label(window, text=msg)
         label80.grid(row=8, column=0, sticky="nse", pady=6)
 
-        button81 = tk.Button(window, text="2. Get File List", bg="#AFEEAF", command=find_filelist, width=30)
+        button81 = tk.Button(
+            window,
+            text="2. Get File List",
+            bg="#AFEEAF",
+            command=find_filelist,
+            width=30,
+        )
         button81.grid(row=8, column=1, sticky="nsw", pady=6)
 
         # Row 9, 10 - Files
@@ -356,7 +394,9 @@ class cdaWindow:
         cell100 = tk.Frame(window)
         cell100.grid(row=10, columnspan=2, sticky="nsew")
         file_list = tk.Listbox(cell100, selectmode=tk.MULTIPLE, exportselection=False)
-        file_list.pack(side=tk.TOP, fill=tk.BOTH, padx=5, pady=5, ipadx=5, ipady=5, expand=True)
+        file_list.pack(
+            side=tk.TOP, fill=tk.BOTH, padx=5, pady=5, ipadx=5, ipady=5, expand=True
+        )
         scrollbar100 = tk.Scrollbar(file_list, orient="vertical")
         scrollbar100.pack(side=tk.RIGHT, fill=tk.BOTH)
         file_list.config(yscrollcommand=scrollbar100.set)
@@ -370,13 +410,17 @@ class cdaWindow:
         cell110.grid_columnconfigure(1, weight=1)
         cell110.grid_columnconfigure(2, weight=0)
 
-        label110 = tk.Label(cell110, text="Local Directory:", justify="left", anchor="w")
+        label110 = tk.Label(
+            cell110, text="Local Directory:", justify="left", anchor="w"
+        )
         label110.grid(row=0, column=0, sticky="new", padx=4)
         dir_entry = tk.Entry(cell110)
         dir_entry.insert(0, default_dir)
         dir_entry.grid(row=0, column=1, sticky="sewn", padx=4)
         # dir_entry.bind("<Key>", lambda e: "break")  # Make it read-only
-        button110 = tk.Button(cell110, text="Select Directory", command=select_dir, width=15)
+        button110 = tk.Button(
+            cell110, text="Select Directory", command=select_dir, width=15
+        )
         button110.grid(row=0, column=2, sticky="wns", padx=4)
 
         # Row 12 - Download Only checkbox, Get Data button, Clear, Exit
@@ -385,10 +429,25 @@ class cdaWindow:
         cell120 = tk.Frame(window)
         cell120.grid(row=12, column=0, sticky="new", pady=4)
         cell120.grid_columnconfigure(0, weight=0)
-        cell120.grid_columnconfigure(1, weight=1)
-        cell120.grid_columnconfigure(2, weight=0)
-        only_ch = tk.Checkbutton(cell120, text="Download Only", variable=download_box, onvalue=1, offvalue=0)
+        cell120.grid_columnconfigure(1, weight=0)
+        cell120.grid_columnconfigure(2, weight=1)
+        cell120.grid_columnconfigure(3, weight=0)
+        only_ch = tk.Checkbutton(
+            cell120,
+            text="Download Only",
+            variable=download_box,
+            onvalue=1,
+            offvalue=0,
+        )
         only_ch.grid(row=0, column=0, sticky="new", padx=4)
+        clip_ch = tk.Checkbutton(
+            cell120,
+            text="Time Clip",
+            variable=clip_box,
+            onvalue=1,
+            offvalue=0,
+        )
+        clip_ch.grid(row=0, column=1, sticky="new", padx=4, ipadx=0)
         msg = "Select Files(s) and press:"
         label120 = tk.Label(cell120, text=msg)
         label120.grid(row=0, column=2, sticky="nse", pady=6)
@@ -399,16 +458,24 @@ class cdaWindow:
         cell121.grid_columnconfigure(1, weight=1)
         cell121.grid_columnconfigure(2, weight=0)
         cell121.grid_columnconfigure(3, weight=0)
-        button122 = tk.Button(cell121, text="3. Get Data", bg="#AFEEAF", command=get_data, width=30)
+        button122 = tk.Button(
+            cell121, text="3. Get Data", bg="#AFEEAF", command=get_data, width=30
+        )
         button122.grid(row=0, column=0, sticky="wns", padx=4)
-        button123 = tk.Button(cell121, text="Clear", command=clear_boxes, width=10, bg="#E9967A")
+        button123 = tk.Button(
+            cell121, text="Clear", command=clear_boxes, width=10, bg="#E9967A"
+        )
         button123.grid(row=0, column=2, sticky="wns", padx=4)
-        button124 = tk.Button(cell121, text="Exit", command=exit_gui, width=10, bg="#E9967A")
+        button124 = tk.Button(
+            cell121, text="Exit", command=exit_gui, width=10, bg="#E9967A"
+        )
         button124.grid(row=0, column=3, sticky="wns", padx=4)
 
         # Row 13 - Status bar
         window.grid_rowconfigure(13, weight=0)
-        status_label = tk.Label(window, text=default_status, justify="left", anchor="w", relief="groove")
+        status_label = tk.Label(
+            window, text=default_status, justify="left", anchor="w", relief="groove"
+        )
         status_label.grid(row=13, columnspan=2, sticky="new", padx=2)
 
 
@@ -423,4 +490,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     startgui = cdaWindow(root)
     root.mainloop()
-

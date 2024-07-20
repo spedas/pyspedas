@@ -4,13 +4,14 @@
 
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
-from .analysis.dpwrspc import dpwrspc
 from .analysis.tvectot import tvectot
-from .analysis.tdpwrspc import tdpwrspc
 from .analysis.tinterpol import tinterpol
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
+from .analysis.wavelet import wavelet
+from .analysis.time_domain_filter import time_domain_filter
 from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
+from .analysis.lingradest import lingradest
 from .cdagui.cdagui import cdagui
 from .cdagui.cdaweb import CDAWeb
 from .cotrans.cotrans import cotrans
@@ -36,6 +37,10 @@ from .cotrans.xyz_to_polar import xyz_to_polar
 #from .geopack.t96 import t96, tt96
 #from .geopack.ts04 import tts04
 from .hapi.hapi import hapi
+from .noaa.noaa_load_kp import noaa_load_kp
+from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
+from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
+from .particles.spd_slice2d import slice1d_plot, slice2d, slice2d_plot
 from .utilities.spice.time_ephemeris import time_ephemeris
 from .utilities.dailynames import dailynames
 from .utilities.datasets import find_datasets

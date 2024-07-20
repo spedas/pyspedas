@@ -29,6 +29,7 @@ def maven_filenames(
     update_prefs=False,
     only_update_prefs=False,
     local_dir=None,
+    public=True
 ):
     """
     This function queries the MAVEN SDC API, and will return a list of files that match the given parameters.
@@ -55,7 +56,9 @@ def maven_filenames(
     only_update_prefs : bool, optional
         If True, only updates preferences and does not return filenames. Defaults to False.
     local_dir : str, optional
-        Local directory to use. Defaults to None.
+        Local directory to use. Defaults to None
+    public: bool, optional
+        If False, try loading data from the non-public service
 
     Returns
     -------
@@ -85,7 +88,7 @@ def maven_filenames(
 
     # Check for public vs private access
     # Hard code in access as public for now
-    public = True
+    # public = True
     """
     public = get_access()
     if not public:
@@ -136,12 +139,16 @@ def maven_filenames(
 
         if not s:
             logging.error("No files found for {}.".format(instrument))
-            maven_files[instrument] = []
+            if instrument not in maven_files:
+               maven_files[instrument] = []
             continue
 
         s = s.split(",")
 
-        maven_files[instrument] = [s, data_dir, public]
+        if instrument not in maven_files:
+            maven_files[instrument] = [s, data_dir, public]
+        else:
+            maven_files[instrument].extend([s, data_dir, public])
 
     # Grab KP data too, there is a lot of good ancillary info in here
     if instruments != "kp":
@@ -159,10 +166,14 @@ def maven_filenames(
         s = get_filenames(query, public)
         if not s:
             logging.error("No files found for {}.".format(instrument))
-            maven_files[instrument] = []
+            if instrument not in maven_files:
+                maven_files[instrument] = []
         else:
             s = s.split(",")
-            maven_files[instrument] = [s, data_dir, public]
+            if instrument not in maven_files:
+                maven_files[instrument] = [s, data_dir, public]
+            else:
+                maven_files[instrument].extend([s, data_dir, public])
 
     return maven_files
 
@@ -190,6 +201,7 @@ def load_data(
     get_support_data=False,
     get_metadata=False,
     auto_yes=False,
+    public = True
 ):
     """
     This function downloads MAVEN data loads it into tplot variables, if applicable.
@@ -261,7 +273,8 @@ def load_data(
         If True, retrieves metadata. Defaults to False.
     auto_yes : bool, optional
         If True, automatically answers 'yes' to prompts. Defaults to False.
-
+    public: bool, optional
+        If false, try using the non-public interface
     Returns
     -------
     dict
@@ -291,6 +304,7 @@ def load_data(
         update_prefs,
         only_update_prefs,
         local_dir,
+        public=public
     )
 
     # If we are not asking for KP data, this flag ensures only ancillary data is loaded in from the KP files
@@ -309,10 +323,14 @@ def load_data(
     # Loop through all instruments, download files locally if needed
     for instr in maven_files.keys():
         bn_files_to_load = []
-        if maven_files[instr]:
-            s = maven_files[instr][0]
-            data_dir = maven_files[instr][1]
-            public = maven_files[instr][2]
+        # There might be more than one set of files to load for this instrument (e.g. kp with iuvs)
+        maven_file_list = maven_files[instr]
+        while(len(maven_file_list) > 0):
+            s = maven_file_list[0]
+            data_dir = maven_file_list[1]
+            public = maven_file_list[2]
+            # Strip off these three entries, in case there's more to process next iteration
+            maven_file_list = maven_file_list[3:]
 
             # Add to list of files to load
             for f in s:
@@ -327,12 +345,19 @@ def load_data(
                         continue
 
                 # Check if the files are KP data
-                if instr == "kp":
-                    full_path = create_dir_if_needed(f, data_dir, "insitu")
-                else:
-                    full_path = create_dir_if_needed(f, data_dir, level)
-                bn_files_to_load.append(f)
-                files_to_load.append(os.path.join(full_path, f))
+                try:
+                    if instr == "kp":
+                        full_path = create_dir_if_needed(f, data_dir, "insitu")
+                    else:
+                        full_path = create_dir_if_needed(f, data_dir, level)
+                    bn_files_to_load.append(f)
+                    files_to_load.append(os.path.join(full_path, f))
+                except Exception as e:
+                    # todo: better handling of rse .tab files
+                    # rse files are .tab files (TAB delimited text files) that currently cannot be loaded into tplot
+                    # for now, we need to skip these files
+                    logging.error("Cannot handle file: " + f)
+                    continue
 
             if list_files:
                 for f in s:
@@ -352,11 +377,14 @@ def load_data(
                 + " files for instrument "
                 + str(instr)
             )
+            logging.info("Files: ")
+            logging.info(s)
             logging.info("Would you like to proceed with the download? ")
             valid_response = False
             cancel = False
             if auto_yes:
                 valid_response = True
+                logging.info("- Auto yes")
             while not valid_response:
                 response = input("(y/n) >  ")
                 if response == "y" or response == "Y":
@@ -375,6 +403,7 @@ def load_data(
             i = 0
             display_progress(i, len(s))
             for f in s:
+                logging.info("File:" + str(f))
                 i = i + 1
                 if instr == "kp":
                     full_path = create_dir_if_needed(f, data_dir, "insitu")
@@ -465,6 +494,8 @@ def load_data(
                     instruments=instruments,
                 )
 
+                logging.info("Kp data loaded:")
+                logging.info(kp_data_loaded)
                 # Link all created KP data to the ancillary KP data
                 for tvar in kp_data_loaded:
                     pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type="alt")
@@ -496,6 +527,9 @@ def load_data(
                 pytplot.link(
                     tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type="lat"
                 )
+
+            logging.info("Maven data list:")
+            logging.info(flat_list)
 
             # Return list of unique KP data
             return flat_list

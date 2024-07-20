@@ -4,7 +4,8 @@ def sspc(trange=['2013-01-28', '2013-01-29'],
         probe='1A',
         downloadonly=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function load data from BARREL Slow Specta (256 channels accumulated over 32 seconds)
 
@@ -17,7 +18,16 @@ def sspc(trange=['2013-01-28', '2013-01-29'],
             Default: ['2013-01-28', '2013-01-29']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -33,26 +43,32 @@ def sspc(trange=['2013-01-28', '2013-01-29'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> pyspedas.barrel.fspc(trange=['2013-01-17', '2013-01-19'], probe='1D')
         >>> tplot('brl1D_FSPC1')
 
     """
-    return load(datatype='sspc', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(datatype='sspc', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def mspc(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function load data from BARREL Medium Spectra (48 channels accumulated over 4 seconds)
 
@@ -65,7 +81,16 @@ def mspc(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -81,25 +106,31 @@ def mspc(trange=['2013-01-29','2013-01-30'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> pyspedas.barrel.mspc(trange=['2013-01-29','2013-01-30'], probe='1A')
         >>> tplot('brl1A_MSPC')
     """
-    return load(datatype='mspc', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(datatype='mspc', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def fspc(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function load data from BARREL Fast Spectra (4 channels record at 20Hz)
 
@@ -112,7 +143,16 @@ def fspc(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -128,26 +168,32 @@ def fspc(trange=['2013-01-29','2013-01-30'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> pyspedas.barrel.fspc(trange=['2013-01-17', '2013-01-19'], probe='1D')
         >>> tplot('brl1D_FSPC1')
     """
 
-    return load(datatype='fspc',trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(datatype='fspc',trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def rcnt(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function load data from BARREL Rate Counters (Scintillating statistics)
 
@@ -160,7 +206,16 @@ def rcnt(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -176,25 +231,31 @@ def rcnt(trange=['2013-01-29','2013-01-30'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> pyspedas.barrel.rcnt(trange=['2013-01-29','2013-01-30'], probe='1A')
         >>> tplot('brl1A_LowLevel')
     """
-    return load(datatype='rcnt', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(datatype='rcnt', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def magn(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function load data from BARREL Magnetometer Data
 
@@ -206,8 +267,16 @@ def magn(trange=['2013-01-29','2013-01-30'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2013-01-29','2013-01-30']
 
-        probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -223,25 +292,31 @@ def magn(trange=['2013-01-29','2013-01-30'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> pyspedas.barrel.magn(trange=['2013-01-29','2013-01-30'], probe='1A')
         >>> tplot('brl1A_Total')
     """
-    return load(datatype='magn', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(datatype='magn', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def ephm(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function load data from BARREL Ephemeris (GPS data and magnetic coordinates)
 
@@ -254,7 +329,16 @@ def ephm(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -270,26 +354,32 @@ def ephm(trange=['2013-01-29','2013-01-30'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> pyspedas.barrel.ephm(trange=['2013-01-29','2013-01-30'], probe='1A')
         >>> tplot('brl1A_GPS_Lat')
     """
    
-    return load(datatype='ephm', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(datatype='ephm', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def hkpg(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function load data from BARREL Housekeeping (Voltages, currents, temperatures)
 
@@ -302,7 +392,16 @@ def hkpg(trange=['2013-01-29','2013-01-30'],
             Default: ['2013-01-29','2013-01-30']
 
         probe: str
-            Options: '1a...1v', '2a...2y', '3a...3g'
+            Options::
+
+                '1a'...'1v'
+                '2a'...'2y'
+                '3a'...'3g'
+                '4a'...'4f'
+                '5a'
+                '6a'
+                '7a'
+
             Default: '1A'
 
         downloadonly: bool
@@ -318,16 +417,21 @@ def hkpg(trange=['2013-01-29','2013-01-30'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example:
     ----------
-        >>> import pyspdedas
+        >>> import pyspedas
         >>> from pytplot import tplot
         >>> pyspedas.barrel.hkpg(trange=['2013-01-29','2013-01-30'], probe='1A')
         >>> tplot('brl1A_V1_Battery')
     """
         
-    return load(datatype='hkpg', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update)
+    return load(datatype='hkpg', trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)

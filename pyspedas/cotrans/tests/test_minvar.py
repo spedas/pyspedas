@@ -1,9 +1,13 @@
 """
 Unit Tests for minvar function.
 """
+import pyspedas
 from pyspedas.cotrans.minvar import minvar
+from pyspedas.cotrans.minvar_matrix_make import minvar_matrix_make
+from pytplot import data_exists, tplot_names, tplot
 import numpy as np
 import unittest
+
 
 
 class TestMinvar(unittest.TestCase):
@@ -61,6 +65,32 @@ class TestMinvar(unittest.TestCase):
         # v[2,2] Should be positive after that
         self.assertTrue(v[2, 2] > 0)
 
+    def test_minvar_matrix_make_day(self):
+        trange=['2007-07-10', '2007-07-11']
+        pyspedas.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
+        minvar_matrix_make('thc_fgs_gse',tstart='2007-07-10/07:54:00',tstop='2007-07-10/07:56:30')
+        self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
+        pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgs_gse',newname='mva_data_day')
+        self.assertTrue((data_exists('mva_data_day')))
+        # TODO: Verify against IDL SPEDAS results
+
+    def test_minvar_matrix_make_hour(self):
+        trange=['2007-07-10', '2007-07-11']
+        pyspedas.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
+        minvar_matrix_make('thc_fgs_gse', twindow=3600, tslide=300)
+        self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
+        pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgs_gse',newname='mva_data_hour')
+        self.assertTrue((data_exists('mva_data_hour')))
+        # TODO: Verify against IDL SPEDAS results
+
+    def test_minvar_matrix_make_hour_interp(self):
+        trange=['2007-07-10', '2007-07-11']
+        pyspedas.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
+        minvar_matrix_make('thc_fgs_gse', twindow=3600, tslide=300)
+        self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
+        pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgl_gse',newname='mva_data_hour_interp')
+        self.assertTrue((data_exists('mva_data_hour_interp')))
+        # TODO: Verify against IDL SPEDAS results
 
 if __name__ == '__main__':
     unittest.main()

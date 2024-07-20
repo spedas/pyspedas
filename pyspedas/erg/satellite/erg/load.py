@@ -5,7 +5,7 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pytplot import cdf_to_tplot
 
-from .config import CONFIG
+from pyspedas.erg.config import CONFIG
 
 def load(trange=['2017-03-27', '2017-03-28'],
          pathformat=None,
@@ -27,7 +27,8 @@ def load(trange=['2017-03-27', '2017-03-28'],
          uname=None,
          passwd=None,
          time_clip=False,
-         version=None):
+         version=None,
+         force_download=False):
     """
     This function is not meant to be called directly; please see the instrument specific wrappers:
         pyspedas.erg.mgf()
@@ -50,7 +51,7 @@ def load(trange=['2017-03-27', '2017-03-28'],
     out_files = []
 
     files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG[
-                     'local_data_dir'], no_download=no_update, last_version=True, username=uname, password=passwd)
+                     'local_data_dir'], no_download=no_update, last_version=True, username=uname, password=passwd, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)

@@ -6,16 +6,18 @@ For cdasws documentation, see:
     https://cdaweb.gsfc.nasa.gov/WebServices/REST/py/cdasws/index.html
 
 """
+
 import logging
 import os
 import re
 from cdasws import CdasWs
-from pytplot import cdf_to_tplot, netcdf_to_tplot
+from pytplot import cdf_to_tplot, netcdf_to_tplot, time_clip as tclip
 from pyspedas.utilities.download import download
+from config import CONFIG
 
 
 class CDAWeb:
-    """ Get information and download files from CDAWeb using cdasws."""
+    """Get information and download files from CDAWeb using cdasws."""
 
     def __init__(self):
         """Initialize."""
@@ -156,7 +158,7 @@ class CDAWeb:
     def cda_download(
         self,
         remote_files,
-        local_dir,
+        local_dir=None,
         download_only=False,
         varformat=None,
         get_support_data=False,
@@ -164,39 +166,50 @@ class CDAWeb:
         suffix="",
         varnames=[],
         notplot=False,
+        merge=False,
+        trange=None,
+        time_clip=False,
+        force_download=False,
     ):
         """Download data files and (by default) load the data into tplot variables
 
         Parameters
         ----------
         remote_files : list of str
-            List of remote file URLs, as obtained from get_datasets()
+            List of remote file URLs, as obtained from function get_datasets().
         local_dir : str
-            Local directory to save the data in
+            Local directory to save the data in.
         download_only : bool
-            If True, download the data, but do not load it into tplot variables
+            If True, download the data, but do not load it into tplot variables.
         varformat: str
-            If set, specifies a pattern for which CDF or NetCDF variables to load
+            If set, specifies a pattern for which CDF or NetCDF variables to load.
         get_support_data: bool
-            If True, load CDF variables marked as 'support_data'
+            If True, load CDF variables marked as 'support_data'.
         prefix: str
-            If set, prepend this string to the variable name when creating the tplot variables
+            If set, prepend this string to the variable name when creating the tplot variables.
         suffix: str
-            If set, append this string to the variable name when creating the tplot variables
+            If set, append this string to the variable name when creating the tplot variables.
         varnames: list of str
-            If set, specifies a list of variables to load from the data files
+            If set, specifies a list of variables to load from the data files.
         notplot: bool
-            If True, return data directly as tplot data structures, rather than a list of tplot names
+            If True, return data directly as tplot data structures, rather than a list of tplot names.
+        merge: bool
+            If True, merge the data with existing tplot variables.
+            If False (the default), overwrite existing tplot variables.
+        trange: list of str
+            If set, clip the time range of the data to these values.
+        time_clip: bool
+            If True, clip the time range of the data to the values in trange.
+        force_download: bool
+            If True, download the data even if it already exists locally.
 
         Returns
         -------
-        list
-            A list with entries for each input URL, with each entry being a list containing the URL, the local file name for
-            that URL, and an integer status for converting the data to tplot variables
+        tuple
+            A tuple containing the number of files downloaded, the number of variables loaded, and a list of the tplot variables loaded.
 
         Examples
         --------
-
         >>> from pyspedas import CDAWeb
         >>> from pytplot import tplot
         >>> cdaweb_obj = CDAWeb()
@@ -204,63 +217,111 @@ class CDAWeb:
         >>> result = cdaweb_obj.cda_download(urllist,local_dir="/tmp")
         >>> tplot('thb_fgs_gsm')
         """
-        result = []
+
+        # Return quantities
+        no_of_files = 0
+        no_of_variables = 0
         loaded_vars = []
+
+        # Set the local and remote directories
         remotehttp = "https://cdaweb.gsfc.nasa.gov/sp_phys/data"
+        if local_dir is None:
+            local_dir = CONFIG["local_data_dir"]
+
         count = 0
         dcount = 0
+        cdf_files = []
+        netcdf_files = []
+        all_files = []
+
+        # Download the files
         for remotef in remote_files:
-            tplot_loaded = 0
             f = remotef.strip().replace(remotehttp, "", 1)
-            localf = local_dir + os.path.sep + f
-            localfile = download(remote_file=remotef, local_file=localf)
-            if localfile is None:
+            localf = os.path.normpath(local_dir + os.path.sep + f)
+            localfiles = download(
+                remote_file=remotef,
+                local_file=localf,
+                force_download=force_download,
+            )
+            if localfiles is None:
                 continue
-            localfile = localfile[0]  # download returns an array
-            count += 1
-            if localfile != "":
-                dcount += 1
-                if not download_only:
+            for f in localfiles:
+                if f is not None and len(f) > 0:
+                    all_files.append(os.path.normpath(f))
+
+        no_of_files = len(all_files)
+        if no_of_files > 0:
+
+            # Sort the file list
+            all_files = list(set(all_files))
+            all_files.sort()
+
+            # Load the data into tplot variables
+            if not download_only:
+                # Separate cdf and netcdf files. All other files cannot be loaded into tplot.
+                for f in all_files:
+                    if f.endswith(".cdf"):
+                        cdf_files.append(f)
+                    elif f.endswith(".nc"):
+                        netcdf_files.append(f)
+                    else:
+                        logging.warning("File type not supported: " + f)
+
+                if len(cdf_files) > 0:
+                    cdf_files.sort()
+                    logging.info("Downloaded " + str(len(cdf_files)) + " CDF files.")
                     try:
-                        if len(localfile) > 3 and (localfile[-3:] == ".nc"):
-                            cvars = netcdf_to_tplot(
-                                localfile, prefix=prefix, suffix=suffix
-                            )
-                        else:
-                            cvars = cdf_to_tplot(
-                                localfile,
-                                prefix=prefix,
-                                suffix=suffix,
-                                get_support_data=get_support_data,
-                                varformat=varformat,
-                                varnames=varnames,
-                                notplot=notplot,
-                            )
-                        if cvars != [] and cvars is not None:
-                            loaded_vars.extend(cvars)
-                        tplot_loaded = 1
+                        cdf_vars = cdf_to_tplot(
+                            cdf_files,
+                            prefix=prefix,
+                            suffix=suffix,
+                            get_support_data=get_support_data,
+                            varformat=varformat,
+                            varnames=varnames,
+                            notplot=notplot,
+                            merge=merge,
+                        )
+                        if cdf_vars is not None:
+                            loaded_vars.extend(cdf_vars)
                     except ValueError as err:
-                        msg = "cdf_to_tplot could not load " + localfile
+                        msg = "cdf_to_tplot could not load " + str(cdf_files)
                         msg += "\n\n"
                         msg += "Error from pytplot: " + str(err)
                         logging.error(msg)
-                        tplot_loaded = 0
-            else:
-                logging.error(
-                    str(count)
-                    + ". There was a problem. Could not download \
-                      file: "
-                    + remotef
-                )
-                tplot_loaded = -1
-                localfile = ""
-            result.append([remotef, localfile, tplot_loaded])
 
-        logging.info("Downloaded " + str(dcount) + " files.")
-        if not download_only:
-            loaded_vars = list(set(loaded_vars))
-            logging.info("tplot variables:")
-            for var in loaded_vars:
-                logging.info(var)
+                if len(netcdf_files) > 0:
+                    netcdf_files.sort()
+                    logging.info(
+                        "Downloaded " + str(len(netcdf_files)) + " NetCDF files."
+                    )
+                    try:
+                        netcdf_vars = netcdf_to_tplot(
+                            netcdf_files,
+                            prefix=prefix,
+                            suffix=suffix,
+                            merge=merge,
+                        )
+                        if netcdf_vars is not None:
+                            loaded_vars.extend(netcdf_vars)
+                    except ValueError as err:
+                        msg = "netcdf_to_tplot could not load " + str(netcdf_files)
+                        msg += "\n\n"
+                        msg += "Error from pytplot: " + str(err)
+                        logging.error(msg)
 
-        return result
+                loaded_vars = list(set(loaded_vars))
+                no_of_variables = len(loaded_vars)
+                logging.info("Number of tplot variables loaded:" + str(no_of_variables))
+
+                if time_clip and trange is not None:
+                    if trange[0] >= trange[1]:
+                        logging.warning(
+                            "trange values equal or out of order, no time clipping performed"
+                        )
+                    else:
+                        for var in loaded_vars:
+                            tclip(var, trange[0], trange[1], suffix="", overwrite=True)
+                elif time_clip:
+                    logging.warning("Warning: No trange specified for time_clip")
+
+        return (no_of_files, no_of_variables, loaded_vars)

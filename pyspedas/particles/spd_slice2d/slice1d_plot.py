@@ -5,7 +5,7 @@ from .slice2d_getinfo import slice2d_getinfo
 from pyspedas.particles.spd_units_string import spd_units_string
 
 
-def plot(the_slice, direction, value, xrange=None, yrange=None):
+def slice1d_plot(the_slice, direction, value, xrange=None, yrange=None):
     """
     Create 1D plot from a 2D particle slice.
 
@@ -15,8 +15,8 @@ def plot(the_slice, direction, value, xrange=None, yrange=None):
     If the 'value' argument is a two-element list, this sums over
     the values between the min and max of the list
 
-    Input
-    --------
+    Parameters
+    ----------
         the_slice: dict
             2D slice returned by slice2d
 
@@ -91,3 +91,6 @@ def plot(the_slice, direction, value, xrange=None, yrange=None):
 
     fig.show()
     return
+
+# For backward compatibility with PyHC Summer School 2024 notebooks
+plot = slice1d_plot

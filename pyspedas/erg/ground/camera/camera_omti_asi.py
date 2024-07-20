@@ -22,7 +22,8 @@ def camera_omti_asi(
     uname: Optional[str] = None,
     passwd: Optional[str] = None,
     time_clip: bool = False,
-    ror: bool = True
+    ror: bool = True,
+    force_download: bool = False,
 ) -> List[str]:
     """
     Load data from OMTI all sky imagers
@@ -82,6 +83,10 @@ def camera_omti_asi(
     ror: bool
             If set, print PI info and rules of the road. Default: True
 
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
+
     Returns
     -------
     None
@@ -138,7 +143,7 @@ def camera_omti_asi(
                             +'/%Y/%m/%d/omti_asi_c??_'+site_input+'_'+wavelength_in+'_%Y%m%d%H_v??.cdf'
 
             loaded_data_temp = load(pathformat=pathformat, file_res=file_res, trange=trange, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                            varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+                            varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
             
             if notplot:
                 loaded_data.update(loaded_data_temp)

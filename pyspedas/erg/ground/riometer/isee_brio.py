@@ -25,6 +25,7 @@ def isee_brio(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True,
+    force_download: bool = False,
 ) -> List[str]:
     """
     Load isee_brio riometer data from ERG Science Center
@@ -76,6 +77,10 @@ def isee_brio(
 
     ror: bool
             If set, print PI info and rules of the road. Default: True
+
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
 
     Returns
@@ -149,6 +154,7 @@ def isee_brio(
             no_update=no_update,
             uname=uname,
             passwd=passwd,
+            force_download=force_download,
         )
 
         if notplot:

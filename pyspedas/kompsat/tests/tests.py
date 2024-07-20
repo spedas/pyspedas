@@ -17,6 +17,16 @@ class Kompsat_Tests(unittest.TestCase):
         self.assertTrue(data_exists("sosmag_1m_position"))
         self.assertTrue("sosmag_1m_b_gse" in var_names)
 
+    def test_1m_get_support_data(self):
+        var_names = kompsat_load(
+            datatype="1m", trange=["2021-01-01 02:00", "2021-01-01 03:00"], get_support_data=True
+        )
+        self.assertTrue(data_exists("sosmag_1m_b_gse"))
+        self.assertTrue(data_exists("sosmag_1m_position"))
+        self.assertTrue("sosmag_1m_b_gse" in var_names)
+        self.assertTrue(data_exists("sosmag_1m_data_flags"))
+        self.assertTrue("sosmag_1m_data_flags" in var_names)
+
     def test_p(self):
         var_names = kompsat_load(
             instrument="p", trange=["2024-04-01 02:00", "2024-04-01 03:00"]

@@ -15,11 +15,22 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     """
     Calculates plasma moments from 3D data structure
 
-    Input:
+    Parameters
+    ----------
         data_in: dict
-            Particle data structure 
+            Particle data structure with entries::
 
-    Parameters:
+            'charge'
+            'mass'
+            'energy'
+            'denergy'
+            'theta'
+            'dtheta'
+            'phi'
+            'dphi'
+            'bins'
+            'data'
+
         sc_pot: float
             Spacecraft potential
 
@@ -27,11 +38,26 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
             Flag indicating that datta is already in eflux and no unit
             conversion is required
 
-    Notes:
-        The calculations were mostly heisted from Davin Larson's IDL version
+    Note
+    ----
+        The calculations were mostly heisted from Davin Larson's IDL SPEDAS version
 
-    Returns:
-        Dictionary containing moments
+    Returns
+    -------
+    dict
+        Dictionary of plasma moments with entries::
+
+            'density'
+            'flux'
+            'mftens'
+            'velocity'
+            'ptens'
+            'ttens'
+            'vthermal'
+            'avgtemp'
+
+    Examples
+    --------
 
     """
 

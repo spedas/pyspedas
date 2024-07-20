@@ -2,6 +2,10 @@ OMNI data
 ========================================================================
 The routines in this module can be used to load data from the OMNI data mission.
 
+
+Load all available OMNI variables
+----------------------------------
+
 .. autofunction:: pyspedas.omni.data
 
 Example

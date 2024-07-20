@@ -122,6 +122,8 @@ def download_file(
     session=None,
     basic_auth=False,
     nbr_tries=0,
+    text_only=False,
+    force_download=False
 ):
     """
     Download a file and return its local path; this function is primarily meant to be called by the download function.
@@ -146,6 +148,12 @@ def download_file(
         Flag to indicate that the remote server uses basic authentication instead of digest authentication.
     nbr_tries : int, optional
         Counts how many times we tried to download the file. Default is 0.
+    text_only : bool, optional
+        Flag to indicate that only the text of the session.get object should be saved.
+        This is useful for downloading HTML files.
+    force_download : bool, optional
+        Flag to indicate if the file should be downloaded even if a local version exists.
+        This causes the local version of the file to be overwritten.
 
     Returns
     -------
@@ -167,7 +175,7 @@ def download_file(
 
     # check if the file exists, and if so, set the last modification time in the header
     # this allows you to avoid re-downloading files that haven't changed
-    if os.path.exists(filename):
+    if os.path.exists(filename) and not force_download:
         mod_tm = (
             datetime.datetime.fromtimestamp(
                 os.path.getmtime(filename), datetime.timezone.utc
@@ -187,13 +195,12 @@ def download_file(
                 headers=headers,
                 auth=(username, password),
             )
-
     # need to delete the If-Modified-Since header so it's not set in the dictionary in subsequent calls
     if headers.get("If-Modified-Since") is not None:
         del headers["If-Modified-Since"]
 
     needs_to_download_file = False
-    if fsrc.status_code == 304:
+    if fsrc.status_code == 304 and not force_download:
         # the file hasn't changed
         logging.info("File is current: " + filename)
         fsrc.close()
@@ -207,7 +214,7 @@ def download_file(
         logging.error("Unauthorized: " + url)
         fsrc.close()
         return None
-    elif fsrc.status_code == 200:
+    elif fsrc.status_code == 200 or (fsrc.status_code == 304 and force_download):
         # this is the main download case
         needs_to_download_file = True
         logging.info("Downloading " + url + " to " + filename)
@@ -221,7 +228,10 @@ def download_file(
         ftmp = NamedTemporaryFile(delete=False)
 
         with open(ftmp.name, "wb") as f:
-            copyfileobj(fsrc.raw, f)
+            if text_only:
+                f.write(fsrc.text.encode("utf-8"))
+            else:
+                copyfileobj(fsrc.raw, f)
 
         # make sure the directory exists
         if (
@@ -258,6 +268,7 @@ def download_file(
             session=session_original,
             basic_auth=basic_auth,
             nbr_tries=nbr_tries,
+            text_only=text_only,
         )
 
     # If the file again cannot be opened, we give up.
@@ -287,6 +298,8 @@ def download(
     basic_auth=False,
     regex=False,
     no_wildcards=False,
+    text_only=False,
+    force_download=False,
 ):
     """
     Download one or more remote files and return their local paths.
@@ -321,6 +334,12 @@ def download(
         Flag to allow regular expressions in the file name matching, instead of unix style matching.
     no_wildcards : bool, optional
         Flag to assume no wild cards in the requested url/filename.
+    text_only : bool, optional
+        Flag to indicate that only the text of the session.get object should be saved.
+        This is useful for downloading HTML files.
+    force_download : bool, optional
+        Flag to indicate if the file should be downloaded even if a local version exists.
+        This causes the local version of the file to be overwritten.
 
     Returns
     -------
@@ -496,6 +515,8 @@ def download(
                         headers=headers,
                         session=session,
                         basic_auth=basic_auth,
+                        text_only=text_only,
+                        force_download=force_download
                     )
                     if resp_data is not None:
                         for file in resp_data:
@@ -511,6 +532,8 @@ def download(
                 headers=headers,
                 session=session,
                 basic_auth=basic_auth,
+                text_only=text_only,
+                force_download=force_download
             )
 
         if resp_data is not None:

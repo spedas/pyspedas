@@ -35,6 +35,7 @@ from obspy.clients.fdsn.header import FDSNNoServiceException
 @contextmanager
 def loguru_capture_logs(level="INFO", format="{level}:{name}:{message}"):
     """Capture loguru-based logs. There is no other way to assert the loguru log. The custom filter also must be defined here"""
+    loguru.logger.remove()
     output = []
     handler_id = loguru.logger.add(output.append, level=level, format=format,
                                    filter=pyspedas.mth5._disable_loguru_warnings)
@@ -135,8 +136,9 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_end = '2015-06-22T02:20:00'
 
         # Try loading data, which should result in warnings by MTH5
-        with loguru_capture_logs() as output:
+        with loguru_capture_logs(level="WARNING") as output:
             load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False)
+            self.assertTrue(len(output) > 0)
         iswaring = any('WARNING:' in s for s in output)
 
         if not iswaring:
@@ -203,8 +205,10 @@ class TestMTH5LoadFDSN(unittest.TestCase):
             date_start = '2015-06-22T01:45:00'
             date_end = '2015-06-22T02:20:00'
 
-            with self.assertRaises(Exception):
-                load_fdsn(network=network, station=station, trange=[date_start, date_end])
+            with self.assertLogs(logger=pyspedas.logger, level='ERROR') as log:
+                with self.assertRaises(Exception):
+                    load_fdsn(network=network, station=station, trange=[date_start, date_end])
+                self.assertIn("HTTP Status code: 400", log.output[0])
 
             tmp_file = os.path.join(CONFIG['local_data_dir'], f'{network}_{station}.h5')
             self.assertFalse(os.path.isfile(tmp_file))

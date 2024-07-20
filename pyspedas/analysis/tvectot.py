@@ -10,6 +10,8 @@ def _tvectot(tvar: str, new_name: str, join_component: bool):
     store_data(new_name, data={'x':data.times,'y':new_data},attr_dict=md)
     
     if join_component:
+        # Caution: this can clobber existing variable names!  Maybe better to manipulate the
+        # data directly instead of calling split_vec/join_vec
         join_vec(split_vec(tvar)+[new_name], newname=new_name)
         options(new_name, 'legend_names', ['x', 'y', 'z', 'Magnitude'])
     else:
@@ -41,11 +43,15 @@ def tvectot(tvars: Union[str, List[str]], newname=None, newnames: Union[str, Lis
     tvars_type = type(tvars)
     if tvars_type == str:
         tvars = [tvars]
-    if join_vec:
+    if join_component:
         suffix = "_tot"
 
     if newname is None:
         newname = [tvar + suffix for tvar in tvars]
+
+    # If newname is a scalar string, zip will iterate over characters
+    if type(newname) is not list:
+        newname = [newname]
 
     for tvar, newname_single in zip(tvars, newname):
         _tvectot(tvar, newname_single, join_component)

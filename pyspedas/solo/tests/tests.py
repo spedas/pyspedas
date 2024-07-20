@@ -14,7 +14,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('B_RTN' in mag_vars)
 
     def test_load_mag_ll02_data(self):
-        mag_vars = pyspedas.solo.mag(level='ll02', trange=['2020-08-04', '2020-08-05'])
+        mag_vars = pyspedas.solo.mag(level='ll02', trange=['2020-08-04', '2020-08-06'])
         self.assertTrue(data_exists('B_RTN'))
         self.assertTrue(data_exists('B_SRF'))
 

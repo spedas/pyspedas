@@ -100,8 +100,8 @@ def state(trange=['2007-03-23', '2007-03-24'],
     # variables, to avoid dangling corrections if they don't exist in this time interval.
     if get_support_data:
         for p in probe:
-            spinras_corrvar='th'+probe+'_spinras_correction'
-            spindec_corrvar='th'+probe+'_spindec_correction'
+            spinras_corrvar='th'+ p +'_spinras_correction'
+            spindec_corrvar='th'+ p +'_spindec_correction'
             if data_exists(spinras_corrvar):
                 del_data(spinras_corrvar)
             if data_exists(spindec_corrvar):

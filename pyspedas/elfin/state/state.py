@@ -1,17 +1,18 @@
 from pyspedas.elfin.load import load
 
-def state(trange=['2022-08-19', '2022-08-19'],
-          probe='a',
-          datatype='defn',
-          level='l1',
-          suffix='',
-          get_support_data=False,
-          varformat=None,
-          varnames=[],
-          downloadonly=False,
-          notplot=False,
-          no_update=False,
-          time_clip=True):
+def state_load(trange=['2022-08-19', '2022-08-19'],
+            probe='a',
+            datatype='defn',
+            level='l1',
+            suffix='',
+            get_support_data=False,
+            varformat=None,
+            varnames=[],
+            downloadonly=False,
+            notplot=False,
+            no_update=False,
+            time_clip=True,
+            force_download=False):
     """
     This function loads data from the ELFIN State data (state)
 
@@ -28,9 +29,12 @@ def state(trange=['2022-08-19', '2022-08-19'],
             Default: 'a'
 
         datatype: str
-            Data type; Valid options:
+            Data type.
+            Valid options::
+
                 'defn'
                 'pred'
+
             Default: 'defn'
 
         level: str
@@ -72,9 +76,15 @@ def state(trange=['2022-08-19', '2022-08-19'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
-        List of tplot variables created.
+    list of str
+        List of tplot variables created::
+
             ela_pos_gei
             ela_vel_gei
             ela_att_gei
@@ -85,17 +95,18 @@ def state(trange=['2022-08-19', '2022-08-19'],
             ela_spin_sun_angle
 
     Example
-    ----------
-        import pyspedas
-        from pytplot import tplot
-        state_vars = pyspedas.elfin.state(probe='a', trange=['2022-08-19', '2022-08-19'])
-        tplot(['ela_pos_gei', 'ela_att_gei', 'ela_att_spinper', 'ela_spin_sun_angle' ])
+    -------
+
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> state_vars = pyspedas.elfin.state(probe='a', trange=['2022-08-19', '2022-08-19'])
+    >>> tplot(['ela_pos_gei', 'ela_att_gei', 'ela_att_spinper', 'ela_spin_sun_angle' ])
 
     """
 
     tvars = load(instrument='state', probe=probe, trange=trange, level=level, datatype=datatype, suffix=suffix,
                  get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly,
-                 notplot=notplot, time_clip=time_clip, no_update=no_update)
+                 notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars

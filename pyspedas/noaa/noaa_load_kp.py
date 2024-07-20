@@ -19,6 +19,7 @@ from pytplot import (
 )
 from pyspedas.noaa.config import CONFIG
 from pyspedas.utilities.download_ftp import download_ftp
+from pytplot import time_clip as tclip
 
 
 def kp_return_fraction(value):
@@ -70,7 +71,13 @@ def convert_to_float_or_int(a, outtype="int"):
     return ans
 
 
-def load_kp_to_tplot(trange=[0, 0], files=[], datatype=[]):
+def load_kp_to_tplot(
+    trange=[0, 0],
+    files=[],
+    datatype=[],
+    prefix="",
+    suffix="",
+):
     """
     Load Kp index data into tplot variables. If data doesn't exist locally,
     download the data from the specified mirror.
@@ -81,10 +88,6 @@ def load_kp_to_tplot(trange=[0, 0], files=[], datatype=[]):
         Time range to load data for. Should be a list of two strings.
     datatype : list of str, optional
         Type of index to load. Default is an empty list, which loads all available data.
-    gfz : bool, optional
-        If this is False (default), load data from ftp://ftp.ngdc.noaa.gov.
-        If this is True, load data from ftp://ftp.gfz-potsdam.de instead of NOAA.
-        If the end time is on or after 2018, this is automatically set to True.
 
     Returns
     -------
@@ -207,65 +210,73 @@ def load_kp_to_tplot(trange=[0, 0], files=[], datatype=[]):
     # Store tplot variables
     # kp (3-hour Kp)
     if "kp" in datatype:
-        store_data("Kp", data={"x": kptimes, "y": kp_return_fraction(kpdata)})
-        options("Kp", "ytitle", "Kp")
-        vars.append("Kp")
+        vn = prefix + "Kp" + suffix
+        store_data(vn, data={"x": kptimes, "y": kp_return_fraction(kpdata)})
+        options(vn, "ytitle", "Kp")
+        vars.append(vn)
     # ap (3-hour ap)
     if "ap" in datatype:
-        store_data("ap", data={"x": kptimes, "y": apdata})
-        options("ap", "ytitle", "ap")
-        vars.append("ap")
+        vn = prefix + "ap" + suffix
+        store_data(vn, data={"x": kptimes, "y": apdata})
+        options(vn, "ytitle", "ap")
+        vars.append(vn)
     # sol_rot_num (solar rotation number)
     if "sol_rot_num" in datatype:
-        store_data("Sol_Rot_Num", data={"x": daytimes, "y": srndata})
-        options("Sol_Rot_Num", "ytitle", "Sol_Rot_Num")
-        vars.append("Sol_Rot_Num")
+        vn = prefix + "Sol_Rot_Num" + suffix
+        store_data(vn, data={"x": daytimes, "y": srndata})
+        options(vn, "ytitle", "Sol_Rot_Num")
+        vars.append(vn)
     # sol_rot_day (day of solar rotation)
     if "sol_rot_day" in datatype:
-        store_data("Sol_Rot_Day", data={"x": daytimes, "y": srddata})
-        options("Sol_Rot_Day", "ytitle", "Sol_Rot_Day")
-        vars.append("Sol_Rot_Day")
+        vn = prefix + "Sol_Rot_Day" + suffix
+        store_data(vn, data={"x": daytimes, "y": srddata})
+        options(vn, "ytitle", "Sol_Rot_Day")
+        vars.append(vn)
     # kp_sum (sum of Kp)
     if "kp_sum" in datatype:
-        store_data("Kp_Sum", data={"x": daytimes, "y": kpsdata})
-        options("Kp_Sum", "ytitle", "Kp_Sum")
-        vars.append("Kp_Sum")
+        vn = prefix + "Kp_Sum" + suffix
+        store_data(vn, data={"x": daytimes, "y": kpsdata})
+        options(vn, "ytitle", "Kp_Sum")
+        vars.append(vn)
     # ap_mean (mean of Ap)
     if "ap_mean" in datatype:
-        store_data("ap_Mean", data={"x": daytimes, "y": apmdata})
-        options("ap_Mean", "ytitle", "ap_Mean")
-        vars.append("ap_Mean")
+        vn = prefix + "ap_Mean" + suffix
+        store_data(vn, data={"x": daytimes, "y": apmdata})
+        options(vn, "ytitle", "ap_Mean")
+        vars.append(vn)
     # cp (planetary C index)
     if "cp" in datatype:
-        store_data("Cp", data={"x": daytimes, "y": cpdata})
-        options("Cp", "ytitle", "Cp")
-        vars.append("Cp")
+        vn = prefix + "Cp" + suffix
+        store_data(vn, data={"x": daytimes, "y": cpdata})
+        options(vn, "ytitle", "Cp")
+        vars.append(vn)
     # c9 (9-point C index)
     if "c9" in datatype:
-        store_data("C9", data={"x": daytimes, "y": c9data})
-        options("C9", "ytitle", "C9")
-        vars.append("C9")
+        vn = prefix + "C9" + suffix
+        store_data(vn, data={"x": daytimes, "y": c9data})
+        options(vn, "ytitle", "C9")
+        vars.append(vn)
 
     # The following do not exist in the GFZ data
     # sunspot_number (sunspot number)
     lentimes = len(daytimes)
     if "sunspot_number" in datatype and len(ssndata) > 0 and len(ssndata) == lentimes:
-        store_data("Sunspot_Number", data={"x": daytimes, "y": ssndata})
-        options("Sunspot_Number", "ytitle", "Sunspot_Number")
-        vars.append("Sunspot_Number")
+        vn = prefix + "Sunspot_Number" + suffix
+        store_data(vn, data={"x": daytimes, "y": ssndata})
+        options(vn, "ytitle", "Sunspot_Number")
+        vars.append(vn)
     # f10.7 (10.7 cm solar radio flux)
     if "f10.7" in datatype and len(srfdata) > 0 and len(srfdata) == lentimes:
-        store_data("F10.7", data={"x": daytimes, "y": srfdata})
-        options("F10.7", "ytitle", "F10.7")
-        vars.append("F10.7")
+        vn = prefix + "F10.7" + suffix
+        store_data(vn, data={"x": daytimes, "y": srfdata})
+        options(vn, "ytitle", "F10.7")
+        vars.append(vn)
     # flux_qualifier (10.7 cm solar radio flux qualifier)
     if "flux_qualifier" in datatype and len(fqdata) > 0 and len(fqdata) == lentimes:
-        store_data("Flux_Qualifier", data={"x": daytimes, "y": fqdata})
-        options("Flux_Qualifier", "ytitle", "Flux_Qualifier")
-        vars.append("Flux_Qualifier")
-
-    if len(trange) == 2 and trange[0] != 0 and trange[1] > trange[0]:
-        time_clip(vars, trange[0], trange[1], overwrite=True)
+        vn = prefix + "Flux_Qualifier" + suffix
+        store_data(vn, data={"x": daytimes, "y": fqdata})
+        options(vn, "ytitle", "Flux_Qualifier")
+        vars.append(vn)
 
     return vars
 
@@ -277,6 +288,10 @@ def noaa_load_kp(
     local_kp_dir=None,
     datatype=[],
     gfz=False,
+    prefix="",
+    suffix="",
+    time_clip=True,
+    force_download=False,
 ):
     """
     Load index data into appropriate variables. If data doesn't exist locally,
@@ -293,10 +308,32 @@ def noaa_load_kp(
     local_kp_dir : str
         Directory where data is saved locally.
     datatype : list of str, optional
-        Type of index to load. Default is an empty list, which loads all available data.
+        Type of index to load. Default is an empty list, which loads all available data. Valid values::
+
+            "Kp",
+            "ap",
+            "Sol_Rot_Num",
+            "Sol_Rot_Day",
+            "Kp_Sum",
+            "ap_Mean",
+            "Cp",
+            "C9",
+            "Sunspot_Number",
+            "F10.7",
+            "Flux_Qualifier",
     gfz : bool, optional
-        Load data from ftp://ftp.gfz-potsdam.de instead of NOAA.
-        This is the default behavior if the end time is on or after 2018. Default is False.
+        Load data from the German Research Centre for Geosciences, ftp://ftp.gfz-potsdam.de instead of NOAA.
+        This is the default behavior if the end time is on or after 2018. Default is False. If this source
+        is used, the Sunspot_Number, F10.7, and Flux_Qualifier datatypes will not be available.
+    prefix: str, optional
+        If provided, specifies a string to be prepended to tplot variable names
+    suffix: str, optional
+        If provided, specifies a string to be appended to tplot variable names
+    time_clip: bool, optional
+        If True, data will be time clipped to the exact time range requested
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -367,7 +404,7 @@ def noaa_load_kp(
     files = []
     # In this case, filesnames are just the year (2020, 2021, etc.)
     for yearstr in remote_names:
-        dfile = download_ftp(kp_mirror, remote_kp_dir, yearstr, file_prefix)
+        dfile = download_ftp(kp_mirror, remote_kp_dir, yearstr, file_prefix, force_download=force_download)
         if len(dfile) > 0:
             files.append(dfile[0])
 
@@ -375,6 +412,15 @@ def noaa_load_kp(
         logging.error("No files found.")
         return vars
 
-    vars = load_kp_to_tplot(trange=trange, files=list(set(files)), datatype=datatype)
+    vars = load_kp_to_tplot(
+        trange=trange,
+        files=list(set(files)),
+        datatype=datatype,
+        prefix=prefix,
+        suffix=suffix,
+    )
+
+    if time_clip:
+        tclip(vars, trange[0], trange[1])
 
     return vars

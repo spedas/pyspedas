@@ -700,9 +700,54 @@ def tag14_equat_sheet(xgsm, ygsm, zgsm, psi, pdyn, byimf, bzimf):
 
     return xgsm_s, ygsm_s, zgsm_s
 
+def tag14_ns_model(time, gsm_pos, pdyn=0.0, byimf=0.0, bzimf=0.0, sc2NS=False):
+    """ Wrapper to wrangle parameters for tag_equat_sheet()
+
+    Parameters
+    ----------
+    time : array_like of str or float
+        Time in either string or double format.
+        If float, represents seconds since 1970.
+        If string, should be in the format: "YYYY-MM-DD/hh:mm:ss".
+    gsm_pos : array_like
+        Position vector in GSM coordinates in re (pos[*,3]).
+    pdyn : float, optional
+        Dynamic pressure in nanoPascal
+    byimf : float, optional
+        Y component of the interplanetary magnetic field, in nT, averaged over previous 30 minutes
+    bzimf : float, optional
+        Z component of the interplanetary magnetic field, in nT, averaged over previous 30 minutes
+    sc2NS : bool, optional
+        If set, returns Z displacement from the spacecraft to the neutral sheet.
+        Value is positive if the NS is northward of the SC location, and negative if below. Default is False.
+
+    Returns
+    -------
+    array_like of float
+        Returns Z displacement of the neutral sheet above or below the XY plane in Re (zgsm of the NS).
+        Value is positive if NS is above z=0 gsm plane, negative if below.
+    """
+    dz2NS = np.zeros(len(time))
+
+    for i in range(len(time)):
+        done = 0
+        xgsm = gsm_pos[i, 0]
+        ygsm = gsm_pos[i, 1]
+        zgsm = gsm_pos[i, 2]
+
+        # get tilt angle of magnetic pole
+        tilt = geopack_recalc(time_double(time[i]))
+        ns_x, ns_y, ns_z = tag14_equat_sheet(xgsm, ygsm, zgsm, tilt, pdyn, byimf, bzimf)
+        dz2NS[i] = ns_z
+
+    if sc2NS:
+        scz = gsm_pos[:, 2]
+        return dz2NS - scz
+    else:
+        return dz2NS
 
 def neutral_sheet(
-    time, pos, kp=None, model="themis", mlt=None, in_coord="gsm", sc2NS=False
+    time, pos, kp=None, model="themis", mlt=None, in_coord="gsm", pdyn=2.0, byimf=0.0, bzimf=0.0, sc2NS=False,
 ):
     """
     Calculate the GSM-z coordinate of the neutral sheet for a given time and position.
@@ -722,7 +767,7 @@ def neutral_sheet(
         Default: None
 
     model : str, optional
-        Neutral sheet model to use. Valid options are 'sm', 'themis', 'aen', 'den', 'fairfield', 'den_fairfield', 'lopez'
+        Neutral sheet model to use. Valid options are 'sm', 'themis', 'aen', 'den', 'fairfield', 'den_fairfield', 'lopez', 'tag14'
         Default: 'themis'
 
     mlt : array_like, optional
@@ -732,6 +777,15 @@ def neutral_sheet(
     in_coord : str, optional
         Coordinate system of the input position.
         Default: 'gsm'
+
+    pdyn : float, optional
+        Solar wind dynamic pressure in nanoPascals
+
+    byimf : float, optional
+        Y component of the interplanetary magnetic field, in nT, averaged over previous 30 minutes
+
+    bzimf : float, optional
+        Z component of the interplanetary magnetic field, in nT, averaged over previous 30 minutes
 
     sc2NS : Bool, optional
         Flag to return spacecraft to neutral sheet distance along z-axis, rather than z-coordinate of neutral sheet
@@ -781,7 +835,7 @@ def neutral_sheet(
         model = "themis"
     else:
         model = model.lower()
-    models = ["sm", "themis", "aen", "den", "fairfield", "den_fairfield", "lopez"]
+    models = ["sm", "themis", "aen", "den", "fairfield", "den_fairfield", "lopez", "tag14"]
     if model not in models:
         logging.error(
             "An invalid neutral sheet model name was used. Valid entries include: "
@@ -812,5 +866,7 @@ def neutral_sheet(
         return den_fairfield_ns_model(time, gsm_pos, sc2NS=sc2NS)
     elif model == "lopez":
         return lopez_ns_model(time, gsm_pos, kp=kp, mlt=mlt, sc2NS=sc2NS)
+    elif model == "tag14":
+        return tag14_ns_model(time, gsm_pos, pdyn=pdyn, byimf=byimf, bzimf=bzimf, sc2NS=sc2NS)
     else:  # model == "themis", the default
         return themis_ns_model(time, gsm_pos, sc2NS=sc2NS)

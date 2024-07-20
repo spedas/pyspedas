@@ -12,7 +12,8 @@ def mgf(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the MGF instrument
     
@@ -56,12 +57,17 @@ def mgf(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+\
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='mgf', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='mgf', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def efd(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -72,7 +78,8 @@ def efd(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the EFD instrument
     
@@ -116,12 +123,16 @@ def efd(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='efd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='efd', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def lep(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -132,7 +143,8 @@ def lep(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the LEP instrument
     
@@ -176,12 +188,16 @@ def lep(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='lep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='lep', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def cpi(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -192,7 +208,8 @@ def cpi(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the CPI instrument
     
@@ -236,12 +253,16 @@ def cpi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='cpi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='cpi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def epic(trange=['2018-11-5', '2018-11-6'],
         datatype='k0',
@@ -252,7 +273,8 @@ def epic(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the EPIC instrument
     
@@ -296,6 +318,10 @@ def epic(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
@@ -303,7 +329,7 @@ def epic(trange=['2018-11-5', '2018-11-6'],
     """
 
 
-    tvars = load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars = load(instrument='epi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot:
         return tvars
@@ -324,7 +350,8 @@ def pwi(trange=['2018-11-5', '2018-11-6'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the PWI instrument
     
@@ -368,12 +395,16 @@ def pwi(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='pwi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='pwi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def datasets(instrument=None, label=True):

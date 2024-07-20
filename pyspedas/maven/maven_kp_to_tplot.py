@@ -6,11 +6,11 @@ from .utilities import maven_param_list
 from .utilities import remove_inst_tag
 from .utilities import (
     get_latest_files_from_date_range,
-    read_iuvs_file,
     get_latest_iuvs_files_from_date_range,
 )
 from .utilities import get_header_info
-from .utilities import orbit_time
+from .orbit_time import orbit_time
+from .read_iuvs_file import read_iuvs_file
 import pytplot
 from _collections import OrderedDict
 import builtins
@@ -24,6 +24,7 @@ def maven_kp_to_tplot(
     insitu_only=False,
     specified_files_only=False,
     ancillary_only=False,
+    notplot=False
 ):
     """
     Convert MAVEN insitu (KP) data files to tplot variables.
@@ -44,6 +45,8 @@ def maven_kp_to_tplot(
         If True, specifies that only filenames given in 'filename' should be read in. Defaults to False.
     ancillary_only : bool, optional
         If True, only the spacecraft and APP info will be loaded. Defaults to False.
+    notplot: bool, optional
+        If true, return the kp_insitu data as a dict rather than tplot variables. Defaults to False.
 
     Returns
     -------
@@ -519,10 +522,20 @@ def maven_kp_to_tplot(
     if not insitu_only and iuvs_filenames:
         for file in iuvs_filenames:
             kp_iuvs.append(read_iuvs_file(file))
+
+    if notplot:
+        return kp_insitu
+
     if not kp_iuvs:
         return tplot_varcreate(kp_insitu)
     else:
-        return kp_insitu, kp_iuvs
+        # return kp_insitu, kp_iuvs
+        insitu_vars = tplot_varcreate(kp_insitu)
+        # The kp_iuvs structure can't be converted using tplot_varcreate.  Not clear
+        # what needs to be done in order to use them. We'll punt on it for now and just
+        # return the insitu variables.
+        # iuvs_vars = tplot_varcreate(kp_iuvs)
+        return insitu_vars
 
 
 def tplot_varcreate(insitu):

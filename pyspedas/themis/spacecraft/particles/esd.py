@@ -80,14 +80,14 @@ def esd(trange=['2021-03-23', '2021-03-24'],
 
     Returns
     -------
-        List of str
+    List of str
         List of tplot variables created
         Empty list if no data
 
     Example
     -------
-        import pyspedas
-        from pytplot import tplot
+        >>> import pyspedas
+        >>> from pytplot import tplot
         >>> esd_var = pyspedas.themis.esd(probe='a', trange=['2023-11-5', '2023-11-6'], datatype='peer')
         >>> tplot(['eflux', 'data_quality'])
 

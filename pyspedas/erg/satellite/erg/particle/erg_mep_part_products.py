@@ -45,7 +45,59 @@ def erg_mep_part_products(
     relativistic=False,
     no_regrid=False
     ):
+    """
+    Parameters
+    ----------
+    in_tvarname:str
+        The name of a tplot variable containing ERG/MEP 3dflux data
+    species: str
+    outputs:list of str
+        The output quantities to generate. Valid options are::
 
+            energy
+            theta
+            phi
+            gyro
+            pa
+            moments
+            fac_energy
+            fac_moments
+
+    no_ang_weighting: bool
+    suffix: str
+        A suffix to be appended to the output tplot variable names
+    units: str
+    datagap: float
+        A time in seconds; data gaps longer than this time will be marked with NaNs
+    regrid:list of int
+        Dimensions to use for regridded data
+    pitch: list of float
+        Lower and upper pitch angle limits to use
+    theta: list of float
+        Lower and upper theta angle limits to use
+    phi_in: list of float
+        Lower and upper phi angle limits to use
+    gyro: list of float
+        Lower and upper gyro angle limits to use
+    energy: list of float
+        Lower and upper energu limits to use when cleaning the data
+    fac_type: str
+        Type of field-aligned coordinate frame to use. Default: 'mphism'
+    trange: list of str
+        A list containing the start and end times to use for generating the products
+    mag_name: str
+        tplot name of the magnetic field variable
+    pos_name: str
+        tplot name of the orbit position variable
+    relativistic: bool
+    no_regrid: bool
+
+    Returns
+    -------
+    list of str
+        A list of tplot variables created
+
+    """
     if len(tnames(in_tvarname)) < 1:
         print('No input data, please specify tplot variable!')
         return 0

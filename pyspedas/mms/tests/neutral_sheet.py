@@ -53,9 +53,17 @@ class NSTests(unittest.TestCase):
         model = neutral_sheet(pos_data.times, pos_data.y, model='den_fairfield')
         self.assertTrue(isinstance(model, np.ndarray))
 
+    def test_tag14(self):
+        model = neutral_sheet(pos_data.times, pos_data.y, model='tag14', sc2NS=True)
+        self.assertTrue(isinstance(model, np.ndarray))
+        model = neutral_sheet(pos_data.times, pos_data.y, model='tag14')
+        self.assertTrue(isinstance(model, np.ndarray))
+
     def test_invalid_model(self):
-        model = neutral_sheet(pos_data.times, pos_data.y, model='ff', sc2NS=True)
-        self.assertTrue(not isinstance(model, np.ndarray))
+        with self.assertLogs(level='ERROR') as log:
+            model = neutral_sheet(pos_data.times, pos_data.y, model='ff', sc2NS=True)
+            self.assertTrue(not isinstance(model, np.ndarray))
+            self.assertIn("An invalid neutral sheet model name was used.", log.output[0])
 
 
 if __name__ == '__main__':

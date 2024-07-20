@@ -39,13 +39,12 @@ def mms_part_getspec(instrument='fpi',
             Time range
 
         units: str
-            Specify units of output variables; must be 'eflux' to calculate moments
+            Specify units of output variables; must be 'eflux' to calculate moments.   Valid options::
 
-            valid options:
-            'flux'   -  # / (cm^2 * s * sr * eV)
-            'eflux'  -  eV / (cm^2 * s * sr * eV)  <default>
-            'df_cm'  -  s^3 / cm^6
-            'df_km'  -  s^3 / km^6
+                'flux'   -  # / (cm^2 * s * sr * eV)
+                'eflux'  -  eV / (cm^2 * s * sr * eV)  <default>
+                'df_cm'  -  s^3 / cm^6
+                'df_km'  -  s^3 / km^6
 
             Default: 'eflux'
 
@@ -62,14 +61,16 @@ def mms_part_getspec(instrument='fpi',
             Spacecraft probe # (Default: 1)
 
         output: str or list of str
-            Output variables; options: 
+            Output variables; options::
+
                 'energy': energy spectrograms
                 'theta': theta spectrograms
                 'phi': phi spectrograms
                 'pa': pitch-angle spectrograms
                 'gyro': gyro-phase spectrograms
                 'moments': plasma moments
-                Default: ['energy', 'theta', 'phi', 'pa', 'gyro']
+
+            Default: ['energy', 'theta', 'phi', 'pa', 'gyro']
 
         energy: list of float
             Energy range [min, max], in eV
@@ -99,8 +100,12 @@ def mms_part_getspec(instrument='fpi',
             If not given, defaults to value of 'data_rate'.
 
         fac_type: str
-            Field aligned coordinate system variant;
-            options: 'phigeo', 'mphigeo', 'xgse'
+            Field aligned coordinate system variant; options::
+
+                'phigeo'
+                'mphigeo'
+                'xgse'
+
             Default: 'mphigeo'
 
         correct_photoelectrons: bool
@@ -124,8 +129,9 @@ def mms_part_getspec(instrument='fpi',
             Flag to disable regridding of data array
 
     Returns
-    ----------
-        Creates tplot variables containing spectrograms and moments
+    -------
+    None
+       Creates tplot variables containing spectrograms and moments
 
     """
 

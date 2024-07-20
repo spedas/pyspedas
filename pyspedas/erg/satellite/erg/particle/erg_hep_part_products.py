@@ -98,6 +98,11 @@ def erg_hep_part_products(
             idx = idx[0]
             outputs_lc[idx] = 'fac_energy'
 
+        idx = np.where(np.array(outputs_lc) == 'moments')[0]
+        if (idx.shape[0] > 0) and ('fac_moments' not in outputs_lc):
+            idx = idx[0]
+            outputs_lc[idx] = 'fac_moments'
+
     #  ;;Preserve the original time range
     tr_org = get_timespan(in_tvarname)
 
@@ -142,10 +147,30 @@ def erg_hep_part_products(
         out_pad = np.zeros((times_array.shape[0], regrid[1]))
         out_pad_y = np.zeros((times_array.shape[0], regrid[1]))
 
+    if 'moments' in outputs_lc:
+        out_density = np.zeros(times_array.shape[0])
+        out_avgtemp = np.zeros(times_array.shape[0])
+        out_vthermal = np.zeros(times_array.shape[0])
+        out_flux = np.zeros([times_array.shape[0], 3])
+        out_velocity = np.zeros([times_array.shape[0], 3])
+        out_mftens = np.zeros([times_array.shape[0], 6])
+        out_ptens = np.zeros([times_array.shape[0], 6])
+        out_ttens = np.zeros([times_array.shape[0], 3, 3])
+
 
     if 'fac_energy' in outputs_lc:
         out_fac_energy = np.zeros((times_array.shape[0], dist['n_energy']))
         out_fac_energy_y = np.zeros((times_array.shape[0], dist['n_energy']))
+
+    if 'fac_moments' in outputs_lc:
+        out_fac_density = np.zeros(times_array.shape[0])
+        out_fac_avgtemp = np.zeros(times_array.shape[0])
+        out_fac_vthermal = np.zeros(times_array.shape[0])
+        out_fac_flux = np.zeros([times_array.shape[0], 3])
+        out_fac_velocity = np.zeros([times_array.shape[0], 3])
+        out_fac_mftens = np.zeros([times_array.shape[0], 6])
+        out_fac_ptens = np.zeros([times_array.shape[0], 6])
+        out_fac_ttens = np.zeros([times_array.shape[0], 3, 3])
 
     out_vars = []
     last_update_time = None
@@ -157,7 +182,7 @@ def erg_hep_part_products(
     """
     # ;;create rotation matrix to B-field aligned coordinates if needed
     
-    fac_outputs = ['pa','gyro','fac_energy']
+    fac_outputs = ['pa','gyro','fac_energy', 'fac_moments']
     fac_requested = len(set(outputs_lc).intersection(fac_outputs)) > 0
     if fac_requested:
         """
@@ -175,7 +200,28 @@ def erg_hep_part_products(
     #  ;;create the magnetic field vector array for mu conversion
     magf = np.array([0., 0., 0.])
     no_mag_for_moments = False
-    
+
+    if ('moments' in outputs_lc) or ('fac_moments' in outputs_lc):
+
+        no_mag = mag_name is None
+        magnm = tnames(mag_name)
+        if (len(magnm) < 1) or no_mag:
+            print('the magnetic field data is not given!')
+            no_mag_for_moments = True
+        else:
+            magnm = magnm[0]
+
+            """
+            ;; Create magnetic field data with times shifted by half of spin
+            ;; periods
+            """
+
+            magtmp = magnm+'_pgs_temp'
+            tcopy(magnm, magtmp)
+            tinterpol(magtmp, times_array, newname=magtmp)
+            magf = get_data(magtmp)[1]  #  ;; [ time, 3] nT
+
+
     if muconv:
 
         no_mag = mag_name is None
@@ -197,7 +243,7 @@ def erg_hep_part_products(
 
     """
     ;;-------------------------------------------------
-    ;; Loop over time to build the spectragrams
+    ;; Loop over time to build the spectragrams and/or moments
     ;;-------------------------------------------------
     """
     for index in range(time_indices.shape[0]):
@@ -237,8 +283,11 @@ def erg_hep_part_products(
         elif magf.ndim == 1:
             magvec = magf
 
-        clean_data = erg_pgs_clean_data(dist, units=units_lc, relativistic=relativistic ,magf=magvec, muconv=muconv)
-
+        if ('moments' in outputs_lc) or ('fac_moments' in outputs_lc):
+            clean_data = erg_pgs_clean_data(dist, units=units_lc, magf=magvec,
+                                            for_moments=True)  #;; invalid values are zero-padded.
+        else:
+            clean_data = erg_pgs_clean_data(dist, units=units_lc, magf=magvec)
 
         if 'mu_unit' in clean_data:
             val = clean_data['mu_unit']
@@ -251,6 +300,24 @@ def erg_hep_part_products(
 
         clean_data = erg_pgs_limit_range(clean_data, phi=phi_in, theta=theta, energy=energy, no_ang_weighting=no_ang_weighting)
 
+        if ('moments' in outputs_lc) or ('fac_moments' in outputs_lc):
+            clean_data_eflux = erg_convert_flux_units(clean_data, units='eflux')
+            magfarr = deepcopy(magf)
+            clean_data_eflux_for_moments = deepcopy(clean_data_eflux)
+            clean_data_eflux_for_moments['data'] = np.where(clean_data_eflux_for_moments['bins'] == 0,
+                                                            0,clean_data_eflux_for_moments['data'])
+            moments = spd_pgs_moments(clean_data_eflux_for_moments)
+
+            if 'moments' in outputs_lc:
+                out_density[index] = moments['density']
+                out_avgtemp[index] = moments['avgtemp']
+                out_vthermal[index] = moments['vthermal']
+                out_flux[index, :] = moments['flux']
+                out_velocity[index, :] = moments['velocity']
+                out_mftens[index, :] = moments['mftens']
+                out_ptens[index, :] = moments['ptens']
+                out_ttens[index, :] = moments['ttens']
+
         #  ;;Build theta spectrogram
         if 'theta' in outputs_lc:
             out_theta_y[index, :], out_theta[index, :] = erg_pgs_make_theta_spec(clean_data, no_ang_weighting=no_ang_weighting)
@@ -262,6 +329,7 @@ def erg_hep_part_products(
         #  ;;Build phi spectrogram
         if 'phi' in outputs_lc:
             out_phi_y[index, :], out_phi[index, :] = erg_pgs_make_phi_spec(clean_data, resolution=dist['n_phi'],no_ang_weighting=no_ang_weighting)
+
 
         #  ;;Perform transformation to FAC, regrid data, and apply limits in new coords
         
@@ -295,6 +363,33 @@ def erg_hep_part_products(
             if 'fac_energy' in outputs_lc:
                 out_fac_energy_y[index, :], out_fac_energy[index, :] = erg_pgs_make_e_spec(clean_data)
 
+            if 'fac_moments' in outputs_lc:
+                clean_data['theta'] = 90. - clean_data['theta'] # ;convert back to latitude for moments calc
+                temp_dict = {'charge': dist['charge'],
+                             'magf': magvec,
+                             'species': dist['species'],
+                             'sc_pot': 0.,
+                             'units_name': units_lc}
+                temp_dict.update(clean_data)
+                clean_data = deepcopy(temp_dict)
+                del temp_dict
+                clean_data_eflux = erg_convert_flux_units(clean_data, units='eflux')
+                clean_data_eflux_for_moments = deepcopy(clean_data_eflux)
+                clean_data_eflux_for_moments['data'] = np.where(clean_data_eflux_for_moments['bins'] == 0,
+                                                                0,clean_data_eflux_for_moments['data'])
+                fac_moments = spd_pgs_moments(clean_data_eflux_for_moments)
+
+                out_fac_density[index] = fac_moments['density']
+                out_fac_avgtemp[index] = fac_moments['avgtemp']
+                out_fac_vthermal[index] = fac_moments['vthermal']
+                out_fac_flux[index, :] = fac_moments['flux']
+                out_fac_velocity[index, :] = fac_moments['velocity']
+                out_fac_mftens[index, :] = fac_moments['mftens']
+                out_fac_ptens[index, :] = fac_moments['ptens']
+                out_fac_ttens[index, :] = fac_moments['ttens']
+
+    made_et_spec = ('energy' in outputs_lc) or ('fac_energy' in outputs_lc)
+
     if 'energy' in outputs_lc:
         output_tplot_name = in_tvarname+'_energy' + suffix
         erg_pgs_make_tplot(output_tplot_name, x=times_array, y=out_energy_y, z=out_energy, units=units, ylog=True, ytitle=dist['data_name'] + ' \\ energy (eV)',
@@ -320,54 +415,41 @@ def erg_hep_part_products(
 
     if 'gyro' in outputs_lc:
         output_tplot_name = in_tvarname+'_gyro' + suffix
-        erg_pgs_make_tplot(output_tplot_name, x=times_array, y=out_gyro_y, z=out_gyro, units=units, ylog=False, ytitle=dist['data_name'] + ' \\ gyro (deg)',
-                            relativistic=relativistic)
+        erg_pgs_make_tplot(output_tplot_name, x=times_array, y=out_gyro_y, z=out_gyro, units=units, ylog=False, ytitle=dist['data_name'] + ' \\ gyro (deg)')
         out_vars.append(output_tplot_name)
 
 
-    if 'fac_energy' in outputs_lc:
+    #  ;Moments Variables
+    if 'moments' in outputs_lc:
+        moments = {'density': out_density,
+              'flux': out_flux,
+              'mftens': out_mftens,
+              'velocity': out_velocity,
+              'ptens': out_ptens,
+              'ttens': out_ttens,
+              'vthermal': out_vthermal,
+              'avgtemp': out_avgtemp}
+        moments_vars = erg_pgs_moments_tplot(moments, x=times_array, prefix=in_tvarname, suffix=suffix)
+        out_vars.extend(moments_vars)
 
+    if 'fac_energy' in outputs_lc:
         output_tplot_name = in_tvarname+'_energy_mag' + suffix
         erg_pgs_make_tplot(output_tplot_name, x=times_array, y=out_fac_energy_y, z=out_fac_energy, units=units, ylog=True, ytitle=dist['data_name'] + ' \\ energy (eV)',
                             relativistic=relativistic, ysubtitle=ysubtitle)
         out_vars.append(output_tplot_name)
 
-    
-    #  ;;Sort a data array by energy for (fac-)energy spectra
-    if ('erg_lepe_' in in_tvarname)  and (made_et_spec):
-        if 'energy' in outputs_lc:
-            t_plot_name = in_tvarname+'_energy' + suffix
-            get_data_energy = get_data(t_plot_name)
-            energy_meta_data = get_data(t_plot_name, metadata=True)
-        elif 'fac_energy' in outputs_lc:
-            t_plot_name = in_tvarname+'_energy_mag' + suffix
-            get_data_energy = get_data(t_plot_name)
-            energy_meta_data = get_data(t_plot_name, metadata=True)
-        
-        if get_data_energy is not None:
-            
-            arange_time_indices = np.arange(get_data_energy[0].size)
-            time_indices_repeat = np.repeat(np.array([arange_time_indices]).T, get_data_energy[1].shape[1], axis=1)
-            time_indices_repeat_reshape =  time_indices_repeat.reshape((time_indices_repeat.size, 1))
-            
-            if get_data_energy[2].ndim == 1:
-                arg_sort_axis_1 = np.repeat(np.argsort([get_data_energy[2]], axis=1), get_data_energy[0].size, axis=0)
-            elif get_data_energy[2].ndim == 2:
-                arg_sort_axis_1=np.argsort(get_data_energy[2], axis=1)
-
-            arg_sort_axis_1_reshape = arg_sort_axis_1.reshape((arg_sort_axis_1.size, 1))
-
-            indices_array =np.concatenate([time_indices_repeat_reshape, arg_sort_axis_1_reshape], axis=1)
-            indices_list_0 = indices_array[:,0].tolist()
-            indices_list_1 = indices_array[:,1].tolist()
-            y_new_1d = get_data_energy[1][indices_list_0 , indices_list_1 ]
-            y_new_2d = y_new_1d.reshape(get_data_energy[1].shape)
-            v_new_1d = get_data_energy[2][indices_list_0 , indices_list_1]
-            v_new_2d = v_new_1d.reshape(get_data_energy[2].shape)
-
-            store_data(t_plot_name, data={'x':get_data_energy[0],
-                                          'y':y_new_2d,
-                                          'v':v_new_2d},
-                        attr_dict=energy_meta_data)
+    #  ;FAC Moments Variables
+    if 'fac_moments' in outputs_lc:
+        fac_moments = {'density': out_fac_density,
+              'flux': out_fac_flux,
+              'mftens': out_fac_mftens,
+              'velocity': out_fac_velocity,
+              'ptens': out_fac_ptens,
+              'ttens': out_fac_ttens,
+              'vthermal': out_fac_vthermal,
+              'avgtemp': out_fac_avgtemp}
+        fac_mom_suffix = '_mag' + suffix
+        fac_moments_vars = erg_pgs_moments_tplot(fac_moments, x=times_array, prefix=in_tvarname, suffix=fac_mom_suffix)
+        out_vars.extend(fac_moments_vars)
 
     return out_vars

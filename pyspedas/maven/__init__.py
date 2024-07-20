@@ -85,6 +85,7 @@ def mag(
     downloadonly=False,
     varnames=[],
     spdf=False,
+    public=True
 ):
     """
     Function to retrieve Magnetometer (MAG) data from the MAVEN mission.
@@ -110,6 +111,8 @@ def mag(
         List of variable names to load. Defaults to [].
     spdf : bool, optional
         Flag indicating whether to use the SPDF library for loading data. Default is False.
+    public: bool, optional
+        If False, try downloading from the non-public service
 
     Returns
     -------
@@ -142,6 +145,7 @@ def mag(
         auto_yes=auto_yes,
         download_only=downloadonly,
         varnames=varnames,
+        public=public
     )
 
 
@@ -167,7 +171,11 @@ def sta(
     level : str, optional
         Data level. Defaults to "l2".
     datatype : str, optional
-        Data type. Defaults to None.
+        Data type. Defaults to "c0-64e2m" (spdf) or None (all data loaded) (MAVEN SDC)
+        Valid options (for MAVEN SDC)::
+
+            2a, c0, c2, c4, c6, c8, ca, cc, cd, ce, cf, d0, d1, d4, d6, d7, d8, d9, da, db
+
     varformat : str, optional
         Variable format. Defaults to None.
     get_support_data : bool, optional
@@ -200,7 +208,7 @@ def sta(
             varnames=varnames,
         )
     if datatype is None:
-        datatype = "2a"
+        datatype = None
     return maven_load(
         instruments="sta",
         start_date=trange[0],

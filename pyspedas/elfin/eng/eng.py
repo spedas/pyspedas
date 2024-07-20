@@ -1,6 +1,6 @@
-from load import load
+from pyspedas.elfin.load import load
 
-def eng(trange=['2022-08-19', '2022-08-19'],
+def eng_load(trange=['2022-08-19', '2022-08-19'],
         probe='a',
         datatype='eng_datatype',
         level='l1',
@@ -11,7 +11,8 @@ def eng(trange=['2022-08-19', '2022-08-19'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the ELFIN Engineering (ENG)
 
@@ -71,10 +72,15 @@ def eng(trange=['2022-08-19', '2022-08-19'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: True
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
-        List of tplot variables created.
-        Variables include:
+    list of str
+        List of tplot variables created. Variables include::
+
             ela_fc_chassis_temp
             ela_fc_idpu_temp
             ela_fc_batt_temp_1
@@ -90,17 +96,17 @@ def eng(trange=['2022-08-19', '2022-08-19'],
 
     Examples
     ----------
-        import pyspedas
-        from pytplot import tplot
-        elf_vars = pyspedas.elfin.eng(probe='a', trange=['2022-08-19', '2022-08-19'])
-        tplot('ela_fc_chassis_temp')
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> elf_vars = pyspedas.elfin.eng(probe='a', trange=['2022-08-19', '2022-08-19'])
+    >>> tplot('ela_fc_chassis_temp')
 
 
 
     """
     tvars = load(instrument='eng', probe=probe, trange=trange, level=level, datatype=datatype, suffix=suffix,
                  get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly,
-                 notplot=notplot, time_clip=time_clip, no_update=no_update)
+                 notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars

@@ -18,8 +18,9 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
 
     Parameters
     -----------
-        parmod: ndarray
-            10-element array (vs. time)::
+        parmod: str
+            A tplot variable containing the model parameters as a 10-element array (vs. time).  The timestamps should match the times in the input position
+            variable. The motdl::
 
                 (1) solar wind pressure pdyn (nanopascals),
                 (2) dst (nanotesla),

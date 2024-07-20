@@ -46,6 +46,10 @@ def dailynames(directory='',
     Returns:
         List containing filenames
 
+    Example:
+        >>> from pyspedsas import time_float
+        >>> time_range = time_float(['2021-01-01','2021-01-03'])
+        >>> pyspedas.dailynames(trange=time_range)
     """
     if trange is None:
         logging.error('No trange specified')

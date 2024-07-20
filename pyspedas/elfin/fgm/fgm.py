@@ -1,7 +1,6 @@
-from .load import load
+from pyspedas.elfin.load import load
 
-
-def fgm(trange=['2022-08-19', '2022-08-19'],
+def fgm_load(trange=['2022-08-19', '2022-08-19'],
         probe='a',
         datatype='survey',
         level='l1',
@@ -12,7 +11,8 @@ def fgm(trange=['2022-08-19', '2022-08-19'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the ELFIN Fluxgate Magnetometer (FGM)
 
@@ -29,8 +29,10 @@ def fgm(trange=['2022-08-19', '2022-08-19'],
             Default: 'a'
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
+
                 'fast', 'survey' for L1 data. Only 'survey' data is available.
+
             Default: 'survey'
 
         level: str
@@ -72,6 +74,10 @@ def fgm(trange=['2022-08-19', '2022-08-19'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of tplot variables created.
@@ -95,7 +101,7 @@ def fgm(trange=['2022-08-19', '2022-08-19'],
     tvars = load(instrument='fgm', probe=probe, trange=trange, level=level,
                  datatype=datatype, suffix=suffix, get_support_data=get_support_data,
                  varformat=varformat, varnames=varnames, downloadonly=downloadonly,
-                 notplot=notplot, time_clip=time_clip, no_update=no_update)
+                 notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars

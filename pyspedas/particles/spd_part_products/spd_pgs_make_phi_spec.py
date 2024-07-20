@@ -15,15 +15,17 @@ def spd_pgs_make_phi_spec(data_in, resolution=None):
     """
     Builds phi (longitudinal) spectrogram from the particle data structure
 
-    Input:
+    Parameters
+    ----------
         data_in: dict
             Particle data structure
 
-    Parameters:
         resolution: int
             Number of phi bins in the output
 
-    Returns:
+    Returns
+    -------
+    tuple
         Tuple containing: (phi values for y-axis, spectrogram values)
     """
 

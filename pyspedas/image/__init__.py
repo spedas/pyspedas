@@ -13,6 +13,7 @@ def lena(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Loads IMAGE LENA data.
@@ -43,6 +44,9 @@ def lena(
         If set, only load data from your local cache. Defaults to False.
     time_clip : bool, optional
         Time clip the variables to exactly the range specified in the trange keyword. Defaults to False.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -61,6 +65,7 @@ def lena(
         notplot=notplot,
         time_clip=time_clip,
         no_update=no_update,
+        force_download=force_download,
     )
 
 
@@ -75,6 +80,7 @@ def mena(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Loads IMAGE MENA data.
@@ -105,6 +111,9 @@ def mena(
         If set, only load data from your local cache. Defaults to False.
     time_clip : bool, optional
         Time clip the variables to exactly the range specified in the trange keyword. Defaults to False.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -123,6 +132,7 @@ def mena(
         notplot=notplot,
         time_clip=time_clip,
         no_update=no_update,
+        force_download=force_download,
     )
 
 
@@ -137,6 +147,7 @@ def hena(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Loads IMAGE HENA data.
@@ -167,6 +178,9 @@ def hena(
         If set, only load data from your local cache. Defaults to False.
     time_clip : bool, optional
         Time clip the variables to exactly the range specified in the trange keyword. Defaults to False.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -185,6 +199,7 @@ def hena(
         notplot=notplot,
         time_clip=time_clip,
         no_update=no_update,
+        force_download=force_download,
     )
 
 
@@ -199,6 +214,7 @@ def rpi(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Loads IMAGE RPI data.
@@ -229,6 +245,9 @@ def rpi(
         If set, only load data from your local cache. Defaults to False.
     time_clip : bool, optional
         Time clip the variables to exactly the range specified in the trange keyword. Defaults to False.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -247,6 +266,7 @@ def rpi(
         notplot=notplot,
         time_clip=time_clip,
         no_update=no_update,
+        force_download=force_download,
     )
 
 
@@ -261,6 +281,7 @@ def euv(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Loads IMAGE EUV data.
@@ -291,6 +312,9 @@ def euv(
         If set, only load data from your local cache. Defaults to False.
     time_clip : bool, optional
         Time clip the variables to exactly the range specified in the trange keyword. Defaults to False.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -309,6 +333,7 @@ def euv(
         notplot=notplot,
         time_clip=time_clip,
         no_update=no_update,
+        force_download=force_download,
     )
 
 
@@ -323,6 +348,7 @@ def fuv(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Loads IMAGE FUV data.
@@ -353,6 +379,9 @@ def fuv(
         If set, only load data from your local cache. Defaults to False.
     time_clip : bool, optional
         Time clip the variables to exactly the range specified in the trange keyword. Defaults to False.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -371,6 +400,7 @@ def fuv(
         notplot=notplot,
         time_clip=time_clip,
         no_update=no_update,
+        force_download=force_download,
     )
 
 
@@ -385,6 +415,7 @@ def orbit(
     notplot=False,
     no_update=False,
     time_clip=False,
+    force_download=False,
 ):
     """
     Loads IMAGE orbit data.
@@ -414,6 +445,9 @@ def orbit(
         If set, only load data from your local cache.
     time_clip : bool, optional
         Time clip the variables to exactly the range specified in the trange keyword.
+    force_download: bool
+        Download file even if local version is more recent than server version
+        Default: False
 
     Returns
     -------
@@ -432,6 +466,7 @@ def orbit(
         notplot=notplot,
         time_clip=time_clip,
         no_update=no_update,
+        force_download=force_download,
     )
 
 

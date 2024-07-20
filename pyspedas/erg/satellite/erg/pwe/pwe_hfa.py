@@ -21,7 +21,8 @@ def pwe_hfa(
     uname: Optional[str] = None,
     passwd: Optional[str] = None,
     time_clip: bool = False,
-    ror: bool = True
+    ror: bool = True,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads data from the PWE experiment from the Arase mission

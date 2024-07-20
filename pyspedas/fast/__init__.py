@@ -12,7 +12,8 @@ def dcb(trange=['2001-09-05', '2001-09-06'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Fluxgate Magnetometer
     
@@ -67,6 +68,11 @@ def dcb(trange=['2001-09-05', '2001-09-06'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of str
@@ -80,7 +86,7 @@ def dcb(trange=['2001-09-05', '2001-09-06'],
     dcb_vars = pyspedas.fast.dcb(trange=['2001-09-05', '2001-09-06'])
     tplot(['EX','EZ','BX','BY','BZ'])
     """
-    return load(instrument='dcb', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='dcb', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def acb(trange=['1998-01-05', '1998-01-06'],
         datatype='', 
@@ -92,7 +98,8 @@ def acb(trange=['1998-01-05', '1998-01-06'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Search-coil Magnetometer
     
@@ -147,6 +154,10 @@ def acb(trange=['1998-01-05', '1998-01-06'],
             Time clip the variables to exactly the range specified in the trange keyword
             Defauly: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of str
@@ -161,7 +172,7 @@ def acb(trange=['1998-01-05', '1998-01-06'],
     tplot('HF_E_SPEC')
 
     """
-    return load(instrument='acb', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='acb', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def esa(trange=['1998-09-05', '1998-09-06'],
         datatype='ies', 
@@ -173,7 +184,8 @@ def esa(trange=['1998-09-05', '1998-09-06'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Electrostatic Analyzers (ESA)
     
@@ -231,6 +243,10 @@ def esa(trange=['1998-09-05', '1998-09-06'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of str
@@ -244,19 +260,20 @@ def esa(trange=['1998-09-05', '1998-09-06'],
     esa_vars = pyspedas.fast.esa()
 
     """
-    return load(instrument='esa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='esa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 def teams(trange=['1998-09-05', '1998-09-06'],
-          datatype='', 
-          level='k0', 
-          suffix='',  
-          get_support_data=False, 
+          datatype='',
+          level='k0',
+          suffix='',
+          get_support_data=False,
           varformat=None,
           varnames=[],
           downloadonly=False,
           notplot=False,
           no_update=False,
-          time_clip=False):
+          time_clip=False,
+          force_download=False):
     """
     This function loads data from the Time-of-flight Energy Angle Mass Spectrograph (TEAMS)
     
@@ -311,6 +328,10 @@ def teams(trange=['1998-09-05', '1998-09-06'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     ----------
         List of str
@@ -326,7 +347,7 @@ def teams(trange=['1998-09-05', '1998-09-06'],
 
 
     """
-    return load(instrument='teams', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='teams', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
 def datasets(instrument=None, label=True):

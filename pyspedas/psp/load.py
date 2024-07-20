@@ -214,16 +214,16 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
 
     elif instrument == 'spc':
-        if username is None:
-            prefix = 'psp_spc_'
-            pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
-        else:
-            # unpublished data
-            # spc pre-public data is prepended by "spp", not "psp"
-            # The psp_ files are located in the same directory after public release
-            # but in that case users can just use the public (spdf) option. 
-            prefix = 'spp_spc_'
-            pathformat = 'sweap/spc/' + level + '/%Y/%m/spp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
+        # spc changes the filename on the secure server depending on
+        # whether data has been publicly released or not.
+        # the publicly released data is on the NASA spdf server with the 'psp'
+        # prefix. 
+        #
+        # However, data on the secure server exists with both the 'psp' and 'spp' 
+        # prefixes. This prefix ambiguity will be handled farther down
+        # and is set to 'psp' for the time being.
+        prefix = 'psp_spc_'
+        pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
     elif instrument == 'spe':
         prefix = 'psp_spe_'
         pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_v??.cdf'
@@ -262,10 +262,12 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
                     username=username, password=password, basic_auth=True,last_version=last_version
                 )
+                if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
+                    raise RuntimeError("No links found.")
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
                                 local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
-        elif instrument in ['spc','spi']:
+        elif instrument == 'spi':
             try:
                 print("Downloading unpublished SWEAP Data....")
                 files = download(
@@ -273,10 +275,69 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
                     username=username, password=password, basic_auth=True,last_version=last_version
                 )
+                if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
+                    raise RuntimeError("No links found.")
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
                                 local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
-        
+
+        elif instrument == 'spc':
+            
+            # try secure server first
+            # secure server may have two file names, 
+            # the publicly released data will be prefixed 'psp_swp_spc_' 
+            # so check that filename first, as it will have the most
+            # up to date version of the data
+
+            try:
+                if last_version:
+                    try:
+                        print("Downloading unpublished SWEAP Data....")
+                        prefix = 'psp_spc_'
+                        pathformat = 'sweap/spc/' + level + '/%Y/%m/psp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
+                        # find the full remote path names using the trange
+                        remote_names_spc = dailynames(file_format=pathformat, trange=trange, res=file_resolution)
+                        remote_dates = dailynames(file_format='%Y-%m-%d', trange=trange, res=file_resolution)
+                        files = download(
+                            remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
+                            local_path=CONFIG['local_data_dir'], no_download=no_update,
+                            username=username, password=password, basic_auth=True,last_version=last_version
+                        )
+
+                        if len(files) != len(remote_dates): # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
+                            trange_temp = [remote_dates[len(files)],trange[1]]    # set new trange to check for spp prefixes
+                            raise RuntimeError("No links found.")
+                    except:
+                        # then, if a date does not have 'psp_swp_spc_' prefix 
+                        # then check for prefix 'spp_swp_spc_' which is the pre-released data
+                        prefix = 'spp_spc_'
+                        pathformat = 'sweap/spc/' + level + '/%Y/%m/spp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
+                        # find the full remote path names using the trange
+                        remote_names_spc = dailynames(file_format=pathformat, trange=trange_temp, res=file_resolution)
+                        print("Downloading unpublished SWEAP Data....")
+                        files = download(
+                            remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
+                            local_path=CONFIG['local_data_dir'], no_download=no_update,
+                            username=username, password=password, basic_auth=True,last_version=last_version
+                            )
+                        if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
+                            raise RuntimeError("No links found.")
+                else:
+                    prefix = 'psp_spc_'
+                    pathformat = 'sweap/spc/' + level + '/%Y/%m/*_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
+                    remote_names_spc = dailynames(file_format=pathformat, trange=trange, res=file_resolution)
+                    files = download(
+                        remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
+                        local_path=CONFIG['local_data_dir'], no_download=no_update,
+                        username=username, password=password, basic_auth=True,last_version=last_version
+                        )
+                    if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
+                        raise RuntimeError("No links found.")
+
+            # if all else fails switch to the NASA spdf server.        
+            except:
+                files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
 
     if files is not None:
         for file in files:

@@ -1,7 +1,7 @@
 
 import os
 import unittest
-from pytplot import data_exists, del_data
+from pytplot import data_exists, del_data, tplot_names
 
 import pyspedas
 
@@ -29,6 +29,12 @@ class LoadTestCases(unittest.TestCase):
         ind_vars = pyspedas.erg.gmag_isee_induction(trange=['2020-08-01/00:00:00', '2020-08-01/02:00:00'], site='msr')
         self.assertTrue(data_exists('isee_induction_db_dt_msr'))
         self.assertTrue('isee_induction_db_dt_msr' in ind_vars)
+
+    def test_load_isee_induction_frequency_dependent_data(self):
+        del_data()
+        ind_vars = pyspedas.erg.gmag_isee_induction(trange=['2020-08-01/00:00:00', '2020-08-01/02:00:00'], site='msr', frequency_dependent=True)
+        self.assertTrue(type(ind_vars) == dict)
+        self.assertTrue('msr' in ind_vars)
 
     def test_load_stel_induction_data(self):
         del_data()
@@ -63,6 +69,12 @@ class LoadTestCases(unittest.TestCase):
     def test_load_isee_vlf_data(self):
         del_data()
         vlf_vars = pyspedas.erg.isee_vlf(trange=['2017-03-30/12:00:00', '2017-03-30/15:00:00'], site='ath')
+        self.assertTrue(data_exists('isee_vlf_ath_ch1'))
+        self.assertTrue('isee_vlf_ath_ch1' in vlf_vars)
+
+    def test_load_isee_vlf_cal_gain_data(self):
+        del_data()
+        vlf_vars = pyspedas.erg.isee_vlf(trange=['2017-03-30/12:00:00', '2017-03-30/15:00:00'], site='ath',  cal_gain=True)
         self.assertTrue(data_exists('isee_vlf_ath_ch1'))
         self.assertTrue('isee_vlf_ath_ch1' in vlf_vars)
 

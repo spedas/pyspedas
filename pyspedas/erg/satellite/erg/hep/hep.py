@@ -22,7 +22,8 @@ def hep(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True,
-    version: Optional[str] = None
+    version: Optional[str] = None,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads data from the HEP experiment from the Arase mission
@@ -82,6 +83,10 @@ def hep(
         passwd: str
             Password. Default: None
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
 
 
     Returns
@@ -125,7 +130,7 @@ def hep(
         notplot = True
 
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, version=version)
+                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, version=version, force_download=force_download)
 
     if (len(loaded_data) > 0) and ror:
 
@@ -165,8 +170,12 @@ def hep(
         if (level == 'l2') and (datatype == 'omniflux'):
             tplot_variables = []
             if prefix + 'FEDO_L' + suffix in loaded_data:
-                v_vars_min = loaded_data[prefix + 'FEDO_L' + suffix]['v'][0]
-                v_vars_max = loaded_data[prefix + 'FEDO_L' + suffix]['v'][1]
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[prefix + 'FEDO_L' + suffix]:
+                    v_keyname = 'v1'
+
+                v_vars_min = loaded_data[prefix + 'FEDO_L' + suffix][v_keyname][0]
+                v_vars_max = loaded_data[prefix + 'FEDO_L' + suffix][v_keyname][1]
                 # log average of energy bins
                 v_vars = np.power(
                     10., (np.log10(v_vars_min) + np.log10(v_vars_max)) / 2.)
@@ -177,8 +186,12 @@ def hep(
                 tplot_variables.append(prefix + 'FEDO_L' + suffix)
 
             if prefix + 'FEDO_H' + suffix in loaded_data:
-                v_vars_min = loaded_data[prefix + 'FEDO_H' + suffix]['v'][0]
-                v_vars_max = loaded_data[prefix + 'FEDO_H' + suffix]['v'][1]
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[prefix + 'FEDO_H' + suffix]:
+                    v_keyname = 'v1'
+
+                v_vars_min = loaded_data[prefix + 'FEDO_H' + suffix][v_keyname][0]
+                v_vars_max = loaded_data[prefix + 'FEDO_H' + suffix][v_keyname][1]
                 # log average of energy bins
                 v_vars = np.power(
                     10., (np.log10(v_vars_min) + np.log10(v_vars_max)) / 2.)
@@ -253,22 +266,28 @@ def hep(
             v2_array = [i for i in range(15)]
 
             if prefix + 'FEDU_L' + suffix in loaded_data:
-
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[prefix + 'FEDU_L' + suffix]:
+                    v_keyname = 'v1'
                 store_data(prefix + 'FEDU_L' + suffix, data={'x': loaded_data[prefix + 'FEDU_L' + suffix]['x'],
                                                              'y': loaded_data[prefix + 'FEDU_L' + suffix]['y'],
-                                                             'v1': np.sqrt(loaded_data[prefix + 'FEDU_L' + suffix]['v'][0, :] *
-                                                                           loaded_data[prefix + 'FEDU_L' + suffix]['v'][1, :]),  # geometric mean for 'v1'
+                                                             'v1': np.sqrt(loaded_data[prefix + 'FEDU_L' + suffix][v_keyname][0, :] *
+                                                                           loaded_data[prefix + 'FEDU_L' + suffix][v_keyname][1, :]),  # geometric mean for 'v1'
                                                              'v2': v2_array},
                            attr_dict={'CDF':loaded_data[prefix + 'FEDU_L' + suffix]['CDF']})
                 tplot_variables.append(prefix + 'FEDU_L' + suffix)
                 clip(prefix + 'FEDU_L' + suffix, -1.0e+10, 1.0e+10)
 
             if prefix + 'FEDU_H' + suffix in loaded_data:
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[prefix + 'FEDU_H' + suffix]:
+                    v_keyname = 'v1'
+
 
                 store_data(prefix + 'FEDU_H' + suffix, data={'x': loaded_data[prefix + 'FEDU_H' + suffix]['x'],
                                                              'y': loaded_data[prefix + 'FEDU_H' + suffix]['y'],
-                                                             'v1': np.sqrt(loaded_data[prefix + 'FEDU_H' + suffix]['v'][0, :] *
-                                                                           loaded_data[prefix + 'FEDU_H' + suffix]['v'][1, :]),  # geometric mean for 'v1'
+                                                             'v1': np.sqrt(loaded_data[prefix + 'FEDU_H' + suffix][v_keyname][0, :] *
+                                                                           loaded_data[prefix + 'FEDU_H' + suffix][v_keyname][1, :]),  # geometric mean for 'v1'
                                                              'v2': v2_array},
                            attr_dict={'CDF':loaded_data[prefix + 'FEDU_H' + suffix]['CDF']})
                 tplot_variables.append(prefix + 'FEDU_H' + suffix)
@@ -317,21 +336,28 @@ def hep(
                 tplot_variables.append(prefix + 'sctno_H' + suffix)
 
             if prefix + 'rawcnt_H' + suffix in loaded_data:
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[prefix + 'rawcnt_H' + suffix]:
+                    v_keyname = 'v1'
+
     
                 store_data(prefix + 'rawcnt_H' + suffix, data={'x': loaded_data[prefix + 'rawcnt_H' + suffix]['x'],
                                                              'y': loaded_data[prefix + 'rawcnt_H' + suffix]['y'],
-                                                             'v1': np.sqrt(loaded_data[prefix + 'rawcnt_H' + suffix]['v'][0, :] *
-                                                                           loaded_data[prefix + 'rawcnt_H' + suffix]['v'][1, :]),  # geometric mean for 'v1'
+                                                             'v1': np.sqrt(loaded_data[prefix + 'rawcnt_H' + suffix][v_keyname][0, :] *
+                                                                           loaded_data[prefix + 'rawcnt_H' + suffix][v_keyname][1, :]),  # geometric mean for 'v1'
                                                              'v2': [i for i in range(15)]},
                            attr_dict={'CDF':loaded_data[prefix + 'rawcnt_H' + suffix]['CDF']})
                 tplot_variables.append(prefix + 'rawcnt_H' + suffix)
 
             if prefix + 'rawcnt_L' + suffix in loaded_data:
-    
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[prefix + 'rawcnt_L' + suffix]:
+                    v_keyname = 'v1'
+
                 store_data(prefix + 'rawcnt_L' + suffix, data={'x': loaded_data[prefix + 'rawcnt_L' + suffix]['x'],
                                                              'y': loaded_data[prefix + 'rawcnt_L' + suffix]['y'],
-                                                             'v1': np.sqrt(loaded_data[prefix + 'rawcnt_L' + suffix]['v'][0, :] *
-                                                                           loaded_data[prefix + 'rawcnt_L' + suffix]['v'][1, :]),  # geometric mean for 'v1'
+                                                             'v1': np.sqrt(loaded_data[prefix + 'rawcnt_L' + suffix][v_keyname][0, :] *
+                                                                           loaded_data[prefix + 'rawcnt_L' + suffix][v_keyname][1, :]),  # geometric mean for 'v1'
                                                              'v2': [i for i in range(15)]},
                            attr_dict={'CDF':loaded_data[prefix + 'rawcnt_L' + suffix]['CDF']})
                 tplot_variables.append(prefix + 'rawcnt_L' + suffix)

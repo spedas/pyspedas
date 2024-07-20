@@ -16,7 +16,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads data from the CSSWE mission from the Relativistic Electron and Proton
     Telescope integrated little experiment (REPTile). This function is not meant
@@ -69,15 +70,20 @@ def load(trange=['2013-11-5', '2013-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
+
     Returns
     ----------
         List of tplot variables created.
 
     Example
     ----------
-        import pyspedas
-        from pytplot import tplot
-        reptile_csswe_vars = pyspedas.csswe.reptile(trange=['2013-11-5', '2013-11-6'])
+    >>> import pyspedas
+    >>> from pytplot import tplot
+    >>> reptile_csswe_vars = pyspedas.csswe.reptile(trange=['2013-11-5', '2013-11-6'])
 
     """
 
@@ -89,7 +95,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)

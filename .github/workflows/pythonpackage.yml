@@ -1,6 +1,6 @@
 name: build
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -16,16 +16,16 @@ jobs:
         python-version: [3.12]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
     - name: Install dependencies (Linux)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
         MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
+        VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -34,11 +34,12 @@ jobs:
           pip install basemap
           pip install mth5
           python -m pyspedas.mms.tests.setup_tests
-      if: matrix.os == 'ubuntu-latest' && (github.ref == 'refs/heads/master'  || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis')
+      if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
         MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
+        VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -47,11 +48,12 @@ jobs:
           pip install basemap
           pip install mth5
           python -m pyspedas.mms.tests.setup_tests
-      if: matrix.os == 'windows-latest' && github.ref == 'refs/heads/master'
+      if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
       env:
         MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
         MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
+        VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -60,9 +62,8 @@ jobs:
           pip install basemap
           pip install mth5
           python -m pyspedas.mms.tests.setup_tests
-      if: matrix.os == 'macos-latest' && github.ref == 'refs/heads/master'
+      if: matrix.os == 'macos-latest'
     - name: Lint with flake8
-      if: github.ref == 'refs/heads/master'
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
@@ -70,9 +71,10 @@ jobs:
         # exit-zero treats all errors as warnings. 
         flake8 . --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
     - name: Test with unittest
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/eric-superfast' || github.ref == 'refs/heads/themis'
+      if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
         SPEDAS_DATA_DIR: data
         ACE_DATA_DIR: ace_data/
         BARREL_DATA_DIR: barrel_data/
@@ -106,16 +108,36 @@ jobs:
         # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
-        # echo Starting akebono tests at `date`
-        # coverage run -a -m pyspedas.akebono.tests.tests
-        echo Starting CDAWeb tests at `date`
-        coverage run -a -m pyspedas.cdagui.tests.tests
-        #echo Starting MTH5 import test at `date`
-        #coverage run -a -m pyspedas.mth5.tests.test_mth5_import
+        echo Starting VIRES client tests at `date`
+        coverage run -a -m pyspedas.vires.tests.tests
+        echo Starting secs tests at `date`
+        coverage run -a -m pyspedas.secs.tests.tests
+        echo Starting MTH5 import test at `date`
+        coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
+        echo Starting maven tests at `date`
+        coverage run -a -m pyspedas.maven.tests.tests
+        echo Starting cluster tests at `date`
+        coverage run -a -m pyspedas.cluster.tests.tests
+        echo Starting akebono tests at `date`
+        coverage run -a -m pyspedas.akebono.tests.tests
+        echo Starting CDAWeb tests at `date`
+        coverage run -a -m pyspedas.cdagui.tests.tests
+        echo Starting themis tplot_time  tests at `date`
+        coverage run -a -m pyspedas.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
         coverage run -a -m pyspedas.barrel.tests.tests
+        echo Starting elfin epd_l1 tests at `date`
+        coverage run -a -m pyspedas.elfin.tests.test_epd_l1
+        echo Starting elfin epd_l2 tests at `date`
+        coverage run -a -m pyspedas.elfin.tests.test_epd_l2
+        echo Starting elfin state tests at `date`      
+        coverage run -a -m pyspedas.elfin.tests.test_state
+        echo Starting elfin tests at `date`      
+        coverage run -a -m pyspedas.elfin.tests.tests
+        echo Starting elfin epd calibration tests at `date`      
+        coverage run -a -m pyspedas.elfin.tests.test_epd_calibration
         echo Starting soho tests at `date`
         coverage run -a -m pyspedas.soho.tests.tests
         echo Starting de2 tests at `date`
@@ -128,12 +150,14 @@ jobs:
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         echo Starting cnofs tests at `date`
         coverage run -a -m pyspedas.cnofs.tests.tests
-        echo Starting secs tests at `date`
-        coverage run -a -m pyspedas.secs.tests.tests
         echo Starting kompsat tests at `date`
         coverage run -a -m pyspedas.kompsat.tests.tests
         echo Starting hapi tests at `date`
         coverage run -a -m pyspedas.hapi.tests.tests
+        echo Starting noaa tests at `date`
+        coverage run -a -m pyspedas.noaa.tests.tests
+        echo Starting particles tests at `date`
+        coverage run -a -m pyspedas.particles.tests.tests
         echo Starting mms cotrans tests at `date`
         coverage run -a -m pyspedas.mms.tests.cotrans
         echo Starting mms events tests at `date`
@@ -176,14 +200,14 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.plot_tests
         echo Starting utilities time_tests tests at `date`
         coverage run -a -m pyspedas.utilities.tests.time_tests
+        echo Starting utilities libs_tests tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.libs_tests
         echo Starting cotrans tests at `date`
         coverage run -a -m pyspedas.cotrans.tests.cotrans
         echo Starting cotrans quaternion tests at `date`
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         echo Starting cotrans minvar tests at `date`
         coverage run -a -m pyspedas.cotrans.tests.test_minvar
-        echo Starting cluster tests at `date`
-        coverage run -a -m pyspedas.cluster.tests.tests
         echo Starting csswe tests at `date`
         coverage run -a -m pyspedas.csswe.tests.tests
         echo Starting ace tests at `date`
@@ -208,6 +232,8 @@ jobs:
         coverage run -a -m pyspedas.polar.tests.tests
         echo Starting geopack tests at `date`
         coverage run -a -m pyspedas.geopack.tests.tests
+        echo Starting geopack-IDL validation tests at `date`
+        coverage run -a -m pyspedas.geopack.tests.geopack_idl_validation_tests
         echo Starting geotail tests at `date`
         coverage run -a -m pyspedas.geotail.tests.tests
         echo Starting analysis tests at `date`
@@ -222,8 +248,6 @@ jobs:
         coverage run -a -m pyspedas.omni.tests.tests
         echo Starting themis tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests
-        echo Starting maven tests at `date`
-        coverage run -a -m pyspedas.maven.tests.tests
         echo Starting goes tests at `date`
         coverage run -a -m pyspedas.goes.tests.tests
         echo Starting mica tests at `date`
@@ -232,8 +256,22 @@ jobs:
         coverage run -a -m pyspedas.ulysses.tests.tests
         echo Starting erg tests at `date`
         coverage run -a -m pyspedas.erg.tests.tests
+        echo Starting erg cotrans tests at `date`
+        coverage run -a -m pyspedas.erg.tests.cotrans_tests
         echo Starting erg ground data tests at `date`
         coverage run -a -m pyspedas.erg.tests.ground_tests
+        echo Starting erg mepe particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.mepe_part_products
+        echo Starting erg mepi particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.mepi_part_products
+        echo Starting erg lepe particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.lepe_part_products
+        echo Starting erg lepi particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.lepi_part_products
+        echo Starting erg xep particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.xep_part_products
+        echo Starting erg hep particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.hep_part_products
         echo Starting solo tests at `date`
         coverage run -a -m pyspedas.solo.tests.tests
         echo Starting kyoto tests at `date`
@@ -242,6 +280,8 @@ jobs:
         coverage run -a -m pyspedas.swarm.tests.tests
         echo Starting themis_check_args tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
+        echo Starting themis autoload support tests at `date`
+        coverage run -a -m pyspedas.themis.tests.autoload_support_tests
         echo Starting themis cal_fit tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_cal_fit
         echo Starting themis dsl_cotrans tests at `date`

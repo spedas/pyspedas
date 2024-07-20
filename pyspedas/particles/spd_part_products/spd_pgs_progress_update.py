@@ -9,7 +9,8 @@ def spd_pgs_progress_update(last_update_time=None, current_sample=None, total_sa
     """
     Helper routine prints status message indicating completion percent
 
-    Parameters:
+    Parameters
+    ----------
         last_update_time: float
             Last time the status message was printed (unix time)
     
@@ -22,7 +23,9 @@ def spd_pgs_progress_update(last_update_time=None, current_sample=None, total_sa
         type_string: str
             Usually the variable name (defaults to 'Data')
 
-    Returns:
+    Returns
+    -------
+    float
         float containing the last update time
 
     """

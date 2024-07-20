@@ -21,7 +21,8 @@ def mepe(
     uname: Optional[str] = None,
     passwd: Optional[str] = None,
     time_clip: bool = False,
-    ror: bool = True
+    ror: bool = True,
+    force_download: bool = False,
 ) -> List[str]:
     """
     This function loads data from the MEP-e experiment from the Arase mission
@@ -83,6 +84,10 @@ def mepe(
         passwd: str
             Password. Default: None
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     -------
         List of tplot variables created.
@@ -108,7 +113,7 @@ def mepe(
         '/%Y/%m/erg_mepe_'+level+'_'+datatype+'_%Y%m%d_v??_??.cdf'
 
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
-                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
+                       varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
     if (len(loaded_data) > 0) and ror:
 

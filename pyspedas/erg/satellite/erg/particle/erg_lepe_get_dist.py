@@ -30,6 +30,13 @@ def erg_lepe_get_dist(tname,
         print(f'Variable: {tname} not found!')
         return 0
     level = level.lower()
+
+    #  If index is provided, ensure it's a list
+
+    if index is not None and not isinstance(index, list) and not isinstance(index, np.ndarray):
+        index = [index]
+
+
     """
     ;; Extract some information from a tplot variable name
     ;; e.g., erg_lepi_l2_3dflux_FPDU
@@ -116,13 +123,13 @@ def erg_lepe_get_dist(tname,
     ;; Then, fill in arrays in the data structure
     ;;   dim[ nenergy, nspinph(azimuth), nanode(elevation), ntime]
     """
-    dist['time'] = data_in[0][[index]]
+    dist['time'] = data_in[0][index]
     dist['end_time'] = dist['time'] + integ_time  # ;; currently hard-coded
     """
     ;; Shuffle the original data array [time,energy, anode, spin phase] to
     ;; be energy-azimuth(spin phase)-elevation-time.
     """
-    dist['data'] = data_in[1][[index]].transpose([1, 3, 2, 0])
+    dist['data'] = data_in[1][index].transpose([1, 3, 2, 0])
     dist['bins'] = np.ones(shape=np.insert(dim_array, dim_array.shape[0],
                                            n_times), dtype='int8')
     # must be set or data will be consider invalid
@@ -141,7 +148,7 @@ def erg_lepe_get_dist(tname,
     ;; Default unit of v in F?DU tplot variables [keV/q] should be
     ;; converted to [eV] by multiplying (1000 * charge number).
     """
-    e0_array_raw = data_in[2][[index]]# ;; [time, 32]
+    e0_array_raw = data_in[2][index]# ;; [time, 32]
     e0_array = e0_array_raw.T
     energy_reform = np.reshape(e0_array, [dim_array[0], 1, 1, n_times])
     energy_rebin1 = np.repeat(energy_reform, dim_array[2],

@@ -16,7 +16,8 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
          downloadonly:bool=False,
          notplot:bool=False,
          no_update:bool=False,
-         time_clip:bool=False) -> List[str]:
+         time_clip:bool=False,
+         force_download=False) -> List[str]:
     """
     Load data from Cluster instruments
 
@@ -74,6 +75,11 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
+
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
 
     Returns
     -------
@@ -144,7 +150,7 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange, res=res)
 
-        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version)
+        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version, force_download=force_download)
         if files is not None:
             for file in files:
                 out_files.append(file)
