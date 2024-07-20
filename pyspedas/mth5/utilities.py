@@ -23,6 +23,7 @@ def _list_of_fdsn_channels():
 
     channel_band = ['M', 'L', 'V', 'U']
     channel_orientation = ['Z', 'N', 'E']
+    # channel_orientation = ['Z', 'N', 'E', '1', '2'] # Some of the data can be stored as '1', '2', which is not supported byt this tool.
     channel_instrument = 'F'
     # Create list of all combinations of channel_band, channel_instrument and channel_orientation
     channel_list = ",".join(
@@ -45,7 +46,7 @@ def mth5_time_str(time):
     return time_datetime(time).strftime("%Y-%m-%dT%H:%M:%S")
 
 
-def datasets(trange=None, network=None, station=None):
+def datasets(trange=None, network=None, station=None, USAarea=False):
     """
     Fetches datasets availablity based on time range, network, and station.
 
@@ -63,6 +64,11 @@ def datasets(trange=None, network=None, station=None):
         The network code to filter the datasets. If None (default), no network filter is applied.
     station : str, optional
         The station code to filter the datasets. If None (default), no station filter is applied.
+    USAarea : bool, optional
+        If True, restricts the search to the geographical boundaries (box) of the USA:
+
+        - Latitude: 24 to 49 degrees
+        - Longitude: -127 to -59 degrees
 
     Returns
     -------
@@ -119,10 +125,6 @@ def datasets(trange=None, network=None, station=None):
     # FDSN F Channels
     cha = _list_of_fdsn_channels()
 
-    # USA coordinate box
-    # lat 24 49
-    # lon -127 -59
-
     net_str = ''
     sta_str = ''
     if network:
@@ -131,8 +133,14 @@ def datasets(trange=None, network=None, station=None):
     if station:
         sta_str = f'sta={station}'
 
-    # URL of the data
-    url = f'https://service.iris.edu/fdsnws/station/1/query?{net_str}&{sta_str}&loc=--&cha={cha}&starttime={t1}&endtime={t2}&level=channel&format=text&maxlat=49&minlon=-127&maxlon=-59&minlat=24&includecomments=false&nodata=404'
+    if USAarea:
+        # URL of the data limited to USA coordinate box
+        # lat 24 49
+        # lon -127 -59
+        url = f'https://service.iris.edu/fdsnws/station/1/query?{net_str}&{sta_str}&loc=*&cha={cha}&starttime={t1}&endtime={t2}&level=channel&format=text&maxlat=49&minlon=-127&maxlon=-59&minlat=24&includecomments=false&nodata=404'
+    else:
+        # URL of the data unlimited in location
+        url = f'https://service.iris.edu/fdsnws/station/1/query?{net_str}&{sta_str}&loc=*&cha={cha}&starttime={t1}&endtime={t2}&level=channel&format=text&includecomments=false&nodata=404'
 
     # Initialize the result dictionary
     res = {}

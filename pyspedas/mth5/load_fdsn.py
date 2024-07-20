@@ -64,35 +64,62 @@ def _request_df_from_input(trange, network, station):
     return request_df
 
 
+def _validate_date_format(date_string):
+    """
+    Validate if a date string is in the correct format.
+
+    Parameters
+    ----------
+    date_string : str
+        The date string to validate. Expected format: YYYY-MM-DDThh:mm:ss.
+
+    Raises
+    ------
+    ValueError
+        If the date string is not in the expected format.
+    """
+    try:
+        datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        raise ValueError(f"Invalid date format: {date_string}. Expected format: YYYY-MM-DDThh:mm:ss")
+
 
 def load_fdsn(trange=None, network=None, station=None,
               nodownload=False, noexception=False, print_request=False,
-              nowarnings=False):
+              nowarnings=False, request_df=None):
     """
     Load FDSN data using MTH5 interface.
 
     Parameters
     ----------
-        trange : list of str
-            Time range of interest.
-        network : str
-            Network name.
-        station : str
-            Station name.
-        nodownload : bool, default=False
-            If h5 file is already created do not load another one.
-        noexception : bool, default=False
-            If true do not raise and Execution produced by FDSN.
-        print_request : bool, default=False
-            Print request_df structure, which can be usefully for debuting the request.
-        nowarnings : bool, default=False
-            If true, disable loguru warnings.
-        filename : bool, default=False
-            If true, return filename as a second return parameter
+    trange : list of str
+        Time range of interest.
+    network : str
+        Network name.
+    station : str
+        Station name.
+    nodownload : bool, default=False
+        If h5 file is already created do not load another one.
+    noexception : bool, default=False
+        If true, do not raise an exception produced by FDSN.
+    print_request : bool, default=False
+        Print request_df structure, which can be useful for debugging the request.
+    nowarnings : bool, default=False
+        If true, disable loguru warnings.
+    request_df : pandas.DataFrame, optional
+        Custom request_df dataframe for the `make_mth5_from_fdsn_client` method of the `FDSN` class.
+        This parameter is optional, and it is not advised to use it unless the user knows exactly what to do.
+        request_df must contain the following:
+
+        - One `station`, one `network`, and one `location` as a list.
+        - A list of 3 strings for `channels`.
+        - The `start` and `end` date fields must contain a list of one string.
+
+        See `pyspedas.mth5.load_fdsn._request_df_from_input` implementation for reference.
 
     Returns
     -------
-    tplot_variable: str or None
+    tplot_variable : str or None
         Tplot variable name. Tplot variable is created if data is loaded successfully, None otherwise.
     """
 
@@ -113,14 +140,23 @@ def load_fdsn(trange=None, network=None, station=None,
         return
 
     # Handle request_df
-    request_df = _request_df_from_input(trange, network, station)
+    if request_df is None:
+        request_df = _request_df_from_input(trange, network, station)
+    else:
+        network = request_df.network
+        station = request_df.station
+        trange = [request_df.start[0], request_df.end[0]]
 
     if print_request:
-        print(request_df)
+        print(request_df.to_string())
 
     # Create time variables that correspond to the request time period
     request_start = datetime.fromisoformat(request_df.start[0])
     request_end = datetime.fromisoformat(request_df.end[0])
+
+    # Validate time period
+    _validate_date_format(request_df.start[0])
+    _validate_date_format(request_df.end[0])
 
     # Determine where data will be stored
     mth5dir = CONFIG['local_data_dir']
@@ -296,5 +332,9 @@ def load_fdsn(trange=None, network=None, station=None,
             }
 
             options(tplot_variable, opt_dict=tplot_options)
+
+            # TODO: For potential future implementation
+            #     filename : bool, default=False
+            #         If true, return filename as a second return parameter
 
             return tplot_variable
