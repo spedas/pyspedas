@@ -5,6 +5,7 @@ import pyspedas
 from pyspedas.cluster.load_csa import cl_master_probes, cl_master_datatypes
 
 
+
 class LoadTestCases(unittest.TestCase):
     def test_csa(self):
         dtypes = cl_master_datatypes()
