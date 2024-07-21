@@ -416,14 +416,22 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 # in test_load_csa_mom_data.
 
                 num_times = len(xdata)
+                ydims = ydata.shape
                 if num_times == 1:
-                    ydims = ydata.shape
                     if len(ydims) == 0:
                         logging.warning("Restoring missing time dimension for scalar-valued variable %s", var)
                         ydata = ydata.reshape(1)
                     elif ydims[0] != 1:
                         logging.warning("Restoring missing time dimension for array-valued variable %s", var)
                         ydata = ydata.reshape(1,*ydims)
+                elif nrv_has_times and (num_times > 2) and (ydims[0] != num_times):
+                    # This case is primarily to catch some MMS FEEPS support variables
+                    # that's marked NRV, but has a DEPEND_0.  Here, we ignore the times,
+                    # make the tplot variable from just the Y data, and skip the rest of
+                    # the metadata processing for this variable.
+                    logging.warning("Ignoring times for probably NRV variable %s", var_name)
+                    output_table[var_name] = {'y': ydata}
+                    continue
 
                 tplot_data = {'x': xdata, 'y': ydata}
 
