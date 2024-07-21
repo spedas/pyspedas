@@ -237,8 +237,12 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         elif ("v1" in data) and ("v2" in data):
             spec_bins = data['v2']
             spec_bins_dimension = 'v2'
+        else:
+            # At least one vn is missing.
+            logging.warning("At least one Vn tag is missing, cannot create spec_bins from variable %s.", name)
+            spec_bins_exist = False
 
-        if type(spec_bins) is not pd.DataFrame:
+        if spec_bins_exist and type(spec_bins) is not pd.DataFrame:
             try:
                 spec_bins = pd.DataFrame(spec_bins)
             except:
@@ -251,7 +255,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
                 spec_bins = pd.DataFrame(spec_bins)
 
 
-        if len(spec_bins.columns) != 1:
+        if spec_bins_exist and len(spec_bins.columns) != 1:
             # The spec_bins are time varying
             # Or maybe they're just DEPEND_N and nothing to do with spectra?
             spec_bins_time_varying = True
@@ -261,7 +265,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
                 logging.error("store_data: Length of spec_bins (%d) and times (%d) do not match for variable %s.",len(spec_bins),len(times),name)
                 spec_bins = None
                 spec_bins_exist = False
-        else:
+        elif spec_bins_exist:
             spec_bins = spec_bins.transpose()
             spec_bins_time_varying = False
     else:
