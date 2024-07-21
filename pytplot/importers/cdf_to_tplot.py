@@ -417,13 +417,18 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
 
                 num_times = len(xdata)
                 ydims = ydata.shape
+                y_ndims = len(ydata.shape)
                 if num_times == 1:
-                    if len(ydims) == 0:
+                    if y_ndims == 0:
                         logging.warning("Restoring missing time dimension for scalar-valued variable %s", var)
                         ydata = ydata.reshape(1)
+                        ydims = ydata.shape
+                        y_ndims = len(ydata.shape)
                     elif ydims[0] != 1:
                         logging.warning("Restoring missing time dimension for array-valued variable %s", var)
                         ydata = ydata.reshape(1,*ydims)
+                        ydims = ydata.shape
+                        y_ndims = len(ydata.shape)
                 elif nrv_has_times and (num_times > 2) and (ydims[0] != num_times):
                     # This case is primarily to catch some MMS FEEPS support variables
                     # that's marked NRV, but has a DEPEND_0.  Here, we ignore the times,
@@ -452,7 +457,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 depend_2 = None
                 depend_3 = None
                 if "DEPEND_1" in var_atts:
-                    if var_atts["DEPEND_1"] in master_cdf_variables:
+                    if y_ndims < 2:
+                        logging.warning("Variable %s has only %d dimension (including time), but has a DEPEND_1 attribute, which will be ignored.", var, y_ndims)
+                        depend_1 = None
+                    elif var_atts["DEPEND_1"] in master_cdf_variables:
                         try:
                             depend_1 = np.array(master_cdf_file.varget(var_atts["DEPEND_1"]))
                             # Ignore the depend types if they are strings
@@ -464,7 +472,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                             var_atts["DEPEND_1"], var)
                             pass
                 if "DEPEND_2" in var_atts:
-                    if var_atts["DEPEND_2"] in master_cdf_variables:
+                    if y_ndims < 3:
+                        logging.warning("Variable %s has only %d dimensions (including time), but has a DEPEND_2 attribute, which will be ignored.", var, y_ndims)
+                        depend_2 = None
+                    elif var_atts["DEPEND_2"] in master_cdf_variables:
                         try:
                             depend_2 = np.array(master_cdf_file.varget(var_atts["DEPEND_2"]))
                             # Ignore the depend types if they are strings
@@ -481,7 +492,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             logging.warning('Unable to get DEPEND_2 variable %s while processing %s',
                                             var_atts["DEPEND_2"], var)
                 if "DEPEND_3" in var_atts:
-                    if var_atts["DEPEND_3"] in master_cdf_variables:
+                    if y_ndims < 4:
+                        logging.warning("Variable %s has only %d dimensions (including time), but has a DEPEND_3 attribute, which will be ignored.", var, y_ndims)
+                        depend_3 = None
+                    elif var_atts["DEPEND_3"] in master_cdf_variables:
                         try:
                             depend_3 = np.array(master_cdf_file.varget(var_atts["DEPEND_3"]))
                             # Ignore the depend types if they are strings
@@ -496,7 +510,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
 
                 nontime_varying_depends = []
 
-                # Fill in any missing depend_n values
+                # Fill in any missing depend_n values (skipping this for now)
                 ndims = len(ydata.shape)
                 if ndims >= 2 and depend_1 is None:
                     # This is so common, we won't bother logging it
