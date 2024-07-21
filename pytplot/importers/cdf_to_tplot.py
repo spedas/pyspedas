@@ -462,9 +462,34 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         depend_1 = None
                     elif var_atts["DEPEND_1"] in master_cdf_variables:
                         try:
-                            depend_1 = np.array(master_cdf_file.varget(var_atts["DEPEND_1"]))
+                            # Check for correct shape, matching time and data dimensions
+                            dep_name = var_atts["DEPEND_1"]
+                            depend_1 = np.array(master_cdf_file.varget(dep_name))
+                            dep_dims = depend_1.shape
+                            dep_ndims = len(dep_dims)
+                            if dep_ndims == 0:
+                                logging.warning("Variable %s DEPEND_1 attribute %s is zero-dimensional, ignoring.", var, dep_name)
+                                depend_1 = None
+                            elif dep_ndims == 1:
+                                # Not time varying
+                                if dep_dims[0] != ydims[1]:
+                                    logging.warning("Variable %s DEPEND_1 attribute %s has length %d, but corresponding data dimension has length %d. Ignoring.",var,dep_name,dep_dims[0],ydims[1])
+                                    depend_1 = None
+                            elif dep_ndims == 2:
+                                # time-varying
+                                if dep_dims[0] != num_times:
+                                    logging.warning("Variable %s time-varying DEPEND_1 attribute %s has %d times, but data has %d times. Ignoring.",var,dep_name,dep_dims[0], num_times)
+                                    depend_1 = None
+                                if dep_dims[1] != ydims[1]:
+                                    logging.warning("Variable %s time-varying DEPEND_1 attribute %s has data length %d, but corresponding data dimension has length %d. Ignoring.",var,dep_name,dep_dims[1],ydims[1])
+                                    depend_1 = None
+                            else:
+                                # Too many dimensions
+                                logging.warning("Variable %s DEPEND_1 attribute %s has too many dimensions (%d), ignoring.",var,dep_name,dep_ndims)
+                                depend_1 = None
+
                             # Ignore the depend types if they are strings
-                            if depend_1.dtype.type is np.str_:
+                            if depend_1 is not None and depend_1.dtype.type is np.str_:
                                 #depend_1 = None
                                 pass
                         except ValueError:
@@ -476,10 +501,44 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         logging.warning("Variable %s has only %d dimensions (including time), but has a DEPEND_2 attribute, which will be ignored.", var, y_ndims)
                         depend_2 = None
                     elif var_atts["DEPEND_2"] in master_cdf_variables:
+
                         try:
-                            depend_2 = np.array(master_cdf_file.varget(var_atts["DEPEND_2"]))
+                            # Check for correct shape, matching time and data dimensions
+                            dep_name = var_atts["DEPEND_2"]
+                            depend_2 = np.array(master_cdf_file.varget(dep_name))
+                            dep_dims = depend_2.shape
+                            dep_ndims = len(dep_dims)
+                            if dep_ndims == 0:
+                                logging.warning("Variable %s DEPEND_2 attribute %s is zero-dimensional, ignoring.", var,
+                                                dep_name)
+                                depend_2 = None
+                            elif dep_ndims == 1:
+                                # Not time varying
+                                if dep_dims[0] != ydims[2]:
+                                    logging.warning(
+                                        "Variable %s DEPEND_2 attribute %s has length %d, but corresponding data dimension has length %d. Ignoring.",
+                                        var, dep_name, dep_dims[0], ydims[2])
+                                    depend_1 = None
+                            elif dep_ndims == 2:
+                                # time-varying
+                                if dep_dims[0] != num_times:
+                                    logging.warning(
+                                        "Variable %s time-varying DEPEND_2 attribute %s has %d times, but data has $%d times. Ignoring.",
+                                        var, dep_name, dep_dims[0], num_times)
+                                    depend_1 = None
+                                if dep_dims[1] != ydims[2]:
+                                    logging.warning(
+                                        "Variable %s time-varying DEPEND_2 attribute %s has data length %d, but corresponding data dimension has length %d. Ignoring.",
+                                        var, dep_name, dep_dims[1], ydims[2])
+                                    depend_2 = None
+                            else:
+                                # Too many dimensions
+                                logging.warning(
+                                    "Variable %s DEPEND_2 attribute %s has too many dimensions (%d), ignoring.",
+                                    var, dep_name, dep_ndims)
+                                depend_2 = None
                             # Ignore the depend types if they are strings
-                            if depend_2.dtype.type is np.str_:
+                            if depend_2 is not None and depend_2.dtype.type is np.str_:
                                 #logging.warning("Variable %s DEPEND_2 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_2"])
                                 if len(ydata.shape) >= 3:
                                     # depend_2 = np.arange(ydata.shape[2])
@@ -497,9 +556,43 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         depend_3 = None
                     elif var_atts["DEPEND_3"] in master_cdf_variables:
                         try:
-                            depend_3 = np.array(master_cdf_file.varget(var_atts["DEPEND_3"]))
+                            # Check for correct shape, matching time and data dimensions
+                            dep_name = var_atts["DEPEND_3"]
+                            depend_3 = np.array(master_cdf_file.varget(dep_name))
+                            dep_dims = depend_3.shape
+                            dep_ndims = len(dep_dims)
+                            if dep_ndims == 0:
+                                logging.warning("Variable %s DEPEND_3 attribute %s is zero-dimensional, ignoring.", var,
+                                                dep_name)
+                                depend_3 = None
+                            elif dep_ndims == 1:
+                                # Not time varying
+                                if dep_dims[0] != ydims[3]:
+                                    logging.warning(
+                                        "Variable %s DEPEND_3 attribute %s has length %d, but corresponding data dimension has length %d. Ignoring.",
+                                        var, dep_name, dep_dims[0], ydims[3])
+                                    depend_3 = None
+                            elif dep_ndims == 2:
+                                # time-varying
+                                if dep_dims[0] != num_times:
+                                    logging.warning(
+                                        "Variable %s time-varying DEPEND_3 attribute %s has %d times, but data has $%d times. Ignoring.",
+                                        var, dep_name, dep_dims[0], num_times)
+                                    depend_3 = None
+                                if dep_dims[1] != ydims[3]:
+                                    logging.warning(
+                                        "Variable %s time-varying DEPEND_3 attribute %s has data length %d, but corresponding data dimension has length %d. Ignoring.",
+                                        var, dep_name, dep_dims[1], ydims[3])
+                                    depend_3 = None
+                            else:
+                                # Too many dimensions
+                                logging.warning(
+                                    "Variable %s DEPEND_3 attribute %s has too many dimensions (%d), ignoring.",
+                                    var, dep_name, dep_ndims)
+                                depend_3 = None
+
                             # Ignore the depend types if they are strings
-                            if depend_3.dtype.type is np.str_:
+                            if depend_3 is not None and depend_3.dtype.type is np.str_:
                                 #logging.warning("Variable %s DEPEND_3 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_3"])
                                 #depend_3 = np.arange(ydata.shape[3])
                                 #depend_3 = None
@@ -549,7 +642,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     if len(depend_1.shape) == 1:
                         nontime_varying_depends.append('v')
                 elif depend_2 is not None:
-                    tplot_data['v'] = depend_2
+                    tplot_data['v2'] = depend_2
                     if len(depend_2.shape) == 1:
                         nontime_varying_depends.append('v')
 
