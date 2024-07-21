@@ -485,8 +485,11 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                     depend_1 = None
                             else:
                                 # Too many dimensions
-                                logging.warning("Variable %s DEPEND_1 attribute %s has too many dimensions (%d), ignoring.",var,dep_name,dep_ndims)
-                                depend_1 = None
+                                # ERG LEPE has time dependent DEPEND_1 with an extra dimension for upper/lower limits, so
+                                # we need to allow this for now, or at least add a flag to skip this check.
+                                #logging.warning("Variable %s DEPEND_1 attribute %s has too many dimensions (%d), ignoring.",var,dep_name,dep_ndims)
+                                #depend_1 = None
+                                pass
 
                             # Ignore the depend types if they are strings
                             if depend_1 is not None and depend_1.dtype.type is np.str_:
@@ -523,9 +526,9 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 # time-varying
                                 if dep_dims[0] != num_times:
                                     logging.warning(
-                                        "Variable %s time-varying DEPEND_2 attribute %s has %d times, but data has $%d times. Ignoring.",
+                                        "Variable %s time-varying DEPEND_2 attribute %s has %d times, but data has %d times. Ignoring.",
                                         var, dep_name, dep_dims[0], num_times)
-                                    depend_1 = None
+                                    depend_2 = None
                                 if dep_dims[1] != ydims[2]:
                                     logging.warning(
                                         "Variable %s time-varying DEPEND_2 attribute %s has data length %d, but corresponding data dimension has length %d. Ignoring.",
@@ -576,7 +579,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 # time-varying
                                 if dep_dims[0] != num_times:
                                     logging.warning(
-                                        "Variable %s time-varying DEPEND_3 attribute %s has %d times, but data has $%d times. Ignoring.",
+                                        "Variable %s time-varying DEPEND_3 attribute %s has %d times, but data has %d times. Ignoring.",
                                         var, dep_name, dep_dims[0], num_times)
                                     depend_3 = None
                                 if dep_dims[1] != ydims[3]:
