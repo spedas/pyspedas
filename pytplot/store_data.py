@@ -267,9 +267,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     else:
         spec_bins = None
         # Provide another dimension if values are more than 1 dimension
-        if len(values.shape) > 1:
+        if len(values.shape) == 2:
             data['v'] = None
         if len(values.shape) > 2:
+            data['v1'] = None
             data['v2'] = None
         if len(values.shape) > 3:
             data['v3'] = None
@@ -277,6 +278,37 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     # Set up xarray dimension and coordinates
     coordinate_list = sorted(list(data.keys()))
     dimension_list = [d + '_dim' for d in coordinate_list]
+
+    if len(coordinate_list) < len(values.shape)-1:
+        logging.warning("store_data: Data array for variable %s has %d dimensions, but only %d v_n keys plus time. Adding empty v_n keys.", name, len(values.shape), len(coordinate_list))
+        if len(values.shape) == 2:
+            data['v'] = None
+        elif len(values.shape) == 3:
+            if 'v' in data:
+                vdat = data.pop('v')
+                data['v1'] = vdat
+                data['v2'] = None
+            else:
+                data['v1'] = None
+                data['v2'] = None
+        elif len(values.shape) == 3:
+            if 'v' in data:
+                vdat = data.pop('v')
+                data['v1'] = vdat
+                data['v2'] = None
+                data['v3'] = None
+            else:
+                if 'v1' not in data:
+                    data['v1'] = None
+                if 'v2' not in data:
+                    data['v2'] = None
+                if 'v3' not in data:
+                    data['v3'] = None
+        coordinate_list = sorted(list(data.keys()))
+        dimension_list = [d + '_dim' for d in coordinate_list]
+        # Don't try to use these dimensions as coordinates
+        spec_bins_exist = False
+        spec_bins = None
 
     # Ignore warnings about cdflib non-nanosecond precision timestamps for now
     with warnings.catch_warnings():
@@ -286,9 +318,10 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
                                 coords={'time': ('time', times)})
         except ValueError as err:
             logging.warning("store_data: ValueError trying to set xarray coordinates for variable %s: %s", name, str(err))
+            spec_bins_exist = False
+            spec_bins = None
             if len(times) == 1:
                 logging.warning("store_data: This is possibly due to the leading data dimension being lost in an array-valued or vector-valued variable with a single timestamp.")
-            return
 
     if spec_bins_exist:
         try:
