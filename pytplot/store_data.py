@@ -317,6 +317,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         spec_bins_exist = False
         spec_bins = None
 
+    temp = None
     # Ignore warnings about cdflib non-nanosecond precision timestamps for now
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore",message="^.*non-nanosecond precision.*$")
@@ -329,6 +330,12 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             spec_bins = None
             if len(times) == 1:
                 logging.warning("store_data: This is possibly due to the leading data dimension being lost in an array-valued or vector-valued variable with a single timestamp.")
+
+    if temp is None:
+        # This can happen with mismatched times/data values, and no valid DEPEND_N.
+        # For example, POLAR MFE data, variable MF_Num
+        logging.warning("store_data: Unable to create xarray object for variable %s, giving up.", name)
+        return
 
     if spec_bins_exist:
         try:
