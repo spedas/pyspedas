@@ -483,8 +483,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                     # So for now, we'll allow it.
                                     pass
                                 if dep_dims[1] != ydims[1]:
-                                    logging.warning("Variable %s time-varying DEPEND_1 attribute %s has data length %d, but corresponding data dimension has length %d. Ignoring.",var,dep_name,dep_dims[1],ydims[1])
-                                    depend_1 = None
+                                    # ERG XEP seems to make a 9x2 rather than a 2x9 array
+                                    logging.warning("Variable %s time-varying DEPEND_1 attribute %s has data length %d, but corresponding data dimension has length %d. Data will be kept (for now).",var,dep_name,dep_dims[1],ydims[1])
+                                    #depend_1 = None
+                                    pass
                             else:
                                 # Too many dimensions
                                 # ERG LEPE has time dependent DEPEND_1 with an extra dimension for upper/lower limits, so
