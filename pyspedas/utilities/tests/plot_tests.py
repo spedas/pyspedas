@@ -7,7 +7,7 @@ from pytplot import store_data, options, timespan, tplot, tplot_options, degap, 
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = False
+global_display = True
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""

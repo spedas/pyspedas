@@ -155,7 +155,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_lepi_3dflux_data(self):
         del_data()
-        lepi_vars = pyspedas.erg.lepi(datatype='3dflux')
+        lepi_vars = pyspedas.erg.lepi(datatype='3dflux', no_update=True)
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU'))
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FHEDU'))
         self.assertTrue('erg_lepi_l2_3dflux_FPDU' in lepi_vars)
