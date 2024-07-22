@@ -198,7 +198,7 @@ class LoadTestCases(unittest.TestCase):
         ## Decorate the obtained spectrum variables
         pytplot.options('erg_lepi_l2_3dflux_FPDU_energy_mag_pa80-100', 'ytitle', 'LEP-i flux\nPA: 80-100\n\n[eV]')
         pytplot.options('erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10', 'ytitle', 'LEP-i flux\nPA: 0-10\n\n[eV]')
-        tplot(['erg_lepi_l2_3dflux_FPDU_energy_mag_pa80-100', 'erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10'], display=display, save_png='erg_lep_en_pa_limit.png')
+        tplot(['erg_lepi_l2_3dflux_FPDU_energy_mag_pa80-100', 'erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10'], display=display, save_png='erg_lepi_en_pa_limit.png')
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10'))
         self.assertTrue('erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10' in vars2)
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU_energy_mag_pa80-100'))

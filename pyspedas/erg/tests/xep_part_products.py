@@ -128,7 +128,7 @@ class LoadTestCases(unittest.TestCase):
         ## Decorate the obtained spectrum variables
         pytplot.options('erg_xep_l2_FEDU_SSD_energy_mag_pa80-100', 'ytitle', 'XEP-e flux\nPA: 80-100\n\n[eV]')
         pytplot.options('erg_xep_l2_FEDU_SSD_energy_mag_pa0-10', 'ytitle', 'XEP-e flux\nPA: 0-10\n\n[eV]')
-        tplot(['erg_xep_l2_FEDU_SSD_energy_mag_pa80-100', 'erg_xep_l2_FEDU_SSD_energy_mag_pa0-10'], display=display, save_png='erg_lep_en_pa_limit.png')
+        tplot(['erg_xep_l2_FEDU_SSD_energy_mag_pa80-100', 'erg_xep_l2_FEDU_SSD_energy_mag_pa0-10'], display=display, save_png='erg_xep_en_pa_limit.png')
         self.assertTrue('erg_xep_l2_FEDU_SSD_energy_mag_pa80-100' in vars1)
         self.assertTrue(data_exists('erg_xep_l2_FEDU_SSD_energy_mag_pa80-100'))
         self.assertTrue('erg_xep_l2_FEDU_SSD_energy_mag_pa0-10' in vars2)
