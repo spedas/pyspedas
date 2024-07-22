@@ -291,23 +291,26 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             if 'v' in data:
                 vdat = data.pop('v')
                 data['v1'] = vdat
-                data['v2'] = None
-            else:
+            elif 'v1' in data:
+                pass
+            if 'v1' not in data:
                 data['v1'] = None
+            if 'v2' not in data:
                 data['v2'] = None
-        elif len(values.shape) == 3:
+        elif len(values.shape) == 4:
+            # ERG LEPI 3dflux quality flags have this issue
             if 'v' in data:
                 vdat = data.pop('v')
                 data['v1'] = vdat
+            elif 'v1' in data:
+                pass
+            if 'v1' not in data:
+                data['v1'] = None
+            if 'v2' not in data:
                 data['v2'] = None
+            if 'v3' not in data:
                 data['v3'] = None
-            else:
-                if 'v1' not in data:
-                    data['v1'] = None
-                if 'v2' not in data:
-                    data['v2'] = None
-                if 'v3' not in data:
-                    data['v3'] = None
+
         coordinate_list = sorted(list(data.keys()))
         dimension_list = [d + '_dim' for d in coordinate_list]
         # Don't try to use these dimensions as coordinates
