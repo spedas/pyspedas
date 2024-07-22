@@ -264,7 +264,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     logging.debug(
                         'No DEPEND_TIME or DEPEND_0 attributes found for variable %s, filename %s assuming non-record-variant',
                         var, filename)
-                    if rec_vary and ('Epoch' not in var):
+                    if rec_vary and ('epoch' not in var.lower()):
                         logging.warning("Variable %s is marked as record-variant, but no DEPEND_TIME or DEPEND_0 attributes found. Treating as NRV.",var)
                     try:
                         ydata = cdf_file.varget(var)
