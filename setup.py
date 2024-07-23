@@ -41,6 +41,7 @@ setup(
         "hapiclient>=0.2.2",
         "https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip",
         "viresclient",
+        "basemap",
     ],
     python_requires=">=3.9",
     include_package_data=True,
