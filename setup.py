@@ -41,7 +41,6 @@ setup(
         "hapiclient>=0.2.2",
         "pytplot-mpl-temp>=2.2.37",
         "viresclient",
-        "basemap",
     ],
     python_requires=">=3.9",
     include_package_data=True,
