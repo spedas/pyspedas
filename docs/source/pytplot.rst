@@ -128,7 +128,25 @@ Spectrum Multiplication
 Plotting
 --------
 
+tplot is the top level plotting routine.  It is now just a wrapper
+for the matplotlib-specific plot routines described below.
+
 .. autofunction:: pytplot.tplot
+
+The matplotlib-specific version of tplot, which actually does all the work.
+
+.. autofunction:: pytplot.MPLPlotter.tplot.tplot
+
+Line plotting routine called by tplot. Not usually called by users,
+documented here for completeness.
+
+.. autofunction:: pytplot.MPLPlotter.lineplot.lineplot
+
+Spectrogram plotting routine called by tplot. Not usually called by users,
+docuemented here for completeness.
+
+.. autofunction:: pytplot.MPLPlotter.specplot.specplot
+
 
 Per-Variable Plot Options
 -------------------------
