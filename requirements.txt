@@ -10,3 +10,4 @@ geopack>=1.0.10
 scipy
 hapiclient>=0.2.2
 viresclient
+basemap
