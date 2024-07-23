@@ -228,7 +228,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 else:
                     var_name = prefix + var + suffix
 
-                # Is this variable marked as non-record-variant?  This may
+                # Is this variable marked as non-record-varying?  This may
                 # differ between the data and master CDFs.
 
                 if new_cdflib:
@@ -249,12 +249,12 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 if "DEPEND_TIME" in var_atts:
                     x_axis_var = var_atts["DEPEND_TIME"]
                     if not rec_vary:
-                        logging.warning("Variable %s is marked non-record-variant, but has DEPEND_TIME attribute",var)
+                        logging.warning("Variable %s is marked non-record-varying, but has DEPEND_TIME attribute",var)
                         nrv_has_times = True
                 elif "DEPEND_0" in var_atts:
                     x_axis_var = var_atts["DEPEND_0"]
                     if not rec_vary:
-                        logging.warning("Variable %s is marked non-record-variant, but has DEPEND_0 attribute",var)
+                        logging.warning("Variable %s is marked non-record-varying, but has DEPEND_0 attribute",var)
                         nrv_has_times = True
 
                 else:
@@ -262,14 +262,14 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     # added by egrimes, 13Jan2021
                     # here we assume if there isn't a DEPEND_TIME or DEPEND_0, there are no other depends
                     logging.debug(
-                        'No DEPEND_TIME or DEPEND_0 attributes found for variable %s, filename %s assuming non-record-variant',
+                        'No DEPEND_TIME or DEPEND_0 attributes found for variable %s, filename %s . Treating as non-record-varying.',
                         var, filename)
                     if rec_vary and ('epoch' not in var.lower()):
-                        logging.warning("Variable %s is marked as record-variant, but no DEPEND_TIME or DEPEND_0 attributes found. Treating as NRV.",var)
+                        logging.warning("Variable %s is marked as record-varying, but no DEPEND_TIME or DEPEND_0 attributes found. Treating as non-record-varying.",var)
                     try:
                         ydata = cdf_file.varget(var)
                     except:
-                        logging.debug('Unable to get ydata for NRV variable %s, filename %s', var, filename)
+                        logging.debug('Unable to get ydata for non-record-varying variable %s, filename %s', var, filename)
                         continue
 
                     if ydata is None:
@@ -434,7 +434,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     # that's marked NRV, but has a DEPEND_0.  Here, we ignore the times,
                     # make the tplot variable from just the Y data, and skip the rest of
                     # the metadata processing for this variable.
-                    logging.warning("Ignoring times for probably NRV variable %s", var_name)
+                    logging.warning("Ignoring times for probably non-record-varying variable %s", var_name)
                     output_table[var_name] = {'y': ydata}
                     continue
 
@@ -458,7 +458,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 depend_3 = None
                 if "DEPEND_1" in var_atts:
                     if y_ndims < 2:
-                        logging.warning("Variable %s has only %d dimension (including time), but has a DEPEND_1 attribute, which will be ignored.", var, y_ndims)
+                        logging.warning("Variable %s has only %d dimension (including time), but has a DEPEND_1 attribute. Removing attribute.", var, y_ndims)
                         depend_1 = None
                     elif var_atts["DEPEND_1"] in master_cdf_variables:
                         try:
@@ -488,30 +488,30 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             dep_dims = depend_1.shape
                             dep_ndims = len(dep_dims)
                             if dep_ndims == 0:
-                                logging.warning("Variable %s DEPEND_1 attribute %s is zero-dimensional, ignoring.", var, dep_name)
+                                logging.warning("Variable %s DEPEND_1 attribute %s is zero-dimensional, Removing attribute.", var, dep_name)
                                 depend_1 = None
                             elif dep_ndims == 1:
                                 # Not time varying
                                 if dep_dims[0] != ydims[1]:
-                                    logging.warning("Variable %s DEPEND_1 attribute %s has length %d, but corresponding data dimension has length %d. Ignoring.",var,dep_name,dep_dims[0],ydims[1])
+                                    logging.warning("Variable %s DEPEND_1 attribute %s has length %d, but corresponding data dimension has length %d. Removing attribute.",var,dep_name,dep_dims[0],ydims[1])
                                     depend_1 = None
                             elif dep_ndims == 2:
                                 # time-varying (?)
                                 if dep_dims[0] != num_times:
-                                    logging.warning("Variable %s is 2-dimensional, but first dimension of DEPEND_1 attribute %s has size %d versus num_times %d. Extra dimension will be kept (for now).",var,dep_name,dep_dims[0], num_times)
+                                    logging.warning("Variable %s is 2-dimensional, but first dimension of DEPEND_1 attribute %s has size %d versus num_times %d. Attribute will be kept (for now).",var,dep_name,dep_dims[0], num_times)
                                     # Or, it could be ERG HEP omniflux data with an extra dimension as upper/lower bounds.
                                     # So for now, we'll allow it.
                                     pass
                                 if dep_dims[1] != ydims[1]:
                                     # ERG XEP seems to make a 9x2 rather than a 2x9 array
-                                    logging.warning("Variable %s time-varying DEPEND_1 attribute %s has data length %d, but corresponding data dimension has length %d. Data will be kept (for now).",var,dep_name,dep_dims[1],ydims[1])
+                                    logging.warning("Variable %s time-varying DEPEND_1 attribute %s has data length %d, but corresponding data dimension has length %d. Attribute will be kept (for now).",var,dep_name,dep_dims[1],ydims[1])
                                     #depend_1 = None
                                     pass
                             else:
                                 # Too many dimensions
                                 # ERG LEPE has time dependent DEPEND_1 with an extra dimension for upper/lower limits, so
                                 # we need to allow this for now, or at least add a flag to skip this check.
-                                #logging.warning("Variable %s DEPEND_1 attribute %s has too many dimensions (%d), ignoring.",var,dep_name,dep_ndims)
+                                logging.warning("Variable %s DEPEND_1 attribute %s has too many dimensions (%d). Keeping extra dimensions (for now).",var,dep_name,dep_ndims)
                                 #depend_1 = None
                                 pass
 
@@ -521,7 +521,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             pass
                 if "DEPEND_2" in var_atts:
                     if y_ndims < 3:
-                        logging.warning("Variable %s has only %d dimensions (including time), but has a DEPEND_2 attribute, which will be ignored.", var, y_ndims)
+                        logging.warning("Variable %s has only %d dimensions (including time), but has a DEPEND_2 attribute. Removing attribute.", var, y_ndims)
                         depend_2 = None
                     elif var_atts["DEPEND_2"] in master_cdf_variables:
 
@@ -553,32 +553,32 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             dep_dims = depend_2.shape
                             dep_ndims = len(dep_dims)
                             if dep_ndims == 0:
-                                logging.warning("Variable %s DEPEND_2 attribute %s is zero-dimensional, ignoring.", var,
+                                logging.warning("Variable %s DEPEND_2 attribute %s is zero-dimensional. Removing attribute.", var,
                                                 dep_name)
                                 depend_2 = None
                             elif dep_ndims == 1:
                                 # Not time varying
                                 if dep_dims[0] != ydims[2]:
                                     logging.warning(
-                                        "Variable %s DEPEND_2 attribute %s has length %d, but corresponding data dimension has length %d. Ignoring.",
+                                        "Variable %s DEPEND_2 attribute %s has length %d, but corresponding data dimension has length %d. Removing attribute.",
                                         var, dep_name, dep_dims[0], ydims[2])
                                     depend_2 = None
                             elif dep_ndims == 2:
                                 # time-varying
                                 if dep_dims[0] != num_times:
                                     logging.warning(
-                                        "Variable %s time-varying DEPEND_2 attribute %s has %d times, but data has %d times. Ignoring.",
+                                        "Variable %s time-varying DEPEND_2 attribute %s has %d times, but data has %d times. Removing attribute.",
                                         var, dep_name, dep_dims[0], num_times)
                                     depend_2 = None
                                 if dep_dims[1] != ydims[2]:
                                     logging.warning(
-                                        "Variable %s time-varying DEPEND_2 attribute %s has data length %d, but corresponding data dimension has length %d. Ignoring.",
+                                        "Variable %s time-varying DEPEND_2 attribute %s has data length %d, but corresponding data dimension has length %d. Removing attribute.",
                                         var, dep_name, dep_dims[1], ydims[2])
                                     depend_2 = None
                             else:
                                 # Too many dimensions
                                 logging.warning(
-                                    "Variable %s DEPEND_2 attribute %s has too many dimensions (%d), ignoring.",
+                                    "Variable %s DEPEND_2 attribute %s has too many dimensions (%d). Removing attribute.",
                                     var, dep_name, dep_ndims)
                                 depend_2 = None
                         except ValueError:
@@ -586,7 +586,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                             var_atts["DEPEND_2"], var)
                 if "DEPEND_3" in var_atts:
                     if y_ndims < 4:
-                        logging.warning("Variable %s has only %d dimensions (including time), but has a DEPEND_3 attribute, which will be ignored.", var, y_ndims)
+                        logging.warning("Variable %s has only %d dimensions (including time), but has a DEPEND_3 attribute. Removing attribute.", var, y_ndims)
                         depend_3 = None
                     elif var_atts["DEPEND_3"] in master_cdf_variables:
                         try:
@@ -617,32 +617,32 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             dep_dims = depend_3.shape
                             dep_ndims = len(dep_dims)
                             if dep_ndims == 0:
-                                logging.warning("Variable %s DEPEND_3 attribute %s is zero-dimensional, ignoring.", var,
+                                logging.warning("Variable %s DEPEND_3 attribute %s is zero-dimensional. Removing attribute.", var,
                                                 dep_name)
                                 depend_3 = None
                             elif dep_ndims == 1:
                                 # Not time varying
                                 if dep_dims[0] != ydims[3]:
                                     logging.warning(
-                                        "Variable %s DEPEND_3 attribute %s has length %d, but corresponding data dimension has length %d. Ignoring.",
+                                        "Variable %s DEPEND_3 attribute %s has length %d, but corresponding data dimension has length %d. Removing attribute.",
                                         var, dep_name, dep_dims[0], ydims[3])
                                     depend_3 = None
                             elif dep_ndims == 2:
                                 # time-varying
                                 if dep_dims[0] != num_times:
                                     logging.warning(
-                                        "Variable %s time-varying DEPEND_3 attribute %s has %d times, but data has %d times. Ignoring.",
+                                        "Variable %s time-varying DEPEND_3 attribute %s has %d times, but data has %d times. Removing attribute.",
                                         var, dep_name, dep_dims[0], num_times)
                                     depend_3 = None
                                 if dep_dims[1] != ydims[3]:
                                     logging.warning(
-                                        "Variable %s time-varying DEPEND_3 attribute %s has data length %d, but corresponding data dimension has length %d. Ignoring.",
+                                        "Variable %s time-varying DEPEND_3 attribute %s has data length %d, but corresponding data dimension has length %d. Removing attribute.",
                                         var, dep_name, dep_dims[1], ydims[3])
                                     depend_3 = None
                             else:
                                 # Too many dimensions
                                 logging.warning(
-                                    "Variable %s DEPEND_3 attribute %s has too many dimensions (%d), ignoring.",
+                                    "Variable %s DEPEND_3 attribute %s has too many dimensions (%d). Removing attribute.",
                                     var, dep_name, dep_ndims)
                                 depend_3 = None
                         except ValueError:
