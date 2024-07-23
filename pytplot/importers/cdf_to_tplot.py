@@ -465,6 +465,26 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             # Check for correct shape, matching time and data dimensions
                             dep_name = var_atts["DEPEND_1"]
                             depend_1 = np.array(master_cdf_file.varget(dep_name))
+                            # String-valued DEPEND_1 handling
+                            # This is not strictly ISTP compliant, but it's extremeley common. For
+                            # example, vector-valued data will often have DEPEND_1 values that are more like
+                            # labels, i.e. ['x', 'y', 'z']
+                            # Previous versions of cdf_to_tplot simply ignored string-valued DEPEND_N.
+                            # But some missions (e.g. ERG) really do want string values as 'v1' or 'v2' tags.
+                            #
+                            # The situation is further complicated by the fact that cdflib seems to introduce
+                            # extra leading or trailing dimensions on string-valued variables.
+                            if depend_1 is not None and depend_1.dtype.type is np.str_:
+                                # Get the original array dimensions from the variable properties
+                                dp_props = master_cdf_file.varinq(dep_name)
+                                if new_cdflib:
+                                    orig_dimensions = dp_props.Dim_Sizes
+                                else:
+                                    orig_dimensions = dp_props['Dim_Sizes']
+                                reshape_dim = tuple(orig_dimensions)
+                                depend_1 = np.reshape(depend_1, reshape_dim)
+                                #depend_1 = None
+                                pass
                             dep_dims = depend_1.shape
                             dep_ndims = len(dep_dims)
                             if dep_ndims == 0:
@@ -495,10 +515,6 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 #depend_1 = None
                                 pass
 
-                            # Ignore the depend types if they are strings
-                            if depend_1 is not None and depend_1.dtype.type is np.str_:
-                                #depend_1 = None
-                                pass
                         except ValueError:
                             logging.warning('Unable to get DEPEND_1 variable %s while processing %s',
                                             var_atts["DEPEND_1"], var)
@@ -513,6 +529,27 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             # Check for correct shape, matching time and data dimensions
                             dep_name = var_atts["DEPEND_2"]
                             depend_2 = np.array(master_cdf_file.varget(dep_name))
+                            # String-valued DEPEND_N handling
+                            # This is not strictly ISTP compliant, but it's extremeley common. For
+                            # example, vector-valued data will often have DEPEND_1 values that are more like
+                            # labels, i.e. ['x', 'y', 'z']
+                            # Previous versions of cdf_to_tplot simply ignored string-valued DEPEND_N.
+                            # But some missions (e.g. ERG) really do want string values as 'v1' or 'v2' tags.
+                            #
+                            # The situation is further complicated by the fact that cdflib seems to introduce
+                            # extra leading or trailing dimensions on string-valued variables.
+                            if depend_2 is not None and depend_2.dtype.type is np.str_:
+                                # Get the original array dimensions from the variable properties
+                                dp_props = master_cdf_file.varinq(dep_name)
+                                if new_cdflib:
+                                    orig_dimensions = dp_props.Dim_Sizes
+                                else:
+                                    orig_dimensions = dp_props['Dim_Sizes']
+                                reshape_dim = tuple(orig_dimensions)
+                                depend_2 = np.reshape(depend_2, reshape_dim)
+                                #depend_2 = None
+                                pass
+
                             dep_dims = depend_2.shape
                             dep_ndims = len(dep_dims)
                             if dep_ndims == 0:
@@ -544,16 +581,6 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                     "Variable %s DEPEND_2 attribute %s has too many dimensions (%d), ignoring.",
                                     var, dep_name, dep_ndims)
                                 depend_2 = None
-                            # Ignore the depend types if they are strings
-                            if depend_2 is not None and depend_2.dtype.type is np.str_:
-                                #logging.warning("Variable %s DEPEND_2 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_2"])
-                                if len(ydata.shape) >= 3:
-                                    # depend_2 = np.arange(ydata.shape[2])
-                                    # depend_2 = None
-                                    pass
-                                else:
-                                    logging.warning("Variable %s has DEPEND_2 attribute %s, but only %d dimensions (including time)", var, var_atts["DEPEND_2"], len(ydata.shape))
-                                    depend_2 = None
                         except ValueError:
                             logging.warning('Unable to get DEPEND_2 variable %s while processing %s',
                                             var_atts["DEPEND_2"], var)
@@ -566,6 +593,27 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             # Check for correct shape, matching time and data dimensions
                             dep_name = var_atts["DEPEND_3"]
                             depend_3 = np.array(master_cdf_file.varget(dep_name))
+                            # String-valued DEPEND_N handling
+                            # This is not strictly ISTP compliant, but it's extremeley common. For
+                            # example, vector-valued data will often have DEPEND_1 values that are more like
+                            # labels, i.e. ['x', 'y', 'z']
+                            # Previous versions of cdf_to_tplot simply ignored string-valued DEPEND_N.
+                            # But some missions (e.g. ERG) really do want string values as 'v1' or 'v2' tags.
+                            #
+                            # The situation is further complicated by the fact that cdflib seems to introduce
+                            # extra leading or trailing dimensions on string-valued variables.
+                            if depend_3 is not None and depend_3.dtype.type is np.str_:
+                                # Get the original array dimensions from the variable properties
+                                dp_props = master_cdf_file.varinq(dep_name)
+                                if new_cdflib:
+                                    orig_dimensions = dp_props.Dim_Sizes
+                                else:
+                                    orig_dimensions = dp_props['Dim_Sizes']
+                                reshape_dim = tuple(orig_dimensions)
+                                depend_3 = np.reshape(depend_3, reshape_dim)
+                                #depend_3 = None
+                                pass
+
                             dep_dims = depend_3.shape
                             dep_ndims = len(dep_dims)
                             if dep_ndims == 0:
@@ -597,13 +645,6 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                     "Variable %s DEPEND_3 attribute %s has too many dimensions (%d), ignoring.",
                                     var, dep_name, dep_ndims)
                                 depend_3 = None
-
-                            # Ignore the depend types if they are strings
-                            if depend_3 is not None and depend_3.dtype.type is np.str_:
-                                #logging.warning("Variable %s DEPEND_3 attribute %s is not ISTP compliant (string-valued), replacing with integer indices",var, var_atts["DEPEND_3"])
-                                #depend_3 = np.arange(ydata.shape[3])
-                                #depend_3 = None
-                                pass
                         except ValueError:
                             logging.warning('Unable to get DEPEND_3 variable %s while processing %s',
                                             var_atts["DEPEND_3"], var)
