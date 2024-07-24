@@ -12,7 +12,7 @@ def rdm(trange=['2012-10-01', '2012-10-02'],
         time_clip=False,
         force_download=False):
     """
-    This function loads data from the ACE Radiation Moniter (RDM)
+    oads data from the Akebono Radiation Moniter (RDM)
     
     Parameters
     ----------

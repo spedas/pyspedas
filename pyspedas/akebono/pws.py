@@ -14,7 +14,7 @@ def pws(trange=['2012-10-01', '2012-10-02'],
         time_clip=False,
         force_download=False):
     """
-    This function loads data from the ACE Plasma Waves and Sounder experiment (PWS)
+    Load data from the Akebono Plasma Waves and Sounder experiment (PWS)
     
     Parameters
     ----------
