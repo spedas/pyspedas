@@ -1,10 +1,8 @@
-from .load import load
 import numpy as np
-import pandas as pd
 from pytplot import store_data, options
 from pytplot import time_double
 from pyspedas.cotrans.xyz_to_polar import xyz_to_polar
-
+from .load_csv_file import load_csv_file
 
 def orb_postprocessing(files):
     """

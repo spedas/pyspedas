@@ -1,10 +1,5 @@
 from .load import load
-import numpy as np
-import pandas as pd
-from pytplot import store_data, options
-from pytplot import time_double
-from pyspedas.cotrans.xyz_to_polar import xyz_to_polar
-
+from .pws_postprocessing import pws_postprocessing
 
 def pws(trange=['2012-10-01', '2012-10-02'],
         datatype='ne', 
