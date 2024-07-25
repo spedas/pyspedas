@@ -3,6 +3,10 @@ from pytplot import store_data, options
 from pytplot import time_double
 from .load_csv_file import load_csv_file
 
+
+# This routine was originally in akebono/__init__.py.  If you need to see the history of this routine before
+# it was moved to its own file, please check the history for __init__.py.
+
 def rdm_postprocessing(files, prefix='', suffix=''):
     """
     Load the RDM ASCII files into tplot variables
