@@ -95,6 +95,12 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
         new_cdflib = False
         logging.debug("Using old version of cdflib (%s)", cdflib.__version__)
 
+    if prefix is None:
+        prefix = ''
+
+    if suffix is None:
+        suffix = ''
+
     if not isinstance(varnames, list):
         varnames = [varnames]
 

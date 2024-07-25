@@ -86,6 +86,11 @@ def netcdf_to_tplot(
 
     stored_variables = []
 
+    if prefix is None:
+        prefix = ''
+    if suffix is None:
+        suffix = ''
+
     if isinstance(filenames, str):
         filenames = [filenames]
     elif isinstance(filenames, list):

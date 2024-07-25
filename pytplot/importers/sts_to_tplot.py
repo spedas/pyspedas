@@ -40,6 +40,11 @@ def sts_to_tplot(sts_file=None, read_only=False, prefix='', suffix='', merge=Tru
     sts_dict = {}
     stored_variables = []
 
+    if prefix is None:
+        prefix = ''
+    if suffix is None:
+        suffix = ''
+
     # Code assumes a list of STS files
     if isinstance(sts_file, str):
         sts_file = [sts_file]
