@@ -47,6 +47,16 @@ class LibsTestCase(unittest.TestCase):
         output = sys.stdout.getvalue()
         self.assertIn('twavpol', output)
 
+    def test_wildcard_partial_wrapper(self):
+        libs('ep*ad')
+        output = sys.stdout.getvalue()
+        self.assertIn('epead', output)
+
+    def test_substring_partial_wrapper(self):
+        libs('epead')
+        output = sys.stdout.getvalue()
+        self.assertIn('epead', output)
+
     def test_known_function_subpackage(self):
         libs('fgm', package=pyspedas.themis)
         output = sys.stdout.getvalue()

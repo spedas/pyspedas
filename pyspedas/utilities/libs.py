@@ -12,6 +12,7 @@ from fnmatch import fnmatchcase
 
 import pytplot
 import pyspedas
+import functools
 
 
 def libs(function_name, package=None):
@@ -60,6 +61,13 @@ def libs(function_name, package=None):
                 doc = inspect.getdoc(obj)
                 first_line_of_doc = doc.split('\n')[0] if doc else "No documentation"
                 print(f"Function: {full_name}\nLocation: {source_file}\nDocumentation: {first_line_of_doc}\n")
+            elif isinstance(obj, functools.partial) and (search_string in name):
+                original_func = obj.func
+                full_name = full_module_name + '.' + name
+                source_file = inspect.getsourcefile(original_func)
+                doc = inspect.getdoc(original_func)
+                first_line_of_doc = doc.split('\n')[0] if doc else "No documentation"
+                print(f"Partial Function: {full_name}\nLocation: {source_file}\nDocumentation: {first_line_of_doc}\n")
 
     def list_functions_wildcard(module, root, wildcard_pattern, pacakge_obj):
         full_module_name = module.__name__
@@ -70,6 +78,13 @@ def libs(function_name, package=None):
                 doc = inspect.getdoc(obj)
                 first_line_of_doc = doc.split('\n')[0] if doc else "No documentation"
                 print(f"Function: {full_name}\nLocation: {source_file}\nDocumentation: {first_line_of_doc}\n")
+            elif isinstance(obj, functools.partial) and fnmatchcase(name.lower(), wildcard_pattern):
+                original_func = obj.func
+                full_name = full_module_name + '.' + name
+                source_file = inspect.getsourcefile(original_func)
+                doc = inspect.getdoc(original_func)
+                first_line_of_doc = doc.split('\n')[0] if doc else "No documentation"
+                print(f"Partial Function: {full_name}\nLocation: {source_file}\nDocumentation: {first_line_of_doc}\n")
 
     def traverse_modules(package, function_name, package_obj):
         # Add the module itself
