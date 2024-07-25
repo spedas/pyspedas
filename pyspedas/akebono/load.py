@@ -10,7 +10,8 @@ from .config import CONFIG
 def load(trange=['2012-10-01', '2012-10-02'], 
          instrument='pws',
          datatype='epd', 
-         level='l2', 
+         level='l2',
+         prefix='',
          suffix='', 
          get_support_data=False, 
          varformat=None,
@@ -29,17 +30,20 @@ def load(trange=['2012-10-01', '2012-10-02'],
         pyspedas.akebono.orb
 
     """
-    prefix = ''
+    if prefix is not None:
+        user_prefix = prefix
+    else:
+        user_prefix = ''
 
     if instrument == 'pws':
         #  only PWS data are available in CDF files
-        prefix = 'akb_pws_'
+        prefix = user_prefix + 'akb_pws_'
         pathformat = instrument + '/NPW-DS/%Y/ak_h1_pws_%Y%m%d_v??.cdf'
     elif instrument == 'rdm':
-        prefix = 'akb_rdm_'
+        prefix = user_prefix + 'akb_rdm_'
         pathformat = instrument + '/%Y/sf%y%m%d'
     elif instrument == 'orb':
-        prefix = 'akb_orb_'
+        prefix = user_prefix + 'akb_orb_'
         pathformat = 'orbit/daily/%Y%m/ED%y%m%d.txt'
     else:
         logging.error('Unknown instrument: ' + instrument)

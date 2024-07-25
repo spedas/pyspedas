@@ -3,7 +3,8 @@ from .pws_postprocessing import pws_postprocessing
 
 def pws(trange=['2012-10-01', '2012-10-02'],
         datatype='ne', 
-        level='h1', 
+        level='h1',
+        prefix='',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -35,8 +36,13 @@ def pws(trange=['2012-10-01', '2012-10-02'],
             Data level; options: 'h1' (default: h1)
             Default: 'h1'
 
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
+
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
             Default: ''
 
@@ -90,11 +96,20 @@ def pws(trange=['2012-10-01', '2012-10-02'],
         >>> tplot(['akb_pws_RX1', 'akb_pws_RX2'])
 
     """
-    tvars = load(instrument='pws', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
+
+    if prefix is None:
+        prefix=''
+
+    if suffix is None:
+        suffix=''
+
+    tvars = load(instrument='pws', trange=trange, level=level, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if tvars is None or notplot or downloadonly:
         return tvars
 
-    return pws_postprocessing(tvars)
+    # Note, prefixes and suffixes have already been applied at this point, but may need
+    # them to get original variable names for postprocessing
+    return pws_postprocessing(tvars, prefix=prefix, suffix=suffix)
 
 

@@ -2,6 +2,7 @@ from .load import load
 from .rdm_postprocessing import rdm_postprocessing
 
 def rdm(trange=['2012-10-01', '2012-10-02'],
+        prefix='',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -22,8 +23,13 @@ def rdm(trange=['2012-10-01', '2012-10-02'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2012-10-01', '2012-10-02']
 
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
+
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
             Default: ''
 
@@ -77,11 +83,11 @@ def rdm(trange=['2012-10-01', '2012-10-02'],
         >>> tplot('akb_rdm_FEIO')
 
     """
-    files = load(instrument='rdm', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
+    files = load(instrument='rdm', trange=trange, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if files is None or notplot or downloadonly:
         return files
 
-    return rdm_postprocessing(files)
+    return rdm_postprocessing(files, prefix=prefix, suffix=suffix)
 
 

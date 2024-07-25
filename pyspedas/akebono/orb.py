@@ -2,7 +2,8 @@ from .load import load
 from .orb_postprocessing import orb_postprocessing
 
 def orb(trange=['2012-10-01', '2012-10-02'],
-        suffix='',  
+        prefix='',
+        suffix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -22,8 +23,13 @@ def orb(trange=['2012-10-01', '2012-10-02'],
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2012-10-01', '2012-10-02']
 
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
+
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
             Default: ''
 
@@ -77,11 +83,11 @@ def orb(trange=['2012-10-01', '2012-10-02'],
         >>> tplot(['akb_orb_geo', 'akb_orb_MLT'])
 
     """
-    files = load(instrument='orb', trange=trange, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
+    files = load(instrument='orb', trange=trange, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
     if files is None or notplot or downloadonly:
         return files
 
-    return orb_postprocessing(files)
+    return orb_postprocessing(files, prefix=prefix, suffix=suffix)
 
 

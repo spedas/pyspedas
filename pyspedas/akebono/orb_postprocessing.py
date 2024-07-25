@@ -4,13 +4,36 @@ from pytplot import time_double
 from pyspedas.cotrans.xyz_to_polar import xyz_to_polar
 from .load_csv_file import load_csv_file
 
-def orb_postprocessing(files):
+def orb_postprocessing(files, prefix='', suffix=''):
     """
     Load the orbit CSV files and create the tplot variables
+
+    Parameters
+    ----------
+    files: list of str
+        List of CSV files to convert to tplot variables
+    prefix: str
+         A prefix to be added to the tplot variables created. Default: ''
+    suffix: str
+        A suffix to be added to the tplot variables created. Default: ''
+
+    Returns
+    -------
+    list of str
+        List of tplot variables created.
     """
+
+    if prefix is None:
+        user_prefix = ''
+    else:
+        user_prefix = prefix
+
+    if suffix is None:
+        suffix = ''
+
     prefix_project = 'akb_'
     prefix_descriptor = 'orb_'
-    prefix = prefix_project + prefix_descriptor
+    prefix = user_prefix + prefix_project + prefix_descriptor
 
     cols = ['pass','ut', 'ksc_azm', 'ksc_elv', 'ksc_dis', 'ksc_ang', 'syo_azm', 'syo_elv', 'syo_dis', 'syo_ang',
             'pra_azm', 'pra_elv', 'pra_dis', 'pra_ang', 'esr_azm', 'esr_elv', 'esr_dis', 'esr_ang', 'gclat','gclon',
@@ -30,42 +53,42 @@ def orb_postprocessing(files):
     rr = r_theta_phi[:, 0]
     th = r_theta_phi[:, 1]
     ph = r_theta_phi[:, 2]
-    store_data(prefix + 'geo', data={'x': unix_times, 'y': xyz_re})
-    store_data(prefix + 'gdlat', data={'x': unix_times, 'y': np.float64(data['gclat'])})
-    store_data(prefix + 'gdlon', data={'x': unix_times, 'y': np.float64(data['gclon'])})
-    store_data(prefix + 'inv', data={'x': unix_times, 'y': np.float64(data['inv'])})
-    store_data(prefix + 'fmlat', data={'x': unix_times, 'y': np.float64(data['fmlat'])})
-    store_data(prefix + 'MLT', data={'x': unix_times, 'y': np.float64(data['mlt'])})
-    store_data(prefix + 'gcalt', data={'x': unix_times, 'y': rr / km_in_re})
-    store_data(prefix + 'gclat', data={'x': unix_times, 'y': th})
-    store_data(prefix + 'gclon', data={'x': unix_times, 'y': ph})
-    options(prefix + 'geo', 'ytitle', 'GEO')
-    options(prefix + 'geo', 'ysubtitle', '[Re]')
-    options(prefix + 'gdlat', 'ytitle', 'Geodetic latitude of the magnetic footprint')
-    options(prefix + 'gdlat', 'ysubtitle', '(120km altitude) [deg]')
-    options(prefix + 'gdlon', 'ytitle', 'Geodetic longitude of the magnetic footprint')
-    options(prefix + 'gdlon', 'ysubtitle', '(120km altitude) [deg]')
-    options(prefix + 'inv', 'ytitle', 'Invariant Latitude of the magnetic footprint')
-    options(prefix + 'inv', 'ysubtitle', '(120km altitude) [deg]')
-    options(prefix + 'fmlat', 'ytitle', 'Geomagnetic Latitude of the magnetic footprint')
-    options(prefix + 'fmlat', 'ysubtitle', '(120km altitude) [deg]')
-    options(prefix + 'MLT', 'ytitle', 'Magnetic Local Time')
-    options(prefix + 'MLT', 'ysubtitle', '[hours]')
-    options(prefix + 'gcalt', 'ytitle', 'Geocentric Altitude')
-    options(prefix + 'gcalt', 'ysubtitle', '[Re]')
-    options(prefix + 'gclat', 'ytitle', 'Geocentric Latitude')
-    options(prefix + 'gclat', 'ysubtitle', '[deg]')
-    options(prefix + 'gclon', 'ytitle', 'Geocentric Longitude')
-    options(prefix + 'gclon', 'ysubtitle', '[deg]')
+    store_data(prefix + 'geo' + suffix, data={'x': unix_times, 'y': xyz_re})
+    store_data(prefix + 'gdlat' + suffix, data={'x': unix_times, 'y': np.float64(data['gclat'])})
+    store_data(prefix + 'gdlon' + suffix, data={'x': unix_times, 'y': np.float64(data['gclon'])})
+    store_data(prefix + 'inv' +  suffix, data={'x': unix_times, 'y': np.float64(data['inv'])})
+    store_data(prefix + 'fmlat' + suffix, data={'x': unix_times, 'y': np.float64(data['fmlat'])})
+    store_data(prefix + 'MLT' + suffix, data={'x': unix_times, 'y': np.float64(data['mlt'])})
+    store_data(prefix + 'gcalt' + suffix, data={'x': unix_times, 'y': rr / km_in_re})
+    store_data(prefix + 'gclat' + suffix, data={'x': unix_times, 'y': th})
+    store_data(prefix + 'gclon' + suffix, data={'x': unix_times, 'y': ph})
+    options(prefix + 'geo' + suffix, 'ytitle', 'GEO')
+    options(prefix + 'geo' + suffix, 'ysubtitle', '[Re]')
+    options(prefix + 'gdlat' + suffix, 'ytitle', 'Geodetic latitude of the magnetic footprint')
+    options(prefix + 'gdlat' + suffix, 'ysubtitle', '(120km altitude) [deg]')
+    options(prefix + 'gdlon' + suffix, 'ytitle', 'Geodetic longitude of the magnetic footprint')
+    options(prefix + 'gdlon' + suffix, 'ysubtitle', '(120km altitude) [deg]')
+    options(prefix + 'inv' + suffix, 'ytitle', 'Invariant Latitude of the magnetic footprint')
+    options(prefix + 'inv' + suffix, 'ysubtitle', '(120km altitude) [deg]')
+    options(prefix + 'fmlat' + suffix , 'ytitle', 'Geomagnetic Latitude of the magnetic footprint')
+    options(prefix + 'fmlat' + suffix, 'ysubtitle', '(120km altitude) [deg]')
+    options(prefix + 'MLT' + suffix, 'ytitle', 'Magnetic Local Time')
+    options(prefix + 'MLT' + suffix, 'ysubtitle', '[hours]')
+    options(prefix + 'gcalt' + suffix, 'ytitle', 'Geocentric Altitude')
+    options(prefix + 'gcalt' + suffix, 'ysubtitle', '[Re]')
+    options(prefix + 'gclat' + suffix, 'ytitle', 'Geocentric Latitude')
+    options(prefix + 'gclat' + suffix, 'ysubtitle', '[deg]')
+    options(prefix + 'gclon' + suffix, 'ytitle', 'Geocentric Longitude')
+    options(prefix + 'gclon' + suffix, 'ysubtitle', '[deg]')
 
-    return [prefix + 'geo',
-            prefix + 'gdlat',
-            prefix + 'gdlon',
-            prefix + 'inv',
-            prefix + 'fmlat',
-            prefix + 'MLT',
-            prefix + 'gcalt',
-            prefix + 'gclat',
-            prefix + 'gclon']
+    return [prefix + 'geo' + suffix,
+            prefix + 'gdlat' + suffix,
+            prefix + 'gdlon' + suffix,
+            prefix + 'inv' + suffix,
+            prefix + 'fmlat' + suffix,
+            prefix + 'MLT' + suffix,
+            prefix + 'gcalt' + suffix,
+            prefix + 'gclat' + suffix,
+            prefix + 'gclon' + suffix]
 
         
