@@ -61,6 +61,7 @@ def rdm_postprocessing(files, prefix='', suffix=''):
     store_data(prefix+'FEIO' + suffix, data={'x': unix_times, 'y': RDM_E3})
     store_data(prefix+'FEIO_Energy' + suffix, data={'x': unix_times, 'y': Energy})
 
+    # Not sure why this is here...FEIO is a scalar at each time step
     options(prefix+'FEIO' + suffix, 'spec', True)
 
     options(user_prefix + prefix_project+'L' + suffix, 'ytitle', 'L-value')
