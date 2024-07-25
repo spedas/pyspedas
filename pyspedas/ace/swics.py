@@ -2,9 +2,12 @@ from .load import load
 from pytplot import options
 from pyspedas.utilities.datasets import find_datasets
 
+# This routine was originally in ace/__init__.py, until being moved to its own file.
+# Please refer to __init__.py if you need to see the revision history before it was moved.
 
 def swics(trange=['2018-11-5', '2018-11-6'],
         datatype='sw2_h3',
+        prefix='',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -37,8 +40,13 @@ def swics(trange=['2018-11-5', '2018-11-6'],
 
             Default: 'sw2_h3'
 
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
+
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
             Default: ''
 
@@ -93,7 +101,7 @@ def swics(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['vHe2', 'vthHe2'])
 
     """
-    return load(trange=trange, instrument='swics', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+    return load(trange=trange, instrument='swics', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
                 time_clip=time_clip, force_download=force_download)
 

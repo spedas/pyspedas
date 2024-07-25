@@ -2,9 +2,12 @@ from .load import load
 from pytplot import options
 from pyspedas.utilities.datasets import find_datasets
 
+# This routine was originally in ace/__init__.py, until being moved to its own file.
+# Please refer to __init__.py if you need to see the revision history before it was moved.
 
 def uleis(trange=['2018-11-5', '2018-11-6'],
         datatype='h2',
+        prefix='',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -33,8 +36,13 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
 
             Default; 'h2'
 
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
+
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
+            The tplot variable names will be given this suffix.  By default,
             no suffix is added.
             Default: ''
 
@@ -91,7 +99,7 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['H_S1', 'H_S2', 'H_S3', 'H_S4', 'H_S5'])
 
     """
-    return load(trange=trange, instrument='ule', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+    return load(trange=trange, instrument='ule', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update, varnames=varnames,
                 time_clip=time_clip, force_download=force_download)
 

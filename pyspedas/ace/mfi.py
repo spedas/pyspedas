@@ -2,9 +2,13 @@ from .load import load
 from pytplot import options
 from pyspedas.utilities.datasets import find_datasets
 
+# This routine was originally in ace/__init__.py, until being moved to its own file.
+# Please refer to __init__.py if you need to see the revision history before it was moved.
+
 
 def mfi(trange=['2018-11-5', '2018-11-6'],
         datatype='h3',
+        prefix='',
         suffix='',  
         get_support_data=False, 
         varformat=None,
@@ -40,6 +44,11 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
                 k2: 1-Hour Key Parameters [PRELIM]
 
             Default: 'h3'
+
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -98,20 +107,26 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
         >>> tplot(['BGSEc', 'Magnitude'])
 
     """
-    tvars = load(trange=trange, instrument='fgm', datatype=datatype, suffix=suffix, get_support_data=get_support_data,
+
+    if prefix is None:
+        prefix = ''
+    if suffix is None:
+        suffix = ''
+
+    tvars = load(trange=trange, instrument='fgm', datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                  varformat=varformat, downloadonly=downloadonly, notplot=notplot, no_update=no_update,
                  varnames=varnames, time_clip=time_clip, force_download=force_download)
     
     if tvars is None or notplot or downloadonly:
         return tvars
 
-    if 'Magnitude'+suffix in tvars:
-        options('Magnitude'+suffix, 'ytitle', 'ACE MFI')
-        options('Magnitude'+suffix, 'legend_names',  'Magnitude')
+    if prefix+'Magnitude'+suffix in tvars:
+        options(prefix+'Magnitude'+suffix, 'ytitle', 'ACE MFI')
+        options(prefix+'Magnitude'+suffix, 'legend_names',  'Magnitude')
 
-    if 'BGSEc'+suffix in tvars:
-        options('BGSEc'+suffix, 'ytitle', 'ACE MFI')
-        options('BGSEc'+suffix, 'legend_names',  ['Bx', 'By', 'Bz'])
+    if prefix+'BGSEc'+suffix in tvars:
+        options(prefix+'BGSEc'+suffix, 'ytitle', 'ACE MFI')
+        options(prefix+'BGSEc'+suffix, 'legend_names',  ['Bx', 'By', 'Bz'])
 
     return tvars
 
