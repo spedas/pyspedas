@@ -86,9 +86,11 @@ def pws(trange=['2012-10-01', '2012-10-02'],
 
     Returns
     ----------
+    list of str
         List of tplot variables created.
 
-    Example:
+
+    Example
     ---------- 
         >>> import pyspedas
         >>> from pytplot import tplot  
