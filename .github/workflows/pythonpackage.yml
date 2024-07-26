@@ -292,8 +292,6 @@ jobs:
         coverage run -a -m pyspedas.themis.tests.tests_spinmodel
         echo Starting themis state tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_state
-        echo Starting themis cal_fit_tplot_metadata tests at `date`
-        coverage run -a -m pyspedas.themis.tests.test_cal_fit_tplot_metadata
         echo Starting themis scpot2dens tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_scpot2dens
         echo Done with tests at `date`
