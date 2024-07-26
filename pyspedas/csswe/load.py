@@ -8,7 +8,8 @@ from .config import CONFIG
 def load(trange=['2013-11-5', '2013-11-6'], 
          instrument='reptile',
          datatype='flux', 
-         level='l2', 
+         level='l2',
+         prefix='',
          suffix='', 
          get_support_data=False, 
          varformat=None,
@@ -87,6 +88,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     """
 
+    if prefix is None:
+        prefix = ''
+    if suffix is None:
+        suffix = ''
+
     if instrument == 'reptile':
         pathformat = level+'/'+instrument+'/'+datatype+'/%Y/csswe_'+instrument+'_6sec-'+datatype+'-'+level+'_%Y%m%d_v??.cdf'
 
@@ -105,7 +111,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars
