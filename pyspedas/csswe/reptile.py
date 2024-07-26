@@ -1,5 +1,6 @@
 from .load import load
 
+# Refer to __init__.py for revision history before the function definitions were split out
 
 def reptile(trange=['2013-11-5', '2013-11-6'],
         datatype='flux', 
