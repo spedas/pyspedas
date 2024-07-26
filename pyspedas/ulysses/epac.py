@@ -1,6 +1,8 @@
 from .load import load
 from typing import List, Union
 
+# This routine was moved out of __init__.py.  Please see that file for previous revision history.
+
 def epac(trange:List[str]=['1996-01-01', '1996-01-02'],
         datatype:str='epac_m1',
         prefix:str='',

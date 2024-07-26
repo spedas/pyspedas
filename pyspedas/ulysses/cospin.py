@@ -1,6 +1,8 @@
 from .load import load
 from typing import List, Union
 
+# This routine was moved out of __init__.py.  Please see that file for previous revision history.
+
 def cospin(trange:List[str]=['2003-01-01', '2003-01-02'],
         datatype:str='het',
         prefix:str='',

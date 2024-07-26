@@ -1,6 +1,9 @@
 from .load import load
 from typing import List, Union
 
+# This routine was moved out of __init__.py.  Please see that file for previous revision history.
+
+
 def swics(trange:List[str]=['2009-01-01', '2009-01-02'],
         datatype:str='scs_m1',
         prefix:str='',
