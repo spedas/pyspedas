@@ -29,6 +29,7 @@ def maven_filenames(
     update_prefs=False,
     only_update_prefs=False,
     local_dir=None,
+    public=True
 ):
     """
     This function queries the MAVEN SDC API, and will return a list of files that match the given parameters.
@@ -56,6 +57,9 @@ def maven_filenames(
         If True, only updates preferences and does not return filenames. Defaults to False.
     local_dir : str, optional
         Local directory to use. Defaults to None.
+    public: bool, optional
+        If False, try loading data from the non-public service
+
 
     Returns
     -------
@@ -85,7 +89,7 @@ def maven_filenames(
 
     # Check for public vs private access
     # Hard code in access as public for now
-    public = True
+    # public = True
     """
     public = get_access()
     if not public:
@@ -198,6 +202,7 @@ def load_data(
     get_support_data=False,
     get_metadata=False,
     auto_yes=False,
+    public=True
 ):
     """
     This function downloads MAVEN data loads it into tplot variables, if applicable.
@@ -269,6 +274,9 @@ def load_data(
         If True, retrieves metadata. Defaults to False.
     auto_yes : bool, optional
         If True, automatically answers 'yes' to prompts. Defaults to False.
+    public: bool, optional
+    If false, try using the non-public interface
+
 
     Returns
     -------
@@ -299,6 +307,7 @@ def load_data(
         update_prefs,
         only_update_prefs,
         local_dir,
+        public=public
     )
 
     # If we are not asking for KP data, this flag ensures only ancillary data is loaded in from the KP files
