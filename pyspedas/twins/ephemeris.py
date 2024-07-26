@@ -4,11 +4,13 @@ from .load import load
 def ephemeris(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
         datatype='or',
+        prefix='',
         suffix='',  
         get_support_data=False, 
         varformat=None,
         varnames=[],
         downloadonly=False,
+        force_download=False,
         notplot=False,
         no_update=False,
         time_clip=False):
@@ -31,6 +33,10 @@ def ephemeris(trange=['2018-11-5', '2018-11-6'],
             Data type; Valid options:
             Default: 'or'
 
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
+
         suffix: str
             The tplot variable names will be given this suffix.
             Default: ''
@@ -52,6 +58,10 @@ def ephemeris(trange=['2018-11-5', '2018-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+            Default: False
+
+        force_download: bool
+            Set this flag to download the CDF files, even if the local copy is newer.
             Default: False
 
         notplot: bool
@@ -81,5 +91,5 @@ def ephemeris(trange=['2018-11-5', '2018-11-6'],
     >>> tplot('FEQUATORIALGSM')
 
     """
-    return load(instrument='ephemeris', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='ephemeris', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, force_download=force_download, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
