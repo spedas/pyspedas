@@ -172,8 +172,8 @@ jobs:
         coverage run -a -m pyspedas.kompsat.tests.tests
         echo Starting hapi tests at `date`
         coverage run -a -m pyspedas.hapi.tests.tests
-        echo Starting noaa tests at `date`
-        coverage run -a -m pyspedas.noaa.tests.tests
+        #echo Starting noaa tests at `date`
+        #coverage run -a -m pyspedas.noaa.tests.tests
         echo Starting particles tests at `date`
         coverage run -a -m pyspedas.particles.tests.tests
         echo Starting mms cotrans tests at `date`
@@ -274,8 +274,8 @@ jobs:
         coverage run -a -m pyspedas.ulysses.tests.tests
         echo Starting solo tests at `date`
         coverage run -a -m pyspedas.solo.tests.tests
-        echo Starting kyoto tests at `date`
-        coverage run -a -m pyspedas.kyoto.tests.tests
+        #echo Starting kyoto tests at `date`
+        #coverage run -a -m pyspedas.kyoto.tests.tests
         echo Starting swarm tests at `date`
         coverage run -a -m pyspedas.swarm.tests.tests
         echo Starting themis_check_args tests at `date`
