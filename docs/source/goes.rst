@@ -21,5 +21,49 @@ Example
    :align: center
    :class: imgborder
 
+EPS
+----------------------------------------------------------
+.. autofunction:: pyspedas.goes.eps
 
+EPEAD
+----------------------------------------------------------
+.. autofunction:: pyspedas.goes.epead
+
+EUVS
+----------------------------------------------------------
+.. autofunction:: pyspedas.goes.euvs
+
+HEPAD
+----------------------------------------------------------
+.. autofunction:: pyspedas.goes.hepad
+
+MAG
+----------------------------------------------------------
+
+.. autofunction:: pyspedas.goes.mag
+
+MPSH
+----------------------------------------------------------
+
+.. autofunction:: pyspedas.goes.mpsh
+
+MAGED
+----------------------------------------------------------
+
+.. autofunction:: pyspedas.goes.maged
+
+MAGPD
+----------------------------------------------------------
+
+.. autofunction:: pyspedas.goes.magpd
+
+ORBIT
+----------------------------------------------------------
+
+.. autofunction:: pyspedas.goes.orbit
+
+SGPS
+----------------------------------------------------------
+
+.. autofunction:: pyspedas.goes.sgps
 
