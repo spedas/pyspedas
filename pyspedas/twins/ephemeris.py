@@ -1,5 +1,6 @@
 from .load import load
 
+# This routine was moved out of __init__.py.  Please see that file for previous revision history.
 
 def ephemeris(trange=['2018-11-5', '2018-11-6'], 
         probe='1',
