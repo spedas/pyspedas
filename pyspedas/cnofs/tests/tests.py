@@ -15,6 +15,18 @@ class LoadTestCases(unittest.TestCase):
         l_vars = pyspedas.cnofs.plp()
         self.assertTrue(data_exists('Ni'))
 
+    def test_load_plp_data_prefix_none(self):
+        l_vars = pyspedas.cnofs.plp(prefix=None)
+        self.assertTrue(data_exists('Ni'))
+
+    def test_load_plp_data_suffix_none(self):
+        l_vars = pyspedas.cnofs.plp(suffix=None)
+        self.assertTrue(data_exists('Ni'))
+
+    def test_load_plp_data_prefix_suffix(self):
+        l_vars = pyspedas.cnofs.plp(prefix='pre_', suffix='_suf')
+        self.assertTrue(data_exists('pre_Ni_suf'))
+
     def test_load_vefi_data(self):
         l_vars = pyspedas.cnofs.vefi()
         self.assertTrue(data_exists('E_meridional'))
