@@ -19,6 +19,24 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
         self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
 
+    def test_load_fgm_data_prefix_none(self):
+        del_data('*')
+        mag_vars = pyspedas.cluster.fgm(prefix=None, time_clip=True)
+        self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
+        self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
+
+    def test_load_fgm_data_suffix_none(self):
+        del_data('*')
+        mag_vars = pyspedas.cluster.fgm(suffix=None, time_clip=True)
+        self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
+        self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
+
+    def test_load_fgm_data_prefix_suffix(self):
+        del_data('*')
+        mag_vars = pyspedas.cluster.fgm(prefix='pre_', suffix='_suf', time_clip=True)
+        self.assertTrue(data_exists('pre_B_xyz_gse__C1_UP_FGM_suf'))
+        self.assertTrue('pre_B_xyz_gse__C1_UP_FGM_suf' in mag_vars)
+
     def test_load_fgm_cp_data(self):
         del_data('*')
         files = pyspedas.cluster.fgm(datatype='cp', trange=['2003-12-15', '2003-12-16'], downloadonly=True)
@@ -112,6 +130,37 @@ class LoadTestCases(unittest.TestCase):
                                              datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
         self.assertTrue('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M' in pos_data)
         self.assertTrue(data_exists('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M'))
+
+    def test_load_csa_CP_AUX_POSGSE_1M_data_prefix_none(self):
+        del_data('*')
+        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+                                             trange=trange,
+                                             prefix=None,
+                                             datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
+        self.assertTrue('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M' in pos_data)
+        self.assertTrue(data_exists('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M'))
+
+    def test_load_csa_CP_AUX_POSGSE_1M_data_suffix_none(self):
+        del_data('*')
+        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+                                             trange=trange,
+                                             suffix=None,
+                                             datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
+        self.assertTrue('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M' in pos_data)
+        self.assertTrue(data_exists('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M'))
+
+    def test_load_csa_CP_AUX_POSGSE_1M_data_prefix_suffix(self):
+        del_data('*')
+        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+                                             trange=trange,
+                                             prefix='pre_',
+                                             suffix='_suf',
+                                             datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
+        self.assertTrue('pre_sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M_suf' in pos_data)
+        self.assertTrue(data_exists('pre_sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M_suf'))
 
 
     def test_load_csa_CP_CIS_CODIF_HS_H1_MOMENTS_data(self):
