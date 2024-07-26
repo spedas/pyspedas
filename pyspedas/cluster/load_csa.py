@@ -61,6 +61,7 @@ def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
              datatypes:List[str]=['CP_CIS-CODIF_HS_H1_MOMENTS'],
              downloadonly:bool=False,
              time_clip:bool=True,
+             prefix:str='',
              suffix:str='',
              get_support_data:bool=False,
              varformat:str=None,
@@ -143,6 +144,11 @@ def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
     """
     # Empty output in case of errors.
     tvars = []
+
+    if prefix is None:
+        prefix = ''
+    if suffix is None:
+        suffix = ''
 
     # Start and end dates
     start_date = cl_format_time(trange[0])
@@ -230,6 +236,7 @@ def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
 
     # Load data into tplot
     tvars = cdf_to_tplot(out_files,
+                         prefix=prefix,
                          suffix=suffix,
                          get_support_data=get_support_data,
                          varformat=varformat,

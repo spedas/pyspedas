@@ -5,6 +5,7 @@ from typing import List, Union, Optional
 def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
         probe:Union[str,List[str]]='1',
         datatype:str='pp',
+        prefix:str='',
         suffix:str='',
         get_support_data:bool=False,
         varformat:str=None,
@@ -32,6 +33,10 @@ def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
         datatype: str
             Data type; Valid options:
             Default: 'up'
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -86,6 +91,6 @@ def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
     >>> tplot([ 'J_e_lo__C1_PP_RAP', 'J_e_hi__C1_PP_RAP', 'J_e_lo__C2_PP_RAP', 'J_e_hi__C2_PP_RAP'])
 
     """
-    return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
+    return load(instrument='rapid', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 

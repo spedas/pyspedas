@@ -5,6 +5,7 @@ from typing import List, Union, Optional
 def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
         probe:Union[str,List[str]]='1',
         datatype:str='waveform',
+        prefix:str='',
         suffix:str='',
         get_support_data:bool=False,
         varformat:str=None,
@@ -32,6 +33,10 @@ def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
         datatype: str
             Data type; Valid options:
             Default: 'waveform'
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -86,6 +91,6 @@ def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
     >>> # Note lack of probe IDs in the variables loaded -- only load one probe at a time
     >>> tplot('WBD_Elec')
     """
-    return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
+    return load(instrument='wbd', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 

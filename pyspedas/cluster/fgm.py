@@ -5,6 +5,7 @@ from typing import List, Union, Optional
 def fgm(trange:List[str]=['2018-11-5', '2018-11-6'],
         probe:Union[str,List[str]]='1',
         datatype:str ='up',
+        prefix:str='',
         suffix:str='',
         get_support_data:bool=False,
         varformat:str=None,
@@ -32,6 +33,10 @@ def fgm(trange:List[str]=['2018-11-5', '2018-11-6'],
         datatype: str
             Data type; Valid options:
             Default: 'up'
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -85,6 +90,6 @@ def fgm(trange:List[str]=['2018-11-5', '2018-11-6'],
     >>> fgm_vars = pyspedas.cluster.fgm(trange=['2018-11-5', '2018-11-6'],probe=['1','2'])
 
     """
-    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
+    return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 

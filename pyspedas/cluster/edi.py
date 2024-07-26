@@ -5,6 +5,7 @@ from typing import List, Union, Optional
 def edi(trange:List[str]=['2018-11-5', '2018-11-6'],
         probe:Union[str,List[str]]='1',
         datatype:str='pp',
+        prefix:str='',
         suffix:str='',
         get_support_data:bool=False,
         varformat:str=None,
@@ -35,6 +36,10 @@ def edi(trange:List[str]=['2018-11-5', '2018-11-6'],
 
         suffix: str
             The tplot variable names will be given this suffix.
+            Default: ''
+
+        prefix: str
+            The tplot variable names will be given this prefix.
             Default: ''
 
         get_support_data: bool

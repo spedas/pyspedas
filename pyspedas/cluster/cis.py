@@ -5,6 +5,7 @@ from typing import List, Union, Optional
 def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
         probe:Union[str,List[str]]='1',
         datatype:str='pp',
+        prefix:str='',
         suffix:str='',
         get_support_data:bool=False,
         varformat:str=None,
@@ -32,6 +33,10 @@ def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
         datatype: str
             Data type; Valid options:
             Default: 'pp'
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -86,6 +91,6 @@ def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
     >>> tplot(['N_p__C1_PP_CIS','N_O1__C1_PP_CIS','N_He1__C1_PP_CIS','N_He2__C1_PP_CIS','N_HIA__C1_PP_CIS'])
 
     """
-    return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
+    return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)
 
 
