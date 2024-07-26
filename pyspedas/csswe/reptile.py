@@ -20,14 +20,16 @@ def reptile(trange=['2013-11-5', '2013-11-6'],
 
     Parameters
     ----------
+
         trange : list of str
-            time range of interest [starttime, endtime] with the format 
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
-            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: ['2013-11-5', '2013-11-6']
+            time range of interest [starttime, endtime] with the format
+            [YYYY-MM-DD, YYYY-MM-DD], or to specify more or less than a day,
+            [YYYY-MM-DD/hh:mm:ss, YYYY-MM-DD/hh:mm:ss].
+            Default: ['2013-11-5', '2013-11-6]
 
         datatype: str
-            Data type; Valid options:
+            Data type; Valid options::
+
                 'counts' for L1 data
                 'flux' for L2 data
 
@@ -68,11 +70,9 @@ def reptile(trange=['2013-11-5', '2013-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
 
-
         force_download: bool
             Download file even if local version is more recent than server version
             Default: False
-
 
     Returns
     -------
