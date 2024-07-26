@@ -1,6 +1,8 @@
 from .load import load
 from typing import List, Union, Optional
 
+# This routine was moved out of __init__.py.  For preceding revision history, please see
+# that file.
 
 def aspoc(trange:List[str]=['2003-11-5', '2003-11-6'],
         probe:Union[str,List[str]]='1',

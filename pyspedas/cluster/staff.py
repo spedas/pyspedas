@@ -1,6 +1,9 @@
 from .load import load
 from typing import List, Union, Optional
 
+# This routine was moved out of __init__.py.  For preceding revision history, please see
+# that file.
+
 
 def staff(trange:List[str]=['2012-11-5', '2012-11-6'],
         probe:Union[str,List[str]]='1',
