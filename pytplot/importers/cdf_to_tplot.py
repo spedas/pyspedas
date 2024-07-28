@@ -505,7 +505,11 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 # time-varying or otherwise multidimensional
                                 if dep_dims[0] != num_times:
                                     logging.warning("Variable %s is 2-dimensional, but first dimension of DEPEND_1 attribute %s has size %d versus num_times %d. Attribute will be kept (for now).",var,dep_name,dep_dims[0], num_times)
-                                    # Or, it could be ERG HEP omniflux data with an extra dimension as upper/lower bounds.
+                                    if dep_dims[0] == 1 and dep_dims[1] == ydims[1]:
+                                        # RBSP EMPHISIS HFR_Spectra has this
+                                        logging.warning("Variable %s DEPEND_1 attribute %s has dimensions 1 x y_dims[1]; reshaping to 1-D array.", var, dep_name)
+                                        depend_1 = np.reshape(depend_1, (ydims[1],))
+                                    # Or, it could be ERG HEP omniflux data with an extra (length-2) dimension as upper/lower bounds.
                                     # So for now, we'll allow it.
                                     pass
                                 if dep_dims[1] != ydims[1]:
@@ -573,12 +577,12 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 # time-varying or otherwise multidimensional
                                 if dep_dims[0] != num_times:
                                     logging.warning(
-                                        "Variable %s multidimensional DEPEND_2 attribute %s has %d times, but data has %d times. Removing attribute.",
+                                        "Variable %s multidimensional DEPEND_2 attribute %s has %d elements in first dimension, but data has %d times. Removing attribute.",
                                         var, dep_name, dep_dims[0], num_times)
                                     depend_2 = None
                                 if dep_dims[1] != ydims[2]:
                                     logging.warning(
-                                        "Variable %s multidimensional DEPEND_2 attribute %s has data length %d, but corresponding data dimension has length %d. Removing attribute.",
+                                        "Variable %s multidimensional DEPEND_2 attribute %s has %d elements in second dimension, but corresponding data dimension has length %d. Removing attribute.",
                                         var, dep_name, dep_dims[1], ydims[2])
                                     depend_2 = None
                             else:
@@ -592,6 +596,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                             var_atts["DEPEND_2"], var)
                 if "DEPEND_3" in var_atts:
                     if y_ndims < 4:
+                        # TWINS imager data has this
                         logging.warning("Variable %s has only %d dimensions (including time), but has a DEPEND_3 attribute. Removing attribute.", var, y_ndims)
                         depend_3 = None
                     elif var_atts["DEPEND_3"] in master_cdf_variables:
@@ -634,15 +639,15 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                         var, dep_name, dep_dims[0], ydims[3])
                                     depend_3 = None
                             elif dep_ndims == 2:
-                                # time-varying
+                                # time-varying, or otherwise multidimensional
                                 if dep_dims[0] != num_times:
                                     logging.warning(
-                                        "Variable %s time-varying DEPEND_3 attribute %s has %d times, but data has %d times. Removing attribute.",
+                                        "Variable %s multidimensional DEPEND_3 attribute %s has %d elements in first dimension, but data has %d times. Removing attribute.",
                                         var, dep_name, dep_dims[0], num_times)
                                     depend_3 = None
                                 if dep_dims[1] != ydims[3]:
                                     logging.warning(
-                                        "Variable %s time-varying DEPEND_3 attribute %s has data length %d, but corresponding data dimension has length %d. Removing attribute.",
+                                        "Variable %s multidimensional DEPEND_3 attribute %s has %d elements in second dimension, but corresponding data dimension has length %d. Removing attribute.",
                                         var, dep_name, dep_dims[1], ydims[3])
                                     depend_3 = None
                             else:
