@@ -5,8 +5,6 @@ from pyspedas.secs.makeplots import make_plots
 from pytplot import del_data
 from pyspedas.secs.config import CONFIG
 
-CONFIG["plots_dir"] = "dir/"
-
 
 class SECSTestCases(unittest.TestCase):
     @patch("matplotlib.pyplot.show")
@@ -18,8 +16,10 @@ class SECSTestCases(unittest.TestCase):
             resolution=10,
             dtype="SECS",
             no_download=False,
-            downloadonly=False,
+            downloadonly=True,
             out_type="df",
+            spdf=True,
+            force_download=True,
         )
         # Returns a Pandas dataframe, not tplot variables
         self.assertTrue(len(d) > 0)
@@ -43,6 +43,8 @@ class SECSTestCases(unittest.TestCase):
             no_download=False,
             downloadonly=False,
             out_type="df",
+            spdf=True,
+            force_download=True,
         )
         # Returns a Pandas dataframe, not tplot variables
         self.assertTrue(len(d) > 0)
@@ -110,6 +112,43 @@ class SECSTestCases(unittest.TestCase):
         )
         # Returns a Pandas dataframe, not tplot variables
         self.assertTrue(len(d) > 0)
+
+    def test_none_cases(self):
+        # No data type provided
+        del_data()
+        trange = ["2017-03-27", "2017-03-28"]
+        d = pyspedas.secs.data(
+            trange=trange,
+            dtype=None,
+        )
+        self.assertTrue(d is None)
+
+        # Wrong data type provided
+        del_data()
+        trange = ["2017-03-27", "2017-03-28"]
+        d = pyspedas.secs.data(
+            trange=trange,
+            dtype="aaa",
+        )
+        self.assertTrue(d is None)
+
+        # Invalid time range provided
+        del_data()
+        trange = ["2018-03-27", "2017-03-28"]
+        d = pyspedas.secs.data(
+            trange=trange,
+            dtype="dc",
+        )
+        self.assertTrue(d is None)
+
+        # Invalid out type provided
+        trange = ["2017-03-27", "2017-03-28"]
+        d = pyspedas.secs.data(
+            trange=trange,
+            dtype="dc",
+            out_type="aaa",
+        )
+        self.assertTrue(d is None)
 
 
 if __name__ == "__main__":

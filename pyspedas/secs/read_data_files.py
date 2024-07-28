@@ -10,12 +10,37 @@ import os
 
 def read_data_files(out_files=None, dtype=None, out_type="np", save_pickle=False):
     """
-    Read data on a daily basis with a 10-secs or other resolution
-    :param out_files: the string list of the downloaded data files' path.
-    :param out_type: the return type: 'np': numpy array; 'df': pandas dataframe; 'dc': dictionary
-    :param dtype: the data which will be read ('EICS' or 'SECS')
-    :return: a numpy nd-array acrossing one or multiple days.
+    Read data on a daily basis with a 10-secs or other resolution.
+
+    Parameters
+    ----------
+    out_files : list of str
+        The list of the downloaded data file paths.
+        This list can be obtained from the load() function, using downloadonly=True.
+    dtype : str
+        The data which will be read ('EICS' or 'SECS').
+    out_type : str
+        The return type: 'np' for numpy array, 'df' for pandas dataframe, 'dc' for dictionary.
+        The default is 'np'.
+    save_pickle : bool
+        Whether to save the output as a pickle file.
+
+    Returns
+    -------
+    Varies (np.ndarray, pd.DataFrame, or dict)
+
+        The data read from the files in the specified format.
+        If out_type is 'np', the data is a numpy array.
+        If out_type is 'df', the data is a pandas dataframe.
+        If out_type is 'dc', the data is a dictionary.
     """
+
+    if out_files is None:
+        logging.error("No data files provided.")
+        return None
+
+    dtype = dtype.upper()
+
     file_names_arr_Dir = out_files
     start_time = time.time()
     # Reading the data at each time stamp (per resolution secs) on one specific date.
@@ -124,7 +149,8 @@ def read_data_files(out_files=None, dtype=None, out_type="np", save_pickle=False
         output = data_dict
 
     else:
-        raise TypeError("%r are invalid keyword arguments" % out_type)
+        logging.error("Invalid output type." + str(out_type))
+        return None
 
     if save_pickle == True:
         if out_type == "dc":  # too large, not useful.

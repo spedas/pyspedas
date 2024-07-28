@@ -3,6 +3,7 @@ import zipfile
 import logging
 import shutil
 import gzip
+from pathlib import Path
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pyspedas.secs.read_data_files import read_data_files
@@ -18,65 +19,85 @@ def load(
     downloadonly=False,
     out_type="np",
     save_pickle=False,
+    spdf=False,
+    force_download=False,
 ):
     """
-    This function loads SECS/EICS data; this function is not meant
-    to be called directly; instead, see the wrapper:
-        pyspedas.secs.data
+    This function downloads and reads SECS/EICS data.
+
+    It does not return tplot variables, but rather the data itself.
+    Usually, this data is used by makeplots.py to create contour plots.
 
     Parameters
     ----------
-        trange : list of str
-            time range of interest [starttime, endtime] with the format
-            'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
-            ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: If not provided, current date or code will prompt for time range
-
-        resolution : str
-            Default: 10
-
-        dtype: str
-            Data type; Valid options:
-                'EICS', 'SECA'
-            Default: ['eics', 'seca']
-
-        suffix: str
-            The tplot variable names will be given this suffix.
-            Default: no suffix is added.
-
-        prefix: str
-            The tplot variable names will be given this prefix.
-            Default: no prefix is added.
-
-        get_stations: bool
-            Set this flag to return a list of SECS station names
-            Default:  False
-
-        downloadonly: bool
-            Set this flag to download the CDF files, but not load them into
-            tplot variables
-            Default: False
-
-        no_update: bool
-            If set, only load data from your local cache
-            Default: False
-
-        no_download: bool
-            If set, only load data from your local cache
-            Default: False
+    trange : list of str
+        Time range of interest [starttime, endtime] with the format
+        ['YYYY-MM-DD', 'YYYY-MM-DD'] or to specify more or less than a day
+        ['YYYY-MM-DD/hh:mm:ss', 'YYYY-MM-DD/hh:mm:ss'].
+        Default: ["2012-11-05/00:00:00", "2012-11-06/00:00:00"]
+    resolution : int, optional
+        Time resolution of the data in seconds.
+        Default: 10
+    dtype : str, optional
+        Data type; Valid options: 'EICS', 'SECS'.
+        Default: None
+    no_download : bool, optional
+        Only load data from the local cache.
+        Default: False
+    downloadonly : bool, optional
+        Set this flag to download the CDF files, but not load data from them.
+        If True, the function returns a list of the downloaded files.
+        Default: False
+    out_type : str, optional
+        The return type: 'np' for numpy array, 'df' for pandas dataframe, 'dc' for dictionary.
+        Default: 'np'
+    save_pickle : bool, optional
+        Whether to save the output as a pickle file.
+        Default: False
+    spdf : bool, optional
+        If True, download data from SPDF instead of UCLA.
+        Default: False
+    force_download : bool, optional
+        If True, re-download the data files.
+        Default: False
 
     Returns
-    ----------
-        List of tplot variables created.
+    -------
+    Varies (list of str, np.ndarray, pd.DataFrame, or dict)
 
-    Example
-    ----------
-        import pyspedas
-        from pytplot import tplot
-        secs_vars = pyspedas.secs(dtype='eics', trange=['2018-02-01', '2018-02-02'])
-        tplot(['secs_eics_latlong', 'secs_eics_jxy'])
+        If downloadonly is True, the function returns a list of the downloaded files.
+        Otherwise, it returns the data read from the files in the specified format.
+        If out_type is 'np', the data is a numpy array.
+        If out_type is 'df', the data is a pandas dataframe.
+        If out_type is 'dc', the data is a dictionary.
 
+    Examples
+    --------
+    >> import pyspedas
+    >> secs_vars = pyspedas.secs.data(dtype='EICS', trange=['2018-02-01', '2018-02-02'], downloadonly=True)
+    >> print(secs_vars)
+    ['/Users/user/data/secs/EICS/2018/02/EICS20180201.zip']
     """
+
+    if dtype is None:
+        logging.error("No data type provided.")
+        return None
+    else:
+        dtype = dtype.upper()
+
+    if trange is None or len(trange) != 2 or trange[1] < trange[0]:
+        logging.error("Invalid time range provided.")
+        return None
+
+    if not downloadonly:
+        if out_type is None:
+            logging.error("No out_type provided.")
+            return None
+        else:
+            out_type = out_type.lower()
+        if out_type not in ["np", "df", "dc"]:
+            logging.error("Invalid out_type provided.")
+            return None
 
     if dtype == "EICS" or dtype == "SECS":
 
@@ -87,7 +108,8 @@ def load(
         remote_path = CONFIG["remote_data_dir"]
 
     else:
-        raise TypeError("%r are invalid keyword arguments" % dtype)
+        logging.error("Invalid data type provided:" + str(dtype))
+        return None
 
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat_zip, trange=trange)
@@ -97,18 +119,62 @@ def load(
     out_files = []
     out_files_zip = []
 
-    files_zip = download(
-        remote_file=remote_names,
-        remote_path=remote_path,
-        local_path=CONFIG["local_data_dir"],
-        no_download=no_download,
-    )
-    files_gz = download(
-        remote_file=remote_names_gz,
-        remote_path=remote_path,
-        local_path=CONFIG["local_data_dir"],
-        no_download=no_download,
-    )
+    if spdf:
+        # Download files from SPDF
+        remote_path_spdf = CONFIG["remote_data_dir_spdf"]
+        # Paths at SPDF do not include the month
+        # zip files at UCLA are inside a directory /year/month/
+        # but the same files at SPDF are inside a directory /year/
+        pathformat_prefix_spdf = dtype + "/%Y/"
+        pathformat_zip_spdf = pathformat_prefix_spdf + dtype + "%Y%m%d.zip"
+        remote_names_spdf = dailynames(file_format=pathformat_zip_spdf, trange=trange)
+        local_dir_spdf = CONFIG["local_data_dir"]
+
+        files_zip_spdf = download(
+            remote_file=remote_names_spdf,
+            remote_path=remote_path_spdf,
+            local_path=local_dir_spdf,
+            no_download=no_download,
+            force_download=force_download,
+        )
+        # At this point, the zip files are downloaded but in a different dir than UCLA files.
+        # We need to move them to a directory containing the month
+        files_zip = []
+        for f in files_zip_spdf:
+            if os.path.exists(f):
+                stem = Path(f).stem
+                if len(stem) >= 10:
+                    # Stem is similar to 'SECS20120301' or 'EICS20120301'
+                    month = stem[8:10]
+                    path = str(Path(f).parent)
+                    new_path = os.path.join(path, month)
+                    new_filename = os.path.join(new_path, os.path.basename(f))
+                    if os.path.exists(new_filename):
+                        os.remove(new_filename)
+                    else:
+                        os.makedirs(new_path)
+                    new_filename = shutil.copy(f, new_path)
+                    files_zip.append(new_filename)
+
+        # SPDF does not contain any .gz files
+        files_gz = []
+    else:
+        # Download files from UCLA
+        files_zip = download(
+            remote_file=remote_names,
+            remote_path=remote_path,
+            local_path=CONFIG["local_data_dir"],
+            no_download=no_download,
+            force_download=force_download,
+        )
+        files_gz = download(
+            remote_file=remote_names_gz,
+            remote_path=remote_path,
+            local_path=CONFIG["local_data_dir"],
+            no_download=no_download,
+            force_download=force_download,
+        )
+
     files_zip = files_zip + files_gz
 
     if files_zip is not None:
@@ -183,7 +249,8 @@ def load(
     ]
     remote_names_unzipped = remote_names_unzipped_existed
     out_files_unzipped = [
-        CONFIG["local_data_dir"] + rf_res for rf_res in remote_names_unzipped
+        os.path.join(CONFIG["local_data_dir"], rf_res)
+        for rf_res in remote_names_unzipped
     ]
     out_files_unzipped = sorted(out_files_unzipped)
 
@@ -198,4 +265,4 @@ def load(
         )
         # print('data_vars: ', data_vars, np.shape(data_vars))
 
-    return data_vars  # tvars
+    return data_vars
