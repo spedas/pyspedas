@@ -205,7 +205,7 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     pathformat_prefix = dtype + '/%Y/%m/'
     pathformat_unzipped = pathformat_prefix + '%d/' + dtype + '%Y%m%d_%H%M%S.dat'
     filename_unzipped = dailynames(file_format=pathformat_unzipped, trange=dtime_range, res=10)
-    out_files_unzipped = [CONFIG['local_data_dir'] + rf_res for rf_res in filename_unzipped]
+    out_files_unzipped = [os.path.join(CONFIG['local_data_dir'], rf_res) for rf_res in filename_unzipped]
     Data_Days_time = read_data_files(out_files=out_files_unzipped, dtype=dtype, out_type='df')
 
     if pred == True: # XC
@@ -286,7 +286,7 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
 
     plt.title(label='EICS ' + tp, fontsize=20, color="black", pad=20)
     plt.tight_layout()
-    plt.savefig(CONFIG['plots_dir'] + 'EICS' + '_vector_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+    plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS' + '_vector_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
     plt.show()
 
     # plot 2: contour plot
@@ -375,15 +375,15 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     plt.tight_layout()
     if pred == True:
         if EICS_component == 'Jy':
-            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jy' + '_pred' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+            plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS_Jy' + '_pred' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
         elif EICS_component == 'Jx':
-            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jx' + '_pred' + '_contour_' + date_nightshade.strftime(
-                '%Y%m%d%H%M%S') + '.jpeg')
+            plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS_Jx' + '_pred' + '_contour_' + date_nightshade.strftime(
+                '%Y%m%d%H%M%S') + '.jpeg'))
     else:
         if EICS_component == 'Jy':
-            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jy' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+            plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS_Jy' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
         elif EICS_component == 'Jx':
-            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jx' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+            plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS_Jx' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
 
     plt.show()
 
@@ -448,7 +448,7 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     text.set_font_properties(font_cb)
     plt.title(label='EICS visual grids' + tp, fontsize=20, color="black", pad=20)
     plt.tight_layout()
-    plt.savefig(CONFIG['plots_dir'] + 'EICS' + '_VisualGrids_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.pdf')
+    plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS' + '_VisualGrids_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.pdf'))
     plt.show()
 
 
@@ -470,7 +470,7 @@ def _make_SECS_plots(data=None, dtime=None, contour_den=8, s_loc=False):
     pathformat_prefix = dtype + '/%Y/%m/'
     pathformat_unzipped = pathformat_prefix + '%d/' + dtype + '%Y%m%d_%H%M%S.dat'
     filename_unzipped = dailynames(file_format=pathformat_unzipped, trange=dtime_range, res=10)
-    out_files_unzipped = [CONFIG['local_data_dir'] + rf_res for rf_res in filename_unzipped]
+    out_files_unzipped = [os.path.join(CONFIG['local_data_dir'], rf_res) for rf_res in filename_unzipped]
     Data_Days_time = read_data_files(out_files=out_files_unzipped, dtype=dtype, out_type='df')
 
     J_comp = Data_Days_time['J']
@@ -545,7 +545,7 @@ def _make_SECS_plots(data=None, dtime=None, contour_den=8, s_loc=False):
     text.set_font_properties(font_cb)
     plt.title(label='SECS ' + tp, fontsize=20, color="black", pad=20)
     plt.tight_layout()
-    plt.savefig(CONFIG['plots_dir'] + 'SECS' + '_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+    plt.savefig(os.path.join(CONFIG['plots_dir'], 'SECS' + '_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
     plt.show()
     print('SECS plots completed!')
     return
