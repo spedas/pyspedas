@@ -332,9 +332,6 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("OB_B"))
         time.sleep(sleep_time)
 
-    # This test downloads a large number of files, and is liable to trigger a "too many requests"
-    # error on the MAVEN SDC server.
-    @unittest.skip
     def test_load_sta_data(self):
         del_data("*")
         # No datatype means "load everything"
