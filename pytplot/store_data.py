@@ -343,8 +343,9 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
                 temp.coords['spec_bins'] = (('time', spec_bins_dimension+'_dim'), spec_bins.values)
             else:
                 temp.coords['spec_bins'] = (spec_bins_dimension+'_dim', np.squeeze(spec_bins.values))
-        except ValueError:
+        except ValueError as err:
             logging.warning('store_data: conflicting size for at least one dimension for variable %s', name)
+            logging.warning('store_data: ValueError exception text: %s',str(err))
 
     for d in coordinate_list:
         if data[d] is None:
