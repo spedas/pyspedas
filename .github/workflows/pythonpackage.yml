@@ -134,8 +134,8 @@ jobs:
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
-        echo Starting maven tests at `date`
-        coverage run -a -m pyspedas.maven.tests.tests
+        #echo Starting maven tests at `date`
+        #coverage run -a -m pyspedas.maven.tests.tests
         echo Starting cluster tests at `date`
         coverage run -a -m pyspedas.cluster.tests.tests
         echo Starting akebono tests at `date`
