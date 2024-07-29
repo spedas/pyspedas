@@ -546,35 +546,6 @@ def download(
 
         short_path = local_file[: 1 + local_file.rfind("/")]
 
-        #if is_fsspec_uri(url) and not no_download and force_download:
-        #    logging.warn("Downloading to local from URI (NOT RECOMMENDED)!")
-        #    protocol, path = url.split("://")
-        #    fs = fsspec.filesystem(protocol, anon=False)
-
-        #    # obtain the file names to be used in the new remote_file argument
-        #    # URIs are not Paths so cannot use Path.name or os.path.basename
-        #    links = [link[link.rfind("/")+1:] for link in fs.glob(url)]
-
-        #    for new_link in links:
-        #        resp_data = download(
-        #            remote_path=remote_path,
-        #            remote_file=short_path + new_link,
-        #            local_path=local_path,
-        #            username=username,
-        #            password=password,
-        #            verify=verify,
-        #            headers=headers,
-        #            session=session,
-        #            basic_auth=basic_auth,
-        #            text_only=text_only,
-        #            no_download=no_download,
-        #            force_download=force_download,
-        #        )
-        #        if resp_data is not None:
-        #            for file in resp_data:
-        #                out.append(file)
-        #    continue
-
         if not no_download:
             # expand the wildcards in the url
             if ("?" in url or "*" in url or regex) and (
@@ -739,23 +710,20 @@ def download(
 
             local = local_file[local_file.rfind("/") + 1 :]
 
-            print(local_path_to_search)
-            import sys
-            sys.exit()
-
             # find matching files from URI
             if is_fsspec_uri(local_path_to_search):
                 protocol, path = local_path_to_search.split("://")
                 fs = fsspec.filesystem(protocol, anon=False)
 
                 if not regex:
-                    matching_files = fs.expand_path(local, recursive=True)
+                    matching_files = list(filter(lambda f: local in f, fs.find(local_path_to_search)))
                 else:
-                    reg_expression = re.compile(local)
-                    matching_files = list(filter(reg_expression.match, fs.expand_path(local, recursive=True)))
+                    reg_expression = re.compile(local_path_to_search)
+                    matching_files = list(filter(reg_expression.match, fs.find(local_path_to_search)))
 
                 for file in matching_files:
-                    temp_out.append(file) # full path?
+                    temp_out.append(protocol + "://" + file)
+                    logging.info("Streaming from local URI (download-failed): " + temp_out[-1])
             else:
                 for dirpath, dirnames, filenames in os.walk(local_path_to_search):
                     if not regex:
