@@ -113,6 +113,19 @@ class SECSTestCases(unittest.TestCase):
         # Returns a Pandas dataframe, not tplot variables
         self.assertTrue(len(d) > 0)
 
+    def test_load_gz(self):
+        # A few dates in 2007 have .gz files (instead of .zip files)
+        # This only happens for the UCLA data, not the SPDF data
+        del_data()
+        dtype = "EICS"  # 'EICS or SECS'
+        trange = ["2007-02-09/02:15:35", "2007-02-09/02:15:35"]
+        d = pyspedas.secs.data(
+            trange=trange,
+            dtype=dtype,
+            downloadonly=True,
+        )
+        self.assertTrue(len(d) > 0)
+
     def test_none_cases(self):
         # No data type provided
         del_data()
