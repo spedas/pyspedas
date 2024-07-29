@@ -70,6 +70,9 @@ def tplot_restore(filename):
                 temp_v2_data = temp_tplot['dq'][i][1][0][6]
                 temp_v3_data = temp_tplot['dq'][i][1][0][8]
 
+                # Data array gets transposed...so we need to swap v1 and v3, while v2 stays the same
+                temp_v1_data, temp_v3_data = temp_v3_data, temp_v1_data
+
                 #Change from little endian to big endian, since pandas apparently hates little endian
                 #We might want to move this into the store_data procedure eventually
                 if (temp_x_data.dtype.byteorder == '>'):
@@ -96,6 +99,9 @@ def tplot_restore(filename):
             elif len(temp_tplot['dq'][i][1][0]) == 8:
                 temp_v1_data = temp_tplot['dq'][i][1][0][4]
                 temp_v2_data = temp_tplot['dq'][i][1][0][6]
+
+                # Data array gets transposed, so we have to swap v1 and v2
+                temp_v1_data, temp_v2_data = temp_v2_data, temp_v1_data
 
                 #Change from little endian to big endian, since pandas apparently hates little endian
                 #We might want to move this into the store_data procedure eventually
