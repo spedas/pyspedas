@@ -9,6 +9,7 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
          probe:Union[str,List[str]]='1',
          instrument:str='fgm',
          datatype:str='up',
+         prefix:str = '',
          suffix:str='',
          get_support_data:bool=False,
          varformat:str=None,
@@ -40,6 +41,10 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
         datatype: str
             Data type; Valid options:
             Default: 'up'
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -103,6 +108,10 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
         pyspedas.cluster.whi
 
     """
+    if prefix is None:
+        prefix = ''
+    if suffix is None:
+        suffix = ''
 
     if not isinstance(probe, list):
         probe = [probe]
@@ -160,7 +169,7 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
 
     if notplot:
         return tvars

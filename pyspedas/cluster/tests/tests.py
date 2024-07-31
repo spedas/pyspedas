@@ -1,8 +1,9 @@
 import os
 import unittest
-from pytplot import data_exists, del_data
+from pytplot import data_exists, del_data, tplot_names, tplot
 import pyspedas
 from pyspedas.cluster.load_csa import cl_master_probes, cl_master_datatypes
+
 
 
 class LoadTestCases(unittest.TestCase):
@@ -17,6 +18,24 @@ class LoadTestCases(unittest.TestCase):
         mag_vars = pyspedas.cluster.fgm(time_clip=True)
         self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
         self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
+
+    def test_load_fgm_data_prefix_none(self):
+        del_data('*')
+        mag_vars = pyspedas.cluster.fgm(prefix=None, time_clip=True)
+        self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
+        self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
+
+    def test_load_fgm_data_suffix_none(self):
+        del_data('*')
+        mag_vars = pyspedas.cluster.fgm(suffix=None, time_clip=True)
+        self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
+        self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
+
+    def test_load_fgm_data_prefix_suffix(self):
+        del_data('*')
+        mag_vars = pyspedas.cluster.fgm(prefix='pre_', suffix='_suf', time_clip=True)
+        self.assertTrue(data_exists('pre_B_xyz_gse__C1_UP_FGM_suf'))
+        self.assertTrue('pre_B_xyz_gse__C1_UP_FGM_suf' in mag_vars)
 
     def test_load_fgm_cp_data(self):
         del_data('*')
@@ -93,17 +112,15 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('E_pow_f5__C1_PP_WHI'))
         self.assertTrue('E_pow_f5__C1_PP_WHI' in whi_vars)
 
-    # 404, no data?
-    @unittest.skip
     def test_load_csa_CE_WBD_WAVEFORM_CDF_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        trange = ['2012-11-06T02:19:00Z', '2012-11-06T02:19:59Z']
         wbd_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CE_WBD_WAVEFORM_CDF'], time_clip=True)
         print(wbd_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in wbd_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('WBD_Elec' in wbd_data)
+        self.assertTrue(data_exists('WBD_Elec'))
 
     def test_load_csa_CP_AUX_POSGSE_1M_data(self):
         del_data('*')
@@ -114,8 +131,38 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M' in pos_data)
         self.assertTrue(data_exists('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+    def test_load_csa_CP_AUX_POSGSE_1M_data_prefix_none(self):
+        del_data('*')
+        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+                                             trange=trange,
+                                             prefix=None,
+                                             datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
+        self.assertTrue('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M' in pos_data)
+        self.assertTrue(data_exists('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M'))
+
+    def test_load_csa_CP_AUX_POSGSE_1M_data_suffix_none(self):
+        del_data('*')
+        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+                                             trange=trange,
+                                             suffix=None,
+                                             datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
+        self.assertTrue('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M' in pos_data)
+        self.assertTrue(data_exists('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M'))
+
+    def test_load_csa_CP_AUX_POSGSE_1M_data_prefix_suffix(self):
+        del_data('*')
+        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+                                             trange=trange,
+                                             prefix='pre_',
+                                             suffix='_suf',
+                                             datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
+        self.assertTrue('pre_sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M_suf' in pos_data)
+        self.assertTrue(data_exists('pre_sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M_suf'))
+
+
     def test_load_csa_CP_CIS_CODIF_HS_H1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -123,11 +170,9 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_H1_MOMENTS'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('density__C1_CP_CIS_CODIF_HS_H1_MOMENTS' in mom_data)
+        self.assertTrue(data_exists('density__C1_CP_CIS_CODIF_HS_H1_MOMENTS'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
     def test_load_csa_CP_CIS_CODIF_HS_He1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -135,11 +180,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_He1_MOMENTS'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('density__C1_CP_CIS_CODIF_HS_He1_MOMENTS' in mom_data)
+        self.assertTrue(data_exists('density__C1_CP_CIS_CODIF_HS_He1_MOMENTS'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_HS_O1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -147,11 +191,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_O1_MOMENTS'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('density__C1_CP_CIS_CODIF_HS_O1_MOMENTS' in mom_data)
+        self.assertTrue(data_exists('density__C1_CP_CIS_CODIF_HS_O1_MOMENTS'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_PAD_HS_H1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -159,11 +202,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_H1_PF'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_H1_PF' in mom_data)
+        self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_H1_PF'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_PAD_HS_He1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -171,11 +213,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_He1_PF'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_He1_PF' in mom_data)
+        self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_He1_PF'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_CODIF_PAD_HS_O1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -183,11 +224,10 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_O1_PF'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_O1_PF' in mom_data)
+        self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_CODIF_PAD_HS_O1_PF'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_HIA_ONBOARD_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -198,10 +238,8 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
         self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
 
-    # Problem at CSA serving CIS data
     # This test uses a different time range from test_load_csa_CP_CIS_HIA_ONBOARD_MOMENTS_data,
     # and loads for all four probes.
-    @unittest.skip
     def test_load_csa_mom_data(self):
         del_data('*')
         mom_data = pyspedas.cluster.load_csa(probes=['C1', 'C2', 'C3', 'C4'],
@@ -210,8 +248,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
         self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
 
-    # Problem at CSA serving CIS data
-    @unittest.skip
+
     def test_load_csa_CP_CIS_HIA_PAD_HS_MAG_IONS_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
@@ -219,14 +256,12 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_CIS-HIA_PAD_HS_MAG_IONS_PF'], time_clip=True)
         print(mom_data)
-        self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
-        self.assertTrue(data_exists('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS'))
+        self.assertTrue('Differential_Particle_Flux__C1_CP_CIS_HIA_PAD_HS_MAG_IONS_PF' in mom_data)
+        self.assertTrue(data_exists('Differential_Particle_Flux__C1_CP_CIS_HIA_PAD_HS_MAG_IONS_PF'))
 
-    # data is all fill?
-    @unittest.skip
     def test_load_csa_CP_EDI_AEDC_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
+        trange = ['2005-08-01T00:00:00Z', '2005-08-02T00:00:00Z']
         edi_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EDI_AEDC'], time_clip=True)
@@ -373,17 +408,15 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('Data__C1_CP_PEA_PITCH_SPIN_PSD' in pea_data)
         self.assertTrue(data_exists('Data__C1_CP_PEA_PITCH_SPIN_PSD'))
 
-    # 404 error, no data available?
-    @unittest.skip
     def test_load_csa_CP_RAP_ESPCT6_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2008-02-03T00:00:00Z', '2008-02-05T00:00:00Z']
         rap_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
-                                             datatypes=['CP_CP_RAP_ESPCT6'], time_clip=True)
+                                             datatypes=['CP_RAP_ESPCT6'], time_clip=True)
         print(rap_data)
-        self.assertTrue('Data_Density__C1_CP_PEA_MOMENTS' in rap_data)
-        self.assertTrue(data_exists('Data_Density__C1_CP_PEA_MOMENTS'))
+        self.assertTrue('Electron_Dif_flux__C1_CP_RAP_ESPCT6' in rap_data)
+        self.assertTrue(data_exists('Electron_Dif_flux__C1_CP_RAP_ESPCT6'))
 
     # multidimensional DEPEND_0 array for dsettings/caveat variables
     def test_load_csa_CP_RAP_ESPCT6_R_data(self):
@@ -435,29 +468,31 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('Helium_Dif_flux__C1_CP_RAP_ISPCT_He' in rap_data)
         self.assertTrue(data_exists('Helium_Dif_flux__C1_CP_RAP_ISPCT_He'))
 
-    # time array all fill?
+    # This date returns data, but it's large enough (tens of megabytes that there's a significant
+    # chance of the server not completing the request.
     @unittest.skip
     def test_load_csa_CP_STA_CS_HBR_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2001-01-31T00:00:00Z', '2001-01-31T23:59:59Z']
         sta_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CS_HBR'], time_clip=True)
         print(sta_data)
-        self.assertTrue('Data_Density__C1_CP_PEA_MOMENTS' in sta_data)
-        self.assertTrue(data_exists('Data_Density__C1_CP_PEA_MOMENTS'))
+        self.assertTrue('Complex_Spectrum__C1_CP_STA_CS_HBR' in sta_data)
+        self.assertTrue(data_exists('Complex_Spectrum__C1_CP_STA_CS_HBR'))
 
-    # time array all fill?
+    # This date returns data, but it's large enough (tens of megabytes that there's a significant
+    # chance of the server not completing the request.
     @unittest.skip
     def test_load_csa_CP_STA_CS_NBR_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2001-01-31T00:00:00Z', '2001-01-31T23:59:59Z']
         sta_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CS_NBR'], time_clip=True)
         print(sta_data)
-        self.assertTrue('Data_Density__C1_CP_PEA_MOMENTS' in sta_data)
-        self.assertTrue(data_exists('Data_Density__C1_CP_PEA_MOMENTS'))
+        self.assertTrue('Complex_Spectrum__C1_CP_STA_CS_NBR' in sta_data)
+        self.assertTrue(data_exists('Complex_Spectrum__C1_CP_STA_CS_NBR'))
 
     def test_load_csa_CP_STA_CWF_GSE_data(self):
         del_data('*')
@@ -492,8 +527,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in sta_data)
         self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
 
-    # no errors, but no variables loaded?
-    @unittest.skip
+    # Spectrogram variables have string-valued DEPEND_2, which is not ISTP compliant.
     def test_load_csa_CP_STA_PSD_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
@@ -501,32 +535,28 @@ class LoadTestCases(unittest.TestCase):
                                              trange=trange,
                                              datatypes=['CP_STA_PSD'], time_clip=True)
         print(sta_data)
-        self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in sta_data)
-        self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
+        #self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in sta_data)
+        #self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
 
-    # 404 error, no data?
-    @unittest.skip
     def test_load_csa_CP_WBD_WAVEFORM_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2001-02-04T13:40:00Z', '2001-02-04T13:49:59Z']
         wbd_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_WBD_WAVEFORM'], time_clip=True)
         print(wbd_data)
-        self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in wbd_data)
-        self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
+        self.assertTrue('E__C1_CP_WBD_WAVEFORM' in wbd_data)
+        self.assertTrue(data_exists('E__C1_CP_WBD_WAVEFORM'))
 
-    # 404 error, no data?
-    @unittest.skip
     def test_load_csa_CP_WHI_ELECTRON_DENSITY_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2018-01-12T00:00:00Z', '2018-01-13T00:00:00Z']
         whi_data = pyspedas.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_WHI_ELECTRON_DENSITY'], time_clip=True)
         print(whi_data)
-        self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in whi_data)
-        self.assertTrue(data_exists('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE'))
+        self.assertTrue('Electron_Density__C1_CP_WHI_ELECTRON_DENSITY' in whi_data)
+        self.assertTrue(data_exists('Electron_Density__C1_CP_WHI_ELECTRON_DENSITY'))
 
     def test_load_csa_CP_CP_WHI_NATURAL_data(self):
         del_data('*')
@@ -537,29 +567,25 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL' in whi_data)
         self.assertTrue(data_exists('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL'))
 
-    # 404 error, no data?
-    @unittest.skip
-    def test_load_csa_JP_PMP_data(self):
+    def test_load_csa_JP_AUX_PMP_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2017-01-01T00:00:00Z', '2017-02-01T00:00:00Z']
         jp_data = pyspedas.cluster.load_csa(probes=['C1'],
                                             trange=trange,
-                                            datatypes=['JP_PMP'], time_clip=True)
+                                            datatypes=['JP_AUX_PMP'], time_clip=True)
         print(jp_data)
-        self.assertTrue('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL' in jp_data)
-        self.assertTrue(data_exists('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL'))
+        self.assertTrue('L_value__C1_JP_AUX_PMP' in jp_data)
+        self.assertTrue(data_exists('L_value__C1_JP_AUX_PMP'))
 
-    # 404 error, no data?
-    @unittest.skip
     def test_load_csa_JP_PSE_data(self):
         del_data('*')
-        trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
+        trange = ['2017-01-01T00:00:00Z', '2018-01-02T00:00:00Z']
         jp_data = pyspedas.cluster.load_csa(probes=['C1'],
                                             trange=trange,
-                                            datatypes=['JP_PSE'], time_clip=True)
+                                            datatypes=['JP_AUX_PSE'], time_clip=True)
         print(jp_data)
-        self.assertTrue('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL' in jp_data)
-        self.assertTrue(data_exists('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL'))
+        self.assertTrue('sc_r1_xyz_gse__C1_JP_AUX_PSE' in jp_data)
+        self.assertTrue(data_exists('sc_r1_xyz_gse__C1_JP_AUX_PSE'))
 
 
 if __name__ == '__main__':

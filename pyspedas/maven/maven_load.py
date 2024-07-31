@@ -56,9 +56,10 @@ def maven_filenames(
     only_update_prefs : bool, optional
         If True, only updates preferences and does not return filenames. Defaults to False.
     local_dir : str, optional
-        Local directory to use. Defaults to None
+        Local directory to use. Defaults to None.
     public: bool, optional
         If False, try loading data from the non-public service
+
 
     Returns
     -------
@@ -201,7 +202,7 @@ def load_data(
     get_support_data=False,
     get_metadata=False,
     auto_yes=False,
-    public = True
+    public=True
 ):
     """
     This function downloads MAVEN data loads it into tplot variables, if applicable.
@@ -274,7 +275,9 @@ def load_data(
     auto_yes : bool, optional
         If True, automatically answers 'yes' to prompts. Defaults to False.
     public: bool, optional
-        If false, try using the non-public interface
+    If false, try using the non-public interface
+
+
     Returns
     -------
     dict
@@ -339,8 +342,13 @@ def load_data(
                     file_type_match = False
                     desc = l2_regex.match(f).group("description")
                     for t in type:
-                        if t in desc:
-                            file_type_match = True
+                        #kluge for STATIC, jmm, 2024-07-24, otherwise type='d1' results in ca,d0,d1,d4 loading
+                        if instr == "sta":
+                            if t+'-' in desc:
+                                file_type_match = True
+                        else:
+                            if t in desc:
+                                file_type_match = True
                     if not file_type_match:
                         continue
 

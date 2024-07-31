@@ -2,9 +2,10 @@ import os
 import unittest
 from pytplot import data_exists
 import pyspedas
-from pytplot import del_data
+from pytplot import del_data, tplot
 from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
 
+global_display=False
 
 class LoadTestCases(unittest.TestCase):
     def tearDown(self):
@@ -40,6 +41,12 @@ class LoadTestCases(unittest.TestCase):
         # L4 density
         dens = pyspedas.rbsp.emfisis(trange=['2018-11-5', '2018-11-6'], datatype='density', level='l4')
         self.assertTrue(data_exists('density'))
+
+    def test_load_hfr_spectra(self):
+        from pytplot import tplot
+        pyspedas.rbsp.emfisis(trange=['2013-01-17', '2013-01-18'], datatype='hfr', level='l2', wavetype='spectra')
+        self.assertTrue(data_exists('HFR_Spectra'))
+        tplot(['HFR_Spectra'], display=global_display, save_png='emphisis_hfr.png')
 
     def test_load_efw_data(self):
         efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l2')

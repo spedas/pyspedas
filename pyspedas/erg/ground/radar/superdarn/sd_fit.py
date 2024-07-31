@@ -737,6 +737,8 @@ def sd_fit(
             get_metadata_vars = get_data(loaded_data[-1], metadata=True)
             if get_metadata_vars is not None:
                 datfiles = deepcopy(get_metadata_vars["CDF"]["FILENAME"])
+                if type(datfiles) is str:
+                    datfiles = [datfiles]
                 position_tbl_dictionary = {}
                 for i in range(10):
                     position_tbl_dictionary[str(i)] = {

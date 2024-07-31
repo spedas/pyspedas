@@ -8,6 +8,18 @@ class LoadTestCases(unittest.TestCase):
         mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'], time_clip=True)
         self.assertTrue(data_exists('Magnitude'))
 
+    def test_load_mfi_prefix_none(self):
+        mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'], prefix=None)
+        self.assertTrue(data_exists('Magnitude'))
+
+    def test_load_mfi_suffix_none(self):
+        mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'], suffix=None)
+        self.assertTrue(data_exists('Magnitude'))
+
+    def test_load_mfi_prefix_suffix(self):
+        mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'], prefix='pre_', suffix='_suf')
+        self.assertTrue(data_exists('pre_Magnitude_suf'))
+
     def test_load_mfi_notplot(self):
         mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'], notplot=True)
         self.assertTrue(isinstance(mfi_vars, dict))

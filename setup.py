@@ -39,7 +39,7 @@ setup(
         "pywavelets",
         "astropy",
         "hapiclient>=0.2.2",
-        "pytplot-mpl-temp>=2.2.32",
+        "pytplot-mpl-temp>=2.2.38",
         "viresclient",
         "fsspec",
         "s3fs",

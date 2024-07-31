@@ -7,7 +7,7 @@ from pytplot import store_data, options, timespan, tplot, tplot_options, degap, 
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = False
+global_display = True
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -77,6 +77,10 @@ class PlotTestCases(unittest.TestCase):
         self.assertEqual(tr_fge,3)
         self.assertEqual(tr_btotal,1)
         self.assertEqual(tr_pseudo,4)
+        # We need to ensure thc_fge_dsl has a 'v' component, so we can pretend this variable is a spectrogram
+        fgs_data = pytplot.get_data('thc_fge_dsl')
+        fgs_meta = pytplot.get_data('thc_fge_dsl', metadata=True)
+        store_data('thc_fge_dsl',data={'x':fgs_data.times, 'y':fgs_data.y, 'v':[0, 1, 2]})
         options('thc_fge_dsl','spec',1)
         tr_pseudo_spec=count_traces('test_pseudo_colors')
         self.assertEqual(tr_pseudo_spec,1)
@@ -110,6 +114,9 @@ class PlotTestCases(unittest.TestCase):
         options('thg_ask_atha','y_no_resample',1)
         tplot_options('title', 'Should be mostly dark with a few lighter features')
         tplot('thg_ask_atha', save_png='thg_ask_atha_no_resample',display=global_display)
+        tplot_options('title', 'Should be somewhat lighter now with logarithmic z scale')
+        options('thg_ask_atha','zlog',"log")
+        tplot('thg_ask_atha', save_png='thg_ask_atha_no_resample_zlog',display=global_display)
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
@@ -118,7 +125,7 @@ class PlotTestCases(unittest.TestCase):
         themis.esa(probe='a',trange=['2016-12-11','2016-12-12'])
         timespan('2016-12-11',1,'days')
         options('tha_peef_en_eflux','yrange', [1000,3000])
-        tplot_options('title', 'Logarithmic bin boundaries: should be a boundary just below the tick mark at y=2000 eV')
+        tplot_options('title', 'Logarithmic bin boundaries: should be a boundary at y~=1947 eV, just below the tick mark at y=2000')
         tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
@@ -141,7 +148,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2016-12-11',1,'hours')
         options('tha_peef_en_eflux','yrange', [1000,3000])
         options('tha_peef_en_eflux', 'y_interp',1)
-        options('tha_peef_en_eflux', 'Y_interp_points', 200)
+        options('tha_peef_en_eflux', 'y_interp_points', 200)
         tplot_options('title', 'Interpolated along y axis')
         tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux_interp_y',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
@@ -155,7 +162,7 @@ class PlotTestCases(unittest.TestCase):
         options('tha_peef_en_eflux', 'x_interp',1)
         options('tha_peef_en_eflux', 'x_interp_points', 500)
         options('tha_peef_en_eflux', 'y_interp',1)
-        options('tha_peef_en_eflux', 'Y_interp_points', 200)
+        options('tha_peef_en_eflux', 'y_interp_points', 200)
         tplot_options('title', 'Interpolated along both x and y axes')
         tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux_interp_both',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
@@ -187,7 +194,7 @@ class PlotTestCases(unittest.TestCase):
     def test_fast_specplot(self):
         del_data("*")
         import pyspedas
-        # FAST TEAMS has fill values -1e31 in V, tod is an energy distribution, the bottom two are pitch angle distributions
+        # FAST TEAMS has fill values -1e31 in V, top is an energy distribution, the bottom two are pitch angle distributions
         teams_vars = pyspedas.fast.teams(['1998-09-05', '1998-09-06'])
         timespan('1998-09-05',1,'days')
         tplot_options('title', 'Fill should be removed, bottom two panels should go to Y=-90 deg')
@@ -278,6 +285,7 @@ class PlotTestCases(unittest.TestCase):
         # Make a combined variable with both ESA and SST spectral data (disjoint energy ranges)
         store_data('combined_spec', ['tha_peif_en_eflux', 'tha_psif_en_eflux'])
         options('tha_peif_en_eflux', 'y_no_resample', 1)
+        options('combined_spec','y_range',[5.0, 7e+06])
         vars = ['tha_peif_en_eflux', 'combined_spec', 'tha_psif_en_eflux']
         tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=ESA, middle=combined, bottom=SST')
         tplot(vars, save_png='test_pseudo_spectra_disjoint_energies', display=global_display)
@@ -303,10 +311,10 @@ class PlotTestCases(unittest.TestCase):
 
         # Zoom in o a burst interval
         timespan('2007-03-23/12:20', 10, 'minutes')
-        tplot_options('title', '')
-        tplot(vars, save_png='test_pseudo_spectra_full_burst_zoomed',display=global_display)
         tplot_options('title', 'Combined full and burst cadence with same energies (zoomed in) top=fast, mid=combined, bot=burst')
+        tplot(vars, save_png='test_pseudo_spectra_full_burst_zoomed',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        tplot_options('title', '')
 
     def test_pseudo_spectra_plus_line(self):
         del_data("*")

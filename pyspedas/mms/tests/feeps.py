@@ -1,4 +1,5 @@
 import unittest
+import logging
 from ..feeps.mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
 from pyspedas import mms_load_feeps, mms_feeps_pad
 from pyspedas.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
@@ -11,6 +12,29 @@ class FEEPSTestCases(unittest.TestCase):
         mms_load_feeps(trange=['2015-12-15/10:00', '2015-12-15/12:00'], time_clip=True)
         data = get('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin')
         self.assertTrue(data.y[-1, :].sum() != 0.0)
+
+    def test_log_filtering(self):
+        # Ensure that log message filtering can be reliably enabled and disabled
+        # Enable filtering
+        saw_filtered_entry = False
+        with self.assertLogs(level='WARNING') as cm:
+            # Guarantee at least one warning is logged
+            logging.warning("Dummy log entry")
+            mms_load_feeps(trange=['2015-12-15/10:00', '2015-12-15/12:00'], filter_recvary_warnings=True)
+            for log_output in cm.output:
+                if  'record-varying' in log_output:
+                    saw_filtered_entry = True
+        self.assertFalse(saw_filtered_entry)
+        # Disable filtering, ensure that filter from previous call was successfully removed
+        saw_filtered_entry = False
+        with self.assertLogs(level='WARNING') as cm:
+            # Guarantee at least one warning is logged
+            logging.warning("Dummy log entry")
+            mms_load_feeps(trange=['2015-12-15/10:00', '2015-12-15/12:00'], filter_recvary_warnings=False)
+            for log_output in cm.output:
+                if 'record-varying' in log_output:
+                    saw_filtered_entry = True
+        self.assertTrue(saw_filtered_entry)
 
     def test_feeps_sitl(self):
         mms_load_feeps(datatype='electron', trange=['2016-11-23', '2016-11-24'], data_rate='srvy', probe=4,

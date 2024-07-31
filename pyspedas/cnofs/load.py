@@ -9,6 +9,7 @@ from .config import CONFIG
 def load(trange=['2013-11-5', '2013-11-6'], 
          instrument='cindi',
          datatype='efield_1sec',
+         prefix='',
          suffix='', 
          get_support_data=False, 
          varformat=None,
@@ -25,6 +26,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.cnofs.plp
         pyspedas.cnofs.vefi
     """
+
+    if prefix is None:
+        prefix=''
+    if suffix is None:
+        suffix=''
 
     if instrument == 'cindi':
         pathformat = instrument+'/ivm_500ms_cdf/%Y/cnofs_'+instrument+'_ivm_500ms_%Y%m%d_v??.cdf'
@@ -48,7 +54,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars

@@ -10,12 +10,16 @@ from pyspedas.mms.feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
 from pyspedas.mms.mms_config import CONFIG
 from pytplot import time_clip as tclip
 
-
+def recvary_log_filter(log):
+    if 'record-varying' in log.msg:
+        return False
+    else:
+        return True
 
 def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 
     level='l2', datatype='electron', varformat=None, varnames=[], get_support_data=True, suffix='', time_clip=False,
     no_update=False, available=False, notplot=False, no_flatfield_corrections=False, data_units=['count_rate', 'intensity'], 
-    latest_version=False, major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False):
+    latest_version=False, major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False, filter_recvary_warnings=True):
     """
     Load data from the MMS Fly's Eye Energetic Particle Sensor (FEEPS)
     
@@ -116,6 +120,9 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
 
+        filter_recvary_warnings: bool
+            If True, capture warnings from cdf_to_tplot and filter out the ones complaining about non-record-varying support data with timestamps
+
     Returns
     --------
         list of str
@@ -133,16 +140,24 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
     """
 
+    # For log filtering
+    from pyspedas import logger
     # as of 3 July 2023, there's a mixture of v7.x.x and v6.x.x files at the SDC
     # these files aren't compatible, so we need to only load the latest major version
     # to avoid crashes (unless otherwise specified)
     if not latest_version and not major_version and min_version is None and cdf_version is None:
         major_version = True
 
+    if filter_recvary_warnings:
+        logger.addFilter(recvary_log_filter)
+
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='feeps',
             datatype=datatype, varformat=varformat, varnames=varnames, get_support_data=get_support_data, suffix=suffix,
             no_update=no_update, available=available, latest_version=latest_version,
             major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
+
+    if filter_recvary_warnings:
+        logger.removeFilter(recvary_log_filter)
 
     if tvars == [] or available or notplot or CONFIG['download_only'] or tvars is None:
         return tvars

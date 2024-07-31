@@ -185,8 +185,11 @@ def lepe(
     if (isinstance(loaded_data, dict)) and (len(loaded_data) > 0):
         if (level == 'l2') and (datatype == 'omniflux'):
             tplot_variables = []
-            v_array = (loaded_data[prefix + 'FEDO' + suffix]['v'][:, 0, :] +
-                       loaded_data[prefix + 'FEDO' + suffix]['v'][:, 1, :]) / 2.
+            v_keyname = 'v'
+            if v_keyname not in loaded_data[prefix + 'FEDO' + suffix]:
+                v_keyname = 'v1'
+            v_array = (loaded_data[prefix + 'FEDO' + suffix][v_keyname][:, 0, :] +
+                       loaded_data[prefix + 'FEDO' + suffix][v_keyname][:, 1, :]) / 2.
             # change minus values to NaN
             v_array = np.where(v_array < 0., np.nan, v_array)
             all_nan_v_indices_array = np.where(
@@ -241,11 +244,14 @@ def lepe(
                 inside_indices_array = np.argwhere( (trange_dt64[0] < time_array)
                              & (trange_dt64[1] > time_array))
                 inside_indices_list = inside_indices_array[:, 0].tolist()
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[prefix + 'FEDU' + suffix]:
+                    v_keyname = 'v1'
                 store_data(prefix + 'FEDU' + suffix,
                            data={'x': time_array[inside_indices_list],
                                  'y': loaded_data[prefix + 'FEDU' + suffix]['y'][inside_indices_list],
-                                 'v1': (loaded_data[prefix + 'FEDU' + suffix]['v'][inside_indices_list][:, 0, :]
-                                        + loaded_data[prefix + 'FEDU' + suffix]['v'][inside_indices_list][:, 1, :]) / 2.,  # arithmetic mean
+                                 'v1': (loaded_data[prefix + 'FEDU' + suffix][v_keyname][inside_indices_list][:, 0, :]
+                                        + loaded_data[prefix + 'FEDU' + suffix][v_keyname][inside_indices_list][:, 1, :]) / 2.,  # arithmetic mean
                                  'v2': ['01', '02', '03', '04', '05', 'A', 'B', '18', '19', '20', '21', '22'],
                                  'v3': [i for i in range(16)]},
                        attr_dict={'CDF':loaded_data[prefix + 'FEDU' + suffix]['CDF']})

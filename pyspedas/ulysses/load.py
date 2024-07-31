@@ -8,11 +8,13 @@ from .config import CONFIG
 def load(trange:List[str]=['2009-01-01', '2009-01-02'],
          instrument:str='vhm',
          datatype:str='1min',
+         prefix:str='',
          suffix:str='',
          get_support_data:bool=False,
          varformat:str=None,
          varnames:List[str]=[],
          downloadonly:bool=False,
+         force_download:bool=False,
          notplot:bool=False,
          no_update:bool=False,
          time_clip:bool=False) -> List[str]:
@@ -32,6 +34,10 @@ def load(trange:List[str]=['2009-01-01', '2009-01-02'],
         datatype: str
             Data type
             Default: '1min'
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -57,6 +63,10 @@ def load(trange:List[str]=['2009-01-01', '2009-01-02'],
             tplot variables
             Default: False
 
+        force_download: bool
+            Set this flag to download the CDF files, even if the local file is newer
+            Default: False
+
         notplot: bool
             Return the data in hash tables instead of creating tplot variables
             Default: False
@@ -78,6 +88,11 @@ def load(trange:List[str]=['2009-01-01', '2009-01-02'],
     _____
     This function is not meant to be called directly; please see the instrument specific wrappers in __init__.py
     """
+
+    if prefix is None:
+        prefix=''
+    if suffix is None:
+        suffix=''
 
     if instrument == 'vhm':
         pathformat = 'mag_cdaweb/vhm_'+datatype+'/%Y/uy_'+datatype+'_vhm_%Y%m%d_v??.cdf'
@@ -106,7 +121,7 @@ def load(trange:List[str]=['2009-01-01', '2009-01-02'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)
@@ -116,7 +131,7 @@ def load(trange:List[str]=['2009-01-01', '2009-01-02'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars

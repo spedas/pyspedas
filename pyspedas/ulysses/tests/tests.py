@@ -44,6 +44,18 @@ class LoadTestCases(unittest.TestCase):
         data = pyspedas.ulysses.grb()
         self.assertTrue(data_exists('Count_Rate'))
 
+    def test_load_grb_data_prefix_none(self):
+        data = pyspedas.ulysses.grb(prefix=None)
+        self.assertTrue(data_exists('Count_Rate'))
+
+    def test_load_grb_data_suffix_none(self):
+        data = pyspedas.ulysses.grb(suffix=None)
+        self.assertTrue(data_exists('Count_Rate'))
+
+    def test_load_grb_data_prefix_suffix(self):
+        data = pyspedas.ulysses.grb(prefix='pre_', suffix='_suf')
+        self.assertTrue(data_exists('pre_Count_Rate_suf'))
+
     def test_downloadonly(self):
         files = pyspedas.ulysses.urap(downloadonly=True, trange=['2003-01-01', '2003-01-02'])
         self.assertTrue(os.path.exists(files[0]))

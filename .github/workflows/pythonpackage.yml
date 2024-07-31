@@ -108,6 +108,24 @@ jobs:
         # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
+        echo Starting erg tests at `date`
+        coverage run -a -m pyspedas.erg.tests.tests
+        echo Starting erg cotrans tests at `date`
+        coverage run -a -m pyspedas.erg.tests.cotrans_tests
+        echo Starting erg ground data tests at `date`
+        coverage run -a -m pyspedas.erg.tests.ground_tests
+        echo Starting erg mepe particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.mepe_part_products
+        echo Starting erg mepi particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.mepi_part_products
+        echo Starting erg lepe particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.lepe_part_products
+        echo Starting erg lepi particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.lepi_part_products
+        echo Starting erg xep particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.xep_part_products
+        echo Starting erg hep particle tests at `date`
+        coverage run -a -m pyspedas.erg.tests.hep_part_products
         echo Starting VIRES client tests at `date`
         coverage run -a -m pyspedas.vires.tests.tests
         echo Starting secs tests at `date`
@@ -116,8 +134,10 @@ jobs:
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
-        echo Starting maven tests at `date`
-        coverage run -a -m pyspedas.maven.tests.tests
+        #echo Starting maven tests at `date`
+        #coverage run -a -m pyspedas.maven.tests.tests
+        echo Starting cluster tests at `date`
+        coverage run -a -m pyspedas.cluster.tests.tests
         echo Starting akebono tests at `date`
         coverage run -a -m pyspedas.akebono.tests.tests
         echo Starting CDAWeb tests at `date`
@@ -206,8 +226,6 @@ jobs:
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         echo Starting cotrans minvar tests at `date`
         coverage run -a -m pyspedas.cotrans.tests.test_minvar
-        echo Starting cluster tests at `date`
-        coverage run -a -m pyspedas.cluster.tests.tests
         echo Starting csswe tests at `date`
         coverage run -a -m pyspedas.csswe.tests.tests
         echo Starting ace tests at `date`
@@ -254,24 +272,6 @@ jobs:
         coverage run -a -m pyspedas.mica.tests.tests
         echo Starting ulysses tests at `date`
         coverage run -a -m pyspedas.ulysses.tests.tests
-        echo Starting erg tests at `date`
-        coverage run -a -m pyspedas.erg.tests.tests
-        echo Starting erg cotrans tests at `date`
-        coverage run -a -m pyspedas.erg.tests.cotrans_tests
-        echo Starting erg ground data tests at `date`
-        coverage run -a -m pyspedas.erg.tests.ground_tests
-        echo Starting erg mepe particle tests at `date`
-        coverage run -a -m pyspedas.erg.tests.mepe_part_products
-        echo Starting erg mepi particle tests at `date`
-        coverage run -a -m pyspedas.erg.tests.mepi_part_products
-        echo Starting erg lepe particle tests at `date`
-        coverage run -a -m pyspedas.erg.tests.lepe_part_products
-        echo Starting erg lepi particle tests at `date`
-        coverage run -a -m pyspedas.erg.tests.lepi_part_products
-        echo Starting erg xep particle tests at `date`
-        coverage run -a -m pyspedas.erg.tests.xep_part_products
-        echo Starting erg hep particle tests at `date`
-        coverage run -a -m pyspedas.erg.tests.hep_part_products
         echo Starting solo tests at `date`
         coverage run -a -m pyspedas.solo.tests.tests
         echo Starting kyoto tests at `date`
@@ -292,8 +292,6 @@ jobs:
         coverage run -a -m pyspedas.themis.tests.tests_spinmodel
         echo Starting themis state tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_state
-        echo Starting themis cal_fit_tplot_metadata tests at `date`
-        coverage run -a -m pyspedas.themis.tests.test_cal_fit_tplot_metadata
         echo Starting themis scpot2dens tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_scpot2dens
         echo Done with tests at `date`

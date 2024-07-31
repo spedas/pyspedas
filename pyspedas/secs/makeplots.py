@@ -205,7 +205,7 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     pathformat_prefix = dtype + '/%Y/%m/'
     pathformat_unzipped = pathformat_prefix + '%d/' + dtype + '%Y%m%d_%H%M%S.dat'
     filename_unzipped = dailynames(file_format=pathformat_unzipped, trange=dtime_range, res=10)
-    out_files_unzipped = [CONFIG['local_data_dir'] + rf_res for rf_res in filename_unzipped]
+    out_files_unzipped = [os.path.join(CONFIG['local_data_dir'], rf_res) for rf_res in filename_unzipped]
     Data_Days_time = read_data_files(out_files=out_files_unzipped, dtype=dtype, out_type='df')
 
     if pred == True: # XC
@@ -286,7 +286,7 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
 
     plt.title(label='EICS ' + tp, fontsize=20, color="black", pad=20)
     plt.tight_layout()
-    plt.savefig(CONFIG['plots_dir'] + 'EICS' + '_vector_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+    plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS' + '_vector_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
     plt.show()
 
     # plot 2: contour plot
@@ -355,61 +355,6 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     # -------------
     if s_loc:
         m.scatter(lon, lat, latlon=True, marker='*', c='black')
-    FAC_loc = False
-    if FAC_loc: # for 2008-02-29 and 2008-02-22 events' field aligned current locations:
-        import pandas as pd
-        event_df_a = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step1_nosubSQ_V2.txt', delimiter=r"\s+")
-        event_df_b = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step2_nosubSQ_V2.txt', delimiter=r"\s+")
-        event_df_c = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step3_nosubSQ_V2.txt', delimiter=r"\s+")
-        event_df_d = pd.read_csv('/Users/xica3495/Downloads/event_locs/scwsnapshot_step4_nosubSQ_V2.txt', delimiter=r"\s+")
-        #print('cp00!')
-        #print(dtime)
-        #print(event_df.loc[0,'time'])
-        #print(dtime==event_df.loc[0,'time'])
-        row_event_df_a = event_df_a[event_df_a['time'] == dtime]
-        row_event_df_b = event_df_b[event_df_b['time'] == dtime]
-        row_event_df_c = event_df_c[event_df_c['time'] == dtime]
-        row_event_df_d = event_df_d[event_df_d['time'] == dtime]
-        #print(row_event_df)
-        #print(row_event_df['lat1_geo'].to_numpy()[0], type(row_event_df['lat1_geo'].to_numpy()[0]))
-        lon1_ev_a = row_event_df_a['lon1_geo'].to_numpy()[0]
-        lon2_ev_a = row_event_df_a['lon2_geo'].to_numpy()[0]
-        lat1_ev_a = row_event_df_a['lat1_geo'].to_numpy()[0]
-        lat2_ev_a = row_event_df_a['lat2_geo'].to_numpy()[0]
-
-        lon1_ev_b = row_event_df_b['lon1_geo'].to_numpy()[0]
-        lon2_ev_b = row_event_df_b['lon2_geo'].to_numpy()[0]
-        lat1_ev_b = row_event_df_b['lat1_geo'].to_numpy()[0]
-        lat2_ev_b = row_event_df_b['lat2_geo'].to_numpy()[0]
-
-        lon1_ev_c = row_event_df_c['lon1_geo'].to_numpy()[0]
-        lon2_ev_c = row_event_df_c['lon2_geo'].to_numpy()[0]
-        lat1_ev_c = row_event_df_c['lat1_geo'].to_numpy()[0]
-        lat2_ev_c = row_event_df_c['lat2_geo'].to_numpy()[0]
-
-        lon1_ev_d = row_event_df_d['lon1_geo'].to_numpy()[0]
-        lon2_ev_d = row_event_df_d['lon2_geo'].to_numpy()[0]
-        lat1_ev_d = row_event_df_d['lat1_geo'].to_numpy()[0]
-        lat2_ev_d = row_event_df_d['lat2_geo'].to_numpy()[0]
-
-
-        m.scatter(lon1_ev_a, lat1_ev_a, latlon=True, marker='o', s=20, c='red')
-        m.scatter(lon2_ev_a, lat2_ev_a, latlon=True, marker='o', s=20, c='blue')
-
-        m.scatter(lon1_ev_b, lat1_ev_b, latlon=True, marker='*', s=20, c='red')
-        m.scatter(lon2_ev_b, lat2_ev_b, latlon=True, marker='*', s=20, c='blue')
-
-        m.scatter(lon1_ev_c, lat1_ev_c, latlon=True, marker='^', s=20, c='red')
-        m.scatter(lon2_ev_c, lat2_ev_c, latlon=True, marker='^', s=20, c='blue')
-
-        m.scatter(lon1_ev_d, lat1_ev_d, latlon=True, marker='D', s=20, c='red')
-        m.scatter(lon2_ev_d, lat2_ev_d, latlon=True, marker='D', s=20, c='blue')
-
-        #print(event_df.loc[0,:])
-        #print(event_df.loc[1,:])
-        #print(event_df.loc[2,['lat1_geo', 'lat2_geo']])
-        #print(event_df['lon2_sm'])
-        print('cp01!')
     # -------------
     cb = m.colorbar(matplotlib.cm.ScalarMappable(norm=norm_cb, cmap='jet_r'), pad='15%')
     if EICS_component == 'Jy':
@@ -430,15 +375,15 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     plt.tight_layout()
     if pred == True:
         if EICS_component == 'Jy':
-            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jy' + '_pred' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+            plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS_Jy' + '_pred' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
         elif EICS_component == 'Jx':
-            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jx' + '_pred' + '_contour_' + date_nightshade.strftime(
-                '%Y%m%d%H%M%S') + '.jpeg')
+            plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS_Jx' + '_pred' + '_contour_' + date_nightshade.strftime(
+                '%Y%m%d%H%M%S') + '.jpeg'))
     else:
         if EICS_component == 'Jy':
-            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jy' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+            plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS_Jy' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
         elif EICS_component == 'Jx':
-            plt.savefig(CONFIG['plots_dir'] + 'EICS_Jx' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+            plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS_Jx' + '_contour_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
 
     plt.show()
 
@@ -503,7 +448,7 @@ def _make_EICS_plots(dtime=None, vplot_sized=False, contour_den=8, s_loc=False, 
     text.set_font_properties(font_cb)
     plt.title(label='EICS visual grids' + tp, fontsize=20, color="black", pad=20)
     plt.tight_layout()
-    plt.savefig(CONFIG['plots_dir'] + 'EICS' + '_VisualGrids_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.pdf')
+    plt.savefig(os.path.join(CONFIG['plots_dir'], 'EICS' + '_VisualGrids_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.pdf'))
     plt.show()
 
 
@@ -525,7 +470,7 @@ def _make_SECS_plots(data=None, dtime=None, contour_den=8, s_loc=False):
     pathformat_prefix = dtype + '/%Y/%m/'
     pathformat_unzipped = pathformat_prefix + '%d/' + dtype + '%Y%m%d_%H%M%S.dat'
     filename_unzipped = dailynames(file_format=pathformat_unzipped, trange=dtime_range, res=10)
-    out_files_unzipped = [CONFIG['local_data_dir'] + rf_res for rf_res in filename_unzipped]
+    out_files_unzipped = [os.path.join(CONFIG['local_data_dir'], rf_res) for rf_res in filename_unzipped]
     Data_Days_time = read_data_files(out_files=out_files_unzipped, dtype=dtype, out_type='df')
 
     J_comp = Data_Days_time['J']
@@ -600,7 +545,7 @@ def _make_SECS_plots(data=None, dtime=None, contour_den=8, s_loc=False):
     text.set_font_properties(font_cb)
     plt.title(label='SECS ' + tp, fontsize=20, color="black", pad=20)
     plt.tight_layout()
-    plt.savefig(CONFIG['plots_dir'] + 'SECS' + '_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg')
+    plt.savefig(os.path.join(CONFIG['plots_dir'], 'SECS' + '_' + date_nightshade.strftime('%Y%m%d%H%M%S') + '.jpeg'))
     plt.show()
     print('SECS plots completed!')
     return

@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock, mock_open
 import urllib.error
+from urllib.error import URLError, HTTPError
 import socket
 
 from mth5.clients.make_mth5 import FDSN
@@ -16,6 +17,7 @@ import pytplot
 
 import time
 import os
+import io
 
 import h5py
 import pandas as pd
@@ -24,6 +26,10 @@ from pyspedas.mth5.config import CONFIG
 
 import loguru
 from contextlib import contextmanager
+
+# Handling exceptions of bad data input
+from obspy.clients.fdsn.header import FDSNBadRequestException
+from obspy.clients.fdsn.header import FDSNNoServiceException
 
 
 @contextmanager
@@ -177,7 +183,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
     def test05_load_fdsn_timeclip(self):
         """
-        Test if the time is cliped correctly.
+        Test if the time is clipped correctly.
         """
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
@@ -220,6 +226,106 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         # incorrect station
         test_network_station_error(network="4P", station="REU49_")
+
+    # Mock FDSN and MTH so we do not make unnessesary calls
+    @patch('mth5.clients.make_mth5.FDSN.__init__', return_value=None)
+    @patch('mth5.mth5.MTH5.__init__', return_value=None)
+    def test07_print_request(self, mock_FDSN, mock_MTH5):
+        """Test the print_request parameter and ensure print output is correct."""
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        # Terminate function after print is complete
+        def side_effect(*args, **kwargs):
+            raise SystemExit("Exiting test.")
+
+        # Assign the side effect to the mock objects
+        mock_FDSN.side_effect = side_effect
+        mock_MTH5.side_effect = side_effect
+
+        # Capture the printed output
+        printed_output = io.StringIO()
+        with self.assertRaises(SystemExit) as cm:
+            with patch('sys.stdout', new=printed_output):
+                load_fdsn(trange=[date_start, date_end], network="4P", station="REU49", print_request=True)
+
+        # Check the content of the print output
+        printed_df = printed_output.getvalue()
+        expected_columns = ['network', 'station', 'start', 'end']
+        self.assertTrue(all(col in printed_df for col in expected_columns))
+
+    @patch('mth5.clients.make_mth5.FDSN.make_mth5_from_fdsn_client')
+    def test08_request_df_parameter(self, mock_make_mth5):
+        """Test the request_df parameter with a custom DataFrame."""
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        custom_request_df = pd.DataFrame({
+            "network": ["4P"],
+            "station": ["REU49"],
+            "location": ["--"],
+            "channel": ["*F*"],
+            "start": [date_start],
+            "end": [date_end]
+        })
+
+        def side_effect(*args, **kwargs):
+            raise SystemExit("make_mth5_from_fdsn_client called, exiting test.")
+
+        mock_make_mth5.side_effect = side_effect
+
+        with self.assertRaises(SystemExit) as cm:
+            load_fdsn(trange=[date_start, date_end], network="4P", station="REU49", request_df=custom_request_df)
+
+        # Verify that the reason for exit is the make_mth5_from_fdsn_client call
+        self.assertEqual(str(cm.exception), "make_mth5_from_fdsn_client called, exiting test.")
+
+        # Verify that make_mth5_from_fdsn_client was called with the custom DataFrame
+        # mock_make_mth5.assert_called_once_with(custom_request_df, interact=False, path=CONFIG['local_data_dir'])
+        self.assertTrue(any(call_args[0][0].equals(custom_request_df) for call_args in mock_make_mth5.call_args_list))
+
+    def test09_invalid_date_or_data(self):
+        """Test the function with invalid date formats in trange."""
+        invalid_date_start = '2015-06-22'
+        invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should results in Exception
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        with self.assertRaises(FDSNBadRequestException) as cm:
+            load_fdsn(trange=[invalid_date_start, invalid_date_end], network="4P", station="REU49")
+
+        # Verify the exception type
+        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
+
+        with self.assertRaises(FDSNBadRequestException) as cm:
+            load_fdsn(trange=[date_start, date_end], network="4P", station="NON_EXISTENT")
+
+        # Verify the exception type
+        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
+
+        with self.assertRaises(FDSNBadRequestException) as cm:
+            load_fdsn(trange=[date_start, date_end], network="NON_EXISTENT", station="REU49")
+
+        # Verify the exception type
+        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
+
+    # TODO: FOR SOME REASON, this test must be called before test02_load_fdsn_basic. Otherwise it does not work.
+    @patch('urllib.request.OpenerDirector.open')
+    def test02__connection_errors(self, mock_open):
+        """Test the function handling of network connection issues."""
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        # Simulate a no internet connection
+        mock_open.side_effect = URLError("Network unreachable")
+
+        with self.assertRaises(Exception) as cm:
+            load_fdsn(trange=[date_start, date_end], network="4P", station="REU49")
+            print(cm.exception)
+
+        # Verify the exception type and message for URLError
+        self.assertTrue(isinstance(cm.exception, FDSNNoServiceException) or isinstance(cm.exception, URLError))
+        # self.assertTrue(isinstance(cm.exception, URLError))
 
     # This test seems to be obsolete
     @unittest.skipIf(H5OPEN, "Open h5 files detected. Close all the h5 references before runing this test")
@@ -429,6 +535,32 @@ class TestDatasetsFunction(unittest.TestCase):
         expected = {'4P': {'ALW48': {('2015-06-18T15:00:36.0000', '2015-07-09T13:45:10.0000'): ['LFE', 'LFN', 'LFZ']}}}
         result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48")
         self.assertEqual(result, expected)
+
+    @patch('urllib.request.urlopen')
+    def test08_datasets_USAarea(self, mock_urlopen):
+        """Test datasets function with USAarea set to True or False."""
+        mock_response = MagicMock()
+        mock_response.status = 200
+        mock_response.read.return_value = self.mock_data.encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48", USAarea=True)
+
+        # Extract the URL passed to urlopen
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertIn("maxlat=49", called_url)
+        self.assertIn("minlon=-127", called_url)
+        self.assertIn("maxlon=-59", called_url)
+        self.assertIn("minlat=24", called_url)
+
+        result = datasets(["2015-06-22", "2015-06-23"], network="4P", station="ALW48")
+
+        # Extract the URL passed to urlopen
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertNotIn("maxlat", called_url)
+        self.assertNotIn("minlon", called_url)
+        self.assertNotIn("maxlon", called_url)
+        self.assertNotIn("minlat", called_url)
 
 
 if __name__ == '__main__':
