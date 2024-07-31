@@ -728,7 +728,7 @@ def download(
                 for file in matching_files:
                     if is_fsspec_uri(local_path_to_search):
                         temp_out.append(protocol + "://" + dirpath + '/' + file)
-                        logging.info("Streaming from local URI (download-failed): " + temp_out[-1])
+                        logging.info("Streaming from local URI: " + temp_out[-1])
                     else:
                         # out.append(os.path.join(dirpath, file))
                         temp_out.append(os.path.join(dirpath, file))
