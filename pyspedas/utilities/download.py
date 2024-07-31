@@ -714,25 +714,22 @@ def download(
             if is_fsspec_uri(local_path_to_search):
                 protocol, path = local_path_to_search.split("://")
                 fs = fsspec.filesystem(protocol, anon=False)
+                walk = fs.walk(local_path_to_search)
+            else:
+                walk = os.walk(local_path_to_search)
 
+            for dirpath, dirnames, filenames in walk:
                 if not regex:
-                    matching_files = list(filter(lambda f: local in f, fs.find(local_path_to_search)))
+                    matching_files = fnmatch.filter(filenames, local)
                 else:
-                    reg_expression = re.compile(local_path_to_search)
-                    matching_files = list(filter(reg_expression.match, fs.find(local_path_to_search)))
+                    reg_expression = re.compile(local)
+                    matching_files = list(filter(reg_expression.match, filenames))
 
                 for file in matching_files:
-                    temp_out.append(protocol + "://" + file)
-                    logging.info("Streaming from local URI (download-failed): " + temp_out[-1])
-            else:
-                for dirpath, dirnames, filenames in os.walk(local_path_to_search):
-                    if not regex:
-                        matching_files = fnmatch.filter(filenames, local)
+                    if is_fsspec_uri(local_path_to_search):
+                        temp_out.append(protocol + "://" + dirpath + '/' + file)
+                        logging.info("Streaming from local URI (download-failed): " + temp_out[-1])
                     else:
-                        reg_expression = re.compile(local)
-                        matching_files = list(filter(reg_expression.match, filenames))
-    
-                    for file in matching_files:
                         # out.append(os.path.join(dirpath, file))
                         temp_out.append(os.path.join(dirpath, file))
 
