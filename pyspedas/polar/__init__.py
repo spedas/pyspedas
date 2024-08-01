@@ -5,9 +5,9 @@ from .efi import efi
 from .pwi import pwi
 from .hydra import hydra
 from .tide import tide
-from timas import timas
-from uvi import uvi
-from vis import vis
-from pixie import pixie
-from orbit import orbit
-from datasets import datasets
+from .timas import timas
+from .uvi import uvi
+from .vis import vis
+from .pixie import pixie
+from .orbit import orbit
+from .datasets import datasets
