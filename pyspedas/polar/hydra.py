@@ -1,5 +1,4 @@
 from .load import load
-from pyspedas.utilities.datasets import find_datasets
 
 
 def hydra(trange=['2003-10-28', '2003-10-29'],

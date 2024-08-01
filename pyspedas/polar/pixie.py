@@ -1,5 +1,4 @@
 from .load import load
-from pyspedas.utilities.datasets import find_datasets
 
 
 def pixie(trange=['1997-01-03', '1997-01-04'],
