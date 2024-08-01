@@ -13,7 +13,8 @@ def pixie(trange=['1997-01-03', '1997-01-04'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        force_download=False):
     """
     This function loads data from the Polar Ionospheric X-ray Imaging Experiment
     
@@ -62,11 +63,15 @@ def pixie(trange=['1997-01-03', '1997-01-04'],
 
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
+        
+        force_download: bool
+            If True, downloads the file even if a newer version exists locally. 
+            Default: False.
 
     Returns
     ----------
         List of tplot variables created.
 
     """
-    return load(instrument='pixie', trange=trange, datatype=datatype, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='pixie', trange=trange, datatype=datatype, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
