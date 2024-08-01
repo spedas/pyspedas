@@ -3,7 +3,8 @@ from .load import load
 
 def efi(trange=['2003-10-28', '2003-10-29'],
         datatype='k0',
-        suffix='',  
+        suffix='', 
+        prefix='', 
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -25,8 +26,14 @@ def efi(trange=['2003-10-28', '2003-10-29'],
             Data type; Valid options:
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            The tplot variable names will be given this suffix. By default,
+            no prefix is added.
+            Default: ''
+        
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -59,5 +66,5 @@ def efi(trange=['2003-10-28', '2003-10-29'],
         List of tplot variables created.
 
     """
-    return load(instrument='efi', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='efi', trange=trange, datatype=datatype, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 

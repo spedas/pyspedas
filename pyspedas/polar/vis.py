@@ -4,6 +4,7 @@ from .load import load
 def vis(trange=['2003-10-28', '2003-10-29'],
         datatype='k0',
         suffix='',  
+        prefix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -27,6 +28,11 @@ def vis(trange=['2003-10-28', '2003-10-29'],
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
             no suffix is added.
+
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -59,5 +65,5 @@ def vis(trange=['2003-10-28', '2003-10-29'],
         List of tplot variables created.
 
     """
-    return load(instrument='vis', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='vis', trange=trange, datatype=datatype, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 

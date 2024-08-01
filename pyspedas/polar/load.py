@@ -9,6 +9,7 @@ def load(trange=['1997-01-03', '1997-01-04'],
          instrument='mfe',
          datatype='k0',
          suffix='', 
+         prefix='',
          get_support_data=False, 
          varformat=None,
          varnames=[],
@@ -50,8 +51,14 @@ def load(trange=['1997-01-03', '1997-01-04'],
             Default: 'k0'
 
         suffix: str
-            The tplot variable names will be given this suffix.
-            Default: no suffix is added.
+            The tplot variable names will be given this suffix. By default,
+            no prefix is added.
+            Default: ''
+        
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -103,6 +110,10 @@ def load(trange=['1997-01-03', '1997-01-04'],
         orbit_polar_vars = pyspedas.polar.orbit(trange=['1997-01-03', '1997-01-04'])
 
     """
+    if prefix is not None:
+        user_prefix = prefix
+    else:
+        user_prefix = ''
 
     if instrument == 'mfe':
         pathformat = instrument+'/'+instrument+'_'+datatype+'/%Y/po_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
@@ -144,7 +155,7 @@ def load(trange=['1997-01-03', '1997-01-04'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=user_prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars

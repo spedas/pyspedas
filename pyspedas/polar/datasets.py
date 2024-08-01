@@ -1,4 +1,3 @@
-from .load import load
 from pyspedas.utilities.datasets import find_datasets
 
 
