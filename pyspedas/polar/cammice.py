@@ -1,5 +1,7 @@
 from .load import load
 
+# This routine was originally in polar/__init__.py.  If you need to see the history of this routine before
+# it was moved to its own file, please check the history for __init__.py.
 
 def cammice(trange=['2003-10-28', '2003-10-29'],
         datatype='k0',

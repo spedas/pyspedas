@@ -1,5 +1,7 @@
 from .load import load
 
+# This routine was originally in polar/__init__.py.  If you need to see the history of this routine before
+# it was moved to its own file, please check the history for __init__.py.
 
 def pixie(trange=['1997-01-03', '1997-01-04'],
         datatype='k0',
