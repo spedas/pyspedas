@@ -114,6 +114,11 @@ def load(trange=['1997-01-03', '1997-01-04'],
         user_prefix = prefix
     else:
         user_prefix = ''
+    
+    if suffix is not None:
+        user_suffix = suffix
+    else:
+        user_suffix = ''
 
     if instrument == 'mfe':
         pathformat = instrument+'/'+instrument+'_'+datatype+'/%Y/po_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
@@ -155,7 +160,7 @@ def load(trange=['1997-01-03', '1997-01-04'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=user_prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=user_suffix, prefix=user_prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars
