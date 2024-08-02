@@ -9,13 +9,15 @@ def load(trange=['1997-01-03', '1997-01-04'],
          instrument='mfe',
          datatype='k0',
          suffix='', 
+         prefix='',
          get_support_data=False, 
          varformat=None,
          varnames=[],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads data from the Polar mission; this function is not meant 
     to be called directly; instead, see the wrappera:
@@ -50,8 +52,14 @@ def load(trange=['1997-01-03', '1997-01-04'],
             Default: 'k0'
 
         suffix: str
-            The tplot variable names will be given this suffix.
-            Default: no suffix is added.
+            The tplot variable names will be given this suffix. By default,
+            no prefix is added.
+            Default: ''
+        
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -84,6 +92,10 @@ def load(trange=['1997-01-03', '1997-01-04'],
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
 
+        force_download: bool
+            If True, downloads the file even if a newer version exists locally. 
+            Default: False.
+
     Returns
     ----------
         List of tplot variables created.
@@ -103,6 +115,11 @@ def load(trange=['1997-01-03', '1997-01-04'],
         orbit_polar_vars = pyspedas.polar.orbit(trange=['1997-01-03', '1997-01-04'])
 
     """
+    if prefix is None:
+        prefix = ''
+    
+    if suffix is None:
+        suffix = ''
 
     if instrument == 'mfe':
         pathformat = instrument+'/'+instrument+'_'+datatype+'/%Y/po_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
@@ -134,7 +151,7 @@ def load(trange=['1997-01-03', '1997-01-04'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)
@@ -144,7 +161,7 @@ def load(trange=['1997-01-03', '1997-01-04'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars
