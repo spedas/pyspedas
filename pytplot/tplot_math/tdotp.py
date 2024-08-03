@@ -1,6 +1,7 @@
 import logging
 from pytplot import get_data, store_data
-
+import xarray as xr
+from packaging.version import Version
 
 def tdotp(variable1, variable2, newname=None):
     """
@@ -53,9 +54,17 @@ def tdotp(variable1, variable2, newname=None):
     if newname is None:
         newname = variable1 + '_dot_' + variable2
 
+    # Check xarray version to see whether it wants 'dims' (older releases) or 'dim' (2023.12.0 and later)
+    # Note that with semantic versioning, we can't just do string comparisons, so we use packaging.version.Version
+
     # calculate the dot product
-    # Note: "dims" is deprecated in favor of "dim", but we'll keep this version for a few more xarray minor releases
-    out = data1.dot(data2, dims='v_dim')
+    if Version(xr.__version__) < Version('2023.12.0'):
+        # old way
+        out = data1.dot(data2, dims='v_dim')
+    else:
+        # new way
+        out = data1.dot(data2, dim='v_dim')
+
 
     # save the output
     saved = store_data(newname, data={'x': data1.time.values, 'y': out.values})
