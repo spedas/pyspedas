@@ -42,7 +42,19 @@ def tplot_rename(old_name, new_name):
         logging.info("The name %s is currently not in pytplot", old_name)
         return
 
-    #remake dictionary with new name in old name's slot
+    # remake dictionary with new name in old name's slot
+
+    # Why not just delete/reinsert the variable being renamed?  Doing it this way
+    # preserves the ordering of variables in the dictionary.  This matches the IDL
+    # behavior, where if 'tha_fit' is the first variable in the list, with index 0,
+    # tplot_rename,'tha_fit', 'tha_fit_rename'
+    # keeps 'tha_fit_rename' at position 0.
+    # No arrays are being copied here, only references, so it's not as inefficient as
+    # it might look.
+    # If the variable being renamed is part of a pseudovariable, you'll end up
+    # with a dangling reference to the old name.  This also matches the IDL behavior,
+    # but should it?   JWL 2024/07/31
+
     d = pytplot.data_quants
     d2 = OrderedDict([(new_name, v) if k == old_name else (k, v) for k, v in d.items()])
     new_data_quants = d2
