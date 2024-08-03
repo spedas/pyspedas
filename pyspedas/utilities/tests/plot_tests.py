@@ -7,7 +7,7 @@ from pytplot import store_data, options, timespan, tplot, tplot_options, degap, 
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = True
+global_display = False
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -213,6 +213,18 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_themis_esa_copy_specplot(self):
+        del_data("*")
+        import pyspedas
+        # THEMIS ESA has monotonically decreasing energies, time varying energies, and also has fill
+        esa_vars = pyspedas.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
+        timespan('2016-07-23',1,'days')
+        tplot_options('title', 'Decreasing and time-varying energies, fillvals, should render correctly')
+        pyspedas.tplot_copy('tha_peef_en_eflux',new_name='tha_peef_copy')
+        tplot('tha_peef_copy', display=global_display, save_png='PEEF_copy_test')
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
     def test_erg_specplot(self):
         del_data("*")
         import pyspedas
@@ -331,6 +343,25 @@ class PlotTestCases(unittest.TestCase):
         timespan('2015-10-16',1,'days')
         tplot_options('title', 'Pseudovar with energy spectrum plus line plot of s/c potential')
         tplot('spec', xsize=12, display=global_display,save_png='MMS_pseudo_spec_plus_line')
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    def test_pseudo_spectra_plus_line_copy(self):
+        del_data("*")
+        import pyspedas
+        pyspedas.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
+        pyspedas.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
+        # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
+        store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2', 'mms1_edp_scpot_fast_l2'])
+        # Set some options so that the spectrum, trace, and y axes are legible
+        options('mms1_edp_scpot_fast_l2', 'yrange', [10, 100])
+        #options('mms2_edp_scpot_fast_l2', 'right_axis', True)
+        options('spec','right_axis','True')
+        tplot_options('xmargin', [0.1, 0.2])
+        timespan('2015-10-16',1,'days')
+        tplot_options('title', 'Pseudovar with energy spectrum plus line plot of s/c potential')
+        pyspedas.tplot_copy('spec', 'spec_copy')
+        tplot('spec_copy', xsize=12, display=global_display,save_png='MMS_pseudo_spec_plus_line')
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
