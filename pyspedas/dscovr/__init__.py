@@ -12,7 +12,7 @@ from pyspedas.utilities.pyspedas_functools import better_partial
 mag = better_partial(load, instrument="mag")
 update_wrapper(mag, load)
 fc = better_partial(load, instrument="fc")
-update_wrapper(mag, load)
+update_wrapper(fc, load)
 orb = better_partial(load, instrument="orb")
 update_wrapper(orb, load)
 att = better_partial(load, instrument="att")
