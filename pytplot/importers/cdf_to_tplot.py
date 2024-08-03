@@ -380,8 +380,6 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             is_fillval = xdata == fillval
                             if is_fillval.any():
                                 logging.warning("Time variable %s for data variable %s contain at least one time equal to FILLVAL (%e)", x_axis_var, var, fillval)
-                        # TODO: check if FILLVAL is defined on time variable, if so, check if there is any fill,
-                        # and warn if found.  There's probably no point in replacing the fill values, though.
                         xdata = np.array(cdflib.cdfepoch.to_datetime(xdata))
                         if isinstance(xdata[0],datetime.datetime):
                             # old cdflib < 1.0.0 returns datetime.datetime objects
