@@ -361,9 +361,27 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             logging.warning("CDF DEPEND_0 attribute %s for variable %s is multidimensional with shape %s, skipping", var_atts['DEPEND_0'], var, str(xdata.shape),)
                             continue
                         # Cluster apparently uses (-1.0e-31) as time tag fill values??  Better check...
-                        if xdata[0] < 0.0:
-                            logging.warning("CDF time tag %e for variable %s cannot be converted to datetime, skipping",xdata[0],var)
-                            continue
+                        # if xdata[0] < 0.0:
+                        #    logging.warning("CDF time tag %e for variable %s cannot be converted to datetime, skipping",xdata[0],var)
+                        #    continue
+
+                        # Check for all-fill Cluster times
+                        # NOTE: At least for Cluster onboard moments downloaded from CSA,
+                        # there is a FILLVAL specified on the time_tags variable, but
+                        # it doesn't seem to match the actual fill value we're seeing.
+                        # The time_tags FILLVAL attribute has -1e+31 (very large negative value) while
+                        # the ones we're actually seeing in the data are -1e-31 (very small negative value)
+                        is_cluster_fill = xdata == -1.0e-31
+                        if is_cluster_fill.all():
+                            logging.warning("Time variable %s for data variable %s has values all equal to -1.0e-31", x_axis_var, var)
+                        # Check if time variable has a FILLVAL attribute defined.
+                        if 'FILLVAL' in epoch_var_atts:
+                            fillval = epoch_var_atts['FILLVAL']
+                            is_fillval = xdata == fillval
+                            if is_fillval.any():
+                                logging.warning("Time variable %s for data variable %s contain at least one time equal to FILLVAL (%e)", x_axis_var, var, fillval)
+                        # TODO: check if FILLVAL is defined on time variable, if so, check if there is any fill,
+                        # and warn if found.  There's probably no point in replacing the fill values, though.
                         xdata = np.array(cdflib.cdfepoch.to_datetime(xdata))
                         if isinstance(xdata[0],datetime.datetime):
                             # old cdflib < 1.0.0 returns datetime.datetime objects
@@ -391,30 +409,50 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 if ydata is None:
                     logging.info('No ydata for variable %s', var)
                     continue
+                elif np.isscalar(ydata):
+                    # Cluster sets FILLVAL attributes on scalar quantities (!) so we need to check...
+                    # This can happen for density variables in the Cluster onboard moments loaded from CSA.
+                    # It may be due to no valid data being available, but CSA makes a CDF with a single
+                    # time value and data point that are both fillvals.
+                    logging.info('ydata for variable %s is a scalar, converting to numpy array',var)
+                    # We won't worry here about how many dimensions it's supposed to have.  We'll fix that below if needed.  For now, we just want to be
+                    # sure it's not a scalar.
+                    ydata = np.array(ydata)
                 if "FILLVAL" in var_atts:
                     if new_cdflib:
                         thisvar_dtd = var_properties.Data_Type_Description
                     else:
                         thisvar_dtd = var_properties["Data_Type_Description"]
 
+                    fillval = var_atts['FILLVAL']
+
                     if (thisvar_dtd == 'CDF_FLOAT' or
                             thisvar_dtd == 'CDF_REAL4' or
                             thisvar_dtd == 'CDF_DOUBLE' or
                             thisvar_dtd == 'CDF_REAL8'):
 
-                        if ydata[ydata == var_atts["FILLVAL"]].size != 0:
-                            ydata[ydata == var_atts["FILLVAL"]] = np.nan
+                        is_fill_cond = ydata == fillval
+                        if is_fill_cond.all():
+                            logging.warning("Floating point data values for variable %s are all fillval (%e)",var, fillval)
+                            ydata[is_fill_cond] = np.nan
+                        elif is_fill_cond.any():
+                            ydata[is_fill_cond] = np.nan
+                        else:
+                            # No fillvals, nothing to do
+                            pass
                     elif thisvar_dtd[:7] == 'CDF_INT':
                         # NaN is only valid for floating point data
                         # but we still need to handle FILLVAL's for
                         # integer data, so we'll just set those to 0
-                        cond = ydata == var_atts["FILLVAL"]
-                        # Cluster sets FILLVAL attributes on scalar quantities (!) so we need to check...
-                        if np.isscalar(ydata):
-                            if cond:
-                                ydata = 0
+                        is_fill_cond = ydata == fillval
+                        if is_fill_cond.all():
+                            logging.warning("Integer data values for variable %s are all fillval (%d).",var, fillval)
+                            ydata[is_fill_cond] = 0
+                        elif is_fill_cond.any():
+                            ydata[is_fill_cond] = 0
                         else:
-                            ydata[cond] = 0
+                            # No fillvals, nothing to do
+                            pass
 
                 # Check dimensions of ydata to see if a leading time dimension has been lost
                 # This seems to happen with some Cluster CDFs, at least the ones served by CSA,
