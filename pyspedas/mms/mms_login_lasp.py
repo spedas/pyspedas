@@ -55,7 +55,6 @@ def mms_login_lasp(always_prompt=False, headers={}):
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", category=ResourceWarning)
-                auth = session.post('https://lasp.colorado.edu', verify=True, timeout=5, headers=headers)
                 testget = session.get('https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science', verify=True, timeout=5, headers=headers)
         except:
             return session, None
