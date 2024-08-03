@@ -49,18 +49,7 @@ def tplot_copy(old_name, new_name):
         # old variable is a non-record varying variable
         pytplot.store_data(new_name, data={'y': pytplot.data_quants[old_name]['data']})
     else:
-        attr_dict = deepcopy(pytplot.data_quants[old_name].attrs)
-        data_dict = {}
-        data_dict['x'] = pytplot.data_quants[old_name].coords['time'].values
-        data_dict['y'] = pytplot.data_quants[old_name].values
-        if len(data_dict['y'].shape) <= 2:
-            pass
-        else:
-            for c in pytplot.data_quants[old_name].coords:
-                if c == 'time' or c == 'spec_bins':
-                    continue
-                data_dict[c] = pytplot.data_quants[old_name].coords[c].values
-        pytplot.store_data(new_name, data=data_dict)
-        pytplot.data_quants[new_name].attrs = attr_dict
+        pytplot.data_quants[new_name] = deepcopy(pytplot.data_quants[old_name])
+        pytplot.data_quants[new_name].name = new_name
 
     return
