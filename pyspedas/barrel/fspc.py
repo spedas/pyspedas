@@ -3,6 +3,8 @@ from .load import load
 def fspc(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
+        prefix='',
+        suffix='',
         no_update=False,
         time_clip=False,
         force_download=False):
@@ -35,6 +37,12 @@ def fspc(trange=['2013-01-29','2013-01-30'],
             tplot variables.
             Default: False
 
+        prefix: str
+            This string will be prepended to the tplot variable names created. Default: ''
+
+        suffix: str
+            This string will be appended to the tplot variable names created.  Default: ''
+
         no_update: bool
             If set, only load data from your local cache
             Default: False
@@ -60,6 +68,6 @@ def fspc(trange=['2013-01-29','2013-01-30'],
         >>> tplot('brl1D_FSPC1')
     """
 
-    return load(datatype='fspc',trange=trange, probe=probe, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
+    return load(datatype='fspc',trange=trange, probe=probe,  prefix=prefix, suffix=suffix, downloadonly=downloadonly, time_clip=time_clip, no_update=no_update, force_download=force_download)
 
 
