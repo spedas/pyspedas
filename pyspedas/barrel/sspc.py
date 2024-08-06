@@ -1,5 +1,7 @@
 from .load import load
 
+# This routine was moved out of __init__.py.  Please see that file for previous revision history.
+
 def sspc(trange=['2013-01-28', '2013-01-29'],
         probe='1A',
         downloadonly=False,

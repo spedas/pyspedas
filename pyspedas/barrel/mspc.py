@@ -1,5 +1,7 @@
 from .load import load
 
+# This routine was moved out of __init__.py.  Please see that file for previous revision history.
+
 def mspc(trange=['2013-01-29','2013-01-30'],
         probe='1A',
         downloadonly=False,
