@@ -57,6 +57,27 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('brl1A_MAG_X_uncalibrated' in magn_vars)
         self.assertTrue(data_exists('brl1A_MAG_X_uncalibrated'))
 
+    def test_magn_prefix_none(self):
+        del_data("*")
+        magn_vars = pyspedas.barrel.magn(probe='1A', prefix=None)
+        self.assertTrue(len(magn_vars) > 0)
+        self.assertTrue('brl1A_MAG_X_uncalibrated' in magn_vars)
+        self.assertTrue(data_exists('brl1A_MAG_X_uncalibrated'))
+
+    def test_magn_suffix_none(self):
+        del_data("*")
+        magn_vars = pyspedas.barrel.magn(probe='1A', suffix=None)
+        self.assertTrue(len(magn_vars) > 0)
+        self.assertTrue('brl1A_MAG_X_uncalibrated' in magn_vars)
+        self.assertTrue(data_exists('brl1A_MAG_X_uncalibrated'))
+
+    def test_magn_prefix_suffix(self):
+        del_data("*")
+        magn_vars = pyspedas.barrel.magn(probe='1A', prefix='pre_', suffix='_suf')
+        self.assertTrue(len(magn_vars) > 0)
+        self.assertTrue('pre_brl1A_MAG_X_uncalibrated_suf' in magn_vars)
+        self.assertTrue(data_exists('pre_brl1A_MAG_X_uncalibrated_suf'))
+
     def test_ephm(self):
         del_data("*")
         ephm_vars = pyspedas.barrel.ephm(probe='1A')
