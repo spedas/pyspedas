@@ -1,6 +1,8 @@
 from .load import load
 from pyspedas.utilities.datasets import find_datasets
 
+# This routine was moved out of __init__.py. Please see that file for previous revision history.
+
 
 def mfi(trange=['2018-11-5', '2018-11-6'],
         datatype='h0',
