@@ -9,6 +9,7 @@ def spi(trange=['2018-11-5', '2018-11-6'],
         datatype='sf00_l3_mom', 
         level='l3',
         suffix='',  
+        prefix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -38,8 +39,14 @@ def spi(trange=['2018-11-5', '2018-11-6'],
                 'sf0a_l3_mom_inst': Moments of the Alpha distribution function (Instrument Frame)
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            The tplot variable names will be given this suffix. By default,
+            no prefix is added.
+            Default: ''
+
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -91,7 +98,7 @@ def spi(trange=['2018-11-5', '2018-11-6'],
         print("Using LEVEL=L3")
 
     return load(instrument='spi', trange=trange, datatype=datatype, level=level, 
-        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
         downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, 
         username=username, password=password,last_version=last_version
         )

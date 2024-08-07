@@ -9,6 +9,7 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
         datatype='let1_rates1h', 
         level='l2',
         suffix='',  
+        prefix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -31,8 +32,14 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
             Data type; Valid options:
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            The tplot variable names will be given this suffix. By default,
+            no prefix is added.
+            Default: ''
+
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -69,6 +76,6 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
 
     """
     return load(instrument='epihi', trange=trange, datatype=datatype, level=level, 
-        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
         downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version)
 

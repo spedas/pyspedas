@@ -9,6 +9,7 @@ def spc(trange=['2018-11-5', '2018-11-6'],
         datatype='l3i', 
         level='l3',
         suffix='',  
+        prefix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -36,8 +37,14 @@ def spc(trange=['2018-11-5', '2018-11-6'],
                 'l2i' (level='l2')
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            The tplot variable names will be given this suffix. By default,
+            no prefix is added.
+            Default: ''
+
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -98,7 +105,7 @@ def spc(trange=['2018-11-5', '2018-11-6'],
             level = 'L2'
             print("Using LEVEL=L2 (unpublished)")
 
-    return load(instrument='spc', trange=trange, datatype=datatype, level=level, suffix=suffix, 
+    return load(instrument='spc', trange=trange, datatype=datatype, level=level, suffix=suffix, prefix=prefix,
         get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, 
         notplot=notplot, time_clip=time_clip, no_update=no_update, username=username, password=password, last_version=last_version)
 

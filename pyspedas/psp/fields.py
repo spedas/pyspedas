@@ -10,6 +10,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         datatype='mag_rtn', 
         level='l2',
         suffix='',  
+        prefix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -54,8 +55,14 @@ def fields(trange=['2018-11-5', '2018-11-6'],
                 'sqtn_rfs_V1V2'
 
         suffix: str
-            The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            The tplot variable names will be given this suffix. By default,
+            no prefix is added.
+            Default: ''
+
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -110,9 +117,6 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
     """
 
-    if suffix:
-        suffix = '_' + suffix
-
     # SCaM and QTN data are Level 3
     if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2']:
         level = 'l3'
@@ -137,7 +141,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
 
     loaded_vars = load(
         instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
-        suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
+        suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
         downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
         username=username, password=password,last_version=last_version
     )
@@ -145,7 +149,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
     if loaded_vars is None or notplot or downloadonly:
         return loaded_vars
 
-    qf_root = 'psp_fld_l2_quality_flags'+suffix
+    qf_root = prefix + 'psp_fld_l2_quality_flags'+suffix
 
     # If variables are loaded that quality flag filtering supports --
     # Make sure the quality flag variable is also loaded and linked. 
@@ -156,11 +160,11 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         & ('psp_fld_l2_quality_flags'+suffix not in loaded_vars):
         loaded_extra = load(
             instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
-            suffix=suffix, get_support_data=True, varformat=varformat, varnames=['psp_fld_l2_quality_flags'],
+            suffix=suffix, prefix=prefix, get_support_data=True, varformat=varformat, varnames=['psp_fld_l2_quality_flags'],
             downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
             username=username, password=password,last_version=last_version
         )
-        qf_root = 'psp_fld_l2_quality_flags'+suffix if 'psp_fld_l2_quality_flags'+suffix in loaded_extra else None
+        qf_root = prefix+'psp_fld_l2_quality_flags'+suffix if prefix+'psp_fld_l2_quality_flags'+suffix in loaded_extra else None
         loaded_vars += loaded_extra
 
     for var in mag_rtnvars:
