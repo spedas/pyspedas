@@ -1,8 +1,5 @@
 
 from .load import load
-from .filter import filter_fields
-
-from pytplot import options, data_quants
 
 # Loading
 def spe(trange=['2018-11-5', '2018-11-6'], 

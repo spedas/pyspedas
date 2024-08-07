@@ -1,6 +1,5 @@
 
 from .load import load
-from .filter import filter_fields
 
 from pytplot import options, data_quants
 
