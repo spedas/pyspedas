@@ -4,11 +4,13 @@ from pyspedas.utilities.datasets import find_datasets
 
 def threedp(trange=['1999-11-5', '1999-11-6'],
         datatype='3dp_emfits_e0',
+        prefix='',
         suffix='',  
         get_support_data=False, 
         varformat=None,
         varnames=[],
         downloadonly=False,
+        force_download=False,
         notplot=False,
         no_update=False,
         berkeley=False,
@@ -29,6 +31,10 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
             Data type; Valid options: '3dp_ehpd', '3dp_ehsp', '3dp_elm2', '3dp_elpd', '3dp_elsp', '3dp_em', '3dp_emfits_e0',
             '3dp_k0', '3dp_phsp', '3dp_plsp', '3dp_pm', '3dp_sfpd', '3dp_sfsp', '3dp_sopd', '3dp_sosp'
             Default: '3dp_emfits_e0'
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -52,6 +58,10 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into 
             tplot variables
+            Default: False
+
+        force_download: bool
+            Set this flag to download the CDF files, even if the local copy is newer.
             Default: False
 
         notplot: bool
@@ -83,5 +93,5 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
     >>> vars = pyspedas.wind.threedp(trange=['1999-11-5', '1999-11-6'],datatype='3dp_emfits_e0')
     >>> tplot(vars)
     """
-    return load(instrument='3dp', berkeley=berkeley, addmaster=addmaster, trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='3dp', berkeley=berkeley, addmaster=addmaster, trange=trange, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, force_download=force_download, notplot=notplot, time_clip=time_clip, no_update=no_update)
 

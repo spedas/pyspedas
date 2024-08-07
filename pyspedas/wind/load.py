@@ -15,6 +15,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          varformat=None,
          varnames=[],
          downloadonly=False,
+         force_download=False,
          notplot=False,
          no_update=False,
          berkeley=False,
@@ -31,6 +32,13 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.wind.orbit
 
     """
+
+    if prefix is None:
+        prefix = ''
+    if suffix is None:
+        suffix = ''
+
+    user_prefix = prefix
 
     if berkeley:
         remote_data_dir = 'http://themis.ssl.berkeley.edu/data/wind/'
@@ -56,9 +64,9 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pathformat = 'orbit/'+datatype+'/%Y/wi_'+datatype.split('_')[1]+'_'+datatype.split('_')[0]+'_%Y%m%d_v??.cdf'
         masterfile = 'wi_' + datatype.split('_')[1]+'_'+datatype.split('_')[0] + '_00000000_v01.cdf'
     elif instrument == '3dp':
-        prefix = 'wi_' + datatype + '_'
+        prefix = user_prefix + 'wi_' + datatype + '_'
         if datatype == '3dp_emfits_e0':
-            prefix = ''
+            prefix = user_prefix
             pathformat = '3dp/'+datatype+'/%Y/wi_'+datatype.split('_')[1]+'_'+datatype.split('_')[2]+'_'+datatype.split('_')[0]+'_%Y%m%d_v??.cdf'
             masterfile = 'wi_' + datatype.split('_')[1]+'_'+datatype.split('_')[2] + '_3dp_00000000_v01.cdf'
         else:
@@ -75,11 +83,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
     out_files = []
 
     if addmaster:
-        mfile = download(remote_file=masterfile,remote_path=masterpath,local_path=local_master_dir,no_download=no_update,last_version=True)
+        mfile = download(remote_file=masterfile,remote_path=masterpath,local_path=local_master_dir,no_download=no_update,force_download=force_download,last_version=True)
     else:
         mfile = [None]
 
-    datafiles = download(remote_file=remote_names, remote_path=remote_data_dir, local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=True)
+    datafiles = download(remote_file=remote_names, remote_path=remote_data_dir, local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download, last_version=True)
 
     out_files.extend(datafiles)
 

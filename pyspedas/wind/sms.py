@@ -4,11 +4,13 @@ from pyspedas.utilities.datasets import find_datasets
 
 def sms(trange=['1999-11-5', '1999-11-6'],
         datatype='k0',
+        prefix='',
         suffix='',  
         get_support_data=False, 
         varformat=None,
         varnames=[],
         downloadonly=False,
+        force_download=False,
         notplot=False,
         no_update=False,
         time_clip=False,
@@ -27,6 +29,10 @@ def sms(trange=['1999-11-5', '1999-11-6'],
         datatype: str
             Data type; Valid options: 'k0','l2'
             Default: 'k0'
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: ''
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -50,6 +56,10 @@ def sms(trange=['1999-11-5', '1999-11-6'],
         downloadonly: bool
             Set this flag to download the CDF files, but not load them into
             tplot variables
+            Default: False
+
+        force_download: bool
+            Set this flag to download the CDF files, even if the local copy is newer.
             Default: False
 
         notplot: bool
@@ -82,5 +92,5 @@ def sms(trange=['1999-11-5', '1999-11-6'],
     >>> tplot(vars)
 
     """
-    return load(instrument='sms', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,addmaster=addmaster)
+    return load(instrument='sms', trange=trange, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, force_download=force_download, notplot=notplot, time_clip=time_clip, no_update=no_update,addmaster=addmaster)
 
