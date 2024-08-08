@@ -17,7 +17,8 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
         notplot=False,
         no_update=False,
         time_clip=False,
-        last_version=False):
+        last_version=False,
+        force_download=False):
     """
     This function loads Parker Solar Probe ISoIS/EPI-Hi data
     
@@ -70,6 +71,10 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
         last_version: bool
             If True, only download the highest-numbered file version
 
+        force_download: bool
+            If True, downloads the file even if a newer version exists locally. 
+            Default: False.
+
     Returns
     ----------
         List of tplot variables created.
@@ -77,5 +82,5 @@ def epihi(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='epihi', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version)
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version, force_download=force_download)
 

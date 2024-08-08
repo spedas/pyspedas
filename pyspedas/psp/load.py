@@ -21,7 +21,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
          time_clip=False,
          username=None,
          password=None,
-         last_version=False):
+         last_version=False,
+         force_download=False):
     """
     This function loads Parker Solar Probe (PSP) data into tplot variables; this function is not
     meant to be called directly; instead, see the wrappers: 
@@ -102,6 +103,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
+        
+        force_download: bool
+            If True, downloads the file even if a newer version exists locally. 
+            Default: False.
 
     Returns
     ----------
@@ -142,7 +147,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     if suffix is None:
         suffix = ''
-        
+
     if prefix is not None:
         user_prefix = prefix
     else:
@@ -173,7 +178,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
             for item in spec_types:
                 loaded_data = load(trange=trange, instrument=instrument, datatype=datatype + '_' + item, level=level, 
                     suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, last_version=last_version)
+                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, last_version=last_version, force_download=force_download)
                 if loaded_data != []:
                     out_vars.extend(loaded_data)
             return out_vars
@@ -267,7 +272,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     if username is None:
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                        local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
+                        local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version, force_download=force_download)
     else:
         if instrument == 'fields':
             try:
@@ -275,26 +280,26 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password, basic_auth=True,last_version=last_version
+                    username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download,
                 )
                 if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                     raise RuntimeError("No links found.")
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version, force_download=force_download)
         elif instrument == 'spi':
             try:
                 print("Downloading unpublished SWEAP Data....")
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password, basic_auth=True,last_version=last_version
+                    username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download
                 )
                 if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                     raise RuntimeError("No links found.")
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version, force_download=force_download)
 
         elif instrument == 'spc':
             
@@ -316,7 +321,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                         files = download(
                             remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
                             local_path=CONFIG['local_data_dir'], no_download=no_update,
-                            username=username, password=password, basic_auth=True,last_version=last_version
+                            username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download
                         )
 
                         if len(files) != len(remote_dates): # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
@@ -333,7 +338,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                         files = download(
                             remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
                             local_path=CONFIG['local_data_dir'], no_download=no_update,
-                            username=username, password=password, basic_auth=True,last_version=last_version
+                            username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download
                             )
                         if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                             raise RuntimeError("No links found.")
@@ -344,7 +349,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     files = download(
                         remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
                         local_path=CONFIG['local_data_dir'], no_download=no_update,
-                        username=username, password=password, basic_auth=True,last_version=last_version
+                        username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download
                         )
                     if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                         raise RuntimeError("No links found.")
@@ -352,7 +357,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
             # if all else fails switch to the NASA spdf server.        
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version, force_download=force_download)
 
     if files is not None:
         for file in files:
