@@ -116,6 +116,11 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         List of tplot variables created.
 
     """
+    if suffix is None:
+        suffix = ''
+        
+    if prefix is None:
+        prefix = ''    
 
     # SCaM and QTN data are Level 3
     if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2']:

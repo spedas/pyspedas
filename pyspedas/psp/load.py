@@ -140,6 +140,9 @@ def load(trange=['2018-11-5', '2018-11-6'],
     else:
         datatype = datatype.lower()
 
+    if suffix is None:
+        suffix = ''
+        
     if prefix is not None:
         user_prefix = prefix
     else:
