@@ -11,6 +11,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
          spec_types=None,  # for DFB AC spectral data
          level='l2',
          suffix='',
+         prefix='',
          get_support_data=False,
          varformat=None,
          varnames=[],
@@ -20,7 +21,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
          time_clip=False,
          username=None,
          password=None,
-         last_version=False):
+         last_version=False,
+         force_download=False):
     """
     This function loads Parker Solar Probe (PSP) data into tplot variables; this function is not
     meant to be called directly; instead, see the wrappers: 
@@ -62,8 +64,14 @@ def load(trange=['2018-11-5', '2018-11-6'],
             Default: 'l2'
 
         suffix: str
-            The tplot variable names will be given this suffix.
-            Default: no suffix is added.
+            The tplot variable names will be given this suffix. By default,
+            no prefix is added.
+            Default: ''
+
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -95,6 +103,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
+        
+        force_download: bool
+            If True, downloads the file even if a newer version exists locally. 
+            Default: False.
 
     Returns
     ----------
@@ -133,11 +145,19 @@ def load(trange=['2018-11-5', '2018-11-6'],
     else:
         datatype = datatype.lower()
 
-    prefix = 'psp_'  #To cover the case if one *does* call this routine directly.
+    if suffix is None:
+        suffix = ''
+
+    if prefix is not None:
+        user_prefix = prefix
+    else:
+        user_prefix = ''
+
+    prefix = user_prefix + 'psp_'  #To cover the case if one *does* call this routine directly.
 
     file_resolution = 24*3600.
     if instrument == 'fields':
-        prefix = '' #CDF Variables are already prefixed with psp_fld_
+        prefix = user_prefix + '' #CDF Variables are already prefixed with psp_fld_
 
         # 4_per_cycle and 1min are daily, not 6h like the full resolution 'mag_(rtn|sc)'
         if datatype in ['mag_rtn', 'mag_sc']:
@@ -158,7 +178,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
             for item in spec_types:
                 loaded_data = load(trange=trange, instrument=instrument, datatype=datatype + '_' + item, level=level, 
                     suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, last_version=last_version)
+                    downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, last_version=last_version, force_download=force_download)
                 if loaded_data != []:
                     out_vars.extend(loaded_data)
             return out_vars
@@ -222,27 +242,27 @@ def load(trange=['2018-11-5', '2018-11-6'],
         # However, data on the secure server exists with both the 'psp' and 'spp' 
         # prefixes. This prefix ambiguity will be handled farther down
         # and is set to 'psp' for the time being.
-        prefix = 'psp_spc_'
+        prefix = user_prefix + 'psp_spc_'
         pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
     elif instrument == 'spe':
-        prefix = 'psp_spe_'
+        prefix = user_prefix + 'psp_spe_'
         pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_v??.cdf'
     elif instrument == 'spi':
         if username is None:
-            prefix = 'psp_spi_'
+            prefix = user_prefix + 'psp_spi_'
             pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/psp_swp_spi_*_%Y%m%d_v??.cdf'
         else:
             # unpublished data
-            prefix = 'psp_spi_'
+            prefix = user_prefix + 'psp_spi_'
             pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/%m/psp_swp_' + datatype + '*_%Y%m%d_v0?.cdf'
     elif instrument == 'epihi':
-        prefix = 'psp_epihi_'
+        prefix = user_prefix + 'psp_epihi_'
         pathformat = 'isois/epihi/' + level + '/' + datatype + '/%Y/psp_isois-epihi_' + level + '*_%Y%m%d_v??.cdf'
     elif instrument == 'epilo':
-        prefix = 'psp_epilo_'
+        prefix = user_prefix + 'psp_epilo_'
         pathformat = 'isois/epilo/' + level + '/' + datatype + '/%Y/psp_isois-epilo_' + level + '*_%Y%m%d_v??.cdf'
     elif instrument == 'epi':
-        prefix = 'psp_isois_'
+        prefix = user_prefix + 'psp_isois_'
         pathformat = 'isois/merged/' + level + '/' + datatype + '/%Y/psp_isois_' + level + '-' + datatype + '_%Y%m%d_v??.cdf'
 
     # find the full remote path names using the trange
@@ -252,7 +272,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     if username is None:
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                        local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
+                        local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version, force_download=force_download)
     else:
         if instrument == 'fields':
             try:
@@ -260,26 +280,26 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password, basic_auth=True,last_version=last_version
+                    username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download,
                 )
                 if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                     raise RuntimeError("No links found.")
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version, force_download=force_download)
         elif instrument == 'spi':
             try:
                 print("Downloading unpublished SWEAP Data....")
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'], 
                     local_path=CONFIG['local_data_dir'], no_download=no_update,
-                    username=username, password=password, basic_auth=True,last_version=last_version
+                    username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download
                 )
                 if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                     raise RuntimeError("No links found.")
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version, force_download=force_download)
 
         elif instrument == 'spc':
             
@@ -293,7 +313,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 if last_version:
                     try:
                         print("Downloading unpublished SWEAP Data....")
-                        prefix = 'psp_spc_'
+                        prefix = user_prefix + 'psp_spc_'
                         pathformat = 'sweap/spc/' + level + '/%Y/%m/psp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
                         # find the full remote path names using the trange
                         remote_names_spc = dailynames(file_format=pathformat, trange=trange, res=file_resolution)
@@ -301,7 +321,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                         files = download(
                             remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
                             local_path=CONFIG['local_data_dir'], no_download=no_update,
-                            username=username, password=password, basic_auth=True,last_version=last_version
+                            username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download
                         )
 
                         if len(files) != len(remote_dates): # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
@@ -310,7 +330,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     except:
                         # then, if a date does not have 'psp_swp_spc_' prefix 
                         # then check for prefix 'spp_swp_spc_' which is the pre-released data
-                        prefix = 'spp_spc_'
+                        prefix = user_prefix + 'spp_spc_'
                         pathformat = 'sweap/spc/' + level + '/%Y/%m/spp_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
                         # find the full remote path names using the trange
                         remote_names_spc = dailynames(file_format=pathformat, trange=trange_temp, res=file_resolution)
@@ -318,18 +338,18 @@ def load(trange=['2018-11-5', '2018-11-6'],
                         files = download(
                             remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
                             local_path=CONFIG['local_data_dir'], no_download=no_update,
-                            username=username, password=password, basic_auth=True,last_version=last_version
+                            username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download
                             )
                         if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                             raise RuntimeError("No links found.")
                 else:
-                    prefix = 'psp_spc_'
+                    prefix = user_prefix + 'psp_spc_'
                     pathformat = 'sweap/spc/' + level + '/%Y/%m/*_swp_spc_' + datatype + '_%Y%m%d_v0?.cdf'
                     remote_names_spc = dailynames(file_format=pathformat, trange=trange, res=file_resolution)
                     files = download(
                         remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'], 
                         local_path=CONFIG['local_data_dir'], no_download=no_update,
-                        username=username, password=password, basic_auth=True,last_version=last_version
+                        username=username, password=password, basic_auth=True,last_version=last_version, force_download=force_download
                         )
                     if files == []: # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                         raise RuntimeError("No links found.")
@@ -337,7 +357,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
             # if all else fails switch to the NASA spdf server.        
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], 
-                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version)
+                                local_path=CONFIG['local_data_dir'], no_download=no_update,last_version=last_version, force_download=force_download)
 
     if files is not None:
         for file in files:
