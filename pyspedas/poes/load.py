@@ -9,14 +9,16 @@ def load(trange=['2018-11-5', '2018-11-6'],
          probe=['noaa19'],
          instrument='sem', 
          datatype='*', 
-         suffix='', 
+         prefix='',
+         suffix='',
          get_support_data=False, 
          varformat=None,
          varnames=[],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads POES Space Environment Monitor data. This function is
     not meant to be called directly; instead, see the wrapper:
@@ -38,6 +40,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
         datatype: str, default='*'
             This variable is unused. It is reserved for the future use.
+
+        prefix: str
+            The tplot variable names will be given this prefix.  By default, no prefix is added.
+            Default: ''
 
         suffix: str, optional
             The tplot variable names will be given this suffix.  By default,
@@ -69,6 +75,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool, default=False
             Time clip the variables to exactly the range specified in the trange keyword
 
+        force_download: bool
+            Download file even if local version is more recent than server version
+            Default: False
+
     Returns
     -------
     dict or list
@@ -91,7 +101,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)
 
-        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+        files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
         if files is not None:
             for file in files:
                 out_files.append(file)
@@ -101,7 +111,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
 
     if notplot:
         return tvars

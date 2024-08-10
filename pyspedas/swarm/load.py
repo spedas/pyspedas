@@ -8,9 +8,11 @@ def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
          instrument='mag',
          datatype='', 
          level='l1b', 
-         suffix='', 
-         varnames=[], # should be sent to hapi as parameters?
-         time_clip=False):
+         prefix='',
+         suffix='',
+         varnames=[],  # should be sent to hapi as parameters?
+         time_clip=False,
+         force_download=False):
     """
     Loads data from the Swarm mission.
 
@@ -29,12 +31,16 @@ def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
         Specific data type to load, if applicable. For magnetometer data, options include 'hr' (high resolution) and 'lr' (low resolution).
     level : str, default='l1b'
         Data level; for magnetometer data. Options: 'l1b'.
+    prefix : str, optional
+        The tplot variable names will be given this prefix. By default, no prefix is added.
     suffix : str, optional
         The tplot variable names will be given this suffix. By default, no suffix is added.
     varnames : list of str, optional
         List of variable names to load as parameters. If not specified, all data variables are loaded.
     time_clip : bool, default=False
         Time clip the variables to exactly the range specified in the trange keyword.
+    force_download : bool, default=False
+        Swarm data is requested via HAPI. This parameter always ignored and reserved for compatibility.
 
     Returns
     -------
@@ -46,6 +52,7 @@ def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
     This function is not intended to be called directly.
     """
 
+
     server = CONFIG['remote_data_dir'] + 'hapi/'
 
     if not isinstance(probe, list):
@@ -55,15 +62,20 @@ def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
 
     out_vars = []
 
+    if prefix:
+        prefix2 = prefix
+    else:
+        prefix2 = ''
+
     for this_probe in probe:
-        prefix = 'swarm' + this_probe.lower() + '_'
+        prefix = prefix2 + 'swarm' + this_probe.lower() + '_'
         if instrument == 'mag':
             dataset = 'SW_OPER_MAG' + this_probe.upper() + '_' + datatype.upper() + '_' + level[1:].upper()
             tvars = hapi(trange=tr, 
                          server=server, 
                          dataset=dataset, 
-                         parameters=varnames, 
-                         suffix=suffix, 
+                         parameters=varnames,
+                         suffix=suffix,
                          prefix=prefix)
 
             if tvars is not None and len(tvars) != 0:
