@@ -10,7 +10,8 @@ def load(
     trange=["2004-11-5", "2004-11-6"],
     instrument="lena",
     datatype="k0",
-    suffix="",
+    suffix='',
+    prefix='',
     get_support_data=False,
     varformat=None,
     varnames=[],
@@ -23,6 +24,17 @@ def load(
     """
     Load IMAGE data.
 
+    This function loads data from the Image mission; this function is not meant
+    to be called directly; instead, see the wrappers:
+    pyspedas.image.lena
+    pyspedas.image.mena
+    pyspedas.image.hena
+    pyspedas.image.rpi
+    pyspedas.image.euv
+    pyspedas.image.fuv
+    pyspedas.image.orbit
+
+
     Parameters
     ----------
     trange : list of str, optional
@@ -34,6 +46,8 @@ def load(
         Data type. Defaults to 'k0'.
     suffix : str, optional
         Suffix to be added to the variable names. Defaults to ''.
+    prefix: str, optional
+        Prefix to be added to the variable names. Defaults to ''.
     get_support_data : bool, optional
         Flag indicating whether to retrieve support data. Defaults to False.
     varformat : str, optional
@@ -164,6 +178,7 @@ def load(
     tvars = cdf_to_tplot(
         out_files,
         suffix=suffix,
+        prefix=prefix,
         get_support_data=get_support_data,
         varformat=varformat,
         varnames=varnames,
