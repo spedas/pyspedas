@@ -9,7 +9,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
          instrument='mgf',
          datatype='k0', 
          suffix='', 
-         get_support_data=False, 
+         prefix='',
+         get_support_data=False,
          varformat=None,
          varnames=[],
          downloadonly=False,
@@ -46,6 +47,10 @@ def load(trange=['2013-11-5', '2013-11-6'],
         suffix: str
             The tplot variable names will be given this suffix.
             Default: no suffix is added
+
+        prefix: str
+            The tplot variable names will be given this prefix.
+            Default: no prefix is added
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -154,7 +159,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
 
     if notplot:
         return tvars
