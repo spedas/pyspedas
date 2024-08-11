@@ -1,15 +1,9 @@
-from pyspedas.utilities.dailynames import dailynames
-from pyspedas.utilities.download import download
-from pytplot import time_clip as tclip
-from pytplot import cdf_to_tplot
+from pyspedas.lanl.load import load
 
-from .config import CONFIG
-
-
-def load(
-    trange=["2007-11-01", "2007-11-02"],
-    instrument="mpa",
-    probe="a1",
+# This routine was originally in lanl/__init__.py.
+def spa(
+    trange=["2004-10-31", "2004-11-01"],
+    probe="l1",
     datatype="k0",
     prefix="",
     suffix="",
@@ -23,9 +17,7 @@ def load(
     force_download=False,
 ):
     """
-    Loads LANL data for the specified instrument and probe.
-
-    Can load data from two instruments, the Magnetospheric Plasma Analyzer (mpa) and the Synchronous Orbit Particle Analyzer (spa).
+    Load data from the LANL Synchronous Orbit Particle Analyzer (SPA)
 
     Parameters
     ----------
@@ -41,7 +33,7 @@ def load(
         Valid probes (with gaps for some dates): 'l0', 'l1', 'l4', 'l7', 'l9', 'a1', 'a2'.
     datatype : str, optional
         The datatype. Defaults to 'k0'.
-        Valid datatypes: 'k0', 'h0'.
+        Valid datatypes: 'k0'
         Data for 'h0' datatype is available only for the 'mpa' instrument and only for a few days in 1998.
     prefix : str, optional
         The tplot variable names will be given this prefix. By default, no prefix is added.
@@ -73,75 +65,24 @@ def load(
         List of tplot variables created.
     """
 
-
-    # remote directory names
-    LANL_SC = {
-        "l0": "90",
-        "l1": "91",
-        "l4": "94",
-        "l7": "97",
-        "l9": "89",
-        "a1": "01a",
-        "a2": "02a",
-    }
-    probe = probe.lower()
-
-    # h0 is only available for mpa and has a different directory structure
-    datatypestr = ""
-    if datatype == "h0" and instrument == "mpa":
-        datatypestr = "_h0"
-
-    # path for SPDF files
-    pathformat = (
-        LANL_SC[probe]
-        + datatypestr
-        + "_"
-        + instrument
-        + "/%Y/"
-        + probe
-        + "_"
-        + datatype
-        + "_"
-        + instrument
-        + "_%Y%m%d_v??.cdf"
-    )
-
-    # find the full remote path names using the trange
-    remote_names = dailynames(file_format=pathformat, trange=trange)
-
-    out_files = []
-
-    files = download(
-        remote_file=remote_names,
-        remote_path=CONFIG["remote_data_dir"],
-        local_path=CONFIG["local_data_dir"],
-        no_download=no_update,
-        force_download=force_download
-    )
-    if files is not None:
-        for file in files:
-            out_files.append(file)
-
-    out_files = sorted(out_files)
-
-    if downloadonly:
-        return out_files
-
-    tvars = cdf_to_tplot(
-        out_files,
+    tvars = load(
+        instrument="spa",
+        trange=trange,
+        datatype="k0",
+        probe=probe,
         prefix=prefix,
         suffix=suffix,
         get_support_data=get_support_data,
         varformat=varformat,
         varnames=varnames,
+        downloadonly=downloadonly,
         notplot=notplot,
+        time_clip=time_clip,
+        no_update=no_update,
+        force_download=force_download
     )
 
-    if notplot:
+    if tvars is None or notplot or downloadonly:
         return tvars
-
-    if time_clip:
-        for new_var in tvars:
-            tclip(new_var, trange[0], trange[1], suffix="")
 
     return tvars

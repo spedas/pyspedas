@@ -53,6 +53,11 @@ class LoadTestCases(unittest.TestCase):
                                          notplot=True, addmaster=True)
         self.assertTrue('N_e_dens_wi_3dp' in tdp_vars)
 
+    def test_load_3dp_emfits_e0_data_prefix_suffix(self):
+        tdp_vars = pyspedas.wind.threedp(trange=['2003-10-11', '2003-10-12'], datatype='3dp_emfits_e0', time_clip=True,
+                                         prefix='pre_', suffix='_suf', notplot=True, addmaster=True)
+        self.assertTrue('pre_N_e_dens_wi_3dp_suf' in tdp_vars)
+
     def test_load_3dp_k0_data(self):
         # Note: this datatype is periodically pruned, SPDF seems to keep the last 3 years worth.
         tdp_vars = pyspedas.wind.threedp(trange=['2023-01-01', '2023-01-02'], datatype='3dp_k0', time_clip=True,
@@ -91,6 +96,22 @@ class LoadTestCases(unittest.TestCase):
         tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_sfpd', time_clip=True,
                                          notplot=True, addmaster=True)
         self.assertTrue('wi_3dp_sfpd_FLUX' in tdp_vars)
+
+    def test_load_3dp_sfpd_data_prefix_none(self):
+        tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_sfpd', time_clip=True,
+                                         prefix=None, notplot=True, addmaster=True)
+        self.assertTrue('wi_3dp_sfpd_FLUX' in tdp_vars)
+
+    def test_load_3dp_sfpd_data_suffix_none(self):
+        tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_sfpd', time_clip=True,
+                                         suffix=None, notplot=True, addmaster=True)
+        self.assertTrue('wi_3dp_sfpd_FLUX' in tdp_vars)
+
+    def test_load_3dp_sfpd_data_prefix_suffix(self):
+        tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_sfpd', time_clip=True,
+                                         prefix='pre_', suffix='_suf', notplot=True, addmaster=True)
+        self.assertTrue('pre_wi_3dp_sfpd_FLUX_suf' in tdp_vars)
+
     def test_load_3dp_sfsp_data(self):
         tdp_vars = pyspedas.wind.threedp(trange=['2019-11-06', '2019-11-07'], datatype='3dp_sfsp', time_clip=True,
                                          notplot=True, addmaster=True)
