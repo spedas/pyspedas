@@ -5,12 +5,12 @@ from pytplot import cdf_to_tplot
 
 from .config import CONFIG
 
-
 def load(trange=['2006-06-01', '2006-06-02'], 
          instrument='mag',
          probe='',
          datatype='1sec',
-         suffix='', 
+         suffix='',
+         prefix='',
          get_support_data=False, 
          varformat=None,
          varnames=[],
@@ -43,7 +43,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars
