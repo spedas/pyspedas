@@ -4,6 +4,7 @@ from .erne_postprocessing import erne_postprocessing
 def erne(trange=['2006-06-01', '2006-06-02'],
         datatype='hed_l2-1min',
         suffix='',  
+        prefix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -28,7 +29,13 @@ def erne(trange=['2006-06-01', '2006-06-02'],
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            no prefix is added.
+            Default: ''
+        
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -61,7 +68,7 @@ def erne(trange=['2006-06-01', '2006-06-02'],
         List of tplot variables created.
 
     """
-    tvars= load(instrument='erne', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars= load(instrument='erne', trange=trange, datatype=datatype, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
     if tvars is None or notplot or downloadonly:
         return tvars

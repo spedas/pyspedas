@@ -11,6 +11,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
          instrument='celias',
          datatype='pm_5min',
          suffix='', 
+         prefix='',
          get_support_data=False, 
          varformat=None,
          varnames=[],
@@ -45,7 +46,13 @@ def load(trange=['2006-06-01', '2006-06-02'],
 
         suffix: str
             The tplot variable names will be given this suffix.
-            Default: no suffix is added.
+            no prefix is added.
+            Default: ''
+        
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -96,6 +103,12 @@ def load(trange=['2006-06-01', '2006-06-02'],
 
     """
 
+    if prefix is None:
+        prefix = ''
+    
+    if suffix is None:
+        suffix = ''
+
     res = 24 * 3600.
 
     if instrument == 'celias':
@@ -127,7 +140,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars

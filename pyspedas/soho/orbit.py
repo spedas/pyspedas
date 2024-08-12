@@ -4,6 +4,7 @@ from .orbit_postprocessing import orbit_postprocessing
 def orbit(trange=['2006-06-01', '2006-06-02'],
         datatype='pre_or',
         suffix='',  
+        prefix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -62,7 +63,7 @@ def orbit(trange=['2006-06-01', '2006-06-02'],
         List of tplot variables created.
 
     """
-    tvars= load(instrument='orbit', trange=trange, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    tvars= load(instrument='orbit', trange=trange, datatype=datatype, suffix=suffix,  prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
 
     if tvars is None or notplot or downloadonly:
         return tvars
