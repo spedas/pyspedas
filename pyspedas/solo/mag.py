@@ -5,7 +5,8 @@ from .load import load
 def mag(trange=['2020-06-01', '2020-06-02'],
         datatype='rtn-normal', 
         level='l2', 
-        suffix='',  
+        suffix='', 
+        prefix='', 
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -36,7 +37,13 @@ def mag(trange=['2020-06-01', '2020-06-02'],
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            no prefix is added.
+            Default: ''
+        
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -70,7 +77,7 @@ def mag(trange=['2020-06-01', '2020-06-02'],
 
     """
 
-    mag_vars = load(instrument='mag', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    mag_vars = load(instrument='mag', trange=trange, level=level, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
     
     if mag_vars is None or notplot or downloadonly:
         return mag_vars
@@ -82,13 +89,13 @@ def mag(trange=['2020-06-01', '2020-06-02'],
     else:
         ytitle = 'SOLO MAG'
 
-    if 'B_SRF'+suffix in mag_vars:
-        options('B_SRF'+suffix, 'legend_names', ['Bx (SRF)', 'By (SRF)', 'Bz (SRF)'])
-        options('B_SRF'+suffix, 'ytitle', ytitle)
+    if prefix+'B_SRF'+suffix in mag_vars:
+        options(prefix+'B_SRF'+suffix, 'legend_names', ['Bx (SRF)', 'By (SRF)', 'Bz (SRF)'])
+        options(prefix+'B_SRF'+suffix, 'ytitle', ytitle)
 
-    if 'B_RTN'+suffix in mag_vars:
-        options('B_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
-        options('B_RTN'+suffix, 'ytitle', ytitle)
+    if prefix+'B_RTN'+suffix in mag_vars:
+        options(prefix+'B_RTN'+suffix, 'legend_names', ['Br (RTN)', 'Bt (RTN)', 'Bn (RTN)'])
+        options(prefix+'B_RTN'+suffix, 'ytitle', ytitle)
 
     return mag_vars
 
