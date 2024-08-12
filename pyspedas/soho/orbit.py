@@ -1,5 +1,5 @@
 from .load import load
-
+from .orbit_postprocessing import orbit_postprocessing
 
 def orbit(trange=['2006-06-01', '2006-06-02'],
         datatype='pre_or',

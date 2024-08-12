@@ -1,5 +1,5 @@
 from .load import load
-
+from .erne_postprocessing import erne_postprocessing
 
 def erne(trange=['2006-06-01', '2006-06-02'],
         datatype='hed_l2-1min',

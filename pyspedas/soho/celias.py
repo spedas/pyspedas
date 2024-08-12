@@ -1,5 +1,5 @@
 from .load import load
-
+from .celias_postprocessing import celias_postprocessing
 
 def celias(trange=['2006-06-01', '2006-06-02'],
         datatype='pm_5min',

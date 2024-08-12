@@ -1,5 +1,5 @@
 from .load import load
-
+from .costep_postprocessing import costep_postprocessing
 
 def costep(trange=['2006-06-01', '2006-06-02'],
         datatype='ephin_l3i-1day',
