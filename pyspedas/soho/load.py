@@ -18,7 +18,8 @@ def load(trange=['2006-06-01', '2006-06-02'],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads data from the SOHO mission; this function is not meant 
     to be called directly; instead, see the wrappers:
@@ -84,6 +85,10 @@ def load(trange=['2006-06-01', '2006-06-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
+        
+        force_download: bool
+            If True, downloads the file even if a newer version exists locally. 
+            Default: False.
 
     Returns
     ----------
@@ -130,7 +135,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)
