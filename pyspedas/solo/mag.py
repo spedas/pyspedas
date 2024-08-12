@@ -77,6 +77,12 @@ def mag(trange=['2020-06-01', '2020-06-02'],
 
     """
 
+    if prefix is None:
+        prefix = ''
+    
+    if suffix is None:
+        suffix = ''
+        
     mag_vars = load(instrument='mag', trange=trange, level=level, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
     
     if mag_vars is None or notplot or downloadonly:

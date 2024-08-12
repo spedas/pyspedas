@@ -1,12 +1,12 @@
 from pytplot import options
 from .load import load
-from pyspedas.utilities.datasets import find_datasets
 
 
 def swa(trange=['2020-07-22', '2020-07-23'],
         datatype='pas-eflux', 
         level='l2', 
         suffix='',  
+        prefix='',
         get_support_data=False, 
         varformat=None,
         varnames=[],
@@ -32,7 +32,13 @@ def swa(trange=['2020-07-22', '2020-07-23'],
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
-            no suffix is added.
+            no prefix is added.
+            Default: ''
+        
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -65,15 +71,22 @@ def swa(trange=['2020-07-22', '2020-07-23'],
         List of tplot variables created.
 
     """
-    loaded_vars = load(instrument='swa', trange=trange, level=level, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+    if prefix is None:
+        prefix = ''
+    
+    if suffix is None:
+        suffix = ''
+
+    loaded_vars = load(instrument='swa', trange=trange, level=level, datatype=datatype, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
     
     if loaded_vars is None or notplot or downloadonly:
         return loaded_vars
 
-    if 'eflux'+suffix in loaded_vars:
-        options('eflux'+suffix, 'spec', True)
-        options('eflux'+suffix, 'ylog', True)
-        options('eflux'+suffix, 'zlog', True)
+    if prefix+'eflux'+suffix in loaded_vars:
+        options(prefix+'eflux'+suffix, 'spec', True)
+        options(prefix+'eflux'+suffix, 'ylog', True)
+        options(prefix+'eflux'+suffix, 'zlog', True)
 
     return loaded_vars
 
