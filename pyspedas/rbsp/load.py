@@ -2,7 +2,7 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
-
+import logging
 from .config import CONFIG
 
 
@@ -149,6 +149,15 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 pathformat = 'rbsp' + prb + '/' + level + '/rps/psbr-rps-1min/%Y/rbsp' + prb + '_' + level + '-1min_psbr-rps_%Y%m%d_v*.cdf'
             elif datatype == 'rps':
                 pathformat = 'rbsp' + prb + '/' + level + '/rps/psbr-rps/%Y/rbsp' + prb + '_' + level + '_psbr-rps_%Y%m%d_v*.cdf'
+        elif instrument == 'magephem':
+            if cadence not in ['1min', '5min']:
+                cadence = '1min'
+                logging.info('Invalid cadence for magephem data. Defaulting to 1min.')
+            if coord.lower() not in ['op77q', 't89d', 't89q', 'ts04d']:
+                coord = 'op77q'
+                logging.info('Invalid coordinate system for magephem data. Defaulting to op77q.')
+
+            pathformat = 'rbsp' + prb + '/ephemeris/ect-mag-ephem/cdf/def-'+cadence+'-'+coord+'/%Y/rbsp-' + prb + '_mag-ephem_def-'+cadence+'-'+coord+'_%Y%m%d_v*.cdf'
 
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)
