@@ -118,7 +118,7 @@ def load(
             pathformat = "orbit/pre_or/%Y/dscovr_orbit_pre_%Y%m%d_v??.cdf"
             pre = "dsc_orbit_"
         else:
-            logging.error("Invalid instrument type." + instr)
+            logging.error("Invalid instrument type: " + instr)
             continue
 
         # If prefix is not empty, add it to the pre variable
