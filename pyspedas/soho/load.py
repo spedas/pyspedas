@@ -11,13 +11,15 @@ def load(trange=['2006-06-01', '2006-06-02'],
          instrument='celias',
          datatype='pm_5min',
          suffix='', 
+         prefix='',
          get_support_data=False, 
          varformat=None,
          varnames=[],
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         force_download=False):
     """
     This function loads data from the SOHO mission; this function is not meant 
     to be called directly; instead, see the wrappers:
@@ -45,7 +47,13 @@ def load(trange=['2006-06-01', '2006-06-02'],
 
         suffix: str
             The tplot variable names will be given this suffix.
-            Default: no suffix is added.
+            no prefix is added.
+            Default: ''
+        
+        prefix: str
+            The tplot variable names will be given this prefix.  By default,
+            no prefix is added.
+            Default: ''
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -77,6 +85,10 @@ def load(trange=['2006-06-01', '2006-06-02'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
+        
+        force_download: bool
+            If True, downloads the file even if a newer version exists locally. 
+            Default: False.
 
     Returns
     ----------
@@ -95,6 +107,12 @@ def load(trange=['2006-06-01', '2006-06-02'],
         orbit_soho_vars = pyspedas.soho.orbit(trange=['2006-06-01', '2006-06-02'])
 
     """
+
+    if prefix is None:
+        prefix = ''
+    
+    if suffix is None:
+        suffix = ''
 
     res = 24 * 3600.
 
@@ -117,7 +135,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)
@@ -127,7 +145,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars
