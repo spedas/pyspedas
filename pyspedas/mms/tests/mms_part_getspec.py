@@ -3,6 +3,7 @@ import numpy as np
 from pyspedas.mms.particles.mms_part_getspec import mms_part_getspec
 from pytplot import data_exists, get_data, tplot_names, tplot
 
+global_display=False
 
 class PGSTests(unittest.TestCase):
     def test_pgs_errors(self):
@@ -142,7 +143,7 @@ class PGSTests(unittest.TestCase):
                          output='energy', suffix='_pa_60_120')
         self.assertTrue(data_exists('mms1_des_dist_fast_fac_energy_pa_60_120'))
         data1 = get_data('mms1_des_dist_fast_fac_energy_pa_60_120')
-        tplot(['mms1_des_dist_fast_fac_energy_pa_0_30', 'mms1_des_dist_fast_fac_energy_pa_60_120'])
+        tplot(['mms1_des_dist_fast_fac_energy_pa_0_30', 'mms1_des_dist_fast_fac_energy_pa_60_120'], display=global_display, save_png='energy_pitch_limits.png')
 
         # Check that the pitch angle limits were actually applied
         delta = np.max(np.abs(data1.y - data0.y))
