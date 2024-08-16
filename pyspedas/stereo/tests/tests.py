@@ -6,7 +6,7 @@ import pyspedas
 
 class LoadTestCases(unittest.TestCase):
     def test_downloadonly(self):
-        files = pyspedas.stereo.mag(trange=['2013-1-6', '2013-1-7'], downloadonly=True)
+        files = pyspedas.stereo.mag(trange=['2013-11-5', '2013-11-6'], downloadonly=True)
         self.assertTrue(os.path.exists(files[0]))
 
     def test_load_mag_data(self):

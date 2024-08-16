@@ -31,7 +31,7 @@ Example
 
    import pyspedas
    from pytplot import tplot
-   elf_vars = pyspedas.elfin.epd(probe='a', trange=['2022-08-19', '2022-08-19'], level='l2')
+   elf_vars = pyspedas.elfin.epd(probe='a', trange=['2019-08-19', '2022-08-19'], level='l2')
    tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', ela_pef_tspin'])
 
 

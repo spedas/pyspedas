@@ -11,7 +11,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
          level='l2',
          datatype='8hz',
          coord='RTN',
-         suffix='', 
+         suffix='',
+         prefix='',
          get_support_data=False, 
          varformat=None,
          varnames=[],
@@ -81,7 +82,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(out_files, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
+    tvars = cdf_to_tplot(out_files, suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, notplot=notplot)
     
     if notplot:
         return tvars

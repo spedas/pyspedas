@@ -8,16 +8,36 @@ Created on Wed Oct 13 14:24:48 2021
 from scipy import signal, special
 import numpy as np
 
-def time_domain_filter(data,time, freq_low, freq_high):
+def time_domain_filter(
+        data,
+        time,
+        freq_low,
+        freq_high):
     """
     Modified for python from SPEDAS's function of the same name
     Purpose: band-pass filter of data, assuming constant dt between points
+
     Parameters:
+    ----------
         data: input nx3 array
         time: in seconds
         freq_low: low coutoff frequency in Hz
         freq_high: high cutoff frequency in Hz
-    Returns: nx3 array of band-pass filtered data
+
+    Returns:
+    -------
+        nx3 array of band-pass filtered data
+
+    Example:
+    -------
+    >>> datax = time     #x:noisy_data.x,y:double(noisy_data.y(*,0))}
+    >>> datay = data[3,*]
+    >>> length = len(datax)
+    >>> index_range = np.arange(length, dtype=float)]
+	>>> sampling_frequency = 1.0/(datax(index_range(1))-datax(index_range(0)))
+	>>> nyquist = sampling_frequency/2.0
+	>>> datax_sub = time_domain_filter(datax, datay, 0, nyquist)
+
     """
     dt = time[1]-time[0]
     nyquist = 1./(2.*dt)
