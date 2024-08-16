@@ -137,7 +137,7 @@ jobs:
         df -h .
         # Clean up files downloaded so far
         /bin/rm -rf data/*
-        # echo "Disk space after cleanup:"
+        echo "Disk space after cleanup:"
         df -h .
         echo "========================================================="
         echo Starting VIRES client tests at `date`
