@@ -1,6 +1,7 @@
 import logging
 from dateutil.parser import parse
 import os
+import time
 
 import pytplot
 from .download_files_utilities import (
@@ -418,6 +419,7 @@ def load_data(
                 else:
                     full_path = create_dir_if_needed(f, data_dir, level)
                 get_file_from_site(f, public, full_path)
+                time.sleep(10.0)
                 display_progress(i, len(s))
 
     # 2. Load files into tplot
