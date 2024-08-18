@@ -137,7 +137,7 @@ jobs:
         df -h .
         # Clean up files downloaded so far
         /bin/rm -rf data/*
-        # echo "Disk space after cleanup:"
+        echo "Disk space after cleanup:"
         df -h .
         echo "========================================================="
         echo Starting VIRES client tests at `date`
@@ -317,5 +317,11 @@ jobs:
         coverage run -a -m pyspedas.themis.tests.tests_state
         echo Starting themis scpot2dens tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_scpot2dens
+        echo "========================================================="
+        # Show the free disk space on this filesystem
+        echo "Disk space after all tests:"
+        df -h .
+        echo "========================================================="        
+
         echo Done with tests at `date`
         coveralls

@@ -11,7 +11,7 @@ from pyspedas.maven.config import CONFIG
 from datetime import datetime
 
 # We need sleep time to avoid "HTTP Error 429: Too Many Requests"
-sleep_time = 20
+sleep_time = 30
 
 
 def get_kp_dict():
