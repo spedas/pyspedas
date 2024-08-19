@@ -11,7 +11,9 @@ def load(trange=['2018-11-5', '2018-11-6'],
          instrument='emfisis',
          level='l3',
          datatype='magnetometer',
+         prefix='',
          suffix='',
+         force_download=False,
          cadence='4sec',  # for EMFISIS mag data
          coord='sm',  # for EMFISIS mag data
          wavetype='waveform',  # for EMFISIS waveform data
@@ -53,8 +55,15 @@ def load(trange=['2018-11-5', '2018-11-6'],
     datatype : str, default='magnetometer'
         Instrument-specific data type.
 
+        Suffix for the tplot variable names.
+    prefix : str, default=''
+        Prefix for the tplot variable names.
+
     suffix : str, default=''
         Suffix for the tplot variable names.
+
+    force_download : bool, default=False
+        Download file even if local version is more recent than server version.
 
     cadence : str, default='4sec'
         Data cadence
@@ -105,7 +114,6 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     datatype_in = datatype
     datatype = datatype.lower()
-    prefix = ''
     out_files = []
 
     if notplot:
@@ -127,7 +135,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
         elif instrument == 'rbspice':
             pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/' + datatype + '/%Y/rbsp-' + prb + '-' + instrument + '_lev-' + str(
                 level[-1]) + '?' + datatype + '_%Y%m%d_v*.cdf'
-            prefix = 'rbsp' + prb + '_rbspice_' + level + '_' + datatype_in + '_'
+            prefix =  prefix + 'rbsp' + prb + '_rbspice_' + level + '_' + datatype_in + '_'
         elif instrument == 'efw':
             if level == 'l3':
                 pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/%Y/rbsp' + prb + '_' + instrument + '-' + level + '_%Y%m%d_v??.cdf'
@@ -154,7 +162,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
         remote_names = dailynames(file_format=pathformat, trange=trange)
 
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
-                         local_path=CONFIG['local_data_dir'], no_download=no_update)
+                         local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
         if files is not None:
             for file in files:
                 out_files.append(file)
