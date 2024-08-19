@@ -310,7 +310,7 @@ class LoadTestCases(unittest.TestCase):
 
         del_data("*")
         data = maven.mag(datatype="ss1s")
-        self.assertTrue(data_exists("OB_B"))
+        self.assertTrue(len(tplot_names("OB_B*"))>0)
         dt = datetime.strptime("2016-01-01/12:00:00", "%Y-%m-%d/%H:%M:%S")
         files = get_l2_files_from_date(dt, "mag")
         self.assertTrue(len(files) > 0)
@@ -329,7 +329,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_mag_byorbit_data(self):
         del_data("*")
         data = maven.mag(trange=[500, 501], datatype="ss1s")
-        self.assertTrue(data_exists("OB_B"))
+        self.assertTrue(len(tplot_names("OB_B*"))>0)
         time.sleep(sleep_time)
 
     def test_load_sta_data(self):
