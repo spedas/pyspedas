@@ -180,7 +180,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                                    varformat=varformat, varnames=varnames, notplot=notplot)
 
             if notplot:
-                tvars = dict(tvars, **tvars_o)
+                tvars.update(tvars_o)
             else:
                 tvars.extend(tvars_o)
 
