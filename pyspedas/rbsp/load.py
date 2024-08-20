@@ -172,9 +172,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
                          local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
-        if files is not None:
-            for file in files:
-                out_files.append(file)
+        if files:
+            out_files.extend(files)
 
         if not downloadonly:
             tvars_o = cdf_to_tplot(sorted(out_files), prefix=prefix, suffix=suffix, get_support_data=get_support_data,
