@@ -123,6 +123,12 @@ def load(trange=['2018-11-5', '2018-11-6'],
     else:
         tvars = []
 
+    if prefix is None:
+        prefix = ''
+
+    if suffix is None:
+        suffix = ''
+
     for prb in probe:
         if instrument == 'emfisis':
             if datatype in ['density', 'housekeeping', 'wna-survey']:
@@ -156,7 +162,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
         elif instrument == 'rps':
             if datatype == 'rps-1min':
                 pathformat = f'rbsp{prb}/{level}/rps/psbr-rps-1min/%Y/rbsp{prb}_{level}-1min_psbr-rps_%Y%m%d_v*.cdf'
-
+            else:
                 pathformat = f'rbsp{prb}/{level}/rps/psbr-rps/%Y/rbsp{prb}_{level}_psbr-rps_%Y%m%d_v*.cdf'
         elif instrument == 'magephem':
             if cadence not in ['1min', '5min']:
