@@ -123,7 +123,7 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
 
             # Calculate spin-averaged variable
             sp_avg_vars = rbsp_rbspice_spin_avg(probe=prb, datatype=datatype, level=level)
-            if omni_vars:
+            if sp_avg_vars:
                 tvars.extend(sp_avg_vars)
 
     return tvars
