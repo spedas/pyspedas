@@ -31,7 +31,7 @@ setup(
     install_requires=[
         "numpy>=1.20.0",
         "requests",
-        "geopack>=1.0.10",
+        "https://github.com/spedas/geopack/archive/geopack.zip",
         "scipy",
         "cdflib",
         "cdasws>=1.7.24",
