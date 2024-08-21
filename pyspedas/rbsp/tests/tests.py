@@ -107,6 +107,11 @@ class LoadTestCases(unittest.TestCase):
         rps_vars = pyspedas.rbsp.rps(datatype='rps')
         self.assertTrue(data_exists('FPDU_Energy'))
 
+    def test_load_magephem_data(self):
+        magephem_vars = pyspedas.rbsp.magephem()
+        print(magephem_vars)
+        self.assertTrue(data_exists('Rgse'))
+        self.assertTrue('Rgse' in magephem_vars)
 
 if __name__ == '__main__':
     unittest.main()

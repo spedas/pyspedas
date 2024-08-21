@@ -29,7 +29,9 @@ def mms_part_getspec(instrument='fpi',
                      disable_photoelectron_corrections=False,
                      zero_negative_values=False,
                      regrid=[32, 16],
-                     no_regrid=False):
+                     no_regrid=False,
+                     prefix='',
+                     suffix=''):
     """
     Generate spectra and moments from 3D MMS particle data
 
@@ -128,6 +130,12 @@ def mms_part_getspec(instrument='fpi',
         no_regrid: bool
             Flag to disable regridding of data array
 
+        prefix: str
+            Prefix for output tplot variables. Default: ''
+
+        suffix: str
+            Suffix for output tplot variables. Default: ''
+
     Returns
     -------
     None
@@ -221,7 +229,7 @@ def mms_part_getspec(instrument='fpi',
                           correct_photoelectrons=correct_photoelectrons, zero_negative_values=zero_negative_values,
                           internal_photoelectron_corrections=internal_photoelectron_corrections,
                           disable_photoelectron_corrections=disable_photoelectron_corrections, regrid=regrid,
-                          no_regrid=no_regrid)
+                          no_regrid=no_regrid, prefix=prefix, suffix=suffix)
         
         if new_vars is None:
             continue

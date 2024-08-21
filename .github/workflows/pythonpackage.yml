@@ -105,7 +105,12 @@ jobs:
         ST5_DATA_DIR: st5_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
+        echo "========================================================="
+        # Show the free disk space on this filesystem
+        echo "Disk space prior to starting tests:"
+        df -h .
         # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
+        echo "========================================================="
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
         echo Starting erg tests at `date`
@@ -126,6 +131,15 @@ jobs:
         coverage run -a -m pyspedas.erg.tests.xep_part_products
         echo Starting erg hep particle tests at `date`
         coverage run -a -m pyspedas.erg.tests.hep_part_products
+        echo "========================================================="
+        # Show the free disk space on this filesystem
+        echo "Disk space after ERG tests:"
+        df -h .
+        # Clean up files downloaded so far
+        /bin/rm -rf data/*
+        echo "Disk space after cleanup:"
+        df -h .
+        echo "========================================================="
         echo Starting VIRES client tests at `date`
         coverage run -a -m pyspedas.vires.tests.tests
         echo Starting secs tests at `date`
@@ -134,8 +148,8 @@ jobs:
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
-        #echo Starting maven tests at `date`
-        #coverage run -a -m pyspedas.maven.tests.tests
+        echo Starting maven tests at `date`
+        coverage run -a -m pyspedas.maven.tests.tests
         echo Starting cluster tests at `date`
         coverage run -a -m pyspedas.cluster.tests.tests
         echo Starting akebono tests at `date`
@@ -208,6 +222,15 @@ jobs:
         coverage run -a -m pyspedas.mms.tests.wavpol
         echo Starting mms slice2d tests at `date`
         coverage run -a -m pyspedas.mms.tests.slice2d
+        echo "========================================================="
+        # Show the free disk space on this filesystem
+        echo "Disk space after MMS tests:"
+        df -h .
+        # Clean up MMS data
+        /bin/rm -rf mms_data/*
+        echo "Disk space after MMS cleanup:"
+        df -h .
+        echo "========================================================="        
         echo Starting dscovr tests at `date`
         coverage run -a -m pyspedas.dscovr.tests.tests
         echo Starting utilities download tests at `date`
@@ -294,5 +317,11 @@ jobs:
         coverage run -a -m pyspedas.themis.tests.tests_state
         echo Starting themis scpot2dens tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_scpot2dens
+        echo "========================================================="
+        # Show the free disk space on this filesystem
+        echo "Disk space after all tests:"
+        df -h .
+        echo "========================================================="        
+
         echo Done with tests at `date`
         coveralls

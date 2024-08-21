@@ -1,6 +1,7 @@
 """Automated tests for the analysis functions."""
 
 import unittest
+import pyspedas
 from pytplot import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
                       yclip, time_clip, deriv_data, tdeflag, clean_spikes,
@@ -306,7 +307,19 @@ class AnalysisTestCases(BaseTestCase):
         d5 = get_data('nparray_str')
         self.assertTrue(abs(d3[1][1][0] - 5.80645161) < 1e-6)
 
+    def test_tinterpol_nonnegative(self):
+        import pytplot
+        trange = ["2018-07-01/01:00", "2018-07-02/00:10"]
 
+        # Test that tinterpol does not introduce negative values when input contains
+        # zeroes.  (This was actually an issue with cdflib 0.4.9 and older pytplot-mpl-temp timestamp handling, not tinterpol itself
+        pyspedas.mms.fpi(datatype=['dis-moms', 'des-moms'], trange=trange, data_rate='brst', time_clip=True,
+                         center_measurement=True)
+        tinterpol('mms1_des_numberdensity_brst', 'mms1_dis_numberdensity_brst')
+        des_n_before = pytplot.get('mms1_des_numberdensity_brst')
+        des_n = pytplot.get('mms1_des_numberdensity_brst-itrp')
+        self.assertTrue((des_n_before.y >=  0.0).all)
+        self.assertTrue((des_n.y >=  0.0).all)
 
 if __name__ == '__main__':
     unittest.main()

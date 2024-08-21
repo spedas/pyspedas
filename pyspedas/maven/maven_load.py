@@ -1,6 +1,7 @@
 import logging
 from dateutil.parser import parse
 import os
+import time
 
 import pytplot
 from .download_files_utilities import (
@@ -29,7 +30,7 @@ def maven_filenames(
     update_prefs=False,
     only_update_prefs=False,
     local_dir=None,
-    public=True
+    public=True,
 ):
     """
     This function queries the MAVEN SDC API, and will return a list of files that match the given parameters.
@@ -141,7 +142,7 @@ def maven_filenames(
         if not s:
             logging.error("No files found for {}.".format(instrument))
             if instrument not in maven_files:
-               maven_files[instrument] = []
+                maven_files[instrument] = []
             continue
 
         s = s.split(",")
@@ -179,6 +180,40 @@ def maven_filenames(
     return maven_files
 
 
+def maven_file_groups(files):
+    """
+    This function groups MAVEN files by their description.
+
+    Parameters
+    ----------
+    files : list of str
+        List of MAVEN filenames.
+
+    Returns
+    -------
+    dict
+        Dictionary of grouped files.
+    """
+
+    # Group files by their description
+    result = {}
+    if len(files) == 0:
+        return result
+    files.sort()
+
+    kp_regex, l2_regex = maven_kp_l2_regex()
+    for f in files:
+        desc = l2_regex.match(os.path.basename(f)).group("description")
+        if desc not in result:
+            result[desc] = []
+        result[desc].append(f)
+
+    for k in result.keys():
+        result[k].sort()
+
+    return result
+
+
 def load_data(
     filenames=None,
     instruments=None,
@@ -202,7 +237,7 @@ def load_data(
     get_support_data=False,
     get_metadata=False,
     auto_yes=False,
-    public=True
+    public=True,
 ):
     """
     This function downloads MAVEN data loads it into tplot variables, if applicable.
@@ -267,7 +302,10 @@ def load_data(
     prefix : str, optional
         Prefix to append to variable names. Defaults to ''.
     suffix : str, optional
-        Suffix to append to variable names. Defaults to ''.
+        Suffix to append to variable names.
+        Defaults to ''.
+        By default the part of the filename (plus the suffix) is appended to the variable name.
+        If suffix='empty', no suffix is appended to the variable name (no part of the filename and no suffix).
     get_support_data : bool, optional
         If True, retrieves support data. Defaults to False.
     get_metadata : bool, optional
@@ -307,7 +345,7 @@ def load_data(
         update_prefs,
         only_update_prefs,
         local_dir,
-        public=public
+        public=public,
     )
 
     # If we are not asking for KP data, this flag ensures only ancillary data is loaded in from the KP files
@@ -328,7 +366,7 @@ def load_data(
         bn_files_to_load = []
         # There might be more than one set of files to load for this instrument (e.g. kp with iuvs)
         maven_file_list = maven_files[instr]
-        while(len(maven_file_list) > 0):
+        while len(maven_file_list) > 0:
             s = maven_file_list[0]
             data_dir = maven_file_list[1]
             public = maven_file_list[2]
@@ -342,9 +380,9 @@ def load_data(
                     file_type_match = False
                     desc = l2_regex.match(f).group("description")
                     for t in type:
-                        #kluge for STATIC, jmm, 2024-07-24, otherwise type='d1' results in ca,d0,d1,d4 loading
+                        # kluge for STATIC, jmm, 2024-07-24, otherwise type='d1' results in ca,d0,d1,d4 loading
                         if instr == "sta":
-                            if t+'-' in desc:
+                            if t + "-" in desc:
                                 file_type_match = True
                         else:
                             if t in desc:
@@ -418,6 +456,7 @@ def load_data(
                 else:
                     full_path = create_dir_if_needed(f, data_dir, level)
                 get_file_from_site(f, public, full_path)
+                time.sleep(10.0)
                 display_progress(i, len(s))
 
     # 2. Load files into tplot
@@ -435,53 +474,50 @@ def load_data(
         loaded_tplot_vars = []
         if not download_only:
 
-            for f in cdf_files:
-                # Loop through CDF files
-                desc = l2_regex.match(os.path.basename(f)).group("description")
-                if desc != "" and suffix == "":
+            # Load in CDF files
+            if len(cdf_files) > 0:
+                cdf_dict = maven_file_groups(cdf_files)
+                for desc in cdf_dict.keys():
+                    if suffix == "empty":
+                        # In this case, no suffix is appended to the variable name
+                        suf = ""
+                    else:
+                        # The description (part of the filename) is appended to the variable name
+                        suf = desc + suffix
                     created_vars = pytplot.cdf_to_tplot(
-                        f,
+                        cdf_dict[desc],
                         varformat=varformat,
                         varnames=varnames,
                         string_encoding="utf-8",
                         get_support_data=get_support_data,
                         prefix=prefix,
+                        suffix=suf,
                         get_metadata=get_metadata,
-                        suffix=desc,
-                        merge=True,
                     )
-                else:
-                    created_vars = pytplot.cdf_to_tplot(
-                        f,
-                        varformat=varformat,
-                        varnames=varnames,
-                        string_encoding="utf-8",
-                        get_support_data=get_support_data,
+                    # Specifically for SWIA and SWEA data, make sure the plots have log axes and are spectrograms
+                    instr = l2_regex.match(os.path.basename(cdf_dict[desc][0])).group(
+                        "instrument"
+                    )
+                    if instr in ["swi", "swe"]:
+                        pytplot.options(created_vars, "spec", 1)
+                    loaded_tplot_vars.append(created_vars)
+
+            # Load in STS files
+            if len(sts_files) > 0:
+                sts_dict = maven_file_groups(sts_files)
+                for desc in sts_dict.keys():
+                    if suffix == "empty":
+                        # In this case, no suffix is appended to the variable name
+                        suf = ""
+                    else:
+                        # The description (part of the filename) is appended to the variable name
+                        suf = desc + suffix
+                    created_vars = pytplot.sts_to_tplot(
+                        sts_dict[desc],
                         prefix=prefix,
-                        get_metadata=get_metadata,
-                        suffix=suffix,
-                        merge=True,
+                        suffix=suf,
                     )
-
-                # Specifically for SWIA and SWEA data, make sure the plots have log axes and are spectrograms
-                instr = l2_regex.match(os.path.basename(f)).group("instrument")
-                if instr in ["swi", "swe"]:
-                    pytplot.options(created_vars, "spec", 1)
-                loaded_tplot_vars.append(created_vars)
-
-            for f in sts_files:
-                # Loop through STS (Mag) files
-                desc = l2_regex.match(os.path.basename(f)).group("description")
-                if desc != "" and suffix == "":
-                    loaded_tplot_vars.append(
-                        pytplot.sts_to_tplot(f, prefix=prefix, suffix=desc, merge=True)
-                    )
-                else:
-                    loaded_tplot_vars.append(
-                        pytplot.sts_to_tplot(
-                            f, prefix=prefix, suffix=suffix, merge=True
-                        )
-                    )
+                    loaded_tplot_vars.append(created_vars)
 
                 # Remove the Decimal Day column, not really useful
                 for tvar in loaded_tplot_vars:
