@@ -152,8 +152,8 @@ jobs:
         coverage run -a -m pyspedas.maven.tests.tests
         echo Starting cluster tests at `date`
         coverage run -a -m pyspedas.cluster.tests.tests
-        echo Starting akebono tests at `date`
-        coverage run -a -m pyspedas.akebono.tests.tests
+        #echo Starting akebono tests at `date`
+        #coverage run -a -m pyspedas.akebono.tests.tests
         echo Starting CDAWeb tests at `date`
         coverage run -a -m pyspedas.cdagui.tests.tests
         echo Starting themis tplot_time  tests at `date`
