@@ -8,7 +8,7 @@ def rps(trange=['2015-11-5', '2015-11-6'],
         prefix='',
         suffix='',
         force_download=False,
-        get_support_data=False,
+        get_support_data=True,
         varformat=None,
         varnames=[],
         downloadonly=False,
@@ -44,7 +44,7 @@ def rps(trange=['2015-11-5', '2015-11-6'],
         force_download : bool, default=False
             Download file even if local version is more recent than server version.
 
-        get_support_data: bool, default=False
+        get_support_data: bool, default=True
             Data with an attribute "VAR_TYPE" with a value of "support_data"
             will be loaded into tplot.  By default, only loads in data with a
             "VAR_TYPE" attribute of "data".
