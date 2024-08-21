@@ -1,36 +1,76 @@
 import os
 import unittest
-from pytplot import data_exists
+from pytplot import data_exists, del_data
 import pyspedas
 
 
-class LoadTestCases(unittest.TestCase):
+class Fast_Tests(unittest.TestCase):
     def test_downloadonly(self):
-        files = pyspedas.fast.acb(trange=['1999-09-22', '1999-09-23'], time_clip=True, level='k0', downloadonly=True)
+        files = pyspedas.fast.acf(
+            trange=["1999-09-22", "1999-09-23"],
+            time_clip=True,
+            level="k0",
+            downloadonly=True,
+        )
         self.assertTrue(os.path.exists(files[0]))
 
-    def test_load_dcb_data(self):
-        dcb_vars = pyspedas.fast.dcb(trange=['1999-09-22', '1999-09-23'], time_clip=True, level='k0')
-        self.assertTrue(data_exists('BX'))
-        self.assertTrue(data_exists('BY'))
-        self.assertTrue(data_exists('BZ'))
-        dcb_vars = pyspedas.fast.dcb(trange=['1998-09-22', '1998-09-23'], level='l2')
+    def test_load_dcf_data(self):
+        dcf_vars = pyspedas.fast.dcf(trange=["1999-09-22", "1999-09-23"], level="k0")
+        self.assertTrue(data_exists("fast_dcf_BX"))
+        self.assertTrue(data_exists("fast_dcf_BY"))
+        self.assertTrue(data_exists("fast_dcf_BZ"))
+        self.assertTrue("fast_dcf_BZ" in dcf_vars)
 
-    def test_load_acb_data(self):
-        dcb_vars = pyspedas.fast.acb(trange=['1999-09-22', '1999-09-23'], time_clip=True, level='k0')
-        self.assertTrue(data_exists('HF_PWR'))
-        self.assertTrue(data_exists('HF_E_SPEC'))
+    def test_load_dcf_data_l2(self):
+        dcf_vars = pyspedas.fast.dcf(trange=["1998-09-22", "1998-09-23"], level="l2")
+        self.assertTrue(data_exists("fast_dcf_DeltaB_GEI"))
+        self.assertTrue("fast_dcf_DeltaB_GEI" in dcf_vars)
+
+    def test_load_acf_data(self):
+        dcf_vars = pyspedas.fast.acf(
+            trange=["1999-09-22", "1999-09-23"], time_clip=True, level="k0"
+        )
+        self.assertTrue(data_exists("fast_acf_HF_PWR"))
+        self.assertTrue(data_exists("fast_acf_HF_E_SPEC"))
+        self.assertTrue("fast_acf_HF_E_SPEC" in dcf_vars)
 
     def test_load_esa_data(self):
-        esa_vars = pyspedas.fast.esa(notplot=True, trange=['1998-09-05/02:00', '1998-09-05/02:30'])
-        self.assertTrue('eflux' in esa_vars)
+        esa_vars = pyspedas.fast.esa(
+            notplot=True, trange=["1998-09-05/02:00", "1998-09-05/02:30"]
+        )
+        self.assertTrue("fast_esa_eflux" in esa_vars)
 
     def test_load_teams_data(self):
-        teams_vars = pyspedas.fast.teams()
-        self.assertTrue(data_exists('H+'))
-        self.assertTrue(data_exists('O+'))
-        self.assertTrue(data_exists('He+'))
+        teams_vars = pyspedas.fast.teams(
+            trange=["1998-09-05", "1998-09-06"], level="k0"
+        )
+        self.assertTrue(data_exists("fast_teams_H+"))
+        self.assertTrue(data_exists("fast_teams_O+"))
+        self.assertTrue(data_exists("fast_teams_He+"))
+        self.assertTrue("fast_teams_fa_spin_dec" in teams_vars)
+
+    def test_load_teams_data_l2(self):
+        teams_vars = pyspedas.fast.teams(
+            trange=["2004-06-01", "2004-06-02"], level="l2"
+        )
+        self.assertTrue(data_exists("fast_teams_proton_distribution"))
+        self.assertTrue("fast_teams_helium_distribution" in teams_vars)
+
+    def test_load_invalid_trange(self):
+        del_data()
+        t_all = pyspedas.fast.load(trange="bad input")
+        self.assertTrue(len(t_all) == 0)
+        del_data()
+        t_all = pyspedas.fast.load(trange=["2018-12-15"])
+        self.assertTrue(len(t_all) == 0)
+        del_data()
+        t_all = pyspedas.fast.load(trange=["2018-12-15", "2018-12-14"])
+        self.assertTrue(len(t_all) == 0)
+
+    def test_load_invalid_instrument(self):
+        t_all = pyspedas.fast.load(instrument="bad input")
+        self.assertTrue(len(t_all) == 0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

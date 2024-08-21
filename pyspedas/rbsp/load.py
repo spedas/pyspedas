@@ -4,6 +4,7 @@ from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 import logging
 
+
 from .config import CONFIG
 
 
@@ -155,7 +156,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
         elif instrument == 'rps':
             if datatype == 'rps-1min':
                 pathformat = f'rbsp{prb}/{level}/rps/psbr-rps-1min/%Y/rbsp{prb}_{level}-1min_psbr-rps_%Y%m%d_v*.cdf'
-            elif datatype == 'rps':
+
                 pathformat = f'rbsp{prb}/{level}/rps/psbr-rps/%Y/rbsp{prb}_{level}_psbr-rps_%Y%m%d_v*.cdf'
         elif instrument == 'magephem':
             if cadence not in ['1min', '5min']:
