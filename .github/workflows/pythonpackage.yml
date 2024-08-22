@@ -113,6 +113,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
+        echo Starting ace tests at `date`
+        coverage run -a -m pyspedas.projects.ace.tests.tests
         echo Starting erg tests at `date`
         coverage run -a -m pyspedas.erg.tests.tests
         echo Starting erg cotrans tests at `date`
@@ -251,8 +253,6 @@ jobs:
         coverage run -a -m pyspedas.cotrans.tests.test_minvar
         echo Starting csswe tests at `date`
         coverage run -a -m pyspedas.csswe.tests.tests
-        echo Starting ace tests at `date`
-        coverage run -a -m pyspedas.ace.tests.tests
         echo Starting equator_s tests at `date`
         coverage run -a -m pyspedas.equator_s.tests.tests
         echo Starting image tests at `date`
