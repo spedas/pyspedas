@@ -82,7 +82,7 @@ from .kompsat.load import load as kompsat_load
 from .noaa import noaa_load_kp
 
 # Make mission-specific namespaces available under pyspedas
-from . import ace
+from .projects import ace
 from . import akebono
 from . import barrel
 from . import cluster
