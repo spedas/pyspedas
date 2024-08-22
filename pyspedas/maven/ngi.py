@@ -1,24 +1,24 @@
-from .maven_load import maven_load
+from .maven_load import load_data
 
 # This routine was originally in maven/__init__.py, until being moved to its own file.
 # Please refer to __init__.py if you need to see the revision history before it was moved.
 
 maven_load = load_data
-def swea(
+
+def ngi(
     trange=["2016-01-01", "2016-01-02"],
     level="l2",
-    datatype="svyspec",
-    suffix=suffix,
-    prefix=prefix,
+    datatype=None,
+    suffix="",
+    prefix="",
     varformat=None,
     get_support_data=False,
     auto_yes=True,
     downloadonly=False,
     varnames=[],
-    spdf=False,
 ):
     """
-    Load MAVEN Solar Wind Electron Analyzer (SWEA) data.
+    Load NGI data from the MAVEN mission.
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ def swea(
     level : str, optional
         Data level. Defaults to "l2".
     datatype : str, optional
-        Data type. Defaults to "svyspec".
+        Data type. Defaults to None.
     suffix: str
         The tplot variable names will be given this suffix.
         Default: '', no suffix is added.
@@ -45,34 +45,21 @@ def swea(
         Whether to only download the data without loading it. Defaults to False.
     varnames : list, optional
         List of variable names to load. Defaults to [].
-    spdf : bool, optional
-        Whether to use the SPDF library for data loading. Defaults to False.
 
     Returns
     -------
     dict
         Dictionary of loaded data variables.
     """
-
-    if spdf:
-        return spdf_load.swea(
-            trange=trange,
-            level=level,
-            datatype=datatype,
-            varformat=varformat,
-            get_support_data=get_support_data,
-            downloadonly=downloadonly,
-            varnames=varnames,
-        )
     return maven_load(
-        instruments="swe",
+        instruments="ngi",
         start_date=trange[0],
         end_date=trange[1],
         type=datatype,
         level=level,
-        varformat=varformat,
         suffix=suffix,
         prefix=prefix,
+        varformat=varformat,
         get_support_data=get_support_data,
         auto_yes=auto_yes,
         download_only=downloadonly,

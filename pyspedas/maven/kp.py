@@ -1,4 +1,5 @@
-from .maven_load import maven_load
+from .maven_load import load_data
+import pyspedas.maven.spdf as spdf_load
 
 # This routine was originally in maven/__init__.py, until being moved to its own file.
 # Please refer to __init__.py if you need to see the revision history before it was moved.
@@ -9,8 +10,8 @@ def kp(
     trange=["2016-01-01", "2016-01-02"],
     datatype=None,
     varformat=None,
-    suffix=suffix,
-    prefix=prefix,
+    suffix="",
+    prefix="",
     get_support_data=False,
     auto_yes=True,
     downloadonly=False,

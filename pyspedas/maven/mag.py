@@ -1,15 +1,17 @@
-from .maven_load import maven_load
+from .maven_load import load_data
+import pyspedas.maven.spdf as spdf_load
 
 # This routine was originally in maven/__init__.py, until being moved to its own file.
 # Please refer to __init__.py if you need to see the revision history before it was moved.
 
 maven_load = load_data
+
 def mag(
     trange=["2016-01-01", "2016-01-02"],
     level="l2",
     datatype=None,
-    suffix=suffix,
-    prefix=prefix,
+    suffix="",
+    prefix="",
     varformat=None,
     get_support_data=False,
     auto_yes=True,
