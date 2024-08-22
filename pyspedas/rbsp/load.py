@@ -3,6 +3,8 @@ from pyspedas.utilities.download import download
 from pytplot import time_clip as tclip
 from pytplot import cdf_to_tplot
 import logging
+
+
 from .config import CONFIG
 
 
@@ -11,7 +13,9 @@ def load(trange=['2018-11-5', '2018-11-6'],
          instrument='emfisis',
          level='l3',
          datatype='magnetometer',
+         prefix='',
          suffix='',
+         force_download=False,
          cadence='4sec',  # for EMFISIS mag data
          coord='sm',  # for EMFISIS mag data
          wavetype='waveform',  # for EMFISIS waveform data
@@ -53,8 +57,15 @@ def load(trange=['2018-11-5', '2018-11-6'],
     datatype : str, default='magnetometer'
         Instrument-specific data type.
 
+        Suffix for the tplot variable names.
+    prefix : str, default=''
+        Prefix for the tplot variable names.
+
     suffix : str, default=''
         Suffix for the tplot variable names.
+
+    force_download : bool, default=False
+        Download file even if local version is more recent than server version.
 
     cadence : str, default='4sec'
         Data cadence
@@ -105,7 +116,6 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     datatype_in = datatype
     datatype = datatype.lower()
-    prefix = ''
     out_files = []
 
     if notplot:
@@ -113,42 +123,47 @@ def load(trange=['2018-11-5', '2018-11-6'],
     else:
         tvars = []
 
+    if prefix is None:
+        prefix = ''
+
+    if suffix is None:
+        suffix = ''
+
     for prb in probe:
         if instrument == 'emfisis':
-            if datatype == 'density' or datatype == 'housekeeping' or datatype == 'wna-survey':
-                pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/' + datatype + '/%Y/rbsp-' + prb + '_' + datatype + '_' + instrument + '-' + level + '_%Y%m%d_v*.cdf'
-            elif datatype == 'wfr' or datatype == 'hfr':
-                pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/' + datatype + '/' + wavetype + '/%Y/rbsp-' + prb + '_' + datatype + '-' + wavetype + '_' + instrument + '-' + level + '_%Y%m%d*_v*.cdf'
+            if datatype in ['density', 'housekeeping', 'wna-survey']:
+                pathformat = f'rbsp{prb}/{level}/{instrument}/{datatype}/%Y/rbsp-{prb}_{datatype}_{instrument}-{level}_%Y%m%d_v*.cdf'
+            elif datatype in ['wfr', 'hfr']:
+                pathformat = f'rbsp{prb}/{level}/{instrument}/{datatype}/{wavetype}/%Y/rbsp-{prb}_{datatype}-{wavetype}_{instrument}-{level}_%Y%m%d*_v*.cdf'
             else:
                 if level == 'l2' and datatype == 'magnetometer':
-                    pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/' + datatype + '/uvw/%Y/rbsp-' + prb + '_' + datatype + '_uvw_' + instrument + '-' + level + '_%Y%m%d*_v*.cdf'
+                    pathformat = f'rbsp{prb}/{level}/{instrument}/{datatype}/uvw/%Y/rbsp-{prb}_{datatype}_uvw_{instrument}-{level}_%Y%m%d*_v*.cdf'
                 else:
-                    pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/' + datatype + '/' + cadence + '/' + coord + '/%Y/rbsp-' + prb + '_' + datatype + '_' + cadence + '-' + coord + '_' + instrument + '-' + level + '_%Y%m%d_v*.cdf'
+                    pathformat = f'rbsp{prb}/{level}/{instrument}/{datatype}/{cadence}/{coord}/%Y/rbsp-{prb}_{datatype}_{cadence}-{coord}_{instrument}-{level}_%Y%m%d_v*.cdf'
         elif instrument == 'rbspice':
-            pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/' + datatype + '/%Y/rbsp-' + prb + '-' + instrument + '_lev-' + str(
-                level[-1]) + '?' + datatype + '_%Y%m%d_v*.cdf'
-            prefix = 'rbsp' + prb + '_rbspice_' + level + '_' + datatype_in + '_'
+            pathformat = f'rbsp{prb}/{level}/{instrument}/{datatype}/%Y/rbsp-{prb}-{instrument}_lev-{level[-1]}?{datatype}_%Y%m%d_v*.cdf'
+            prefix = prefix + f'rbsp{prb}_rbspice_{level}_{datatype_in}_'
         elif instrument == 'efw':
-            if level == 'l3':
-                pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/%Y/rbsp' + prb + '_' + instrument + '-' + level + '_%Y%m%d_v??.cdf'
-            else:
-                pathformat = 'rbsp' + prb + '/' + level + '/' + instrument + '/' + datatype + '/%Y/rbsp' + prb + '_' + instrument + '-' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+                if level == 'l3':
+                    pathformat = f'rbsp{prb}/{level}/{instrument}/%Y/rbsp{prb}_{instrument}-{level}_%Y%m%d_v??.cdf'
+                else:
+                    pathformat = f'rbsp{prb}/{level}/{instrument}/{datatype}/%Y/rbsp{prb}_{instrument}-{level}_{datatype}_%Y%m%d_v??.cdf'
         elif instrument == 'mageis':
-            pathformat = 'rbsp' + prb + '/' + level + '/ect/' + instrument + '/sectors/' + rel + '/%Y/rbsp' + prb + '_' + rel + '_ect-mageis-' + level + '_%Y%m%d_v*.cdf'
+                pathformat = f'rbsp{prb}/{level}/ect/{instrument}/sectors/{rel}/%Y/rbsp{prb}_{rel}_ect-mageis-{level}_%Y%m%d_v*.cdf'
         elif instrument == 'hope':
             if datatype == 'moments':
-                pathformat = 'rbsp' + prb + '/' + level + '/ect/' + instrument + '/' + datatype + '/' + rel + '/%Y/rbsp' + prb + '_' + rel + '_ect-hope-mom-' + level + '_%Y%m%d_v*.cdf'
+                pathformat = f'rbsp{prb}/{level}/ect/{instrument}/{datatype}/{rel}/%Y/rbsp{prb}_{rel}_ect-hope-mom-{level}_%Y%m%d_v*.cdf'
             elif datatype == 'pitchangle':
-                pathformat = 'rbsp' + prb + '/' + level + '/ect/' + instrument + '/' + datatype + '/' + rel + '/%Y/rbsp' + prb + '_' + rel + '_ect-hope-pa-' + level + '_%Y%m%d_v*.cdf'
+                pathformat = f'rbsp{prb}/{level}/ect/{instrument}/{datatype}/{rel}/%Y/rbsp{prb}_{rel}_ect-hope-pa-{level}_%Y%m%d_v*.cdf'
             elif datatype == 'spinaverage':
-                pathformat = 'rbsp' + prb + '/' + level + '/ect/' + instrument + '/' + datatype + '/' + rel + '/%Y/rbsp' + prb + '_' + rel + '_ect-hope-sci-' + level + 'sa_%Y%m%d_v*.cdf'
+                pathformat = f'rbsp{prb}/{level}/ect/{instrument}/{datatype}/{rel}/%Y/rbsp{prb}_{rel}_ect-hope-sci-{level}sa_%Y%m%d_v*.cdf'
         elif instrument == 'rept':
-            pathformat = 'rbsp' + prb + '/' + level + '/ect/' + instrument + '/sectors/' + rel + '/%Y/rbsp' + prb + '_' + rel + '_ect-rept-sci-' + level + '_%Y%m%d_v*.cdf'
+            pathformat = f'rbsp{prb}/{level}/ect/{instrument}/sectors/{rel}/%Y/rbsp{prb}_{rel}_ect-rept-sci-{level}_%Y%m%d_v*.cdf'
         elif instrument == 'rps':
             if datatype == 'rps-1min':
-                pathformat = 'rbsp' + prb + '/' + level + '/rps/psbr-rps-1min/%Y/rbsp' + prb + '_' + level + '-1min_psbr-rps_%Y%m%d_v*.cdf'
-            elif datatype == 'rps':
-                pathformat = 'rbsp' + prb + '/' + level + '/rps/psbr-rps/%Y/rbsp' + prb + '_' + level + '_psbr-rps_%Y%m%d_v*.cdf'
+                pathformat = f'rbsp{prb}/{level}/rps/psbr-rps-1min/%Y/rbsp{prb}_{level}-1min_psbr-rps_%Y%m%d_v*.cdf'
+            else:
+                pathformat = f'rbsp{prb}/{level}/rps/psbr-rps/%Y/rbsp{prb}_{level}_psbr-rps_%Y%m%d_v*.cdf'
         elif instrument == 'magephem':
             if cadence not in ['1min', '5min']:
                 cadence = '1min'
@@ -157,23 +172,22 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 coord = 'op77q'
                 logging.info('Invalid coordinate system for magephem data. Defaulting to op77q.')
 
-            pathformat = 'rbsp' + prb + '/ephemeris/ect-mag-ephem/cdf/def-'+cadence+'-'+coord+'/%Y/rbsp-' + prb + '_mag-ephem_def-'+cadence+'-'+coord+'_%Y%m%d_v*.cdf'
+            pathformat = f'rbsp{prb}/ephemeris/ect-mag-ephem/cdf/def-{cadence}-{coord}/%Y/rbsp-{prb}_mag-ephem_def-{cadence}-{coord}_%Y%m%d_v*.cdf'
 
         # find the full remote path names using the trange
         remote_names = dailynames(file_format=pathformat, trange=trange)
 
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
-                         local_path=CONFIG['local_data_dir'], no_download=no_update)
-        if files is not None:
-            for file in files:
-                out_files.append(file)
+                         local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
+        if files:
+            out_files.extend(files)
 
         if not downloadonly:
             tvars_o = cdf_to_tplot(sorted(out_files), prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                                    varformat=varformat, varnames=varnames, notplot=notplot)
 
             if notplot:
-                tvars = dict(tvars, **tvars_o)
+                tvars.update(tvars_o)
             else:
                 tvars.extend(tvars_o)
 

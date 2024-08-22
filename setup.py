@@ -8,7 +8,7 @@ from codecs import open
 
 setup(
     name="pyspedas",
-    version="1.5.17",
+    version="1.5.18",
     description="Python Space Physics Environment Data Analysis Software (pySPEDAS)",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -31,7 +31,7 @@ setup(
     install_requires=[
         "numpy>=1.20.0",
         "requests",
-        "geopack>=1.0.10",
+        "https://github.com/spedas/geopack/archive/refs/heads/master.zip",
         "scipy",
         "cdflib",
         "cdasws>=1.7.24",

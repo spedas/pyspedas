@@ -307,19 +307,75 @@ class AnalysisTestCases(BaseTestCase):
         d5 = get_data('nparray_str')
         self.assertTrue(abs(d3[1][1][0] - 5.80645161) < 1e-6)
 
-    def test_tinterpol_nonnegative(self):
-        import pytplot
-        trange = ["2018-07-01/01:00", "2018-07-02/00:10"]
+    def test_scipy_interp1d(self):
+        import scipy
+        time_strings_input = np.array(['2018-07-01T13:02:16.892474880',
+                                       '2018-07-01T13:02:16.922475008',
+                                       '2018-07-01T13:02:16.952474880'])
+        values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
+        time_strings_interp_to = np.array(['2018-07-01T13:02:16.922475008'])
 
-        # Test that tinterpol does not introduce negative values when input contains
-        # zeroes.  (This was actually an issue with cdflib 0.4.9 and older pytplot-mpl-temp timestamp handling, not tinterpol itself
-        pyspedas.mms.fpi(datatype=['dis-moms', 'des-moms'], trange=trange, data_rate='brst', time_clip=True,
-                         center_measurement=True)
-        tinterpol('mms1_des_numberdensity_brst', 'mms1_dis_numberdensity_brst')
-        des_n_before = pytplot.get('mms1_des_numberdensity_brst')
-        des_n = pytplot.get('mms1_des_numberdensity_brst-itrp')
-        self.assertTrue((des_n_before.y >=  0.0).all)
-        self.assertTrue((des_n.y >=  0.0).all)
+        input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
+        interp_to_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_interp_to])
+
+        input_times_float64 = input_times_npdt64.astype(np.float64)
+        interp_to_time_float64 = interp_to_times_npdt64.astype(np.float64)
+
+        interpolator = scipy.interpolate.interp1d(input_times_float64, values_input, kind='linear')
+        result=interpolator(interp_to_time_float64)
+        # Known to fail.  This affects xarray.interp and the current version of tinterpol.
+        #self.assertTrue((result >= 0.0).all())
+
+    def test_xarray_interp(self):
+        import xarray as xr
+        import numpy as np
+
+        time_strings_input = np.array(['2018-07-01T13:02:16.892474880',
+                                       '2018-07-01T13:02:16.922475008',
+                                       '2018-07-01T13:02:16.952474880'])
+        values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
+        time_strings_interp_to = np.array(['2018-07-01T13:02:16.922475008'])
+
+        input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
+        interp_to_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_interp_to])
+
+        data_array = xr.DataArray(values_input,dims=['time'],coords={'time':('time',input_times_npdt64)})
+
+        result = data_array.interp({"time": interp_to_times_npdt64},method='linear')
+        # This is known to fail, due to issues in scipy.interpolate.interp1d
+        #self.assertTrue((result.values >= 0.0).all())
+
+    def test_numpy_interp(self):
+        time_strings_input = np.array(['2018-07-01T13:02:16.892474880',
+                                       '2018-07-01T13:02:16.922475008',
+                                       '2018-07-01T13:02:16.952474880'])
+        values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
+
+        time_strings_interp_to = np.array(['2018-07-01T13:02:16.922475008'])
+        input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
+        interp_to_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_interp_to])
+        input_times_float64 = input_times_npdt64.astype(np.float64)
+        interp_to_time_float64 = interp_to_times_npdt64.astype(np.float64)
+        result=np.interp(interp_to_time_float64,input_times_float64,values_input)
+        # This works, unlike scipy and xarray!
+        self.assertTrue((result >= 0.0).all())
+
+
+    def test_tinterpol_nonnegative2(self):
+        time_strings_input = np.array(['2018-07-01T13:02:16.892474880',
+                                       '2018-07-01T13:02:16.922475008',
+                                       '2018-07-01T13:02:16.952474880'])
+        values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
+        time_strings_interp_to = np.array(['2018-07-01T13:02:16.922475008'])
+        input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
+        interp_to_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_interp_to])
+        store_data('interp_input', data={'x':input_times_npdt64, 'y':values_input})
+        store_data('interp_to', data={'x':interp_to_times_npdt64, 'y':[0.0]})
+        tinterpol('interp_input', 'interp_to', newname='interp_result')
+        result=get_data('interp_result')
+        # This is known to fail, apparently due to limitations of scipy.interpolate.interp1d which are
+        # unlikely to ever be fixed. See tests above for xarray.interp and scipy
+        # self.assertTrue((result.y >= 0.0).all())
 
 if __name__ == '__main__':
     unittest.main()

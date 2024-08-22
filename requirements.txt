@@ -6,7 +6,7 @@ cdasws>=1.7.24
 netCDF4
 pywavelets
 astropy
-geopack>=1.0.10
+https://github.com/spedas/geopack/archive/refs/heads/master.zip
 scipy
 hapiclient>=0.2.2
 viresclient
