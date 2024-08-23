@@ -20,7 +20,7 @@ import tarfile
 import os
 from pathlib import Path
 from typing import List
-from pyspedas.cluster.config import CONFIG
+from .config import CONFIG
 
 
 def cl_master_datatypes():

@@ -83,9 +83,9 @@ from .noaa import noaa_load_kp
 
 # Make mission-specific namespaces available under pyspedas
 from .projects import ace
-from . import akebono
-from . import barrel
-from . import cluster
+from .projects import akebono
+from .projects import barrel
+from .projects import cluster
 from . import cnofs
 from . import csswe
 from . import de2
