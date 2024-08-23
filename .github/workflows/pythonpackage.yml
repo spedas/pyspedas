@@ -71,7 +71,7 @@ jobs:
         # exit-zero treats all errors as warnings. 
         flake8 . --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
     - name: Test with unittest
-      if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master'
+      if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
@@ -153,15 +153,15 @@ jobs:
         echo Starting maven tests at `date`
         coverage run -a -m pyspedas.maven.tests.tests
         echo Starting cluster tests at `date`
-        coverage run -a -m pyspedas.cluster.tests.tests
+        coverage run -a -m pyspedas.projects.cluster.tests.tests
         #echo Starting akebono tests at `date`
-        #coverage run -a -m pyspedas.akebono.tests.tests
+        #coverage run -a -m pyspedas.projects.akebono.tests.tests
         echo Starting CDAWeb tests at `date`
         coverage run -a -m pyspedas.cdagui.tests.tests
         echo Starting themis tplot_time  tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
-        coverage run -a -m pyspedas.barrel.tests.tests
+        coverage run -a -m pyspedas.projects.barrel.tests.tests
         echo Starting elfin epd_l1 tests at `date`
         coverage run -a -m pyspedas.elfin.tests.test_epd_l1
         echo Starting elfin epd_l2 tests at `date`
