@@ -21,8 +21,7 @@ class TplotTimeValidation(unittest.TestCase):
     def test_timespan(self):
         """Test pytplot.timespan as used in ERG notebook"""
         from pytplot import tplot,timespan
-        from pyspedas.erg import mgf
-        vars = mgf(trange=['2017-03-27', '2017-03-28'])  # load MGF Lv.2 8-s data for 0-24 UT on Mar. 27, 2017.
+        vars = pyspedas.erg.mgf(trange=['2017-03-27', '2017-03-28'])  # load MGF Lv.2 8-s data for 0-24 UT on Mar. 27, 2017.
         tplot('erg_mgf_l2_mag_8sec_sm', display=display)
         timespan('2017-03-27 09:00:00', 6, keyword='hours')
         tplot(['erg_mgf_l2_mag_8sec_sm', 'erg_mgf_l2_mag_8sec_gsm'], display=display)
