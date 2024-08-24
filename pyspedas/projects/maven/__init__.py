@@ -1,4 +1,4 @@
-import pyspedas.maven.spdf as spdf_load
+import pyspedas.projects.maven.spdf as spdf_load
 from .maven_load import load_data
 maven_load = load_data
 from .euv import euv

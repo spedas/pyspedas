@@ -1,4 +1,4 @@
-from pyspedas.lanl.load import load
+from .load import load
 
 # This routine was originally in lanl/__init__.py.
 def mpa(

@@ -1,15 +1,15 @@
 from .maven_load import load_data
-import pyspedas.maven.spdf as spdf_load
+import pyspedas.projects.maven.spdf as spdf_load
 
 # This routine was originally in maven/__init__.py, until being moved to its own file.
 # Please refer to __init__.py if you need to see the revision history before it was moved.
 
 maven_load = load_data
 
-def swea(
+def sep(
     trange=["2016-01-01", "2016-01-02"],
     level="l2",
-    datatype="svyspec",
+    datatype="s2-cal-svy-full",
     suffix="",
     prefix="",
     varformat=None,
@@ -20,7 +20,7 @@ def swea(
     spdf=False,
 ):
     """
-    Load MAVEN Solar Wind Electron Analyzer (SWEA) data.
+    Loads MAVEN Solar Energetic Particle (SEP) data.
 
     Parameters
     ----------
@@ -30,7 +30,7 @@ def swea(
     level : str, optional
         Data level. Defaults to "l2".
     datatype : str, optional
-        Data type. Defaults to "svyspec".
+        Data type. Defaults to "s2-cal-svy-full".
     suffix: str
         The tplot variable names will be given this suffix.
         Default: '', no suffix is added.
@@ -40,15 +40,15 @@ def swea(
     varformat : str, optional
         Variable format. Defaults to None.
     get_support_data : bool, optional
-        Whether to retrieve support data. Defaults to False.
+        Whether to download support data. Defaults to False.
     auto_yes : bool, optional
-        Whether to automatically answer "yes" to prompts. Defaults to True.
+        Whether to automatically answer 'yes' to all prompts. Defaults to True.
     downloadonly : bool, optional
         Whether to only download the data without loading it. Defaults to False.
     varnames : list, optional
         List of variable names to load. Defaults to [].
     spdf : bool, optional
-        Whether to use the SPDF library for data loading. Defaults to False.
+        Whether to use the SPDF library for loading the data. Defaults to False.
 
     Returns
     -------
@@ -57,7 +57,7 @@ def swea(
     """
 
     if spdf:
-        return spdf_load.swea(
+        return spdf_load.sep(
             trange=trange,
             level=level,
             datatype=datatype,
@@ -67,7 +67,7 @@ def swea(
             varnames=varnames,
         )
     return maven_load(
-        instruments="swe",
+        instruments="sep",
         start_date=trange[0],
         end_date=trange[1],
         type=datatype,
@@ -80,3 +80,4 @@ def swea(
         download_only=downloadonly,
         varnames=varnames,
     )
+

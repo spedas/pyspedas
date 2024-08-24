@@ -2,12 +2,12 @@ import os
 import unittest
 from pytplot import data_exists, tplot_names, del_data
 from pyspedas import maven
-from pyspedas.maven.download_files_utilities import get_orbit_files, merge_orbit_files, get_file_from_site
-from pyspedas.maven.maven_kp_to_tplot import maven_kp_to_tplot
-from pyspedas.maven.utilities import get_latest_iuvs_files_from_date_range
+from pyspedas.projects.maven.download_files_utilities import get_orbit_files, merge_orbit_files, get_file_from_site
+from pyspedas.projects.maven.maven_kp_to_tplot import maven_kp_to_tplot
+from pyspedas.projects.maven.utilities import get_latest_iuvs_files_from_date_range
 import time
 import collections
-from pyspedas.maven.config import CONFIG
+from pyspedas.projects.maven.config import CONFIG
 from datetime import datetime
 
 # We need sleep time to avoid "HTTP Error 429: Too Many Requests"
@@ -32,7 +32,7 @@ def get_kp_dict():
 
 class OrbitTestCases(unittest.TestCase):
     def test_get_merge_orbit_files(self):
-        from pyspedas.maven.config import CONFIG
+        from pyspedas.projects.maven.config import CONFIG
 
         get_orbit_files()
         merge_orbit_files()
@@ -91,7 +91,7 @@ class LoadTestCases(unittest.TestCase):
         time.sleep(sleep_time)
 
     def test_kp_param_errors(self):
-        from pyspedas.maven.kp_utilities import param_list, param_range, range_select
+        from pyspedas.projects.maven.kp_utilities import param_list, param_range, range_select
         # bad value in kp dict
         kp = {}
         kp["foo"] = "bar"
@@ -124,13 +124,13 @@ class LoadTestCases(unittest.TestCase):
             i = len(log.output)
 
     def test_kp_utilities(self):
-        from pyspedas.maven.kp_utilities import (
+        from pyspedas.projects.maven.kp_utilities import (
             param_list,
             param_range,
             range_select,
             get_inst_obs_labels,
         )
-        from pyspedas.maven.kp_utilities import find_param_from_index
+        from pyspedas.projects.maven.kp_utilities import find_param_from_index
 
         kp = get_kp_dict()
         self.assertTrue(type(kp) is collections.OrderedDict)
@@ -306,7 +306,7 @@ class LoadTestCases(unittest.TestCase):
             pass
 
     def test_load_mag_data(self):
-        from pyspedas.maven.utilities import get_l2_files_from_date
+        from pyspedas.projects.maven.utilities import get_l2_files_from_date
 
         del_data("*")
         data = maven.mag(datatype="ss1s")
@@ -317,7 +317,7 @@ class LoadTestCases(unittest.TestCase):
         time.sleep(sleep_time)
 
     def test_load_mag_data_private(self):
-        from pyspedas.maven.utilities import get_l2_files_from_date
+        from pyspedas.projects.maven.utilities import get_l2_files_from_date
 
         del_data("*")
         # We don't have credentials to the private site yet, so this is expected to fail

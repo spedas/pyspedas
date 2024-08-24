@@ -238,7 +238,7 @@ class PlotTestCases(unittest.TestCase):
 
     def test_maven_specplot(self):
         del_data("*")
-        from pyspedas.maven.spdf import load
+        from pyspedas.projects.maven.spdf import load
         sta_vars = load(trange=['2020-12-30', '2020-12-31'], instrument='static', datatype='c0-64e2m')
         print(sta_vars)
         timespan('2020-12-30',1,'days')
@@ -251,7 +251,7 @@ class PlotTestCases(unittest.TestCase):
     #@unittest.skip(reason="Failing until we establish a default for spec_dim_to_plot")
     def test_maven_fluxes_specplot(self):
         del_data("*")
-        from pyspedas.maven.spdf import load
+        from pyspedas.projects.maven.spdf import load
         swe_vars = load(trange=['2014-10-18', '2014-10-19'], instrument='swea')
         print(swe_vars)
         timespan('2014-10-18',1,'days')

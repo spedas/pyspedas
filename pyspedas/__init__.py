@@ -77,7 +77,6 @@ from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 from .mms.plots.mms_overview_plot import mms_overview_plot
 from .mms.particles.mms_part_getspec import mms_part_getspec
 from .mms.particles.mms_part_slice2d import mms_part_slice2d
-from .maven import maven_load
 from .noaa import noaa_load_kp
 
 # Make mission-specific namespaces available under pyspedas
@@ -100,9 +99,11 @@ from .projects import kompsat
 # for backward compatibility
 from .projects.kompsat.load import load as kompsat_load
 from .projects import kyoto
-from . import lanl
-from . import maven
-from . import mica
+from .projects import lanl
+from .projects import maven
+# for backward compatibility
+from .projects.maven import maven_load
+from .projects import mica
 from . import omni
 from . import poes
 from . import polar

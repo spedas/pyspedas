@@ -151,7 +151,7 @@ jobs:
         echo Starting MTH5 load_fdsn test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
         echo Starting maven tests at `date`
-        coverage run -a -m pyspedas.maven.tests.tests
+        coverage run -a -m pyspedas.projects.maven.tests.tests
         echo Starting cluster tests at `date`
         coverage run -a -m pyspedas.projects.cluster.tests.tests
         #echo Starting akebono tests at `date`
@@ -179,7 +179,7 @@ jobs:
         echo Starting st5 tests at `date`
         coverage run -a -m pyspedas.st5.tests.tests
         echo Starting lanl tests at `date`
-        coverage run -a -m pyspedas.lanl.tests.tests
+        coverage run -a -m pyspedas.projects.lanl.tests.tests
         echo Starting cotrans quaternion tests at `date`
         coverage run -a -m pyspedas.cotrans.tests.quaternions
         echo Starting cnofs tests at `date`
@@ -292,7 +292,7 @@ jobs:
         echo Starting goes tests at `date`
         coverage run -a -m pyspedas.projects.goes.tests.tests
         echo Starting mica tests at `date`
-        coverage run -a -m pyspedas.mica.tests.tests
+        coverage run -a -m pyspedas.projects.mica.tests.tests
         echo Starting ulysses tests at `date`
         coverage run -a -m pyspedas.ulysses.tests.tests
         echo Starting solo tests at `date`
