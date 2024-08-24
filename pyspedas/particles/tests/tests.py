@@ -1,7 +1,7 @@
 import unittest
 import logging
 import pyspedas
-from pyspedas.erg.satellite.erg.particle.erg_lepe_get_dist import erg_lepe_get_dist
+from pyspedas.projects.erg.satellite.erg.particle.erg_lepe_get_dist import erg_lepe_get_dist
 from pyspedas.particles.spd_part_products.spd_pgs_make_theta_spec import spd_pgs_make_theta_spec
 from pyspedas.particles.spd_part_products.spd_pgs_make_phi_spec import spd_pgs_make_phi_spec
 from pyspedas.particles.spd_part_products.spd_pgs_make_e_spec import spd_pgs_make_e_spec
