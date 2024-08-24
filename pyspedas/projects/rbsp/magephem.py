@@ -1,4 +1,4 @@
-from pyspedas.rbsp.load import load
+from .load import load
 
 # Add the loader for MagEphem cdf files.
 def magephem(trange=['2018-11-5', '2018-11-6'],

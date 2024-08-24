@@ -1,4 +1,4 @@
-from pyspedas.rbsp.load import load
+from .load import load
 
 
 def rps(trange=['2015-11-5', '2015-11-6'],

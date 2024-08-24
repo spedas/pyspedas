@@ -1,22 +1,23 @@
-from pyspedas.rbsp.load import load
+from .load import load
 
 
-def efw(trange=['2015-11-5', '2015-11-6'],
-        probe='a',
-        datatype='spec',
-        level='l3',
-        suffix='',
-        prefix='',
-        force_download=False,
-        get_support_data=False,
-        varformat=None,
-        varnames=[],
-        downloadonly=False,
-        notplot=False,
-        no_update=False,
-        time_clip=False):
+def mageis(trange=['2015-11-5', '2015-11-6'],
+           probe='a',
+           datatype='',
+           level='l3',
+           rel='rel04',
+           prefix='',
+           suffix='',
+           force_download=False,
+           get_support_data=False,
+           varformat=None,
+           varnames=[],
+           downloadonly=False,
+           notplot=False,
+           no_update=False,
+           time_clip=False):
     """
-    This function loads data from the Electric Field and Waves Suite (EFW)
+    This function loads data from the Energetic Particle, Composition, and Thermal Plasma Suite (ECT)
 
     Parameters
     ----------
@@ -28,21 +29,24 @@ def efw(trange=['2015-11-5', '2015-11-6'],
         probe : str or list of str, default='a'
             Spacecraft probe name: 'a' or 'b'
 
-        datatype : str, default='spec'
+        datatype : str, default=''
             Data type. Valid options are specific to different data levels.
 
         level : str, default='l3'
             Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
 
+        rel : str, default='rel04'
+            Release version of the data.
+
         prefix : str, optional
             The tplot variable names will be given this prefix. By default, no prefix is added.
 
-        suffix : str, optional
+        suffix: str, optional
             The tplot variable names will be given this suffix.  By default,
             no suffix is added.
 
         force_download : bool, default=False
-            Download file even if local version is more recent than server version
+            Download file even if local version is more recent than server version.
 
         get_support_data: bool, default=False
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -77,7 +81,7 @@ def efw(trange=['2015-11-5', '2015-11-6'],
 
     Examples
     --------
-    >>> efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
-    >>> tplot(['efield_in_inertial_frame_spinfit_mgse', 'spacecraft_potential'])
+    >>> mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
+    >>> tplot('I')
     """
-    return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, level=level, prefix=prefix, suffix=suffix, force_download=force_download, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+    return load(instrument='mageis', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, prefix=prefix, suffix=suffix, force_download=force_download, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

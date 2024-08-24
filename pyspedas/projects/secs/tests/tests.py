@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch
 import pyspedas
-from pyspedas.secs.makeplots import make_plots
+from pyspedas.projects.secs.makeplots import make_plots
 from pytplot import del_data
-from pyspedas.secs.config import CONFIG
+from pyspedas.projects.secs.config import CONFIG
 
 
 class SECSTestCases(unittest.TestCase):

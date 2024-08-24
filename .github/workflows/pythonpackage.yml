@@ -145,7 +145,7 @@ jobs:
         echo Starting VIRES client tests at `date`
         coverage run -a -m pyspedas.vires.tests.tests
         echo Starting secs tests at `date`
-        coverage run -a -m pyspedas.secs.tests.tests
+        coverage run -a -m pyspedas.projects.secs.tests.tests
         echo Starting MTH5 import test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
@@ -173,7 +173,7 @@ jobs:
         echo Starting elfin epd calibration tests at `date`      
         coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
         echo Starting soho tests at `date`
-        coverage run -a -m pyspedas.soho.tests.tests
+        coverage run -a -m pyspedas.projects.soho.tests.tests
         echo Starting de2 tests at `date`
         coverage run -a -m pyspedas.projects.de2.tests.tests
         echo Starting st5 tests at `date`
@@ -258,9 +258,9 @@ jobs:
         echo Starting image tests at `date`
         coverage run -a -m pyspedas.projects.image.tests.tests
         echo Starting psp tests at `date`
-        coverage run -a -m pyspedas.psp.tests.tests
+        coverage run -a -m pyspedas.projects.psp.tests.tests
         echo Starting rbsp tests at `date`
-        coverage run -a -m pyspedas.rbsp.tests.tests
+        coverage run -a -m pyspedas.projects.rbsp.tests.tests
         echo Starting stereo tests at `date`
         coverage run -a -m pyspedas.stereo.tests.tests
         echo Starting twins tests at `date`
@@ -268,9 +268,9 @@ jobs:
         echo Starting wind tests at `date`
         coverage run -a -m pyspedas.wind.tests.tests
         echo Starting poes tests at `date`
-        coverage run -a -m pyspedas.poes.tests.tests
+        coverage run -a -m pyspedas.projects.poes.tests.tests
         echo Starting polar tests at `date`
-        coverage run -a -m pyspedas.polar.tests.tests
+        coverage run -a -m pyspedas.projects.polar.tests.tests
         echo Starting geopack tests at `date`
         coverage run -a -m pyspedas.geopack.tests.tests
         echo Starting geopack-IDL validation tests at `date`

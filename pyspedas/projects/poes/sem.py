@@ -1,3 +1,5 @@
+from .load import load
+
 # This routine was originally in poes/__init__.py.
 def sem(trange=['2018-11-5', '2018-11-6'],
         probe=['noaa19'],
@@ -78,6 +80,3 @@ def sem(trange=['2018-11-5', '2018-11-6'],
     >>> tplot('ted_ele_tel30_low_eflux')
     """
     return load(instrument='sem', probe=probe, trange=trange, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)
-
-
-from pyspedas.poes.load import load

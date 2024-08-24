@@ -1,21 +1,21 @@
-from pyspedas.rbsp.load import load
+from .load import load
 
 
-def mageis(trange=['2015-11-5', '2015-11-6'],
-           probe='a',
-           datatype='',
-           level='l3',
-           rel='rel04',
-           prefix='',
-           suffix='',
-           force_download=False,
-           get_support_data=False,
-           varformat=None,
-           varnames=[],
-           downloadonly=False,
-           notplot=False,
-           no_update=False,
-           time_clip=False):
+def rept(trange=['2015-11-5', '2015-11-6'],
+         probe='a',
+         datatype='',
+         level='l3',
+         rel='rel03',
+         prefix='',
+         suffix='',
+         force_download=False,
+         get_support_data=False,
+         varformat=None,
+         varnames=[],
+         downloadonly=False,
+         notplot=False,
+         no_update=False,
+         time_clip=False):
     """
     This function loads data from the Energetic Particle, Composition, and Thermal Plasma Suite (ECT)
 
@@ -35,7 +35,7 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
         level : str, default='l3'
             Data level. Valid options: 'l1', 'l2', 'l3', 'l4'
 
-        rel : str, default='rel04'
+        rel : str, default='rel03'
             Release version of the data.
 
         prefix : str, optional
@@ -81,7 +81,8 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
 
     Examples
     --------
-    >>> mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
-    >>> tplot('I')
+    >>> rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
+    >>> tplot('FEDU')
     """
-    return load(instrument='mageis', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, prefix=prefix, suffix=suffix, force_download=force_download, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)
+
+    return load(instrument='rept', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, prefix=prefix, suffix=suffix, force_download=force_download, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

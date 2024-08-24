@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from pytplot import get_data, store_data, options
-from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg import rbsp_rbspice_pad_spinavg
+from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg import rbsp_rbspice_pad_spinavg
 
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one
 # bottleneck nanmean is ~2.5x faster
@@ -48,7 +48,7 @@ def rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3', energy=[0, 1000],
     >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_spin')
 
     # Calculate the pitch angle distributions
-    >>> from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
+    >>> from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
     >>> rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3')
     >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad')
     """

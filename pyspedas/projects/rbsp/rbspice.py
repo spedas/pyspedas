@@ -1,9 +1,9 @@
 import pyspedas
 # from pyspedas.rbsp import load, rbsp_load_rbspice_read, rbsp_rbspice_omni, rbsp_rbspice_spin_avg
-from pyspedas.rbsp.load import load
-from pyspedas.rbsp.rbspice_lib.rbsp_load_rbspice_read import rbsp_load_rbspice_read
-from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_omni import rbsp_rbspice_omni
-from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_spin_avg import rbsp_rbspice_spin_avg
+from .load import load
+from .rbspice_lib.rbsp_load_rbspice_read import rbsp_load_rbspice_read
+from .rbspice_lib.rbsp_rbspice_omni import rbsp_rbspice_omni
+from .rbspice_lib.rbsp_rbspice_spin_avg import rbsp_rbspice_spin_avg
 
 
 def rbspice(trange=['2018-11-5', '2018-11-6'],
@@ -86,7 +86,7 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
     >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_spin')
 
     # Calculate the pitch angle distributions
-    >>> from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
+    >>> from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
     >>> rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3')
     >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad_spin')
     """

@@ -6,7 +6,7 @@ import gzip
 from pathlib import Path
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.secs.read_data_files import read_data_files
+from .read_data_files import read_data_files
 
 from .config import CONFIG
 

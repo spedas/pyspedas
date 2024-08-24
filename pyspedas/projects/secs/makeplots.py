@@ -10,7 +10,7 @@ from matplotlib.colors import TwoSlopeNorm, Normalize, SymLogNorm, NoNorm, LogNo
 from .config import CONFIG
 from itertools import chain
 from matplotlib.path import Path
-from pyspedas.secs import read_data_files
+from .read_data_files import read_data_files
 from datetime import datetime, timedelta
 from pyspedas.utilities.dailynames import dailynames
 from mpl_toolkits.basemap.solar import daynight_terminator

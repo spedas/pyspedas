@@ -3,7 +3,7 @@ import unittest
 from pytplot import data_exists
 import pyspedas
 from pytplot import del_data, tplot
-from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
+from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
 
 global_display=False
 
