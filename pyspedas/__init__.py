@@ -78,7 +78,6 @@ from .mms.plots.mms_overview_plot import mms_overview_plot
 from .mms.particles.mms_part_getspec import mms_part_getspec
 from .mms.particles.mms_part_slice2d import mms_part_slice2d
 from .maven import maven_load
-from .kompsat.load import load as kompsat_load
 from .noaa import noaa_load_kp
 
 # Make mission-specific namespaces available under pyspedas
@@ -86,18 +85,21 @@ from .projects import ace
 from .projects import akebono
 from .projects import barrel
 from .projects import cluster
-from . import cnofs
-from . import csswe
-from . import de2
-from . import dscovr
-from . import elfin
-from . import equator_s
-from . import erg
-from . import fast
-from . import geotail
-from . import goes
-from . import image
-from . import kyoto
+from .projects import cnofs
+from .projects import csswe
+from .projects import de2
+from .projects import dscovr
+from .projects import elfin
+from .projects import equator_s
+from .projects import erg
+from .projects import fast
+from .projects import geotail
+from .projects import goes
+from .projects import image
+from .projects import kompsat
+# for backward compatibility
+from .projects.kompsat.load import load as kompsat_load
+from .projects import kyoto
 from . import lanl
 from . import maven
 from . import mica
