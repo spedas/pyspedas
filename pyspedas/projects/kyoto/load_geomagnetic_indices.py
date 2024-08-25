@@ -1,7 +1,7 @@
 import logging
 from .load_dst import dst as load_dst
 from .load_ae import load_ae
-from pyspedas.themis.ground.gmag import gmag as thm_gmag
+from pyspedas.projects.themis.ground.gmag import gmag as thm_gmag
 from pyspedas.projects.noaa.noaa_load_kp import noaa_load_kp
 from pyspedas.projects.omni import data as omni_load
 from pytplot import time_clip as tclip

@@ -52,7 +52,7 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         The SPEDAS script that creates the file: projects/themis/state/cotrans/thm_cotrans_validate.pro
         """
         from pyspedas.utilities.download import download
-        from pyspedas.themis.config import CONFIG
+        from pyspedas.projects.themis.config import CONFIG
 
         # Testing time range
         cls.t = ['2008-03-23', '2008-03-28']

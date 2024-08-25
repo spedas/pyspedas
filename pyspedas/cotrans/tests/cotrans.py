@@ -12,7 +12,7 @@ These tests include the function in the following files:
 import unittest
 import pyspedas
 import logging
-from pyspedas.themis.cotrans.dsl2gse import dsl2gse
+from pyspedas.projects.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans.cotrans import cotrans
 from pyspedas.cotrans.fac_matrix_make import fac_matrix_make
 from pytplot import get_data, store_data, del_data

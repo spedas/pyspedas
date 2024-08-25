@@ -67,19 +67,19 @@ from pytplot import *
 from .projects import omni
 
 # Import routine names with mission prefixes into pyspedas namespace
-from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
+from .projects.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
     mms_load_edp, mms_load_eis, mms_load_feeps, \
     mms_load_hpca, mms_load_fpi, mms_load_aspoc, \
     mms_load_dsp, mms_load_fsm, mms_load_state, \
     mms_qcotrans, mms_cotrans_lmn, mms_cotrans_qrotate, mms_cotrans_qtransformer
-from .mms.feeps.mms_feeps_pad import mms_feeps_pad
-from .mms.feeps.mms_feeps_gpd import mms_feeps_gpd
-from .mms.eis.mms_eis_pad import mms_eis_pad
-from .mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
-from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
-from .mms.plots.mms_overview_plot import mms_overview_plot
-from .mms.particles.mms_part_getspec import mms_part_getspec
-from .mms.particles.mms_part_slice2d import mms_part_slice2d
+from .projects.mms.feeps.mms_feeps_pad import mms_feeps_pad
+from .projects.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
+from .projects.mms.eis.mms_eis_pad import mms_eis_pad
+from .projects.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from .projects.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from .projects.mms.plots.mms_overview_plot import mms_overview_plot
+from .projects.mms.particles.mms_part_getspec import mms_part_getspec
+from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
 
 # Make mission-specific namespaces available under pyspedas
 from .projects import ace
@@ -106,8 +106,8 @@ from .projects import maven
 # for backward compatibility
 from .projects.maven import maven_load
 from .projects import mica
+from .projects import mms
 from .projects import noaa
-
 from .projects import poes
 from .projects import polar
 from .projects import psp
@@ -118,7 +118,7 @@ from .projects import solo
 from .projects import st5
 from .projects import stereo
 from .projects import swarm
-from . import themis
+from .projects import themis
 from .projects import twins
 from .projects import ulysses
 from . import vires
