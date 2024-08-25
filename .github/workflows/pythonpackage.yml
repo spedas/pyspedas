@@ -159,7 +159,7 @@ jobs:
         echo Starting CDAWeb tests at `date`
         coverage run -a -m pyspedas.cdagui.tests.tests
         echo Starting themis tplot_time  tests at `date`
-        coverage run -a -m pyspedas.themis.tests.tests_tplot_time
+        coverage run -a -m pyspedas.projects.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
         coverage run -a -m pyspedas.projects.barrel.tests.tests
         echo Starting elfin epd_l1 tests at `date`
