@@ -177,7 +177,7 @@ jobs:
         echo Starting de2 tests at `date`
         coverage run -a -m pyspedas.projects.de2.tests.tests
         echo Starting st5 tests at `date`
-        coverage run -a -m pyspedas.st5.tests.tests
+        coverage run -a -m pyspedas.projects.st5.tests.tests
         echo Starting lanl tests at `date`
         coverage run -a -m pyspedas.projects.lanl.tests.tests
         echo Starting cotrans quaternion tests at `date`
@@ -262,7 +262,7 @@ jobs:
         echo Starting rbsp tests at `date`
         coverage run -a -m pyspedas.projects.rbsp.tests.tests
         echo Starting stereo tests at `date`
-        coverage run -a -m pyspedas.stereo.tests.tests
+        coverage run -a -m pyspedas.projects.stereo.tests.tests
         echo Starting twins tests at `date`
         coverage run -a -m pyspedas.twins.tests.tests
         echo Starting wind tests at `date`
@@ -296,11 +296,11 @@ jobs:
         echo Starting ulysses tests at `date`
         coverage run -a -m pyspedas.ulysses.tests.tests
         echo Starting solo tests at `date`
-        coverage run -a -m pyspedas.solo.tests.tests
+        coverage run -a -m pyspedas.projects.solo.tests.tests
         echo Starting kyoto tests at `date`
         coverage run -a -m pyspedas.projects.kyoto.tests.tests
         echo Starting swarm tests at `date`
-        coverage run -a -m pyspedas.swarm.tests.tests
+        coverage run -a -m pyspedas.projects.swarm.tests.tests
         echo Starting themis_check_args tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests_themis_check_args
         echo Starting themis autoload support tests at `date`

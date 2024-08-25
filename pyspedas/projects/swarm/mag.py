@@ -1,6 +1,6 @@
 from pytplot import tplot
 import pyspedas
-from pyspedas.swarm.load import load
+from .load import load
 
 # This routine was originally in swarm/__init__.py.
 def mag(trange=['2017-03-27/06:00', '2017-03-27/08:00'],

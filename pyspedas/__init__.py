@@ -111,10 +111,10 @@ from .projects import psp
 from .projects import rbsp
 from .projects import secs
 from .projects import soho
-from . import solo
-from . import st5
-from . import stereo
-from . import swarm
+from .projects import solo
+from .projects import st5
+from .projects import stereo
+from .projects import swarm
 from . import themis
 from . import twins
 from . import ulysses
