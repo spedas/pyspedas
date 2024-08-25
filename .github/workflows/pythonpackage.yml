@@ -264,9 +264,9 @@ jobs:
         echo Starting stereo tests at `date`
         coverage run -a -m pyspedas.projects.stereo.tests.tests
         echo Starting twins tests at `date`
-        coverage run -a -m pyspedas.twins.tests.tests
+        coverage run -a -m pyspedas.projects.twins.tests.tests
         echo Starting wind tests at `date`
-        coverage run -a -m pyspedas.wind.tests.tests
+        coverage run -a -m pyspedas.projects.wind.tests.tests
         echo Starting poes tests at `date`
         coverage run -a -m pyspedas.projects.poes.tests.tests
         echo Starting polar tests at `date`
@@ -294,7 +294,7 @@ jobs:
         echo Starting mica tests at `date`
         coverage run -a -m pyspedas.projects.mica.tests.tests
         echo Starting ulysses tests at `date`
-        coverage run -a -m pyspedas.ulysses.tests.tests
+        coverage run -a -m pyspedas.projects.ulysses.tests.tests
         echo Starting solo tests at `date`
         coverage run -a -m pyspedas.projects.solo.tests.tests
         echo Starting kyoto tests at `date`

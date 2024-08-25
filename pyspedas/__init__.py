@@ -116,10 +116,10 @@ from .projects import st5
 from .projects import stereo
 from .projects import swarm
 from . import themis
-from . import twins
-from . import ulysses
+from .projects import twins
+from .projects import ulysses
 from . import vires
-from . import wind
+from .projects import wind
 
 # set up logging/console output
 import logging
