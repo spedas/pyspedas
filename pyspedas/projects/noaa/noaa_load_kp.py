@@ -17,7 +17,7 @@ from pytplot import (
     options,
     time_clip,
 )
-from pyspedas.noaa.config import CONFIG
+from .config import CONFIG
 from pyspedas.utilities.download_ftp import download_ftp
 from pytplot import time_clip as tclip
 

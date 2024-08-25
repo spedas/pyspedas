@@ -189,7 +189,7 @@ jobs:
         echo Starting hapi tests at `date`
         coverage run -a -m pyspedas.hapi.tests.tests
         echo Starting noaa tests at `date`
-        coverage run -a -m pyspedas.noaa.tests.tests
+        coverage run -a -m pyspedas.projects.noaa.tests.tests
         echo Starting particles tests at `date`
         coverage run -a -m pyspedas.particles.tests.tests
         echo Starting mms cotrans tests at `date`
@@ -265,7 +265,7 @@ jobs:
         coverage run -a -m pyspedas.projects.stereo.tests.tests
         echo Starting twins tests at `date`
         coverage run -a -m pyspedas.projects.twins.tests.tests
-        echo Starting wind tests at `date`
+        echo Starting wind tests at `date`from pyspedas.poes.load import load
         coverage run -a -m pyspedas.projects.wind.tests.tests
         echo Starting poes tests at `date`
         coverage run -a -m pyspedas.projects.poes.tests.tests
@@ -286,7 +286,7 @@ jobs:
         echo Starting fast tests at `date`
         coverage run -a -m pyspedas.projects.fast.tests.tests
         echo Starting omni tests at `date`
-        coverage run -a -m pyspedas.omni.tests.tests
+        coverage run -a -m pyspedas.projects.omni.tests.tests
         echo Starting themis tests at `date`
         coverage run -a -m pyspedas.themis.tests.tests
         echo Starting goes tests at `date`

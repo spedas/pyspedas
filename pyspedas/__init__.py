@@ -37,7 +37,7 @@ from .cotrans.xyz_to_polar import xyz_to_polar
 #from .geopack.t96 import t96, tt96
 #from .geopack.ts04 import tts04
 from .hapi.hapi import hapi
-from .noaa.noaa_load_kp import noaa_load_kp
+from .projects.noaa.noaa_load_kp import noaa_load_kp
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
 from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
 from .particles.spd_slice2d import slice1d_plot, slice2d, slice2d_plot
@@ -63,6 +63,9 @@ from .version import version
 
 from pytplot import *
 
+# omni must precede mms to avoid problems with circular imports
+from .projects import omni
+
 # Import routine names with mission prefixes into pyspedas namespace
 from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
     mms_load_edp, mms_load_eis, mms_load_feeps, \
@@ -77,7 +80,6 @@ from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
 from .mms.plots.mms_overview_plot import mms_overview_plot
 from .mms.particles.mms_part_getspec import mms_part_getspec
 from .mms.particles.mms_part_slice2d import mms_part_slice2d
-from .noaa import noaa_load_kp
 
 # Make mission-specific namespaces available under pyspedas
 from .projects import ace
@@ -104,7 +106,8 @@ from .projects import maven
 # for backward compatibility
 from .projects.maven import maven_load
 from .projects import mica
-from . import omni
+from .projects import noaa
+
 from .projects import poes
 from .projects import polar
 from .projects import psp
