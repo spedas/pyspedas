@@ -81,6 +81,32 @@ from .projects.mms.plots.mms_overview_plot import mms_overview_plot
 from .projects.mms.particles.mms_part_getspec import mms_part_getspec
 from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
 
+
+# The code below is needed for backward compatibility, so users can continue to do things
+# like "from pyspedas.mms import mec" even after mms has been moved to the projects directory.
+
+import sys
+from importlib import import_module
+
+# List of submodules we want to make available under the pyspedas namespace
+submodules = ['ace', 'akebono', 'barrel', 'cluster', 'cnofs', 'csswe', 'de2', 'dscovr',
+             'elfin', 'equator_s', 'erg', 'fast', 'geotail', 'goes', 'image', 'kompsat',
+              'kyoto', 'lanl', 'maven', 'mica', 'mms', 'noaa', 'omni', 'poes', 'polar', 'psp',
+              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'twins',
+              'ulysses'
+              ]
+
+for submodule in submodules:
+    # Import the module from the new path
+    full_module_path = f"pyspedas.projects.{submodule}"
+    imported_module = import_module(full_module_path)
+
+    # Add it to sys.modules under the old path
+    sys.modules[f"pyspedas.{submodule}"] = imported_module
+
+# This set of imports is still needed for backward compatibility, when using fully-qualified
+# routine names in function calls, like "pyspedas.mms.mec()" rather than "pyspedas.projects.mms.mec()"
+
 # Make mission-specific namespaces available under pyspedas
 from .projects import ace
 from .projects import akebono
