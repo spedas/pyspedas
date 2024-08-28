@@ -1,5 +1,7 @@
-import fnmatch, re, logging
+import re
+import logging
 from pytplot import tplot_names
+from .wildcard_expand import wildcard_expand
 
 
 def tnames(pattern=None, regex=None):
@@ -12,7 +14,7 @@ def tnames(pattern=None, regex=None):
         Pattern(s) to search for.
         It can be a string or a list of strings (multiple patterns).
         Each pattern can contain wildcards such as * and ?, using unix-style matching.
-        The default is None.
+        The default is None
     regex : str, optional
         Regular expression pattern to search for.
         If regex is provided, the pattern argument is ignored.
@@ -52,11 +54,6 @@ def tnames(pattern=None, regex=None):
         except re.error:
             logging.error("Invalid regular expression.")
     elif pattern is not None:
-        # Use fnmatch to find all names that match the pattern
-        if isinstance(pattern, str):
-            name_list.extend(fnmatch.filter(all_names, pattern))
-        else:
-            for p in pattern:
-                name_list.extend(fnmatch.filter(all_names, p))
+        name_list = wildcard_expand(all_names,pattern)
 
     return name_list
