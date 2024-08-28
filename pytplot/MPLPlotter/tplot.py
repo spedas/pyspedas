@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 import pytplot
 from fnmatch import filter as tname_filter
 from time import sleep
+from pytplot.wildcard_expand import tplot_wildcard_expand, tname_byindex
 
 from .lineplot import lineplot
 from .specplot import specplot
@@ -46,22 +47,11 @@ def tplot(variables, var_label=None,
     """
     This function creates tplot windows using matplotlib as a backend.
     """
-    tnames = pytplot.tplot_names(quiet=True)
-    if isinstance(variables, str):
-        # check for wild cards * or ?
-        if '*' in variables or '?' in variables:
-            variables = tname_filter(tnames, variables)
-
-    if not isinstance(variables, list):
-        variables = [variables]
-
-    # support for using the variable # instead of the variable name
-    for idx, variable in enumerate(variables):
-        if isinstance(variable, int):
-            if variable > len(tnames):
-                logging.info('Variable not found: ' + str(variable))
-            variables[idx] = tnames[variable]
-
+    # This call resolves wildcard patterns and converts integers to variable names
+    variables = tplot_wildcard_expand(variables)
+    if len(variables) == 0:
+        logging.warning("tplot: No matching tplot names were found")
+        return
     # support for matplotlib styles
     style = pytplot.tplot_opt_glob.get('style')
     if style is not None:
@@ -478,7 +468,7 @@ def tplot(variables, var_label=None,
 
         for label in var_label:
             if isinstance(label, int):
-                label = tnames[label]
+                label = tname_byindex(label)
             label_data = pytplot.get_data(label, xarray=True, dt=True)
 
             if label_data is None:
