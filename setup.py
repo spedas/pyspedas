@@ -39,7 +39,7 @@ setup(
         "pywavelets",
         "astropy",
         "hapiclient>=0.2.2",
-        "pytplot-mpl-temp>=2.2.40",
+        "https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip",
         "viresclient",
     ],
     python_requires=">=3.9",
