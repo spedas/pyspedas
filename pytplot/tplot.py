@@ -166,6 +166,7 @@ def tplot(name,
                          second_axis_size=second_axis_size,
                          return_plot_objects=return_plot_objects)
 
+    # Code below this point should be unreachable, left in for reference purposes
     if interactive:
         slice=True
 
