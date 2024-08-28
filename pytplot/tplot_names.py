@@ -48,11 +48,14 @@ def tplot_names(quiet=False):
             index += 1
             continue
 
-        if len(pytplot.data_quants[key].attrs['plot_options']['overplots']) != 0:
-            names_to_print = pytplot.data_quants[key].name + "  data from: "
-            for oplot_name in pytplot.data_quants[key].attrs['plot_options']['overplots']:
-                names_to_print = names_to_print + " " + oplot_name
-
+        if len(pytplot.data_quants[key].attrs['plot_options']['overplots_mpl']) != 0:
+            if quiet:
+                # In this context we only want variable names, and no other formatting
+                names_to_print = pytplot.data_quants[key].name
+            else:
+                names_to_print = pytplot.data_quants[key].name + "  data from: "
+                for oplot_name in pytplot.data_quants[key].attrs['plot_options']['overplots_mpl']:
+                    names_to_print = names_to_print + " " + oplot_name
         else:
             if isinstance(key, str):
                 names_to_print = pytplot.data_quants[key].name
