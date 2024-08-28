@@ -401,6 +401,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         temp.attrs['plot_options']['links'] = links
         #temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
         temp.attrs['plot_options']['overplots'] = []
+        temp.attrs['plot_options']['overplots_mpl'] = []
         temp.attrs['plot_options']['interactive_xaxis_opt'] = {}
         temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
         temp.attrs['plot_options']['error'] = err_values
