@@ -309,22 +309,43 @@ class AnalysisTestCases(BaseTestCase):
 
     def test_scipy_interp1d(self):
         import scipy
+        import numpy as np
         time_strings_input = np.array(['2018-07-01T13:02:16.892474880',
                                        '2018-07-01T13:02:16.922475008',
                                        '2018-07-01T13:02:16.952474880'])
         values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
-        time_strings_interp_to = np.array(['2018-07-01T13:02:16.922475008'])
 
         input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
-        interp_to_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_interp_to])
+        interp_to_times_npdt64 = np.array(input_times_npdt64[1])
 
         input_times_float64 = input_times_npdt64.astype(np.float64)
         interp_to_time_float64 = interp_to_times_npdt64.astype(np.float64)
 
         interpolator = scipy.interpolate.interp1d(input_times_float64, values_input, kind='linear')
         result=interpolator(interp_to_time_float64)
+        print(result)
         # Known to fail.  This affects xarray.interp and the current version of tinterpol.
         #self.assertTrue((result >= 0.0).all())
+
+    def test_scipy_spline(self):
+        import scipy
+        import numpy as np
+        time_strings_input = np.array(['2018-07-01T13:02:16.892474880',
+                                       '2018-07-01T13:02:16.922475008',
+                                       '2018-07-01T13:02:16.952474880'])
+        values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
+
+        input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
+        interp_to_times_npdt64 = np.array(input_times_npdt64[1])
+
+        input_times_float64 = input_times_npdt64.astype(np.float64)
+        interp_to_time_float64 = interp_to_times_npdt64.astype(np.float64)
+
+        interpolator = scipy.interpolate.make_interp_spline(input_times_float64, values_input, k=1)
+        result=interpolator(interp_to_time_float64)
+        print(result)
+        # make_interp_spline() with k=1 gives the expected result
+        self.assertTrue((result >= 0.0).all())
 
     def test_xarray_interp(self):
         import xarray as xr
@@ -334,15 +355,39 @@ class AnalysisTestCases(BaseTestCase):
                                        '2018-07-01T13:02:16.922475008',
                                        '2018-07-01T13:02:16.952474880'])
         values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
-        time_strings_interp_to = np.array(['2018-07-01T13:02:16.922475008'])
 
         input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
-        interp_to_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_interp_to])
+        interp_to_times_npdt64 = np.array(input_times_npdt64[1])
 
         data_array = xr.DataArray(values_input,dims=['time'],coords={'time':('time',input_times_npdt64)})
 
         result = data_array.interp({"time": interp_to_times_npdt64},method='linear')
         # This is known to fail, due to issues in scipy.interpolate.interp1d
+        print(result.values)
+        # result.values is [-3.469446951953614e-18]
+        #self.assertTrue((result.values >= 0.0).all())
+
+    def test_xarray_interp_float_times(self):
+        import xarray as xr
+        import numpy as np
+
+        time_strings_input = np.array(['2018-07-01T13:02:16.892474880',
+                                       '2018-07-01T13:02:16.922475008',
+                                       '2018-07-01T13:02:16.952474880'])
+        values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
+
+        input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
+        interp_to_times_npdt64 = np.array(input_times_npdt64[1])
+
+        input_times_float64 = input_times_npdt64.astype(np.float64)
+        interp_to_time_float64 = interp_to_times_npdt64.astype(np.float64)
+
+        data_array = xr.DataArray(values_input,dims=['time'],coords={'time':('time',input_times_float64)})
+
+        result = data_array.interp({"time": interp_to_time_float64},method='linear')
+        # This is known to fail, due to issues in scipy.interpolate.interp1d
+        print(result.values)
+        # result.values is [-3.469446951953614e-18]
         #self.assertTrue((result.values >= 0.0).all())
 
     def test_numpy_interp(self):
