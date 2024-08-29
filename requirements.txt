@@ -1,7 +1,7 @@
 numpy>=1.20.0
 requests
 cdflib
-https://github.com/MAVENSDC/PyTplot/archive/matplotlib-backend.zip
+pytplot-mpl-temp>=2.2.41
 cdasws>=1.7.24
 netCDF4
 pywavelets
