@@ -160,8 +160,8 @@ def tplot(variables, var_label=None,
         var_quants = pytplot.data_quants[variable]
 
         if not isinstance(var_quants, dict):
-            if var_quants.attrs['plot_options'].get('overplots_mpl') is not None:
-                overplots = var_quants.attrs['plot_options']['overplots_mpl']
+            overplots = var_quants.attrs['plot_options'].get('overplots_mpl')
+            if overplots is not None and len(overplots) > 0:
                 pseudo_var = True
 
         # deal with pseudo-variables first

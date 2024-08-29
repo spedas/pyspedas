@@ -32,7 +32,8 @@ def is_pseudovariable(tvar):
         var_quants = pytplot.data_quants[tvar]
 
         if not isinstance(var_quants, dict):
-            if var_quants.attrs['plot_options'].get('overplots_mpl') is not None:
+            overplot_list = var_quants.attrs['plot_options'].get('overplots_mpl')
+            if overplot_list is not None and len(overplot_list) > 0:
                 pseudo_var = True
 
         var_data = pytplot.get_data(tvar, dt=True)
