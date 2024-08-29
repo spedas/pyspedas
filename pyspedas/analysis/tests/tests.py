@@ -209,7 +209,7 @@ class AnalysisTestCases(BaseTestCase):
         self.assertTrue((d[1] == [2., 2.5, 5.,   6., -7., -19.]).all())
 
     def test_tvectot(self):
-        from pyspedas.themis import state
+        from pyspedas.projects.themis import state
         from pytplot import data_exists
         state(probe='a')
         tvectot('tha_pos', join_component=True)
