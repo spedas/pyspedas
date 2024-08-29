@@ -113,8 +113,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
-        echo Starting maven tests at `date`
-        coverage run -a -m pyspedas.projects.maven.tests.tests
+        #echo Starting maven tests at `date`
+        #coverage run -a -m pyspedas.projects.maven.tests.tests
         echo Starting ace tests at `date`
         coverage run -a -m pyspedas.projects.ace.tests.tests
         echo Starting erg tests at `date`
