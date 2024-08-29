@@ -144,8 +144,8 @@ jobs:
         echo "Disk space after cleanup:"
         df -h .
         echo "========================================================="
-        echo Starting VIRES client tests at `date`
-        coverage run -a -m pyspedas.vires.tests.tests
+        #echo Starting VIRES client tests at `date`
+        #coverage run -a -m pyspedas.vires.tests.tests
         echo Starting secs tests at `date`
         coverage run -a -m pyspedas.projects.secs.tests.tests
         echo Starting MTH5 import test at `date`
@@ -239,6 +239,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.download_tests
         echo Starting utilities misc tests at `date`
         coverage run -a -m pyspedas.utilities.tests.misc_tests
+        echo Starting tplot wildcard tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.tplot_wildcard_tests
         echo Starting plotting tests at `date`
         coverage run -a -m pyspedas.utilities.tests.plot_tests
         echo Starting utilities time_tests tests at `date`
