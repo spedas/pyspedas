@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 
 from pyspedas import themis
-from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data
+from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
@@ -53,6 +53,16 @@ class PlotTestCases(unittest.TestCase):
         options('thc_fgs_dsl','line_style','dot') # gets used for all lines
         tplot_options('title', 'Line styles all dot')
         tplot('thc_fgs_dsl',save_png='test_linestyle_allsame',display=global_display)
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    def test_ylim(self):
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
+        ylim('thc_fgs_dsl',-100, 100)
+        tplot_options('title', 'Y limit [-100, 100]')
+        tplot('thc_fgs_dsl',save_png='test_ylim',display=global_display)
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
