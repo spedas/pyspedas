@@ -1,7 +1,7 @@
 import re
 import logging
 from pytplot import tplot_names
-from .wildcard_expand import wildcard_expand
+from .wildcard_routines import wildcard_expand
 
 
 def tnames(pattern=None, regex=None):

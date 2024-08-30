@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 import pytplot
 from fnmatch import filter as tname_filter
 from time import sleep
-from pytplot.wildcard_expand import tplot_wildcard_expand, tname_byindex
+from pytplot.wildcard_routines import tplot_wildcard_expand, tname_byindex
 
 from .lineplot import lineplot
 from .specplot import specplot
