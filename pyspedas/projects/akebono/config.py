@@ -1,7 +1,7 @@
 import os
 
 CONFIG = {'local_data_dir': 'akebono_data/',
-          'remote_data_dir': 'http://darts.isas.jaxa.jp/stp/data/exosd/'}
+          'remote_data_dir': 'https://data.darts.isas.jaxa.jp/pub/akebono/'}
 
 # override local data directory with environment variables
 if os.environ.get('SPEDAS_DATA_DIR'):
