@@ -1,7 +1,7 @@
 
 import math
 import numpy as np
-from scipy.ndimage.interpolation import shift
+from scipy.ndimage import shift
 from copy import deepcopy
 
 # use nansum from bottleneck if it's installed, otherwise use the numpy one

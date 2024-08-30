@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.ndimage.interpolation import shift
+from scipy.ndimage import shift
 
 
 def mms_pgs_clean_data(data_in):
