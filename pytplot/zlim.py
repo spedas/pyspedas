@@ -40,6 +40,5 @@ def zlim(name, min, max):
         logging.info("The name %s is currently not in pytplot.", name)
         return
 
-    pytplot.data_quants[name].attrs['plot_options']['zaxis_opt']['z_range'] = [min, max]
-    
+    pytplot.options(name,'z_range',[min,max])
     return
