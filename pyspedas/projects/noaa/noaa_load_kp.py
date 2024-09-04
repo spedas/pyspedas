@@ -15,11 +15,12 @@ from pytplot import (
     time_double,
     store_data,
     options,
-    time_clip,
+    time_clip as tclip,
 )
-from .config import CONFIG
+from pyspedas.projects.noaa.config import CONFIG
 from pyspedas.utilities.download_ftp import download_ftp
-from pytplot import time_clip as tclip
+from pyspedas.utilities.dailynames import dailynames
+from pyspedas.utilities.download import download
 
 
 def kp_return_fraction(value):
@@ -79,8 +80,9 @@ def load_kp_to_tplot(
     suffix="",
 ):
     """
-    Load Kp index data into tplot variables. If data doesn't exist locally,
-    download the data from the specified mirror.
+    Load Kp index data into tplot variables.
+
+    These are text files that have to be parsed to extract the data and store it in tplot variables.
 
     Parameters
     ----------
@@ -92,8 +94,7 @@ def load_kp_to_tplot(
     Returns
     -------
     list of str
-        This function does not return a value but downloads and processes data.
-        Data is saved in a tplot variable.
+        List of tplot variables that contain the data.
     """
     vars = []
 
@@ -145,7 +146,7 @@ def load_kp_to_tplot(
 
         with open(kpfile, "r") as f:
             for line in f:
-                if len(line) < 63:
+                if len(line) < 63 or line.startswith("#") or line.startswith(" "):
                     # Skip lines that are less than 63 characters long (62 data and \n)
                     continue
 
@@ -282,20 +283,21 @@ def load_kp_to_tplot(
 
 
 def noaa_load_kp(
-    trange=["2017-03-23/00:00:00", "2017-03-23/23:59:59"],
+    trange=["2017-03-01/00:00:00", "2017-03-31/23:59:59"],
     kp_mirror=None,
     remote_kp_dir=None,
     local_kp_dir=None,
     datatype=[],
     gfz=False,
+    gfz_ftp=False,
     prefix="",
     suffix="",
     time_clip=True,
     force_download=False,
 ):
     """
-    Load index data into appropriate variables. If data doesn't exist locally,
-    download the data from the specified mirror.
+    Load geomagnetic index data into appropriate variables.
+
 
     Parameters
     ----------
@@ -308,8 +310,7 @@ def noaa_load_kp(
     local_kp_dir : str
         Directory where data is saved locally.
     datatype : list of str, optional
-        Type of index to load. Default is an empty list, which loads all available data. Valid values::
-
+        Type of index to load. Default is an empty list, which loads all available data. Valid values:
             "Kp",
             "ap",
             "Sol_Rot_Num",
@@ -322,18 +323,23 @@ def noaa_load_kp(
             "F10.7",
             "Flux_Qualifier",
     gfz : bool, optional
-        Load data from the German Research Centre for Geosciences, ftp://ftp.gfz-potsdam.de instead of NOAA.
-        This is the default behavior if the end time is on or after 2018. Default is False. If this source
-        is used, the Sunspot_Number, F10.7, and Flux_Qualifier datatypes will not be available.
+        Load data from the HTTPS site of the German Research Centre for Geosciences, instead of NOAA.
+        This is the default behavior if the end time is on or after 2018.
+        Default is False (by default, it loads data from the ftp server of NOAA).
+        If this source is used, the Sunspot_Number, F10.7, and Flux_Qualifier datatypes will not be available.
+    gfz_ftp : bool, optional
+        Load data from the ftp site of GFZ instead of https site. This is legacy behavior.
+        Default is False.
     prefix: str, optional
-        If provided, specifies a string to be prepended to tplot variable names
+        If provided, specifies a string to be prepended to tplot variable names.
     suffix: str, optional
-        If provided, specifies a string to be appended to tplot variable names
+        If provided, specifies a string to be appended to tplot variable names.
     time_clip: bool, optional
-        If True, data will be time clipped to the exact time range requested
+        If True, data will be time clipped to the exact time range requested.
+        Default is True.
     force_download: bool
-        Download file even if local version is more recent than server version
-        Default: False
+        Download file even if local version is more recent than server version.
+        Default is False.
 
     Returns
     -------
@@ -375,38 +381,66 @@ def noaa_load_kp(
         )
 
     # Remote site and directory
+    use_ftp = True
     if gfz or end_year >= 2018:
-        kp_mirror = "ftp.gfz-potsdam.de"
-        remote_kp_dir = "/pub/home/obs/kp-ap/wdc/yearly/"
-        gfz = True
-        pre = "kp"
-        suf = ".wdc"
+        if gfz_ftp:
+            kp_mirror = "ftp.gfz-potsdam.de"
+            remote_kp_dir = "/pub/home/obs/kp-ap/wdc/yearly/"
+            gfz = True
+            pre = "kp"
+            suf = ".wdc"
+            use_ftp = True
+        else:
+            use_ftp = False
     else:
         kp_mirror = kp_mirror or "ftp.ngdc.noaa.gov"
         remote_kp_dir = remote_kp_dir or "/STP/GEOMAGNETIC_DATA/INDICES/KP_AP/"
         pre = ""
         suf = ""
-
-    logging.info("Loading geomagnetic index data from " + kp_mirror + remote_kp_dir)
-
-    # Remote names
-    remote_names = [pre + str(year) + suf for year in range(start_year, end_year + 1)]
+        use_ftp = True
 
     # Local directory
     if not local_kp_dir:
-        file_prefix = CONFIG["local_data_dir"]
+        local_data_dir = CONFIG["local_data_dir"]
     else:
-        file_prefix = local_kp_dir
+        local_data_dir = local_kp_dir
 
-    if len(file_prefix) > 0 and not file_prefix.endswith(os.sep):
-        file_prefix += os.sep
+    if len(local_data_dir) > 0 and not local_data_dir.endswith(os.sep):
+        local_data_dir += os.sep
 
-    files = []
-    # In this case, filesnames are just the year (2020, 2021, etc.)
-    for yearstr in remote_names:
-        dfile = download_ftp(kp_mirror, remote_kp_dir, yearstr, file_prefix, force_download=force_download)
-        if len(dfile) > 0:
-            files.append(dfile[0])
+    if use_ftp:
+        logging.info("Loading geomagnetic index data from " + kp_mirror + remote_kp_dir)
+        # Remote names
+        remote_names = [
+            pre + str(year) + suf for year in range(start_year, end_year + 1)
+        ]
+
+        files = []
+        # In this case, filesnames are just the year (2020, 2021, etc.)
+        for yearstr in remote_names:
+            dfile = download_ftp(
+                kp_mirror,
+                remote_kp_dir,
+                yearstr,
+                local_data_dir,
+                force_download=force_download,
+            )
+            if len(dfile) > 0:
+                files.append(dfile[0])
+    else:
+        # use https for gfz data
+        gfz_path_http = (
+            "https://datapub.gfz-potsdam.de/download/10.5880.Kp.0001/Kp_definitive/"
+        )
+        logging.info("Loading geomagnetic index data from " + gfz_path_http)
+        pathformat = "Kp_def%Y.wdc"
+        remote_names = dailynames(file_format=pathformat, trange=trange)
+        files = download(
+            remote_file=remote_names,
+            remote_path=gfz_path_http,
+            local_path=local_data_dir,
+            force_download=force_download,
+        )
 
     if len(files) == 0:
         logging.error("No files found.")
@@ -421,6 +455,6 @@ def noaa_load_kp(
     )
 
     if time_clip:
-        tclip(vars, trange[0], trange[1])
+        tclip(vars, trange[0], trange[1], overwrite=True)
 
     return vars
