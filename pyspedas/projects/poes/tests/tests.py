@@ -3,6 +3,7 @@ import unittest
 from pytplot import data_exists
 from pytplot import get_data
 import pyspedas
+from pyspedas.projects.poes.load import load
 
 
 class LoadTestCases(unittest.TestCase):
@@ -34,6 +35,10 @@ class LoadTestCases(unittest.TestCase):
     def test_downloadonly(self):
         files = pyspedas.poes.sem(downloadonly=True, probe='noaa19')
         self.assertTrue(os.path.exists(files[0]))
+
+    def test_ncei_server(self):
+        vars = load(trange=['1999-01-03', '1999-01-04'], probe=['noaa15'], ncei_server=True, time_clip=True)
+        self.assertTrue('geogLL' in vars)
 
 
 if __name__ == '__main__':
