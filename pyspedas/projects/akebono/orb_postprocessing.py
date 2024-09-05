@@ -44,7 +44,10 @@ def orb_postprocessing(files, prefix='', suffix=''):
             'inv', 'fmlat', 'mlat', 'mlt', 'bmdl_x', 'bmdl_y', 'bmdl_z', 'xxlon_sc', 'xxlat_sc', 'aheight','lsun',
             's_direc_x', 's_direc_y', 's_direc_z', 'sc_pos_x', 'sc_pos_y', 'sc_pos_z', 'sc_vel_x', 'sc_vel_y', 'sc_vel_z']
 
-    data = load_csv_file(files, cols=cols)
+    try:
+        data = load_csv_file(files, cols=cols)
+    except UnicodeDecodeError:
+        data = load_csv_file(files, cols=cols, gz=True)
     values = data.to_numpy()
     unix_times = time_double([date[2:4] + '-' + date[4:6] + '-' + date[0:2] + '/' + date[6:8] + ':' + date[8:10] + ':' + date[10:12] for date in data['ut']])
 

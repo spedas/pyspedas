@@ -34,7 +34,11 @@ def rdm_postprocessing(files, prefix='', suffix=''):
     if suffix is None:
         suffix = ''
 
-    data = load_csv_file(files)
+    try:
+        data = load_csv_file(files)
+    except UnicodeDecodeError:
+        data = load_csv_file(files, gz=True)
+
     values = data.to_numpy()
     unix_times = time_double([ymd + '/' + hms for ymd, hms in zip(values[:, 0], values[:, 1])])
 
