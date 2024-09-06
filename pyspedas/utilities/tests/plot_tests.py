@@ -12,6 +12,29 @@ default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
 
+    def test_markers_and_symbols(self):
+        # Regression test for lineplot crash when marker sizes are set
+        # Taken from pytplot markers and symbols notebook in pyspedas_examples
+        store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1]})
+        tplot('data', display=global_display, save_png='simple_lineplot.png')
+        options('data', 'marker', 'X')
+        tplot('data', display=global_display, save_png='markers_lineplot.png')
+        options('data', 'symbols', True)
+        tplot('data', display=global_display, save_png='symbols_lineplot.png')
+        options('data', 'marker_size', 200)
+        tplot('data', display=global_display, save_png='markersize_lineplot.png')
+        options('data', 'symbols', False)
+        tplot('data', display=global_display, save_png='markersize_nosymbols_lineplot.png')
+        options('data', 'marker_size', 20)
+        tplot('data', display=global_display, save_png='markersize20_nosymbols_lineplot.png')
+        options('data', 'markevery', 2)
+        tplot('data', display=global_display, save_png='markevery_lineplot.png')
+        options('data', 'marker', 'H')
+        tplot('data', display=global_display, save_png='hexagons_lineplot.png')
+
+
+
+
     def test_line_pseudovariables(self):
         del_data("*")
         # Test that tplot variables with different number of traces can be combined into a pseudovariable and plotted correctly.
