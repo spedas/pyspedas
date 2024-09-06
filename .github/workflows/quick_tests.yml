@@ -22,14 +22,12 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies (Linux)
-      env:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install spacepy  # required for MMS qcotrans tests
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
-      env:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
