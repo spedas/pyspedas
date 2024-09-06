@@ -13,7 +13,7 @@ import re
 from cdasws import CdasWs
 from pytplot import cdf_to_tplot, netcdf_to_tplot, time_clip as tclip
 from pyspedas.utilities.download import download
-from config import CONFIG
+from .config import CONFIG
 
 
 class CDAWeb:
