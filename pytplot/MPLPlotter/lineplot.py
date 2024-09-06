@@ -18,7 +18,7 @@ def lineplot(var_data,
 
     Parameters
     ----------
-        var_data: np.ndarray
+        var_data: dict
             The data to be plotted (may have multiple traces)
         var_times:
             Array of datetime objects to use for x axis
@@ -50,6 +50,10 @@ def lineplot(var_data,
         num_lines = 1
     else:
         num_lines = var_data.y.shape[1]
+
+    is_errorbar_plot = False
+    if 'dy' in var_data._fields:
+        is_errorbar_plot = True
 
     if yaxis_options.get('legend_names') is not None:
         labels = yaxis_options['legend_names']
@@ -165,7 +169,7 @@ def lineplot(var_data,
         marker_sizes = get_trace_options(marker_sizes, running_trace_count, num_lines, repeat=True)
 
     # check for error data first
-    if 'dy' in var_data._fields:
+    if is_errorbar_plot:
         # error data provided
         line_options['yerr'] = var_data.dy[time_idxs]
         plotter = this_axis.errorbar
@@ -180,6 +184,8 @@ def lineplot(var_data,
     else:
         # no error data provided
         plotter = this_axis.plot
+        # Note: to turn off connecting lines in an error bar plot, do not use the
+        # 'symbols' option.  Instead, set the line_options metadata to 'None' (as a string).
         if symbols:
             plotter = this_axis.scatter
 
@@ -195,16 +201,26 @@ def lineplot(var_data,
             marker = None
 
         if marker_sizes is not None:
+            # Note: scaling of marker sizes in scatter plots and line plots is different!
+            # For line plot and scatter plot marker sizes to match, the line plot
+            # marker size should be the square root of the scatter plot marker size.
+            # Maybe that should be enforced here....???
+
             if symbols:
                 line_options['s'] = marker_sizes[line]
             else:
                 line_options['markersize'] = marker_sizes[line]
 
+        if symbols:
+            this_line_style='None'
+        else:
+            this_line_style=line_style[line]
+
         if marker_every is not None:
             line_options['markevery'] = marker_every[line]
 
         this_line = plotter(var_times, var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line], color=color,
-                            linestyle=line_style[line], linewidth=thick[line], marker=marker, **line_options)
+                            linestyle=this_line_style, linewidth=thick[line], marker=marker, **line_options)
 
         if labels is not None:
             try:
