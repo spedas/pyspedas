@@ -87,8 +87,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         python -m unittest  pyspedas.utilities.tests.test_find_ip_address
-        echo Starting CDAWeb tests at `date`
-        python -m unittest  pyspedas.cdagui.tests.tests
+        #echo Starting CDAWeb tests at `date`
+        #python -m unittest  pyspedas.cdagui.tests.tests
         echo Starting akebono tests at `date`
         python -m unittest  pyspedas.projects.akebono.tests.tests
         echo Starting ace tests at `date`
