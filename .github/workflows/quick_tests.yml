@@ -87,8 +87,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         python -m unittest  pyspedas.utilities.tests.test_find_ip_address
-        #echo Starting CDAWeb tests at `date`
-        #python -m unittest  pyspedas.cdagui.tests.tests
+        echo Starting CDAWeb tests at `date`
+        python -m unittest  pyspedas/cdagui/tests/tests.py
         echo Starting akebono tests at `date`
         python -m unittest  pyspedas.projects.akebono.tests.tests
         echo Starting ace tests at `date`
@@ -118,7 +118,7 @@ jobs:
         echo Starting lanl tests at `date`
         python -m unittest  pyspedas.projects.lanl.tests.tests
         echo Starting cotrans quaternion tests at `date`
-        python -m unittest  pyspedas.cotrans.tests.quaternions
+        python -m unittest  pyspedas/cotrans/tests/quaternions.py
         echo Starting cnofs tests at `date`
         python -m unittest  pyspedas.projects.cnofs.tests.tests
         echo Starting kompsat tests at `date`
@@ -145,10 +145,8 @@ jobs:
         python -m unittest  pyspedas.utilities.tests.libs_tests
         echo Starting cotrans tests at `date`
         python -m unittest  pyspedas.cotrans.tests.cotrans
-        echo Starting cotrans quaternion tests at `date`
-        python -m unittest  pyspedas.cotrans.tests.quaternions
         echo Starting cotrans minvar tests at `date`
-        python -m unittest  pyspedas.cotrans.tests.test_minvar
+        python -m unittest  pyspedas/cotrans/tests/test_minvar.py
         echo Starting csswe tests at `date`
         python -m unittest  pyspedas.projects.csswe.tests.tests
         echo Starting equator_s tests at `date`
