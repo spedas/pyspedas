@@ -161,7 +161,7 @@ def lineplot(var_data,
 
     marker_sizes = None
     if line_opts.get('marker_size') is not None:
-        marker_sizes = line_opts('marker_size')
+        marker_sizes = line_opts['marker_size']
         marker_sizes = get_trace_options(marker_sizes, running_trace_count, num_lines, repeat=True)
 
     # check for error data first
