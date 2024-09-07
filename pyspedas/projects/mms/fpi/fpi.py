@@ -37,9 +37,9 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
         datatype : str or list of str
             Valid datatypes for FPI are:
-             'des-moms', 'dis-moms', 'des-dist', 'dis-dist', 'des', 'dis'
+             'des-moms', 'dis-moms', 'des-momsaux', 'dis-momsaux', 'des-dist', 'dis-dist', 'des', 'dis'
              Defaults:
-             ['des-moms', 'dis-moms', 'des-dist' , 'dis-dist'] (for level != 'ql' or unspecified)
+             ['des-moms', 'dis-moms', 'des-dist' , 'dis-dist', 'des-momsaux', 'dis-momsaux'] (for level != 'ql' or unspecified)
              ['des', 'dis'] (for level == 'ql')
 
         get_support_data: bool
@@ -130,13 +130,13 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     if data_rate.lower() == 'brst':
         if isinstance(datatype, str):
             if (datatype == '*' or datatype == '') and level.lower() != 'ql':
-                datatype = ['des-dist', 'dis-dist', 'dis-moms', 'des-moms']
+                datatype = ['des-dist', 'dis-dist', 'dis-moms', 'des-moms', 'dis-momsaux', 'des-momsaux']
     else:
         if isinstance(datatype, str):
             if (datatype == '*' or datatype == '') and level.lower() == 'ql':
                 datatype = ['des', 'dis']
             if (datatype == '*' or datatype == '') and level.lower() != 'ql':
-                datatype = ['des-dist', 'dis-dist', 'dis-moms', 'des-moms']
+                datatype = ['des-dist', 'dis-dist', 'dis-moms', 'des-moms', 'dis-momsaux', 'des-momsaux']
 
     # kludge for level = 'sitl' -> datatype shouldn't be defined for sitl data.
     if level.lower() == 'sitl' or level.lower() == 'trig':

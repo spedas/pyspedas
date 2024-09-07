@@ -1,6 +1,6 @@
 from copy import deepcopy
 import numpy as np
-from scipy.ndimage.interpolation import shift
+from scipy.ndimage import shift
 from scipy.constants import c as const_c
 from pyspedas import time_double
 from pyspedas.particles.spd_slice2d.slice2d_nearest import slice2d_nearest

@@ -1,7 +1,7 @@
 
 import math
 import numpy as np
-from scipy.ndimage.interpolation import shift
+from scipy.ndimage import shift
 
 from copy import deepcopy
 

@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from scipy.ndimage.interpolation import shift
+from scipy.ndimage import shift
 from pyspedas.projects.mms.particles.mms_convert_flux_units import mms_convert_flux_units
 
 

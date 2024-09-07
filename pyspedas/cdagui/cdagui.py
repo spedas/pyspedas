@@ -23,7 +23,7 @@ import time
 import tkinter as tk
 from tkinter import messagebox, filedialog
 from pyspedas.cdagui.cdaweb import CDAWeb
-from config import CONFIG
+from pyspedas.cdagui.config import CONFIG
 
 
 class cdaWindow:

@@ -114,3 +114,20 @@ COLUMNS   FMT   DESCRIPTION
                   either interpolation or extrapolation; and "3" indicates no
                   observation.
 ```
+
+
+### GFZ HTTPS site
+
+The .wdc files in GFZ are also available using HTTPS which is easier to use than ftp:
+
+https://datapub.gfz-potsdam.de/download/10.5880.Kp.0001/Kp_definitive/
+
+
+For the description of these files, see:
+
+https://datapub.gfz-potsdam.de/download/10.5880.Kp.0001/kp_index_data_description_20210311.pdf
+
+
+For more information, see:
+
+https://www.gfz-potsdam.de/en/section/geomagnetism/data-products-services/geomagnetic-kp-index

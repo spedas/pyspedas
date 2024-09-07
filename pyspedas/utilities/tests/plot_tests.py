@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 
 from pyspedas import themis
-from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data
+from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
@@ -11,6 +11,29 @@ global_display = False
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
+
+    def test_markers_and_symbols(self):
+        # Regression test for lineplot crash when marker sizes are set
+        # Taken from pytplot markers and symbols notebook in pyspedas_examples
+        store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1]})
+        tplot('data', display=global_display, save_png='simple_lineplot.png')
+        options('data', 'marker', 'X')
+        tplot('data', display=global_display, save_png='markers_lineplot.png')
+        options('data', 'symbols', True)
+        tplot('data', display=global_display, save_png='symbols_lineplot.png')
+        options('data', 'marker_size', 200)
+        tplot('data', display=global_display, save_png='markersize_lineplot.png')
+        options('data', 'symbols', False)
+        tplot('data', display=global_display, save_png='markersize_nosymbols_lineplot.png')
+        options('data', 'marker_size', 20)
+        tplot('data', display=global_display, save_png='markersize20_nosymbols_lineplot.png')
+        options('data', 'markevery', 2)
+        tplot('data', display=global_display, save_png='markevery_lineplot.png')
+        options('data', 'marker', 'H')
+        tplot('data', display=global_display, save_png='hexagons_lineplot.png')
+
+
+
 
     def test_line_pseudovariables(self):
         del_data("*")
@@ -53,6 +76,16 @@ class PlotTestCases(unittest.TestCase):
         options('thc_fgs_dsl','line_style','dot') # gets used for all lines
         tplot_options('title', 'Line styles all dot')
         tplot('thc_fgs_dsl',save_png='test_linestyle_allsame',display=global_display)
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    def test_ylim(self):
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
+        ylim('thc_fgs_dsl',-100, 100)
+        tplot_options('title', 'Y limit [-100, 100]')
+        tplot('thc_fgs_dsl',save_png='test_ylim',display=global_display)
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
