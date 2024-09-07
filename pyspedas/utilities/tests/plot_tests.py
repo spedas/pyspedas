@@ -15,15 +15,16 @@ class PlotTestCases(unittest.TestCase):
     def test_markers_and_symbols(self):
         # Regression test for lineplot crash when marker sizes are set
         # Taken from pytplot markers and symbols notebook in pyspedas_examples
+        del_data('*')
         store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1]})
         tplot('data', display=global_display, save_png='simple_lineplot.png')
         options('data', 'marker', 'X')
         tplot('data', display=global_display, save_png='markers_lineplot.png')
-        options('data', 'symbols', True)
-        tplot('data', display=global_display, save_png='symbols_lineplot.png')
+        options('data', 'linestyle', 'None')
+        tplot('data', display=global_display, save_png='noline_lineplot.png')
         options('data', 'marker_size', 200)
         tplot('data', display=global_display, save_png='markersize_lineplot.png')
-        options('data', 'symbols', False)
+        options('data', 'line_style_name', 'solid')
         tplot('data', display=global_display, save_png='markersize_nosymbols_lineplot.png')
         options('data', 'marker_size', 20)
         tplot('data', display=global_display, save_png='markersize20_nosymbols_lineplot.png')
@@ -32,6 +33,26 @@ class PlotTestCases(unittest.TestCase):
         options('data', 'marker', 'H')
         tplot('data', display=global_display, save_png='hexagons_lineplot.png')
 
+    def test_markers_and_symbols_error_bars(self):
+        # Regression test for lineplot crash when marker sizes are set
+        # Taken from pytplot markers and symbols notebook in pyspedas_examples
+        del_data('*')
+        store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1], 'dy':[0.25]*6})
+        tplot('data', display=global_display, save_png='simple_lineplot_errbars.png')
+        options('data', 'marker', 'X')
+        tplot('data', display=global_display, save_png='markers_lineplot_errbars.png')
+        options('data', 'line_style', 'None')
+        tplot('data', display=global_display, save_png='symbols_lineplot_errbars.png')
+        options('data', 'marker_size', 200)
+        tplot('data', display=global_display, save_png='markersize_lineplot_errbars.png')
+        options('data', 'symbols', False)
+        tplot('data', display=global_display, save_png='markersize_nosymbols_lineplot_errbars.png')
+        options('data', 'marker_size', 20)
+        tplot('data', display=global_display, save_png='markersize20_nosymbols_lineplot_errbars.png')
+        options('data', 'markevery', 2)
+        tplot('data', display=global_display, save_png='markevery_lineplot_errbars.png')
+        options('data', 'marker', 'H')
+        tplot('data', display=global_display, save_png='hexagons_lineplot_errbars.png')
 
 
 
