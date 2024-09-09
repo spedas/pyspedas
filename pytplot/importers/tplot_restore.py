@@ -39,7 +39,7 @@ def tplot_restore(filename):
     
     #Error check
     if not (os.path.isfile(filename)):
-        logging.error("%s is not a valid file name",filename)
+        logging.error("tplot_restore: %s is not a valid file name",filename)
         return
     
     #Check if the restored file was an IDL file
@@ -48,11 +48,16 @@ def tplot_restore(filename):
         temp_tplot = readsav(filename)
         for i in range(len(temp_tplot['dq'])):
             if isinstance(temp_tplot['dq'][i][0], str):
-                logging.warning("Error reading variable; this error occurs when the variable wasn't loaded in IDL when the SAV file was created.")
+                logging.warning("tplot_restore: Error reading variable; this error occurs when the variable wasn't loaded in IDL when the SAV file was created.")
                 continue
 
             data_name = temp_tplot['dq'][i][0].decode("utf-8")
-            temp_x_data = temp_tplot['dq'][i][1][0][0].squeeze()
+            try:
+                temp_x_data = temp_tplot['dq'][i][1][0][0].squeeze()
+            except AttributeError as err:
+                logging.warning("tplot_restore: Attribute error squeezing temp_x_data, index %d, name %s. (Value is scalar rather than array?)",i,data_name)
+                continue
+
 
             #Pandas reads in data the other way I guess
             if len(temp_tplot['dq'][i][1][0][2].shape) == 4:
