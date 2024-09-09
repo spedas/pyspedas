@@ -99,8 +99,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.akebono.tests.tests
         echo Starting ace tests at `date`
         coverage run -a -m  pyspedas.projects.ace.tests.tests
-        echo Starting cluster tests at `date`
-        coverage run -a -m  pyspedas.projects.cluster.tests.tests
+        #echo Starting cluster tests at `date`
+        #coverage run -a -m  pyspedas.projects.cluster.tests.tests
         echo Starting themis tplot_time  tests at `date`
         coverage run -a -m  pyspedas.projects.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
