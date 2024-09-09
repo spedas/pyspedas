@@ -331,15 +331,14 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             if len(times) == 1:
                 logging.warning("store_data: This is possibly due to the leading data dimension being lost in an array-valued or vector-valued variable with a single timestamp.")
             # If data is 1-dimensional, ignore any DEPEND_N supplied
-            if len(values.shape) == 1:
-                if 'v' in data.keys():
-                    vlen=len(data['v'])
-                else:
-                    vlen=len(data['v1'])
-                logging.warning("store_data: variable %s is 1-dimensional but has a v or v1 component with length %d. Dropping redundant coordinate.",name, vlen)
+            elif (len(values.shape) == 1) and len(dimension_list) > 0:
+                logging.warning("store_data: variable %s is 1-dimensional, but has additional keys defined: %s.  Dropping redundant coordinate(s).",name, dimension_list)
                 temp = xr.DataArray(values, dims=['time'], coords={'time': ('time', times)})
                 coordinate_list=[]
                 dimension_list=[]
+            else:
+                logging.warning("Giving up on this variable.")
+                return
 
     if temp is None:
         # This can happen with mismatched times/data values, and no valid DEPEND_N.
