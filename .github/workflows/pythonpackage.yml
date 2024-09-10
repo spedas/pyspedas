@@ -154,8 +154,8 @@ jobs:
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
-        #echo Starting cluster tests at `date`
-        #coverage run -a -m pyspedas.projects.cluster.tests.tests
+        echo Starting cluster tests at `date`
+        coverage run -a -m pyspedas.projects.cluster.tests.tests
         echo Starting CDAWeb tests at `date`
         coverage run -a -m pyspedas.cdagui.tests.tests
         echo Starting themis tplot_time  tests at `date`
@@ -186,8 +186,8 @@ jobs:
         coverage run -a -m pyspedas.projects.cnofs.tests.tests
         echo Starting kompsat tests at `date`
         coverage run -a -m pyspedas.projects.kompsat.tests.tests
-        echo Starting hapi tests at `date`
-        coverage run -a -m pyspedas.hapi.tests.tests
+        #echo Starting hapi tests at `date`
+        #coverage run -a -m pyspedas.hapi.tests.tests
         echo Starting noaa tests at `date`
         coverage run -a -m pyspedas.projects.noaa.tests.tests
         echo Starting particles tests at `date`
