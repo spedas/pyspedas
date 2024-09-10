@@ -40,17 +40,17 @@ def mvn_kp_sc_traj_xyz(
 
         for x, y, z in np.array([a for a in zip(x_array, y_array, z_array)]):
             if x > max_x:
-                data.append(np.NaN)
+                data.append(np.nan)
             elif x < min_x:
-                data.append(np.NaN)
+                data.append(np.nan)
             elif y > max_y:
-                data.append(np.NaN)
+                data.append(np.nan)
             elif y < min_y:
-                data.append(np.NaN)
+                data.append(np.nan)
             elif z > max_z:
-                data.append(np.NaN)
+                data.append(np.nan)
             elif z < min_z:
-                data.append(np.NaN)
+                data.append(np.nan)
 
             sorted_x_distance = np.argsort(np.abs(dims_x - x))
             ix1 = dims_x[sorted_x_distance[0]]

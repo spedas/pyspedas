@@ -416,7 +416,7 @@ def cal_fit(probe='a', no_cal=False):
     angle = np.arccos(fgs[:, 2] / np.sqrt(np.sum(fgs ** 2, axis=1))) * 180 / np.pi
     angle80 = angle > 80
     if np.any(angle80):
-        Ez[angle80] = np.NaN
+        Ez[angle80] = np.nan
     efx_dot0_data = deepcopy(efs)
     efx_dot0_data[:, 2] = Ez
 
