@@ -201,7 +201,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
         # The the log of the z values if we are using a logarithmic x axis
         if self._getzaxistype() == 'log':
-            data[data <= 0] = np.NaN
+            data[data <= 0] = np.nan
             data = np.log10(data)
             zmin = np.log10(self.zmin)
             zmax = np.log10(self.zmax)
@@ -268,8 +268,8 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
             # Try cutting the data off that is outside the bounds
             try:
-                temp_data[yp < np.nanmin(y_values_at_xi)] = np.NaN
-                temp_data[yp > np.nanmax(y_values_at_xi)] = np.NaN
+                temp_data[yp < np.nanmin(y_values_at_xi)] = np.nan
+                temp_data[yp > np.nanmax(y_values_at_xi)] = np.nan
             except RuntimeWarning:
                 # If the entire bin is NaN the above stuff fails, so just continue on
                 pass

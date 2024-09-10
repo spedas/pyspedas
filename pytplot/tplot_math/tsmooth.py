@@ -49,13 +49,13 @@ def smooth(data, width=10, preserve_nans=None):
 
     for i, d in enumerate(data):
         if (i >= (width-1)/2) and (i <= N-(width+1)/2):
-            if (preserve_nans is not None) and data[i] is np.NaN:
+            if (preserve_nans is not None) and data[i] is np.nan:
                 continue
             tsum = 0
             count = 0
             for j in range(int(width)):
                 idx = math.ceil(i+j-width/2)
-                if data[idx] is not np.NaN:
+                if data[idx] is not np.nan:
                     tsum += data[idx]
                     count += 1
             if count > 0:  # otherwise, all NaN

@@ -100,14 +100,14 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
             for i in range(dim[0]):
                 # compare smoothed out values to original values
                 if abs(d0[i] - ds[i]) > thresh * abs(ds[i]):
-                    dn[i] = np.NaN  # for spikes, set to NaN
+                    dn[i] = np.nan  # for spikes, set to NaN
         else:
             # More than one dim data.
             for j in range(dim[1]):
                 for i in range(dim[0]):
                     # compare smoothed out values to original values
                     if abs(d0[i, j] - ds[i, j]) > thresh * abs(ds[i, j]):
-                        dn[i, j] = np.NaN  # for spikes, set to NaN
+                        dn[i, j] = np.nan  # for spikes, set to NaN
 
         # pytplot.data_quants[new] = d
         pytplot.replace_data(new, dn)

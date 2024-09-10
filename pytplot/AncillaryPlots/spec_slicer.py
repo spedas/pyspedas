@@ -152,7 +152,7 @@ def spec_slicer(var=None, time=None, interactive=False):
                     data_at_slice = tplot_utilities.reduce_spec_dataset(tplot_dataset=y_values_avgd)
                     data_values_at_slice = data_at_slice.values
                     if y_axis_log:
-                        data_values_at_slice[data_values_at_slice <= 0] = np.NaN
+                        data_values_at_slice[data_values_at_slice <= 0] = np.nan
 
                     try:
                         plot_data.setData(bins, data_values_at_slice)
@@ -167,7 +167,7 @@ def spec_slicer(var=None, time=None, interactive=False):
 
                         data_values_at_slice = data_at_slice.values
                         if y_axis_log:
-                            data_values_at_slice[data_values_at_slice<=0] = np.NaN
+                            data_values_at_slice[data_values_at_slice<=0] = np.nan
                         #Create a Mask for Nan Values
                         locations_where_nan = np.argwhere(np.isnan(data_values_at_slice))
                         if len(locations_where_nan) > 0:
