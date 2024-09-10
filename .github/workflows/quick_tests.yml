@@ -28,7 +28,6 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install mth5
-          pip install "numpy >= 2.0.0"
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       run: |
@@ -37,7 +36,6 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install mth5
-          pip install "numpy >= 2.0.0"
       if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
       run: |
@@ -46,7 +44,6 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install mth5
-          pip install "numpy >= 2.0.0"
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |
