@@ -1,6 +1,6 @@
 name: quick_tests
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
@@ -129,8 +129,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.cnofs.tests.tests
         echo Starting kompsat tests at `date`
         coverage run -a -m  pyspedas.projects.kompsat.tests.tests
-        #echo Starting hapi tests at `date`
-        #coverage run -a -m  pyspedas.hapi.tests.tests
+        echo Starting hapi tests at `date`
+        coverage run -a -m  pyspedas.hapi.tests.tests
         echo Starting noaa tests at `date`
         coverage run -a -m  pyspedas.projects.noaa.tests.tests
         echo Starting particles tests at `date`
