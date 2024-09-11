@@ -130,7 +130,7 @@ jobs:
         echo Starting kompsat tests at `date`
         coverage run -a -m  pyspedas.projects.kompsat.tests.tests
         echo Starting hapi tests at `date`
-        coverage run -a -m  pyspedas.hapi.tests.tests
+        coverage run -a -m  pyspedas.hapi_tools.tests.tests
         echo Starting noaa tests at `date`
         coverage run -a -m  pyspedas.projects.noaa.tests.tests
         echo Starting particles tests at `date`
