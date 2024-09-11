@@ -53,7 +53,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     >>> import pyspedas
     >>> cat_entries = pyspedas.hapi(server='https://cdaweb.gsfc.nasa.gov/hapi', catalog=True)
 
-    Load OMNI data from CDAWeg HAPI server
+    Load OMNI data from CDAWeb HAPI server
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> h_vars = pyspedas.hapi(trange=['2003-10-20', '2003-11-30'],server='https://cdaweb.gsfc.nasa.gov/hapi',dataset='OMNI_HRO2_1MIN')

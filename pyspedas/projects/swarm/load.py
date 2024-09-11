@@ -1,6 +1,6 @@
 from pytplot import time_string, time_double
 from pytplot import time_clip as tclip
-from pyspedas.hapi.hapi import hapi
+from pyspedas.hapi_tools.hapi import hapi
 from .config import CONFIG
 
 def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'], 

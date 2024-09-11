@@ -36,7 +36,7 @@ from .cotrans_tools.xyz_to_polar import xyz_to_polar
 #from .geopack.t89 import t89, tt89
 #from .geopack.t96 import t96, tt96
 #from .geopack.ts04 import tts04
-from .hapi.hapi import hapi
+from .hapi_tools.hapi import hapi
 from .projects.noaa.noaa_load_kp import noaa_load_kp
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
 from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
