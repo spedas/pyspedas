@@ -2,8 +2,8 @@ import logging
 import numpy as np
 from pyspedas import tinterpol
 from pytplot import get_data, store_data, tnames
-from pyspedas.cotrans.quaternions import qtom, mtoq, qslerp
-from pyspedas.cotrans.matrix_array_lib import ctv_verify_mats, ctv_left_mats, ctv_swap_hands
+from pyspedas.cotrans_tools.quaternions import qtom, mtoq, qslerp
+from pyspedas.cotrans_tools.matrix_array_lib import ctv_verify_mats, ctv_left_mats, ctv_swap_hands
 
 
 def tvector_rotate(mat_var_in, vec_var_in, newname=None):

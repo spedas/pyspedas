@@ -1,7 +1,7 @@
 import unittest
 import pyspedas
 from pytplot import data_exists
-from pyspedas.cotrans.fac_matrix_make import fac_matrix_make
+from pyspedas.cotrans_tools.fac_matrix_make import fac_matrix_make
 from pyspedas import tinterpol
 from pytplot import get_data, store_data
 from pyspedas import twavpol

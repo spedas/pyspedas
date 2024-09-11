@@ -7,13 +7,13 @@ from pyspedas.projects.themis import autoload_support, ssl2dsl,dsl2gse
 
 
 class DSLCotransDataValidation(unittest.TestCase):
-    """ Compares cotrans results between Python and IDL """
+    """ Compares cotrans_tools results between Python and IDL """
 
     @classmethod
     def setUpClass(cls):
         """
         IDL Data has to be downloaded to perform these tests
-        The SPEDAS script that creates the file: projects/themis/state/cotrans/thm_cotrans_validate.pro
+        The SPEDAS script that creates the file: projects/themis/state/cotrans_tools/thm_cotrans_validate.pro
         """
         from pyspedas.utilities.download import download
         from pyspedas.projects.themis.config import CONFIG
@@ -68,7 +68,7 @@ class DSLCotransDataValidation(unittest.TestCase):
         cls.basis_y_dsl2ssl = get_data('basis_y_dsl2ssl')
         cls.basis_z_dsl2ssl = get_data('basis_z_dsl2ssl')
 
-        # The cotrans routines now can load their own support data.  However, it seems you actually need
+        # The cotrans_tools routines now can load their own support data.  However, it seems you actually need
         # some substantial padding of the support data time interval compared to the target variable.  I
         # think this is due to the V03 state spinaxis and spinphase corrections, which are only given once per
         # day. So you need at least the preceding and following days to be able to interpolate to the current
@@ -91,7 +91,7 @@ class DSLCotransDataValidation(unittest.TestCase):
 
     def test_gei2gse(self):
         """Validate gei2gse transform """
-        from pyspedas.cotrans.cotrans_lib import subgei2gse
+        from pyspedas.cotrans_tools.cotrans_lib import subgei2gse
 
         bx = self.basis_x
         by = self.basis_y
@@ -106,7 +106,7 @@ class DSLCotransDataValidation(unittest.TestCase):
 
     def test_gse2gei(self):
         """Validate gse2gei transform """
-        from pyspedas.cotrans.cotrans_lib import subgse2gei
+        from pyspedas.cotrans_tools.cotrans_lib import subgse2gei
 
         bx = self.basis_x
         by = self.basis_y
@@ -130,7 +130,7 @@ class DSLCotransDataValidation(unittest.TestCase):
 
     def test_dsl2gse_y(self):
         """Validate dsl2gse Y axis transform """
-        from pyspedas.cotrans.cotrans_lib import subgse2gei
+        from pyspedas.cotrans_tools.cotrans_lib import subgse2gei
         set_coords('basis_y', 'DSL')
         result = dsl2gse('basis_y', 'basis_y_dsl2gse', probe='a')
         self.assertEqual(result, 1)
@@ -156,7 +156,7 @@ class DSLCotransDataValidation(unittest.TestCase):
 
     def test_gse2dsl_y(self):
         """Validate gse2dsl Y axis transform """
-        from pyspedas.cotrans.cotrans_lib import subgse2gei
+        from pyspedas.cotrans_tools.cotrans_lib import subgse2gei
         set_coords('basis_y', 'GSE')
         result = dsl2gse('basis_y', 'basis_y_gse2dsl', probe='a', isgsetodsl=True)
         self.assertEqual(result, 1)

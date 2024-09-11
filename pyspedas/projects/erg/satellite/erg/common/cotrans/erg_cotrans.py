@@ -2,7 +2,7 @@
 ;    To transform time series data from one coordinate to another. The supported coordinate 
 ;     systems are: SGA, SGI, DSI, J2000. Further transformation from J2000 to the 
 ;     geophysical coordinates (GEI, GSE, etc) can be processed by "cotrans()", which can be
-      imported by (from pyspedas.cotrans.cotrans import cotrans). 
+      imported by (from pyspedas.cotrans_tools.cotrans import cotrans).
 ;     
 ;     The actual transformation is done by helper functions, such as sga2sgi(), sgi2dsi(), 
 ;     and dsi2j2000().

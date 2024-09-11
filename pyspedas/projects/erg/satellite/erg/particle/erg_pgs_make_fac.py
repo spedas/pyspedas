@@ -3,7 +3,7 @@ import numpy as np
 from pyspedas import tcopy
 from pytplot import get_data, store_data, tnames
 
-from pyspedas.cotrans.cotrans import cotrans
+from pyspedas.cotrans_tools.cotrans import cotrans
 from pytplot import tnormalize
 from pytplot import tcrossp
 from pyspedas.analysis.tinterpol import tinterpol

@@ -16,7 +16,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../..'))
 
 import pyspedas
-import pyspedas.cotrans.cotrans
+import pyspedas.cotrans_tools.cotrans
 
 # -- Project information -----------------------------------------------------
 

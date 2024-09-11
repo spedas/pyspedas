@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from pytplot import data_exists
-from pyspedas.cotrans.cotrans import cotrans
+from pyspedas.cotrans_tools.cotrans import cotrans
 from pytplot import tnormalize
 from pytplot import tcrossp
 from pyspedas.analysis.tinterpol import tinterpol

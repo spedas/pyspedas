@@ -13,7 +13,7 @@ This function is similar to cotrans.pro of IDL SPEDAS.
 import logging
 import pytplot
 from pytplot import get_coords,set_coords
-from pyspedas.cotrans.cotrans_lib import subcotrans
+from pyspedas.cotrans_tools.cotrans_lib import subcotrans
 
 
 def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,

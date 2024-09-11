@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pyspedas.cotrans.quaternions import qslerp, qcompose, qconj, mtoq, qtom, qvalidate, qmult, qdecompose
+from pyspedas.cotrans_tools.quaternions import qslerp, qcompose, qconj, mtoq, qtom, qvalidate, qmult, qdecompose
 
 
 class Qtests(unittest.TestCase):

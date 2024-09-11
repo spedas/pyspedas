@@ -6,8 +6,8 @@ import numpy as np
 import logging
 from pytplot import get_data, store_data, options, get_coords
 import pyspedas
-from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.cotrans.gsm2lmn import gsm2lmn
+from pyspedas.cotrans_tools.cotrans import cotrans
+from pyspedas.cotrans_tools.gsm2lmn import gsm2lmn
 from pyspedas import tinterpol, omni
 # For some reason, the import below started picking up the module mec, rather than the wrapper mec() defined in mms/__init__.py.
 # Importing it as pyspedas.mms.mec seems to remove the ambiguity, but I wonder if something fishy is going on

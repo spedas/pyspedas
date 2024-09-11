@@ -1,4 +1,4 @@
-from pyspedas.cotrans.minvar import minvar
+from pyspedas.cotrans_tools.minvar import minvar
 from pytplot import get_data, store_data, time_double
 import numpy as np
 

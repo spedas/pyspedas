@@ -1,20 +1,20 @@
 """
-Tests for cotrans functions.
+Tests for cotrans_tools functions.
 
 These tests include the function in the following files:
     utilites/contrans.py
     utilities/cotrans_lib.py
     utilites/igrf.py
     utilites/j2000.py
-    themis/cotrans/dsl2gse.py
+    themis/cotrans_tools/dsl2gse.py
 
 """
 import unittest
 import pyspedas
 import logging
 from pyspedas.projects.themis.cotrans.dsl2gse import dsl2gse
-from pyspedas.cotrans.cotrans import cotrans
-from pyspedas.cotrans.fac_matrix_make import fac_matrix_make
+from pyspedas.cotrans_tools.cotrans import cotrans
+from pyspedas.cotrans_tools.fac_matrix_make import fac_matrix_make
 from pytplot import get_data, store_data, del_data
 from pyspedas import cotrans_get_coord, cotrans_set_coord, sm2mlt
 
@@ -103,7 +103,7 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(units_after == 'mm')
 
     def test_dsl2gse(self):
-        """Test themis.cotrans.dsl2gse."""
+        """Test themis.cotrans_tools.dsl2gse."""
         del_data()
         # Try with missing variables. It should exit without problems.
         with self.assertLogs(level='ERROR') as log:

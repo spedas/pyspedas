@@ -6,9 +6,9 @@ import logging
 import numpy as np
 import pytplot
 from pytplot import tnormalize, tcrossp
-from pyspedas.cotrans.tvector_rotate import tvector_rotate
+from pyspedas.cotrans_tools.tvector_rotate import tvector_rotate
 from pytplot import data_exists, get_coords, set_coords
-from pyspedas.cotrans.cotrans import cotrans
+from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.analysis.tinterpol import tinterpol
 from pyspedas.analysis.deriv_data import deriv_data
 from pyspedas.projects.themis.cotrans.gse2sse import gse2sse
