@@ -115,8 +115,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
         echo Starting akebono tests at `date`
         coverage run -a -m pyspedas.projects.akebono.tests.tests
-        #echo Starting maven tests at `date`
-        #coverage run -a -m pyspedas.projects.maven.tests.tests
+        echo Starting maven tests at `date`
+        coverage run -a -m pyspedas.projects.maven.tests.tests
         echo Starting ace tests at `date`
         coverage run -a -m pyspedas.projects.ace.tests.tests
         echo Starting erg tests at `date`
@@ -157,7 +157,7 @@ jobs:
         echo Starting cluster tests at `date`
         coverage run -a -m pyspedas.projects.cluster.tests.tests
         echo Starting CDAWeb tests at `date`
-        coverage run -a -m pyspedas.cdagui.tests.tests
+        coverage run -a -m pyspedas.cdagui_tools.tests.tests
         echo Starting themis tplot_time  tests at `date`
         coverage run -a -m pyspedas.projects.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
