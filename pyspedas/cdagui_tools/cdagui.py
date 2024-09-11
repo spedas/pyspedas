@@ -11,8 +11,8 @@ For cdasws documentation, see:
 
 
 To open the GUI window:
-    from pyspedas.cdagui_tools.cdagui import cdaweb_gui
-    x = cdaweb_gui()
+    from pyspedas import cdagui
+    x = cdagui()
 To start the gui from the command line, use:
     python pyspedas/cdagui_tools/cdagui.py
 """

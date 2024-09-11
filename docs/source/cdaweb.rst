@@ -91,7 +91,7 @@ To start the CDAWeb browser:
 
 .. code-block:: python
 
-  from pyspedas.cdagui.cdagui import cdagui
+  from pyspedas import cdagui
   cdagui()
 
 This should bring up a screen like this:
