@@ -181,7 +181,7 @@ jobs:
         echo Starting lanl tests at `date`
         coverage run -a -m pyspedas.projects.lanl.tests.tests
         echo Starting cotrans quaternion tests at `date`
-        coverage run -a -m pyspedas.cotrans.tests.quaternions
+        coverage run -a -m pyspedas.cotrans_tools.tests.quaternions
         echo Starting cnofs tests at `date`
         coverage run -a -m pyspedas.projects.cnofs.tests.tests
         echo Starting kompsat tests at `date`
@@ -248,9 +248,9 @@ jobs:
         echo Starting utilities libs_tests tests at `date`
         coverage run -a -m pyspedas.utilities.tests.libs_tests
         echo Starting cotrans tests at `date`
-        coverage run -a -m pyspedas.cotrans.tests.cotrans
+        coverage run -a -m pyspedas.cotrans_tools.tests.cotrans
         echo Starting cotrans minvar tests at `date`
-        coverage run -a -m pyspedas.cotrans.tests.test_minvar
+        coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
         echo Starting csswe tests at `date`
         coverage run -a -m pyspedas.projects.csswe.tests.tests
         echo Starting equator_s tests at `date`
