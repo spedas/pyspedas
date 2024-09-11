@@ -11,10 +11,10 @@ For cdasws documentation, see:
 
 
 To open the GUI window:
-    from pyspedas.cdagui.cdagui import cdagui
-    x = cdagui()
+    from pyspedas.cdagui_tools.cdagui import cdaweb_gui
+    x = cdaweb_gui()
 To start the gui from the command line, use:
-    python pyspedas/cdagui/cdagui.py
+    python pyspedas/cdagui_tools/cdagui.py
 """
 
 import logging
@@ -22,8 +22,8 @@ import os
 import time
 import tkinter as tk
 from tkinter import messagebox, filedialog
-from pyspedas.cdagui.cdaweb import CDAWeb
-from pyspedas.cdagui.config import CONFIG
+from pyspedas.cdagui_tools.cdaweb import CDAWeb
+from pyspedas.cdagui_tools.config import CONFIG
 
 
 class cdaWindow:

@@ -12,8 +12,8 @@ from .analysis.wavelet import wavelet
 from .analysis.time_domain_filter import time_domain_filter
 from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
 from .analysis.lingradest import lingradest
-from .cdagui.cdagui import cdagui
-from .cdagui.cdaweb import CDAWeb
+from .cdagui_tools.cdagui import cdagui
+from .cdagui_tools.cdaweb import CDAWeb
 from .cotrans.cotrans import cotrans
 from .cotrans.cotrans_get_coord import cotrans_get_coord
 from .cotrans.cotrans_set_coord import cotrans_set_coord
