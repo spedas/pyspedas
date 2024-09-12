@@ -3,11 +3,13 @@ import pyspedas
 from pyspedas import mms_load_fpi
 import unittest
 
-from pytplot import data_exists, get_data
+from pytplot import data_exists, get_data, tplot
 from pyspedas.projects.mms.fpi.mms_fpi_split_tensor import mms_fpi_split_tensor
 from pyspedas.projects.mms.fpi.mms_fpi_ang_ang import mms_fpi_ang_ang
 from pyspedas.projects.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
 from pyspedas.projects.mms.fpi.mms_pad_fpi import mms_pad_fpi
+
+global_display=False
 
 
 class FPITestCases(unittest.TestCase):
@@ -73,14 +75,6 @@ class FPITestCases(unittest.TestCase):
     def test_errorflag_compression_bars(self):
         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['des-dist', 'des-moms'])
         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-dist', 'dis-moms'])
-        # mms_fpi_make_errorflagbars('mms1_des_errorflags_brst_moms', level='l2')
-        # mms_fpi_make_errorflagbars('mms1_dis_errorflags_brst_moms', level='l2')
-        # mms_fpi_make_errorflagbars('mms1_des_errorflags_brst_dist', level='l2')
-        # mms_fpi_make_errorflagbars('mms1_dis_errorflags_brst_dist', level='l2')
-        # mms_fpi_make_compressionlossbars('mms1_des_compressionloss_brst_moms')
-        # mms_fpi_make_compressionlossbars('mms1_dis_compressionloss_brst_moms')
-        # mms_fpi_make_compressionlossbars('mms1_des_compressionloss_brst_dist')
-        # mms_fpi_make_compressionlossbars('mms1_dis_compressionloss_brst_dist')
         self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_full'))
         self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_main'))
         self.assertTrue(data_exists('mms1_des_errorflags_brst_moms_flagbars_mini'))
@@ -93,6 +87,30 @@ class FPITestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_dis_compressionloss_brst_moms_flagbars'))
         self.assertTrue(data_exists('mms1_des_compressionloss_brst_dist_flagbars'))
         self.assertTrue(data_exists('mms1_dis_compressionloss_brst_dist_flagbars'))
+
+    def test_errorflag_bars_bit14(self):
+        # Test that the recently added bit flag for 'MMS3 Spintone DIS008 Anomaly' is
+        # correctly recognized and that the error flag bars are plottable
+        data = mms_load_fpi(probe='3',trange=['2019-02-09/00:32:00', '2019-02-09/00:35:00'], data_rate='brst', datatype=['des-moms', 'dis-moms'])
+        data = mms_load_fpi(probe='3',trange=['2019-02-09/00:32:00', '2019-02-09/00:35:00'], data_rate='fast', datatype=['des-moms', 'dis-moms'])
+        self.assertTrue(data_exists('mms3_des_errorflags_brst_moms_flagbars_full'))
+        self.assertTrue(data_exists('mms3_des_errorflags_brst_moms_flagbars_main'))
+        self.assertTrue(data_exists('mms3_des_errorflags_brst_moms_flagbars_mini'))
+        self.assertTrue(data_exists('mms3_dis_errorflags_brst_moms_flagbars_full'))
+        self.assertTrue(data_exists('mms3_dis_errorflags_brst_moms_flagbars_main'))
+        self.assertTrue(data_exists('mms3_dis_errorflags_brst_moms_flagbars_mini'))
+        self.assertTrue(data_exists('mms3_des_compressionloss_brst_moms_flagbars'))
+        self.assertTrue(data_exists('mms3_dis_compressionloss_brst_moms_flagbars'))
+        # Test that at least one sample has bit 14 (counting from 0) turned on
+        d=get_data('mms3_dis_errorflags_brst_moms_flagbars_full')
+        self.assertFalse(np.isnan(d.y[:,14]).all())
+        tplot('mms3_des_errorflags_brst_moms_flagbars_full', display=global_display, save_png='mm3_des_flagbars_full.png')
+        tplot('mms3_des_errorflags_brst_moms_flagbars_main', display=global_display, save_png='mm3_des_flagbars_main.png')
+        tplot('mms3_des_errorflags_brst_moms_flagbars_mini', display=global_display, save_png='mm3_des_flagbars_mini.png')
+        tplot('mms3_dis_errorflags_brst_moms_flagbars_full', display=global_display, save_png='mm3_dis_flagbars_full.png')
+        tplot('mms3_dis_errorflags_brst_moms_flagbars_main', display=global_display, save_png='mm3_dis_flagbars_main.png')
+        tplot('mms3_dis_errorflags_brst_moms_flagbars_mini', display=global_display, save_png='mm3_dis_flagbars_mini.png')
+
 
     def test_angle_angle(self):
         mms_fpi_ang_ang('2015-10-16/13:06:59.985', species='e',data_rate='brst', save_png='mms1_fpi_ang_ang_brst', display=False)

@@ -51,6 +51,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
          bit 11 = compression pipeline error
          Bit 12 = spintone calculation error (DBCS only)
          Bit 13 = significant (>=20%) penetrating radiation (DIS only)
+         Bit 14 = high MMS3 spintone due to DIS008 anomaly (DIS only)
 
        For DES/DIS moments (Fast):
          bit 0 = manually flagged interval --> contact the FPI team for direction when utilizing this data; further correction is required
@@ -67,6 +68,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
          bit 11 = compression pipeline error
          Bit 12 = spintone calculation error (DBCS only)
          Bit 13 = significant (>=20%) penetrating radiation (DIS only)
+         Bit 14 = high MMS3 spintone due to DIS008 anomaly (DIS only)
 
     Notes
     -----------
@@ -93,15 +95,15 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
         md_dt = md_dt[0]
 
     if md_dt[-4:] == 'moms' or level == 'ql':
-        labels_full=['Contact FPI team','Saturation','SCpot>20V','no SCpot','>10% Cold','>25% Hot','High Mach#','Low Density','Onboard Mag','L2pre Mag','Photoelectrons','Compression', 'Spintones', 'Radiation']
+        labels_full=['Contact FPI team','Saturation','SCpot>20V','no SCpot','>10% Cold','>25% Hot','High Mach#','Low Density','Onboard Mag','L2pre Mag','Photoelectrons','Compression', 'Spintones', 'Radiation', 'MMS3 DIS Spintone']
 
-        flags = ['{0:014b}'.format(flag) for flag in data.y]
-        flagline = np.zeros((len(data.times), 14))
+        flags = ['{0:015b}'.format(flag) for flag in data.y]
+        flagline = np.zeros((len(data.times), 15))
         flagline_others = np.zeros(len(data.times))
         flagline_all = np.zeros(len(data.times))
         for j, flag in enumerate(flags):
-            for i in range(14):
-                if int(flag[13-i:13-i+1]) == 0:
+            for i in range(15):
+                if int(flag[14-i:14-i+1]) == 0:
                     flagline[j, i] = np.nan
                     if flagline_all[j] != 1:
                         flagline_all[j] = np.nan
@@ -125,7 +127,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
                     flagline_all[j] = 1.0
                     flagline[j, i] = 1.0
 
-        labels_full=['Contact FPI team','Saturation','SCpot>20V','no SCpot','>10% Cold','>25% Hot','High Mach#','Low Density','Onboard Mag','L2pre Mag','Photoelectrons','Compression', 'Spintones', 'Radiation']
+        labels_full=['Contact FPI team','Saturation','SCpot>20V','no SCpot','>10% Cold','>25% Hot','High Mach#','Low Density','Onboard Mag','L2pre Mag','Photoelectrons','Compression', 'Spintones', 'Radiation', 'MMS3 DIS Spintone']
 
         if instrument == 'DES':
             des_full = np.array([[flagline[:,0]],[flagline[:,1]-0.1],[flagline[:,2]-0.2],[flagline[:,3]-0.3],[flagline[:,4]-0.4],[flagline[:,5]-0.5],[flagline[:,6]-0.6],[flagline[:,7]-0.7],[flagline[:,8]-0.8],[flagline[:,9]-0.9],[flagline[:,10]-1.0],[flagline[:,11]-1.1],[flagline[:,12]-1.2]])
@@ -175,10 +177,10 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
             options(tname + '_flagbars_mini', 'symbols', True)
             options(tname + '_flagbars_mini', 'markers', 's')
         else:
-            dis_full = np.array([[flagline[:,0]],[flagline[:,1]-0.1],[flagline[:,2]-0.2],[flagline[:,3]-0.3],[flagline[:,4]-0.4],[flagline[:,5]-0.5],[flagline[:,6]-0.6],[flagline[:,7]-0.7],[flagline[:,8]-0.8],[flagline[:,9]-0.9],[flagline[:,10]-1.0],[flagline[:,11]-1.1],[flagline[:,12]-1.2],[flagline[:,13]-1.3]])
+            dis_full = np.array([[flagline[:,0]],[flagline[:,1]-0.1],[flagline[:,2]-0.2],[flagline[:,3]-0.3],[flagline[:,4]-0.4],[flagline[:,5]-0.5],[flagline[:,6]-0.6],[flagline[:,7]-0.7],[flagline[:,8]-0.8],[flagline[:,9]-0.9],[flagline[:,10]-1.0],[flagline[:,11]-1.1],[flagline[:,12]-1.2],[flagline[:,13]-1.3],[flagline[:,14]-1.4]])
             dis_full = dis_full.squeeze().T
             store_data(tname + '_flagbars_full', data={'x': data.times, 'y': dis_full})
-            options(tname + '_flagbars_full', 'yrange', [-0.15, 1.35])
+            options(tname + '_flagbars_full', 'yrange', [-1.5, 1.35])
             options(tname + '_flagbars_full', 'legend_names', labels_full)
             options(tname + '_flagbars_full', 'symbols', True)
             options(tname + '_flagbars_full', 'markers', 's')
@@ -187,7 +189,7 @@ def mms_fpi_make_errorflagbars(tname, level='l2'):
             options(tname + '_flagbars_full', 'border', False)
             options(tname + '_flagbars_full', 'ytitle', instrument)
             options(tname + '_flagbars_full', 'ysubtitle', data_rate)
-            options(tname + '_flagbars_full', 'color', ['k', 'red', 'green', 'teal', 'blue', 'purple', 'teal', 'black', 'blue', 'green', 'red', 'k', 'blue', 'orange'])
+            options(tname + '_flagbars_full', 'color', ['k', 'red', 'green', 'teal', 'blue', 'purple', 'teal', 'black', 'blue', 'green', 'red', 'k', 'blue', 'orange', 'red'])
 
             dis_main = np.array([[flagline[:,1]-0.2],[flagline[:,13]-0.4],[flagline[:,5]-0.6],[flagline_others-0.8]])
             dis_main = dis_main.squeeze().T
