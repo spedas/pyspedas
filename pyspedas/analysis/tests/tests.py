@@ -114,7 +114,7 @@ class AnalysisTestCases(BaseTestCase):
     def test_subtract_average_nan(self):
         """Test subtract_average with NaN values."""
         # Create a tplot variable with NaN values
-        store_data('test-nan', data={'x': [1., 2., 3., 4.], 'y': [3., 5., np.NaN, 8.]})
+        store_data('test-nan', data={'x': [1., 2., 3., 4.], 'y': [3., 5., np.nan, 8.]})
 
         # Run subtract_average
         tvar = subtract_average('test-nan')
@@ -127,12 +127,12 @@ class AnalysisTestCases(BaseTestCase):
         self.assertTrue(np.isnan(d[1][2]), "NaN values should remain in the output.")
 
         # Check that non-NaN values are properly adjusted
-        expected_values = np.array([3., 5., np.NaN, 8.]) - np.nanmean(np.array([3., 5., np.NaN, 8.]))
+        expected_values = np.array([3., 5., np.nan, 8.]) - np.nanmean(np.array([3., 5., np.nan, 8.]))
         np.testing.assert_array_almost_equal(d[1], expected_values,
                                              err_msg="Non-NaN values should be adjusted by subtracting the mean.")
 
         # Additional NaN scenarios
-        store_data('test-nan-all', data={'x': [1., 2., 3., 4.], 'y': [np.NaN, np.NaN, np.NaN, np.NaN]})
+        store_data('test-nan-all', data={'x': [1., 2., 3., 4.], 'y': [np.nan, np.nan, np.nan, np.nan]})
 
         # Check all NaN case
         result_all = subtract_average('test-nan-all')
@@ -371,7 +371,7 @@ class AnalysisTestCases(BaseTestCase):
         r = [1.0, 1.3333333333333333, 2.0, 3.0, 2.6666666666666665,
              3.0, 2.6666666666666665, 3.0, 2.0, 1.3333333333333333, 1.0]
         self.assertTrue(x == r)
-        b = [1.0, 1.0, 2.0, 3.0, np.NaN, np.NaN, np.NaN, np.NaN, 2.0, 1.0, 1.0]
+        b = [1.0, 1.0, 2.0, 3.0, np.nan, np.nan, np.nan, np.nan, 2.0, 1.0, 1.0]
         y = smooth(b, width=3)
         ry = [1.0, 1.3333333333333333, 2.0, 1.6666666666666665, 1.0,
               np.nan, np.nan, 0.6666666666666666, 1.0, 1.3333333333333333, 1.0]
