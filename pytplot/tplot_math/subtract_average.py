@@ -94,17 +94,21 @@ def subtract_average(
         dim = data.shape
         if median:
             if len(dim) == 1:
-                data -= numpy.median(data, axis=0)
+                if not numpy.isnan(data).all():
+                        data -= numpy.nanmedian(data, axis=0)
             else:
                 for i in range(dim[1]):
-                    data[:, i] -= numpy.median(data[:, i], axis=0)
+                    if not numpy.isnan(data[:, i]).all():
+                        data[:, i] -= numpy.nanmedian(data[:, i], axis=0)
             ptype = 'Median'
         else:
             if len(dim) == 1:
-                data -= numpy.mean(data, axis=0)
+                if not numpy.isnan(data).all():
+                    data -= numpy.nanmean(data, axis=0)
             else:
                 for i in range(dim[1]):
-                    data[:, i] -= numpy.mean(data[:, i], axis=0)
+                    if not numpy.isnan(data[:, i]).all():
+                        data[:, i] -= numpy.nanmean(data[:, i], axis=0)
             ptype = 'Mean'
 
         pytplot.data_quants[new].values = data
