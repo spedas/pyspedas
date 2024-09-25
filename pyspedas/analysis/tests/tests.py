@@ -110,7 +110,6 @@ class AnalysisTestCases(BaseTestCase):
         subtract_average(['test1', 'test'], newname="testtest2")
         self.assertTrue(len(d[1]) == 6)
 
-    @unittest.skip('Currently subtract_average returns all NaN.')
     def test_subtract_average_nan(self):
         """Test subtract_average with NaN values."""
         # Create a tplot variable with NaN values
@@ -136,6 +135,34 @@ class AnalysisTestCases(BaseTestCase):
 
         # Check all NaN case
         result_all = subtract_average('test-nan-all')
+        d_all = get_data(result_all[0])
+        self.assertTrue(np.isnan(d_all[1]).all(), "All NaN input should result in all NaN output.")
+
+    def test_subtract_median_nan(self):
+        """Test subtract_median with NaN values."""
+        # Create a tplot variable with NaN values
+        store_data('test-nan', data={'x': [1., 2., 3., 4.], 'y': [3., 5., np.nan, 8.]})
+
+        # Run subtract_median
+        tvar = subtract_median('test-nan')
+        d = get_data(tvar[0])
+
+        # Check that the result is not all NaN
+        self.assertFalse(np.isnan(d[1]).all(), "The result should not be all NaN.")
+
+        # Check that NaN remains where it was
+        self.assertTrue(np.isnan(d[1][2]), "NaN values should remain in the output.")
+
+        # Check that non-NaN values are properly adjusted by subtracting the median
+        expected_values = np.array([3., 5., np.nan, 8.]) - np.nanmedian(np.array([3., 5., np.nan, 8.]))
+        np.testing.assert_array_almost_equal(d[1], expected_values,
+                                             err_msg="Non-NaN values should be adjusted by subtracting the median.")
+
+        # Additional NaN scenarios
+        store_data('test-nan-all', data={'x': [1., 2., 3., 4.], 'y': [np.nan, np.nan, np.nan, np.nan]})
+
+        # Check all NaN case
+        result_all = subtract_median('test-nan-all')
         d_all = get_data(result_all[0])
         self.assertTrue(np.isnan(d_all[1]).all(), "All NaN input should result in all NaN output.")
 
