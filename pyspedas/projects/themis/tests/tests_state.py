@@ -4,7 +4,7 @@ from pyspedas.projects.themis import state
 from pytplot import data_exists, get_data, del_data, tplot_restore
 from numpy.testing import assert_allclose
 
-class StateDataValidation(unittest.TestCase):
+class Themis_StateDataTests(unittest.TestCase):
     """ Tests creation of support variables in themis.state() """
 
     @classmethod
@@ -100,6 +100,16 @@ class StateDataValidation(unittest.TestCase):
         state(trange=['2007-03-23','2007-03-24'], probe='b',varformat='*pos*',exclude_format='*sse*')
         self.assertTrue(data_exists('thb_pos_gse'))
         self.assertFalse(data_exists('thb_pos_sse'))
+
+    def test_ssc(self):
+        from pyspedas.themis import ssc
+        vars = ssc()
+        self.assertTrue(len(vars) > 0)
+
+    def test_ssc_pre(self):
+        from pyspedas.themis import ssc_pre
+        vars = ssc_pre()
+        self.assertTrue(len(vars) > 0)
 
 if __name__ == '__main__':
     unittest.main()
