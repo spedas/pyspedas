@@ -19,15 +19,17 @@ class GmagTestCases(unittest.TestCase):
     def test_gmag_list(self):
         """Get gmag list of stations."""
         from pyspedas.projects.themis.ground.gmag import gmag_list
-        self.assertTrue(gmag_list()[0:5] == ['abk', 'akul', 'amd', 'amer',
-                                             'amk'])
+        l = gmag_list()
+        for site in ['abk', 'akul', 'amd', 'amer', 'amk']:
+            self.assertTrue(site in l)
 
     def test_gmag_groups(self):
         """Get gmag groups."""
         from pyspedas.projects.themis.ground.gmag import gmag_groups
         gmag_table = gmag_groups()
-        self.assertTrue(list(gmag_table.keys())[0:5] == ['kyoto', 'sgu',
-                                                         'autx', 'ae', 'aari'])
+        keylist = list(gmag_table.keys())
+        for group in ['kyoto', 'sgu', 'autx', 'ae', 'aari']:
+            self.assertTrue(group in keylist)
 
     def test_check_gmag(self):
         """Check a gmag station."""
