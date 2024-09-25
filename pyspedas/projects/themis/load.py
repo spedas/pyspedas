@@ -55,7 +55,12 @@ def load(trange=['2013-11-5', '2013-11-6'],
     file_resolution = 24*3600.0 # default to daily files
     varformat_tmp = None #used for ASK data, when site is input, so that possible varformat input is not overwritten
 
+
     for prb in probe:
+
+        # Remote data directory (CDAWeb for SSC data)
+        remote_data_dir = CONFIG['remote_data_dir']
+
         if instrument == 'ask':
             if stations is None:
                 pathformat = ('thg/' + level + '/asi/ask/%Y/thg_' + level + '_ask'
@@ -171,6 +176,14 @@ def load(trange=['2013-11-5', '2013-11-6'],
         elif instrument == 'slp':
             # note: v01 hard-coded in IDL version as well
             pathformat = 'slp/' + level + '/eph/%Y/slp_l1_eph_%Y%m%d_v01.cdf'
+        elif instrument == 'ssc':
+            # current/past orbit data from CDAWeb
+            pathformat = 'th' + prb + '/ssc/%Y/th' + prb + '_or_ssc' + '_%Y%m01_v??.cdf'
+            remote_data_dir = 'https://cdaweb.gsfc.nasa.gov/pub/data/themis/'
+        elif instrument == 'ssc_pre':
+            # predicted orbit data from CDAWeb
+            pathformat = 'th' + prb + '/ssc_pre/%Y/th' + prb + 'pred_or_ssc' + '_%Y0101_v??.cdf'
+            remote_data_dir = 'https://cdaweb.gsfc.nasa.gov/pub/data/themis/'
         elif instrument == 'gmag':
             if stations is None:
                 logging.error('No stations specified')
@@ -198,7 +211,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
             remote_names = dailynames(file_format=file_format, trange=trange, res=file_resolution)
 
             files = download(remote_file=remote_names,
-                             remote_path=CONFIG['remote_data_dir'],
+                             remote_path=remote_data_dir,
                              local_path=CONFIG['local_data_dir'],
                              no_download=no_update,
                              last_version=True,
