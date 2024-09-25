@@ -17,6 +17,8 @@ from .ground.ask import ask
 
 from .state.state import state
 from .state.slp import slp
+from .state.ssc import ssc
+from .state.ssc_pre import ssc_pre
 
 from .state.autoload_support import autoload_support
 from .state import get_spinmodel
