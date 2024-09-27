@@ -37,6 +37,14 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
     See: https://docs.xarray.dev/en/latest/generated/xarray.DataArray.interp.html
     Similar to tinterpol.pro in IDL SPEDAS.
 
+    'linear' vs. 'slinear' methods:  Due to a quirk in the implmentation of the scipy interp1d routine (used
+    internally by xarray.interp),'linear' interpolation may yield unexpected results under certain conditions.
+    In particular, when using 32-bit floating point data, if an output time exactly matches one of the input times, the
+    interpolated value may differ slightly (on the order of 1 ULP) from the input value at that timestamp.
+    This can cause problems for downstream calculations: for example, if the input is strictly non-negative, but
+    contains zero values, the interpolated data may contain small negative values. The 'slinear' method does not appear
+    to suffer from this issue, but may be slightly slower.
+
 
     Examples
     --------
