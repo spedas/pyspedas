@@ -33,6 +33,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
 
     Notes
     -----
+
     Uses xarray interp method to interpolate data to the times in interp_to.
     See: https://docs.xarray.dev/en/latest/generated/xarray.DataArray.interp.html
     Similar to tinterpol.pro in IDL SPEDAS.
