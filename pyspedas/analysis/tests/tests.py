@@ -558,5 +558,22 @@ class AnalysisTestCases(BaseTestCase):
         # unlikely to ever be fixed. See tests above for xarray.interp and scipy
         # self.assertTrue((result.y >= 0.0).all())
 
+    def test_tinterpol_slinear(self):
+        # This test uses the 'slinear' interpolation method (order 1 spline) which
+        # seems not to be susceptible to the issue that method='linear' has with interpolating
+        # to points exactly matching the input times.
+        time_strings_input = np.array(['2018-07-01T13:02:16.892474880',
+                                       '2018-07-01T13:02:16.922475008',
+                                       '2018-07-01T13:02:16.952474880'])
+        values_input = np.array([0.028584518, 0., 0.013626526],dtype=np.float32)
+        time_strings_interp_to = np.array(['2018-07-01T13:02:16.922475008'])
+        input_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_input])
+        interp_to_times_npdt64 = np.array([np.datetime64(t) for t in time_strings_interp_to])
+        store_data('interp_input', data={'x':input_times_npdt64, 'y':values_input})
+        store_data('interp_to', data={'x':interp_to_times_npdt64, 'y':[0.0]})
+        tinterpol('interp_input', 'interp_to', newname='interp_result', method='slinear')
+        result=get_data('interp_result')
+        self.assertTrue((result.y >= 0.0).all())
+
 if __name__ == '__main__':
     unittest.main()
