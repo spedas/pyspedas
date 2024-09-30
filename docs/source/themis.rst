@@ -149,7 +149,6 @@ Example
 
 
 
-
 State data
 ----------------------------------------------------------
 .. autofunction:: pyspedas.themis.state
@@ -168,6 +167,39 @@ Example
    :align: center
    :class: imgborder
 
+
+
+Orbit data from SSCWeb
+----------------------------------------------------------
+.. autofunction:: pyspedas.themis.ssc
+
+Example
+^^^^^^^^^
+
+.. code-block:: python
+   
+   from pyspedas.themis import ssc
+   ssc_vars = ssc(probe='d', trange=['2012-10-01', '2012-10-02'])
+   print(ssc_vars)
+
+   ['GEO_LAT', 'GEO_LON', 'GEO_LCT_T', 'GM_LAT', 'GM_LON', 'GM_LCT_T', 'GSE_LAT', 'GSE_LON', 'GSE_LCT_T', 'GSM_LAT', 'GSM_LON', 'SM_LAT', 'SM_LON', 'SM_LCT_T', 'NorthBtrace_GEO_LAT', 'NorthBtrace_GEO_LON', 'NorthBtrace_GEO_ARCLEN', 'SouthBtrace_GEO_LAT', 'SouthBtrace_GEO_LON', 'SouthBtrace_GEO_ARCLEN', 'NorthBtrace_GM_LAT', 'NorthBtrace_GM_LON', 'NorthBtrace_GM_ARCLEN', 'SouthBtrace_GM_LAT', 'SouthBtrace_GM_LON', 'SouthBtrace_GM_ARCLEN', 'RADIUS', 'MAG_STRTH', 'DNEUTS', 'BOW_SHOCK', 'MAG_PAUSE', 'L_VALUE', 'INVAR_LAT', 'MAG_X', 'MAG_Y', 'MAG_Z', 'XYZ_GEO', 'XYZ_GM', 'XYZ_GSE', 'XYZ_GSM', 'XYZ_SM']
+
+
+
+Orbit data from SSCWeb (predicted)
+----------------------------------------------------------
+.. autofunction:: pyspedas.themis.ssc_pre
+
+Example
+^^^^^^^^^
+
+.. code-block:: python
+   
+   from pyspedas.themis import ssc_pre
+   ssc_pre_vars = ssc_pre(probe='a', trange=['2028-12-01', '2028-12-02'])
+   print(ssc_pre_vars)
+
+   ['GEO_LAT', 'GEO_LON', 'GEO_LCT_T', 'GM_LAT', 'GM_LON', 'GM_LCT_T', 'GSE_LAT', 'GSE_LON', 'GSE_LCT_T', 'GSM_LAT', 'GSM_LON', 'SM_LAT', 'SM_LON', 'SM_LCT_T', 'NorthBtrace_GEO_LAT', 'NorthBtrace_GEO_LON', 'NorthBtrace_GEO_ARCLEN', 'SouthBtrace_GEO_LAT', 'SouthBtrace_GEO_LON', 'SouthBtrace_GEO_ARCLEN', 'NorthBtrace_GM_LAT', 'NorthBtrace_GM_LON', 'NorthBtrace_GM_ARCLEN', 'SouthBtrace_GM_LAT', 'SouthBtrace_GM_LON', 'SouthBtrace_GM_ARCLEN', 'RADIUS', 'MAG_STRTH', 'DNEUTS', 'BOW_SHOCK', 'MAG_PAUSE', 'L_VALUE', 'INVAR_LAT', 'MAG_X', 'MAG_Y', 'MAG_Z', 'XYZ_GEO', 'XYZ_GM', 'XYZ_GSE', 'XYZ_GSM', 'XYZ_SM']
 
 
 

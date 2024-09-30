@@ -1,6 +1,6 @@
 import logging
 import unittest
-from pyspedas.projects.themis import state
+from pyspedas.projects.themis import state, ssc, ssc_pre
 from pytplot import data_exists, get_data, del_data, tplot_restore
 from numpy.testing import assert_allclose
 
@@ -102,12 +102,10 @@ class Themis_StateDataTests(unittest.TestCase):
         self.assertFalse(data_exists('thb_pos_sse'))
 
     def test_ssc(self):
-        from pyspedas.themis import ssc
         vars = ssc()
         self.assertTrue(len(vars) > 0)
 
     def test_ssc_pre(self):
-        from pyspedas.themis import ssc_pre
         vars = ssc_pre()
         self.assertTrue(len(vars) > 0)
 
