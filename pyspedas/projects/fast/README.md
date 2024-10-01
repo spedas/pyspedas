@@ -16,37 +16,34 @@ import pyspedas
 from pytplot import tplot
 ```
 
-#### Fluxgate Magnetometer (DCB)
+#### Fluxgate Magnetometer (DCF)
 
 ```python
-dcb_vars = pyspedas.fast.dcb(trange=['1998-09-05', '1998-09-06'])
-
-tplot('')
+dcf_vars = pyspedas.fast.dcf(trange=["1996-12-01", "1996-12-02"])
+tplot(['fast_dcf_DeltaB_GEI'])
 ```
 
 
-#### Search-coil Magnetometer (ACB)
+#### Search-coil Magnetometer (ACF)
 
 ```python
-acb_vars = pyspedas.fast.acb()
-
-tplot('HF_E_SPEC')
+acf_vars = pyspedas.fast.acf(trange=["1996-12-01", "1996-12-02"])
+tplot('fast_acf_HF_E_SPEC')
 ```
 
 
 #### Electrostatic Analyzers (ESA)
 
 ```python
-esa_vars = pyspedas.fast.esa(downloadonly=True)
-
+esa_vars = pyspedas.fast.esa(trange=["1996-12-01", "1996-12-02"])
+tplot('fast_esa_eflux')
 ```
 
 
 #### Time-of-flight Energy Angle Mass Spectrograph (TEAMS)
 
 ```python
-teams_vars = pyspedas.fast.teams(trange=['1998-09-05', '1998-09-06'])
-
-tplot(['H+', 'H+_low', 'H+_high'])
+teams_vars = pyspedas.fast.teams(trange=["2005-08-01", "2005-08-02"])
+tplot(['fast_teams_helium_omni_flux'])
 ```
 
