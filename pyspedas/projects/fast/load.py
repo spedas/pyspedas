@@ -8,7 +8,7 @@ from .config import CONFIG
 
 
 def load(
-    trange=["2004-05-05", "2004-05-06"],
+    trange=["1996-12-01", "1996-12-02"],
     instrument="dcf",
     datatype="",
     level="l2",
@@ -32,7 +32,7 @@ def load(
         Time range of interest [starttime, endtime] with the format
         ['YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
         ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss'].
-        Default is ["2013-11-5", "2013-11-6"].
+        Default is ["1996-12-01", "1996-12-02"].
     instrument : str or list of str, optional
         Type of instrument.
         Values can be: 'dcf', 'acf', 'esa', 'teams', 'all'.
@@ -92,8 +92,14 @@ def load(
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> dcf_vars = pyspedas.fast.load(instrument='dcf')
-    >>> tplot(['fast_dbc_BX','fast_dbc_BY','fast_dbc_BZ'])
+    >>> dcf_vars = pyspedas.fast.dcf(trange=["1996-12-01", "1996-12-02"])
+    >>> tplot(['fast_dcf_DeltaB_GEI'])
+    >>> acf_vars = pyspedas.fast.acf(trange=["1996-12-01", "1996-12-02"])
+    >>> tplot('fast_acf_HF_E_SPEC')
+    >>> esa_vars = pyspedas.fast.esa(trange=["1996-12-01", "1996-12-02"])
+    >>> tplot('fast_esa_eflux')
+    >>> teams_vars = pyspedas.fast.teams(trange=["2005-08-01", "2005-08-02"])
+    >>> tplot(['fast_teams_helium_omni_flux'])
     """
 
     out_files = []
