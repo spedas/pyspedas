@@ -5,10 +5,10 @@ include *.md
 include LICENSE.txt
 
 # include the MMS FEEPS sun contamination CSV files
-include pyspedas/mms/feeps/sun/*.csv
+include pyspedas/projects/mms/feeps/sun/*.csv
 
 # include the image of Earth for MMS orbit plots
-include pyspedas/mms/mec/*.png
+include pyspedas/projects/mms/mec/*.png
 
 # include elfin calibration data
-include pyspedas/elfin/epd/el*_epde_cal_data.txt
+include pyspedas/projects/elfin/epd/el*_epde_cal_data.txt
