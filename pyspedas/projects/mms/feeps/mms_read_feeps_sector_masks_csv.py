@@ -1,6 +1,7 @@
 import csv
 import os
 import numpy as np
+import logging
 from pytplot import time_double, time_string
 
 
@@ -31,20 +32,27 @@ def mms_read_feeps_sector_masks_csv(trange):
              1642032000.0000000, # 1/13/2022
              1651795200.0000000, # 5/6/2022
              1660521600.0000000, # 8/15/2022
-             1706832000.0000000] # 02/02/2024
+             1706832000.0000000, # 02/02/2024
+             1721779200.0000000] # 07/24/2024
 
     # find the file closest to the start time
     nearest_date = dates[(np.abs(np.array(dates)-time_double(trange[0]))).argmin()]
 
     for mms_sc in [1, 2, 3, 4]:
-        csv_file = os.sep.join([os.path.dirname(os.path.abspath(__file__)), 'sun', 'MMS'+str(mms_sc)+'_FEEPS_ContaminatedSectors_'+time_string(nearest_date, fmt='%Y%m%d')+'.csv'])
+        csv_filename = os.sep.join([os.path.dirname(os.path.abspath(__file__)), 'sun', 'MMS'+str(mms_sc)+'_FEEPS_ContaminatedSectors_'+time_string(nearest_date, fmt='%Y%m%d')+'.csv'])
 
-        csv_file = open(csv_file, 'r')
+        csv_file = open(csv_filename, 'r',encoding='utf-8-sig')
         csv_reader = csv.reader(csv_file)
         csv_data = []
 
         for line in csv_reader:
-            csv_data.append([float(l) for l in line])
+            try:
+                csv_data.append([float(l) for l in line])
+            except ValueError:
+                logging.error("Trouble reading line in contamination file "+csv_filename)
+                logging.error(line)
+                csv_file.close()
+                return
             
         csv_file.close()
 
