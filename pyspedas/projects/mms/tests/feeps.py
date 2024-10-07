@@ -126,6 +126,32 @@ class FEEPSTestCases(unittest.TestCase):
         self.assertTrue(d['mms2imaskt9'] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 53, 54, 60, 61, 62, 63])
         self.assertTrue(d['mms1imaskb6'] == [40, 41, 42, 49, 50, 51, 52, 53, 54, 57, 58])
 
+    def test_all_sector_masks(self):
+        # Ensure that all contamination sector CSV files are readable, with no trailing commas
+        # or other formatting issues.  Update the file_times array in this test whenever new
+        # CSVs are added.
+
+        from pytplot import time_string
+        """
+        file_times=[1447200000.0000000, # 11/11/2015
+             1468022400.0000000, # 7/9/2016
+             1477612800.0000000, # 10/28/2016
+             1496188800.0000000, # 5/31/2017
+             1506988800.0000000, # 10/3/2017
+             1538697600.0000000, # 10/5/2018
+             1642032000.0000000, # 1/13/2022
+             1651795200.0000000, # 5/6/2022
+             1660521600.0000000, # 8/15/2022
+             1706832000.0000000, # 02/02/2024
+             1721779200.0000000] # 07/24/2024
+        """
+        file_times=[1706832000.0000000]
+        for ft in file_times:
+            trange=[ft,ft+86400.0]
+            logging.info("Reading files for: "+time_string(trange[0]))
+            d = mms_read_feeps_sector_masks_csv(trange)
+            self.assertTrue(d is not None)
+
 
 if __name__ == '__main__':
     unittest.main()
