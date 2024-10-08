@@ -444,6 +444,13 @@ class PlotTestCases(unittest.TestCase):
         tplot('E_Flux',display=global_display, save_png='psp_E_Flux')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_geopack_support(self):
+        import pyspedas
+        trange=['1997-09-01','1997-10-01']
+        pyspedas.kyoto.dst(trange=trange)
+        tplot('kyoto_dst')
+        pyspedas.omni.load(trange=trange)
+        tplot(['flow_speed', 'proton_density'])
 
 if __name__ == '__main__':
     unittest.main()
