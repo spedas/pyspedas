@@ -562,9 +562,6 @@ def tplot(variables, var_label=None,
                 colorbar.set_label(ztitle_text + '\n ' + zsubtitle_text,
                                    fontsize=char_size)
 
-    if return_plot_objects:
-        return fig, axes
-
     if save_png is not None and save_png != '':
         if not save_png.endswith('.png'):
             save_png += '.png'
@@ -599,6 +596,8 @@ def tplot(variables, var_label=None,
     if display:
         plt.show()
 
+    if return_plot_objects:
+        return fig, axes
 
 def mouse_move_slice(event, slice_axes, slice_plot):
     """
