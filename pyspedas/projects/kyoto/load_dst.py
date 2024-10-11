@@ -34,20 +34,45 @@ def parse_dst_html(html_text, year=None, month=None):
     # loop over days
     for day_str in data_strs:
         # the first element of hourly_data is the day, the rest are the hourly Dst values
-        #         hourly_data = day_str.split()
-        hourly_data = re.findall(r"[-+]?\d+", day_str)
+        hourly_data = re.findall(r'[-+]?\d+', day_str)
+        ## if the data is not complete for a whole day (which is typically the case for real time data):
         if len(hourly_data[1:]) != 24:
-            continue
-        for idx, dst_value in enumerate(hourly_data[1:]):
-            times.append(
-                time_double(
-                    year + "-" + month + "-" + hourly_data[0] + "/" + str(idx) + ":30"
+            ## if the data is not completely missing for a whole day:
+            if len(hourly_data[1:]) != 3:
+                for idx, dst_value in enumerate(hourly_data[1:]):
+                    ## The kyoto website uses a 4 digit format.
+                    remainder = len(dst_value) % 4
+                    ## if the remainder is not zero, it can be either the regular case '-23' or
+                    ## the ill case '-159999'. index by 0:remainder gives the correct -23 or -15
+                    if remainder > 0:
+                        times.append(
+                            time_double(
+                                year + "-" + month + "-" + hourly_data[0] + "/" + str(idx) + ":30"
+                            )
+                        )
+                        data.append(float(dst_value[0:remainder]))
+                    ## if the remainder is zero, it can be either the regular case '-1599999' or
+                    ## the ill case '9999...9999' with the number of nine being the multiple of 4.
+                    ## we further test if the first four digits are 9999. If not, we simply index by
+                    ## [0:4], which gives -159 in the regular case. Else, we ignore missing data.
+                    elif dst_value[0:4] != '9999':
+                        times.append(
+                            time_double(
+                                year + "-" + month + "-" + hourly_data[0] + "/" + str(idx) + ":30"
+                            )
+                        )
+                        data.append(float(dst_value[0:4]))
+        ## if the data is complete for a whole day.
+        else:
+            for idx, dst_value in enumerate(hourly_data[1:]):
+                times.append(
+                    time_double(
+                        year + "-" + month + "-" + hourly_data[0] + "/" + str(idx) + ":30"
+                    )
                 )
-            )
-            data.append(float(dst_value))
+                data.append(float(dst_value))
 
     return (times, data)
-
 
 def dst(
     trange=None,
