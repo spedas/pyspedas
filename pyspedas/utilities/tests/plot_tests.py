@@ -444,5 +444,16 @@ class PlotTestCases(unittest.TestCase):
         tplot('E_Flux',display=global_display, save_png='psp_E_Flux')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_save_with_plot_objects(self):
+        # Test that output files are saved when return_plot_objects is True
+        import pyspedas
+        import os
+        from matplotlib import pyplot as plt
+        pyspedas.themis.state(probe='a')
+        if os.path.exists('ret_plot_objs.png'):
+            os.remove('ret_plot_objs.png')
+        tplot('tha_pos',display=global_display,return_plot_objects=True, save_png='ret_plot_objs.png')
+        self.assertTrue(os.path.exists('ret_plot_objs.png'))
+
 if __name__ == '__main__':
     unittest.main()
