@@ -3,7 +3,7 @@ from .spinmodel import Spinmodel, save_spinmodel
 from pytplot import data_exists
 
 
-def spinmodel_postprocess(probe: str):
+def spinmodel_postprocess(probe: str, suffix: str=''):
     """ Create and initialize three Spinmodel objects using tplot variables loaded from the STATE CDFs.
 
         The three models correspond to the three available correction levels: 0 = no corrections, 1 = waveform
@@ -24,8 +24,8 @@ def spinmodel_postprocess(probe: str):
                      'segflags']
     missing_var = False
     for v in sm_quantities:
-        non_ecl_v = 'th' + probe + '_spin_' + v
-        ecl_v = 'th' + probe + '_spin_ecl_' + v
+        non_ecl_v = 'th' + probe + '_spin_' + v + suffix
+        ecl_v = 'th' + probe + '_spin_ecl_' + v + suffix
         if not (data_exists(non_ecl_v) and data_exists(ecl_v)):
             missing_var = True
 
@@ -36,11 +36,11 @@ def spinmodel_postprocess(probe: str):
     logging.info("Creating spin model for probe " + probe + " correction level 0")
     # Expect a warning message here: That name is currently not in tplot.
     # Maybe there's a better idiom in pytplot for checking whether a variable exists?
-    model0 = Spinmodel(probe, 0)
+    model0 = Spinmodel(probe, 0, suffix)
     save_spinmodel(probe, 0, model0)
     logging.info("Creating spin model for probe " + probe + " correction level 1")
-    model1 = Spinmodel(probe, 1)
+    model1 = Spinmodel(probe, 1, suffix)
     save_spinmodel(probe, 1, model1)
     logging.info("Creating spin model for probe " + probe + " correction level 2")
-    model2 = Spinmodel(probe, 2)
+    model2 = Spinmodel(probe, 2, suffix)
     save_spinmodel(probe, 2, model2)
