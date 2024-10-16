@@ -13,7 +13,7 @@ jobs:
         os: [ubuntu-latest]
         #os: [ubuntu-latest]
         #os: [windows-latest]
-        python-version: [3.12]
+        python-version: [3.13]
 
     steps:
     - uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
-          pip install mth5
+          pip install mth5<=0.4.7
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
@@ -46,7 +46,7 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
-          pip install mth5
+          pip install mth5<=0.4.7
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
@@ -60,7 +60,7 @@ jobs:
           pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
-          pip install mth5
+          pip install mth5<=0.4.7
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
