@@ -10,7 +10,8 @@ from pytplot import time_string
 
 def get_sm_data(probe: str,
                 valname: str,
-                correction_level: int) -> (np.ndarray, np.ndarray):
+                correction_level: int,
+                suffix: str = '') -> (np.ndarray, np.ndarray):
     """ Return the times and values for a spin model tplot variable
 
     Args:
@@ -25,7 +26,7 @@ def get_sm_data(probe: str,
         infix = '_'
     else:
         infix = '_ecl_'
-    tvar_name = 'th' + probe + '_spin' + infix + valname
+    tvar_name = 'th' + probe + '_spin' + infix + valname + suffix
     if data_exists(tvar_name):
         res = get_data(tvar_name)
         return res.times, res.y
@@ -556,7 +557,8 @@ class Spinmodel:
 
     def __init__(self,
                  probe,
-                 correction_level):
+                 correction_level,
+                 suffix=''):
         self.lastseg = SpinmodelSegment(t1=0.0, t2=0.0, c1=0, c2=0, b=0.0, c=0.0, npts=0, maxgap=0.0, phaserr=0.0,
                                         initial_delta_phi=0.0, idpu_spinper=0.0, segflags=0)
         self.seg_times = np.zeros(1, float)
@@ -573,18 +575,18 @@ class Spinmodel:
         self.seg_segflags = np.zeros(1, int)
         self.seg_count = 0
         self.seg_list = []
-        seg_times, tend_data = get_sm_data(probe, 'tend', correction_level)
-        t, spinper_data = get_sm_data(probe, 'spinper', correction_level)
-        t, c_data = get_sm_data(probe, 'c', correction_level)
-        t, phaserr_data = get_sm_data(probe, 'phaserr', correction_level)
-        t, nspins_data = get_sm_data(probe, 'nspins', correction_level)
-        t, npts_data = get_sm_data(probe, 'npts', correction_level)
-        t, maxgap_data = get_sm_data(probe, 'maxgap', correction_level)
-        t, initial_delta_phi_data = get_sm_data(probe, 'initial_delta_phi', correction_level)
-        t, idpu_spinper_data = get_sm_data(probe, 'idpu_spinper', correction_level)
-        t, segflags_data = get_sm_data(probe, 'segflags', correction_level)
+        seg_times, tend_data = get_sm_data(probe, 'tend', correction_level, suffix)
+        _, spinper_data = get_sm_data(probe, 'spinper', correction_level, suffix)
+        _, c_data = get_sm_data(probe, 'c', correction_level, suffix)
+        _, phaserr_data = get_sm_data(probe, 'phaserr', correction_level, suffix)
+        _, nspins_data = get_sm_data(probe, 'nspins', correction_level, suffix)
+        _, npts_data = get_sm_data(probe, 'npts', correction_level, suffix)
+        _, maxgap_data = get_sm_data(probe, 'maxgap', correction_level, suffix)
+        _, initial_delta_phi_data = get_sm_data(probe, 'initial_delta_phi', correction_level, suffix)
+        _, idpu_spinper_data = get_sm_data(probe, 'idpu_spinper', correction_level, suffix)
+        _, segflags_data = get_sm_data(probe, 'segflags', correction_level, suffix)
         # The spin_correction variable only exists in V03 state CDFs, and has its own time variable
-        tmp = get_sm_data(probe, 'correction', 0)
+        tmp = get_sm_data(probe, 'correction', 0, suffix)
         if tmp is None:
             logging.info('spin_correction variable not available, defaulting to 0.0')
             self.spin_corr_times = [0.0, 1.0]
@@ -593,14 +595,14 @@ class Spinmodel:
             self.spin_corr_times, self.spin_corr_vals = tmp
 
         # The fgm_corr_offset and fgm_corr_tend variables may not exist, and have their own time variable
-        tmp = get_sm_data(probe, 'fgm_corr_offset', correction_level)
+        tmp = get_sm_data(probe, 'fgm_corr_offset', correction_level, suffix)
         if tmp is None:
             do_fgm_corr = False
             logging.info('FGM correction variables not available')
         else:
             do_fgm_corr = True
             fgm_corr_time, fgm_corr_offset = tmp
-            t, fgm_corr_tend = get_sm_data(probe, 'fgm_corr_tend', correction_level)
+            _, fgm_corr_tend = get_sm_data(probe, 'fgm_corr_tend', correction_level, suffix)
 
         seg_count = len(seg_times)
         # tlast = seg_times[0]

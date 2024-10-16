@@ -115,18 +115,18 @@ def state(trange=['2007-03-23', '2007-03-24'],
     if get_support_data:
         for p in probe:
             # Process spin model variables
-            spinmodel_postprocess(p)
+            spinmodel_postprocess(p,suffix)
             if not keep_spin:
                 spinvar_pattern = 'th' + p + '_spin_*'
                 del_data(spinvar_pattern)
             # Perform spin axis RA and Dec corrections
-            spinras_var = 'th' + p + '_spinras'
-            delta_spinras_var = 'th' + p + '_spinras_correction'
-            corrected_spinras_var = 'th' + p + '_spinras_corrected'
+            spinras_var = 'th' + p + '_spinras' + suffix
+            delta_spinras_var = 'th' + p + '_spinras_correction' + suffix
+            corrected_spinras_var = 'th' + p + '_spinras_corrected' + suffix
 
-            spindec_var = 'th' + p + '_spindec'
-            delta_spindec_var = 'th' + p + '_spindec_correction'
-            corrected_spindec_var = 'th' + p + '_spindec_corrected'
+            spindec_var = 'th' + p + '_spindec' + suffix
+            delta_spindec_var = 'th' + p + '_spindec_correction' + suffix
+            corrected_spindec_var = 'th' + p + '_spindec_corrected' + suffix
 
             apply_spinaxis_corrections(spinras=spinras_var, delta_spinras=delta_spinras_var,
                                        corrected_spinras=corrected_spinras_var, spindec=spindec_var,
