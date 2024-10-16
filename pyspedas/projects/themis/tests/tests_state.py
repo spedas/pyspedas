@@ -101,6 +101,13 @@ class Themis_StateDataTests(unittest.TestCase):
         self.assertTrue(data_exists('thb_pos_gse'))
         self.assertFalse(data_exists('thb_pos_sse'))
 
+    def test_state_suffix_spinmodel(self):
+        from pyspedas.themis import get_spinmodel
+        # Test that the exclude_format option to state() works
+        state(trange=['2007-03-23','2007-03-24'], probe='a',suffix='_suffix', get_support_data=True)
+        model = get_spinmodel('a', 2)
+        self.assertTrue(model is not None)
+
     def test_ssc(self):
         vars = ssc()
         self.assertTrue(len(vars) > 0)
