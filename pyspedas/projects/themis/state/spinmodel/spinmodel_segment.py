@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 
 class SpinmodelSegment:
@@ -39,8 +40,8 @@ class SpinmodelSegment:
                  segflags: int):
         self.t1 = t1
         self.t2 = t2
-        self.c1 = c1
-        self.c2 = c2
+        self.c1 = np.int32(c1)
+        self.c2 = np.int32(c2)
         self.b = b
         self.c = c
         self.npts = npts
