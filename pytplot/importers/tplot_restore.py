@@ -81,15 +81,15 @@ def tplot_restore(filename):
                 #Change from little endian to big endian, since pandas apparently hates little endian
                 #We might want to move this into the store_data procedure eventually
                 if (temp_x_data.dtype.byteorder == '>'):
-                    temp_x_data = temp_x_data.byteswap().newbyteorder()
+                    temp_x_data = temp_x_data.byteswap().view(temp_x_data.dtype.newbyteorder())
                 if (temp_y_data.dtype.byteorder == '>'):
-                    temp_y_data = temp_y_data.byteswap().newbyteorder()
+                    temp_y_data = temp_y_data.byteswap().view(temp_y_data.dtype.newbyteorder())
                 if (temp_v1_data.dtype.byteorder == '>'):
-                    temp_v1_data = temp_v1_data.byteswap().newbyteorder()
+                    temp_v1_data = temp_v1_data.byteswap().view(temp_v1_data.dtype.newbyteorder())
                 if (temp_v2_data.dtype.byteorder == '>'):
-                    temp_v2_data = temp_v2_data.byteswap().newbyteorder()
+                    temp_v2_data = temp_v2_data.byteswap().view(temp_v2_data.dtype.newbyteorder())
                 if (temp_v3_data.dtype.byteorder == '>'):
-                    temp_v3_data = temp_v3_data.byteswap().newbyteorder()
+                    temp_v3_data = temp_v3_data.byteswap().view(temp_v3_data.dtype.newbyteorder())
 
                 # support time-varying depends
                 if len(temp_v1_data.shape) == 2:
@@ -111,13 +111,13 @@ def tplot_restore(filename):
                 #Change from little endian to big endian, since pandas apparently hates little endian
                 #We might want to move this into the store_data procedure eventually
                 if (temp_x_data.dtype.byteorder == '>'):
-                    temp_x_data = temp_x_data.byteswap().newbyteorder()
+                    temp_x_data = temp_x_data.byteswap().view(temp_x_data.dtype.newbyteorder())
                 if (temp_y_data.dtype.byteorder == '>'):
-                    temp_y_data = temp_y_data.byteswap().newbyteorder()
+                    temp_y_data = temp_y_data.byteswap().view(temp_y_data.dtype.newbyteorder())
                 if (temp_v1_data.dtype.byteorder == '>'):
-                    temp_v1_data = temp_v1_data.byteswap().newbyteorder()
+                    temp_v1_data = temp_v1_data.byteswap().view(temp_v1_data.dtype.newbyteorder())
                 if (temp_v2_data.dtype.byteorder == '>'):
-                    temp_v2_data = temp_v2_data.byteswap().newbyteorder()
+                    temp_v2_data = temp_v2_data.byteswap().view(temp_v2_data.dtype.newbyteorder())
 
                 # support time-varying depends
                 if len(temp_v1_data.shape) == 2:
@@ -134,11 +134,11 @@ def tplot_restore(filename):
                 #Change from little endian to big endian, since pandas apparently hates little endian
                 #We might want to move this into the store_data procedure eventually
                 if (temp_x_data.dtype.byteorder == '>'):
-                    temp_x_data = temp_x_data.byteswap().newbyteorder()
+                    temp_x_data = temp_x_data.byteswap().view(temp_x_data.dtype.newbyteorder())
                 if (temp_y_data.dtype.byteorder == '>'):
-                    temp_y_data = temp_y_data.byteswap().newbyteorder()
+                    temp_y_data = temp_y_data.byteswap().view(temp_y_data.dtype.newbyteorder())
                 if (temp_v_data.dtype.byteorder == '>'):
-                    temp_v_data = temp_v_data.byteswap().newbyteorder()
+                    temp_v_data = temp_v_data.byteswap().view(temp_v_data.dtype.newbyteorder())
                 
                 # support time-varying depends
                 if len(temp_v_data.shape) == 2:
@@ -149,9 +149,9 @@ def tplot_restore(filename):
                 #Change from little endian to big endian, since pandas apparently hates little endian
                 #We might want to move this into the store_data procedure eventually
                 if (temp_x_data.dtype.byteorder == '>'):
-                    temp_x_data = temp_x_data.byteswap().newbyteorder()
+                    temp_x_data = temp_x_data.byteswap().view(temp_x_data.dtype.newbyteorder())
                 if (temp_y_data.dtype.byteorder == '>'):
-                    temp_y_data = temp_y_data.byteswap().newbyteorder()
+                    temp_y_data = temp_y_data.byteswap().view(temp_y_data.dtype.newbyteorder())
                 store_data(data_name, data={'x':temp_x_data, 'y':temp_y_data})
             
             if temp_tplot['dq'][i][3].dtype.names is not None:
