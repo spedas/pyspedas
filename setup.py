@@ -8,7 +8,7 @@ from codecs import open
 
 setup(
     name="pyspedas",
-    version="1.6.2",
+    version="",
     description="Python Space Physics Environment Data Analysis Software (pySPEDAS)",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
