@@ -56,7 +56,7 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
 
 
 .. toctree::
-   :caption: PySPEDAS 2.0 migration guide
+   :caption: Upcoming changes in PySPEDAS 2.0
    :maxdepth: 1
 
    pyspedas_2_migration
