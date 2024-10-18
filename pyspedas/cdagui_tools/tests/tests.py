@@ -94,7 +94,6 @@ class CDAWebTests(unittest.TestCase):
         self.assertTrue(data_exists('b_gse'))
 
 
-    @unittest.skip("CDAWeb returning bad CDFs for New Horizons data")
     def test_load_time_clip(self):
         del_data('*')
         cdaweb_obj = CDAWeb()
@@ -113,7 +112,6 @@ class CDAWebTests(unittest.TestCase):
         self.assertTrue(dat.times[0] >= time_double(start_time))
         self.assertTrue(dat.times[-1] <= time_double(end_time))
 
-    @unittest.skip("CDAWeb returning bad CDFs for New Horizons data")
     def test_load_time_clip_no_trange(self):
         del_data('*')
         cdaweb_obj = CDAWeb()
@@ -132,7 +130,6 @@ class CDAWebTests(unittest.TestCase):
                 got_trange_warning = True
         self.assertTrue(got_trange_warning)
 
-    @unittest.skip("CDAWeb returning bad CDFs for New Horizons data")
     def test_load_time_clip_empty_trange(self):
         del_data('*')
         cdaweb_obj = CDAWeb()
@@ -151,7 +148,6 @@ class CDAWebTests(unittest.TestCase):
                 got_trange_warning = True
         self.assertTrue(got_trange_warning)
 
-    @unittest.skip("CDAWeb returning bad CDFs for New Horizons data")
     def test_load_time_clip_backward_trange(self):
         del_data('*')
         cdaweb_obj = CDAWeb()
