@@ -22,6 +22,13 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
     -------
         None
 
+    Notes
+    -----
+
+    This routine uses the xarray coarsen() method to reduce the time resolution.  It will only work if the
+    data is evenly gridded, and the res parameter evenly divides the number of samples.
+    For most purposes, it is more appropriate to use pyspedas.avg_data() instead.
+
     Examples
     --------
 
