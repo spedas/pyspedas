@@ -5,50 +5,6 @@ import logging
 
 def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1, dash=False):
     """
-    This function will add a vertical bar to all time series plots.  This is useful if you
-    want to bring attention to a specific time.
-
-    Parameters
-    ----------
-        t : float/list
-            The time in seconds since Jan 01 1970 to place the vertical bar.  If a list of numbers are supplied,
-            multiple bars will be created.  If "databar" is set, then "t" becomes the point on the y axis to
-            place a horizontal bar.
-        varname : str/list, optional
-            The variable(s) to add the vertical bar to.  If not set, the default is to add it to all current plots.
-        databar : bool, optional
-            This will turn the timebar into a horizontal data bar.  If this is set True, then variable "t" becomes
-            the point on the y axis to place a horizontal bar.
-        delete : bool, optional
-            If set to True, at lease one varname must be supplied.  The timebar at point "t" for variable "varname"
-            will be removed.
-        color : str
-            The color of the bar
-        thick : int
-            The thickness of the bar
-        dash : bool
-            If set to True, the bar is dashed rather than solid
-
-    Returns
-    -------
-        None
-
-    Examples
-    --------
-        >>> # Place a green time bar at 2017-07-17 00:00:00
-        >>> import pytplot
-        >>> pytplot.timebar(1500249600, color='green')
-
-        >>> # Place a dashed data bar at 5500 on the y axis
-        >>> pytplot.timebar(5500, dashed=True, databar=True)
-
-        >>> Place 3 magenta time bars of thickness 5
-            at [2015-12-26 05:20:01, 2015-12-26 08:06:40, 2015-12-26 08:53:19]
-            for variable 'sgx' plot
-        >>> pytplot.timebar([1451107201,1451117200,1451119999],'sgx',color='m',thick=5)
-
-    """
-    """
     This function will add a vertical bar to all time series plots. This is useful if you
     want to bring attention to a specific time.
 
