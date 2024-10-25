@@ -7,7 +7,7 @@ from pytplot import store_data, options, timespan, tplot, tplot_options, degap, 
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = False
+global_display = True
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -54,6 +54,19 @@ class PlotTestCases(unittest.TestCase):
         options('data', 'marker', 'H')
         tplot('data', display=global_display, save_png='hexagons_lineplot_errbars.png')
 
+    def test_timebars(self):
+        from pytplot import timebar
+        del_data('*')
+        themis.fgm(probe='c', trange=default_trange)
+        timebar(t=10000.0,varname='thc_fge_dsl',databar=True,color='black')
+        timebar(t=-10000.0,varname='thc_fge_dsl',databar=True,color='red', dash=True)
+        timebar(t=pytplot.time_double('2007-03-23/14:00'),varname='thc_fge_btotal',color='magenta')
+        timebar(t=pytplot.time_double('2007-03-23/14:30'),color='blue')
+        timebar(t=pytplot.time_double('2007-03-23/15:30'),color='green', dash=True)
+        tplot_options('title', 'Databars at +/- 10000 top panel, timebars at 14:30 and 15:30 all panels, timebar at 14:00 bottom panel, linestyles and colors as specified')
+        tplot(['thc_fge_dsl','thc_fge_btotal'], display=global_display, save_png='timebars.png')
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
 
     def test_line_pseudovariables(self):
