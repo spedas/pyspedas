@@ -422,12 +422,14 @@ def tplot(variables, var_label=None,
                 # vertical bars
                 if time_bar['dimension'] == 'height':
                     this_axis.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc),
-                        color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'))
+                        color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'),
+                                      linestyle=time_bar.get('line_dash'))
 
                 # horizontal bars
                 if time_bar['dimension'] == 'width':
                     this_axis.axhline(y=time_bar['location'], color=np.array(time_bar.get('line_color'))/256.0,
-                                      lw=time_bar.get('line_width'))
+                                      lw=time_bar.get('line_width'),
+                                      linestyle=time_bar.get('line_dash'))
 
         # highlight time intervals
         if pytplot.data_quants[variable].attrs['plot_options'].get('highlight_intervals') is not None:
