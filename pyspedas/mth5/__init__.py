@@ -16,7 +16,7 @@ try:
 
 except (ImportError, ModuleNotFoundError):
     logging.error(f'MTH5 must be installed to use module {__name__}.')
-    logging.error("Please install it using: pip install 'mth5==0.4.7'")
+    logging.error("Please install it using: pip install mth5")
     raise
 
 # # Synchronize mth5 logging output level with pyspedas logging output level
