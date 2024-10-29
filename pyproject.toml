@@ -1,9 +1,7 @@
 [project]
 name = "pyspedas"
 description = "Python Space Physics Environment Data Analysis Software (pySPEDAS)"
-authors = [
-    { name="Jim Lewis", email="jwl@ssl.berkeley.edu" }
-]
+authors = [{ name = "Jim Lewis", email = "jwl@ssl.berkeley.edu" }]
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
@@ -18,15 +16,11 @@ dependencies = [
     "netCDF4",
     "astropy",
     "scipy",
-    "hapiclient>=0.2.2",
-    "viresclient",
 ]
 
 [project.optional-dependencies]
-analysis = [
-    "geopack>=1.0.11",
-    "pywavelets",
-]
+analysis = ["geopack>=1.0.11", "pywavelets"]
+client = ["viresclient", "hapiclient>=0.2.2"]
 
 [project.urls]
 Documentation = "https://pyspedas.readthedocs.io"
