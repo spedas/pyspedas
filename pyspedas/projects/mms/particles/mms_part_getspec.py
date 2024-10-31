@@ -19,8 +19,11 @@ def mms_part_getspec(instrument='fpi',
                      theta=None,
                      pitch=None,
                      gyro=None,
+                     mag_name=None,
                      mag_data_rate=None,
-                     scpot_data_rate=None,
+                     pos_name=None,
+                     sc_pot_name=None,
+                     sc_pot_data_rate=None,
                      fac_type='mphigeo',
                      center_measurement=False,
                      spdf=False,
@@ -93,9 +96,17 @@ def mms_part_getspec(instrument='fpi',
             Tplot variable containing magnetic field data for
             moments and FAC transformations
 
+        mag_data_rate: str
+            Data rate to use when loading the spacecraft potential data ('fast', 'srvy' or 'brst')
+            If not given, defaults to value of 'data_rate'.
+
         pos_name: str
             Tplot variable containing spacecraft position for
-            FAC transformations
+            FAC transformations. If not given, defaults to 'mmsN_mec_r_gse'
+
+        sc_pot_name: str
+            If set, overrides default sc_pot variable name constructed from sc_pot_data_rate below.
+            Default: None
 
         sc_pot_data_rate: str
             Data rate to use when loading the spacecraft potential data ('fast', 'srvy' or 'brst')
@@ -155,11 +166,11 @@ def mms_part_getspec(instrument='fpi',
         else:
             mag_data_rate = 'srvy'
 
-    if scpot_data_rate is None:
+    if sc_pot_data_rate is None:
         if data_rate == 'brst':
-            scpot_data_rate = 'brst'
+            sc_pot_data_rate = 'brst'
         else:
-            scpot_data_rate = 'fast'
+            sc_pot_data_rate = 'fast'
 
     instrument = instrument.lower()
 
@@ -207,25 +218,36 @@ def mms_part_getspec(instrument='fpi',
         logging.error('Error, no magnetic field data loaded.')
         return
 
-    scpot_vars = mms.edp(probe=probe, trange=support_trange, level='l2', spdf=spdf, data_rate=scpot_data_rate, datatype='scpot', varformat='*_edp_scpot_*')
+    scpot_vars = mms.edp(probe=probe, trange=support_trange, level='l2', spdf=spdf, data_rate=sc_pot_data_rate, datatype='scpot', varformat='*_edp_scpot_*')
 
     out_vars = []
 
     for prb in probe:
         prb_str = str(prb)
-        mag_name = 'mms'+prb_str+'_fgm_b_gse_'+mag_data_rate+'_l2_bvec'
-        pos_name = 'mms'+prb_str+'_mec_r_gse'
+
+        if mag_name is None or mag_name == '':
+            mag_name = 'mms'+prb_str+'_fgm_b_gse_'+mag_data_rate+'_l2_bvec'
+        else:
+            logging.info("Using non-default variable %s for mag data",mag_name)
+
+        if pos_name is None or pos_name == '':
+            pos_name = 'mms'+prb_str+'_mec_r_gse'
+        else:
+            logging.info("Using non-default variable %s for position data",pos_name)
+
+        if sc_pot_name is None or sc_pot_name == '':
+            sc_pot_name = 'mms' + prb_str + '_edp_scpot_' + sc_pot_data_rate + '_l2'
+        else:
+            logging.info('Using non-default variable %s for sc_pot data', sc_pot_name)
 
         if instrument == 'fpi':
             tname = 'mms'+prb_str+'_d'+species+'s_dist_'+data_rate
         elif instrument == 'hpca':
             tname = 'mms'+prb_str+'_hpca_'+species+'_phase_space_density'
 
-        scpot_variable = 'mms'+prb_str+'_edp_scpot_'+scpot_data_rate+'_l2'
-
         new_vars = mms_part_products(tname, species=species, instrument=instrument, probe=prb, data_rate=data_rate,
                           output=output, units=units, energy=energy, phi=phi, theta=theta, pitch=pitch, gyro=gyro,
-                          mag_name=mag_name, pos_name=pos_name, fac_type=fac_type, sc_pot_name=scpot_variable,
+                          mag_name=mag_name, pos_name=pos_name, fac_type=fac_type, sc_pot_name=sc_pot_name,
                           correct_photoelectrons=correct_photoelectrons, zero_negative_values=zero_negative_values,
                           internal_photoelectron_corrections=internal_photoelectron_corrections,
                           disable_photoelectron_corrections=disable_photoelectron_corrections, regrid=regrid,
