@@ -110,3 +110,11 @@ include-package-data = true
 "pyspedas.projects.mms.feeps.sun" = ["*.csv"]
 "pyspedas.projects.mms.mec" = ["*.png"]
 "pyspedas.projects.elfin.epd" = ["el*_epde_cal_data.txt"]
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
+
+[tool.pixi.dependencies]
+pytables = "*"
+netcdf4 = "*"
