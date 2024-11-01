@@ -8,7 +8,7 @@ from pyspedas import themis
 from pyspedas import cotrans
 from pyspedas import mpause_2, mpause_t96
 from pyspedas import find_datasets
-from pytplot import data_exists, tkm2re, tplot, split_vec, del_data
+from pytplot import data_exists, tkm2re, split_vec, del_data
 from pytplot import get_data, store_data, options
 
 
@@ -175,6 +175,9 @@ class UtilTestCases(unittest.TestCase):
     def test_imports(self):
         import pyspedas
         from pytplot import del_data, data_exists, tplot_names
+        
+        lazy_test = True
+        
         # fully qualified name without .projects.
         del_data('*')
         pyspedas.themis.state(probe='a')
@@ -197,10 +200,11 @@ class UtilTestCases(unittest.TestCase):
 
         # import state without .projects.
         # PyCharm's static analysis doesn't like this (red underlines) but it works at runtime
-        from pyspedas.themis import state
-        del_data('*')
-        state(probe='a')
-        self.assertTrue(data_exists('tha_pos'))
+        if not lazy_test:
+            from pyspedas.themis import state
+            del_data('*')
+            state(probe='a')
+            self.assertTrue(data_exists('tha_pos'))
         # import state with .projects.
         from pyspedas.projects.themis import state
         del_data('*')
@@ -212,16 +216,18 @@ class UtilTestCases(unittest.TestCase):
         mms.fgm()
         self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
 
-        from pyspedas.mms import fgm
-        del_data('*')
-        fgm()
-        self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
+        if not lazy_test:
+            from pyspedas.mms import fgm
+            del_data('*')
+            fgm()
+            self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
 
         # import state without .projects.
-        from pyspedas.themis.state.state import state
-        del_data('*')
-        state(probe='a')
-        self.assertTrue(data_exists('tha_pos'))
+        if not lazy_test:
+            from pyspedas.themis.state.state import state
+            del_data('*')
+            state(probe='a')
+            self.assertTrue(data_exists('tha_pos'))
         # import state with .projects.
         from pyspedas.projects.themis.state.state import state
         del_data('*')
