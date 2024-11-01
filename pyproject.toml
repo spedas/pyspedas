@@ -93,6 +93,7 @@ dependencies = [
     "hapiclient>=0.2.2",
     "pytplot-mpl-temp>=2.2.49",
     "viresclient",
+    "lazy-loader"
 ]
 
 [project.urls]
