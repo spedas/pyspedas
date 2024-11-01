@@ -92,6 +92,8 @@ from .projects import submodules as projects_submodules
 def __getattr__(name):
     if name in projects_submodules:
         return import_module(".projects." + name, __name__)
+    if name == "vires":
+        return import_module("." + name, __name__)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 # This set of imports is still needed for backward compatibility, when using fully-qualified
@@ -101,7 +103,6 @@ def __getattr__(name):
 # for backward compatibility
 from .projects.kompsat.load import load as kompsat_load
 from .projects.maven import maven_load
-from . import vires
 
 # set up logging/console output
 import logging
