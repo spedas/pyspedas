@@ -107,9 +107,7 @@ packages = {find = {exclude = ["contrib", "docs", "tests*"]}}
 include-package-data = true
 
 [tool.setuptools.package-data]
+"*"=["*.md","LICENSE.txt"]
 "pyspedas.projects.mms.feeps.sun" = ["*.csv"]
 "pyspedas.projects.mms.mec" = ["*.png"]
 "pyspedas.projects.elfin.epd" = ["el*_epde_cal_data.txt"]
-
-[tool.setuptools.include]
-files = ["*.md", "LICENSE.txt"]
