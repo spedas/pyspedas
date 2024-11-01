@@ -38,6 +38,7 @@ submodules = [
     "themis.state",
     "twins",
     "ulysses",
+    "wind",
 ]
 
 __getattr__, __dir__, _ = lazy.attach(__name__, submodules)

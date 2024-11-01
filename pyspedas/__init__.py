@@ -86,17 +86,11 @@ from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
 # like "from pyspedas.mms import mec" even after mms has been moved to the projects directory.
 
 from importlib import import_module
+from .projects import submodules as projects_submodules
 
-# List of submodules we want to make available under the pyspedas namespace
-submodules = ['ace', 'akebono', 'barrel', 'cluster', 'cnofs', 'csswe', 'de2', 'dscovr',
-             'elfin', 'equator_s', 'erg', 'fast', 'geotail', 'goes', 'image', 'kompsat',
-              'kyoto', 'lanl', 'maven', 'mica', 'mms', 'noaa', 'omni', 'poes', 'polar', 'psp',
-              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state', 'twins',
-              'ulysses', "wind"
-              ]
-    
+# Make project submodules available under the pyspedas namespace
 def __getattr__(name):
-    if name in submodules:
+    if name in projects_submodules:
         return import_module(".projects." + name, __name__)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
