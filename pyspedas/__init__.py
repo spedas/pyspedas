@@ -12,7 +12,6 @@ from .analysis.wavelet import wavelet
 from .analysis.time_domain_filter import time_domain_filter
 from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
 from .analysis.lingradest import lingradest
-from .cdagui_tools.cdagui import cdagui
 from .cdagui_tools.cdaweb import CDAWeb
 from .cotrans_tools.cotrans import cotrans
 from .cotrans_tools.cotrans_get_coord import cotrans_get_coord
@@ -39,7 +38,6 @@ from .cotrans_tools.xyz_to_polar import xyz_to_polar
 from .hapi_tools.hapi import hapi
 from .projects.noaa.noaa_load_kp import noaa_load_kp
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
-from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
 from .particles.spd_slice2d import slice1d_plot, slice2d, slice2d_plot
 from .utilities.spice.time_ephemeris import time_ephemeris
 from .utilities.dailynames import dailynames
@@ -85,70 +83,37 @@ from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
 # The code below is needed for backward compatibility, so users can continue to do things
 # like "from pyspedas.mms import mec" even after mms has been moved to the projects directory.
 
-import sys
 from importlib import import_module
+from .projects import submodules as projects_submodules
 
-# List of submodules we want to make available under the pyspedas namespace
-submodules = ['ace', 'akebono', 'barrel', 'cluster', 'cnofs', 'csswe', 'de2', 'dscovr',
-             'elfin', 'equator_s', 'erg', 'fast', 'geotail', 'goes', 'image', 'kompsat',
-              'kyoto', 'lanl', 'maven', 'mica', 'mms', 'noaa', 'omni', 'poes', 'polar', 'psp',
-              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state', 'twins',
-              'ulysses'
-              ]
+submod_attrs = {
+    "cdagui_tools.cdagui": ["cdagui"],
+    "particles.spd_part_products": ["spd_pgs_do_fac", "spd_pgs_regrid"],
+}
 
-for submodule in submodules:
-    # Import the module from the new path
-    full_module_path = f"pyspedas.projects.{submodule}"
-    imported_module = import_module(full_module_path)
+attr_to_modules = {attr: mod for mod, attrs in submod_attrs.items() for attr in attrs}
 
-    # Add it to sys.modules under the old path
-    sys.modules[f"pyspedas.{submodule}"] = imported_module
+
+# Make project submodules available under the pyspedas namespace
+def __getattr__(name):
+    if name in projects_submodules:
+        return import_module(".projects." + name, __name__)
+    if name == "vires":
+        return import_module("." + name, __name__)
+    elif name in attr_to_modules:
+        submod_path = f"{__name__}.{attr_to_modules[name]}"
+        submod = import_module(submod_path)
+        attr = getattr(submod, name)
+        return attr
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 # This set of imports is still needed for backward compatibility, when using fully-qualified
 # routine names in function calls, like "pyspedas.mms.mec()" rather than "pyspedas.projects.mms.mec()"
 
 # Make mission-specific namespaces available under pyspedas
-from .projects import ace
-from .projects import akebono
-from .projects import barrel
-from .projects import cluster
-from .projects import cnofs
-from .projects import csswe
-from .projects import de2
-from .projects import dscovr
-from .projects import elfin
-from .projects import equator_s
-from .projects import erg
-from .projects import fast
-from .projects import geotail
-from .projects import goes
-from .projects import image
-from .projects import kompsat
 # for backward compatibility
 from .projects.kompsat.load import load as kompsat_load
-from .projects import kyoto
-from .projects import lanl
-from .projects import maven
-# for backward compatibility
 from .projects.maven import maven_load
-from .projects import mica
-from .projects import mms
-from .projects import noaa
-from .projects import poes
-from .projects import polar
-from .projects import psp
-from .projects import rbsp
-from .projects import secs
-from .projects import soho
-from .projects import solo
-from .projects import st5
-from .projects import stereo
-from .projects import swarm
-from .projects import themis
-from .projects import twins
-from .projects import ulysses
-from . import vires
-from .projects import wind
 
 # set up logging/console output
 import logging
