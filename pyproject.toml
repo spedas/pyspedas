@@ -103,6 +103,13 @@ Documentation = "https://pyspedas.readthedocs.io"
 Issue_Tracker = "https://github.com/spedas/pyspedas/issues"
 Source_Code = "https://github.com/spedas/pyspedas"
 
+[project.optional-dependencies]
+test = [
+    "spacepy",      # required for MMS qcotrans tests
+    "coveralls", 
+    "mth5<=0.4.7",
+]
+
 [tool.setuptools]
 packages = {find = {exclude = ["contrib", "docs", "tests*"]}}
 include-package-data = true
