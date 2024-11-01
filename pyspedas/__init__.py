@@ -12,7 +12,6 @@ from .analysis.wavelet import wavelet
 from .analysis.time_domain_filter import time_domain_filter
 from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
 from .analysis.lingradest import lingradest
-from .cdagui_tools.cdagui import cdagui
 from .cdagui_tools.cdaweb import CDAWeb
 from .cotrans_tools.cotrans import cotrans
 from .cotrans_tools.cotrans_get_coord import cotrans_get_coord
@@ -39,7 +38,6 @@ from .cotrans_tools.xyz_to_polar import xyz_to_polar
 from .hapi_tools.hapi import hapi
 from .projects.noaa.noaa_load_kp import noaa_load_kp
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
-from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
 from .particles.spd_slice2d import slice1d_plot, slice2d, slice2d_plot
 from .utilities.spice.time_ephemeris import time_ephemeris
 from .utilities.dailynames import dailynames
@@ -88,12 +86,25 @@ from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
 from importlib import import_module
 from .projects import submodules as projects_submodules
 
+submod_attrs = {
+    "cdagui_tools.cdagui": ["cdagui"],
+    "particles.spd_part_products": ["spd_pgs_do_fac", "spd_pgs_regrid"],
+}
+
+attr_to_modules = {attr: mod for mod, attrs in submod_attrs.items() for attr in attrs}
+
+
 # Make project submodules available under the pyspedas namespace
 def __getattr__(name):
     if name in projects_submodules:
         return import_module(".projects." + name, __name__)
     if name == "vires":
         return import_module("." + name, __name__)
+    elif name in attr_to_modules:
+        submod_path = f"{__name__}.{attr_to_modules[name]}"
+        submod = import_module(submod_path)
+        attr = getattr(submod, name)
+        return attr
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 # This set of imports is still needed for backward compatibility, when using fully-qualified
