@@ -109,6 +109,10 @@ test = [
     "coveralls", 
     "mth5<=0.4.7",
 ]
+dev = [
+    "ruff",
+    "ipython",
+]
 
 [tool.setuptools]
 packages = {find = {exclude = ["contrib", "docs", "tests*"]}}
