@@ -102,6 +102,17 @@ Documentation = "https://pyspedas.readthedocs.io"
 Issue_Tracker = "https://github.com/spedas/pyspedas/issues"
 Source_Code = "https://github.com/spedas/pyspedas"
 
+[project.optional-dependencies]
+test = [
+    "spacepy",      # required for MMS qcotrans tests
+    "coveralls", 
+    "mth5<=0.4.7",
+]
+dev = [
+    "ruff",
+    "ipython",
+]
+
 [tool.setuptools]
 packages = {find = {exclude = ["contrib", "docs", "tests*"]}}
 include-package-data = true
@@ -111,5 +122,10 @@ include-package-data = true
 "pyspedas.projects.mms.mec" = ["*.png"]
 "pyspedas.projects.elfin.epd" = ["el*_epde_cal_data.txt"]
 
-[tool.setuptools.include]
-files = ["*.md", "LICENSE.txt"]
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
+
+[tool.pixi.dependencies]
+pytables = "*"
+netcdf4 = "*"
