@@ -93,7 +93,7 @@ def sepica(trange=['2004-11-5', '2004-11-6'],
     ---------- 
         >>> import pyspedas
         >>> from pytplot import tplot   
-        >>> sepica_vars = pyspedas.ace.sepica(trange=['2004-11-5', '2004-11-6'])
+        >>> sepica_vars = pyspedas.projects.ace.sepica(trange=['2004-11-5', '2004-11-6'])
         >>> tplot(['H1', 'H2', 'H3'])
 
     """

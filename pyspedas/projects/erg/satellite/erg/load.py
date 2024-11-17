@@ -31,17 +31,17 @@ def load(trange=['2017-03-27', '2017-03-28'],
          force_download=False):
     """
     This function is not meant to be called directly; please see the instrument specific wrappers:
-        pyspedas.erg.mgf()
-        pyspedas.erg.hep()
-        pyspedas.erg.orb()
-        pyspedas.erg.lepe()
-        pyspedas.erg.lepi()
-        pyspedas.erg.mepe()
-        pyspedas.erg.mepi()
-        pyspedas.erg.pwe_ofa()
-        pyspedas.erg.pwe_efd()
-        pyspedas.erg.pwe_hfa()
-        pyspedas.erg.xep()
+        pyspedas.projects.erg.mgf()
+        pyspedas.projects.erg.hep()
+        pyspedas.projects.erg.orb()
+        pyspedas.projects.erg.lepe()
+        pyspedas.projects.erg.lepi()
+        pyspedas.projects.erg.mepe()
+        pyspedas.projects.erg.mepi()
+        pyspedas.projects.erg.pwe_ofa()
+        pyspedas.projects.erg.pwe_efd()
+        pyspedas.projects.erg.pwe_hfa()
+        pyspedas.projects.erg.xep()
     """
 
     # find the full remote path names using the trange

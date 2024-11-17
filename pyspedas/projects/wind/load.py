@@ -24,12 +24,12 @@ def load(trange=['2013-11-5', '2013-11-6'],
     """
     This function loads data from the WIND mission; this function is not meant 
     to be called directly; instead, see the wrappers:
-        pyspedas.wind.mfi
-        pyspedas.wind.swe
-        pyspedas.wind.sms
-        pyspedas.wind.threedp
-        pyspedas.wind.waves
-        pyspedas.wind.orbit
+        pyspedas.projects.wind.mfi
+        pyspedas.projects.wind.swe
+        pyspedas.projects.wind.sms
+        pyspedas.projects.wind.threedp
+        pyspedas.projects.wind.waves
+        pyspedas.projects.wind.orbit
 
     """
 

@@ -58,7 +58,7 @@ class LibsTestCase(unittest.TestCase):
         self.assertIn('epead', output)
 
     def test_known_function_subpackage(self):
-        libs('fgm', package=pyspedas.themis)
+        libs('fgm', package=pyspedas.projects.themis)
         output = sys.stdout.getvalue()
         self.assertIn('fgm', output)
         self.assertNotIn('mms', output)
@@ -76,7 +76,7 @@ class LibsTestCase(unittest.TestCase):
         self.assertNotIn('Function: pytplot', output)
 
     def test_known_function_version_pyspeds_themis_subpackage(self):
-        libs('fgm', package=pyspedas.themis)
+        libs('fgm', package=pyspedas.projects.themis)
         output = sys.stdout.getvalue()
         self.assertIn('fgm', output)
 

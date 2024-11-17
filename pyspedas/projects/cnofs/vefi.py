@@ -82,7 +82,7 @@ def vefi(trange=['2010-11-5', '2010-11-6'],
     ----------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> vefi_vars = pyspedas.cnofs.vefi(trange=['2013-11-5', '2013-11-6'])
+        >>> vefi_vars = pyspedas.projects.cnofs.vefi(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['E_meridional', 'E_zonal'])
     """
     return load(instrument='vefi', datatype=datatype, trange=trange, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, force_download=force_download)

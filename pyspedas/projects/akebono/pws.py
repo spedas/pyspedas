@@ -97,7 +97,7 @@ def pws(trange=['2012-10-01', '2012-10-02'],
     ---------- 
         >>> import pyspedas
         >>> from pytplot import tplot  
-        >>> pws_vars = pyspedas.akebono.pws(trange=['2012-10-01', '2012-10-02'])
+        >>> pws_vars = pyspedas.projects.akebono.pws(trange=['2012-10-01', '2012-10-02'])
         >>> tplot(['akb_pws_RX1', 'akb_pws_RX2'])
 
     """

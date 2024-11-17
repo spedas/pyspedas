@@ -139,7 +139,7 @@ def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> fgm_vars = pyspedas.cluster.load_csa(trange=['2008-11-01','2008-11-02'],datatypes=['CP_FGM_FULL'])
+    >>> fgm_vars = pyspedas.projects.cluster.load_csa(trange=['2008-11-01','2008-11-02'],datatypes=['CP_FGM_FULL'])
     >>> tplot(['B_vec_xyz_gse__C1_CP_FGM_FULL','B_mag__C1_CP_FGM_FULL'])
     """
     # Empty output in case of errors.

@@ -23,8 +23,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
     """
     This function loads data from the STEREO mission; this function is not meant 
     to be called directly; instead, see the wrappers:
-        pyspedas.stereo.mag
-        pyspedas.stereo.plastic
+        pyspedas.projects.stereo.mag
+        pyspedas.projects.stereo.plastic
 
     """
 

@@ -26,7 +26,7 @@ def get_params(model, g_variables=None):
     support_trange = [time_double(trange[0])-60*60*24, 
                       time_double(trange[1])+60*60*24]
     pyspedas.kyoto.dst(trange=support_trange)
-    pyspedas.omni.data(trange=trange)
+    pyspedas.projects.omni.data(trange=trange)
     join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
     if model == 't01' and g_variables is None:
         g_variables = [6.0, 10.0]

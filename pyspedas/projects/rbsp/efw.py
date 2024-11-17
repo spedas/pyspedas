@@ -77,7 +77,7 @@ def efw(trange=['2015-11-5', '2015-11-6'],
 
     Examples
     --------
-    >>> efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
+    >>> efw_vars = pyspedas.projects.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
     >>> tplot(['efield_in_inertial_frame_spinfit_mgse', 'spacecraft_potential'])
     """
     return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, level=level, prefix=prefix, suffix=suffix, force_download=force_download, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

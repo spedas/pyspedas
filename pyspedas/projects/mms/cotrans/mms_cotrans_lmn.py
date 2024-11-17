@@ -10,7 +10,7 @@ from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.cotrans_tools.gsm2lmn import gsm2lmn
 from pyspedas import tinterpol, omni
 # For some reason, the import below started picking up the module mec, rather than the wrapper mec() defined in mms/__init__.py.
-# Importing it as pyspedas.mms.mec seems to remove the ambiguity, but I wonder if something fishy is going on
+# Importing it as pyspedas.projects.mms.mec seems to remove the ambiguity, but I wonder if something fishy is going on
 # with the imports in pyspedas, mms, and mms.mec.
 #from pyspedas.projects.mms import mec
 
@@ -78,7 +78,7 @@ def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_ra
             return
 
     # load the spacecraft position data
-    mec_vars = pyspedas.mms.mec(trange=[min(data_in.times), max(data_in.times)], probe=probe, data_rate=data_rate)
+    mec_vars = pyspedas.projects.mms.mec(trange=[min(data_in.times), max(data_in.times)], probe=probe, data_rate=data_rate)
 
     # interpolate the position data to the input data
     tinterp_vars = tinterpol('mms'+probe+'_mec_r_gsm', name_in, newname='mms'+probe+'_mec_r_gsm_interp')

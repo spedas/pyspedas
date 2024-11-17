@@ -75,7 +75,7 @@ def load(
 
     Examples
     --------
-    >>> from pyspedas.poes.load import load
+    >>> from pyspedas.projects.poes.load import load
     >>> vars = load(trange=['2013-11-5', '2013-11-6'])
     >>> print(vars)
     """

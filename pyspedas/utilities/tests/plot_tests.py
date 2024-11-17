@@ -1,7 +1,7 @@
 """Test plotting functions (mostly for pseudovariables)"""
 import unittest
 import numpy as np
-
+import pyspedas
 from pyspedas import themis
 from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim
 import pytplot
@@ -252,7 +252,7 @@ class PlotTestCases(unittest.TestCase):
         import pyspedas
         # ELFIN data with V values that oscillate, the original problem that resulted in the resample, this is an angular distrubtion
         timespan('2021-07-14/11:55',10,'minutes')
-        epd_var = pyspedas.elfin.epd(trange=['2021-07-14/11:55', '2021-07-14/12:05'], probe='a', level='l2', type_='nflux', fullspin=False)
+        epd_var = pyspedas.projects.elfin.epd(trange=['2021-07-14/11:55', '2021-07-14/12:05'], probe='a', level='l2', type_='nflux', fullspin=False)
         tplot_options('title', 'ELFIN data with time-varying bins, should render accurately')
         tplot('ela_pef_hs_nflux_ch0', display=global_display, save_png='ELFIN_test')
         tplot_options('title', '')
@@ -262,7 +262,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         # FAST TEAMS has fill values -1e31 in V, top is an energy distribution, the bottom two are pitch angle distributions
-        teams_vars = pyspedas.fast.teams(['1998-09-05', '1998-09-06'])
+        teams_vars = pyspedas.projects.fast.teams(['1998-09-05', '1998-09-06'])
         timespan('1998-09-05',1,'days')
         tplot_options('title', 'Fill should be removed, bottom two panels should go to Y=-90 deg')
         tplot(['H+', 'H+_low', 'H+_high'], display=global_display, save_png='TEAMS_test')
@@ -273,7 +273,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         # THEMIS ESA has monotonically decreasing energies, time varying energies, and also has fill
-        esa_vars = pyspedas.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
+        esa_vars = pyspedas.projects.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
         timespan('2016-07-23',1,'days')
         tplot_options('title', 'Decreasing and time-varying energies, fillvals, should render correctly')
         tplot('tha_peef_en_eflux', display=global_display, save_png='PEEF_test')
@@ -284,7 +284,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         # THEMIS ESA has monotonically decreasing energies, time varying energies, and also has fill
-        esa_vars = pyspedas.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
+        esa_vars = pyspedas.projects.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
         timespan('2016-07-23',1,'days')
         tplot_options('title', 'Decreasing and time-varying energies, fillvals, should render correctly')
         pyspedas.tplot_copy('tha_peef_en_eflux',new_name='tha_peef_copy')
@@ -296,7 +296,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         # ERG specplots, only vertical lines on the bottom panel for original resample...
-        pyspedas.erg.hep(trange=['2017-03-27', '2017-03-28'])
+        pyspedas.projects.erg.hep(trange=['2017-03-27', '2017-03-28'])
         timespan('2017-03-27',1,'days')
         tplot_options('title', 'Time varying spectral bins, should render correctly')
         tplot(['erg_hep_l2_FEDO_L', 'erg_hep_l2_FEDO_H'], display=global_display, save_png='ERG_test')
@@ -341,7 +341,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         from pytplot import store_data
-        pyspedas.themis.state(probe='c',trange=default_trange)
+        pyspedas.projects.themis.state(probe='c',trange=default_trange)
         store_data('ps1', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
         store_data('ps2', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
         store_data('ps3', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
@@ -358,8 +358,8 @@ class PlotTestCases(unittest.TestCase):
         from pytplot import zlim, ylim, timespan
 
         # Load ESA and SST data
-        pyspedas.themis.esa(probe='a', trange=default_trange)
-        pyspedas.themis.sst(probe='a', trange=default_trange)
+        pyspedas.projects.themis.esa(probe='a', trange=default_trange)
+        pyspedas.projects.themis.sst(probe='a', trange=default_trange)
 
         # Make a combined variable with both ESA and SST spectral data (disjoint energy ranges)
         store_data('combined_spec', ['tha_peif_en_eflux', 'tha_psif_en_eflux'])
@@ -398,8 +398,8 @@ class PlotTestCases(unittest.TestCase):
     def test_pseudo_spectra_plus_line(self):
         del_data("*")
         import pyspedas
-        pyspedas.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
-        pyspedas.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
+        pyspedas.projects.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
+        pyspedas.projects.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
         # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
         store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2', 'mms1_edp_scpot_fast_l2'])
         # Set some options so that the spectrum, trace, and y axes are legible
@@ -416,8 +416,8 @@ class PlotTestCases(unittest.TestCase):
     def test_pseudo_spectra_plus_line_copy(self):
         del_data("*")
         import pyspedas
-        pyspedas.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
-        pyspedas.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
+        pyspedas.projects.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
+        pyspedas.projects.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
         # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
         store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2', 'mms1_edp_scpot_fast_l2'])
         # Set some options so that the spectrum, trace, and y axes are legible
@@ -439,7 +439,7 @@ class PlotTestCases(unittest.TestCase):
         import numpy as np
         # import matplotlib.pyplot as plt
         from pytplot import tplot
-        spi_vars = pyspedas.psp.spi(trange=['2022-12-12/00:00', '2022-12-12/23:59'], datatype='sf00_l3_mom', level='l3',
+        spi_vars = pyspedas.projects.psp.spi(trange=['2022-12-12/00:00', '2022-12-12/23:59'], datatype='sf00_l3_mom', level='l3',
                                     time_clip=True)
         time = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['time'].values
         # print(time)
@@ -462,7 +462,7 @@ class PlotTestCases(unittest.TestCase):
         import pyspedas
         import os
         from matplotlib import pyplot as plt
-        pyspedas.themis.state(probe='a')
+        pyspedas.projects.themis.state(probe='a')
         if os.path.exists('ret_plot_objs.png'):
             os.remove('ret_plot_objs.png')
         tplot('tha_pos',display=global_display,return_plot_objects=True, save_png='ret_plot_objs.png')

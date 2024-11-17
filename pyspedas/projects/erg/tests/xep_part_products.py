@@ -19,7 +19,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        pyspedas.projects.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
         # Calculate and plot energy spectrum
         vars = erg_xep_part_products( 'erg_xep_l2_FEDU_SSD', outputs='phi', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
         tplot( 'erg_xep_l2_FEDU_SSD_phi', display=display, save_png='erg_xep_phi.png' )
@@ -30,7 +30,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        pyspedas.projects.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
         # Calculate and plot energy spectrum
         vars = erg_xep_part_products( 'erg_xep_l2_FEDU_SSD', outputs='phi', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
         tplot( 'erg_xep_l2_FEDU_SSD_phi', display=display, save_png='erg_xep_phi_no_trange.png' )
@@ -42,9 +42,9 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
-        vars = pyspedas.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
-        vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
+        pyspedas.projects.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
+        vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
@@ -57,9 +57,9 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
-        vars = pyspedas.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
-        vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
+        pyspedas.projects.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
+        vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate and plot energy spectrum
@@ -72,7 +72,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        pyspedas.projects.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
         # Calculate and plot energy spectrum
         vars = erg_xep_part_products( 'erg_xep_l2_FEDU_SSD', outputs='energy', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
         tplot( 'erg_xep_l2_FEDU_SSD_energy', display=display, save_png='erg_xep_en_spec.png' )
@@ -83,7 +83,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        pyspedas.projects.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
         # Calculate and plot energy spectrum
         vars = erg_xep_part_products( 'erg_xep_l2_FEDU_SSD', outputs='energy', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], phi_in=[0., 180.] )
         tplot( 'erg_xep_l2_FEDU_SSD_energy', display=display, save_png='erg_xep_en_spec_limit_phi.png' )
@@ -95,9 +95,9 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
-        vars = pyspedas.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
-        vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
+        pyspedas.projects.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
+        vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate the pitch angle distribution
@@ -112,9 +112,9 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load XEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
-        vars = pyspedas.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
-        vars = pyspedas.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
+        pyspedas.projects.erg.xep( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='2dflux' )
+        vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
+        vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
         pos_vn = 'erg_orb_l2_pos_gse'
         # Calculate energy-time spectra of electron flux for limited pitch-angle (PA) ranges

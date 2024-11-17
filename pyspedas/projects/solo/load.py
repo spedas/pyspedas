@@ -23,10 +23,10 @@ def load(trange=['2020-06-01', '2020-06-02'],
     """
     This function loads data from the Solar Orbiter mission; this function is not meant 
     to be called directly; instead, see the wrappers:
-        pyspedas.solo.mag
-        pyspedas.solo.epd
-        pyspedas.solo.rpw
-        pyspedas.solo.swa
+        pyspedas.projects.solo.mag
+        pyspedas.projects.solo.epd
+        pyspedas.projects.solo.rpw
+        pyspedas.projects.solo.swa
 
     Parameters
     ----------

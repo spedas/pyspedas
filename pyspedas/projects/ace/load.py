@@ -21,14 +21,14 @@ def load(trange=['2013-11-5', '2013-11-6'],
     """
     This function loads data from the ACE mission; this function is not meant 
     to be called directly; instead, see the wrappers:
-        pyspedas.ace.mfi
-        pyspedas.ace.swe
-        pyspedas.ace.epam
-        pyspedas.ace.cris
-        pyspedas.ace.sis
-        pyspedas.ace.uleis
-        pyspedas.ace.sepica
-        pyspedas.ace.swics
+        pyspedas.projects.ace.mfi
+        pyspedas.projects.ace.swe
+        pyspedas.projects.ace.epam
+        pyspedas.projects.ace.cris
+        pyspedas.projects.ace.sis
+        pyspedas.projects.ace.uleis
+        pyspedas.projects.ace.sepica
+        pyspedas.projects.ace.swics
 
     """
 

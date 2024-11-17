@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Mars Atmosphere an
 
 Magnetometer (MAG)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.maven.mag
+.. autofunction:: pyspedas.projects.maven.mag
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mag_vars = pyspedas.maven.mag(trange=['2014-10-18', '2014-10-19'])
+   mag_vars = pyspedas.projects.maven.mag(trange=['2014-10-18', '2014-10-19'])
    tplot('OB_B')
 
 .. image:: _static/maven_mag.png
@@ -26,7 +26,7 @@ Example
 
 Solar Wind Electron Analyzer (SWEA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.maven.swea
+.. autofunction:: pyspedas.projects.maven.swea
 
 Example
 ^^^^^^^^^
@@ -35,7 +35,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   swe_vars = pyspedas.maven.swea(trange=['2014-10-18', '2014-10-19'])
+   swe_vars = pyspedas.projects.maven.swea(trange=['2014-10-18', '2014-10-19'])
    tplot('diff_en_fluxes_svyspec')
 
 .. image:: _static/maven_swea.png
@@ -47,7 +47,7 @@ Example
 
 Solar Wind Ion Analyzer (SWIA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.maven.swia
+.. autofunction:: pyspedas.projects.maven.swia
 
 Example
 ^^^^^^^^^
@@ -56,7 +56,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   swi_vars = pyspedas.maven.swia(trange=['2014-10-18', '2014-10-19'])
+   swi_vars = pyspedas.projects.maven.swia(trange=['2014-10-18', '2014-10-19'])
    tplot('spectra_diff_en_fluxes_onboardsvyspec')
 
 .. image:: _static/maven_swia.png
@@ -68,7 +68,7 @@ Example
 
 SupraThermal And Thermal Ion Composition (STATIC)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.maven.sta
+.. autofunction:: pyspedas.projects.maven.sta
 
 Example
 ^^^^^^^^^
@@ -77,7 +77,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   sta_vars = pyspedas.maven.sta(trange=['2014-10-18', '2014-10-19'])
+   sta_vars = pyspedas.projects.maven.sta(trange=['2014-10-18', '2014-10-19'])
    tplot('hkp_2a-hkp')
 
 .. image:: _static/maven_sta.png
@@ -89,7 +89,7 @@ Example
 
 Solar Energetic Particle (SEP)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.maven.sep
+.. autofunction:: pyspedas.projects.maven.sep
 
 Example
 ^^^^^^^^^
@@ -98,7 +98,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   sep_vars = pyspedas.maven.sep(trange=['2014-10-18', '2014-10-19'])
+   sep_vars = pyspedas.projects.maven.sep(trange=['2014-10-18', '2014-10-19'])
    tplot('f_ion_flux_tot_s2-cal-svy-full')
 
 .. image:: _static/maven_sep.png
@@ -110,7 +110,7 @@ Example
 
 Langmuir Probe and Waves (LPW)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.maven.lpw
+.. autofunction:: pyspedas.projects.maven.lpw
 
 Example
 ^^^^^^^^^
@@ -119,7 +119,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   lpw_vars = pyspedas.maven.lpw(trange=['2014-10-18', '2014-10-19'])
+   lpw_vars = pyspedas.projects.maven.lpw(trange=['2014-10-18', '2014-10-19'])
    tplot('mvn_lpw_lp_iv_l2_lpiv')
 
 .. image:: _static/maven_lpw.png
@@ -131,7 +131,7 @@ Example
 
 Extreme Ultraviolet Monitor (EUV)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.maven.euv
+.. autofunction:: pyspedas.projects.maven.euv
 
 Example
 ^^^^^^^^^
@@ -140,7 +140,7 @@ Example
    
    import pyspedas
    from pytplot import tplot, options
-   euv_vars = pyspedas.maven.euv(trange=['2014-10-18', '2014-10-19'])
+   euv_vars = pyspedas.projects.maven.euv(trange=['2014-10-18', '2014-10-19'])
    options('mvn_euv_calib_bands_bands','ylog',0)
    tplot('mvn_euv_calib_bands_bands')
 

@@ -59,7 +59,7 @@ def loadr(
 
     Examples
     --------
-    >>> from pyspedas.goes import load
+    >>> from pyspedas.projects.goes import load
     >>> trange = ['2023-01-01', '2023-01-02']
     >>> vars = load(trange=trange, probe='16', instrument='mag', datatype='1min', time_clip=True)
     >>> print(vars)
@@ -275,7 +275,7 @@ def load(
 
     Examples
     --------
-    >>> from pyspedas.goes import load
+    >>> from pyspedas.projects.goes import load
     >>> trange = ['2019-01-01', '2019-01-02']
     >>> vars = load(trange=trange, probe='15', instrument='fgm', datatype='1min', time_clip=True)
     >>> print(vars)

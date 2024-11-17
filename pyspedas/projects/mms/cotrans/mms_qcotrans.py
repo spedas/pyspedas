@@ -51,7 +51,7 @@ def mms_qcotrans(
 
     Examples
     --------
-    >>> from pyspedas.mms import mec, mms_qcotrans # Import MMS namespace and mms_qcotrans routine
+    >>> from pyspedas.projects.mms import mec, mms_qcotrans # Import MMS namespace and mms_qcotrans routine
     >>> from pytplot import tplot # Import tplot routine to plot results
     >>> mec(trange=['2015-10-16', '2015-10-17'], probe='1')   # Load quaternions, positions, and velocity variables from MEC data, using default datatypes
     >>> mms_qcotrans('mms1_mec_v_sm', 'mms1_mec_v_sm_2gse', out_coord='gse') # Transform SM velocity to GSE

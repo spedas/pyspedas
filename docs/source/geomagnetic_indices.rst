@@ -5,7 +5,7 @@ The routines described in this section can be used to load several sets of geoma
 
 Kyoto Dst
 ---------
-.. autofunction:: pyspedas.kyoto.dst
+.. autofunction:: pyspedas.projects.kyoto.dst
 
 Example
 ^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   dst_vars = pyspedas.kyoto.dst(trange=['2018-11-5', '2018-11-6'])
+   dst_vars = pyspedas.projects.kyoto.dst(trange=['2018-11-5', '2018-11-6'])
    tplot('kyoto_dst')
 
 .. image:: _static/kyoto_dst.png
@@ -24,7 +24,7 @@ Example
 
 Kyoto AE
 ---------
-.. autofunction:: pyspedas.kyoto.load_ae
+.. autofunction:: pyspedas.projects.kyoto.load_ae
 
 Example
 ^^^^^^^
@@ -33,7 +33,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   ae_vars = pyspedas.kyoto.load_ae(trange=['2018-11-5', '2018-11-6'])
+   ae_vars = pyspedas.projects.kyoto.load_ae(trange=['2018-11-5', '2018-11-6'])
    tplot(ae_vars)
 
 .. image:: _static/kyoto_ae.png
@@ -43,7 +43,7 @@ Example
 
 NOAA/GFZ Kp and other geomagnetic Indices
 -----------------------------------------
-.. autofunction:: pyspedas.noaa_load_kp
+.. autofunction:: pyspedas.projects.noaa.noaa_load_kp
 
 Example
 ^^^^^^^
@@ -52,7 +52,7 @@ Example
 
    import pyspedas
    from pytplot import tplot
-   geom_ind = pyspedas.noaa.noaa_load_kp(trange=['2018-11-5', '2018-11-6'])
+   geom_ind = pyspedas.projects.noaa.noaa_load_kp(trange=['2018-11-5', '2018-11-6'])
    tplot(geom_ind)
 
 .. image:: _static/kyoto_dst.png
@@ -60,9 +60,9 @@ Example
 
 OMNI Solar Wind and magnetospheric indices
 -------------------------------------------
-The pyspedas.omni.data() routine can be used to load variables from the OMNIweb data set.
+The pyspedas.projects.omni.data() routine can be used to load variables from the OMNIweb data set.
 
-.. autofunction:: pyspedas.omni.data
+.. autofunction:: pyspedas.projects.omni.data
 
 Example
 ^^^^^^^^^
@@ -71,7 +71,7 @@ Example
 
    import pyspedas
    from pytplot import tplot
-   omni_vars = pyspedas.omni.data(trange=['2013-11-5', '2013-11-6'])
+   omni_vars = pyspedas.projects.omni.data(trange=['2013-11-5', '2013-11-6'])
    tplot(['BX_GSE', 'BY_GSE', 'BZ_GSE', 'flow_speed', 'Vx', 'Vy', 'Vz', 'SYM_H'])
 
 .. image:: _static/omni_data.png

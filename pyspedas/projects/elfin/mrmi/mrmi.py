@@ -86,7 +86,7 @@ def mrmi_load(trange=['2022-08-19', '2022-08-19'],
     ----------
         import pyspedas
         from pytplot import tplot
-        mrmi_vars = pyspedas.elfin.mrmi(probe='b', trange=['2022-08-19', '2022-08-19']
+        mrmi_vars = pyspedas.projects.elfin.mrmi(probe='b', trange=['2022-08-19', '2022-08-19']
         tplot('elb_mrmi')
 
     """

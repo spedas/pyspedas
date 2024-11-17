@@ -26,7 +26,7 @@ def rbsp_load_rbspice_read(level='l3', probe='a', datatype='TOFxEH'):
 
     Examples
     --------
-    This function is called within pyspedas.rbsp.rbspice
+    This function is called within pyspedas.projects.rbsp.rbspice
     """
     if level != 'l1':
         units_label = '1/(cm^2-sr-s-keV)'

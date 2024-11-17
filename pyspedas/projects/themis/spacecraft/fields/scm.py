@@ -78,7 +78,7 @@ def scm(trange=['2007-03-23', '2007-03-24'],
     -------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> scm_vars = pyspedas.themis.scm(probe='d', trange=['2013-11-05', '2013-11-06'])
+        >>> scm_vars = pyspedas.projects.themis.scm(probe='d', trange=['2013-11-05', '2013-11-06'])
         >>> tplot(['thd_scf_btotal', 'thd_scf_gse'])
 
     """

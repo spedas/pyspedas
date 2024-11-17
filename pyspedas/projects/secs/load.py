@@ -74,7 +74,7 @@ def load(
     Examples
     --------
     >> import pyspedas
-    >> secs_vars = pyspedas.secs.data(dtype='EICS', trange=['2018-02-01', '2018-02-02'], downloadonly=True)
+    >> secs_vars = pyspedas.projects.secs.data(dtype='EICS', trange=['2018-02-01', '2018-02-02'], downloadonly=True)
     >> print(secs_vars)
     ['/Users/user/data/secs/EICS/2018/02/EICS20180201.zip']
     """

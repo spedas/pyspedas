@@ -90,7 +90,7 @@ def edi(trange:List[str]=['2018-11-5', '2018-11-6'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> edi_vars = pyspedas.cluster.edi(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
+    >>> edi_vars = pyspedas.projects.cluster.edi(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
     >>> tplot(['V_ed_xyz_gse__C1_PP_EDI','V_ed_xyz_gse__C1_PP_EDI'])
     """
     return load(instrument='edi', trange=trange, probe=probe, datatype=datatype, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)

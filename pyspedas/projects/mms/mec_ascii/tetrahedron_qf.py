@@ -35,7 +35,7 @@ def mms_load_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_update=False
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> qf_vars = pyspedas.mms.mms_load_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'])
+    >>> qf_vars = pyspedas.projects.mms.mms_load_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'])
     >>> tplot('mms_tetrahedron_qf')
 
     """

@@ -84,7 +84,7 @@ def swics(trange:List[str]=['2009-01-01', '2009-01-02'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> swics_vars = pyspedas.ulysses.swics(trange=['2009-01-01', '2009-01-02'])
+    >>> swics_vars = pyspedas.projects.ulysses.swics(trange=['2009-01-01', '2009-01-02'])
     >>> tplot('Velocity')
     """
     return load(instrument='swics', trange=trange, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, force_download=force_download, notplot=notplot, time_clip=time_clip, no_update=no_update)

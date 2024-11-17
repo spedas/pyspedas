@@ -11,7 +11,7 @@ class SECSTestCases(unittest.TestCase):
     def test_load_secs(self, mock_show):
         del_data()
         trange = ["2017-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             resolution=10,
             dtype="SECS",
@@ -36,7 +36,7 @@ class SECSTestCases(unittest.TestCase):
     def test_load_eics(self, mock_show):
         del_data()
         trange = ["2017-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             resolution=10,
             dtype="EICS",
@@ -60,7 +60,7 @@ class SECSTestCases(unittest.TestCase):
     def test_load_secs_dc(self):
         trange = ["2017-03-27", "2017-03-28"]
         del_data()
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             resolution=10,
             dtype="SECS",
@@ -74,7 +74,7 @@ class SECSTestCases(unittest.TestCase):
     def test_load_eics_dc(self):
         del_data()
         trange = ["2017-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             resolution=10,
             dtype="EICS",
@@ -88,7 +88,7 @@ class SECSTestCases(unittest.TestCase):
     def test_load_secs_np(self):
         del_data()
         trange = ["2017-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             resolution=10,
             dtype="SECS",
@@ -102,7 +102,7 @@ class SECSTestCases(unittest.TestCase):
     def test_load_eics_np(self):
         del_data()
         trange = ["2017-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             resolution=10,
             dtype="EICS",
@@ -119,7 +119,7 @@ class SECSTestCases(unittest.TestCase):
         del_data()
         dtype = "EICS"  # 'EICS or SECS'
         trange = ["2007-02-09/02:15:35", "2007-02-09/02:15:35"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             dtype=dtype,
             downloadonly=True,
@@ -130,7 +130,7 @@ class SECSTestCases(unittest.TestCase):
         # No data type provided
         del_data()
         trange = ["2017-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             dtype=None,
         )
@@ -139,7 +139,7 @@ class SECSTestCases(unittest.TestCase):
         # Wrong data type provided
         del_data()
         trange = ["2017-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             dtype="aaa",
         )
@@ -148,7 +148,7 @@ class SECSTestCases(unittest.TestCase):
         # Invalid time range provided
         del_data()
         trange = ["2018-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             dtype="dc",
         )
@@ -156,7 +156,7 @@ class SECSTestCases(unittest.TestCase):
 
         # Invalid out type provided
         trange = ["2017-03-27", "2017-03-28"]
-        d = pyspedas.secs.data(
+        d = pyspedas.projects.secs.data(
             trange=trange,
             dtype="dc",
             out_type="aaa",

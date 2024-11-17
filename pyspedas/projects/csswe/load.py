@@ -23,7 +23,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     This function loads data from the CSSWE mission from the Relativistic Electron and Proton
     Telescope integrated little experiment (REPTile). This function is not meant
     to be called directly; instead, see the wrapper:
-        pyspedas.csswe.reptile
+        pyspedas.projects.csswe.reptile
 
     Parameters
     ----------
@@ -84,7 +84,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     ----------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> reptile_csswe_vars = pyspedas.csswe.reptile(trange=['2013-11-5', '2013-11-6'])
+    >>> reptile_csswe_vars = pyspedas.projects.csswe.reptile(trange=['2013-11-5', '2013-11-6'])
 
     """
 

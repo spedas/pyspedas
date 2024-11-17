@@ -109,7 +109,7 @@ def mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06;01'], probe='1', dat
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> fsm_data = pyspedas.mms.mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06:01'])
+    >>> fsm_data = pyspedas.projects.mms.mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06:01'])
     >>> tplot(['mms1_fsm_b_mag_brst_l3','mms1_fsm_b_gse_brst_l3','mms1_fsm_r_gse_brst_l3'])
 
     """

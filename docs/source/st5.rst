@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Space Technology 5
 
 Magnetometer (MAG)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.st5.mag
+.. autofunction:: pyspedas.projects.st5.mag
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   st5_vars = pyspedas.st5.mag(trange=['2006-06-01', '2006-06-02'])
+   st5_vars = pyspedas.projects.st5.mag(trange=['2006-06-01', '2006-06-02'])
    tplot(['B_SM', 'SC_POS_SM'])
 
 .. image:: _static/st5_mag.png

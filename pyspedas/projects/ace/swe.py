@@ -100,7 +100,7 @@ def swe(trange=['2018-11-5', '2018-11-6'],
 
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> swe_vars = pyspedas.ace.swe(trange=['2018-11-5', '2018-11-6'])
+        >>> swe_vars = pyspedas.projects.ace.swe(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['Vp', 'Tpr'])
 
     """

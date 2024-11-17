@@ -115,19 +115,19 @@ def scpot2dens(scpot, scptime, Te, Tetime, dens_e, dens_e_time, dens_i, dens_i_t
     Parameters
     ----------
     scpot : array_like
-        Spacecraft potential data, expected as a 1-D array. (call pyspedas.themis.esa, DATATYPE = 'peer_sc_pot')
+        Spacecraft potential data, expected as a 1-D array. (call pyspedas.projects.themis.esa, DATATYPE = 'peer_sc_pot')
     scptime : array_like
         The time base of `scpot`.
     Te : array_like
-        Electron temperature data, expected as a 1-D array. (call pyspedas.themis.esa, DATATYPE = 'peer_avgtemp')
+        Electron temperature data, expected as a 1-D array. (call pyspedas.projects.themis.esa, DATATYPE = 'peer_avgtemp')
     Tetime : array_like
         The time base of `Te`.
     dens_e : array_like
-        Electron density data, expected as a 1-D array. (call pyspedas.themis.esa, DATATYPE = 'peer_density')
+        Electron density data, expected as a 1-D array. (call pyspedas.projects.themis.esa, DATATYPE = 'peer_density')
     dens_e_time : array_like
         The time base for `dens_e`.
     dens_i : array_like
-        Ion density data, expected as a 1-D array. (call pyspedas.themis.esa, DATATYPE = 'peir_density')
+        Ion density data, expected as a 1-D array. (call pyspedas.projects.themis.esa, DATATYPE = 'peir_density')
     dens_i_time : array_like
         The time base for `dens_i`.
     probe_in : int or str, default='c'
@@ -161,7 +161,7 @@ def scpot2dens(scpot, scptime, Te, Tetime, dens_e, dens_e_time, dens_i, dens_i_t
     trange = ['2007-7-20/17:00:00', '2007-7-20/17:20:00']
 
     # Load THEMIS ESA data for probe 'c' within the specified time range
-    pyspedas.themis.esa(trange=trange,
+    pyspedas.projects.themis.esa(trange=trange,
                         probe='c',
                         varnames=['thc_peer_density', 'thc_peir_density', 'thc_peer_sc_pot', 'thc_peer_avgtemp'],
                         level='l2')

@@ -112,7 +112,7 @@ class UtilTestCases(unittest.TestCase):
     def test_plotting_wildcards_indices(self):
         # Test tplot using wildcards
         del_data('*')
-        pyspedas.themis.state(probe=['a', 'b', 'c', 'd', 'e'])
+        pyspedas.projects.themis.state(probe=['a', 'b', 'c', 'd', 'e'])
         # Wildcard pattern
         tplot_options('title',"Positions of THEMIS A B C D E")
         tplot('th?_pos', save_png='tplot_wildcard.png', display=global_display)

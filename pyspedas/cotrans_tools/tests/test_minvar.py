@@ -67,7 +67,7 @@ class TestMinvar(unittest.TestCase):
 
     def test_minvar_matrix_make_day(self):
         trange=['2007-07-10', '2007-07-11']
-        pyspedas.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
+        pyspedas.projects.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
         minvar_matrix_make('thc_fgs_gse',tstart='2007-07-10/07:54:00',tstop='2007-07-10/07:56:30')
         self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
         pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgs_gse',newname='mva_data_day')
@@ -76,7 +76,7 @@ class TestMinvar(unittest.TestCase):
 
     def test_minvar_matrix_make_hour(self):
         trange=['2007-07-10', '2007-07-11']
-        pyspedas.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
+        pyspedas.projects.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
         minvar_matrix_make('thc_fgs_gse', twindow=3600, tslide=300)
         self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
         pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgs_gse',newname='mva_data_hour')
@@ -85,7 +85,7 @@ class TestMinvar(unittest.TestCase):
 
     def test_minvar_matrix_make_hour_interp(self):
         trange=['2007-07-10', '2007-07-11']
-        pyspedas.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
+        pyspedas.projects.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
         minvar_matrix_make('thc_fgs_gse', twindow=3600, tslide=300)
         self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
         pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgl_gse',newname='mva_data_hour_interp')

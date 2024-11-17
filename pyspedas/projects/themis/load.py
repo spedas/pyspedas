@@ -30,21 +30,21 @@ def load(trange=['2013-11-5', '2013-11-6'],
     This function loads data from the THEMIS mission;
     this function is not meant to be called directly;
     instead, see the wrappers:
-        pyspedas.themis.fgm
-        pyspedas.themis.fit
-        pyspedas.themis.efi
-        pyspedas.themis.scm
-        pyspedas.themis.fft
-        pyspedas.themis.fbk
-        pyspedas.themis.esa
-        pyspedas.themis.esd
-        pyspedas.themis.sst
-        pyspedas.themis.mom
-        pyspedas.themis.gmom
-        pyspedas.themis.gmag
-        pyspedas.themis.ask
-        pyspedas.themis.state
-        pyspedas.themis.slp
+        pyspedas.projects.themis.fgm
+        pyspedas.projects.themis.fit
+        pyspedas.projects.themis.efi
+        pyspedas.projects.themis.scm
+        pyspedas.projects.themis.fft
+        pyspedas.projects.themis.fbk
+        pyspedas.projects.themis.esa
+        pyspedas.projects.themis.esd
+        pyspedas.projects.themis.sst
+        pyspedas.projects.themis.mom
+        pyspedas.projects.themis.gmom
+        pyspedas.projects.themis.gmag
+        pyspedas.projects.themis.ask
+        pyspedas.projects.themis.state
+        pyspedas.projects.themis.slp
 
     """
 

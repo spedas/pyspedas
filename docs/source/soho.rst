@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Solar & Heliospher
 
 Charge, Element, and Isotope Analysis System (CELIAS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.soho.celias
+.. autofunction:: pyspedas.projects.soho.celias
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   celias_vars = pyspedas.soho.celias(trange=['2006-06-01', '2006-06-02'])
+   celias_vars = pyspedas.projects.soho.celias(trange=['2006-06-01', '2006-06-02'])
    tplot(['V_p', 'N_p'])
 
 .. image:: _static/soho_celias.png
@@ -24,7 +24,7 @@ Example
 
 Comprehensive Suprathermal and Energetic Particle Analyzer (COSTEP)
 --------------------------------------------------------------------
-.. autofunction:: pyspedas.soho.costep
+.. autofunction:: pyspedas.projects.soho.costep
 
 Example
 ^^^^^^^^^
@@ -33,7 +33,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   costep_vars = pyspedas.soho.costep(trange=['2006-06-01', '2006-06-02'])
+   costep_vars = pyspedas.projects.soho.costep(trange=['2006-06-01', '2006-06-02'])
    tplot(['P_int', 'He_int'])
 
 .. image:: _static/soho_costep.png
@@ -43,7 +43,7 @@ Example
 
 Energetic and Relativistic Nuclei and Electron experiment (ERNE)
 -----------------------------------------------------------------
-.. autofunction:: pyspedas.soho.erne
+.. autofunction:: pyspedas.projects.soho.erne
 
 Example
 ^^^^^^^^^
@@ -52,7 +52,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   erne_vars = pyspedas.soho.erne(trange=['2006-06-01', '2006-06-02'])
+   erne_vars = pyspedas.projects.soho.erne(trange=['2006-06-01', '2006-06-02'])
    tplot('PH')
 
 .. image:: _static/soho_erne.png
@@ -62,7 +62,7 @@ Example
 
 Orbit (ephemeris and attitude) data (ORBIT)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.soho.orbit
+.. autofunction:: pyspedas.projects.soho.orbit
 
 Example
 ^^^^^^^^^
@@ -71,7 +71,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   orbit_vars = pyspedas.soho.orbit(trange=['2006-06-01', '2006-06-02'])
+   orbit_vars = pyspedas.projects.soho.orbit(trange=['2006-06-01', '2006-06-02'])
    tplot(['GSE_POS', 'GSE_VEL'])
 
 .. image:: _static/soho_orbit.png

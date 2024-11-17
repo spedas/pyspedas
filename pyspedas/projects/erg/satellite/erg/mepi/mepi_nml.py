@@ -95,7 +95,7 @@ def mepi_nml(
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> mepi_nml_vars = pyspedas.erg.mepi_nml(trange=['2017-03-27', '2017-03-28'])
+    >>> mepi_nml_vars = pyspedas.projects.erg.mepi_nml(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_mepi_l2_omniflux_FPDO')
 
     """

@@ -92,13 +92,13 @@ def load(
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> dcf_vars = pyspedas.fast.dcf(trange=["1996-12-01", "1996-12-02"])
+    >>> dcf_vars = pyspedas.projects.fast.dcf(trange=["1996-12-01", "1996-12-02"])
     >>> tplot(['fast_dcf_DeltaB_GEI'])
-    >>> acf_vars = pyspedas.fast.acf(trange=["1996-12-01", "1996-12-02"])
+    >>> acf_vars = pyspedas.projects.fast.acf(trange=["1996-12-01", "1996-12-02"])
     >>> tplot('fast_acf_HF_E_SPEC')
-    >>> esa_vars = pyspedas.fast.esa(trange=["1996-12-01", "1996-12-02"])
+    >>> esa_vars = pyspedas.projects.fast.esa(trange=["1996-12-01", "1996-12-02"])
     >>> tplot('fast_esa_eflux')
-    >>> teams_vars = pyspedas.fast.teams(trange=["2005-08-01", "2005-08-02"])
+    >>> teams_vars = pyspedas.projects.fast.teams(trange=["2005-08-01", "2005-08-02"])
     >>> tplot(['fast_teams_helium_omni_flux'])
     """
 

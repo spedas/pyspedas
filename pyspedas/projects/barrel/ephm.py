@@ -66,7 +66,7 @@ def ephm(trange=['2013-01-29','2013-01-30'],
     ----------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> pyspedas.barrel.ephm(trange=['2013-01-29','2013-01-30'], probe='1A')
+        >>> pyspedas.projects.barrel.ephm(trange=['2013-01-29','2013-01-30'], probe='1A')
         >>> tplot('brl1A_GPS_Lat')
     """
    

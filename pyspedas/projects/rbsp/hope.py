@@ -81,7 +81,7 @@ def hope(trange=['2015-11-5', '2015-11-6'],
 
     Examples
     --------
-    >>> hope_vars = pyspedas.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='moments', level='l3', rel='rel04')
+    >>> hope_vars = pyspedas.projects.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='moments', level='l3', rel='rel04')
     >>> tplot('Ion_density')
     """
 

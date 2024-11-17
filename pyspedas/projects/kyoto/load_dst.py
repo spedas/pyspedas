@@ -122,7 +122,7 @@ def dst(
 
     Examples
     --------
-    >>> from pyspedas.kyoto import dst
+    >>> from pyspedas.projects.kyoto import dst
     >>> dst_data = dst(trange=['2015-01-01', '2015-01-02'])
     >>> print(dst_data)
     kyoto_dst

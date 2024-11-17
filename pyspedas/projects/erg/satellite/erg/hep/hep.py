@@ -97,7 +97,7 @@ def hep(
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> hep_vars = pyspedas.erg.hep(trange=['2017-03-27', '2017-03-28'])
+    >>> hep_vars = pyspedas.projects.erg.hep(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_hep_l2_FEDO_L')
 
 

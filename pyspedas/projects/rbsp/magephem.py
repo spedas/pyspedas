@@ -78,7 +78,7 @@ def magephem(trange=['2018-11-5', '2018-11-6'],
 
     Examples
     --------
-    >>> magephem_vars = pyspedas.rbsp.magephem(trange=['2018-11-5/10:00', '2018-11-5/15:00'], cadence='1min', coord='op77q', time_clip=True)
+    >>> magephem_vars = pyspedas.projects.rbsp.magephem(trange=['2018-11-5/10:00', '2018-11-5/15:00'], cadence='1min', coord='op77q', time_clip=True)
     >>> tplot(['L','Lsimple','Kp','Dst'])
     """
     return load(instrument='magephem', trange=trange, probe=probe, cadence=cadence, coord=coord, prefix=prefix, suffix=suffix, force_download=force_download, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

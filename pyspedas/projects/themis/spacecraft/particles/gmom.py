@@ -79,7 +79,7 @@ def gmom(trange=['2007-03-23', '2007-03-24'],
     -------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> gmom_vars = pyspedas.themis.gmom(probe='d', trange=['2013-11-5', '2013-11-6'])
+        >>> gmom_vars = pyspedas.projects.themis.gmom(probe='d', trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['thd_ptiff_velocity_gse', 'thd_pteff_density', 'thd_pteff_avgtemp'])
 
 

@@ -26,7 +26,7 @@ def load(
     Loads OMNI (Combined 1AU IP Data; Magnetic and Solar Indices) data; intended for internal use.
 
     This function is a core component for data loading but is not meant to be called directly by users.
-    Instead, users should utilize the wrapper function `pyspedas.omni.data` to access this functionality.
+    Instead, users should utilize the wrapper function `pyspedas.projects.omni.data` to access this functionality.
 
     Parameters
     ----------

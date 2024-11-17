@@ -75,7 +75,7 @@ def cindi(trange=['2013-11-5', '2013-11-6'],
     ----------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> cindi_vars = pyspedas.cnofs.cindi(trange=['2013-11-5', '2013-11-6'])
+        >>> cindi_vars = pyspedas.projects.cnofs.cindi(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['ionVelocityX', 'ionVelocityY', 'ionVelocityZ'])
 
     """

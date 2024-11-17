@@ -116,19 +116,19 @@ def load(trange=['2018-11-5', '2018-11-6'],
     ----------
         import pyspedas
         from pytplot import tplot
-        fields_psp_vars = pyspedas.psp.fields(trange=['2018-11-5', '2018-11-6'])
+        fields_psp_vars = pyspedas.projects.psp.fields(trange=['2018-11-5', '2018-11-6'])
 
-        spc_psp_vars = pyspedas.psp.spc(trange=['2018-11-5', '2018-11-6'])
+        spc_psp_vars = pyspedas.projects.psp.spc(trange=['2018-11-5', '2018-11-6'])
 
-        spe_psp_vars = pyspedas.psp.spe(trange=['2018-11-5', '2018-11-6'])
+        spe_psp_vars = pyspedas.projects.psp.spe(trange=['2018-11-5', '2018-11-6'])
 
-        spi_psp_vars = pyspedas.psp.spi(trange=['2018-11-5', '2018-11-6'])
+        spi_psp_vars = pyspedas.projects.psp.spi(trange=['2018-11-5', '2018-11-6'])
 
-        epihi_psp_vars = pyspedas.psp.epihi(trange=['2018-11-5', '2018-11-6'])
+        epihi_psp_vars = pyspedas.projects.psp.epihi(trange=['2018-11-5', '2018-11-6'])
 
-        epilo_psp_vars = pyspedas.psp.epilo(trange=['2018-11-5', '2018-11-6'])
+        epilo_psp_vars = pyspedas.projects.psp.epilo(trange=['2018-11-5', '2018-11-6'])
 
-        epi_psp_vars = pyspedas.psp.epi(trange=['2018-11-5', '2018-11-6'])
+        epi_psp_vars = pyspedas.projects.psp.epi(trange=['2018-11-5', '2018-11-6'])
 
     """
     # remote path formats generally are going to be all lowercase except for

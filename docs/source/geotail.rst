@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Geotail mission.
 
 Magnetic Field Experiment (MGF)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.geotail.mgf
+.. autofunction:: pyspedas.projects.geotail.mgf
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mgf_vars = pyspedas.geotail.mgf(trange=['2018-11-5', '2018-11-6'])
+   mgf_vars = pyspedas.projects.geotail.mgf(trange=['2018-11-5', '2018-11-6'])
    tplot(['IB', 'IB_vector'])
 
 .. image:: _static/geotail_mgf.png
@@ -26,7 +26,7 @@ Example
 
 Electric Field Detector (EFD)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.geotail.efd
+.. autofunction:: pyspedas.projects.geotail.efd
 
 Example
 ^^^^^^^^^
@@ -35,7 +35,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   efd_vars = pyspedas.geotail.efd(trange=['2018-11-5', '2018-11-6'])
+   efd_vars = pyspedas.projects.geotail.efd(trange=['2018-11-5', '2018-11-6'])
    tplot(['Es', 'Ss', 'Bs', 'Vs', 'Ew', 'Sw', 'Bw', 'Vw'])
 
 .. image:: _static/geotail_efd.png
@@ -47,7 +47,7 @@ Example
 
 Low Energy Particle experiment (LEP)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.geotail.lep
+.. autofunction:: pyspedas.projects.geotail.lep
 
 Example
 ^^^^^^^^^
@@ -56,7 +56,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   lep_vars = pyspedas.geotail.lep(trange=['2018-11-5/05:00', '2018-11-5/06:00'], time_clip=True)
+   lep_vars = pyspedas.projects.geotail.lep(trange=['2018-11-5/05:00', '2018-11-5/06:00'], time_clip=True)
    tplot(['N0', 'V0'])
 
 .. image:: _static/geotail_lep.png
@@ -68,7 +68,7 @@ Example
 
 Comprehensive Plasma Instrumentation (CPI)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.geotail.cpi
+.. autofunction:: pyspedas.projects.geotail.cpi
 
 Example
 ^^^^^^^^^
@@ -77,7 +77,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   cpi_vars = pyspedas.geotail.cpi(trange=['2018-11-5/15:00', '2018-11-5/18:00'], time_clip=True)
+   cpi_vars = pyspedas.projects.geotail.cpi(trange=['2018-11-5/15:00', '2018-11-5/18:00'], time_clip=True)
    tplot(['SW_P_Den', 'SW_P_AVGE', 'SW_V', 'HP_P_Den'])
 
 .. image:: _static/geotail_cpi.png
@@ -89,7 +89,7 @@ Example
 
 Energetic Particles and Ion Composition Instrument (EPIC)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.geotail.epic
+.. autofunction:: pyspedas.projects.geotail.epic
 
 Example
 ^^^^^^^^^
@@ -98,7 +98,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   epic_vars = pyspedas.geotail.epic(trange=['2018-11-5', '2018-11-6'])
+   epic_vars = pyspedas.projects.geotail.epic(trange=['2018-11-5', '2018-11-6'])
    tplot('IDiffI_I')
 
 .. image:: _static/geotail_epic.png
@@ -110,7 +110,7 @@ Example
 
 Plasma Wave Instrument (PWI)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.geotail.pwi
+.. autofunction:: pyspedas.projects.geotail.pwi
 
 Example
 ^^^^^^^^^
@@ -119,7 +119,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   pwi_vars = pyspedas.geotail.pwi(trange=['2018-11-5/06:00', '2018-11-5/07:00'], time_clip=True)
+   pwi_vars = pyspedas.projects.geotail.pwi(trange=['2018-11-5/06:00', '2018-11-5/07:00'], time_clip=True)
    tplot(['MCAE_AVE', 'MCAB_AVE'])
 
 .. image:: _static/geotail_pwi.png

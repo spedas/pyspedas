@@ -83,7 +83,7 @@ def grb(trange:List[str]=['2003-01-01', '2003-01-02'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> grb_vars = pyspedas.ulysses.grb(trange=['2003-01-01', '2003-01-02'])
+    >>> grb_vars = pyspedas.projects.ulysses.grb(trange=['2003-01-01', '2003-01-02'])
     >>> tplot('Count_Rate')
 
     """

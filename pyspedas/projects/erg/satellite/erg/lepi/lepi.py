@@ -104,7 +104,7 @@ def lepi(
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> lepi_vars = pyspedas.erg.lepi(trange=['2017-04-09', '2017-04-10'])
+    >>> lepi_vars = pyspedas.projects.erg.lepi(trange=['2017-04-09', '2017-04-10'])
     >>> tplot('erg_lepi_l2_omniflux_FODO')
 
     """

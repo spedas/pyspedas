@@ -84,7 +84,7 @@ def urap(trange:List[str]=['2003-01-01', '2003-01-02'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> urap_vars = pyspedas.ulysses.urap(trange=['2003-01-01', '2003-01-02'])
+    >>> urap_vars = pyspedas.projects.ulysses.urap(trange=['2003-01-01', '2003-01-02'])
     >>> print(urap_vars)
     """
     return load(instrument='urap', trange=trange, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, force_download=force_download, notplot=notplot, time_clip=time_clip, no_update=no_update)

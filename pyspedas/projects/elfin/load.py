@@ -26,12 +26,12 @@ def load(trange=['2020-11-5', '2020-11-6'],
     This function loads data from the ELFIN mission; this function is not meant 
     to be called directly; instead, see the wrappers:
 
-        pyspedas.elfin.fgm
-        pyspedas.elfin.epd
-        pyspedas.elfin.mrma
-        pyspedas.elfin.mrmi
-        pyspedas.elfin.state
-        pyspedas.elfin.eng
+        pyspedas.projects.elfin.fgm
+        pyspedas.projects.elfin.epd
+        pyspedas.projects.elfin.mrma
+        pyspedas.projects.elfin.mrmi
+        pyspedas.projects.elfin.state
+        pyspedas.projects.elfin.eng
 
         This is a test
     """

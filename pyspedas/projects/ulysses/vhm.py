@@ -83,7 +83,7 @@ def vhm(trange:List[str]=['2009-01-01', '2009-01-02'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> vhm_vars = pyspedas.ulysses.vhm(trange=['2009-01-01', '2009-01-02'])
+    >>> vhm_vars = pyspedas.projects.ulysses.vhm(trange=['2009-01-01', '2009-01-02'])
     >>> tplot('B_MAG')
     """
     return load(instrument='vhm', trange=trange, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, force_download=force_download, notplot=notplot, time_clip=time_clip, no_update=no_update)

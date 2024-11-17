@@ -100,7 +100,7 @@ def epam(trange=['2018-11-5', '2018-11-6'],
 
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> epam_vars = pyspedas.ace.epam(trange=['2018-11-5', '2018-11-6'])
+        >>> epam_vars = pyspedas.projects.ace.epam(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['H_lo', 'Ion_very_lo', 'Ion_lo', 'Ion_mid', 'Ion_hi', 'Electron_lo', 'Electron_hi'])
 
     """

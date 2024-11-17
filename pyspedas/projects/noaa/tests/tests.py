@@ -8,7 +8,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_kp_data_2024(self):
         # Load data from noaa
         del_data('*')
-        kp_vars = pyspedas.noaa.noaa_load_kp(trange=['2024-01-01', '2024-01-02'])
+        kp_vars = pyspedas.projects.noaa.noaa_load_kp(trange=['2024-01-01', '2024-01-02'])
         self.assertTrue('Kp' in kp_vars)
         self.assertTrue('ap' in kp_vars)
         self.assertTrue('Sol_Rot_Num' in kp_vars)
@@ -29,7 +29,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_kp_data_2014(self):
         # Load data from noaa
         del_data('*')
-        kp_vars = pyspedas.noaa.noaa_load_kp(trange=['2014-01-01', '2014-01-02'], prefix='noaa_', suffix='_test')
+        kp_vars = pyspedas.projects.noaa.noaa_load_kp(trange=['2014-01-01', '2014-01-02'], prefix='noaa_', suffix='_test')
         self.assertTrue('noaa_Kp_test' in kp_vars)
         self.assertTrue('noaa_ap_test' in kp_vars)
         self.assertTrue('noaa_Sol_Rot_Num_test' in kp_vars)
@@ -56,7 +56,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_kp_data_2014_gfz(self):
         # final
         del_data('*')
-        kp_vars = pyspedas.noaa.noaa_load_kp(trange=['2014-01-01', '2014-01-02'], gfz=True)
+        kp_vars = pyspedas.projects.noaa.noaa_load_kp(trange=['2014-01-01', '2014-01-02'], gfz=True)
         self.assertTrue('Kp' in kp_vars)
         self.assertTrue('ap' in kp_vars)
         self.assertTrue('Sol_Rot_Num' in kp_vars)
@@ -77,7 +77,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_kp_data_2014_gfz_ftp(self):
         # final
         del_data('*')
-        kp_vars = pyspedas.noaa.noaa_load_kp(trange=['2014-01-01', '2014-01-02'], gfz=True,gfz_ftp=True)
+        kp_vars = pyspedas.projects.noaa.noaa_load_kp(trange=['2014-01-01', '2014-01-02'], gfz=True,gfz_ftp=True)
         self.assertTrue('Kp' in kp_vars)
         self.assertTrue('ap' in kp_vars)
         self.assertTrue('Sol_Rot_Num' in kp_vars)

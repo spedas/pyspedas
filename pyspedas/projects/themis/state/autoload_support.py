@@ -168,6 +168,6 @@ def autoload_support(varname=None,
 
     # Perform the needed updates
     if do_slp:
-        pyspedas.themis.slp(trange=trange_needed)
+        pyspedas.projects.themis.slp(trange=trange_needed)
     if do_state:
-        pyspedas.themis.state(probe=probe, trange=trange_needed, get_support_data=True)
+        pyspedas.projects.themis.state(probe=probe, trange=trange_needed, get_support_data=True)

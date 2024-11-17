@@ -3,7 +3,7 @@ This module perform unitest on elfin epd l2 spectrogram by comparing
 with tplot variable genrate by IDL routine
 
 How to run:
-    $ python -m pyspedas.elfin.tests.test_epd_l2
+    $ python -m pyspedas.projects.elfin.tests.test_epd_l2
 """
 import unittest
 import logging
@@ -136,7 +136,7 @@ class TestELFL2Validation(unittest.TestCase):
 
     def test_epd_l2_hs_nflux(self):
         """Validate epd l2 halfspin nflux spectogram"""
-        pyspedas.elfin.epd(trange=self.t, probe=self.probe, level='l2',no_update=True)
+        pyspedas.projects.elfin.epd(trange=self.t, probe=self.probe, level='l2',no_update=True)
         elf_pef_hs_nflux_ch0 = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch0")
         elf_pef_hs_nflux_ch1 = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch1")
         elf_pef_hs_nflux_ch2 = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch2")
@@ -181,7 +181,7 @@ class TestELFL2Validation(unittest.TestCase):
 
     def test_epd_l2_hs_eflux(self):
         """Validate epd l2 halfspin eflux spectogram"""
-        pyspedas.elfin.epd(
+        pyspedas.projects.elfin.epd(
             trange=self.t,
             probe=self.probe,
             level='l2',
@@ -227,7 +227,7 @@ class TestELFL2Validation(unittest.TestCase):
 
     def test_epd_l2_fs_nflux(self):
         """Validate epd l2 fullspin nflux spectogram"""
-        pyspedas.elfin.epd(
+        pyspedas.projects.elfin.epd(
             trange=self.t,
             probe=self.probe,
             level='l2',
@@ -267,7 +267,7 @@ class TestELFL2Validation(unittest.TestCase):
 
     def test_epd_l2_fs_eflux(self):
         """Validate epd l2 fullspin eflux spectogram"""
-        pyspedas.elfin.epd(
+        pyspedas.projects.elfin.epd(
             trange=self.t,
             probe=self.probe,
             level='l2',

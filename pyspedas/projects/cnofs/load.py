@@ -22,9 +22,9 @@ def load(trange=['2013-11-5', '2013-11-6'],
     """
     This function loads data from the CNOFS mission; this function is not meant
     to be called directly; instead, see the wrappers:
-        pyspedas.cnofs.cindi
-        pyspedas.cnofs.plp
-        pyspedas.cnofs.vefi
+        pyspedas.projects.cnofs.cindi
+        pyspedas.projects.cnofs.plp
+        pyspedas.projects.cnofs.vefi
     """
 
     if prefix is None:

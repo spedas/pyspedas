@@ -96,7 +96,7 @@ def mepe(
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> mepe_vars = pyspedas.erg.mepe(trange=['2017-03-27', '2017-03-28'])
+    >>> mepe_vars = pyspedas.projects.erg.mepe(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_mepe_l2_omniflux_FEDO')
 
     """

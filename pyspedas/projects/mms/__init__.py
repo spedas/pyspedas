@@ -32,13 +32,13 @@ from .particles import mms_part_getspec, mms_part_slice2d
     the following wrappers allow users to import the load routines using 
     the syntax: 
     
-            >>> from pyspedas.mms import fgm
+            >>> from pyspedas.projects.mms import fgm
             >>> fgm_data = fgm(...)
 
         and/or
 
             >>> import pyspedas
-            >>> fgm_data = pyspedas.mms.fgm(...)
+            >>> fgm_data = pyspedas.projects.mms.fgm(...)
 '''
 
 # Some of these wrappers shadow MMS module names in a way that seems too fragile -- adding an apparently unrelated

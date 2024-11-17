@@ -34,7 +34,7 @@ Examples
 .. code-block:: python
    
    import pyspedas
-   pyspedas.themis.state(trange=['2015-10-16', '2015-10-17'], probe='c')
+   pyspedas.projects.themis.state(trange=['2015-10-16', '2015-10-17'], probe='c')
 
    from pyspedas import cotrans
    cotrans(name_in='thc_pos_gse', name_out='gsm_data', coord_in='gse', coord_out='gsm')

@@ -92,7 +92,7 @@ def state(trange=['2007-03-23', '2007-03-24'],
     -------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> pyspedas.themis.state(trange=['2007-03-23', '2007-03-24'], probe='a', varnames=['tha_pos_gse','tha_vel_gse'])
+        >>> pyspedas.projects.themis.state(trange=['2007-03-23', '2007-03-24'], probe='a', varnames=['tha_pos_gse','tha_vel_gse'])
         >>> tplot['tha_pos_gse', 'tha_vel_gse'])
 
     """

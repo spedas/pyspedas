@@ -90,7 +90,7 @@ def orbit(trange=['1999-11-5', '1999-11-6'],
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> vars = pyspedas.wind.orbit(trange=['1999-11-5', '1999-11-6'],datatype='pre_or')
+    >>> vars = pyspedas.projects.wind.orbit(trange=['1999-11-5', '1999-11-6'],datatype='pre_or')
     >>> tplot(vars)
 
     """

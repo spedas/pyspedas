@@ -90,7 +90,7 @@ def efw(trange:List[str]=['2018-11-5', '2018-11-6'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> efw_vars = pyspedas.cluster.efw(trange=['2003-11-01','2003-11-02'],probe=['2'])
+    >>> efw_vars = pyspedas.projects.cluster.efw(trange=['2003-11-01','2003-11-02'],probe=['2'])
     >>> tplot('E_pow_f1__C2_PP_EFW')
     """
     return load(instrument='efw', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)

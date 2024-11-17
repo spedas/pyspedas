@@ -120,8 +120,8 @@ class FPITestCases(unittest.TestCase):
 
     def test_pad(self):
         trange = ['2015-10-16/13:06:29', '2015-10-16/13:06:32']
-        pyspedas.mms.fpi(trange=trange, data_rate='brst', datatype=['dis-dist', 'des-dist', 'dis-moms'], time_clip=True)
-        pyspedas.mms.fgm(trange=trange, data_rate='brst')
+        pyspedas.projects.mms.fpi(trange=trange, data_rate='brst', datatype=['dis-dist', 'des-dist', 'dis-moms'], time_clip=True)
+        pyspedas.projects.mms.fgm(trange=trange, data_rate='brst')
         dists = mms_get_fpi_dist('mms1_dis_dist_brst')
         dists_e = mms_get_fpi_dist('mms1_des_dist_brst')
         pa_dist = mms_pad_fpi(dists, trange=trange, mag_data='mms1_fgm_b_gse_brst_l2_bvec')
@@ -135,7 +135,7 @@ class FPITestCases(unittest.TestCase):
                       vel_data='mms1_dis_bulkv_gse_brst')
 
     def test_split_tensors(self):
-        data = pyspedas.mms.fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'],
+        data = pyspedas.projects.mms.fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'],
                                 data_rate='brst',
                                 datatype=['dis-moms', 'des-moms'])
 

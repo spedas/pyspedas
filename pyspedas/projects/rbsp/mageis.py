@@ -81,7 +81,7 @@ def mageis(trange=['2015-11-5', '2015-11-6'],
 
     Examples
     --------
-    >>> mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
+    >>> mageis_vars = pyspedas.projects.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
     >>> tplot('I')
     """
     return load(instrument='mageis', rel=rel, trange=trange, probe=probe, datatype=datatype, level=level, prefix=prefix, suffix=suffix, force_download=force_download, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update)

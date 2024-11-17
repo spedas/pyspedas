@@ -10,14 +10,14 @@ class LoadTestCases(unittest.TestCase):
 
     def test_downloadonly(self):
         del_data()
-        mag_files = pyspedas.goes.fgm(datatype="1min", downloadonly=True)
+        mag_files = pyspedas.projects.goes.fgm(datatype="1min", downloadonly=True)
         self.assertTrue(os.path.exists(mag_files[0]))
 
     def test_load_orbit_data(self):
         del_data()
-        orbit_vars = pyspedas.goes.orbit(downloadonly=True)
-        orbit_vars = pyspedas.goes.orbit(notplot=True)
-        orbit_vars = pyspedas.goes.orbit()
+        orbit_vars = pyspedas.projects.goes.orbit(downloadonly=True)
+        orbit_vars = pyspedas.projects.goes.orbit(notplot=True)
+        orbit_vars = pyspedas.projects.goes.orbit()
         self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars)
         self.assertTrue("g15_orbit_XYZ_GSE" in orbit_vars)
         self.assertTrue("g15_orbit_XYZ_SM" in orbit_vars)
@@ -30,7 +30,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_1min_mag_data(self):
         del_data()
-        mag_vars = pyspedas.goes.fgm(datatype="1min")
+        mag_vars = pyspedas.projects.goes.fgm(datatype="1min")
         self.assertTrue("g15_fgm_BX_1" in mag_vars)
         self.assertTrue("g15_fgm_BY_1" in mag_vars)
         self.assertTrue("g15_fgm_BZ_1" in mag_vars)
@@ -40,7 +40,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_5min_mag_data(self):
         del_data()
-        mag_vars = pyspedas.goes.fgm(
+        mag_vars = pyspedas.projects.goes.fgm(
             datatype="5min",
             probe="10",
             trange=["2000-07-01", "2000-07-02"],
@@ -51,7 +51,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_full_mag_data(self):
         del_data()
-        mag_vars = pyspedas.goes.fgm(datatype="512ms", suffix="_512")
+        mag_vars = pyspedas.projects.goes.fgm(datatype="512ms", suffix="_512")
         self.assertTrue("g15_fgm_BX_1_512" in mag_vars)
         self.assertTrue("g15_fgm_BY_1_512" in mag_vars)
         self.assertTrue("g15_fgm_BZ_1_512" in mag_vars)
@@ -61,7 +61,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_1min_epead_data(self):
         del_data()
-        epead_vars = pyspedas.goes.epead()
+        epead_vars = pyspedas.projects.goes.epead()
         self.assertTrue("g15_epead_E1E_UNCOR_FLUX" in epead_vars)
         self.assertTrue(data_exists("g15_epead_E1E_UNCOR_FLUX"))
         self.assertTrue("g15_epead_E1W_UNCOR_FLUX" in epead_vars)
@@ -83,7 +83,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_full_epead_data(self):
         del_data()
-        epead_vars = pyspedas.goes.epead(datatype="1min")
+        epead_vars = pyspedas.projects.goes.epead(datatype="1min")
         self.assertTrue("g15_epead_E1E_UNCOR_FLUX" in epead_vars)
         self.assertTrue(data_exists("g15_epead_E1E_UNCOR_FLUX"))
         self.assertTrue("g15_epead_E1W_UNCOR_FLUX" in epead_vars)
@@ -105,7 +105,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_5min_epead_data(self):
         del_data()
-        epead_vars = pyspedas.goes.epead(datatype="5min")
+        epead_vars = pyspedas.projects.goes.epead(datatype="5min")
         self.assertTrue("g15_epead_E1E_UNCOR_FLUX" in epead_vars)
         self.assertTrue(data_exists("g15_epead_E1E_UNCOR_FLUX"))
         self.assertTrue("g15_epead_E1W_UNCOR_FLUX" in epead_vars)
@@ -127,7 +127,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_full_maged_data(self):
         del_data()
-        maged_vars = pyspedas.goes.maged(datatype="full")
+        maged_vars = pyspedas.projects.goes.maged(datatype="full")
         self.assertTrue("g15_maged_M_1ME1_DTC_UNCOR_CR" in maged_vars)
         self.assertTrue(data_exists("g15_maged_M_1ME1_DTC_UNCOR_CR"))
         self.assertTrue("g15_maged_M_1ME2_DTC_UNCOR_CR" in maged_vars)
@@ -141,7 +141,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_1min_maged_data(self):
         del_data()
-        maged_vars = pyspedas.goes.maged(datatype="1min", time_clip=True)
+        maged_vars = pyspedas.projects.goes.maged(datatype="1min", time_clip=True)
         self.assertTrue("g15_maged_M_1ME1_DTC_UNCOR_FLUX" in maged_vars)
         self.assertTrue(data_exists("g15_maged_M_1ME1_DTC_UNCOR_FLUX"))
         self.assertTrue("g15_maged_M_1ME2_DTC_UNCOR_FLUX" in maged_vars)
@@ -155,7 +155,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_5min_maged_data(self):
         del_data()
-        maged_vars = pyspedas.goes.maged(datatype="5min", time_clip=True)
+        maged_vars = pyspedas.projects.goes.maged(datatype="5min", time_clip=True)
         self.assertTrue("g15_maged_M_2ME1_DTC_COR_FLUX" in maged_vars)
         self.assertTrue(data_exists("g15_maged_M_2ME1_DTC_COR_FLUX"))
         self.assertTrue("g15_maged_M_2ME2_DTC_COR_FLUX" in maged_vars)
@@ -169,7 +169,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_full_magpd_data(self):
         del_data()
-        magpd_vars = pyspedas.goes.magpd(datatype="full")
+        magpd_vars = pyspedas.projects.goes.magpd(datatype="full")
         self.assertTrue("g15_magpd_M_1MP1_DTC_UNCOR_CR" in magpd_vars)
         self.assertTrue(data_exists("g15_magpd_M_1MP1_DTC_UNCOR_CR"))
         self.assertTrue("g15_magpd_M_1MP2_DTC_UNCOR_CR" in magpd_vars)
@@ -183,7 +183,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_1min_magpd_data(self):
         del_data()
-        magpd_vars = pyspedas.goes.magpd(datatype="1min", time_clip=True)
+        magpd_vars = pyspedas.projects.goes.magpd(datatype="1min", time_clip=True)
         self.assertTrue("g15_magpd_M_1MP1_DTC_UNCOR_FLUX" in magpd_vars)
         self.assertTrue(data_exists("g15_magpd_M_1MP1_DTC_UNCOR_FLUX"))
         self.assertTrue("g15_magpd_M_1MP2_DTC_UNCOR_FLUX" in magpd_vars)
@@ -197,7 +197,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_full_hepad_data(self):
         del_data()
-        hepad_vars = pyspedas.goes.hepad(datatype="full")
+        hepad_vars = pyspedas.projects.goes.hepad(datatype="full")
         self.assertTrue("g15_hepad_P10_FLUX" in hepad_vars)
         self.assertTrue("g15_hepad_S1_COUNT_RATE" in hepad_vars)
         self.assertTrue(data_exists("g15_hepad_P10_FLUX"))
@@ -205,7 +205,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_1min_hepad_data(self):
         del_data()
-        hepad_vars = pyspedas.goes.hepad(prefix="probename", time_clip=True)
+        hepad_vars = pyspedas.projects.goes.hepad(prefix="probename", time_clip=True)
         self.assertTrue("g15_hepad_P10_FLUX" in hepad_vars)
         self.assertTrue("g15_hepad_S1_COUNT_RATE" in hepad_vars)
         self.assertTrue(data_exists("g15_hepad_P10_FLUX"))
@@ -213,7 +213,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_xrs_data(self):
         del_data()
-        xrs_vars = pyspedas.goes.xrs(
+        xrs_vars = pyspedas.projects.goes.xrs(
             probe="10", datatype="full", trange=["2002-08-01", "2002-08-01"]
         )
         self.assertTrue("g10_xrs_xl" in xrs_vars)
@@ -221,7 +221,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_xrs_5m_data(self):
         del_data()
-        xrs_vars = pyspedas.goes.xrs(
+        xrs_vars = pyspedas.projects.goes.xrs(
             probe="11",
             datatype="5min",
             trange=["2000-09-01", "2000-09-01"],
@@ -232,7 +232,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_xrs_1m_data(self):
         del_data()
-        xrs_vars = pyspedas.goes.xrs(
+        xrs_vars = pyspedas.projects.goes.xrs(
             probe="11",
             datatype="1min",
             trange=["2000-09-01", "2000-09-01"],
@@ -244,7 +244,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_eps_1m_data(self):
         del_data()
-        eps_vars = pyspedas.goes.eps(
+        eps_vars = pyspedas.projects.goes.eps(
             trange=["2000-09-01", "2000-09-01"], probe="11", time_clip=True
         )
         self.assertTrue("g11_eps_e1_flux_i" in eps_vars)
@@ -256,7 +256,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_eps_5m_data(self):
         del_data()
-        eps_vars = pyspedas.goes.eps(
+        eps_vars = pyspedas.projects.goes.eps(
             trange=["2000-09-01", "2000-09-01"],
             probe="11",
             datatype="5min",
@@ -279,13 +279,13 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_xrs_data_16(self):
         del_data()
-        xrs_vars_16 = pyspedas.goes.xrs(probe="16", trange=["2022-09-01", "2022-09-02"])
+        xrs_vars_16 = pyspedas.projects.goes.xrs(probe="16", trange=["2022-09-01", "2022-09-02"])
         self.assertTrue("g16_xrs_xrsa_flux" in xrs_vars_16)
         self.assertTrue(data_exists("g16_xrs_xrsa_flux"))
 
     def test_load_xrs_data_17_hi(self):
         del_data()
-        xrs_vars_17 = pyspedas.goes.xrs(
+        xrs_vars_17 = pyspedas.projects.goes.xrs(
             probe="17", trange=["2022-07-01", "2022-07-02"], datatype="hi"
         )
         self.assertTrue("g17_xrs_xrsb_flux" in xrs_vars_17)
@@ -293,7 +293,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_euvs_data_17(self):
         del_data()
-        euvs_vars_17 = pyspedas.goes.euvs(
+        euvs_vars_17 = pyspedas.projects.goes.euvs(
             probe="17", trange=["2022-09-01", "2022-09-02"]
         )
         self.assertTrue("g17_euvs_irr_256" in euvs_vars_17)
@@ -301,7 +301,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_euvs_data_16_hi(self):
         del_data()
-        euvs_vars_16 = pyspedas.goes.euvs(
+        euvs_vars_16 = pyspedas.projects.goes.euvs(
             probe="16",
             trange=["2022-08-01", "2022-08-02"],
             prefix="probename",
@@ -312,7 +312,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_mag_data_16(self):
         del_data()
-        mag_vars_16 = pyspedas.goes.mag(
+        mag_vars_16 = pyspedas.projects.goes.mag(
             probe="16", trange=["2023-01-30", "2023-01-31"], prefix="goes16_"
         )
         self.assertTrue("goes16_b_total" in mag_vars_16)
@@ -320,7 +320,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_mag_data_17(self):
         del_data()
-        mag_vars_17 = pyspedas.goes.mag(
+        mag_vars_17 = pyspedas.projects.goes.mag(
             probe="17",
             trange=["2022-01-30", "2022-01-31"],
             prefix="goes17_",
@@ -331,7 +331,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_mpsh_data_17(self):
         del_data()
-        mpsh_vars_17 = pyspedas.goes.mpsh(
+        mpsh_vars_17 = pyspedas.projects.goes.mpsh(
             probe="17",
             trange=["2022-09-01", "2022-09-02"],
             prefix="probename",
@@ -342,7 +342,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_mpsh_data_16(self):
         del_data()
-        mpsh_vars_16 = pyspedas.goes.mpsh(
+        mpsh_vars_16 = pyspedas.projects.goes.mpsh(
             probe="16", trange=["2022-10-01", "2022-10-02"], prefix="", datatype="hi"
         )
         self.assertTrue("g16_mpsh_AvgDiffProtonFlux" in mpsh_vars_16)
@@ -350,7 +350,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_sgps_data_16(self):
         del_data()
-        sgps_vars_16 = pyspedas.goes.sgps(
+        sgps_vars_16 = pyspedas.projects.goes.sgps(
             probe="16", trange=["2023-01-30", "2023-01-31"], prefix="probename"
         )
         self.assertTrue("g16_sgps_AvgDiffAlphaFlux" in sgps_vars_16)
@@ -358,7 +358,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_sgps_data_18(self):
         del_data()
-        sgps_vars_18 = pyspedas.goes.sgps(
+        sgps_vars_18 = pyspedas.projects.goes.sgps(
             probe="18",
             trange=["2023-01-30", "2023-01-31"],
             datatype="hi",

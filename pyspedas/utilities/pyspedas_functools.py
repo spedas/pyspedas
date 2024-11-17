@@ -4,7 +4,7 @@ from typing import TypeVar
 # Credit to Aidan Grant, from the comments of a Jetbrains open issue (linked below) regarding autocompletion
 # of functions defined with functools.partial.  This seems to solve the issue with
 # PyCharm not being able to autocomplete or show arguments for some of our load routines,
-# e.g. from pyspedas.goes
+# e.g. from pyspedas.projects.goes
 
 T = TypeVar('T')
 

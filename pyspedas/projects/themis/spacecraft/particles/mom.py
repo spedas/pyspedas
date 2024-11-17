@@ -82,7 +82,7 @@ def mom(trange=['2008-03-23', '2008-03-24'],
     -------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> mom_vars = pyspedas.themis.mom(probe='d', trange=['2013-11-5', '2013-11-6'])
+        >>> mom_vars = pyspedas.projects.themis.mom(probe='d', trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['thd_peim_velocity_gsm', 'thd_peim_density'])
 
 

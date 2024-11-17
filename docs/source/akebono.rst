@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Akebono mission.
 
 Plasma Waves and Sounder experiment (PWS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.akebono.pws
+.. autofunction:: pyspedas.projects.akebono.pws
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   pws_vars = pyspedas.akebono.pws(trange=['2012-10-01', '2012-10-02'])
+   pws_vars = pyspedas.projects.akebono.pws(trange=['2012-10-01', '2012-10-02'])
    tplot('akb_pws_RX1')
 
 .. image:: _static/akebono_pws.png
@@ -24,7 +24,7 @@ Example
 
 Radiation Moniter (RDM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.akebono.rdm
+.. autofunction:: pyspedas.projects.akebono.rdm
 
 Example
 ^^^^^^^^^
@@ -33,7 +33,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   rdm_vars = pyspedas.akebono.rdm(trange=['2012-10-01', '2012-10-02'])
+   rdm_vars = pyspedas.projects.akebono.rdm(trange=['2012-10-01', '2012-10-02'])
    tplot('akb_rdm_FEIO')
 
 .. image:: _static/akebono_rdm.png
@@ -43,7 +43,7 @@ Example
 
 Orbit data (orb)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.akebono.orb
+.. autofunction:: pyspedas.projects.akebono.orb
 
 Example
 ^^^^^^^^^
@@ -52,7 +52,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   orb_vars = pyspedas.akebono.orb(trange=['2012-10-01', '2012-10-02'])
+   orb_vars = pyspedas.projects.akebono.orb(trange=['2012-10-01', '2012-10-02'])
    tplot(['akb_orb_geo', 'akb_orb_MLT'])
 
 .. image:: _static/akebono_orb.png

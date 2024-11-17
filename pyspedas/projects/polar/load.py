@@ -21,18 +21,18 @@ def load(trange=['1997-01-03', '1997-01-04'],
     """
     This function loads data from the Polar mission; this function is not meant 
     to be called directly; instead, see the wrappera:
-        pyspedas.polar.mfe
-        pyspedas.polar.efi
-        pyspedas.polar.pwi
-        pyspedas.polar.hydra
-        pyspedas.polar.tide
-        pyspedas.polar.timas
-        pyspedas.polar.cammice
-        pyspedas.polar.ceppad
-        pyspedas.polar.uvi
-        pyspedas.polar.vis
-        pyspedas.polar.pixie
-        pyspedas.polar.orbit
+        pyspedas.projects.polar.mfe
+        pyspedas.projects.polar.efi
+        pyspedas.projects.polar.pwi
+        pyspedas.projects.polar.hydra
+        pyspedas.projects.polar.tide
+        pyspedas.projects.polar.timas
+        pyspedas.projects.polar.cammice
+        pyspedas.projects.polar.ceppad
+        pyspedas.projects.polar.uvi
+        pyspedas.projects.polar.vis
+        pyspedas.projects.polar.pixie
+        pyspedas.projects.polar.orbit
 
     Parameters
     ----------
@@ -104,15 +104,15 @@ def load(trange=['1997-01-03', '1997-01-04'],
     ----------
         import pyspedas
         from pytplot import tplot
-        mfe_polar_vars = pyspedas.polar.mfe(trange=['1997-01-03', '1997-01-04'])
+        mfe_polar_vars = pyspedas.projects.polar.mfe(trange=['1997-01-03', '1997-01-04'])
 
-        efi_polar_vars = pyspedas.polar.efi(trange=['1997-01-03', '1997-01-04'])
+        efi_polar_vars = pyspedas.projects.polar.efi(trange=['1997-01-03', '1997-01-04'])
 
-        pwi_polar_vars = pyspedas.polar.pwi(trange=['1997-01-03', '1997-01-04'])
+        pwi_polar_vars = pyspedas.projects.polar.pwi(trange=['1997-01-03', '1997-01-04'])
 
-        tide_polar_vars = pyspedas.polar.tide(trange=['1997-01-03', '1997-01-04'])
+        tide_polar_vars = pyspedas.projects.polar.tide(trange=['1997-01-03', '1997-01-04'])
 
-        orbit_polar_vars = pyspedas.polar.orbit(trange=['1997-01-03', '1997-01-04'])
+        orbit_polar_vars = pyspedas.projects.polar.orbit(trange=['1997-01-03', '1997-01-04'])
 
     """
     if prefix is None:

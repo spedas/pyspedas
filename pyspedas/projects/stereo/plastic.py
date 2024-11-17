@@ -82,7 +82,7 @@ def plastic(trange=['2013-11-5', '2013-11-6'],
     ----------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> plastic_vars = pyspedas.stereo.plastic(trange=['2013-11-5', '2013-11-6'])
+        >>> plastic_vars = pyspedas.projects.stereo.plastic(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['proton_number_density', 'proton_bulk_speed', 'proton_temperature', 'proton_thermal_speed'])
 
     """

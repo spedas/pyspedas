@@ -25,9 +25,9 @@ def load(trange=['2012-10-01', '2012-10-02'],
     This function loads data from the Akebono mission; this function is not meant 
     to be called directly; instead, see the wrappers:
 
-        pyspedas.akebono.pws
-        pyspedas.akebono.rdm
-        pyspedas.akebono.orb
+        pyspedas.projects.akebono.pws
+        pyspedas.projects.akebono.rdm
+        pyspedas.projects.akebono.orb
 
     """
     if prefix is not None:

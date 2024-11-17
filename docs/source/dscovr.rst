@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Deep Space Climate
 
 Magnetometer (MAG)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.dscovr.mag
+.. autofunction:: pyspedas.projects.dscovr.mag
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mag_vars = pyspedas.dscovr.mag(trange=['2018-11-5', '2018-11-6'])
+   mag_vars = pyspedas.projects.dscovr.mag(trange=['2018-11-5', '2018-11-6'])
    tplot('dsc_h0_mag_B1GSE')
 
 .. image:: _static/dscovr_mag.png
@@ -26,7 +26,7 @@ Example
 
 Faraday cup (FC)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.dscovr.fc
+.. autofunction:: pyspedas.projects.dscovr.fc
 
 Example
 ^^^^^^^^^
@@ -35,7 +35,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   fc_vars = pyspedas.dscovr.fc(trange=['2018-11-5', '2018-11-6'])
+   fc_vars = pyspedas.projects.dscovr.fc(trange=['2018-11-5', '2018-11-6'])
    tplot(['dsc_h1_fc_V_GSE', 'dsc_h1_fc_THERMAL_SPD', 'dsc_h1_fc_Np', 'dsc_h1_fc_THERMAL_TEMP'])
 
 .. image:: _static/dscovr_fc.png
@@ -47,7 +47,7 @@ Example
 
 Orbit data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.dscovr.orb
+.. autofunction:: pyspedas.projects.dscovr.orb
 
 Example
 ^^^^^^^^^
@@ -56,7 +56,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   orb_vars = pyspedas.dscovr.orb(trange=['2018-11-5', '2018-11-6'])
+   orb_vars = pyspedas.projects.dscovr.orb(trange=['2018-11-5', '2018-11-6'])
    tplot(['dsc_orbit_SUN_R', 'dsc_orbit_GCI_POS', 'dsc_orbit_GCI_VEL', 'dsc_orbit_GSE_POS', 'dsc_orbit_MOON_GSE_POS'])
 
 .. image:: _static/dscovr_orb.png
@@ -68,7 +68,7 @@ Example
 
 Attitude data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.dscovr.att
+.. autofunction:: pyspedas.projects.dscovr.att
 
 Example
 ^^^^^^^^^
@@ -77,7 +77,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   att_vars = pyspedas.dscovr.att(trange=['2018-11-5', '2018-11-6'])
+   att_vars = pyspedas.projects.dscovr.att(trange=['2018-11-5', '2018-11-6'])
    tplot(['dsc_att_GSE_Yaw', 'dsc_att_GSE_Pitch', 'dsc_att_GSE_Roll'])
 
 .. image:: _static/dscovr_att.png
@@ -89,7 +89,7 @@ Example
 
 Load all data at once
 ----------------------------------------------------------
-.. autofunction:: pyspedas.dscovr.all
+.. autofunction:: pyspedas.projects.dscovr.all
 
 Example
 ^^^^^^^^^
@@ -98,7 +98,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   all_vars = pyspedas.dscovr.all(trange=['2018-11-5', '2018-11-6'])
+   all_vars = pyspedas.projects.dscovr.all(trange=['2018-11-5', '2018-11-6'])
    tplot(['dsc_h0_mag_B1GSE', 'dsc_h1_fc_V_GSE', 'dsc_h1_fc_THERMAL_SPD', 'dsc_h1_fc_Np', 'dsc_orbit_GSE_POS'])
 
 .. image:: _static/dscovr_all.png

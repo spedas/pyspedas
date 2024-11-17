@@ -113,7 +113,7 @@ class TestScpo2densValidation(unittest.TestCase):
         ```
         """
 
-        pyspedas.themis.esa(trange=trange, probe=probe,
+        pyspedas.projects.themis.esa(trange=trange, probe=probe,
                             varnames=[f'th{probe}_peer_density',
                                       f'th{probe}_peir_density',
                                       f'th{probe}_peer_sc_pot',

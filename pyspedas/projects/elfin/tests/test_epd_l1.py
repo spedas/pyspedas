@@ -3,7 +3,7 @@ This module perform unitest on elfin epd l1 spectrogram by comparing
 with tplot variable genrate by IDL routine 
 
 How to run:
-    $ python -m pyspedas.elfin.tests.test_epd_l1
+    $ python -m pyspedas.projects.elfin.tests.test_epd_l1
 """
 import unittest
 import logging
@@ -90,7 +90,7 @@ class TestELFL1Validation(unittest.TestCase):
 
     def test_epd_l1_raw(self):
         """Validate epd l1 raw spectogram"""
-        pyspedas.elfin.epd(trange=self.t, probe=self.probe, level='l1', type_='raw')
+        pyspedas.projects.elfin.epd(trange=self.t, probe=self.probe, level='l1', type_='raw')
         elf_pef_raw = pytplot.get_data(f"el{self.probe}_pef_raw")
         assert_allclose(elf_pef_raw.y, self.elf_pef_raw.y, rtol=1e-01)
 
@@ -99,7 +99,7 @@ class TestELFL1Validation(unittest.TestCase):
 
     def test_epd_l1_cps(self):
         """Validate epd l1 nflux spectogram"""
-        pyspedas.elfin.epd(trange=self.t, probe=self.probe, level='l1', type_='cps')
+        pyspedas.projects.elfin.epd(trange=self.t, probe=self.probe, level='l1', type_='cps')
         elf_pef_cps = pytplot.get_data(f"el{self.probe}_pef_cps")
         assert_allclose(elf_pef_cps.y, self.elf_pef_cps.y, rtol=1e-01)
 
@@ -108,7 +108,7 @@ class TestELFL1Validation(unittest.TestCase):
 
     def test_epd_l1_nflux(self):
         """Validate epd l1 nflux spectogram"""
-        pyspedas.elfin.epd(trange=self.t, probe=self.probe, level='l1', type_='nflux')
+        pyspedas.projects.elfin.epd(trange=self.t, probe=self.probe, level='l1', type_='nflux')
         elf_pef_nflux = pytplot.get_data(f"el{self.probe}_pef_nflux")
         assert_allclose(elf_pef_nflux.y, self.elf_pef_nflux.y, rtol=1e-01)
 
@@ -117,7 +117,7 @@ class TestELFL1Validation(unittest.TestCase):
 
     def test_epd_l1_eflux(self):
         """Validate epd l1 elux spectogram"""
-        pyspedas.elfin.epd(trange=self.t, probe=self.probe, level='l1', type_='eflux')
+        pyspedas.projects.elfin.epd(trange=self.t, probe=self.probe, level='l1', type_='eflux')
         elf_pef_eflux = pytplot.get_data(f"el{self.probe}_pef_eflux")
         elf_pef_sectnum = pytplot.get_data(f"el{self.probe}_pef_sectnum")
         elf_pef_nspinsinsum = pytplot.get_data(f"el{self.probe}_pef_nspinsinsum")

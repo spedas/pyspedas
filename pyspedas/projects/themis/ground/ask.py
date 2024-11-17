@@ -79,7 +79,7 @@ def ask(site=None,
     -------
         import pyspedas
         from pytplot import tplot
-        >>> ask_vars = pyspedas.themis.ask(trange=['2013-11-05', '2013-11-06'])
+        >>> ask_vars = pyspedas.projects.themis.ask(trange=['2013-11-05', '2013-11-06'])
         >>> tplot(['thg_ask_atha', 'thg_ask_chbg'])
     """
 

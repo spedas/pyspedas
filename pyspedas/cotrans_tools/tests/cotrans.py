@@ -113,10 +113,10 @@ class CotransTestCases(unittest.TestCase):
             self.assertIn("Please load missing variables.", log.output[2])
         # Now load the needed variables.
         time_range = ['2017-03-23 00:00:00', '2017-03-23 23:59:59']
-        pyspedas.themis.state(probe='a', trange=time_range,
+        pyspedas.projects.themis.state(probe='a', trange=time_range,
                               get_support_data=True,
                               varnames=['tha_spinras', 'tha_spindec'])
-        pyspedas.themis.fgm(probe='a', trange=time_range,
+        pyspedas.projects.themis.fgm(probe='a', trange=time_range,
                             varnames=['tha_fgl_dsl'])
 
         fac_matrix_make('tha_fgl_dsl')
@@ -143,7 +143,7 @@ class CotransTestCases(unittest.TestCase):
         probe = 'a'
         name_in = "tha_pos"
         name_out = "tha_pos_new_geo"
-        pyspedas.themis.state(probe=probe, trange=trange,
+        pyspedas.projects.themis.state(probe=probe, trange=trange,
                               time_clip=True, varnames=[name_in])
         cotrans(name_in=name_in, name_out=name_out,
                 coord_in="gei", coord_out="geo")
@@ -161,7 +161,7 @@ class CotransTestCases(unittest.TestCase):
         probe = 'a'
         name_in = "tha_pos"
         name_out = "tha_pos_new_geo"
-        pyspedas.themis.state(probe=probe, trange=trange,
+        pyspedas.projects.themis.state(probe=probe, trange=trange,
                               time_clip=True, varnames=[name_in])
         # Metadata coordinate system is GEI, but requesting GSM->GEO transform.  This should generate an error message
         # and return failure.

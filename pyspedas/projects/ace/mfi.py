@@ -103,7 +103,7 @@ def mfi(trange=['2018-11-5', '2018-11-6'],
 
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'])
+        >>> mfi_vars = pyspedas.projects.ace.mfi(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['BGSEc', 'Magnitude'])
 
     """

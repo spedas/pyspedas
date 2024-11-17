@@ -78,7 +78,7 @@ def fft(trange=['2007-03-23', '2007-03-24'],
     -------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> fft_vars = pyspedas.themis.fft(probe='d', trange=['2013-11-5', '2013-11-6'])
+        >>> fft_vars = pyspedas.projects.themis.fft(probe='d', trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['thd_fff_32_edc12','thd_fff_32_scm2'])
 
 

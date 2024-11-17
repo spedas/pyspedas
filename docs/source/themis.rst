@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Time History of Ev
 
 Fluxgate magnetometer (FGM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.fgm
+.. autofunction:: pyspedas.projects.themis.fgm
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   fgm_vars = pyspedas.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
+   fgm_vars = pyspedas.projects.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_fgs_btotal', 'thd_fgs_gse'])
 
 .. image:: _static/themis_fgm.png
@@ -26,7 +26,7 @@ Example
 
 Search-coil magnetometer (SCM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.scm
+.. autofunction:: pyspedas.projects.themis.scm
 
 Example
 ^^^^^^^^^
@@ -35,7 +35,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   scm_vars = pyspedas.themis.scm(probe='d', trange=['2013-11-5', '2013-11-6'])
+   scm_vars = pyspedas.projects.themis.scm(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_scf_btotal', 'thd_scf_gse'])
 
 .. image:: _static/themis_scm.png
@@ -47,7 +47,7 @@ Example
 
 Electric Field Instrument (EFI)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.efi
+.. autofunction:: pyspedas.projects.themis.efi
 
 Example
 ^^^^^^^^^
@@ -56,7 +56,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   efi_vars = pyspedas.themis.efi(probe='d', trange=['2013-11-5', '2013-11-6'])
+   efi_vars = pyspedas.projects.themis.efi(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot('thd_efs_dot0_gse')
 
 .. image:: _static/themis_efi.png
@@ -68,7 +68,7 @@ Example
 
 Electrostatic Analyzer (ESA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.esa
+.. autofunction:: pyspedas.projects.themis.esa
 
 Example
 ^^^^^^^^^
@@ -77,7 +77,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   esa_vars = pyspedas.themis.esa(probe='d', trange=['2013-11-5', '2013-11-6'])
+   esa_vars = pyspedas.projects.themis.esa(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_peif_density', 'thd_peif_vthermal'])
 
 .. image:: _static/themis_esa.png
@@ -89,7 +89,7 @@ Example
 
 Solid State Telescope (SST)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.sst
+.. autofunction:: pyspedas.projects.themis.sst
 
 Example
 ^^^^^^^^^
@@ -98,7 +98,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   sst_vars = pyspedas.themis.sst(probe='d', trange=['2013-11-5', '2013-11-6'])
+   sst_vars = pyspedas.projects.themis.sst(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot('thd_psif_density')
 
 .. image:: _static/themis_sst.png
@@ -110,7 +110,7 @@ Example
 
 Moments data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.mom
+.. autofunction:: pyspedas.projects.themis.mom
 
 Example
 ^^^^^^^^^
@@ -119,7 +119,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mom_vars = pyspedas.themis.mom(probe='d', trange=['2013-11-5', '2013-11-6'])
+   mom_vars = pyspedas.projects.themis.mom(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_peim_velocity_gsm', 'thd_peim_density'])
 
 .. image:: _static/themis_mom.png
@@ -131,7 +131,7 @@ Example
 
 Ground computed moments data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.gmom
+.. autofunction:: pyspedas.projects.themis.gmom
 
 Example
 ^^^^^^^^^
@@ -140,7 +140,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   gmom_vars = pyspedas.themis.gmom(probe='d', trange=['2013-11-5', '2013-11-6'])
+   gmom_vars = pyspedas.projects.themis.gmom(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_ptiff_velocity_gse', 'thd_pteff_density', 'thd_pteff_avgtemp'])
 
 .. image:: _static/themis_gmom.png
@@ -151,7 +151,7 @@ Example
 
 State data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.state
+.. autofunction:: pyspedas.projects.themis.state
 
 Example
 ^^^^^^^^^
@@ -160,7 +160,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   state_vars = pyspedas.themis.state(probe='d', trange=['2013-11-5', '2013-11-6'])
+   state_vars = pyspedas.projects.themis.state(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_pos', 'thd_vel'])
 
 .. image:: _static/themis_state.png
@@ -171,14 +171,14 @@ Example
 
 Orbit data from SSCWeb
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.ssc
+.. autofunction:: pyspedas.projects.themis.ssc
 
 Example
 ^^^^^^^^^
 
 .. code-block:: python
    
-   from pyspedas.themis import ssc
+   from pyspedas.projects.themis import ssc
    ssc_vars = ssc(probe='d', trange=['2012-10-01', '2012-10-02'])
    print(ssc_vars)
 
@@ -188,14 +188,14 @@ Example
 
 Orbit data from SSCWeb (predicted)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.ssc_pre
+.. autofunction:: pyspedas.projects.themis.ssc_pre
 
 Example
 ^^^^^^^^^
 
 .. code-block:: python
    
-   from pyspedas.themis import ssc_pre
+   from pyspedas.projects.themis import ssc_pre
    ssc_pre_vars = ssc_pre(probe='a', trange=['2028-12-01', '2028-12-02'])
    print(ssc_pre_vars)
 
@@ -205,7 +205,7 @@ Example
 
 Ground magnetometer data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.themis.gmag
+.. autofunction:: pyspedas.projects.themis.gmag
 
 Example
 ^^^^^^^^^
@@ -214,7 +214,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   gmag_vars = pyspedas.themis.gmag(sites='ccnv', trange=['2013-11-5', '2013-11-6'])
+   gmag_vars = pyspedas.projects.themis.gmag(sites='ccnv', trange=['2013-11-5', '2013-11-6'])
    tplot('thg_mag_ccnv')
 
 .. image:: _static/themis_gmag.png

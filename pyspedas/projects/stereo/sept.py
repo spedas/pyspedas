@@ -80,7 +80,7 @@ def sept(trange=['2013-11-5', '2013-11-6'],
     ----------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> sept_vars = pyspedas.stereo.sept(trange=['2013-1-5', '2013-1-6'])
+        >>> sept_vars = pyspedas.projects.stereo.sept(trange=['2013-1-5', '2013-1-6'])
         >>> tplot(sit_vars)
 
     """

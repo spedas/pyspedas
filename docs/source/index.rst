@@ -22,10 +22,10 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
 
    time_range = ['2020-04-20/06:00', '2020-04-20/08:00']
 
-   pyspedas.solo.mag(trange=time_range, time_clip=True)
-   pyspedas.psp.fields(trange=time_range, time_clip=True)
-   pyspedas.mms.fgm(trange=time_range, time_clip=True, probe=2)
-   pyspedas.themis.fgm(trange=time_range, time_clip=True, probe='d')
+   pyspedas.projects.solo.mag(trange=time_range, time_clip=True)
+   pyspedas.projects.psp.fields(trange=time_range, time_clip=True)
+   pyspedas.projects.mms.fgm(trange=time_range, time_clip=True, probe=2)
+   pyspedas.projects.themis.fgm(trange=time_range, time_clip=True, probe='d')
 
    tplot(['B_RTN', 'psp_fld_l2_mag_RTN', 'mms2_fgm_b_gsm_srvy_l2_bvec', 'thd_fgs_gsm'])
 

@@ -15,107 +15,107 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_fgm_data(self):
         del_data('*')
-        mag_vars = pyspedas.cluster.fgm(time_clip=True)
+        mag_vars = pyspedas.projects.cluster.fgm(time_clip=True)
         self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
         self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
 
     def test_load_fgm_data_prefix_none(self):
         del_data('*')
-        mag_vars = pyspedas.cluster.fgm(prefix=None, time_clip=True)
+        mag_vars = pyspedas.projects.cluster.fgm(prefix=None, time_clip=True)
         self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
         self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
 
     def test_load_fgm_data_suffix_none(self):
         del_data('*')
-        mag_vars = pyspedas.cluster.fgm(suffix=None, time_clip=True)
+        mag_vars = pyspedas.projects.cluster.fgm(suffix=None, time_clip=True)
         self.assertTrue(data_exists('B_xyz_gse__C1_UP_FGM'))
         self.assertTrue('B_xyz_gse__C1_UP_FGM' in mag_vars)
 
     def test_load_fgm_data_prefix_suffix(self):
         del_data('*')
-        mag_vars = pyspedas.cluster.fgm(prefix='pre_', suffix='_suf', time_clip=True)
+        mag_vars = pyspedas.projects.cluster.fgm(prefix='pre_', suffix='_suf', time_clip=True)
         self.assertTrue(data_exists('pre_B_xyz_gse__C1_UP_FGM_suf'))
         self.assertTrue('pre_B_xyz_gse__C1_UP_FGM_suf' in mag_vars)
 
     def test_load_fgm_cp_data(self):
         del_data('*')
-        files = pyspedas.cluster.fgm(datatype='cp', trange=['2003-12-15', '2003-12-16'], downloadonly=True)
+        files = pyspedas.projects.cluster.fgm(datatype='cp', trange=['2003-12-15', '2003-12-16'], downloadonly=True)
         self.assertTrue(os.path.exists(files[0]))
 
     def test_load_asp_data(self):
         del_data('*')
-        asp_vars = pyspedas.cluster.aspoc(trange=['2004-04-05', '2004-04-06'])
+        asp_vars = pyspedas.projects.cluster.aspoc(trange=['2004-04-05', '2004-04-06'])
         self.assertTrue(data_exists('I_ion__C1_PP_ASP'))
         self.assertTrue('I_ion__C1_PP_ASP' in asp_vars)
 
     def test_load_cis_data(self):
         del_data('*')
-        cis_vars = pyspedas.cluster.cis()
+        cis_vars = pyspedas.projects.cluster.cis()
         self.assertTrue(data_exists('N_p__C1_PP_CIS'))
         self.assertTrue('N_p__C1_PP_CIS' in cis_vars)
 
     def test_load_dwp_data(self):
         del_data('*')
-        dwp_vars = pyspedas.cluster.dwp()
+        dwp_vars = pyspedas.projects.cluster.dwp()
         self.assertTrue(data_exists('Correl_freq__C1_PP_DWP'))
         self.assertTrue('Correl_freq__C1_PP_DWP' in dwp_vars)
 
     def test_load_edi_data_download_only(self):
         del_data('*')
-        edi_vars = pyspedas.cluster.edi(downloadonly=True)
+        edi_vars = pyspedas.projects.cluster.edi(downloadonly=True)
         self.assertTrue(isinstance(edi_vars, list))
 
     def test_load_edi_data(self):
         del_data('*')
-        edi_vars = pyspedas.cluster.edi()
+        edi_vars = pyspedas.projects.cluster.edi()
         self.assertTrue(data_exists('V_ed_xyz_gse__C1_PP_EDI'))
         self.assertTrue('V_ed_xyz_gse__C1_PP_EDI' in edi_vars)
 
     def test_load_efw_data(self):
         del_data('*')
-        efw_vars = pyspedas.cluster.efw()
+        efw_vars = pyspedas.projects.cluster.efw()
         self.assertTrue(data_exists('E_pow_f1__C1_PP_EFW'))
         self.assertTrue('E_pow_f1__C1_PP_EFW' in efw_vars)
 
     def test_load_peace_data(self):
         del_data('*')
-        p_vars = pyspedas.cluster.peace()
+        p_vars = pyspedas.projects.cluster.peace()
         self.assertTrue(data_exists('T_e_par__C1_PP_PEA'))
         self.assertTrue('T_e_par__C1_PP_PEA' in p_vars)
 
     def test_load_rap_data(self):
         del_data('*')
-        r_vars = pyspedas.cluster.rapid()
+        r_vars = pyspedas.projects.cluster.rapid()
         self.assertTrue(data_exists('J_e_lo__C1_PP_RAP'))
         self.assertTrue('J_e_lo__C1_PP_RAP' in r_vars)
 
     def test_load_sta_data(self):
         del_data('*')
-        sta_vars = pyspedas.cluster.staff()
+        sta_vars = pyspedas.projects.cluster.staff()
         self.assertTrue(data_exists('E_pow_f2__C1_PP_STA'))
         self.assertTrue('E_pow_f2__C1_PP_STA' in sta_vars)
 
     def test_load_wbd_data_notplot(self):
         del_data('*')
-        wbd_vars = pyspedas.cluster.wbd(trange=['2012-11-6/02:10', '2012-11-6/02:15'], notplot=True)
+        wbd_vars = pyspedas.projects.cluster.wbd(trange=['2012-11-6/02:10', '2012-11-6/02:15'], notplot=True)
         self.assertTrue('WBD_Elec' in wbd_vars)
 
     def test_load_wbd_data_(self):
         del_data('*')
-        wbd_vars = pyspedas.cluster.wbd(trange=['2012-11-6/02:10', '2012-11-6/02:15'])
+        wbd_vars = pyspedas.projects.cluster.wbd(trange=['2012-11-6/02:10', '2012-11-6/02:15'])
         self.assertTrue(data_exists('WBD_Elec'))
         self.assertTrue('WBD_Elec' in wbd_vars)
 
     def test_load_whi_data(self):
         del_data('*')
-        whi_vars = pyspedas.cluster.whi()
+        whi_vars = pyspedas.projects.cluster.whi()
         self.assertTrue(data_exists('E_pow_f5__C1_PP_WHI'))
         self.assertTrue('E_pow_f5__C1_PP_WHI' in whi_vars)
 
     def test_load_csa_CE_WBD_WAVEFORM_CDF_data(self):
         del_data('*')
         trange = ['2012-11-06T02:19:00Z', '2012-11-06T02:19:59Z']
-        wbd_data = pyspedas.cluster.load_csa(probes=['C1'],
+        wbd_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CE_WBD_WAVEFORM_CDF'], time_clip=True)
         print(wbd_data)
@@ -125,7 +125,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_AUX_POSGSE_1M_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+        pos_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
         self.assertTrue('sc_r_xyz_gse__C1_CP_AUX_POSGSE_1M' in pos_data)
@@ -134,7 +134,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_AUX_POSGSE_1M_data_prefix_none(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+        pos_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              prefix=None,
                                              datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
@@ -144,7 +144,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_AUX_POSGSE_1M_data_suffix_none(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+        pos_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              suffix=None,
                                              datatypes=['CP_AUX_POSGSE_1M'], time_clip=True)
@@ -154,7 +154,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_AUX_POSGSE_1M_data_prefix_suffix(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        pos_data = pyspedas.cluster.load_csa(probes=['C1'],
+        pos_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              prefix='pre_',
                                              suffix='_suf',
@@ -166,7 +166,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CIS_CODIF_HS_H1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_H1_MOMENTS'], time_clip=True)
         print(mom_data)
@@ -176,7 +176,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CIS_CODIF_HS_He1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_He1_MOMENTS'], time_clip=True)
         print(mom_data)
@@ -187,7 +187,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CIS_CODIF_HS_O1_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_HS_O1_MOMENTS'], time_clip=True)
         print(mom_data)
@@ -198,7 +198,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CIS_CODIF_PAD_HS_H1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_H1_PF'], time_clip=True)
         print(mom_data)
@@ -209,7 +209,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CIS_CODIF_PAD_HS_He1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_He1_PF'], time_clip=True)
         print(mom_data)
@@ -220,7 +220,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CIS_CODIF_PAD_HS_O1_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_CIS-CODIF_PAD_HS_O1_PF'], time_clip=True)
         print(mom_data)
@@ -231,7 +231,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CIS_HIA_ONBOARD_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_CIS-HIA_ONBOARD_MOMENTS'], time_clip=True)
         print(mom_data)
@@ -242,7 +242,7 @@ class LoadTestCases(unittest.TestCase):
     # and loads for all four probes.
     def test_load_csa_mom_data(self):
         del_data('*')
-        mom_data = pyspedas.cluster.load_csa(probes=['C1', 'C2', 'C3', 'C4'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1', 'C2', 'C3', 'C4'],
                                              trange=['2003-08-17/16:40', '2003-08-17/16:45'],
                                              datatypes=['CP_CIS-HIA_ONBOARD_MOMENTS'], time_clip=True)
         self.assertTrue('density__C1_CP_CIS_HIA_ONBOARD_MOMENTS' in mom_data)
@@ -252,7 +252,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CIS_HIA_PAD_HS_MAG_IONS_PF_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_CIS-HIA_PAD_HS_MAG_IONS_PF'], time_clip=True)
         print(mom_data)
@@ -262,7 +262,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EDI_AEDC_data(self):
         del_data('*')
         trange = ['2005-08-01T00:00:00Z', '2005-08-02T00:00:00Z']
-        edi_data = pyspedas.cluster.load_csa(probes=['C1'],
+        edi_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EDI_AEDC'], time_clip=True)
         print(edi_data)
@@ -272,7 +272,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EDI_MP_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        edi_data = pyspedas.cluster.load_csa(probes=['C1'],
+        edi_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EDI_MP'], time_clip=True)
         self.assertTrue('V_ed_xyz_gse__C1_CP_EDI_MP' in edi_data)
@@ -281,7 +281,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EDI_SPIN_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        edi_data = pyspedas.cluster.load_csa(probes=['C1'],
+        edi_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EDI_SPIN'], time_clip=True)
         self.assertTrue('V_ed_xyz_gse__C1_CP_EDI_SPIN' in edi_data)
@@ -291,7 +291,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EFW_L2_E3D_INERT_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        efw_data = pyspedas.cluster.load_csa(probes=['C1'],
+        efw_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EFW_L2_E3D_INERT'], time_clip=True)
         self.assertTrue('E_Vec_xyz_ISR2__C1_CP_EFW_L2_E3D_INERT' in efw_data)
@@ -300,7 +300,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EFW_L2_P_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-04T00:00:00Z']
-        efw_data = pyspedas.cluster.load_csa(probes=['C1'],
+        efw_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EFW_L2_P'], time_clip=True)
         self.assertTrue('Spacecraft_potential__C1_CP_EFW_L2_P' in efw_data)
@@ -309,7 +309,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EFW_L2_V3D_INERT_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        efw_data = pyspedas.cluster.load_csa(probes=['C1'],
+        efw_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EFW_L2_V3D_INERT'], time_clip=True)
         self.assertTrue('v_drift_ISR2__C1_CP_EFW_L2_V3D_INERT' in efw_data)
@@ -318,7 +318,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EFW_L3_E3D_INERT_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        efw_data = pyspedas.cluster.load_csa(probes=['C1'],
+        efw_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EFW_L3_E3D_INERT'], time_clip=True)
         self.assertTrue('E_Vec_xyz_ISR2__C1_CP_EFW_L3_E3D_INERT' in efw_data)
@@ -327,7 +327,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EFW_L3_P_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        efw_data = pyspedas.cluster.load_csa(probes=['C1'],
+        efw_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EFW_L3_P'], time_clip=True)
         self.assertTrue('Spacecraft_potential__C1_CP_EFW_L3_P' in efw_data)
@@ -336,7 +336,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_EFW_L3_V3D_INERT_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        efw_data = pyspedas.cluster.load_csa(probes=['C1'],
+        efw_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_EFW_L3_V3D_INERT'], time_clip=True)
         self.assertTrue('v_drift_ISR2__C1_CP_EFW_L3_V3D_INERT' in efw_data)
@@ -345,7 +345,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_FGM_5VPS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        fgm_data = pyspedas.cluster.load_csa(probes=['C1'],
+        fgm_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_FGM_5VPS'], time_clip=True)
         self.assertTrue('B_vec_xyz_gse__C1_CP_FGM_5VPS' in fgm_data)
@@ -354,7 +354,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_FGM_FULL_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        fgm_data = pyspedas.cluster.load_csa(probes=['C1'],
+        fgm_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_FGM_FULL'], time_clip=True)
         self.assertTrue('B_vec_xyz_gse__C1_CP_FGM_FULL' in fgm_data)
@@ -363,7 +363,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_FGM_SPIN_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        fgm_data = pyspedas.cluster.load_csa(probes=['C1'],
+        fgm_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_FGM_SPIN'], time_clip=True)
         self.assertTrue('B_vec_xyz_gse__C1_CP_FGM_SPIN' in fgm_data)
@@ -372,7 +372,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_PEA_MOMENTS_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        mom_data = pyspedas.cluster.load_csa(probes=['C1'],
+        mom_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_PEA_MOMENTS'], time_clip=True)
         self.assertTrue('Data_Density__C1_CP_PEA_MOMENTS' in mom_data)
@@ -382,7 +382,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_PEA_PITCH_SPIN_DEFlux_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        pea_data = pyspedas.cluster.load_csa(probes=['C1'],
+        pea_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_PEA_PITCH_SPIN_DEFlux'], time_clip=True)
         self.assertTrue('Data__C1_CP_PEA_PITCH_SPIN_DEFlux' in pea_data)
@@ -392,7 +392,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_PEA_PITCH_SPIN_DPFlux_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        pea_data = pyspedas.cluster.load_csa(probes=['C1'],
+        pea_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_PEA_PITCH_SPIN_DPFlux'], time_clip=True)
         self.assertTrue('Data__C1_CP_PEA_PITCH_SPIN_DPFlux' in pea_data)
@@ -402,7 +402,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_PEA_PITCH_SPIN_PSD_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        pea_data = pyspedas.cluster.load_csa(probes=['C1'],
+        pea_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_PEA_PITCH_SPIN_PSD'], time_clip=True)
         self.assertTrue('Data__C1_CP_PEA_PITCH_SPIN_PSD' in pea_data)
@@ -411,7 +411,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_RAP_ESPCT6_data(self):
         del_data('*')
         trange = ['2008-02-03T00:00:00Z', '2008-02-05T00:00:00Z']
-        rap_data = pyspedas.cluster.load_csa(probes=['C1'],
+        rap_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_RAP_ESPCT6'], time_clip=True)
         print(rap_data)
@@ -422,7 +422,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_RAP_ESPCT6_R_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        rap_data = pyspedas.cluster.load_csa(probes=['C1'],
+        rap_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_RAP_ESPCT6_R'], time_clip=True)
         self.assertTrue('Electron_Rate__C1_CP_RAP_ESPCT6_R' in rap_data)
@@ -432,7 +432,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_RAP_HSPCT_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        rap_data = pyspedas.cluster.load_csa(probes=['C1'],
+        rap_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_RAP_HSPCT'], time_clip=True)
         self.assertTrue('Proton_Dif_flux__C1_CP_RAP_HSPCT' in rap_data)
@@ -442,7 +442,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_RAP_HSPCT_R_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        rap_data = pyspedas.cluster.load_csa(probes=['C1'],
+        rap_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_RAP_HSPCT_R'], time_clip=True)
         self.assertTrue('Proton_Rate__C1_CP_RAP_HSPCT_R' in rap_data)
@@ -452,7 +452,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_RAP_ISPCT_CNO_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        rap_data = pyspedas.cluster.load_csa(probes=['C1'],
+        rap_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_RAP_ISPCT_CNO'], time_clip=True)
         self.assertTrue('CNO_Dif_flux__C1_CP_RAP_ISPCT_CNO' in rap_data)
@@ -462,7 +462,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_RAP_ISPCT_He_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        rap_data = pyspedas.cluster.load_csa(probes=['C1'],
+        rap_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_RAP_ISPCT_He'], time_clip=True)
         self.assertTrue('Helium_Dif_flux__C1_CP_RAP_ISPCT_He' in rap_data)
@@ -474,7 +474,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_STA_CS_HBR_data(self):
         del_data('*')
         trange = ['2001-01-31T00:00:00Z', '2001-01-31T23:59:59Z']
-        sta_data = pyspedas.cluster.load_csa(probes=['C1'],
+        sta_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CS_HBR'], time_clip=True)
         print(sta_data)
@@ -487,7 +487,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_STA_CS_NBR_data(self):
         del_data('*')
         trange = ['2001-01-31T00:00:00Z', '2001-01-31T23:59:59Z']
-        sta_data = pyspedas.cluster.load_csa(probes=['C1'],
+        sta_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CS_NBR'], time_clip=True)
         print(sta_data)
@@ -497,7 +497,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_STA_CWF_GSE_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        sta_data = pyspedas.cluster.load_csa(probes=['C1'],
+        sta_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CWF_GSE'], time_clip=True)
         self.assertTrue('B_vec_xyz_Instrument__C1_CP_STA_CWF_GSE' in sta_data)
@@ -508,7 +508,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_STA_CWF_HBR_ISR2_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        sta_data = pyspedas.cluster.load_csa(probes=['C1'],
+        sta_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CWF_HBR_ISR2'], time_clip=True)
         print(sta_data)
@@ -520,7 +520,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_STA_CWF_NBR_ISR2_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        sta_data = pyspedas.cluster.load_csa(probes=['C1'],
+        sta_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_CWF_NBR_ISR2'], time_clip=True)
         print(sta_data)
@@ -531,7 +531,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_STA_PSD_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        sta_data = pyspedas.cluster.load_csa(probes=['C1'],
+        sta_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_STA_PSD'], time_clip=True)
         print(sta_data)
@@ -541,7 +541,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_WBD_WAVEFORM_data(self):
         del_data('*')
         trange = ['2001-02-04T13:40:00Z', '2001-02-04T13:49:59Z']
-        wbd_data = pyspedas.cluster.load_csa(probes=['C1'],
+        wbd_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_WBD_WAVEFORM'], time_clip=True)
         print(wbd_data)
@@ -551,7 +551,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_WHI_ELECTRON_DENSITY_data(self):
         del_data('*')
         trange = ['2018-01-12T00:00:00Z', '2018-01-13T00:00:00Z']
-        whi_data = pyspedas.cluster.load_csa(probes=['C1'],
+        whi_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_WHI_ELECTRON_DENSITY'], time_clip=True)
         print(whi_data)
@@ -561,7 +561,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_CP_CP_WHI_NATURAL_data(self):
         del_data('*')
         trange = ['2001-02-01T00:00:00Z', '2001-02-02T00:00:00Z']
-        whi_data = pyspedas.cluster.load_csa(probes=['C1'],
+        whi_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                              trange=trange,
                                              datatypes=['CP_WHI_NATURAL'], time_clip=True)
         self.assertTrue('Electric_Spectral_Power_Density__C1_CP_WHI_NATURAL' in whi_data)
@@ -570,7 +570,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_JP_AUX_PMP_data(self):
         del_data('*')
         trange = ['2017-01-01T00:00:00Z', '2017-02-01T00:00:00Z']
-        jp_data = pyspedas.cluster.load_csa(probes=['C1'],
+        jp_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                             trange=trange,
                                             datatypes=['JP_AUX_PMP'], time_clip=True)
         print(jp_data)
@@ -580,7 +580,7 @@ class LoadTestCases(unittest.TestCase):
     def test_load_csa_JP_PSE_data(self):
         del_data('*')
         trange = ['2017-01-01T00:00:00Z', '2018-01-02T00:00:00Z']
-        jp_data = pyspedas.cluster.load_csa(probes=['C1'],
+        jp_data = pyspedas.projects.cluster.load_csa(probes=['C1'],
                                             trange=trange,
                                             datatypes=['JP_AUX_PSE'], time_clip=True)
         print(jp_data)

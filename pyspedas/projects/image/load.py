@@ -26,13 +26,13 @@ def load(
 
     This function loads data from the Image mission; this function is not meant
     to be called directly; instead, see the wrappers:
-    pyspedas.image.lena
-    pyspedas.image.mena
-    pyspedas.image.hena
-    pyspedas.image.rpi
-    pyspedas.image.euv
-    pyspedas.image.fuv
-    pyspedas.image.orbit
+    pyspedas.projects.image.lena
+    pyspedas.projects.image.mena
+    pyspedas.projects.image.hena
+    pyspedas.projects.image.rpi
+    pyspedas.projects.image.euv
+    pyspedas.projects.image.fuv
+    pyspedas.projects.image.orbit
 
 
     Parameters

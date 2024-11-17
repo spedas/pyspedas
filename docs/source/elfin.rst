@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Electron Losses an
 
 Fluxgate magnetometer (FGM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.elfin.fgm
+.. autofunction:: pyspedas.projects.elfin.fgm
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
 
    import pyspedas
    from pytplot import tplot
-   fgm_vars = pyspedas.elfin.fgm(probe='a', trange=['2022-08-19', '2022-08-19'])
+   fgm_vars = pyspedas.projects.elfin.fgm(probe='a', trange=['2022-08-19', '2022-08-19'])
    tplot(['ela_fgs_fsp_res_ndw', 'ela_fgs_fsp_res_obw'])
 
 
@@ -22,7 +22,7 @@ Example
 
 Energetic Particle Detector (EPD)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.elfin.epd
+.. autofunction:: pyspedas.projects.elfin.epd
 
 Example
 ^^^^^^^^^
@@ -31,7 +31,7 @@ Example
 
    import pyspedas
    from pytplot import tplot
-   elf_vars = pyspedas.elfin.epd(probe='a', trange=['2019-08-19', '2022-08-19'], level='l2')
+   elf_vars = pyspedas.projects.elfin.epd(probe='a', trange=['2019-08-19', '2022-08-19'], level='l2')
    tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', ela_pef_tspin'])
 
 
@@ -39,7 +39,7 @@ Example
 
 Magnetic Field sensor XYZ data collected by IDPU (MRMI)
 -------------------------------------------------------------------------
-.. autofunction:: pyspedas.elfin.mrmi
+.. autofunction:: pyspedas.projects.elfin.mrmi
 
 Example
 ^^^^^^^^^
@@ -48,7 +48,7 @@ Example
 
    import pyspedas
    from pytplot import tplot
-   mrmi_vars = pyspedas.elfin.mrmi(probe='b', trange=['2022-08-19', '2022-08-19']
+   mrmi_vars = pyspedas.projects.elfin.mrmi(probe='b', trange=['2022-08-19', '2022-08-19']
    tplot('elb_mrmi')
 
 
@@ -56,7 +56,7 @@ Example
 
 Magnetic Field sensor XYZ data collected by Attitude Control Board (MRMA)
 -------------------------------------------------------------------------
-.. autofunction:: pyspedas.elfin.mrma
+.. autofunction:: pyspedas.projects.elfin.mrma
 
 Example
 ^^^^^^^^^
@@ -65,7 +65,7 @@ Example
 
    import pyspedas
    from pytplot import tplot
-   mrma_vars = pyspedas.elfin.mrma(probe='a', trange=['2022-08-19', '2022-08-19'])
+   mrma_vars = pyspedas.projects.elfin.mrma(probe='a', trange=['2022-08-19', '2022-08-19'])
    tplot('ela_mrma')
 
 
@@ -73,7 +73,7 @@ Example
 
 State data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.elfin.state
+.. autofunction:: pyspedas.projects.elfin.state
 
 Example
 ^^^^^^^^^
@@ -82,7 +82,7 @@ Example
 
    import pyspedas
    from pytplot import tplot
-   state_vars = pyspedas.elfin.state(probe='a', trange=['2022-08-19', '2022-08-19'])
+   state_vars = pyspedas.projects.elfin.state(probe='a', trange=['2022-08-19', '2022-08-19'])
    tplot(['ela_pos_gei', 'ela_att_gei', 'ela_att_spinper', 'ela_spin_sun_angle' ])
 
 

@@ -63,7 +63,7 @@ def mms_feeps_gpd(trange=['2017-07-11/22:30', '2017-07-11/22:35'],
     if isinstance(probe, int):
         probe = str(probe)
 
-    feeps_data = pyspedas.mms.feeps(trange=trange, data_rate=data_rate, probe=probe, level=level)
+    feeps_data = pyspedas.projects.mms.feeps(trange=trange, data_rate=data_rate, probe=probe, level=level)
 
     if len(feeps_data) == 0:
         logging.error('Problem loading FEEPS data for this time range.')

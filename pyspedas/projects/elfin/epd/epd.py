@@ -147,12 +147,12 @@ def epd_load(trange=['2022-08-19', '2022-08-19'],
 
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> elf_vars = pyspedas.elfin.epd(probe='b', trange=['2021-01-01', '2021-01-02'], datatype='pif')
+        >>> elf_vars = pyspedas.projects.elfin.epd(probe='b', trange=['2021-01-01', '2021-01-02'], datatype='pif')
         >>> tplot(['elb_pif_nflux', 'elb_pif_spinper'])
 
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> elf_vars = pyspedas.elfin.epd(probe='a', trange=['2022-08-19', '2022-08-19'], level='l2')
+        >>> elf_vars = pyspedas.projects.elfin.epd(probe='a', trange=['2022-08-19', '2022-08-19'], level='l2')
         >>> tplot(['ela_pef_fs_Epat_nflux', 'ela_pef_hs_Epat_nflux'. 'ela_pef_pa', 'ela_pef_tspin'])
 
     """

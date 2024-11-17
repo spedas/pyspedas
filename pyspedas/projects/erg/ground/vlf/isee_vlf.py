@@ -93,7 +93,7 @@ def isee_vlf(
     Examples
     ________
     >>> import pyspedas
-    >>> vlf_vars=pyspedas.erg.isee_vlf(trange=['2017-03-30/12:00:00', '2017-03-30/15:00:00'],site='ath')
+    >>> vlf_vars=pyspedas.projects.erg.isee_vlf(trange=['2017-03-30/12:00:00', '2017-03-30/15:00:00'],site='ath')
     >>> print(vlf_vars)
 
     """

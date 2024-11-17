@@ -83,7 +83,7 @@ def lad(trange=['2018-11-5', '2018-11-6'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> lad_vars = pyspedas.twins.lad(trange=['2018-11-5/6:00', '2018-11-5/6:20'], time_clip=True)
+    >>> lad_vars = pyspedas.projects.twins.lad(trange=['2018-11-5/6:00', '2018-11-5/6:20'], time_clip=True)
     >>> tplot(['lad1_data', 'lad2_data'])
 
     """

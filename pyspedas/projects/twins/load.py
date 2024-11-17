@@ -92,9 +92,9 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
     -----
     This function loads TWINS data; this function is not meant 
     to be called directly; instead, see the wrappers:
-        pyspedas.twins.lad
-        pyspedas.twins.ephemeris
-        pyspedas.twins.imager
+        pyspedas.projects.twins.lad
+        pyspedas.projects.twins.ephemeris
+        pyspedas.projects.twins.imager
 
     """
 

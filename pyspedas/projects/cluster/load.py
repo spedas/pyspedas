@@ -95,17 +95,17 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
     -----
     This function loads data from the Cluster mission; this function is not meant 
     to be called directly; instead, see the wrappers:
-        pyspedas.cluster.fgm
-        pyspedas.cluster.aspoc
-        pyspedas.cluster.cis
-        pyspedas.cluster.dwp
-        pyspedas.cluster.edi
-        pyspedas.cluster.efw
-        pyspedas.cluster.peace
-        pyspedas.cluster.rapid
-        pyspedas.cluster.staff
-        pyspedas.cluster.wbd
-        pyspedas.cluster.whi
+        pyspedas.projects.cluster.fgm
+        pyspedas.projects.cluster.aspoc
+        pyspedas.projects.cluster.cis
+        pyspedas.projects.cluster.dwp
+        pyspedas.projects.cluster.edi
+        pyspedas.projects.cluster.efw
+        pyspedas.projects.cluster.peace
+        pyspedas.projects.cluster.rapid
+        pyspedas.projects.cluster.staff
+        pyspedas.projects.cluster.wbd
+        pyspedas.projects.cluster.whi
 
     """
     if prefix is None:

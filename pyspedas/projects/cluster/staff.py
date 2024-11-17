@@ -90,7 +90,7 @@ def staff(trange:List[str]=['2012-11-5', '2012-11-6'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> staff_vars = pyspedas.cluster.staff(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
+    >>> staff_vars = pyspedas.projects.cluster.staff(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
     >>> tplot(['B_par_f1__C1_PP_STA', 'B_perp_f1__C1_PP_STA', 'B_par_f1__C2_PP_STA', 'B_perp_f1__C2_PP_STA'])
 
     """

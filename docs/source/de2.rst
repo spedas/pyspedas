@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Dynamics Explorer 
 
 Magnetometer (MAG)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.de2.mag
+.. autofunction:: pyspedas.projects.de2.mag
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mag_vars = pyspedas.de2.mag(trange=['1983-02-10', '1983-02-11'])
+   mag_vars = pyspedas.projects.de2.mag(trange=['1983-02-10', '1983-02-11'])
    tplot(['bx', 'by', 'bz'])
 
 .. image:: _static/de2_mag.png
@@ -24,7 +24,7 @@ Example
 
 Neutral Atmosphere Composition Spectrometer (NACS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.de2.nacs
+.. autofunction:: pyspedas.projects.de2.nacs
 
 Example
 ^^^^^^^^^
@@ -33,7 +33,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   nacs_vars = pyspedas.de2.nacs(trange=['1983-02-10', '1983-02-11'])
+   nacs_vars = pyspedas.projects.de2.nacs(trange=['1983-02-10', '1983-02-11'])
    tplot(['O_density', 'N_density'])
 
 .. image:: _static/de2_nacs.png
@@ -43,7 +43,7 @@ Example
 
 Retarding Potential Analyzer (RPA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.de2.rpa
+.. autofunction:: pyspedas.projects.de2.rpa
 
 Example
 ^^^^^^^^^
@@ -52,7 +52,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   rpa_vars = pyspedas.de2.rpa(trange=['1983-02-10', '1983-02-11'])
+   rpa_vars = pyspedas.projects.de2.rpa(trange=['1983-02-10', '1983-02-11'])
    tplot(['ionDensity', 'ionTemperature'])
 
 .. image:: _static/de2_rpa.png
@@ -62,7 +62,7 @@ Example
 
 Fabry-Pérot Interferometer (FPI)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.de2.fpi
+.. autofunction:: pyspedas.projects.de2.fpi
 
 Example
 ^^^^^^^^^
@@ -71,7 +71,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   fpi_vars = pyspedas.de2.fpi(trange=['1983-02-10', '1983-02-11'])
+   fpi_vars = pyspedas.projects.de2.fpi(trange=['1983-02-10', '1983-02-11'])
    tplot('TnF')
 
 .. image:: _static/de2_fpi.png
@@ -81,7 +81,7 @@ Example
 
 Ion Drift Meter (IDM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.de2.idm
+.. autofunction:: pyspedas.projects.de2.idm
 
 Example
 ^^^^^^^^^
@@ -90,7 +90,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   idm_vars = pyspedas.de2.idm(trange=['1983-02-10', '1983-02-11'])
+   idm_vars = pyspedas.projects.de2.idm(trange=['1983-02-10', '1983-02-11'])
    tplot(['ionVelocityZ', 'ionVelocityY'])
 
 .. image:: _static/de2_idm.png
@@ -100,7 +100,7 @@ Example
 
 Wind and Temperature Spectrometer (WATS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.de2.wats
+.. autofunction:: pyspedas.projects.de2.wats
 
 Example
 ^^^^^^^^^
@@ -109,7 +109,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   wats_vars = pyspedas.de2.wats(trange=['1983-02-10', '1983-02-11'])
+   wats_vars = pyspedas.projects.de2.wats(trange=['1983-02-10', '1983-02-11'])
    tplot(['density', 'Tn'])
 
 .. image:: _static/de2_wats.png
@@ -119,7 +119,7 @@ Example
 
 Vector Electric Field Instrument (VEFI)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.de2.vefi
+.. autofunction:: pyspedas.projects.de2.vefi
 
 Example
 ^^^^^^^^^
@@ -128,7 +128,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   vefi_vars = pyspedas.de2.vefi(trange=['1983-02-10', '1983-02-11'])
+   vefi_vars = pyspedas.projects.de2.vefi(trange=['1983-02-10', '1983-02-11'])
    tplot(['spectA', 'spectB', 'spectC'])
 
 .. image:: _static/de2_vefi.png
@@ -138,7 +138,7 @@ Example
 
 Langmuir Probe Instrument (LANG)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.de2.lang
+.. autofunction:: pyspedas.projects.de2.lang
 
 Example
 ^^^^^^^^^
@@ -147,7 +147,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   lang_vars = pyspedas.de2.lang(trange=['1983-02-10', '1983-02-11'])
+   lang_vars = pyspedas.projects.de2.lang(trange=['1983-02-10', '1983-02-11'])
    tplot(['plasmaDensity', 'electronTemp'])
 
 .. image:: _static/de2_lang.png

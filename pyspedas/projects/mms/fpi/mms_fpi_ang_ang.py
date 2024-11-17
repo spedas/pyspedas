@@ -81,7 +81,7 @@ def mms_fpi_ang_ang(
 
     trange = [time_double(time) - 300, time_double(time) + 300]
 
-    fpi_vars = pyspedas.mms.fpi(
+    fpi_vars = pyspedas.projects.mms.fpi(
         trange=trange,
         datatype=["d" + species + "s-moms", "d" + species + "s-dist"],
         probe=probe,
@@ -90,7 +90,7 @@ def mms_fpi_ang_ang(
         center_measurement=center_measurement,
     )
 
-    fgm_vars = pyspedas.mms.fgm(
+    fgm_vars = pyspedas.projects.mms.fgm(
         trange=trange, probe=probe, data_rate=fgm_data_rate, level=fgm_level
     )
     dist = get_data("mms" + probe + "_d" + species + "s_dist_" + data_rate)

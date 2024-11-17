@@ -81,13 +81,13 @@ def load(
     Examples
     --------
     >>> import pyspedas
-    >>> vars = pyspedas.de2.load(instrument='mag', trange=['1983-02-10', '1983-02-11'], datatype='62ms', prefix = 'de2_')
+    >>> vars = pyspedas.projects.de2.load(instrument='mag', trange=['1983-02-10', '1983-02-11'], datatype='62ms', prefix = 'de2_')
     >>> print(vars)
     ['de2_ex', 'de2_ey', 'de2_bx', 'de2_by', 'de2_bz', 'de2_bxm', 'de2_bym', 'de2_bzm',
     'de2_glat', 'de2_glon', 'de2_ilat', 'de2_mlt', 'de2_alt']
 
     >>> import pyspedas
-    >>> vars = pyspedas.de2.lang(trange=['1983-02-10', '1983-02-11'], prefix = 'de2_')
+    >>> vars = pyspedas.projects.de2.lang(trange=['1983-02-10', '1983-02-11'], prefix = 'de2_')
     >>> print(vars)
     ['de2_OrbitNumber', 'de2_electronTemp', 'de2_plasmaDensity', 'de2_satPotential',
     'de2_alt', 'de2_glat', 'de2_glon', 'de2_lst', 'de2_lmt', 'de2_L', 'de2_ilat', 'de2_sza']

@@ -14,8 +14,8 @@ import logging
 
 class FSMLoadTestCases(unittest.TestCase):
     def test_load_basic(self):
-        files = pyspedas.mms.fsm(trange=['2015-10-16/06:00', '2015-10-16/06:05'], available=True)
-        fsm = pyspedas.mms.fsm(trange=['2015-10-16/06:00', '2015-10-16/06:05'])
+        files = pyspedas.projects.mms.fsm(trange=['2015-10-16/06:00', '2015-10-16/06:05'], available=True)
+        fsm = pyspedas.projects.mms.fsm(trange=['2015-10-16/06:00', '2015-10-16/06:05'])
         self.assertTrue(data_exists('mms1_fsm_b_mag_brst_l3'))
         self.assertTrue(data_exists('mms1_fsm_b_gse_brst_l3'))
         tplot(['mms1_fsm_b_mag_brst_l3', 'mms1_fsm_b_gse_brst_l3'], display=False)
@@ -422,7 +422,7 @@ class SCMLoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_scm_acb_gse_scsrvy_srvy_l2'))
 
     def test_load_schb(self):
-        data = pyspedas.mms.scm(probe=4, data_rate='brst', datatype='schb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
+        data = pyspedas.projects.mms.scm(probe=4, data_rate='brst', datatype='schb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
         self.assertTrue(data_exists('mms4_scm_acb_gse_schb_brst_l2'))
 
     def test_load_suffix(self):

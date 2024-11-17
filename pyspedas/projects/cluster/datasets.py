@@ -19,6 +19,6 @@ def datasets(instrument=None, label=True):
     Examples
     --------
     >>> import pyspedas
-    >>> pyspedas.cluster.datasets('FGM')
+    >>> pyspedas.projects.cluster.datasets('FGM')
     """
     return find_datasets(mission='Cluster', instrument=instrument, label=label)

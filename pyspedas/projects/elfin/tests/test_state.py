@@ -3,7 +3,7 @@ This module perform unitest on elfin state file by comparing
 with tplot variable genrate by IDL routine
 
 How to run:
-    $ python -m pyspedas.elfin.tests.test_state
+    $ python -m pyspedas.projects.elfin.tests.test_state
 """
 import unittest
 import logging
@@ -56,7 +56,7 @@ class TestELFStateValidation(unittest.TestCase):
 
     def test_state(self):
         """Validate state data."""
-        pyspedas.elfin.state(trange=self.t, probe=self.probe)
+        pyspedas.projects.elfin.state(trange=self.t, probe=self.probe)
         elf_pos_gei = pytplot.get_data(f"el{self.probe}_pos_gei")
         elf_vel_gei = pytplot.get_data(f"el{self.probe}_vel_gei")
         elf_att_gei = pytplot.get_data(f"el{self.probe}_att_gei")

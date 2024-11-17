@@ -16,10 +16,10 @@ class WavpolTestCases(unittest.TestCase):
         sc = '4'
         scm_data_rate = 'brst'
         scm_datatype = 'scb'
-        pyspedas.mms.scm(probe=sc, datatype=scm_datatype, level='l2', trange=trange, data_rate=scm_data_rate)
+        pyspedas.projects.mms.scm(probe=sc, datatype=scm_datatype, level='l2', trange=trange, data_rate=scm_data_rate)
         mms_scm_name = 'mms' + sc + '_scm_acb_gse_' + scm_datatype + '_' + scm_data_rate + '_l2'
         fgm_data_rate = 'srvy'
-        pyspedas.mms.fgm(probe=sc, trange=trange, data_rate=fgm_data_rate)
+        pyspedas.projects.mms.fgm(probe=sc, trange=trange, data_rate=fgm_data_rate)
         mms_fgm_name = 'mms' + sc + '_fgm_b_gse_' + fgm_data_rate + '_l2_bvec'
         fac_matrix_make(mms_fgm_name, other_dim='xgse', newname=mms_fgm_name + '_fac_mat')
         tinterpol('mms4_fgm_b_gse_srvy_l2_bvec_fac_mat', mms_scm_name)

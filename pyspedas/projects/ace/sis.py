@@ -96,7 +96,7 @@ def sis(trange=['2018-11-5', '2018-11-6'],
 
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> sis_vars = pyspedas.ace.sis(trange=['2018-11-5', '2018-11-6'])
+        >>> sis_vars = pyspedas.projects.ace.sis(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['H_lo', 'H_hi', 'CNO_lo', 'CNO_hi', 'Z_ge_10'])
 
     """

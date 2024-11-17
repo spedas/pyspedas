@@ -84,7 +84,7 @@ def orb(trange=['2012-10-01', '2012-10-02'],
     ----------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> orb_vars = pyspedas.akebono.orb(trange=['2012-10-01', '2012-10-02'])
+        >>> orb_vars = pyspedas.projects.akebono.orb(trange=['2012-10-01', '2012-10-02'])
         >>> tplot(['akb_orb_geo', 'akb_orb_MLT'])
 
     """

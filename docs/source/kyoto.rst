@@ -5,7 +5,7 @@ The routines in this module can be used to load Kyoto Dst data from the World Da
 
 Load the data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.kyoto.dst
+.. autofunction:: pyspedas.projects.kyoto.dst
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   dst_vars = pyspedas.kyoto.dst(trange=['2018-11-5', '2018-11-6'])
+   dst_vars = pyspedas.projects.kyoto.dst(trange=['2018-11-5', '2018-11-6'])
    tplot('kyoto_dst')
 
 .. image:: _static/kyoto_dst.png

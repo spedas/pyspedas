@@ -57,7 +57,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_fgs(self):
         """Validate tha_fgs."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
 
         cal_fit(probe='a')
         tha_fgs = pytplot.get_data('tha_fgs')
@@ -67,7 +67,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_fgs_sigma(self):
         """Validate tha_fgs_sigma."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
         cal_fit(probe='a')
         tha_fgs_sigma = pytplot.get_data('tha_fgs_sigma')
         diff = np.nanmedian(tha_fgs_sigma.y - self.tha_fgs_sigma.y, axis=0, keepdims=True)
@@ -75,7 +75,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_fit_bfit(self):
         """Validate tha_fit_bfit."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
         cal_fit(probe='a')
         tha_fit_bfit = pytplot.get_data('tha_fit_bfit')
         diff = np.nanmedian(tha_fit_bfit.y - self.tha_fit_bfit.y, axis=0, keepdims=True)
@@ -83,7 +83,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_fit_efit(self):
         """Validate tha_fit_efit."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_fit_efit = pytplot.get_data('tha_fit_efit')
@@ -92,7 +92,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_efs(self):
         """Validate tha_efs."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_efs = pytplot.get_data('tha_efs')
@@ -101,7 +101,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_efs_sigma(self):
         """Validate tha_efs_sigma."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_efs_sigma = pytplot.get_data('tha_efs_sigma')
@@ -110,7 +110,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_efs_0(self):
         """Validate tha_efs_0."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_efs_0 = pytplot.get_data('tha_efs_0')
@@ -119,7 +119,7 @@ class TestCalFitDataValidation(unittest.TestCase):
 
     def test_efs_dot0(self):
         """Validate tha_efs_sigma."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
         tha_efs_dot0 = pytplot.get_data('tha_efs_dot0')
@@ -161,7 +161,7 @@ class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
 
     def test_efs(self):
         """Validate tha_efs."""
-        pyspedas.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+        pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a', no_cal=True)
         tha_efs = pytplot.get_data('tha_efs')
@@ -176,12 +176,12 @@ class TestCalFitInput(unittest.TestCase):
 
     def test_wrong_satellite(self):
         """Validate tha_fgs."""
-        pyspedas.themis.fit(trange=self.t, probe='x', level='l1', varnames=['tha_fit'], time_clip=True)
+        pyspedas.projects.themis.fit(trange=self.t, probe='x', level='l1', varnames=['tha_fit'], time_clip=True)
         cal_fit(probe='x')
 
     def test_e34_ss(self):
         t = ['2011-02-27', '2011-02-28']
-        pyspedas.themis.fit(trange=t, probe='b', level='l1', varnames=['thb_fit', 'thb_fit_code'],
+        pyspedas.projects.themis.fit(trange=t, probe='b', level='l1', varnames=['thb_fit', 'thb_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='b')
 
@@ -195,7 +195,7 @@ class TestCalFitInput(unittest.TestCase):
 class TestCalFitMeta(unittest.TestCase):
     def setUp(self):
         trange = ['2008-03-15', '2008-03-15']
-        pyspedas.themis.fit(trange=trange, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
+        pyspedas.projects.themis.fit(trange=trange, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a', no_cal=True)
 

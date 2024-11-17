@@ -20,7 +20,7 @@ def datasets(instrument=None, label=True):
 
     Examples
     --------
-    >>> pyspedas.rbsp.find_datasets(instrument='REPT', label=True)
+    >>> pyspedas.projects.rbsp.find_datasets(instrument='REPT', label=True)
     ...
     RBSPA_REL03_ECT-REPT-SCI-L3: RBSP/ECT REPT Pitch Angle Resolved Electron and Proton Fluxes. Electron energies: 2 - 59.45 MeV. Proton energies: 21.25 - 0 MeV - D. Baker (University of Colorado at Boulder)
     ...

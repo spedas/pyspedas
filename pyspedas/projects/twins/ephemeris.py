@@ -88,7 +88,7 @@ def ephemeris(trange=['2018-11-5', '2018-11-6'],
     >>> import pyspedas
     >>> from pytplot import tplot
     >>> # Note: variables have the same names for both probes, so only load one at a time
-    >>> ephem_vars = pyspedas.twins.ephemeris(probe=['1'],trange=['2008-04-01','2008-04-02'])
+    >>> ephem_vars = pyspedas.projects.twins.ephemeris(probe=['1'],trange=['2008-04-01','2008-04-02'])
     >>> tplot('FEQUATORIALGSM')
 
     """

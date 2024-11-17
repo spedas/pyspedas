@@ -102,7 +102,7 @@ def load_ae(
 
     Examples
     --------
-    >>> from pyspedas.kyoto import load_ae
+    >>> from pyspedas.projects.kyoto import load_ae
     >>> trange = ['2010-01-01 12:00:00', '2010-01-01 18:00:00']
     >>> vars = load_ae(trange=trange)
     >>> print(vars)

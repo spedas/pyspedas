@@ -17,7 +17,7 @@ def load(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
     Loads data from the Swarm mission.
 
     This function is not meant to be called directly; instead, see the wrappers such as:
-        - pyspedas.swarm.mag.
+        - pyspedas.projects.swarm.mag.
 
     Parameters
     ----------

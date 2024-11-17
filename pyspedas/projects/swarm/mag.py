@@ -50,7 +50,7 @@ def mag(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
     >>> from pytplot import tplot
 
     # Load MAG data for probe 'c'
-    >>> mag_vars = pyspedas.swarm.mag(probe='c', trange=['2017-03-27/06:00', '2017-03-27/08:00'], datatype='hr')
+    >>> mag_vars = pyspedas.projects.swarm.mag(probe='c', trange=['2017-03-27/06:00', '2017-03-27/08:00'], datatype='hr')
 
     # Plot the loaded MAG data
     >>> tplot('swarmc_B_VFM')

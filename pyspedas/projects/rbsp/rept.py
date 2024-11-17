@@ -81,7 +81,7 @@ def rept(trange=['2015-11-5', '2015-11-6'],
 
     Examples
     --------
-    >>> rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
+    >>> rept_vars = pyspedas.projects.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
     >>> tplot('FEDU')
     """
 

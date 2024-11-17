@@ -22,7 +22,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
     This function loads data from the ST5 mission; this function is not meant 
     to be called directly; instead, see the wrappers:
 
-        pyspedas.st5.mag
+        pyspedas.projects.st5.mag
 
     """
 

@@ -97,7 +97,7 @@ def swics(trange=['2018-11-5', '2018-11-6'],
     ---------- 
         >>> import pyspedas
         >>> from pytplot import tplot  
-        >>> swi_vars = pyspedas.ace.swics(trange=['2018-11-5', '2018-11-6'])
+        >>> swi_vars = pyspedas.projects.ace.swics(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['vHe2', 'vthHe2'])
 
     """

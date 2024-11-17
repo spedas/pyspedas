@@ -83,7 +83,7 @@ def cospin(trange:List[str]=['2003-01-01', '2003-01-02'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> cospin_vars = pyspedas.ulysses.cospin(trange=['2003-01-01', '2003-01-02'])
+    >>> cospin_vars = pyspedas.projects.ulysses.cospin(trange=['2003-01-01', '2003-01-02'])
     >>> print(cospin_vars)
     """
     return load(instrument='cospin', trange=trange, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, force_download=force_download, notplot=notplot, time_clip=time_clip, no_update=no_update)

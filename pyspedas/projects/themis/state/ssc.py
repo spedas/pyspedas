@@ -80,7 +80,7 @@ def ssc(
 
     Example
     -------
-        >>> from pyspedas.themis import ssc
+        >>> from pyspedas.projects.themis import ssc
         >>> vars = ssc(probe='d', trange=['2013-11-5', '2013-11-6'])
         >>> print(vars)
 

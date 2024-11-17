@@ -24,13 +24,13 @@ def load(trange=None,
     This function loads data from the BARREL mission; this function is not meant 
     to be called directly; instead, see the wrappers::
 
-        pyspedas.barrel.sspc
-        pyspedas.barrel.mspc
-        pyspedas.barrel.fspc
-        pyspedas.barrel.magn
-        pyspedas.barrel.ephm
-        pyspedas.barrel.rcnt
-        pyspedas.barrel.hkpg
+        pyspedas.projects.barrel.sspc
+        pyspedas.projects.barrel.mspc
+        pyspedas.projects.barrel.fspc
+        pyspedas.projects.barrel.magn
+        pyspedas.projects.barrel.ephm
+        pyspedas.projects.barrel.rcnt
+        pyspedas.projects.barrel.hkpg
 
     """
 

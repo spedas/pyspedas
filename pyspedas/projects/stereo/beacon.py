@@ -76,7 +76,7 @@ def beacon(trange=['2013-11-5', '2013-11-6'],
     ----------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> beacon_vars = pyspedas.stereo.beacon(trange=['2013-11-5', '2013-11-6'])
+        >>> beacon_vars = pyspedas.projects.stereo.beacon(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['MAGBField'])
 
     """

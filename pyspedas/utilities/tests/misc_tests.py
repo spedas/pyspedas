@@ -163,7 +163,7 @@ class UtilTestCases(unittest.TestCase):
 
     def test_split_vec_metadata(self):
         del_data('*')
-        pyspedas.themis.fit(probe='c')
+        pyspedas.projects.themis.fit(probe='c')
         md = get_data('thc_fgs_dsl')
         split_vec('thc_fgs_dsl')
         self.assertTrue(data_exists('thc_fgs_dsl_x'))
@@ -177,7 +177,7 @@ class UtilTestCases(unittest.TestCase):
         from pytplot import del_data, data_exists, tplot_names
         # fully qualified name without .projects.
         del_data('*')
-        pyspedas.themis.state(probe='a')
+        pyspedas.projects.themis.state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
         # fully qualified name with .projects.
         del_data('*')
@@ -197,7 +197,7 @@ class UtilTestCases(unittest.TestCase):
 
         # import state without .projects.
         # PyCharm's static analysis doesn't like this (red underlines) but it works at runtime
-        from pyspedas.themis import state
+        from pyspedas.projects.themis import state
         del_data('*')
         state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
@@ -212,13 +212,13 @@ class UtilTestCases(unittest.TestCase):
         mms.fgm()
         self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
 
-        from pyspedas.mms import fgm
+        from pyspedas.projects.mms import fgm
         del_data('*')
         fgm()
         self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
 
         # import state without .projects.
-        from pyspedas.themis.state.state import state
+        from pyspedas.projects.themis.state.state import state
         del_data('*')
         state(probe='a')
         self.assertTrue(data_exists('tha_pos'))

@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the LANL plasma analyz
 
 Magnetospheric Plasma Analyzer (MPA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.lanl.mpa
+.. autofunction:: pyspedas.projects.lanl.mpa
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mpa_vars = pyspedas.lanl.mpa(trange=['2004-10-31', '2004-11-01'])
+   mpa_vars = pyspedas.projects.lanl.mpa(trange=['2004-10-31', '2004-11-01'])
    tplot(['dens_lop', 'vel_lop'])
 
 .. image:: _static/lanl_mpa.png
@@ -24,7 +24,7 @@ Example
 
 Synchronous Orbit Particle Analyzer (SPA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.lanl.spa
+.. autofunction:: pyspedas.projects.lanl.spa
 
 Example
 ^^^^^^^^^
@@ -33,7 +33,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   spa_vars = pyspedas.lanl.spa(trange=['2004-10-31', '2004-11-01'])
+   spa_vars = pyspedas.projects.lanl.spa(trange=['2004-10-31', '2004-11-01'])
    tplot(['spa_p_temp', 'spa_e_temp'])
 
 .. image:: _static/lanl_spa.png

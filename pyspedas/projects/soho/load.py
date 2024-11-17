@@ -24,10 +24,10 @@ def load(trange=['2006-06-01', '2006-06-02'],
     This function loads data from the SOHO mission; this function is not meant 
     to be called directly; instead, see the wrappers:
 
-        pyspedas.soho.celias
-        pyspedas.soho.cosp
-        pyspedas.soho.erne
-        pyspedas.soho.orbit
+        pyspedas.projects.soho.celias
+        pyspedas.projects.soho.cosp
+        pyspedas.projects.soho.erne
+        pyspedas.projects.soho.orbit
 
     Parameters
     ----------
@@ -98,13 +98,13 @@ def load(trange=['2006-06-01', '2006-06-02'],
     ----------
         import pyspedas
         from pytplot import tplot
-        celias_soho_vars = pyspedas.soho.celias(trange=['2006-06-01', '2006-06-02'])
+        celias_soho_vars = pyspedas.projects.soho.celias(trange=['2006-06-01', '2006-06-02'])
 
-        cosp_soho_vars = pyspedas.soho.cosp(trange=['2006-06-01', '2006-06-02'])
+        cosp_soho_vars = pyspedas.projects.soho.cosp(trange=['2006-06-01', '2006-06-02'])
 
-        erne_soho_vars = pyspedas.soho.erne(trange=['2006-06-01', '2006-06-02'])
+        erne_soho_vars = pyspedas.projects.soho.erne(trange=['2006-06-01', '2006-06-02'])
 
-        orbit_soho_vars = pyspedas.soho.orbit(trange=['2006-06-01', '2006-06-02'])
+        orbit_soho_vars = pyspedas.projects.soho.orbit(trange=['2006-06-01', '2006-06-02'])
 
     """
 

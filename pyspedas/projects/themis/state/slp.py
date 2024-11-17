@@ -74,7 +74,7 @@ def slp(trange=['2007-03-23', '2007-03-24'],
     -------
         >>> import pyspedas
         >>> from pytplot import tplot
-        >>> slp_vars = pyspedas.themis.slp(trange=['2023-11-06', '2023-11-07'])
+        >>> slp_vars = pyspedas.projects.themis.slp(trange=['2023-11-06', '2023-11-07'])
         >>> tplot(['slp_sun_pos','slp_lun_pos'])
 
     """

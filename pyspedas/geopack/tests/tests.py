@@ -39,7 +39,7 @@ def get_params(model, g_variables=None):
     support_trange = [time_double(trange[0])-60*60*24, 
                       time_double(trange[1])+60*60*24]
     pyspedas.kyoto.dst(trange=support_trange)
-    pyspedas.omni.data(trange=trange)
+    pyspedas.projects.omni.data(trange=trange)
     join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
     if model == 't01' and g_variables is None:
         g_variables = [6.0, 10.0]
@@ -59,17 +59,17 @@ def get_params(model, g_variables=None):
 
 class LoadTestCases(unittest.TestCase):
     def test_igrf(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         tt89('mms1_mec_r_gsm', igrf_only=True)
         self.assertTrue(data_exists('mms1_mec_r_gsm_bt89'))
 
     def test_tt89(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         tt89('mms1_mec_r_gsm')
         self.assertTrue(data_exists('mms1_mec_r_gsm_bt89'))
 
     def test_tt96(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         params = get_params('t96')
         # This interpolation can result in NaNs in the position variable, so they need to be cleaned
         tinterpol('mms1_mec_r_gsm', 'proton_density')
@@ -78,7 +78,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_clean_bt96'))
 
     def test_tt01(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         params = get_params('t01')
         # This can yield nans in the interpolated position variable for times outside the range of proton_density.
         # We don't want to pass NaNs to any of the geopack routines, so deflag
@@ -110,7 +110,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_clean_bt01'))
 
     def test_tts04(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         params = get_params('ts04')
         tinterpol('mms1_mec_r_gsm', 'proton_density')
         tts04('mms1_mec_r_gsm-itrp', parmod=params)
@@ -121,7 +121,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_errors(self):
         # exercise some of the error code
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         params = get_params('ts04')
         tinterpol('mms1_mec_r_gsm', 'proton_density')
         tts04('var_doesnt_exist')

@@ -125,10 +125,10 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> mom_vars = pyspedas.mms.mms_load_hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')
+    >>> mom_vars = pyspedas.projects.mms.mms_load_hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')
     >>> tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity'])
     >>> # load the ion data (support data, fluxes, phase space densities, all ion data samples are n x m arrays
-    >>> ion_vars = pyspedas.mms.mms_load_hpca(trange=['2016-10-16', '2016-10-17'], datatype='ion')
+    >>> ion_vars = pyspedas.projects.mms.mms_load_hpca(trange=['2016-10-16', '2016-10-17'], datatype='ion')
     """
     if level.lower() != 'l2':
         if varformat is None:

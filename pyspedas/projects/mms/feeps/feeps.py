@@ -133,7 +133,7 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> feeps_data = pyspedas.mms.mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', datatype='electron')
+    >>> feeps_data = pyspedas.projects.mms.mms_load_feeps(trange=['2015-10-16', '2015-10-17'], probe='1', datatype='electron')
     >>> tplot(['mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin', 'mms1_epd_feeps_srvy_l2_electron_intensity_omni'])
 
 

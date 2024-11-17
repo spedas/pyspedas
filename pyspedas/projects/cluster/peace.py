@@ -90,7 +90,7 @@ def peace(trange:List[str]=['2016-11-5', '2016-11-6'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> peace_vars = pyspedas.cluster.peace(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
+    >>> peace_vars = pyspedas.projects.cluster.peace(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
     >>> tplot([ 'N_e_den__C1_PP_PEA', 'V_e_xyz_gse__C1_PP_PEA', 'N_e_den__C2_PP_PEA', 'V_e_xyz_gse__C2_PP_PEA'])
 
     """

@@ -90,7 +90,7 @@ def sms(trange=['1999-11-5', '1999-11-6'],
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> vars = pyspedas.wind.sms(trange=['1999-11-5', '1999-11-6'],datatype='k0')
+    >>> vars = pyspedas.projects.wind.sms(trange=['1999-11-5', '1999-11-6'],datatype='k0')
     >>> tplot(vars)
 
     """

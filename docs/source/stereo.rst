@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Solar Terrestrial 
 
 Magnetometer (MAG)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.stereo.mag
+.. autofunction:: pyspedas.projects.stereo.mag
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mag_vars = pyspedas.stereo.mag(trange=['2013-11-5', '2013-11-6'])
+   mag_vars = pyspedas.projects.stereo.mag(trange=['2013-11-5', '2013-11-6'])
    tplot('BFIELD')
 
 .. image:: _static/stereo_mag.png
@@ -24,37 +24,37 @@ Example
 
 Solar Wind Electron Analyzer (SWEA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.stereo.swea
+.. autofunction:: pyspedas.projects.stereo.swea
 
 
 Suprathermal Electron Telescope (STE)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.stereo.ste
+.. autofunction:: pyspedas.projects.stereo.ste
 
 
 Solar Electron Proton Telescope (SEPT)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.stereo.sept
+.. autofunction:: pyspedas.projects.stereo.sept
 
 
 Suprathermal Ion Telescope (SIT)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.stereo.sit
+.. autofunction:: pyspedas.projects.stereo.sit
 
 
 Low Energy Telescope (LET)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.stereo.let
+.. autofunction:: pyspedas.projects.stereo.let
 
 
 High Energy Telescope (HET)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.stereo.het
+.. autofunction:: pyspedas.projects.stereo.het
 
 
 PLAsma and SupraThermal Ion Composition (PLASTIC)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.stereo.plastic
+.. autofunction:: pyspedas.projects.stereo.plastic
 
 Example
 ^^^^^^^^^
@@ -63,7 +63,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   plastic_vars = pyspedas.stereo.plastic(trange=['2013-11-5', '2013-11-6'])
+   plastic_vars = pyspedas.projects.stereo.plastic(trange=['2013-11-5', '2013-11-6'])
    tplot(['proton_number_density', 'proton_bulk_speed', 'proton_temperature', 'proton_thermal_speed'])
 
 .. image:: _static/stereo_plastic.png

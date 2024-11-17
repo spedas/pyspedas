@@ -81,7 +81,7 @@ def ssc_pre(
 
     Example
     -------
-        >>> from pyspedas.themis import ssc_pre
+        >>> from pyspedas.projects.themis import ssc_pre
         >>> vars = ssc_pre(probe='d', trange=['2026-12-25', '2026-12-26'])
         >>> print(vars)
 

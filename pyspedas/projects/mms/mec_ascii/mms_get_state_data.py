@@ -15,7 +15,7 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
     datatypes=['pos', 'vel'], level='def', no_download=False, pred_or_def=True, 
     suffix='', always_prompt=False):
     """
-    Helper routine for loading state data (ASCII files from the SDC); not meant to be called directly; see pyspedas.mms.state instead
+    Helper routine for loading state data (ASCII files from the SDC); not meant to be called directly; see pyspedas.projects.mms.state instead
     """
 
     if not isinstance(probe, list): probe = [probe]

@@ -7,7 +7,7 @@ from pyspedas.projects.mms.cotrans.mms_cotrans_lmn import mms_cotrans_lmn
 
 class CotransTestCases(unittest.TestCase):
     def test_qcotrans_sm_to_gse(self):
-        pyspedas.mms.mec()
+        pyspedas.projects.mms.mec()
         ret1 = mms_qcotrans('mms1_mec_v_sm', 'mms1_mec_v_sm_2gse', out_coord='gse')
         ret2 = mms_qcotrans('mms1_mec_r_sm', 'mms1_mec_r_sm_2gse', out_coord='gse')
         self.assertTrue(data_exists('mms1_mec_v_sm_2gse'))
@@ -17,14 +17,14 @@ class CotransTestCases(unittest.TestCase):
         mms_qcotrans(['mms1_mec_r_sm', 'mms1_mec_v_sm'], ['mms1_mec_r_sm_2gse', 'mms1_mec_v_sm_2gse'], out_coord=['gse', 'gse'])
 
     def test_qcotrans_fgm_sm_to_gse(self):
-        pyspedas.mms.mec()
-        pyspedas.mms.fgm()
+        pyspedas.projects.mms.mec()
+        pyspedas.projects.mms.fgm()
         mms_qcotrans('mms1_fgm_b_gsm_srvy_l2_bvec', 'mms1_fgm_b_gsm_brst_l2_bvec_2gse', probe=1, out_coord='gse')
         self.assertTrue(data_exists('mms1_fgm_b_gsm_brst_l2_bvec_2gse'))
 
     def test_qcotrans_errors(self):
         with self.assertLogs(level='WARNING') as log:
-            pyspedas.mms.mec()
+            pyspedas.projects.mms.mec()
 
             # in_name not specified
             mms_qcotrans(out_name='mms1_mec_v_sm_2gse', out_coord='gse')
@@ -72,13 +72,13 @@ class CotransTestCases(unittest.TestCase):
 
 
     def test_lmn(self):
-        pyspedas.mms.fgm(trange=['2015-10-16/13:00', '2015-10-16/13:10'], data_rate='brst')
+        pyspedas.projects.mms.fgm(trange=['2015-10-16/13:00', '2015-10-16/13:10'], data_rate='brst')
         mms_cotrans_lmn('mms1_fgm_b_gsm_brst_l2_bvec', 'mms1_fgm_b_gsm_brst_l2_bvec_2lmn')
         self.assertTrue(data_exists('mms1_fgm_b_gsm_brst_l2_bvec_2lmn'))
 
     def test_lmn_errors(self):
         with self.assertLogs(level='ERROR') as log:
-            pyspedas.mms.fgm(trange=['2015-10-16/13:00', '2015-10-16/13:10'], data_rate='brst')
+            pyspedas.projects.mms.fgm(trange=['2015-10-16/13:00', '2015-10-16/13:10'], data_rate='brst')
 
             # invalid variable name
             mms_cotrans_lmn('mms1_fgm_b_gsm_brst_l2_bvec2', 'mms1_fgm_b_gsm_brst_l2_bvec_2lmn')

@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Geostationary Oper
 
 Magnetometer (FGM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.goes.fgm
+.. autofunction:: pyspedas.projects.goes.fgm
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mag_vars = pyspedas.goes.fgm(trange=['2013-11-5', '2013-11-6'], datatype='512ms')
+   mag_vars = pyspedas.projects.goes.fgm(trange=['2013-11-5', '2013-11-6'], datatype='512ms')
    tplot(['BX_1', 'BY_1', 'BZ_1'])
 
 .. image:: _static/goes_fgm.png
@@ -23,47 +23,47 @@ Example
 
 EPS
 ----------------------------------------------------------
-.. autofunction:: pyspedas.goes.eps
+.. autofunction:: pyspedas.projects.goes.eps
 
 EPEAD
 ----------------------------------------------------------
-.. autofunction:: pyspedas.goes.epead
+.. autofunction:: pyspedas.projects.goes.epead
 
 EUVS
 ----------------------------------------------------------
-.. autofunction:: pyspedas.goes.euvs
+.. autofunction:: pyspedas.projects.goes.euvs
 
 HEPAD
 ----------------------------------------------------------
-.. autofunction:: pyspedas.goes.hepad
+.. autofunction:: pyspedas.projects.goes.hepad
 
 MAG
 ----------------------------------------------------------
 
-.. autofunction:: pyspedas.goes.mag
+.. autofunction:: pyspedas.projects.goes.mag
 
 MPSH
 ----------------------------------------------------------
 
-.. autofunction:: pyspedas.goes.mpsh
+.. autofunction:: pyspedas.projects.goes.mpsh
 
 MAGED
 ----------------------------------------------------------
 
-.. autofunction:: pyspedas.goes.maged
+.. autofunction:: pyspedas.projects.goes.maged
 
 MAGPD
 ----------------------------------------------------------
 
-.. autofunction:: pyspedas.goes.magpd
+.. autofunction:: pyspedas.projects.goes.magpd
 
 ORBIT
 ----------------------------------------------------------
 
-.. autofunction:: pyspedas.goes.orbit
+.. autofunction:: pyspedas.projects.goes.orbit
 
 SGPS
 ----------------------------------------------------------
 
-.. autofunction:: pyspedas.goes.sgps
+.. autofunction:: pyspedas.projects.goes.sgps
 

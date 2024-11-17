@@ -90,7 +90,7 @@ def fgm(trange:List[str]=['2018-11-5', '2018-11-6'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> fgm_vars = pyspedas.cluster.fgm(trange=['2018-11-5', '2018-11-6'],probe=['1','2'])
+    >>> fgm_vars = pyspedas.projects.cluster.fgm(trange=['2018-11-5', '2018-11-6'],probe=['1','2'])
 
     """
     return load(instrument='fgm', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download)

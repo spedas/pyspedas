@@ -78,7 +78,7 @@ def sst(trange=['2007-03-23', '2007-03-24'],
     -------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> sst_vars = pyspedas.themis.sst(probe='d', trange=['2013-11-5', '2013-11-6'])
+    >>> sst_vars = pyspedas.projects.themis.sst(probe='d', trange=['2013-11-5', '2013-11-6'])
     >>> tplot('thd_psif_density')
 
 

@@ -111,7 +111,7 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> edp_vars = pyspedas.mms.mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1')
+    >>> edp_vars = pyspedas.projects.mms.mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1')
     >>> tplot('mms1_edp_dce_gse_fast_l2')
 
 

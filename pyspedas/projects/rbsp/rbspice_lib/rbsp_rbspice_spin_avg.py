@@ -34,7 +34,7 @@ def rbsp_rbspice_spin_avg(probe='a', datatype='TOFxEH', level='l3'):
 
     Examples
     --------
-    This function is called within pyspedas.rbsp.rbspice
+    This function is called within pyspedas.projects.rbsp.rbspice
     """
     if probe is None:
         probe = 'a'

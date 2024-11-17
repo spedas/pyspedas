@@ -113,7 +113,7 @@ def pwe_wfc(
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> pwe_wfc_vars = pyspedas.erg.pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'])
+    >>> pwe_wfc_vars = pyspedas.projects.erg.pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'])
     >>> tplot('erg_pwe_wfc_l2_e_65khz_Ex_waveform')
 
     """

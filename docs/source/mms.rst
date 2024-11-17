@@ -11,10 +11,10 @@ Each of the MMS load routines has a short name, which is just the instrument nam
 
 Fluxgate Magnetometer (FGM)
 -----------------------------
-Short name: pyspedas.mms.fgm
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.fgm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_fgm
+.. autofunction:: pyspedas.projects.mms.mms_load_fgm
 
 FGM Example
 ^^^^^^^^^^^^
@@ -23,7 +23,7 @@ FGM Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.fgm(trange=['2015-10-16/12:45', '2015-10-16/13:00'], time_clip=True)
+   pyspedas.projects.mms.fgm(trange=['2015-10-16/12:45', '2015-10-16/13:00'], time_clip=True)
    tplot(['mms1_fgm_b_gsm_srvy_l2_btot', 'mms1_fgm_b_gsm_srvy_l2_bvec'])
 
 .. image:: _static/mms_fgm.png
@@ -32,10 +32,10 @@ FGM Example
 
 Search-coil Magnetometer (SCM)
 --------------------------------
-Short name: pyspedas.mms.scm
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.scm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_scm
+.. autofunction:: pyspedas.projects.mms.mms_load_scm
 
 
 SCM Example
@@ -45,7 +45,7 @@ SCM Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.scm(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
+   pyspedas.projects.mms.scm(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
    tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
 
 .. image:: _static/mms_scm.png
@@ -54,10 +54,10 @@ SCM Example
 
 Level 3 FGM+SCM Data (FSM)
 -----------------------------
-Short name: pyspedas.mms.fsm
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.fsm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_fsm
+.. autofunction:: pyspedas.projects.mms.mms_load_fsm
 
 
 FSM Example
@@ -67,7 +67,7 @@ FSM Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.fsm(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
+   pyspedas.projects.mms.fsm(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
    tplot(['mms1_fsm_b_mag_brst_l3', 'mms1_fsm_b_gse_brst_l3'])
 
 .. image:: _static/mms_fsm.png
@@ -76,10 +76,10 @@ FSM Example
 
 Electric field Double Probe (EDP)
 -----------------------------------
-Short name: pyspedas.mms.edp
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.edp
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.edp
+.. autofunction:: pyspedas.projects.mms.edp
 
 
 EDP Example
@@ -89,7 +89,7 @@ EDP Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.edp(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
+   pyspedas.projects.mms.edp(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
    tplot('mms1_edp_dce_gse_fast_l2')
 
 .. image:: _static/mms_edp.png
@@ -98,10 +98,10 @@ EDP Example
 
 Electron Drift Instrument (EDI)
 ---------------------------------
-Short name: pyspedas.mms.edi
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.edi
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_edi
+.. autofunction:: pyspedas.projects.mms.mms_load_edi
 
 
 EDI Example
@@ -111,7 +111,7 @@ EDI Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.edi(trange=['2016-10-16/21:00', '2016-10-16/22:00'], time_clip=True)
+   pyspedas.projects.mms.edi(trange=['2016-10-16/21:00', '2016-10-16/22:00'], time_clip=True)
    tplot(['mms1_edi_vdrift_gse_srvy_l2', 'mms1_edi_e_gse_srvy_l2'])
 
 .. image:: _static/mms_edi.png
@@ -120,10 +120,10 @@ EDI Example
 
 Fly's Eye Energetic Particle Sensor (FEEPS)
 --------------------------------------------
-Short name: pyspedas.mms.feeps
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.feeps
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_feeps
+.. autofunction:: pyspedas.projects.mms.mms_load_feeps
 
 
 FEEPS Example
@@ -133,7 +133,7 @@ FEEPS Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.feeps(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.mms.feeps(trange=['2015-10-16', '2015-10-17'])
    tplot('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin')
 
 .. image:: _static/mms_feeps.png
@@ -142,10 +142,10 @@ FEEPS Example
 
 Energetic Ion Spectrometer (EIS)
 -----------------------------------
-Short name: pyspedas.mms.eis
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.eis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_eis
+.. autofunction:: pyspedas.projects.mms.mms_load_eis
 
 
 EIS Example
@@ -155,7 +155,7 @@ EIS Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.eis(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.mms.eis(trange=['2015-10-16', '2015-10-17'])
    tplot(['mms1_epd_eis_srvy_l2_extof_proton_flux_omni', 'mms1_epd_eis_srvy_l2_extof_proton_flux_omni_spin'])
 
 .. image:: _static/mms_eis.png
@@ -164,10 +164,10 @@ EIS Example
 
 Active Spacecraft Potential Control (ASPOC)
 --------------------------------------------
-Short name: pyspedas.mms.aspoc
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.aspoc
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_aspoc
+.. autofunction:: pyspedas.projects.mms.mms_load_aspoc
 
 
 ASPOC Example
@@ -177,7 +177,7 @@ ASPOC Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.aspoc(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.mms.aspoc(trange=['2015-10-16', '2015-10-17'])
    tplot(['mms1_aspoc_ionc_l2', 'mms1_asp1_ionc_l2', 'mms1_asp2_ionc_l2'])
 
 .. image:: _static/mms_aspoc.png
@@ -186,10 +186,10 @@ ASPOC Example
 
 Fast Plasma Investigation (FPI)
 --------------------------------
-Short name: pyspedas.mms.fpi
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.fpi
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_fpi
+.. autofunction:: pyspedas.projects.mms.mms_load_fpi
 
 
 FPI Example
@@ -199,7 +199,7 @@ FPI Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.fpi(trange=['2015-10-16', '2015-10-17'], datatype='des-moms')
+   pyspedas.projects.mms.fpi(trange=['2015-10-16', '2015-10-17'], datatype='des-moms')
    tplot(['mms1_des_energyspectr_omni_fast', 'mms1_des_bulkv_gse_fast', 'mms1_des_numberdensity_fast'])
 
 .. image:: _static/mms_fpi.png
@@ -208,12 +208,12 @@ FPI Example
 
 Hot Plasma Composition Analyzer (HPCA)
 ---------------------------------------
-Short name: pyspedas.mms.hpca
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.hpca
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_hpca
+.. autofunction:: pyspedas.projects.mms.mms_load_hpca
 
-Short name: pyspedas.mms.hpca
+Short name: pyspedas.projects.mms.hpca
 
 HPCA Example
 ^^^^^^^^^^^^^^^
@@ -222,7 +222,7 @@ HPCA Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')
+   pyspedas.projects.mms.hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')
    tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity', 'mms1_hpca_hplus_scalar_temperature'])
 
 .. image:: _static/mms_hpca.png
@@ -231,10 +231,10 @@ HPCA Example
 
 Mission Ephemeris Coordinates (MEC)
 -------------------------------------
-Short name: pyspedas.mms.mec
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.mec
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_mec
+.. autofunction:: pyspedas.projects.mms.mms_load_mec
 
 MEC Example
 ^^^^^^^^^^^^^^^
@@ -243,7 +243,7 @@ MEC Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.mms.mec(trange=['2015-10-16', '2015-10-17'])
    tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 
 .. image:: _static/mms_mec.png
@@ -252,10 +252,10 @@ MEC Example
 
 Attitude and Ephemeris (STATE)
 -------------------------------
-Short name: pyspedas.mms.state
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_state
+.. autofunction:: pyspedas.projects.mms.mms_load_state
 
 
 State Example
@@ -265,7 +265,7 @@ State Example
    
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.state(trange=['2020-12-16', '2020-12-17'])
+   pyspedas.projects.mms.state(trange=['2020-12-16', '2020-12-17'])
    tplot(['mms1_defeph_pos', 'mms1_defeph_vel'])
 
 .. image:: _static/mms_state.png
@@ -275,10 +275,10 @@ State Example
 
 Tetrahedron Quality Factor
 --------------------------------
-Short name: pyspedas.mms.tetrahedron_qf
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Short name: pyspedas.projects.mms.tetrahedron_qf
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autofunction:: pyspedas.mms.mms_load_tetrahedron_qf
+.. autofunction:: pyspedas.projects.mms.mms_load_tetrahedron_qf
 
 Tetrahedron QF Example
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -287,7 +287,7 @@ Tetrahedron QF Example
 
    import pyspedas
    from pytplot import tplot
-   pyspedas.mms.tetrahedron_qf(trange=['2020-12-16', '2020-12-17'])
+   pyspedas.projects.mms.tetrahedron_qf(trange=['2020-12-16', '2020-12-17'])
    tplot(['mms_tetrahedron_qf'])
 
 .. image:: _static/mms_tetrahedron_qf.png

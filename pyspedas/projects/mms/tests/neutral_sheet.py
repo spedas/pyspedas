@@ -5,7 +5,7 @@ from pyspedas import tkm2re
 from pyspedas.analysis.neutral_sheet import neutral_sheet
 from pytplot import get_data
 
-pyspedas.mms.mec()
+pyspedas.projects.mms.mec()
 tkm2re('mms1_mec_r_gsm')
 pos_data = get_data('mms1_mec_r_gsm_re')
 

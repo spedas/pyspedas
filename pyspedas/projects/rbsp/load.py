@@ -31,13 +31,13 @@ def load(trange=['2018-11-5', '2018-11-6'],
     Load Van Allen Probes (RBSP) data for various instruments and data levels.
 
     It is not intended to be called directly. Instead, use the following wrappers for specific instruments:
-        - pyspedas.rbsp.emfisis
-        - pyspedas.rbsp.rbspice
-        - pyspedas.rbsp.efw
-        - pyspedas.rbsp.mageis
-        - pyspedas.rbsp.hope
-        - pyspedas.rbsp.rept
-        - pyspedas.rbsp.rps
+        - pyspedas.projects.rbsp.emfisis
+        - pyspedas.projects.rbsp.rbspice
+        - pyspedas.projects.rbsp.efw
+        - pyspedas.projects.rbsp.mageis
+        - pyspedas.projects.rbsp.hope
+        - pyspedas.projects.rbsp.rept
+        - pyspedas.projects.rbsp.rps
 
     Parameters
     ----------

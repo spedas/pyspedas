@@ -90,7 +90,7 @@ def rapid(trange:List[str]=['2016-11-5', '2016-11-6'],
     --------
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> rapid_vars = pyspedas.cluster.rapid(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
+    >>> rapid_vars = pyspedas.projects.cluster.rapid(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
     >>> tplot([ 'J_e_lo__C1_PP_RAP', 'J_e_hi__C1_PP_RAP', 'J_e_lo__C2_PP_RAP', 'J_e_hi__C2_PP_RAP'])
 
     """
