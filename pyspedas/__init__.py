@@ -12,22 +12,22 @@ from .analysis.wavelet import wavelet
 from .analysis.time_domain_filter import time_domain_filter
 from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
 from .analysis.lingradest import lingradest
-from .cdagui.cdagui import cdagui
-from .cdagui.cdaweb import CDAWeb
-from .cotrans.cotrans import cotrans
-from .cotrans.cotrans_get_coord import cotrans_get_coord
-from .cotrans.cotrans_set_coord import cotrans_set_coord
-from .cotrans.tvector_rotate import tvector_rotate
-from .cotrans.cart2spc import cart2spc
-from .cotrans.spc2cart import spc2cart
-from .cotrans.sm2mlt import sm2mlt
-from .cotrans.fac_matrix_make import fac_matrix_make
-from .cotrans.gsm2lmn import gsm2lmn
-from .cotrans.minvar import minvar
-from .cotrans.minvar_matrix_make import minvar_matrix_make
-from .cotrans.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq
-from .cotrans.tvector_rotate import tvector_rotate
-from .cotrans.xyz_to_polar import xyz_to_polar
+from .cdagui_tools.cdagui import cdagui
+from .cdagui_tools.cdaweb import CDAWeb
+from .cotrans_tools.cotrans import cotrans
+from .cotrans_tools.cotrans_get_coord import cotrans_get_coord
+from .cotrans_tools.cotrans_set_coord import cotrans_set_coord
+from .cotrans_tools.tvector_rotate import tvector_rotate
+from .cotrans_tools.cart2spc import cart2spc
+from .cotrans_tools.spc2cart import spc2cart
+from .cotrans_tools.sm2mlt import sm2mlt
+from .cotrans_tools.fac_matrix_make import fac_matrix_make
+from .cotrans_tools.gsm2lmn import gsm2lmn
+from .cotrans_tools.minvar import minvar
+from .cotrans_tools.minvar_matrix_make import minvar_matrix_make
+from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq
+from .cotrans_tools.tvector_rotate import tvector_rotate
+from .cotrans_tools.xyz_to_polar import xyz_to_polar
 # Importing geopack causes IGRF coefficients to be loaded by the external geopack package, which may not be desired.
 #from .geopack.get_tsy_params import get_tsy_params
 #from .geopack.get_w_params import get_w
@@ -36,8 +36,8 @@ from .cotrans.xyz_to_polar import xyz_to_polar
 #from .geopack.t89 import t89, tt89
 #from .geopack.t96 import t96, tt96
 #from .geopack.ts04 import tts04
-from .hapi.hapi import hapi
-from .noaa.noaa_load_kp import noaa_load_kp
+from .hapi_tools.hapi import hapi
+from .projects.noaa.noaa_load_kp import noaa_load_kp
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
 from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
 from .particles.spd_slice2d import slice1d_plot, slice2d, slice2d_plot
@@ -63,60 +63,92 @@ from .version import version
 
 from pytplot import *
 
+# omni must precede mms to avoid problems with circular imports
+from .projects import omni
+
 # Import routine names with mission prefixes into pyspedas namespace
-from .mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
+from .projects.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
     mms_load_edp, mms_load_eis, mms_load_feeps, \
     mms_load_hpca, mms_load_fpi, mms_load_aspoc, \
     mms_load_dsp, mms_load_fsm, mms_load_state, \
     mms_qcotrans, mms_cotrans_lmn, mms_cotrans_qrotate, mms_cotrans_qtransformer
-from .mms.feeps.mms_feeps_pad import mms_feeps_pad
-from .mms.feeps.mms_feeps_gpd import mms_feeps_gpd
-from .mms.eis.mms_eis_pad import mms_eis_pad
-from .mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
-from .mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
-from .mms.plots.mms_overview_plot import mms_overview_plot
-from .mms.particles.mms_part_getspec import mms_part_getspec
-from .mms.particles.mms_part_slice2d import mms_part_slice2d
-from .maven import maven_load
-from .kompsat.load import load as kompsat_load
-from .noaa import noaa_load_kp
+from .projects.mms.feeps.mms_feeps_pad import mms_feeps_pad
+from .projects.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
+from .projects.mms.eis.mms_eis_pad import mms_eis_pad
+from .projects.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from .projects.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from .projects.mms.plots.mms_overview_plot import mms_overview_plot
+from .projects.mms.particles.mms_part_getspec import mms_part_getspec
+from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
+
+
+# The code below is needed for backward compatibility, so users can continue to do things
+# like "from pyspedas.mms import mec" even after mms has been moved to the projects directory.
+
+import sys
+from importlib import import_module
+
+# List of submodules we want to make available under the pyspedas namespace
+submodules = ['ace', 'akebono', 'barrel', 'cluster', 'cnofs', 'csswe', 'de2', 'dscovr',
+             'elfin', 'equator_s', 'erg', 'fast', 'geotail', 'goes', 'image', 'kompsat',
+              'kyoto', 'lanl', 'maven', 'mica', 'mms', 'noaa', 'omni', 'poes', 'polar', 'psp',
+              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state', 'twins',
+              'ulysses'
+              ]
+
+for submodule in submodules:
+    # Import the module from the new path
+    full_module_path = f"pyspedas.projects.{submodule}"
+    imported_module = import_module(full_module_path)
+
+    # Add it to sys.modules under the old path
+    sys.modules[f"pyspedas.{submodule}"] = imported_module
+
+# This set of imports is still needed for backward compatibility, when using fully-qualified
+# routine names in function calls, like "pyspedas.mms.mec()" rather than "pyspedas.projects.mms.mec()"
 
 # Make mission-specific namespaces available under pyspedas
-from . import ace
-from . import akebono
-from . import barrel
-from . import cluster
-from . import cnofs
-from . import csswe
-from . import de2
-from . import dscovr
-from . import elfin
-from . import equator_s
-from . import erg
-from . import fast
-from . import geotail
-from . import goes
-from . import image
-from . import kyoto
-from . import lanl
-from . import maven
-from . import mica
-from . import omni
-from . import poes
-from . import polar
-from . import psp
-from . import rbsp
-from . import secs
-from . import soho
-from . import solo
-from . import st5
-from . import stereo
-from . import swarm
-from . import themis
-from . import twins
-from . import ulysses
+from .projects import ace
+from .projects import akebono
+from .projects import barrel
+from .projects import cluster
+from .projects import cnofs
+from .projects import csswe
+from .projects import de2
+from .projects import dscovr
+from .projects import elfin
+from .projects import equator_s
+from .projects import erg
+from .projects import fast
+from .projects import geotail
+from .projects import goes
+from .projects import image
+from .projects import kompsat
+# for backward compatibility
+from .projects.kompsat.load import load as kompsat_load
+from .projects import kyoto
+from .projects import lanl
+from .projects import maven
+# for backward compatibility
+from .projects.maven import maven_load
+from .projects import mica
+from .projects import mms
+from .projects import noaa
+from .projects import poes
+from .projects import polar
+from .projects import psp
+from .projects import rbsp
+from .projects import secs
+from .projects import soho
+from .projects import solo
+from .projects import st5
+from .projects import stereo
+from .projects import swarm
+from .projects import themis
+from .projects import twins
+from .projects import ulysses
 from . import vires
-from . import wind
+from .projects import wind
 
 # set up logging/console output
 import logging

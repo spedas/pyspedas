@@ -4,12 +4,12 @@ The routines in this module can be used to load data from the Two Wide-Angle Ima
 
 Energetic Neutral Atom (ENA) imager
 ----------------------------------------------------------
-.. autofunction:: pyspedas.twins.imager
+.. autofunction:: pyspedas.projects.twins.imager
 
 
 Lyman-alpha Detector (LAD)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.twins.lad
+.. autofunction:: pyspedas.projects.twins.lad
 
 Example
 ^^^^^^^^^
@@ -18,7 +18,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   lad_vars = pyspedas.twins.lad(trange=['2018-11-5/6:00', '2018-11-5/6:20'], time_clip=True)
+   lad_vars = pyspedas.projects.twins.lad(trange=['2018-11-5/6:00', '2018-11-5/6:20'], time_clip=True)
    tplot(['lad1_data', 'lad2_data'])
 
 .. image:: _static/twins_lad.png
@@ -28,7 +28,7 @@ Example
 
 Ephemeris
 ----------------------------------------------------------
-.. autofunction:: pyspedas.twins.ephemeris
+.. autofunction:: pyspedas.projects.twins.ephemeris
 
 Example
 ^^^^^^^^^
@@ -37,7 +37,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   ephem_vars = pyspedas.twins.ephemeris(trange=['2018-11-5', '2018-11-6'])
+   ephem_vars = pyspedas.projects.twins.ephemeris(trange=['2018-11-5', '2018-11-6'])
    tplot('FSCGSM')
 
 .. image:: _static/twins_ephemeris.png

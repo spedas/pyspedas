@@ -25,7 +25,7 @@ class TestImportErrorHandling(unittest.TestCase):
 
             # Verify the error log was called with the expected message
             self.mock_logging_error.assert_any_call('MTH5 must be installed to use module pyspedas.mth5.')
-            self.mock_logging_error.assert_any_call('Please install it using: pip install mth5')
+            self.mock_logging_error.assert_any_call("Please install it using: pip install mth5")
 
 
 if __name__ == '__main__':

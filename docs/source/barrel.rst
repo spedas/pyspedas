@@ -88,7 +88,7 @@ Data can be loaded using the wrapper functions for each data type:
 
    import pyspedas
    from pytplot import tplot
-   sspc_vars = pyspedas.barrel.sspc(probe='1A', trange= ['2013-01-28', '2013-02-14'])
+   sspc_vars = pyspedas.projects.barrel.sspc(probe='1A', trange= ['2013-01-28', '2013-02-14'])
    tplot('brl1A_SSPC')
 
 
@@ -101,16 +101,16 @@ Full example notebooks available at https://github.com/spedas/pyspedas_examples
 Load Routines
 --------------
 
-.. autofunction:: pyspedas.barrel.sspc
+.. autofunction:: pyspedas.projects.barrel.sspc
 
-.. autofunction:: pyspedas.barrel.mspc
+.. autofunction:: pyspedas.projects.barrel.mspc
 
-.. autofunction:: pyspedas.barrel.fspc
+.. autofunction:: pyspedas.projects.barrel.fspc
 
-.. autofunction:: pyspedas.barrel.magn
+.. autofunction:: pyspedas.projects.barrel.magn
 
-.. autofunction:: pyspedas.barrel.ephm
+.. autofunction:: pyspedas.projects.barrel.ephm
 
-.. autofunction:: pyspedas.barrel.rcnt
+.. autofunction:: pyspedas.projects.barrel.rcnt
 
-.. autofunction:: pyspedas.barrel.hkpg
+.. autofunction:: pyspedas.projects.barrel.hkpg

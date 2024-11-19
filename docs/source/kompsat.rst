@@ -45,7 +45,7 @@ Example
     from pytplot import tplot, options
 
     # Load L2 magnetometer data and plot it
-    var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")
+    var_names = pyspedas.projects.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")
     tplot(var_names)
 
 .. image:: _static/kompsat_mag.png
@@ -56,7 +56,7 @@ Example
 .. code-block:: python
 
     # Load electron data and plot it
-    var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
+    var_names = pyspedas.projects.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="e")
     options(var_names, 'ysubtitle', '')  # remove subtitles (units) 
     tplot(var_names)
 
@@ -68,7 +68,7 @@ Example
 .. code-block:: python
 
     # Load proton data and plot it
-    var_names = pyspedas.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
+    var_names = pyspedas.projects.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], instrument="p")
     options(var_names, 'ysubtitle', '')  # remove subtitles (units) 
     tplot(var_names)
 
@@ -81,6 +81,6 @@ Example
 
 Load function (SOSMAG and particle )
 ----------------------------------------------------------
-.. autofunction:: pyspedas.kompsat.load
+.. autofunction:: pyspedas.projects.kompsat.load
 
 

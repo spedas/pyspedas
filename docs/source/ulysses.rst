@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Ulysses mission.
 
 Magnetic field (VHM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ulysses.vhm
+.. autofunction:: pyspedas.projects.ulysses.vhm
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   vhm_vars = pyspedas.ulysses.vhm()
+   vhm_vars = pyspedas.projects.ulysses.vhm()
    tplot('B_MAG')
 
 .. image:: _static/ulysses_vhm.png
@@ -26,7 +26,7 @@ Example
 
 Solar wind plasma (SWOOPS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ulysses.swoops
+.. autofunction:: pyspedas.projects.ulysses.swoops
 
 Example
 ^^^^^^^^^
@@ -35,7 +35,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   swoops_vars = pyspedas.ulysses.swoops()
+   swoops_vars = pyspedas.projects.ulysses.swoops()
    tplot(['Density', 'Temperature', 'Velocity'])
 
 .. image:: _static/ulysses_swoops.png
@@ -47,7 +47,7 @@ Example
 
 Solar wind ion composition (SWICS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ulysses.swics
+.. autofunction:: pyspedas.projects.ulysses.swics
 
 Example
 ^^^^^^^^^
@@ -56,7 +56,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   swics_vars = pyspedas.ulysses.swics()
+   swics_vars = pyspedas.projects.ulysses.swics()
    tplot('Velocity')
 
 .. image:: _static/ulysses_swics.png
@@ -68,7 +68,7 @@ Example
 
 Energetic particles (EPAC)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ulysses.epac
+.. autofunction:: pyspedas.projects.ulysses.epac
 
 Example
 ^^^^^^^^^
@@ -77,7 +77,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   epac_vars = pyspedas.ulysses.epac()
+   epac_vars = pyspedas.projects.ulysses.epac()
    tplot('Omni_Protons')
 
 .. image:: _static/ulysses_epac.png
@@ -89,7 +89,7 @@ Example
 
 Low-energy ions and electrons (HI-SCALE)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ulysses.hiscale
+.. autofunction:: pyspedas.projects.ulysses.hiscale
 
 Example
 ^^^^^^^^^
@@ -98,7 +98,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   hiscale_vars = pyspedas.ulysses.hiscale()
+   hiscale_vars = pyspedas.projects.ulysses.hiscale()
    tplot('Electrons')
 
 .. image:: _static/ulysses_hiscale.png
@@ -110,7 +110,7 @@ Example
 
 Solar X-rays and cosmic gamma-ray bursts (GRB)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ulysses.grb
+.. autofunction:: pyspedas.projects.ulysses.grb
 
 Example
 ^^^^^^^^^
@@ -119,7 +119,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   grb_vars = pyspedas.ulysses.grb()
+   grb_vars = pyspedas.projects.ulysses.grb()
    tplot('Count_Rate')
 
 .. image:: _static/ulysses_grb.png

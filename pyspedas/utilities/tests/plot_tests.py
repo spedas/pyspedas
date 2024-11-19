@@ -1,16 +1,73 @@
 """Test plotting functions (mostly for pseudovariables)"""
 import unittest
 import numpy as np
-
+import pyspedas
 from pyspedas import themis
-from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data
+from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = True
+global_display = False
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
+
+    def test_markers_and_symbols(self):
+        # Regression test for lineplot crash when marker sizes are set
+        # Taken from pytplot markers and symbols notebook in pyspedas_examples
+        del_data('*')
+        store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1]})
+        tplot('data', display=global_display, save_png='simple_lineplot.png')
+        options('data', 'marker', 'X')
+        tplot('data', display=global_display, save_png='markers_lineplot.png')
+        options('data', 'linestyle', 'None')
+        tplot('data', display=global_display, save_png='noline_lineplot.png')
+        options('data', 'marker_size', 200)
+        tplot('data', display=global_display, save_png='markersize_lineplot.png')
+        options('data', 'line_style_name', 'solid')
+        tplot('data', display=global_display, save_png='markersize_nosymbols_lineplot.png')
+        options('data', 'marker_size', 20)
+        tplot('data', display=global_display, save_png='markersize20_nosymbols_lineplot.png')
+        options('data', 'markevery', 2)
+        tplot('data', display=global_display, save_png='markevery_lineplot.png')
+        options('data', 'marker', 'H')
+        tplot('data', display=global_display, save_png='hexagons_lineplot.png')
+
+    def test_markers_and_symbols_error_bars(self):
+        # Regression test for lineplot crash when marker sizes are set
+        # Taken from pytplot markers and symbols notebook in pyspedas_examples
+        del_data('*')
+        store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1], 'dy':[0.25]*6})
+        tplot('data', display=global_display, save_png='simple_lineplot_errbars.png')
+        options('data', 'marker', 'X')
+        tplot('data', display=global_display, save_png='markers_lineplot_errbars.png')
+        options('data', 'line_style', 'None')
+        tplot('data', display=global_display, save_png='symbols_lineplot_errbars.png')
+        options('data', 'marker_size', 200)
+        tplot('data', display=global_display, save_png='markersize_lineplot_errbars.png')
+        options('data', 'symbols', False)
+        tplot('data', display=global_display, save_png='markersize_nosymbols_lineplot_errbars.png')
+        options('data', 'marker_size', 20)
+        tplot('data', display=global_display, save_png='markersize20_nosymbols_lineplot_errbars.png')
+        options('data', 'markevery', 2)
+        tplot('data', display=global_display, save_png='markevery_lineplot_errbars.png')
+        options('data', 'marker', 'H')
+        tplot('data', display=global_display, save_png='hexagons_lineplot_errbars.png')
+
+    def test_timebars(self):
+        from pytplot import timebar
+        del_data('*')
+        themis.fgm(probe='c', trange=default_trange)
+        timebar(t=10000.0,varname='thc_fge_dsl',databar=True,color='black')
+        timebar(t=-10000.0,varname='thc_fge_dsl',databar=True,color='red', dash=True)
+        timebar(t=pytplot.time_double('2007-03-23/14:00'),varname='thc_fge_btotal',color='magenta')
+        timebar(t=pytplot.time_double('2007-03-23/14:30'),color='blue')
+        timebar(t=pytplot.time_double('2007-03-23/15:30'),color='green', dash=True)
+        tplot_options('title', 'Databars at +/- 10000 top panel, timebars at 14:30 and 15:30 all panels, timebar at 14:00 bottom panel, linestyles and colors as specified')
+        tplot(['thc_fge_dsl','thc_fge_btotal'], display=global_display, save_png='timebars.png')
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
+
 
     def test_line_pseudovariables(self):
         del_data("*")
@@ -53,6 +110,16 @@ class PlotTestCases(unittest.TestCase):
         options('thc_fgs_dsl','line_style','dot') # gets used for all lines
         tplot_options('title', 'Line styles all dot')
         tplot('thc_fgs_dsl',save_png='test_linestyle_allsame',display=global_display)
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    def test_ylim(self):
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
+        ylim('thc_fgs_dsl',-100, 100)
+        tplot_options('title', 'Y limit [-100, 100]')
+        tplot('thc_fgs_dsl',save_png='test_ylim',display=global_display)
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
@@ -185,7 +252,7 @@ class PlotTestCases(unittest.TestCase):
         import pyspedas
         # ELFIN data with V values that oscillate, the original problem that resulted in the resample, this is an angular distrubtion
         timespan('2021-07-14/11:55',10,'minutes')
-        epd_var = pyspedas.elfin.epd(trange=['2021-07-14/11:55', '2021-07-14/12:05'], probe='a', level='l2', type_='nflux', fullspin=False)
+        epd_var = pyspedas.projects.elfin.epd(trange=['2021-07-14/11:55', '2021-07-14/12:05'], probe='a', level='l2', type_='nflux', fullspin=False)
         tplot_options('title', 'ELFIN data with time-varying bins, should render accurately')
         tplot('ela_pef_hs_nflux_ch0', display=global_display, save_png='ELFIN_test')
         tplot_options('title', '')
@@ -195,7 +262,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         # FAST TEAMS has fill values -1e31 in V, top is an energy distribution, the bottom two are pitch angle distributions
-        teams_vars = pyspedas.fast.teams(['1998-09-05', '1998-09-06'])
+        teams_vars = pyspedas.projects.fast.teams(['1998-09-05', '1998-09-06'])
         timespan('1998-09-05',1,'days')
         tplot_options('title', 'Fill should be removed, bottom two panels should go to Y=-90 deg')
         tplot(['H+', 'H+_low', 'H+_high'], display=global_display, save_png='TEAMS_test')
@@ -206,10 +273,22 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         # THEMIS ESA has monotonically decreasing energies, time varying energies, and also has fill
-        esa_vars = pyspedas.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
+        esa_vars = pyspedas.projects.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
         timespan('2016-07-23',1,'days')
         tplot_options('title', 'Decreasing and time-varying energies, fillvals, should render correctly')
         tplot('tha_peef_en_eflux', display=global_display, save_png='PEEF_test')
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    def test_themis_esa_copy_specplot(self):
+        del_data("*")
+        import pyspedas
+        # THEMIS ESA has monotonically decreasing energies, time varying energies, and also has fill
+        esa_vars = pyspedas.projects.themis.esa(trange=['2016-07-23', '2016-07-24'], probe='a')
+        timespan('2016-07-23',1,'days')
+        tplot_options('title', 'Decreasing and time-varying energies, fillvals, should render correctly')
+        pyspedas.tplot_copy('tha_peef_en_eflux',new_name='tha_peef_copy')
+        tplot('tha_peef_copy', display=global_display, save_png='PEEF_copy_test')
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
@@ -217,7 +296,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         # ERG specplots, only vertical lines on the bottom panel for original resample...
-        pyspedas.erg.hep(trange=['2017-03-27', '2017-03-28'])
+        pyspedas.projects.erg.hep(trange=['2017-03-27', '2017-03-28'])
         timespan('2017-03-27',1,'days')
         tplot_options('title', 'Time varying spectral bins, should render correctly')
         tplot(['erg_hep_l2_FEDO_L', 'erg_hep_l2_FEDO_H'], display=global_display, save_png='ERG_test')
@@ -226,7 +305,7 @@ class PlotTestCases(unittest.TestCase):
 
     def test_maven_specplot(self):
         del_data("*")
-        from pyspedas.maven.spdf import load
+        from pyspedas.projects.maven.spdf import load
         sta_vars = load(trange=['2020-12-30', '2020-12-31'], instrument='static', datatype='c0-64e2m')
         print(sta_vars)
         timespan('2020-12-30',1,'days')
@@ -239,7 +318,7 @@ class PlotTestCases(unittest.TestCase):
     #@unittest.skip(reason="Failing until we establish a default for spec_dim_to_plot")
     def test_maven_fluxes_specplot(self):
         del_data("*")
-        from pyspedas.maven.spdf import load
+        from pyspedas.projects.maven.spdf import load
         swe_vars = load(trange=['2014-10-18', '2014-10-19'], instrument='swea')
         print(swe_vars)
         timespan('2014-10-18',1,'days')
@@ -262,7 +341,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         from pytplot import store_data
-        pyspedas.themis.state(probe='c',trange=default_trange)
+        pyspedas.projects.themis.state(probe='c',trange=default_trange)
         store_data('ps1', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
         store_data('ps2', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
         store_data('ps3', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
@@ -279,8 +358,8 @@ class PlotTestCases(unittest.TestCase):
         from pytplot import zlim, ylim, timespan
 
         # Load ESA and SST data
-        pyspedas.themis.esa(probe='a', trange=default_trange)
-        pyspedas.themis.sst(probe='a', trange=default_trange)
+        pyspedas.projects.themis.esa(probe='a', trange=default_trange)
+        pyspedas.projects.themis.sst(probe='a', trange=default_trange)
 
         # Make a combined variable with both ESA and SST spectral data (disjoint energy ranges)
         store_data('combined_spec', ['tha_peif_en_eflux', 'tha_psif_en_eflux'])
@@ -319,8 +398,8 @@ class PlotTestCases(unittest.TestCase):
     def test_pseudo_spectra_plus_line(self):
         del_data("*")
         import pyspedas
-        pyspedas.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
-        pyspedas.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
+        pyspedas.projects.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
+        pyspedas.projects.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
         # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
         store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2', 'mms1_edp_scpot_fast_l2'])
         # Set some options so that the spectrum, trace, and y axes are legible
@@ -334,6 +413,25 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_pseudo_spectra_plus_line_copy(self):
+        del_data("*")
+        import pyspedas
+        pyspedas.projects.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
+        pyspedas.projects.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
+        # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
+        store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2', 'mms1_edp_scpot_fast_l2'])
+        # Set some options so that the spectrum, trace, and y axes are legible
+        options('mms1_edp_scpot_fast_l2', 'yrange', [10, 100])
+        #options('mms2_edp_scpot_fast_l2', 'right_axis', True)
+        options('spec','right_axis','True')
+        tplot_options('xmargin', [0.1, 0.2])
+        timespan('2015-10-16',1,'days')
+        tplot_options('title', 'Pseudovar with energy spectrum plus line plot of s/c potential')
+        pyspedas.tplot_copy('spec', 'spec_copy')
+        tplot('spec_copy', xsize=12, display=global_display,save_png='MMS_pseudo_spec_plus_line')
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
     def test_psp_flux_plot(self):
         del_data("*")
         import pyspedas
@@ -341,7 +439,7 @@ class PlotTestCases(unittest.TestCase):
         import numpy as np
         # import matplotlib.pyplot as plt
         from pytplot import tplot
-        spi_vars = pyspedas.psp.spi(trange=['2022-12-12/00:00', '2022-12-12/23:59'], datatype='sf00_l3_mom', level='l3',
+        spi_vars = pyspedas.projects.psp.spi(trange=['2022-12-12/00:00', '2022-12-12/23:59'], datatype='sf00_l3_mom', level='l3',
                                     time_clip=True)
         time = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['time'].values
         # print(time)
@@ -359,6 +457,16 @@ class PlotTestCases(unittest.TestCase):
         tplot('E_Flux',display=global_display, save_png='psp_E_Flux')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_save_with_plot_objects(self):
+        # Test that output files are saved when return_plot_objects is True
+        import pyspedas
+        import os
+        from matplotlib import pyplot as plt
+        pyspedas.projects.themis.state(probe='a')
+        if os.path.exists('ret_plot_objs.png'):
+            os.remove('ret_plot_objs.png')
+        tplot('tha_pos',display=global_display,return_plot_objects=True, save_png='ret_plot_objs.png')
+        self.assertTrue(os.path.exists('ret_plot_objs.png'))
 
 if __name__ == '__main__':
     unittest.main()

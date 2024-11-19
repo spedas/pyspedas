@@ -3,9 +3,10 @@ Fast Auroral Snapshot Explorer (FAST)
 The routines in this module can be used to load data from the Fast Auroral Snapshot Explorer (FAST) mission.
 
 
-Fluxgate Magnetometer (DCB)
+Fluxgate Magnetometer (DCF)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.fast.dcb
+.. autofunction:: pyspedas.projects.fast.dcf
+
 
 Example
 ^^^^^^^^^
@@ -14,19 +15,18 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   dcb_vars = pyspedas.fast.dcb(trange=['1998-09-05', '1998-09-06'])
-   tplot('')
+   dcf_vars = pyspedas.projects.fast.dcf(trange=["1996-12-01", "1996-12-02"])
+   tplot(['fast_dcf_DeltaB_GEI'])
 
-.. image:: _static/fast_dcb.png
+.. image:: _static/fast_dcf.png
    :align: center
    :class: imgborder
 
 
 
-
-Search-coil Magnetometer (ACB)
+Search-coil Magnetometer (ACF)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.fast.acb
+.. autofunction:: pyspedas.projects.fast.acf
 
 Example
 ^^^^^^^^^
@@ -35,19 +35,41 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   acb_vars = pyspedas.fast.acb()
-   tplot('HF_E_SPEC')
+   acf_vars = pyspedas.projects.fast.acf(trange=["1996-12-01", "1996-12-02"])
+   tplot('fast_acf_HF_E_SPEC')
 
-.. image:: _static/fast_acb.png
+.. image:: _static/fast_acf.png
    :align: center
    :class: imgborder
+
+
+
+
+Electrostatic Analyzers (ESA)
+----------------------------------------------------------
+.. autofunction:: pyspedas.projects.fast.esa
+
+Example
+^^^^^^^^^
+
+.. code-block:: python
+   
+   import pyspedas
+   from pytplot import tplot
+   esa_vars = pyspedas.projects.fast.esa(trange=["1996-12-01", "1996-12-02"])
+   tplot('fast_esa_eflux')
+
+.. image:: _static/fast_esa.png
+   :align: center
+   :class: imgborder
+
 
 
 
 
 Time-of-flight Energy Angle Mass Spectrograph (TEAMS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.fast.teams
+.. autofunction:: pyspedas.projects.fast.teams
 
 Example
 ^^^^^^^^^
@@ -56,8 +78,8 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   teams_vars = pyspedas.fast.teams(trange=['1998-09-05', '1998-09-06'])
-   tplot(['H+', 'H+_low', 'H+_high'])
+   teams_vars = pyspedas.projects.fast.teams(trange=["2005-08-01", "2005-08-02"])
+   tplot(['fast_teams_helium_omni_flux'])
 
 .. image:: _static/fast_teams.png
    :align: center

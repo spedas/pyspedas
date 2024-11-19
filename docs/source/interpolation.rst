@@ -7,7 +7,7 @@ pyspedas.interpol() operates directly on arrays, not tplot variables. It is a wr
 
 .. autofunction:: pyspedas.interpol
 
-pyspedas.tinterpol() operates on tplot variables, and uses the xarray interp() method internally.  It can take a list of
+pyspedas.tinterpol() operates on tplot variables, and uses the xarray interp() method (which itself uses scipy.interp1d) internally.  It can take a list of
 tplot variables and perform the interpolation on all of them.
 
 .. autofunction:: pyspedas.tinterpol

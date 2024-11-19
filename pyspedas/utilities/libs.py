@@ -42,7 +42,7 @@ def libs(function_name, package=None):
 
     >>> from pyspedas import libs
     >>> libs('fgm')
-    >>> libs('fgm', package=pyspedas.mms)
+    >>> libs('fgm', package=pyspedas.projects.mms)
 
     """
 

@@ -18,12 +18,28 @@ from pytplot import join_vec, store_data, get_data, tdeflag, del_data
 
 trange = ['2015-10-16', '2015-10-17']
 
+def gen_circle():
+    import pytplot
+    # Generate a circle at 5 RE in the XZ plane
+    angle = np.arange(0.0,361.0, 1.0)
+    angle_rad = np.deg2rad(angle)
+    y=np.zeros(len(angle_rad),np.float64)
+    x=5.0*np.sin(angle_rad)*6371.2
+    z=5.0*np.cos(angle_rad)*6371.2
+    t=np.zeros(len(angle_rad))
+    t[:] = pytplot.time_double('2024-01-01/06:31:00') + np.arange(0.0,361.0,1.0)
+    pos=np.zeros((len(angle_rad),3), np.float64)
+    pos[:,0] = x
+    pos[:,1] = y
+    pos[:,2] = z
+    pytplot.store_data('circle_magpoles_5re',data={'x':t,'y':pos})
+    pytplot.set_coords('circle_magpoles_5re', 'GSM')
 
 def get_params(model, g_variables=None):
     support_trange = [time_double(trange[0])-60*60*24, 
                       time_double(trange[1])+60*60*24]
     pyspedas.kyoto.dst(trange=support_trange)
-    pyspedas.omni.data(trange=trange)
+    pyspedas.projects.omni.data(trange=trange)
     join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
     if model == 't01' and g_variables is None:
         g_variables = [6.0, 10.0]
@@ -43,17 +59,17 @@ def get_params(model, g_variables=None):
 
 class LoadTestCases(unittest.TestCase):
     def test_igrf(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         tt89('mms1_mec_r_gsm', igrf_only=True)
         self.assertTrue(data_exists('mms1_mec_r_gsm_bt89'))
 
     def test_tt89(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         tt89('mms1_mec_r_gsm')
         self.assertTrue(data_exists('mms1_mec_r_gsm_bt89'))
 
     def test_tt96(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         params = get_params('t96')
         # This interpolation can result in NaNs in the position variable, so they need to be cleaned
         tinterpol('mms1_mec_r_gsm', 'proton_density')
@@ -62,7 +78,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_clean_bt96'))
 
     def test_tt01(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         params = get_params('t01')
         # This can yield nans in the interpolated position variable for times outside the range of proton_density.
         # We don't want to pass NaNs to any of the geopack routines, so deflag
@@ -94,7 +110,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_clean_bt01'))
 
     def test_tts04(self):
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         params = get_params('ts04')
         tinterpol('mms1_mec_r_gsm', 'proton_density')
         tts04('mms1_mec_r_gsm-itrp', parmod=params)
@@ -105,7 +121,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_errors(self):
         # exercise some of the error code
-        mec_vars = pyspedas.mms.mec(trange=trange)
+        mec_vars = pyspedas.projects.mms.mec(trange=trange)
         params = get_params('ts04')
         tinterpol('mms1_mec_r_gsm', 'proton_density')
         tts04('var_doesnt_exist')
@@ -138,6 +154,44 @@ class LoadTestCases(unittest.TestCase):
     def test_t89_iono_s_s(self):
         trace_iono_89(time_double('2007-03-23/00:00:00'), np.array([-2.0,0.0,-1.0]),iopt=3, south=True)
 
+    def test_t96_roi(self):
+        import pytplot
+        gen_circle()
+        params = get_params('t96')
+        dat=get_data(params)
+        circ_dat=get_data('circle_magpoles_5re')
+        n=len(circ_dat.times)
+        newdat=np.zeros((n,10), np.float64)
+        newdat[:,:] = dat.y[0,]
+        store_data(params,data={'x':circ_dat.times, 'y':newdat})
+        tt96('circle_magpoles_5re', parmod=params)
+        #pytplot.tplot(['circle_magpoles_5re','circle_magpoles_5re_bt96'])
+
+    def test_t01_roi(self):
+        import pytplot
+        gen_circle()
+        params = get_params('t01')
+        dat=get_data(params)
+        circ_dat=get_data('circle_magpoles_5re')
+        n=len(circ_dat.times)
+        newdat=np.zeros((n,10), np.float64)
+        newdat[:,:] = dat.y[0,]
+        store_data(params,data={'x':circ_dat.times, 'y':newdat})
+        tt01('circle_magpoles_5re', parmod=params)
+        #pytplot.tplot(['circle_magpoles_5re','circle_magpoles_5re_bt01'])
+
+    def test_t04_roi(self):
+        import pytplot
+        gen_circle()
+        params = get_params('ts04')
+        dat=get_data(params)
+        circ_dat=get_data('circle_magpoles_5re')
+        n=len(circ_dat.times)
+        newdat=np.zeros((n,10), np.float64)
+        newdat[:,:] = dat.y[0,]
+        store_data(params,data={'x':circ_dat.times, 'y':newdat})
+        tts04('circle_magpoles_5re', parmod=params)
+        #pytplot.tplot(['circle_magpoles_5re','circle_magpoles_5re_bts04'])
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,7 +14,7 @@ T89 Example
    
    # load some spacecraft position data
    import pyspedas
-   pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the field using the T89 model
    from pyspedas.geopack import tt89
@@ -40,7 +40,7 @@ T96 Example
    
    # load some spacecraft position data
    import pyspedas
-   pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the params using the solar wind data; see the "Solar Wind Parameters" section below for an example
 
@@ -72,7 +72,7 @@ T01 Example
    
    # load some spacecraft position data
    import pyspedas
-   pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the params using the solar wind data; see the "Solar Wind Parameters" section below for an example
 
@@ -104,7 +104,7 @@ TS04 Example
 
    # load some spacecraft position data
    import pyspedas
-   pyspedas.mms.mec(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.mms.mec(trange=['2015-10-16', '2015-10-17'])
 
    # calculate the params using the solar wind data; see the "Solar Wind Parameters" section below for an example
 
@@ -137,8 +137,8 @@ get_tsy_params Example
    
    # load Dst and solar wind data
    import pyspedas
-   pyspedas.kyoto.dst(trange=['2015-10-16', '2015-10-17'])
-   pyspedas.omni.data(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.kyoto.dst(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.omni.data(trange=['2015-10-16', '2015-10-17'])
 
    # join the components of B into a single variable
    # BX isn't used

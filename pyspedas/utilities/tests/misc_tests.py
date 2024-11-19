@@ -1,13 +1,14 @@
 """Test functions in the utilites folder."""
 import unittest
 
+import pyspedas
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas import tcopy
 from pyspedas import themis
 from pyspedas import cotrans
 from pyspedas import mpause_2, mpause_t96
 from pyspedas import find_datasets
-from pytplot import data_exists, tkm2re, tplot
+from pytplot import data_exists, tkm2re, tplot, split_vec, del_data
 from pytplot import get_data, store_data, options
 
 
@@ -159,6 +160,73 @@ class UtilTestCases(unittest.TestCase):
         ds = find_datasets(mission='MMS', instrument='FGM',label=True)
         self.assertTrue('MMS1_FGM_BRST_L2' in ds)
         self.assertTrue('MMS2_FGM_BRST_L2' in ds)
+
+    def test_split_vec_metadata(self):
+        del_data('*')
+        pyspedas.projects.themis.fit(probe='c')
+        md = get_data('thc_fgs_dsl')
+        split_vec('thc_fgs_dsl')
+        self.assertTrue(data_exists('thc_fgs_dsl_x'))
+        self.assertTrue(data_exists('thc_fgs_dsl_y'))
+        self.assertTrue(data_exists('thc_fgs_dsl_z'))
+        md_x = get_data('thc_fgs_dsl_x', metadata=True)
+        self.assertTrue(md_x['plot_options']['xaxis_opt']['axis_label'] == 'Time')
+
+    def test_imports(self):
+        import pyspedas
+        from pytplot import del_data, data_exists, tplot_names
+        # fully qualified name without .projects.
+        del_data('*')
+        pyspedas.projects.themis.state(probe='a')
+        self.assertTrue(data_exists('tha_pos'))
+        # fully qualified name with .projects.
+        del_data('*')
+        pyspedas.projects.themis.state(probe='a')
+        self.assertTrue(data_exists('tha_pos'))
+
+        # import themis without .projects.
+        from pyspedas import themis
+        del_data('*')
+        themis.state(probe='a')
+        self.assertTrue(data_exists('tha_pos'))
+        # import themis with .projects.
+        from pyspedas.projects import themis
+        del_data('*')
+        themis.state(probe='a')
+        self.assertTrue(data_exists('tha_pos'))
+
+        # import state without .projects.
+        # PyCharm's static analysis doesn't like this (red underlines) but it works at runtime
+        from pyspedas.projects.themis import state
+        del_data('*')
+        state(probe='a')
+        self.assertTrue(data_exists('tha_pos'))
+        # import state with .projects.
+        from pyspedas.projects.themis import state
+        del_data('*')
+        state(probe='a')
+        self.assertTrue(data_exists('tha_pos'))
+
+        from pyspedas import mms
+        del_data('*')
+        mms.fgm()
+        self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
+
+        from pyspedas.projects.mms import fgm
+        del_data('*')
+        fgm()
+        self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
+
+        # import state without .projects.
+        from pyspedas.projects.themis.state.state import state
+        del_data('*')
+        state(probe='a')
+        self.assertTrue(data_exists('tha_pos'))
+        # import state with .projects.
+        from pyspedas.projects.themis.state.state import state
+        del_data('*')
+        state(probe='a')
+        self.assertTrue(data_exists('tha_pos'))
 
 if __name__ == '__main__':
     unittest.main()

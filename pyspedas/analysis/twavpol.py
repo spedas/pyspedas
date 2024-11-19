@@ -111,7 +111,7 @@ def wpol_matsqrd(i1, i2, i3, ematspec):
 def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
     """Calculate helicity, ellipticity."""
     # Avoid warnings.
-    warnings.simplefilter("ignore", np.ComplexWarning)
+    warnings.simplefilter("ignore", np.exceptions.ComplexWarning)
 
     # Define arrays.
     helicity = np.empty((nosteps, int(nopfft/2), 3))

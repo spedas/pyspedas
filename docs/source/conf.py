@@ -16,7 +16,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../..'))
 
 import pyspedas
-import pyspedas.cotrans.cotrans
+import pyspedas.cotrans_tools.cotrans
 
 # -- Project information -----------------------------------------------------
 
@@ -25,7 +25,7 @@ copyright = '2018-2024, UC Regents, unless otherwise indicated'
 author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
-release = '1.5.16'
+release = '1.7.0'
 
 
 # -- General configuration ---------------------------------------------------

@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Advanced Compositi
 
 Magnetometer (MFI)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ace.mfi
+.. autofunction:: pyspedas.projects.ace.mfi
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mfi_vars = pyspedas.ace.mfi(trange=['2018-11-5', '2018-11-6'])
+   mfi_vars = pyspedas.projects.ace.mfi(trange=['2018-11-5', '2018-11-6'])
    tplot(['BGSEc', 'Magnitude'])
 
 .. image:: _static/ace_mfi.png
@@ -26,7 +26,7 @@ Example
 
 Solar Wind Electron, Proton and Alpha Monitor (SWEPAM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ace.swe
+.. autofunction:: pyspedas.projects.ace.swe
 
 Example
 ^^^^^^^^^
@@ -35,7 +35,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   swe_vars = pyspedas.ace.swe(trange=['2018-11-5', '2018-11-6'])
+   swe_vars = pyspedas.projects.ace.swe(trange=['2018-11-5', '2018-11-6'])
    tplot(['Vp', 'Tpr'])
 
 .. image:: _static/ace_swe.png
@@ -47,7 +47,7 @@ Example
 
 Electron, Proton, and Alpha-particle Monitor (EPAM)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ace.epam
+.. autofunction:: pyspedas.projects.ace.epam
 
 Example
 ^^^^^^^^^
@@ -56,7 +56,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   epam_vars = pyspedas.ace.epam(trange=['2018-11-5', '2018-11-6'])
+   epam_vars = pyspedas.projects.ace.epam(trange=['2018-11-5', '2018-11-6'])
    tplot(['H_lo', 'Ion_very_lo', 'Ion_lo', 'Ion_mid', 'Ion_hi', 'Electron_lo', 'Electron_hi'])
 
 .. image:: _static/ace_epam.png
@@ -68,7 +68,7 @@ Example
 
 Cosmic Ray Isotope Spectrometer (CRIS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ace.cris
+.. autofunction:: pyspedas.projects.ace.cris
 
 Example
 ^^^^^^^^^
@@ -77,7 +77,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   cris_vars = pyspedas.ace.cris(trange=['2018-11-5', '2018-11-6'])
+   cris_vars = pyspedas.projects.ace.cris(trange=['2018-11-5', '2018-11-6'])
    tplot(['flux_B', 'flux_C', 'flux_N', 'flux_O', 'flux_F', 'flux_Ne'])
 
 .. image:: _static/ace_cris.png
@@ -89,7 +89,7 @@ Example
 
 Solar Isotope Spectrometer (SIS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ace.sis
+.. autofunction:: pyspedas.projects.ace.sis
 
 Example
 ^^^^^^^^^
@@ -98,7 +98,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   sis_vars = pyspedas.ace.sis(trange=['2018-11-5', '2018-11-6'])
+   sis_vars = pyspedas.projects.ace.sis(trange=['2018-11-5', '2018-11-6'])
    tplot(['H_lo', 'H_hi', 'CNO_lo', 'CNO_hi', 'Z_ge_10'])
 
 .. image:: _static/ace_sis.png
@@ -110,7 +110,7 @@ Example
 
 Ultra Low Energy Isotope Spectrometer (ULEIS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ace.uleis
+.. autofunction:: pyspedas.projects.ace.uleis
 
 Example
 ^^^^^^^^^
@@ -119,7 +119,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   uleis_vars = pyspedas.ace.uleis(trange=['2018-11-5', '2018-11-6'])
+   uleis_vars = pyspedas.projects.ace.uleis(trange=['2018-11-5', '2018-11-6'])
    tplot(['H_S1', 'H_S2', 'H_S3', 'H_S4', 'H_S5'])
 
 .. image:: _static/ace_uleis.png
@@ -131,7 +131,7 @@ Example
 
 Solar Energetic Particle Ionic Charge Analyzer (SEPICA)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ace.sepica
+.. autofunction:: pyspedas.projects.ace.sepica
 
 Example
 ^^^^^^^^^
@@ -140,7 +140,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   sepica_vars = pyspedas.ace.sepica(trange=['2004-11-5', '2004-11-6'])
+   sepica_vars = pyspedas.projects.ace.sepica(trange=['2004-11-5', '2004-11-6'])
    tplot(['H1', 'H2', 'H3'])
 
 .. image:: _static/ace_sepica.png
@@ -152,7 +152,7 @@ Example
 
 Solar Wind Ion Composition Spectrometer (SWICS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.ace.swics
+.. autofunction:: pyspedas.projects.ace.swics
 
 Example
 ^^^^^^^^^
@@ -161,7 +161,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   swi_vars = pyspedas.ace.swics(trange=['2018-11-5', '2018-11-6'])
+   swi_vars = pyspedas.projects.ace.swics(trange=['2018-11-5', '2018-11-6'])
    tplot(['vHe2', 'vthHe2'])
 
 .. image:: _static/ace_swics.png

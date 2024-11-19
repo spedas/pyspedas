@@ -38,7 +38,7 @@ You can load data into tplot variables by calling pyspedas.mission.instrument(),
 .. code-block:: python
 
    import pyspedas
-   pyspedas.mms.fgm()
+   pyspedas.projects.mms.fgm()
 
 
 The load routines support several keywords to control which data products are loaded (datatype, level, etc). 

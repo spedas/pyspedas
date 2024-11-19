@@ -28,10 +28,6 @@ Add Across Columns
 ------------------
 .. autofunction:: pytplot.tplot_math.add_across
 
-Average over time
------------------
-.. autofunction:: pytplot.tplot_math.avg_res_data
-
 Clean Spikes
 ------------
 .. autofunction:: pytplot.tplot_math.clean_spikes

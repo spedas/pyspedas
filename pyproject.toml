@@ -1,0 +1,113 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyspedas"
+version = "1.7.0"
+description = "Python Space Physics Environment Data Analysis Software (pySPEDAS)"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Jim Lewis", email = "jwl@ssl.berkeley.edu"},
+]
+keywords = [
+    "SPEDAS",
+    "data",
+    "tools",
+    "space physics",
+    "data analysis",
+    "space science",
+    "scientific computing",
+    "time series analysis",
+    "data visualization",
+    "satellite data",
+    "magnetosphere",
+    "ionosphere",
+    "heliophysics",
+    "geophysics",
+    "remote sensing",
+    "astrophysics",
+    "solar physics",
+    "space weather",
+    "data retrieval",
+    "NASA",
+    "NOAA",
+    "ESA",
+    "JAXA",
+    "HSO",
+    "CDF",
+    "ISTP",
+    "netCDF",
+    "Python package",
+    "THEMIS",
+    "ARTEMIS",
+    "MMS",
+    "ERG",
+    "Arase",
+    "ACE",
+    "MAVEN",
+    "RBSP",
+    "Van Allen Probes",
+    "GOES",
+    "POES",
+    "Cluster",
+    "OMNIWeb",
+    "aurora",
+    "geomagnetic index",
+    "Kp index",
+    "AE index",
+    "magnetic field models",
+    "Tsyganenko",
+    "IGRF",
+    "geopack",
+    "magnetotelluric",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "numpy>=1.20.0",
+    "requests",
+    "geopack>=1.0.11",
+    "scipy",
+    "cdflib",
+    "cdasws>=1.7.24",
+    "netCDF4>=1.6.2",
+    "pywavelets",
+    "astropy",
+    "hapiclient>=0.2.2",
+    "pytplot-mpl-temp>=2.2.50",
+    "viresclient",
+]
+
+[project.urls]
+Homepage = "https://github.com/spedas/pyspedas"
+Information = "https://spedas.org/wiki/"
+Documentation = "https://pyspedas.readthedocs.io"
+Issue_Tracker = "https://github.com/spedas/pyspedas/issues"
+Source_Code = "https://github.com/spedas/pyspedas"
+
+[tool.setuptools]
+packages = {find = {exclude = ["contrib", "docs", "tests*"]}}
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*"=["*.md","LICENSE.txt"]
+"pyspedas.projects.mms.feeps.sun" = ["*.csv"]
+"pyspedas.projects.mms.mec" = ["*.png"]
+"pyspedas.projects.elfin.epd" = ["el*_epde_cal_data.txt"]

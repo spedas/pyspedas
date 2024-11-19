@@ -8,7 +8,7 @@ The following geomagnetic indices can be loaded into tplot variables:
 For "Kp" and "ap", there is one data point for every 3 hours.
 For all other variables, there is one data point per day.
 
-.. autofunction:: pyspedas.noaa.noaa_load_kp
+.. autofunction:: pyspedas.projects.noaa.noaa_load_kp
 
 Example
 -------
@@ -18,7 +18,7 @@ Example
    import pyspedas
    from pytplot import tplot
    trange = ["2017-03-23/00:00:00", "2017-04-23/23:59:59"]
-   noaa_vars = pyspedas.noaa.noaa_load_kp(trange=trange)
+   noaa_vars = pyspedas.projects.noaa.noaa_load_kp(trange=trange)
    print(noaa_vars)
    tplot(['Kp','ap','F10.7'])
 

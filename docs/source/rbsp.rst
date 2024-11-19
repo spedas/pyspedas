@@ -5,7 +5,7 @@ The routines in this module can be used to load and process data (in case of RBS
 
 Electric and Magnetic Field Instrument Suite and Integrated Science (EMFISIS)
 -------------------------------------------------------------------------------
-.. autofunction:: pyspedas.rbsp.emfisis
+.. autofunction:: pyspedas.projects.rbsp.emfisis
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   emfisis_vars = pyspedas.rbsp.emfisis(trange=['2018-11-5/10:00', '2018-11-5/15:00'], datatype='magnetometer', level='l3', time_clip=True)
+   emfisis_vars = pyspedas.projects.rbsp.emfisis(trange=['2018-11-5/10:00', '2018-11-5/15:00'], datatype='magnetometer', level='l3', time_clip=True)
    tplot(['Mag', 'Magnitude'])
 
 .. image:: _static/rbsp_emfisis.png
@@ -26,7 +26,7 @@ Example
 
 Electric Field and Waves Suite (EFW)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.rbsp.efw
+.. autofunction:: pyspedas.projects.rbsp.efw
 
 Example
 ^^^^^^^^^
@@ -35,7 +35,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   efw_vars = pyspedas.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
+   efw_vars = pyspedas.projects.rbsp.efw(trange=['2015-11-5', '2015-11-6'], level='l3')
    tplot(['efield_in_inertial_frame_spinfit_mgse', 'spacecraft_potential'])
 
 .. image:: _static/rbsp_efw.png
@@ -47,7 +47,7 @@ Example
 
 Radiation Belt Storm Probes Ion Composition Experiment (RBSPICE)
 -----------------------------------------------------------------
-.. autofunction:: pyspedas.rbsp.rbspice
+.. autofunction:: pyspedas.projects.rbsp.rbspice
 
 Example
 ^^^^^^^^^
@@ -56,10 +56,10 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   rbspice_vars = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEH', level='l3')
+   rbspice_vars = pyspedas.projects.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEH', level='l3')
    tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_spin')
    # calculate the pitch angle distributions
-   from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
+   from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
    rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3')
    tplot(['rbspa_rbspice_l3_TOFxEH_proton_omni_spin',
           'rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad_spin'])
@@ -68,13 +68,13 @@ Example
    :align: center
    :class: imgborder
 
-.. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad.rbsp_rbspice_pad
+.. autofunction:: pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad.rbsp_rbspice_pad
 
-.. autofunction:: pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg.rbsp_rbspice_pad_spinavg
+.. autofunction:: pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg.rbsp_rbspice_pad_spinavg
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - MagEIS
 --------------------------------------------------------------------------
-.. autofunction:: pyspedas.rbsp.mageis
+.. autofunction:: pyspedas.projects.rbsp.mageis
 
 Example
 ^^^^^^^^^
@@ -83,7 +83,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mageis_vars = pyspedas.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
+   mageis_vars = pyspedas.projects.rbsp.mageis(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel04')
    tplot('I')
 
 .. image:: _static/rbsp_mageis.png
@@ -95,7 +95,7 @@ Example
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - HOPE
 ------------------------------------------------------------------------
-.. autofunction:: pyspedas.rbsp.hope
+.. autofunction:: pyspedas.projects.rbsp.hope
 
 Example
 ^^^^^^^^^
@@ -104,7 +104,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   hope_vars = pyspedas.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='moments', level='l3', rel='rel04')
+   hope_vars = pyspedas.projects.rbsp.hope(trange=['2018-11-5', '2018-11-6'], datatype='moments', level='l3', rel='rel04')
    tplot('Ion_density')
 
 .. image:: _static/rbsp_hope.png
@@ -115,7 +115,7 @@ Example
 
 Energetic Particle, Composition, and Thermal Plasma Suite (ECT) - REPT
 ------------------------------------------------------------------------
-.. autofunction:: pyspedas.rbsp.rept
+.. autofunction:: pyspedas.projects.rbsp.rept
 
 Example
 ^^^^^^^^^
@@ -124,7 +124,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   rept_vars = pyspedas.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
+   rept_vars = pyspedas.projects.rbsp.rept(trange=['2018-11-5', '2018-11-6'], level='l3', rel='rel03')
    tplot('Tperp_e_200')
 
 .. image:: _static/rbsp_rept.png
@@ -136,7 +136,7 @@ Example
 
 Relativistic Proton Spectrometer (RPS)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.rbsp.rps
+.. autofunction:: pyspedas.projects.rbsp.rps
 
 Example
 ^^^^^^^^^
@@ -145,7 +145,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   rps_vars = pyspedas.rbsp.rps(trange=['2018-11-5', '2018-11-6'], datatype='rps', level='l2')
+   rps_vars = pyspedas.projects.rbsp.rps(trange=['2018-11-5', '2018-11-6'], datatype='rps', level='l2')
    tplot('DOSE1')
 
 .. image:: _static/rbsp_rps.png

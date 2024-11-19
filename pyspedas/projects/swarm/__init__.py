@@ -1,0 +1,2 @@
+from .mag import mag
+

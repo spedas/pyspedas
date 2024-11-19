@@ -5,7 +5,7 @@ The routines in this module can be used to load data from the Wind mission.
 
 Magnetic Field Investigation (MFI)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.wind.mfi
+.. autofunction:: pyspedas.projects.wind.mfi
 
 Example
 ^^^^^^^^^
@@ -14,7 +14,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   mfi_vars = pyspedas.wind.mfi(trange=['2013-11-5', '2013-11-6'])
+   mfi_vars = pyspedas.projects.wind.mfi(trange=['2013-11-5', '2013-11-6'])
    tplot('BGSE')
 
 .. image:: _static/wind_mfi.png
@@ -25,7 +25,7 @@ Example
 
 Solar Wind Experiment (SWE)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.wind.swe
+.. autofunction:: pyspedas.projects.wind.swe
 
 Example
 ^^^^^^^^^
@@ -34,7 +34,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   swe_vars = pyspedas.wind.swe(trange=['2013-11-5', '2013-11-6'])
+   swe_vars = pyspedas.projects.wind.swe(trange=['2013-11-5', '2013-11-6'])
    tplot(['N_elec', 'T_elec'])
 
 .. image:: _static/wind_swe.png
@@ -45,7 +45,7 @@ Example
 
 Radio and Plasma Waves (WAVES)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.wind.waves
+.. autofunction:: pyspedas.projects.wind.waves
 
 Example
 ^^^^^^^^^
@@ -54,7 +54,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   waves_vars = pyspedas.wind.waves(trange=['2013-11-5', '2013-11-6'])
+   waves_vars = pyspedas.projects.wind.waves(trange=['2013-11-5', '2013-11-6'])
    tplot(['E_VOLTAGE_RAD2', 'E_VOLTAGE_RAD1', 'E_VOLTAGE_TNR'])
 
 .. image:: _static/wind_waves.png
@@ -65,7 +65,7 @@ Example
 
 3D Plasma Analyzer (3DP)
 ----------------------------------------------------------
-.. autofunction:: pyspedas.wind.threedp
+.. autofunction:: pyspedas.projects.wind.threedp
 
 Example
 ^^^^^^^^^
@@ -74,7 +74,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   threedp_vars = pyspedas.wind.threedp()
+   threedp_vars = pyspedas.projects.wind.threedp()
    tplot(['V_e_xyz_gse_wi_3dp', 'N_e_dens_wi_3dp', 'T_e_par_wi_3dp'])
 
 .. image:: _static/wind_threedp.png
@@ -85,7 +85,7 @@ Example
 
 Solar Wind and Suprathermal Ion Composition Experiment (SMS)
 -------------------------------------------------------------
-.. autofunction:: pyspedas.wind.sms
+.. autofunction:: pyspedas.projects.wind.sms
 
 Example
 ^^^^^^^^^
@@ -94,7 +94,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   sms_vars = pyspedas.wind.sms()
+   sms_vars = pyspedas.projects.wind.sms()
    tplot(['C_ion_temp', 'O_ion_temp'])
 
 .. image:: _static/wind_sms.png
@@ -105,7 +105,7 @@ Example
 
 Orbit data
 ----------------------------------------------------------
-.. autofunction:: pyspedas.wind.orbit
+.. autofunction:: pyspedas.projects.wind.orbit
 
 Example
 ^^^^^^^^^
@@ -114,7 +114,7 @@ Example
    
    import pyspedas
    from pytplot import tplot
-   orb_vars = pyspedas.wind.orbit(trange=['2013-11-5', '2013-11-6'])
+   orb_vars = pyspedas.projects.wind.orbit(trange=['2013-11-5', '2013-11-6'])
    tplot(['GSE_POS', 'GSE_VEL', 'GSM_POS', 'GSM_VEL'])
 
 .. image:: _static/wind_orbit.png
