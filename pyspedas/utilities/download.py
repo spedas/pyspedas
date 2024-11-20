@@ -205,7 +205,6 @@ def download_file(
 
     # Cloud Awareness
     if is_fsspec_uri(url):
-        #dt_fmt = "%a, %d %b %Y %H:%M:%S GMT"
         protocol, path = url.split("://")
         remote_fs = fsspec.filesystem(protocol, anon=False)
         remote_modtime = remote_fs.info(path)["LastModified"]

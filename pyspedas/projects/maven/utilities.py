@@ -6,7 +6,8 @@ from .file_regex import maven_kp_l2_regex
 import numpy as np
 import collections
 
-
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
 
 def remove_inst_tag(df):
     """
@@ -43,9 +44,10 @@ def get_latest_files_from_date_range(date1, date2):
     from datetime import timedelta
 
     mvn_root_data_dir = utils.get_root_data_dir()
-    maven_data_dir = os.path.join(
+    sep = "/" if is_fsspec_uri(mvn_root_data_dir) else os.path.sep
+    maven_data_dir = sep.join([
         mvn_root_data_dir, "maven", "data", "sci", "kp", "insitu"
-    )
+    ])
 
     # Each file starts at midnight, so lets cut off the hours and just pay attention to the days
     date1 = date1.replace(hour=0, minute=0, second=0)
@@ -62,13 +64,26 @@ def get_latest_files_from_date_range(date1, date2):
         year = str(current_date.year)
         month = str("%02d" % current_date.month)
         day = str("%02d" % current_date.day)
-        full_path = os.path.join(maven_data_dir, year, month)
-        if os.path.exists(full_path):
+        full_path = sep.join([maven_data_dir, year, month])
+        listdir = []
+        if is_fsspec_uri(full_path):
+            protocol, path = maven_data_dir.split("://")
+            fs = fsspec.filesystem(protocol)
+
+            exists = fs.exists(full_path)
+            if exists:
+                listdir = fs.listdir(full_path, detail=False)
+                # fsspec alternative to os.path.basename
+                listdir = [f.rstrip("/").split("/")[-1] for f in listdir]
+        else:
+            exists = os.path.exists(full_path)
+            if exists: listdir = os.listdir(full_path)
+        if exists:
             # Grab only the most recent version/revision of regular and crustal insitu files for each
             # day
             insitu = {}
             c_insitu = {}
-            for f in os.listdir(full_path):
+            for f in listdir:
                 # logging.warning(f)
                 if kp_regex.match(f).group("day") == day and not kp_regex.match(
                     f
@@ -96,7 +111,7 @@ def get_latest_files_from_date_range(date1, date2):
                 most_recent_insitu = [
                     f for f in insitu.keys() if max_r in f and max_v in f
                 ]
-                filenames.append(os.path.join(full_path, most_recent_insitu[0]))
+                filenames.append(sep.join([full_path, most_recent_insitu[0]]))
 
             if c_insitu:
                 # Get max version
@@ -110,7 +125,7 @@ def get_latest_files_from_date_range(date1, date2):
                 most_recent_c_insitu = [
                     f for f in c_insitu.keys() if c_max_r in f and c_max_v in f
                 ]
-                filenames.append(os.path.join(full_path, most_recent_c_insitu[0]))
+                filenames.append(sep.join([full_path, most_recent_c_insitu[0]]))
 
     filenames = sorted(filenames)
     return filenames
@@ -132,9 +147,10 @@ def get_latest_iuvs_files_from_date_range(date1, date2):
 
     kp_regex, l2_regex = maven_kp_l2_regex()
     mvn_root_data_dir = utils.get_root_data_dir()
-    maven_data_dir = os.path.join(
+    sep = "/" if is_fsspec_uri(mvn_root_data_dir) else os.path.sep
+    maven_data_dir = sep.join([
         mvn_root_data_dir, "maven", "data", "sci", "kp", "iuvs"
-    )
+    ])
 
     # Each file starts at midnight, so lets cut off the hours and just pay attention to the days
     date1 = date1.replace(hour=0, minute=0, second=0)
@@ -150,11 +166,24 @@ def get_latest_iuvs_files_from_date_range(date1, date2):
         month = str("%02d" % current_date.month)
         day = str("%02d" % current_date.day)
         # TODO: Fix the path after we fix the iuvs regex
-        full_path = os.path.join(maven_data_dir,"occ-", "02")
-        if os.path.exists(full_path):
+        full_path = sep.join([maven_data_dir,"occ-", "02"])
+        listdir = []
+        if is_fsspec_uri(full_path):
+            protocol, path = maven_data_dir.split("://")
+            fs = fsspec.filesystem(protocol)
+
+            exists = fs.exists(full_path)
+            if exists:
+                listdir = fs.listdir(full_path, detail=False)
+                # fsspec alternative to os.path.basename
+                listdir = [f.rstrip("/").split("/")[-1] for f in listdir]
+        else:
+            exists = os.path.exists(full_path)
+            if exists: listdir = os.listdir(full_path)
+        if exists:
             basenames = []
             # Obtain a list of all the basenames for the day
-            for f in os.listdir(full_path):
+            for f in listdir:
                 if kp_regex.match(f).group("day") == day:
                     description = kp_regex.match(f).group("description")
                     year = kp_regex.match(f).group("year")
@@ -169,7 +198,7 @@ def get_latest_iuvs_files_from_date_range(date1, date2):
             for bn in basenames:
                 version = 0
                 revision = 0
-                for f in os.listdir(full_path):
+                for f in listdir:
                     description = kp_regex.match(f).group("description")
                     year = kp_regex.match(f).group("year")
                     month = kp_regex.match(f).group("month")
@@ -181,7 +210,7 @@ def get_latest_iuvs_files_from_date_range(date1, date2):
                         if int(v) > int(version):
                             version = v
 
-                for f in os.listdir(full_path):
+                for f in listdir:
                     description = kp_regex.match(f).group("description")
                     year = kp_regex.match(f).group("year")
                     month = kp_regex.match(f).group("month")
@@ -195,7 +224,7 @@ def get_latest_iuvs_files_from_date_range(date1, date2):
                             revision = r
                 if int(version) > 0:
                     seq = (bn, "v" + str(version), "r" + str(revision) + ".tab")
-                    files_to_return.append(os.path.join(full_path, "_".join(seq)))
+                    files_to_return.append(sep.join([full_path, "_".join(seq)]))
     files_to_return = sorted(files_to_return)
     return files_to_return
 
@@ -214,9 +243,8 @@ def get_l2_files_from_date(date1, instrument):
 
     kp_regex, l2_regex = maven_kp_l2_regex()
     mvn_root_data_dir = utils.get_root_data_dir()
-    maven_data_dir = os.path.join(
-        mvn_root_data_dir, "maven", "data", "sci", instrument, "l2"
-    )
+    sep = "/" if is_fsspec_uri(mvn_root_data_dir) else os.path.sep
+    maven_data_dir = sep.join([mvn_root_data_dir, "maven", "data", "sci", instrument, "l2"])
 
     # Each file starts at midnight, so lets cut off the hours and just pay attention to the days
     date1 = date1.replace(hour=0, minute=0, second=0)
@@ -226,11 +254,25 @@ def get_l2_files_from_date(date1, instrument):
     year = str(date1.year)
     month = str("%02d" % date1.month)
     day = str("%02d" % date1.day)
-    full_path = os.path.join(maven_data_dir, year, month)
-    if os.path.exists(full_path):
-        for f in os.listdir(full_path):
+    full_path = sep.join([maven_data_dir, year, month])
+    listdir = []
+    if is_fsspec_uri(mvn_root_data_dir):
+        protocol, path = mvn_root_data_dir.split("://")
+        fs = fsspec.filesystem(protocol)
+
+        exists = fs.exists(full_path)
+        if exists:
+            listdir = fs.listdir(full_path, detail=False)
+            # fsspec alternative to os.path.basename
+            listdir = [f.rstrip("/").split("/")[-1] for f in listdir]
+    else:
+        exists = os.path.exists(full_path)
+        if exists: os.listdir(full_path)
+
+    if exists:
+        for f in listdir:
             if l2_regex.match(f).group("day") == day:
-                filenames.append(os.path.join(full_path, f))
+                filenames.append(sep.join([full_path, f]))
 
     filenames = sorted(filenames)
     return filenames
@@ -248,7 +290,14 @@ def get_header_info(filename):
     """
     # Determine number of header lines
     nheader = 0
-    with open(filename) as f:
+    if is_fsspec_uri(filename):
+        protocol, path = filename.split("://")
+        fs = fsspec.filesystem(protocol)
+        fo = fs.open(filename, "rt")
+    else:
+        fo = open(filename)
+
+    with fo as f:
         for line in f:
             if line.startswith("#"):
                 nheader += 1
@@ -257,7 +306,13 @@ def get_header_info(filename):
     read_param_list = False
     start_temp = False
     index_list = []
-    with open(filename) as fin:
+    if is_fsspec_uri(filename):
+        protocol, path = filename.split("://")
+        fs = fsspec.filesystem(protocol)
+        fo = fs.open(filename, "rt")
+    else:
+        fo = open(filename)
+    with fo as fin:
         icol = -2  # Counting header lines detailing column names
         iname = 1  # for counting seven lines with name info
         ncol = -1  # Dummy value to allow reading of early headerlines?

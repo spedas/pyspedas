@@ -31,6 +31,12 @@ By default, the data is stored in your pyspedas directory in a folder named 'pyd
 
 Mission specific data directories (e.g., **MMS_DATA_DIR** for MMS, **THM_DATA_DIR** for THEMIS) can also be set, and these will override **SPEDAS_DATA_DIR**.
 
+Cloud Repositories
+------------------------
+**SPEDAS_DATA_DIR** and mission specific data directories can also be the URI of a cloud repository (e.g., an S3 repository). If this data directory is set to an URI, files will be downloaded from the data server to the URI location. The data will then be streamed from the URI without needing to download the file locally. 
+
+In order to successfully access the specified cloud repository, the user is required to correctly set up permissions to be able to read and write to that cloud repository on their own. Refer `here <https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html>`_ for how to prepare your AWS configuration and credentials.
+
 Loading and Plotting Data
 ---------------------------
 You can load data into tplot variables by calling pyspedas.mission.instrument(), e.g.,
