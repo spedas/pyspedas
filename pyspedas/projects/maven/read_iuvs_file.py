@@ -6,6 +6,9 @@ from .file_regex import maven_kp_l2_regex
 import numpy as np
 import collections
 
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
+
 def read_iuvs_file(file):
     """
     Read an IUVS file and return a dictionary containing the data.
@@ -19,7 +22,14 @@ def read_iuvs_file(file):
     iuvs_dict = {}
     periapse_num = 0
     occ_num = 0
-    with open(file) as f:
+    if is_fsspec_uri(file):
+        protocol, path = file.split("://")
+        fs = fsspec.filesystem(protocol)
+
+        fileobj = fs.open(file, "r")
+    else:
+        fileobj = open(file, "r")
+    with fileobj as f:
         line = f.readline()
         while line != "":
             if line.startswith("*"):

@@ -5,6 +5,8 @@ import logging
 import pandas as pd
 from pyspedas.projects.mms.mms_config import CONFIG
 
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
 
 def mms_get_local_ancillary_files(filetype='tetrahedron_qf', trange=None):
     """
@@ -39,16 +41,24 @@ def mms_get_local_ancillary_files(filetype='tetrahedron_qf', trange=None):
     #   and FILETYPE is either DEFATT, PREDATT, DEFEPH, PREDEPH in uppercase
     #   and start/endDate is YYYYDOY
     #   and version is Vnn (.V00, .V01, etc..)
-    dir_pattern = os.sep.join([CONFIG['local_data_dir'], 'ancillary', 'mms', f'{filetype}'])
+    sep = "/" if is_fsspec_uri(CONFIG["local_data_dir"]) else os.path.sep
+    dir_pattern = sep.join([CONFIG['local_data_dir'], 'ancillary', 'mms', f'{filetype}'])
     file_pattern = f'MMS_DEFQ_???????_???????.V??'
 
     files_in_trange = []
     out_files = []
 
-    files = glob.glob(os.sep.join([dir_pattern, file_pattern]))
+    if is_fsspec_uri(dir_pattern):
+        protocol, path = dir_pattern.split("://")
+        fs = fsspec.filesystem(protocol)
+
+        files = fs.glob(sep.join([dir_pattern, file_pattern]))
+        files = [sep.join([protocol+"://", file]) for file in files]
+    else:
+        files = glob.glob(sep.join([dir_pattern, file_pattern]))
 
     for file in files:
-        filename = os.path.basename(file)
+        filename = os.path.basename(file) if not is_fsspec_uri(dir_pattern) else file.split("/")[-1]
         try:
             date_parts = filename.split('_')
             start_time_str = date_parts[2]

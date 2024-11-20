@@ -2,6 +2,8 @@ import logging
 from .file_regex import maven_kp_l2_regex
 from .config import CONFIG
 
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
 
 def get_filenames(query, public):
     """
@@ -96,7 +98,16 @@ def get_file_from_site(filename, public, data_dir):
         page = urllib.request.urlopen(public_url)
         logging.debug("get_file_from_site finished request to public url: %s", public_url)
 
-    with open(os.path.join(data_dir, filename), "wb") as code:
+    # Cloud Awareness: write page contents to URI
+    if is_fsspec_uri(data_dir):
+        protocol, path = data_dir.split("://")
+        fs = fsspec.filesystem(protocol)
+
+        fo = fs.open("/".join([data_dir, filename]), "wb")
+    else:
+        fo = open(os.path.join(data_dir, filename), "wb")
+
+    with fo as code:
         code.write(page.read())
 
     return
@@ -121,20 +132,33 @@ def get_orbit_files():
     page_string = str(page.read())
     toolkit_path = CONFIG["local_data_dir"]
 
-    orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
+    # Cloud Awareness: operate on fsspec filesystem instead of os
+    if is_fsspec_uri(toolkit_path):
+        protocol, path = toolkit_path.split("://")
+        fs = fsspec.filesystem(protocol)
 
-    if not os.path.exists(toolkit_path):
-        os.mkdir(toolkit_path)
+        orbit_files_path = "/".join([toolkit_path, "orbitfiles"])
+        fs.mkdirs(orbit_files_path)
+    else:
+        orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
 
-    if not os.path.exists(orbit_files_path):
-        os.mkdir(orbit_files_path)
+        if not os.path.exists(toolkit_path):
+            os.mkdir(toolkit_path)
+
+        if not os.path.exists(orbit_files_path):
+            os.mkdir(orbit_files_path)
 
     for matching_pattern in re.findall(pattern, page_string):
         filename = "maven_orb_rec" + matching_pattern
         logging.debug("get_orbit_files() making request to URL %s", orbit_files_url + filename)
         o_file = urllib.request.urlopen(orbit_files_url + filename)
         logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url + filename)
-        with open(os.path.join(orbit_files_path, filename), "wb") as code:
+
+        if is_fsspec_uri(toolkit_path):
+            fo = fs.open("/".join([orbit_files_path, filename]), "wb")
+        else:
+            fo = open(os.path.join(orbit_files_path, filename), "wb")
+        with fo as code:
             code.write(o_file.read())
 
     merge_orbit_files()
@@ -156,14 +180,29 @@ def merge_orbit_files():
     import re
 
     toolkit_path = CONFIG["local_data_dir"]
-    orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
+
+    # Cloud Awareness: traverse fsspec-like filesystem instead of os
+    if is_fsspec_uri(toolkit_path):
+        protocol, path = toolkit_path.split("://")
+        fs = fsspec.filesystem(protocol)
+
+        orbit_files_path = "/".join([toolkit_path, "orbitfiles"])
+        fl = fs.listdir(orbit_files_path, detail=False)
+        fl = [f.rstrip("/").split("/")[-1] for f in fl]
+        fo = fs.open("/".join([orbit_files_path, "maven_orb_rec.orb"]), "w")
+    else:
+        orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
+
+        fl = os.listdir(orbit_files_path)
+        fo = open(os.path.join(orbit_files_path, "maven_orb_rec.orb"), "w")
+
     pattern = "maven_orb_rec(_|)(|.{6})(|_.{9}).orb"
     orb_dates = []
     orb_files = []
-    for f in os.listdir(orbit_files_path):
+    for f in fl:
         x = re.match(pattern, f)
         if x is not None:
-            orb_files.append(os.path.join(orbit_files_path, f))
+            orb_file = os.path.join(orbit_files_path, f) if not is_fsspec_uri(toolkit_path) else "/".join([orbit_files_path, f])
             if x.group(2) != "":
                 orb_dates.append(x.group(2))
             else:
@@ -171,10 +210,15 @@ def merge_orbit_files():
 
     sorted_files = [x for (y, x) in sorted(zip(orb_dates, orb_files))]
 
-    with open(os.path.join(orbit_files_path, "maven_orb_rec.orb"), "w") as code:
+    with fo as code:
         skip_2_lines = False
         for o_file in sorted_files:
-            with open(o_file) as f:
+            if is_fsspec_uri(toolkit_path):
+                # assumes fsspec filesystem triggered above
+                fo_file = fs.open(o_file)
+            else:
+                fo_file = open(o_file)
+            with fo_file as f:
                 if skip_2_lines:
                     f.readline()
                     f.readline()
@@ -263,8 +307,26 @@ def set_new_data_root_dir():
 
     # Get new preferred data download location for pyspedas project
     valid_path = input("Enter directory preference: ")
-    while not os.path.exists(valid_path):
-        valid_path = input("Specified path does not exist. Enter new path: ")
+
+    # Cloud Awareness: had to rework for ensuring URI exists
+    exists = False
+    while not exists:
+        if is_fsspec_uri(valid_path):
+            if not "://" in valid_path:
+                valid_path = input("Specified path does not exist. Enter new path: ")
+            else:
+                protocol, path = valid_path.split("://")
+                fs = fsspec.filesystem(protocol)
+
+                if fs.exists(valid_path):
+                    exists = True
+                else:
+                    valid_path = input("Specified path does not exist. Enter new path: ")
+        else:
+            if os.path.exists(valid_path):
+                exists = True
+            else:
+                valid_path = input("Specified path does not exist. Enter new path: ")
     download_path = valid_path
     logging.warning("Location of the mvn_toolkit_prefs file set to " + download_path)
 
@@ -291,7 +353,17 @@ def get_new_files(files_on_site, data_dir, instrument, level):
 
     fos = files_on_site
     files_on_hd = []
-    for dir, _, files in os.walk(data_dir):
+
+    # Cloud Awareness: traverse fsspec filesystem
+    if is_fsspec_uri(data_dir):
+        protocol, path = data_dir.split("://")
+        fs = fsspec.filesystem(protocol)
+
+        walk = fs.walk(data_dir)
+    else:
+        walk = os.walk(data_dir)
+
+    for dir, _, files in walk:
         for f in files:
             if re.match("mvn_" + instrument + "_" + level + "_*", f):
                 files_on_hd.append(f)
@@ -321,6 +393,15 @@ def create_dir_if_needed(f, data_dir, level):
         year, month, _ = get_year_month_day_from_kp_file(f)
     else:
         year, month, _ = get_year_month_day_from_sci_file(f)
+
+    # Cloud Awareness: operate upon fsspec-like filesystem
+    if is_fsspec_uri(data_dir):
+        protocol, path = data_dir.split("://")
+        fs = fsspec.filesystem(protocol)
+
+        full_path = "/".join([data_dir, year, month])
+        fs.mkdirs(full_path)
+        return full_path
 
     if not os.path.exists(os.path.join(data_dir, year, month)):
         os.makedirs(os.path.join(data_dir, year, month))

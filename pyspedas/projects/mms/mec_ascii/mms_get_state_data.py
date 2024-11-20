@@ -10,6 +10,8 @@ from pyspedas.projects.mms.mec_ascii.mms_get_local_state_files import mms_get_lo
 from pyspedas.projects.mms.mec_ascii.mms_load_eph_tplot import mms_load_eph_tplot
 from pyspedas.projects.mms.mec_ascii.mms_load_att_tplot import mms_load_att_tplot
 
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
 
 def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'], 
     datatypes=['pos', 'vel'], level='def', no_download=False, pred_or_def=True, 
@@ -55,6 +57,8 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
 
     return_vars = []
 
+    sep = "/" if is_fsspec_uri(local_data_dir) else os.path.sep
+
     for probe_id in probe:
         # probe will need to be a string from now on
         probe_id = str(probe_id)
@@ -65,7 +69,7 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
             files_in_interval = []
             out_files = []
 
-            out_dir = os.sep.join([local_data_dir, 'ancillary', 'mms'+probe_id, level+filetype])
+            out_dir = sep.join([local_data_dir, 'ancillary', 'mms'+probe_id, level+filetype])
 
             if CONFIG['no_download'] != True and no_download != True:
                 # predicted doesn't support start_date/end_date
@@ -105,12 +109,26 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                     files_in_interval = http_json['files']
 
                 for file in files_in_interval:
-                    out_file = os.sep.join([out_dir, file['file_name']])
+                    out_file = sep.join([out_dir, file['file_name']])
 
-                    if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
-                        out_files.append(out_file)
-                        http_request.close()
-                        continue
+                    if is_fsspec_uri(out_file):
+                        protocol, path = out_file.split("://")
+                        fs = fsspec.filesystem(protocol)
+
+                        exists = fs.exists(out_file)
+                    else:
+                        exists = os.path.exists(out_file)
+
+                    if exists:
+                        if is_fsspec_uri(out_file):
+                            f_size = fs.size(out_file)
+                        else:
+                            f_size = os.stat(out_file).st_size
+
+                        if str(f_size) == str(file['file_size']):
+                            out_files.append(out_file)
+                            http_request.close()
+                            continue
 
                     if user is None:
                         download_url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/download/ancillary?file=' + file['file_name']
@@ -128,11 +146,21 @@ def mms_get_state_data(probe='1', trange=['2015-10-16', '2015-10-17'],
                     with open(ftmp.name, 'wb') as f:
                         copyfileobj(fsrc.raw, f)
 
-                    if not os.path.exists(out_dir):
-                        os.makedirs(out_dir)
+                    if is_fsspec_uri(out_dir):
+                        protocol, path = out_dir.split("://")
+                        fs = fsspec.filesystem(protocol)
 
-                    # if the download was successful, copy to data directory
-                    copy(ftmp.name, out_file)
+                        fs.makedirs(out_dir, exist_ok=True)
+
+                        # if the download was successful, put at URI specified
+                        fs.put(ftmp.name, out_file)
+                    else:
+                        if not os.path.exists(out_dir):
+                            os.makedirs(out_dir)
+
+                        # if the download was successful, copy to data directory
+                        copy(ftmp.name, out_file)
+
                     out_files.append(out_file)
                     fsrc.close()
                     ftmp.close()
