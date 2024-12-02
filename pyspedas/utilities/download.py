@@ -225,7 +225,8 @@ def download_file(
         return None
 
     if needs_to_download_file:
-        ftmp = NamedTemporaryFile(delete=False)
+        froot, fsuffix = os.path.splitext(filename)
+        ftmp = NamedTemporaryFile(delete=False, suffix=fsuffix)
 
         with open(ftmp.name, "wb") as f:
             if text_only:
@@ -241,13 +242,18 @@ def download_file(
             os.makedirs(os.path.dirname(filename))
 
         # if the download was successful, copy to data directory
-        copy(ftmp.name, filename)
+        if check_downloaded_file(ftmp.name):
+            copy(ftmp.name, filename)
+            logging.info("Download complete: " + filename)
+        else:
+            logging.error("Download of '" + filename + "' failed. The temp file will be removed.")
+            logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
 
+        # cleanup
         fsrc.close()
         ftmp.close()
         os.unlink(ftmp.name)  # delete the temporary file
-
-        logging.info("Download complete: " + filename)
+            
 
     # At this point, we check if the file can be opened.
     # If it cannot be opened, we delete the file and try again.
