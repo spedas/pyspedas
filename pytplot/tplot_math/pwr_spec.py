@@ -1,6 +1,7 @@
 import numpy as np
 import logging
 import pytplot
+from pytplot import data_exists
 from scipy import signal
 
 
@@ -39,9 +40,13 @@ def pwr_spec(tvar, nbp=256, nsp=128, newname=None):
         >>> time = [pytplot.time_float("2020-01-01") + i for i in range(10000)]
         >>> quantity = [math.sin(i) for i in range(10000)]
         >>> pytplot.store_data("dp", data={"x": time, "y": quantity})
-        >>> pytplot.pwr_spec("dp", name="dp_pwrspec")
+        >>> pytplot.pwr_spec("dp", newname="dp_pwrspec")
         >>> pytplot.tplot("dp_pwrspec")
     """
+
+    if not data_exists(tvar):
+        logging.error("Input variable %s does not exist", tvar)
+        return
 
     d = pytplot.get_data(tvar)
     x, y = d[0], d[1]
@@ -73,12 +78,12 @@ def pwr_spec(tvar, nbp=256, nsp=128, newname=None):
         f_new.append(f)
         pxx_new.append(pxx)
 
-    if name is None:
-        name = tvar + "_pwrspec"
+    if newname is None:
+        newname = tvar + "_pwrspec"
 
-    pytplot.store_data(name, data={"x": x_new, "y": pxx_new, "v": f_new})
-    pytplot.options(name, "spec", 1)
-    pytplot.options(name, "zlog", 1)
-    pytplot.options(name, "ylog", 1)
+    pytplot.store_data(newname, data={"x": x_new, "y": pxx_new, "v": f_new})
+    pytplot.options(newname, "spec", 1)
+    pytplot.options(newname, "zlog", 1)
+    pytplot.options(newname, "ylog", 1)
 
     return
