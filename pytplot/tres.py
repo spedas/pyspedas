@@ -28,7 +28,7 @@ def tres(tplot_var):
     >>> import pyspedas
     >>> import pyspedas
     >>> import pytplot
-    >>> fgm_vars = pyspedas.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
+    >>> fgm_vars = pyspedas.projects.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
     >>> dt = pytplot.tres('thd_fgs_gse')
     >>> dts = pytplot.tres(fgm_vars)
 
