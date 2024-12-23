@@ -1,7 +1,7 @@
 import os
 
 CONFIG = {'local_data_dir': 'themis_data/',
-          'remote_data_dir': 'http://themis.ssl.berkeley.edu/data/themis/'}
+          'remote_data_dir': 'https://themis.ssl.berkeley.edu/data/themis/'}
 
 # override local data directory with environment variables
 if os.environ.get('SPEDAS_DATA_DIR'):
