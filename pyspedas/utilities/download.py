@@ -333,7 +333,9 @@ def download_file(
         return None
 
     if needs_to_download_file:
-        fsuffix = filename.partition('.')[-1] # could be fsspec uri
+        fsuffix = filename.split('.') # could be fsspec uri
+        fsuffix = '' if fsuffix[0] == filename else fsuffix[-1]
+            
         ftmp = NamedTemporaryFile(delete=False, suffix=fsuffix)
 
         with open(ftmp.name, "wb") as f:
