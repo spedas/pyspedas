@@ -324,7 +324,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 if len(files) != len(remote_dates): # I think this is a temp-fix, the logic of these blocks doesnt work now that download() doesnt raise an exception
                     if str(type(trange[1])) == "<class 'datetime.datetime'>" : #Handle case when user input is type <datetime.datetime>
                         t_end = trange[1].strftime('%Y-%m-%d')
-                    trange_temp = [remote_dates[len(files)],t_end]    # set new trange to check for spp prefixes
+                    trange_temp = [remote_dates[len(files)],trange[1]]    # set new trange to check for spp prefixes
                     raise RuntimeError("No 'psp...' prefix links found.")
             except RuntimeError as e:
                 print(e)
