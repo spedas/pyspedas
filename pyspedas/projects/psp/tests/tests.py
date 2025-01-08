@@ -103,7 +103,7 @@ class LoadTestCases(unittest.TestCase):
         spc_vars = pyspedas.projects.psp.spc(trange=['2018-11-5', '2018-11-6'], datatype='l3i', level='l3', suffix=None)
         self.assertTrue(data_exists('psp_spc_np_fit'))
     
-    def test_load_spc_data_suffix_none(self):
+    def test_load_spc_data_suffix(self):
         spc_vars = pyspedas.projects.psp.spc(trange=['2018-11-5', '2018-11-6'], datatype='l3i', level='l3', prefix='pre_', suffix='_suf')
         self.assertTrue(data_exists('pre_psp_spc_np_fit_suf'))
 
