@@ -17,6 +17,7 @@ def tplot_vl(
         font_size: float = 10,
         display=True,
         var_label=[],
+        save_png=None,
 ) -> Figure:
     if fig is None:
         fig = plt.figure()
@@ -36,6 +37,7 @@ def tplot_vl(
         var_label_list=var_label_tmp,
         fig=fig,
         display=False,
+        save_png=save_png,
         return_plot_objects=True,
         font_size=font_size,
     )  # type: ignore

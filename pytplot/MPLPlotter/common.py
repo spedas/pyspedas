@@ -8,7 +8,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from pytplot import get_data, tplot
 from pytplot.MPLPlotter.tplot import get_var_label_ticks
-
+from matplotlib import pyplot as plt
 
 def plot_init(
         xsize: float = 800,
@@ -70,6 +70,7 @@ def _postprocess_var_label_panel(
         var_label_list: Sequence[Any],
         axs: Sequence[Axes],
         font_size: float,
+        save_png=None
 ) -> None:
     # PyTplot's tplot does not apply xlim if there is no data, so apply here
     x_range = pytplot.tplot_opt_glob.get("x_range")
@@ -188,6 +189,11 @@ def _postprocess_var_label_panel(
             ys.append(y)
             y_labels.append(y_label)
     var_label_axis.set_yticks(ys, y_labels, ha="right")
+    if save_png is not None and save_png != '':
+        if not save_png.endswith('.png'):
+            save_png += '.png'
+        plt.savefig(save_png)
+
 
 
 def overplot_line(tplot_name: str, ax: Axes) -> None:
@@ -244,6 +250,7 @@ def tplot_with_var_label_panel(
         var_label_list: Sequence[str],
         fig: Figure,
         display: bool = False,
+        save_png=None,
         return_plot_objects: bool = True,
         font_size: float = 10,
 ):
@@ -258,9 +265,10 @@ def tplot_with_var_label_panel(
         fig=fig,
         axis=axs,
         display=display,
+        save_png=None,
     )
     # Postprocess var panels
-    _postprocess_var_label_panel(tplot_list, var_label_list, axs, font_size)
+    _postprocess_var_label_panel(tplot_list, var_label_list, axs, font_size, save_png=save_png)
 
     if return_plot_objects:
         return fig, axs
