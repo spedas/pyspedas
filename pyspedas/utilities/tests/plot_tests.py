@@ -468,5 +468,31 @@ class PlotTestCases(unittest.TestCase):
         tplot('tha_pos',display=global_display,return_plot_objects=True, save_png='ret_plot_objs.png')
         self.assertTrue(os.path.exists('ret_plot_objs.png'))
 
+    def test_erg_tplot_vlabels(self):
+        # Test alternate varlabel implementation from Tomo Hori
+        del_data("*")
+        import pyspedas
+
+        from pyspedas.projects.erg import mgf, orb
+        mgf()
+        orb()
+        from pytplot import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
+
+        split_vec('erg_orb_l2_pos_rmlatmlt')
+        split_vec('erg_orb_l2_pos_Lm')
+        options('erg_orb_l2_pos_rmlatmlt_x', 'ytitle', 'R')
+        options('erg_orb_l2_pos_rmlatmlt_y', 'ytitle', 'Mlat')
+        options('erg_orb_l2_pos_rmlatmlt_z', 'ytitle', 'MLT')
+
+        var_label = ['erg_orb_l2_pos_Lm_x', 'erg_orb_l2_pos_rmlatmlt_x', 'erg_orb_l2_pos_rmlatmlt_y',
+                     'erg_orb_l2_pos_rmlatmlt_z']
+        # tplot_options('var_label', var_label)
+
+        plot_vars = ['erg_mgf_l2_mag_8sec_sm', 'erg_mgf_l2_igrf_8sec_sm', 'erg_orb_l2_pos_Lm_x']
+
+        from pytplot import tplot_vl
+        fig = tplot_vl(plot_vars, var_label=var_label, display=global_display, save_png='erg_varlabel.png')
+
+
 if __name__ == '__main__':
     unittest.main()
