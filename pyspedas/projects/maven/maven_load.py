@@ -18,6 +18,8 @@ from .file_regex import maven_kp_l2_regex  # kp_regex, l2_regex
 from .orbit_time import orbit_time
 from .maven_kp_to_tplot import maven_kp_to_tplot
 
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
 
 def maven_filenames(
     filenames=None,
@@ -131,9 +133,10 @@ def maven_filenames(
         if level == "iuvs":
             query_args.append("file_extension=tab")
 
-        data_dir = os.path.join(
+        sep = "/" if is_fsspec_uri(mvn_root_data_dir) else os.path.sep
+        data_dir = sep.join([
             mvn_root_data_dir, "maven", "data", "sci", instrument, level
-        )
+        ])
 
         query = "&".join(query_args)
 
@@ -161,9 +164,10 @@ def maven_filenames(
         query_args.append("level=insitu")
         query_args.append("start_date=" + start_date)
         query_args.append("end_date=" + end_date)
-        data_dir = os.path.join(
+        sep = "/" if is_fsspec_uri(mvn_root_data_dir) else os.path.sep
+        data_dir = sep.join([
             mvn_root_data_dir, "maven", "data", "sci", "kp", "insitu"
-        )
+        ])
         query = "&".join(query_args)
         s = get_filenames(query, public)
         if not s:
@@ -203,7 +207,14 @@ def maven_file_groups(files):
 
     kp_regex, l2_regex = maven_kp_l2_regex()
     for f in files:
-        desc = l2_regex.match(os.path.basename(f)).group("description")
+        if is_fsspec_uri(f):
+            protocol, path = f.split("://")
+            fs = fsspec.filesystem(protocol)
+
+            basename = f.rstrip("/").split("/")[-1]
+        else:
+            basename = os.path.basename(f)
+        desc = l2_regex.match(basename).group("description")
         if desc not in result:
             result[desc] = []
         result[desc].append(f)
@@ -397,7 +408,8 @@ def load_data(
                     else:
                         full_path = create_dir_if_needed(f, data_dir, level)
                     bn_files_to_load.append(f)
-                    files_to_load.append(os.path.join(full_path, f))
+                    sep = "/" if is_fsspec_uri(full_path) else os.path.sep
+                    files_to_load.append(sep.join([full_path, f]))
                 except Exception as e:
                     # todo: better handling of rse .tab files
                     # rse files are .tab files (TAB delimited text files) that currently cannot be loaded into tplot
@@ -495,7 +507,14 @@ def load_data(
                         get_metadata=get_metadata,
                     )
                     # Specifically for SWIA and SWEA data, make sure the plots have log axes and are spectrograms
-                    instr = l2_regex.match(os.path.basename(cdf_dict[desc][0])).group(
+                    if is_fsspec_uri(cdf_dict[desc][0]):
+                        protocol, path = cdf_dict[desc][0].split("://")
+                        fs = fsspec.filesystem(protocol)
+
+                        basename = cdf_dict[desc][0].rstrip("/").split("/")[-1]
+                    else:
+                        basename = os.path.basename(cdf_dict[desc][0])
+                    instr = l2_regex.match(basename).group(
                         "instrument"
                     )
                     if instr in ["swi", "swe"]:
@@ -512,11 +531,16 @@ def load_data(
                     else:
                         # The description (part of the filename) is appended to the variable name
                         suf = desc + suffix
-                    created_vars = pytplot.sts_to_tplot(
-                        sts_dict[desc],
-                        prefix=prefix,
-                        suffix=suf,
-                    )
+                    try:
+                        created_vars = pytplot.sts_to_tplot(
+                            sts_dict[desc],
+                            prefix=prefix,
+                            suffix=suf,
+                        )
+                    except FileNotFoundError:
+                        logging.error("PyTplot Error: STS importer is not URI capable.")
+                        logging.error("\tSkipping file as PyTplot cannot use this type of filesystem.")
+                        continue
                     loaded_tplot_vars.append(created_vars)
 
                 # Remove the Decimal Day column, not really useful

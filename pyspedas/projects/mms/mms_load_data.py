@@ -18,6 +18,8 @@ from .mms_login_lasp import mms_login_lasp
 from .mms_file_filter import mms_file_filter
 from .mms_load_data_spdf import mms_load_data_spdf
 
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
 
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
     instrument='fgm', datatype='', varformat=None, exclude_format=None, prefix='', suffix='', get_support_data=False, time_clip=False,
@@ -127,23 +129,34 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                             for file in files_in_interval:
                                 file_date = parse(file['timetag'])
+                                sep = "/" if is_fsspec_uri(CONFIG["local_data_dir"]) else os.path.sep
                                 if dtype == '':
-                                    out_dir = os.sep.join([CONFIG['local_data_dir'], 'mms'+prb, instrument, drate, lvl, file_date.strftime('%Y'), file_date.strftime('%m')])
+                                    out_dir = sep.join([CONFIG['local_data_dir'], 'mms'+prb, instrument, drate, lvl, file_date.strftime('%Y'), file_date.strftime('%m')])
                                 else:
-                                    out_dir = os.sep.join([CONFIG['local_data_dir'], 'mms'+prb, instrument, drate, lvl, dtype, file_date.strftime('%Y'), file_date.strftime('%m')])
+                                    out_dir = sep.join([CONFIG['local_data_dir'], 'mms'+prb, instrument, drate, lvl, dtype, file_date.strftime('%Y'), file_date.strftime('%m')])
 
                                 if drate.lower() == 'brst':
-                                    out_dir = os.sep.join([out_dir, file_date.strftime('%d')])
+                                    out_dir = sep.join([out_dir, file_date.strftime('%d')])
 
-                                out_file = os.sep.join([out_dir, file['file_name']])
+                                out_file = sep.join([out_dir, file['file_name']])
 
                                 if CONFIG['debug_mode']: logging.info('File: ' + file['file_name'] + ' / ' + file['timetag'])
 
-                                if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
-                                    if not download_only: logging.info('Loading ' + out_file)
-                                    out_files.append(out_file)
-                                    file_found = True
-                                    continue
+                                if is_fsspec_uri(CONFIG["local_data_dir"]):
+                                    protocol, path = out_file.split("://")
+                                    fs = fsspec.filesystem(protocol)
+
+                                    if fs.exists(out_file) and str(fs.size(out_file)) == str(file["file_size"]):
+                                        if not download_only: logging.info('Streaming ' + out_file)
+                                        out_files.append(out_file)
+                                        file_found = True
+                                        continue
+                                else:
+                                    if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
+                                        if not download_only: logging.info('Loading ' + out_file)
+                                        out_files.append(out_file)
+                                        file_found = True
+                                        continue
 
                                 if user is None:
                                     download_url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/download/science?file=' + file['file_name']
@@ -160,11 +173,21 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                 with open(ftmp.name, 'wb') as f:
                                     copyfileobj(fsrc.raw, f)
 
-                                if not os.path.exists(out_dir):
-                                    os.makedirs(out_dir)
+                                if is_fsspec_uri(CONFIG["local_data_dir"]):
+                                    protocol, path = out_dir.split("://")
+                                    fs = fsspec.filesystem(protocol)
 
-                                # if the download was successful, copy to data directory
-                                copy(ftmp.name, out_file)
+                                    fs.makedirs(out_dir, exist_ok=True)
+
+                                    # if the download was successful, put at URI specified
+                                    fs.put(ftmp.name, out_file)
+                                else:
+                                    if not os.path.exists(out_dir):
+                                        os.makedirs(out_dir)
+
+                                    # if the download was successful, copy to data directory
+                                    copy(ftmp.name, out_file)
+
                                 out_files.append(out_file)
                                 file_found = True
                                 fsrc.close()

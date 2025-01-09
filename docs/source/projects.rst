@@ -8,7 +8,8 @@ Some key points that apply to most or all of these load routines:
 
 * PySPEDAS maintains a cache of previously downloaded data.   The cache location to use is controlled by the SPEDAS_DATA_DIR environment variable.
   Many missions allow the user to set a data directory specific to that mission, overriding the global SPEDAS_DATA_DIR setting. For example,
-  THM_DATA_DIR can be used to specify the local directory to use for the THEMIS mission.
+  THM_DATA_DIR can be used to specify the local directory to use for the THEMIS mission. 
+  The cache location can be a local file directory or a URI location (e.g., an S3 repository).
 
 * By default, PySPEDAS contacts the data server to get a list of filenames to fulfill the request,
   and compares the modification times on the server and locally cached files to determine
