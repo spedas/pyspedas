@@ -20,11 +20,11 @@ def get_kp_dict():
     fn = [
         os.path.join(
             local_data_dir,
-            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r01.tab",
+            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r02.tab",
         ),
         os.path.join(
             local_data_dir,
-            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r01.tab",
+            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r02.tab",
         ),
     ]
     return maven_kp_to_tplot(filename=fn, notplot=True)
