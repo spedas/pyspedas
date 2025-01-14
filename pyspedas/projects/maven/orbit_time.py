@@ -2,6 +2,8 @@ import logging
 import os
 
 from .config import CONFIG
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
 
 def month_to_num(month_string):
     """
@@ -70,10 +72,18 @@ def orbit_time(begin_orbit, end_orbit=None):
     """
 
     toolkit_path = CONFIG["local_data_dir"]
-    orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
-    orb_file = os.path.join(orbit_files_path, "maven_orb_rec.orb")
+    sep = "/" if is_fsspec_uri(toolkit_path) else os.path.sep
+    orbit_files_path = sep.join([toolkit_path, "orbitfiles"])
+    orb_file = sep.join([orbit_files_path, "maven_orb_rec.orb"])
+    if is_fsspec_uri(toolkit_path):
+        protocol, path = toolkit_path.split("://")
+        fs = fsspec.filesystem(protocol)
 
-    with open(orb_file, "r") as f:
+        fileobj = fs.open(orb_file, "r")
+    else:
+        fileobj = open(orb_file, "r")
+
+    with fileobj as f:
         if end_orbit is None:
             end_orbit = begin_orbit
         orbit_num = []

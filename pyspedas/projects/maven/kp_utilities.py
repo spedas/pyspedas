@@ -141,11 +141,11 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
             return kp
 
         if minimum is None:
-            minimum = np.repeat(-np.Infinity, len(parameter))
+            minimum = np.repeat(-np.inf, len(parameter))
         elif not isinstance(minimum, list):
             minimum = [minimum]
         if maximum is None:
-            maximum = np.repeat(np.Infinity, len(parameter))
+            maximum = np.repeat(np.inf, len(parameter))
         elif not isinstance(maximum, list):
             maximum = [maximum]
 
@@ -257,9 +257,9 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
                     logging.warning("Applying only Time filtering")
                     parameter = None
                 elif minimum is None:
-                    minimum = [-np.Infinity]  # Unbounded below
+                    minimum = [-np.inf]  # Unbounded below
                 elif maximum is None:
-                    maximum = [np.Infinity]  # Unbounded above
+                    maximum = [np.inf]  # Unbounded above
                 else:
                     pass  # Range fully bounded
                 if not isinstance(minimum, list):
@@ -291,11 +291,11 @@ def range_select(kp, time=None, parameter=None, maximum=None, minimum=None):
                     lmin = 0
                     lmax = 0
                 elif minimum is None:
-                    minimum = np.repeat(-np.Infinity,len(parameter))
+                    minimum = np.repeat(-np.inf,len(parameter))
                     lmin = len(parameter)
                     lmax = len(maximum)
                 elif maximum is None:
-                    maximum = np.repeat(np.Infinity, len(parameter))
+                    maximum = np.repeat(np.inf, len(parameter))
                     lmin = len(minimum)
                     lmax = len(parameter)
                 else:
