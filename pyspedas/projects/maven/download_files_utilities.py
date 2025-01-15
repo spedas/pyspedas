@@ -125,7 +125,7 @@ def get_orbit_files():
     import re
 
     orbit_files_url = "http://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/spk/"
-    pattern = r"maven_orb_rec(\.orb|.{17}\.orb)"
+    pattern = r">maven_orb_rec(\.orb|.{17}\.orb)<"
     logging.debug("get_orbit_files() making request to URL %s", orbit_files_url)
     page = urllib.request.urlopen(orbit_files_url)
     logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url)
@@ -155,11 +155,17 @@ def get_orbit_files():
         logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url + filename)
 
         if is_fsspec_uri(toolkit_path):
-            fo = fs.open("/".join([orbit_files_path, filename]), "wb")
+            ifn = "/".join([orbit_files_path, filename])
+            logging.debug("reading fsspec file %s",ifn)
+            fo = fs.open(ifn, "wb")
         else:
-            fo = open(os.path.join(orbit_files_path, filename), "wb")
+            ifn = os.path.join(orbit_files_path, filename)
+            logging.debug("reading plain file %s",ifn)
+            fo = open(ifn, "wb")
         with fo as code:
-            code.write(o_file.read())
+            content=o_file.read()
+            logging.debug("writing %d bytes into file %s",len(content), ifn)
+            code.write(content)
 
     merge_orbit_files()
 
@@ -203,6 +209,7 @@ def merge_orbit_files():
         x = re.match(pattern, f)
         if x is not None:
             orb_file = os.path.join(orbit_files_path, f) if not is_fsspec_uri(toolkit_path) else "/".join([orbit_files_path, f])
+            orb_files.append(orb_file)
             if x.group(2) != "":
                 orb_dates.append(x.group(2))
             else:
