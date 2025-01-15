@@ -74,11 +74,11 @@ class LoadTestCases(unittest.TestCase):
         fn = [
             '/'.join([
                 config.CONFIG["local_data_dir"],
-                "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r01.tab",
+                "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r02.tab",
             ]),
             '/'.join([
                 config.CONFIG["local_data_dir"],
-                "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r01.tab",
+                "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r02.tab",
             ]),
         ]
 
