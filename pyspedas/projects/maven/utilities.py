@@ -267,7 +267,8 @@ def get_l2_files_from_date(date1, instrument):
             listdir = [f.rstrip("/").split("/")[-1] for f in listdir]
     else:
         exists = os.path.exists(full_path)
-        if exists: os.listdir(full_path)
+        if exists:
+            listdir = os.listdir(full_path)
 
     if exists:
         for f in listdir:
