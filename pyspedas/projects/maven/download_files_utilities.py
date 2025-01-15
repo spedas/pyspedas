@@ -230,7 +230,11 @@ def merge_orbit_files():
                     f.readline()
                     f.readline()
                 skip_2_lines = True
-                code.write(f.read())
+                content=f.read()
+                if type(content) is bytes:
+                    code.write(str(content))
+                else:
+                    code.write(content)
 
     return
 
