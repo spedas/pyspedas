@@ -30,7 +30,7 @@ os.environ["AWS_S3_ENDPOINT"] = localhost
 os.environ["AWS_ENDPOINT_URL"] = localhost
 
 # We need sleep time to avoid "HTTP Error 429: Too Many Requests"
-sleep_time = 30
+sleep_time = 45
 
 class LoadTestCases(unittest.TestCase):
     """
