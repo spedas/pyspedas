@@ -37,7 +37,7 @@ class OrbitTestCases(unittest.TestCase):
         get_orbit_files()
         merge_orbit_files()
         orbfilepath = os.path.join(
-            CONFIG["local_data_dir"], "orbitfiles", "maven_orb_rec.orb"
+            CONFIG["local_data_dir"], "orbitfiles", "maven_orb_rec_merged.orb"
         )
         self.assertTrue(os.path.exists(orbfilepath))
 

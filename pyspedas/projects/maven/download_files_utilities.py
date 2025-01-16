@@ -42,14 +42,14 @@ def get_filenames(query, public):
         handler = urllib.request.HTTPBasicAuthHandler(p)
         opener = urllib.request.build_opener(handler)
         urllib.request.install_opener(opener)
-        logging.debug("get_filenames() making request to private URL: %s", private_url)
+        logging.info("get_filenames() making request to private URL: %s", private_url)
         page = urllib.request.urlopen(private_url)
-        logging.debug("get_filenames() finished request to private URL: %s", private_url)
+        logging.info("get_filenames() finished request to private URL: %s", private_url)
 
     else:
-        logging.debug("get_filenames() making request to public URL: %s", public_url)
+        logging.info("get_filenames() making request to public URL: %s", public_url)
         page = urllib.request.urlopen(public_url)
-        logging.debug("get_filenames() finished request to public URL: %s", public_url)
+        logging.info("get_filenames() finished request to public URL: %s", public_url)
 
     return page.read().decode("utf-8")
 
@@ -160,7 +160,7 @@ def get_orbit_files():
             fo = fs.open(ifn, "wb")
         else:
             ifn = os.path.join(orbit_files_path, filename)
-            logging.debug("reading plain file %s",ifn)
+            logging.info("reading plain file %s",ifn)
             fo = open(ifn, "wb")
         with fo as code:
             content=o_file.read()
@@ -177,7 +177,7 @@ def merge_orbit_files():
     Merge MAVEN orbit files into a single file.
 
     This function searches for MAVEN orbit files in the 'orbitfiles' directory and merges them into a single file
-    named 'maven_orb_rec.orb' in the same directory. The files are sorted based on their dates before merging.
+    named 'maven_orb_rec_merged.orb' in the same directory. The files are sorted based on their dates before merging.
 
     Returns:
         None
@@ -195,12 +195,14 @@ def merge_orbit_files():
         orbit_files_path = "/".join([toolkit_path, "orbitfiles"])
         fl = fs.listdir(orbit_files_path, detail=False)
         fl = [f.rstrip("/").split("/")[-1] for f in fl]
-        fo = fs.open("/".join([orbit_files_path, "maven_orb_rec.orb"]), "w")
+        output_filename = "/".join([orbit_files_path, "maven_orb_rec_merged.orb"])
+        fo = fs.open(output_filename, "w")
     else:
         orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
 
         fl = os.listdir(orbit_files_path)
-        fo = open(os.path.join(orbit_files_path, "maven_orb_rec.orb"), "w")
+        output_filename = os.path.join(orbit_files_path,"maven_orb_rec_merged.org")
+        fo = open(output_filename, "w")
 
     pattern = "maven_orb_rec(_|)(|.{6})(|_.{9}).orb"
     orb_dates = []
@@ -220,6 +222,7 @@ def merge_orbit_files():
     with fo as code:
         skip_2_lines = False
         for o_file in sorted_files:
+            logging.info("merge_orbit_files processing file %s", o_file)
             if is_fsspec_uri(toolkit_path):
                 # assumes fsspec filesystem triggered above
                 fo_file = fs.open(o_file)
@@ -231,6 +234,7 @@ def merge_orbit_files():
                     f.readline()
                 skip_2_lines = True
                 content=f.read()
+                logging.info("writing %d bytes to output file %s",len(content),output_filename)
                 if type(content) is bytes:
                     code.write(str(content))
                 else:

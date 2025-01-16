@@ -140,6 +140,7 @@ def maven_filenames(
 
         query = "&".join(query_args)
 
+        logging.info("Querying for filenames: %s", query)
         s = get_filenames(query, public)
 
         if not s:
@@ -149,6 +150,7 @@ def maven_filenames(
             continue
 
         s = s.split(",")
+        logging.info("Returned %d files",len(s))
 
         if instrument not in maven_files:
             maven_files[instrument] = [s, data_dir, public]

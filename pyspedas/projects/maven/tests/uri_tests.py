@@ -6,7 +6,8 @@ import datetime as dt
 import subprocess
 
 from pytplot import data_exists, tplot_names
-from pyspedas import maven
+import pyspedas
+from pyspedas.projects import maven
 from pyspedas.projects.maven import config,                   \
                                     utilities,                \
                                     maven_kp_to_tplot,        \
@@ -31,6 +32,8 @@ os.environ["AWS_ENDPOINT_URL"] = localhost
 
 # We need sleep time to avoid "HTTP Error 429: Too Many Requests"
 sleep_time = 45
+
+import logging
 
 class LoadTestCases(unittest.TestCase):
     """
@@ -104,7 +107,7 @@ class LoadTestCases(unittest.TestCase):
         download_files_utilities.get_orbit_files()
         download_files_utilities.merge_orbit_files()
         orbfilepath = "/".join([
-            config.CONFIG["local_data_dir"], "orbitfiles", "maven_orb_rec.orb"
+            config.CONFIG["local_data_dir"], "orbitfiles", "maven_orb_rec_merged.orb"
         ])
 
         # assert file exists
@@ -430,8 +433,12 @@ class LoadTestCases(unittest.TestCase):
             pass
 
     def test_load_mag_byorbit_data(self):
+        #config.CONFIG["local_data_dir"] = f"s3://{bucket_name}"
+        #saved_logging_level = pyspedas.logger.getEffectiveLevel()
+        #pyspedas.logger.setLevel(logging.DEBUG)
         data = maven.mag(trange=[500, 501], datatype="ss1s")
         self.assertTrue(len(tplot_names("OB_B*"))>0)
+        #pyspedas.logger.setLevel(saved_logging_level)
         time.sleep(sleep_time)
 
     def test_load_sta_data(self):
