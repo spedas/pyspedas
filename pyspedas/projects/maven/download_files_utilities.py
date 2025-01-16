@@ -126,9 +126,9 @@ def get_orbit_files():
 
     orbit_files_url = "http://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/spk/"
     pattern = r">maven_orb_rec(\.orb|.{17}\.orb)<"
-    logging.debug("get_orbit_files() making request to URL %s", orbit_files_url)
+    logging.info("get_orbit_files() making request to URL %s", orbit_files_url)
     page = urllib.request.urlopen(orbit_files_url)
-    logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url)
+    logging.info("get_orbit_files() finished request to URL %s", orbit_files_url)
     page_string = str(page.read())
     toolkit_path = CONFIG["local_data_dir"]
 
@@ -150,13 +150,13 @@ def get_orbit_files():
 
     for matching_pattern in re.findall(pattern, page_string):
         filename = "maven_orb_rec" + matching_pattern
-        logging.debug("get_orbit_files() making request to URL %s", orbit_files_url + filename)
+        logging.info("get_orbit_files() making request to URL %s", orbit_files_url + filename)
         o_file = urllib.request.urlopen(orbit_files_url + filename)
-        logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url + filename)
+        logging.info("get_orbit_files() finished request to URL %s", orbit_files_url + filename)
 
         if is_fsspec_uri(toolkit_path):
             ifn = "/".join([orbit_files_path, filename])
-            logging.debug("reading fsspec file %s",ifn)
+            logging.info("reading fsspec file %s",ifn)
             fo = fs.open(ifn, "wb")
         else:
             ifn = os.path.join(orbit_files_path, filename)
@@ -164,7 +164,7 @@ def get_orbit_files():
             fo = open(ifn, "wb")
         with fo as code:
             content=o_file.read()
-            logging.debug("writing %d bytes into file %s",len(content), ifn)
+            logging.info("writing %d bytes into file %s",len(content), ifn)
             code.write(content)
 
     merge_orbit_files()
