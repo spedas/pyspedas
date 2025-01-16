@@ -429,7 +429,6 @@ class LoadTestCases(unittest.TestCase):
         except Exception as e:
             pass
 
-    @unittest.skip # BROKEN
     def test_load_mag_byorbit_data(self):
         data = maven.mag(trange=[500, 501], datatype="ss1s")
         self.assertTrue(len(tplot_names("OB_B*"))>0)
