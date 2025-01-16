@@ -177,7 +177,7 @@ def merge_orbit_files():
     Merge MAVEN orbit files into a single file.
 
     This function searches for MAVEN orbit files in the 'orbitfiles' directory and merges them into a single file
-    named 'maven_orb_rec_merged.orb' in the same directory. The files are sorted based on their dates before merging.
+    named 'merged_maven_orbits.orb' in the same directory. The files are sorted based on their dates before merging.
 
     Returns:
         None
@@ -195,13 +195,13 @@ def merge_orbit_files():
         orbit_files_path = "/".join([toolkit_path, "orbitfiles"])
         fl = fs.listdir(orbit_files_path, detail=False)
         fl = [f.rstrip("/").split("/")[-1] for f in fl]
-        output_filename = "/".join([orbit_files_path, "maven_orb_rec_merged.orb"])
+        output_filename = "/".join([orbit_files_path, "merged_maven_orbits.orb"])
         fo = fs.open(output_filename, "w")
     else:
         orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
 
         fl = os.listdir(orbit_files_path)
-        output_filename = os.path.join(orbit_files_path,"maven_orb_rec_merged.org")
+        output_filename = os.path.join(orbit_files_path,"merged_maven_orbits.orb")
         fo = open(output_filename, "w")
 
     pattern = "maven_orb_rec(_|)(|.{6})(|_.{9}).orb"

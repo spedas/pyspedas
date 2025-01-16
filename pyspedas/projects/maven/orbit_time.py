@@ -74,7 +74,7 @@ def orbit_time(begin_orbit, end_orbit=None):
     toolkit_path = CONFIG["local_data_dir"]
     sep = "/" if is_fsspec_uri(toolkit_path) else os.path.sep
     orbit_files_path = sep.join([toolkit_path, "orbitfiles"])
-    orb_file = sep.join([orbit_files_path, "maven_orb_rec_merged.orb"])
+    orb_file = sep.join([orbit_files_path, "merged_maven_orbits.orb"])
     logging.info("Getting orbit info from file %s", orb_file)
     if is_fsspec_uri(toolkit_path):
         protocol, path = toolkit_path.split("://")
