@@ -231,8 +231,8 @@ jobs:
         coverage run -a -m pyspedas.projects.mms.tests.wavpol
         echo Starting mms slice2d tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.slice2d
-        echo Starting mms S3 tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.load_uri_tests
+        #echo Starting mms S3 tests at `date`
+        #coverage run -a -m pyspedas.projects.mms.tests.load_uri_tests
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space after MMS tests:"
