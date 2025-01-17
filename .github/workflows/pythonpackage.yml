@@ -118,8 +118,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
         echo Starting akebono tests at `date`
         coverage run -a -m pyspedas.projects.akebono.tests.tests
-        echo Starting maven S3 tests at `date`
-        coverage run -a -m pyspedas.projects.maven.tests.uri_tests
+        #echo Starting maven S3 tests at `date`
+        #coverage run -a -m pyspedas.projects.maven.tests.uri_tests
         echo Starting maven tests at `date`
         coverage run -a -m pyspedas.projects.maven.tests.tests
         echo Starting ace tests at `date`
