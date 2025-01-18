@@ -254,7 +254,7 @@ jobs:
         echo Starting utilities libs_tests tests at `date`
         coverage run -a -m pyspedas.utilities.tests.libs_tests
         echo Starting utilities S3 tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.load_uri_tests
+        coverage run -a -m pyspedas.utilities.tests.download_uri_tests
         echo Starting cotrans tests at `date`
         coverage run -a -m pyspedas.cotrans_tools.tests.cotrans
         echo Starting cotrans minvar tests at `date`
