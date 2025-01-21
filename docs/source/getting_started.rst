@@ -38,7 +38,7 @@ Installing PyCharm Community Edition
 ------------------------------------
 
 PyCharm (Community Edition) is a free-to-use interactive development environment for Python.
-This is the main tool you will to interact with Python and PySPEDAS.
+This is the main tool you will use to interact with Python and PySPEDAS.
 
 The software can be downloaded and installed from https://www.jetbrains.com/pycharm/download/ .
 Scoll down past the "PyCharm Professional" downloader (which requires a paid license) and choose
