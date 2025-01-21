@@ -63,7 +63,7 @@ and will also be used by IDL (if you’re running a recent copy of the bleeding 
 You should set **SPEDAS_DATA_DIR** to a folder where you have write access, preferably on your hard drive rather than
 a network drive or mount point, on a filesystem which has enough free space to accomodate many gigabytes of
 downloaded data.  It's probably best to create that top-level folder by hand, if it doesn't already exist. (Any needed subdirectories
-will be created automatically by SPEDAS or PySPEDAS).  For example, you might use "C:\spedas_data" on Windows to put it
+will be created automatically by SPEDAS or PySPEDAS).  For example, you might use "C:\\spedas_data" on Windows to put it
 at the root of your hard drive, or "/Users/your_userid/spedas_data" on a Mac to put it under your home directory.
 
 Once you've decided where to put your data directory, you need to ensure that the **SPEDAS_DATA_DIR** environment
@@ -81,7 +81,7 @@ You may need to log out of your account and log back in so these changes take ef
 Create a Python project in PyCharm
 ----------------------------------
 
-You will need to create a Python project and "virtual environement", which is where you'll
+You will need to create a Python project and "virtual environment", which is where you'll
 install pyspedas and some other tools you'll need.
 
 You should have an icon for PyCharm on your desktop or start menu.  Use it to open PyCharm.
