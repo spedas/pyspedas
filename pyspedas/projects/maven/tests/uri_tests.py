@@ -31,7 +31,8 @@ os.environ["AWS_S3_ENDPOINT"] = localhost
 os.environ["AWS_ENDPOINT_URL"] = localhost
 
 # We need sleep time to avoid "HTTP Error 429: Too Many Requests"
-sleep_time = 45
+# This may not be necessary any more
+sleep_time = 1
 
 import logging
 
