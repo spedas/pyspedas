@@ -334,6 +334,11 @@ class AnalysisTestCases(BaseTestCase):
         # Length should be two less, because NaNs were removed.
         self.assertTrue(len(d[1]) == len_dn - 2)
 
+    def test_tdeflag_kyoto(self):
+        trange = ['2015-03-15', '2015-03-22']
+        dst_vars=pyspedas.projects.kyoto.dst(trange=trange)
+        tdeflag('kyoto_dst',method='linear')
+
     def test_deriv_data(self):
         """Test deriv_data."""
         deriv_data('aaabbbccc')  # Test non-existent name
