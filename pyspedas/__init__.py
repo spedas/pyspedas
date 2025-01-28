@@ -25,7 +25,7 @@ from .cotrans_tools.fac_matrix_make import fac_matrix_make
 from .cotrans_tools.gsm2lmn import gsm2lmn
 from .cotrans_tools.minvar import minvar
 from .cotrans_tools.minvar_matrix_make import minvar_matrix_make
-from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq
+from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq, qnormalize
 from .cotrans_tools.tvector_rotate import tvector_rotate
 from .cotrans_tools.xyz_to_polar import xyz_to_polar
 # Importing geopack causes IGRF coefficients to be loaded by the external geopack package, which may not be desired.
