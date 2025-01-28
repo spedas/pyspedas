@@ -92,7 +92,7 @@ dependencies = [
     "pywavelets",
     "astropy",
     "hapiclient>=0.2.2",
-    "pytplot-mpl-temp>=2.2.51",
+    "pytplot-mpl-temp>=2.2.52",
     "viresclient",
     "fsspec",
     "s3fs",
