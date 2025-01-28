@@ -74,9 +74,9 @@ def set_any(name, tag_name, tag_value):
 
     Examples
     ----------
+        >>> import pyspedas
         >>> import pytplot
-        >>> from pyspedas import themis
-        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pyspedas.projects.themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
         >>> pytplot.data_att_getters_setters.set_any('tha_pos', 'coord_sys', 'GSE')
 
     """
@@ -115,7 +115,7 @@ def get_coords(name):
         The coordinate system is stored in the variable's metadata at:
             metadata['data_att']['coord_sys']
 
-        See cotrans_set_coord to update the coordinate system
+        See pyspedas.get_coords() to update the coordinate system
 
     Returns
     ----------
@@ -125,10 +125,9 @@ def get_coords(name):
 
     Examples
     ----------
-        >>> import pytplot
-        >>> from pyspedas import themis
-        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
-        >>> pytplot.get_coords('tha_pos')
+        >>> import pyspedas
+        >>> pyspedas.projects.themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pyspedas.get_coords('tha_pos')
 
     """
 
@@ -152,7 +151,7 @@ def set_coords(name, coords):
         The coordinate system is stored in the variable's metadata at:
             metadata['data_att']['coord_sys']
 
-        See get_coord to return the coordinate system
+        See pyspedas.get_coords() to return the coordinate system
 
     Returns
     ----------
@@ -160,10 +159,9 @@ def set_coords(name, coords):
 
     Examples
     ----------
-        >>> import pytplot
-        >>> from pyspedas import themis
-        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
-        >>> pytplot.set_coords('tha_pos', 'GEI')
+        >>> import pyspedas
+        >>> pyspedas.projects.themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pyspedas.set_coords('tha_pos', 'GEI')
     """
 
     # check that the variable exists
