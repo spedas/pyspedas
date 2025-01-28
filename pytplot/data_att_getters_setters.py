@@ -8,7 +8,7 @@ def get_any(name,tag_name):
     This function returns an arbitrary value from the data_att dictionary within the metdata of a tplot variable.
     It is intended to be called by other tag-specific getters and setters.
 
-    Parameters:
+    Parameters
     ----------
         name: str
             name of the tplot variable
@@ -16,16 +16,16 @@ def get_any(name,tag_name):
         tag_name: str
             The name of the attribute to be returned
 
-    Notes:
+    Notes
     ----------
         The metadata values are stored in the variable's metadata at:
             metadata['data_att'][tag_name]
 
-    Returns:
+    Returns
     ----------
         Contents of specified tag name in the data_att structure, or None if not present.
 
-    Examples:
+    Examples
     ----------
         >>> import pytplot
         >>> from pyspedas import themis
@@ -52,7 +52,7 @@ def set_any(name, tag_name, tag_value):
     This function sets an arbitrary attribute in the data_att dictionary within the metadata of a tplot variable.
     It is intended to be called by other tag-specific getters and setters.
 
-    Parameters:
+    Parameters
     ----------
         name: str
             name of the tplot variable
@@ -63,16 +63,16 @@ def set_any(name, tag_name, tag_value):
         tag_value: Any
             The value of the attribute to be stored
 
-    Notes:
+    Notes
     ----------
         The metadata values are stored in the variable's metadata at:
             metadata['data_att'][tag_name]
 
-    Returns:
+    Returns
     ----------
         Contents of specified tag name in the data_att structure, or None if not present.
 
-    Examples:
+    Examples
     ----------
         >>> import pytplot
         >>> from pyspedas import themis
@@ -105,25 +105,25 @@ def get_coords(name):
 
     This function returns the coordinate system of a tplot variable
 
-    Parameters:
+    Parameters
     ----------
         name: str
             name of the tplot variable
 
-    Notes:
+    Notes
     ----------
         The coordinate system is stored in the variable's metadata at:
             metadata['data_att']['coord_sys']
 
         See cotrans_set_coord to update the coordinate system
 
-    Returns:
+    Returns
     ----------
         Coordinate system of the tplot variable
         or
         None if the coordinate system isn't set
 
-    Examples:
+    Examples
     ----------
         >>> import pytplot
         >>> from pyspedas import themis
@@ -139,7 +139,7 @@ def set_coords(name, coords):
     This function sets the coordinate system of a tplot variable, and updates legend names
     and axis labels if they include the coordinate system.
 
-    Parameters:
+    Parameters
     ----------
         name: str
             name of the tplot variable
@@ -147,18 +147,18 @@ def set_coords(name, coords):
         coord: str
             Abbreviated name of the coordinate system (upper case recommended)
 
-    Notes:
+    Notes
     ----------
         The coordinate system is stored in the variable's metadata at:
             metadata['data_att']['coord_sys']
 
         See get_coord to return the coordinate system
 
-    Returns:
+    Returns
     ----------
         bool: True/False depending on if the operation was successful
 
-    Examples:
+    Examples
     ----------
         >>> import pytplot
         >>> from pyspedas import themis
@@ -199,25 +199,25 @@ def get_units(name):
 
     This function returns the units of a tplot variable
 
-    Parameters:
+    Parameters
     ----------
         name: str
             name of the tplot variable
 
-    Notes:
+    Notes
     ----------
         The units string is stored in the variable's metadata at:
             metadata['data_att']['units']
 
         See set_units to update the coordinate system
 
-    Returns:
+    Returns
     ----------
         Units of the tplot variable
         or
         None if the coordinate system isn't set
 
-    Examples:
+    Examples
     ----------
         >>> import pytplot
         >>> from pyspedas import themis
@@ -232,7 +232,7 @@ def set_units(name, units):
     This function sets the units of a tplot variable, and updates legend names
     and axis labels if they include the units.
 
-    Parameters:
+    Parameters
     ----------
         name: str
             name of the tplot variable
@@ -240,18 +240,18 @@ def set_units(name, units):
         coord: str
             Units
 
-    Notes:
+    Notes
     ----------
         The units are stored in the variable's metadata at:
             metadata['data_att']['units']
 
         See get_units to return the units
 
-    Returns:
+    Returns
     ----------
         bool: True/False depending on if the operation was successful
 
-    Examples:
+    Examples
     ----------
         >>> import pytplot
         >>> from pyspedas import themis
