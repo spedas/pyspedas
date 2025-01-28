@@ -112,6 +112,7 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
                 append_v = True
 
         # Fill the new variable
+        non_nan_seen = False
         for j in range(len(time)):
             # This used to be "if len(data[j]) > 1", which failed if data is 1-D so that data[j] is scalar
             # Instead we go by the dimensions of the data array itself
@@ -120,11 +121,14 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
             else:
                 tj = data[j]
             if not np.isnan(tj):
+                non_nan_seen = True
                 new_time.append(time[j])
                 new_data.append(data[j])
                 if alen == 3 and append_v:
                     new_v.append(v[j])
-
+        if non_nan_seen is False:
+            logging.warning('No unflagged data in %s, returning.', tvar)
+            return
         if newname is None:
             if alen == 2:
                 pytplot.store_data(tvar, data={'x': new_time, 'y': new_data})
@@ -140,6 +144,9 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
         a = copy.deepcopy(pytplot.get_data(tvar))
         time = a[0]
         data = a[1]
+        # Force the data into a 2-d view, retaining the original shape so we can restore it later
+        original_data_shape = data.shape
+        data = data.reshape(len(time), -1)
         alen = len(a)
         if alen > 3:
             logging.info('deflag is not used for more than 2-d input')
@@ -158,19 +165,19 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
             else:
                 flag_is_nan = False
             for k in range(ny):
-                print(data[:, k])
+                #print(data[:, k])
                 if (flag_is_nan):
-                    flagged_data = np.where(np.isnan(data[:, k]))[0]
+                    flagged_data = np.argwhere(np.isnan(data[:, k])).flatten()
                 else:
-                    flagged_data = np.where(data[:, k] == flag[i])[0]
+                    flagged_data = np.argwhere(data[:, k] == flag[i]).flatten()
                 if len(flagged_data) > 0:
                     if flag_is_nan:
-                        okval = np.where(np.isnan(data[:, k]) is False)[0]
+                        okval = np.argwhere(np.isfinite(data[:, k])).flatten()
                     else:
-                        okval = np.where(data[:, k] != flag[i])[0]
+                        okval = np.argwhere(data[:, k] != flag[i]).flatten()
 
-                    if len(okval) == 0:
-                        logging.info('No unflagged data, returning')
+                    if len(okval) == 0 and method in ['linear', 'repeat']:
+                        logging.info('No unflagged data in %s, returning', tvar)
                         return
                     if method == 'repeat':  # flagged data repeats the previous unflagged value
                         for j in range(ntimes):
@@ -186,12 +193,14 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
                                         data[j, k] = data[okval[0], k]
                                     else:
                                         data[j, k] = data[j-1, k]
+                        #print("After repeat: ", data[:, k])
                     elif method == 'replace':
                         if fillval is None:
                             fv = np.nan
                         else:
                             fv = fillval
                         data[flagged_data, k] = fv
+                        #print("After replace: ", data[:,k])
                     else:  # method = 'linear'
                         # interpolate flagged data, using np.interp
                         dataj = data[okval, k]
@@ -199,19 +208,20 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
                         timej_flagged = time[flagged_data]
                         dataj_interpd = np.interp(timej_flagged, timej, dataj)
                         data[flagged_data, k] = dataj_interpd
+                        #print("After linear: ", data[:,k])
                 else:
-                    print("No Flagged_data")
+                    logging.info("No flagged data in %s", tvar)
 
         if newname is None:
             if alen == 2:
-                pytplot.store_data(tvar, data={'x': time, 'y': data})
+                pytplot.store_data(tvar, data={'x': time, 'y': data.reshape(original_data_shape)})
             else:
-                pytplot.store_data(tvar, data={'x': time, 'y': data, 'v': v})
+                pytplot.store_data(tvar, data={'x': time, 'y': data.reshape(original_data_shape), 'v': v})
         else:
             if alen == 2:
-                pytplot.store_data(newname, data={'x': time, 'y': data})
+                pytplot.store_data(newname, data={'x': time, 'y': data.reshape(original_data_shape)})
             else:
-                pytplot.store_data(newname, data={'x': time, 'y': data, 'v': v})
+                pytplot.store_data(newname, data={'x': time, 'y': data.reshape(original_data_shape), 'v': v})
                 pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
     else:  # any other option includes method=None, replace flags with NaN
         nf = len(flag)
