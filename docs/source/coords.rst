@@ -86,7 +86,7 @@ Getting/Setting the Coordinate System for tplot variables
 Quaternion Routines
 -------------------
 
-Quaternions can be used to represent rotations in 3-D space, much like Euler Angles
+Quaternions can be used to represent rotations in 3-D space, much like Euler angles
 or rotation matrices.  They are often more computationally convenient and efficient.
 They are represented in PySPEDAS as 4-element floating point arrays, which can be thought
 of as a scalar component encoding the rotation angle, and 3 vector components encoding the rotation axis.
