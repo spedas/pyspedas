@@ -21,12 +21,14 @@ def qmult(q1, q2):
 
     Notes
     -----
-    Implementation largely copied from the euve c library for
-    quaternions
-    Represention has q[0] = scalar component
-                     q[1] = vector x
-                     q[2] = vector y
-                     q[3] = vector z
+    Implementation largely copied from the euve c library for quaternions
+
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
@@ -68,16 +70,29 @@ def qmult(q1, q2):
 
 def qdecompose(q):
     """
-    Purpose: decompose quaternions into axes and angeles
-    Inputs: q:  a 4 element quaternion or an Nx4 element array of quaternions
-    Returns: a 4 element array with a[0] = angle, and a[1:3] = axis, or
+    Decompose quaternions into axes and angles
+
+    Parameters
+    ----------
+    q:  a 4 element quaternion or an Nx4 element array of quaternions
+
+
+    Returns
+    --------
+    a 4 element array with a[0] = angle, and a[1:3] = axis, or
     an Nx4 element array or -1L on failure
-    Notes: Implementation largely copied from the euve c library for
-    quaternions
-    Represention has q[0] = scalar component
-                 q[1] = vector x
-                 q[2] = vector y
-                 q[3] = vector z
+
+    Notes
+    ------
+
+    Implementation largely copied from the euve c library for quaternions
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
+
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
     As per the euve implementation, if q[0] is outside of the range of
@@ -133,22 +148,30 @@ def qdecompose(q):
 
 def qvalidate(q, argname, fxname):
     """
-    Purpose: validate inputs for the idl quaternion library
+    Validate inputs for the PySPEDAS quaternion library
 
-    Inputs: q: a 4 element array, or an Nx4 element array, representing quaternion(s)
-            argname: the name of the argument to be used in error messages
+    Parameters
+    -----------
+    q: a 4 element array, or an Nx4 element array, representing quaternion(s)
+    argname: the name of the argument to be used in error messages
 
-    Returns: an Nx4 array or -1, it will turn 4 element quaternion arrays
-             into 1x4 element quaternion arrays
+    Returns
+    -------
+    str
+    an Nx4 array or -1, it will turn 4 element quaternion arrays into 1x4 element quaternion arrays
 
-    Notes: This function is here because I noticed a lot of the error
+    Notes
+    -----
+    This function is here because I noticed a lot of the error
     checking code was being repeated, and it was making the functions
     long and hard to read
 
-    Represention has q[0] = scalar component
-                     q[1] = vector x
-                     q[2] = vector y
-                     q[3] = vector z
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
@@ -181,18 +204,29 @@ def qvalidate(q, argname, fxname):
 
 def qconj(q):
     """
-    Purpose: calculate the conjugate a quaternion or an array of quaternions
+    Calculate the conjugate of a quaternion or an array of quaternions
 
-    Inputs: q: a 4 element array, or an Nx4 element array, representing quaternion(s)
+    Parameters
+    ----------
 
-    Returns: q*
+    q: a 4 element array, or an Nx4 element array, representing quaternion(s)
 
-    Notes: Implementation largely copied from the euve c library for
+    Returns
+    -------
+
+    q*
+
+    Notes
+    -----
+
+    Implementation largely copied from the euve c library for
     quaternions
-    Represention has q[0] = scalar component
-                     q[1] = vector x
-                     q[2] = vector y
-                     q[3] = vector z
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
@@ -250,10 +284,12 @@ def qslerp(q, x1, x2, geometric=False, eq_tolerance=1e-12):
 
     Notes
     -----
-    Represention has q[0] = scalar component
-                 q[1] = vector x
-                 q[2] = vector y
-                 q[3] = vector z
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as an eigenvalue of the rotation the quaterion performs
 
@@ -441,18 +477,28 @@ def qslerp(q, x1, x2, geometric=False, eq_tolerance=1e-12):
 
 def qdotp(q1, q2):
     """
-    Purpose: calculate the dot product of two quaternions or two arrays of quaternions
+    Calculate the dot product of two quaternions or two arrays of quaternions
 
-    Inputs: q1: a 4 element array, or an Nx4 element array, representing quaternion(s)
-            q2: a 4 element array, or an Nx4 element array, representing quaternion(s)
+    Parameters
+    ----------
 
-    Returns: q1.q2, or -1 on failure
+    q1: a 4 element array, or an Nx4 element array, representing quaternion(s)
+    q2: a 4 element array, or an Nx4 element array, representing quaternion(s)
 
-    Notes:
-    Represention has q[0] = scalar component
-                     q[1] = vector x
-                     q[2] = vector y
-                     q[3] = vector z
+    Returns
+    -------
+
+    q1.q2, or -1 on failure
+
+    Notes
+    -----
+
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
@@ -474,19 +520,30 @@ def qdotp(q1, q2):
 
 def qnorm(q):
     """
-    Purpose: calculate the norm a quaternion or an array of quaternions
+    Calculate the norm a quaternion or an array of quaternions
 
-    Inputs: q: a 4 element array, or an Nx4 element array, representing quaternion(s)
+    Parameters
+    ----------
 
-    Returns: norm(q): sqrt(a^2+b^2+c^2+d^2) or -1L on fail
+    q: a 4 element array, or an Nx4 element array, representing quaternion(s)
+
+    Returns
+    -------
+
+    norm(q): sqrt(a^2+b^2+c^2+d^2) or -1L on fail
                       will be a single element or an N length array
 
-    Notes: Implementation largely copied from the euve c library for
+    Notes
+    -----
+
+    Implementation largely copied from the euve c library for
     quaternions
-    Represention has q[0] = scalar component
-                 q[1] = vector x
-                 q[2] = vector y
-                 q[3] = vector z
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
@@ -504,18 +561,29 @@ def qnorm(q):
 
 def qnormalize(q):
     """
-    Purpose: normalize a quaternion or an array of quaternions
+    Normalize a quaternion or an array of quaternions
 
-    Inputs: q: a 4 element array, or an Nx4 element array, representing quaternion(s)
+    Parameters
+    ----------
 
-    Returns: q/(sqrt(norm(q))) or -1L on fail
+    q: a 4 element array, or an Nx4 element array, representing quaternion(s)
 
-    Notes: Implementation largely copied from the euve c library for
+    Returns
+    -------
+
+    q/(sqrt(norm(q))) or -1L on fail
+
+    Notes
+    -----
+
+    Implementation largely copied from the euve c library for
     quaternions
-    Represention has q[0] = scalar component
-                  q[1] = vector x
-                  q[2] = vector y
-                  q[3] = vector z
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
@@ -547,24 +615,28 @@ def qnormalize(q):
 
 def mtoq(m):
     """
-    Function: mtoq
-
-    Purpose: transforms a rotation matrix into a quaternion.  If the
-    matrix does not perform a rotation, then its behavior may be ill-
-    defined
+    Transform a rotation matrix into a quaternion.
+    If the matrix does not perform a rotation, then its behavior may be ill-defined
 
     WARNING!!!! - this routine does not conform to the wikipedia definition.  see warning for qtom.pro
 
-    Inputs: m: a 3x3 element array or an Nx3x3 element array
+    Parameters
+    ----------
+    m: a 3x3 element array or an Nx3x3 element array
 
-    Returns: q
+    Returns
+    -------
+
+    q
 
     Notes: Implementation largely copied from the euve c library for
     quaternions
-    Represention has q[0] = scalar component
-                     q[1] = vector x
-                     q[2] = vector y
-                     q[3] = vector z
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
@@ -679,21 +751,32 @@ def mtoq(m):
 
 def qtom(qi):
     """
-    Purpose: transforms quaternions into rotation matrices
+    Transforms quaternions into rotation matrices
+
     WARNING!!! It appears that this routine returns the transpose (inverse) of the rotation matrix!
     It differs from the CSPICE library and Wikipedia
 
-    Inputs: a 4 element array representing a quaternion or an Nx4 element
-    array representing an array of quaternions
+    Parameters
+    ----------
 
-    Returns: a 3x3 matrix or an Nx3x3 array
+    qi: a 4 element array representing a quaternion or a Nx4 element array representing an array of quaternions
 
-    Notes: Implementation largely copied from the euve c library for
+    Returns
+    -------
+
+    a 3x3 matrix or Nx3x3 array
+
+    Notes
+    -----
+
+    Implementation largely copied from the euve c library for
     quaternions
-    Represention has q[0] = scalar component
-                     q[1] = vector x
-                     q[2] = vector y
-                     q[3] = vector z
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
 
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
@@ -732,17 +815,32 @@ def qtom(qi):
 
 def qcompose(vec, theta, free=True):
     """
-    Purpose: compose quaternions from vectors and angles
-    Inputs: vec: 3 element array or an Nx3 element array
-            theta: an angle or an N element array of angles(in radians)
-    Keywords: free: Flag to allow thetas outside [0,pi)
-    Returns: a 4 element quaternion or an Nx4 element array of quaternions
-    Notes: Implementation largely copied from the euve c library for
+    Compose quaternions from rotation axis vectors and rotation angles
+
+    Parameters
+    ----------
+
+    vec: 3 element array or an Nx3 element array
+    theta: an angle or an N element array of angles(in radians)
+    free: Flag to allow thetas outside [0,pi)
+
+    Returns
+    -------
+
+    a 4 element quaternion or an Nx4 element array of quaternions
+
+    Notes
+    -----
+
+    Implementation largely copied from the euve c library for
     quaternions
-    Represention has q[0] = scalar component
-                 q[1] = vector x
-                 q[2] = vector y
-                 q[3] = vector z
+    Represention has::
+
+        q[0] = scalar component
+        q[1] = vector x
+        q[2] = vector y
+        q[3] = vector z
+
     The vector component of the quaternion can also be thought of as
     an eigenvalue of the rotation the quaterion performs
 
