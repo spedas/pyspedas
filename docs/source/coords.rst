@@ -14,6 +14,8 @@ There are also routines for working with other specialized coordinate systems
 
 * FAC (Field alignned coordinates)
 * LMN (Boundary-aligned coordinates)
+* MVA (Minimum-variance coordinates)
+
 
 Some individual projects may include additional coordinate trasformation routines
 for systems used by those missions.  For example, the THEMIS module includes some additional
@@ -44,15 +46,81 @@ Examples
    from pytplot import tplot
    tplot(['gsm_data', 'sm_data', 'geo_data'])
    
+Cartesian to Spherical Coordinates
+-----------------------------------
+
+.. autofunction:: pyspedas.cart2spc
+
+Spherical to Cartesian Coordinates
+-----------------------------------
+
+.. autofunction:: pyspedas.spc2cart
+
+Field-Aligned Coordinates (FAC)
+-------------------------------
+
+.. autofunction:: pyspedas.fac_matrix_make
+
+
+Minimum Variance (MVA) Coordinates
+-----------------------------------
+
+.. autofunction:: pyspedas.minvar_matrix_make
+.. autofunction:: pyspedas.minvar
 
 LMN Coordinates
-------------------------
-.. autofunction:: pyspedas.cotrans_tools.gsm2lmn.gsm2lmn
+---------------
 
-Getting/Setting the Coordinate System
-----------------------------------------
-.. autofunction:: pyspedas.cotrans_get_coord
-.. autofunction:: pyspedas.cotrans_set_coord
+.. autofunction:: pyspedas.gsm2lmn
+
+Rotate Vectors by Rotation Matrix
+----------------------------------
+
+.. autofunction:: pyspedas.tvector_rotate
+
+Getting/Setting the Coordinate System for tplot variables
+---------------------------------------------------------
+.. autofunction:: pyspedas.get_coords
+.. autofunction:: pyspedas.set_coords
+
+Quaternion Routines
+-------------------
+
+Quaternions can be used to represent rotations in 3-D space, much like Euler Angles
+or rotation matrices.  They are often more computationally convenient and efficient.
+They are represented in PySPEDAS as 4-element floating point arrays, which can be thought
+of as a scalar component encoding the rotation angle, and 3 vector components encoding the rotation axis.
+
+Convertiong to/from axis-angle rotation specification
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autofunction:: pyspedas.qcompose
+.. autofunction:: pyspedas.qdecompose
+
+Converting to/from rotation matrices
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.mtoq
+.. autofunction:: pyspedas.qtom
+
+Combining quaternions (by multiplying)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.qmult
+
+Interpolating rotations (Quaternion Spherical Linear intERPolation)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.qslerp
+
+Other operations
+^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.qnorm
+.. autofunction:: pyspedas.qnormalize
+.. autofunction:: pyspedas.qvalidate
+.. autofunction:: pyspedas.qconj
+
+
 
 Support Routines
 ------------------------
