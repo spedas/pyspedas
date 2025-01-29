@@ -74,12 +74,16 @@ Restrictions:
 import logging
 import warnings
 import numpy as np
+"""
 # use nansum from bottleneck if it's installed, otherwise use the numpy one
+# disabled for now for troubleshooting pyhc environment
 try:
     import bottleneck as bn
     nansum = bn.nansum
 except ImportError:
     nansum = np.nansum
+"""
+from numpy import nansum
 from pytplot import get_data, store_data, options, tnames
 
 def atan2c(zx, zy):
@@ -111,7 +115,7 @@ def wpol_matsqrd(i1, i2, i3, ematspec):
 def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
     """Calculate helicity, ellipticity."""
     # Avoid warnings.
-    warnings.simplefilter("ignore", np.exceptions.ComplexWarning)
+    #warnings.simplefilter("ignore", np.exceptions.ComplexWarning)
 
     # Define arrays.
     helicity = np.empty((nosteps, int(nopfft/2), 3))
