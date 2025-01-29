@@ -285,9 +285,25 @@ notebooks are in your project, and you can click on the one you want to run).
 
 This will open a browser window (or open a new tab in your existing browser) which should look something like this:
 
+.. image:: _static/jupyter_window.png
+   :align: center
+   :class: imgborder
+
+A few frequently-used controls are highlighed in red:
+
+#. File menu: Save changes to your notebook, open a new notebook, etc
+#. Add new cell: Add a new Markdown or code cell below your current location in the notebook
+#. Run current cell: Renders the Markdown code, or runs the Python code in the current cell, and advances to the next cell.
+#. Run all cells in notebook: Run the entire notebook from start to finish.
+
+To get started with the notebook you've just opened, I'd suggest clicking the "Run current cell" control to
+step through the notebook cell-by-cell and see what happens at each step.
+
+For more information, you might want to check out the official documentation: https://jupyter-notebook.readthedocs.io/en/latest/notebook.html
 
 
 Creating Jupyter notebooks
 --------------------------
 
 
+TBD
