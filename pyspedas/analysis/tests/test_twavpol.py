@@ -21,6 +21,14 @@ class TwavpolDataValidation(unittest.TestCase):
         from pyspedas.utilities.download import download
         from pyspedas.projects.themis.config import CONFIG
 
+        # Numpy diagnostic info
+        print("Numpy pocketfft:")
+        print(np.fft._pocketfft)
+        print("Numpy config:")
+        print(np.__config__.show())
+        print("Numpy CPU features:")
+        print(np.core._multiarray_umath.__cpu_features__)
+
         # Testing tolerance
         cls.tol = 1e-10
 
