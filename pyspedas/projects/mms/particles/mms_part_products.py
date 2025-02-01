@@ -12,8 +12,8 @@ from pyspedas.particles.spd_part_products.spd_pgs_regrid import spd_pgs_regrid
 from pyspedas.particles.moments.spd_pgs_moments import spd_pgs_moments
 from pyspedas.particles.moments.spd_pgs_moments_tplot import spd_pgs_moments_tplot
 
-from pyspedas.projects.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
-from pyspedas.projects.mms.hpca.mms_get_hpca_dist import mms_get_hpca_dist
+from pyspedas.projects.mms.fpi_tools.mms_get_fpi_dist import mms_get_fpi_dist
+from pyspedas.projects.mms.hpca_tools.mms_get_hpca_dist import mms_get_hpca_dist
 from pyspedas.projects.mms.particles.mms_convert_flux_units import mms_convert_flux_units
 from pyspedas.projects.mms.particles.mms_pgs_clean_data import mms_pgs_clean_data
 from pyspedas.projects.mms.particles.mms_pgs_clean_support import mms_pgs_clean_support

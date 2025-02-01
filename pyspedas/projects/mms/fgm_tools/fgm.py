@@ -1,8 +1,8 @@
 import re
 from pyspedas.projects.mms.mms_load_data import mms_load_data
-from pyspedas.projects.mms.fgm.mms_fgm_remove_flags import mms_fgm_remove_flags
-from pyspedas.projects.mms.fgm.mms_fgm_set_metadata import mms_fgm_set_metadata
-from pyspedas.projects.mms.fgm.mms_split_fgm_data import mms_split_fgm_data
+from pyspedas.projects.mms.fgm_tools.mms_fgm_remove_flags import mms_fgm_remove_flags
+from pyspedas.projects.mms.fgm_tools.mms_fgm_set_metadata import mms_fgm_set_metadata
+from pyspedas.projects.mms.fgm_tools.mms_split_fgm_data import mms_split_fgm_data
 from pyspedas.projects.mms.mms_config import CONFIG
 from pytplot import data_exists
 from pytplot import del_data

@@ -16,9 +16,9 @@ from pyspedas.projects.mms import mms_config, mms_load_state,            \
                                   # mms_load_fpi, mms_load_feeps
 import pyspedas
 from pyspedas import tdpwrspc
-from pyspedas.projects.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
-from pyspedas.projects.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
-from pyspedas.projects.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
+from pyspedas.projects.mms.hpca_tools.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from pyspedas.projects.mms.hpca_tools.mms_hpca_spin_sum import mms_hpca_spin_sum
+from pyspedas.projects.mms.hpca_tools.mms_get_hpca_info import mms_get_hpca_info
 #==========================================================
 
 # moto server mock details

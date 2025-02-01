@@ -1,15 +1,13 @@
 from pyspedas.projects.mms.mms_load_data import mms_load_data
-from pyspedas.projects.mms.edp.mms_edp_set_metadata import mms_edp_set_metadata
-from pyspedas.projects.mms.mms_config import CONFIG
 
 
 
-def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', level='l2', datatype='dce',
-        varformat=None, varnames=[], get_support_data=False, suffix='', time_clip=True, no_update=False,
-        available=False, notplot=False, latest_version=False, major_version=False, min_version=None, cdf_version=None, 
-        spdf=False, always_prompt=False):
+def mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06;01'], probe='1', data_rate='brst',
+    level='l3', datatype='8khz', get_support_data=False, time_clip=False, no_update=False, 
+    available=False, varformat=None, varnames=[], notplot=False, suffix='', latest_version=False, 
+    major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False):
     """
-    Load data from the MMS Electric field Double Probes (EDP) instrument
+    This function loads MMS FSM (FGM + SCM) data into tplot variables
     
     Parameters
     ----------
@@ -17,23 +15,23 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-            Default: ['2015-10-16', '2015-10-17']
+            Default: ['2015-10-16/05:59', '2015-10-16/06:01']
 
         probe : str or list of str
             list of probes, valid values for MMS probes are ['1','2','3','4'].
             Default: '1'
 
         data_rate : str or list of str
-            instrument data rates for EDP include ['brst', 'fast', 'slow', 'srvy'].
-            Default: 'fast'
+            Valid values: 'brst'
+            Default: 'brst'
 
         level : str
             indicates level of data processing.
-            Default: 'l2'
+            Default: 'l3'
 
         datatype : str or list of str
-            Valid datatypes for EDP are: ['dce', 'dcv', 'ace', 'hmfe']
-            Default: 'dce'
+            Valid datatype for FSM is: 8khz
+            Default: '8khz'
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
@@ -44,16 +42,16 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
         time_clip: bool
             Data will be clipped to the exact trange specified by the trange keyword.
             Default: False
-            
+
         varformat: str
             The file variable formats to load into tplot.  Wildcard character
-            "*" is accepted.
+            "*" is accepted.  By default, all variables are loaded in.
             Default: None (all variables are loaded)
 
         varnames: list of str
-            List of variable names to load. If list is empty or not specified,
+            List of variable names to load (if not specified,
             all data variables are loaded)
-            Default: []
+            Default: [] (all variables are loaded)
 
         suffix: str
             The tplot variable names will be given this suffix.  By default, 
@@ -96,13 +94,13 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
             Set this keyword to always prompt for the user's username and password;
             useful if you accidentally save an incorrect password, or if your SDC password has changed
             Default: False
-
+            
         spdf: bool
             If True, download the data from the SPDF instead of the SDC
             Default: False
 
     Returns
-    --------
+    -------
         list of str
             List of tplot variables created.
 
@@ -111,27 +109,12 @@ def mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
 
     >>> import pyspedas
     >>> from pytplot import tplot
-    >>> edp_vars = pyspedas.projects.mms.mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1')
-    >>> tplot('mms1_edp_dce_gse_fast_l2')
-
+    >>> fsm_data = pyspedas.projects.mms.mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06:01'])
+    >>> tplot(['mms1_fsm_b_mag_brst_l3','mms1_fsm_b_gse_brst_l3','mms1_fsm_r_gse_brst_l3'])
 
     """
-
-    # as of 20 June 2023, there's a mixture of v2.x.x and v3.x.x files at the SDC
-    # these files aren't compatible, so we need to only load the latest major version
-    # to avoid crashes (unless otherwise specified)
-    if not latest_version and not major_version and min_version is None and cdf_version is None:
-        major_version = True
-
-    tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='edp',
-            datatype=datatype, varformat=varformat, varnames=varnames, get_support_data=get_support_data, suffix=suffix,
-            time_clip=time_clip, no_update=no_update, available=available, latest_version=latest_version, 
-            major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf, 
-            always_prompt=always_prompt)
-    
-    if tvars is None or available or notplot or CONFIG['download_only']:
-        return tvars
-
-    mms_edp_set_metadata(probe, data_rate, level, suffix=suffix)
-
+    tvars = mms_load_data(trange=trange, notplot=notplot, varformat=varformat, probe=probe, data_rate=data_rate, 
+        level=level, instrument='fsm', datatype=datatype, get_support_data=get_support_data, time_clip=time_clip,
+        no_update=no_update, available=available, suffix=suffix, latest_version=latest_version, varnames=varnames,
+        major_version=major_version, min_version=min_version, cdf_version=cdf_version, spdf=spdf, always_prompt=always_prompt)
     return tvars

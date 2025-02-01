@@ -72,11 +72,11 @@ from .projects.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi
     mms_load_hpca, mms_load_fpi, mms_load_aspoc, \
     mms_load_dsp, mms_load_fsm, mms_load_state, \
     mms_qcotrans, mms_cotrans_lmn, mms_cotrans_qrotate, mms_cotrans_qtransformer
-from .projects.mms.feeps.mms_feeps_pad import mms_feeps_pad
-from .projects.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
-from .projects.mms.eis.mms_eis_pad import mms_eis_pad
-from .projects.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
-from .projects.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from .projects.mms.feeps_tools.mms_feeps_pad import mms_feeps_pad
+from .projects.mms.feeps_tools.mms_feeps_gpd import mms_feeps_gpd
+from .projects.mms.eis_tools.mms_eis_pad import mms_eis_pad
+from .projects.mms.hpca_tools.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from .projects.mms.hpca_tools.mms_hpca_spin_sum import mms_hpca_spin_sum
 from .projects.mms.plots.mms_overview_plot import mms_overview_plot
 from .projects.mms.particles.mms_part_getspec import mms_part_getspec
 from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d

@@ -2,7 +2,7 @@
 import unittest
 import pyspedas
 from pytplot import data_exists
-from pyspedas.projects.mms.fgm.mms_lingradest import mms_lingradest
+from pyspedas.projects.mms.fgm_tools.mms_lingradest import mms_lingradest
 
 class CurlTestCases(unittest.TestCase):
     def test_default(self):

@@ -1,8 +1,8 @@
 from pyspedas.projects.mms.mms_load_data import mms_load_data
-from pyspedas.projects.mms.fpi.mms_fpi_set_metadata import mms_fpi_set_metadata
-from pyspedas.projects.mms.fpi.mms_load_fpi_calc_pad import mms_load_fpi_calc_pad
-from pyspedas.projects.mms.fpi.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
-from pyspedas.projects.mms.fpi.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
+from pyspedas.projects.mms.fpi_tools.mms_fpi_set_metadata import mms_fpi_set_metadata
+from pyspedas.projects.mms.fpi_tools.mms_load_fpi_calc_pad import mms_load_fpi_calc_pad
+from pyspedas.projects.mms.fpi_tools.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
+from pyspedas.projects.mms.fpi_tools.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
 from pyspedas.projects.mms.mms_config import CONFIG
 from pytplot import tplot_rename, del_data
 

@@ -6,8 +6,8 @@ import pytplot
 from pytplot import get_data
 import pyspedas
 from pyspedas import time_double
-from pyspedas.projects.mms.fpi.mms_get_fpi_dist import mms_get_fpi_dist
-from pyspedas.projects.mms.fpi.mms_pad_fpi import mms_pad_fpi
+from pyspedas.projects.mms.fpi_tools.mms_get_fpi_dist import mms_get_fpi_dist
+from pyspedas.projects.mms.fpi_tools.mms_pad_fpi import mms_pad_fpi
 
 
 def mms_fpi_ang_ang(

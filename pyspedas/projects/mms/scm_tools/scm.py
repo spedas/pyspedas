@@ -1,5 +1,5 @@
 from pyspedas.projects.mms.mms_load_data import mms_load_data
-from pyspedas.projects.mms.scm.mms_scm_set_metadata import mms_scm_set_metadata
+from pyspedas.projects.mms.scm_tools.mms_scm_set_metadata import mms_scm_set_metadata
 from pyspedas.projects.mms.mms_config import CONFIG
 
 

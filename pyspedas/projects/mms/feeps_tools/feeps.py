@@ -1,12 +1,12 @@
 from pyspedas.projects.mms.mms_load_data import mms_load_data
-from pyspedas.projects.mms.feeps.mms_feeps_correct_energies import mms_feeps_correct_energies
-from pyspedas.projects.mms.feeps.mms_feeps_flat_field_corrections import mms_feeps_flat_field_corrections
-from pyspedas.projects.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
-from pyspedas.projects.mms.feeps.mms_feeps_split_integral_ch import mms_feeps_split_integral_ch
-from pyspedas.projects.mms.feeps.mms_feeps_remove_bad_data import mms_feeps_remove_bad_data
-from pyspedas.projects.mms.feeps.mms_feeps_remove_sun import mms_feeps_remove_sun
-from pyspedas.projects.mms.feeps.mms_feeps_omni import mms_feeps_omni
-from pyspedas.projects.mms.feeps.mms_feeps_spin_avg import mms_feeps_spin_avg
+from pyspedas.projects.mms.feeps_tools.mms_feeps_correct_energies import mms_feeps_correct_energies
+from pyspedas.projects.mms.feeps_tools.mms_feeps_flat_field_corrections import mms_feeps_flat_field_corrections
+from pyspedas.projects.mms.feeps_tools.mms_feeps_active_eyes import mms_feeps_active_eyes
+from pyspedas.projects.mms.feeps_tools.mms_feeps_split_integral_ch import mms_feeps_split_integral_ch
+from pyspedas.projects.mms.feeps_tools.mms_feeps_remove_bad_data import mms_feeps_remove_bad_data
+from pyspedas.projects.mms.feeps_tools.mms_feeps_remove_sun import mms_feeps_remove_sun
+from pyspedas.projects.mms.feeps_tools.mms_feeps_omni import mms_feeps_omni
+from pyspedas.projects.mms.feeps_tools.mms_feeps_spin_avg import mms_feeps_spin_avg
 from pyspedas.projects.mms.mms_config import CONFIG
 from pytplot import time_clip as tclip
 

@@ -2,7 +2,7 @@ import logging
 import numpy as np
 from pyspedas.projects import mms
 from pyspedas import tinterpol
-from pyspedas.projects.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
+from pyspedas.projects.mms.feeps_tools.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pytplot import get, store, options, time_double
 
 

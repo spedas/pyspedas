@@ -2,8 +2,8 @@ import logging
 import numpy as np
 import pyspedas 
 from pytplot import get, store, options
-from pyspedas.projects.mms.feeps.mms_feeps_active_eyes import mms_feeps_active_eyes
-from pyspedas.projects.mms.feeps.mms_feeps_getgyrophase import mms_feeps_getgyrophase
+from pyspedas.projects.mms.feeps_tools.mms_feeps_active_eyes import mms_feeps_active_eyes
+from pyspedas.projects.mms.feeps_tools.mms_feeps_getgyrophase import mms_feeps_getgyrophase
 
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one
 # bottleneck nanmean is ~2.5x faster

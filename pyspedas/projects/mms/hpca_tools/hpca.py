@@ -2,9 +2,9 @@ import numpy as np
 import logging
 import re
 from pyspedas.projects.mms.mms_load_data import mms_load_data
-from pyspedas.projects.mms.hpca.mms_hpca_set_metadata import mms_hpca_set_metadata
-from pyspedas.projects.mms.hpca.mms_get_hpca_info import mms_get_hpca_info
-from pyspedas.projects.mms.hpca.mms_hpca_energies import mms_hpca_energies
+from pyspedas.projects.mms.hpca_tools.mms_hpca_set_metadata import mms_hpca_set_metadata
+from pyspedas.projects.mms.hpca_tools.mms_get_hpca_info import mms_get_hpca_info
+from pyspedas.projects.mms.hpca_tools.mms_hpca_energies import mms_hpca_energies
 from pyspedas.projects.mms.mms_config import CONFIG
 from pytplot import get_data, store_data, get
 

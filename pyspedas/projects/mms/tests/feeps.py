@@ -1,8 +1,8 @@
 import unittest
 import logging
-from ..feeps.mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
+from ..feeps_tools.mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
 from pyspedas import mms_load_feeps, mms_feeps_pad
-from pyspedas.projects.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
+from pyspedas.projects.mms.feeps_tools.mms_feeps_gpd import mms_feeps_gpd
 from pytplot import del_data, tplot, data_exists, get
 
 

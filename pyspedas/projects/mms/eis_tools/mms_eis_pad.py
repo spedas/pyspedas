@@ -3,7 +3,7 @@ import logging
 import numpy as np
 from pytplot import tnames
 from pytplot import get_data, store_data, options
-from pyspedas.projects.mms.eis.mms_eis_pad_spinavg import mms_eis_pad_spinavg
+from pyspedas.projects.mms.eis_tools.mms_eis_pad_spinavg import mms_eis_pad_spinavg
 
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one
 # bottleneck nanmean is ~2.5x faster

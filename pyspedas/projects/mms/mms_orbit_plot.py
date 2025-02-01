@@ -122,7 +122,7 @@ def mms_orbit_plot(trange=['2015-10-16', '2015-10-17'],
     fig, axis = plt.subplots(sharey=True, sharex=True, figsize=(xsize, ysize))
 
     if earth:
-        im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec/earth_polar1.png')
+        im = plt.imread(os.path.dirname(os.path.realpath(__file__)) + '/mec_tools/earth_polar1.png')
         plt.imshow(im, extent=(-1, 1, -1, 1))
 
     plot_count = 0
