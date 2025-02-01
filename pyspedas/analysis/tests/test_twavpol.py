@@ -27,7 +27,7 @@ class TwavpolDataValidation(unittest.TestCase):
         print("Numpy config:")
         print(np.__config__.show())
         print("Numpy CPU features:")
-        print(np.core._multiarray_umath.__cpu_features__)
+        print(np._core._multiarray_umath.__cpu_features__)
 
         # Testing tolerance
         cls.tol = 1e-10
