@@ -3,7 +3,7 @@ import pyspedas
 import pyspedas.projects.themis
 from pytplot import data_exists
 from pytplot import time_double
-from pyspedas.projects.themis.state.spinmodel.spinmodel import get_spinmodel
+from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
 import pytplot
 
 

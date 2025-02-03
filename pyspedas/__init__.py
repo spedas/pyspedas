@@ -37,7 +37,7 @@ from .cotrans_tools.xyz_to_polar import xyz_to_polar
 #from .geopack.t96 import t96, tt96
 #from .geopack.ts04 import tts04
 from .hapi_tools.hapi import hapi
-from .projects.noaa.noaa_load_kp import noaa_load_kp
+
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
 from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
 from .particles.spd_slice2d import slice1d_plot, slice2d, slice2d_plot
@@ -62,7 +62,7 @@ from .version import version
 # circular dependencies.  Import directly from pytplot instead.
 
 from pytplot import *
-
+from .projects.noaa.noaa_load_kp import noaa_load_kp
 # omni must precede mms to avoid problems with circular imports
 from .projects import omni
 
@@ -92,7 +92,7 @@ from importlib import import_module
 submodules = ['ace', 'akebono', 'barrel', 'cluster', 'cnofs', 'csswe', 'de2', 'dscovr',
              'elfin', 'equator_s', 'erg', 'fast', 'geotail', 'goes', 'image', 'kompsat',
               'kyoto', 'lanl', 'maven', 'mica', 'mms', 'noaa', 'omni', 'poes', 'polar', 'psp',
-              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state', 'twins',
+              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state_tools', 'twins',
               'ulysses'
               ]
 

@@ -20,7 +20,7 @@ def ssc_pre(
     For example: https://cdaweb.gsfc.nasa.gov/pub/data/themis/thc/ssc_pre/
     Each downloaded file contains data for a full year.
 
-    See also, pyspedas.projects.themis.state.ssc
+    See also, pyspedas.projects.themis.state_tools.ssc
 
     Parameters
     ----------

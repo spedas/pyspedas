@@ -19,7 +19,7 @@ def ssc(
 
     For example: https://cdaweb.gsfc.nasa.gov/pub/data/themis/thc/ssc/
 
-    See also, pyspedas.projects.themis.state.ssc_pre
+    See also, pyspedas.projects.themis.state_tools.ssc_pre
 
     Parameters
     ----------
