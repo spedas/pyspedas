@@ -217,12 +217,12 @@ class UtilTestCases(unittest.TestCase):
         fgm()
         self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
 
-        # import mms.state without .projects.
-        from pyspedas.themis.state.state import state
+        # deep import themis.state without .projects.
+        from pyspedas.themis.state_tools.state import state
         del_data('*')
         state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
-        # import mms.state with .projects.
+        # deep import themis.state with .projects.
         from pyspedas.projects.themis.state_tools.state import state
         del_data('*')
         state(probe='a')
