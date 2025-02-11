@@ -8,7 +8,7 @@ from pytplot import get_data, store_data, options, get_coords
 import pyspedas
 from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.cotrans_tools.gsm2lmn import gsm2lmn
-from pyspedas import tinterpol
+from pyspedas import tinterpol, data_exists
 # For some reason, the import below started picking up the module mec, rather than the wrapper mec() defined in mms/__init__.py.
 # Importing it as pyspedas.projects.mms.mec seems to remove the ambiguity, but I wonder if something fishy is going on
 # with the imports in pyspedas, mms, and mms.mec.
@@ -45,7 +45,7 @@ def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_ra
             input variable name
 
         data_rate: str
-            Data rate of the input data; default is 'srvy'
+            Data rate of the ephemeris support data to be loaded; default is 'srvy'
 
     Returns
     --------
@@ -80,8 +80,17 @@ def mms_cotrans_lmn(name_in, name_out, gsm=False, gse=False, probe=None, data_ra
     # load the spacecraft position data
     mec_vars = pyspedas.projects.mms.mec(trange=[min(data_in.times), max(data_in.times)], probe=probe, data_rate=data_rate)
 
+    if mec_vars is None or len(mec_vars) == 0:
+        logging.error('No MEC data found for probe %s and data rate %s; unable to transform to LMN.', probe, data_rate)
+        return
+
+    ephemeris_var = 'mms'+probe+'_mec_r_gsm'
+    if not data_exists(ephemeris_var):
+        logging.error('Ephemeris variable %s not found; unable to transform to LMN', ephemeris_var)
+        return
+
     # interpolate the position data to the input data
-    tinterp_vars = tinterpol('mms'+probe+'_mec_r_gsm', name_in, newname='mms'+probe+'_mec_r_gsm_interp')
+    tinterp_vars = tinterpol(ephemeris_var, name_in, newname='mms'+probe+'_mec_r_gsm_interp')
 
     pos_data = get_data('mms'+probe+'_mec_r_gsm_interp')
 
