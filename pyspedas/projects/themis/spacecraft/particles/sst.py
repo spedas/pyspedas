@@ -74,6 +74,27 @@ def sst(trange=['2007-03-23', '2007-03-24'],
         List of tplot variables created
         Empty list if no data
 
+
+    Notes
+    -----
+
+    The thx_*_atten variables produced when loading SST L1 data contain 4 status bits, representing
+    the state of the attenuators on the two SST sensor heads, defined as::
+
+        (MSB) Open Equatorial Attenuator,
+        Closed Equatorial Attenuator,
+        Open Polar Attenuator,
+        (LSB) Closed Polar Attenuator
+
+    With MSB/LSB not representing actual bits, but as labels to clarify bit order. Some examples::
+
+        0x5: both attenuators closed
+        0xA: both attenuators open
+        0x6: equatorial closed, polar open  (Occurs during stuck atten error on themis D)
+        0xf: Error state. Invalid data.
+        0x9: equatorial open, polar closed (This should never actually happen)
+
+
     Example
     -------
     >>> import pyspedas
