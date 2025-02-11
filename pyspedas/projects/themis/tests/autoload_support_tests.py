@@ -3,7 +3,7 @@ import os
 import unittest
 from pytplot import data_exists, time_string, time_double, del_data, get_timespan
 from pyspedas.projects.themis import autoload_support, get_spinmodel, fit
-from pyspedas.projects.themis.state.autoload_support import load_needed
+from pyspedas.projects.themis.state_tools.autoload_support import load_needed
 
 
 class AutoLoadTestCases(unittest.TestCase):

@@ -7,26 +7,32 @@ from functools import wraps
 
 from .mec_ascii.state import mms_load_state
 from .mec_ascii.tetrahedron_qf import mms_load_tetrahedron_qf
-from .fgm.fgm import mms_load_fgm
-from .hpca.hpca import mms_load_hpca
-from .fpi.fpi import mms_load_fpi
-from .scm.scm import mms_load_scm
-from .mec.mec import mms_load_mec
-from .feeps.feeps import mms_load_feeps
-from .eis.eis import mms_load_eis
-from .edi.edi import mms_load_edi
-from .edp.edp import mms_load_edp
-from .dsp.dsp import mms_load_dsp
-from .aspoc.aspoc import mms_load_aspoc
-from .fsm.fsm import mms_load_fsm
-from .fgm.mms_curl import mms_curl
-from .fgm.mms_lingradest import mms_lingradest
+from .fgm_tools.fgm import mms_load_fgm
+from .hpca_tools.hpca import mms_load_hpca
+from .fpi_tools.fpi import mms_load_fpi
+from .fpi_tools.mms_fpi_ang_ang import mms_fpi_ang_ang
+from .scm_tools.scm import mms_load_scm
+from .mec_tools.mec import mms_load_mec
+from .feeps_tools.feeps import mms_load_feeps
+from .eis_tools.eis import mms_load_eis
+from .edi_tools.edi import mms_load_edi
+from .edp_tools.edp import mms_load_edp
+from .dsp_tools.dsp import mms_load_dsp
+from .aspoc_tools.aspoc import mms_load_aspoc
+from .fsm_tools.fsm import mms_load_fsm
+from .fgm_tools.mms_curl import mms_curl
+from .fgm_tools.mms_lingradest import mms_lingradest
 from .spd_mms_load_bss import spd_mms_load_bss
 from .cotrans.mms_cotrans_lmn import mms_cotrans_lmn
 from .cotrans.mms_cotrans_qrotate import mms_cotrans_qrotate
 from .cotrans.mms_cotrans_qtransformer import mms_cotrans_qtransformer
 from .cotrans.mms_qcotrans import mms_qcotrans
 from .particles import mms_part_getspec, mms_part_slice2d
+from .mms_orbit_plot import mms_orbit_plot
+from .mms_load_brst_segments import mms_load_brst_segments
+from .mms_load_fast_segments import mms_load_fast_segments
+from .mms_load_sroi_segments import mms_load_sroi_segments
+from .mms_events import mms_brst_events
 
 '''
     the following wrappers allow users to import the load routines using 

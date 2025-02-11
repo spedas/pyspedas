@@ -195,9 +195,9 @@ class UtilTestCases(unittest.TestCase):
         themis.state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
 
-        # import state without .projects.
+        # import themis.state without .projects.
         # PyCharm's static analysis doesn't like this (red underlines) but it works at runtime
-        from pyspedas.projects.themis import state
+        from pyspedas.themis import state
         del_data('*')
         state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
@@ -217,13 +217,13 @@ class UtilTestCases(unittest.TestCase):
         fgm()
         self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
 
-        # import state without .projects.
-        from pyspedas.projects.themis.state.state import state
+        # deep import themis.state without .projects.
+        from pyspedas.themis.state_tools.state import state
         del_data('*')
         state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
-        # import state with .projects.
-        from pyspedas.projects.themis.state.state import state
+        # deep import themis.state with .projects.
+        from pyspedas.projects.themis.state_tools.state import state
         del_data('*')
         state(probe='a')
         self.assertTrue(data_exists('tha_pos'))

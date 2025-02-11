@@ -8,21 +8,21 @@ from pyspedas.cotrans_tools.matrix_array_lib import ctv_verify_mats, ctv_left_ma
 
 def tvector_rotate(mat_var_in, vec_var_in, newname=None):
     """
-    Rotates array data by a set of coordinate
-    transformation matrices and outputs tplot variables.
+    Rotates tplot vector data by a set of coordinate ransformation matrices and outputs tplot variables.
     This is designed mainly for use with fac_matrix_make, 
-    but can be used for more general purposes.
+    but can be used for more general purposes.  The input variable containing the
+    rotation matrices is automatically interpolated to the timestamps in the vec_var_in variables,
+    using the qslerp (Quaternion Spherical Linear intERPolation) routine from the PySPEDAS quaternion
+    library.
 
-    Input
-    ------
+    Parameters
+    -----------
         mat_var_in: str
             Tplot variable containing the transformation matrices
 
         vec_var_in: str or list of str
             Tplot variables to be transformed
 
-    Parameters
-    ----------
         newname: str or list of str
             Name of the output tplot variables
 

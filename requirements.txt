@@ -1,7 +1,8 @@
 numpy>=1.20.0
 requests
-cdflib
-pytplot-mpl-temp>=2.2.50
+cdflib>=1.0.0
+spacepy
+pytplot-mpl-temp>=2.2.52
 cdasws>=1.7.24
 netCDF4
 pywavelets
@@ -10,3 +11,6 @@ geopack>=1.0.11
 scipy
 hapiclient>=0.2.2
 viresclient
+fsspec
+s3fs
+aioboto3

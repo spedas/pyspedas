@@ -15,11 +15,11 @@ from .spacecraft.particles.gmom import gmom
 from .ground.gmag import gmag
 from .ground.ask import ask
 
-from .state.state import state
-from .state.slp import slp
-from .state.ssc import ssc
-from .state.ssc_pre import ssc_pre
+from .state_tools.state import state
+from .state_tools.slp import slp
+from .state_tools.ssc import ssc
+from .state_tools.ssc_pre import ssc_pre
 
-from .state.autoload_support import autoload_support
-from .state import get_spinmodel
+from .state_tools.autoload_support import autoload_support
+from .state_tools import get_spinmodel
 from .cotrans import sse2sel,gse2sse,dsl2gse,ssl2dsl

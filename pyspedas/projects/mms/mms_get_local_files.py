@@ -8,6 +8,8 @@ from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse
 from datetime import timedelta
 
+from pyspedas.utilities.download import is_fsspec_uri
+import fsspec
 
 def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, mirror=False):
     """
@@ -51,6 +53,8 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
     else:
         data_dir = CONFIG['local_data_dir']
 
+    sep = "/" if is_fsspec_uri(data_dir) else os.path.sep
+
     # directory and file name search patterns
     #   -assume directories are of the form:
     #      (srvy, SITL): spacecraft/instrument/rate/level[/datatype]/year/month/
@@ -65,27 +69,39 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
     if datatype == '' or datatype is None:
         level_and_dtype = level
     else:
-        level_and_dtype = os.sep.join([level, datatype])
+        level_and_dtype = sep.join([level, datatype])
 
     for date in days:
         if data_rate == 'brst':
-            local_dir = os.sep.join([data_dir, 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m'), date.strftime('%d')])
+            local_dir = sep.join([data_dir, 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m'), date.strftime('%d')])
         else:
-            local_dir = os.sep.join([data_dir, 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m')])
+            local_dir = sep.join([data_dir, 'mms'+probe, instrument, data_rate, level_and_dtype, date.strftime('%Y'), date.strftime('%m')])
 
         if os.name == 'nt':
-            full_path = os.sep.join([re.escape(local_dir)+os.sep, file_name])
+            full_path = sep.join([re.escape(local_dir)+os.sep, file_name])
         else:
-            full_path = os.sep.join([re.escape(local_dir), file_name])
+            full_path = sep.join([re.escape(local_dir), file_name])
 
         # check for extra /'s in the path
         if '//' in full_path:
             full_path = full_path.replace('//', '/')
+        if is_fsspec_uri(data_dir):
+            # Cloud Awareness: the replacement above removes the expected :// URI pattern
+            full_path = full_path.replace(":/", "://")
+
+            protocol, path = data_dir.split("://")
+            fs = fsspec.filesystem(protocol)
+
+            walk = fs.walk(data_dir)
+        else:
+            walk = os.walk(data_dir)
 
         regex = re.compile(full_path)
-        for root, dirs, files in os.walk(data_dir):
+        for root, dirs, files in walk:
             for file in files:
-                this_file = os.sep.join([root, file])
+                this_file = sep.join([root, file])
+                if is_fsspec_uri(data_dir):
+                    this_file = protocol + "://" + this_file
                 if CONFIG['debug_mode']: logging.info('Checking ' + this_file)
                 if CONFIG['debug_mode']: logging.info('against: ' + full_path)
                 
@@ -115,7 +131,13 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
             local_file = file.replace(mirror_dir, local_dir)
             if CONFIG['debug_mode']:
                 logging.info('Copying ' + file + ' to ' + local_file)
-            shutil.copyfile(file, local_file)
+            if is_fsspec_uri(local_dir):
+                protocol, path = local_dir.split("://")
+                fs.fsspec.filesystem(protocol)
+
+                fs.put_file(file, local_file)
+            else:
+                shutil.copyfile(file, local_file)
             local_files_copied.append(local_file)
         local_files = local_files_copied
 

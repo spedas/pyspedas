@@ -8,7 +8,7 @@ from pytplot import get_data, store_data, options, get_coords
 import pyspedas
 from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.cotrans_tools.gsm2lmn import gsm2lmn
-from pyspedas import tinterpol, omni
+from pyspedas import tinterpol
 # For some reason, the import below started picking up the module mec, rather than the wrapper mec() defined in mms/__init__.py.
 # Importing it as pyspedas.projects.mms.mec seems to remove the ambiguity, but I wonder if something fishy is going on
 # with the imports in pyspedas, mms, and mms.mec.
@@ -129,7 +129,7 @@ def solarwind_load(trange, level='hro2', min5=False):
         datatype = '5min'
     else:
         datatype = '1min'
-    omni_vars = omni.data(trange=trange, level=level, datatype=datatype)
+    omni_vars = pyspedas.projects.omni.data(trange=trange, level=level, datatype=datatype)
     bzgsm = get_data('BZ_GSM')
     dp = get_data('Pressure')
     return np.array([bzgsm.times, bzgsm.y, dp.y]).T

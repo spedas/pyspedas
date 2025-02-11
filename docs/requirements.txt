@@ -6,8 +6,11 @@ cdasws>=1.7.24
 netCDF4
 pywavelets
 astropy
-pytplot-mpl-temp>=2.2.50
+pytplot-mpl-temp>=2.2.52
 geopack>=1.0.11
 viresclient
 hapiclient
+fsspec
+s3fs
+aioboto3
 sphinx-rtd-theme

@@ -25,25 +25,25 @@ jobs:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install 'mth5>=0.4.9'
+          pip install 'moto[server]'
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install 'mth5>=0.4.9'
+          pip install 'moto[server]'
       if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install 'mth5>=0.4.9'
+          pip install 'moto[server]'
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |
@@ -101,6 +101,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.ace.tests.tests
         echo Starting cluster tests at `date`
         coverage run -a -m  pyspedas.projects.cluster.tests.tests
+        echo Starting cluster S3 tests at `date`
+        coverage run -a -m  pyspedas.projects.cluster.tests.uri_tests
         echo Starting themis tplot_time  tests at `date`
         coverage run -a -m  pyspedas.projects.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
@@ -141,6 +143,8 @@ jobs:
         coverage run -a -m  pyspedas.utilities.tests.download_tests
         echo Starting utilities misc tests at `date`
         coverage run -a -m  pyspedas.utilities.tests.misc_tests
+        echo Starting utilities URI tests at `date`
+        coverage run -a -m  pyspedas.utilities.tests.download_uri_tests
         echo Starting tplot wildcard tests at `date`
         coverage run -a -m  pyspedas.utilities.tests.tplot_wildcard_tests
         echo Starting plotting tests at `date`
@@ -182,6 +186,11 @@ jobs:
         echo Starting analysis tests at `date`
         coverage run -a -m  pyspedas.analysis.tests.tests
         echo Starting analysis wavpol tests at `date`
+        # Environment diagnostics
+        echo "locale:"
+        locale
+        echo "Environment:"
+        printenv
         coverage run -a -m  pyspedas.analysis.tests.test_twavpol
         echo Starting analysis magnetic nulls tests at `date`
         coverage run -a -m  pyspedas.analysis.tests.test_magnetic_nulls

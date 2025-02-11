@@ -29,10 +29,10 @@ jobs:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
           pip install 'mth5>=0.4.9'
+          pip install 'moto[server]'
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
@@ -43,10 +43,10 @@ jobs:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
           pip install 'mth5>=0.4.9'
+          pip install 'moto[server]'
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
@@ -57,11 +57,11 @@ jobs:
       run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install spacepy  # required for MMS qcotrans tests
           pip install coveralls
           pip install basemap
           pip install 'mth5>=0.4.9'
           python -m pyspedas.projects.mms.tests.setup_tests
+          pip install 'moto[server]'
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |
@@ -115,6 +115,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
         echo Starting akebono tests at `date`
         coverage run -a -m pyspedas.projects.akebono.tests.tests
+        #echo Starting maven S3 tests at `date`
+        #coverage run -a -m pyspedas.projects.maven.tests.uri_tests
         echo Starting maven tests at `date`
         coverage run -a -m pyspedas.projects.maven.tests.tests
         echo Starting ace tests at `date`
@@ -156,6 +158,8 @@ jobs:
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
         echo Starting cluster tests at `date`
         coverage run -a -m pyspedas.projects.cluster.tests.tests
+        echo Starting cluster S3 tests at `date`
+        coverage run -a -m pyspedas.projects.cluster.tests.uri_tests
         echo Starting CDAWeb tests at `date`
         coverage run -a -m pyspedas.cdagui_tools.tests.tests
         echo Starting themis tplot_time  tests at `date`
@@ -224,6 +228,8 @@ jobs:
         coverage run -a -m pyspedas.projects.mms.tests.wavpol
         echo Starting mms slice2d tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.slice2d
+        #echo Starting mms S3 tests at `date`
+        #coverage run -a -m pyspedas.projects.mms.tests.load_uri_tests
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space after MMS tests:"
@@ -247,6 +253,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.time_tests
         echo Starting utilities libs_tests tests at `date`
         coverage run -a -m pyspedas.utilities.tests.libs_tests
+        echo Starting utilities S3 tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.download_uri_tests
         echo Starting cotrans tests at `date`
         coverage run -a -m pyspedas.cotrans_tools.tests.cotrans
         echo Starting cotrans minvar tests at `date`

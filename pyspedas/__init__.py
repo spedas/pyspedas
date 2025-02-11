@@ -25,7 +25,7 @@ from .cotrans_tools.fac_matrix_make import fac_matrix_make
 from .cotrans_tools.gsm2lmn import gsm2lmn
 from .cotrans_tools.minvar import minvar
 from .cotrans_tools.minvar_matrix_make import minvar_matrix_make
-from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq
+from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq, qnormalize
 from .cotrans_tools.tvector_rotate import tvector_rotate
 from .cotrans_tools.xyz_to_polar import xyz_to_polar
 # Importing geopack causes IGRF coefficients to be loaded by the external geopack package, which may not be desired.
@@ -37,7 +37,7 @@ from .cotrans_tools.xyz_to_polar import xyz_to_polar
 #from .geopack.t96 import t96, tt96
 #from .geopack.ts04 import tts04
 from .hapi_tools.hapi import hapi
-from .projects.noaa.noaa_load_kp import noaa_load_kp
+
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
 from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
 from .particles.spd_slice2d import slice1d_plot, slice2d, slice2d_plot
@@ -62,7 +62,7 @@ from .version import version
 # circular dependencies.  Import directly from pytplot instead.
 
 from pytplot import *
-
+from .projects.noaa.noaa_load_kp import noaa_load_kp
 # omni must precede mms to avoid problems with circular imports
 from .projects import omni
 
@@ -72,11 +72,11 @@ from .projects.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi
     mms_load_hpca, mms_load_fpi, mms_load_aspoc, \
     mms_load_dsp, mms_load_fsm, mms_load_state, \
     mms_qcotrans, mms_cotrans_lmn, mms_cotrans_qrotate, mms_cotrans_qtransformer
-from .projects.mms.feeps.mms_feeps_pad import mms_feeps_pad
-from .projects.mms.feeps.mms_feeps_gpd import mms_feeps_gpd
-from .projects.mms.eis.mms_eis_pad import mms_eis_pad
-from .projects.mms.hpca.mms_hpca_calc_anodes import mms_hpca_calc_anodes
-from .projects.mms.hpca.mms_hpca_spin_sum import mms_hpca_spin_sum
+from .projects.mms.feeps_tools.mms_feeps_pad import mms_feeps_pad
+from .projects.mms.feeps_tools.mms_feeps_gpd import mms_feeps_gpd
+from .projects.mms.eis_tools.mms_eis_pad import mms_eis_pad
+from .projects.mms.hpca_tools.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from .projects.mms.hpca_tools.mms_hpca_spin_sum import mms_hpca_spin_sum
 from .projects.mms.plots.mms_overview_plot import mms_overview_plot
 from .projects.mms.particles.mms_part_getspec import mms_part_getspec
 from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
@@ -92,7 +92,7 @@ from importlib import import_module
 submodules = ['ace', 'akebono', 'barrel', 'cluster', 'cnofs', 'csswe', 'de2', 'dscovr',
              'elfin', 'equator_s', 'erg', 'fast', 'geotail', 'goes', 'image', 'kompsat',
               'kyoto', 'lanl', 'maven', 'mica', 'mms', 'noaa', 'omni', 'poes', 'polar', 'psp',
-              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state', 'twins',
+              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state_tools', 'twins',
               'ulysses'
               ]
 

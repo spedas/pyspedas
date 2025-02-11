@@ -11,7 +11,8 @@ from pyspedas.projects.maven.config import CONFIG
 from datetime import datetime
 
 # We need sleep time to avoid "HTTP Error 429: Too Many Requests"
-sleep_time = 30
+# As of January 2025, this may no longer be necessary for MAVEN
+sleep_time = 1
 
 
 def get_kp_dict():
@@ -20,11 +21,11 @@ def get_kp_dict():
     fn = [
         os.path.join(
             local_data_dir,
-            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r01.tab",
+            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v20_r02.tab",
         ),
         os.path.join(
             local_data_dir,
-            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r01.tab",
+            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v20_r02.tab",
         ),
     ]
     return maven_kp_to_tplot(filename=fn, notplot=True)
@@ -37,7 +38,7 @@ class OrbitTestCases(unittest.TestCase):
         get_orbit_files()
         merge_orbit_files()
         orbfilepath = os.path.join(
-            CONFIG["local_data_dir"], "orbitfiles", "maven_orb_rec.orb"
+            CONFIG["local_data_dir"], "orbitfiles", "merged_maven_orbits.orb"
         )
         self.assertTrue(os.path.exists(orbfilepath))
 
