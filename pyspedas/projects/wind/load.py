@@ -59,7 +59,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
         masterfile = 'wi_' + datatype + '_sms_00000000_v01.cdf'
     elif instrument == 'waves':
         if datatype == 'rad1' or datatype == 'rad2':
-            prefix = user_prefix + 'wi_' + datatype + '_'
+            prefix = user_prefix + 'wi_l2_wav_' + datatype + '_'
             pathformat = 'waves/'+datatype+'_l2/%Y/wi_l2_wav_'+datatype+'_%Y%m%d_v??.cdf'
             masterfile = 'wi_l2_wav_'+datatype+'_00000000_v01.cdf'
         else:
