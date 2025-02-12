@@ -20,15 +20,35 @@ To start the gui from the command line, use:
 import logging
 import os
 import time
-import tkinter as tk
-from tkinter import messagebox, filedialog
 from pyspedas.cdagui_tools.cdaweb import CDAWeb
 from pyspedas.cdagui_tools.config import CONFIG
+from typing import Optional, Tuple
+from types import ModuleType
 
+# Rather than import tkinter unconditionally at the top of the module (possibly leading
+# to error messages each time pyspedas is imported), if python isn't built with tkinter included,
+# we move those imports into a function that only gets called when someone tries to use the GUI.
+# If tkinter isn't available, let the user know that they need a different build of Python
+# to use this feature.
+
+
+def import_tkinter_with_message() -> Tuple[Optional[ModuleType], Optional[ModuleType], Optional[ModuleType]]:
+    """Attempt to import tkinter and return the module. If unavailable, log an error message describing the problem. """
+    try:
+        import tkinter as tk
+        from tkinter import messagebox, filedialog
+        return tk, messagebox, filedialog
+    except ImportError:
+        logging.error("The version of Python you are using does not support the tkinter module needed to run the PySPEDAS CDAWeb GUI.")
+        logging.error("You may need to reinstall a different version of Python compiled with tkinter support.")
+        return None, None, None
 
 class cdaWindow:
 
-    def __init__(self, master):
+     def __init__(self, master):
+        tk, messagebox, filedialog = import_tkinter_with_message()
+        if tk is None:
+            return
         # CDAWeb connection
         cda = CDAWeb()
 
@@ -480,13 +500,17 @@ class cdaWindow:
 
 
 def cdagui():
-    root = tk.Tk()
-    startgui = cdaWindow(root)
-    root.mainloop()
-    return startgui
+    tk, messagebox, filedialog = import_tkinter_with_message()
+    if tk is not None:
+        root = tk.Tk()
+        startgui = cdaWindow(root)
+        root.mainloop()
+        return startgui
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    startgui = cdaWindow(root)
-    root.mainloop()
+    tk, messagebox, filedialog = import_tkinter_with_message()
+    if tk is not None:
+        root = tk.Tk()
+        startgui = cdaWindow(root)
+        root.mainloop()
