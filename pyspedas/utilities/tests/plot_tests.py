@@ -17,6 +17,7 @@ class PlotTestCases(unittest.TestCase):
         # Taken from pytplot markers and symbols notebook in pyspedas_examples
         del_data('*')
         store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1]})
+        timespan('1970-01-01',10,'seconds')
         tplot('data', display=global_display, save_png='simple_lineplot.png')
         options('data', 'marker', 'X')
         tplot('data', display=global_display, save_png='markers_lineplot.png')
@@ -32,12 +33,14 @@ class PlotTestCases(unittest.TestCase):
         tplot('data', display=global_display, save_png='markevery_lineplot.png')
         options('data', 'marker', 'H')
         tplot('data', display=global_display, save_png='hexagons_lineplot.png')
+        timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
     def test_markers_and_symbols_error_bars(self):
         # Regression test for lineplot crash when marker sizes are set
         # Taken from pytplot markers and symbols notebook in pyspedas_examples
         del_data('*')
         store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1], 'dy':[0.25]*6})
+        timespan('1970-01-01',10,'seconds')
         tplot('data', display=global_display, save_png='simple_lineplot_errbars.png')
         options('data', 'marker', 'X')
         tplot('data', display=global_display, save_png='markers_lineplot_errbars.png')
@@ -53,10 +56,12 @@ class PlotTestCases(unittest.TestCase):
         tplot('data', display=global_display, save_png='markevery_lineplot_errbars.png')
         options('data', 'marker', 'H')
         tplot('data', display=global_display, save_png='hexagons_lineplot_errbars.png')
+        timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
     def test_timebars(self):
         from pytplot import timebar
         del_data('*')
+        timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
         themis.fgm(probe='c', trange=default_trange)
         timebar(t=10000.0,varname='thc_fge_dsl',databar=True,color='black')
         timebar(t=-10000.0,varname='thc_fge_dsl',databar=True,color='red', dash=True)
@@ -74,6 +79,7 @@ class PlotTestCases(unittest.TestCase):
         # Test that tplot variables with different number of traces can be combined into a pseudovariable and plotted correctly.
         # Both plots should have 4 properly labeled traces.
         themis.fgm(probe='c', trange=default_trange)
+        timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
         store_data('comb_3_1',data=['thc_fge_dsl','thc_fge_btotal'])
         store_data('comb_1_3',data=['thc_fge_btotal','thc_fge_dsl'])
         tplot_options('title', 'Pseudovariable with one+three line traces')
@@ -474,6 +480,7 @@ class PlotTestCases(unittest.TestCase):
         import pyspedas
 
         from pyspedas.projects.erg import mgf, orb
+        timespan('2017-03-27',1,'days')
         mgf()
         orb()
         from pytplot import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
@@ -492,6 +499,7 @@ class PlotTestCases(unittest.TestCase):
 
         from pytplot import tplot_vl
         fig = tplot_vl(plot_vars, var_label=var_label, display=global_display, save_png='erg_varlabel.png')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
 
 if __name__ == '__main__':
