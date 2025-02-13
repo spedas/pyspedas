@@ -119,25 +119,28 @@ In order to successfully access the specified cloud repository, the user is requ
 
 ## Usage
 
-To get started, import pyspedas and pytplot:
-
-```python
-import pyspedas
-from pytplot import tplot
-```
-
-You can load data into tplot variables by calling `pyspedas.mission.instrument()`, e.g.,
+You can load data into tplot variables by calling `pyspedas.projecs.mission.instrument()`, e.g.,
 
 To load and plot 1 day of THEMIS FGM data for probe 'd':
 ```python
-thm_fgm = pyspedas.themis.fgm(trange=['2015-10-16', '2015-10-17'], probe='d')
+import pyspedas
+from pyspedas import tplot
+
+thm_fgm = pyspedas.projects.themis.fgm(trange=['2015-10-16', '2015-10-17'], probe='d')
 
 tplot(['thd_fgs_gse', 'thd_fgs_gsm'])
 ```
 
+The above example used the fully qualified load routine name `pyspedas.projects.themis.fgm`.
+It is also possible to use abbreviated names by importing them from the appropriate mission module:
+
 To load and plot 2 minutes of MMS burst mode FGM data:
 ```python
-mms_fgm = pyspedas.mms.fgm(trange=['2015-10-16/13:05:30', '2015-10-16/13:07:30'], data_rate='brst')
+import pyspedas
+from pyspedas import tplot
+from pyspedas.projects.mms import fgm
+
+mms_fgm = fgm(trange=['2015-10-16/13:05:30', '2015-10-16/13:07:30'], data_rate='brst')
 
 tplot(['mms1_fgm_b_gse_brst_l2', 'mms1_fgm_b_gsm_brst_l2'])
 ```
@@ -146,17 +149,22 @@ Note: by default, PySPEDAS loads all data contained in CDFs found within the req
 
 To load and plot 6 hours of PSP SWEAP/SPAN-i data:
 ```python
-spi_vars = pyspedas.psp.spi(trange=['2018-11-5', '2018-11-5/06:00'], time_clip=True)
+import pyspedas
+from pyspedas import tplot
+
+spi_vars = pyspedas.projects.psp.spi(trange=['2018-11-5', '2018-11-5/06:00'], time_clip=True)
 
 tplot(['DENS', 'VEL', 'T_TENSOR', 'TEMP'])
 ```
 
 To download 5 days of STEREO magnetometer data (but not load them into tplot variables):
 ```python
-stereo_files = pyspedas.stereo.mag(trange=['2013-11-1', '2013-11-6'], downloadonly=True)
+import pyspedas
+
+stereo_files = pyspedas.projects.stereo.mag(trange=['2013-11-1', '2013-11-6'], downloadonly=True)
 ```
 
-### Standard Options
+### Standard Load Routine Options
 - `trange`: two-element list specifying the time range of interest. This keyword accepts a wide range of formats
 - `time_clip`: if set, clip the variables to the exact time range specified by the `trange` keyword
 - `suffix`: string specifying a suffix to append to the loaded variables
@@ -221,15 +229,18 @@ https://pyspedas.readthedocs.io/
 ## Getting Help
 To find the options supported, call `help` on the instrument function you're interested in:
 ```python
-help(pyspedas.themis.fgm)
+import pyspedas
+
+help(pyspedas.projects.themis.fgm)
 ```
 
-You can ask questions by creating an issue or by joining the [SPEDAS mailing list](http://spedas.org/mailman/listinfo/spedas-list_spedas.org).
+You can ask questions by creating an issue here on Github, by joining the [SPEDAS mailing list](http://spedas.org/mailman/listinfo/spedas-list_spedas.org),
+or by emailing the project maintainers at jwl@ssl.berkeley.edu .
 
 
 ## PyTplot
 
-Pytplot is a separate project, that replicates the IDL "tplot" functionality. Pyspedas uses a modified version of pytplot with matplotlib as the plotting library.
+Pytplot is a separate project (soon to be merged into PySPEDAS), that replicates the IDL "tplot" functionality. Pyspedas uses a modified version of pytplot with matplotlib as the plotting library.
 
 
 ## Contributing
