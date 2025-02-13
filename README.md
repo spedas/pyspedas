@@ -136,9 +136,8 @@ It is also possible to use abbreviated names by importing them from the appropri
 
 To load and plot 2 minutes of MMS burst mode FGM data:
 ```python
-import pyspedas
-from pyspedas import tplot
 from pyspedas.projects.mms import fgm
+from pyspedas import tplot
 
 mms_fgm = fgm(trange=['2015-10-16/13:05:30', '2015-10-16/13:07:30'], data_rate='brst')
 
@@ -234,6 +233,19 @@ import pyspedas
 help(pyspedas.projects.themis.fgm)
 ```
 
+To find PySPEDAS routine names by a keyword search, use the `libs` command (similar to the one found in IDL SPEDAS.)
+
+```python
+import pyspedas
+from pyspedas import libs
+
+# Find all PySPEDAS routine names containing the given string
+libs('fgm')
+
+# If you don't know the exact spelling, you can use wildcard characters * and ? in the search pattern:
+libs('wav*pol')
+
+```
 You can ask questions by creating an issue here on Github, by joining the [SPEDAS mailing list](http://spedas.org/mailman/listinfo/spedas-list_spedas.org),
 or by emailing the project maintainers at jwl@ssl.berkeley.edu .
 
