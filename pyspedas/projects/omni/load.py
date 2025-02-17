@@ -9,7 +9,7 @@ from .config import CONFIG
 def load(
     trange=["2013-11-5", "2013-11-6"],
     datatype="1min",
-    level="hro2",
+    level="hro",
     prefix="",
     suffix="",
     get_support_data=False,
@@ -38,7 +38,7 @@ def load(
         Data type; valid options: '1min', '5min', 'hourly'.
         Default: '1min'.
     level : str, optional
-        Data level; valid options: 'hro', 'hro2'. Default='hro2'
+        Data level; valid options: 'hro', 'hro2'. Default='hro'
     prefix : str, optional
         Prefix for the tplot variable names. By default, no prefix is added.
     suffix : str, optional
