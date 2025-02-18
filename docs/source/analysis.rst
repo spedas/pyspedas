@@ -151,22 +151,3 @@ are zero), and infer the topology of the magnetic field at the null point.
 .. autofunction:: pyspedas.classify_null_type
 
 .. autofunction:: pyspedas.lingradest
-
-Other analysis tools
----------------------
-
-The tools in this section perform various operations on tplot variables.
-
-.. toctree::
-   :maxdepth: 2
-
-   avg_data
-   clean_spikes
-   tcrossp
-   tdotp 
-   tdpwrspc
-   interpolation
-   tnormalize
-   subtract_average
-   subtract_median
-   twavpol

@@ -1,9 +1,10 @@
 PyTplot
 =======
 
-PyTplot (as implemented by the pytplot-matplotlib-temp PyPI package) can be thought of as a companion package to PySPEDAS.  (In the future,
-pyspedas will absorb the PyTplot tools and it will no longer have this
-external dependency.
+PyTplot (as implemented by the pytplot-matplotlib-temp PyPI package) can be thought of as a companion package to PySPEDAS.
+
+In the future, the pytplot tools will be migrated into the pyspedas package.  They are all available for
+importing directly from the top level pyspedas module.
 
 Some of the most useful and frequently used pytplot utilities are
 documented below:
@@ -12,113 +13,112 @@ documented below:
 Tplot Variables
 ----------------
 
-.. autofunction:: pytplot.get_data
-.. autofunction:: pytplot.store_data
-.. autofunction:: pytplot.tplot_names
-.. autofunction:: pytplot.tnames
+.. autofunction:: pyspedas.get_data
+.. autofunction:: pyspedas.store_data
+.. autofunction:: pyspedas.tplot_names
+.. autofunction:: pyspedas.tnames
 
 Arithmetic
 ----------
-.. autofunction:: pytplot.tplot_math.add
-.. autofunction:: pytplot.tplot_math.subtract
-.. autofunction:: pytplot.tplot_math.multiply
-.. autofunction:: pytplot.tplot_math.divide
+.. autofunction:: pyspedas.add
+.. autofunction:: pyspedas.subtract
+.. autofunction:: pyspedas.multiply
+.. autofunction:: pyspedas.divide
+
+.. autofunction:: pyspedas.derive
+.. autofunction:: pyspedas.deriv_data
+
+.. autofunction:: pyspedas.subtract_average
+.. autofunction:: pyspedas.subtract_median
+
 
 Add Across Columns
 ------------------
-.. autofunction:: pytplot.tplot_math.add_across
+.. autofunction:: pyspedas.add_across
 
 Clean Spikes
 ------------
-.. autofunction:: pytplot.tplot_math.clean_spikes
+.. autofunction:: pyspedas.clean_spikes
 
-Clip Data
----------
-.. autofunction:: pytplot.tplot_math.clip
+Clip Data Values
+-----------------
+.. autofunction:: pyspedas.clip
 
 Crop Data
 ---------
-.. autofunction:: pytplot.tplot_math.crop
+.. autofunction:: pyspedas.crop
 
 Deflag Data
 -----------
-.. autofunction:: pytplot.tplot_math.deflag
+.. autofunction:: pyspedas.deflag
 
 Degap Data
 ----------
-.. autofunction:: pytplot.tplot_math.degap
-
-Derivative
-----------
-.. autofunction:: pytplot.tplot_math.derive
+.. autofunction:: pyspedas.degap
 
 Dynamic Power Spectrum
 ----------------------
-.. autofunction:: pytplot.tplot_math.dpwrspc
+.. autofunction:: pyspedas.dpwrspc
 
 Flatten Data
 ------------
-.. autofunction:: pytplot.tplot_math.flatten
+.. autofunction:: pyspedas.flatten
 
 Interpolate through NaN values
 ------------------------------
-.. autofunction:: pytplot.tplot_math.interp_nan
+.. autofunction:: pyspedas.interp_nan
 
 Join/Split Data
 ---------------
-.. autofunction:: pytplot.tplot_math.join_vec
-.. autofunction:: pytplot.tplot_math.split_vec
+.. autofunction:: pyspedas.join_vec
+.. autofunction:: pyspedas.split_vec
 
 Make a data gap
 ------------------------------
-.. autofunction:: pytplot.tplot_math.makegap
+.. autofunction:: pyspedas.makegap
 
 Power Spectrum
 --------------
-.. autofunction:: pytplot.tplot_math.pwr_spec
+.. autofunction:: pyspedas.pwr_spec
 
-Subtract Average/Median
------------------------
-.. autofunction:: pytplot.tplot_math.subtract_average
-.. autofunction:: pytplot.tplot_math.subtract_median
 
 Vector Dot/Cross Products
 -------------------------
-.. autofunction:: pytplot.tplot_math.tdotp
-.. autofunction:: pytplot.tplot_math.tcrossp
+.. autofunction:: pyspedas.tdotp
+.. autofunction:: pyspedas.tcrossp
 
 Dynamic Power Spectrum of Tplot variable
 -----------------------------------------
-.. autofunction:: pytplot.tplot_math.tdpwrspc
+.. autofunction:: pyspedas.tdpwrspc
 
 Time Clip
 ---------
-.. autofunction:: pytplot.tplot_math.time_clip
+.. autofunction:: pyspedas.time_clip
 
 Interpolate Tplot Variables
 ---------------------------
-.. autofunction:: pytplot.tplot_math.tinterp
+.. autofunction:: pyspedas.tinterp
 
 Km to/from Earth Radii unit conversion
 --------------------------------------
-.. autofunction:: pytplot.tplot_math.tkm2re
+.. autofunction:: pyspedas.tkm2re
 
 Normalize to unit vectors
 --------------------------------------
-.. autofunction:: pytplot.tplot_math.tnormalize
+.. autofunction:: pyspedas.tnormalize
 
 Power Spectrum of Tplot variable
 --------------------------------
-.. autofunction:: pytplot.tplot_math.tpwrspc
+.. autofunction:: pyspedas.tpwrspc
 
 Smooth Data
 -----------
-.. autofunction:: pytplot.tplot_math.tsmooth
+.. autofunction:: pyspedas.tsmooth
 
 
 Spectrum Multiplication
 -----------------------
-.. autofunction:: pytplot.tplot_math.spec_mult
+.. autofunction:: pyspedas.spec_mult
 
 
 Plotting
@@ -147,9 +147,9 @@ docuemented here for completeness.
 Per-Variable Plot Options
 -------------------------
 
-.. autofunction:: pytplot.options
+.. autofunction:: pyspedas.options
 
 "Global" plot options
 ---------------------
 
-.. autofunction:: pytplot.tplot_options
+.. autofunction:: pyspedas.tplot_options
