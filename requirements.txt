@@ -2,7 +2,7 @@ numpy>=1.20.0
 requests
 cdflib>=1.0.0
 spacepy
-pytplot-mpl-temp>=2.2.52
+pytplot-mpl-temp>=2.2.53
 cdasws>=1.7.24
 netCDF4
 pywavelets
