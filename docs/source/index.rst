@@ -48,6 +48,7 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
    projects
    analysis
    cdaweb
+   hapi
    geopack
    coords
    utilities
