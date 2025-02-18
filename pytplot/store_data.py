@@ -158,7 +158,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         err_values = None
 
     # Convert input time representation to np.datetime64 objects, if needed
-    if isinstance(times, pd.core.series.Series):
+    if isinstance(times, pd.Series):
         datetimes = times.to_numpy()  # if it is pandas series, convert to numpy array
     elif isinstance(times[0],(datetime.datetime,np.datetime64)):
         # Timezone-naive datetime or np.datetime64, use as-is, but we might have to convert the container to a numpy array
