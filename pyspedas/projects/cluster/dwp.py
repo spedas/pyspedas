@@ -90,7 +90,7 @@ def dwp(trange:List[str]=['2018-11-5', '2018-11-6'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> dwp_vars = pyspedas.projects.cluster.dwp(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
     >>> tplot(['Correl_freq__C1_PP_DWP','Correl_P__C1_PP_DWP'])
 

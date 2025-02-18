@@ -60,7 +60,7 @@ def att(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> att_vars = pyspedas.projects.erg.att(trange=['2017-04-01', '2017-04-02'])
     >>> tplot(['erg_att_sprate', 'erg_att_spphase', 'erg_att_izras', 'erg_att_izdec', 'erg_att_gxras', 'erg_att_gxdec', 'erg_att_gzras', 'erg_att_gzdec'])
 

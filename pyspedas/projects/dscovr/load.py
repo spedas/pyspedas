@@ -78,7 +78,7 @@ def load(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> mag_vars = pyspedas.projects.dscovr.mag(trange=['2018-11-5', '2018-11-6'])
     >>> tplot('dsc_h0_mag_B1GSE')
     """

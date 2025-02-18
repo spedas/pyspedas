@@ -112,7 +112,7 @@ def lepe(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> lepe_vars = pyspedas.projects.erg.lepe(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_lepe_l2_omniflux_FEDO')
 

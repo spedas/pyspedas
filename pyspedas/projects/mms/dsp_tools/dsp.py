@@ -109,7 +109,7 @@ def mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     --------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> dsp_data = pyspedas.projects.mms.mms_load_dsp(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast', datatype='bpsd')
     >>> tplot('mms1_dsp_bpsd_omni_fast_l2')
 

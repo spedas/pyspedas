@@ -82,7 +82,7 @@ def hiscale(trange:List[str]=['2003-01-01', '2003-01-02'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> hiscale_vars = pyspedas.projects.ulysses.hiscale()
     >>> tplot('Electrons')
     """

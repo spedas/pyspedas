@@ -91,7 +91,7 @@ def load(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> dcf_vars = pyspedas.projects.fast.dcf(trange=["1996-12-01", "1996-12-02"])
     >>> tplot(['fast_dcf_DeltaB_GEI'])
     >>> acf_vars = pyspedas.projects.fast.acf(trange=["1996-12-01", "1996-12-02"])

@@ -63,7 +63,7 @@ def wavelet(
     Example
     -------
         >>> import numpy as np
-        >>> import pytplot
+        import pyspedas
         >>> from pyspedas import time_float
         >>> from pyspedas.analysis.wavelet import wavelet
 
@@ -74,18 +74,18 @@ def wavelet(
         >>> y[1000:3000] = y2[1000:3000]
         >>> var = 'sin_wav'
         >>> time = time_float('2010-01-01') + 10*t
-        >>> pytplot.store_data(var, data={'x':time, 'y':y})
+        >>> pyspedas.store_data(var, data={'x':time, 'y':y})
 
         >>> # Gaussian Derivative wavelets transformation.
         >>> powervar = wavelet(var, wavename='gaus1')
         >>> pvar = powervar[0]
 
         >>> # Define plotting parameters and plot.
-        >>> pytplot.options(pvar, 'colormap', 'jet')
-        >>> pytplot.ylim(pvar, 0.001, 0.1)
-        >>> pytplot.options(pvar, 'ylog', True)
-        >>> pytplot.options(pvar, 'ytitle', pvar)
-        >>> pytplot.tplot([var, pvar])
+        >>> pyspedas.options(pvar, 'colormap', 'jet')
+        >>> pyspedas.ylim(pvar, 0.001, 0.1)
+        >>> pyspedas.options(pvar, 'ylog', True)
+        >>> pyspedas.options(pvar, 'ytitle', pvar)
+        >>> pyspedas.tplot([var, pvar])
     """
     # new_names is deprecated in favor of newname
     if new_names is not None:

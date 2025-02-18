@@ -47,7 +47,7 @@ def mag(trange=['2017-03-27/06:00', '2017-03-27/08:00'],
     To load and plot Magnetometer (MAG) data from the Swarm mission for probe 'c' over a specific time range, you can use the following commands:
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
 
     # Load MAG data for probe 'c'
     >>> mag_vars = pyspedas.projects.swarm.mag(probe='c', trange=['2017-03-27/06:00', '2017-03-27/08:00'], datatype='hr')

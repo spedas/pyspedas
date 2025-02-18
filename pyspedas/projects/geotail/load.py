@@ -96,32 +96,32 @@ def load(trange=['2013-11-5', '2013-11-6'],
     Example
     ----------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> mgf_vars = pyspedas.projects.geotail.mgf(trange=['2018-11-5', '2018-11-6'])
     >>> tplot(['IB', 'IB_vector'])
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> efd_vars = pyspedas.projects.geotail.efd(trange=['2018-11-5', '2018-11-6'])
     >>> tplot(['Es', 'Ss', 'Bs', 'Vs', 'Ew', 'Sw', 'Bw', 'Vw'])
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> lep_vars = pyspedas.projects.geotail.lep(trange=['2018-11-5/05:00', '2018-11-5/06:00'], time_clip=True)
     >>> tplot(['N0', 'V0'])
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> cpi_vars = pyspedas.projects.geotail.cpi(trange=['2018-11-5/15:00', '2018-11-5/18:00'], time_clip=True)
     >>> tplot(['SW_P_Den', 'SW_P_AVGE', 'SW_V', 'HP_P_Den'])
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> epic_vars = pyspedas.projects.geotail.epic(trange=['2018-11-5', '2018-11-6'])
     >>> tplot('IDiffI_I')
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> pwi_vars = pyspedas.projects.geotail.pwi(trange=['2018-11-5/06:00', '2018-11-5/07:00'], time_clip=True)
     >>> tplot(['MCAE_AVE', 'MCAB_AVE'])
 

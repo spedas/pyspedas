@@ -78,7 +78,7 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
     Example
     -------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> fgm_vars = pyspedas.projects.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['thd_fgs_btotal', 'thd_fgs_gse'])
 

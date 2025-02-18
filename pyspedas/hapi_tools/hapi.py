@@ -56,7 +56,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
 
     >>> # Load OMNI data from CDAWeb HAPI server
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> h_vars = pyspedas.hapi(trange=['2003-10-20', '2003-11-30'],server='https://cdaweb.gsfc.nasa.gov/hapi',dataset='OMNI_HRO2_1MIN')
     >>> tplot(['BX_GSE','BY_GSE','BZ_GSE'])
     """

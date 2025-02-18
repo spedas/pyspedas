@@ -98,7 +98,7 @@ def state_load(trange=['2022-08-19', '2022-08-19'],
     -------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> state_vars = pyspedas.projects.elfin.state(probe='a', trange=['2022-08-19', '2022-08-19'])
     >>> tplot(['ela_pos_gei', 'ela_att_gei', 'ela_att_spinper', 'ela_spin_sun_angle' ])
 

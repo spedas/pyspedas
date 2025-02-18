@@ -89,7 +89,7 @@ def waves(trange=['2018-11-5', '2018-11-6'],
     --------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> vars = pyspedas.projects.wind.waves(trange=['2018-11-5', '2018-11-6'],datatype='h1')
     >>> tplot(vars)
 

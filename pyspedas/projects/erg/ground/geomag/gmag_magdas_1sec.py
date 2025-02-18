@@ -93,7 +93,7 @@ def gmag_magdas_1sec(
     Examples
     ________
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> magdas_vars=pyspedas.projects.erg.gmag_magdas_1sec(trange=["2010-01-01", "2010-01-02"],site='ama')
     >>> tplot('magdas_mag_ama_1sec_hdz')
 

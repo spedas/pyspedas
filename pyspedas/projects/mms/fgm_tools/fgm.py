@@ -129,7 +129,7 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     -------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> fgm_vars = pyspedas.projects.mms.mms_load_fgm(trange=['2015-10-16', '2015-10-17'])
     >>> tplot('mms1_fgm_b_gsm_srvy_l2')
 

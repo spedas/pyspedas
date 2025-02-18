@@ -84,7 +84,7 @@ def swea(trange=['2013-1-5', '2013-1-6'],
     Example:
     ----------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> swea_vars = pyspedas.projects.stereo.swea(trange=['2013-1-5', '2013-1-6'])
         >>> tplot(sit_vars)
 

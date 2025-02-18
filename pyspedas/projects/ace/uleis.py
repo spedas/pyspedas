@@ -94,7 +94,7 @@ def uleis(trange=['2018-11-5', '2018-11-6'],
     ----------
 
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> uleis_vars = pyspedas.projects.ace.uleis(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['H_S1', 'H_S2', 'H_S3', 'H_S4', 'H_S5'])
 

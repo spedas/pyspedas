@@ -64,7 +64,7 @@ def magn(trange=['2013-01-29','2013-01-30'],
     Example:
     ----------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> pyspedas.projects.barrel.magn(trange=['2013-01-29','2013-01-30'], probe='1A')
         >>> tplot('brl1A_Total')
     """

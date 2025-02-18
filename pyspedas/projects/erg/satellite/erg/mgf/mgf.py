@@ -98,7 +98,7 @@ def mgf(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> mgf_vars = pyspedas.projects.erg.mgf(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_mgf_l2_mag_8sec_sm')
 

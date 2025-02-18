@@ -95,7 +95,7 @@ def pwe_ofa(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> pwe_ofa_vars = pyspedas.projects.erg.pwe_ofa(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_pwe_ofa_l2_spec_E_spectra_132')
 

@@ -121,7 +121,7 @@ def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast
     -------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> fpi_vars = pyspedas.projects.mms.mms_load_fpi(trange=['2015-10-16', '2015-10-17'], datatype='dis-moms')
     >>> tplot(['mms1_dis_bulkv_gse_fast', 'mms1_dis_numberdensity_fast'])
 

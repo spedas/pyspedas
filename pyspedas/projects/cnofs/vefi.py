@@ -81,7 +81,7 @@ def vefi(trange=['2010-11-5', '2010-11-6'],
     Example:
     ----------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> vefi_vars = pyspedas.projects.cnofs.vefi(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['E_meridional', 'E_zonal'])
     """

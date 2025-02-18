@@ -89,7 +89,7 @@ def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> cis_vars = pyspedas.projects.cluster.cis(trange=['2003-11-01','2003-11-02'],probe=['1'])
     >>> tplot(['N_p__C1_PP_CIS','N_O1__C1_PP_CIS','N_He1__C1_PP_CIS','N_He2__C1_PP_CIS','N_HIA__C1_PP_CIS'])
 

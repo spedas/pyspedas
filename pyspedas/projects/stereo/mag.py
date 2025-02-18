@@ -80,7 +80,7 @@ def mag(trange=['2013-11-5', '2013-11-6'],
     Example:
     ----------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> mag_vars = pyspedas.projects.stereo.mag(trange=['2013-1-5', '2013-1-6'])
         >>> tplot('BFIELD')
 

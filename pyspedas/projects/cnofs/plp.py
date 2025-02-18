@@ -75,7 +75,7 @@ def plp(trange=['2010-11-5', '2010-11-6'],
     Example:
     ----------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> plp_vars = pyspedas.projects.cnofs.plp(trange=['2010-11-5', '2010-11-6'])
         >>> tplot('Ni')
     """

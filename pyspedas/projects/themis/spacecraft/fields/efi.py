@@ -77,7 +77,7 @@ def efi(trange=['2007-03-23', '2007-03-24'],
     Example
     -------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> efi_vars = pyspedas.projects.themis.efi(probe='d', trange=['2013-11-5', '2013-11-6'])
         >>> tplot('thd_efs_dot0_gse')
 

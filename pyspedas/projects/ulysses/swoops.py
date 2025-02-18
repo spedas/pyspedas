@@ -82,7 +82,7 @@ def swoops(trange:List[str]=['2009-01-01', '2009-01-02'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> swoops_vars = pyspedas.projects.ulysses.swoops(trange=['2009-01-01', '2009-01-02'])
     >>> tplot(['Density', 'Temperature', 'Velocity'])
     """

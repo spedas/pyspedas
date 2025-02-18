@@ -111,7 +111,7 @@ def mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     -------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> eis_vars = pyspedas.projects.mms.mms_load_eis(trange=['2015-10-16', '2015-10-17'], probe='1', datatype=['phxtof', 'extof'])
     >>> # plot the non-spin averaged flux
     >>> tplot(['mms1_epd_eis_srvy_l2_extof_proton_flux_omni', 'mms1_epd_eis_srvy_l2_phxtof_proton_flux_omni'])

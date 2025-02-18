@@ -96,7 +96,7 @@ def mepi_tof(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> mepi_tof_vars = pyspedas.projects.erg.mepi_tof(trange=['2017-03-27', '2017-03-28'])
 
     """

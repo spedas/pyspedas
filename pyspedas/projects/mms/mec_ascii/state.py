@@ -50,7 +50,7 @@ def mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', level='def',
     -------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> pos_data = pyspedas.projects.mms.mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', datatypes='pos', level='def')
     >>> tplot('mms1_defeph_pos')
 

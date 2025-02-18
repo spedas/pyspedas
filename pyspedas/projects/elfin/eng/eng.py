@@ -97,7 +97,7 @@ def eng_load(trange=['2022-08-19', '2022-08-19'],
     Examples
     ----------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> elf_vars = pyspedas.projects.elfin.eng(probe='a', trange=['2022-08-19', '2022-08-19'])
     >>> tplot('ela_fc_chassis_temp')
 

@@ -94,7 +94,7 @@ def xep(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> xep_vars = pyspedas.projects.erg.xep(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_xep_l2_FEDO_SSD')
 

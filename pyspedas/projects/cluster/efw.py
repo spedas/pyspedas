@@ -89,7 +89,7 @@ def efw(trange:List[str]=['2018-11-5', '2018-11-6'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> efw_vars = pyspedas.projects.cluster.efw(trange=['2003-11-01','2003-11-02'],probe=['2'])
     >>> tplot('E_pow_f1__C2_PP_EFW')
     """

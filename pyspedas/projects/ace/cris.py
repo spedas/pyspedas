@@ -95,7 +95,7 @@ def cris(trange=['2018-11-5', '2018-11-6'],
     ----------
 
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> cris_vars = pyspedas.projects.ace.cris(trange=['2018-11-5', '2018-11-6'])
         >>> tplot(['flux_B', 'flux_C', 'flux_N', 'flux_O', 'flux_F', 'flux_Ne'])
 

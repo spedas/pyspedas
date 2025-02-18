@@ -101,7 +101,7 @@ def gmag_mm210(
     Examples
     ________
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> mm210_vars=pyspedas.projects.erg.gmag_mm210(trange=["2005-01-01", "2005-01-02"],site='adl',datatype='1min')
     >>> tplot('mm210_mag_adl_1min_hdz')
 

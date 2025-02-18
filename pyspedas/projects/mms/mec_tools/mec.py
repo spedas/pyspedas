@@ -114,7 +114,7 @@ def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
     -------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> mec_data = pyspedas.projects.mms.mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1')
     >>> tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 

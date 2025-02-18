@@ -91,7 +91,7 @@ def threedp(trange=['1999-11-5', '1999-11-6'],
     --------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> vars = pyspedas.projects.wind.threedp(trange=['1999-11-5', '1999-11-6'],datatype='3dp_emfits_e0')
     >>> tplot(vars)
     """

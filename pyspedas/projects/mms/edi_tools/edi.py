@@ -107,7 +107,7 @@ def mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1', data_rate='srvy
     -------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> edi_vars = pyspedas.projects.mms.mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1')
     >>> tplot('mms1_edi_e_gse_srvy_l2')
 

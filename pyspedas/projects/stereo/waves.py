@@ -81,7 +81,7 @@ def waves(trange=['2013-11-5', '2013-11-6'],
     Example:
     ----------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> hfr_vars = pyspedas.projects.stereo.waves(trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['PSD_FLUX'])
 

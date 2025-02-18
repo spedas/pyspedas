@@ -211,7 +211,7 @@ class CDAWeb:
         Examples
         --------
         >>> from pyspedas import CDAWeb
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> cdaweb_obj = CDAWeb()
         >>> urllist = cdaweb_obj.get_filenames(['THB_L2_FIT (2007-02-26 to 2020-01-17)'], '2010-01-01 00:00:00', '2010-01-10 00:00:00')
         >>> result = cdaweb_obj.cda_download(urllist,local_dir="/tmp")

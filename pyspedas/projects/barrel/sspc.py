@@ -65,7 +65,7 @@ def sspc(trange=['2013-01-28', '2013-01-29'],
     Example:
     ----------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> pyspedas.projects.barrel.fspc(trange=['2013-01-17', '2013-01-19'], probe='1D')
         >>> tplot('brl1D_FSPC1')
 

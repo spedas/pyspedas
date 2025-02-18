@@ -83,7 +83,7 @@ def epac(trange:List[str]=['1996-01-01', '1996-01-02'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> epac_vars = pyspedas.projects.ulysses.epac(trange=['1996-01-01', '1996-01-02'])
     >>> tplot('Omni_Protons')
 

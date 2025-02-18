@@ -89,7 +89,7 @@ def whi(trange:List[str]=['2012-11-5', '2012-11-6'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> whi_vars = pyspedas.projects.cluster.whi(trange=['2003-11-01','2003-11-02'],probe=['1','2'])
     >>> tplot(['N_e_res__C1_PP_WHI','E_pow_f4__C1_PP_WHI','N_e_res__C2_PP_WHI','E_pow_f4__C2_PP_WHI'])
 

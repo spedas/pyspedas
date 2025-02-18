@@ -101,7 +101,7 @@ def pwe_efd(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> pwe_efd_vars = pyspedas.projects.erg.pwe_efd(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_pwe_efd_l2_E_spin_Eu_dsi')
 

@@ -76,7 +76,7 @@ def fit(trange=['2007-03-23', '2007-03-24'],
     Example
     -------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> fit_vars = pyspedas.projects.themis.fit(probe='d', trange=['2013-11-05', '2013-11-06'])
         >>> tplot(['thd_fgs_gse', 'thd_efs_dot0_gse'])
 

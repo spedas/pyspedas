@@ -76,7 +76,7 @@ def esa(trange=['2007-03-23', '2007-03-24'],
     Example
     -------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> esa_vars = pyspedas.projects.themis.esa(probe='d', trange=['2013-11-5', '2013-11-6'])
         >>> tplot(['thd_peif_density', 'thd_peif_vthermal'])
 

@@ -27,13 +27,13 @@ def interpol(
 
     Examples
     --------
-        >>> import pytplot
+        import pyspedas
         >>> import pyspedas
         >>> x1 = [0, 4, 8, 12]
-        >>> time1 = [pytplot.time_float("2020-01-01") + i for i in x1]
+        >>> time1 = [pyspedas.time_float("2020-01-01") + i for i in x1]
         >>> x2=[0, 2, 4, 6, 8, 10, 12]
         >>> y1=[10, 20, 30, 40]
-        >>> time2 = [pytplot.time_float("2020-01-01") + i for i in x2]
+        >>> time2 = [pyspedas.time_float("2020-01-01") + i for i in x2]
         >>> pyspedas.interpol(y1, time1, time2)
     """
     if isinstance(data, list):

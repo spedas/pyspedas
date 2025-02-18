@@ -87,7 +87,7 @@ def esd(trange=['2021-03-23', '2021-03-24'],
     Example
     -------
         >>> import pyspedas
-        >>> from pytplot import tplot
+        >>> from pyspedas import tplot
         >>> esd_var = pyspedas.projects.themis.esd(probe='a', trange=['2023-11-5', '2023-11-6'], datatype='peer')
         >>> tplot(['eflux', 'data_quality'])
 

@@ -109,7 +109,7 @@ def orb(
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> orb_vars = pyspedas.projects.erg.orb(trange=['2017-03-27', '2017-03-28'])
     >>> tplot('erg_orb_l2_pos_gse')
 

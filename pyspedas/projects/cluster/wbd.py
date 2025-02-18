@@ -86,7 +86,7 @@ def wbd(trange:List[str]=['2003-11-01/14:00:00','2003-11-01/14:05:00'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> wbd_vars = pyspedas.projects.cluster.wbd(trange=['2003-11-01/14:00:00','2003-11-01/14:05:00'],probe=['1'])
     >>> # Note lack of probe IDs in the variables loaded -- only load one probe at a time
     >>> tplot('WBD_Elec')

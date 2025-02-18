@@ -740,7 +740,7 @@ def load(
 
     Examples
     --------
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> from pyspedas import kompsat_load
 
     >>> # Plot L2 magnetometer data

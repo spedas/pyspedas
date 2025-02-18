@@ -88,7 +88,7 @@ def aspoc(trange:List[str]=['2003-11-5', '2003-11-6'],
     Examples
     --------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> aspoc_vars=pyspedas.projects.cluster.aspoc(trange=['2003-11-05','2003-11-06'],probe=['1','2'])
     >>> tplot(['I_ion__C1_PP_ASP','I_ion__C2_PP_ASP'])
 

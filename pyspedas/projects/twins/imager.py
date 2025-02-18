@@ -82,7 +82,7 @@ def imager(trange=['2018-11-5', '2018-11-6'],
     --------
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> img_vars = pyspedas.projects.twins.imager(trange=['2018-11-5', '2018-11-6'])
     >>> tplot('smooth_image_val')
 

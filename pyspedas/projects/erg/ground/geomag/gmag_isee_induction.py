@@ -95,7 +95,7 @@ def gmag_isee_induction(
     ________
 
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> ind_vars=pyspedas.projects.erg.gmag_isee_induction(trange=['2020-08-01','2020-08-02'], site='all')
     >>> tplot('isee_induction_db_dt_msr')
     """

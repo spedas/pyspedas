@@ -86,7 +86,7 @@ def mrma_load(trange=['2022-08-19', '2022-08-19'],
     Example
     ----------
     >>> import pyspedas
-    >>> from pytplot import tplot
+    >>> from pyspedas import tplot
     >>> mrma_vars = pyspedas.projects.elfin.mrma(probe='a', trange=['2022-08-19', '2022-08-19'])
     >>> tplot('ela_mrma')
 
