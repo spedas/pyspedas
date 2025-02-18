@@ -1,4 +1,4 @@
-Copyright (c) 2017-2022 UC Regents, unless otherwise indicated
+Copyright (c) 2017-2025 Regents of the University of California, unless otherwise indicated
 
 All rights reserved.
 
