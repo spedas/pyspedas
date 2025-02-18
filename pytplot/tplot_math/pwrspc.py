@@ -47,7 +47,7 @@ def pwrspc(time, quantity, noline=False, nohanning=False, bin=3, notperhz=False)
     --------
 
         >>> # Compute the power spectrum of a given time series
-        >>> from pytplot import pwrspc
+        >>> from pyspedas import pwrspc
         >>> time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         >>> quantity = [1,2,3,1,2,3,1,2,3,1]
         >>> freq, power = pwrspc(time, quantity)

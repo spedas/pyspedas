@@ -49,11 +49,11 @@ def format_sandbox(option, value):
 
     Examples:
         >>> # Set the plot title
-        >>> import pytplot
-        >>> pytplot.tplot_options('title', 'SWEA Data for Orbit 1563')
+        >>> import pyspedas
+        >>> pyspedas.tplot_options('title', 'SWEA Data for Orbit 1563')
 
         >>> # Set the window size
-        >>> pytplot.tplot_options('wsize', [1000,500])
+        >>> pyspedas.tplot_options('wsize', [1000,500])
 
     """
     option = option.lower()

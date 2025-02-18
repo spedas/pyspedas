@@ -22,8 +22,8 @@ def timestamp(val):
     Examples
     --------
          >>> # Turn on the timestamp
-         >>> import pytplot
-         >>> pytplot.timestamp('on')
+         >>> import pyspedas
+         >>> pyspedas.timestamp('on')
     """
 
     if val == 'on':

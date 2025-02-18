@@ -27,11 +27,11 @@ def get_ylimits(name, trg=None):
 
     Examples
     --------
-    >>> import pytplot
+    >>> import pyspedas
     >>> x_data = [1, 2, 3, 4, 5]
     >>> y_data = [1, 2, 3, 4, 5]
-    >>> pytplot.store_data("Variable1", data={'x': x_data, 'y': y_data})
-    >>> y1, y2 = pytplot.get_ylimits("Variable1")
+    >>> pyspedas.store_data("Variable1", data={'x': x_data, 'y': y_data})
+    >>> y1, y2 = pyspedas.get_ylimits("Variable1")
     """
 
     if isinstance(name, int):

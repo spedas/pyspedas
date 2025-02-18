@@ -27,8 +27,8 @@ def tplot_copy(old_name, new_name):
     Examples
     --------
         >>> # Copy Variable 1 into a new Variable 2
-        >>> import pytplot
-        >>> pytplot.tplot_copy("Variable1", "Variable2")
+        >>> import pyspedas
+        >>> pyspedas.tplot_copy("Variable1", "Variable2")
 
     """
 

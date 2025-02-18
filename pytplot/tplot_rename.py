@@ -25,8 +25,8 @@ def tplot_rename(old_name, new_name):
     Examples
     --------
         >>> # Rename Variable 1 to Variable 2
-        >>> import pytplot
-        >>> pytplot.tplot_rename("Variable1", "Variable2")
+        >>> import pyspedas
+        >>> pyspedas.tplot_rename("Variable1", "Variable2")
 
     """
 

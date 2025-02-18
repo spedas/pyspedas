@@ -26,11 +26,11 @@ def xlim(min, max):
     Examples:
     ---------
         >>> # Set the timespan to be 2017-07-17 00:00:00 plus 1 day
-        >>> import pytplot
-        >>> pytplot.xlim(1500249600, 1500249600 + 86400)
+        >>> import pyspedas
+        >>> pyspedas.xlim(1500249600, 1500249600 + 86400)
         
         >>> # The same as above, but using different inputs
-        >>> pytplot.xlim("2017-07-17 00:00:00", "2017-07-18 00:00:00")
+        >>> pyspedas.xlim("2017-07-17 00:00:00", "2017-07-18 00:00:00")
 
     """
     if not isinstance(min, (int, float, complex)):

@@ -27,11 +27,11 @@ def get_timespan(name):
     Examples
     --------
         >>> # Retrieve the time span from Variable 1
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> time1, time2 = pytplot.get_timespan("Variable1")
+        >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> time1, time2 = pyspedas.get_timespan("Variable1")
 
     """
     

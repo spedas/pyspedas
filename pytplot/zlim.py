@@ -28,12 +28,12 @@ def zlim(name, min, max):
     Examples
     --------
         >>> # Change the z range of Variable1 
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3]
         >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
         >>> v_data = [1,2,3]
-        >>> pytplot.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
-        >>> pytplot.zlim('Variable1', 2, 3)
+        >>> pyspedas.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+        >>> pyspedas.zlim('Variable1', 2, 3)
 
     """
     if name not in pytplot.data_quants.keys():

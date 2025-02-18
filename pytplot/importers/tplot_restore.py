@@ -32,8 +32,8 @@ def tplot_restore(filename):
     
     Examples:
         >>> # Restore the saved data from the tplot_save example
-        >>> import pytplot
-        >>> pytplot.tplot_restore('C:/temp/variable1.pytplot')
+        >>> import pyspedas
+        >>> pyspedas.tplot_restore('C:/temp/variable1.pytplot')
 
     """
     

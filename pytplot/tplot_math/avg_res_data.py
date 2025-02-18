@@ -33,9 +33,9 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
     --------
 
         >>> #Average the data over every two seconds
-        >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
-        >>> pytplot.avg_res_data('d',2,'d2res')
-        >>> print(pytplot.data_quants['d'].values)
+        >>> pyspedas.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
+        >>> pyspedas.avg_res_data('d',2,'d2res')
+        >>> print(pyspedas.data_quants['d'].values)
     """
 
     # new_tvar is deprecated in favor of newname

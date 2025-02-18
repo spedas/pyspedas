@@ -25,12 +25,12 @@ def tplot_save(names, filename=None):
     
     Examples:
         >>> # Save a single tplot variable
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> pytplot.ylim('Variable1', 2, 4)
-        >>> pytplot.save('Variable1', filename='C:/temp/variable1.pytplot')
+        >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.ylim('Variable1', 2, 4)
+        >>> pyspedas.save('Variable1', filename='C:/temp/variable1.pytplot')
 
     """
     if isinstance(names,int):

@@ -24,7 +24,7 @@ def wildcard_expand(master_list, patterns, case_sensitive=True):
     Examples
     --------
 
-    >>> from pytplot import wildcard_expand
+    >>> from pyspedas import wildcard_expand
     >>> master_list = ['mms1_mec_r_sm', 'mms2_mec_r_sm', 'mms3_mec_r_gsm', 'tha_pos_gsm']
     >>> wildcard_expand(master_list,'*')
     ['mms1_mec_r_sm', 'mms2_mec_r_sm', 'mms3_mec_r_gsm', 'tha_pos_gsm']

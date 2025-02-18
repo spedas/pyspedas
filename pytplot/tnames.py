@@ -28,12 +28,12 @@ def tnames(pattern=None, regex=None):
 
     Examples
     -------
-        >>> import pytplot
+        >>> import pyspedas
         >>> import pyspedas
         >>> from pyspedas.projects.themis import fgm
         >>> fgm(trange=['2007-03-23','2007-03-24'], probe='a')
-        >>> pytplot.tnames('tha_fgs*')
-        >>> pytplot.tnames('th?_fgs_gsm')
+        >>> pyspedas.tnames('tha_fgs*')
+        >>> pyspedas.tnames('th?_fgs_gsm')
     """
     name_list = list()
     all_names = tplot_names(quiet=True)

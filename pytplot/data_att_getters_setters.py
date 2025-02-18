@@ -220,7 +220,7 @@ def get_units(name):
         >>> import pytplot
         >>> from pyspedas import themis
         >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
-        >>> pytplot.get_units('tha_pos')
+        >>> pyspedas.get_units('tha_pos')
     """
 
     return get_any(name,'units')
@@ -254,7 +254,7 @@ def set_units(name, units):
         >>> import pytplot
         >>> from pyspedas import themis
         >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
-        >>> pytplot.set_units('tha_pos', 're')
+        >>> pyspedas.set_units('tha_pos', 're')
     """
 
     # check that the variable exists

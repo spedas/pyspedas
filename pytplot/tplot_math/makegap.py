@@ -33,13 +33,13 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
     Examples
     --------
 
-        >>> import pytplot
-        >>> time = [pytplot.time_float("2020-01-01") + i for i in [1, 2, 3, 4, 5, 6, 9, 10, 11]]
+        >>> import pyspedas
+        >>> time = [pyspedas.time_float("2020-01-01") + i for i in [1, 2, 3, 4, 5, 6, 9, 10, 11]]
         >>> y = [1, 2, 3, 4, 5, 6, 9, 10, 11]
-        >>> pytplot.store_data("a", data={"x": time, "y": y})
-        >>> a = pytplot.get_data("a")
+        >>> pyspedas.store_data("a", data={"x": time, "y": y})
+        >>> a = pyspedas.get_data("a")
         >>> print(a)
-        >>> b = pytplot.makegap(a)
+        >>> b = pyspedas.makegap(a)
         >>> print(b)
 
     """

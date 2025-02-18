@@ -25,11 +25,11 @@ def ylim(name, min, max):
     Examples
     --------
         >>> # Change the y range of Variable1 
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> pytplot.ylim('Variable1', 2, 4)
+        >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.ylim('Variable1', 2, 4)
 
     """
     if name not in pytplot.data_quants.keys():

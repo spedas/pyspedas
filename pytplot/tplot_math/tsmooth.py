@@ -35,9 +35,9 @@ def smooth(data, width=10, preserve_nans=None):
     
     Example
     -------
-        >>> import pytplot
+        >>> import pyspedas
         >>> import numpy as np
-        >>> print(pytplot.smooth(np.random.random(100)))
+        >>> print(pyspedas.smooth(np.random.random(100)))
 
     """
     result = data.copy()
@@ -100,10 +100,10 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
 
     Example
     -------
-        >>> import pytplot
+        >>> import pyspedas
         >>> import numpy as np
-        >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
-        >>> pytplot.tsmooth('a')
+        >>> pyspedas.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
+        >>> pyspedas.tsmooth('a')
         >>> print(pytplot.data_quants['a-s'].data)
     """
     old_names = pytplot.tnames(names)

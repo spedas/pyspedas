@@ -25,11 +25,11 @@ def timespan(t1, dt, keyword="days"):
     Examples
     --------
     >>> # Set the timespan to be 2017-07-17 00:00:00 plus 1 day
-    >>> import pytplot
-    >>> pytplot.timespan(1500249600, 1)
+    >>> import pyspedas
+    >>> pyspedas.timespan(1500249600, 1)
 
     >>> # The same as above, but using different inputs
-    >>> pytplot.timespan("2017-07-17 00:00:00", 24, keyword='hours')
+    >>> pyspedas.timespan("2017-07-17 00:00:00", 24, keyword='hours')
     """
 
     if keyword == "days":

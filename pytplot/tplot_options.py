@@ -54,8 +54,8 @@ def tplot_options(option, value):
     Examples
     --------
         >>> # Set the plot title
-        >>> import pytplot
-        >>> pytplot.tplot_options('title', 'SWEA Data for Orbit 1563')
+        >>> import pyspedas
+        >>> pyspedas.tplot_options('title', 'SWEA Data for Orbit 1563')
     
     """
     

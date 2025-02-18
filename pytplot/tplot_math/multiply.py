@@ -26,13 +26,13 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
     --------
         >>> x1 = [0, 4, 8, 12, 16]
         >>> x2 = [0, 4, 8, 12, 16, 19, 21]
-        >>> time1 = [pytplot.time_float("2020-01-01") + i for i in x1]
-        >>> time2 = [pytplot.time_float("2020-01-01") + i for i in x2]
-        >>> pytplot.store_data("a", data={"x": time1, "y": [1, 2, 3, 4, 5]})
-        >>> pytplot.store_data("c", data={"x": time2, "y": [1, 4, 1, 7, 1, 9, 1]})
-        >>> n = pytplot.multiply("a", "c", newname="a_x_c")
+        >>> time1 = [pyspedas.time_float("2020-01-01") + i for i in x1]
+        >>> time2 = [pyspedas.time_float("2020-01-01") + i for i in x2]
+        >>> pyspedas.store_data("a", data={"x": time1, "y": [1, 2, 3, 4, 5]})
+        >>> pyspedas.store_data("c", data={"x": time2, "y": [1, 4, 1, 7, 1, 9, 1]})
+        >>> n = pyspedas.multiply("a", "c", newname="a_x_c")
         >>> print('new tplot variable:', n)
-        >>> ac = pytplot.get_data(n)
+        >>> ac = pyspedas.get_data(n)
         >>> print(ac)
     """
     # new_tvar is deprecated in favor of newname

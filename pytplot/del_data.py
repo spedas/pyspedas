@@ -25,8 +25,8 @@ def del_data(name=None):
     Examples
     --------
         >>> # Delete Variable 1
-        >>> import pytplot
-        >>> pytplot.del_data("Variable1")
+        >>> import pyspedas
+        >>> pyspedas.del_data("Variable1")
 
     """
     if name is None:

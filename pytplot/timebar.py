@@ -36,16 +36,16 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
     Examples
     --------
     >>> # Place a green time bar at 2017-07-17 00:00:00
-    >>> import pytplot
-    >>> pytplot.timebar(1500249600, color='green')
+    >>> import pyspedas
+    >>> pyspedas.timebar(1500249600, color='green')
 
     >>> # Place a dashed data bar at 5500 on the y axis
-    >>> pytplot.timebar(5500, dash=True, databar=True)
+    >>> pyspedas.timebar(5500, dash=True, databar=True)
 
     >>> # Place 3 magenta time bars of thickness 5
     >>> # at [2015-12-26 05:20:01, 2015-12-26 08:06:40, 2015-12-26 08:53:19]
     >>> # for variable 'sgx' plot
-    >>> pytplot.timebar([1451107201,1451117200,1451119999],'sgx',color='m',thick=5)
+    >>> pyspedas.timebar([1451107201,1451117200,1451119999],'sgx',color='m',thick=5)
     """
 
     # make sure t entered is a list

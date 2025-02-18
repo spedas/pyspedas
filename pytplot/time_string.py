@@ -23,7 +23,7 @@ def time_string_one(float_time=None, fmt=None):
 
     Examples
     --------
-    >>> from pytplot import time_string_one
+    >>> from pyspedas import time_string_one
     >>> time_string_one(1679745600.0)
     '2023-03-25 12:00:00.000000'
 
@@ -111,7 +111,7 @@ def time_datetime(time=None, tz=None):
 
     Examples
     --------
-    >>> from pytplot import time_datetime
+    >>> from pyspedas import time_datetime
     >>> from datetime import timezone, timedelta
     >>> time_datetime(1679745600.0)
     # or

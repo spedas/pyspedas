@@ -23,7 +23,7 @@ def time_float_one(s_time=None):
 
     Examples
     --------
-    >>> from pytplot import time_float_one
+    >>> from pyspedas import time_float_one
     >>> time_float_one('2023-03-25 12:00:00')
     1679745600.0
 
@@ -61,7 +61,7 @@ def time_float(str_time=None):
 
     Examples
     --------
-    >>> from pytplot import time_float
+    >>> from pyspedas import time_float
     >>> time_float(['2023-03-25 12:00:00', '2023-03-26 12:00:00'])
     [1679745600.0, 1679832000.0]
 
@@ -108,7 +108,7 @@ def time_double(str_time=None):
 
     Examples
     --------
-    >>> from pytplot import time_double
+    >>> from pyspedas import time_double
     >>> time_double(['2023-03-25 12:00:00', '2023-03-26 12:00:00'])
     [1679745600.0, 1679832000.0]
 

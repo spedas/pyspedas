@@ -23,11 +23,11 @@ def replace_data(tplot_name, new_data):
     Examples
     --------
     >>> # Replace data into an existing variable
-    >>> import pytplot
-    >>> pytplot.store_data("v1", data={'x':[1,2,3,4],'y':[1,2,3,4]})
-    >>> print(pytplot.get_data('v1'))
-    >>> pytplot.replace_data("v1",[5,6,7,8])
-    >>> print(pytplot.get_data('v1'))
+    >>> import pyspedas
+    >>> pyspedas.store_data("v1", data={'x':[1,2,3,4],'y':[1,2,3,4]})
+    >>> print(pyspedas.get_data('v1'))
+    >>> pyspedas.replace_data("v1",[5,6,7,8])
+    >>> print(pyspedas.get_data('v1'))
     """
 
     # if old name input is a number, convert to corresponding name

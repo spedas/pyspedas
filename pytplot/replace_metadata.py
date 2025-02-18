@@ -23,9 +23,9 @@ def replace_metadata(tplot_name, new_metadata):
     Examples
     --------
     >>> # Copy Variable 1 metadata into Variable 2, which must already exist
-    >>> import pytplot
-    >>> meta = pytplot_get_data('Variable1', metadata=True)
-    >>> pytplot.replace_metadata("Variable2", meta)
+    >>> import pyspedas
+    >>> meta = pyspedas.get_data('Variable1', metadata=True)
+    >>> pyspedas.replace_metadata("Variable2", meta)
     """
 
     # if old name input is a number, convert to corresponding name

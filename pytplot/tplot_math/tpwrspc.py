@@ -55,11 +55,11 @@ def tpwrspc(varname, newname=None, overwrite=False, noline=False, nohanning=Fals
     
     Examples
     --------
-        >>> import pytplot
+        >>> import pyspedas
         >>> import numpy as np
-        >>> pytplot.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
-        >>> pytplot.tpwrspc('a')
-        >>> pytplot.get_data('a_pwrspc')
+        >>> pyspedas.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
+        >>> pyspedas.tpwrspc('a')
+        >>> pyspedas.get_data('a_pwrspc')
     """
 
     # Check if the variable exists

@@ -66,28 +66,28 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     Examples
     --------
         >>> # Store a single line
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
     
         >>> # Store two lines
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
-        >>> pytplot.store_data("Variable2", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.store_data("Variable2", data={'x':x_data, 'y':y_data})
         
         >>> # Store a spectrogram
         >>> x_data = [1,2,3]
         >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
         >>> v_data = [1,2,3]
-        >>> pytplot.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+        >>> pyspedas.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
         
         >>> # Combine two different line plots
-        >>> pytplot.store_data("Variable1and2", data=['Variable1', 'Variable2'])
+        >>> pyspedas.store_data("Variable1and2", data=['Variable1', 'Variable2'])
         
         >>> #Rename TVar
-        >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-        >>> pytplot.store_data('a',newname='f')
+        >>> pyspedas.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+        >>> pyspedas.store_data('a',newname='f')
 
     """
     
@@ -503,28 +503,28 @@ def store(name, data=None, delete=False, newname=None, metadata={}):
 
     Examples:
         >>> # Store a single line
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.store("Variable1", data={'x':x_data, 'y':y_data})
 
         >>> # Store a two lines
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
-        >>> pytplot.store("Variable2", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.store("Variable2", data={'x':x_data, 'y':y_data})
 
         >>> # Store a spectrogram
         >>> x_data = [1,2,3]
         >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
         >>> v_data = [1,2,3]
-        >>> pytplot.store("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+        >>> pyspedas.store("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
 
         >>> # Combine two different line plots
-        >>> pytplot.store("Variable1and2", data=['Variable1', 'Variable2'])
+        >>> pyspedas.store("Variable1and2", data=['Variable1', 'Variable2'])
 
         >>> #Rename TVar
-        >>> pytplot.store('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-        >>> pytplot.store('a',newname='f')
+        >>> pyspedas.store('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+        >>> pyspedas.store('a',newname='f')
     """
     return store_data(name, data=data, delete=delete, newname=newname, attr_dict=metadata)
 

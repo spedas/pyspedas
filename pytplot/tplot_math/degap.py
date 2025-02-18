@@ -47,12 +47,12 @@ def degap(
     Examples
     --------
 
-        >>> import pytplot
-        >>> time = [pytplot.time_float("2020-01-01") + i for i in [1, 2, 3, 4, 5, 6, 9, 10, 11]]
+        >>> import pyspedas
+        >>> time = [pyspedas.time_float("2020-01-01") + i for i in [1, 2, 3, 4, 5, 6, 9, 10, 11]]
         >>> y = [1, 2, 3, 4, 5, 6, 9, 10, 11]
-        >>> pytplot.store_data("a", data={"x": time, "y": y})
+        >>> pyspedas.store_data("a", data={"x": time, "y": y})
         >>> degap("a", newname="b")
-        >>> b = pytplot.get("b")
+        >>> b = pyspedas.get("b")
         >>> print(b)
     """
 

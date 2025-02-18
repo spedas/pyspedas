@@ -35,12 +35,12 @@ def pwr_spec(tvar, nbp=256, nsp=128, newname=None):
 
     Examples
     --------
-        >>> import pytplot
+        >>> import pyspedas
         >>> import math
-        >>> time = [pytplot.time_float("2020-01-01") + i for i in range(10000)]
+        >>> time = [pyspedas.time_float("2020-01-01") + i for i in range(10000)]
         >>> quantity = [math.sin(i) for i in range(10000)]
-        >>> pytplot.store_data("dp", data={"x": time, "y": quantity})
-        >>> pytplot.pwr_spec("dp", newname="dp_pwrspec")
+        >>> pyspedas.store_data("dp", data={"x": time, "y": quantity})
+        >>> pyspedas.pwr_spec("dp", newname="dp_pwrspec")
         >>> pytplot.tplot("dp_pwrspec")
     """
 

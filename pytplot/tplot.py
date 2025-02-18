@@ -119,25 +119,25 @@ def tplot(name,
     Examples
     --------
         >>> #Plot a single line in bokeh
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [2,3,4,5,6]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> pytplot.tplot("Variable1",bokeh=True)
+        >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.tplot("Variable1",bokeh=True)
 
         >>> #Display two plots
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
-        >>> pytplot.store_data("Variable2", data={'x':x_data, 'y':y_data})
-        >>> pytplot.tplot(["Variable1", "Variable2"])
+        >>> pyspedas.store_data("Variable2", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.tplot(["Variable1", "Variable2"])
 
         >>> #Display 2 plots, using Variable1 as another x axis
         >>> x_data = [1,2,3]
         >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
         >>> v_data = [1,2,3]
-        >>> pytplot.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
-        >>> pytplot.options("Variable3", 'spec', 1)
-        >>> pytplot.tplot(["Variable2", "Variable3"], var_label='Variable1')
+        >>> pyspedas.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+        >>> pyspedas.options("Variable3", 'spec', 1)
+        >>> pyspedas.tplot(["Variable2", "Variable3"], var_label='Variable1')
 
     """
     # If no tplot names were provided, exit

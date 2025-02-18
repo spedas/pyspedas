@@ -34,9 +34,9 @@ def subtract(
 
     Examples
     --------
-        >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-        >>> pytplot.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
-        >>> pytplot.subtract('a','c',new_tvar='a-c')
+        >>> pyspedas.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+        >>> pyspedas.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
+        >>> pyspedas.subtract('a','c',new_tvar='a-c')
         >>> print(pytplot.data_quants['a-c'].data)
     """
 

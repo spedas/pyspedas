@@ -28,8 +28,8 @@ def tlimit(arg=None, full=False, last=False):
 
     Examples
     --------
-    >>> import pytplot
-    >>> pytplot.tlimit(['2023/03/24/', '2023/03/25'])
+    >>> import pyspedas
+    >>> pyspedas.tlimit(['2023/03/24/', '2023/03/25'])
 
     """
 

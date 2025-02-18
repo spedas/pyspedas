@@ -28,8 +28,8 @@ def flatten(tvar, range=None, newname=None, new_tvar=None):
     Examples
     --------
         >>> # Divide each column by the average of the data between times 8 and 14
-        >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
-        >>> pytplot.flatten('d',[8,14],'d_flatten')
+        >>> pyspedas.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
+        >>> pyspedas.flatten('d',[8,14],'d_flatten')
         >>> print(pytplot.data_quants['d_flatten'].values)
     """
     # new_tvar is deprecated in favor of newname

@@ -19,12 +19,12 @@ def count_traces(tvar):
 
     Examples
     --------
-        >>> import pytplot
-        >>> pytplot.store_data('a', data={'x': range(10), 'y': range(10)})
-        >>> pytplot.store_data('b', data={'x': range(10), 'y': range(10)})
-        >>> pytplot.store_data('pseudovar', data=['a','b'])
-        >>> pytplot.count_traces('a')  # 1
-        >>> pytplot.count_traces('pseudovar') # 2
+        >>> import pyspedas
+        >>> pyspedas.store_data('a', data={'x': range(10), 'y': range(10)})
+        >>> pyspedas.store_data('b', data={'x': range(10), 'y': range(10)})
+        >>> pyspedas.store_data('pseudovar', data=['a','b'])
+        >>> pyspedas.count_traces('a')  # 1
+        >>> pyspedas.count_traces('pseudovar') # 2
 
     """
     trace_count = 0

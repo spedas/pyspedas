@@ -73,15 +73,15 @@ def netcdf_to_tplot(
     --------
     Create tplot variables from a GOES netCDF file:
 
-    >>> import pytplot
+    >>> import pyspedas
     >>> file = "/Users/user_name/goes_files/g15_epead_a16ew_1m_20171201_20171231.nc"
-    >>> pytplot.netcdf_to_tplot(file, prefix='mvn_')
+    >>> pyspedas.netcdf_to_tplot(file, prefix='mvn_')
 
     Add a prefix, and plot immediately:
 
-    >>> import pytplot
+    >>> import pyspedas
     >>> file = "/Users/user_name/goes_files/g15_epead_a16ew_1m_20171201_20171231.nc"
-    >>> pytplot.netcdf_to_tplot(file, prefix='goes_prefix_', plot=True)
+    >>> pyspedas.netcdf_to_tplot(file, prefix='goes_prefix_', plot=True)
     """
 
     stored_variables = []

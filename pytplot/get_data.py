@@ -55,12 +55,12 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
     Examples
     --------
         >>> # Retrieve the data from Variable 1
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> time, data = pytplot.get_data("Variable1")
-        >>> metadata = pytplot.get_data("Variable1", metadata=True)
+        >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> time, data = pyspedas.get_data("Variable1")
+        >>> metadata = pyspedas.get_data("Variable1", metadata=True)
 
     """
 
@@ -186,11 +186,11 @@ def get(name, xarray=False, metadata=False, dt=True, units=True):
 
     Examples:
         >>> # Retrieve the data from Variable 1
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store("Variable1", data={'x':x_data, 'y':y_data})
-        >>> time, data = pytplot.get("Variable1")
+        >>> pyspedas.store("Variable1", data={'x':x_data, 'y':y_data})
+        >>> time, data = pyspedas.get("Variable1")
 
     """
     return get_data(name, xarray=xarray, metadata=metadata, dt=dt, units=units)

@@ -19,12 +19,12 @@ def is_pseudovariable(tvar):
 
     Example
     ----------
-        >>> import pytplot
-        >>> pytplot.store_data('a', data={'x': range(10), 'y': range(10)})
-        >>> pytplot.store_data('b', data={'x': range(10), 'y': range(10)})
-        >>> pytplot.store_data('pseudovar', data=['a','b'])
-        >>> pytplot.is_pseudovariable('a')  # False
-        >>> pytplot.is_pseudovariable('pseudo') # True
+        >>> import pyspedas
+        >>> pyspedas.store_data('a', data={'x': range(10), 'y': range(10)})
+        >>> pyspedas.store_data('b', data={'x': range(10), 'y': range(10)})
+        >>> pyspedas.store_data('pseudovar', data=['a','b'])
+        >>> pyspedas.is_pseudovariable('a')  # False
+        >>> pyspedas.is_pseudovariable('pseudo') # True
 
     """
     pseudo_var = False

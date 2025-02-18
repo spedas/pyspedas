@@ -21,10 +21,10 @@ def tplot_names(quiet=False):
             
     Examples
     --------
-        >>> import pytplot
+        >>> import pyspedas
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
-        >>> pytplot.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
         >>> tnames = pyplot.tplot_names()
         0 : Variable 1
 

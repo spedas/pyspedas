@@ -43,9 +43,9 @@ def subtract_average(
 
     Examples
     --------
-        >>> pytplot.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
-        >>> pytplot.subtract_average('a')
-        >>> pytplot.tplot(['a','a-d'])
+        >>> pyspedas.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
+        >>> pyspedas.subtract_average('a')
+        >>> pyspedas.tplot(['a','a-d'])
 
     """
 

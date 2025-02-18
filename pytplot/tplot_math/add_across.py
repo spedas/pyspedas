@@ -35,14 +35,14 @@ def add_across(tvar,column_range=None,newname=None,new_tvar=None):
     --------
 
         >>> #Add across every column in the data
-        >>> pytplot.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
-        >>> pytplot.add_across('d',newname='d_aa')
+        >>> pyspedas.store_data('d', data={'x':[2,5,8,11,14,17,21], 'y':[[1,1,50],[2,2,3],[100,4,47],[4,90,5],[5,5,99],[6,6,25],[7,7,-5]]})
+        >>> pyspedas.add_across('d',newname='d_aa')
         >>> print(pytplot.data_quants['d_aa'].data)
 
         >>> #Add across specific columns in the data
-        >>> pytplot.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
-        >>> pytplot.add_across('b',column_range=[[1,2],[3,4]],newname='b_aap')
-        >>> print(pytplot.data_quants['b_aap'].data)
+        >>> pyspedas.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
+        >>> pyspedas.add_across('b',column_range=[[1,2],[3,4]],newname='b_aap')
+        >>> print(pyspedas.data_quants['b_aap'].data)
     """
 
     # new_tvar is deprecated in favor of newname

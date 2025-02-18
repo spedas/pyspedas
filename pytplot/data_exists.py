@@ -18,9 +18,9 @@ def data_exists(tvar):
 
     Example
     ----------
-        >>> import pytplot
-        >>> pytplot.store_data('a', data={'x': range(10), 'y': range(10)})
-        >>> pytplot.data_exists('a')
+        >>> import pyspedas
+        >>> pyspedas.store_data('a', data={'x': range(10), 'y': range(10)})
+        >>> pyspedas.data_exists('a')
 
     """
     if tvar in pytplot.data_quants.keys():

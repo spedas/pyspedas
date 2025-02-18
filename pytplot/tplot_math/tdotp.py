@@ -26,16 +26,16 @@ def tdotp(variable1, variable2, newname=None):
     --------
 
         >>> # Compute the dot products of a given time series
-        >>> import pytplot
+        >>> import pyspedas
         >>> x1 = [0, 4, 8]
         >>> x2 = [0, 4, 8]
-        >>> time1 = [pytplot.time_float("2020-01-01") + i for i in x1]
-        >>> time2 = [pytplot.time_float("2020-01-01") + i for i in x2]
-        >>> pytplot.store_data("a", data={"x": time1, "y": [[1, 2, 3],[2, 3, 4],[3, 4, 5]]})
-        >>> pytplot.store_data("c", data={"x": time2, "y": [[1, 4, 1],[2, 5, 2],[3, 5, 3]]})
-        >>> n = pytplot.tdotp("a", "c", newname="a_dot_c")
+        >>> time1 = [pyspedas.time_float("2020-01-01") + i for i in x1]
+        >>> time2 = [pyspedas.time_float("2020-01-01") + i for i in x2]
+        >>> pyspedas.store_data("a", data={"x": time1, "y": [[1, 2, 3],[2, 3, 4],[3, 4, 5]]})
+        >>> pyspedas.store_data("c", data={"x": time2, "y": [[1, 4, 1],[2, 5, 2],[3, 5, 3]]})
+        >>> n = pyspedas.tdotp("a", "c", newname="a_dot_c")
         >>> print('new tplot variable:', n)
-        >>> ac = pytplot.get_data(n)
+        >>> ac = pyspedas.get_data(n)
         >>> print(ac)
 
     """
