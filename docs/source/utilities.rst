@@ -48,10 +48,6 @@ Matrix/Vector Operations
 .. autofunction:: pyspedas.tnormalize
 .. autofunction:: pyspedas.tvector_rotate
 
-
-Quaternion Operations
-----------------------
-
 Data Cleanup Operations
 ------------------------
 

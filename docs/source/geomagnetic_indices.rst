@@ -6,6 +6,7 @@ The routines described in this section can be used to load several sets of geoma
 Kyoto Dst
 ---------
 .. autofunction:: pyspedas.projects.kyoto.dst
+   :no-index:
 
 Example
 ^^^^^^^
@@ -25,6 +26,7 @@ Example
 Kyoto AE
 ---------
 .. autofunction:: pyspedas.projects.kyoto.load_ae
+   :no-index:
 
 Example
 ^^^^^^^
@@ -44,6 +46,7 @@ Example
 NOAA/GFZ Kp and other geomagnetic Indices
 -----------------------------------------
 .. autofunction:: pyspedas.projects.noaa.noaa_load_kp
+   :no-index:
 
 Example
 ^^^^^^^
@@ -63,6 +66,7 @@ OMNI Solar Wind and magnetospheric indices
 The pyspedas.projects.omni.data() routine can be used to load variables from the OMNIweb data set.
 
 .. autofunction:: pyspedas.projects.omni.data
+   :no-index:
 
 Example
 ^^^^^^^^^

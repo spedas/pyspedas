@@ -77,6 +77,7 @@ Rotate Vectors by Rotation Matrix
 ----------------------------------
 
 .. autofunction:: pyspedas.tvector_rotate
+   :no-index:
 
 Getting/Setting the Coordinate System for tplot variables
 ---------------------------------------------------------
