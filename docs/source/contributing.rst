@@ -86,3 +86,13 @@ We need a lot more of them to be sure that IDL SPEDAS and PySPEDAS are giving co
 
 We have a robust, well-tested template for adding new missions to pySPEDAS. If you would like to contribute a new mission or project to pySPEDAS, please contact the SPEDAS team
 for the latest copy of the template, or just code it up on your own (hopefully as consistent as possible with the conventions followed by other missions), and send us a PR on Github.
+
+Code of Conduct
+---------------
+
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making
+participation in our project and our community a harassment-free experience for everyone, regardless of age, body size,
+disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status,
+nationality, personal appearance, race, religion, or sexual identity and orientation.
+
+For more information: `PySPEDAS Code of Conduct <https://github.com/spedas/pyspedas?tab=coc-ov-file#readme>`_
