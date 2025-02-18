@@ -14,7 +14,7 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
 
     Parameters
     ----------
-        tvar1 : str
+        tvar : str
             Name of tvar to use for data clipping.
         ymin : int/float
             Minimum value to keep (inclusive)

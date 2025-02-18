@@ -17,6 +17,7 @@ def timestamp(val):
             A string that can either be 'on' or 'off'.
 
     Returns
+    -------
         None
 
     Examples

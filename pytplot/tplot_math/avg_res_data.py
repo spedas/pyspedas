@@ -9,7 +9,7 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
 
     Parameters
     ----------
-        tvar1 : str
+        tvar : str
             Name of tplot variable.
         res : int/float
             The new data resolution

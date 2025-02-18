@@ -25,7 +25,7 @@ def tplot_names(quiet=False):
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
         >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
-        >>> tnames = pyplot.tplot_names()
+        >>> tnames = pyspedas.tplot_names()
         0 : Variable 1
 
     """

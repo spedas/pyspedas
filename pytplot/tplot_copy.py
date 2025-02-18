@@ -15,7 +15,7 @@ def tplot_copy(old_name, new_name):
 
     Parameters
     ----------
-        name : str
+        old_name : str
             Old name of the Tplot Variable
         new_name : str
             Name of the copied Tplot Variable
