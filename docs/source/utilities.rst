@@ -61,7 +61,7 @@ Data Cleanup Operations
 .. autofunction:: pyspedas.tsmooth
 
 Interpolation Tools
-===================
+--------------------
 
 There are several routines for performing interpolation in pyspedas and pytplot, each designed
 for slightly different use cases.
