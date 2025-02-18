@@ -27,10 +27,9 @@ def get_any(name,tag_name):
 
     Examples
     ----------
-        >>> import pytplot
-        >>> from pyspedas import themis
-        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
-        >>> pytplot.data_att_getters_setters.get_any('tha_pos', 'coord_sys')
+        >>> import pyspedas
+        >>> pyspedas.projects.themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> pyspedas.get_any('tha_pos', 'coord_sys')
 
     """
     metadata = get_data(name, metadata=True)
@@ -75,9 +74,8 @@ def set_any(name, tag_name, tag_value):
     Examples
     ----------
         >>> import pyspedas
-        >>> import pytplot
         >>> pyspedas.projects.themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
-        >>> pytplot.data_att_getters_setters.set_any('tha_pos', 'coord_sys', 'GSE')
+        >>> pyspedas.set_any('tha_pos', 'coord_sys', 'GSE')
 
     """
     # check that the variable exists
@@ -217,9 +215,8 @@ def get_units(name):
 
     Examples
     ----------
-        >>> import pytplot
-        >>> from pyspedas import themis
-        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> import pyspedas
+        >>> pyspedas.projects.themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
         >>> pyspedas.get_units('tha_pos')
     """
 
@@ -251,9 +248,8 @@ def set_units(name, units):
 
     Examples
     ----------
-        >>> import pytplot
-        >>> from pyspedas import themis
-        >>> themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
+        >>> import pyspedas
+        >>> pyspedas.projects.themis.state(trange=['2007-06-23', '2007-06-24'], probe='a')
         >>> pyspedas.set_units('tha_pos', 're')
     """
 
