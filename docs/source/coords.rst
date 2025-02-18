@@ -82,7 +82,9 @@ Rotate Vectors by Rotation Matrix
 Getting/Setting the Coordinate System for tplot variables
 ---------------------------------------------------------
 .. autofunction:: pyspedas.get_coords
+   :no-index:
 .. autofunction:: pyspedas.set_coords
+   :no-index:
 
 Quaternion Routines
 -------------------
