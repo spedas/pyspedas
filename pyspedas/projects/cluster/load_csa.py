@@ -82,7 +82,8 @@ def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
             Default: ['C1']
 
         datatypes : list of str
-            List of Cluster data types. Valid options: ['CE_WBD_WAVEFORM_CDF', 'CP_AUX_POSGSE_1M',
+            List of Cluster data types. Valid options::
+              'CE_WBD_WAVEFORM_CDF', 'CP_AUX_POSGSE_1M',
               'CP_CIS-CODIF_HS_H1_MOMENTS', 'CP_CIS-CODIF_HS_He1_MOMENTS',
               'CP_CIS-CODIF_HS_O1_MOMENTS', 'CP_CIS-CODIF_PAD_HS_H1_PF',
               'CP_CIS-CODIF_PAD_HS_He1_PF', 'CP_CIS-CODIF_PAD_HS_O1_PF',
@@ -96,7 +97,8 @@ def load_csa(trange:List[str]=['2001-02-01', '2001-02-03'],
               'CP_RAP_ISPCT_CNO', 'CP_RAP_ISPCT_He', 'CP_STA_CS_HBR',
               'CP_STA_CS_NBR', 'CP_STA_CWF_GSE', 'CP_STA_CWF_HBR_ISR2',
               'CP_STA_CWF_NBR_ISR2', 'CP_STA_PSD', 'CP_WBD_WAVEFORM',
-              'CP_WHI_ELECTRON_DENSITY', 'CP_WHI_NATURAL', 'JP_AUX_PMP', 'JP_AUX_PSE']
+              'CP_WHI_ELECTRON_DENSITY', 'CP_WHI_NATURAL', 'JP_AUX_PMP', 'JP_AUX_PSE'
+
             Default: ['CP_CIS-CODIF_HS_H1_MOMENTS']
 
         downloadonly: bool
