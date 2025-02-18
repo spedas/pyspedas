@@ -24,6 +24,19 @@ Creating and Managing Tplot Variables
 .. autofunction:: pyspedas.tplot_copy
 .. autofunction:: pyspedas.tplot_rename
 
+Tplot Variable Metadata Getters/Setters
+----------------------------------------
+
+Some PySPEDAS routines (for example, coordinate transforms and magnetic field models)
+need access to certain metadata to operate properly.  When loading from external data sources,
+this is often taken care of automatically, but if your code needs to create its own tplot variables
+or inspect metadata for input variables, these routines can help.
+
+.. autofunction:: pyspedas.get_coords
+.. autofunction:: pyspedas.set_coords
+.. autofunction:: pyspedas.get_units
+.. autofunction:: pyspedas.set_units
+
 Arithmetic
 ----------
 .. autofunction:: pyspedas.add
