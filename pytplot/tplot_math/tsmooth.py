@@ -104,7 +104,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         >>> import numpy as np
         >>> pyspedas.store_data('a', data={'x': range(100), 'y': np.random.random(100)})
         >>> pyspedas.tsmooth('a')
-        >>> print(pytplot.data_quants['a-s'].data)
+
     """
     old_names = pytplot.tnames(names)
 

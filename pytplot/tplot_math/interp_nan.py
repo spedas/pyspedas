@@ -31,7 +31,7 @@ def interp_nan(tvar, newname=None, new_tvar=None, s_limit=None):
     >>> import numpy as np
     >>> pyspedas.store_data('e', data={'x':[2,5,8,11,14,17,21], 'y':[[np.nan,1,1],[np.nan,2,3],[4,np.nan,47],[4,np.nan,5],[5,5,99],[6,6,25],[7,np.nan,-5]]})
     >>> pyspedas.interp_nan('e','e_nonan',s_limit=5)
-    >>> print(pytplot.data_quants['e_nonan'].values)
+
     """
     # new_tvar is deprecated in favor of newname
     if new_tvar is not None:

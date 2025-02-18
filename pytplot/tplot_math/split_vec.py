@@ -54,9 +54,9 @@ def split_vec(
     --------
         >>> pyspedas.store_data('b', data={'x':[2,5,8,11,14,17,20], 'y':[[1,1,1,1,1,1],[2,2,5,4,1,1],[100,100,3,50,1,1],[4,4,8,58,1,1],[5,5,9,21,1,1],[6,6,2,2,1,1],[7,7,1,6,1,1]]})
         >>> pyspedas.split_vec('b')
-        >>> print(pytplot.data_quants['b_0'].values)
-        >>> print(pytplot.data_quants['b_1'].values)
-        >>> print(pytplot.data_quants['b_5'].values)
+
+
+
     """
     # new_name is deprecated in favor of newname
     if new_name is not None:

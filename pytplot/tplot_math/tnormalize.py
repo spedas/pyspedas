@@ -29,7 +29,7 @@ def tnormalize(variable, newname=None, return_data=False):
         >>> import pyspedas
         >>> pyspedas.store_data('a', data={'x':[1, 2, 3], 'y':[[1,2,3],[4,5,6],[7,8,9]]})
         >>> pyspedas.tnormalize('a')
-        >>> print(pytplot.data_quants['a_normalized'].data)
+
 
     """
     metadata_in = {}

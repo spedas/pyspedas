@@ -34,7 +34,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
         >>> import pyspedas
         >>> pyspedas.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
         >>> pyspedas.tkm2re('a', km = True)
-        >>> print(pytplot.data_quants['a_km'].data)
+
 
     """
     km_in_re = 6371.2
