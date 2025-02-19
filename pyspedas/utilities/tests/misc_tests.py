@@ -10,6 +10,8 @@ from pyspedas import mpause_2, mpause_t96
 from pyspedas import find_datasets
 from pytplot import data_exists, tkm2re, tplot, split_vec, del_data
 from pytplot import get_data, store_data, options
+import numpy as np
+from numpy.testing import assert_allclose
 
 
 class UtilTestCases(unittest.TestCase):
@@ -73,15 +75,193 @@ class UtilTestCases(unittest.TestCase):
 
     def test_time_clip(self):
         import pytplot
-        x=[1,2,3]
-        y=[2,4,6]
-        xfp = [1.0,2.0,3.0]
-        pytplot.store_data('fptest',data={'x':xfp,'y':y})
+        x=[1,2,3,4,5]
+        y=[2,4,6,8,10]
+        xfp = [1.0,2.0,3.0,4.0,5.0]
+        # Data for a scalar variable
+        y_scalar = [0.0, 1.0, 2.0, 3.0, 4.0]
+        # Data for a vector variable
+        y_vec = [[0.0, 1.0, 2.0],[3.0,4.0,5.0],[6.0,7.0,8.0],[9.0,10.0,11.0],[12.0,13.0,14.0]]
+        y_vec = np.array(y_vec)
+        # Constant metadata for a vector variable
+        v1_1d = [1.0, 2.0, 3.0]
+        # Time varying metadata for a vector variable
+        v1_2d = y_vec
+        # Data for a 3x3 matrix variable
+        y_mat = [[[0.0, 1.0, 2.0],    [0.0, 1.0, 2.0],  [0.0, 1.0, 2.0]],
+                 [[3.0, 4.0, 5.0],    [3.0,4.0,5.0],    [3.0,4.0,5.0]],
+                 [[6.0, 7.0, 8.0],    [6.0,7.0,8.0],    [6.0,7.0,8.0]],
+                 [[9.0, 10.0, 11.0],  [9.0,10.0,11.0],  [9.0,10.0,11.0]],
+                 [[12.0, 13.0, 14.0], [12.0,13.0,14.0], [12.0,13.0,14.0]]]
+        y_mat = np.array(y_mat)
+        v2_1d = v1_1d
+        v2_2d = y_vec
+
+        # Scalar
+        pytplot.store_data('fptest',data={'x':xfp,'y':y_scalar})
+        # 1-D vec, no metadata
+        pytplot.store_data('fptest_vec_no_v1',data={'x':xfp,'y':y_vec})
+        # 1-D vec, with 1-D (constant) V1
+        pytplot.store_data('fptest_vec_v1_1d',data={'x':xfp,'y':y_vec, 'v':v1_1d})
+        # 1-D vec, with 2-D (time varying) V1
+        pytplot.store_data('fptest_vec_v1_2d',data={'x':xfp,'y':y_vec, 'v':v1_2d})
+        # 3x3 mat, with no V1, no V2
+        pytplot.store_data('fptest_mat_v1_none_v2_none',data={'x':xfp,'y':y_mat})
+        # 3x3 mat, with 1-D (constant) V1, 1-D (constant) V2
+        pytplot.store_data('fptest_mat_v1_1d_v2_1d',data={'x':xfp,'y':y_mat, 'v1':v1_1d, 'v2':v2_1d})
+        # 3x3 mat, with 2-D (time varying) V1, 2-D (time varying) V2
+        pytplot.store_data('fptest_mat_v1_2d_v2_2d',data={'x':xfp,'y':y_mat, 'v1':v1_2d, 'v2':v2_2d})
+        # 3x3 mat, with 2-D (time varying) V1, 1-D (constant) V2
+        pytplot.store_data('fptest_mat_v1_2d_v2_1d',data={'x':xfp,'y':y_mat, 'v1':v1_2d, 'v2':v2_1d})
+        # 3x3 mat, with 1-D (constant) V1, 2-D (time varying) V2
+        pytplot.store_data('fptest_mat_v1_1d_v2_2d',data={'x':xfp,'y':y_mat, 'v1':v1_1d, 'v2':v2_2d})
+        # 3x3 mat, with missing V1, 2-D (time varying) V2
+        # This doesn't quite work.  The 'v2' value doesn't survive the store_data/get_data round trip
+        # if v1 is missing.  Not sure if that really qualifies as a bug, considering how ill-advised such a
+        # construct would be...
+        # pytplot.store_data('fptest_mat_v1_none_v2_2d',data={'x':xfp,'y':y_mat, 'v1':None, 'v2':v2_2d})
+
+
+
         # Test warning for no data in time range
         pytplot.time_clip('fptest',1.5,1.7)
+
         # Single value in time range
         pytplot.time_clip('fptest',1.5,2.5)
         self.assertTrue(data_exists('fptest-tclip'))
+        dat=get_data('fptest-tclip')
+        self.assertTrue(len(dat.times) == 1)
+        self.assertTrue(dat.times[0] == 2.0)
+
+        # Multiple values in time range
+        pytplot.time_clip('fptest',1.5,3.5)
+        dat=get_data('fptest-tclip')
+        self.assertTrue(len(dat.times) == 2)
+        assert_allclose(dat.times, [2.0, 3.0])
+
+
+        # Vector data, single value in time range, no metadata
+        pytplot.time_clip('fptest_vec_no_v1',1.5,2.5)
+        self.assertTrue(data_exists('fptest_vec_no_v1-tclip'))
+        dat=get_data('fptest_vec_no_v1-tclip')
+        self.assertTrue(len(dat.times) == 1)
+        self.assertTrue(dat.times[0] == 2.0)
+        assert_allclose(dat.y[0,:], [3.0,4.0,5.0])
+
+        # Vector data, single value in time range, constant metadata
+        pytplot.time_clip('fptest_vec_v1_1d',1.5,2.5)
+        self.assertTrue(data_exists('fptest_vec_v1_1d-tclip'))
+        dat=get_data('fptest_vec_v1_1d-tclip')
+        self.assertTrue(len(dat.times) == 1)
+        self.assertTrue(dat.times[0] == 2.0)
+        assert_allclose(dat.y[0,:], [3.0,4.0,5.0])
+        assert_allclose(dat.v, v1_1d)
+
+        # Vector data, multiple values in time range, constant metadata
+        pytplot.time_clip('fptest_vec_v1_1d',1.5,3.5)
+        self.assertTrue(data_exists('fptest_vec_v1_1d-tclip'))
+        dat=get_data('fptest_vec_v1_1d-tclip')
+        self.assertTrue(len(dat.times) == 2)
+        assert_allclose(dat.times, [2.0, 3.0])
+        assert_allclose(dat.y, [[3.0,4.0,5.0], [6.0, 7.0, 8.0]])
+        assert_allclose(dat.v, v1_1d)
+
+        # Vector data, single value in time range, time-varying metadata
+        pytplot.time_clip('fptest_vec_v1_2d',1.5,2.5)
+        self.assertTrue(data_exists('fptest_vec_v1_2d-tclip'))
+        dat=get_data('fptest_vec_v1_2d-tclip')
+        self.assertTrue(len(dat.times) == 1)
+        self.assertTrue(dat.times[0] == 2.0)
+        self.assertTrue(dat.v.shape == (1,3))
+        assert_allclose(dat.y[0,:], [3.0,4.0,5.0])
+        assert_allclose(dat.v, v1_2d[1:2])
+
+        # Vector data, multiple values in time range, time-varying metadata
+        pytplot.time_clip('fptest_vec_v1_2d',1.5,3.5)
+        self.assertTrue(data_exists('fptest_vec_v1_2d-tclip'))
+        dat=get_data('fptest_vec_v1_2d-tclip')
+        self.assertTrue(len(dat.times) == 2)
+        assert_allclose(dat.times, xfp[1:3])
+        self.assertTrue(dat.y.shape == (2,3))
+        assert_allclose(dat.y, y_vec[1:3,:])
+        self.assertTrue(dat.v.shape == (2,3))
+        assert_allclose(dat.v, v1_2d[1:3])
+
+        # matrix data, single value in time range, no metadata
+        pytplot.time_clip('fptest_mat_v1_none_v2_none',1.5,2.5)
+        self.assertTrue(data_exists('fptest_mat_v1_none_v2_none-tclip'))
+        dat=get_data('fptest_mat_v1_none_v2_none-tclip')
+        self.assertTrue(len(dat.times) == 1)
+        self.assertTrue(dat.times[0] == 2.0)
+        assert_allclose(dat.y[0,:,:], y_mat[1,:,:])
+
+        # matrix data, single value in time range, constant v1 and v2 metadata
+        pytplot.time_clip('fptest_mat_v1_1d_v2_1d',1.5,2.5)
+        self.assertTrue(data_exists('fptest_mat_v1_1d_v2_1d-tclip'))
+        dat=get_data('fptest_mat_v1_1d_v2_1d-tclip')
+        self.assertTrue(len(dat.times) == 1)
+        self.assertTrue(dat.times[0] == 2.0)
+        assert_allclose(dat.y[0,:,:], y_mat[1,:,:])
+        assert_allclose(dat.v1, v1_1d)
+        assert_allclose(dat.v2, v2_1d)
+
+        # matrix data, multiple values in time range, constant v1 and v2 metadata
+        pytplot.time_clip('fptest_mat_v1_1d_v2_1d',1.5,3.5)
+        self.assertTrue(data_exists('fptest_mat_v1_1d_v2_1d-tclip'))
+        dat=get_data('fptest_mat_v1_1d_v2_1d-tclip')
+        self.assertTrue(len(dat.times) == 2)
+        assert_allclose(dat.times, [2.0, 3.0])
+        assert_allclose(dat.y, y_mat[1:3,:,:])
+        assert_allclose(dat.v1, v1_1d)
+        assert_allclose(dat.v2, v2_1d)
+
+        # matrix data, single value in time range, constant v1, time-varying v2 metadata
+        pytplot.time_clip('fptest_mat_v1_1d_v2_2d',1.5,2.5)
+        self.assertTrue(data_exists('fptest_mat_v1_1d_v2_2d-tclip'))
+        dat=get_data('fptest_mat_v1_1d_v2_2d-tclip')
+        self.assertTrue(len(dat.times) == 1)
+        self.assertTrue(dat.times[0] == 2.0)
+        self.assertTrue(dat.v1.shape == (3,))
+        assert_allclose(dat.y[:,:,:], y_mat[1:2,:,:])
+        assert_allclose(dat.v1, v1_1d)
+        assert_allclose(dat.v2, v1_2d[1:2])
+
+        # matrix data, multiple values in time range, constant v1, time-varying v2 metadata
+        pytplot.time_clip('fptest_mat_v1_1d_v2_2d',1.5,3.5)
+        self.assertTrue(data_exists('fptest_mat_v1_1d_v2_2d-tclip'))
+        dat=get_data('fptest_mat_v1_1d_v2_2d-tclip')
+        self.assertTrue(len(dat.times) == 2)
+        assert_allclose(dat.times, xfp[1:3])
+        self.assertTrue(dat.v1.shape == (3,))
+        assert_allclose(dat.y[:,:,:], y_mat[1:3,:,:])
+        assert_allclose(dat.v1, v1_1d)
+        assert_allclose(dat.v2, v1_2d[1:3])
+
+        # matrix data, single values in time range, time-varying v1, constant v2 metadata
+        pytplot.time_clip('fptest_mat_v1_2d_v2_1d',1.5,2.5)
+        self.assertTrue(data_exists('fptest_mat_v1_2d_v2_1d-tclip'))
+        dat=get_data('fptest_mat_v1_2d_v2_1d-tclip')
+        self.assertTrue(len(dat.times) == 1)
+        self.assertTrue(dat.times[0] == 2.0)
+        self.assertTrue(dat.v1.shape == (1,3))
+        self.assertTrue(dat.v2.shape == (3,))
+        assert_allclose(dat.y[:,:,], y_mat[1:2,:,:])
+        assert_allclose(dat.v1, v1_2d[1:2])
+        assert_allclose(dat.v2, v2_1d)
+
+        # matrix data, multiple values in time range, time-varying v1, constant v2 metadata
+        pytplot.time_clip('fptest_mat_v1_2d_v2_1d',1.5,3.5)
+        self.assertTrue(data_exists('fptest_mat_v1_2d_v2_1d-tclip'))
+        dat=get_data('fptest_mat_v1_2d_v2_1d-tclip')
+        self.assertTrue(len(dat.times) == 2)
+        assert_allclose(dat.times, [2.0, 3.0])
+        self.assertTrue(dat.v1.shape == (2,3))
+        self.assertTrue(dat.v2.shape == (3,))
+        assert_allclose(dat.y[:,:,], y_mat[1:3,:,:])
+        assert_allclose(dat.v1, v1_2d[1:3])
+        assert_allclose(dat.v2, v2_1d)
+
+        # Multiple variables in one call
         pytplot.store_data('tst1',data={'x':x,'y':y})
         pytplot.store_data('tst2',data={'x':x,'y':y})
         # reversed time limits
