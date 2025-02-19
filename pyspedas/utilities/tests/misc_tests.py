@@ -139,6 +139,18 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(len(dat.times) == 2)
         assert_allclose(dat.times, [2.0, 3.0])
 
+        # Multiple values in time range -- clip interior
+        pytplot.time_clip('fptest',1.5,3.5, suffix='-tclip-interior', interior_clip=True)
+        dat=get_data('fptest-tclip-interior')
+        self.assertTrue(len(dat.times) == 3)
+        assert_allclose(dat.times, [1.0, 4.0, 5.0])
+
+        # Entire time range
+        pytplot.time_clip('fptest',-100.0,100.0, suffix='-full_range')
+        self.assertTrue(data_exists('fptest-full_range'))
+        dat=get_data('fptest-full_range')
+        self.assertTrue(len(dat.times) == 5)
+        assert_allclose(dat.times, xfp)
 
         # Vector data, single value in time range, no metadata
         pytplot.time_clip('fptest_vec_no_v1',1.5,2.5)
