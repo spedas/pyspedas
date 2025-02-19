@@ -36,7 +36,6 @@ class LoadTestCases(unittest.TestCase):
         files = pyspedas.projects.poes.sem(downloadonly=True, probe='noaa19')
         self.assertTrue(os.path.exists(files[0]))
 
-    @unittest.skip("NCEI offline for the time being, due to hurricane damage")
     def test_ncei_server(self):
         vars = load(trange=['1999-01-03', '1999-01-04'], probe=['noaa15'], ncei_server=True, time_clip=True)
         self.assertTrue('geogLL' in vars)
