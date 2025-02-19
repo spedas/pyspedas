@@ -8,7 +8,8 @@ Similar to tclip.pro in IDL SPEDAS.
 """
 import logging
 import pytplot
-
+import numpy as np
+import copy
 
 def time_clip(
         names,
@@ -17,7 +18,8 @@ def time_clip(
         newname=None,
         new_names=None,
         suffix='-tclip',
-        overwrite=False
+        overwrite=False,
+        interior_clip=False
 ):
     """
     Clip data from time_start to time_end.
@@ -26,9 +28,9 @@ def time_clip(
     ----------
     names: str/list of str
         List of pytplot names.
-    time_start : float
+    time_start : float or string
         Start time.
-    time_end : float
+    time_end : float or string
         End time.
     newname: str/list of str, optional
         List of new names for pytplot variables.
@@ -42,6 +44,10 @@ def time_clip(
     overwrite: bool, optional
         If true, overwrite the existing tplot variable.
         Default: False
+    interior_clip: bool, optional
+        If true, reverse sense of operation and clip out times within the start/end range, for example,
+        when manually despiking data.
+        Default: False
 
     Returns
     -------
@@ -51,6 +57,7 @@ def time_clip(
     Example
     -------
         >>> # Clip time
+        >>> import pyspedas
         >>> x1 = [0, 4, 8, 12, 16]
         >>> time1 = [pyspedas.time_float("2020-01-01") + i for i in x1]
         >>> pyspedas.store_data("a", data={"x": time1, "y": [[1, 2, 3],[2, 3, 4],[3, 4, 5],[4, 5, 6],[5, 6,7]]})
@@ -99,78 +106,70 @@ def time_clip(
             pytplot.tplot_copy(old_names[j], n_names[j])
 
         alldata = pytplot.get_data(n_names[j])
-        metadata = pytplot.get_data(n_names[j], metadata=True)
+        metadata = copy.deepcopy(pytplot.get_data(n_names[j], metadata=True))
 
         if not isinstance(alldata, tuple): # NRV variable
             continue
             
         time = alldata[0]
         data = alldata[1]
+        input_count = len(time)
 
-        index_start = 0
-        index_end = len(time)
 
-        if index_end < 1:
+        if input_count < 1:
             logging.info('time_clip found empty data for variable '+old_names[j])
             continue
 
-        new_time = pytplot.time_float(time)
+        new_time = np.array(pytplot.time_float(time))
         new_time_start = pytplot.time_float(time_start)
         new_time_end = pytplot.time_float(time_end)
 
-        if (new_time_start > new_time[-1]) or (new_time_end < new_time[0]):
+        if interior_clip:
+            # Invert sense of default comparison
+            cond = (new_time < new_time_start) | (new_time > new_time_end)
+        else:
+            cond = (new_time >= new_time_start) & (new_time <= new_time_end)
+
+        count = np.count_nonzero(cond)
+
+        if count == 0:
             logging.warning('time_clip: '+ old_names[j] + ' has no data in requested range')
             continue
 
-        if (new_time_start <= new_time[0]) and (new_time_end >= new_time[-1]):
+        if count == input_count:
             logging.debug('Time clip returns full data set for variable '+old_names[j])
-            continue
-
-        for i in range(index_end):
-            if new_time[i] >= new_time_start:
-                index_start = i
-                break
-        found_end = index_end
-        for i in range(index_start, index_end):
-            if new_time[i] > new_time_end:
-                found_end = i
-                break
-        index_end = found_end
-
-        if index_start == index_end:
-            logging.warning('time_clip: ' + old_names[j] + ' has no data in requested range')
             continue
 
         tmp_q = pytplot.data_quants[n_names[j]]
 
         if 'v1' in tmp_q.coords.keys():
             if len(tmp_q.coords['v1'].values.shape) == 2:
-                v1_data = tmp_q.coords['v1'].values[index_start:index_end, :]
+                v1_data = tmp_q.coords['v1'].values[cond, :]
             else:
                 v1_data = tmp_q.coords['v1'].values
 
         if 'v2' in tmp_q.coords.keys():
             if len(tmp_q.coords['v2'].values.shape) == 2:
-                v2_data = tmp_q.coords['v2'].values[index_start:index_end, :]
+                v2_data = tmp_q.coords['v2'].values[cond, :]
             else:
                 v2_data = tmp_q.coords['v2'].values
 
         if 'v3' in tmp_q.coords.keys():
             if len(tmp_q.coords['v3'].values.shape) == 2:
-                v3_data = tmp_q.coords['v3'].values[index_start:index_end, :]
+                v3_data = tmp_q.coords['v3'].values[cond, :]
             else:
                 v3_data = tmp_q.coords['v3'].values
 
         if 'v' in tmp_q.coords.keys():
             if len(tmp_q.coords['v'].values.shape) == 2:
-                v_data = tmp_q.coords['v'].values[index_start:index_end, :]
+                v_data = tmp_q.coords['v'].values[cond, :]
             else:
                 v_data = tmp_q.coords['v'].values
 
         if 'spec_bins' in tmp_q.coords.keys():
             if len(tmp_q.coords['spec_bins'].values.shape) == 2:
                 v_data = tmp_q.coords['spec_bins']\
-                    .values[index_start:index_end, :]
+                    .values[cond, :]
             else:
                 v_data = tmp_q.coords['spec_bins'].values
 
@@ -179,41 +178,41 @@ def time_clip(
                 'v2' in tmp_q.coords.keys() and\
                     'v3' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
-                    'x': time[index_start:index_end],
-                    'y': data[index_start:index_end, :, :, :],
+                    'x': time[cond],
+                    'y': data[cond, :, :, :],
                     'v1': v1_data, 'v2': v2_data, 'v3': v3_data},
                     attr_dict=metadata)
             elif 'v1' in tmp_q.coords.keys() and\
                     'v2' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
-                    'x': time[index_start:index_end],
-                    'y': data[index_start:index_end, :, :],
+                    'x': time[cond],
+                    'y': data[cond, :, :],
                     'v1': v1_data, 'v2': v2_data},
                     attr_dict=metadata)
             elif 'v1' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
-                    'x': time[index_start:index_end],
-                    'y': data[index_start:index_end, :],
+                    'x': time[cond],
+                    'y': data[cond, :],
                     'v1': v1_data}, attr_dict=metadata)
             elif 'spec_bins' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
-                    'x': time[index_start:index_end],
-                    'y': data[index_start:index_end, :],
+                    'x': time[cond],
+                    'y': data[cond, :],
                     'v': v_data}, attr_dict=metadata)
             elif 'v' in tmp_q.coords.keys():
                 pytplot.store_data(n_names[j], data={
-                    'x': time[index_start:index_end],
-                    'y': data[index_start:index_end, :],
+                    'x': time[cond],
+                    'y': data[cond, :],
                     'v': v_data}, attr_dict=metadata)
             elif data.ndim == 1:
                 pytplot.store_data(n_names[j], data={
-                    'x': time[index_start:index_end],
-                    'y': data[index_start:index_end]},
+                    'x': time[cond],
+                    'y': data[cond]},
                     attr_dict=metadata)
             else:
                 pytplot.store_data(n_names[j], data={
-                    'x': time[index_start:index_end],
-                    'y': data[index_start:index_end]},
+                    'x': time[cond],
+                    'y': data[cond]},
                     attr_dict=metadata)
         except Exception as e:
             logging.error('Problem time clipping: ' + n_names[j])
