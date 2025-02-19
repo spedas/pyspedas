@@ -18,6 +18,20 @@ class FPITestCases(unittest.TestCase):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
 
+
+    # Regression test for non-monotonic timestamps in FPI numberdensity variables.
+    # They are present in both des-moms and des-momsaux L2 CDFs, and if both sets of files
+    # are passed in the same call to cdf_to_tplot, the output tplot variable can
+    # get duplicate (therefore nonmonotonic) times and data values from merging the des-moms and des-momsaux
+    # copies.
+    @unittest.skip("Fix not yet implemented")
+    def test_numberdensity_monotonic(self):
+        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
+        dens = get_data('mms1_des_numberdensity_fast')
+        times = dens.times
+        dt = times[1:] - times[0:-1]
+        self.assertTrue(np.min(dt) > 0.0)
+
     def test_load_spdf_data(self):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], spdf=True)
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
