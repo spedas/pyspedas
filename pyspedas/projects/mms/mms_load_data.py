@@ -74,6 +74,13 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     out_files = []
     available_files = []
 
+    # We want to load CDFs by groups (probe, level, datatype, data rate) rather than
+    # all together in one giant call to cdf_to_tplot.  We'll use a dictionary, with keys
+    # derived from each combination of attributes, and maintain separate lists of files to
+    # load together for each key.
+
+    out_file_groupings = {}
+
     for prb in probe:
         for drate in data_rate:
             start_date = parse(trange[0]).strftime('%Y-%m-%d') # need to request full day, then parse out later
@@ -90,6 +97,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
             for lvl in level:
                 for dtype in datatype:
+
+                    grouping_key = f"probe: {prb}, drate: {drate}, level: {lvl}, datatype: {dtype}"
+                    out_file_groupings[grouping_key] = []
 
                     file_found = False
 
@@ -149,12 +159,14 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                     if fs.exists(out_file) and str(fs.size(out_file)) == str(file["file_size"]):
                                         if not download_only: logging.info('Streaming ' + out_file)
                                         out_files.append(out_file)
+                                        out_file_groupings[grouping_key].append(out_file)
                                         file_found = True
                                         continue
                                 else:
                                     if os.path.exists(out_file) and str(os.stat(out_file).st_size) == str(file['file_size']):
-                                        if not download_only: logging.info('Loading ' + out_file)
+                                        if not download_only: logging.debug('Loading ' + out_file)
                                         out_files.append(out_file)
+                                        out_file_groupings[grouping_key].append(out_file)
                                         file_found = True
                                         continue
 
@@ -202,7 +214,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                         added_local_files = False
                         if not download_only:
                             logging.info('Searching for local files...')
-                            out_files.extend(mms_get_local_files(prb, instrument, drate, lvl, dtype, trange))
+                            local_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange)
+                            out_files.extend(local_files)
+                            out_file_groupings[grouping_key].extend(local_files)
                             added_local_files = True
 
                         if added_local_files and CONFIG['mirror_data_dir'] is not None:
@@ -210,7 +224,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                             # and we always copy the files from the mirror to the local data directory
                             # before trying to load into tplot variables 
                             logging.info('No local files found; checking network mirror...')
-                            out_files.extend(mms_get_local_files(prb, instrument, drate, lvl, dtype, trange, mirror=True))
+                            local_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange, mirror=True)
+                            out_files.extend(local_files)
+                            out_file_groupings[grouping_key].extend(local_files)
 
     if not no_download:
         sdc_session.close()
@@ -221,16 +237,43 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if not download_only:
         out_files = sorted(out_files)
 
+        # We could be returning a dict or a list, depending on whether notplot is set.
+        # In either case, we probably want to eliminate duplicates.  So depending on
+        # notplot, we create an empty dict or set, update() it with each returned dictionary (notplot)
+        # or list (default), then if we're doing tplot variables, convert it back to a list
+        # after processing all the groups.
+
+        if notplot:
+            return_value = {}
+        else:
+            return_value = set()
+
+        for key in out_file_groupings.keys():
+            group_list = out_file_groupings[key]
+            if len(group_list) > 0:
+                sorted_group_list = sorted(group_list)
+                filtered_group_list = mms_file_filter(sorted_group_list, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
+                if not filtered_group_list:
+                    logging.info(f"No matching CDF versions found for group: {key}, after sorting and filtering.")
+                else:
+                    logging.info(f"Loading files for group: {key}, after sorting and filtering:")
+                    for f in filtered_group_list:
+                        logging.info(f)
+                    these_variables = cdf_to_tplot(filtered_group_list, varformat=varformat,exclude_format=exclude_format, varnames=varnames, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+                    return_value.update(these_variables)
+
         filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
+
         if not filtered_out_files:
             logging.info('No matching CDF versions found.')
             return
 
-        new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat,exclude_format=exclude_format, varnames=varnames, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
+        # new_variables = cdf_to_tplot(filtered_out_files, varformat=varformat,exclude_format=exclude_format, varnames=varnames, get_support_data=get_support_data, prefix=prefix, suffix=suffix, center_measurement=center_measurement, notplot=notplot)
 
         if notplot:
-            return new_variables
+            return return_value
 
+        new_variables = list(return_value)
         if not new_variables:
             logging.warning('No data loaded.')
             return
