@@ -201,6 +201,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                     copy(ftmp.name, out_file)
 
                                 out_files.append(out_file)
+                                out_file_groupings[grouping_key].extend([out_file])
                                 file_found = True
                                 fsrc.close()
                                 ftmp.close()
