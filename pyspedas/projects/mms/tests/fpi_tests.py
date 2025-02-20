@@ -24,7 +24,7 @@ class FPITestCases(unittest.TestCase):
     # are passed in the same call to cdf_to_tplot, the output tplot variable can
     # get duplicate (therefore nonmonotonic) times and data values from merging the des-moms and des-momsaux
     # copies.
-    @unittest.skip("Fix not yet implemented")
+
     def test_numberdensity_monotonic(self):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
         dens = get_data('mms1_des_numberdensity_fast')
