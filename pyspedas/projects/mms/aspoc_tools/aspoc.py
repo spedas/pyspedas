@@ -29,8 +29,7 @@ def mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='sr
             Default: 'l2'
 
         datatype : str or list of str
-            Valid datatypes for ASPOC are: ['asp1', 'asp2', 'aspoc']
-            Default: 'aspoc'
+            Do not use: defined only for consistency with other load routines.  All ASPOC data will be loaded.
 
         get_support_data: bool
             Data with an attribute "VAR_TYPE" with a value of "support_data"
