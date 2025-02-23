@@ -64,7 +64,7 @@ def time_clip(
         >>> time_start=time1[0]
         >>> time_end=time1[2]
         >>> pyspedas.time_clip('a',time_start,time_end)
-        >>> ac = pytplot.get_data('a-tclip')
+        >>> ac = pyspedas.get_data('a-tclip')
         >>> print(ac)
 
     """
@@ -97,8 +97,25 @@ def time_clip(
         logging.warning('time_clip: new_names and old_names have different lengths, using suffixes instead')
         n_names = [s + suffix for s in old_names]
 
-    if time_start > time_end:
-        logging.error('time_clip: Start time '+str(time_start)+' is larger than end time ' + str(time_end))
+    # We want the start/end times as both strings (for log messages) and floats (for comparisons)
+
+    if isinstance(time_start, str):
+        time_start_str = time_start
+        time_start_float = pytplot.time_float(time_start)
+    else:
+        time_start_str = pytplot.time_string(time_start)
+        time_start_float = time_start
+
+    if isinstance(time_end, str):
+        time_end_str = time_end
+        time_end_float = pytplot.time_float(time_end)
+    else:
+        time_end_str = pytplot.time_string(time_end)
+        time_end_float = time_end
+
+
+    if time_start_float > time_end_float:
+        logging.error('time_clip: Start time ' + time_start_str +' is larger than end time ' + time_end_str)
         return
 
     for j in range(len(old_names)):
@@ -121,14 +138,12 @@ def time_clip(
             continue
 
         new_time = np.array(pytplot.time_float(time))
-        new_time_start = pytplot.time_float(time_start)
-        new_time_end = pytplot.time_float(time_end)
 
         if interior_clip:
             # Invert sense of default comparison
-            cond = (new_time < new_time_start) | (new_time > new_time_end)
+            cond = (new_time < time_start_float) | (new_time > time_end_float)
         else:
-            cond = (new_time >= new_time_start) & (new_time <= new_time_end)
+            cond = (new_time >= time_start_float) & (new_time <= time_end_float)
 
         count = np.count_nonzero(cond)
 
