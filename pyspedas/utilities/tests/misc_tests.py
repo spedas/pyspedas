@@ -303,6 +303,17 @@ class UtilTestCases(unittest.TestCase):
         # empty input list
         pytplot.time_clip([],1.5,2.5)
 
+        # Strings as start/end times
+        trange = ['2007-03-23/9:30', '2007-03-23/12:00']
+        # Note times are out of order if compared as strings!
+        self.assertTrue(trange[0] > trange[1])
+        pyspedas.projects.themis.state(probe='a',trange=trange)
+        pyspedas.time_clip('tha_pos',trange[0], trange[1],newname='tha_pos-tclip')
+        self.assertTrue(data_exists('tha_pos-tclip'))
+        dat=get_data('tha_pos-tclip')
+        self.assertTrue(dat.times[0] >= pyspedas.time_float(trange[0]))
+
+
     def test_mpause_t96(self):
         trange = ['2023-03-24', '2023-03-25']
         # THEMIS orbits come from the 'state' datatype
