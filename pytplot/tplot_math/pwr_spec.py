@@ -41,7 +41,7 @@ def pwr_spec(tvar, nbp=256, nsp=128, newname=None):
         >>> quantity = [math.sin(i) for i in range(10000)]
         >>> pyspedas.store_data("dp", data={"x": time, "y": quantity})
         >>> pyspedas.pwr_spec("dp", newname="dp_pwrspec")
-        >>> pytplot.tplot("dp_pwrspec")
+        >>> pyspedas.tplot("dp_pwrspec")
     """
 
     if not data_exists(tvar):
