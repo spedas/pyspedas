@@ -111,7 +111,7 @@ Example
         import pytplot
         import pyspedas
         from pyspedas.projects.erg import erg_mep_part_products
-        from pytplot import timespan, tplot
+        from pyspedas import timespan, tplot
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
         pyspedas.projects.erg.mepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
         vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data

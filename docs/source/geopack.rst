@@ -20,7 +20,7 @@ T89 Example
    from pyspedas.geopack import tt89
    tt89('mms1_mec_r_gsm')
 
-   from pytplot import tplot
+   from pyspedas import tplot
    tplot('mms1_mec_r_gsm_bt89')
 
 .. image:: _static/tt89.png
@@ -52,7 +52,7 @@ T96 Example
    from pyspedas.geopack import tt96
    tt96('mms1_mec_r_gsm-itrp', parmod=params)
 
-   from pytplot import tplot
+   from pyspedas import tplot
    tplot('mms1_mec_r_gsm-itrp_bt96')
 
 .. image:: _static/tt96.png
@@ -84,7 +84,7 @@ T01 Example
    from pyspedas.geopack import tt01
    tt01('mms1_mec_r_gsm-itrp', parmod=params)
 
-   from pytplot import tplot
+   from pyspedas import tplot
    tplot('mms1_mec_r_gsm-itrp_bt01')
 
 .. image:: _static/tt01.png
@@ -116,7 +116,7 @@ TS04 Example
    from pyspedas.geopack import tts04
    tts04('mms1_mec_r_gsm-itrp', parmod=params)
 
-   from pytplot import tplot
+   from pyspedas import tplot
    tplot('mms1_mec_r_gsm-itrp_bts04')
 
 .. image:: _static/tts04.png
@@ -142,7 +142,7 @@ get_tsy_params Example
 
    # join the components of B into a single variable
    # BX isn't used
-   from pytplot import join_vec
+   from pyspedas import join_vec
    join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
 
    from pyspedas.geopack.get_tsy_params import get_tsy_params

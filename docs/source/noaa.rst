@@ -16,7 +16,7 @@ Example
 .. code-block:: python
 
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    trange = ["2017-03-23/00:00:00", "2017-04-23/23:59:59"]
    noaa_vars = pyspedas.projects.noaa.noaa_load_kp(trange=trange)
    print(noaa_vars)

@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    reptile_vars = pyspedas.projects.csswe.reptile(trange=['2013-11-5', '2013-11-6'])
    tplot(['E1flux', 'E2flux', 'E3flux', 'P1flux', 'P2flux', 'P3flux'])
 

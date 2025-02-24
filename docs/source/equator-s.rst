@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mam_vars = pyspedas.projects.equator_s.mam(trange=['1998-04-06', '1998-04-07'])
    tplot('B_xyz_gse%eq_pp_mam')
 
@@ -34,7 +34,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    edi_vars = pyspedas.projects.equator_s.edi(trange=['1998-04-06', '1998-04-07'])
    tplot('E_xyz_gse%eq_pp_edi')
 
@@ -55,7 +55,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    epi_vars = pyspedas.projects.equator_s.epi(trange=['1998-04-06', '1998-04-30'])
    tplot(['J_e_1%eq_pp_epi', 'J_e_2%eq_pp_epi', 'J_e_3%eq_pp_epi'])
 
@@ -76,7 +76,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    ici_vars = pyspedas.projects.equator_s.ici(trange=['1998-04-06', '1998-04-07'])
    tplot('V_p_xyz_gse%eq_pp_ici')
 
@@ -97,7 +97,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pcd_vars = pyspedas.projects.equator_s.pcd(trange=['1998-04-06', '1998-04-07'])
    tplot('I_ion%eq_pp_pcd')
 
@@ -118,7 +118,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sfd_vars = pyspedas.projects.equator_s.sfd()
    tplot('F_e>0.26%eq_sp_sfd')
 

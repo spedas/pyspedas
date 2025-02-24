@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mag_vars = pyspedas.projects.goes.fgm(trange=['2013-11-5', '2013-11-6'], datatype='512ms')
    tplot(['BX_1', 'BY_1', 'BZ_1'])
 

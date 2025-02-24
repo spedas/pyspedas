@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    dst_vars = pyspedas.projects.kyoto.dst(trange=['2018-11-5', '2018-11-6'])
    tplot('kyoto_dst')
 

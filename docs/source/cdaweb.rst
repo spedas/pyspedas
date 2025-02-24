@@ -29,7 +29,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot, options, get_data
+   from pyspedas import tplot, options, get_data
    # Create the CDAWeb interface object
    cdaweb_obj = pyspedas.CDAWeb()
 

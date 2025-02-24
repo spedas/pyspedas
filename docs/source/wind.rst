@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mfi_vars = pyspedas.projects.wind.mfi(trange=['2013-11-5', '2013-11-6'])
    tplot('BGSE')
 
@@ -33,7 +33,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    swe_vars = pyspedas.projects.wind.swe(trange=['2013-11-5', '2013-11-6'])
    tplot(['N_elec', 'T_elec'])
 
@@ -53,7 +53,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    waves_vars = pyspedas.projects.wind.waves(trange=['2013-11-5', '2013-11-6'])
    tplot(['E_VOLTAGE_RAD2', 'E_VOLTAGE_RAD1', 'E_VOLTAGE_TNR'])
 
@@ -73,7 +73,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    threedp_vars = pyspedas.projects.wind.threedp()
    tplot(['V_e_xyz_gse_wi_3dp', 'N_e_dens_wi_3dp', 'T_e_par_wi_3dp'])
 
@@ -93,7 +93,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sms_vars = pyspedas.projects.wind.sms()
    tplot(['C_ion_temp', 'O_ion_temp'])
 
@@ -113,7 +113,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    orb_vars = pyspedas.projects.wind.orbit(trange=['2013-11-5', '2013-11-6'])
    tplot(['GSE_POS', 'GSE_VEL', 'GSM_POS', 'GSM_VEL'])
 

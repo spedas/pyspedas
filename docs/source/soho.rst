@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    celias_vars = pyspedas.projects.soho.celias(trange=['2006-06-01', '2006-06-02'])
    tplot(['V_p', 'N_p'])
 
@@ -32,7 +32,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    costep_vars = pyspedas.projects.soho.costep(trange=['2006-06-01', '2006-06-02'])
    tplot(['P_int', 'He_int'])
 
@@ -51,7 +51,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    erne_vars = pyspedas.projects.soho.erne(trange=['2006-06-01', '2006-06-02'])
    tplot('PH')
 
@@ -70,7 +70,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    orbit_vars = pyspedas.projects.soho.orbit(trange=['2006-06-01', '2006-06-02'])
    tplot(['GSE_POS', 'GSE_VEL'])
 

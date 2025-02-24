@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mag_vars = pyspedas.projects.stereo.mag(trange=['2013-11-5', '2013-11-6'])
    tplot('BFIELD')
 
@@ -62,7 +62,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    plastic_vars = pyspedas.projects.stereo.plastic(trange=['2013-11-5', '2013-11-6'])
    tplot(['proton_number_density', 'proton_bulk_speed', 'proton_temperature', 'proton_thermal_speed'])
 

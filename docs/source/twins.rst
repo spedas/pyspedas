@@ -17,7 +17,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    lad_vars = pyspedas.projects.twins.lad(trange=['2018-11-5/6:00', '2018-11-5/6:20'], time_clip=True)
    tplot(['lad1_data', 'lad2_data'])
 
@@ -36,7 +36,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    ephem_vars = pyspedas.projects.twins.ephemeris(trange=['2018-11-5', '2018-11-6'])
    tplot('FSCGSM')
 

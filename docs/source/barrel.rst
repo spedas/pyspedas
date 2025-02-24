@@ -87,7 +87,7 @@ Data can be loaded using the wrapper functions for each data type:
 .. code-block:: python
 
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sspc_vars = pyspedas.projects.barrel.sspc(probe='1A', trange= ['2013-01-28', '2013-02-14'])
    tplot('brl1A_SSPC')
 

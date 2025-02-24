@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    fgm_vars = pyspedas.projects.cluster.fgm(trange=['2018-11-5', '2018-11-6'])
    tplot('B_xyz_gse__C1_UP_FGM')
 
@@ -34,7 +34,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    asp_vars = pyspedas.projects.cluster.aspoc(trange=['2004-10-01', '2004-10-2'])
    tplot('I_ion__C1_PP_ASP')
 
@@ -55,7 +55,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    cis_vars = pyspedas.projects.cluster.cis(trange=['2004-10-01', '2004-10-2'])
    tplot(['N_p__C1_PP_CIS', 'V_p_xyz_gse__C1_PP_CIS', 'T_p_par__C1_PP_CIS', 'T_p_perp__C1_PP_CIS'])
 
@@ -76,7 +76,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    dwp_vars = pyspedas.projects.cluster.dwp(trange=['2004-10-01', '2004-10-2'])
    tplot('Correl_Ivar__C1_PP_DWP')
 
@@ -97,7 +97,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    edi_vars = pyspedas.projects.cluster.edi(trange=['2004-10-01', '2004-10-2'])
    tplot(['V_ed_xyz_gse__C1_PP_EDI', 'E_xyz_gse__C1_PP_EDI'])
 
@@ -118,7 +118,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    efw_vars = pyspedas.projects.cluster.efw(trange=['2004-10-01', '2004-10-2'])
    tplot('E_dusk__C1_PP_EFW')
 
@@ -139,7 +139,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    peace_vars = pyspedas.projects.cluster.peace(trange=['2004-10-01', '2004-10-2'])
    tplot(['N_e_den__C1_PP_PEA', 'V_e_xyz_gse__C1_PP_PEA', 'T_e_par__C1_PP_PEA', 'T_e_perp__C1_PP_PEA'])
 
@@ -160,7 +160,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    rap_vars = pyspedas.projects.cluster.rapid(trange=['2004-10-01', '2004-10-2'])
    tplot(['J_e_lo__C1_PP_RAP', 'J_e_hi__C1_PP_RAP', 'J_p_lo__C1_PP_RAP', 'J_p_hi__C1_PP_RAP'])
 
@@ -181,7 +181,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sta_vars = pyspedas.projects.cluster.staff(trange=['2004-10-01', '2004-10-02'])
    tplot('B_par_f1__C1_PP_STA')
 
@@ -202,7 +202,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    wbd_vars = pyspedas.projects.cluster.wbd(trange=['2012-11-06/02:10', '2012-11-06/02:20'])
    tplot('WBD_Elec')
 
@@ -223,7 +223,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    whi_vars = pyspedas.projects.cluster.whi()
    tplot('N_e_res__C1_PP_WHI')
 

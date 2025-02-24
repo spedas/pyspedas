@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    nal_vars = pyspedas.projects.mica.induction(site='NAL', trange=['2019-02-01','2019-02-02'])
    tplot('spectra_x_1Hz_NAL')
 

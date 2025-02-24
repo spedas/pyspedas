@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sem_vars = pyspedas.projects.poes.sem(trange=['2013-11-5', '2013-11-6'])
    tplot('ted_ele_tel30_low_eflux')
 

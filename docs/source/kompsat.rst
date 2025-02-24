@@ -40,9 +40,9 @@ Example
 ----------------------------------------------------------
 .. code-block:: python
 
-    # Import from pyspedas and pytplot
+    # Import from pyspedas
     import pyspedas
-    from pytplot import tplot, options
+    from pyspedas import tplot, options
 
     # Load L2 magnetometer data and plot it
     var_names = pyspedas.projects.kompsat.load(trange=["2024-03-31 02:00:00", "2024-03-31 03:00:00"], datatype="1m")

@@ -13,7 +13,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
 
     att_vars = pyspedas.projects.erg.att(trange=['2017-04-01', '2017-04-02'])
     tplot(['erg_att_sprate', 'erg_att_spphase', 'erg_att_izras', 'erg_att_izdec', 'erg_att_gxras', 'erg_att_gxdec', 'erg_att_gzras', 'erg_att_gzdec'])
@@ -32,7 +32,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.hep(trange=['2017-03-27', '2017-03-28'])
     tplot(['erg_hep_l2_FEDO_L', 'erg_hep_l2_FEDO_H'])
 
@@ -49,7 +49,7 @@ Low-energy Particles – electrons (LEP-e)
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.lepe(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_lepe_l2_omniflux_FEDO')
 
@@ -66,7 +66,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
 
     lepi_vars = pyspedas.projects.erg.lepi(trange=['2017-04-09', '2017-04-10'])
     tplot('erg_lepi_l2_omniflux_FODO')
@@ -83,7 +83,7 @@ Medium-energy Particles - electrons (MEP-e)
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.mepe(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_mepe_l2_omniflux_FEDO')
 
@@ -99,7 +99,7 @@ Medium-energy Particles – "normal mode" ion (MEP-i)
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.mepi_nml(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_mepi_l2_omniflux_FODO')
 
@@ -114,7 +114,7 @@ Medium-energy Particles - "time of flight mode" ion (MEP-i)
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.mepi_tof(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_mepi_l2_omniflux_FODO')
 
@@ -132,7 +132,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.mgf(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_mgf_l2_mag_8sec_sm')
 
@@ -150,7 +150,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.orb(trange=['2017-03-27', '2017-03-28'])
     tplot(['erg_orb_l2_pos_gsm', 'erg_orb_l2_vel_gsm'])
 
@@ -169,7 +169,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
 
     pwe_efd_vars = pyspedas.projects.erg.pwe_efd(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_pwe_efd_l2_E_spin_Eu_dsi')
@@ -191,7 +191,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.pwe_hfa(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_pwe_hfa_l2_low_spectra_esum')
 
@@ -209,7 +209,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.pwe_ofa(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_pwe_ofa_l2_spec_E_spectra_132')
 
@@ -227,7 +227,7 @@ Example
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
 
     pwe_wfc_vars = pyspedas.projects.erg.pwe_wfc(trange=['2017-04-01/12:00:00', '2017-04-01/13:00:00'])
     tplot('erg_pwe_wfc_l2_e_65khz_Ex_waveform')
@@ -243,7 +243,7 @@ Extremely High-energy electrons (XEP-e)
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     pyspedas.projects.erg.xep(trange=['2017-03-27', '2017-03-28'])
     tplot('erg_xep_l2_FEDO_SSD')
 
@@ -269,7 +269,7 @@ ISEE Fluxgate Magnetometers
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     fluxgate_vars=pyspedas.projects.erg.gmag_isee_fluxgate(trange=['2020-08-01','2020-08-02'], site='all')
     tplot('isee_fluxgate_mag_ktb_1min_hdz')
 
@@ -285,7 +285,7 @@ ISEE Induction Magnetometers
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     ind_vars=pyspedas.projects.erg.gmag_isee_induction(trange=['2020-08-01','2020-08-02'], site='all')
     tplot('isee_induction_db_dt_msr')
 
@@ -300,7 +300,7 @@ MAGDAS 1sec data
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     magdas_vars=pyspedas.projects.erg.gmag_magdas_1sec(trange=["2010-01-01", "2010-01-02"],site='ama')
     tplot('magdas_mag_ama_1sec_hdz')
 
@@ -316,7 +316,7 @@ MM210 data
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     mm210_vars=pyspedas.projects.erg.gmag_mm210(trange=["2005-01-01", "2005-01-02"],site='adl',datatype='1min')
     tplot('mm210_mag_adl_1min_hdz')
 
@@ -332,7 +332,7 @@ STEL Fluxgate Magnetometers
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     fluxgate_vars=pyspedas.projects.erg.gmag_stel_fluxgate(trange=['2020-08-01','2020-08-02'], site='ktb')
     tplot('isee_fluxgate_mag_ktb_1min_hdz')
 
@@ -347,7 +347,7 @@ STEL Induction Magnetometers
 .. code-block:: python
 
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     ind_vars=pyspedas.projects.erg.gmag_stel_induction(trange=['2020-08-01','2020-08-02'], site='msr')
     tplot('isee_induction_db_dt_msr')
 

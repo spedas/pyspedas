@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mpa_vars = pyspedas.projects.lanl.mpa(trange=['2004-10-31', '2004-11-01'])
    tplot(['dens_lop', 'vel_lop'])
 
@@ -32,7 +32,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    spa_vars = pyspedas.projects.lanl.spa(trange=['2004-10-31', '2004-11-01'])
    tplot(['spa_p_temp', 'spa_e_temp'])
 

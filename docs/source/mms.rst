@@ -22,7 +22,7 @@ FGM Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.fgm(trange=['2015-10-16/12:45', '2015-10-16/13:00'], time_clip=True)
    tplot(['mms1_fgm_b_gsm_srvy_l2_btot', 'mms1_fgm_b_gsm_srvy_l2_bvec'])
 
@@ -44,7 +44,7 @@ SCM Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.scm(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
    tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
 
@@ -66,7 +66,7 @@ FSM Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.fsm(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
    tplot(['mms1_fsm_b_mag_brst_l3', 'mms1_fsm_b_gse_brst_l3'])
 
@@ -88,7 +88,7 @@ EDP Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.edp(trange=['2015-10-16/13:06', '2015-10-16/13:07'], time_clip=True)
    tplot('mms1_edp_dce_gse_fast_l2')
 
@@ -110,7 +110,7 @@ EDI Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.edi(trange=['2016-10-16/21:00', '2016-10-16/22:00'], time_clip=True)
    tplot(['mms1_edi_vdrift_gse_srvy_l2', 'mms1_edi_e_gse_srvy_l2'])
 
@@ -132,7 +132,7 @@ FEEPS Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.feeps(trange=['2015-10-16', '2015-10-17'])
    tplot('mms1_epd_feeps_srvy_l2_electron_intensity_omni_spin')
 
@@ -154,7 +154,7 @@ EIS Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.eis(trange=['2015-10-16', '2015-10-17'])
    tplot(['mms1_epd_eis_srvy_l2_extof_proton_flux_omni', 'mms1_epd_eis_srvy_l2_extof_proton_flux_omni_spin'])
 
@@ -176,7 +176,7 @@ ASPOC Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.aspoc(trange=['2015-10-16', '2015-10-17'])
    tplot(['mms1_aspoc_ionc_l2', 'mms1_asp1_ionc_l2', 'mms1_asp2_ionc_l2'])
 
@@ -198,7 +198,7 @@ FPI Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.fpi(trange=['2015-10-16', '2015-10-17'], datatype='des-moms')
    tplot(['mms1_des_energyspectr_omni_fast', 'mms1_des_bulkv_gse_fast', 'mms1_des_numberdensity_fast'])
 
@@ -221,7 +221,7 @@ HPCA Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments')
    tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity', 'mms1_hpca_hplus_scalar_temperature'])
 
@@ -242,7 +242,7 @@ MEC Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.mec(trange=['2015-10-16', '2015-10-17'])
    tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 
@@ -264,7 +264,7 @@ State Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.state(trange=['2020-12-16', '2020-12-17'])
    tplot(['mms1_defeph_pos', 'mms1_defeph_vel'])
 
@@ -286,7 +286,7 @@ Tetrahedron QF Example
 .. code-block:: python
 
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pyspedas.projects.mms.tetrahedron_qf(trange=['2020-12-16', '2020-12-17'])
    tplot(['mms_tetrahedron_qf'])
 

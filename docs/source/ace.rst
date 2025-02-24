@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mfi_vars = pyspedas.projects.ace.mfi(trange=['2018-11-5', '2018-11-6'])
    tplot(['BGSEc', 'Magnitude'])
 
@@ -34,7 +34,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    swe_vars = pyspedas.projects.ace.swe(trange=['2018-11-5', '2018-11-6'])
    tplot(['Vp', 'Tpr'])
 
@@ -55,7 +55,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    epam_vars = pyspedas.projects.ace.epam(trange=['2018-11-5', '2018-11-6'])
    tplot(['H_lo', 'Ion_very_lo', 'Ion_lo', 'Ion_mid', 'Ion_hi', 'Electron_lo', 'Electron_hi'])
 
@@ -76,7 +76,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    cris_vars = pyspedas.projects.ace.cris(trange=['2018-11-5', '2018-11-6'])
    tplot(['flux_B', 'flux_C', 'flux_N', 'flux_O', 'flux_F', 'flux_Ne'])
 
@@ -97,7 +97,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sis_vars = pyspedas.projects.ace.sis(trange=['2018-11-5', '2018-11-6'])
    tplot(['H_lo', 'H_hi', 'CNO_lo', 'CNO_hi', 'Z_ge_10'])
 
@@ -118,7 +118,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    uleis_vars = pyspedas.projects.ace.uleis(trange=['2018-11-5', '2018-11-6'])
    tplot(['H_S1', 'H_S2', 'H_S3', 'H_S4', 'H_S5'])
 
@@ -139,7 +139,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sepica_vars = pyspedas.projects.ace.sepica(trange=['2004-11-5', '2004-11-6'])
    tplot(['H1', 'H2', 'H3'])
 
@@ -160,7 +160,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    swi_vars = pyspedas.projects.ace.swics(trange=['2018-11-5', '2018-11-6'])
    tplot(['vHe2', 'vthHe2'])
 

@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    pws_vars = pyspedas.projects.akebono.pws(trange=['2012-10-01', '2012-10-02'])
    tplot('akb_pws_RX1')
 
@@ -32,7 +32,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    rdm_vars = pyspedas.projects.akebono.rdm(trange=['2012-10-01', '2012-10-02'])
    tplot('akb_rdm_FEIO')
 
@@ -51,7 +51,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    orb_vars = pyspedas.projects.akebono.orb(trange=['2012-10-01', '2012-10-02'])
    tplot(['akb_orb_geo', 'akb_orb_MLT'])
 

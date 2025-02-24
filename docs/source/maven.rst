@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mag_vars = pyspedas.projects.maven.mag(trange=['2014-10-18', '2014-10-19'])
    tplot('OB_B')
 
@@ -34,7 +34,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    swe_vars = pyspedas.projects.maven.swea(trange=['2014-10-18', '2014-10-19'])
    tplot('diff_en_fluxes_svyspec')
 
@@ -55,7 +55,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    swi_vars = pyspedas.projects.maven.swia(trange=['2014-10-18', '2014-10-19'])
    tplot('spectra_diff_en_fluxes_onboardsvyspec')
 
@@ -76,7 +76,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sta_vars = pyspedas.projects.maven.sta(trange=['2014-10-18', '2014-10-19'])
    tplot('hkp_2a-hkp')
 
@@ -97,7 +97,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sep_vars = pyspedas.projects.maven.sep(trange=['2014-10-18', '2014-10-19'])
    tplot('f_ion_flux_tot_s2-cal-svy-full')
 
@@ -118,7 +118,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    lpw_vars = pyspedas.projects.maven.lpw(trange=['2014-10-18', '2014-10-19'])
    tplot('mvn_lpw_lp_iv_l2_lpiv')
 
@@ -139,7 +139,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot, options
+   from pyspedas import tplot, options
    euv_vars = pyspedas.projects.maven.euv(trange=['2014-10-18', '2014-10-19'])
    options('mvn_euv_calib_bands_bands','ylog',0)
    tplot('mvn_euv_calib_bands_bands')

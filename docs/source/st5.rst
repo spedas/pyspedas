@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    st5_vars = pyspedas.projects.st5.mag(trange=['2006-06-01', '2006-06-02'])
    tplot(['B_SM', 'SC_POS_SM'])
 

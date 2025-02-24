@@ -18,7 +18,7 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
 
    time_range = ['2020-04-20/06:00', '2020-04-20/08:00']
 

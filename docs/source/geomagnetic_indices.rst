@@ -14,7 +14,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    dst_vars = pyspedas.projects.kyoto.dst(trange=['2018-11-5', '2018-11-6'])
    tplot('kyoto_dst')
 
@@ -34,7 +34,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    ae_vars = pyspedas.projects.kyoto.load_ae(trange=['2018-11-5', '2018-11-6'])
    tplot(ae_vars)
 
@@ -54,7 +54,7 @@ Example
 .. code-block:: python
 
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    geom_ind = pyspedas.projects.noaa.noaa_load_kp(trange=['2018-11-5', '2018-11-6'])
    tplot(geom_ind)
 
@@ -74,7 +74,7 @@ Example
 .. code-block:: python
 
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    omni_vars = pyspedas.projects.omni.data(trange=['2013-11-5', '2013-11-6'])
    tplot(['BX_GSE', 'BY_GSE', 'BZ_GSE', 'flow_speed', 'Vx', 'Vy', 'Vz', 'SYM_H'])
 

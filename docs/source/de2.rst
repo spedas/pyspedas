@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mag_vars = pyspedas.projects.de2.mag(trange=['1983-02-10', '1983-02-11'])
    tplot(['bx', 'by', 'bz'])
 
@@ -32,7 +32,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    nacs_vars = pyspedas.projects.de2.nacs(trange=['1983-02-10', '1983-02-11'])
    tplot(['O_density', 'N_density'])
 
@@ -51,7 +51,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    rpa_vars = pyspedas.projects.de2.rpa(trange=['1983-02-10', '1983-02-11'])
    tplot(['ionDensity', 'ionTemperature'])
 
@@ -70,7 +70,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    fpi_vars = pyspedas.projects.de2.fpi(trange=['1983-02-10', '1983-02-11'])
    tplot('TnF')
 
@@ -89,7 +89,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    idm_vars = pyspedas.projects.de2.idm(trange=['1983-02-10', '1983-02-11'])
    tplot(['ionVelocityZ', 'ionVelocityY'])
 
@@ -108,7 +108,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    wats_vars = pyspedas.projects.de2.wats(trange=['1983-02-10', '1983-02-11'])
    tplot(['density', 'Tn'])
 
@@ -127,7 +127,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    vefi_vars = pyspedas.projects.de2.vefi(trange=['1983-02-10', '1983-02-11'])
    tplot(['spectA', 'spectB', 'spectC'])
 
@@ -146,7 +146,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    lang_vars = pyspedas.projects.de2.lang(trange=['1983-02-10', '1983-02-11'])
    tplot(['plasmaDensity', 'electronTemp'])
 

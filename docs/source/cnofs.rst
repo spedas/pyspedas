@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    cindi_vars = pyspedas.projects.cnofs.cindi(trange=['2013-11-5', '2013-11-6'])
    tplot(['ionVelocityX', 'ionVelocityY', 'ionVelocityZ'])
 
@@ -32,7 +32,7 @@ Example
 .. code-block:: python
 
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    vefi_vars = pyspedas.projects.cnofs.vefi(trange=['2010-11-5/12:00', '2010-11-5/13:00'])
    tplot(['E_meridional', 'E_zonal'])
 
@@ -51,7 +51,7 @@ Example
 .. code-block:: python
 
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    plp_vars = pyspedas.projects.cnofs.plp(trange=['2010-11-5', '2010-11-6'])
    tplot('Ni')
 

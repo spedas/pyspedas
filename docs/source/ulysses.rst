@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    vhm_vars = pyspedas.projects.ulysses.vhm()
    tplot('B_MAG')
 
@@ -34,7 +34,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    swoops_vars = pyspedas.projects.ulysses.swoops()
    tplot(['Density', 'Temperature', 'Velocity'])
 
@@ -55,7 +55,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    swics_vars = pyspedas.projects.ulysses.swics()
    tplot('Velocity')
 
@@ -76,7 +76,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    epac_vars = pyspedas.projects.ulysses.epac()
    tplot('Omni_Protons')
 
@@ -97,7 +97,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    hiscale_vars = pyspedas.projects.ulysses.hiscale()
    tplot('Electrons')
 
@@ -118,7 +118,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    grb_vars = pyspedas.projects.ulysses.grb()
    tplot('Count_Rate')
 

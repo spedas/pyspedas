@@ -13,7 +13,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    fgm_vars = pyspedas.projects.themis.fgm(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_fgs_btotal', 'thd_fgs_gse'])
 
@@ -34,7 +34,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    scm_vars = pyspedas.projects.themis.scm(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_scf_btotal', 'thd_scf_gse'])
 
@@ -55,7 +55,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    efi_vars = pyspedas.projects.themis.efi(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot('thd_efs_dot0_gse')
 
@@ -76,7 +76,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    esa_vars = pyspedas.projects.themis.esa(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_peif_density', 'thd_peif_vthermal'])
 
@@ -97,7 +97,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    sst_vars = pyspedas.projects.themis.sst(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot('thd_psif_density')
 
@@ -118,7 +118,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    mom_vars = pyspedas.projects.themis.mom(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_peim_velocity_gsm', 'thd_peim_density'])
 
@@ -139,7 +139,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    gmom_vars = pyspedas.projects.themis.gmom(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_ptiff_velocity_gse', 'thd_pteff_density', 'thd_pteff_avgtemp'])
 
@@ -159,7 +159,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    state_vars = pyspedas.projects.themis.state(probe='d', trange=['2013-11-5', '2013-11-6'])
    tplot(['thd_pos', 'thd_vel'])
 
@@ -213,7 +213,7 @@ Example
 .. code-block:: python
    
    import pyspedas
-   from pytplot import tplot
+   from pyspedas import tplot
    gmag_vars = pyspedas.projects.themis.gmag(sites='ccnv', trange=['2013-11-5', '2013-11-6'])
    tplot('thg_mag_ccnv')
 

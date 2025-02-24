@@ -334,7 +334,7 @@ Example: Load SWARM-A magnetometer data
 
     # Load SWARM-A magnetometer data
     import pyspedas
-    from pytplot import tplot
+    from pyspedas import tplot
     vires_vars = pyspedas.vires.load(trange=['2014-01-01T00:00', '2014-01-01T01:00'],
         collection="SW_OPER_MAGA_LR_1B",
         measurements=["F", "B_NEC"],

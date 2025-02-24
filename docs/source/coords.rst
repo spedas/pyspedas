@@ -43,7 +43,7 @@ Examples
    cotrans(name_in='thc_pos_gse', name_out='sm_data', coord_in='gse', coord_out='sm')
    cotrans(name_in='thc_pos_gse', name_out='geo_data', coord_in='gse', coord_out='geo')
 
-   from pytplot import tplot
+   from pyspedas import tplot
    tplot(['gsm_data', 'sm_data', 'geo_data'])
    
 Cartesian to Spherical Coordinates
