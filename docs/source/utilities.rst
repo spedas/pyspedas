@@ -4,7 +4,87 @@ Utilities
 .. toctree::
    :maxdepth: 2
 
-   time_conversion
+Time Conversions
+----------------
+
+Most routines in PySPEDAS will accept or produce times in one of two representations: either
+as floating-point values interpreted as a count of seconds since the Unix
+epoch 1970-01-01/00:00  (often called "Unix time"), or as strings, for example '2018-04-01/12:00:00.001'.
+
+The PySPEDAS time_string(), time_float(), and time_double() can be used
+to convert single timestamps, or lists or arrays of timestamps, between these
+representations.
+
+The format of PySPEDAS timestamps is somewhat flexible...basically enything
+that can be handled via the dateutil.parser parse() or isoparse() utilities.
+
+Internally, PySPEDAS currently uses Numpy datetime64() objects with nanosecond precision
+as the time representation of tplot variables and Matplotlib plots.  This is an
+implementation detail that should not be relied on in user code!  The PySPEDAS get_data
+and store_data() routines (described below) for using and creating tplot variables
+do the appropriate conversions between the internal time representation and
+the Unix times or string timestamps used elsewhere in PySPEDAS.
+
+The use of Unix times in much of PySPEDAS (and indeed, Python in general) leads to potential pitfalls when
+dealing with leap seconds, which are by definition ignored when converting between
+Unix times and string timestamps.  This is a bit of a sore point in the scientific
+Python community.  The Astropy package has one of the few fully leap-second-aware time representations,
+but the lack of support for it in commonly used scientific Python packages (e.g. Numpy, Pandas, xarray)
+are a hindrance to adopting it as a common time representation in PySPEDAS and
+elsewhere in the PyHC ecosystem.
+
+
+.. autofunction:: pyspedas.time_string
+   :no-index:
+
+Example
+^^^^^^^^^
+
+.. code-block:: python
+
+   from pyspedas import time_string
+   time_string(1444953600.0)
+
+.. code-block:: python
+
+   '2015-10-16 00:00:00.000000'
+
+.. autofunction:: pyspedas.time_double
+   :no-index:
+
+Example
+^^^^^^^^^
+
+.. code-block:: python
+
+   from pyspedas import time_double
+   time_double('2015-10-16/14:00')
+
+.. code-block:: python
+
+   1445004000.0
+
+
+
+There may be occasions (for example, when passing times to routines
+in other packages) when it might be useful to convert to/from Python datetime
+objects. time_datetime() accepts either Unix times or strings, and returns Python datetime objects.
+
+.. autofunction:: pyspedas.time_datetime
+   :no-index:
+
+Example
+^^^^^^^^^
+
+.. code-block:: python
+
+   from pyspedas import time_datetime
+   time_datetime('2015-10-16/14:00')
+
+
+.. code-block:: python
+
+   datetime.datetime(2015, 10, 16, 14, 0, tzinfo=datetime.timezone.utc)
 
 Creating and Managing Tplot Variables
 -------------------------------------
