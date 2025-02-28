@@ -132,7 +132,7 @@ class FEEPSTestCases(unittest.TestCase):
         # CSVs are added.
 
         from pytplot import time_string
-        """
+
         file_times=[1447200000.0000000, # 11/11/2015
              1468022400.0000000, # 7/9/2016
              1477612800.0000000, # 10/28/2016
@@ -144,8 +144,7 @@ class FEEPSTestCases(unittest.TestCase):
              1660521600.0000000, # 8/15/2022
              1706832000.0000000, # 02/02/2024
              1721779200.0000000] # 07/24/2024
-        """
-        file_times=[1706832000.0000000]
+
         for ft in file_times:
             trange=[ft,ft+86400.0]
             logging.info("Reading files for: "+time_string(trange[0]))
