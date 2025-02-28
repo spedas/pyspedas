@@ -33,7 +33,8 @@ def mms_read_feeps_sector_masks_csv(trange):
              1651795200.0000000, # 5/6/2022
              1660521600.0000000, # 8/15/2022
              1706832000.0000000, # 02/02/2024
-             1721779200.0000000] # 07/24/2024
+             1721779200.0000000, # 07/24/2024
+             1739664000.0000000] # 02/16/2025
 
     # find the file closest to the start time
     nearest_date = dates[(np.abs(np.array(dates)-time_double(trange[0]))).argmin()]
