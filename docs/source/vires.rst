@@ -1,5 +1,5 @@
-VIRES
-=====
+Load data via VIRES service
+============================
 The routines in this module can be used to load data from the Swarm mission.
 This module supports more data types than the Swarm module, which is limited to the
 subset of data types available from the HAPI server.
