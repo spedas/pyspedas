@@ -106,10 +106,19 @@ Example
    :class: imgborder
 
 
+Onboard Filter Bank Data (FBK)
+------------------------------
 
+.. autofunction:: pyspedas.projects.themis.fbk
 
-Moments data
-----------------------------------------------------------
+Onboard FFT Data (FFT)
+-----------------------
+
+.. autofunction:: pyspedas.projects.themis.fft
+
+Onboard Moments Data (MOM)
+---------------------------
+
 .. autofunction:: pyspedas.projects.themis.mom
 
 Example
@@ -129,7 +138,7 @@ Example
 
 
 
-Ground computed moments data
+Ground computed moments data (GMOM)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.projects.themis.gmom
 
@@ -149,8 +158,9 @@ Example
 
 
 
-State data
+State data (STATE)
 ----------------------------------------------------------
+
 .. autofunction:: pyspedas.projects.themis.state
 
 Example
@@ -169,8 +179,9 @@ Example
 
 
 
-Orbit data from SSCWeb
+Orbit data from SSCWeb (SSC)
 ----------------------------------------------------------
+
 .. autofunction:: pyspedas.projects.themis.ssc
 
 Example
@@ -186,8 +197,9 @@ Example
 
 
 
-Orbit data from SSCWeb (predicted)
+Orbit predictions from SSCWeb (SSC_PRE)
 ----------------------------------------------------------
+
 .. autofunction:: pyspedas.projects.themis.ssc_pre
 
 Example
@@ -203,8 +215,10 @@ Example
 
 
 
-Ground magnetometer data
+Ground Magnetometer Data (GMAG)
 ----------------------------------------------------------
+
+
 .. autofunction:: pyspedas.projects.themis.gmag
 
 Example
