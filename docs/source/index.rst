@@ -62,6 +62,14 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
 
    pyspedas_2_migration
 
+.. toctree::
+   :caption: For PySPEDAS developers and admins
+   :maxdepth: 1
+
+   devguide
+   adminguide
+
+
 .. |build| image:: https://github.com/spedas/pyspedas/workflows/build/badge.svg
 .. |coverage| image:: https://coveralls.io/repos/github/spedas/pyspedas/badge.svg
 .. |version| image:: https://img.shields.io/pypi/v/pyspedas.svg
