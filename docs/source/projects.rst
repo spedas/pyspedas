@@ -109,5 +109,4 @@ Some key points that apply to most or all of these load routines:
    themis
    twins
    ulysses
-   vires
    wind
