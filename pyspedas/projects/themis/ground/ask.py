@@ -77,8 +77,8 @@ def ask(site=None,
     
     Example
     -------
-        import pyspedas
-        from pytplot import tplot
+        >>> import pyspedas
+        >>> from pyspedas import tplot
         >>> ask_vars = pyspedas.projects.themis.ask(trange=['2013-11-05', '2013-11-06'])
         >>> tplot(['thg_ask_atha', 'thg_ask_chbg'])
     """

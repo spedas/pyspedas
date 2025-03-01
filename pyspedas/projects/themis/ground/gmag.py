@@ -92,12 +92,12 @@ def gmag(
 
     Examples
     --------
-    from pyspedas.projects.themis import gmag
-    from pytplot import tplot
-
-    # Load ground magnetometer data for specific sites and time range
-    gmag_vars = gmag(sites=['ccnv','bmls'], trange=['2013-11-05', '2013-11-06'])
-    tplot(['thg_mag_bmls', 'thg_mag_ccnv'])
+    >>> from pyspedas.projects.themis import gmag
+    >>> from pyspedas import tplot
+    >>>
+    >>> # Load ground magnetometer data for specific sites and time range
+    >>> gmag_vars = gmag(sites=['ccnv','bmls'], trange=['2013-11-05', '2013-11-06'])
+    >>> tplot(['thg_mag_bmls', 'thg_mag_ccnv'])
     """
 
     if sites is None:
