@@ -63,10 +63,9 @@ def wavelet(
     Example
     -------
         >>> import numpy as np
-        import pyspedas
+        >>> import pyspedas
         >>> from pyspedas import time_float
         >>> from pyspedas.analysis.wavelet import wavelet
-
         >>> # Create a tplot variable that contains a wave.
         >>> t = np.arange(4000.)
         >>> y = np.sin(2*np.pi*t/32.)
@@ -75,11 +74,9 @@ def wavelet(
         >>> var = 'sin_wav'
         >>> time = time_float('2010-01-01') + 10*t
         >>> pyspedas.store_data(var, data={'x':time, 'y':y})
-
         >>> # Gaussian Derivative wavelets transformation.
         >>> powervar = wavelet(var, wavename='gaus1')
         >>> pvar = powervar[0]
-
         >>> # Define plotting parameters and plot.
         >>> pyspedas.options(pvar, 'colormap', 'jet')
         >>> pyspedas.ylim(pvar, 0.001, 0.1)
