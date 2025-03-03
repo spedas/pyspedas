@@ -70,6 +70,38 @@ class TimeTestCases(unittest.TestCase):
         store_data('degap_test_string_spec',data={'x':str_times,'y':spdata,'v':spv})
         options('degap_test_string_spec','spec',1)
 
+        degap('degap_test_float',dt=2.0, maxgap=5.0, newname='degap_maxgap')
+        dg_data=get_data('degap_maxgap')
+        # Should NOT insert a data point with timestamp 5.0, value NaN
+        self.assertEqual(dg_data.times[3],11.0)
+        self.assertTrue(np.isfinite(dg_data.y[3]))
+        self.assertTrue(len(dg_data.times), 9)
+
+        degap('degap_test_float',dt=2.0, newname='degap_default_gapfill')
+        dg_data=get_data('degap_default_gapfill')
+        # Should NOT insert a data point with timestamp 5.0, value NaN
+        self.assertEqual(dg_data.times[3],5.0)
+        self.assertFalse(np.isfinite(dg_data.y[3]))
+        self.assertTrue(len(dg_data.times), 15)
+
+        degap('degap_test_float',dt=2.0, onenanpergap=True, newname='degap_onenanpergap')
+        dg_data=get_data('degap_onenanpergap')
+        # Should insert a data point with timestamp 5.0, value NaN
+        self.assertEqual(dg_data.times[3],5.0)
+        self.assertEqual(dg_data.times[7],15.0)
+        self.assertFalse(np.isfinite(dg_data.y[3]))
+        self.assertFalse(np.isfinite(dg_data.y[7]))
+        self.assertTrue(len(dg_data.times), 11)
+
+        degap('degap_test_float',dt=2.0, twonanpergap=True, newname='degap_twonanpergap')
+        dg_data=get_data('degap_twonanpergap')
+        # Should insert a data point with timestamp 5.0, value NaN
+        self.assertEqual(dg_data.times[3],3.25)
+        self.assertEqual(dg_data.times[4],10.75)
+        self.assertFalse(np.isfinite(dg_data.y[3]))
+        self.assertFalse(np.isfinite(dg_data.y[4]))
+        self.assertTrue(len(dg_data.times), 13)
+
         degap('degap_test_float',dt=2.0)
         dg_data=get_data('degap_test_float')
         # Should insert a data point with timestamp 5.0, value NaN
