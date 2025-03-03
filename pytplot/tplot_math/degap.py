@@ -8,6 +8,7 @@ def degap(
     tvar,
     dt=None,
     margin=0.25,
+    maxgap=None,
     func="nan",
     newname=None,
     new_tvar=None,
@@ -26,6 +27,9 @@ def degap(
         margin : int/float, optional, default is 0.25 seconds
             The maximum deviation from the step size allowed before degapping occurs.  In other words, if you'd like to fill in data every 4 seconds
             but occasionally the data is 4.1 seconds apart, set the margin to .1 so that a data point is not inserted there.
+        maxgap : int|float, optional
+            Maximum gap length (in seconds) that will be filled.  If None, defaults to entire time range (i.e.
+            all gaps with length > (dt+margin) will be filled)
         func : str, optional
             Either 'nan' or 'ffill', which overrides normal interpolation with NaN
             substitution or forward-filled values.
@@ -84,12 +88,14 @@ def degap(
     #    new_tvar_index = pytplot.data_quants[tvar].coords['time']
     new_tvar_index = pytplot.get_data(tvar)[0]  # Unix time float64
     gap_size = np.diff(new_tvar_index)
+    if maxgap is None:
+        maxgap = np.nanmax(new_tvar_index)-np.nanmin(new_tvar_index)
 
     # Default for dt is the median value of gap_size, the time interval differences
     if dt == None:
         dt = np.median(gap_size)
 
-    gap_index_locations = np.where(gap_size > dt + margin)
+    gap_index_locations = np.where((gap_size > dt + margin) & (gap_size < maxgap))
     values_to_add = np.array([])
     if onenanpergap == True:
         for i in gap_index_locations[0]:
