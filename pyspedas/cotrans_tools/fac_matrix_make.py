@@ -54,6 +54,7 @@ def normalize_vectors(vectors):
 
 
 def pos_cotrans(pos_times, pos_data, mag_var_name):
+    """Coordinate transformation of position"""
     store_data('fac_mat_pos_tmp', data={'x': pos_times, 'y': pos_data})
 
     # Retrieve the coordinate system mad_var_name
@@ -67,10 +68,12 @@ def pos_cotrans(pos_times, pos_data, mag_var_name):
 
 
 def get_z_axis(mag_data):
+    """Normalized magnetic field vector"""
     return tnormalize(mag_data.y, return_data=True)
 
 
 def build_fac_axes(z, refv, mode='yxz'):
+    """Construct FAC axes based on defined mode"""
     if mode == 'yxz':
         y = tcrossp(z, refv, return_data=True)
         y = normalize_vectors(y)
@@ -115,124 +118,6 @@ def get_ref_phi(pos_data, mag_var_name, sign=1):
 
     arr = pos_cotrans(pos_data.times, arr, mag_var_name)
     return arr
-
-
-# # === Previous Implementation === #
-# def xgse(mag_var_name):
-#     """
-#     Generates the 'xgse' transformation matrix
-#     """
-#     mag_data = validate_vector_data(mag_var_name)
-#     if mag_data is None:
-#         return None
-#
-#     # xaxis of this system is X of the gse system. Z is mag field
-#     N = len(mag_data.times)
-#     x_axis = np.zeros((N, 3))
-#     x_axis[:, 0] = 1
-#
-#     # create orthonormal basis set
-#     z_basis = tnormalize(mag_var_name, return_data=True)
-#     if z_basis is None:
-#         return None
-#
-#     y_basis = tcrossp(z_basis, x_axis, return_data=True)
-#     y_basis = tnormalize(y_basis, return_data=True)
-#     x_basis = tcrossp(y_basis, z_basis, return_data=True)
-#
-#     return (x_basis, y_basis, z_basis)
-#
-# def rgeo(mag_var_name, pos_var_name):
-#     """
-#     Build FAC basis for the 'rgeo' option.
-#     Rgeo is the normalized (interpolated) position vector.
-#     Z-axis = normalized magnetic field.
-#     Y-axis = B x Rgeo.
-#     X-axis = Y x B.
-#     """
-#     pos_data = validate_vector_data(pos_var_name)
-#     if pos_data is None:
-#         return None
-#
-#     # Interpolate position data onto the magnetic field's time grid.
-#     interp_pos_data = interpolate_position(pos_var_name, mag_var_name)
-#     if interp_pos_data is None:
-#         return None
-#
-#     # Normalize the interpolated position vector.
-#     rgeo_norm = normalize_vectors(interp_pos_data.y)
-#
-#     # Z-axis: normalized magnetic field.
-#     z_basis = tnormalize(mag_var_name, return_data=True)
-#     if z_basis is None:
-#         return None
-#
-#     # Y-axis: cross(B, Rgeo)
-#     y_basis = tcrossp(z_basis, rgeo_norm, return_data=True)
-#     y_basis = normalize_vectors(y_basis)
-#
-#     # X-axis: cross(Y, B)
-#     x_basis = tcrossp(y_basis, z_basis, return_data=True)
-#     return (x_basis, y_basis, z_basis)
-#
-# def phigeo(mag_var_name, pos_var_name, probe=None, sign=1):
-#     """
-#     Phigeo transformation (using azimuthal GEI phi vector).
-#       - Interpolate position data and compute phi = arctan2(y, x) in degrees.
-#       - Define phi_vector = [-sin(phi), cos(phi), 0], multiplied by sign.
-#       - Transform phi_vector into the magnetic field coordinate system:
-#           if mag system is 'gse' or 'gsm', use cotrans; if 'dsl', use thm_cotrans.
-#       - Z-axis: normalized magnetic field.
-#       - X-axis: computed as (phi_vector) x Z.
-#       - Y-axis: computed as Z x X.
-#     """
-#     pos_data = validate_vector_data(pos_var_name)
-#     if pos_data is None:
-#         return None
-#
-#     interp_data = interpolate_position(pos_var_name, mag_var_name)
-#     if interp_data is None:
-#         return None
-#
-#     # Use xyz_to_polar function to convert Cartesian coordinates to polar.
-#     # This function returns (r, theta, phi) where phi is in degrees.
-#     res = xyz_to_polar(interp_data.y)
-#     phi_deg = res[:, 1]
-#
-#     phi_vector = np.empty_like(interp_data.y)
-#     phi_vector[:, 0] = -np.sin(np.radians(phi_deg)) * sign
-#     phi_vector[:, 1] = np.cos(np.radians(phi_deg)) * sign
-#     phi_vector[:, 2] = 0.0
-#
-#     mag_data = get_data(mag_var_name)
-#
-#     # TODO: This block of code is not yet correct
-#     mag_coord_sys = "gei"
-#     if hasattr(mag_data, "dlimits") and mag_data.dlimits is not None:
-#         mag_coord_sys = mag_data.dlimits.get("data_att", {}).get("coord_sys", "gei").lower()
-#
-#     if mag_coord_sys == "gse":
-#         phi_vector = cotrans(data_in=phi_vector, coord_in="gei", coord_out="gse")
-#     elif mag_coord_sys == "gsm":
-#         phi_vector = cotrans(phi_vector, coord_in="gei", coord_out="gsm")
-#     elif mag_coord_sys == "dsl":
-#         # TODO: implement dsl
-#         # phi_vector = thm_cotrans(phi_vector, in_coord="gei", out_coord="dsl", probe=probe)
-#         logging.error("dsl coordinate is not supported for phigeo yet")
-#     else:
-#         logging.error("Unsupported magnetic field coordinate system for phigeo")
-#         return None
-#
-#     z_basis = tnormalize(mag_var_name, return_data=True)
-#     if z_basis is None:
-#         return None
-#
-#     x_basis = tcrossp(phi_vector, z_basis, return_data=True)
-#     x_basis = normalize_vectors(x_basis)
-#     y_basis = tcrossp(z_basis, x_basis, return_data=True)
-#     y_basis = normalize_vectors(y_basis)
-#     return (x_basis, y_basis, z_basis)
-# # === End of Previous Implementation === #
 
 # === Dictionary Mapping Option Strings to Functions ===
 COORD_FUNCTIONS = {
