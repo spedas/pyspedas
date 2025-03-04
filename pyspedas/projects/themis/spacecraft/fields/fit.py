@@ -11,7 +11,8 @@ def fit(trange=['2007-03-23', '2007-03-24'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        **kwargs):
     """
     This function loads THEMIS FIT data
 
@@ -67,6 +68,9 @@ def fit(trange=['2007-03-23', '2007-03-24'],
             in the trange keyword
             Default: False
 
+        **kwargs: dict
+            Any additional keyword arguments will be passed to the load function
+
     Returns
     -------
     List of str
@@ -85,7 +89,8 @@ def fit(trange=['2007-03-23', '2007-03-24'],
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
-                probe=probe, time_clip=time_clip, no_update=no_update)
+                probe=probe, time_clip=time_clip, no_update=no_update,
+                **kwargs)
 
 
 def cal_fit(probe='a', no_cal=False):
