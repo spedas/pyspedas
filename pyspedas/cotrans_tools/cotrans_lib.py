@@ -13,10 +13,41 @@ For a comparison to IDL, see: http://spedas.org/wiki/index.php?title=Cotrans
 """
 import numpy as np
 import logging
-import datetime
+from datetime import datetime, timezone, timedelta
 from pyspedas.cotrans_tools.igrf import set_igrf_params
 from pyspedas.cotrans_tools.j2000 import set_j2000_params
 
+
+def safe_fromtimestamp(timestamp):
+    """
+    Safely convert Unix timestamp to datetime object.
+
+    Parameters
+    ----------
+    timestamp : float or list of float
+        Unix timestamp
+
+    Returns
+    -------
+    list of datetime objects
+
+    Notes
+    -----
+    This function works for positive and negative timestamps.
+    """
+    result = []
+    if not isinstance(timestamp, list) and not isinstance(timestamp, np.ndarray):
+        t = [timestamp]
+    else:
+        t = timestamp
+        
+    for i in range(len(t)):
+        if t[i] > 0:
+            result.append(datetime.fromtimestamp(t[i], timezone.utc))
+        else:
+            result.append(datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=t[i]))
+
+    return result
 
 def get_time_parts(time_in):
     """
@@ -24,7 +55,7 @@ def get_time_parts(time_in):
 
     Parameters
     ----------
-    time_in: list of float
+    time_in: float or list of float
         Time array.
 
     Returns
@@ -41,12 +72,25 @@ def get_time_parts(time_in):
         Seconds and milliseconds.
 
     """
-    tnp = np.vectorize(datetime.datetime.fromtimestamp)(time_in[:],datetime.timezone.utc)
+    # if time_in is not a list, make it one
+    if not isinstance(time_in, list):
+        time_in = [time_in]
+
+    # Get datetime objects, in order to find year, doy, etc.
+    tnp = safe_fromtimestamp(time_in)
     iyear = np.array([tt.year for tt in tnp])
     idoy = np.array([tt.timetuple().tm_yday for tt in tnp])
     ih = np.array([tt.hour for tt in tnp])
     im = np.array([tt.minute for tt in tnp])
     isec = np.array([tt.second + tt.microsecond/1000000.0 for tt in tnp])
+
+    if len(tnp)==1:
+        # if only one element, return a scalar
+        iyear = iyear[0]
+        idoy = idoy[0]
+        ih = ih[0]
+        im = im[0]
+        isec = isec[0]
 
     return iyear, idoy, ih, im, isec
 
@@ -129,7 +173,7 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     Notes
     -----
     Compute geodipole axis direction from International Geomagnetic Reference
-    Field (IGRF-13) model for time interval 1970 to 2020.
+    Field (IGRF-14) model for time interval 1965 to 2030.
     For time out of interval, computation is made for nearest boundary.
     Same as SPEDAS cdipdir.
     """
@@ -140,14 +184,21 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     if (iyear is None) or (idoy is None):
         iyear, idoy, ih, im, isec = get_time_parts(time_in)
 
-    # IGRF-13 parameters, 1965-2020.
+    # Get IGRF-14 parameters, 1965-2025.
     minyear, maxyear, ga, ha, dg, dh = set_igrf_params()
 
+    # Find base year for IGRF coefficients.
     y = iyear - (iyear % 5)
     if y < minyear:
         y = minyear
-    elif y > maxyear:
-        y = maxyear
+    elif y > maxyear-5:
+        y = maxyear-5
+
+    # Do not interpolate beyond boundaries (minyear and maxyear).
+    if iyear < minyear:
+        iyear = minyear
+    elif iyear > maxyear:
+        iyear = maxyear
 
     year0 = y
     year1 = y + 5

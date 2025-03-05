@@ -37,8 +37,8 @@ def set_igrf_params():
     for time interval 1970 to 2025 (with interpolation up to 2030).
     Used to compute geodipole axis direction, function cdipdir().
     """
-    minyear = 1970  # Some functions do not work with negative unix times.
-    maxyear = 2030  # max year plus 5 years with interpolation
+    minyear = 1965  # min year provided
+    maxyear = 2030  # max year computed (including 5 years with interpolation)
     ga = {}
     ha = {}
     ga[1965] = [0.0, -30334.0, -2119.0, -1662.0, 2997.0, 1594.0, 1297.0, -2038.0, 1292.0, 856.0, 957.0, 804.0, 479.0, -390.0, 252.0, -219.0, 358.0, 254.0, -31.0, -157.0, -62.0, 45.0, 61.0, 8.0, -228.0, 4.0, 1.0, -111.0, 75.0, -57.0, 4.0, 13.0, -26.0, -6.0, 13.0, 1.0, 13.0, 5.0, -4.0, -14.0, 0.0, 8.0, -1.0, 11.0, 4.0, 8.0, 10.0, 2.0, -13.0, 10.0, -1.0, -1.0, 5.0, 1.0, -2.0, -2.0, -3.0, 2.0, -5.0, -2.0, 4.0, 4.0, 0.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
