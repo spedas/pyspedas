@@ -56,7 +56,9 @@ def subtract_average(
 
     old_names = pytplot.tnames(names)
 
-    if len(old_names) < 1:
+    if len(old_names) == 0:
+        return
+    elif len(old_names) < 1:
         logging.error('Subtract Average error: No pytplot names were provided.')
         return
 
