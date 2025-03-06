@@ -74,6 +74,19 @@ class TestMinvar(unittest.TestCase):
         self.assertTrue((data_exists('mva_data_day')))
         # TODO: Verify against IDL SPEDAS results
 
+    def test_minvar_matrix_extra_outputs(self):
+        trange=['2007-07-10', '2007-07-11']
+        pyspedas.projects.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
+        minvar_matrix_make('thc_fgs_gse',tstart='2007-07-10/07:54:00',tstop='2007-07-10/07:56:30',
+                           evname='mva_lambdas',tminname='mva_min',tmidname='mva_mid',tmaxname='mva_max')
+        self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
+        pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgs_gse',newname='mva_data_day')
+        self.assertTrue((data_exists('mva_data_day')))
+        self.assertTrue(data_exists('mva_lambdas'))
+        self.assertTrue(data_exists('mva_min'))
+        self.assertTrue(data_exists('mva_min'))
+        self.assertTrue(data_exists('mva_max'))
+
     def test_minvar_matrix_make_hour(self):
         trange=['2007-07-10', '2007-07-11']
         pyspedas.projects.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
