@@ -52,7 +52,7 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
-        logging.error('clean_spikes error: No pytplot names were provided.')
+        logging.error('clean_spikes: No valid tplot names were provided.')
         return
 
     if suffix is None:
