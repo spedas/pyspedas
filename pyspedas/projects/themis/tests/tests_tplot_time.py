@@ -2,6 +2,7 @@ import logging
 import unittest
 import pyspedas
 import pytplot
+import numpy as np
 from numpy.testing import assert_allclose
 
 display=False
@@ -42,6 +43,30 @@ class TplotTimeValidation(unittest.TestCase):
         vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
         tplot('tha_fgl_dsl', display=display)  # full plot
         tlimit(['2007-03-23/14:00','2007-03-23/14:00:00.9'])
+        tplot('tha_fgl_dsl', display=display)  # short time interval
+
+    def test_numeric_tlimit(self):
+        """Test pytplot.timespan as used in ERG notebook"""
+        from pytplot import tplot,tlimit
+        from pyspedas.projects.themis import fgm
+        vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
+        tplot('tha_fgl_dsl', display=display)  # full plot
+        tstart=pytplot.time_double('2007-03-23/14:00')
+        tend=tstart+ 60*60
+        trange=[tstart,tend]
+        tlimit(trange)
+        tplot('tha_fgl_dsl', display=display)  # short time interval
+
+    def test_numpy_tlimit(self):
+        """Test pytplot.timespan as used in ERG notebook"""
+        from pytplot import tplot,tlimit
+        from pyspedas.projects.themis import fgm
+        vars = fgm(probe='a',level='l2',trange=['2007-03-23', '2007-03-24'])
+        tplot('tha_fgl_dsl', display=display)  # full plot
+        tstart=pytplot.time_double('2007-03-23/14:00')
+        tend=tstart+ 60*60
+        trange=np.array([tstart,tend])
+        tlimit(trange)
         tplot('tha_fgl_dsl', display=display)  # short time interval
 
     def test_timebar(self):
