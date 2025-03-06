@@ -2,6 +2,7 @@ import logging
 import pytplot
 import numpy as np
 from pytplot import tplot_utilities as utilities
+from .wildcard_routines import tplot_wildcard_expand
 
 
 def options(name, option=None, value=None, opt_dict=None):
@@ -120,7 +121,8 @@ def options(name, option=None, value=None, opt_dict=None):
     if not isinstance(name, list):
         name = [name]
 
-    for i in name:
+    names = tplot_wildcard_expand(name)
+    for i in names:
 
         for option, value in opt_dict.items():
 
@@ -131,29 +133,29 @@ def options(name, option=None, value=None, opt_dict=None):
                 logging.info(str(i) + " is currently not in pytplot.")
                 return
 
-            if option == 'color':
+            elif option in ['color', 'colors', 'col', 'cols']:
                 if isinstance(value, list):
                     pytplot.data_quants[i].attrs['plot_options']['extras']['line_color'] = value
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['extras']['line_color'] = [value]
 
-            if option == 'link':
+            elif option == 'link':
                 if isinstance(value, list):
                     pytplot.link(i, value[1], value[0])
 
-            if option == 'colormap':
+            elif option == 'colormap':
                 if isinstance(value, list):
                     pytplot.data_quants[i].attrs['plot_options']['extras']['colormap'] = value
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['extras']['colormap'] = [value]
 
-            if option == 'colormap_width':
+            elif option == 'colormap_width':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['colormap_width'] = value
 
-            if option == 'second_axis_size':
+            elif option == 'second_axis_size':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['second_axis_size'] = value
 
-            if option == 'spec':
+            elif option == 'spec':
                 _reset_plots(i)
                 if value:
                     if 'spec_bins' not in pytplot.data_quants[i].coords:
@@ -176,79 +178,79 @@ def options(name, option=None, value=None, opt_dict=None):
                     else:
                         pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v1'
 
-            if option == 'alt':
+            elif option == 'alt':
                 _reset_plots(i)
                 pytplot.data_quants[i].attrs['plot_options']['extras']['alt'] = value
 
-            if option == 'map':
+            elif option == 'map':
                 _reset_plots(i)
                 pytplot.data_quants[i].attrs['plot_options']['extras']['map'] = value
 
-            if option == 'legend_names' or option == 'labels':
+            elif option in ['legend_names', 'labels', 'legend_name', 'legend_label']:
                 if isinstance(value, list):
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = [value]
 
-            if option == 'legend_location' or option == 'labels_location':
+            elif option in ['legend_location', 'labels_location', 'legends_location', 'label_location']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_location'] = value
 
-            if option == 'legend_size' or option == 'labels_size':
+            elif option in ['legend_size', 'labels_size', 'label_size']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_size'] = value
 
-            if option == 'legend_shadow' or option == 'labels_shadow':
+            elif option in ['legend_shadow', 'labels_shadow', 'label_shadow']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_shadow'] = value
 
-            if option == 'legend_title' or option == 'labels_title':
+            elif option in ['legend_title', 'label_title', 'labels_title']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_title'] = value
 
-            if option == 'legend_titlesize' or option == 'labels_titlesize':
+            elif option in ['legend_titlesize', 'label_titlesize', 'labels_titlesize']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_titlesize'] = value
 
-            if option == 'legend_color' or option == 'labels_color':
+            elif option in ['legend_color', 'legends_color','label_color','labels_color']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_color'] = value
 
-            if option == 'legend_edgecolor' or option == 'labels_edgecolor':
+            elif option in ['legend_edgecolor', 'labels_edgecolor']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_edgecolor'] = value
 
-            if option == 'legend_facecolor' or option == 'labels_facecolor':
+            elif option in ['legend_facecolor', 'labels_facecolor']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_facecolor'] = value
 
-            if option == 'legend_markerfirst' or option == 'labels_markerfirst':
+            elif option in ['legend_markerfirst' or option == 'labels_markerfirst']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerfirst'] = value
 
-            if option == 'legend_markerscale' or option == 'labels_markerscale':
+            elif option in ['legend_markerscale', 'labels_markerscale']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
 
-            if option == 'legend_markersize' or option == 'legend_markersize':
+            elif option in ['legend_markersize', 'legend_markersize']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markersize'] = value
 
-            if option == 'legend_frameon' or option == 'labels_frameon':
+            elif option in ['legend_frameon', 'labels_frameon']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
 
-            if option == 'legend_ncols' or option == 'labels_ncols':
+            elif option in ['legend_ncols', 'labels_ncols', 'label_ncols']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_ncols'] = value
 
-            if option == 'xlog_slice':
+            elif option == 'xlog_slice':
                 if value:
                     pytplot.data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'log'
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'linear'
 
-            if option == 'ylog':
+            elif option == 'ylog':
                 negflag = 0 # _ylog_check(data_quants, value, i)
                 if negflag == 0 and value:
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'log'
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'linear'
 
-            if option == 'ylog_slice':
+            elif option == 'ylog_slice':
                 if value:
                     pytplot.data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'log'
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'linear'
 
-            if option == 'zlog':
+            elif option == 'zlog':
                 # check for negative values and warn the user that they will be ignored
                 negflag = _zlog_check(pytplot.data_quants, value, i)
                 if negflag != 0 and value:
@@ -259,12 +261,12 @@ def options(name, option=None, value=None, opt_dict=None):
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
 
-            if option == 'nodata':
+            elif option == 'nodata':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
 
             # Obsolete? (except for value='none'?) JWL 2024-03-21
             # These don't seem to be the correct format for matplotlib parameterized line styles.
-            if option == 'line_style' or option == 'linestyle':
+            elif option in ['line_style', 'linestyle', 'line_style_name']:
                 if value == 0 or value == 'solid_line':
                     to_be = []
                 elif value == 1 or value == 'dot':
@@ -288,184 +290,184 @@ def options(name, option=None, value=None, opt_dict=None):
                 if(value == 6 or value == 'none'):
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
 
-            if option == 'char_size' or option == 'charsize':
+            elif option in ['char_size', 'charsize']:
                 pytplot.data_quants[i].attrs['plot_options']['extras']['char_size'] = value
 
-            if option == 'name':
+            elif option == 'name':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['name'] = value
 
-            if option == 'title':
+            elif option == 'title':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['title'] = value
 
-            if option == "panel_size":
+            elif option == "panel_size":
                 if value > 1 or value <= 0:
                     logging.info("Invalid panel_size value (%f). Should be in (0, 1]",value)
                     return
                 pytplot.data_quants[i].attrs['plot_options']['extras']['panel_size'] = value
 
-            if option == 'basemap':
+            elif option == 'basemap':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['basemap'] = value
 
-            if option == 'alpha':
+            elif option == 'alpha':
                 if value > 1 or value < 0:
                     logging.info("Invalid alpha value (%f). Should be [0, 1]",value)
                     return
                 pytplot.data_quants[i].attrs['plot_options']['extras']['alpha'] = value
 
-            if option == 'marker':
+            elif option in ['marker', 'markers']:
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker'] = value
 
-            if option == 'errorevery':
+            elif option == 'errorevery':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['errorevery'] = value
 
-            if option == 'capsize':
+            elif option == 'capsize':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['capsize'] = value
 
-            if option == 'ecolor':
+            elif option == 'ecolor':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['ecolor'] = value
 
-            if option == 'elinewidth':
+            elif option == 'elinewidth':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['elinewidth'] = value
 
-            if option == 'marker_size':
+            elif option == 'marker_size':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['marker_size'] = value
 
-            if option == 'markevery':
+            elif option == 'markevery':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['markevery'] = value
 
-            if option == 'symbols':
+            elif option == 'symbols':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['symbols'] = value
 
-            if option == 'xtick_length':
+            elif option == 'xtick_length':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_length'] = value
 
-            if option == 'ytick_length':
+            elif option == 'ytick_length':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_length'] = value
 
-            if option == 'xtick_width':
+            elif option == 'xtick_width':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_width'] = value
 
-            if option == 'ytick_width':
+            elif option == 'ytick_width':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_width'] = value
 
-            if option == 'xtick_color':
+            elif option == 'xtick_color':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['xtickcolor'] = value
 
-            if option == 'ytick_color':
+            elif option == 'ytick_color':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ytickcolor'] = value
 
-            if option == 'xtick_labelcolor':
+            elif option == 'xtick_labelcolor':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_labelcolor'] = value
 
-            if option == 'ytick_labelcolor':
+            elif option == 'ytick_labelcolor':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_labelcolor'] = value
 
-            if option == 'xtick_direction':
+            elif option == 'xtick_direction':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['xtick_direction'] = value
 
-            if option == 'ytick_direction':
+            elif option == 'ytick_direction':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ytick_direction'] = value
 
-            if option == 'right_axis':
+            elif option == 'right_axis':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['right_axis'] = value
 
-            if option == 'thick':
+            elif option == 'thick':
                 if isinstance(value, list):
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_width'] = [value]
 
-            if option == 'yrange' or option == 'y_range':
+            elif option in ['yrange', 'y_range']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
                 # track whether the yrange option was set by the user
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range_user'] = True
 
-            if option == 'y_major_ticks':
+            elif option == 'y_major_ticks':
                 # check whether the value is 1D array-like
                 if isinstance(value, (list, np.ndarray)):
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_major_ticks'] = value
                 else:
                     logging.warning('y_major_ticks must be a 1D array-like object')
 
-            if option == 'y_minor_tick_interval':
+            elif option == 'y_minor_tick_interval':
                 # check whether the value is a number
                 if isinstance(value, (int, float)):
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_minor_tick_interval'] = value
                 else:
                     logging.warning('y_minor_tick_interval must be a number')
 
-            if option == 'zrange' or option == 'z_range':
+            elif option in ['zrange', 'z_range']:
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
 
-            if option == 'xrange_slice':
+            elif option == 'xrange_slice':
                 plt_opts = pytplot.data_quants[i].attrs['plot_options']
                 if plt_opts.get('slice_xaxis_opt') is not None:
                     plt_opts['slice_xaxis_opt']['xi_range'] = [value[0], value[1]]
 
-            if option == 'yrange_slice':
+            elif option == 'yrange_slice':
                 plt_opts = pytplot.data_quants[i].attrs['plot_options']
                 if plt_opts.get('slice_yaxis_opt') is not None:
                     plt_opts['slice_yaxis_opt']['yi_range'] = [value[0], value[1]]
 
-            if option == 'xtitle':
+            elif option == 'xtitle':
                 pytplot.data_quants[i].attrs['plot_options']['xaxis_opt']['axis_label'] = value
 
-            if option == 'ytitle':
+            elif option == 'ytitle':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['axis_label'] = value
 
-            if option == 'ztitle':
+            elif option == 'ztitle':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_label'] = value
 
-            if option == 'xsubtitle':
+            elif option == 'xsubtitle':
                 pytplot.data_quants[i].attrs['plot_options']['xaxis_opt']['axis_subtitle'] = value
 
-            if option == 'ysubtitle':
+            elif option == 'ysubtitle':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['axis_subtitle'] = value
 
-            if option == 'zsubtitle':
+            elif option == 'zsubtitle':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_subtitle'] = value
 
-            if option == 'ytitle_color':
+            elif option == 'ytitle_color':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['axis_color'] = value
 
-            if option == 'ztitle_color':
+            elif option == 'ztitle_color':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_color'] = value
 
-            if option == 'ybar':
+            elif option == 'ybar':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ybar'] = value
 
-            if option == 'ybar_color':
+            elif option == 'ybar_color':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ybar'] = value
 
-            if option == 'ybar_size':
+            elif option == 'ybar_size':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['ysize'] = value
 
-            if option == 'plotter':
+            elif option == 'plotter':
                 _reset_plots(i)
                 pytplot.data_quants[i].attrs['plot_options']['extras']['plotter'] = value
 
-            if option == 'crosshair_x':
+            elif option == 'crosshair_x':
                 pytplot.data_quants[i].attrs['plot_options']['xaxis_opt']['crosshair'] = value
 
-            if option == 'crosshair_y':
+            elif option == 'crosshair_y':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['crosshair'] = value
 
-            if option == 'crosshair_z':
+            elif option == 'crosshair_z':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['crosshair'] = value
 
-            if option == 'static':
+            elif option == 'static':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['static'] = value
 
-            if option == 'static_tavg':
+            elif option == 'static_tavg':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['static_tavg'] = [value[0], value[1]]
 
-            if option == 't_average':
+            elif option == 't_average':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['t_average'] = value
 
-            if option == 'data_gap': #jmm, 2023-06-20
+            elif option == 'data_gap': #jmm, 2023-06-20
                 pytplot.data_quants[i].attrs['plot_options']['extras']['data_gap'] = value
 
-            if option == 'spec_dim_to_plot' or option == 'spec_plot_dim':
+            elif option in ['spec_dim_to_plot', 'spec_plot_dim']:
                 if len(pytplot.data_quants[i].values.shape) <= 2:
                     logging.warning(f"Must have more than 2 coordinate dimensions to set spec_coord_to_plot for {pytplot.data_quants[i].name}")
                     continue
@@ -495,7 +497,7 @@ def options(name, option=None, value=None, opt_dict=None):
                 pytplot.data_quants[i].coords['spec_bins'] = pytplot.data_quants[i].coords[coord_to_plot]
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pytplot.data_quants[i])
 
-            if option == 'spec_slices_to_use':
+            elif option == 'spec_slices_to_use':
                 if not isinstance(value, dict):
                     logging.error("Must be a dictionary object in the format {'v2':15, 'v3':7}")
                     return
@@ -507,25 +509,31 @@ def options(name, option=None, value=None, opt_dict=None):
 
                 pytplot.data_quants[i].attrs['plot_options']['extras']['spec_slices_to_use'] = value
 
-            if option == 'border':
+            elif option == 'border':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['border'] = value
 
-            if option == 'var_label_ticks':
+            elif option == 'var_label_ticks':
                 pytplot.data_quants[i].attrs['plot_options']['var_label_ticks'] = value
 
-            if option == 'y_interp':
+            elif option == 'y_interp':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_interp'] = value
 
-            if option == 'y_interp_points':
+            elif option == 'y_interp_points':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_interp_points'] = value
 
-            if option == 'x_interp':
+            elif option == 'x_interp':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['x_interp'] = value
 
-            if option == 'x_interp_points':
+            elif option == 'x_interp_points':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['x_interp_points'] = value
-            if option == 'y_no_resample':
+            elif option == 'y_no_resample':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_no_resample'] = value
+
+            else:
+                # Apparently cdf_to_tplot is treating all variable attributes as potential plot
+                # options.  Adding this warning will end up spamming the logs unless cdf_to_tplot is changed.
+                logging.warning(f"Unrecognized option {option}")
+                #pass
     return
 
 
