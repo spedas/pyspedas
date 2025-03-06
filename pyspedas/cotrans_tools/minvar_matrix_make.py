@@ -8,8 +8,43 @@ def minvar_matrix_make(in_var_name,
                        tstop=None,
                        twindow=None,
                        tslide=None,
-                       newname=None):
+                       newname=None,
+                       evname=None,
+                       tminname=None,
+                       tmidname=None,
+                       tmaxname=None):
     """
+    Use an input variable to make rotation matrices to rotate vectors into a minimum variance coordinate system.
+
+    Parameters
+    ----------
+    in_var_name : str
+        Name of the input variable that defines the coordinate system
+    tstart: str
+        Start time of the interval for which MVA matrices will be created.
+    tend: str
+        End time of the interval for which MVA matrices will be created.
+    twindow: float
+        Duration (in seconds) of the window used to produce each matrix. Defaults to
+        entire time series.
+    tslide: float
+        Offset time (in seconds) between each successive window start time. Defaults to twindow/2.
+        Set to 0 to produce only a single matrix.
+    newname: str
+        Name of the tplot variable to receive the MVA rotation matrices.
+    evname: str
+        Name of the tplot variable to receive the eigenvalues at each window.
+    tminname: str
+         Name of the tplot variable to receive the basis vectors for the minimum variance direction.
+    tmidname: str
+         Name of the tplot variable to receive the basis vectors for the intermediate variance direction.
+    tmaxname: str
+         Name of the tplot variable to receive the basis vectors for the maximum variance direction.
+
+    Returns
+    -------
+    list of str
+        The list of tplot variables produced.
 
     """
     data = get_data(in_var_name)
@@ -92,5 +127,21 @@ def minvar_matrix_make(in_var_name,
 
     if saved:
         out_vars.append(newname)
+
+    if evname is not None:
+        store_data(evname, data={'x': o_times[:-1], 'y': o_lams[:-1, :]})
+        out_vars.append(evname)
+
+    if tminname is not None:
+        store_data(tminname, data={'x': o_times[:-1], 'y': o_eigs[:-1, 2, :]})
+        out_vars.append(tminname)
+
+    if tmidname is not None:
+        store_data(tmidname, data={'x': o_times[:-1], 'y': o_eigs[:-1, 1, :]})
+        out_vars.append(tmidname)
+
+    if tmaxname is not None:
+        store_data(tmaxname, data={'x': o_times[:-1], 'y': o_eigs[:-1, 0, :]})
+        out_vars.append(tmaxname)
 
     return out_vars
