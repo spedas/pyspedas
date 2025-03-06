@@ -1,5 +1,5 @@
 from numpy import linalg
-from pytplot import split_vec, join_vec, get_data, store_data, options
+from pytplot import split_vec, join_vec, get_data, store_data, options, tplot_wildcard_expand
 from typing import Union, List
 import logging
 
@@ -39,6 +39,10 @@ def tvectot(tvars: Union[str, List[str]], newname=None, newnames: Union[str, Lis
     if newnames is not None:
         logging.info("tvectot: The newnames parameter is deprecated. Please use newname instead.")
         newname = newnames
+
+    tvars = tplot_wildcard_expand(tvars)
+    if len(tvars) == 0:
+        return
 
     tvars_type = type(tvars)
     if tvars_type == str:
