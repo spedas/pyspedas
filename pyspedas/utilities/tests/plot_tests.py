@@ -239,7 +239,7 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', 'Interpolated along both x and y axes')
         tplot('tha_peef_en_eflux',save_png='tha_peef_en_eflux_interp_both',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
-        options('tha_peef_en_eflux', '_interp',0) # reset for other tests
+        options('tha_peef_en_eflux', 'x_interp',0) # reset for other tests
         options('tha_peef_en_eflux', 'y_interp',0) # reset for other tests
 
     def test_mms_epsd_specplot(self):
@@ -268,10 +268,11 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         import pyspedas
         # FAST TEAMS has fill values -1e31 in V, top is an energy distribution, the bottom two are pitch angle distributions
-        teams_vars = pyspedas.projects.fast.teams(['1998-09-05', '1998-09-06'])
+        teams_vars = pyspedas.projects.fast.teams(['1998-09-05', '1998-09-06'], level='k0')
         timespan('1998-09-05',1,'days')
         tplot_options('title', 'Fill should be removed, bottom two panels should go to Y=-90 deg')
-        tplot(['H+', 'H+_low', 'H+_high'], display=global_display, save_png='TEAMS_test')
+        # Specify variables to plot as a space-delimited string with wildcards
+        tplot('*H+ *H+_low *H+_high', display=global_display, save_png='TEAMS_test')
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
@@ -471,6 +472,7 @@ class PlotTestCases(unittest.TestCase):
         pyspedas.projects.themis.state(probe='a')
         if os.path.exists('ret_plot_objs.png'):
             os.remove('ret_plot_objs.png')
+        tplot_options('title', 'Should create ret_plot_objs.png ')
         tplot('tha_pos',display=global_display,return_plot_objects=True, save_png='ret_plot_objs.png')
         self.assertTrue(os.path.exists('ret_plot_objs.png'))
 
