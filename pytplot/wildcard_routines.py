@@ -144,8 +144,13 @@ def tplot_wildcard_expand(patterns, case_sensitive=True):
     input_pattern_list = patterns
     if patterns is None:
         return []
-    if isinstance(patterns,str) or isinstance(patterns,int):
+    elif isinstance(patterns,str) or isinstance(patterns,int):
         input_pattern_list = [patterns]
+    elif isinstance(patterns,list):
+        input_pattern_list = patterns
+    else:
+        logging.warning("tplot_wildcard_expand: patterns must be a string, int or list")
+        return []
 
     string_patterns = []
 
@@ -157,7 +162,12 @@ def tplot_wildcard_expand(patterns, case_sensitive=True):
                 string_patterns.append(name)
             else:
                 string_patterns.append(item)
+        elif isinstance(item,str):
+            # If space-delimited, break out into list
+            items = item.split(' ')
+            for it in items:
+                string_patterns.append(it)
         else:
-            string_patterns.append(item)
+            logging.warning("wildcard_expand: bad input: "+str(item) +" Patterns must be a string or int")
     tn = tplot_names(quiet=True)
     return wildcard_expand(tn, patterns=string_patterns, case_sensitive=case_sensitive)
