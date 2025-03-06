@@ -1,5 +1,5 @@
 import numpy as np
-
+import pytplot
 
 def xyz_to_polar(data, co_latitude=False):
     """
@@ -23,6 +23,14 @@ def xyz_to_polar(data, co_latitude=False):
     phi : numpy.ndarray
         azimuthal angle of the vector
     """
+
+    make_tvars=False
+    if isinstance(data, str):
+        make_tvars = True
+        name_in = data
+        d=pytplot.get_data(name_in)
+        data = d.y
+
     x = data[:, 0]
     y = data[:, 1]
     z = data[:, 2]
@@ -32,4 +40,11 @@ def xyz_to_polar(data, co_latitude=False):
     out[:, 2] = np.arctan2(y, x)*180.0/np.pi
     if not co_latitude:
         out[:, 1] = 90.0 - out[:, 1]
-    return out
+
+    if make_tvars:
+        pytplot.store_data(name_in+'_mag', data={'x':d.times, 'y':out[:,0]})
+        pytplot.store_data(name_in + '_th', data={'x': d.times, 'y': out[:, 1]})
+        pytplot.store_data(name_in + '_phi', data={'x': d.times, 'y': out[:, 2]})
+        return
+    else:
+        return out
