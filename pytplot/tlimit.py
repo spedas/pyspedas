@@ -33,12 +33,12 @@ def tlimit(arg=None, full=False, last=False):
 
     """
 
-    if full or arg == 'full':
+    if full or (isinstance(arg,str) and arg == 'full'):
         if pytplot.tplot_opt_glob.get('x_range') is not None:
             del pytplot.tplot_opt_glob['x_range']
-    elif last or arg == 'last':
+    elif last or (isinstance(arg,str) and arg == 'last'):
         pytplot.tplot_opt_glob['x_range'] = pytplot.tplot_opt_glob['x_range_last']
-    elif isinstance(arg, list):
+    else:
         minn = arg[0]
         maxx = arg[1]
         xlim(minn, maxx)
