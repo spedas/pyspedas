@@ -11,8 +11,8 @@ def ylim(name, min, max):
     
     Parameters
     ----------
-        name : str
-            The name of the tplot variable that you wish to set y limits for.  
+        name : str, int, list of str, list of int
+            The names, indices, or wildcard patterns of the tplot variable that you wish to set y limits for.
         min : flt
             The start of the y axis.
         max : flt
@@ -32,8 +32,6 @@ def ylim(name, min, max):
         >>> pyspedas.ylim('Variable1', 2, 4)
 
     """
-    if name not in pytplot.data_quants.keys():
-        logging.info("The name %s is currently not in pytplot.",name)
-        return
+
     pytplot.options(name,'y_range',[min, max])
     return

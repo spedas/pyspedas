@@ -14,8 +14,8 @@ def zlim(name, min, max):
     
     Parameters
     ----------
-        name : str
-            The name of the tplot variable that you wish to set z limits for.  
+        name : str, int, list of str, list of int
+            The names, indices, or wildcard patterns of the tplot variable that you wish to set z limits for.
         min : flt
             The start of the z axis.
         max : flt
@@ -36,9 +36,5 @@ def zlim(name, min, max):
         >>> pyspedas.zlim('Variable1', 2, 3)
 
     """
-    if name not in pytplot.data_quants.keys():
-        logging.info("The name %s is currently not in pytplot.", name)
-        return
-
     pytplot.options(name,'z_range',[min,max])
     return
