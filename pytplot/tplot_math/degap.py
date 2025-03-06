@@ -69,7 +69,9 @@ def degap(
 
     # check for globbed or array input, and call recursively
     tn = pytplot.tnames(tvar)
-    if len(tn) > 1:
+    if len(tn) == 0:
+        return
+    elif len(tn) > 1:
         for j in range(len(tn)):
             pytplot.degap(
                 tn[j],

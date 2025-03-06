@@ -47,7 +47,9 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
 
     #check for globbed or array input, and call recursively
     tn = pytplot.tnames(tvar)
-    if len(tn) > 1:
+    if len(tn) == 0:
+        return
+    elif len(tn) > 1:
         for j in range(len(tn)):
             pytplot.clip(tn[j],ymin,ymax)
         return
