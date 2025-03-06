@@ -58,7 +58,7 @@ def avg_data(names, trange=[], res=None, width=None,
     old_names = tnames(names)
 
     if names is None or len(old_names) < 1:
-        logging.error('avg_data error: No pytplot names were provided.')
+        logging.error('avg_data: No valid tplot names were provided.')
         return
 
     if suffix is None:

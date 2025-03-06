@@ -81,7 +81,7 @@ def yclip(
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        logging.error("yclip error: No pytplot names were provided.")
+        logging.error("yclip error: No valid tplot names were provided.")
         return
 
     if suffix is None:

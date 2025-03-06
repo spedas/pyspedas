@@ -49,7 +49,7 @@ def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None,
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        logging.error('deriv_data error: No pytplot names were provided.')
+        logging.error('deriv_data: No valid tplot names were provided.')
         return
 
     if suffix is None:
