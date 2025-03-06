@@ -915,7 +915,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         options(var_name, 'ysubtitle', f'[{unitsstr}]')
 
             # Gather up all options in the variable attribute section, toss them into options and see what sticks
-            options(var_name, opt_dict=metadata[var_name]['var_attrs'])
+            # JWL 2025-03-06: We want options() to warn about unrecognized option names.  If used here, it will
+            # spam the logs with warnings.  There is also the possibility that someone could use an attribute name
+            # for some other purpose, that collides with the PySPEDAS interpretation.
+            #options(var_name, opt_dict=metadata[var_name]['var_attrs'])
 
         if to_merge is True:
             cur_data_quant = pytplot.data_quants[var_name]
