@@ -96,8 +96,8 @@ jobs:
         echo Starting CDAWeb tests at `date`
         coverage run -a -m  pyspedas.cdagui_tools.tests.tests
         echo Starting akebono tests at `date`
-        #coverage run -a -m  pyspedas.projects.akebono.tests.tests
-        #echo Starting ace tests at `date`
+        coverage run -a -m  pyspedas.projects.akebono.tests.tests
+        echo Starting ace tests at `date`
         coverage run -a -m  pyspedas.projects.ace.tests.tests
         echo Starting cluster tests at `date`
         coverage run -a -m  pyspedas.projects.cluster.tests.tests
