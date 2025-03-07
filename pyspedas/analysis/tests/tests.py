@@ -464,8 +464,25 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('tha_pos_tot')
         s = d.y.shape[1]
         self.assertEqual(s,4)
-        tvectot('tha_pos',newname='tha_pos_total')
+        del_data('tha_pos_tot')
+        tvectot('tha_pos') # join_component defaults to True now
+        self.assertTrue(data_exists('tha_pos_tot'))
+        d = get_data('tha_pos_tot')
+        s = d.y.shape[1]
+        self.assertEqual(s,4)
+        del_data('tha_pos_tot')
+        nn = tvectot('tha_pos',join_component=False)
+        self.assertTrue(data_exists('tha_pos_mag'))
+        d = get_data('tha_pos_mag')
+        ndims = len(d.y.shape)
+        self.assertEqual(ndims,1)
+        del_data('tha_pos_mag')
+        nn = tvectot('tha_pos',newname='tha_pos_total',join_component=False)
         self.assertTrue(data_exists('tha_pos_total'))
+        d = get_data('tha_pos_total')
+        ndims = len(d.y.shape)
+        self.assertEqual(ndims,1)
+        del_data('tha_pos_total')
         tvectot('tha_pos',suffix='_rtot')
         self.assertTrue(data_exists('tha_pos_rtot'))
 
