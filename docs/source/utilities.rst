@@ -140,6 +140,8 @@ Matrix/Vector Operations
 .. autofunction:: pyspedas.tcrossp
 .. autofunction:: pyspedas.tnormalize
 .. autofunction:: pyspedas.tvector_rotate
+.. autofunction:: pyspedas.tvectot
+
 
 Data Cleanup Operations
 ------------------------
