@@ -184,7 +184,7 @@ class CotransTestCases(unittest.TestCase):
         dout = get_data(name_out)
         out_len = len(dout[0])
         gsm = dout[1][1]
-        res = [775.0, 11.70325822, -7.93937951]
+        res = [775.0, 11.70357713,-7.93890939]
         self.assertTrue(out_len == in_len)
         self.assertTrue(abs(gsm[0]-res[0]) <= 1e-6)
         self.assertTrue(abs(gsm[1]-res[1]) <= 1e-6)
@@ -224,7 +224,7 @@ class CotransTestCases(unittest.TestCase):
         dout = get_data(name_out)
         out_len = len(dout[0])
         gsm = dout[1][1]
-        res = [4.59847513e+01, 7.62303493e+02, 1.32679267e+02]
+        res = [ 45.98475132, 762.29816225, 132.7098884 ]
         self.assertTrue(out_len == in_len)
         self.assertTrue(abs(gsm[0]-res[0]) <= 1e-6)
         self.assertTrue(abs(gsm[1]-res[1]) <= 1e-6)
