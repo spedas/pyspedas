@@ -72,8 +72,8 @@ def get_time_parts(time_in):
         Seconds and milliseconds.
 
     """
-    # if time_in is not a list, make it one
-    if not isinstance(time_in, list):
+    # if time_in is not a list or ndarray, make it one
+    if not isinstance(time_in, list) and not isinstance(time_in, np.ndarray):
         time_in = [time_in]
 
     # Get datetime objects, in order to find year, doy, etc.
