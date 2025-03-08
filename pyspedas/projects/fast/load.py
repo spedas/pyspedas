@@ -151,7 +151,7 @@ def load(
                 pathformat = "teams/k0/%Y/fa_k0_tms_%Y%m%d_v??.cdf"
             else:
                 # for l2 data, the only available datatype is "pa"
-                pathformat = "teams/l2/pa/%Y/%m/fast_teams_pa_l2_%Y%m%d_????_v??.cdf"
+                pathformat = "teams/l2/pa/%Y/%m/fast_teams_pa_l2_%Y%m%d_?????_v??.cdf"
 
         else:
             logging.error("Invalid instrument type: " + instr)
