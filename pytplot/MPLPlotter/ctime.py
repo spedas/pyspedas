@@ -59,6 +59,16 @@ def ctime(fig, ax):
     list of double
         The selected times as floating point Unix times (in seconds)
 
+    Examples
+    --------
+
+    >>> import pyspedas
+    >>> from pyspedas import tplot, ctime, time_string
+    >>> pyspedas.projects.themis.state(probe='a')
+    >>> fig, ax = tplot('tha_pos', return_plot_objects=True)
+    >>> saved_timestamps = ctime(fig, ax)
+    >>> print(time_string(saved_timestamps))
+
     """
     # Reset the selected_times list before starting a new selection
     global selected_times
