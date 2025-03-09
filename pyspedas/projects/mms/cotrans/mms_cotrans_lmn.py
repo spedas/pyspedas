@@ -9,10 +9,6 @@ import pyspedas
 from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.cotrans_tools.gsm2lmn import gsm2lmn
 from pyspedas import tinterpol, data_exists
-# For some reason, the import below started picking up the module mec, rather than the wrapper mec() defined in mms/__init__.py.
-# Importing it as pyspedas.projects.mms.mec seems to remove the ambiguity, but I wonder if something fishy is going on
-# with the imports in pyspedas, mms, and mms.mec.
-#from pyspedas.projects.mms import mec
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
