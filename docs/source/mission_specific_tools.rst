@@ -13,3 +13,4 @@ mission-specific wrappers to format the data for use with PySPEDAS general purpo
    themis_analysis
    erg_analysis
    mms_analysis
+   rbsp_analysis

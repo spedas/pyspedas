@@ -45,8 +45,8 @@ Interactive Time Selection from Plots
 
 The ctime routine is a close analogue of the IDL SPEDAS tool.  A call to tplot()
 with return_plot_objects=True will return Matplotlib figure and axis objects that can
-be passed to ctime to select which plot will be used as a time picker.
-Left-clicking on the plot will save that timestamp to the output list; after
+be passed to ctime.  During a call to ctime, a vertical time bar will track the cursor
+location within the plot. Left-clicking will save that timestamp to the output list; after
 selecting the desired number of points, the user can right-click to quit.  ctime will
 then return the list of timestamps selected.
 

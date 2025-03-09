@@ -18,13 +18,8 @@ There are also routines for working with other specialized coordinate systems
 
 
 Some individual projects may include additional coordinate trasformation routines
-for systems used by those missions.  For example, the THEMIS module includes some additional
-transforms for:
-
-* DSL (Despun Solar Spinaxis)
-* SSL (Spinning Solar SpinAxis)
-* SSL (Selenocentric Solar Ecliptic)
-* SEL (Selenographic)
+for systems used by those missions.  Documentation for the mission-spefic coordinate
+transform tools and other utilities can be found on the "Mission Specific Tools" page.
 
 Transformations
 ------------------------------------

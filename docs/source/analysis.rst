@@ -11,6 +11,8 @@ will generally be needed to load the particle data to be operated on,
 perform any calibration, sanitization, or other preliminary steps, then
 populate the data structures used by the general-purpose particle tools.
 
+For documentation of mission-specific particle tools, see the "Mission Specific Tools" page.
+
 Plasma Moments
 --------------
 
@@ -77,64 +79,6 @@ slice2d_plot
 
 .. autofunction:: pyspedas.slice2d_plot
 
-MMS particle distribution tools
--------------------------------
-
-This set of routines operates on MMS 3-D particle distributions to calculate
-plasma moments and plot 1D or 2D slices through the distributions.
-
-mms_part_getspec
-^^^^^^^^^^^^^^^^
-
-.. autofunction:: pyspedas.projects.mms.mms_part_getspec
-
-mms_part_slice2d
-^^^^^^^^^^^^^^^^
-
-.. autofunction:: pyspedas.projects.mms.mms_part_slice2d
-
-ERG (Arase) particle distribution tools
----------------------------------------
-
-These routines operate on Arase 3-D particle distributions.
-
-erg_mep_part_products
-^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: pyspedas.projects.erg.erg_mep_part_products
-
-Example
-^^^^^^^
-
-.. code-block:: python
-
-        import pytplot
-        import pyspedas
-        from pyspedas.projects.erg import erg_mep_part_products
-        from pyspedas import timespan, tplot
-        timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.mepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
-        vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
-        vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
-        mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
-        pos_vn = 'erg_orb_l2_pos_gse'
-        # Calculate energy-time spectra of electron flux for limited pitch-angle (PA) ranges
-        ## Here we calculate energy-time spectra for PA = 0-10 deg and PA = 80-100 deg.
-        vars = erg_mep_part_products('erg_mepe_l2_3dflux_FEDU', outputs='fac_energy', pitch=[80., 100.],
-                                     fac_type='xdsi', mag_name=mag_vn, pos_name=pos_vn,
-                                     trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'], suffix='_pa80-100')
-        vars = erg_mep_part_products('erg_mepe_l2_3dflux_FEDU', outputs='fac_energy', pitch=[0., 10.], fac_type='xdsi',
-                                     mag_name=mag_vn, pos_name=pos_vn,
-                                     trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'], suffix='_pa0-10')
-
-        ## Decorate the obtained spectrum variables
-        pytplot.options('erg_mepe_l2_3dflux_FEDU_energy_mag_pa80-100', 'ytitle', 'MEP-e flux\nPA: 80-100\n\n[eV]')
-        pytplot.options('erg_mepe_l2_3dflux_FEDU_energy_mag_pa0-10', 'ytitle', 'MEP-e flux\nPA: 0-10\n\n[eV]')
-        tplot(['erg_mepe_l2_3dflux_FEDU_energy_mag_pa80-100', 'erg_mepe_l2_3dflux_FEDU_energy_mag_pa0-10'], save_png='erg_mep_en_pa_limit.png')
-
-.. image:: _static/erg_mep_en_pa_limit.png
-   :align: center
-   :class: imgborder
 
 
 Magnetic Null Finding

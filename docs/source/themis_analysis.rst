@@ -10,7 +10,7 @@ The two ARTEMIS probes (aka THEMIS-B and THEMIS-C) are in lunar orbits, so
 so a few selenocentric coordinate transforms are required.
 
 * DSL (Despun Solar Spinaxis)
-* SSL (Spinning Solar SpinAxis)
+* SSE (Spinning Solar SpinAxis)
 * SSL (Selenocentric Solar Ecliptic)
 * SEL (Selenographic)
 
