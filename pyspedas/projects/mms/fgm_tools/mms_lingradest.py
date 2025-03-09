@@ -25,7 +25,7 @@ def mms_lingradest(fields=None, positions=None, suffix=''):
     Returns
     -------
     None
-        The function stores the computed parameters as PyTplot variables
+        The function stores the computed parameters as tplot variables
     """
     if fields is None or positions is None:
         logging.error('B-field and spacecraft position keywords required.')

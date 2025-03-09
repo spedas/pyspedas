@@ -1,5 +1,5 @@
 """
-Creates a new pytplot variable as the time average of original.
+Creates a new tplot variable as the time average of original.
 
     Notes
     -----
@@ -31,10 +31,10 @@ def avg_data(names, trange=[], res=None, width=None,
         Number of values for the averaging window.
         If res is set, then width is ignored.
     newname: str/list of str, optional
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         If not given, then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply.
@@ -201,7 +201,7 @@ def avg_data(names, trange=[], res=None, width=None,
                         nd1.append(np.nan) if isempty else nd1.append(np.average(d[i][idx0, j]))
                 process_v[d._fields[i]].append(nd1)
 
-        # Create the new pytplot variable
+        # Create the new tplot variable
         data_dict = {'x': new_times, 'y': new_data}
         for i in retain_energies:
             data_dict[d._fields[i]] = d[i]

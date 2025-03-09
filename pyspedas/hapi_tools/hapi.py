@@ -8,7 +8,7 @@ from hapiclient import hapi as load_hapi
 def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
          prefix='', catalog=False, quiet=False):
     """
-    Loads data from a HAPI server into pytplot variables
+    Loads data from a HAPI server into tplot variables
 
     Parameters
     -----------

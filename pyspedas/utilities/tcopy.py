@@ -1,5 +1,5 @@
 """
-Creates a deep copy of a pytplot variable, with a new name.
+Creates a deep copy of a plot variable, with a new name.
 
 Notes
 -----
@@ -14,7 +14,7 @@ import copy
 
 def tcopy_one(name_in, name_out):
     """
-    Copy a single pytplot variable.
+    Copy a single tplot variable.
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ def tcopy_one(name_in, name_out):
     None.
 
     """
-    # Copies one pytplot variable
+    # Copies one tplot variable
     tvar_old = pytplot.data_quants[name_in]
     tvar_new = copy.deepcopy(tvar_old)
     tvar_new.name = name_out
@@ -38,7 +38,7 @@ def tcopy_one(name_in, name_out):
 
 def tcopy(names_in, names_out=None, suffix=None):
     """
-    Copy a list of pytplot variables.
+    Copy a list of tplot variables.
 
     Parameters
     ----------
@@ -62,7 +62,7 @@ def tcopy(names_in, names_out=None, suffix=None):
     """
     names_in = pyspedas.tnames(names_in)
     if len(names_in) < 1:
-        logging.error('tcopy error: No pytplot variables found.')
+        logging.error('tcopy: no valid tplot variables found.')
         return
 
     if suffix is None:

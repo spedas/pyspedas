@@ -33,10 +33,10 @@ def wavelet(
     names: str/list of str
         List of pytplot names.
     newname: str/list of str, optional
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         Default: If not given, then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         Default: If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply.
@@ -58,7 +58,7 @@ def wavelet(
 
     Returns
     -------
-    A list of pytplot variables that contain the wavelet power.
+    A list of tplot variables that contain the wavelet power.
 
     Example
     -------

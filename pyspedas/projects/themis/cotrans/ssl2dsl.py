@@ -21,9 +21,9 @@ def ssl2dsl(name_in: str, name_out: str, isdsltossl: bool = False, ignore_input_
     Parameters
     ----------
         name_in: str
-            Name of input pytplot variable (e.g. 'tha_fgl_ssl')
+            Name of input tplot variable (e.g. 'tha_fgl_ssl')
         name_out: str
-            Name of output pytplot variable (e.g. 'tha_fgl_dsl')
+            Name of output tplot variable (e.g. 'tha_fgl_dsl')
         isdsltossl: bool
             If 0 (default) then SSL to DSL.
             If 1, then DSL to SSL.

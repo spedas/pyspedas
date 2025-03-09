@@ -22,9 +22,9 @@ def dsl2gse(name_in: str, name_out: str, isgsetodsl: bool = False, ignore_input_
     Parameters
     ----------
         name_in: str
-            Name of input pytplot variable (e.g. 'tha_fgl_dsl')
+            Name of input tplot variable (e.g. 'tha_fgl_dsl')
         name_out: str
-            Name of output pytplot variable (e.g. 'tha_fgl_gse')
+            Name of output tplot variable (e.g. 'tha_fgl_gse')
         isgsetodsl: bool
             If False (default) then DSL to GSE.
             If True, then GSE to DSL.

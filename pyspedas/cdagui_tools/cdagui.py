@@ -2,7 +2,7 @@
 GUI for CDAWeb.
 
 A GUI that can download data files from CDAWeb
-and load them into pytplot variables.
+and load them into tplot variables.
 
 Requires cdasws.
 For cdasws documentation, see:

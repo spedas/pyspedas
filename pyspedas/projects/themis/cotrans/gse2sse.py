@@ -20,9 +20,9 @@ def gse2sse(name_in: str, name_out: str, isssetogse: bool = False,
     Parameters
     ----------
         name_in: str
-            Name of input pytplot variable (e.g. 'tha_fgl_dsl')
+            Name of input tplot variable (e.g. 'tha_fgl_dsl')
         name_out: str
-            Name of output pytplot variable (e.g. 'tha_fgl_sse')
+            Name of output tplot variable (e.g. 'tha_fgl_sse')
         isssetogse: bool
             If False (default), then GSE to SSE.
             If True, then SSE to GSE.

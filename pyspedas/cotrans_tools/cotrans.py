@@ -43,7 +43,7 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     Returns
     -------
     Returns 1 for successful completion.
-        Fills a new pytplot variable with data in the coord_out system.
+        Fills a new tplot variable with data in the coord_out system.
     """
     if coord_out is None:
         logging.error("cotrans error: No output coordinates were provided.")
@@ -103,11 +103,11 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     if name_in is None:
         name_in = 'cotranstemp'
 
-    # Find the name of the output pytplot variable.
+    # Find the name of the output tplot variable.
     if name_out is None:
         name_out = name_in + "_" + coord_out
 
-    # Save output pytplot variable.
+    # Save output tplot variable.
     pytplot.tplot_copy(name_in, name_out)
     pytplot.data_quants[name_out].data = data_out
 

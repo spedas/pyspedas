@@ -21,14 +21,14 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
         where 'zero', 'slinear', 'quadratic' and 'cubic' refer to a spline interpolation of zeroth, first, second or third order;
         'previous' and 'next' simply return the previous or next value of the point) or as an integer specifying the order of the spline interpolator to use.
     newname : str or list of str, optional
-        List of new names for pytplot variables. If '', then pytplot variables are replaced. If not given, then a suffix is applied.
+        List of new names for tplot variables. If '', then tplot variables are replaced. If not given, then a suffix is applied.
     suffix : str, optional
         A suffix to apply. Default is '-itrp'.
 
     Returns
     -------
     None
-        This function works in-place or creates new pytplot variables depending on the 'newname' parameter.
+        This function works in-place or creates new tplot variables depending on the 'newname' parameter.
 
 
     Notes

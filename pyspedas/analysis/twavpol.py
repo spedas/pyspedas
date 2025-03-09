@@ -647,18 +647,18 @@ def wavpol(ct, bx, by, bz,
 
 
 def twavpol(tvarname, prefix='', nopfft=-1, steplength=-1, bin_freq=-1):
-    """Apply wavpol to a pytplot variable.
+    """Apply wavpol to a tplot variable.
 
-    Creates multiple pytplot variables:
+    Creates multiple tplot variables:
     '_powspec','_degpol', '_waveangle', '_elliptict', '_helict',
     '_pspec3_x', '_pspec3_y', '_pspec3_z'
 
     Parameters
     ----------
     tvarname : string
-              Name of pytplot variable.
+              Name of tplot variable.
     prefix : string, optional
-            Prefix for pytplot variables created.
+            Prefix for tplot variables created.
     nopfft : int, optional
         Number of points in FFT. The default is 256.
     steplength : int, optional
@@ -678,14 +678,14 @@ def twavpol(tvarname, prefix='', nopfft=-1, steplength=-1, bin_freq=-1):
 
     all_names = tnames(tvarname)
     if len(all_names) < 1:
-        logging.error('twavpol error: No valid pytplot variables match tvarname.')
+        logging.error('twavpol: No valid tplot variables match tvarname.')
         return 0
 
     xdata = get_data(tvarname)
 
     ct = xdata.times
     if len(ct) < 2:
-        logging.error('twavpol error: Time variable does not have enough points.')
+        logging.error('twavpol: Time variable does not have enough points.')
         return 0
 
     bfield = xdata.y
@@ -710,7 +710,7 @@ def twavpol(tvarname, prefix='', nopfft=-1, steplength=-1, bin_freq=-1):
         logging.error('twavpol error: There were errors while applying wavpol.')
         return 0
 
-    # Store new pytplot variables as spectrograms.
+    # Store new tplot variables as spectrograms.
     vt = prefix+'_powspec'
     store_data(vt, data={'x': timeline, 'y': powspec, 'v': freqline})
     options(vt, 'spec', 1)

@@ -16,12 +16,13 @@ from pyspedas.projects.themis import autoload_support
 
 def sse2sel(name_in: str, name_out: str, isseltosse: bool = False, ignore_input_coord: bool = False) -> int:
     """Transform sse to sel.
+
     Parameters
     ----------
         name_in: str
-            Name of input pytplot variable (e.g. 'tha_state_pos_sse' or 'tha_state_pos_sel')
+            Name of input tplot variable (e.g. 'tha_state_pos_sse' or 'tha_state_pos_sel')
         name_out: str
-            Name of output pytplot variable (e.g. 'tha_fgl_sse')
+            Name of output tplot variable (e.g. 'tha_fgl_sse')
         isseltosse: bool
             If False (default), then SSE to SEL.
             If True, then SEL to SSE.

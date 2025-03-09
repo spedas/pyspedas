@@ -30,10 +30,10 @@ def yclip(
         Values outside (ymin, ymax) are replaced with this flag.
         Default is float('nan').
     newname : str or list of str, optional
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         If not given, then a suffix is applied.
     new_names : str or list of str, optional
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         If not given, then a suffix is applied.
         This parameter is deprecated.
     suffix : str, optional
@@ -81,7 +81,7 @@ def yclip(
     old_names = pyspedas.tnames(names)
 
     if len(old_names) < 1:
-        logging.error("yclip error: No valid tplot names were provided.")
+        logging.error("yclip: No valid tplot names were provided.")
         return
 
     if suffix is None:
