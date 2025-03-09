@@ -120,10 +120,10 @@ def erg_cotrans(in_name='',
 
         out_name : str
             Name of output tplot variable in which the transformed data are stored. 
-             If not explicitly provided, out_name is automatically generated from 
-             "in_name" by replacing the coordinate name with a new one. 
-             For example, if you runs erg_cotrans(in_name='xxxx_sgi', out_coord='sga')
-             then the result is stored in a newly created tplot variable 'xxxx_sga'.
+            If not explicitly provided, out_name is automatically generated from
+            "in_name" by replacing the coordinate name with a new one.
+            For example, if you runs erg_cotrans(in_name='xxxx_sgi', out_coord='sga')
+            then the result is stored in a newly created tplot variable 'xxxx_sga'.
 
         in_coord : str
             'sga', 'sgi', 'dsi', or 'j2000'
