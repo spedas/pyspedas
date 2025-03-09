@@ -14,9 +14,9 @@ def del_data(name=None):
     
     Parameters
     ----------
-        name : str, optional 
-            Name of the tplot variable to be deleted.  If no name is provided, then 
-            all tplot variables will be deleted.  
+        name : str or list[str]
+            Names of the tplot variables to be deleted.  If no name is provided, then
+            all tplot variables will be deleted.  (wildcards accepted)
          
     Returns
     -------
@@ -30,46 +30,21 @@ def del_data(name=None):
 
     """
     if name is None:
-        tplot_names = list(pytplot.data_quants.keys())
-        for i in tplot_names:
-            del pytplot.data_quants[i]
+        name = '*'
+
+    names=pytplot.tnames(name)
+    if len(names) < 1:
+        logging.warning("del_data: No valid tplot variables found, returning")
         return
-    
-    if not isinstance(name, list):
-        name = [name]
-    
-    entries = []
-    for i in name:
-        if ('?' in i) or ('*' in i):
-            for j in pytplot.data_quants.keys():
-                if isinstance(pytplot.data_quants[j], dict):
-                    # NRV variable
-                    var_verif = fnmatch.fnmatch(pytplot.data_quants[j]['name'], i)
-                    if var_verif == 1:
-                        entries.append(pytplot.data_quants[j]['name'])
-                    else:
-                        continue
-                else:
-                    var_verif = fnmatch.fnmatch(pytplot.data_quants[j].name, i)
-                    if var_verif == 1:
-                        entries.append(pytplot.data_quants[j].name)
-                    else:
-                        continue
-            for key in entries:
-                if key in pytplot.data_quants:
-                    del pytplot.data_quants[key]
-        elif i not in pytplot.data_quants.keys():
-            logging.info(str(i) + " is currently not in pytplot.")
-            return
-        
+
+    for name in names:
+        if isinstance(pytplot.data_quants[name], dict):
+            temp_data_quants = pytplot.data_quants[name]
+            str_name = temp_data_quants['name']
         else:
-            if isinstance(pytplot.data_quants[i], dict):
-                temp_data_quants = pytplot.data_quants[i]
-                str_name = temp_data_quants['name']
-            else:
-                temp_data_quants = pytplot.data_quants[i]
-                str_name = temp_data_quants.name
-            
-            del pytplot.data_quants[str_name]
+            temp_data_quants = pytplot.data_quants[name]
+            str_name = temp_data_quants.name
+
+        del pytplot.data_quants[str_name]
         
     return
