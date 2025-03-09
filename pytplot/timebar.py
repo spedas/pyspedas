@@ -15,7 +15,7 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
         multiple bars will be created. If "databar" is set, then "t" becomes the point on the y axis to
         place a horizontal bar.
     varname : str or list, optional
-        The variable(s) to add the vertical bar to. If not set, the default is to add it to all current plots.
+        The variable(s) to add the vertical bar to. If not set, the default is to add it to all current plots. (wildcards accepted)
     databar : bool, optional
         This will turn the timebar into a horizontal data bar. If this is set True, then variable "t" becomes
         the point on the y axis to place a horizontal bar.
@@ -47,6 +47,9 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
     >>> # for variable 'sgx' plot
     >>> pyspedas.timebar([1451107201,1451117200,1451119999],'sgx',color='m',thick=5)
     """
+
+    # wildcard expansion
+    varname = pytplot.tnames(varname)
 
     # make sure t entered is a list
     if not isinstance(t, list):
