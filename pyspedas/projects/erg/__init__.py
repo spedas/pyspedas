@@ -16,6 +16,10 @@ from .satellite.erg.particle.erg_xep_part_products import erg_xep_part_products
 from .satellite.erg.particle.erg_hep_part_products import erg_hep_part_products
 from .satellite.erg.particle.erg_mep_part_products import erg_mep_part_products
 from .satellite.erg.particle.erg_lep_part_products import erg_lep_part_products
+from .satellite.erg.common.cotrans.dsi2j2000 import dsi2j2000
+from .satellite.erg.common.cotrans.erg_cotrans import erg_cotrans
+from .satellite.erg.common.cotrans.sga2sgi import sga2sgi
+from .satellite.erg.common.cotrans.sgi2dsi import sgi2dsi
 
 from .ground.camera.camera_omti_asi import camera_omti_asi
 from .ground.geomag.gmag_isee_fluxgate import gmag_isee_fluxgate
