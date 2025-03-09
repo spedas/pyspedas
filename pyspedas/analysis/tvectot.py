@@ -44,7 +44,8 @@ def tvectot(tvars: Union[str, List[str]],
 
     Returns
     -------
-    Names of the magnitude tplot variables.
+    str or list[str]
+        Names of the magnitude tplot variables.
     """
 
     # newnames is deprecated in favor of newname
