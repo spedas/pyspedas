@@ -9,6 +9,7 @@ These tests include the function in the following files:
     themis/cotrans_tools/dsl2gse.py
 
 """
+import numpy as np
 import unittest
 import pyspedas
 import logging
@@ -16,7 +17,7 @@ from pyspedas.projects.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.cotrans_tools.fac_matrix_make import fac_matrix_make
 from pytplot import get_data, store_data, del_data
-from pyspedas import cotrans_get_coord, cotrans_set_coord, sm2mlt
+from pyspedas import cotrans_get_coord, cotrans_set_coord, sm2mlt, tplot_copy, set_units, get_units
 
 
 class CotransTestCases(unittest.TestCase):
@@ -315,6 +316,43 @@ class CotransTestCases(unittest.TestCase):
         for i in range(4):
             self.assertTrue(abs(mlt_idl[i]-mlt_python[i]) <= 1e-6)
 
+    def test_units_coords(self):
+        '''Test setting units and coordinate systems (including wildcards)
+        '''
+
+        test_dat = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+        test_times = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+
+        store_data('v1', data={'x':test_times, 'y':test_dat})
+        tplot_copy('v1', 'v2')
+        tplot_copy('v1', 'v3')
+        tplot_copy('v1','v4')
+
+        cotrans_set_coord('v?', 'GSE')
+        c1 = cotrans_get_coord('v1')
+        c2 = cotrans_get_coord('v2')
+        c3 = cotrans_get_coord('v3')
+        c4 = cotrans_get_coord('v4')
+        self.assertTrue(c1 == 'GSE')
+        self.assertTrue(c2 == 'GSE')
+        self.assertTrue(c3 == 'GSE')
+        self.assertTrue(c4 == 'GSE')
+
+        set_units('v?', 'nT')
+        u1 = get_units('v1')
+        u2 = get_units('v2')
+        u3 = get_units('v3')
+        u4 = get_units('v4')
+        self.assertTrue(u1 == 'nT')
+        self.assertTrue(u2 == 'nT')
+        self.assertTrue(u3 == 'nT')
+        self.assertTrue(u4 == 'nT')
+
+        res = cotrans_set_coord('nonexistent', 'GSE')
+        self.assertFalse(res)
+
+        res = set_units('xxx yyy zzz', 'nT')
+        self.assertFalse(res)
 
 if __name__ == '__main__':
     unittest.main()
