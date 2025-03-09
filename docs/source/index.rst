@@ -53,6 +53,7 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
    geopack
    coords
    utilities
+   mission_specific_tools
    pytplot
    contributing
 

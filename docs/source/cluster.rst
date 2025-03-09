@@ -236,7 +236,7 @@ Load Data from Cluster Science Archive
 ---------------------------------------
 
 The above routines load data from NASA's SPDF archive.  There is also a way to download Cluster data products
-directly from ESA's Cluster Science Archive
+directly from ESA's Cluster Science Archive.
 
 .. autofunction:: pyspedas.projects.cluster.load_csa
 
