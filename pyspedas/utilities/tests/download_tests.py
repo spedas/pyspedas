@@ -19,26 +19,26 @@ class DownloadTestCases(unittest.TestCase):
 
     def test_wildcard(self):
         # Test a wildcard pattern with several matches
-        files = download(remote_path='http://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2008/tha_l1_state_20080323_v??.cdf')
+        files = download(remote_path='https://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2008/tha_l1_state_20080323_v??.cdf')
         self.assertTrue(len(files) == 4)  # v00, v01, v02, v03 should be available on this date
         self.assertTrue(files[3] == os.path.join(os.getcwd(), 'tha_l1_state_20080323_v03.cdf'))
 
     def test_missing_index(self):
         # Test a wildcard pattern on a nonexistent directory
         # This should warn "Remote index not found"
-        files = download(remote_path='http://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2006/tha_l1_state_20060323_v??.cdf')
+        files = download(remote_path='https://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2006/tha_l1_state_20060323_v??.cdf')
         self.assertTrue(len(files) == 0)
 
     def test_last_version(self):
         # Test a wildcard pattern with several matches, and last_version=True, returning the final (lexicographic) value
-        files = download(remote_path='http://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2008/tha_l1_state_20080323_v??.cdf',last_version=True)
+        files = download(remote_path='https://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2008/tha_l1_state_20080323_v??.cdf',last_version=True)
         self.assertTrue(len(files) == 1)  # v00, v01, v02, v03 should be available on this date, should only return v03
         self.assertTrue(files[0] == os.path.join(os.getcwd(), 'tha_l1_state_20080323_v03.cdf'))
 
     def test_last_version_nomatch(self):
         # Test a wildcard pattern that doesn't match anything.
         # This should warn about no matching file found in the index.
-        files = download(remote_path='http://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2008/tha_l1_state_20080332_v??.cdf',last_version=True)
+        files = download(remote_path='https://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2008/tha_l1_state_20080332_v??.cdf',last_version=True)
         self.assertTrue(len(files) == 0)  # Nonexistent date, nothing should be found
 
     def test_remote_path_file(self):
