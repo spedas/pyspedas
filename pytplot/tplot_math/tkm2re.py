@@ -9,7 +9,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
     Parameters
     -----------
         name: str or list of str
-            Names of tplot variables to convert
+            Names of tplot variables to convert (wildcards accepted)
 
         km: bool, optional
             If True, convert Re to Km. If False, convert Km to Re.
@@ -42,7 +42,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
     names = pytplot.tnames(name)
 
     if names == []:
-        logging.error('No tplot variables found: ' + name)
+        logging.error('tkm2re: No valid tplot variables found: ' + name)
         return
 
     if newname is None:

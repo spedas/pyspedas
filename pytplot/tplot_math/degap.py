@@ -20,8 +20,8 @@ def degap(
 
     Parameters
     ----------
-        tvar : str
-            Name of tplot variable to modify
+        tvar : str or list[str]
+            Names of tplot variables to degap (wildcards accepted)
         dt : int/float
             Step size of the data in seconds, default is to use the median time interval
         margin : int/float, optional, default is 0.25 seconds

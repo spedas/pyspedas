@@ -18,18 +18,18 @@ def subtract_average(
     Parameters
     ----------
     names: str/list of str
-        List of pytplot names.
+        List of tplot variable names to process (wildcards accepted)
     newname: str/list of str, optional
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         Default: None. If not given, then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         Default: None. If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply.
         Default: '-d'.
     overwrite: bool, optional
-        If set, then pytplot variables are replaced.
+        If set, then tplot variables are replaced.
         Default: None
     median: float, optional
         If it is 0 or not set, then it computes the mean.

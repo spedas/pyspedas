@@ -20,12 +20,12 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     Parameters
     ----------
     names: str/list of str
-        List of pytplot names.
+        List of pytplot names (wildcards accepted)
     new_names: str/list of str, optional (Deprecated)
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         If not given, then a suffix is applied.
     newname: str/list of str, optional
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply. Default is '-avg'.

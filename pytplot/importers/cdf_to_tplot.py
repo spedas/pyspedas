@@ -62,7 +62,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
             variables generated from this function will be on the same plot.
         merge: bool
             If True, then data from different cdf files will be merged into
-            a single pytplot variable.
+            a single tplot variable.
         get_ignore_data: bool
             Data with an attribute "VAR_TYPE" with a value of "ignore_data"
             will be loaded into tplot.  By default, only loads in data with a

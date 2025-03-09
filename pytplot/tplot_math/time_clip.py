@@ -27,16 +27,16 @@ def time_clip(
     Parameters
     ----------
     names: str/list of str
-        List of pytplot names.
+        List of tplot variable names to time clip (wildcards accepted)
     time_start : float or string
         Start time.
     time_end : float or string
         End time.
     newname: str/list of str, optional
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         Default: None. If not given, then a suffix is applied or the variables are overwritten
     new_names: str/list of str, optional (Deprecated)
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         Default: None. If not given, then a suffix is applied or the variables are overwritten
     suffix: str, optional
         A suffix to apply.
@@ -52,7 +52,7 @@ def time_clip(
     Returns
     -------
     list of str
-        Returns a list of pytplot variables created or changed
+        Returns a list of tplot variables created or changed
 
     Example
     -------
@@ -69,7 +69,7 @@ def time_clip(
 
     """
     if len(names) < 1:
-        logging.warning('time_clip: no pytplot variables specified')
+        logging.warning('time_clip: no valid tplot variables specified')
         return
 
     # new_names is deprecated
@@ -80,7 +80,7 @@ def time_clip(
     old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
-        logging.warning('time_clip: No pytplot variables matching '+str(names))
+        logging.warning('time_clip: No valid tplot variables matching '+str(names))
         return
 
     if overwrite:

@@ -14,8 +14,8 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
 
     Parameters
     ----------
-        tvar : str
-            Name of tvar to use for data clipping.
+        tvar : str or list[str]
+            tplot variable names to clip (wildcards accepted)
         ymin : int/float
             Minimum value to keep (inclusive)
         ymax : int/float

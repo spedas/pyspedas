@@ -7,7 +7,7 @@ from .pwrspc import pwrspc
 def tpwrspc(varname, newname=None, overwrite=False, noline=False, nohanning=False, bin=3, notperhz=False, trange=None, axis=0):
     """
     This function is a wrapper for pwrspc.
-    It applies pwrspc to a pytplot variable and stores the result in a new pytplot variable.
+    It applies pwrspc to a tplot variable and stores the result in a new tplot variable.
 
     Parameters
     ----------

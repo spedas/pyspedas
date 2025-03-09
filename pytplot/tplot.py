@@ -142,7 +142,7 @@ def tplot(name,
     """
     # If no tplot names were provided, exit
     if name is None or len(name) < 1:
-        logging.error("No tplot variables were provided.")
+        logging.error("no valid tplot variables were provided.")
         return
     elif not isinstance(name, list):
         name = [name] # If only one name was provided, put it in a list

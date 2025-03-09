@@ -34,9 +34,9 @@ def tdpwrspc(
     Parameters
     ----------
     varname: str
-        Name of pytplot variable.
+        Name of tplot variable.
     newname: str, optional
-        Name of new pytplot variable to save data to.
+        Name of new tplot variable to save data to.
         Default: None. If newname is not set '_dpwrspc' will be appended to the varname
     trange: list of float, optional
         Start and end times for the calculation.
@@ -69,7 +69,7 @@ def tdpwrspc(
     Returns
     -------
     str
-        Name of new pytplot variable.
+        Name of new tplot variable.
 
     Example
     -------

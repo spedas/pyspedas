@@ -165,7 +165,7 @@ def set_coords(name, coords):
 
     namelist = tplot_wildcard_expand(name)
     if len(namelist) == 0:
-        logging.warning("No valid tplot variables were found, returning.")
+        logging.warning("set_coords: No valid tplot variables were found, returning.")
         return False
 
     for name in namelist:
@@ -259,7 +259,7 @@ def set_units(name, units):
 
     namelist = tplot_wildcard_expand(name)
     if len(namelist) == 0:
-        logging.warning("No valid tplot variables were found, returning.")
+        logging.warning("set_units: No valid tplot variables were found, returning.")
         return False
 
     for name in namelist:

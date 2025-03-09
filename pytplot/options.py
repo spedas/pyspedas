@@ -10,8 +10,8 @@ def options(name, option=None, value=None, opt_dict=None):
 
     Parameters
     ----------
-        name : str
-            Name or number of the tplot variable.
+        name : str or list[str]
+            Names of tplot variables to be updates (wildcards accepted).
         option : str, optional
             The name of the option. See the options section below.
         value : str, int, float, list, optional

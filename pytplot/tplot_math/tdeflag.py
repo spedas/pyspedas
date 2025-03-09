@@ -25,7 +25,7 @@ def tdeflag(names,
     Parameters
     ----------
     names: str/list of str
-        List of pytplot names.
+        List of tplot variables names to deflag (wildcards accepted)
     flag: float, int, or list
         Value or values to be treated as flags
     method: str, optional
@@ -38,12 +38,12 @@ def tdeflag(names,
         Option 'remove_nan' removes time intervals with NaN values
         Default: 'remove_nan'
     newname: str/list of str, optional
-        List of new names for pytplot variables.
-        If '', then pytplot variables are replaced.
+        List of new names for tplot variables.
+        If '', then tplot variables are replaced.
         Default: None. If not specified then a suffix is applied.
     new_names: str/list of str, optional (Deprecated)
-        List of new names for pytplot variables.
-        If '', then pytplot variables are replaced.
+        List of new names for tplot variables.
+        If '', then tplot variables are replaced.
         Default: None.
     suffix: str, optional
         A suffix to apply.
@@ -57,7 +57,7 @@ def tdeflag(names,
     Returns
     -------
     list of str
-        List of pytplot variables created or altered by tdeflag
+        List of tplot variables created or altered by tdeflag
 
     Examples
     --------
@@ -77,7 +77,7 @@ def tdeflag(names,
     old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
-        logging.error('tdeflag error: No pytplot names were provided.')
+        logging.error('tdeflag: No valid tplot names were provided.')
         return None
 
     if suffix is None:

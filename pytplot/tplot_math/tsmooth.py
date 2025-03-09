@@ -71,7 +71,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
     Parameters
     ----------
     names: str/list of str
-        List of pytplot names.
+        List of tplot variable names to be smoothed (wildcards accepted)
     width: int, optional
         Data window to use for smoothing. The default is 10.
     median: bool, optional
@@ -79,11 +79,11 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
     preserve_nans: bool, optional
         If None, then replace NaNs. The default is None.
     newname: str/list of str, optional
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         If not given, then a suffix is applied. 
         The default is None.
     new_names: str/list of str, optional (deprecated)
-        List of new names for pytplot variables.
+        List of new names for tplot variables.
         If not given, then a suffix is applied.
         The default is None.
     suffix: str, optional
@@ -109,7 +109,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
     old_names = pytplot.tnames(names)
 
     if len(old_names) < 1:
-        logging.error('tsmooth error: No pytplot names were provided.')
+        logging.error('tsmooth: No valid tplot variable names were provided.')
         return
 
     # new_names is deprecated

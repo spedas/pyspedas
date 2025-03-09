@@ -11,8 +11,8 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
     Parameters
     ----------
 
-        tvar: str
-            Name of tplot variable to use for data clipping.
+        tvar: str or list[str]
+            Names of tplot variables to deflag (wildcards accepted)
         flag : int,list
             Flagged data will be converted to NaNs.
         method : str, optional
