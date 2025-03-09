@@ -47,6 +47,7 @@ def ctime(fig, ax):
 
     Left click saves the time at the current cursor position.  Right click exits and returns the list
     of saved times.
+
     Parameters
     ----------
     fig
