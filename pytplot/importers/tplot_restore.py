@@ -170,7 +170,7 @@ def tplot_restore(filename):
                         data_att = {name.lower(): value for name, value in zip(att_names, att_values)}
                         pytplot.data_quants[data_name].attrs['data_att'] = data_att
 
-                    options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0])
+                    options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0], quiet=True)
 
             pytplot.data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
             pytplot.data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]

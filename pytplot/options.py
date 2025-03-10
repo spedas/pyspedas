@@ -5,7 +5,7 @@ from pytplot import tplot_utilities as utilities
 from .wildcard_routines import tplot_wildcard_expand
 
 
-def options(name, option=None, value=None, opt_dict=None):
+def options(name, option=None, value=None, opt_dict=None, quiet=False):
     """ Set a large variety of options for individual plots.
 
     Parameters
@@ -19,6 +19,8 @@ def options(name, option=None, value=None, opt_dict=None):
         opt_dict : dict, optional
             This can be a dictionary of option-value pairs. 'option' and 'value'
             will not be needed if this dictionary item is supplied.
+        quiet: bool, optional
+            If True, do not complain about unrecognized options.
 
     Options
     -------
@@ -532,7 +534,8 @@ def options(name, option=None, value=None, opt_dict=None):
             else:
                 # Apparently cdf_to_tplot is treating all variable attributes as potential plot
                 # options.  Adding this warning will end up spamming the logs unless cdf_to_tplot is changed.
-                logging.warning(f"Unrecognized option {option}")
+                if not quiet:
+                    logging.warning(f"Unrecognized option {option}")
                 #pass
     return
 
