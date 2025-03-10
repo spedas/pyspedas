@@ -1,12 +1,14 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+
 from functools import partial
 from pytplot import time_string
 from matplotlib.lines import Line2D
+import numpy as np
 
 # Store selected times
 selected_times = []
-vertical_line = None
+vertical_lines = []
 cid = None
 motion_cid = None
 
@@ -16,13 +18,16 @@ def on_motion(event):
         # Get the current x-position of the cursor (time)
         cursor_time = event.xdata
         # Update the vertical line position
-        vertical_line.set_xdata([cursor_time, cursor_time])
+        for vline in vertical_lines:
+            vline.set_xdata([cursor_time, cursor_time])
         plt.draw()
 
 
 # Define the click event handler
 def ctime_on_click(ax, cid, event):
     global selected_times
+    global vertical_lines
+
     if event.inaxes:  # Check if the click is within the plot's axes
         if event.button == 1:  # Left-click to add a timestamp
             # Convert the x-coordinate (time) to a datetime
@@ -37,12 +42,13 @@ def ctime_on_click(ax, cid, event):
             print("Right-click: Ending selection.")
             plt.disconnect(cid)  # Disconnect the event handler
             plt.disconnect(motion_cid)  # Disconnect motion event handler
-            vertical_line.remove()  # Remove the vertical line from the plot
+            for vline in vertical_lines:
+                vline.remove()  # Remove the vertical line from the plot
             print(f"Selected Times: {selected_times}")
 
 
 
-def ctime(fig, ax):
+def ctime(fig):
     """ Select time values by clicking on a plot, similar to ctime in IDL SPEDAS
 
     Left click saves the time at the current cursor position.  Right click exits and returns the list
@@ -52,8 +58,6 @@ def ctime(fig, ax):
     ----------
     fig
         A matplotlib fig object specifying the plot to be used for the time picker (returned by tplot with return_plot_objects=True)
-    ax
-        A matplotlib axes object specifying the plot to be used for the time picker(returned by tplot with return_plot_objects=True)
 
     Returns
     -------
@@ -67,7 +71,7 @@ def ctime(fig, ax):
     >>> from pyspedas import tplot, ctime, time_string
     >>> pyspedas.projects.themis.state(probe='a')
     >>> fig, ax = tplot('tha_pos', return_plot_objects=True)
-    >>> saved_timestamps = ctime(fig, ax)
+    >>> saved_timestamps = ctime(fig)
     >>> print(time_string(saved_timestamps))
 
     """
@@ -75,20 +79,27 @@ def ctime(fig, ax):
     global selected_times
     global cid
     global motion_cid
-    global vertical_line
+    global vertical_lines
 
     selected_times = []
+    vertical_lines = []
 
     print("Use the mouse to select times.  Left click to add a new time, right click to exit")
 
-    # Get the y-axis range
-    y_bottom, y_top = ax.get_ylim()
+    # Create vertical lines in each subplot to track the cursor position
+    for ax in fig.axes:
+        # Get the y-axis range
+        y_bottom, y_top = ax.get_ylim()
+        vline = Line2D([0, 0], [y_bottom, y_top], color='g', linestyle='--')
+        vertical_lines.append(vline)
+        ax.add_line(vline)
 
-    vertical_line = Line2D([0, 0], [y_bottom, y_top], color='g', linestyle='--')
-    ax.add_line(vertical_line)
+    # We only need to attach the event handlers to one axis (otherwise the handlers will trigger
+    # multiple times on each event).  We also could have attached them to the figure rather than an axis.
+    # Arbitrarily choose the first panel.
 
     # Use partial to pass ax and cid to on_click
-    on_click_with_ax_and_cid = partial(ctime_on_click, ax)
+    on_click_with_ax_and_cid = partial(ctime_on_click, fig.axes[0])
 
     # Connect the motion event to the handler
     motion_cid = fig.canvas.mpl_connect('motion_notify_event', on_motion)
@@ -97,6 +108,7 @@ def ctime(fig, ax):
     cid = fig.canvas.mpl_connect('button_press_event', lambda event: on_click_with_ax_and_cid(cid, event))
 
     # Show the plot and block the execution until right-click ends selection
+
     plt.show()
 
     # The function returns selected times after the user has finished
