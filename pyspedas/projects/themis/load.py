@@ -170,9 +170,16 @@ def load(trange=['2013-11-5', '2013-11-6'],
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
                           + '_%Y%m%d_v??.cdf')
         elif instrument == 'state':
-            pathformat = ('th' + prb + '/' + level + '/' + instrument
-                          + '/%Y/th' + prb + '_' + level + '_' + instrument
-                          + '_%Y%m%d.cdf')
+            if 'spdf' in remote_data_dir:
+                # There is no unversioned link at SPDF, specify a versioned file with wildcard.
+                pathformat = ('th' + prb + '/' + level + '/' + instrument
+                              + '/%Y/th' + prb + '_' + level + '_' + instrument
+                              + '_%Y%m%d_v??.cdf')
+            else:
+                # Load the unversioned file, which should be a link to the highest version
+                pathformat = ('th' + prb + '/' + level + '/' + instrument
+                              + '/%Y/th' + prb + '_' + level + '_' + instrument
+                              + '_%Y%m%d.cdf')
         elif instrument == 'slp':
             # note: v01 hard-coded in IDL version as well
             pathformat = 'slp/' + level + '/eph/%Y/slp_l1_eph_%Y%m%d_v01.cdf'
