@@ -108,6 +108,24 @@ class Themis_StateDataTests(unittest.TestCase):
         model = get_spinmodel('a', 2)
         self.assertTrue(model is not None)
 
+    def test_state_spdf(self):
+        from pyspedas.projects.themis.config import CONFIG
+        del_data('the*')
+        save = CONFIG['remote_data_dir']
+        CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/themis/'
+        state(trange=['2007-04-01','2007-04-02'], probe='e')
+        CONFIG['remote_data_dir'] = save
+        self.assertTrue(data_exists('tha_pos'))
+
+    def test_state_ucla(self):
+        from pyspedas.projects.themis.config import CONFIG
+        del_data('the*')
+        save = CONFIG['remote_data_dir']
+        CONFIG['remote_data_dir'] = 'https://themis-data.igpp.ucla.edu/'
+        state(trange=['2009-04-01','2009-04-02'], probe='e')
+        CONFIG['remote_data_dir'] = save
+        self.assertTrue(data_exists('tha_pos'))
+
     def test_ssc(self):
         vars = ssc()
         self.assertTrue(len(vars) > 0)
