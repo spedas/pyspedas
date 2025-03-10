@@ -11,7 +11,7 @@ dependencies = [
     "numpy>=1.20.0",
     "requests",
     "cdflib",
-    "pytplot-mpl-temp>=2.2.58",
+    "pytplot-mpl-temp>=2.2.59",
     "cdasws>=1.7.24",
     "netCDF4",
     "astropy",
