@@ -103,8 +103,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.cluster.tests.tests
         echo Starting cluster S3 tests at `date`
         coverage run -a -m  pyspedas.projects.cluster.tests.uri_tests
-        #echo Starting themis tplot_time  tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests_tplot_time
+        echo Starting themis tplot_time  tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
         coverage run -a -m  pyspedas.projects.barrel.tests.tests
         echo Starting elfin epd_l1 tests at `date`
@@ -198,8 +198,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.fast.tests.tests
         echo Starting omni tests at `date`
         coverage run -a -m  pyspedas.projects.omni.tests.tests
-        #echo Starting themis tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests
+        echo Starting themis tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests
         echo Starting goes tests at `date`
         coverage run -a -m  pyspedas.projects.goes.tests.tests
         echo Starting mica tests at `date`
@@ -212,22 +212,22 @@ jobs:
         coverage run -a -m  pyspedas.projects.kyoto.tests.tests
         echo Starting swarm tests at `date`
         coverage run -a -m  pyspedas.projects.swarm.tests.tests
-        #echo Starting themis_check_args tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests_themis_check_args
-        #echo Starting themis autoload support tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.autoload_support_tests
-        #echo Starting themis cal_fit tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests_cal_fit
-        #echo Starting themis dsl_cotrans tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests_dsl_cotrans
-        #echo Starting themis lunar_cotrans tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests_lunar_cotrans
-        #echo Starting themis spinmodel tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests_spinmodel
-        #echo Starting themis state tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests_state
-        #echo Starting themis scpot2dens tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.tests_scpot2dens
+        echo Starting themis_check_args tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests_themis_check_args
+        echo Starting themis autoload support tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.autoload_support_tests
+        echo Starting themis cal_fit tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests_cal_fit
+        echo Starting themis dsl_cotrans tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests_dsl_cotrans
+        echo Starting themis lunar_cotrans tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests_lunar_cotrans
+        echo Starting themis spinmodel tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests_spinmodel
+        echo Starting themis state tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests_state
+        echo Starting themis scpot2dens tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.tests_scpot2dens
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space after all tests:"
