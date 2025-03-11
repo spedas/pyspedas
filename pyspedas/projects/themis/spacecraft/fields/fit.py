@@ -2,6 +2,11 @@ from pyspedas.projects.themis.load import load
 import gzip
 
 
+def is_gzip(file_path):
+    """Check if a file is gzip-compressed."""
+    with open(file_path, 'rb') as f:
+        return f.read(2) == b'\x1f\x8b'
+    
 def fit(trange=['2007-03-23', '2007-03-24'],
         probe='c',
         level='l2',
@@ -230,13 +235,13 @@ def cal_fit(probe='a', no_cal=False):
         logging.warning(f"Calibration file {thx}_fgmcal.txt is not found")
         return
 
-    try:
+    if not is_gzip(calfile[0]):
         caldata = np.loadtxt(calfile[0], converters={0: time_float_one})
-    except UnicodeDecodeError:
+    else:
         logging.warning("%s appears to be compressed, retrying with gzip",calfile[0])
         with gzip.open(calfile[0], 'rt') as f:
             caldata = np.loadtxt(f, converters={0: time_float_one})
-
+        
     # TODO: In SPEDAS we checks if data is already calibrated
     # Limit to the time of interest
     caltime = caldata[:, 0]
@@ -367,13 +372,12 @@ def cal_fit(probe='a', no_cal=False):
     collist = list()
     [collist.extend(cnum) for cnum in colnums.values()]
     collist.sort()  # ensurer that the list of columns is sorted
-    try:
-        eficaltxt = np.loadtxt(eficalfile[0], skiprows=1, max_rows=1, converters={0: time_float_one}, usecols=collist)
-    except UnicodeDecodeError:
-        logging.warning('%s appears to be compressed, retrying with gzip', eficalfile[0])
-        with gzip.open(eficalfile[0], 'rt') as f:
-            eficaltxt = np.loadtxt(f, skiprows=1, max_rows=1, converters={0: time_float_one}, usecols=collist)
 
+    if is_gzip(eficalfile[0]):
+        eficaltxt = np.loadtxt(eficalfile[0], skiprows=1, max_rows=1, converters={0: time_float_one}, usecols=collist)
+    else:  
+        with gzip.open(eficalfile[0], 'rt') as f:
+            eficaltxt = np.loadtxt(f, skiprows=1, max_rows=1, converters={0: time_float_one}, usecols=collist)  
 
     eficaldata = {"time": eficaltxt[0], "gain": eficaltxt[4:7], "offset": eficaltxt[1:4],
                   "boom_length": eficaltxt[7:10], "boom_shorting_factor": eficaltxt[10:13],
