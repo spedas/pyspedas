@@ -61,8 +61,8 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         cls.tol = 1e-10
 
         # Download tplot files
-        remote_server = 'https://spedas.org/'
-        remote_name = 'testfiles/geopack_idl_validate.cdf'
+        remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
+        remote_name = 'analysis_tools/geopack_idl_validate.cdf'
 
         datafile = download(remote_file=remote_name,
                             remote_path=remote_server,

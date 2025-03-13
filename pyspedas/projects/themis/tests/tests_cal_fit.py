@@ -142,8 +142,8 @@ class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
         self.tol = 1e-10
 
         # Download tplot files
-        remote_server = 'https://spedas.org/'
-        remote_name = 'testfiles/tha_efs_no_cal.tplot'
+        remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
+        remote_name = 'load_routine_tests/tha_efs_no_cal.tplot'
         calfile = download(remote_file=remote_name,
                            remote_path=remote_server,
                            local_path=CONFIG['local_data_dir'],

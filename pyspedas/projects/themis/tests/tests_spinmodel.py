@@ -35,9 +35,9 @@ class SpinmodelDataValidation(unittest.TestCase):
         from pyspedas.projects.themis.config import CONFIG
 
         # Download tplot files
-        remote_server = 'https://spedas.org/'
+        remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
         # remote_name = 'testfiles/thm_cotrans_validate.cdf'
-        remote_name = 'testfiles/tha_validate_spinmodel.cdf'
+        remote_name = 'load_routine_tests/tha_validate_spinmodel.cdf'
         datafile = download(remote_file=remote_name,
                             remote_path=remote_server,
                             local_path=CONFIG['local_data_dir'],

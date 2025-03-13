@@ -21,8 +21,8 @@ class Themis_StateDataTests(unittest.TestCase):
 
 
         # Download validation file
-        remote_server = 'https://spedas.org/'
-        remote_name = 'testfiles/thm_state_validate.tplot'
+        remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
+        remote_name = 'load_routine_tests/thm_state_validate.tplot'
         datafile = download(remote_file=remote_name,
                            remote_path=remote_server,
                            local_path=CONFIG['local_data_dir'],
