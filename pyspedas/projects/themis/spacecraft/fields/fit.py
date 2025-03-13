@@ -1,12 +1,7 @@
 from pyspedas.projects.themis.load import load
+from pyspedas.utilities.is_gzip import is_gzip
 import gzip
 
-
-def is_gzip(file_path):
-    """Check if a file is gzip-compressed."""
-    with open(file_path, 'rb') as f:
-        return f.read(2) == b'\x1f\x8b'
-    
 def fit(trange=['2007-03-23', '2007-03-24'],
         probe='c',
         level='l2',
@@ -373,7 +368,7 @@ def cal_fit(probe='a', no_cal=False):
     [collist.extend(cnum) for cnum in colnums.values()]
     collist.sort()  # ensurer that the list of columns is sorted
 
-    if is_gzip(eficalfile[0]):
+    if not is_gzip(eficalfile[0]):
         eficaltxt = np.loadtxt(eficalfile[0], skiprows=1, max_rows=1, converters={0: time_float_one}, usecols=collist)
     else:  
         with gzip.open(eficalfile[0], 'rt') as f:
