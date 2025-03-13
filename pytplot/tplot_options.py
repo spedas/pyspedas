@@ -25,6 +25,14 @@ def tplot_options(option, value):
         x_range             [flt, flt]   The min and max x_range (time) to be plotted on all plots
         vertical_spacing    flt          The space (in inches) vertically between two plots
         axis_font_size      int          The font size of the axis ticks.  Default is 10.
+        charsize            int          The font size for the legend strings
+        style               str          The matplotlib plot style to use
+        xsize               flt          The size of the plot window in the X dimension (units of inches)
+        ysize               flt          The size of the plot window in the Y dimension (units of inches)
+        title_text          str          Plot title
+        xmargin             [flt, flt]   The width of the left and right margins of the plot (in inches)
+        ymargin             [flt, flt]   The height of the top and bottom margins of the plot (in inches)
+        annotations         dict         A dictionary of text, positions, xycoords, and other options to be placed on the plot
         ==================  ==========   =====
 
 
@@ -45,6 +53,7 @@ def tplot_options(option, value):
         axis_tick_num                 [tuples]     A list of tuples that determines how many ticks appear. (not yet implemented)
         yaxis_width                   int          The number of pixels wide of the y axis (not yet implemented)
         y_axis_zoom                   bool         Set True if the mouse wheel should zoom in on the y axis as well as the x on plots (not yet implemented)
+        var_label                     [str]        List of variables to have their values printed at the boottom of the plot Not yet implemented
         ============================  ==========   =====
 
     Returns
