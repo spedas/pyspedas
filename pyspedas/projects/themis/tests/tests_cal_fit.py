@@ -28,8 +28,8 @@ class TestCalFitDataValidation(unittest.TestCase):
         cls.tol = 1e-10
 
         # Download tplot files
-        remote_server = 'https://spedas.org/'
-        remote_name = 'testfiles/cal_fit.tplot'
+        remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
+        remote_name = 'calibration_tests/cal_fit.tplot'
         calfile = download(remote_file=remote_name,
                            remote_path=remote_server,
                            local_path=CONFIG['local_data_dir'],
