@@ -151,7 +151,8 @@ def download_file(
     session=None,
     basic_auth=False,
     nbr_tries=0,
-    text_only=False,
+    text_only=None,
+    unzip=None,
     force_download=False
 ):
     """
@@ -338,9 +339,19 @@ def download_file(
             
         ftmp = NamedTemporaryFile(delete=False, suffix=fsuffix)
 
+        if text_only is None:
+            if fsuffix.lower() in ['txt', 'csv', 'html']:
+                text_only = True
+            else:
+                text_only = False
+        if unzip is None:
+            unzip=True
+
         with open(ftmp.name, "wb") as f:
-            if text_only:
-                f.write(fsrc.text.encode("utf-8"))
+            if unzip and text_only:
+                ret = f.write(fsrc.text.encode("utf-8"))
+            elif unzip and not text_only:
+                ret = f.write(fsrc.content)
             else:
                 copyfileobj(fsrc.raw, f)
 
@@ -400,6 +411,7 @@ def download_file(
             basic_auth=basic_auth,
             nbr_tries=nbr_tries,
             text_only=text_only,
+            unzip=unzip
         )
 
     # If the file again cannot be opened, we give up.
@@ -432,7 +444,8 @@ def download(
     basic_auth=False,
     regex=False,
     no_wildcards=False,
-    text_only=False,
+    text_only=None,
+    unzip=None,
     force_download=False,
 ):
     """
@@ -702,6 +715,7 @@ def download(
                 session=session,
                 basic_auth=basic_auth,
                 text_only=text_only,
+                unzip=unzip,
                 force_download=force_download
             )
 
