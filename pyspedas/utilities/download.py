@@ -152,7 +152,6 @@ def download_file(
     basic_auth=False,
     nbr_tries=0,
     text_only=None,
-    unzip=None,
     force_download=False
 ):
     """
@@ -179,8 +178,8 @@ def download_file(
     nbr_tries : int, optional
         Counts how many times we tried to download the file. Default is 0.
     text_only : bool, optional
-        Flag to indicate that only the text of the session.get object should be saved.
-        This is useful for downloading HTML files.
+        If True, save the response content as utf-8 encoded text.  If False, treat as a stream of bytes. If None,
+        try to infer the correct format from the filename suffix. Defaults to None.
     force_download : bool, optional
         Flag to indicate if the file should be downloaded even if a local version exists.
         This causes the local version of the file to be overwritten.
@@ -339,21 +338,23 @@ def download_file(
             
         ftmp = NamedTemporaryFile(delete=False, suffix=fsuffix)
 
+        # If no text_only value was passed, try to determine whether the file is text (and should be utf-8 encoded),
+        # or binary (saved as-is) by looking at the file extension.
+
         if text_only is None:
-            if fsuffix.lower() in ['txt', 'csv', 'html']:
+            if fsuffix.lower() in ['', 'txt', 'csv', 'html', 'tab', 'log', 'rtf', 'md', 'xml', 'pdf']:
                 text_only = True
             else:
                 text_only = False
-        if unzip is None:
-            unzip=True
 
         with open(ftmp.name, "wb") as f:
-            if unzip and text_only:
+            # There is also the fsrc.raw file object, which returns the raw bytes as read from the socket.
+            # It may be gzip-compressed.  This is probably the wrong choice in nearly every scenario, so that
+            # option has been removed.
+            if text_only:
                 ret = f.write(fsrc.text.encode("utf-8"))
-            elif unzip and not text_only:
-                ret = f.write(fsrc.content)
             else:
-                copyfileobj(fsrc.raw, f)
+                ret = f.write(fsrc.content)
 
         if is_fsspec_uri(filename):
             protocol, path = filename.split("://")
@@ -411,7 +412,6 @@ def download_file(
             basic_auth=basic_auth,
             nbr_tries=nbr_tries,
             text_only=text_only,
-            unzip=unzip
         )
 
     # If the file again cannot be opened, we give up.
@@ -445,7 +445,6 @@ def download(
     regex=False,
     no_wildcards=False,
     text_only=None,
-    unzip=None,
     force_download=False,
 ):
     """
@@ -482,8 +481,8 @@ def download(
     no_wildcards : bool, optional
         Flag to assume no wild cards in the requested url/filename.
     text_only : bool, optional
-        Flag to indicate that only the text of the session.get object should be saved.
-        This is useful for downloading HTML files.
+        If True, save the response content as utf-8 encoded text.  If False, treat as a stream of bytes. If None,
+        try to infer the correct format from the filename suffix.  Defaults to None.
     force_download : bool, optional
         Flag to indicate if the file should be downloaded even if a local version exists.
         This causes the local version of the file to be overwritten.
@@ -715,7 +714,6 @@ def download(
                 session=session,
                 basic_auth=basic_auth,
                 text_only=text_only,
-                unzip=unzip,
                 force_download=force_download
             )
 
