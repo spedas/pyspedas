@@ -190,3 +190,22 @@ Wave, Polarization, Power Spectrum operations
 .. autofunction:: pyspedas.tdpwrspc
 .. autofunction:: pyspedas.spec_mult
 
+Download utilities
+-------------------
+
+.. autofunction:: pyspedas.download
+.. autofunction:: pyspedas.download_ftp
+.. autofunction:: pyspedas.dailynames
+.. autofunction:: pyspedas.load_leap_table
+
+Miscellaneous utilities
+------------------------
+
+.. autofunction:: pyspedas.find_datasets
+.. autofunction:: pyspedas.find_ip_address
+.. autofunction:: pyspedas.is_gzip
+.. autofunction:: pyspedas.libs
+.. autofunction:: pyspedas.mpause_2
+.. autofunction:: pyspedas.mpause_t96
+
+
