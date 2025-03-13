@@ -32,7 +32,7 @@ def find_datasets(mission=None, instrument=None, label=False, quiet=False):
     MMS1_FGM_SRVY_L2
     ...
 
-    # Suppress printed output
+    >>> # Suppress printed output
     >>> from pyspedas import find_datasets
     >>> mms_list = find_datasets(mission='MMS', quiet=True)
     >>> print(mms_list[0:3])

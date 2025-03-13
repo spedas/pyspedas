@@ -20,8 +20,8 @@ def load_leap_table(reload=False):
 
     Returns
     ---------
-        dict containing 'dates' with array of Julian dates corresponding
-        to the leap seconds in the 'leaps' array
+        dict
+            A dictionary containing 'dates' with array of Julian dates corresponding to the leap seconds in the 'leaps' array
 
     """
     if os.environ.get('CDF_LEAPSECONDSTABLE') is not None:

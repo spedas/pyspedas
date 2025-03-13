@@ -6,7 +6,7 @@ def mpause_2(xmp=None, ymp_west=None, short=False, xmp_max=10.78):
     Calculate the magnetopause (X, Y) locations based on the Fairfield model (JGR, 1971).
     An aberration of 4 degrees is assumed.
 
-    Parameters:
+    Parameters
     ----------
     xmp (array-like, optional):
         Spacecraft position, x component (defaults to a range if not provided).
@@ -17,16 +17,19 @@ def mpause_2(xmp=None, ymp_west=None, short=False, xmp_max=10.78):
     xmp_max (float, optional):
         Maximum value of xmp (defaults to 10.78, the value from the Fairfield paper).
 
-    Returns:
+    Returns
     -------
+
     tuple: A tuple containing two elements:
         xmp (numpy.ndarray): The x coordinates of the magnetopause.
         ymp (numpy.ndarray): The y coordinates of the magnetopause.
 
 
-    Notes:
+    Notes
     -----
+
     Similar to mpause_2.pro in IDL SPEDAS.
+
     """
 
     # Define constants

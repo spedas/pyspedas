@@ -17,28 +17,28 @@ import functools
 
 def libs(function_name, package=None):
     """
-    Searches for a specified function within a given package and its submodules,
-    and prints information about the function if found. The search is performed
-    utilizing the imports defined in each __init__.py package file to display the
-    callable function name.
+    Search for a specified function by exact name, substring, or wildcard within a given package and its submodules.
 
-    Parameters:
-    - function_name (str): The name or partial name of the function to search for. If "*" or "?"
-      are found in the function name, a case-insensitive wildcard match is performed, otherwise
-      function_name is treated as a substring to match.
-    - package (module, optional): The Python package in which to search for the function.
-      Default is the pyspedas package. This should be a Python module object.
+    Parameters
+    ----------
+    function_name (str):
+        The name or partial name of the function to search for. If "*" or "?" are found in the function name, a case-insensitive wildcard match is performed, otherwise
+        function_name is treated as a substring to match.
+        package (module, optional): The Python package in which to search for the function.
+        Default is the pyspedas package. This should be a Python module object.
 
-    Note:
-    - All submodules of pyspedas and pytplot are imported during the search. The package option is
-      simply narrows the search.
-    - The function specifically searches for functions, not classes or other objects.
-    - If multiple functions with the same name exist in different modules within the package,
-      it will list them all.
-    - The function handles ImportError exceptions by printing an error message and
-      continuing the search, except 'pytplot.QtPlotter'. pytplot.QtPlotter results in error during import and ignored
+    Note
+    ----
 
-    Example Usage:
+    All submodules of pyspedas and pytplot are imported during the search. The package option is
+    simply narrows the search.
+    The function specifically searches for functions, not classes or other objects.
+    If multiple functions with the same name exist in different modules within the package, it will list them all.
+    The function handles ImportError exceptions by printing an error message and
+    continuing the search, except 'pytplot.QtPlotter'. pytplot.QtPlotter results in error during import and ignored
+
+    Example
+    -------
 
     >>> from pyspedas import libs
     >>> libs('fgm')

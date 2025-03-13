@@ -5,14 +5,14 @@ def mpause_t96(pd, xgsm=None, ygsm=None, zgsm=None):
     """
     Calculate the location of the magnetopause using the Tsyganenko 1996 (T96) model.
 
-    Parameters:
+    Parameters
     ----------
         pd (float):
             Solar wind ram pressure in nanopascals.
         xgsm, ygsm, zgsm  (array-like):
             Coordinates of points in Earth radii (Re) to check whether they are inside or outside the magnetopause.
 
-    Returns:
+    Returns
     -------
         xmgnp, ymgnp, zmgnp (array-like):
             Locations of the magnetopause boundary in Earth radii (Re).
@@ -21,7 +21,7 @@ def mpause_t96(pd, xgsm=None, ygsm=None, zgsm=None):
         distan (array-like):
             Distance from the given points to the nearest point on the magnetopause boundary.
 
-    Notes:
+    Notes
     -----
     The pressure-dependent magnetopause that is used in the T96_01 model
     (TSYGANENKO, JGR, V.100, P.5599, 1995; ESA SP-389, P.181, O;T. 1996)
