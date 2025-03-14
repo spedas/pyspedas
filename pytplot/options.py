@@ -24,45 +24,164 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
 
     Options
     -------
+
+    Many of the options are passed directly to matplotlib calls.  For more extensive documentation about how to use these
+    obtions, see the matplotlib documentation: https://matplotlib.org/stable/users/index.html
+
+    Note that many X-axis options are controlled at the level of the entire plot, rather than per-variable (since plots with multiple panels will
+    share many X axis properties).  See the tplot_options() routine for available per-plot options,
+
+
         ======================  ===========  ===========================================================================================================================
-        Options                 Value type   Notes
+        Panel Options           Value type   Notes
         ======================  ===========  ===========================================================================================================================
-        name                    str          The title of the plot.
+        title                    str         The title of the plot.
         panel_size              flt          Number between (0,1], representing the percent size of the plot.
         alpha                   flt          Number between [0,1], gives the transparency of the plot lines.
-        thick                   flt          Sets plot line width.
+        line_width              flt          Sets plot line width.
         legend_names            list         A list of strings that will be used to identify the lines.
         line_style              str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
         border                  bool         Turns on or off the top/right axes that would create a box around the plot.
         var_label_ticks         int          Sets the number of ticks if this variable is displayed as an alternative x axis.
         char_size               int          Defines character size for plot labels, etc.
+        right_axis              bool         If true,display a second Y axis on the right side of the plot.
+        second_axis_size        numeric      The size of the second axis to display
         data_gap                numeric      If there is a gap in the data larger than this number in seconds, then insert
+        visible                 bool         If False, do not display lines for this variable.
         (cont)                  (cont)       NaNs. This is similar to using the degap procedure on the variable, but is
         (cont)                  (cont)       applied at plot-time, and does not persist in the variable data.
-        yrange                  flt/list     Two numbers that give the y axis range of the plot. If a third argument is present, set linear or log scaling accordingly.
+        ======================  ===========  ===========================================================================================================================
+
+        ======================  ===========  ===========================================================================================================================
+        Legend Options          Value type   Notes
+        ======================  ===========  ===========================================================================================================================
+        legend_names            list         A list of strings that will be used to identify the legends.
+        legend_size             numeric      The font size of the legend names
+        legend_shadow           bool         Turns on or off drop shadows on the legend box
+        legend_title            str          The title to display on the legend
+        legend_titlesize        numeric      The font size of the legend title
+        legend_color            [str]        The color of the legend names
+        legend_edgecolor        str          The edge color of markers displayed in the legend
+        legend_facecolor        str          The face color of markers displayed in the legend
+        legend_markerfirst      boolean      Put the marker to the left of the line in the legend
+        legend_markerscale      numeric      The scale size of markers displayed in the legend
+        legend_markersize       numeric      The size of the markers displayed in the legend
+        ======================  ===========  ===========================================================================================================================
+
+        ======================  ===========  ===========================================================================================================================
+        X Axis Options          Value type   Notes
+        ======================  ===========  ===========================================================================================================================
+        xtitle                  str          The title of the x axis.
+        xsubtitle               str          The title of the x axis subtitle.
+        xtitle_color            str          The color of the x axis title.
+        xtick_length            numeric      The length of the x tick marks
+        xtick_width             numeric      The width of the x tick marks
+        xtick_color             str          The color of the x tick marks
+        xtick_labelcolor        str          The color of the x tick marks
+        xtick_direction         numeric      The direction of the x tick marks
+        ======================  ===========  ===========================================================================================================================
+
+
+        ======================  ===========  ===========================================================================================================================
+        Y Axis Options          Value type   Notes
+        ======================  ===========  ===========================================================================================================================
+        y_range                 flt/list     Two numbers that give the y axis range of the plot. If a third argument is present, set linear or log scaling accordingly.
         ylog                    bool         True sets the y axis to log scale, False reverts.
         ytitle                  str          Title shown on the y axis. Use backslash for new lines.
         ysubtitle               str          Subtitle shown on the y axis.
-        y_major_ticks           list         A list of values that will be used to set the major ticks on the y axis.
-        y_minor_tick_interval   numeric      The interval between minor ticks on the y axis.
-        zrange                  flt/list     Two numbers that give the z axis range of the plot. If a third argument is present, set linear or log scaling accordingly.
+        ytitle_color            str          The color of the y axis title.
+        ytick_length            numeric      The length of the Y tick marks
+        ytick_width             numeric      The width of the Y tick marks
+        ytick_color             str          The color of the Y tick marks
+        ytick_labelcolor        str          The color of the Y tick marks
+        ytick_direction         numeric      The direction of the Y tick marks
+        y_major_ticks           [numeric]    A list of values that will be used to set the major ticks on the Y axis.
+        y_minor_tick_interval   numeric      The interval between minor ticks on the Y axis.
+        ======================  ===========  ===========================================================================================================================
+
+        ======================  ===========  ===========================================================================================================================
+        Error Bar Options       Value type   Notes
+        ======================  ===========  ===========================================================================================================================
+        errorevery              numeric      Interval at which to show error bars
+        capsize                 numeric      The size of error bar caps
+        ecolor                  str          The color of the error bar lines
+        elinewidth              numeric      The width of the error bar lines
+        ======================  ===========  ===========================================================================================================================
+
+        ======================  ===========  ===========================================================================================================================
+        Marker/Symbol  Options  Value type   Notes
+        ======================  ===========  ===========================================================================================================================
+        marker_size             numeric      The size of the markers displayed in the plot
+        markevery               numeric      Interval at which to show markers
+        symbols                 bool         If True, display as a scatter plot (no lines)
+        ======================  ===========  ===========================================================================================================================
+
+
+        ======================  ===========  ===========================================================================================================================
+        Z  / Specplot Options   Value type   Notes
+        ======================  ===========  ===========================================================================================================================
+        spec                    bool         Display this variable as a spectrogram.
+        colormap                str/list     Color map to use for specplots https://matplotlib.org/examples/color/colormaps_reference.html.
+        colormap_width          numeric      The width of the specplot color bar
+        z_range                 flt/list     Two numbers that give the z axis range of the plot. If a third argument is present, set linear or log scaling accordingly.
         zlog                    int          True sets the z axis to log scale, False reverts (spectrograms only).
         ztitle                  str          Title shown on the z axis. Spec plots only. Use backslash for new lines.
         zsubtitle               str          Subtitle shown on the z axis. Spec plots only.
-        colormap                str/list     Color map to use for specplots https://matplotlib.org/examples/color/colormaps_reference.html.
+        ztitle_color            str          The color of the z axis title.
+        x_interp                bool         If true, perform smoothing of spectrograms in the X direction
+        x_interp_points         numeric      Number of interpolation points to use in the X direction
+        y_interp                bool         If true, perform smoothing of spectrograms in the Y direction
+        y_interp_points         numeric      Number of interpolation points to use in the Y direction
         xrange_slice            flt/list     Two numbers that give the x axis range of spectrogram slicing plots.
         yrange_slice            flt/list     Two numbers that give the y axis range of spectrogram slicing plots.
         xlog_slice              bool         Sets x axis on slice plot to log scale if True.
         ylog_slice              bool         Sets y axis on slice plot to log scale if True.
-        spec_plot_dim           int/str      If variable has more than two dimensions, this sets which dimension the "v"
+        spec_dim_to_plot        int/str      If variable has more than two dimensions, this sets which dimension the "v"
         (cont)                  (cont)       variable will display on the y axis in spectrogram plots.
         (cont)                  (cont)       All other dimensions are summed into this one, unless "spec_slices_to_use"
         (cont)                  (cont)       is also set for this variable.
-        spec_dim_to_plot        int/str      Same as spec_plot_dim, just with a slightly more descriptive name.
         spec_slices_to_use      str          Must be a dictionary of coordinate:values. If a variable has more than two
         (cont)                  (cont)       dimensions, spectrogram plots will plot values at that particular slice of
         (cont)                  (cont)       that dimension. See examples for how it works.
         ======================  ===========  ===========================================================================================================================
+
+        Many options have synonyms or variant spellings that are commonly used.  The first column gives the name that is used
+        throughout the plotting code.  The second column gives the synonyms that are accepted.
+
+        ======================  ======================================================================================================================================
+        Canonical name          Accepted synonyms
+        ======================  ======================================================================================================================================
+        title                   name
+        line_color              color, colors, col, cols, line_colors
+        legend_names            labels, legend_name, legend_label, legend_labels
+        legend_location         labels_location, legends_location, label_location, labels_location
+        legend_size             labels_size, label_size
+        legend_shadow           labels_shadow. label_shadow
+        legend_title            label_title, labels_title
+        legend_titlesize        lable_titlesize, labels_titlesize
+        legend_color            legends_color, label_color, labels_color
+        legend_edgecolor        label_edgecolor, labels_edgecolor
+        legend_facecolor        label_facecolor, labels_facecolor
+        legend_markerfirst      label_markerfirst, labels_markerfirst
+        legend_markerscale      label_markerscale, labels_markerscale
+        legend_markersize       label_markersize, labels_markersize
+        legend_frameon          label_frameon, labels_frameon
+        legend_ncols            label_ncols, labels_ncols
+        line_style_name         line_style, linestyle
+        visible                 nodata
+        char_size               charsize
+        marker                  markers
+        marker_size             markersize
+        markevery               markerevery mark_every marker_every
+        symbol                  symbols
+        line_width              thick
+        y_range                 yrange
+        z_range                 zrange
+        data_gap                datagap
+        spec_dim_to_plot        spec_plot_dim
+        ======================  ======================================================================================================================================
+
+
 
     Returns
     -------
@@ -119,7 +238,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                 logging.info(str(i) + " is currently not in pytplot.")
                 return
 
-            elif option in ['color', 'colors', 'col', 'cols']:
+            elif option in ['color', 'colors', 'col', 'cols', 'line_color', 'line_colors']:
                 if isinstance(value, list):
                     pytplot.data_quants[i].attrs['plot_options']['extras']['line_color'] = value
                 else:
@@ -164,13 +283,13 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                     else:
                         pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v1'
 
-            elif option in ['legend_names', 'labels', 'legend_name', 'legend_label']:
+            elif option in ['legend_names', 'labels', 'legend_name', 'legend_label', 'legend_labels']:
                 if isinstance(value, list):
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = [value]
 
-            elif option in ['legend_location', 'labels_location', 'legends_location', 'label_location']:
+            elif option in ['legend_location', 'labels_location', 'legends_location', 'label_location', 'labels_location']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_location'] = value
 
             elif option in ['legend_size', 'labels_size', 'label_size']:
@@ -188,23 +307,23 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option in ['legend_color', 'legends_color','label_color','labels_color']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_color'] = value
 
-            elif option in ['legend_edgecolor', 'labels_edgecolor']:
+            elif option in ['legend_edgecolor', 'label_edgecolor', 'labels_edgecolor']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_edgecolor'] = value
 
-            elif option in ['legend_facecolor', 'labels_facecolor']:
+            elif option in ['legend_facecolor', 'label_facecolor', 'labels_facecolor']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_facecolor'] = value
 
-            elif option in ['legend_markerfirst', 'labels_markerfirst']:
+            elif option in ['legend_markerfirst', 'label_markerfirst', 'labels_markerfirst']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerfirst'] = value
 
-            elif option in ['legend_markerscale', 'labels_markerscale']:
+            elif option in ['legend_markerscale', 'label_markerscale', 'labels_markerscale']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
 
-            elif option in ['legend_markersize', 'legend_markersize']:
+            elif option in ['legend_markersize', 'label_markersize', 'labels_markersize']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markersize'] = value
 
-            elif option in ['legend_frameon', 'labels_frameon']:
-                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
+            elif option in ['legend_frameon', 'label_frameon', 'labels_frameon']:
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_frameon'] = value
 
             elif option in ['legend_ncols', 'labels_ncols', 'label_ncols']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_ncols'] = value
@@ -239,7 +358,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
 
-            elif option == 'nodata':
+            elif option in ['nodata', 'visible']:
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
 
             # Obsolete? (except for value='none'?) JWL 2024-03-21
@@ -272,10 +391,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option in ['char_size', 'charsize']:
                 pytplot.data_quants[i].attrs['plot_options']['extras']['char_size'] = value
 
-            elif option == 'name':
-                pytplot.data_quants[i].attrs['plot_options']['line_opt']['name'] = value
-
-            elif option == 'title':
+            elif option in ['name', 'title']:
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['title'] = value
 
             elif option == "panel_size":
@@ -420,15 +536,14 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option == 'zsubtitle':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_subtitle'] = value
 
+            elif option == 'xtitle_color':
+                pytplot.data_quants[i].attrs['plot_options']['xaxis_opt']['axis_color'] = value
+
             elif option == 'ytitle_color':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['axis_color'] = value
 
             elif option == 'ztitle_color':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_color'] = value
-
-
-            elif option == 't_average':
-                pytplot.data_quants[i].attrs['plot_options']['extras']['t_average'] = value
 
             elif option in ['data_gap', 'datagap']: #jmm, 2023-06-20
                 pytplot.data_quants[i].attrs['plot_options']['extras']['data_gap'] = value
