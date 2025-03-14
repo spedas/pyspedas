@@ -85,68 +85,26 @@ def option_usage():
 def set_tplot_options(option, value, old_tplot_opt_glob):
     new_tplot_opt_glob = old_tplot_opt_glob
     
-    if option == 'title':
+    if option in ['title_text', 'title']:
         new_tplot_opt_glob['title_text'] = value
     
     elif option == 'title_size':
         new_tplot_opt_glob['title_size'] = value
         
-    elif option == 'wsize':
-        new_tplot_opt_glob['window_size'] = value
-        
-    elif option == 'title_align':
-        new_tplot_opt_glob['title_align'] = value
-        
     elif option == 'var_label':
         new_tplot_opt_glob['var_label'] = value
-        
-    elif option == 'alt_range':
-        new_tplot_opt_glob['alt_range'] = value
-
-    elif option == 'map_x_range':
-        new_tplot_opt_glob['map_x_range'] = value
-
-    elif option == 'map_y_range':
-        new_tplot_opt_glob['map_y_range'] = value
 
     elif option == 'x_range':
         new_tplot_opt_glob['x_range'] = value
 
-    elif option == 'crosshair':
-        new_tplot_opt_glob['crosshair'] = value
-
     elif option == 'data_gap':
         new_tplot_opt_glob['data_gap'] = value
-    
-    elif option == 'roi':
-        new_tplot_opt_glob['roi_lines'] = value
 
     elif option == 'vertical_spacing':
         new_tplot_opt_glob['vertical_spacing'] = value
 
-    elif option == 'show_all_axes':
-        new_tplot_opt_glob['show_all_axes'] = value
-
-    elif option == 'min_border_top':
-        new_tplot_opt_glob['min_border_top'] = value
-
-    elif option == 'min_border_bottom':
-        new_tplot_opt_glob['min_border_bottom'] = value
-
-    elif option == 'black_background':
-        new_tplot_opt_glob['black_background'] = value
-
     elif option == 'axis_font_size':
         new_tplot_opt_glob['axis_font_size'] = value
-
-    elif option == 'axis_tick_num':
-        new_tplot_opt_glob['axis_tick_num'] = value
-
-    elif option == 'yaxis_width':
-        new_tplot_opt_glob['yaxis_width'] = value
-
-    elif option == 'y_axis_zoom':
-        new_tplot_opt_glob['y_axis_zoom'] = value
 
     elif option == 'xmargin':
         new_tplot_opt_glob['xmargin'] = value
