@@ -57,6 +57,10 @@ Per-Variable Plot Options
 
 .. autofunction:: pyspedas.options
 
+.. autofunction:: pyspedas.timebar
+
+.. autofunction:: pyspedas.databar
+
 "Global" plot options
 ---------------------
 

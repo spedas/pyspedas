@@ -98,6 +98,7 @@ Creating and Managing Tplot Variables
 .. autofunction:: pyspedas.del_data
 .. autofunction:: pyspedas.data_exists
 .. autofunction:: pyspedas.get_timespan
+.. autofunction:: pyspedas.tres
 .. autofunction:: pyspedas.get_ylimits
 .. autofunction:: pyspedas.replace_data
 .. autofunction:: pyspedas.replace_metadata
