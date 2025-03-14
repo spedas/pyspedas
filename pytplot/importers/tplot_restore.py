@@ -68,7 +68,12 @@ def tplot_restore(filename):
                 temp_y_data = np.transpose(temp_tplot['dq'][i][1][0][2])
             else:
                 temp_y_data = temp_tplot['dq'][i][1][0][2]
-            
+
+            # Check for loss of leading dimension if only 1 timestamp is present
+            shape = temp_x_data.shape
+            if len(shape) == 0:
+                temp_x_data = np.atleast_1d(temp_x_data)
+
             # variable contains V1, V2 and V3 (e.g., DF as a function of energy, theta, phi)
             if len(temp_tplot['dq'][i][1][0]) == 10:
                 temp_v1_data = temp_tplot['dq'][i][1][0][4]
@@ -170,7 +175,8 @@ def tplot_restore(filename):
                         data_att = {name.lower(): value for name, value in zip(att_names, att_values)}
                         pytplot.data_quants[data_name].attrs['data_att'] = data_att
 
-                    options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0], quiet=True)
+                    if option_name.lower() not in ['color', 'colors']:
+                        options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0], quiet=True)
 
             pytplot.data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
             pytplot.data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
