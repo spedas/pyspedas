@@ -146,6 +146,7 @@ from .replace_data import replace_data
 from .replace_metadata import replace_metadata
 from .get_ylimits import get_ylimits
 from .timebar import timebar
+from .databar import databar
 from .del_data import del_data
 from .timespan import timespan
 from .options import options
