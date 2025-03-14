@@ -43,7 +43,7 @@ def derive(tvar,newname=None, new_tvar=None):
         a.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
         pytplot.data_quants[tvar] = a
     else:
-        data = {'x':a.coords['time'], 'y':a.values}
+        data = {'x':a.coords['time'], 'y':a.values * 1e09}  # Internal time in units of nanoseconds
         for coord in a.coords:
             if coord != 'time' and coord != 'spec_bins':
                 data[coord] = a.coords[coord].values
