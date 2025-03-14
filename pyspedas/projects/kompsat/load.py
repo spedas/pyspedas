@@ -13,15 +13,15 @@ https://swe.ssa.esa.int/sosmag
 https://swe.ssa.esa.int/hapi
 
 Data types available:
-    1. SOSMAG real time (datatype='1m', esa_gk2a_sosmag_1m)
+    1. SOSMAG real time (datatype='1m', d3s_gk2a_sosmag_1m)
         Near-realtime Magnetic Field Data with 1-16Hz from SOSMAG
         on GEO-KOMPSAT-2A in geostationary orbit at 128.2E.
-        'spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_1m'
+        'spase://SSA/NumericalData/D3S/d3s_gk2a_sosmag_1m'
 
-    2. SOSMAG calibrated (default, datatype='', esa_gk2a_sosmag_recalib)
+    2. SOSMAG calibrated (default, datatype='', d3s_gk2a_sosmag_recalib)
         Recalibrated L2 Magnetic Field Data with 1-16Hz from SOSMAG
         on GEO-KOMPSAT-2A in geostationary orbit at 128.2E.
-        'spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_recalib'
+        'spase://SSA/NumericalData/D3S/d3s_gk2a_sosmag_recalib'
 
     3. Electrons real time:
         'spase://SSA/NumericalData/GEO-KOMPSAT-2A/kma_gk2a_ksem_pd_e_l1'
@@ -278,11 +278,10 @@ def esa_hapi_get_data(
     elif instrument in ["protons", "p"]:
         dataid = "spase://SSA/NumericalData/GEO-KOMPSAT-2A/kma_gk2a_ksem_pd_p_l1"
     else:
-        dataid = "spase://SSA/NumericalData/GEO-KOMPSAT-2A/"
         if datatype == "1m":
-            dataid = dataid + "esa_gk2a_sosmag_1m"
+            dataid = "spase://SSA/NumericalData/D3S/d3s_gk2a_sosmag_1m"
         else:
-            dataid = dataid + "esa_gk2a_sosmag_recalib"
+            dataid = "spase://SSA/NumericalData/D3S/d3s_gk2a_sosmag_recalib"
 
     # This query string can also be used in a browser.
     hquery = (
@@ -761,9 +760,9 @@ def load(
 
     SOSMAG data:
 
-    https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_recalib&time.min=2021-01-31T01:00:00.000Z&time.max=2021-01-31T01:01:00.000Z&format=json
+    https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/D3S/d3s_gk2a_sosmag_recalib&time.min=2021-01-31T01:00:00.000Z&time.max=2021-01-31T01:01:00.000Z&format=json
 
-    https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/GEO-KOMPSAT-2A/esa_gk2a_sosmag_1m&time.min=2021-01-31T01:00:00.000Z&time.max=2021-01-31T01:01:00.000Z&format=json
+    https://swe.ssa.esa.int/hapi/data?id=spase://SSA/NumericalData/D3S/d3s_gk2a_sosmag_1m&time.min=2021-01-31T01:00:00.000Z&time.max=2021-01-31T01:01:00.000Z&format=json
 
     Particle data:
 
