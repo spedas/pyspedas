@@ -27,27 +27,33 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         ======================  ===========  ===========================================================================================================================
         Options                 Value type   Notes
         ======================  ===========  ===========================================================================================================================
-        colormap                str/list     https://matplotlib.org/examples/color/colormaps_reference.html.
-        ylog                    int          True sets the y axis to log scale, False reverts.
-        zlog                    int          True sets the z axis to log scale, False reverts (spectrograms only).
-        legend_names            list         A list of strings that will be used to identify the lines.
-        xlog_slice              bool         Sets x axis on slice plot to log scale if True.
-        ylog                    bool         Set y axis on main plot window to log scale if True.
-        ylog_slice              bool         Sets y axis on slice plot to log scale if True.
-        line_style              str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
-        char_size               int          Defines character size for plot labels, etc.
         name                    str          The title of the plot.
         panel_size              flt          Number between (0,1], representing the percent size of the plot.
         alpha                   flt          Number between [0,1], gives the transparency of the plot lines.
         thick                   flt          Sets plot line width.
+        legend_names            list         A list of strings that will be used to identify the lines.
+        line_style              str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
+        border                  bool         Turns on or off the top/right axes that would create a box around the plot.
+        var_label_ticks         int          Sets the number of ticks if this variable is displayed as an alternative x axis.
+        char_size               int          Defines character size for plot labels, etc.
+        data_gap                numeric      If there is a gap in the data larger than this number in seconds, then insert
+        (cont)                  (cont)       NaNs. This is similar to using the degap procedure on the variable, but is
+        (cont)                  (cont)       applied at plot-time, and does not persist in the variable data.
         yrange                  flt/list     Two numbers that give the y axis range of the plot. If a third argument is present, set linear or log scaling accordingly.
+        ylog                    bool         True sets the y axis to log scale, False reverts.
+        ytitle                  str          Title shown on the y axis. Use backslash for new lines.
+        ysubtitle               str          Subtitle shown on the y axis.
+        y_major_ticks           list         A list of values that will be used to set the major ticks on the y axis.
+        y_minor_tick_interval   numeric      The interval between minor ticks on the y axis.
         zrange                  flt/list     Two numbers that give the z axis range of the plot. If a third argument is present, set linear or log scaling accordingly.
+        zlog                    int          True sets the z axis to log scale, False reverts (spectrograms only).
+        ztitle                  str          Title shown on the z axis. Spec plots only. Use backslash for new lines.
+        zsubtitle               str          Subtitle shown on the z axis. Spec plots only.
+        colormap                str/list     Color map to use for specplots https://matplotlib.org/examples/color/colormaps_reference.html.
         xrange_slice            flt/list     Two numbers that give the x axis range of spectrogram slicing plots.
         yrange_slice            flt/list     Two numbers that give the y axis range of spectrogram slicing plots.
-        ytitle                  str          Title shown on the y axis. Use backslash for new lines.
-        ztitle                  str          Title shown on the z axis. Spec plots only. Use backslash for new lines.
-        ysubtitle               str          Subtitle shown on the y axis.
-        zsubtitle               str          Subtitle shown on the z axis. Spec plots only.
+        xlog_slice              bool         Sets x axis on slice plot to log scale if True.
+        ylog_slice              bool         Sets y axis on slice plot to log scale if True.
         spec_plot_dim           int/str      If variable has more than two dimensions, this sets which dimension the "v"
         (cont)                  (cont)       variable will display on the y axis in spectrogram plots.
         (cont)                  (cont)       All other dimensions are summed into this one, unless "spec_slices_to_use"
@@ -56,36 +62,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         spec_slices_to_use      str          Must be a dictionary of coordinate:values. If a variable has more than two
         (cont)                  (cont)       dimensions, spectrogram plots will plot values at that particular slice of
         (cont)                  (cont)       that dimension. See examples for how it works.
-        border                  bool         Turns on or off the top/right axes that would create a box around the plot.
-        var_label_ticks         int          Sets the number of ticks if this variable is displayed as an alternative x axis.
-        data_gap                numerical    If there is a gap in the data larger than this number in seconds, then insert
-        (cont)                  (cont)       NaNs. This is similar to using the degap procedure on the variable, but is
-        (cont)                  (cont)       applied at plot-time, and does not persist in the variable data.
-        y_major_ticks           list         A list of values that will be used to set the major ticks on the y axis.
-        y_minor_tick_interval   numerical    The interval between minor ticks on the y axis.
         ======================  ===========  ===========================================================================================================================
-
-    Options
-    -------
-
-        ===========================  ===========  ===============================================================================
-        Obsolete/Not Yet Supported   Value type   Notes
-        ===========================  ===========  ===============================================================================
-        Color                        str/list     red, green, blue, etc. Also takes in RGB tuples, i.e. (0,255,0) for green
-        Spec                         int          1 sets the Tplot Variable to spectrogram mode, 0 reverts.
-        Alt                          int          1 sets the Tplot Variable to altitude plot mode, 0 reverts.
-        Map                          int          1 sets the Tplot Variable to latitude/longitude mode, 0 reverts.
-        link                         list         Allows a user to reference one tplot variable to another.
-        basemap                      str          Full path and name of a background image for "Map" plots.
-        plotter                      str          Allows a user to implement their own plotting script in place of the ones herein.
-        crosshair_x                  str          Title for x-axis crosshair.
-        crosshair_y                  str          Title for y-axis crosshair.
-        crosshair_z                  str          Title for z-axis crosshair.
-        static                       str          Datetime string that gives desired time to plot y and z values from a spec plot.
-        static_tavg                  str          Datetime string that gives desired time-averaged y and z values to plot from a spec plot.
-        t_average                    int          Seconds around which the cursor is averaged when hovering over spectrogram plots.
-        ===========================  ===========  ===============================================================================
-
 
     Returns
     -------
@@ -186,14 +163,6 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                         pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v2'
                     else:
                         pytplot.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v1'
-
-            elif option == 'alt':
-                _reset_plots(i)
-                pytplot.data_quants[i].attrs['plot_options']['extras']['alt'] = value
-
-            elif option == 'map':
-                _reset_plots(i)
-                pytplot.data_quants[i].attrs['plot_options']['extras']['map'] = value
 
             elif option in ['legend_names', 'labels', 'legend_name', 'legend_label']:
                 if isinstance(value, list):
@@ -296,6 +265,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
 
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = _convert_to_matplotlib_linestyle(value)
 
+                # unused?
                 if(value == 6 or value == 'none'):
                     pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
 
@@ -313,9 +283,6 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                     logging.info("Invalid panel_size value (%f). Should be in (0, 1]",value)
                     return
                 pytplot.data_quants[i].attrs['plot_options']['extras']['panel_size'] = value
-
-            elif option == 'basemap':
-                pytplot.data_quants[i].attrs['plot_options']['extras']['basemap'] = value
 
             elif option == 'alpha':
                 if value > 1 or value < 0:
@@ -459,33 +426,6 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option == 'ztitle_color':
                 pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_color'] = value
 
-            elif option == 'ybar':
-                pytplot.data_quants[i].attrs['plot_options']['extras']['ybar'] = value
-
-            elif option == 'ybar_color':
-                pytplot.data_quants[i].attrs['plot_options']['extras']['ybar'] = value
-
-            elif option == 'ybar_size':
-                pytplot.data_quants[i].attrs['plot_options']['extras']['ysize'] = value
-
-            elif option == 'plotter':
-                _reset_plots(i)
-                pytplot.data_quants[i].attrs['plot_options']['extras']['plotter'] = value
-
-            elif option == 'crosshair_x':
-                pytplot.data_quants[i].attrs['plot_options']['xaxis_opt']['crosshair'] = value
-
-            elif option == 'crosshair_y':
-                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['crosshair'] = value
-
-            elif option == 'crosshair_z':
-                pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['crosshair'] = value
-
-            elif option == 'static':
-                pytplot.data_quants[i].attrs['plot_options']['extras']['static'] = value
-
-            elif option == 'static_tavg':
-                pytplot.data_quants[i].attrs['plot_options']['extras']['static_tavg'] = [value[0], value[1]]
 
             elif option == 't_average':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['t_average'] = value
@@ -537,9 +477,6 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
 
             elif option == 'border':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['border'] = value
-
-            elif option == 'var_label_ticks':
-                pytplot.data_quants[i].attrs['plot_options']['var_label_ticks'] = value
 
             elif option == 'y_interp':
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_interp'] = value
