@@ -22,7 +22,11 @@ def rbsp_rbspice_omni(probe='a', datatype='TOFxEH', level='l3'):
         Spacecraft probe name: 'a' or 'b'
 
     datatype: str, default='TOFxEH'
-        RBSPICE data type: 'EBR','ESRHELT','ESRLEHT','IBR','ISBR','ISRHELT','TOFxEH','TOFxEIon','TOFxEnonH','TOFxPHHHELT','TOFxPHHLEHT'
+        RBSPICE data type::
+
+         'EBR', 'ESRHELT', 'ESRLEHT', 'IBR', 'ISBR', 'ISRHELT',
+         'TOFxEH', 'TOFxEIon', 'TOFxEnonH', 'TOFxPHHHELT', 'TOFxPHHLEHT'
+
         Values depends on different data levels.
 
     level : str, default='l3'
