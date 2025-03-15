@@ -1,5 +1,5 @@
 from pyspedas.cotrans_tools.minvar import minvar
-from pytplot import get_data, store_data, time_double
+from pytplot import get_data, store_data, time_double, time_string
 import numpy as np
 
 
@@ -59,12 +59,12 @@ def minvar_matrix_make(in_var_name,
     else:
         stop_d = time_double(tstop)
 
-    if twindow is None:
+    if (twindow is None) or (twindow > (stop_d - start_d)):
         twindow = stop_d - start_d
 
     # sets it to something large enough that it will only generate one
     # matrix in the default case
-    if tslide is None:
+    if (tslide is None) or (tslide <= 0) :
         tslide = twindow / 2.0
 
     if newname is None:
@@ -72,13 +72,8 @@ def minvar_matrix_make(in_var_name,
 
     current_d = start_d
 
-    # estimate the number of output matrices to generate temporary storage
-    if tslide != 0:
-        o_num = (stop_d - start_d) / tslide
-    else:
-        o_num = 1
-
-    o_num = int(o_num)
+    # Exact number of windows: always at least one, plus however many tslides fit in the space after the first window
+    o_num = 1 + int((stop_d - start_d - twindow)/tslide)
 
     o_times = np.zeros(o_num)
     o_lams = np.zeros((o_num, 3))
@@ -86,7 +81,7 @@ def minvar_matrix_make(in_var_name,
 
     i = 0
 
-    while current_d + twindow <= stop_d + twindow:
+    while current_d + twindow <= stop_d:
         if i >= o_num:
             break
         # output time for the mva matrix is the midpoint time for the interval
@@ -119,7 +114,7 @@ def minvar_matrix_make(in_var_name,
         if tslide == 0:
             break
 
-    o_d = {'x': o_times[:-1], 'y': o_eigs[0:-1, :, :]}
+    o_d = {'x': o_times, 'y': o_eigs}
 
     out_vars = []
 
@@ -129,19 +124,19 @@ def minvar_matrix_make(in_var_name,
         out_vars.append(newname)
 
     if evname is not None:
-        store_data(evname, data={'x': o_times[:-1], 'y': o_lams[:-1, :]})
+        store_data(evname, data={'x': o_times, 'y': o_lams})
         out_vars.append(evname)
 
     if tminname is not None:
-        store_data(tminname, data={'x': o_times[:-1], 'y': o_eigs[:-1, 2, :]})
+        store_data(tminname, data={'x': o_times, 'y': o_eigs[:, 2, :]})
         out_vars.append(tminname)
 
     if tmidname is not None:
-        store_data(tmidname, data={'x': o_times[:-1], 'y': o_eigs[:-1, 1, :]})
+        store_data(tmidname, data={'x': o_times, 'y': o_eigs[:, 1, :]})
         out_vars.append(tmidname)
 
     if tmaxname is not None:
-        store_data(tmaxname, data={'x': o_times[:-1], 'y': o_eigs[:-1, 0, :]})
+        store_data(tmaxname, data={'x': o_times, 'y': o_eigs[:, 0, :]})
         out_vars.append(tmaxname)
 
     return out_vars
