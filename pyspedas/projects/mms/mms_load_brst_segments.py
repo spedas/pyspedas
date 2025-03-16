@@ -1,7 +1,6 @@
 import os
 import logging
 import numpy as np
-from scipy.io import readsav
 from pytplot import store_data, options
 from pytplot import time_double
 from pyspedas.utilities.download import download
@@ -9,7 +8,7 @@ from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
 
 
-def mms_load_brst_segments(trange=None, suffix='', sdc=True):
+def mms_load_brst_segments(trange=None, suffix=''):
     """
     This function loads the burst segment intervals
     
@@ -23,10 +22,6 @@ def mms_load_brst_segments(trange=None, suffix='', sdc=True):
         suffix: str
             String to append to the end of the tplot variable names
 
-        sdc: bool
-            Flag to download the data from the SDC instead of spedas.org
-            (spedas.org is out of date, but faster); defaults to True
-
     Returns
     ---------
         Tuple containing (start_times, end_times)
@@ -38,33 +33,14 @@ def mms_load_brst_segments(trange=None, suffix='', sdc=True):
 
     tr = time_double(trange)
 
-    if not sdc:
-        save_file = os.path.join(CONFIG['local_data_dir'], 'mms_brst_intervals.sav')
-        brst_file = download(remote_file='http://www.spedas.org/mms/mms_brst_intervals.sav',
-            local_file=save_file)
+    intervals = mms_update_brst_intervals()
 
-        if len(brst_file) == 0:
-            logging.error('Error downloading burst intervals sav file')
-            return None
-
-        try:
-            intervals = readsav(save_file)
-        except FileNotFoundError:
-            logging.error('Error loading burst intervals sav file: ' + save_file)
-            return None
-
-        unix_start = intervals['brst_intervals'].start_times[0]
-        unix_end = intervals['brst_intervals'].end_times[0]
-
+    if intervals is not None:
+        unix_start = np.array(intervals['start_times'])
+        unix_end = np.array(intervals['end_times'])
     else:
-        intervals = mms_update_brst_intervals()
-
-        if intervals is not None:
-            unix_start = np.array(intervals['start_times'])
-            unix_end = np.array(intervals['end_times'])
-        else:
-            logging.error('Error downloading latest burst intervals file.')
-            return
+        logging.error('Error downloading latest burst intervals file.')
+        return
 
     sorted_idxs = np.argsort(unix_start)
     unix_start = unix_start[sorted_idxs]
