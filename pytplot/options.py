@@ -35,11 +35,10 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         ======================  ===========  ===========================================================================================================================
         Panel Options           Value type   Notes
         ======================  ===========  ===========================================================================================================================
-        title                    str         The title of the plot.
+        title                   str          The title of the plot.
         panel_size              flt          Number between (0,1], representing the percent size of the plot.
         alpha                   flt          Number between [0,1], gives the transparency of the plot lines.
         line_width              flt          Sets plot line width.
-        legend_names            list         A list of strings that will be used to identify the lines.
         line_style              str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
         border                  bool         Turns on or off the top/right axes that would create a box around the plot.
         var_label_ticks         int          Sets the number of ticks if this variable is displayed as an alternative x axis.
@@ -56,6 +55,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         Legend Options          Value type   Notes
         ======================  ===========  ===========================================================================================================================
         legend_names            list         A list of strings that will be used to identify the legends.
+        legend_location         str         A string giving the location of the legend box.
         legend_size             numeric      The font size of the legend names
         legend_shadow           bool         Turns on or off drop shadows on the legend box
         legend_title            str          The title to display on the legend
@@ -71,8 +71,8 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         ======================  ===========  ===========================================================================================================================
         X Axis Options          Value type   Notes
         ======================  ===========  ===========================================================================================================================
-        xtitle                  str          The title of the x axis.
-        xsubtitle               str          The title of the x axis subtitle.
+        xtitle                  str          The title to be placed under the x axis.
+        xsubtitle               str          The subtitle to be placed under the x axis
         xtitle_color            str          The color of the x axis title.
         xtick_length            numeric      The length of the x tick marks
         xtick_width             numeric      The width of the x tick marks
