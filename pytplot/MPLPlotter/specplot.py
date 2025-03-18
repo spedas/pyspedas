@@ -23,7 +23,7 @@ def get_bin_boundaries(bin_centers:np.ndarray, ylog:bool = False):
     -------
     tuple
     bin_boundaries: np.ndarray[float]
-        Floating point array of bin boundaries computed from the bin centers.  Output array will be one element longer thab the input array.
+        Floating point array of bin boundaries computed from the bin centers.  Output array will be one element longer than the input array.
     direction: int
         Flag increasing or decreasing bin order: +1 increasing, -1 decreasing, 0 indeterminate
 
@@ -122,7 +122,7 @@ def get_bin_boundaries(bin_centers:np.ndarray, ylog:bool = False):
 
 
 
-def specplot_make_1d_ybins(values: np.ndarray, vdata:np.ndarray, ylog:bool, min_ratio:float = 0.001):
+def specplot_make_1d_ybins(values: np.ndarray, vdata:np.ndarray, ylog:bool, min_ratio:float = 0.001, no_regrid=False):
     """ Convert 2-D Y-bin arrays of bin center values to a 1-D array and rebin the data array
 
     Parameters
@@ -141,6 +141,9 @@ def specplot_make_1d_ybins(values: np.ndarray, vdata:np.ndarray, ylog:bool, min_
     Specifies a threshold for determining whether adjacent bins should be combined in a
     "thinning" process.  The default value of .001 represents a 1-pixel difference in
     where the bin boundaries are rendered if the Y axis is 1000 pixels high.
+
+    no_regrid: bool
+    If True, skip rebinning the data array and only return the bin boundaries.
 
     Returns
     -------
@@ -240,7 +243,7 @@ def specplot_make_1d_ybins(values: np.ndarray, vdata:np.ndarray, ylog:bool, min_
         #print("2d bins decreasing: ", str(dec_count))
         #print("2d bins indeterminate: ", str(ind_count))
         if ind_count > 0:
-            logging.warning("specplot_make_1d_ybins: Direction of increasee of input bin centers was indeterminate (all-nan, all-same, or non-monotonic) at %d of %d time indices.", ind_count, ntimes)
+            logging.warning("specplot_make_1d_ybins: Direction of increase of input bin centers was indeterminate (all-nan, all-same, or non-monotonic) at %d of %d time indices.", ind_count, ntimes)
 
     # Convert the bin boundary set back to an array
     #logging.info("Done finding bin boundaries, sorting")
@@ -297,6 +300,8 @@ def specplot_make_1d_ybins(values: np.ndarray, vdata:np.ndarray, ylog:bool, min_
 
     # logging.info("Specplot 1-D y bins after thinning: array size %d, yrange %f, smallest difference %f, epsilon %f,  ratio %f",len(output_bin_boundaries),yrange,np.min(diff),epsilon, (ymax-ymin)/np.min(diff))
 
+    if no_regrid:
+        return output_bin_boundaries
     #logging.info("Started rebinning (new style)")
     if values.dtype.kind == 'f':
         fill = np.nan
