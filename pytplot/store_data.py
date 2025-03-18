@@ -379,7 +379,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             logging.warning("store_data: ValueError exception text: %s", str(err))
 
     # Set up Attributes Dictionaries
-    xaxis_opt = dict(axis_label='Time')
+    xaxis_opt = dict(axis_label='')
     yaxis_opt = dict(axis_label=name) if (spec_bins is None) else dict(axis_label='')
     zaxis_opt = dict(axis_label='Z-Axis') if (spec_bins is None) else dict(axis_label=name)
     xaxis_opt['crosshair'] = 'X'
