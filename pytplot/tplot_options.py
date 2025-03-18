@@ -18,11 +18,10 @@ def tplot_options(option, value):
         ==================  ==========   =====
         Option (Synonyms)   Value type   Notes
         ==================  ==========   =====
-        title_text (title)  str          Title of the entire plot (above any panel titles)
+        title_text (title)  str          Title of the entire plot (mpl 'suptitle', above any panel titles)
         title_size          int          Font size of the title
         data_gap            int          Number of seconds with consecutive nan values allowed before no interp should occur
         x_range             [flt, flt]   The min and max x_range (time) to be plotted on all plots
-        vertical_spacing    flt          The space (in inches) vertically between two plots
         axis_font_size      int          The font size of the axis ticks.  Default is 10.
         charsize            int          The font size for the legend strings
         style               str          The matplotlib plot style to use

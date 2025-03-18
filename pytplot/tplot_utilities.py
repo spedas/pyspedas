@@ -100,9 +100,6 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'data_gap':
         new_tplot_opt_glob['data_gap'] = value
 
-    elif option == 'vertical_spacing':
-        new_tplot_opt_glob['vertical_spacing'] = value
-
     elif option == 'axis_font_size':
         new_tplot_opt_glob['axis_font_size'] = value
 
