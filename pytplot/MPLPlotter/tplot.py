@@ -4,13 +4,14 @@ import numpy as np
 import matplotlib as mpl
 from datetime import date, datetime, timezone
 from matplotlib import pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import pytplot
 from fnmatch import filter as tname_filter
 from time import sleep
 from pytplot.wildcard_routines import tplot_wildcard_expand, tname_byindex
 
 from .lineplot import lineplot
-from .specplot import specplot
+from .specplot import specplot, specplot_make_1d_ybins
 
 # the following improves the x-axis ticks labels
 import matplotlib.units as munits
@@ -20,6 +21,169 @@ munits.registry[np.datetime64] = converter
 munits.registry[date] = converter
 munits.registry[datetime] = converter
 
+def pseudovar_component_props(varname: str):
+    """ Return or calculate the plot properties for a single normal tplot variable
+
+
+    Parameters
+    ----------
+    varname: str
+        Name of the tplot variable to inspect
+
+    Returns
+    -------
+    dict
+        Dictionary of plot properties for this variable::
+            is_spec: True if variable is a spectrogram
+            ymin, ymax, ylog: Y axis limits
+            zmin, zmax, zlog: Z axis limits (if variable is a spectrogram)
+
+    """
+
+    output_dict = {'ymin':np.nan, 'ymax':np.nan, 'ylog':False,
+                   'zmin':np.nan, 'zmax': np.nan, 'zlog':False,
+                   'is_spec': False}
+
+    attrs = pytplot.data_quants[varname].attrs
+    plot_opts = attrs.get('plot_options')
+    if plot_opts is not None:
+        yaxis_opt = plot_opts.get('yaxis_opt')
+        if yaxis_opt is not None:
+            ylog = yaxis_opt['y_axis_type']
+            yrange = yaxis_opt.get('y_range')
+    else:
+        ylog = False
+        yrange=[None, None]
+
+    plot_extras = attrs['plot_options']['extras']
+    dat = pytplot.get_data(varname)
+
+    if ylog is None or ylog == '' or ylog.lower() == 'linear':
+        output_dict['ylog'] = False
+    else:
+        output_dict['ylog'] = True
+
+    if plot_extras.get('spec') is not None:
+        spec = plot_extras['spec']
+        if spec:
+            # Inspect a specplot variable
+            output_dict['is_spec']=True
+            if yrange is not None:
+                output_dict['ymin'] = yrange[0]
+                output_dict['ymax'] = yrange[1]
+            else:
+                # Figure out which attribute to use for bin centers (copied from specplot, maybe
+                # should be pulled out into a separate routine?)
+                var_data=dat
+                if len(var_data) == 3:
+                    if hasattr(var_data, 'v'):
+                        input_bin_centers = var_data.v
+                    elif hasattr(var_data, 'v1'):
+                        input_bin_centers = var_data.v1
+                    else:
+                        logging.warning("Multidimensional variable %s has no v or v1 attribute", varname)
+                elif len(var_data) == 4:
+                    if hasattr(var_data, 'v1'):
+                        if 'spec_dim_to_plot' in plot_extras:
+                            if plot_extras['spec_dim_to_plot'] == 'v1':
+                                input_bin_centers = var_data.v1
+                    if hasattr(var_data, 'v2'):
+                        if 'spec_dim_to_plot' in plot_extras:
+                            if plot_extras['spec_dim_to_plot'] == 'v2':
+                                input_bin_centers = var_data.v2
+
+                output_bin_boundaries = specplot_make_1d_ybins(None, input_bin_centers, no_regrid=True)
+                output_dict['ymin']=np.nanmin(output_bin_boundaries)
+                output_dict['ymax']=np.nanmax(output_bin_boundaries)
+
+            zaxis_options = attrs['plot_options']['zaxis_opt']
+            zrange = zaxis_options.get('zrange')
+            if zrange is not None:
+                output_dict['zmin'] = zrange[0]
+                output_dict['zmax'] = zrange[1]
+            else:
+                # Determine Z range from data array
+                output_dict['zmin'] = np.nanmin(dat.y)
+                output_dict['zmax'] = np.nanmax(dat.y)
+            zlog = zaxis_options.get('z_axis_type')
+            if zlog is None or zlog.lower() == 'linear':
+                output_dict['zlog'] = False
+            else:
+                output_dict['zlog'] = True
+
+
+    else:
+        # Inspect a line plot variable
+        output_dict['is_spec']=False
+        if yrange is not None:
+            output_dict['ymin'] = yrange[0]
+            output_dict['ymax'] = yrange[1]
+        else:
+            output_dict['ymin'] = np.nanmin(dat.y)
+            output_dict['ymax'] = np.nanmax(dat.y)
+    return output_dict
+
+def gather_pseudovar_props(pseudovars:list[str]):
+    """ Inspect the components of a pseudovariable to determine plot limits and other settings
+
+    If any component has y or z ranges/scales set, they will be used, otherwise limits will be determined from
+    the data values.
+
+    If any component specifies log scaling, it will be applied to all components, otherwise linear scaling will
+    be used for all
+
+    Parameters
+    ----------
+    pseudovars: list[str]
+        List of tplot composite variable components to inspect
+
+    Returns
+    -------
+    dict
+        A dictionary containing the plot properties to apply to each component variable::
+            line_ymin, line_ymax, line_ylog : Y axis limits for line plots
+            spec_ymin, spec_ymax, spec_ylog : Y axis limits for spectrograms
+            spec_zmin, spec_zmax, spec_zlog : Z axis limits for spectrograms
+            has_line_plots: True if any component is a line plot
+            has_spec_plots: True if any component is a spectrogram plot
+
+    """
+    output_dict = { 'has_line_plots': False,
+                    'has_spec_plots': False,
+                    'line_ymin': np.nan,
+                    'line_ymax': np.nan,
+                    'line_ylog': False,
+                    'spec_ymin': np.nan,
+                    'spec_ymax': np.nan,
+                    'spec_ylog': False,
+                    'spec_zmin': np.nan,
+                    'spec_zmax': np.nan,
+                    'spec_zlog': False,
+                    'first_spec_var': None}
+
+
+    for var in pseudovars:
+        props = pseudovar_component_props(var)
+        print(f"{var}: is_spec: {props['is_spec']} ymin: {props['ymin']} ymax: {props['ymax']} ylog: {props['ylog']} zmin: {props['zmin']} zmax: {props['zmax']} zlog: {props['zlog']}")
+        if props['is_spec']:
+            output_dict['has_spec_plots'] = True
+            if output_dict['first_spec_var'] is None:
+                output_dict['first_spec_var'] = var
+            if props['zlog']:
+                output_dict['spec_zlog'] = True
+            if props['ylog']:
+                output_dict['spec_ylog'] = True
+            output_dict['spec_zmin']= np.nanmin([output_dict['spec_zmin'], props['zmin']])
+            output_dict['spec_zmax']= np.nanmax([output_dict['spec_zmax'], props['zmax']])
+            output_dict['spec_ymin']= np.nanmin([output_dict['spec_ymin'], props['ymin']])
+            output_dict['spec_ymax']= np.nanmax([output_dict['spec_ymax'], props['ymax']])
+        else:
+            output_dict['has_line_plots'] = True
+            if props['ylog']:
+                output_dict['line_ylog'] = True
+            output_dict['line_ymin'] = np.nanmin([output_dict['line_ymin'], props['ymin']])
+            output_dict['line_ymax'] = np.nanmax([output_dict['line_ymax'], props['ymax']])
+    return output_dict
 
 def tplot(variables, var_label=None,
           xsize=None,
@@ -37,10 +201,12 @@ def tplot(variables, var_label=None,
           trace_count_thisvar=None,
           pseudo_idx=None,
           pseudo_right_axis=False,
+          pseudo_xaxis_options=None,
           pseudo_yaxis_options=None,
           pseudo_zaxis_options=None,
           pseudo_line_options=None,
           pseudo_extra_options=None,
+          show_colorbar=True,
           second_axis_size=0.0,
           slice=False,
           return_plot_objects=False):
@@ -52,10 +218,6 @@ def tplot(variables, var_label=None,
     if len(variables) == 0:
         logging.warning("tplot: No matching tplot names were found")
         return
-    # support for matplotlib styles
-    style = pytplot.tplot_opt_glob.get('style')
-    if style is not None:
-        plt.style.use(style)
 
     num_panels = len(variables)
     panel_sizes = [1]*num_panels
@@ -93,19 +255,37 @@ def tplot(variables, var_label=None,
     # (for example, an energy spectrum plus spacecraft potential).  JWL 2024-03-26
 
     if fig is None and axis is None:
-        fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes})
+        processing_pseudovar_component = False
+        fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes}, layout='constrained')
         fig.set_size_inches(xsize, ysize)
+        plot_title = pytplot.tplot_opt_glob['title_text']
+        fig.suptitle(plot_title)
+        if (plot_title is not None) and plot_title != '':
+            if 'title_size' in pytplot.tplot_opt_glob:
+                title_size = pytplot.tplot_opt_glob['title_size']
+                fig.suptitle(plot_title, fontsize=title_size)
+            else:
+                fig.suptitle(plot_title)
+        # support for matplotlib styles
+        style = pytplot.tplot_opt_glob.get('style')
+        if style is not None:
+            plt.style.use(style)
     else:
         # fig and axis have been passed as parameters, most likely a recursive tplot call to render
         # a pseudovariable
+        processing_pseudovar_component = True
         if pseudo_idx == 0 or pseudo_right_axis == False:
             # setting up first axis
             axes = axis
         elif pseudo_idx > 0 and pseudo_right_axis:
             # generate and use the right axis?  probably still wrong...
             axes = axis.twinx()
+        # support for matplotlib styles -- shouldn't be needed if processing pseudovar components?
+        style = pytplot.tplot_opt_glob.get('style')
+        if style is not None:
+            plt.style.use(style)
 
-    plot_title = pytplot.tplot_opt_glob['title_text']
+
     axis_font_size = pytplot.tplot_opt_glob.get('axis_font_size')
     vertical_spacing = pytplot.tplot_opt_glob.get('vertical_spacing')
     xmargin = pytplot.tplot_opt_glob.get('xmargin')
@@ -114,18 +294,18 @@ def tplot(variables, var_label=None,
 
     colorbars = {}
 
-    if xmargin is None:
-        xmargin = [0.10, 0.05]
+    # if xmargin is None:
+    #    xmargin = [0.10, 0.05]
 
-    fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
+    # fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
 
-    if ymargin is not None:
-        fig.subplots_adjust(top=1-ymargin[0], bottom=ymargin[1])
+    # if ymargin is not None:
+    #    fig.subplots_adjust(top=1-ymargin[0], bottom=ymargin[1])
 
-    if vertical_spacing is None:
-        vertical_spacing = 0.07
+    # if vertical_spacing is None:
+    #    vertical_spacing = 0.07
 
-    fig.subplots_adjust(hspace=vertical_spacing)
+    # fig.subplots_adjust(hspace=vertical_spacing)
 
     for idx, variable in enumerate(variables):
         var_data_org = pytplot.get_data(variable, dt=True)
@@ -177,6 +357,7 @@ def tplot(variables, var_label=None,
 
             # pseudo variable metadata should override the metadata
             # for individual variables
+            xaxis_options = None
             yaxis_options = None
             zaxis_options = None
             line_opts = None
@@ -197,42 +378,45 @@ def tplot(variables, var_label=None,
                     zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
                     line_opts = var_quants.attrs['plot_options']['line_opt']
 
-            # Prevent plot titles from showing up on each pseudovariable panel
-            if idx > 0:
-                pytplot.tplot_opt_glob['title_text'] = ''
-
             traces_processed = 0
+            pseudovar_props = gather_pseudovar_props(pseudo_vars)
+            new_zr = [ None, pseudovar_props['spec_zmax']]
+            if pseudovar_props['spec_zlog']:
+                new_zscale='log'
+            else:
+                new_zscale='linear'
+            override_spec_zopts = {'z_range':new_zr, 'z_axis_style':new_zscale}
+            if zaxis_options is not None:
+                zaxis_options = zaxis_options | override_spec_zopts
+            else:
+                zaxis_options = override_spec_zopts
+
             for pseudo_idx, var in enumerate(pseudo_vars):
                 # We're plotting a pseudovariable.  Iterate over the sub-variables, keeping track of how many
                 # traces have been plotted so far, so we can correctly match option values to traces. The pseudovariable
                 # y_axis, z_axis, line and extra options are passed as parameters so they can be merged with the
                 # sub-variable options, with any pseudovar options overriding the sub-variable options.
                 trace_count_thisvar = pytplot.count_traces(var)
+                if var == pseudovar_props['first_spec_var']:
+                    pseudo_show_colorbar=True
+                else:
+                    pseudo_show_colorbar=False
                 tplot(var, return_plot_objects=return_plot_objects,
-                      xsize=xsize, ysize=ysize, save_png=save_png,
-                      save_eps=save_eps, save_svg=save_svg, save_pdf=save_pdf,
+                      xsize=xsize, ysize=ysize,
                       fig=fig, axis=this_axis, display=False,
                       running_trace_count=traces_processed,
                       trace_count_thisvar=trace_count_thisvar,
                       pseudo_idx=pseudo_idx,
                       second_axis_size=0.1,
-                      pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
+                      pseudo_xaxis_options=xaxis_options, pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
                       pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
-                      pseudo_right_axis=pseudo_right_axis)
+                      pseudo_right_axis=pseudo_right_axis,
+                      show_colorbar=pseudo_show_colorbar)
                 traces_processed += trace_count_thisvar
             
-            if idx > 0:
-                pytplot.tplot_opt_glob['title_text'] = plot_title
 
             continue
 
-        # set the figure title
-        if idx == 0 and plot_title != '':
-            if 'title_size' in pytplot.tplot_opt_glob:
-                title_size = pytplot.tplot_opt_glob['title_size']
-                this_axis.set_title(plot_title, fontsize=title_size)
-            else:
-                this_axis.set_title(plot_title)
 
         #if data_gap is an option for this variable, or if it's a add
         #gaps here; an individual gap setting should override the
@@ -274,6 +458,11 @@ def tplot(variables, var_label=None,
         var_times = var_data_times
 
         # set some more plot options
+        xaxis_options = var_quants.attrs['plot_options']['xaxis_opt']
+        if pseudo_xaxis_options is not None and len(pseudo_xaxis_options) > 0:
+            merged_xaxis_options = xaxis_options | pseudo_xaxis_options
+            xaxis_options = merged_xaxis_options
+
         yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
         if pseudo_yaxis_options is not None and len(pseudo_yaxis_options) > 0:
             merged_yaxis_options = yaxis_options | pseudo_yaxis_options
@@ -299,6 +488,21 @@ def tplot(variables, var_label=None,
         if pseudo_extra_options is not None and len(pseudo_extra_options) > 0:
             merged_plot_extras = plot_extras | pseudo_extra_options
             plot_extras = merged_plot_extras
+
+        xtitle = None
+        if xaxis_options.get('axis_label') is not None:
+            xtitle = xaxis_options['axis_label']
+
+
+        xsubtitle = ''
+        if xaxis_options.get('axis_subtitle') is not None:
+            xsubtitle = xaxis_options['axis_subtitle']
+
+        if style is None:
+            xtitle_color = 'black'
+        else:
+            xtitle_color = None
+
 
         ylog = yaxis_options['y_axis_type']
 
@@ -354,6 +558,12 @@ def tplot(variables, var_label=None,
 
         if yaxis_options.get('axis_color') is not None:
             ytitle_color = yaxis_options['axis_color']
+
+        if xtitle is not None and xtitle != '':
+            if xtitle_color is not None:
+                this_axis.set_xlabel(xtitle + '\n' + xsubtitle, fontsize=char_size, color=xtitle_color)
+            else:
+                this_axis.set_xlabel(xtitle + '\n' + xsubtitle, fontsize=char_size)
 
         if ytitle_color is not None:
             this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size, color=ytitle_color)
@@ -493,7 +703,7 @@ def tplot(variables, var_label=None,
             ytitle = pytplot.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
             new_xaxis.set_xlabel(ytitle)
 
-        fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
+        # fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
 
     # add the color bars to any spectra
     for idx, variable in enumerate(variables):
@@ -511,7 +721,7 @@ def tplot(variables, var_label=None,
         else:
             colormap_width = 0.02
 
-        if spec:
+        if spec and show_colorbar:
             if colorbars.get(variable) is None:
                 continue
 
@@ -526,19 +736,28 @@ def tplot(variables, var_label=None,
                 this_axis = axes[idx]
 
             xmargin = pytplot.tplot_opt_glob.get('xmargin')
-            if xmargin is None:
-                fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
+            # if xmargin is None:
+            #    fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
             
             if plot_extras.get('second_axis_size') is not None:
                 second_axis_size = plot_extras['second_axis_size']
 
+            colorbar = fig.colorbar(colorbars[variable]['im'], ax=this_axis)
+
+            """
             box = this_axis.get_position()
             pad, width = 0.02, colormap_width
             cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
             if colorbars[variable]['axis_font_size'] is not None:
                 cax.tick_params(labelsize=colorbars[variable]['axis_font_size'])
             colorbar = fig.colorbar(colorbars[variable]['im'], cax=cax)
-
+            """
+            """
+            divider = make_axes_locatable(this_axis)
+            cax = divider.append_axes("right", size="5%", pad=0.1 + second_axis_size)
+            print("Adding colorbar for ",variable)
+            colorbar = fig.colorbar(colorbars[variable]['im'], cax=cax)
+            """
             if style is None:
                 ztitle_color = 'black'
             else:
@@ -563,6 +782,8 @@ def tplot(variables, var_label=None,
             else:
                 colorbar.set_label(ztitle_text + '\n ' + zsubtitle_text,
                                    fontsize=char_size)
+
+    # plt.tight_layout()
 
     if save_png is not None and save_png != '':
         if not save_png.endswith('.png'):
@@ -631,6 +852,7 @@ def mouse_move_slice(event, slice_axes, slice_plot):
     else:
         vdata = data.v
 
+    xaxis_options = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['xaxis_opt']
     yaxis_options = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['yaxis_opt']
     zaxis_options = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['zaxis_opt']
 
