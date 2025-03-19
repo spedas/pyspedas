@@ -462,9 +462,9 @@ class PlotTestCases(unittest.TestCase):
         # Make a combined variable with both ESA and SST spectral data (disjoint energy ranges)
         store_data('combined_spec', ['tha_peif_en_eflux', 'tha_psif_en_eflux'])
         options('tha_peif_en_eflux', 'y_no_resample', 1)
-        options('combined_spec','y_range',[5.0, 7e+06])
+        #options('combined_spec','y_range',[5.0, 7e+06])
         vars = ['tha_psif_en_eflux', 'combined_spec', 'tha_peif_en_eflux']
-        tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=SST, middle=combined, bottom=ESA')
+        tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=SST, middle=combined, bottom=ESA\nMiddle plot y range should go down to near zero')
         tplot(vars, save_png='test_pseudo_spectra_disjoint_energies', display=global_display)
 
         tplot_options('title','Original burst variable')
@@ -474,12 +474,12 @@ class PlotTestCases(unittest.TestCase):
         tplot('tha_peib_en_eflux',display=global_display)
         # Make a combined variable with full & burst data (same energy ranges, intermittent burst data at higher cadence)
         store_data('esa_srvy_burst', ['tha_peif_en_eflux', 'tha_peib_en_eflux'])
-        zlim('tha_peif_en_eflux', 1.0e3, 1.0e7)
-        options('tha_peif_en_eflux', 'y_range', [0.5, 1.0e6])
+        #zlim('tha_peif_en_eflux', 1.0e3, 1.0e7)
+        #options('tha_peif_en_eflux', 'y_range', [0.5, 1.0e6])
 
         options('tha_peib_en_eflux', 'y_no_resample', 1)
-        zlim('tha_peib_en_eflux', 1.0e3, 1.0e7)
-        options('tha_peib_en_eflux', 'y_range', [0.5, 1.0e6])
+        #zlim('tha_peib_en_eflux', 1.0e3, 1.0e7)
+        #options('tha_peib_en_eflux', 'y_range', [0.5, 1.0e6])
         options('tha_peib_en_eflux', 'data_gap', 4.0)
         vars = ['tha_peif_en_eflux', 'esa_srvy_burst', 'tha_peib_en_eflux']
         tplot_options('title', 'Combining full & burst cadence with same energies: top=fast, middle=combined, bot=burst')
@@ -490,6 +490,38 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23/12:20', 10, 'minutes')
         tplot_options('title', 'Combined full and burst cadence with same energies (zoomed in) top=fast, mid=combined, bot=burst')
         tplot(vars, save_png='test_pseudo_spectra_full_burst_zoomed',display=global_display)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        tplot_options('title', '')
+
+    def test_pseudovars_spectra_explicit_yzranges(self):
+        del_data("*")
+        import pyspedas
+        from pytplot import zlim, ylim, timespan
+
+        # Load ESA and SST data
+        pyspedas.projects.themis.esa(probe='a', trange=default_trange)
+        pyspedas.projects.themis.sst(probe='a', trange=default_trange)
+
+        # Make a combined variable with both ESA and SST spectral data (disjoint energy ranges)
+        store_data('combined_spec', ['tha_peif_en_eflux', 'tha_psif_en_eflux'])
+        options('tha_peif_en_eflux', 'y_no_resample', 1)
+        options('combined_spec','y_range',[0.1, 7e+06])
+        vars = ['tha_psif_en_eflux', 'combined_spec', 'tha_peif_en_eflux']
+        tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=SST, middle=combined, bottom=ESA\nMiddle plot y range should go down to 0.1')
+        tplot(vars, save_png='test_pseudo_spectra_disjoint_energies_explicityrange', display=global_display)
+
+        tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=SST, middle=combined, bottom=ESA\nMiddle plot should have linear Y axis')
+        options('combined_spec', 'ylog', False)
+        tplot(vars, save_png='test_pseudo_spectra_disjoint_energies_explicityrange', display=global_display)
+
+        options('tha_peib_en_eflux', 'y_no_resample', 1)
+        zlim('tha_peib_en_eflux', 1.0e3, 1.0e7)
+        options('tha_peib_en_eflux', 'y_range', [0.5, 1.0e6])
+        options('tha_peib_en_eflux', 'data_gap', 4.0)
+        vars = ['tha_peif_en_eflux', 'esa_srvy_burst', 'tha_peib_en_eflux']
+        zlim('esa_srvy_burst', 1.0e3, 1.0e20)
+        tplot_options('title', 'Combining full & burst cadence with same energies: top=fast, middle=combined, bot=burst\nMiddle panel should have an expanded zrange (high max)')
+        tplot(vars, save_png='test_pseudo_spectra_full_burst_explicitzrange',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('title', '')
 
