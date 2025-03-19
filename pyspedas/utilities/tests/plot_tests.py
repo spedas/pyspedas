@@ -7,7 +7,7 @@ from pytplot import store_data, options, timespan, tplot, tplot_options, degap, 
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = False
+global_display = True
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -84,7 +84,6 @@ class PlotTestCases(unittest.TestCase):
         # This also changes the color of the connecting lines and markers, not necessarily what we want
         tplot_options('title', 'Line plot with red error bars and hexagon markers, capsize=10')
         tplot('data', display=global_display, save_png='hexagons_lineplot_errbars_cap10redwidth5.png')
-
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
         tplot_options('title', '')
 
@@ -169,6 +168,21 @@ class PlotTestCases(unittest.TestCase):
         tplot('thc_fgs_dsl',save_png='test_linestyle_allsame',display=global_display)
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    def test_ytick_options(self):
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
+        tplot_options('title', 'Default major and minor ticks, major ticks every 5000 nT from -5000 to 20000')
+        tplot('thc_fgs_dsl',save_png='ticks_default.png',display=global_display)
+        options('thc_fgs_dsl', 'y_major_ticks', [-7500, -5000, -2500, 0, 2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000, 22500, 25000])
+        tplot_options('title', 'Manual major ticks, every 2500 nT from -7500 to 25000')
+        tplot('thc_fgs_dsl',save_png='ticks_major_every2500.png',display=global_display)
+        options('thc_fgs_dsl', 'y_minor_tick_interval', 1250)
+        tplot_options('title', 'Manual major and minor ticks, every 2500/1250 nT from -7500 to 25000')
+        tplot('thc_fgs_dsl',save_png='ticks_major_every2500_minor1250.png',display=global_display)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        tplot_options('title','')
 
     def test_ylim(self):
         del_data("*")
