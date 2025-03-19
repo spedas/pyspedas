@@ -11,7 +11,8 @@ def time_string_one(float_time=None, fmt=None):
     Parameters
     ----------
     float_time : float, optional
-        The input time as a float. If not provided, the current time is used.
+        The input time as a float. If not provided, the current time is used. If input is actually a string,
+        it is returned as-is.
     fmt : str, optional
         The format string for time conversion. The default format is '%Y-%m-%d %H:%M:%S.%f'.
 
@@ -39,6 +40,9 @@ def time_string_one(float_time=None, fmt=None):
 
     if float_time is None:
         str_time = datetime.now().strftime(fmt)
+    elif isinstance(float_time, str):
+        # It's already a string, just return the input
+        return float_time
     else:
         str_time = datetime.fromtimestamp(float_time,timezone.utc).strftime(fmt)
 
@@ -52,7 +56,7 @@ def time_string(float_time=None, fmt=None):
     Parameters
     ----------
     float_time : floats, or list of floats, optional
-        The input time(s) as float(s). If not provided, the current time is used.
+        The input time(s) as float(s). If not provided, the current time is used. Any string inputs are returned as-is.
     fmt : str, optional
         The format string for time conversion. The default format is '%Y-%m-%d %H:%M:%S.%f'.
 
