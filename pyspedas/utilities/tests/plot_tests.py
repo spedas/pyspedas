@@ -18,22 +18,31 @@ class PlotTestCases(unittest.TestCase):
         del_data('*')
         store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1]})
         timespan('1970-01-01',10,'seconds')
+        tplot_options('title', 'Simple line plot')
         tplot('data', display=global_display, save_png='simple_lineplot.png')
         options('data', 'marker', 'X')
+        tplot_options('title', 'Simple line plot with X markers')
         tplot('data', display=global_display, save_png='markers_lineplot.png')
         options('data', 'linestyle', 'None')
+        tplot_options('title', 'Symbol-only plot with X markers')
         tplot('data', display=global_display, save_png='noline_lineplot.png')
         options('data', 'marker_size', 200)
+        tplot_options('title', 'Symbol-only plot with size 200 markers')
         tplot('data', display=global_display, save_png='markersize_lineplot.png')
         options('data', 'line_style_name', 'solid')
+        tplot_options('title', 'Line+symbol plot with size 200 markers')
         tplot('data', display=global_display, save_png='markersize_nosymbols_lineplot.png')
         options('data', 'marker_size', 20)
+        tplot_options('title', 'Line+symbol plot with error bars and size 20 markers')
         tplot('data', display=global_display, save_png='markersize20_nosymbols_lineplot.png')
         options('data', 'markevery', 2)
+        tplot_options('title', 'Line+symbol plot with error bars and markers every 2 data points')
         tplot('data', display=global_display, save_png='markevery_lineplot.png')
         options('data', 'marker', 'H')
+        tplot_options('title', 'Line plot with error bars and hexagon markers')
         tplot('data', display=global_display, save_png='hexagons_lineplot.png')
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
+        tplot_options('title', '')
 
     def test_markers_and_symbols_error_bars(self):
         # Regression test for lineplot crash when marker sizes are set
@@ -41,21 +50,63 @@ class PlotTestCases(unittest.TestCase):
         del_data('*')
         store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1], 'dy':[0.25]*6})
         timespan('1970-01-01',10,'seconds')
+        tplot_options('title', 'Line plot with error bars')
         tplot('data', display=global_display, save_png='simple_lineplot_errbars.png')
         options('data', 'marker', 'X')
+        tplot_options('title', 'Line plot with error bars and X markers')
         tplot('data', display=global_display, save_png='markers_lineplot_errbars.png')
         options('data', 'line_style', 'None')
+        tplot_options('title', 'X markers and error bars with no lines')
         tplot('data', display=global_display, save_png='symbols_lineplot_errbars.png')
-        options('data', 'marker_size', 200)
+        options('data', 'marker_size', 30)
+        tplot_options('title', 'No lines, size 30 X markers and error bars')
         tplot('data', display=global_display, save_png='markersize_lineplot_errbars.png')
-        options('data', 'symbols', False)
+        options('data', 'marker', None)
+        options('data', 'line_style', 'solid')
+        tplot_options('title', 'Line plot without markers with error bars')
         tplot('data', display=global_display, save_png='markersize_nosymbols_lineplot_errbars.png')
         options('data', 'marker_size', 20)
+        options('data', 'line_style', 'None')
+        options('data', 'symbols', False)
+        tplot_options('title', 'Error bars, no lines, with size 20 markers but symbols=False')
         tplot('data', display=global_display, save_png='markersize20_nosymbols_lineplot_errbars.png')
         options('data', 'markevery', 2)
+        options('data', 'marker', 'X')
+        options('data', 'line_style', 'solid')
+        tplot_options('title', 'Line plot error bars and markers every 2 data points')
         tplot('data', display=global_display, save_png='markevery_lineplot_errbars.png')
         options('data', 'marker', 'H')
+        tplot_options('title', 'Line plot with error bars and hexagon markers')
         tplot('data', display=global_display, save_png='hexagons_lineplot_errbars.png')
+        options('data', 'capsize', 10)
+        options('data', 'color', 'r')
+        options('data','elinewidth', 5)
+        # This also changes the color of the connecting lines and markers, not necessarily what we want
+        tplot_options('title', 'Line plot with red error bars and hexagon markers, capsize=10')
+        tplot('data', display=global_display, save_png='hexagons_lineplot_errbars_cap10redwidth5.png')
+
+        timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
+        tplot_options('title', '')
+
+    def test_plot_titles(self):
+        # Regression test for lineplot crash when marker sizes are set
+        # Taken from pytplot markers and symbols notebook in pyspedas_examples
+        del_data('*')
+        store_data('data', data={'x': [1, 2, 3, 4, 5, 6], 'y': [1, 1, 1, 1, 1, 1]})
+        timespan('1970-01-01',10,'seconds')
+        tplot_options('title','This title should be visible')
+        tplot('data', display=global_display, save_png='simple_title.png')
+        tplot_options('title', 'This title should be in a larger font')
+        tplot_options('title_size', 20)
+        tplot('data', display=global_display, save_png='title_titlesize.png')
+        tplot_options('title_size', 12)
+        tplot_options('title', '')
+        options('data', 'xtitle','There should be no main title displayed')
+        tplot('data', display=global_display, save_png='title_emptystring.png')
+        tplot_options('title', None)
+        options('data', 'xtitle','There should be no main title displayed')
+        tplot('data', display=global_display, save_png='title_none.png')
+        tplot_options('title', '')
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
     def test_timebars(self):
@@ -138,6 +189,32 @@ class PlotTestCases(unittest.TestCase):
         self.assertTrue(is_pseudovariable('test_pseudo_colors'))
         self.assertFalse(is_pseudovariable('thc_fgs_dsl'))
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
+    def test_xytitles(self):
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        options('thc_fgs_dsl','xtitle',"thc_fgs_dsl xtitle")
+        options('thc_fgs_gsm','xtitle',"thc_fgs_gsm xtitle")
+        options('thc_fgs_dsl', 'xsubtitle', "thc_fgs_dsl xsubtitle")
+        options('thc_fgs_gsm', 'xsubtitle', "thc_fgs_gsm xsubtitle")
+        options('thc_fgs_dsl','ytitle',"thc_fgs_dsl ytitle")
+        options('thc_fgs_gsm','ytitle',"thc_fgs_gsm ytitle")
+        options('thc_fgs_dsl', 'ysubtitle', "thc_fgs_dsl ysubtitle")
+        options('thc_fgs_gsm', 'ysubtitle', "thc_fgs_gsm ysubtitle")
+        tplot_options('title', 'xtitle and xsubtitle should show below each variable panel')
+        tplot('thc_fgs_dsl', display=global_display, save_png='test_titles_single.png')
+        tplot('thc_fgs_dsl thc_fgs_gsm', display=global_display, save_png='test_titles_multi.png')
+        tplot_options('title', '')
+
+    def test_legend(self):
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        options('thc_fgs_dsl','legend_names', ['X-DSL', 'Y-DSL', 'Z-DSL'])
+        options('thc_fgs_dsl','legend_title', 'legend title')
+        options('thc_fgs_dsl','legend_shadow', True)
+        options('thc_fgs_dsl', 'legend_location', 'spedas')
+        tplot('thc_fgs_dsl', display=global_display, save_png='test_legend.png')
+
 
     def test_count_traces(self):
         del_data("*")
@@ -372,8 +449,8 @@ class PlotTestCases(unittest.TestCase):
         store_data('combined_spec', ['tha_peif_en_eflux', 'tha_psif_en_eflux'])
         options('tha_peif_en_eflux', 'y_no_resample', 1)
         options('combined_spec','y_range',[5.0, 7e+06])
-        vars = ['tha_peif_en_eflux', 'combined_spec', 'tha_psif_en_eflux']
-        tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=ESA, middle=combined, bottom=SST')
+        vars = ['tha_psif_en_eflux', 'combined_spec', 'tha_peif_en_eflux']
+        tplot_options('title', 'Pseudovar with two spectra, disjoint energies: top=SST, middle=combined, bottom=ESA')
         tplot(vars, save_png='test_pseudo_spectra_disjoint_energies', display=global_display)
 
         tplot_options('title','Original burst variable')
@@ -408,7 +485,7 @@ class PlotTestCases(unittest.TestCase):
         pyspedas.projects.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
         pyspedas.projects.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
         # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
-        store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2', 'mms1_edp_scpot_fast_l2'])
+        store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2'])
         # Set some options so that the spectrum, trace, and y axes are legible
         options('mms1_edp_scpot_fast_l2', 'yrange', [10, 100])
         #options('mms2_edp_scpot_fast_l2', 'right_axis', True)
@@ -426,7 +503,7 @@ class PlotTestCases(unittest.TestCase):
         pyspedas.projects.mms.fpi(datatype='des-moms', trange=['2015-10-16', '2015-10-17'])
         pyspedas.projects.mms.edp(trange=['2015-10-16', '2015-10-17'], datatype='scpot')
         # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
-        store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2', 'mms1_edp_scpot_fast_l2'])
+        store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2'])
         # Set some options so that the spectrum, trace, and y axes are legible
         options('mms1_edp_scpot_fast_l2', 'yrange', [10, 100])
         #options('mms2_edp_scpot_fast_l2', 'right_axis', True)
