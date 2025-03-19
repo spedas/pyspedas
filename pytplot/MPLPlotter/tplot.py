@@ -58,10 +58,14 @@ def pseudovar_component_props(varname: str):
     plot_extras = attrs['plot_options']['extras']
     dat = pytplot.get_data(varname)
 
-    if ylog is None or ylog == '' or ylog.lower() == 'linear':
+    if ylog is None or ylog is False or ylog == '' or ylog.lower() == 'linear':
         output_dict['ylog'] = False
+        ylog = False
     else:
         output_dict['ylog'] = True
+        ylog = True
+
+    # ylog is now guaranteed to be boolean
 
     if plot_extras.get('spec') is not None:
         spec = plot_extras['spec']
@@ -92,7 +96,7 @@ def pseudovar_component_props(varname: str):
                             if plot_extras['spec_dim_to_plot'] == 'v2':
                                 input_bin_centers = var_data.v2
 
-                output_bin_boundaries = specplot_make_1d_ybins(None, input_bin_centers, no_regrid=True)
+                output_bin_boundaries = specplot_make_1d_ybins(None, input_bin_centers, ylog, no_regrid=True)
                 output_dict['ymin']=np.nanmin(output_bin_boundaries)
                 output_dict['ymax']=np.nanmax(output_bin_boundaries)
 
@@ -164,7 +168,7 @@ def gather_pseudovar_props(pseudovars:list[str]):
 
     for var in pseudovars:
         props = pseudovar_component_props(var)
-        print(f"{var}: is_spec: {props['is_spec']} ymin: {props['ymin']} ymax: {props['ymax']} ylog: {props['ylog']} zmin: {props['zmin']} zmax: {props['zmax']} zlog: {props['zlog']}")
+        #print(f"{var}: is_spec: {props['is_spec']} ymin: {props['ymin']} ymax: {props['ymax']} ylog: {props['ylog']} zmin: {props['zmin']} zmax: {props['zmax']} zlog: {props['zlog']}")
         if props['is_spec']:
             output_dict['has_spec_plots'] = True
             if output_dict['first_spec_var'] is None:
@@ -380,16 +384,57 @@ def tplot(variables, var_label=None,
 
             traces_processed = 0
             pseudovar_props = gather_pseudovar_props(pseudo_vars)
+            #
+            # Determine which Y axis options need to be changed to accommodate multiple component variables
+            # There might be line variables and spectra, each with their own overall yscale and yrange.
+            # If both are present, the spectra will take priority.
+            # If explicit y or z scales or ranges are set on the pseudovariable, do not override.
+            if pseudovar_props['has_spec_plots']:
+                if pseudovar_props['spec_ylog']:
+                    new_yscale = 'log'
+                else:
+                    new_yscale = 'linear'
+                new_yr = [pseudovar_props['spec_ymin'], pseudovar_props['spec_ymax']]
+            else:
+                if pseudovar_props['line_ylog']:
+                    new_yscale = 'log'
+                else:
+                    new_yscale = 'linear'
+                new_yr = [pseudovar_props['line_ymin'], pseudovar_props['line_ymax']]
+            override_yopts = {}
+            if yaxis_options is None:
+                override_yopts = {'y_range':new_yr, 'y_range_user':True,'y_axis_style':new_yscale}
+            else:
+                if yaxis_options.get('y_range') is None:
+                    override_yopts['y_range'] = new_yr
+                    override_yopts['y_range_user'] = True
+                if yaxis_options.get('y_axis_style') is None:
+                    override_yopts['y_axis_style'] = new_yscale
+            if yaxis_options is not None:
+                yaxis_options = yaxis_options | override_yopts
+            else:
+                yaxis_options = override_yopts
+
+            # Determine which Z axis options need to be changed to accommodate multiple component variables
+            #
+            # We only care about specplots here.
             new_zr = [ None, pseudovar_props['spec_zmax']]
             if pseudovar_props['spec_zlog']:
                 new_zscale='log'
             else:
                 new_zscale='linear'
-            override_spec_zopts = {'z_range':new_zr, 'z_axis_style':new_zscale}
-            if zaxis_options is not None:
-                zaxis_options = zaxis_options | override_spec_zopts
+            override_zopts = {}
+            if zaxis_options is None:
+                override_zopts = {'z_range':new_zr, 'z_axis_style':new_zscale}
             else:
-                zaxis_options = override_spec_zopts
+                if zaxis_options.get('z_range') is None:
+                    override_yopts['z_range'] = new_zr
+                if yaxis_options.get('z_axis_style') is None:
+                    override_yopts['z_axis_style'] = new_zscale
+            if zaxis_options is not None:
+                zaxis_options = zaxis_options | override_zopts
+            else:
+                zaxis_options = override_zopts
 
             for pseudo_idx, var in enumerate(pseudo_vars):
                 # We're plotting a pseudovariable.  Iterate over the sub-variables, keeping track of how many

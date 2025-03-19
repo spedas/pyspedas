@@ -431,9 +431,9 @@ def specplot(
     #logging.info("zlog_str is " + str(zlog_str))
 
     yrange = yaxis_options["y_range"]
-    if not np.isfinite(yrange[0]):
+    if yrange[0] is None or not np.isfinite(yrange[0]):
         yrange[0] = None
-    if not np.isfinite(yrange[1]):
+    if yrange[1] is None or not np.isfinite(yrange[1]):
         yrange[1] = None
 
     if zaxis_options.get("z_range") is not None:
