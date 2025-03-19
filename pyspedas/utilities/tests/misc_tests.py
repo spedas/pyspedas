@@ -367,13 +367,13 @@ class UtilTestCases(unittest.TestCase):
     def test_split_vec_metadata(self):
         del_data('*')
         pyspedas.projects.themis.fit(probe='c')
-        md = get_data('thc_fgs_dsl')
+        md = get_data('thc_fgs_dsl', metadata=True)
         split_vec('thc_fgs_dsl')
         self.assertTrue(data_exists('thc_fgs_dsl_x'))
         self.assertTrue(data_exists('thc_fgs_dsl_y'))
         self.assertTrue(data_exists('thc_fgs_dsl_z'))
         md_x = get_data('thc_fgs_dsl_x', metadata=True)
-        self.assertTrue(md_x['plot_options']['xaxis_opt']['axis_label'] == 'Time')
+        self.assertTrue(md_x['plot_options']['xaxis_opt']['axis_label'] == md['plot_options']['xaxis_opt']['axis_label'])
 
     def test_imports(self):
         import pyspedas
