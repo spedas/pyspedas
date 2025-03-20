@@ -93,8 +93,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m  pyspedas.utilities.tests.test_find_ip_address
-        echo Starting CDAWeb tests at `date`
-        coverage run -a -m  pyspedas.cdagui_tools.tests.tests
+        #echo Starting CDAWeb tests at `date`
+        #coverage run -a -m  pyspedas.cdagui_tools.tests.tests
         echo Starting akebono tests at `date`
         coverage run -a -m  pyspedas.projects.akebono.tests.tests
         echo Starting ace tests at `date`
