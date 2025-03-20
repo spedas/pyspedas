@@ -245,7 +245,9 @@ def tplot(variables, var_label=None,
             if num_panels > 4:
                 ysize = 8
             else:
-                ysize = 5
+                # This was previously set to 5, which resulted in a non-monotonic progression of panel heights
+                default_y_sizes = [5, 5, 6, 7, 8]
+                ysize = default_y_sizes[num_panels]
 
     # The logic here for handling the 'right_axis' option is pretty convoluted, and makes a number of assumptions
     # that may not be warranted: mainly that right_axis will only be set on pseudovariables, and that if
@@ -428,9 +430,9 @@ def tplot(variables, var_label=None,
                 override_zopts = {'z_range':new_zr, 'z_axis_style':new_zscale}
             else:
                 if zaxis_options.get('z_range') is None:
-                    override_yopts['z_range'] = new_zr
-                if yaxis_options.get('z_axis_style') is None:
-                    override_yopts['z_axis_style'] = new_zscale
+                    override_zopts['z_range'] = new_zr
+                if zaxis_options.get('z_axis_style') is None:
+                    override_zopts['z_axis_style'] = new_zscale
             if zaxis_options is not None:
                 zaxis_options = zaxis_options | override_zopts
             else:
@@ -829,6 +831,7 @@ def tplot(variables, var_label=None,
                                    fontsize=char_size)
 
     # plt.tight_layout()
+    fig.canvas.draw()
 
     if save_png is not None and save_png != '':
         if not save_png.endswith('.png'):
