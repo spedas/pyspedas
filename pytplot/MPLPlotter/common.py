@@ -119,7 +119,8 @@ def _postprocess_var_label_panel(
     # to suppress deprecate warning
     xaxis_ticks_dt = [
         np.datetime64(
-            matplotlib.dates.num2date(tick_val).replace(tzinfo=None).isoformat()
+            matplotlib.dates.num2date(tick_val).replace(tzinfo=None).isoformat(),
+            'ns'
         )
         for tick_val in xaxis_ticks
     ]
