@@ -166,6 +166,7 @@ from .tres import tres
 from .format_sandbox import format_sandbox
 from .tplot_math import *
 from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
+from .MPLPlotter.var_labels import var_label_panel
 from .MPLPlotter.tplot_vl import tplot_vl
 from .MPLPlotter.ctime import ctime
 
