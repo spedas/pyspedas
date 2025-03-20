@@ -223,8 +223,14 @@ def tplot(variables, var_label=None,
         logging.warning("tplot: No matching tplot names were found")
         return
 
-    num_panels = len(variables)
-    panel_sizes = [1]*num_panels
+    if var_label is not None:
+        varlabel_style = pytplot.tplot_opt_glob.get('varlabel_style')
+        if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
+            num_panels = len(variables)
+            panel_sizes = [1]*num_panels
+        else: # varlabel_style 'extra_panel'
+            num_panels = len(variables) + 1
+            panel_sizes = [1] * len(variables) + [0.1 * (len(var_label) + 2)]
 
     # support for the panel_size option
     for var_idx, variable in enumerate(variables):
@@ -721,39 +727,12 @@ def tplot(variables, var_label=None,
                                    rotation=annotation['rotation'],
                                    color=annotation['color'])
 
-    # apply any addition x-axes specified by the var_label keyword
+    # apply any addition x-axes (or panel) specified by the var_label keyword
     if var_label is not None:
-        if not isinstance(var_label, list):
-            var_label = [var_label]
-
-        axis_delta = 0.0
-
-        for label in var_label:
-            if isinstance(label, int):
-                label = tname_byindex(label)
-            label_data = pytplot.get_data(label, xarray=True, dt=True)
-
-            if label_data is None:
-                logging.info('Variable not found: ' + label)
-                continue
-
-            if len(label_data.values.shape) != 1:
-                logging.info(label + ' specified as a vector; var_label only supports scalars. Try splitting the vector into seperate tplot variables.')
-                continue
-
-            # set up the new x-axis
-            axis_delta = axis_delta - num_panels*0.1
-            new_xaxis = this_axis.secondary_xaxis(axis_delta)
-            xaxis_ticks = this_axis.get_xticks().tolist()
-            xaxis_ticks_dt = [np.datetime64(mpl.dates.num2date(tick_val).replace(tzinfo=None).isoformat(), 'ns') for tick_val in xaxis_ticks]
-            # xaxis_ticks_unix = [tick_val.timestamp() for tick_val in xaxis_ticks_dt]
-            xaxis_labels = get_var_label_ticks(label_data, xaxis_ticks_dt)
-            new_xaxis.set_xticks(xaxis_ticks_dt)
-            new_xaxis.set_xticklabels(xaxis_labels)
-            ytitle = pytplot.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
-            new_xaxis.set_xlabel(ytitle)
-
-        # fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
+        if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
+            varlabels_extra_axes(num_panels, this_axis, var_label)
+        else:
+            pytplot.var_label_panel(variables, var_label, axes,  axis_font_size)
 
     # add the color bars to any spectra
     for idx, variable in enumerate(variables):
@@ -872,6 +851,45 @@ def tplot(variables, var_label=None,
 
     if return_plot_objects:
         return fig, axes
+
+
+def varlabels_extra_axes(num_panels, this_axis, var_label):
+    # apply any addition x-axes specified by the var_label keyword
+    if var_label is not None:
+        if not isinstance(var_label, list):
+            var_label = [var_label]
+
+        axis_delta = 0.0
+
+        for label in var_label:
+            if isinstance(label, int):
+                label = tname_byindex(label)
+            label_data = pytplot.get_data(label, xarray=True, dt=True)
+
+            if label_data is None:
+                logging.info('Variable not found: ' + label)
+                continue
+
+            if len(label_data.values.shape) != 1:
+                logging.info(
+                    label + ' specified as a vector; var_label only supports scalars. Try splitting the vector into seperate tplot variables.')
+                continue
+
+            # set up the new x-axis
+            axis_delta = axis_delta - num_panels * 0.1
+            new_xaxis = this_axis.secondary_xaxis(axis_delta)
+            xaxis_ticks = this_axis.get_xticks().tolist()
+            xaxis_ticks_dt = [np.datetime64(mpl.dates.num2date(tick_val).replace(tzinfo=None).isoformat(), 'ns') for
+                              tick_val in xaxis_ticks]
+            # xaxis_ticks_unix = [tick_val.timestamp() for tick_val in xaxis_ticks_dt]
+            xaxis_labels = get_var_label_ticks(label_data, xaxis_ticks_dt)
+            new_xaxis.set_xticks(xaxis_ticks_dt)
+            new_xaxis.set_xticklabels(xaxis_labels)
+            ytitle = pytplot.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
+            new_xaxis.set_xlabel(ytitle)
+
+        # fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
+
 
 def mouse_move_slice(event, slice_axes, slice_plot):
     """
