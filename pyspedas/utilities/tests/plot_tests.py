@@ -626,6 +626,33 @@ class PlotTestCases(unittest.TestCase):
         fig = tplot_vl(plot_vars, var_label=var_label, display=global_display, save_png='erg_varlabel.png')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_original_tplot_vlabels(self):
+        # Test alternate varlabel implementation from Tomo Hori
+        del_data("*")
+        import pyspedas
+
+        from pyspedas.projects.erg import mgf, orb
+        timespan('2017-03-27',1,'days')
+        mgf()
+        orb()
+        from pytplot import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
+
+        split_vec('erg_orb_l2_pos_rmlatmlt')
+        split_vec('erg_orb_l2_pos_Lm')
+        options('erg_orb_l2_pos_rmlatmlt_x', 'ytitle', 'R')
+        options('erg_orb_l2_pos_rmlatmlt_y', 'ytitle', 'Mlat')
+        options('erg_orb_l2_pos_rmlatmlt_z', 'ytitle', 'MLT')
+
+        var_label = ['erg_orb_l2_pos_Lm_x', 'erg_orb_l2_pos_rmlatmlt_x', 'erg_orb_l2_pos_rmlatmlt_y',
+                     'erg_orb_l2_pos_rmlatmlt_z']
+        # tplot_options('var_label', var_label)
+
+        plot_vars = ['erg_mgf_l2_mag_8sec_sm', 'erg_mgf_l2_igrf_8sec_sm', 'erg_orb_l2_pos_Lm_x']
+
+        from pytplot import tplot_vl
+        fig,axs = tplot(plot_vars, var_label=var_label, display=global_display, save_png='original_varlabel.png')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
 
 if __name__ == '__main__':
     unittest.main()
