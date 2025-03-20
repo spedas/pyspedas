@@ -121,6 +121,9 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'ysize':
         new_tplot_opt_glob['ysize'] = value
 
+    elif option == 'varlabel_style':
+        new_tplot_opt_glob['varlabel_style'] = value
+
     else:
         logging.warning("Unknown option supplied: " + str(option))
 
