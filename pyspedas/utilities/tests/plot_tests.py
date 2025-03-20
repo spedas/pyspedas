@@ -538,8 +538,8 @@ class PlotTestCases(unittest.TestCase):
         options('spec','right_axis','True')
         tplot_options('xmargin', [0.1, 0.2])
         timespan('2015-10-16',1,'days')
-        tplot_options('title', 'Pseudovar with energy spectrum plus line plot of s/c potential')
-        tplot('spec', xsize=12, display=global_display,save_png='MMS_pseudo_spec_plus_line')
+        tplot_options('title', 'Pseudovar with energy spectrum plus line plot of s/c potential, combined var has right_axis set\nTop: spec Middle: combined Bottom: line')
+        tplot('mms1_des_energyspectr_omni_fast spec mms1_edp_scpot_fast_l2', xsize=12, display=global_display,save_png='MMS_pseudo_spec_plus_line')
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
@@ -650,7 +650,7 @@ class PlotTestCases(unittest.TestCase):
         plot_vars = ['erg_mgf_l2_mag_8sec_sm', 'erg_mgf_l2_igrf_8sec_sm', 'erg_orb_l2_pos_Lm_x']
 
         from pytplot import tplot_vl
-        fig,axs = tplot(plot_vars, var_label=var_label, display=global_display, save_png='original_varlabel.png')
+        tplot(plot_vars, var_label=var_label, display=global_display, save_png='original_varlabel.png')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
 
