@@ -404,7 +404,10 @@ def tplot(variables, var_label=None,
                     new_yscale = 'linear'
                 new_yr = [pseudovar_props['line_ymin'], pseudovar_props['line_ymax']]
             override_yopts = {}
-            if yaxis_options is None:
+            if pseudo_right_axis:
+                # Who knows?  Let the component variable Y-axis fight it out...
+                override_yopts = {}
+            elif yaxis_options is None:
                 override_yopts = {'y_range':new_yr, 'y_range_user':True,'y_axis_style':new_yscale}
             else:
                 if yaxis_options.get('y_range') is None:
