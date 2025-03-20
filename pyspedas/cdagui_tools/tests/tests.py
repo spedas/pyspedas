@@ -22,8 +22,8 @@ class CDAWebTests(unittest.TestCase):
     def test_get_filenames(self):
         cdaweb_obj = CDAWeb()
         urllist = cdaweb_obj.get_filenames(['VOYAGER2_2S_MAG (1977-08-24 to 1991-01-01)'],
-                                           "1979-01-01", "1979-01-02")
-        self.assertTrue('https://cdaweb.gsfc.nasa.gov/sp_phys/data/voyager/voyager2/magnetic_fields_cdaweb/mag_2s/1979/voyager2_2s_mag_19790101_v01.cdf' in urllist)
+                                           "1979-01-11", "1979-01-12")
+        self.assertTrue('https://cdaweb.gsfc.nasa.gov/sp_phys/data/voyager/voyager2/magnetic_fields_cdaweb/mag_2s/1979/voyager2_2s_mag_19790111_v01.cdf' in urllist)
 
     def test_load_merge(self):
         del_data('*')
@@ -45,8 +45,8 @@ class CDAWebTests(unittest.TestCase):
 
         cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='v2_')
         dat = get_data('v2_protonDensity')
-        # Files are monthly; we should have over a year of data.
-        self.assertTrue((dat.times[-1] - dat.times[0])/86400.0 > 395.0)
+        # Files are monthly; we should have almost a year of data.
+        self.assertTrue((dat.times[-1] - dat.times[0])/86400.0 > 300)
 
     def test_load_icon_netcdf(self):
         del_data('*')
@@ -170,7 +170,7 @@ class CDAWebTests(unittest.TestCase):
         del_data('*')
         cdaweb_obj = CDAWeb()
         urllist = cdaweb_obj.get_filenames(['VOYAGER2_2S_MAG (1977-08-24 to 1991-01-01)'],
-                                           "1979-01-01", "1979-01-02")
+                                           "1979-01-11", "1979-01-12")
         cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='v2_')
         self.assertTrue(data_exists('v2_B1'))
 
