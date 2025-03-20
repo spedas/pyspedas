@@ -223,14 +223,14 @@ def tplot(variables, var_label=None,
         logging.warning("tplot: No matching tplot names were found")
         return
 
-    if var_label is not None:
-        varlabel_style = pytplot.tplot_opt_glob.get('varlabel_style')
-        if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
-            num_panels = len(variables)
-            panel_sizes = [1]*num_panels
-        else: # varlabel_style 'extra_panel'
-            num_panels = len(variables) + 1
-            panel_sizes = [1] * len(variables) + [0.1 * (len(var_label) + 2)]
+
+    varlabel_style = pytplot.tplot_opt_glob.get('varlabel_style')
+    if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
+        num_panels = len(variables)
+        panel_sizes = [1]*num_panels
+    else: # varlabel_style 'extra_panel'
+        num_panels = len(variables) + 1
+        panel_sizes = [1] * len(variables) + [0.1 * (len(var_label) + 2)]
 
     # support for the panel_size option
     for var_idx, variable in enumerate(variables):
