@@ -193,8 +193,6 @@ def download_file(
     -----
     Checks if the CDF or netCDF file can be opened, and if it can't, tries to download the file for a second time.
 
-    Cloud Awareness
-    ---------------
     In support of URIs passed as inputs, priority is given to streaming from a URI source
     rather than downloading the file(s). This behavior is separate from web-based urls
     that would become overloaded. The package fsspec is used to simulate a filesystem
