@@ -40,6 +40,7 @@ if pytplot.using_graphics:
     from pytplot.AncillaryPlots import position_mars_3d
 
 def tplot(name,
+          trange=None,
           var_label=None,
           slice=False,
           combine_axes=True,
@@ -81,6 +82,8 @@ def tplot(name,
         name : str or list of str, required
             List of tplot variables that will be plotted.
             If this is empty, nothing will be plotted.
+        trange: list of string or float, optional
+            If set, this time range will be used, temporarily overriding any previous xlim or timespan calls
         var_label : str, optional
             The name of the tplot variable you would like as
             a second x axis.
@@ -149,7 +152,9 @@ def tplot(name,
     num_plots = len(name)
 
     if qt == False and bokeh == False:
-        return mpl_tplot(name, var_label=var_label,
+        return mpl_tplot(name,
+                         trange=trange,
+                         var_label=var_label,
                          xsize=xsize,
                          ysize=ysize,
                          save_png=save_png,
@@ -181,6 +186,7 @@ def tplot(name,
         if name[i] not in pytplot.data_quants.keys():
             logging.info(str(name[i]) + " is currently not in pytplot")
             return
+
 
     if isinstance(var_label, int):
         var_label = list(pytplot.data_quants.keys())[var_label]

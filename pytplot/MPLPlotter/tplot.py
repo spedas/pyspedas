@@ -189,7 +189,10 @@ def gather_pseudovar_props(pseudovars:list[str]):
             output_dict['line_ymax'] = np.nanmax([output_dict['line_ymax'], props['ymax']])
     return output_dict
 
-def tplot(variables, var_label=None,
+
+def tplot(variables,
+          trange=None,
+          var_label=None,
           xsize=None,
           ysize=None,
           save_png='',
@@ -457,7 +460,9 @@ def tplot(variables, var_label=None,
                     pseudo_show_colorbar=True
                 else:
                     pseudo_show_colorbar=False
-                tplot(var, return_plot_objects=return_plot_objects,
+                tplot(var,
+                      trange=trange,
+                      return_plot_objects=return_plot_objects,
                       xsize=xsize, ysize=ysize,
                       fig=fig, axis=this_axis, display=False,
                       running_trace_count=traces_processed,
@@ -484,11 +489,23 @@ def tplot(variables, var_label=None,
             if pytplot.tplot_opt_glob['data_gap'] is not None and pytplot.tplot_opt_glob['data_gap'] > 0:
                 var_data = pytplot.makegap(var_data, dt = pytplot.tplot_opt_glob['data_gap'])
 
-        # set the x-axis range, if it was set with xlim or tlimit
-        if pytplot.tplot_opt_glob.get('x_range') is not None:
-            x_range = pytplot.tplot_opt_glob['x_range']  # Seconds since epoch
-            x_range_start = x_range[0]
-            x_range_stop = x_range[1]
+        # set the x-axis range, if it was set with xlim or tlimit or the trange parameter
+        if trange is None and pytplot.tplot_opt_glob.get('x_range') is None:
+            var_data_times = var_data.times
+            time_idxs = np.arange(len(var_data_times))
+        else:
+            if trange is not None:
+                if len(trange) != 2:
+                    logging.error('Invalid trange setting: must be a 2-element list or array')
+                    return
+                if isinstance(trange[0], str):
+                    x_range = pytplot.time_double(trange) # seconds since epoch
+                    x_range_start = x_range[0]
+                    x_range_stop = x_range[1]
+            else:
+                x_range = pytplot.tplot_opt_glob['x_range']  # Seconds since epoch
+                x_range_start = x_range[0]
+                x_range_stop = x_range[1]
 
             # Check for NaN or inf in x_range
             if not np.isfinite(x_range_start):
@@ -507,9 +524,6 @@ def tplot(variables, var_label=None,
                 logging.info('No data found in the time range: ' + variable)
                 continue
             var_data_times = var_data.times[time_idxs]
-        else:
-            var_data_times = var_data.times
-            time_idxs = np.arange(len(var_data_times))
 
         var_times = var_data_times
 
