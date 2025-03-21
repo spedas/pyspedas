@@ -8,7 +8,7 @@ import pytplot
 import numpy as np
 
 def tres(tplot_var):
-    """
+    r"""
     Returns the time resolution of a tplot variable, defined as the median value 
     of the differences between time values from the data points, e.g., median(d.x[1:*]-d.x). 
     Can be used for multiple variables.

@@ -55,7 +55,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         Legend Options          Value type   Notes
         ======================  ===========  ===========================================================================================================================
         legend_names            list         A list of strings that will be used to identify the legends.
-        legend_location         str         A string giving the location of the legend box.
+        legend_location         str          A string giving the location of the legend box.
         legend_size             numeric      The font size of the legend names
         legend_shadow           bool         Turns on or off drop shadows on the legend box
         legend_title            str          The title to display on the legend
