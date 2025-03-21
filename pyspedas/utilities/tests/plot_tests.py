@@ -487,9 +487,9 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
         # Zoom in o a burst interval
-        timespan('2007-03-23/12:20', 10, 'minutes')
+        #timespan('2007-03-23/12:20', 10, 'minutes')
         tplot_options('title', 'Combined full and burst cadence with same energies (zoomed in) top=fast, mid=combined, bot=burst')
-        tplot(vars, save_png='test_pseudo_spectra_full_burst_zoomed',display=global_display)
+        tplot(vars, trange=['2007-03-23/12:20', '2007-03-23/12:30'],save_png='test_pseudo_spectra_full_burst_zoomed',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('title', '')
 
@@ -681,6 +681,18 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('varlabel_style', None)
 
+    def test_tplot_trange(self):
+        del_data("*")
+        pyspedas.projects.themis.fit(probe='e', trange=['2007-03-23', '2007-03-24'])
+        tplot_options('title','No timespan or xlim set, full time range of loaded data')
+        tplot('the_fgs_dsl', display=global_display, save_png='notrange_default.png')
+        tplot_options('title','No timespan or xlim set, using trange to plot 12:00 to 23:59')
+        tplot('the_fgs_dsl', trange=['2007-03-23/12:00', '2007-03-24/00:00'], display=global_display, save_png='trange_pm.png')
+        tplot_options('title', 'Using xlim to set time range from 00:00 to 12:00')
+        pytplot.xlim('2007-03-23/00:00:00','2007-03-23/12:00:00')
+        tplot('the_fgs_dsl',display=global_display, save_png='xlim_am.png')
+        tplot_options('title', 'Xlim set to 00:00 to 12:00, overriding with trange from 10:00 to 12:00')
+        tplot('the_fgs_dsl', trange=['2007-03-23/10:00', '2007-03-23/12:00:00'], display=global_display, save_png='xlim_am_trange_override.png')
 
 if __name__ == '__main__':
     unittest.main()
