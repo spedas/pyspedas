@@ -4,7 +4,7 @@ from pytplot import get_data, store, tnames
 import numpy as np
 
 
-def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
+def tinterpol(names, interp_to, method=None, newname=None, extrapolate=False, suffix=None):
     """
     Interpolate data to times in interp_to.
 
@@ -22,6 +22,8 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
         'previous' and 'next' simply return the previous or next value of the point) or as an integer specifying the order of the spline interpolator to use.
     newname : str or list of str, optional
         List of new names for tplot variables. If '', then tplot variables are replaced. If not given, then a suffix is applied.
+    extrapolate: bool
+        If true, extrapolate beyond the start/end times of the interp_to variable.  Default is False (for now)
     suffix : str, optional
         A suffix to apply. Default is '-itrp'.
 
@@ -107,6 +109,11 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
     else:
         interp_to_times = interp_to
 
+    kwargs={}
+    if extrapolate:
+        kwargs={'fill_value':'extrapolate'}
+
+
     for name_idx, name in enumerate(old_names):
         xdata = get_data(name, xarray=True)
         metadata = get_data(name, metadata=True)
@@ -136,7 +143,7 @@ def tinterpol(names, interp_to, method=None, newname=None, suffix=None):
             )
             return
 
-        xdata_interpolated = xdata.interp({"time": interp_to_datetimes}, method=method)
+        xdata_interpolated = xdata.interp({"time": interp_to_datetimes}, method=method, kwargs=kwargs)
 
         if "spec_bins" in xdata.coords:
             store(
