@@ -1,7 +1,7 @@
 import logging
 import numpy as np
-
-from pyspedas import tinterpol
+import pyspedas
+#from pyspedas import tinterpol, interpol
 
 from pytplot import get_coords
 from pytplot import tnormalize
@@ -37,7 +37,7 @@ def interpolate_position(pos_var_name, interp_to):
     Interpolate position data to the time grid of the magnetic field variable.
     The result is stored as pos_var_name + "-itrp".
     """
-    tinterpol(names=pos_var_name, interp_to=interp_to, method="linear",
+    pyspedas.tinterpol(names=pos_var_name, interp_to=interp_to, method="linear",
               newname=None, suffix="-itrp")
     interp_var = pos_var_name + "-itrp"
     interp_data = get_data(interp_var)
@@ -61,8 +61,9 @@ def pos_cotrans(pos_times, pos_data, mag_var_name):
     coord_system = get_coords(mag_var_name)
 
     cotrans(name_in='fac_mat_pos_tmp', coord_in='gei', coord_out=coord_system.lower())
-    pos_data = get_data('fac_mat_pos_tmp')
-    del_data('fac_mat_pos_tmp')
+    newname = 'fac_mat_pos_tmp_' + coord_system.lower()
+    pos_data = get_data(newname)
+    del_data(newname)
 
     return pos_data.y
 
@@ -110,7 +111,7 @@ def get_ref_rgeo(pos_data, mag_var_name, sign=1):
 
 def get_ref_phi(pos_data, mag_var_name, sign=1):
     polar = xyz_to_polar(pos_data.y)
-    phi_deg = polar[:, 1]
+    phi_deg = polar[:, 2]
     arr = np.empty_like(pos_data.y)
     arr[:, 0] = -np.sin(np.radians(phi_deg)) * sign
     arr[:, 1] = np.cos(np.radians(phi_deg)) * sign
@@ -177,7 +178,7 @@ def fac_matrix_make(mag_var_name, other_dim='Xgse', pos_var_name=None, newname=N
     # For certain coordinate systems, a position variable is required.
     required_pos = ["rgeo", "mrgeo", "phigeo", "mphigeo", "phism", "mphism"]
     if coord_option in required_pos and pos_var_name is None:
-        logging.error("Need pos_var for %s", other_dim)
+        logging.error("Need pos_var_name for %s", other_dim)
         return None
 
     if coord_option in required_pos:
