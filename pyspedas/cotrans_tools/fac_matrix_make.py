@@ -38,7 +38,7 @@ def interpolate_position(pos_var_name, interp_to):
     The result is stored as pos_var_name + "-itrp".
     """
     pyspedas.tinterpol(names=pos_var_name, interp_to=interp_to, method="linear",
-              newname=None, suffix="-itrp")
+              newname=None, extrapolate=True, suffix="-itrp")
     interp_var = pos_var_name + "-itrp"
     interp_data = get_data(interp_var)
     if interp_data is None:
