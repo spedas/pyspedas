@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import pyspedas
 from pyspedas import themis
-from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim
+from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim, databar
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
@@ -108,12 +108,15 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
-    def test_timebars(self):
+    def test_time_data_bars(self):
         from pytplot import timebar
         del_data('*')
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
         themis.fgm(probe='c', trange=default_trange)
+        # use timebar to place a databar
         timebar(t=10000.0,varname='thc_fge_dsl',databar=True,color='black')
+        # use databar to place a databar
+        databar('thc_fgs_dsl',-10000.0, color='red', dash=True)
         timebar(t=-10000.0,varname='thc_fge_dsl',databar=True,color='red', dash=True)
         timebar(t=pytplot.time_double('2007-03-23/14:00'),varname='thc_fge_btotal',color='magenta')
         timebar(t=pytplot.time_double('2007-03-23/14:30'),color='blue')
