@@ -4,7 +4,7 @@ import pytplot
 import logging
 
 
-def databar(y, varname=None, databar=False, delete=False, color="black", thick=1, dash=False):
+def databar(varname, y=0.0, delete=False, color="black", thick=1, dash=False):
     """
     This function will add a horizontal bar at the given value to a plot of a tplot variable.
 
@@ -12,8 +12,8 @@ def databar(y, varname=None, databar=False, delete=False, color="black", thick=1
     ----------
     y : float or list
         The Y-axis value  If a list of numbers are supplied, multiple bars will be created.
-    varname : str or list, optional
-        The variable(s) to add the vertical bar to. If not set, the default is to add it to all current plots. (wildcards accepted)
+    varname : str or list
+        The variable(s) to add the vertical bar to. (wildcards accepted)
     delete : bool, optional
         If set to True, at least one varname must be supplied. The timebar at value "y" for variable "varname"
         will be removed.
@@ -32,15 +32,15 @@ def databar(y, varname=None, databar=False, delete=False, color="black", thick=1
     --------
     >>> # Place a green time bar at 2017-07-17 00:00:00
     >>> import pyspedas
-    >>> pyspedas.databar(0, color='green')
+    >>> pyspedas.databar('*', 0, color='green')
 
     >>> # Place a dashed data bar at 5500 on the y axis
-    >>> pyspedas.databar(5500, dash=True)
+    >>> pyspedas.databar('*', 5500, dash=True)
 
     >>> # Place 3 magenta time bars of thickness 5
     >>> # at -100, 0, +100
     >>> # for variable 'sgx' plot
-    >>> pyspedas.databar([-100, 0, 100],'sgx',color='m',thick=5)
+    >>> pyspedas.databar('sgx', [-100, 0, 100],color='m',thick=5)
     """
 
     # wildcard expansion
