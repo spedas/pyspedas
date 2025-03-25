@@ -70,7 +70,9 @@ def ctime_on_click(ax, cid, event):
             for vline in vertical_lines:
                 vline.remove()  # Remove the vertical line from the plot
             #clear_selection_lines()
-            print(f"Selected Times: {selected_times}")
+            #print(f"Selected Times: {selected_times}")
+            plt.draw()
+            plt.FigureCanvasBase.stop_event_loop()
 
 # Define the key press event handler
 def on_key(event: KeyEvent):
@@ -86,6 +88,8 @@ def on_key(event: KeyEvent):
         plt.disconnect(kbd_cid)  # Disconnect kbd event handler
         for vline in vertical_lines:
             vline.remove()  # Remove the vertical line from the plot
+        plt.draw()
+        plt.FigureCanvasBase.stop_event_loop()
         #clear_selection_lines()
 
 
@@ -153,8 +157,9 @@ def ctime(fig):
     kbd_cid = fig.canvas.mpl_connect('key_press_event', on_key)
     # Show the plot and block the execution until right-click ends selection
 
-    plt.draw()
-    plt.show(block=True)
+    #plt.draw()
+    #plt.show(block=True)
+    plt.FigureCanvasBase.start_event_loop()
 
     #print("Exiting ctime")
     # The function returns selected times after the user has finished
