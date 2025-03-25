@@ -96,13 +96,35 @@ def on_key(event: KeyEvent):
 def ctime(fig):
     """ Select time values by clicking on a plot, similar to ctime in IDL SPEDAS
 
-    Left click saves the time at the current cursor position.  Right click exits and returns the list
-    of saved times.
+    Left click saves the time at the current cursor position.  'c' clears the list of times selected. Right click or 'q' exits and returns the list
+    of saved times (as floating point Unix times).
 
     Parameters
     ----------
     fig
         A matplotlib fig object specifying the plot to be used for the time picker (returned by tplot with return_plot_objects=True)
+
+    Notes
+    ------
+
+    When using this tool in an interactive Jupyter notebook, there are a few factors that might affect the operation
+    of ctime() in that environment.  You will need to specify an interactive backend, by using the "magic" commands
+    "%matplotlib widget" or "%matplotlib notebook" prior to importing or calling any pyspedas, pytplot, or matplotlib
+    routines.  These commands may require additional packages to be installed (for example, 'ipympl'). It is probably best to do the initial plot and the ctime() call in the same Jupyter cell.
+
+    In a Jupyter environment, calling ctime() can result in a second copy of the plot, which can be confusing.  You can
+    prevent this by using the "display=False" keyword on the initial tplot call. The plot will show as soon as ctime()
+    is called.
+
+    Some IDEs, like PyCharm Professional, have the ability to host a Jupyter session directly in the
+    IDE, rather than in an external browser.  If this causes issues with ctime(), try opening the notebook using the
+    standard "jupyter notebook" command rather than using the IDE's built-in Jupyter support.
+
+    The most common failure mode
+    of ctime() seems to be an immediate return of an empty time list, while the plot acts as if ctime is still running (time bars
+    following the mouse, selection marks appearing and being cleared as expected, etc.  If this happens, please
+    try the suggestions above, or let the developers know by opening a Github issue with a description of your
+    environment, and some sample code showing what you're trying to do.
 
     Returns
     -------
