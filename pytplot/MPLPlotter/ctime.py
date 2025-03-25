@@ -58,12 +58,12 @@ def ctime_on_click(ax, cid, event):
             timestamp = mdates.num2date(event.xdata).timestamp()
             timestamp_str = time_string(timestamp)
             selected_times.append(timestamp)
-            print(f"Selected Time: {timestamp_str}")
+            #print(f"Selected Time: {timestamp_str}")
             add_selection_line(event.xdata)
             #ax.plot(clicked_time, event.ydata, 'ro')  # Mark the selected point with a red dot
             plt.draw()
         elif event.button == 3:  # Right-click to stop
-            print("Right-click: Ending selection.")
+            #print("Right-click: Ending selection.")
             plt.disconnect(cid)  # Disconnect the event handler
             plt.disconnect(motion_cid)  # Disconnect motion event handler
             plt.disconnect(kbd_cid)  # Disconnect kbd event handler
@@ -75,12 +75,12 @@ def ctime_on_click(ax, cid, event):
 # Define the key press event handler
 def on_key(event: KeyEvent):
     if event.key == 'c':  # Check if 'q' was pressed
-        print("Pressed 'c', clearing selections")
+        #print("Pressed 'c', clearing selections")
         clear_selection_lines()
         selected_times.clear()
 
     if event.key == 'q':  # Check if 'q' was pressed
-        print("Pressed 'q', quitting...")
+        #print("Pressed 'q', quitting...")
         plt.disconnect(cid)  # Disconnect the event handler
         plt.disconnect(motion_cid)  # Disconnect motion event handler
         plt.disconnect(kbd_cid)  # Disconnect kbd event handler
@@ -153,6 +153,7 @@ def ctime(fig):
     kbd_cid = fig.canvas.mpl_connect('key_press_event', on_key)
     # Show the plot and block the execution until right-click ends selection
 
+    plt.draw()
     plt.show(block=True)
 
     #print("Exiting ctime")
