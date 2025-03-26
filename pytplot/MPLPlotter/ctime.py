@@ -1,120 +1,135 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from pytplot import time_string
+
 from matplotlib.lines import Line2D
 from matplotlib.backend_bases import KeyEvent
 
+class TimeSelector:
 
-# Store selected times
-selected_times = []
-vertical_lines = []
-cid = None
-motion_cid = None
-kbd_on_cid = None
-kbd_off_cid = None
-logs=[]
+    def add_selection_line(self,time):
+        for item in self.axis_list:
+            ax, y_bottom, y_top = item
+            # Get the y-axis range
+            vline = Line2D([time,time], [y_bottom, y_top], color='b', linestyle='--')
+            self.selected_lines.append(vline)
+            ax.add_line(vline)
 
-shift_on=False
-
-# Manage the lines to mark the selections
-
-# list of tuples (ax, ylower, yupper)
-saved_fig = None
-axis_list = []
-selected_lines = []
-
-def add_selection_line(time):
-    for item in axis_list:
-        ax, y_bottom, y_top = item
-        # Get the y-axis range
-        vline = Line2D([time,time], [y_bottom, y_top], color='b', linestyle='--')
-        selected_lines.append(vline)
-        ax.add_line(vline)
-
-def clear_selection_lines():
-    global selected_lines
-    print("Clearing selection lines")
-    for vline in selected_lines:
-        vline.set_color('r')
-        vline.remove()
-    plt.draw()
-    selected_lines.clear()
-
-
-# Define the motion event handler
-def ctime_on_motion(event):
-    if event.inaxes:  # Check if the mouse is over the plot's axes
-        # Get the current x-position of the cursor (time)
-        cursor_time = event.xdata
-        # Update the vertical line position
-        for vline in vertical_lines:
-            vline.set_xdata([cursor_time, cursor_time])
+    def clear_selection_lines(self):
+        print("Clearing selection lines")
+        for vline in self.selected_lines:
+            vline.set_color('r')
+            vline.remove()
         plt.draw()
+        self.selected_lines.clear()
 
 
-# Define the click event handler
-def ctime_on_click(event):
-    global selected_times
-    global vertical_lines
-    global logs
-    global saved_fig
-
-    if event.inaxes:  # Check if the click is within the plot's axes
-        if event.button == 1:  # Left-click to add a timestamp, or shift-left-click to clear timestamps
-            if shift_on:
-                clear_selection_lines()
-                selected_times.clear()
-                logs.append("shift left click")
-            else:
-                # Convert the x-coordinate (time) to a datetime
-                logs.append("left click")
-                timestamp = mdates.num2date(event.xdata).timestamp()
-                selected_times.append(timestamp)
-                add_selection_line(event.xdata)
+    # Define the motion event handler
+    def ctime_on_motion(self, event):
+        if event.inaxes:  # Check if the mouse is over the plot's axes
+            # Get the current x-position of the cursor (time)
+            cursor_time = event.xdata
+            # Update the vertical line position
+            for vline in self.vertical_lines:
+                vline.set_xdata(cursor_time)
             plt.draw()
-        elif event.button == 3:  # Right-click to stop
-            logs.append("right click")
-            plt.disconnect(cid)  # Disconnect the event handler
-            plt.disconnect(motion_cid)  # Disconnect motion event handler
-            plt.disconnect(kbd_on_cid)  # Disconnect kbd event handler
-            plt.disconnect(kbd_off_cid)  # Disconnect kbd event handler
-            for vline in vertical_lines:
+
+
+    # Define the click event handler
+    def ctime_on_click(self, event):
+
+        if event.inaxes:  # Check if the click is within the plot's axes
+            if event.button == 1:  # Left-click to add a timestamp, or shift-left-click to clear timestamps
+                if self.shift_on:
+                    self.clear_selection_lines()
+                    self.selected_times.clear()
+                    self.logs.append("shift left click")
+                else:
+                    # Convert the x-coordinate (time) to a datetime
+                    self.logs.append("left click")
+                    timestamp = mdates.num2date(event.xdata).timestamp()
+                    self.selected_times.append(timestamp)
+                    self.add_selection_line(event.xdata)
+                plt.draw()
+            elif event.button == 3:  # Right-click to stop
+                self.logs.append("right click")
+                plt.disconnect(self.cid)  # Disconnect the event handler
+                plt.disconnect(self.motion_cid)  # Disconnect motion event handler
+                plt.disconnect(self.kbd_on_cid)  # Disconnect kbd event handler
+                plt.disconnect(self.kbd_off_cid)  # Disconnect kbd event handler
+                for vline in self.vertical_lines:
+                    vline.remove()  # Remove the vertical line from the plot
+                plt.draw()
+                self.saved_fig.canvas.stop_event_loop()
+
+    # Define the key press event handler
+    def ctime_on_key(self, event: KeyEvent):
+
+        self.logs.append("key pressed: " + event.key)
+        if event.key == 'c' or event.key == 'e':  # Check if 'c' was pressed
+            #print("Pressed 'c', clearing selections")
+            self.clear_selection_lines()
+            self.selected_times.clear()
+            plt.draw()
+        elif event.key == 'shift':
+            self.shift_on=True
+        elif event.key == 'q':  # Check if 'q' was pressed
+            #print("Pressed 'q', quitting...")
+            plt.disconnect(self.cid)  # Disconnect the event handler
+            plt.disconnect(self.motion_cid)  # Disconnect motion event handler
+            plt.disconnect(self.kbd_on_cid)  # Disconnect kbd event handler
+            plt.disconnect(self.kbd_off_cid)  # Disconnect kbd event handler
+            for vline in self.vertical_lines:
                 vline.remove()  # Remove the vertical line from the plot
             plt.draw()
-            saved_fig.canvas.stop_event_loop()
+            self.saved_fig.canvas.stop_event_loop()
+            #clear_selection_lines()
 
-# Define the key press event handler
-def ctime_on_key(event: KeyEvent):
-    global logs
-    global saved_fig
-    global shift_on
-    logs.append("key pressed: " + event.key)
-    if event.key == 'c' or event.key == 'e':  # Check if 'c' was pressed
-        #print("Pressed 'c', clearing selections")
-        clear_selection_lines()
-        selected_times.clear()
-        plt.draw()
-    elif event.key == 'shift':
-        shift_on=True
-    elif event.key == 'q':  # Check if 'q' was pressed
-        #print("Pressed 'q', quitting...")
-        plt.disconnect(cid)  # Disconnect the event handler
-        plt.disconnect(motion_cid)  # Disconnect motion event handler
-        plt.disconnect(kbd_on_cid)  # Disconnect kbd event handler
-        plt.disconnect(kbd_off_cid)  # Disconnect kbd event handler
-        for vline in vertical_lines:
-            vline.remove()  # Remove the vertical line from the plot
-        plt.draw()
-        saved_fig.canvas.stop_event_loop()
-        #clear_selection_lines()
+    # Define the key release event handler
+    def ctime_off_key(self, event: KeyEvent):
+        self.logs.append("key released")
+        if event.key == 'shift':
+            self.shift_on=False
 
-# Define the key release event handler
-def ctime_off_key(event: KeyEvent):
-    global logs
-    global shift_on
-    logs.append("key released")
-    if event.key == 'shift':
-        shift_on=False
+    def ctime_run_event_loop(self):
+        plt.draw()
+        plt.show(block=False)
+        # plt.ioff()
+        self.saved_fig.canvas.start_event_loop(-1)
+        return self.selected_times
+
+    def __init__(self, fig):
+        """Initialize."""
+        self.saved_fig = fig
+        self.selected_times = []
+        self.selected_lines = []
+        self.vertical_lines = []
+        self.axis_list = []
+        self.cid = None
+        self.motion_cid = None
+        self.kbd_on_cid = None
+        self.kbd_off_cid = None
+        self.shift_on = False
+        self.logs = []
+
+        # Create vertical lines in each subplot to track the cursor position
+        for ax in fig.axes:
+            # Get the y-axis range
+            y_bottom, y_top = ax.get_ylim()
+            vline = Line2D([0, 0], [y_bottom, y_top], color='g', linestyle='--')
+            self.vertical_lines.append(vline)
+            ax.add_line(vline)
+            self.axis_list.append((ax, y_bottom, y_top))
+
+        # Connect the motion event to the handler
+        self.motion_cid = fig.canvas.mpl_connect('motion_notify_event', self.ctime_on_motion)
+
+        # Connect the click event to the handler
+        self.cid = fig.canvas.mpl_connect('button_press_event', self.ctime_on_click)
+
+        # Connect the key press/release events to the handler
+        self.kbd_on_cid = fig.canvas.mpl_connect('key_press_event', self.ctime_on_key)
+        self.kbd_off_cid = fig.canvas.mpl_connect('key_release_event', self.ctime_off_key)
+
 
 def ctime(fig):
     """ Select time values by clicking on a plot, similar to ctime in IDL SPEDAS
@@ -162,58 +177,12 @@ def ctime(fig):
     >>> import pyspedas
     >>> from pyspedas import tplot, ctime, time_string
     >>> pyspedas.projects.themis.state(probe='a')
-    >>> fig, ax = tplot('tha_pos', return_plot_objects=True)
-    >>> saved_timestamps = ctime(fig)
+    >>> myfig, ax = tplot('tha_pos', return_plot_objects=True)
+    >>> saved_timestamps = ctime(myfig)
     >>> print(time_string(saved_timestamps))
 
     """
-    # Reset the selected_times list before starting a new selection
-    global selected_times
-    global cid
-    global motion_cid
-    global vertical_lines
-    global kbd_on_cid
-    global kbd_off_cid
-    global saved_fig
-    global shift_on
-    global logs
-
-    saved_fig = fig
-
-    selected_times = []
-    vertical_lines = []
-    shift_on=False
-    logs=[]
-
+    ctime_obj = TimeSelector(fig)
     print("Use the mouse to select times.  Left click to add a new time, type 'c' to clear selections, 'q' or right click to exit")
-
-    # Create vertical lines in each subplot to track the cursor position
-    for ax in fig.axes:
-        # Get the y-axis range
-        y_bottom, y_top = ax.get_ylim()
-        vline = Line2D([0, 0], [y_bottom, y_top], color='g', linestyle='--')
-        vertical_lines.append(vline)
-        ax.add_line(vline)
-        axis_list.append( (ax, y_bottom, y_top))
-
-    # Connect the motion event to the handler
-    motion_cid = fig.canvas.mpl_connect('motion_notify_event', ctime_on_motion)
-
-    # Connect the click event to the handler
-    cid = fig.canvas.mpl_connect('button_press_event', ctime_on_click)
-
-    # Connect the key press/release events to the handler
-    kbd_on_cid = fig.canvas.mpl_connect('key_press_event', ctime_on_key)
-    kbd_off_cid = fig.canvas.mpl_connect('key_release_event', ctime_off_key)
-
-    # Show the plot and block the execution until right-click ends selection
-
-    plt.draw()
-    plt.show(block=False)
-    #plt.ioff()
-    fig.canvas.start_event_loop(-1)
-
-    #print("Exiting ctime")
-    # The function returns selected times after the user has finished
-    return selected_times
+    return ctime_obj.ctime_run_event_loop()
 
