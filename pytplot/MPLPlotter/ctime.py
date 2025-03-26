@@ -3,6 +3,7 @@ import matplotlib.dates as mdates
 
 from matplotlib.lines import Line2D
 from matplotlib.backend_bases import KeyEvent
+from matplotlib.pyplot import rcParams
 
 class TimeSelector:
 
@@ -91,10 +92,30 @@ class TimeSelector:
             self.shift_on=False
 
     def ctime_run_event_loop(self):
-        plt.draw()
+        # matplotlib defines some default keyboard commands for manipulating plots.  In particular,
+        # 'c' is assigned to "navigate backward", and 'q' is assigned to "close the plot".  We want
+        # to redefine these as "clear selections" and "quit ctime", then restore the original definitions
+        # upon exit.
+        #
+        # This only works if the user hasn't redefined 'c' and 'q' to mean something else.
+        # The correct way to do this would be to go through all the keymap.* keys, delect 'c' or 'q' from them,
+        # then restore the whole map at the end.  This is probably good enough for now.
+        #
+
+        save_back = rcParams['keymap.back']
+        save_quit = rcParams['keymap.quit']
+        rcParams['keymap.back'] = []
+        rcParams['keymap.quit'] = []
+
+        #plt.draw()
         plt.show(block=False)
         # plt.ioff()
         self.saved_fig.canvas.start_event_loop(-1)
+
+        # Restore original keyboard shortcuts
+        rcParams['keymap.back'] = save_back
+        rcParams['keymap.quit'] = save_quit
+
         return self.selected_times
 
     def __init__(self, fig):
@@ -134,7 +155,7 @@ class TimeSelector:
 def ctime(fig):
     """ Select time values by clicking on a plot, similar to ctime in IDL SPEDAS
 
-    Left click saves the time at the current cursor position.  'c' clears the list of times selected. Right click or 'q' exits and returns the list
+    Left click saves the time at the current cursor position.  'c', 'e', or shift-left click clears the list of times selected. Right click or 'q' exits and returns the list
     of saved times (as floating point Unix times).
 
     Parameters
@@ -184,5 +205,6 @@ def ctime(fig):
     """
     ctime_obj = TimeSelector(fig)
     print("Use the mouse to select times.  Left click to add a new time, type 'c' to clear selections, 'q' or right click to exit")
-    return ctime_obj.ctime_run_event_loop()
+    selected_times = ctime_obj.ctime_run_event_loop()
+    return selected_times
 
