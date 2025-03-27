@@ -16,7 +16,6 @@ class TimeSelector:
             ax.add_line(vline)
 
     def clear_selection_lines(self):
-        print("Clearing selection lines")
         for vline in self.selected_lines:
             vline.set_color('r')
             vline.remove()
