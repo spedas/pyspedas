@@ -97,7 +97,7 @@ class TimeSelector:
         # upon exit.
         #
         # This only works if the user hasn't redefined 'c' and 'q' to mean something else.
-        # The correct way to do this would be to go through all the keymap.* keys, delect 'c' or 'q' from them,
+        # The correct way to do this would be to go through all the keymap.* keys, delete 'c' or 'q' from them,
         # then restore the whole map at the end.  This is probably good enough for now.
         #
 
@@ -107,7 +107,7 @@ class TimeSelector:
         rcParams['keymap.quit'] = []
 
         #plt.draw()
-        plt.show(block=False)
+        #plt.show(block=False)
         # plt.ioff()
         self.saved_fig.canvas.start_event_loop(-1)
 
