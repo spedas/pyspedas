@@ -167,24 +167,13 @@ def ctime(fig):
     This feature is very platform-dependent, and should still be considered experimental.  Please let the PySPEDAS developers know
     if you have trouble using it in your environment.
 
-    When using this tool in an interactive Jupyter notebook, there are a few factors that might affect the operation
-    of ctime.  You will need to specify an interactive backend, by using the "magic" commands
-    "%matplotlib ipympl" (or some other backend appropriate for your environment) prior to importing or calling any pyspedas, pytplot, or matplotlib
-    routines.  It is probably best to do the initial plot and the ctime() call in the same Jupyter cell.
+    As of this release, ctime seems to work in most situations, except for Jupyter notebooks using the 'ipympl' (aka 'widget')
+    matplotlib backend.  With that backend, the most common failure modes are that the ctime() call returns immediately, with no
+    chance to interact with the plot, or the tplot call gets stuck somehow and never renders the plot.
 
-    In a Jupyter environment, calling ctime() can result in a second copy of the plot, which can be confusing.  You can
-    prevent this by using the "display=False" keyword on the initial tplot call. The plot will show as soon as ctime()
-    is called.
-
-    Some IDEs, like PyCharm Professional, have the ability to host a Jupyter session directly in the
-    IDE, rather than in an external browser.  If this causes issues with ctime(), try opening the notebook using the
-    standard "jupyter notebook" command rather than using the IDE's built-in Jupyter support.
-
-    The most common failure mode
-    of ctime() seems to be an immediate return of an empty time list, while the plot acts as if ctime is still running (time bars
-    following the mouse, selection marks appearing and being cleared as expected, etc.)  If this happens, please
-    try the suggestions above, or let the developers know by opening a GitHub issue with a description of your
-    environment, and some sample code showing what you're trying to do.
+    We are working on a fix for the ipympl incompatibility, but for now, the best workaround for Jupyter notebooks may be to use "%matplotlib auto"
+    as the backend.  Depending on your exact environment, this will probably render the plots outside of the Jupyter notebooks (so the plot results
+    won't be saved in the notebook), but at least ctime should work, allowing you to continue with your desired workflow.
 
     Returns
     -------
