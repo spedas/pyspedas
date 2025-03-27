@@ -50,6 +50,11 @@ location within the plot. Left-clicking will save that timestamp to the output l
 selecting the desired number of points, the user can right-click to quit.  ctime will
 then return the list of timestamps selected.
 
+At the moment, ctime does not work reliably in a Jupyter notebook when the matplotlib 'ipympl'
+backend is used, or with the default 'inline' non-interactive back end.  If you are developing a notebook which
+calls ctime, we recommend specifying the 'auto' backend (via the 'magic' command "%matplotlib auto") before importing
+or calling any pyspedas, pytplot, or matplotlib routines.
+
 .. autofunction:: pyspedas.ctime
 
 Per-Variable Plot Options
