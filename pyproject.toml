@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyspedas"
-version = "1.7.15"
+version = "1.7.16"
 description = "Python Space Physics Environment Data Analysis Software (pySPEDAS)"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.9"
