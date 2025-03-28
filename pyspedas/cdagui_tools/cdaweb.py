@@ -21,7 +21,7 @@ class CDAWeb:
 
     def __init__(self):
         """Initialize."""
-        self.cdas = CdasWs()
+        self.cdas = CdasWs(endpoint=CONFIG['cdas_endpoint'])
 
     def get_observatories(self):
         """Return a list of strings CDAWeb uses to designate missions or mission groups
@@ -224,7 +224,7 @@ class CDAWeb:
         loaded_vars = []
 
         # Set the local and remote directories
-        remotehttp = "https://cdaweb.gsfc.nasa.gov/sp_phys/data"
+        remotehttp = CONFIG['remote_data_dir']
         if local_dir is None:
             local_dir = CONFIG["local_data_dir"]
 

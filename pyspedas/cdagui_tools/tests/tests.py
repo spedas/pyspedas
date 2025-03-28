@@ -174,6 +174,27 @@ class CDAWebTests(unittest.TestCase):
         cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='v2_')
         self.assertTrue(data_exists('v2_B1'))
 
+    def test_load_icon_netcdf_alt_urls(self):
+        del_data('*')
+        # Create the CDAWeb interface object
+        import pyspedas
+        from pyspedas.cdagui_tools.config import CONFIG
+
+        # Replace the standard URLs with http rather than https and see if it still works
+        CONFIG['cdas_endpoint'] = 'http://cdaweb.gsfc.nasa.gov/WS/cdasr/1/dataviews/sp_phys/'
+        CONFIG['remote_data_dir'] = 'http://cdaweb.gsfc.nasa.gov/sp_phys/data'
+        cdaweb_obj = pyspedas.CDAWeb()
+
+        cdaweb_obj = pyspedas.CDAWeb()
+
+        time0 = '2021-01-15T14:05:52'
+        time1 = '2021-01-15T15:08:57'
+
+        urllist = cdaweb_obj.get_filenames(['ICON_L2-2_MIGHTI_VECTOR-WIND-GREEN (2019-12-06 to 2022-11-25)'], time0,
+                                           time1)
+        result = cdaweb_obj.cda_download(urllist, "cdaweb/")
+        self.assertTrue(data_exists('ICON_L22_Fringe_Amplitude'))
+
 
 if __name__ == '__main__':
     unittest.main()
