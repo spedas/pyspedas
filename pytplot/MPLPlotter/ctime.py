@@ -30,7 +30,7 @@ class TimeSelector:
             cursor_time = event.xdata
             # Update the vertical line position
             for vline in self.vertical_lines:
-                vline.set_xdata(cursor_time)
+                vline.set_xdata([cursor_time, cursor_time])
             plt.draw()
 
 
