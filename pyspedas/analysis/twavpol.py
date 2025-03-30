@@ -74,7 +74,7 @@ Restrictions:
 import logging
 import warnings
 import numpy as np
-"""
+
 # use nansum from bottleneck if it's installed, otherwise use the numpy one
 # disabled for now for troubleshooting pyhc environment
 try:
@@ -82,9 +82,11 @@ try:
     nansum = bn.nansum
 except ImportError:
     nansum = np.nansum
-"""
+
 from numpy import nansum
 from pytplot import get_data, store_data, options, tnames
+
+empty_initializer = 0.0
 
 def atan2c(zx, zy):
     """Define arctan2 with complex numbers."""
@@ -115,29 +117,29 @@ def wpol_matsqrd(i1, i2, i3, ematspec):
 def wpol_helicity(nosteps, nopfft, KK, ematspec, waveangle):
     """Calculate helicity, ellipticity."""
     # Avoid warnings.
-    #warnings.simplefilter("ignore", np.exceptions.ComplexWarning)
+    warnings.simplefilter("ignore", np.exceptions.ComplexWarning)
 
     # Define arrays.
-    helicity = np.empty((nosteps, int(nopfft/2), 3))
-    ellip = np.empty((nosteps, int(nopfft/2), 3))
-    alphax = np.empty((nosteps, int(nopfft/2)))
-    alphasin2x = np.empty((nosteps, int(nopfft/2)))
-    alphacos2x = np.empty((nosteps, int(nopfft/2)))
-    alphasin3x = np.empty((nosteps, int(nopfft/2)))
-    alphacos3x = np.empty((nosteps, int(nopfft/2)))
-    alphay = np.empty((nosteps, int(nopfft/2)))
-    alphasin2y = np.empty((nosteps, int(nopfft/2)))
-    alphacos2y = np.empty((nosteps, int(nopfft/2)))
-    alphasin3y = np.empty((nosteps, int(nopfft/2)))
-    alphacos3y = np.empty((nosteps, int(nopfft/2)))
-    alphaz = np.empty((nosteps, int(nopfft/2)))
-    alphasin2z = np.empty((nosteps, int(nopfft/2)))
-    alphacos2z = np.empty((nosteps, int(nopfft/2)))
-    alphasin3z = np.empty((nosteps, int(nopfft/2)))
-    alphacos3z = np.empty((nosteps, int(nopfft/2)))
-    lambdau = np.empty((nosteps, int(nopfft/2), 3, 3), dtype=complex)
-    lambday = np.empty((nosteps, int(nopfft/2), 3, 3), dtype=complex)
-    lambdaurot = np.empty((nosteps, int(nopfft/2), 2), dtype=complex)
+    helicity = np.full((nosteps, int(nopfft/2), 3), empty_initializer)
+    ellip = np.full((nosteps, int(nopfft/2), 3), empty_initializer)
+    alphax = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphasin2x = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphacos2x = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphasin3x = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphacos3x = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphay = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphasin2y = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphacos2y = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphasin3y = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphacos3y = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphaz = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphasin2z = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphacos2z = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphasin3z = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    alphacos3z = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    lambdau = np.full((nosteps, int(nopfft/2), 3, 3), empty_initializer, dtype=complex)
+    lambday = np.full((nosteps, int(nopfft/2), 3, 3), empty_initializer,dtype=complex)
+    lambdaurot = np.full((nosteps, int(nopfft/2), 2), empty_initializer, dtype=complex)
 
     alphax[KK, :] = np.sqrt(ematspec[KK, :, 0, 0])
     alphacos2x[KK, :] = (np.real(ematspec[KK, :, 0, 1]) /
@@ -393,37 +395,37 @@ def wavpol(ct, bx, by, bz,
     KK = 0
 
     # Create empty arrays
-    specx = np.empty((nosteps, nopfft), dtype=complex)
-    specy = np.empty((nosteps, nopfft), dtype=complex)
-    specz = np.empty((nosteps, nopfft), dtype=complex)
-    halfspecx = np.empty((nosteps, int(nopfft/2)), dtype=complex)
-    halfspecy = np.empty((nosteps, int(nopfft/2)), dtype=complex)
-    halfspecz = np.empty((nosteps, int(nopfft/2)), dtype=complex)
-    matspec = np.empty((nosteps, int(nopfft/2), 3, 3), dtype=complex)
-    ematspec = np.empty((nosteps, int(nopfft/2), 3, 3), dtype=complex)
-    aaa2 = np.empty((nosteps, int(nopfft/2)))
-    wnx = np.empty((nosteps, int(nopfft/2)))
-    wny = np.empty((nosteps, int(nopfft/2)))
-    wnz = np.empty((nosteps, int(nopfft/2)))
-    waveangle = np.empty((nosteps, int(nopfft/2)))
-    matsqrd = np.empty((nosteps, int(nopfft/2), 3, 3), dtype=complex)
-    trmatsqrd = np.empty((nosteps, int(nopfft/2)))
-    trmatspec = np.empty((nosteps, int(nopfft/2)))
-    degpol = np.empty((nosteps, int(nopfft/2)))
-    xrmatspec = np.empty((nosteps, int(nopfft/2)))
-    yrmatspec = np.empty((nosteps, int(nopfft/2)))
-    zrmatspec = np.empty((nosteps, int(nopfft/2)))
+    specx = np.full((nosteps, nopfft), empty_initializer, dtype=complex)
+    specy = np.full((nosteps, nopfft), empty_initializer,  dtype=complex)
+    specz = np.full((nosteps, nopfft), empty_initializer,  dtype=complex)
+    halfspecx = np.full((nosteps, int(nopfft/2)), empty_initializer,  dtype=complex)
+    halfspecy = np.full((nosteps, int(nopfft/2)), empty_initializer,  dtype=complex)
+    halfspecz = np.full((nosteps, int(nopfft/2)), empty_initializer,  dtype=complex)
+    matspec = np.full((nosteps, int(nopfft/2), 3, 3), empty_initializer,  dtype=complex)
+    ematspec = np.full((nosteps, int(nopfft/2), 3, 3), empty_initializer,  dtype=complex)
+    aaa2 = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    wnx = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    wny = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    wnz = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    waveangle = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    matsqrd = np.full((nosteps, int(nopfft/2), 3, 3), empty_initializer, dtype=complex)
+    trmatsqrd = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    trmatspec = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    degpol = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    xrmatspec = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    yrmatspec = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    zrmatspec = np.full((nosteps, int(nopfft/2)), empty_initializer)
 
     # Return arrays.
-    timeline = np.empty((nosteps))
+    timeline = np.full((nosteps), empty_initializer)
     freqline = ''
-    helict = np.empty((nosteps, int(nopfft/2)))
-    elliptict = np.empty((nosteps, int(nopfft/2)))
-    powspec = np.empty((nosteps, int(nopfft/2)))
-    pspecx = np.empty((nosteps, int(nopfft/2)))
-    pspecy = np.empty((nosteps, int(nopfft/2)))
-    pspecz = np.empty((nosteps, int(nopfft/2)))
-    pspec3 = np.empty((nosteps, int(nopfft/2), 3))
+    helict = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    elliptict = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    powspec = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    pspecx = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    pspecy = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    pspecz = np.full((nosteps, int(nopfft/2)), empty_initializer)
+    pspec3 = np.full((nosteps, int(nopfft/2), 3), empty_initializer)
 
     for batch in range(n_batches):
         ind1 = errs[batch]+1
