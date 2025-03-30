@@ -97,10 +97,13 @@ def get_ref_xgse(N):
     return x_axis
 
 
-def get_ref_ygsm(N):
-    y_axis = np.zeros((N, 3))
+def get_ref_ygsm(pos_data, mag):
+    magdat = get_data(mag)
+    y_axis = np.zeros((len(magdat.times), 3))
     y_axis[:, 1] = 1
-    return y_axis
+    mag_coord = get_coords(mag).lower()
+    arr = cotrans(data_in=y_axis, time_in = magdat.times, coord_in='gsm', coord_out=mag_coord)
+    return arr
 
 
 def get_ref_rgeo(pos_data, mag_var_name, sign=1):
@@ -116,8 +119,18 @@ def get_ref_phi(pos_data, mag_var_name, sign=1):
     arr[:, 0] = -np.sin(np.radians(phi_deg)) * sign
     arr[:, 1] = np.cos(np.radians(phi_deg)) * sign
     arr[:, 2] = 0.0
-
     arr = pos_cotrans(pos_data.times, arr, mag_var_name)
+    return arr
+
+def get_ref_phi_sm(pos_data, mag_var_name, sign=1):
+    polar = xyz_to_polar(pos_data.y)
+    phi_deg = polar[:, 2]
+    arr = np.empty_like(pos_data.y)
+    arr[:, 0] = -np.sin(np.radians(phi_deg)) * sign
+    arr[:, 1] = np.cos(np.radians(phi_deg)) * sign
+    arr[:, 2] = 0.0
+    arr_gei = cotrans(data_in=arr, time_in=pos_data.times, coord_in='sm', coord_out='gei')
+    arr = pos_cotrans(pos_data.times, arr_gei, mag_var_name)
     return arr
 
 # === Dictionary Mapping Option Strings to Functions ===
@@ -127,9 +140,9 @@ COORD_FUNCTIONS = {
     "mrgeo": {"mode": "yxz", "ref": lambda mag, pos: get_ref_rgeo(pos, mag, -1)},
     "phigeo": {"mode": "xyz", "ref": lambda mag, pos: get_ref_phi(pos, mag,  1)},
     "mphigeo": {"mode": "xyz", "ref": lambda mag, pos: get_ref_phi(pos, mag, -1)},
-    "phism": {"mode": "xyz", "ref": lambda mag, pos: get_ref_phi(pos, mag,  1)},
-    "mphism": {"mode": "xyz", "ref": lambda mag, pos: get_ref_phi(pos, mag, -1)},
-    "ygsm": {"mode": "xyz", "ref": lambda mag, pos: get_ref_ygsm(len(get_data(mag).times))}
+    "phism": {"mode": "xyz", "ref": lambda mag, pos: get_ref_phi_sm(pos, mag,  1)},
+    "mphism": {"mode": "xyz", "ref": lambda mag, pos: get_ref_phi_sm(pos, mag, -1)},
+    "ygsm": {"mode": "xyz", "ref": lambda mag, pos: get_ref_ygsm(pos, mag)}
 }
 
 # === Main Interface ===
