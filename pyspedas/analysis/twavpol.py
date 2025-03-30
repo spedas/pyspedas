@@ -728,6 +728,9 @@ def twavpol(tvarname, prefix='', nopfft=-1, steplength=-1, bin_freq=-1):
     vt = prefix+'_helict'
     store_data(vt, data={'x': timeline, 'y': helict, 'v': freqline})
     options(vt, 'spec', 1)
+    vt = prefix + '_pspec3'
+    store_data(vt, data={'x': timeline, 'y': pspec3, 'v': freqline})
+    options(vt, 'spec', 1)
 
     # Take the three components of pspec3.
     vt = prefix+'_pspec3_x'
