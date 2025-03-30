@@ -66,6 +66,7 @@ Minimum Variance (MVA) Coordinates
 LMN Coordinates
 ---------------
 
+.. autofunction:: pyspedas.lmn_matrix_make
 .. autofunction:: pyspedas.gsm2lmn
 
 Rotate Vectors by Rotation Matrix
