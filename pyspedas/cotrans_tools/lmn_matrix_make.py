@@ -1,6 +1,7 @@
 import logging
 import numpy as np
-from pyspedas import gsm2lmn, get_data, store_data, set_coords
+from .gsm2lmn import gsm2lmn
+from pytplot import get_data, store_data, set_coords
 
 def lmn_matrix_make(mag_var_name, pos_var_name, swdata=None, swdata_var_name=None, newname=None):
     """

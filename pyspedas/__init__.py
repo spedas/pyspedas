@@ -23,7 +23,7 @@ from .cotrans_tools.spc2cart import spc2cart
 from .cotrans_tools.sm2mlt import sm2mlt
 from .cotrans_tools.fac_matrix_make import fac_matrix_make
 from .cotrans_tools.gsm2lmn import gsm2lmn
-from .cotrans_tools.lmn_matrx_make import lmn_matrx_make
+from .cotrans_tools.lmn_matrix_make import lmn_matrix_make
 from .cotrans_tools.minvar import minvar
 from .cotrans_tools.minvar_matrix_make import minvar_matrix_make
 from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq, qnormalize
