@@ -16,25 +16,16 @@ class TwavpolDataValidation(unittest.TestCase):
     def setUpClass(cls):
         """
         IDL Data has to be downloaded to perform these tests
-        The SPEDAS script that creates the file: projects/themis/state/cotrans/thm_cotrans_validate.pro
+        The SPEDAS script that creates the file: general/science/wavpol/python_wavpol_validate.pro
         """
         from pyspedas.utilities.download import download
         from pyspedas.projects.themis.config import CONFIG
-
-        # Numpy diagnostic info
-        print("Numpy pocketfft:")
-        print(np.fft._pocketfft)
-        print("Numpy config:")
-        print(np.__config__.show())
-        print("Numpy CPU features:")
-        print(np._core._multiarray_umath.__cpu_features__)
 
         # Testing tolerance
         cls.tol = 1e-10
 
         # Download tplot files
         remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
-        # remote_name = 'testfiles/thm_cotrans_validate.cdf'
         remote_name = 'analysis_tools/thc_twavpol_validate.tplot'
         datafile = download(remote_file=remote_name,
                             remote_path=remote_server,
@@ -61,6 +52,7 @@ class TwavpolDataValidation(unittest.TestCase):
         cls.thc_scf_fac_waveangle = pyspedas.get_data('thc_scf_fac_waveangle')
         cls.thc_scf_fac_elliptict = pyspedas.get_data('thc_scf_fac_elliptict')
         cls.thc_scf_fac_helict = pyspedas.get_data('thc_scf_fac_helict')
+        cls.thc_scf_fac_pspec3 = pyspedas.get_data('thc_scf_fac_pspec3')
 
         tplot_copy('thc_scf_fac', 'idl_thc_scf_fac')
         tplot_rename('thc_scf_fac_powspec', 'idl_thc_scf_fac_powspec')
@@ -68,6 +60,7 @@ class TwavpolDataValidation(unittest.TestCase):
         tplot_rename('thc_scf_fac_waveangle', 'idl_thc_scf_fac_waveangle')
         tplot_rename('thc_scf_fac_elliptict', 'idl_thc_scf_fac_elliptict')
         tplot_rename('thc_scf_fac_helict', 'idl_thc_scf_fac_helict')
+        tplot_rename('thc_scf_fac_pspec3', 'idl_thc_scf_fac_pspec3')
 
         twavpol('thc_scf_fac')
 
@@ -76,6 +69,19 @@ class TwavpolDataValidation(unittest.TestCase):
     def setUp(self):
         """ We need to clean tplot variables before each run"""
         # pyspedas.del_data('*')
+
+    def test_multiple_twavpol_call(self):
+        """ Validate twavpol power spectrum output between two calls with the same input """
+
+        twavpol('thc_scf_fac')
+        before_py_powspec = get_data('thc_scf_fac_powspec')
+        twavpol('thc_scf_fac')
+        after_py_powspec = get_data('thc_scf_fac_powspec')
+        assert_allclose(before_py_powspec.y, after_py_powspec.y)
+        logging.info("nanmin/nanmax of powspec: %f %f ",np.nanmin(after_py_powspec.y),np.nanmax(after_py_powspec.y))
+        assert_allclose(after_py_powspec.times,self.thc_scf_fac_powspec.times,atol=1.0e-06)
+        assert_allclose(after_py_powspec.y, self.thc_scf_fac_powspec.y, atol=1.0e-06,rtol=1.0e-06)
+        tplot(['thc_scf_fac_powspec', 'idl_thc_scf_fac_powspec'] ,display=global_display, save_png='powspec.png' )
 
     def test_powspec(self):
         """ Validate twavpol power spectrum output """
@@ -122,6 +128,28 @@ class TwavpolDataValidation(unittest.TestCase):
         assert_allclose(py_helict.times,self.thc_scf_fac_helict.times,atol=1.0e-06)
         assert_allclose(py_helict.y, self.thc_scf_fac_helict.y, atol=1.0e-06,rtol=1.0e-06)
         tplot(['thc_scf_fac_helict', 'idl_thc_scf_fac_helict'] ,display=global_display, save_png='helict.png' )
+
+    def test_pspec3(self):
+        """ Validate twavpol pspec3 output """
+
+        py_pspec3 = pyspedas.get_data('thc_scf_fac_pspec3')
+        logging.info("nanmin/nanmax of pspec3: %f %f ",np.nanmin(py_pspec3.y),np.nanmax(py_pspec3.y))
+        assert_allclose(py_pspec3.times,self.thc_scf_fac_pspec3.times,atol=1.0e-06)
+        assert_allclose(py_pspec3.y, self.thc_scf_fac_pspec3.y, atol=1.0e-06,rtol=1.0e-06)
+        tplot(['thc_scf_fac_pspec3', 'idl_thc_scf_fac_pspec3', 'thc_scf_fac_pspec3*'] ,display=global_display, save_png='pspec3.png' )
+
+    @unittest.skip('skipping, work in progress')
+    def test_mms_scm(self):
+        #achDate = ['2015-09-19/10:07:00', '2015-09-19/10:07:12']
+        achDate = ['2015-09-19/10:06:00', '2015-09-19/10:09:00']
+        SCMbrst_vars = pyspedas.projects.mms.scm(probe=4, data_rate='brst', trange=achDate, time_clip=True)
+        # SCM burst sampling rate = 8192/inputs as done in example tutorial
+        nopfft_input = 8192  # number of points for FFT
+        steplength_input = nopfft_input / 2  # number of points for shifting between 2 FFT
+        bin_freq_input = 3  # number of bins for frequency averaging
+        pyspedas.twavpol('mms4_scm_acb_gse_scb_brst_l2', nopfft=nopfft_input, steplength=steplength_input,
+                         bin_freq=bin_freq_input)
+        tplot(['mms4*scb_brst_l2','mms4*powspec*','mms4*degpol*','mms4*elliptc', 'mms4*helict','mms4*angle'], display=global_display, save_png='mms_scm_burst.png')
 
 
 if __name__ == '__main__':
