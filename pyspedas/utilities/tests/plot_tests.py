@@ -588,6 +588,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2022-12-12',1,'days')
         tplot_options('title', 'Parker Solar Probe E_flux')
         tplot('E_Flux',display=global_display, save_png='psp_E_Flux')
+        tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_save_with_plot_objects(self):
@@ -601,6 +602,7 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', 'Should create ret_plot_objs.png ')
         tplot('tha_pos',display=global_display,return_plot_objects=True, save_png='ret_plot_objs.png')
         self.assertTrue(os.path.exists('ret_plot_objs.png'))
+        tplot_options('title', '')
 
     def test_erg_tplot_vlabels(self):
         # Test alternate varlabel implementation from Tomo Hori
@@ -628,6 +630,7 @@ class PlotTestCases(unittest.TestCase):
         from pytplot import tplot_vl
         fig = tplot_vl(plot_vars, var_label=var_label, display=global_display, save_png='erg_varlabel.png')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        tplot_options('title', '')
 
     def test_original_tplot_vlabels(self):
         # Test alternate varlabel implementation from Tomo Hori
@@ -655,6 +658,7 @@ class PlotTestCases(unittest.TestCase):
         from pytplot import tplot_vl
         tplot(plot_vars, var_label=var_label, display=global_display, save_png='original_varlabel.png')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        tplot_options('title', '')
 
     def test_tplot_vlabels_extra_panel(self):
         # Test alternate varlabel implementation from Tomo Hori
@@ -683,6 +687,7 @@ class PlotTestCases(unittest.TestCase):
         tplot(plot_vars, var_label=var_label, display=global_display, save_png='varlabel_extra_panel.png')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('varlabel_style', None)
+        tplot_options('title', '')
 
     def test_tplot_trange(self):
         del_data("*")
@@ -696,6 +701,7 @@ class PlotTestCases(unittest.TestCase):
         tplot('the_fgs_dsl',display=global_display, save_png='xlim_am.png')
         tplot_options('title', 'Xlim set to 00:00 to 12:00, overriding with trange from 10:00 to 12:00')
         tplot('the_fgs_dsl', trange=['2007-03-23/10:00', '2007-03-23/12:00:00'], display=global_display, save_png='xlim_am_trange_override.png')
+        tplot_options('title', '')
 
 if __name__ == '__main__':
     unittest.main()
