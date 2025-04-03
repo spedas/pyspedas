@@ -1,7 +1,6 @@
 import unittest
 from pyspedas import CDAWeb
 from pytplot import data_exists, del_data, get_data, time_double, tplot_names, tplot
-import re
 
 
 class CDAWebTests(unittest.TestCase):
@@ -24,7 +23,7 @@ class CDAWebTests(unittest.TestCase):
         cdaweb_obj = CDAWeb()
         urllist = cdaweb_obj.get_filenames(['VOYAGER2_2S_MAG (1977-08-24 to 1991-01-01)'],
                                            "1979-01-11", "1979-01-12")
-        self.assertTrue(any([re.match(item, ".*voyager2_2s_mag_19790111_v01.cdf") for item in urllist]))
+        self.assertTrue(any(["voyager2_2s_mag_19790111_v01.cdf" in item for item in urllist]))
 
     def test_load_merge(self):
         del_data('*')
@@ -99,17 +98,25 @@ class CDAWebTests(unittest.TestCase):
         del_data('*')
         cdaweb_obj = CDAWeb()
 
-        dataset = 'NEW_HORIZONS_SWAP_VALIDSUM (2008-10-10 to 2023-07-31)'
-        start_time = '2014-10-10 00:00:00'
-        end_time = '2014-11-10 00:00:00'
+        ds_list = cdaweb_obj.get_datasets(['THEMIS'], ['Magnetic Fields (space)'])
+
+        # End date of THEMIS mag data is continuously updated, so we have to search the available datesets
+        # rather than hardcoding it
+
+        dataset = next((item for item in ds_list if 'THA_L2_FIT' in item), None)
+
+        self.assertTrue(dataset is not None)
+
+        start_time = '2010-01-01 00:00:00'
+        end_time = '2010-01-01 12:00:00'
 
         # Get the URLs for the available data in this time range
         urllist = cdaweb_obj.get_filenames([dataset], start_time, end_time)
-        cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='nh_', trange=[start_time, end_time], time_clip=True)
+        cdaweb_obj.cda_download(urllist, "cdaweb/", trange=[start_time, end_time], time_clip=True)
 
         # Verify that the times were clipped
         # Note that tplot variables with no data in the requested interval will NOT be clipped (deleted).
-        dat = get_data('nh_n')
+        dat = get_data('tha_fgs_dsl')
         self.assertTrue(dat.times[0] >= time_double(start_time))
         self.assertTrue(dat.times[-1] <= time_double(end_time))
 
@@ -117,14 +124,22 @@ class CDAWebTests(unittest.TestCase):
         del_data('*')
         cdaweb_obj = CDAWeb()
 
-        dataset = 'NEW_HORIZONS_SWAP_VALIDSUM (2008-10-10 to 2023-07-31)'
-        start_time = '2014-10-10 00:00:00'
-        end_time = '2014-11-10 00:00:00'
+        ds_list = cdaweb_obj.get_datasets(['THEMIS'], ['Magnetic Fields (space)'])
+
+        # End date of THEMIS mag data is continuously updated, so we have to search the available datesets
+        # rather than hardcoding it
+
+        dataset = next((item for item in ds_list if 'THA_L2_FIT' in item), None)
+
+        self.assertTrue(dataset is not None)
+
+        start_time = '2010-01-01 00:00:00'
+        end_time = '2010-01-01 12:00:00'
 
         # Get the URLs for the available data in this time range
         urllist = cdaweb_obj.get_filenames([dataset], start_time, end_time)
         with self.assertLogs(level='WARNING') as logs:
-            cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='nh_', time_clip=True)
+            cdaweb_obj.cda_download(urllist, "cdaweb/", time_clip=True)
         got_trange_warning = False
         for o in logs.output:
             if "No trange specified" in o:
@@ -135,14 +150,22 @@ class CDAWebTests(unittest.TestCase):
         del_data('*')
         cdaweb_obj = CDAWeb()
 
-        dataset = 'NEW_HORIZONS_SWAP_VALIDSUM (2008-10-10 to 2023-07-31)'
-        start_time = '2014-10-10 00:00:00'
-        end_time = '2014-11-10 00:00:00'
+        ds_list = cdaweb_obj.get_datasets(['THEMIS'], ['Magnetic Fields (space)'])
+
+        # End date of THEMIS mag data is continuously updated, so we have to search the available datesets
+        # rather than hardcoding it
+
+        dataset = next((item for item in ds_list if 'THA_L2_FIT' in item), None)
+
+        self.assertTrue(dataset is not None)
+
+        start_time = '2010-01-01 00:00:00'
+        end_time = '2010-01-01 12:00:00'
 
         # Get the URLs for the available data in this time range
         urllist = cdaweb_obj.get_filenames([dataset], start_time, end_time)
         with self.assertLogs(level='WARNING') as logs:
-            cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='nh_', trange=[start_time, start_time],  time_clip=True)
+            cdaweb_obj.cda_download(urllist, "cdaweb/", trange=[start_time, start_time],  time_clip=True)
         got_trange_warning = False
         for o in logs.output:
             if "equal" in o:
@@ -153,14 +176,22 @@ class CDAWebTests(unittest.TestCase):
         del_data('*')
         cdaweb_obj = CDAWeb()
 
-        dataset = 'NEW_HORIZONS_SWAP_VALIDSUM (2008-10-10 to 2023-07-31)'
-        start_time = '2014-10-10 00:00:00'
-        end_time = '2014-11-10 00:00:00'
+        ds_list = cdaweb_obj.get_datasets(['THEMIS'], ['Magnetic Fields (space)'])
+
+        # End date of THEMIS mag data is continuously updated, so we have to search the available datesets
+        # rather than hardcoding it
+
+        dataset = next((item for item in ds_list if 'THA_L2_FIT' in item), None)
+
+        self.assertTrue(dataset is not None)
+
+        start_time = '2010-01-01 00:00:00'
+        end_time = '2010-01-01 12:00:00'
 
         # Get the URLs for the available data in this time range
         urllist = cdaweb_obj.get_filenames([dataset], start_time, end_time)
         with self.assertLogs(level='WARNING') as logs:
-            cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='nh_', trange=[end_time, start_time],  time_clip=True)
+            cdaweb_obj.cda_download(urllist, "cdaweb/", trange=[end_time, start_time],  time_clip=True)
         got_trange_warning = False
         for o in logs.output:
             if "out of order" in o:
