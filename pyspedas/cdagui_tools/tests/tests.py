@@ -45,8 +45,8 @@ class CDAWebTests(unittest.TestCase):
 
         cdaweb_obj.cda_download(urllist, "cdaweb/", prefix='v2_')
         dat = get_data('v2_protonDensity')
-        # Files are monthly; we should have almost a year of data.
-        self.assertTrue((dat.times[-1] - dat.times[0])/86400.0 > 300)
+        # Files are monthly; we should have over a year of data.
+        self.assertTrue((dat.times[-1] - dat.times[0])/86400.0 > 395.0)
 
     def test_load_icon_netcdf(self):
         del_data('*')
