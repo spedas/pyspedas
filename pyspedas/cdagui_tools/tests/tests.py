@@ -1,6 +1,7 @@
 import unittest
 from pyspedas import CDAWeb
 from pytplot import data_exists, del_data, get_data, time_double, tplot_names, tplot
+import re
 
 
 class CDAWebTests(unittest.TestCase):
@@ -23,7 +24,7 @@ class CDAWebTests(unittest.TestCase):
         cdaweb_obj = CDAWeb()
         urllist = cdaweb_obj.get_filenames(['VOYAGER2_2S_MAG (1977-08-24 to 1991-01-01)'],
                                            "1979-01-11", "1979-01-12")
-        self.assertTrue('https://cdaweb.gsfc.nasa.gov/sp_phys/data/voyager/voyager2/magnetic_fields_cdaweb/mag_2s/1979/voyager2_2s_mag_19790111_v01.cdf' in urllist)
+        self.assertTrue(any([re.match(item, ".*voyager2_2s_mag_19790111_v01.cdf") for item in urllist]))
 
     def test_load_merge(self):
         del_data('*')
