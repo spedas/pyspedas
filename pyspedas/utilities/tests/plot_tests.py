@@ -184,6 +184,40 @@ class PlotTestCases(unittest.TestCase):
         options('thc_fgs_dsl', 'y_minor_tick_interval', 1250)
         tplot_options('title', 'Manual major and minor ticks, every 2500/1250 nT from -7500 to 25000')
         tplot('thc_fgs_dsl',save_png='ticks_major_every2500_minor1250.png',display=global_display)
+
+        tplot_options('title', 'Y tick options: length 20, tick color green, width 5, labelcolor green, direction inout')
+        options('thc_fgs_gse', 'ytick_length', 20)
+        options('thc_fgs_gse', 'ytick_color', 'green')
+        options('thc_fgs_gse', 'ytick_width', 5)
+        options('thc_fgs_gse', 'ytick_direction', 'inout')
+        options('thc_fgs_gse', 'ytick_labelcolor', 'green')
+        tplot('thc_fgs_gse',save_png='ytick_multi_options.png',display=global_display)
+
+        options('thc_fgs_gse', 'ytick_length', None)
+        options('thc_fgs_gse', 'ytick_color', None)
+        options('thc_fgs_gse', 'ytick_width', None)
+        options('thc_fgs_gse', 'ytick_direction', None)
+        options('thc_fgs_gse', 'ytick_labelcolor', None)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        tplot_options('title','')
+
+    def test_xtick_options(self):
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
+
+        tplot_options('title', 'X tick options: length 20, tick color green, width 5, labelcolor green, direction inout')
+        options('thc_fgs_gse', 'xtick_length', 20)
+        options('thc_fgs_gse', 'xtick_color', 'green')
+        options('thc_fgs_gse', 'xtick_width', 5)
+        options('thc_fgs_gse', 'xtick_direction', 'inout')
+        options('thc_fgs_gse', 'xtick_labelcolor', 'green')
+        tplot('thc_fgs_gse',save_png='xtick_multi_options.png',display=global_display)
+        options('thc_fgs_gse', 'xtick_length', None)
+        options('thc_fgs_gse', 'xtick_color', None)
+        options('thc_fgs_gse', 'xtick_width', None)
+        options('thc_fgs_gse', 'xtick_direction', None)
+        options('thc_fgs_gse', 'xtick_labelcolor', None)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('title','')
 
@@ -685,9 +719,14 @@ class PlotTestCases(unittest.TestCase):
 
         from pytplot import tplot_vl
         tplot(plot_vars, var_label=var_label, display=global_display, save_png='varlabel_extra_panel.png')
+
+        options(var_label, 'var_label_format', '{:.1f}')
+        tplot_options('title', 'Var labels should all have 1 digit after the decimal point')
+        tplot(plot_vars, var_label=var_label, display=global_display, save_png='varlabel_extra_panel_single_decimal.png')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('varlabel_style', None)
         tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_tplot_trange(self):
         del_data("*")
