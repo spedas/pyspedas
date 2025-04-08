@@ -41,7 +41,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         line_width              flt          Sets plot line width.
         line_style              str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
         border                  bool         Turns on or off the top/right axes that would create a box around the plot.
-        var_label_ticks         int          Sets the number of ticks if this variable is displayed as an alternative x axis.
+        var_label_format        str          The format of the tick labels if this variable is displayed as an alternative x axis. Default: {:.2f}
         char_size               int          Defines character size for plot labels, etc.
         right_axis              bool         If true,display a second Y axis on the right side of the plot.
         second_axis_size        numeric      The size of the second axis to display
@@ -78,7 +78,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         xtick_width             numeric      The width of the x tick marks
         xtick_color             str          The color of the x tick marks
         xtick_labelcolor        str          The color of the x tick marks
-        xtick_direction         numeric      The direction of the x tick marks
+        xtick_direction         str          The direction of the x tick marks (in, out, inout)
         ======================  ===========  ===========================================================================================================================
 
 
@@ -94,7 +94,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         ytick_width             numeric      The width of the Y tick marks
         ytick_color             str          The color of the Y tick marks
         ytick_labelcolor        str          The color of the Y tick marks
-        ytick_direction         numeric      The direction of the Y tick marks
+        ytick_direction         str          The direction of the Y tick marks (in, out, inout)
         y_major_ticks           [numeric]    A list of values that will be used to set the major ticks on the Y axis.
         y_minor_tick_interval   numeric      The interval between minor ticks on the Y axis.
         ======================  ===========  ===========================================================================================================================
@@ -179,6 +179,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         z_range                 zrange
         data_gap                datagap
         spec_dim_to_plot        spec_plot_dim
+        var_label_format        varlabel_format
         ======================  ======================================================================================================================================
 
 
@@ -390,6 +391,9 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
 
             elif option in ['char_size', 'charsize']:
                 pytplot.data_quants[i].attrs['plot_options']['extras']['char_size'] = value
+
+            elif option in ['var_label_format', 'varlabel_format']:
+                pytplot.data_quants[i].attrs['plot_options']['extras']['var_label_format'] = value
 
             elif option in ['name', 'title']:
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['title'] = value
