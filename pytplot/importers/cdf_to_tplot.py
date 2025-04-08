@@ -516,6 +516,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             #
                             # The situation is further complicated by the fact that cdflib seems to introduce
                             # extra leading or trailing dimensions on string-valued variables.
+                            #
+                            # As of cdflib version 1.3.3, it seems the issue has been corrected.  I will leave
+                            # the test and warning enabled, in case of a regression later.  JWL 2025-04-04
+                            #
                             if depend_1 is not None and depend_1.dtype.type is np.str_:
                                 # Get the original array dimensions from the variable properties
                                 dp_props = master_cdf_file.varinq(dep_name)
@@ -524,6 +528,8 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 else:
                                     orig_dimensions = dp_props['Dim_Sizes']
                                 reshape_dim = tuple(orig_dimensions)
+                                if depend_1.shape != reshape_dim:
+                                    logging.warning('Cdflib returned dimensions %s which do not match original dimensions %s. Reshaping to original dimensions.  This may be fixed by updating to a more recent version of cdflib.', depend_1.shape, reshape_dim)
                                 depend_1 = np.reshape(depend_1, reshape_dim)
                                 #depend_1 = None
                                 pass
