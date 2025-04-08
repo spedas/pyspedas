@@ -414,7 +414,7 @@ class SCMLoadTestCases(unittest.TestCase):
         tplot(['mms4_scm_acb_gse_scb_brst_l2',
                'mms4_scm_acb_gse_scb_brst_l2_x_dpwrspc',
                'mms4_scm_acb_gse_scb_brst_l2_y_dpwrspc',
-               'mms4_scm_acb_gse_scb_brst_l2_z_dpwrspc'], display=False)
+               'mms4_scm_acb_gse_scb_brst_l2_z_dpwrspc'], save_png='mms_scm_tdpwrspec.png',display=False)
 
     def test_load_default_data(self):
         data = mms_load_scm(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
