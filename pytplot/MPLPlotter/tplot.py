@@ -673,7 +673,7 @@ def tplot(variables,
             this_axis.tick_params(axis='y', width=plot_extras.get('ytick_width'))
 
         if plot_extras.get('xtick_labelcolor') is not None:
-            this_axis.tick_params(axis='y', labelcolor=plot_extras.get('xtick_labelcolor'))
+            this_axis.tick_params(axis='x', labelcolor=plot_extras.get('xtick_labelcolor'))
 
         if plot_extras.get('ytick_labelcolor') is not None:
             this_axis.tick_params(axis='y', labelcolor=plot_extras.get('ytick_labelcolor'))
@@ -1004,8 +1004,12 @@ def mouse_move_slice(event, slice_axes, slice_plot):
 
 def get_var_label_ticks(var_xr, times):
     out_ticks = []
+    extras = var_xr.attrs['plot_options']['extras']
+    var_label_format = extras.get('var_label_format')
+    if var_label_format is None:
+        var_label_format = '{:.2f}'
     for time in times:
-        out_ticks.append('{:.2f}'.format(var_xr.interp(coords={'time': time}, kwargs={'fill_value': 'extrapolate', 'bounds_error': False}).values))
+        out_ticks.append(var_label_format.format(var_xr.interp(coords={'time': time}, kwargs={'fill_value': 'extrapolate', 'bounds_error': False}).values))
     return out_ticks
 
 
