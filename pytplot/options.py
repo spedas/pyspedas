@@ -61,11 +61,11 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         legend_title            str          The title to display on the legend
         legend_titlesize        numeric      The font size of the legend title
         legend_color            [str]        The color of the legend names
-        legend_edgecolor        str          The edge color of markers displayed in the legend
-        legend_facecolor        str          The face color of markers displayed in the legend
-        legend_markerfirst      boolean      Put the marker to the left of the line in the legend
+        legend_edgecolor        str          The border color of the legend box
+        legend_facecolor        str          The background color of the legend box
+        legend_markerfirst      boolean      Put the marker and line to the left of the label in the legend
         legend_markerscale      numeric      The scale size of markers displayed in the legend
-        legend_markersize       numeric      The size of the markers displayed in the legend
+        legend_linewidth        numeric      The width of the lines displayed in the legend
         ======================  ===========  ===========================================================================================================================
 
         ======================  ===========  ===========================================================================================================================
@@ -164,7 +164,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         legend_facecolor        label_facecolor, labels_facecolor
         legend_markerfirst      label_markerfirst, labels_markerfirst
         legend_markerscale      label_markerscale, labels_markerscale
-        legend_markersize       label_markersize, labels_markersize
+        legend_linewidth        label_linewidth, labels_linewidth
         legend_frameon          label_frameon, labels_frameon
         legend_ncols            label_ncols, labels_ncols
         line_style_name         line_style, linestyle
@@ -320,8 +320,8 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option in ['legend_markerscale', 'label_markerscale', 'labels_markerscale']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
 
-            elif option in ['legend_markersize', 'label_markersize', 'labels_markersize']:
-                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markersize'] = value
+            elif option in ['legend_linewidth', 'label_linewidth', 'labels_linewidth']:
+                pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_linewidth'] = value
 
             elif option in ['legend_frameon', 'label_frameon', 'labels_frameon']:
                 pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_frameon'] = value

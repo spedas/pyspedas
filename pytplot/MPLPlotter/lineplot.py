@@ -85,7 +85,7 @@ def lineplot(var_data,
     legend_color = yaxis_options.get('legend_color')
     legend_markerfirst = yaxis_options.get('legend_markerfirst')
     legend_markerscale = yaxis_options.get('legend_markerscale')
-    legend_markersize = yaxis_options.get('legend_markersize')
+    legend_linewidth = yaxis_options.get('legend_linewidth')
     legend_edgecolor = yaxis_options.get('legend_edgecolor')
     legend_facecolor = yaxis_options.get('legend_facecolor')
     legend_frameon = yaxis_options.get('legend_frameon')
@@ -93,8 +93,8 @@ def lineplot(var_data,
     if legend_ncols is None:
         legend_ncols = 1
 
-    if legend_markersize is None:
-        legend_markersize = 4
+    if legend_linewidth is None:
+        legend_linewidth = 4
 
     if legend_size is None:
         legend_size = pytplot.tplot_opt_glob.get('charsize')
@@ -241,7 +241,7 @@ def lineplot(var_data,
         except AttributeError:
             handles = legend.legendHandles
         for legobj in handles:
-            legobj.set_linewidth(legend_markersize)
+            legobj.set_linewidth(legend_linewidth)
 
     return True
 
