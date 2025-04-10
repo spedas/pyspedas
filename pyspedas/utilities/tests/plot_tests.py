@@ -74,14 +74,18 @@ class PlotTestCases(unittest.TestCase):
         options('data', 'marker', 'X')
         options('data', 'line_style', 'solid')
         tplot_options('title', 'Line plot error bars and markers every 2 data points')
-        tplot('data', display=global_display, save_png='markevery_lineplot_errbars.png')
+        options('data', 'markevery', 2)
+        options('data', 'errorevery', 3)
+        options('data', 'marker', 'X')
+        options('data', 'line_style', 'solid')
+        tplot_options('title', 'Line plot error bars every 3 and markers every 2 data points')
+        tplot('data', display=global_display, save_png='markevery_errorevery_lineplot_errbars.png')
         options('data', 'marker', 'H')
         tplot_options('title', 'Line plot with error bars and hexagon markers')
         tplot('data', display=global_display, save_png='hexagons_lineplot_errbars.png')
         options('data', 'capsize', 10)
-        options('data', 'color', 'r')
+        options('data', 'ecolor', 'r')
         options('data','elinewidth', 5)
-        # This also changes the color of the connecting lines and markers, not necessarily what we want
         tplot_options('title', 'Line plot with red error bars and hexagon markers, capsize=10')
         tplot('data', display=global_display, save_png='hexagons_lineplot_errbars_cap10redwidth5.png')
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
@@ -100,7 +104,13 @@ class PlotTestCases(unittest.TestCase):
         tplot('data', display=global_display, save_png='title_titlesize.png')
         tplot_options('title_size', 12)
         tplot_options('title', '')
-        options('data', 'xtitle','There should be no main title displayed')
+        options('data', 'xtitle','There should be no main title displayed. char_size=20')
+        options('data', 'xsubtitle', 'this is an x subtitle')
+        options('data', 'xtitle_color','red')
+        options('data', 'ytitle','This is a ytitle')
+        options('data', 'ysubtitle', 'this is a y subtitle')
+        options('data', 'ytitle_color','green')
+        options('data', 'char_size',20)
         tplot('data', display=global_display, save_png='title_emptystring.png')
         tplot_options('title', None)
         options('data', 'xtitle','There should be no main title displayed')
@@ -184,6 +194,40 @@ class PlotTestCases(unittest.TestCase):
         options('thc_fgs_dsl', 'y_minor_tick_interval', 1250)
         tplot_options('title', 'Manual major and minor ticks, every 2500/1250 nT from -7500 to 25000')
         tplot('thc_fgs_dsl',save_png='ticks_major_every2500_minor1250.png',display=global_display)
+
+        tplot_options('title', 'Y tick options: length 20, tick color green, width 5, labelcolor green, direction inout')
+        options('thc_fgs_gse', 'ytick_length', 20)
+        options('thc_fgs_gse', 'ytick_color', 'green')
+        options('thc_fgs_gse', 'ytick_width', 5)
+        options('thc_fgs_gse', 'ytick_direction', 'inout')
+        options('thc_fgs_gse', 'ytick_labelcolor', 'green')
+        tplot('thc_fgs_gse',save_png='ytick_multi_options.png',display=global_display)
+
+        options('thc_fgs_gse', 'ytick_length', None)
+        options('thc_fgs_gse', 'ytick_color', None)
+        options('thc_fgs_gse', 'ytick_width', None)
+        options('thc_fgs_gse', 'ytick_direction', None)
+        options('thc_fgs_gse', 'ytick_labelcolor', None)
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+        tplot_options('title','')
+
+    def test_xtick_options(self):
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
+
+        tplot_options('title', 'X tick options: length 20, tick color green, width 5, labelcolor green, direction inout')
+        options('thc_fgs_gse', 'xtick_length', 20)
+        options('thc_fgs_gse', 'xtick_color', 'green')
+        options('thc_fgs_gse', 'xtick_width', 5)
+        options('thc_fgs_gse', 'xtick_direction', 'inout')
+        options('thc_fgs_gse', 'xtick_labelcolor', 'green')
+        tplot('thc_fgs_gse',save_png='xtick_multi_options.png',display=global_display)
+        options('thc_fgs_gse', 'xtick_length', None)
+        options('thc_fgs_gse', 'xtick_color', None)
+        options('thc_fgs_gse', 'xtick_width', None)
+        options('thc_fgs_gse', 'xtick_direction', None)
+        options('thc_fgs_gse', 'xtick_labelcolor', None)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('title','')
 
@@ -226,9 +270,19 @@ class PlotTestCases(unittest.TestCase):
     def test_legend(self):
         del_data("*")
         themis.fgm(probe='c',trange=default_trange)
+        options('thc_fgs_dsl', 'marker', 'x')
         options('thc_fgs_dsl','legend_names', ['X-DSL', 'Y-DSL', 'Z-DSL'])
         options('thc_fgs_dsl','legend_title', 'legend title')
+        options('thc_fgs_dsl','legend_titlesize', 20)
+        options('thc_fgs_dsl','legend_color', 'green')
+        options('thc_fgs_dsl','legend_edgecolor', 'blue')
+        options('thc_fgs_dsl','legend_facecolor', 'gray')
+        options('thc_fgs_dsl','legend_markerscale', 2)
+        options('thc_fgs_dsl','legend_markerfirst', True)
+        options('thc_fgs_dsl','legend_linewidth', 6)
+        options('thc_fgs_dsl','legend_ncols', 3)
         options('thc_fgs_dsl','legend_shadow', True)
+        options('thc_fgs_dsl', 'legend_frameon', True)
         options('thc_fgs_dsl', 'legend_location', 'spedas')
         tplot('thc_fgs_dsl', display=global_display, save_png='test_legend.png')
 
@@ -537,8 +591,13 @@ class PlotTestCases(unittest.TestCase):
         store_data('spec', data=['mms1_des_energyspectr_omni_fast', 'mms1_edp_scpot_fast_l2'])
         # Set some options so that the spectrum, trace, and y axes are legible
         options('mms1_edp_scpot_fast_l2', 'yrange', [10, 100])
+        options('mms1_edp_scpot_fast_l2', 'alpha', 0.5)
         #options('mms2_edp_scpot_fast_l2', 'right_axis', True)
         options('spec','right_axis','True')
+        options('mms1_des_energyspectr_omni_fast','ztitle', 'This is a ztitle')
+        options('mms1_des_energyspectr_omni_fast','zsubtitle', 'This is a z subtitle')
+        options('mms1_des_energyspectr_omni_fast', 'ztitle_color', 'green')
+        options('mms1_des_energyspectr_omni_fast', 'second_axis_size', 0.14)
         tplot_options('xmargin', [0.1, 0.2])
         timespan('2015-10-16',1,'days')
         tplot_options('title', 'Pseudovar with energy spectrum plus line plot of s/c potential, combined var has right_axis set\nTop: spec Middle: combined Bottom: line')
@@ -685,9 +744,14 @@ class PlotTestCases(unittest.TestCase):
 
         from pytplot import tplot_vl
         tplot(plot_vars, var_label=var_label, display=global_display, save_png='varlabel_extra_panel.png')
+
+        options(var_label, 'var_label_format', '{:.1f}')
+        tplot_options('title', 'Var labels should all have 1 digit after the decimal point')
+        tplot(plot_vars, var_label=var_label, display=global_display, save_png='varlabel_extra_panel_single_decimal.png')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('varlabel_style', None)
         tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_tplot_trange(self):
         del_data("*")

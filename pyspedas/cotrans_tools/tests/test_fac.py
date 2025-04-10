@@ -161,7 +161,6 @@ class TestFac(unittest.TestCase):
         assert_allclose(dat1.y, self.mat_rgeo_thm.y, atol=.002)
         assert_allclose(dat2.y, self.vec_rgeo_thm.y, atol=.002)
 
-    @unittest.skip('skipping, IDL results are probably wrong')
     def test_fac_phigeo(self):
         """Test of other_dim = phigeo"""
 
@@ -182,7 +181,6 @@ class TestFac(unittest.TestCase):
         assert_allclose(dat1.y, self.mat_phigeo_thm.y, atol=.002)
         assert_allclose(dat2.y, self.vec_phigeo_thm.y, atol=.002)
 
-    @unittest.skip('skipping, IDL results are probably wrong')
     def test_fac_mphigeo(self):
         """Test of other_dim = phigeo"""
 

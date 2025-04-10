@@ -211,20 +211,40 @@ class CDAWebTests(unittest.TestCase):
         # Create the CDAWeb interface object
         import pyspedas
         from pyspedas.cdagui_tools.config import CONFIG
+        # Save the URL settings from the current configuration
+        save_cdas_endpoint = CONFIG['cdas_endpoint']
+        save_remote_data_dir = CONFIG['remote_data_dir']
 
         # Replace the standard URLs with http rather than https and see if it still works
-        CONFIG['cdas_endpoint'] = 'http://cdaweb.gsfc.nasa.gov/WS/cdasr/1/dataviews/sp_phys/'
-        CONFIG['remote_data_dir'] = 'http://cdaweb.gsfc.nasa.gov/sp_phys/data'
-        cdaweb_obj = pyspedas.CDAWeb()
+        alternate_endpoint = 'http://cdaweb.gsfc.nasa.gov/WS/cdasr/1/dataviews/sp_phys/'
+        alternate_download_url = 'http://cdaweb.gsfc.nasa.gov/sp_phys/data'
+
+        CONFIG['cdas_endpoint'] = alternate_endpoint
+        CONFIG['remote_data_dir'] = alternate_download_url
 
         cdaweb_obj = pyspedas.CDAWeb()
 
-        time0 = '2021-01-15T14:05:52'
-        time1 = '2021-01-15T15:08:57'
+        # I'm not sure if it's possible to get the cdasws library to issue a log message with the endpoint URL that
+        # was actually used.  So we'll go ahead and peek at the internals, just to see if the object got initialized as expected.
+        endpoint_used = cdaweb_obj.cdas._endpoint
+
+        # Note that the time range is different from the other ICON test, to avoid tests interfering with each other
+        time0 = '2021-02-15T14:05:52'
+        time1 = '2021-02-15T15:08:57'
 
         urllist = cdaweb_obj.get_filenames(['ICON_L2-2_MIGHTI_VECTOR-WIND-GREEN (2019-12-06 to 2022-11-25)'], time0,
                                            time1)
         result = cdaweb_obj.cda_download(urllist, "cdaweb/")
+
+        # Restore prior configured URLs
+        CONFIG['cdas_endpoint'] = save_cdas_endpoint
+        CONFIG['remote_data_dir'] = save_remote_data_dir
+
+        # Check that the expected endpoint was used
+        self.assertEqual(endpoint_used, alternate_endpoint)
+        # Check that the expected download URL was used
+        self.assertTrue(alternate_download_url in urllist[0])
+        # Check that data was successfully loaded
         self.assertTrue(data_exists('ICON_L22_Fringe_Amplitude'))
 
 
