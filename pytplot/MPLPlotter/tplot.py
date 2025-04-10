@@ -573,6 +573,8 @@ def tplot(variables,
         else:
             xtitle_color = None
 
+        if xaxis_options.get('axis_color') is not None:
+            xtitle_color = xaxis_options['axis_color']
 
         ylog = yaxis_options['y_axis_type']
 
@@ -753,16 +755,12 @@ def tplot(variables,
         if pytplot.data_quants.get(variable) is None:
             continue
         plot_extras = pytplot.data_quants[variable].attrs['plot_options']['extras']
-
+        zaxis_options = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']
         if plot_extras.get('spec') is not None:
             spec = plot_extras['spec']
         else:
             spec = False
 
-        if plot_extras.get('colormap_width') is not None:
-            colormap_width = plot_extras['colormap_width']
-        else:
-            colormap_width = 0.02
 
         if spec and show_colorbar:
             if colorbars.get(variable) is None:
@@ -787,20 +785,6 @@ def tplot(variables,
 
             colorbar = fig.colorbar(colorbars[variable]['im'], ax=this_axis)
 
-            """
-            box = this_axis.get_position()
-            pad, width = 0.02, colormap_width
-            cax = fig.add_axes([box.xmax + pad + second_axis_size, box.ymin, width, box.height])
-            if colorbars[variable]['axis_font_size'] is not None:
-                cax.tick_params(labelsize=colorbars[variable]['axis_font_size'])
-            colorbar = fig.colorbar(colorbars[variable]['im'], cax=cax)
-            """
-            """
-            divider = make_axes_locatable(this_axis)
-            cax = divider.append_axes("right", size="5%", pad=0.1 + second_axis_size)
-            print("Adding colorbar for ",variable)
-            colorbar = fig.colorbar(colorbars[variable]['im'], cax=cax)
-            """
             if style is None:
                 ztitle_color = 'black'
             else:
