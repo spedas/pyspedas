@@ -122,7 +122,6 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         ======================  ===========  ===========================================================================================================================
         spec                    bool         Display this variable as a spectrogram.
         colormap                str/list     Color map to use for specplots https://matplotlib.org/examples/color/colormaps_reference.html.
-        colormap_width          numeric      The width of the specplot color bar
         z_range                 flt/list     Two numbers that give the z axis range of the plot. If a third argument is present, set linear or log scaling accordingly.
         zlog                    int          True sets the z axis to log scale, False reverts (spectrograms only).
         ztitle                  str          Title shown on the z axis. Spec plots only. Use backslash for new lines.
@@ -254,9 +253,6 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                     pytplot.data_quants[i].attrs['plot_options']['extras']['colormap'] = value
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['extras']['colormap'] = [value]
-
-            elif option == 'colormap_width':
-                pytplot.data_quants[i].attrs['plot_options']['extras']['colormap_width'] = value
 
             elif option == 'second_axis_size':
                 pytplot.data_quants[i].attrs['plot_options']['extras']['second_axis_size'] = value
