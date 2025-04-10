@@ -162,10 +162,9 @@ def magephem_ect(trange=["2018-11-5", "2018-11-6"], probe="a", cadence="1min", c
     - The data includes magnetic field line mapping parameters essential for radiation belt studies
     - Coordinate systems are based on different magnetic field models for various geomagnetic conditions
     """
-    from pytplot import time_clip as tclip
-
     from pyspedas.utilities.dailynames import dailynames
     from pyspedas.utilities.download import download
+    from pytplot import time_clip as tclip
 
     from .config import CONFIG_ECT
     from .magephem_read import magephem_read_h5, magephem_read_txt
@@ -201,9 +200,9 @@ def magephem_ect(trange=["2018-11-5", "2018-11-6"], probe="a", cadence="1min", c
 
         if not downloadonly:
             if filetype == "h5":
-                tvars_o = magephem_read_h5(sorted(files), varnames=varnames)
+                tvars_o = magephem_read_h5(sorted(files), varnames=varnames, notplot=notplot, prefix=prefix, suffix=suffix)
             elif filetype == "txt":
-                tvars_o = magephem_read_txt(sorted(files), varnames=varnames)
+                tvars_o = magephem_read_txt(sorted(files), varnames=varnames, notplot=notplot, prefix=prefix, suffix=suffix)
 
             if notplot:
                 tvars.update(tvars_o)
