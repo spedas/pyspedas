@@ -42,7 +42,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         line_style              str          scatter (to make scatter plots), or solid_line, dot, dash, dash_dot, dash_dot_dot_dot, long_dash.
         border                  bool         Turns on or off the top/right axes that would create a box around the plot.
         var_label_format        str          The format of the tick labels if this variable is displayed as an alternative x axis. Default: {:.2f}
-        char_size               int          Defines character size for plot labels, etc.
+        char_size               int          Defines character size for x/y/z titles and subtitles
         right_axis              bool         If true,display a second Y axis on the right side of the plot.
         second_axis_size        numeric      The size of the second axis to display
         data_gap                numeric      If there is a gap in the data larger than this number in seconds, then insert
@@ -167,7 +167,6 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         legend_frameon          label_frameon, labels_frameon
         legend_ncols            label_ncols, labels_ncols
         line_style_name         line_style, linestyle
-        visible                 nodata
         char_size               charsize
         marker                  markers
         marker_size             markersize
@@ -355,8 +354,11 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
 
-            elif option in ['nodata', 'visible']:
-                pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = value
+            elif option =='value':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = bool(value)
+
+            elif option =='nodata':
+                pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = not bool(value)
 
             # Obsolete? (except for value='none'?) JWL 2024-03-21
             # These don't seem to be the correct format for matplotlib parameterized line styles.
