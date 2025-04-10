@@ -181,21 +181,23 @@ def tplot_restore(filename):
             pytplot.data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
             pytplot.data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
         
-            for option_name in temp_tplot['tv'][0][0].dtype.names:
-                # the following should be set on the tplot variable, not for the entire session
-                #if option_name == 'TRANGE':
-                #    # x_range of [0, 0] causes tplot to create an empty figure
-                #    if temp_tplot['tv'][0][0][option_name][0][0] != 0 or temp_tplot['tv'][0][0][option_name][0][1] != 0:
-                #        tplot_options('x_range', temp_tplot['tv'][0][0][option_name][0])
-                if option_name == 'WSIZE':
-                    tplot_options('wsize', temp_tplot['tv'][0][0][option_name][0])
-                if option_name == 'VAR_LABEL':
-                    tplot_options('var_label', temp_tplot['tv'][0][0][option_name][0])
-            if 'P' in temp_tplot['tv'][0][1].tolist():
-                for option_name in temp_tplot['tv'][0][1]['P'][0].dtype.names:
-                    if option_name == 'TITLE':
-                        tplot_options('title', temp_tplot['tv'][0][1]['P'][0][option_name][0])
-
+            if not np.isscalar(temp_tplot['tv']): # Skip if it is a scalar
+                for option_name in temp_tplot['tv'][0][0].dtype.names:
+                    # the following should be set on the tplot variable, not for the entire session
+                    #if option_name == 'TRANGE':
+                    #    # x_range of [0, 0] causes tplot to create an empty figure
+                    #    if temp_tplot['tv'][0][0][option_name][0][0] != 0 or temp_tplot['tv'][0][0][option_name][0][1] != 0:
+                    #        tplot_options('x_range', temp_tplot['tv'][0][0][option_name][0])
+                    if option_name == 'WSIZE':
+                        tplot_options('wsize', temp_tplot['tv'][0][0][option_name][0])
+                    if option_name == 'VAR_LABEL':
+                        tplot_options('var_label', temp_tplot['tv'][0][0][option_name][0])
+                if 'P' in temp_tplot['tv'][0][1].tolist():
+                    for option_name in temp_tplot['tv'][0][1]['P'][0].dtype.names:
+                        if option_name == 'TITLE':
+                            tplot_options('title', temp_tplot['tv'][0][1]['P'][0][option_name][0])
+ 
+                
             # correct legend_names array
             plt_options = pytplot.data_quants[data_name].attrs['plot_options']
             yaxis_opts = plt_options.get('yaxis_opt')
