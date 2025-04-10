@@ -118,7 +118,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-testdata/
 build/
 develop-eggs/
 dist/
