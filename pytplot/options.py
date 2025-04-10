@@ -47,6 +47,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         second_axis_size        numeric      The size of the second axis to display
         data_gap                numeric      If there is a gap in the data larger than this number in seconds, then insert
         visible                 bool         If False, do not display lines for this variable.
+        nodata                  bool         If True, do not display lines for this variable.
         (cont)                  (cont)       NaNs. This is similar to using the degap procedure on the variable, but is
         (cont)                  (cont)       applied at plot-time, and does not persist in the variable data.
         ======================  ===========  ===========================================================================================================================
@@ -354,7 +355,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                 else:
                     pytplot.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
 
-            elif option =='value':
+            elif option =='visible':
                 pytplot.data_quants[i].attrs['plot_options']['line_opt']['visible'] = bool(value)
 
             elif option =='nodata':
