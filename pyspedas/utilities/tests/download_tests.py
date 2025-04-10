@@ -1,4 +1,3 @@
-
 import os
 import unittest
 
@@ -24,7 +23,7 @@ class DownloadTestCases(unittest.TestCase):
 
     def test_wildcard(self):
         # Test a wildcard pattern with several matches
-        files = download(remote_path='https://themis-data.igpp.ucla.edu/tha/l1/state/2008/tha_l1_state_20080323_v??.cdf')
+        files = download(remote_path="https://themis-data.igpp.ucla.edu/tha/l1/state/2008/tha_l1_state_20080323_v??.cdf", last_version=False)
         self.assertTrue(len(files) == 4)  # v00, v01, v02, v03 should be available on this date
         self.assertTrue(files[3] == os.path.join(os.getcwd(), 'tha_l1_state_20080323_v03.cdf'))
 
@@ -64,7 +63,6 @@ class DownloadTestCases(unittest.TestCase):
         self.assertTrue(len(files) == 1)
         self.assertTrue(files[0] == os.path.join('psp_data/spc/l3', 'psp_swp_spc_l3i_20190401_v01.cdf'))
 
-
     def test_force_download(self):
         # specifying both remote_path and remote_file saves the files to the current working directory + the path specified in remote_file
         files = download(remote_path='https://spdf.gsfc.nasa.gov/pub/data/', remote_file='themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf')
@@ -82,5 +80,6 @@ class DownloadTestCases(unittest.TestCase):
                              force_download=True)
             self.assertIn("Downloading", log.output[0])
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

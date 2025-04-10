@@ -145,9 +145,9 @@ class LoadTestCases(unittest.TestCase):
         magephem_ect_vars = pyspedas.projects.rbsp.magephem_ect(trange=["2018-11-05", "2018-11-08"], probe="a", cadence="1min", coord="op77q", filetype="txt")
         self.assertTrue(data_exists("Lsimple"))
         self.assertTrue(data_exists("Lm_eq"))
-        self.assertTrue(data_exists("CD_MLAT"))
-        self.assertTrue(data_exists("CD_MLON"))
-        self.assertTrue(data_exists("CD_MLT"))
+        self.assertTrue(data_exists("CDMAG_MLAT"))
+        self.assertTrue(data_exists("CDMAG_MLON"))
+        self.assertTrue(data_exists("CDMAG_MLT"))
 
     def test_load_magephem_ect_h5_data(self):
         del_data("*")
