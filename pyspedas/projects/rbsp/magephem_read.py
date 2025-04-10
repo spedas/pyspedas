@@ -761,7 +761,7 @@ def magephem_read_txt(out_files, varnames=None, notplot=False, prefix="", suffix
     for ifile, file in enumerate(out_files):
         start_line = getstartline(file)
         # Read the data using numpy
-        file_pd = pd.read_csv(file, skiprows=(start_line + 2), sep="\s+", header=None)
+        file_pd = pd.read_csv(file, skiprows=(start_line + 2), sep=r"\s+", header=None)
 
         # If the time in the last row is 00:00:00, which duplicates the start of the next day, remove the last row
         if (ifile != len(out_files) - 1) and ("T00:00:00.0000Z" in file_pd.iloc[-1, 0]):

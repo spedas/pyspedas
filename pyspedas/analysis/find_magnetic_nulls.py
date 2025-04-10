@@ -540,7 +540,7 @@ def find_magnetic_nulls_fote(positions=None, fields=None, smooth_fields=True, sm
     options('null_bary_dist_types','legend_location','upper right')
     options('null_bary_dist_types','legend_ncols',len((symvars)))
     options('null_bary_dist_types','legend_markerfirst',True)
-    options('null_bary_dist_types','legend_markersize', 1)
+    options('null_bary_dist_types','legend_linewidth', 1)
     options('null_bary_dist_types','ytitle','Null types')
     set_units('null_bary_dist_types',pos_units)
 
