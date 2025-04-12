@@ -157,8 +157,6 @@ from pytplot.importers.cdf_to_tplot import cdf_to_tplot
 from pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
 from pytplot.importers.sts_to_tplot import sts_to_tplot
 from .tplot_utilities import compare_versions
-from .tplot_utilities import highlight
-from .tplot_utilities import annotate
 from .data_att_getters_setters import set_coords, get_coords, set_units, get_units
 from .data_exists import data_exists
 from .link import link
@@ -169,6 +167,8 @@ from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byi
 from .MPLPlotter.var_labels import var_label_panel
 from .MPLPlotter.tplot_vl import tplot_vl
 from .MPLPlotter.ctime import ctime
+from .MPLPlotter.highlight import highlight
+from .MPLPlotter.annotate import annotate
 
 # set up logging/console output
 import logging
