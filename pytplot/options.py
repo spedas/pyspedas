@@ -46,6 +46,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         right_axis              bool         If true,display a second Y axis on the right side of the plot.
         second_axis_size        numeric      The size of the second axis to display
         data_gap                numeric      If there is a gap in the data larger than this number in seconds, then insert
+        annotations             dict         A dictionary or list of dictionaries of matplotlib text annotation parameters (see annotate() routine)
         visible                 bool         If False, do not display lines for this variable.
         nodata                  bool         If True, do not display lines for this variable.
         (cont)                  (cont)       NaNs. This is similar to using the degap procedure on the variable, but is
@@ -179,6 +180,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         data_gap                datagap
         spec_dim_to_plot        spec_plot_dim
         var_label_format        varlabel_format
+        annotations             annotation
         ======================  ======================================================================================================================================
 
 
@@ -247,6 +249,11 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option == 'link':
                 if isinstance(value, list):
                     pytplot.link(i, value[1], value[0])
+
+            elif option in ['annotation', 'annotations']:
+                # It is probably more convenient to use the annotations() wrapper function
+                # to manage annotations
+                pytplot.data_quants[i].attrs['plot_options']['extras']['annotations'] = value
 
             elif option == 'colormap':
                 if isinstance(value, list):
