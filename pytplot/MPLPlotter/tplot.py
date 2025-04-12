@@ -728,8 +728,8 @@ def tplot(variables,
                                   **hightlight_opts)
 
         # add annotations
-        if pytplot.tplot_opt_glob.get('annotations') is not None:
-            annotations = pytplot.tplot_opt_glob['annotations']
+        if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('annotations') is not None:
+            annotations = pytplot.data_quants[variable].attrs['plot_options']['extras']['annotations']
             for annotation in annotations:
                 this_axis.annotate(annotation['text'], annotation['position'],
                                    xycoords=annotation['xycoords'],
