@@ -241,6 +241,38 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
+    def test_highlight(self):
+        del_data("*")
+        from pyspedas import highlight, time_double
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
+        t1 = time_double('2007-03-23/03:00:00')
+        t2 = time_double('2007-03-23/04:00:00')
+        t3 = time_double('2007-03-23/05:00:00')
+        highlight('thc_fgs_dsl', range=[t1,t2],color='red', alpha=0.2)
+        highlight('thc_fgs_*', range=[t2,t3],color='green', alpha=0.2, hatch='o')
+        tplot('thc_fgs_dsl thc_fgs_gsm', display=global_display, save_png='test_highlight.png')
+
+    def test_annotations(self):
+        from pyspedas import annotate
+        del_data("*")
+        themis.fgm(probe='c',trange=default_trange)
+        timespan('2007-03-23', 1, 'days')
+        t1 = np.datetime64('2007-03-23T06:00')
+        y1 = -5000
+        t2 = np.datetime64('2007-03-23T18:00')
+        y2 = 10000
+        # Position relative to panel size
+        annotate('thc_fgs_dsl',text='Annotation 1',position=[0.5, 0.5], color='red',fontsize=10)
+        # Position in data coordinates
+        annotate('thc_fgs_gsm', text='Annotation 2', position=(t2, y2), xycoords='data', color='blue',fontsize=20)
+        # Multi-variable annotations using wildcard
+        annotate('thc_fgs_*', text='Multi Annotation', position = [0.1, 0.8], color='green')
+        tplot('thc_fgs_dsl thc_fgs_gsm',save_png='test_annotations',display=global_display)
+        tplot_options('title', '')
+        timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
+
     def test_is_pseudovar(self):
         del_data("*")
         from pytplot import is_pseudovariable
