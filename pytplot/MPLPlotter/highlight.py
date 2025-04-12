@@ -3,7 +3,7 @@ import logging
 
 def highlight(variables=None, range=None, color='gray', alpha=0.2, fill=True, edgecolor=None, facecolor=None, hatch=None, delete=False):
     """
-    Highlight a time interval on tplot variables
+    Highlight a time interval on tplot variables by adding shading to the plot panel
 
     Most parameters are passed to the matplotlib axes.axvspan method via a dictionary.
 
