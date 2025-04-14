@@ -438,7 +438,7 @@ def download(
     verify=True,
     session=None,
     no_download=False,
-    last_version=True,
+    last_version=False,
     basic_auth=False,
     regex=False,
     no_wildcards=False,
