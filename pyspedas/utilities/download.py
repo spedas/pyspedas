@@ -472,7 +472,7 @@ def download(
         Requests session object that allows you to persist things like HTTP authentication through multiple calls.
     no_download : bool, optional
         Flag to not download remote files.
-    last_version : bool, optional
+    last_version : bool, optional (default is True)
         Flag to only download the last in file in a lexically sorted list when multiple matches are found using wildcards.
     regex : bool, optional
         Flag to allow regular expressions in the file name matching, instead of unix style matching.
@@ -596,7 +596,7 @@ def download(
                             index_table[url_base] = links
                         else:
                             links = [protocol + "://" + link for link in fs.glob(url)]
-                            
+
                             if len(links) > 0:
                                 for link in links:
                                     logging.info("Using remote URI file: "+link)
@@ -722,7 +722,7 @@ def download(
                 out.append(file)
         else:
             # download wasn't successful, search for local files
-            logging.info("Searching for local files...")
+            # logging.info("Searching for local files...")
 
             temp_out = []
 
@@ -764,9 +764,11 @@ def download(
 
             if last_version:
                 out.append(temp_out[-1])  # append the latest version
+                logging.info(f"Local file found: {temp_out[-1]}")
             else:
                 for file in temp_out:
                     out.append(file)
+                logging.info(f"Local files found: {temp_out}")
 
     session.close()
     return out
