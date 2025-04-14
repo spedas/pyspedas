@@ -13,12 +13,12 @@ PySPEDAS can transform between many of the standard coordinate systems used in h
 There are also routines for working with other specialized coordinate systems
 
 * FAC (Field alignned coordinates)
-* LMN (Boundary-aligned coordinates)
+* LMN (Boundary-normal coordinates)
 * MVA (Minimum-variance coordinates)
 
 
 Some individual projects may include additional coordinate trasformation routines
-for systems used by those missions.  Documentation for the mission-spefic coordinate
+for systems used by those missions.  Documentation for the mission-specific coordinate
 transform tools and other utilities can be found on the "Mission Specific Tools" page.
 
 Transformations
@@ -54,17 +54,34 @@ Spherical to Cartesian Coordinates
 Field-Aligned Coordinates (FAC)
 -------------------------------
 
+In this coordinate system, the Z axis is aligned with the magnetic field direction.  This leaves a degree of freedom for
+the orientation of the X and Y axes.  The "other_dim" parameter lets the user select a reference direction from a number of
+options (some of which require an additional input variable to specify the probe position).  The output is a set of rotation
+matrices versus time, suitable for use with the tvector_rotate utility.
+
 .. autofunction:: pyspedas.fac_matrix_make
 
 
 Minimum Variance (MVA) Coordinates
 -----------------------------------
 
+In this coordinate system, a set of right-handed basis vectors i,j,k representing
+the maximum, intermediate, and minimum variance directions is produced from an input variable,
+using a sliding window for the variance, eigenvalue, and eigenvector calculations. To resolve ambiguity
+in the direction of the basis vectors, the signs are manipulated such that the Z components on the j and k
+components in the j and k directions are positive, while maintaining a right-handed coordinate system. The output is a
+set of rotation matrices over time, suitable for use with the tvector_rotate utility.
+
 .. autofunction:: pyspedas.minvar_matrix_make
 .. autofunction:: pyspedas.minvar
 
 LMN Coordinates
 ---------------
+
+In this coordinate system, a set of basis vectors L, M, N are produced, using the probe position, magnetic field direction,
+and some solar wind parameters, using the Shue model for the magnetopause boundary location.
+The N component will be normal to the magnetopause boundary with the other two components in the tangent plane.
+The output is a set of rotation matrices over time, suitable for use with the tvector_rotate utility.
 
 .. autofunction:: pyspedas.lmn_matrix_make
 .. autofunction:: pyspedas.gsm2lmn
