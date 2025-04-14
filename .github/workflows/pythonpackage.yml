@@ -261,6 +261,8 @@ jobs:
         coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
         echo Starting cotrans fac tests at `date`
         coverage run -a -m  pyspedas.cotrans_tools.tests.test_fac
+        echo Starting cotrans lmn tests at `date`
+        coverage run -a -m  pyspedas.cotrans_tools.tests.test_lmn
         echo Starting csswe tests at `date`
         coverage run -a -m pyspedas.projects.csswe.tests.tests
         echo Starting equator_s tests at `date`
