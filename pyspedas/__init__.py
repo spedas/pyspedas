@@ -55,6 +55,7 @@ from .utilities.mpause_2 import mpause_2
 from .utilities.mpause_t96 import mpause_t96
 from .utilities.tcopy import tcopy
 from .utilities.is_gzip import is_gzip
+from .utilities.xdegap import xdegap
 from .version import version
 
 
