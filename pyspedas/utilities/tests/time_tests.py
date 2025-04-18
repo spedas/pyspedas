@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import numpy as np
 from pytplot import time_string, time_datetime
 from pytplot import time_float, time_double, degap, store_data, get_data, options, data_exists
-
+from pyspedas import time_ephemeris
 
 class TimeTestCases(unittest.TestCase):
     def test_time_datetime(self):
@@ -163,6 +163,14 @@ class TimeTestCases(unittest.TestCase):
         store_data('pseudovar_all_bad',data=['missing_var1','missing_var2','missing_var3'])
         self.assertFalse(data_exists('pseudovar_all_bad'))
 
+    def test_time_ephemeris(self):
+        testdate='2025-01-01/00:00:00'
+        ut=time_double(testdate)
+        et=time_ephemeris(ut)
+        self.assertAlmostEqual(ut,1735689600.0000000, places=5)
+        self.assertAlmostEqual(et,788961669.18399811, places=5)
+        et_to_ut=time_ephemeris(et,et2ut=True)
+        self.assertAlmostEqual(ut,et_to_ut, places=6)
 
 if __name__ == '__main__':
     unittest.main()
