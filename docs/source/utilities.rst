@@ -86,6 +86,9 @@ Example
 
    datetime.datetime(2015, 10, 16, 14, 0, tzinfo=datetime.timezone.utc)
 
+
+.. autofunction:: pyspedas.time_ephemeris
+
 Creating and Managing Tplot Variables
 -------------------------------------
 
