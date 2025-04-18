@@ -257,6 +257,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.download_uri_tests
         echo Starting cotrans tests at `date`
         coverage run -a -m pyspedas.cotrans_tools.tests.cotrans
+        echo Starting utilities xdegap tests at `date`
+        coverage run -a -m  pyspedas.utilities.tests.test_xdegap
         echo Starting cotrans minvar tests at `date`
         coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
         echo Starting cotrans fac tests at `date`
