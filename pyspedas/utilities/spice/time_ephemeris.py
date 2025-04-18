@@ -7,12 +7,24 @@ from pyspedas.utilities.interpol import interpol
 
 def time_ephemeris(t, et2ut=False):
     """
-    Purpose: conversion between unix time and ephemeris time
-    Usage:   et = time_ephemeris(ut)          ; Converts from UT (unix/posix time) to ephemeris time
-    Or:      ut = time_ephemeris(et, et2ut=True)   ; Converts from ephemeris time to UT double precision (UNIX time)
-    Warning: this routine is only accurate to about 1 millisecond and does not attempt to reflect GR effects
+    Convert between unix time and ephemeris time, based on the IDL routine by Davin Larson
 
-    Based on the SPEDAS IDL routine by Davin Larson
+    Parameters
+    ==========
+
+    t: float
+        Input time to convert, by default unix time (seconds since 1970-01-01)
+    et2ut: bool
+        If True, convert ephemeris time (seconds since 2000-01-01/11:58:55 UTC) to unix time (Default: False)
+
+    Examples
+    ========
+
+    >>> strdate='2025-01-01/00:00:00'
+    >>> ut = pyspedas.time_double(strdate)
+    >>> et = pyspedas.time_ephemeris(ut)
+    >>> print(et)
+    788961669.184
     """
     if not isinstance(t, float):
         t = time_double(t)
