@@ -34,7 +34,10 @@ def mms_part_getspec(instrument='fpi',
                      regrid=[32, 16],
                      no_regrid=False,
                      prefix='',
-                     suffix=''):
+                     suffix='', 
+                     subtract_bulk = False,
+                     vel_name = None,
+                     vel_data_rate = None):
     """
     Generate spectra and moments from 3D MMS particle data
 
@@ -121,6 +124,18 @@ def mms_part_getspec(instrument='fpi',
 
             Default: 'mphigeo'
 
+        ### ADDED 4.16.2025, TESTING BULK VELOCITY SUBTRACTION
+        subtract_bulk: bool
+            subtract the bulk velocity prior to doing the calculations
+
+        vel_name: str
+            Tplot variable containing velocity data in km/s for use with /subtract_bulk
+
+        vel_data_rate: str
+            Data rate to use when loading the bulk velocity data ('fast' or 'brst')
+
+        #################
+            
         correct_photoelectrons: bool
             Flag to correct FPI data for photoelectrons 
             (defaults to True for FPI electron data - disable with the parameter below)
@@ -159,7 +174,13 @@ def mms_part_getspec(instrument='fpi',
     if trange is None:
         logging.error('Time range not specified; please specify time range using the trange keyword.')
         return
-
+### new ####
+    if vel_data_rate is None:  # type: ignore
+        if data_rate == 'brst':
+            vel_data_rate = 'brst'
+        else:
+            vel_data_rate = 'srvy'
+####### new #########
     if mag_data_rate is None:
         if data_rate == 'brst':
             mag_data_rate = 'brst'
@@ -181,6 +202,14 @@ def mms_part_getspec(instrument='fpi',
     
     if instrument == 'fpi':
         data_vars = mms.fpi(datatype='d'+species+'s-dist', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, spdf=spdf)
+
+        # load bulk velocity variables if user requests to subtract
+        if subtract_bulk == True and vel_name is None: 
+            vel_vars = mms.fpi(datatype='d'+species+'s-moms', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, spdf=spdf)
+            if not vel_vars:
+                logging.error('Error, no bulk velocity data loaded.')
+                return
+        
     elif instrument == 'hpca':
         # for HPCA, 'fast' should be 'srvy'
         if data_rate == 'fast':
@@ -205,6 +234,7 @@ def mms_part_getspec(instrument='fpi',
 
     support_trange = [time_double(trange[0])-60.0, time_double(trange[1])+60.0]
 
+    
     # load state data (needed for coordinate transformations and field-aligned coordinates)
     pos_vars = mms.mec(probe=probe, trange=support_trange, time_clip=True, spdf=spdf)
 
@@ -224,6 +254,15 @@ def mms_part_getspec(instrument='fpi',
 
     for prb in probe:
         prb_str = str(prb)
+
+        #### new #####
+
+        if vel_name is None or vel_name == '': 
+            vel_name = 'mms'+prb_str+'_d'+species+'s_bulkv_gse_'+vel_data_rate
+        else: 
+            logging.info("Using non-default variable %s for vel data",vel_name)
+
+        ###### new #######
 
         if mag_name is None or mag_name == '':
             mag_name = 'mms'+prb_str+'_fgm_b_gse_'+mag_data_rate+'_l2_bvec'
@@ -247,11 +286,11 @@ def mms_part_getspec(instrument='fpi',
 
         new_vars = mms_part_products(tname, species=species, instrument=instrument, probe=prb, data_rate=data_rate,
                           output=output, units=units, energy=energy, phi=phi, theta=theta, pitch=pitch, gyro=gyro,
-                          mag_name=mag_name, pos_name=pos_name, fac_type=fac_type, sc_pot_name=sc_pot_name,
+                          mag_name=mag_name, pos_name=pos_name, vel_name = vel_name, fac_type=fac_type, sc_pot_name=sc_pot_name,
                           correct_photoelectrons=correct_photoelectrons, zero_negative_values=zero_negative_values,
                           internal_photoelectron_corrections=internal_photoelectron_corrections,
                           disable_photoelectron_corrections=disable_photoelectron_corrections, regrid=regrid,
-                          no_regrid=no_regrid, prefix=prefix, suffix=suffix)
+                          no_regrid=no_regrid, prefix=prefix, suffix=suffix, subtract_bulk = subtract_bulk)
         
         if new_vars is None:
             continue
