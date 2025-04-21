@@ -49,5 +49,3 @@ def spd_pgs_v_shift(data, vector):
     data['energy'] = .5 * data['mass'] * v_new**2
     data['theta'] = theta
     data['phi'] = phi
-
-    print("spd_pgs_v_shift.py has been loaded")
