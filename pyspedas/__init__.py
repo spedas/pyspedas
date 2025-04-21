@@ -39,7 +39,7 @@ from .cotrans_tools.xyz_to_polar import xyz_to_polar
 from .hapi_tools.hapi import hapi
 
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
-from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid
+from .particles.spd_part_products import spd_pgs_do_fac, spd_pgs_regrid, spd_pgs_v_shift
 from .particles.spd_slice2d import slice1d_plot, slice2d, slice2d_plot
 from .utilities.spice.time_ephemeris import time_ephemeris
 from .utilities.dailynames import dailynames

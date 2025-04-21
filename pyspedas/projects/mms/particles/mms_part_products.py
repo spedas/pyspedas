@@ -9,8 +9,10 @@ from pyspedas.particles.spd_part_products.spd_pgs_limit_range import spd_pgs_lim
 from pyspedas.particles.spd_part_products.spd_pgs_progress_update import spd_pgs_progress_update
 from pyspedas.particles.spd_part_products.spd_pgs_do_fac import spd_pgs_do_fac
 from pyspedas.particles.spd_part_products.spd_pgs_regrid import spd_pgs_regrid
+from pyspedas.particles.spd_part_products.spd_pgs_v_shift import spd_pgs_v_shift
 from pyspedas.particles.moments.spd_pgs_moments import spd_pgs_moments
 from pyspedas.particles.moments.spd_pgs_moments_tplot import spd_pgs_moments_tplot
+
 
 from pyspedas.projects.mms.fpi_tools.mms_get_fpi_dist import mms_get_fpi_dist
 from pyspedas.projects.mms.hpca_tools.mms_get_hpca_dist import mms_get_hpca_dist
@@ -48,6 +50,7 @@ def mms_part_products(in_tvarname,
                       zero_negative_values=False,
                       internal_photoelectron_corrections=False,
                       disable_photoelectron_corrections=False,
+                      subtract_bulk = False, 
                       no_regrid=False,
                       regrid=[32, 16],
                       vel_name=None,
@@ -143,6 +146,10 @@ def mms_part_products(in_tvarname,
 
         no_regrid: bool
             Flag to disable reegridding
+        
+            ###new###
+        subtract_bulk: bool
+            Subtracts the bulk velocity from the distribution data
 
         regrid: array of int
             Array giving dimensions of regridded data
@@ -162,6 +169,10 @@ def mms_part_products(in_tvarname,
         Creates tplot variables containing spectrograms and moments
 
     """
+    # regridding not allowed if user opts to subtract bulk velocity
+    #regridding assumes energies are constant across angles, which is not true when bulk velocity is subtracted
+    if subtract_bulk == True:
+        no_regrid = True
 
     units = units.lower()
     if isinstance(probe, int):
@@ -272,6 +283,11 @@ def mms_part_products(in_tvarname,
         mag_data = support_data[0]
         scpot_data = support_data[2]
 
+    # loading and cleaning support data for bulk velocity subtraction
+    if subtract_bulk == True: 
+        support_data = mms_pgs_clean_support(data_times, mag_name=mag_name, vel_name=vel_name, sc_pot_name=sc_pot_name)
+        vel_data = support_data[1]
+
     if disable_photoelectron_corrections:
         correct_photoelectrons = False
         internal_photoelectron_corrections = False
@@ -305,7 +321,7 @@ are the scientific products that should be used for analysis."""
             parity = get_data('mms'+probe+'_des_steptable_parity_brst')
 
         startdelphi = get_data('mms'+probe+'_des_startdelphi_count_'+data_rate)
-
+#### Looping over times to build spectrograms (this is what takes the longest)
     for i in range(0, ntimes):
         last_update_time = spd_pgs_progress_update(last_update_time=last_update_time, current_sample=i, total_samples=ntimes, type_string=in_tvarname)
 
@@ -357,14 +373,22 @@ are the scientific products that should be used for analysis."""
 
             dist_in['data'] = corrected_df
 
+        # note: why are the units converted before the data is cleaned?
         data = mms_convert_flux_units(dist_in, units=units)
 
+        # sanitizes data 
+            # removes unneeded fields from strucutre to increase efficiency
+            # reforms into energy by angle data
         clean_data = mms_pgs_clean_data(data)
 
         # split hpca angle bins to be equal width in phi/theta
         # this is needed when skipping the regrid step
         if instrument == 'hpca':
             clean_data = mms_pgs_split_hpca(clean_data)
+        
+        if subtract_bulk == True: 
+            #import spd_pgs_v_shift, make sure its in correct folder
+            spd_pgs_v_shift(clean_data,vel_data[i,:])
 
         # Apply phi, theta, & energy limits
         if not fac_requested:
