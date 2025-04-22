@@ -749,7 +749,7 @@ def magephem_read_txt(out_files, varnames=None, notplot=False, prefix="", suffix
     """
 
     if (varnames is None) or (len(varnames) == 0):
-        varnames2load = ["Time", "Lsimple", "Lm_eq", "CD_MLAT", "CD_MLON", "CD_MLT"]
+        varnames2load = ["Time", "Lsimple", "Lm_eq", "CDMAG_MLAT", "CDMAG_MLON", "CDMAG_MLT"]
     else:
         varnames2load = varnames
 
