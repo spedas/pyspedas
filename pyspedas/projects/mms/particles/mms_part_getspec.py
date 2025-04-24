@@ -205,7 +205,7 @@ def mms_part_getspec(instrument='fpi',
 
         # load bulk velocity variables if user requests to subtract
         if subtract_bulk == True and vel_name is None: 
-            vel_vars = mms.fpi(datatype='d'+species+'s-moms', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, spdf=spdf)
+            vel_vars = mms.fpi(datatype='d'+species+'s-moms', probe=probe, data_rate=data_rate, trange=trange, varformat='*_d'+species+'s_bulkv_gse_*' + '|' + '*_d'+species+'*s_bulkv_spintone_gse_*', spdf=spdf)
             if not vel_vars:
                 logging.error('Error, no bulk velocity data loaded.')
                 return
