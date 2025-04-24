@@ -45,11 +45,14 @@ Cartesian to Spherical Coordinates
 -----------------------------------
 
 .. autofunction:: pyspedas.cart2spc
+.. autofunction:: pyspedas.cart_to_sphere
+.. autofunction:: pyspedas.xyz_to_polar
 
 Spherical to Cartesian Coordinates
 -----------------------------------
 
 .. autofunction:: pyspedas.spc2cart
+.. autofunction:: pyspedas.sphere_to_cart
 
 Field-Aligned Coordinates (FAC)
 -------------------------------
@@ -88,6 +91,12 @@ The output is a set of rotation matrices over time, suitable for use with the tv
 
 Rotate Vectors by Rotation Matrix
 ----------------------------------
+
+Several of the specialized coordinate transforms (for example, FAC, LMN, or MVA)
+are implemented by generating a rotation matrix to transform vectors from the original
+system to the target system.  The tvector_rotate routine applies these rotation matrices to
+tplot variables containing vectors in the original coordinate system, performing any necessary
+interpolation of the rotation matrices to match the timestamps of the vectors being transformed.
 
 .. autofunction:: pyspedas.tvector_rotate
    :no-index:
