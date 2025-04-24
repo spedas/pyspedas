@@ -335,6 +335,9 @@ are the scientific products that should be used for analysis."""
         else:
             dist_in = dists
 
+        # Save the original energy table in case it gets manipulated (e.g. via bulk velocity subtraction)
+        dist_in['orig_energy'] = dist_in['energy'][:,0,0]
+
         # apply the DES photoelectron corrections
         if correct_photoelectrons or internal_photoelectron_corrections:
             # From Dan Gershman's release notes on the FPI photoelectron model:

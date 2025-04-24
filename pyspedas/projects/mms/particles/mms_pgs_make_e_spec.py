@@ -40,8 +40,8 @@ def mms_pgs_make_e_spec(data_in):
         for item in zero_bins:
             data['data'][item[0], item[1]] = 0.0
 
-    # use the first energy table for now
-    outtable = data['energy'][:, 0]
+    # use the original energy table for now
+    outtable = data['orig_energy']
     outbins = np.zeros([len(data['data'][:, 0]), len(data['data'][0, :])])
 
     # rebin the data to the original energy table

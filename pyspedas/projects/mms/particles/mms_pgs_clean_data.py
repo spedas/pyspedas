@@ -10,6 +10,7 @@ def mms_pgs_clean_data(data_in):
     """
 
     output = {'charge': data_in['charge'], 'mass': data_in['mass'],
+              'orig_energy': data_in['orig_energy'],
               'data': np.reshape(data_in['data'], [data_in['data'].shape[0], data_in['data'].shape[1]*data_in['data'].shape[2]], order='F'),
               'bins': np.reshape(data_in['bins'], [data_in['data'].shape[0], data_in['data'].shape[1]*data_in['data'].shape[2]], order='F'),
               'theta': np.reshape(data_in['theta'], [data_in['data'].shape[0], data_in['data'].shape[1]*data_in['data'].shape[2]], order='F'),
