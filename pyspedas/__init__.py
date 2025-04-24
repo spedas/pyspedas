@@ -20,6 +20,8 @@ from .cotrans_tools.cotrans_set_coord import cotrans_set_coord
 from .cotrans_tools.tvector_rotate import tvector_rotate
 from .cotrans_tools.cart2spc import cart2spc
 from .cotrans_tools.spc2cart import spc2cart
+from .cotrans_tools.sphere_to_cart import sphere_to_cart
+from .cotrans_tools.cart_to_sphere import cart_to_sphere
 from .cotrans_tools.sm2mlt import sm2mlt
 from .cotrans_tools.fac_matrix_make import fac_matrix_make
 from .cotrans_tools.gsm2lmn import gsm2lmn
