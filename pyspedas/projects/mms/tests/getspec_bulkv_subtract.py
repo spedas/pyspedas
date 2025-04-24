@@ -58,7 +58,7 @@ class TestGetspecBulkv(unittest.TestCase):
 
         mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
                         output=['energy'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
-        tplot(['mms1_dis_dist_brst_energy_bulk_subtract','spec_bulk_subtract'],display=global_display,save_png='mms_getspec_bulk_subtract.png')
+        tplot(['spec_nobulk_subtract', 'mms1_dis_dist_brst_energy_bulk_subtract','spec_bulk_subtract'],display=global_display,save_png='mms_getspec_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_energy_bulk_subtract')
         # Test Y values (energy bins)
         assert_allclose(self.nobulk_subtract.v, pydat.v, rtol=1.0e-05)
