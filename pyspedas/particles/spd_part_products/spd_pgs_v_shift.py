@@ -1,6 +1,6 @@
 import numpy as np
-from pyspedas.cotrans_tools.cart2spc import cart2spc
-from pyspedas.cotrans_tools.spc2cart import spc2cart
+from pyspedas.cotrans_tools.cart_to_sphere import cart_to_sphere
+from pyspedas.cotrans_tools.sphere_to_cart import sphere_to_cart
 
 def spd_pgs_v_shift(data, vector):
 # Procedure:
@@ -37,7 +37,7 @@ def spd_pgs_v_shift(data, vector):
     phi = data['phi']
 
     #sphere to cart
-    x, y, z = spc2cart(v, theta, phi)
+    x, y, z = sphere_to_cart(v, theta, phi)
 
     #subtract input vector
     newx = x - vector[0]
@@ -45,7 +45,7 @@ def spd_pgs_v_shift(data, vector):
     newz = z - vector[2]    
 
     #cart to sphere
-    v_new, theta, phi = cart2spc(newx, newy, newz)
+    v_new, theta, phi = cart_to_sphere(newx, newy, newz)
     data['energy'] = .5 * data['mass'] * v_new**2
     data['theta'] = theta
     data['phi'] = phi
