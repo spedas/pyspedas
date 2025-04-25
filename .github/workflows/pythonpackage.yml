@@ -210,6 +210,8 @@ jobs:
         coverage run -a -m pyspedas.projects.mms.tests.ql_l1b_sitl_tests
         echo Starting mms_part_getspec tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.mms_part_getspec
+        echo Starting mms_part_getspec FPI bulk velocity subtraction tests at `date`
+        coverage run -a -m pyspedas.projects.mms.tests.getspec_bulkv_subtract
         echo Starting mms load routine tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.load_routine_tests
         echo Starting mms feeps tests at `date`
