@@ -44,6 +44,12 @@ def mms_pgs_make_e_spec(data_in):
     outtable = data['orig_energy']
     outbins = np.zeros([len(data['data'][:, 0]), len(data['data'][0, :])])
 
+    # energy range to accept (this is questionable, but matches IDL)
+    # TODO: Take a closer look at this logic.  Should we be comparing to the energy bin _center_ values?
+    # The IDL version accepts an 'energy' parameter to define energy limits; that feature may no longer be used though?
+
+    erange = [np.min(data['energy']), np.max(data['energy'])]
+
     # rebin the data to the original energy table
     for ang_idx in range(0, len(data['data'][0, :])):
         etable = data['energy'][:, ang_idx]
@@ -53,8 +59,15 @@ def mms_pgs_make_e_spec(data_in):
                 whereen = np.argwhere(outtable == this_en)
                 outbins[whereen, ang_idx] += data['data'][binidx, ang_idx]
 
+    # check for out of range values (questionable but matches IDL)
+    where_out_of_erange = np.argwhere((outtable < erange[0]) | (outtable > erange[1]))
+    if where_out_of_erange.size != 0:
+        outbins[where_out_of_erange] = np.nan
+
+    # If we want to use NaN as a marker for unused bins, we need to use sum rather than nansum here.
+
     if len(data['data'][0, :]) > 1:
-        ave = nansum(outbins, axis=1)/nansum(data['bins'], axis=1)
+        ave = np.sum(outbins, axis=1)/np.sum(data['bins'], axis=1)
     else:
         ave = outbins/data['bins']
 
