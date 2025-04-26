@@ -41,9 +41,11 @@ def cart_to_sphere(x, y, z):
     r = np.sqrt(x**2 + y**2 + z**2)
 
     # Calculate phi
-    maskn = np.where(y < 0, 1, 0)
-    maskp = np.where(y > 0, 1, 0)
-    phi = 2*np.pi - maskn * np.arccos(x/np.sqrt(x**2 + y**2)) + maskp * np.arccos(x/np.sqrt(x**2 + y**2))
+    phi = np.arctan2(y,x)
+
+    # Ensure range is in [0,2*pi]
+    corr = np.where(phi < 0.0,2.0*np.pi, 0)
+    phi += corr
 
     # Calculate theta
     theta = np.arcsin(z/r)
