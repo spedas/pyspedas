@@ -26,6 +26,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('Cp'))
         self.assertTrue(data_exists('C9'))
 
+    @unittest.skip('KP_AP data set no longer exists on NOAA FTP server')
     def test_load_kp_data_2014(self):
         # Load data from noaa
         del_data('*')
