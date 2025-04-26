@@ -218,6 +218,13 @@ def mms_part_getspec(instrument='fpi',
         if species in ['i', 'e']:
             species = 'hplus'
         data_vars = mms.hpca(datatype='ion', probe=probe, data_rate=data_rate, trange=trange, time_clip=True, center_measurement=center_measurement, get_support_data=True, spdf=spdf)
+
+        # load bulk velocity variables if user requests to subtract
+        if subtract_bulk == True and vel_name is None:
+            vel_vars = mms.hpca(datatype='moments', probe=probe, data_rate=data_rate, trange=trange, varformat='*_hpca_'+species+'_ion_bulk_velocity', spdf=spdf)
+            if not vel_vars:
+                logging.error('Error, no bulk velocity data loaded.')
+                return
     else:
         logging.error('Error, unknown instrument: ' + instrument + '; valid options: fpi, hpca')
         return
@@ -257,8 +264,11 @@ def mms_part_getspec(instrument='fpi',
 
         #### new #####
 
-        if vel_name is None or vel_name == '': 
-            vel_name = 'mms'+prb_str+'_d'+species+'s_bulkv_gse_'+vel_data_rate
+        if vel_name is None or vel_name == '':
+            if instrument == 'fpi':
+                vel_name = 'mms'+prb_str+'_d'+species+'s_bulkv_gse_'+vel_data_rate
+            else:
+                vel_name = 'mms'+prb_str+'_hpca_'+species+'_ion_bulk_velocity'
         else: 
             logging.info("Using non-default variable %s for vel data",vel_name)
 
