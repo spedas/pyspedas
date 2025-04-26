@@ -48,6 +48,7 @@ class LoadTestCases(unittest.TestCase):
         dst_min=np.min(kd.y)
         self.assertTrue(dst_min < -100.0)
 
+    @unittest.skip('Disabled due to missing KP_AP directory on NOAA FTP site')
     def test_load_geomagnetic_indices(self):
         del_data('*')
         geom_ind_vars = pyspedas.projects.kyoto.load_geomagnetic_indices(trange=["2015-03-16", "2015-03-19"])
