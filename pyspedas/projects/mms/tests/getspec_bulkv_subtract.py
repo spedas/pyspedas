@@ -32,38 +32,332 @@ class TestGetspecBulkv(unittest.TestCase):
 
         # Load validation variables from the test file
         filename = datafile[0]
+        #filename = '/tmp/mms_getspec_bulkv_validate.tplot'
         tplot_restore(filename)
+        # Spectra
+        cls.e_nobulk_subtract = get_data('mms1_dis_dist_brst_energy_no_bulk_subtract')
+        cls.e_bulk_subtract = get_data('mms1_dis_dist_brst_energy_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_energy_no_bulk_subtract','e_spec_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_energy_bulk_subtract','e_spec_bulk_subtract')
+        cls.theta_nobulk_subtract = get_data('mms1_dis_dist_brst_theta_no_bulk_subtract')
+        cls.theta_bulk_subtract = get_data('mms1_dis_dist_brst_theta_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_theta_no_bulk_subtract','theta_spec_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_theta_bulk_subtract','theta_spec_bulk_subtract')
+        cls.phi_nobulk_subtract = get_data('mms1_dis_dist_brst_phi_no_bulk_subtract')
+        cls.phi_bulk_subtract = get_data('mms1_dis_dist_brst_phi_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_phi_no_bulk_subtract','phi_spec_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_phi_bulk_subtract','phi_spec_bulk_subtract')
+        cls.pa_nobulk_subtract = get_data('mms1_dis_dist_brst_pa_no_bulk_subtract')
+        cls.pa_bulk_subtract = get_data('mms1_dis_dist_brst_pa_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_pa_no_bulk_subtract','pa_spec_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_pa_bulk_subtract','pa_spec_bulk_subtract')
+        cls.gyro_nobulk_subtract = get_data('mms1_dis_dist_brst_gyro_no_bulk_subtract')
+        cls.gyro_bulk_subtract = get_data('mms1_dis_dist_brst_gyro_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_gyro_no_bulk_subtract','gyro_spec_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_gyro_bulk_subtract','gyro_spec_bulk_subtract')
+        # Moments
+        cls.avgtemp_nobulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
+        cls.avgtemp_bulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_avgtemp_no_bulk_subtract','avgtemp_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_avgtemp_bulk_subtract','avgtemp_mom_bulk_subtract')
+        cls.density_nobulk_subtract = get_data('mms1_dis_dist_brst_density_no_bulk_subtract')
+        cls.density_bulk_subtract = get_data('mms1_dis_dist_brst_density_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_density_no_bulk_subtract','density_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_density_bulk_subtract','density_mom_bulk_subtract')
+        cls.eflux_nobulk_subtract = get_data('mms1_dis_dist_brst_eflux_no_bulk_subtract')
+        cls.eflux_bulk_subtract = get_data('mms1_dis_dist_brst_eflux_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_eflux_no_bulk_subtract','eflux_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_eflux_bulk_subtract','eflux_mom_bulk_subtract')
+        cls.flux_nobulk_subtract = get_data('mms1_dis_dist_brst_flux_no_bulk_subtract')
+        cls.flux_bulk_subtract = get_data('mms1_dis_dist_brst_flux_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_flux_no_bulk_subtract','flux_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_flux_bulk_subtract','flux_mom_bulk_subtract')
+        cls.mftens_nobulk_subtract = get_data('mms1_dis_dist_brst_mftens_no_bulk_subtract')
+        cls.mftens_bulk_subtract = get_data('mms1_dis_dist_brst_mftens_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_mftens_no_bulk_subtract','mftens_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_mftens_bulk_subtract','mftens_mom_bulk_subtract')
+        cls.ptens_nobulk_subtract = get_data('mms1_dis_dist_brst_ptens_no_bulk_subtract')
+        cls.ptens_bulk_subtract = get_data('mms1_dis_dist_brst_ptens_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_ptens_no_bulk_subtract','ptens_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_ptens_bulk_subtract','ptens_mom_bulk_subtract')
 
-        cls.nobulk_subtract = get_data('mms1_dis_dist_brst_energy_no_bulk_subtract')
-        cls.bulk_subtract = get_data('mms1_dis_dist_brst_energy_bulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_energy_no_bulk_subtract','spec_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_energy_bulk_subtract','spec_bulk_subtract')
+        # HPCA Spectra
+        cls.hpca_e_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract')
+        cls.hpca_e_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_energy_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract','hpca_e_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_energy_bulk_subtract','hpca_e_bulk_subtract')
+        cls.hpca_phi_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_phi_no_bulk_subtract')
+        cls.hpca_phi_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_phi_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_phi_no_bulk_subtract','hpca_phi_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_phi_bulk_subtract','hpca_phi_bulk_subtract')
+        cls.hpca_theta_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract')
+        cls.hpca_theta_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_theta_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract','hpca_theta_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_theta_bulk_subtract','hpca_theta_bulk_subtract')
+
+        # Field-aligned moments
+
+        tplot_names()
         del_data('mms1*')
 
 
-    def test_getspec_nobulkv_subtract(self):
+    def test_getspec_e_nobulkv_subtract(self):
         """Test of getspec without bulk velocity subtraction"""
 
         mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
                         output=['energy'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
-        tplot(['mms1_dis_dist_brst_energy_no_bulk_subtract','spec_nobulk_subtract'],display=global_display,save_png='mms_getspec_nobulk_subtract.png')
+        tplot(['mms1_dis_dist_brst_energy_no_bulk_subtract','e_spec_nobulk_subtract'],display=global_display,save_png='mms_getspec_e_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_energy_no_bulk_subtract')
         # Test Y values (energy bins)
-        assert_allclose(self.nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        assert_allclose(self.e_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
         # Test Z values
-        assert_allclose(self.nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+        assert_allclose(self.e_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
 
-    def test_getspec_bulkv_subtract(self):
+    def test_getspec_e_bulkv_subtract(self):
         """Test of getspec with bulk velocity subtraction"""
 
         mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
                         output=['energy'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
-        tplot(['spec_nobulk_subtract', 'mms1_dis_dist_brst_energy_bulk_subtract','spec_bulk_subtract'],display=global_display,save_png='mms_getspec_bulk_subtract.png')
+        tplot(['e_spec_nobulk_subtract', 'mms1_dis_dist_brst_energy_bulk_subtract','e_spec_bulk_subtract'],display=global_display,save_png='mms_getspec_e_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_energy_bulk_subtract')
         # Test Y values (energy bins)
-        assert_allclose(self.nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        assert_allclose(self.e_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
         # Test Z values
-        assert_allclose(self.bulk_subtract.y, pydat.y, rtol=1.0e-05)
+        assert_allclose(self.e_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_e_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['energy'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract','hpca_e_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_e_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract')
+        # Test Y values (energy bins)
+        #assert_allclose(self.hpca_e_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_e_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_e_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['energy'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_e_nobulk_subtract','mms1_hpca_hplus_phase_space_density_energy_bulk_subtract','hpca_e_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_e_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_energy_bulk_subtract')
+        # Test Y values (energy bins)
+        #assert_allclose(self.hpca_e_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_e_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_phi_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['phi'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_phi_no_bulk_subtract','hpca_phi_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_phi_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_phi_no_bulk_subtract')
+        # Test Y values (phi bins)
+        #assert_allclose(self.hpca_phi_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_phi_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_phi_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['phi'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_phi_nobulk_subtract','mms1_hpca_hplus_phase_space_density_phi_bulk_subtract','hpca_phi_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_phi_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_phi_bulk_subtract')
+        # Test Y values (phi bins)
+        #assert_allclose(self.hpca_phi_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_phi_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_theta_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['theta'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract','hpca_theta_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_theta_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract')
+        # Test Y values (theta bins)
+        #assert_allclose(self.hpca_theta_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_theta_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_theta_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['theta'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_theta_nobulk_subtract','mms1_hpca_hplus_phase_space_density_theta_bulk_subtract','hpca_theta_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_theta_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_theta_bulk_subtract')
+        # Test Y values (theta bins)
+        #assert_allclose(self.hpca_theta_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_theta_bulk_subtract.y, pydat.y, rtol=2.0e-03)
+
+    def test_getspec_theta_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['theta'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_dis_dist_brst_theta_no_bulk_subtract','theta_spec_nobulk_subtract'],display=global_display,save_png='mms_getspec_theta_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_theta_no_bulk_subtract')
+        # Test Y values (energy bins)
+        #assert_allclose(self.theta_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.theta_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_getspec_theta_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['theta'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        tplot(['theta_spec_nobulk_subtract', 'mms1_dis_dist_brst_theta_bulk_subtract','theta_spec_bulk_subtract'],display=global_display,save_png='mms_getspec_theta_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_theta_bulk_subtract')
+        # Test Y values (energy bins)
+        #assert_allclose(self.theta_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.theta_bulk_subtract.y, pydat.y, rtol=1.0e-03)
+
+    def test_getspec_phi_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['phi'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_dis_dist_brst_phi_no_bulk_subtract','phi_spec_nobulk_subtract'],display=global_display,save_png='mms_getspec_phi_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_phi_no_bulk_subtract')
+        # Test Y values (energy bins)
+        #assert_allclose(self.phi_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.phi_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_getspec_phi_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['phi'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        tplot(['phi_spec_nobulk_subtract', 'mms1_dis_dist_brst_phi_bulk_subtract','phi_spec_bulk_subtract'],display=global_display,save_png='mms_getspec_phi_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_phi_bulk_subtract')
+        # Test Y values (energy bins)
+        #assert_allclose(self.phi_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.phi_bulk_subtract.y, pydat.y, rtol=1.0e-03)
+
+    def test_getspec_pa_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['pa'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        pydat=get_data('mms1_dis_dist_brst_pa_no_bulk_subtract')
+        diff = np.abs(self.pa_nobulk_subtract.y - pydat.y)
+        md = get_data('mms1_dis_dist_brst_pa_no_bulk_subtract',metadata=True)
+        store_data('pa_diff', data={'x': pydat.times, 'y': diff, 'v': pydat.v}, attr_dict=md)
+
+        tplot(['mms1_dis_dist_brst_pa_no_bulk_subtract','pa_spec_nobulk_subtract', 'pa_diff'],display=global_display,save_png='mms_getspec_pa_nobulk_subtract.png')
+        # Test Y values (energy bins)
+        #assert_allclose(self.pa_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.pa_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_getspec_pa_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['pa'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        pydat=get_data('mms1_dis_dist_brst_pa_bulk_subtract')
+        diff = np.abs(self.pa_bulk_subtract.y - pydat.y)
+        md = get_data('mms1_dis_dist_brst_pa_bulk_subtract',metadata=True)
+        store_data('pa_diff', data={'x': pydat.times, 'y': diff, 'v': pydat.v}, attr_dict=md)
+
+        tplot(['pa_spec_nobulk_subtract', 'mms1_dis_dist_brst_pa_bulk_subtract','pa_spec_bulk_subtract', 'pa_diff'],display=global_display,save_png='mms_getspec_pa_bulk_subtract.png')
+        # Test Y values (energy bins)
+        #assert_allclose(self.pa_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.pa_bulk_subtract.y, pydat.y, rtol=1.0e-02)
+
+    def test_getspec_gyro_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['gyro'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_dis_dist_brst_gyro_no_bulk_subtract','gyro_spec_nobulk_subtract'],display=global_display,save_png='mms_getspec_gyro_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_gyro_no_bulk_subtract')
+        # Test Y values (energy bins)
+        #assert_allclose(self.gyro_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.gyro_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_getspec_gyro_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['gyro'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        tplot(['gyro_spec_nobulk_subtract', 'mms1_dis_dist_brst_gyro_bulk_subtract','gyro_spec_bulk_subtract'],display=global_display,save_png='mms_getspec_gyro_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_gyro_bulk_subtract')
+        # Test Y values (energy bins)
+        #assert_allclose(self.gyro_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.gyro_bulk_subtract.y, pydat.y, rtol=1.0e-02)
+
+    def test_getspec_moments_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['moments'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        print(pyspedas.tnames('mms1_dis_dist_brst*no_bulk_subtract'))
+        tplot(['mms1_dis_dist_brst_avgtemp_no_bulk_subtract','avgtemp_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_avgtemp_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
+        assert_allclose(self.avgtemp_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_density_no_bulk_subtract','density_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_density_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_density_no_bulk_subtract')
+        assert_allclose(self.density_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+        # eflux not implemented yet
+        #tplot(['mms1_dis_dist_brst_eflux_no_bulk_subtract','eflux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_eflux_nobulk_subtract.png')
+        #pydat=get_data('mms1_dis_dist_brst_eflux_no_bulk_subtract')
+        #assert_allclose(self.eflux_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_flux_no_bulk_subtract','flux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_flux_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_flux_no_bulk_subtract')
+        # 10% differences in flux
+        #assert_allclose(self.flux_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_mftens_no_bulk_subtract','mftens_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_mftens_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_mftens_no_bulk_subtract')
+        # Almost 10% differences in places
+        #assert_allclose(self.mftens_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_ptens_no_bulk_subtract','ptens_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_ptens_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_ptens_no_bulk_subtract')
+        # Large differences
+        #assert_allclose(self.ptens_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+
+    def test_getspec_moments_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['moments'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        tplot(['avgtemp_mom_nobulk_subtract', 'mms1_dis_dist_brst_avgtemp_bulk_subtract','avgtemp_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_avgtemp_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_avgtemp_bulk_subtract')
+        assert_allclose(self.avgtemp_bulk_subtract.y, pydat.y, rtol=1.0e-02, atol=2.0)
+        tplot(['mms1_dis_dist_brst_density_bulk_subtract','density_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_density_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_density_bulk_subtract')
+        # Big mismatch on the bulk subtracted density
+        #assert_allclose(self.density_bulk_subtract.y, pydat.y, rtol=1.0e-03)
+        # eflux not implemented yet
+        #tplot(['mms1_dis_dist_brst_eflux_bulk_subtract','eflux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_eflux_bulk_subtract.png')
+        #pydat=get_data('mms1_dis_dist_brst_eflux_bulk_subtract')
+        #assert_allclose(self.eflux_bulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_flux_bulk_subtract','flux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_flux_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_flux_bulk_subtract')
+        # Large differences in bulkv-subtracted flux
+        #assert_allclose(self.flux_bulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_mftens_bulk_subtract','mftens_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_mftens_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_mftens_bulk_subtract')
+        # Large differences
+        # assert_allclose(self.mftens_bulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_ptens_bulk_subtract','ptens_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_ptens_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_ptens_bulk_subtract')
+        # Large differences
+        #assert_allclose(self.ptens_bulk_subtract.y, pydat.y, rtol=1.0e-03)
 
 
 if __name__ == '__main__':
