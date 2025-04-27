@@ -94,6 +94,22 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.hpca_theta_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_theta_bulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract','hpca_theta_nobulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_theta_bulk_subtract','hpca_theta_bulk_subtract')
+        
+        # HPCA field aligned spectra
+        cls.hpca_energy_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_energy_mag_no_bulk_subtract')
+        cls.hpca_energy_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_energy_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_energy_mag_no_bulk_subtract','hpca_energy_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_energy_mag_bulk_subtract','hpca_energy_mag_bulk_subtract')
+
+        cls.hpca_pa_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_pa_no_bulk_subtract')
+        cls.hpca_pa_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_pa_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_pa_no_bulk_subtract','hpca_pa_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_pa_bulk_subtract','hpca_pa_bulk_subtract')
+
+        cls.hpca_gyro_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract')
+        cls.hpca_gyro_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract','hpca_gyro_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract','hpca_gyro_bulk_subtract')
 
         # Field-aligned moments
 
@@ -149,6 +165,30 @@ class TestGetspecBulkv(unittest.TestCase):
         # Test Z values
         assert_allclose(self.hpca_e_bulk_subtract.y, pydat.y, rtol=1.0e-05)
 
+    def test_hpca_getspec_energy_mag_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['energy'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract','hpca_energy_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_energy_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract')
+        # Test Y values (energy_mag bins)
+        #assert_allclose(self.hpca_energy_mag_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_energy_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_energy_mag_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['energy'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_energy_mag_nobulk_subtract','mms1_hpca_hplus_phase_space_density_energy_bulk_subtract','hpca_energy_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_energy_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_energy_bulk_subtract')
+        # Test Y values (energy_mag bins)
+        #assert_allclose(self.hpca_energy_mag_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_energy_mag_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
     def test_hpca_getspec_phi_nobulkv_subtract(self):
         """Test of getspec without bulk velocity subtraction"""
 
@@ -172,6 +212,54 @@ class TestGetspecBulkv(unittest.TestCase):
         #assert_allclose(self.hpca_phi_bulk_subtract.v, pydat.v, rtol=1.0e-05)
         # Test Z values
         assert_allclose(self.hpca_phi_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_gyro_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['gyro'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract','hpca_gyro_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_gyro_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract')
+        # Test Y values (gyro bins)
+        #assert_allclose(self.hpca_gyro_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_gyro_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_gyro_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['gyro'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_gyro_nobulk_subtract','mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract','hpca_gyro_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_gyro_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract')
+        # Test Y values (gyro bins)
+        #assert_allclose(self.hpca_gyro_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_gyro_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_pa_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['pa'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_pa_no_bulk_subtract','hpca_pa_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_pa_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_pa_no_bulk_subtract')
+        # Test Y values (pa bins)
+        #assert_allclose(self.hpca_pa_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_pa_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+
+    def test_hpca_getspec_pa_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['pa'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_pa_nobulk_subtract','mms1_hpca_hplus_phase_space_density_pa_bulk_subtract','hpca_pa_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_pa_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_pa_bulk_subtract')
+        # Test Y values (pa bins)
+        #assert_allclose(self.hpca_pa_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_pa_bulk_subtract.y, pydat.y, rtol=1.0e-05)
 
     def test_hpca_getspec_theta_nobulkv_subtract(self):
         """Test of getspec without bulk velocity subtraction"""
