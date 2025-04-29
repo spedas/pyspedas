@@ -30,7 +30,7 @@ from .cotrans.mms_qcotrans import mms_qcotrans
 from .particles import mms_part_getspec, mms_part_slice2d
 from .mms_orbit_plot import mms_orbit_plot
 from .mms_load_brst_segments import mms_load_brst_segments
-from .mms_load_fast_segments import mms_load_fast_segments
+from pyspedas.projects.mms.deprecated.mms_load_fast_segments import mms_load_fast_segments
 from .mms_load_sroi_segments import mms_load_sroi_segments
 from .mms_events import mms_brst_events
 

@@ -1,6 +1,5 @@
 import logging
 from pytplot import time_double
-from pyspedas.projects.mms.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments
 from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
 
@@ -40,7 +39,8 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
         if dtype == 'fast':
             if time_double(trange[0]) <= time_double('2015-11-06'):
                 # use the old fast segments code for dates before 6Nov15
-                out = mms_load_fast_segments(trange=trange)
+                logging.error("Loading archived fast survey segment times from spedas.org is no longer supported.")
+                out = None
             else:
                 # use SRoI code for dates on and after 6Nov15
                 out = mms_load_sroi_segments(trange=trange, probe=probe)

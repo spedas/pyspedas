@@ -10,7 +10,7 @@ from pyspedas.projects.mms.mms_config import CONFIG
 
 def mms_load_fast_segments(trange=None, suffix=''):
     """
-    This function loads the fast segment intervals
+    Deprecated routine to load archived MMS fast survey segment time intervals from spedas.org.
     
     Parameters
     -----------
@@ -27,6 +27,9 @@ def mms_load_fast_segments(trange=None, suffix=''):
         Tuple containing (start_times, end_times)
 
     """
+    logging.error("Downloading archived fast survey segment data from spedas.org is no longer supported.")
+    return None
+
     if trange is None:
         logging.error('Error; no trange specified.')
         return None
