@@ -1,6 +1,7 @@
 import logging
 import numpy as np
 from pyspedas.cotrans_tools.gsm2lmn import gsm2lmn
+from .rotmat_set_coords import rotmat_set_coords
 from pytplot import get_data, store_data, set_coords, tnames, options, time_clip
 from pyspedas import tinterpol
 from pyspedas.projects.omni.omni_solarwind_load import omni_solarwind_load
@@ -110,7 +111,7 @@ def lmn_matrix_make(
 
     # Store the LMN transformation matrix in a new tplot variable
     store_data(newname, data={"x": times, "y": blmn})
-    set_coords(newname, "LMN")
+    rotmat_set_coords(newname, "GSM", "LMN")
     options(newname, "ysubtitle", "[LMN]")
     options(newname, "legend_names", ["BL", "BM", "BN"])
 

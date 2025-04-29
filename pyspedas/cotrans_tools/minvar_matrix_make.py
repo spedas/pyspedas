@@ -1,4 +1,6 @@
+import pyspedas
 from pyspedas.cotrans_tools.minvar import minvar
+from .rotmat_set_coords import rotmat_set_coords
 from pytplot import get_data, store_data, time_double, time_string
 import numpy as np
 
@@ -48,6 +50,7 @@ def minvar_matrix_make(in_var_name,
 
     """
     data = get_data(in_var_name)
+    input_coords = pyspedas.get_coords(in_var_name)
 
     if tstart is None:
         start_d = data.times[0]
@@ -121,6 +124,8 @@ def minvar_matrix_make(in_var_name,
     saved = store_data(newname, data=o_d)
 
     if saved:
+        # Set input and output coordinates for this rotation matrix
+        rotmat_set_coords(newname, input_coords, 'MVA')
         out_vars.append(newname)
 
     if evname is not None:

@@ -11,6 +11,7 @@ from pytplot import get_data, store_data, del_data
 
 from pyspedas.cotrans_tools.xyz_to_polar import xyz_to_polar
 from pyspedas.cotrans_tools.cotrans import cotrans
+from .rotmat_set_coords import rotmat_set_coords
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
@@ -236,5 +237,8 @@ def fac_matrix_make(mag_var_name, other_dim='Xgse', pos_var_name=None, newname=N
 
     # Store the computed FAC matrix into a new tplot variable.
     store_data(newname, data={'x': mag_data.times, 'y': fac_mat})
+    mag_data_coords = get_coords(mag_var_name)
+    out_coords = "FAC-" + coord_option.upper()
+    rotmat_set_coords(newname, mag_data_coords.upper(), out_coords)
 
     return newname
