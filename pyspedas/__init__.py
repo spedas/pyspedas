@@ -17,6 +17,8 @@ from .cdagui_tools.cdaweb import CDAWeb
 from .cotrans_tools.cotrans import cotrans
 from .cotrans_tools.cotrans_get_coord import cotrans_get_coord
 from .cotrans_tools.cotrans_set_coord import cotrans_set_coord
+from .cotrans_tools.rotmat_get_coords import rotmat_get_coords
+from .cotrans_tools.rotmat_set_coords import rotmat_set_coords
 from .cotrans_tools.tvector_rotate import tvector_rotate
 from .cotrans_tools.cart2spc import cart2spc
 from .cotrans_tools.spc2cart import spc2cart
