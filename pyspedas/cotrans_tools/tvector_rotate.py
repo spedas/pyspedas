@@ -104,7 +104,8 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
             vec_fac[i, :] = matrix @ vec_data.y[i, :]
 
         saved = store_data(new_var, data={'x': vec_data.times, 'y': vec_fac}, attr_dict=out_vec_metadata)
-        pyspedas.set_coords(new_var, rot_out_coords)
+        if rot_out_coords is not None:
+            pyspedas.set_coords(new_var, rot_out_coords)
 
         if saved:
             out_names.append(new_var)
