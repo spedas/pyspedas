@@ -1,9 +1,12 @@
 import logging
 import numpy as np
+import pyspedas
 from pyspedas import tinterpol
 from pytplot import get_data, store_data, tnames
 from pyspedas.cotrans_tools.quaternions import qtom, mtoq, qslerp
 from pyspedas.cotrans_tools.matrix_array_lib import ctv_verify_mats, ctv_left_mats, ctv_swap_hands
+from copy import deepcopy
+from .rotmat_get_coords import rotmat_get_coords
 
 
 def tvector_rotate(mat_var_in, vec_var_in, newname=None):
@@ -54,12 +57,20 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
 
     out_names = []
 
+    rot_in_coords, rot_out_coords = rotmat_get_coords(mat_var_in)
+
     # loop over the vectors
     for vec_var, new_var in zip(vec_var_in, newname):
         vec_data = get_data(vec_var)
-        vec_metadata = get_data(vec_var, metadata=True)
+        in_vec_metadata = get_data(vec_var, metadata=True)
+        out_vec_metadata = deepcopy(in_vec_metadata)
         mat_data = get_data(mat_var_in)
         m_d_y = mat_data.y
+
+        in_vec_coords = pyspedas.get_coords(vec_var)
+        if rot_in_coords is not None and (in_vec_coords is None or in_vec_coords.lower() != rot_in_coords.lower()):
+            logging.warning(f"Input vector {vec_var} coordinate system {in_vec_coords} does not match rotation matrix {mat_var_in} input coordinate system {rot_in_coords}")
+
 
         if not np.array_equal(vec_data.times, mat_data.times) and len(mat_data.times) != 1:
             verify_check = ctv_verify_mats(mat_data.y)
@@ -92,7 +103,8 @@ def tvector_rotate(mat_var_in, vec_var_in, newname=None):
 
             vec_fac[i, :] = matrix @ vec_data.y[i, :]
 
-        saved = store_data(new_var, data={'x': vec_data.times, 'y': vec_fac}, attr_dict=vec_metadata)
+        saved = store_data(new_var, data={'x': vec_data.times, 'y': vec_fac}, attr_dict=out_vec_metadata)
+        pyspedas.set_coords(new_var, rot_out_coords)
 
         if saved:
             out_names.append(new_var)
