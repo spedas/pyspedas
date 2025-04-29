@@ -4,7 +4,7 @@ Unit Tests for lmn transformations.
 
 import numpy as np
 import unittest
-
+import pyspedas
 from pytplot import del_data, get_data, tnames, tplot, data_exists, tplot_restore
 from pyspedas.projects.omni.omni_solarwind_load import omni_solarwind_load
 from pyspedas.cotrans_tools.lmn_matrix_make import lmn_matrix_make
@@ -200,6 +200,11 @@ class TestLMNTransform(unittest.TestCase):
 
         # Compute LMN
         lmn_matrix_make(py_pos, py_b, trange=trange, newname=py_hro)
+
+        # Verify rotation matrix input and output coordinates
+        in_coords, out_coords = pyspedas.rotmat_get_coords(py_hro)
+        self.assertEqual(in_coords.upper(), "GSM")
+        self.assertEqual(out_coords.upper(), "LMN")
 
         for name in py_names:
             self.assertTrue(data_exists(name), f"Data variable does not exist: " + name)

@@ -157,8 +157,16 @@ class TestMinvar(unittest.TestCase):
         pyspedas.projects.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
         minvar_matrix_make('thc_fgs_gse', twindow=3600, tslide=300)
         self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
+        # Check rotation matrix input and output coords
+        in_coord, out_coord = pyspedas.rotmat_get_coords("thc_fgs_gse_mva_mat")
+        self.assertEqual(in_coord.upper(), "GSE")
+        self.assertEqual(out_coord.upper(), "MVA")
         pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgl_gse',newname='mva_data_hour_interp')
         self.assertTrue((data_exists('mva_data_hour_interp')))
+        # Check output vector coordinates
+        vec_out_coord = pyspedas.get_coords('mva_data_hour_interp')
+        self.assertEqual(vec_out_coord.upper(), "MVA")
+
 
     def test_minvar_matrix_make_idl_single(self):
         """ Test a minvar_matrix_make call with only a single window """

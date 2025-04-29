@@ -9,7 +9,7 @@ import numpy as np
 import unittest
 from pyspedas import tplot_restore
 from numpy.testing import assert_allclose
-from pyspedas import tvector_rotate
+from pyspedas import tvector_rotate, rotmat_get_coords
 from pyspedas import download
 
 
@@ -119,13 +119,24 @@ class TestFac(unittest.TestCase):
         """Test of other_dim = xgse"""
 
         fac_matrix_make('idl_thc_fgs_gse_sm601',other_dim='xgse',newname='mat_xgse')
+        fac_in, fac_out = rotmat_get_coords('mat_xgse')
+        self.assertEqual(fac_in, 'GSE')
+        self.assertEqual(fac_out, 'FAC-XGSE')
         tvector_rotate('mat_xgse', 'idl_thc_fgs_gse', newname='vec_xgse')
+        out_vec_coords = pyspedas.get_coords('vec_xgse')
+        self.assertEqual(out_vec_coords,'FAC-XGSE')
         dat1 = get_data('mat_xgse')
         dat2 = get_data('vec_xgse')
         store_data('vecdiff',data={'x':dat2.times, 'y':self.vec_xgse.y - dat2.y})
         assert_allclose(dat1.y, self.mat_xgse.y, atol=1.0e-06)
         assert_allclose(dat2.y, self.vec_xgse.y, atol=1.0e-06)
         store_data('vecdiff',data={'x':dat2.times, 'y':self.vec_xgse.y - dat2.y})
+        # Test rotmat_get_coords on variable that doesn't have the right metadata
+        bogus_in, bogus_out = rotmat_get_coords('vecdiff')
+        self.assertEqual(bogus_in, None)
+        self.assertEqual(bogus_out, None)
+        # Test tvector_rotate on a variable with no coords set
+        tvector_rotate('mat_xgse', 'vecdiff', newname='bogus_vec_cotrans')
         #tplot('vec_xgse idl_thc_fgs_fac_xgse vecdiff')
 
     def test_fac_xgse_thm(self):
