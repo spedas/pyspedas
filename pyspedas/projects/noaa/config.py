@@ -2,7 +2,8 @@ import os
 
 CONFIG = {
     "local_data_dir": "geom_indices/",
-    "remote_data_dir": "http://themis.ssl.berkeley.edu/data/themis/",
+    "gfz_remote_data_dir": "https://datapub.gfz-potsdam.de/download/10.5880.Kp.0001/Kp_definitive/",
+    "noaa_remote_data_dir": "https://www.ngdc.noaa.gov/stp/space-weather/geomagnetic-data/INDICES/KP_AP/"
 }
 
 # override local data directory with environment variables
