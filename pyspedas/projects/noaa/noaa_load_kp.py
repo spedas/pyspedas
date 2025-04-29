@@ -284,12 +284,9 @@ def load_kp_to_tplot(
 
 def noaa_load_kp(
     trange=["2017-03-01/00:00:00", "2017-03-31/23:59:59"],
-    kp_mirror=None,
-    remote_kp_dir=None,
     local_kp_dir=None,
     datatype=[],
     gfz=False,
-    gfz_ftp=False,
     prefix="",
     suffix="",
     time_clip=True,
@@ -303,10 +300,6 @@ def noaa_load_kp(
     ----------
     trange : list of str
         Time range to load data for. Should be a list of two strings.
-    kp_mirror : str
-        HTTP server where mirrored Kp/Ap data resides.
-    remote_kp_dir : str
-        Directory where the Kp/Ap data lives on the mirror server.
     local_kp_dir : str
         Directory where data is saved locally.
     datatype : list of str, optional
@@ -325,11 +318,8 @@ def noaa_load_kp(
     gfz : bool, optional
         Load data from the HTTPS site of the German Research Centre for Geosciences, instead of NOAA.
         This is the default behavior if the end time is on or after 2018.
-        Default is False (by default, it loads data from the ftp server of NOAA).
+        Default is False (by default, it loads data from the HTTPS server of NOAA).
         If this source is used, the Sunspot_Number, F10.7, and Flux_Qualifier datatypes will not be available.
-    gfz_ftp : bool, optional
-        Load data from the ftp site of GFZ instead of https site. This is legacy behavior.
-        Default is False.
     prefix: str, optional
         If provided, specifies a string to be prepended to tplot variable names.
     suffix: str, optional
@@ -381,24 +371,12 @@ def noaa_load_kp(
         )
 
     # Remote site and directory
-    use_ftp = True
     if gfz or end_year >= 2018:
-        if gfz_ftp:
-            kp_mirror = "ftp.gfz-potsdam.de"
-            remote_kp_dir = "/pub/home/obs/kp-ap/wdc/yearly/"
-            gfz = True
-            pre = "kp"
-            suf = ".wdc"
-            use_ftp = True
-        else:
-            use_ftp = False
+        remote_data_dir = CONFIG['gfz_remote_data_dir']
+        pathformat = "Kp_def%Y.wdc"
     else:
-        kp_mirror = kp_mirror or "ftp.ngdc.noaa.gov"
-        remote_kp_dir = remote_kp_dir or "/STP/GEOMAGNETIC_DATA/INDICES/KP_AP/"
-        pre = ""
-        suf = ""
-        use_ftp = True
-
+        remote_data_dir=CONFIG['noaa_remote_data_dir']
+        pathformat = "%Y"
     # Local directory
     if not local_kp_dir:
         local_data_dir = CONFIG["local_data_dir"]
@@ -408,39 +386,14 @@ def noaa_load_kp(
     if len(local_data_dir) > 0 and not local_data_dir.endswith(os.sep):
         local_data_dir += os.sep
 
-    if use_ftp:
-        logging.info("Loading geomagnetic index data from " + kp_mirror + remote_kp_dir)
-        # Remote names
-        remote_names = [
-            pre + str(year) + suf for year in range(start_year, end_year + 1)
-        ]
-
-        files = []
-        # In this case, filesnames are just the year (2020, 2021, etc.)
-        for yearstr in remote_names:
-            dfile = download_ftp(
-                kp_mirror,
-                remote_kp_dir,
-                yearstr,
-                local_data_dir,
-                force_download=force_download,
-            )
-            if len(dfile) > 0:
-                files.append(dfile[0])
-    else:
-        # use https for gfz data
-        gfz_path_http = (
-            "https://datapub.gfz-potsdam.de/download/10.5880.Kp.0001/Kp_definitive/"
-        )
-        logging.info("Loading geomagnetic index data from " + gfz_path_http)
-        pathformat = "Kp_def%Y.wdc"
-        remote_names = dailynames(file_format=pathformat, trange=trange)
-        files = download(
-            remote_file=remote_names,
-            remote_path=gfz_path_http,
-            local_path=local_data_dir,
-            force_download=force_download,
-        )
+    logging.info("Loading geomagnetic index data from " + remote_data_dir)
+    remote_names = dailynames(file_format=pathformat, trange=trange)
+    files = download(
+        remote_file=remote_names,
+        remote_path=remote_data_dir,
+        local_path=local_data_dir,
+        force_download=force_download,
+    )
 
     if len(files) == 0:
         logging.error("No files found.")
