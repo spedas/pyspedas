@@ -41,10 +41,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
             The file names and full paths of CDF files.
         mastercdf : str
             The file name of a master CDF to be used, if any
-        varformat : str
+        varformat : str or list[str]
             The file variable formats to load into tplot.  Wildcard character
             "*" is accepted.  By default, all variables are loaded in.
-        exclude_format : str
+        exclude_format : str or list[str]
             The file variable formats to exclude from loading into tplot.  Wildcard character
             "*" is accepted. By default, no variables are excluded.
         get_support_data: bool
@@ -101,6 +101,11 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     if suffix is None:
         suffix = ''
 
+    # When doing varname, varformat, or exclude_format checks, do we need to take prefixes or suffixes into account?
+    check_pre_suff = False
+    if prefix != '' or suffix != '':
+        check_pre_suff = True
+
     if not isinstance(varnames, list):
         varnames = [varnames]
 
@@ -127,10 +132,26 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     if get_ignore_data:
         var_type.append('ignore_data')
 
+    # Replace lists with regex alternation
+    if isinstance(varformat, list):
+        varformat = '|'.join(varformat)
+    # Replace spaces with regex alternation
+    if ' ' in varformat:
+        explode=varformat.split()
+        varformat='|'.join(explode)
+
     varformat = varformat.replace("*", ".*")
     var_regex = re.compile(varformat)
 
     if exclude_format is not None:
+        # Replace spaces and lists with regex alternation as we did for varformat
+        if isinstance(exclude_format, list):
+            exclude_format = '|'.join(exclude_format)
+        # Replace spaces with regex alternation
+        if ' ' in exclude_format:
+            explode=exclude_format.split()
+            exclude_format='|'.join(explode)
+
         exclude_format = exclude_format.replace("*",".*")
         exclude_regex = re.compile(exclude_format)
     else:
@@ -183,6 +204,9 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
         # User defined variables.
         if len(varnames) > 0:
             load_cdf_variables = [value for value in varnames if value in all_cdf_variables]
+            if check_pre_suff:
+                pre_suff = [value for value in all_cdf_variables if prefix+value+suffix in varnames]
+                load_cdf_variables.extend(pre_suff)
         else:
             load_cdf_variables = all_cdf_variables
 
@@ -193,10 +217,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
             gatt = {}
 
         for var in load_cdf_variables:
-            if not re.match(var_regex, var):
+            if not re.match(var_regex, var) and (not check_pre_suff or not re.match(var_regex, prefix+var+suffix)):
                 logging.debug("Variable %s does not match varformat, skipping", var)
                 continue
-            elif exclude_regex is not None and re.match(exclude_regex, var):
+            elif exclude_regex is not None and (re.match(exclude_regex, var) or (check_pre_suff and re.match(exclude_regex, prefix+var+suffix))):
                 logging.debug("Variable %s matches exclude_format, skipping", var)
                 continue
             logging.debug('Processing variable attributes for %s', var)
