@@ -3,6 +3,7 @@ import unittest
 
 import pyspedas
 from pyspedas.utilities.download import download
+from pyspedas.utilities.download_ftp import download_ftp
 
 from pyspedas.projects.themis.config import CONFIG
 # Use whichever remote server is configured for THEMIS, in case the Berkeley server is unavailable
@@ -119,6 +120,44 @@ class DownloadTestCases(unittest.TestCase):
         vars = pyspedas.projects.themis.state(probe='a',suffix='_suf', exclude_format=['*vel*', '*spin*','*sse*_suf', '*sel'])
         vars.sort()
         self.assertEqual(vars, ['tha_pos_gse_suf', 'tha_pos_gsm_suf', 'tha_pos_suf'])
+
+    def test_download_ftp(self):
+        from pyspedas.projects.noaa.config import CONFIG
+        kp_mirror = "ftp.gfz-potsdam.de"
+        remote_kp_dir = "/pub/home/obs/kp-ap/wdc/yearly/"
+        local_data_dir = CONFIG['local_data_dir']
+        pre = "kp"
+        suf = ".wdc"
+        start_year = 2019
+        end_year = 2021
+        # Remote names
+        remote_names = [
+            pre + str(year) + suf for year in range(start_year, end_year + 1)
+        ]
+        files=[]
+        for yearstr in remote_names:
+            dfile = download_ftp(
+                kp_mirror,
+                remote_kp_dir,
+                yearstr,
+                local_data_dir,
+                force_download=True,
+            )
+            if len(dfile) > 0:
+                files.append(dfile[0])
+        self.assertTrue(os.path.exists(files[0]))
+        self.assertTrue(os.path.exists(files[1]))
+        self.assertTrue(os.path.exists(files[2]))
+        # repeat download of first file to exercise 'file not modified' path
+        dfile = download_ftp(
+            kp_mirror,
+            remote_kp_dir,
+            remote_names[0],
+            local_data_dir,
+            force_download=False,
+        )
+        self.assertTrue(len(dfile) == 1)
+
 
 
 if __name__ == "__main__":
