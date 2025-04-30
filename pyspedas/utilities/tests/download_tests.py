@@ -1,6 +1,7 @@
 import os
 import unittest
 
+import pyspedas
 from pyspedas.utilities.download import download
 
 from pyspedas.projects.themis.config import CONFIG
@@ -79,6 +80,45 @@ class DownloadTestCases(unittest.TestCase):
                              remote_file='themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf',
                              force_download=True)
             self.assertIn("Downloading", log.output[0])
+
+    def test_cdf_to_tplot_varformat(self):
+        # Check varnamea, varformat, exclude_format, and suffixes in various combinations
+        # single varformat pattern
+        vars = pyspedas.projects.themis.state(probe='a',varformat='*pos*')
+        vars.sort()
+        self.assertEqual(vars, ['tha_pos', 'tha_pos_gse', 'tha_pos_gsm', 'tha_pos_sel', 'tha_pos_sse'])
+        # single varformat pattern with "|", should include both options
+        vars = pyspedas.projects.themis.state(probe='a', varformat='*pos*|*vel*')
+        vars.sort()
+        self.assertEqual(vars,['tha_pos', 'tha_pos_gse', 'tha_pos_gsm', 'tha_pos_sel', 'tha_pos_sse', 'tha_vel', 'tha_vel_gse', 'tha_vel_gsm', 'tha_vel_sel', 'tha_vel_sse'])
+        # varformat pattern with spaces, should treat as alternate patterns
+        vars = pyspedas.projects.themis.state(probe='a', varformat='*pos*  *vel*')
+        vars.sort()
+        self.assertEqual(vars,['tha_pos', 'tha_pos_gse', 'tha_pos_gsm', 'tha_pos_sel', 'tha_pos_sse', 'tha_vel', 'tha_vel_gse', 'tha_vel_gsm', 'tha_vel_sel', 'tha_vel_sse'])
+        # varformat and exclude_format patterns with spaces
+        vars = pyspedas.projects.themis.state(probe='a', varformat='*pos*  *vel*', exclude_format='*sel* *sse*')
+        vars.sort()
+        self.assertEqual(vars,['tha_pos', 'tha_pos_gse', 'tha_pos_gsm', 'tha_vel', 'tha_vel_gse', 'tha_vel_gsm'])
+        # varformat patterns as array, should treat as alternate patterns
+        vars = pyspedas.projects.themis.state(probe='a', varformat=['*pos*','*vel*'])
+        vars.sort()
+        self.assertEqual(vars,['tha_pos', 'tha_pos_gse', 'tha_pos_gsm', 'tha_pos_sel', 'tha_pos_sse', 'tha_vel', 'tha_vel_gse', 'tha_vel_gsm', 'tha_vel_sel', 'tha_vel_sse'])
+        # varformat and exclude_format patterns as arrays
+        vars = pyspedas.projects.themis.state(probe='a', varformat=['*pos*','*vel*'], exclude_format=['*sel*', '*sse*'])
+        vars.sort()
+        self.assertEqual(vars,['tha_pos', 'tha_pos_gse', 'tha_pos_gsm', 'tha_vel', 'tha_vel_gse', 'tha_vel_gsm'])
+        # varnames with suffix specified, should return requested variables even though CDF names don't have suffix
+        vars = pyspedas.projects.themis.state(probe='a',suffix='_suf', varnames=['tha_pos_suf', 'tha_pos_gse_suf'])
+        vars.sort()
+        self.assertEqual(vars, ['tha_pos_gse_suf', 'tha_pos_suf'])
+        # varformat with suffix specified, should return values
+        vars = pyspedas.projects.themis.state(probe='a',suffix='_suf', varformat=['*pos_suf', '*pos_gse_suf'])
+        vars.sort()
+        self.assertEqual(vars, ['tha_pos_gse_suf', 'tha_pos_suf'])
+        # exclude_format with suffix specified, should remove variables with or without suffixes
+        vars = pyspedas.projects.themis.state(probe='a',suffix='_suf', exclude_format=['*vel*', '*spin*','*sse*_suf', '*sel'])
+        vars.sort()
+        self.assertEqual(vars, ['tha_pos_gse_suf', 'tha_pos_gsm_suf', 'tha_pos_suf'])
 
 
 if __name__ == "__main__":
