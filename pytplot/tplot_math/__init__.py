@@ -7,7 +7,6 @@ from .deflag import deflag
 from .degap import degap
 from .derive import derive
 from .divide import divide
-from .flatten import flatten
 from .interp_nan import interp_nan
 from .tinterp import tinterp
 from .join_vec import join_vec
