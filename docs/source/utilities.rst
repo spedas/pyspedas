@@ -118,6 +118,8 @@ or inspect metadata for input variables, these routines can help.
 
 .. autofunction:: pyspedas.get_coords
 .. autofunction:: pyspedas.set_coords
+.. autofunction:: pyspedas.rotmat_set_coords
+.. autofunction:: pyspedas.rotmat_get_coords
 .. autofunction:: pyspedas.get_units
 .. autofunction:: pyspedas.set_units
 

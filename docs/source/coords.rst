@@ -101,6 +101,11 @@ interpolation of the rotation matrices to match the timestamps of the vectors be
 .. autofunction:: pyspedas.tvector_rotate
    :no-index:
 
+.. autofunction:: pyspedas.rotmat_set_coords
+   :no-index:
+.. autofunction:: pyspedas.rotmat_get_coords
+   :no-index:
+
 Getting/Setting the Coordinate System for tplot variables
 ---------------------------------------------------------
 .. autofunction:: pyspedas.get_coords
