@@ -131,7 +131,6 @@ def tpwrspc(varname, newname=None, overwrite=False, noline=False, nohanning=Fals
         ff = np.array([f,])
         tt = np.array([tav,], dtype='float64')
         store_data(newname, data={'x': tt, 'y':  pp, 'v':  ff})
-        options(newname, 'data_type', 'power_spectrum')
         options(newname, 'spec', 1)
         options(newname, 'ylog', 1)
     else:
