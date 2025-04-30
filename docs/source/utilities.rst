@@ -136,7 +136,6 @@ Arithmetic
 .. autofunction:: pyspedas.deriv_data
 .. autofunction:: pyspedas.tkm2re
 .. autofunction:: pyspedas.avg_res_data
-.. autofunction:: pyspedas.flatten
 .. autofunction:: pyspedas.subtract_average
 .. autofunction:: pyspedas.subtract_median
 
