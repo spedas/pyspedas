@@ -1,6 +1,6 @@
 
 import logging
-from pytplot import store_data, options
+from pytplot import store_data, options, set_units
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
@@ -32,14 +32,35 @@ def spd_pgs_moments_tplot(moments, x=None, prefix='', suffix=''):
 
     if x is None:
         logging.error('Error, no x-values specified')
-        return
+        return None
 
     if not isinstance(moments, dict):
         logging.error('Error, the "moments" variable must be a hash table containing the moments')
-        return
+        return None
+
+    units_dict = {
+        'density': '1/cc',
+        'velocity': 'km/s',
+        'vthermal': 'km/s',
+        'flux': '#/s/cm^2',
+        't3': 'eV',
+        'magt3': 'eV',
+        'avgtemp': 'eV',
+        'sc_pot': 'V',
+        'eflux': 'eV/(cm^2-s)',
+        'mftens': 'eV/cm^3',
+        'ptens': 'eV/cm^3',
+        'symm_theta': 'degrees',
+        'symm_phi': 'degrees',
+        'symm_ang': 'degrees',
+        'magf': 'nT',
+        }
 
     for key in moments.keys():
         store_data(prefix + '_' + key + suffix, data={'x': x, 'y': moments[key]})
+        units = units_dict.get(key)
+        if units is not None:
+            set_units(prefix + '_' + key + suffix, units)
 
     options(prefix + '_density' + suffix, 'ysubtitle', '[1/cc]')
     options(prefix + '_velocity' + suffix, 'yrange', [-800, 800])
