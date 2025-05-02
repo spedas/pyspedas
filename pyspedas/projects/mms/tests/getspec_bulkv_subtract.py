@@ -80,6 +80,14 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.ptens_bulk_subtract = get_data('mms1_dis_dist_brst_ptens_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_ptens_no_bulk_subtract','ptens_mom_nobulk_subtract')
         tplot_copy('mms1_dis_dist_brst_ptens_bulk_subtract','ptens_mom_bulk_subtract')
+        cls.velocity_nobulk_subtract = get_data('mms1_dis_dist_brst_velocity_no_bulk_subtract')
+        cls.velocity_bulk_subtract = get_data('mms1_dis_dist_brst_velocity_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_velocity_no_bulk_subtract','velocity_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_velocity_bulk_subtract','velocity_mom_bulk_subtract')
+        cls.vthermal_nobulk_subtract = get_data('mms1_dis_dist_brst_vthermal_no_bulk_subtract')
+        cls.vthermal_bulk_subtract = get_data('mms1_dis_dist_brst_vthermal_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_vthermal_no_bulk_subtract','vthermal_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_vthermal_bulk_subtract','vthermal_mom_bulk_subtract')
 
         # HPCA Spectra
         cls.hpca_e_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract')
@@ -391,15 +399,19 @@ class TestGetspecBulkv(unittest.TestCase):
 
     def test_getspec_moments_nobulkv_subtract(self):
         """Test of getspec without bulk velocity subtraction"""
+        from pyspedas import get_units
 
         mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
                         output=['moments'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
-        print(pyspedas.tnames('mms1_dis_dist_brst*no_bulk_subtract'))
         tplot(['mms1_dis_dist_brst_avgtemp_no_bulk_subtract','avgtemp_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_avgtemp_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
+        self.assertEqual(units,'eV')
         assert_allclose(self.avgtemp_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
         tplot(['mms1_dis_dist_brst_density_no_bulk_subtract','density_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_density_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_density_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_density_no_bulk_subtract')
+        self.assertEqual(units,'1/cm^3')
         assert_allclose(self.density_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
         # eflux not implemented yet
         #tplot(['mms1_dis_dist_brst_eflux_no_bulk_subtract','eflux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_eflux_nobulk_subtract.png')
@@ -407,16 +419,34 @@ class TestGetspecBulkv(unittest.TestCase):
         #assert_allclose(self.eflux_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
         tplot(['mms1_dis_dist_brst_flux_no_bulk_subtract','flux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_flux_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_flux_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_flux_no_bulk_subtract')
+        self.assertEqual(units,'1/(cm^2-s)')
         # 10% differences in flux
         #assert_allclose(self.flux_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
         tplot(['mms1_dis_dist_brst_mftens_no_bulk_subtract','mftens_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_mftens_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_mftens_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_mftens_no_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
         # Almost 10% differences in places
         #assert_allclose(self.mftens_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
         tplot(['mms1_dis_dist_brst_ptens_no_bulk_subtract','ptens_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_ptens_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_ptens_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_ptens_no_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
         # Large differences
         #assert_allclose(self.ptens_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_velocity_no_bulk_subtract','velocity_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_velocity_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_velocity_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_velocity_no_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # 10% differences
+        #assert_allclose(self.velocity_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_vthermal_no_bulk_subtract','vthermal_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_vthermal_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_vthermal_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_vthermal_no_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # Large differences
+        assert_allclose(self.vthermal_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
 
     def test_getspec_moments_bulkv_subtract(self):
         """Test of getspec with bulk velocity subtraction"""
