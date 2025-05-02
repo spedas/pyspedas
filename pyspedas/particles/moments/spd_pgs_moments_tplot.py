@@ -57,13 +57,13 @@ def spd_pgs_moments_tplot(moments, x=None, prefix='', suffix=''):
         }
 
     for key in moments.keys():
-        store_data(prefix + '_' + key + suffix, data={'x': x, 'y': moments[key]})
+        store_data(prefix + key + suffix, data={'x': x, 'y': moments[key]})
         units = units_dict.get(key)
         if units is not None:
-            set_units(prefix + '_' + key + suffix, units)
+            set_units(prefix + key + suffix, units)
 
-    options(prefix + '_density' + suffix, 'ysubtitle', '[1/cc]')
-    options(prefix + '_velocity' + suffix, 'yrange', [-800, 800])
-    options(prefix + '_flux' + suffix, 'yrange', [-1e8, 1e8])
+    options(prefix + 'density' + suffix, 'ysubtitle', '[1/cc]')
+    options(prefix + 'velocity' + suffix, 'yrange', [-800, 800])
+    options(prefix + 'flux' + suffix, 'yrange', [-1e8, 1e8])
 
-    return [prefix + '_' + key + suffix for key in moments.keys()]
+    return [prefix + key + suffix for key in moments.keys()]

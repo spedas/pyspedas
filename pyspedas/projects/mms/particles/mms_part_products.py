@@ -474,7 +474,7 @@ are the scientific products that should be used for analysis."""
               'ptens': out_ptens,
               'vthermal': out_vthermal,
               'avgtemp': out_avgtemp}
-        moments_vars = spd_pgs_moments_tplot(moments, x=data_times, prefix=user_prefix + in_tvarname, suffix=suffix)
+        moments_vars = spd_pgs_moments_tplot(moments, x=data_times, prefix=user_prefix + in_tvarname + '_', suffix=suffix)
         out_vars.extend(moments_vars)
 
     if 'fac_moments' in output:
@@ -486,7 +486,7 @@ are the scientific products that should be used for analysis."""
               'ptens': out_fac_ptens,
               'vthermal': out_fac_vthermal,
               'avgtemp': out_fac_avgtemp}
-        fac_moments_vars = spd_pgs_moments_tplot(fac_moments, x=data_times, prefix=user_prefix + in_tvarname+'_fac', suffix=suffix)
+        fac_moments_vars = spd_pgs_moments_tplot(fac_moments, x=data_times, prefix=user_prefix + in_tvarname+'_fac_', suffix=suffix)
         out_vars.extend(fac_moments_vars)
 
     if 'energy' in output:
