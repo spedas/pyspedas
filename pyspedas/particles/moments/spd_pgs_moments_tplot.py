@@ -39,10 +39,10 @@ def spd_pgs_moments_tplot(moments, x=None, prefix='', suffix=''):
         return None
 
     units_dict = {
-        'density': '1/cc',
+        'density': '1/cm^3',
         'velocity': 'km/s',
         'vthermal': 'km/s',
-        'flux': '#/s/cm^2',
+        'flux': '1/(cm^2-s)',
         't3': 'eV',
         'magt3': 'eV',
         'avgtemp': 'eV',
@@ -61,8 +61,8 @@ def spd_pgs_moments_tplot(moments, x=None, prefix='', suffix=''):
         units = units_dict.get(key)
         if units is not None:
             set_units(prefix + key + suffix, units)
+            options(prefix+key+suffix, 'ysubtitle', '[' + units + ']')
 
-    options(prefix + 'density' + suffix, 'ysubtitle', '[1/cc]')
     options(prefix + 'velocity' + suffix, 'yrange', [-800, 800])
     options(prefix + 'flux' + suffix, 'yrange', [-1e8, 1e8])
 
