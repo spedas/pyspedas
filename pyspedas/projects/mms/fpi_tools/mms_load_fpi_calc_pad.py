@@ -104,4 +104,4 @@ def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', su
         options(pad_avg_name, 'spec', True)
         out_vars.append(pad_avg_name)
 
-        return out_vars
+    return out_vars
