@@ -48,7 +48,8 @@ def split_vec(
 
     Returns
     -------
-        None
+    list[str]
+        List of variables created
 
     Examples
     --------
@@ -66,7 +67,7 @@ def split_vec(
     # Make sure the tvar is found
     if tvar not in pytplot.data_quants:
         logging.error(f"Error: {tvar} not found in memory.")
-        return
+        return None
 
     # Give a default to the new name
     if newname is None:
