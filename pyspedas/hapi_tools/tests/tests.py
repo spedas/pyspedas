@@ -41,6 +41,16 @@ class HAPITests(unittest.TestCase):
         self.assertTrue(data_exists('BY_GSE'))
         self.assertTrue(data_exists('BZ_GSE'))
 
+    def test_string_time(self):
+        del_data()
+        server = "https://supermag.jhuapl.edu/hapi"
+        dataset = "TTB/PT1M/xyz"
+        start = "2020-05-10T00:00Z"
+        stop = "2020-05-14T00:00Z"
+        parameters = ''
+        param_list = hapi(trange=[start,stop], server=server, dataset=dataset, parameters=parameters)
+        self.assertTrue('mlt' in param_list)
+        self.assertTrue(data_exists('mlt'))
 
 if __name__ == '__main__':
     unittest.main()
