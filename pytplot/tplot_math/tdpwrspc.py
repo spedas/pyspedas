@@ -12,7 +12,7 @@ import logging
 import numpy as np
 from .dpwrspc import dpwrspc
 from .split_vec import split_vec
-from pytplot import get_data, store_data, options, time_double
+from pytplot import get_data, store_data, options, time_double, set_units
 
 
 def tdpwrspc(
@@ -134,7 +134,7 @@ def tdpwrspc(
                 if len(ok) == 0:
                     logging.error("No data in time range")
                     logging.error(f"{tr}")
-                    return
+                    return None
                 t = t[ok]
                 y = y[ok]
 
@@ -142,7 +142,7 @@ def tdpwrspc(
             ok = np.isfinite(y)
             if len(ok) == 0:
                 logging.error("No finite data in time range")
-                return
+                return None
             t = t[ok]
             y = y[ok]
 
@@ -164,7 +164,7 @@ def tdpwrspc(
 
             if len(ok) <= nbp:
                 logging.error("Not enough data in time range")
-                return
+                return None
 
             pwrspc = dpwrspc(
                 t,
@@ -182,19 +182,17 @@ def tdpwrspc(
                 store_data(
                     newname, data={"x": pwrspc[0] + t00, "y": pwrspc[2], "v": pwrspc[1]}
                 )
-                if has_data_att:
-                    options(newname, "data_att", metadata["data_att"])
-                options(newname, "data_type", "dynamic_power_spectrum")
                 options(newname, "ysubtitle", "[Hz]")
                 options(newname, "spec", True)
                 options(newname, "ylog", True)
                 options(newname, "zlog", True)
                 options(newname, "Colormap", "spedas")
                 if has_units:
-                    options(newname, "units", newunits)
+                    set_units(newname, newunits)
                 if notperhz:
                     options(newname, "ztitle", "(" + inputunits + ")^2")
                 else:
                     options(newname, "ztitle", "(" + inputunits + ")^2/Hz")
 
-        return newname
+                return newname
+    return None
