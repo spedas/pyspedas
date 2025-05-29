@@ -143,10 +143,14 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
                 continue
 
         for idx, datapoint in enumerate(data):
-            if single_line:
-                data_out[idx] = datapoint[param_idx+1]
+            if param_type in ['double','integer']:
+                datapt = datapoint[param_idx+1]
             else:
-                data_out[idx, :] = datapoint[param_idx+1]
+                datapt = None
+            if single_line:
+                data_out[idx] = datapt
+            else:
+                data_out[idx, :] = datapt
 
         data_out = data_out.squeeze()
 
