@@ -603,6 +603,7 @@ class PlotTestCases(unittest.TestCase):
         options('combined_spec', 'ylog', False)
         tplot(vars, save_png='test_pseudo_spectra_disjoint_energies_explicityrange', display=global_display)
 
+        store_data('esa_srvy_burst', ['tha_peif_en_eflux', 'tha_peib_en_eflux'])
         options('tha_peib_en_eflux', 'y_no_resample', 1)
         zlim('tha_peib_en_eflux', 1.0e3, 1.0e7)
         options('tha_peib_en_eflux', 'y_range', [0.5, 1.0e6])
