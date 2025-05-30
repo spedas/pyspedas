@@ -18,6 +18,12 @@ class FPITestCases(unittest.TestCase):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
 
+    # Test loading partial moments data sets
+
+    def test_load_partmoms_data(self):
+        data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], datatype=['des-partmoms', 'dis-partmoms'])
+        self.assertTrue(data_exists('mms1_des_bulkv_part_gse_fast'))
+        self.assertTrue(data_exists('mms1_dis_bulkv_part_gse_fast'))
 
     # Regression test for non-monotonic timestamps in FPI numberdensity variables.
     # They are present in both des-moms and des-momsaux L2 CDFs, and if both sets of files
