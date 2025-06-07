@@ -35,7 +35,7 @@ import requests
 import json
 import numpy as np
 from pytplot import store_data, options
-from pytplot import time_double, time_string
+from pytplot import time_double, time_string, set_units, set_coords
 
 
 # Global parameters for the functions in this file.
@@ -412,7 +412,7 @@ def sosmag_to_tplot(
         options(var_name2, "legend_names", pnames)
         options(var_name2, "ytitle", "b_gse")
         options(var_name2, "ysubtitle", "[nT]")
-        options(var_name2, "coord_sys", "gse")
+        set_coords(var_name2, "gse")
         var_names.append(var_name2)
 
         # Magnetic field in HPEN 'b_hpen_x', 'b_hpen_y', 'b_hpen_z'
@@ -427,7 +427,7 @@ def sosmag_to_tplot(
             options(var_name3, "legend_names", pnames)
             options(var_name3, "ytitle", "b_hpen")
             options(var_name3, "ysubtitle", "[nT]")
-            options(var_name3, "coord_sys", "hpen")
+            set_coords(var_name3, "hpen")
             var_names.append(var_name3)
 
         # Spacecraft Position in GSE 'position_x', 'position_y', 'position_z'
@@ -441,7 +441,7 @@ def sosmag_to_tplot(
         options(var_name4, "legend_names", pnames)
         options(var_name4, "ytitle", "pos_gse")
         options(var_name4, "ysubtitle", "[km]")
-        options(var_name4, "coord_sys", "gse")
+        set_coords(var_name4,  "gse")
         var_names.append(var_name4)
 
         # Data flags
@@ -605,8 +605,8 @@ def particle_to_tplot(
             options(var_name0, "legend_names", pname + " (" + flux_bands[i - 1] + ")")
             options(var_name0, "ytitle", pname)
             options(var_name0, "ysubtitle", "[cm^-2 sr^-1 s^-1 keV^-1]")
-            options(var_name0, "coord_sys", "gse")
-            options(var_name0, "units", "cm^-2 sr^-1 s^-1 keV^-1")
+            set_coords(var_name0, "gse")
+            set_units(var_name0,  "cm^-2 sr^-1 s^-1 keV^-1")
             var_names.append(var_name0)
 
         # Attenuator is opened ('0') or closed ('1')
