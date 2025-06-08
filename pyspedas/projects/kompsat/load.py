@@ -251,6 +251,8 @@ def esa_hapi_get_data(
         The obtained session cookie.
     xsrf_token: str
         The obtained xsrf token cookie.
+    instrument: str
+        The instrument name. Valid options: "sosmag", "electron", "protons".  Default: "sosmag"
     datatype: str
         Data type for sosmag, either '' (recalibrated) or '1m' (1 minute, real time).
     timemin: str
@@ -350,7 +352,7 @@ def sosmag_to_tplot(
         The obtained data as a json dictionary of strings.
     parameters: dict of str
         The obtained parameters for the data as a json dictionary of strings.
-    description: str
+    desc: str
         The obtained description for this set of data.
     datatype: str
         Data type can be either '' (recalibrated) or '1m' (1 minute real time).
@@ -515,7 +517,7 @@ def particle_to_tplot(
         The obtained data as a json dictionary of strings.
     parameters: dict of str
         The obtained parameters for the data as a json dictionary of strings.
-    description: str
+    desc: str
         The obtained description for this set of data.
     ptype: str
         Particle type can be either 'p' (protons) or 'e' (electrons).
@@ -791,8 +793,8 @@ def load(
     # Set a session with the server.
     capok = False
     if authenticated:
-        sessionοκ, jsession_id, xsrf_token = esa_get_session(auth_cookie)
-        if sessionοκ:
+        sessionok, jsession_id, xsrf_token = esa_get_session(auth_cookie)
+        if sessionok:
             # Session successfully established. Obtained session cookies.
             # Testing session cookies on hapi/capabilities.
             if esa_hapi_parameters["print_messages"]:
