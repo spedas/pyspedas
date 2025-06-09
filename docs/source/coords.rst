@@ -75,6 +75,19 @@ in the direction of the basis vectors, the signs are manipulated such that the Z
 components in the j and k directions are positive, while maintaining a right-handed coordinate system. The output is a
 set of rotation matrices over time, suitable for use with the tvector_rotate utility.
 
+Minimum Variance Analysis shares several similarities with Principal Component Analysis (PCA): both approaches
+involve setting up a covariance matrix, and finding eigenvalues and eigenvectors to form an orthnormal coordinate system.
+However, there are some key differences::
+
+    * PySPEDAS' MVA tools work with time-verying 3-d vector data, while PCA is often applied to high-dimensional data sets.
+    * MVA preserves the absolute variance and basis vector directions, while PCA often renormalizes its inputs to have mean 0 and variance 1.
+    * MVA uses a sliding time window, while PCA is usually applied to the entire dataset at once.
+    * PCA is often used to reduce the dimensionality of the data set, while MVA keeps all three dimensions
+    * PCA is more concerned with the amount of variance that is explained by each dimension, while in MVA, the output basis vectors are the output of most interest.
+
+
+
+
 .. autofunction:: pyspedas.minvar_matrix_make
 .. autofunction:: pyspedas.minvar
 
