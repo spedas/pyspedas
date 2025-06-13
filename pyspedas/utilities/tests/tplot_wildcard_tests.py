@@ -148,6 +148,26 @@ class UtilTestCases(unittest.TestCase):
         tplot_options('title',"Positions of THEMIS A B C D E")
         tplot(['th?_pos', 'doesnt_exist'], save_png='tplot_list_onebad.png', display=global_display)
 
+    def test_tplot_names_embedded_spaces(self):
+        # Tplot names can have embedded spaces, make sure they're treated correctly
+        from pyspedas import store_data, del_data, tnames, tplot_names, data_exists
+        del_data('*')
+        t=[1.0,2.0,3.0]
+        d=[1,2,3]
+        store_data('embedded spaces', data={'x':t, 'y':d})
+        names=tnames()
+        self.assertEqual(names, ['embedded spaces'])
+        names=tplot_names()
+        self.assertEqual(names, ['embedded spaces'])
+        del_data('embedded spaces')
+        self.assertFalse(data_exists('embedded spaces'))
+        store_data('embedded spaces', data={'x':t, 'y':d})
+        del_data('*')
+        self.assertFalse(data_exists('embedded spaces'))
+        store_data('embedded spaces', data={'x':t, 'y':d})
+        # This should warn about 'd', 'e', and 'f' not found, but not warn about 'embedded' or 'spaces'
+        vals = tplot_wildcard_expand(['embedded spaces', 'd e f'])
+        self.assertEqual(vals,['embedded spaces'])
 
 
 if __name__ == '__main__':
