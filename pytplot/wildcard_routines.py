@@ -4,7 +4,7 @@ import logging
 from pytplot import data_quants
 from .tplot_names import tplot_names
 
-def wildcard_expand(master_list, patterns, case_sensitive=True):
+def wildcard_expand(master_list, patterns, case_sensitive=True, split_whitespace=True):
     """ Find elements in master list matching one or more wild card patterns
 
     Parameters
@@ -15,6 +15,9 @@ def wildcard_expand(master_list, patterns, case_sensitive=True):
         One or more patterns, which may contain wildcard characters, to be matched agains the master list
     case_sensitive: bool
         A boolean flag indicating whether case-sensitive matching should be performed. Default: True
+    split_whitespace: bool
+        A boolean flag indicating that master_list or patterns should be treated as space-delimited lists.  Set to False if embedded spaces
+        are to be matched.  Default: True
 
     Returns
     -------
@@ -36,10 +39,10 @@ def wildcard_expand(master_list, patterns, case_sensitive=True):
     ['tha_pos_gsm']
 
     """
-    if master_list is None or isinstance(master_list, list) is False:
-        logging.warning("wildcard_expand: master_list must be a non-empty list")
+    if master_list is None:
+        logging.warning("wildcard_expand: master_list must be a non-empty string or list")
         return []
-    if patterns is None or patterns == '':
+    if patterns is None:
         # One could argue that it makes sense to return the entire master list here?
         return []
 
@@ -49,14 +52,31 @@ def wildcard_expand(master_list, patterns, case_sensitive=True):
     # Convert inputs to lists if necessary
     if isinstance(patterns, str):
         patterns=[patterns]
+    if isinstance(master_list, str):
+        master_list=[master_list]
 
     # Warn if either input is empty
-    if len(master_list) == 0 or master_list is None:
+    if len(master_list) == 0 or master_list is None or master_list==['']:
         logging.warning("wildcard_expand: empty master list")
         return []
-    if len(patterns) == 0 or patterns is None:
+    if len(patterns) == 0 or patterns is None or patterns==['']:
         logging.warning("wildcard_expand: empty pattern list")
         return []
+
+    # If split_whitespace is true, expand master list and patterns
+    if split_whitespace:
+        expanded_master_list = []
+        for p in master_list:
+            p_expanded=p.split(' ')
+            expanded_master_list.extend(p_expanded)
+        master_list = expanded_master_list
+        # Do the same for the patterns
+        expanded_patterns=[]
+        for pattern in patterns:
+            split_pattern=pattern.split(' ')
+            expanded_patterns.extend(split_pattern)
+        patterns=expanded_patterns
+
 
     # Prepare temporary lists for matching
     if case_sensitive:
