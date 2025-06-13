@@ -123,13 +123,33 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_efi_l1_data(self):
         """Load L1 EFI."""
-        pyspedas.projects.themis.efi(level='l1', varnames=['thc_eff'])
+        vars = pyspedas.projects.themis.efi(level='l1', varnames=['thc_eff','thc_efp'])
         self.assertTrue(data_exists('thc_eff'))
+        self.assertTrue(data_exists('thc_efp'))
+        self.assertFalse('thc_efw' in vars)
+
+    def test_load_efi_l1_datatype(self):
+        """Load L1 EFI."""
+        vars = pyspedas.projects.themis.efi(level='l1', datatype=['eff', 'efp'])
+        self.assertTrue(data_exists('thc_eff'))
+        self.assertTrue(data_exists('thc_efp'))
+        self.assertFalse('thc_efw' in vars)
 
     def test_load_efi_data(self):
         """Load EFI."""
-        pyspedas.projects.themis.efi(time_clip=True, varnames=['thc_eff_e12_efs'])
+        vars = pyspedas.projects.themis.efi(time_clip=True, varnames=['thc_eff_e12_efs'])
         self.assertTrue(data_exists('thc_eff_e12_efs'))
+        self.assertFalse('thc_efw_gse' in vars)
+
+    def test_load_l2_efw_data(self):
+        """Load EFI L2 wave burst data"""
+        vars = pyspedas.projects.themis.efi(trange=['2017-01-01','2017-01-02'], probe='a',time_clip=True, datatype='efw')
+        self.assertTrue(data_exists('tha_efw_gse'))
+
+    def test_load_l2_efp_data(self):
+        """Load EFI L2 wave burst data"""
+        vars = pyspedas.projects.themis.efi(trange=['2017-01-01','2017-01-02'], probe='a',time_clip=True, datatype='efp')
+        self.assertTrue(data_exists('tha_efp_gse'))
 
     def test_load_slp_data(self):
         pyspedas.projects.themis.slp()
