@@ -242,7 +242,6 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
     def test_highlight(self):
-        del_data("*")
         from pyspedas import highlight, time_double
         del_data("*")
         themis.fgm(probe='c',trange=default_trange)
