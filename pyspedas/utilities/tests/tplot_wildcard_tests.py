@@ -37,9 +37,32 @@ class UtilTestCases(unittest.TestCase):
         # Master list and pattern both null
         result = wildcard_expand(None,None)
         self.assertEqual(result, [])
-        # Master list not a list
+        # Master list not a list (Formerly an error, now accepted)
         result = wildcard_expand('foo', 'foo')
+        self.assertEqual(result, ['foo'])
+        # Master list as space delimited string  (used to be an error, now accepted)
+        master_list_str = 'Foo foo tha_pos_gsm thb_pos_gsm mms1_mec_r_sm'
+        result = wildcard_expand(master_list_str, 'foo')
+        self.assertEqual(result, ['foo'])
+        # Master list and search list as space delimited strings
+        result = wildcard_expand(master_list_str, 'foo bar')
+        self.assertEqual(result, ['foo'])
+        # Search list is a list containing some space delimited strings
+        result = wildcard_expand(master_list_str, ['Foo','foo', 'thb_pos_gsm mms1_mec_r_sm'])
+        self.assertEqual(result, ['Foo','foo', 'thb_pos_gsm', 'mms1_mec_r_sm'])
+        # Master list is empty
+        result = wildcard_expand([], 'foo')
         self.assertEqual(result, [])
+        result = wildcard_expand([''], 'foo')
+        self.assertEqual(result, [])
+        # Patterns are empty
+        result=wildcard_expand(master_list_str,[])
+        self.assertEqual(result, [])
+        result = wildcard_expand(master_list_str,'')
+        self.assertEqual(result, [])
+        # Do not split on spaces
+        result=wildcard_expand(['foo bar','baz quux'], 'foo bar', split_whitespace=False)
+        self.assertEqual(result, ['foo bar'])
 
     def test_tplot_wildcard_expand(self):
         # Test wildcard expansion against current tplot variables
@@ -76,6 +99,7 @@ class UtilTestCases(unittest.TestCase):
         # Null pattern
         result = tplot_wildcard_expand(None)
         self.assertEqual(result, [])
+
 
     def test_tindex_byname(self):
         # Test lookups of tplot variable indices by name
@@ -123,6 +147,7 @@ class UtilTestCases(unittest.TestCase):
         # List including a bad name
         tplot_options('title',"Positions of THEMIS A B C D E")
         tplot(['th?_pos', 'doesnt_exist'], save_png='tplot_list_onebad.png', display=global_display)
+
 
 
 if __name__ == '__main__':
