@@ -36,10 +36,26 @@ def efi(trange=['2007-03-23', '2007-03-24'],
             Default: 'l2'
 
         datatype: str or list of str
-            Data type;
-            Valid L1 options: ['eff', 'efp', 'efw', 'vaf', 'vap', 'vaw', 'vbf', 'vbp', 'vbw']
-            Valid L2 options: ['efi', 'efp', efw']
-            Default: None [all valid datatypes for that level will be loaded]
+            Data type; Valid L1 options::
+
+                'eff', Fast survey E12, E34, E56 waveforms
+                'efp', Particle burst E12, E34, E56 waveforms
+                'efw', Wave burst E12 E34, E56 waveforms
+                'vaf', Fast survey voltage group A, V1-V6 boom voltages
+                'vap', Particle burst voltage group A, V1-V6 boom voltages
+                'vaw', Wave burst voltage group A, V1-V6 boom voltages
+                'vbf', Fast survey voltage group B, V1-V6 boom voltages
+                'vbp', Particle burst voltage group B, V1-V6 boom voltages
+                'vbw', Wave burst voltage group B, V1-V6 boom voltages
+                L1 default: [eff. efp, efw, vaf. vap, vaw]
+
+            Valid L2 options::
+
+                'efi', Fast survey E field vectors and other quantities
+                'efp', Particle burst E field vectors
+                'efw', Wave burst E field vectors
+                L2 default: efi
+
 
         suffix: str
             The tplot variable names will be given this suffix.
