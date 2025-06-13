@@ -1,10 +1,13 @@
 
+import logging
+from pyspedas import wildcard_expand
 from pyspedas.projects.themis.load import load
 
 
 def efi(trange=['2007-03-23', '2007-03-24'],
         probe='c',
         level='l2',
+        datatype=None,
         suffix='',
         get_support_data=False,
         varformat=None,
@@ -31,6 +34,12 @@ def efi(trange=['2007-03-23', '2007-03-24'],
         level: str
             Data type; Valid options: 'l1', 'l2'
             Default: 'l2'
+
+        datatype: str or list of str
+            Data type;
+            Valid L1 options: ['eff', 'efp', 'efw', 'vaf', 'vap', 'vaw', 'vbf', 'vbp', 'vbw']
+            Valid L2 options: ['efi', 'efp', efw']
+            Default: None [all valid datatypes for that level will be loaded]
 
         suffix: str
             The tplot variable names will be given this suffix.
@@ -83,7 +92,36 @@ def efi(trange=['2007-03-23', '2007-03-24'],
 
 
     """
+    valid_levels = ['l1', 'l2']
+    valid_l1_datatypes = ['eff', 'efp', 'efw', 'vaf', 'vap', 'vaw', 'vbf', 'vbp', 'vbw']
+    default_l1_datatypes = ['eff', 'efp', 'efw', 'vaf', 'vap', 'vaw']  # omit vb* by default
+    valid_l2_datatypes = ['efi', 'efp', 'efw']
+    default_l2_datatypes = ['efi'] # omit efp and efw unless specifically requested
+
+    if level.lower() not in valid_levels:
+        logging.error("Unrecognized level %s", level)
+        return []
+
+    level=level.lower()
+
+    if level == 'l1':
+        valid_datatypes=valid_l1_datatypes
+        default_datatypes=default_l1_datatypes
+    else:
+        valid_datatypes=valid_l2_datatypes
+        default_datatypes=default_l2_datatypes
+
+    if datatype is None:
+        selected_datatype=default_datatypes
+    else:
+        selected_datatype=wildcard_expand(valid_datatypes, datatype, case_sensitive=False)
+
+    if len(selected_datatype) == 0:
+        logging.error("No valid datatypes selected")
+        return []
+
     return load(instrument='efi', trange=trange, level=level,
+                datatype=selected_datatype,
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,

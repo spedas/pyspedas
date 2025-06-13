@@ -85,34 +85,14 @@ def load(trange=['2013-11-5', '2013-11-6'],
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
                           + '_%Y%m%d_v??.cdf')
         elif instrument == 'efi':
-            if level == 'l2':
-                pathformat = ('th' + prb + '/' + level + '/' + instrument
-                              + '/%Y/th' + prb + '_' + level + '_' + instrument
-                              + '_%Y%m%d_v??.cdf')
-            elif level == 'l1':
-                pathformat = [('th' + prb + '/' + level + '/vaf/%Y/th' + prb
-                               + '_' + level + '_vaf_%Y%m%d_v??.cdf'),
-                              ('th' + prb + '/' + level + '/vap/%Y/th' + prb
-                               + '_' + level + '_vap_%Y%m%d_v??.cdf'),
-                              ('th' + prb + '/' + level + '/vaw/%Y/th' + prb
-                               + '_' + level + '_vaw_%Y%m%d_v??.cdf'),
-                              ('th' + prb + '/' + level + '/vbf/%Y/th' + prb
-                               + '_' + level + '_vbf_%Y%m%d_v??.cdf'),
-                              ('th' + prb + '/' + level + '/vbp/%Y/th' + prb
-                               + '_' + level + '_vbp_%Y%m%d_v??.cdf'),
-                              ('th' + prb + '/' + level + '/vbw/%Y/th' + prb
-                               + '_' + level + '_vbw_%Y%m%d_v??.cdf'),
-                              ('th' + prb + '/' + level + '/eff/%Y/th' + prb
-                              + '_' + level + '_eff_%Y%m%d_v??.cdf'),
-                              ('th' + prb + '/' + level + '/efw/%Y/th' + prb
-                               + '_' + level + '_efw_%Y%m%d_v??.cdf'),
-                              ('th' + prb + '/' + level + '/efp/%Y/th' + prb
-                               + '_' + level + '_efp_%Y%m%d_v??.cdf')]
+            pathformat = ['th' + prb + '/' + level + '/' + dt
+                    + '/%Y/th' + prb + '_' + level + '_' + dt
+                    + '_%Y%m%d_v01.cdf' for dt in datatype]
         elif instrument == 'scm':
             if level == 'l2':
                 pathformat = ('th' + prb + '/' + level + '/' + instrument
                               + '/%Y/th' + prb + '_' + level + '_' + instrument
-                              + '_%Y%m%d_v??.cdf')
+                              + '_%Y%m%d_v01.cdf')
             elif level == 'l1':
                 pathformat = [('th' + prb + '/' + level + '/scp/%Y/th' + prb
                                + '_' + level + '_scp_%Y%m%d_v??.cdf'),
