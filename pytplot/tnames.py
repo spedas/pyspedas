@@ -1,7 +1,7 @@
 import re
 import logging
 from pytplot import tplot_names
-from .wildcard_routines import wildcard_expand
+from .wildcard_routines import tplot_wildcard_expand
 
 
 def tnames(pattern=None, regex=None):
@@ -55,6 +55,7 @@ def tnames(pattern=None, regex=None):
         except re.error:
             logging.error("Invalid regular expression.")
     elif pattern is not None:
-        name_list = wildcard_expand(all_names,pattern)
+        # Switch to tplot_wildcard_expand for improved handling of tplot names with embedded spaces
+        name_list = tplot_wildcard_expand(pattern)
 
     return name_list

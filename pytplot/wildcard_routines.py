@@ -173,6 +173,8 @@ def tplot_wildcard_expand(patterns, case_sensitive=True):
         return []
 
     string_patterns = []
+    # Get list of existing tplot names
+    tn = tplot_names(quiet=True)
 
     # Interpret integers as tplot variable indices
     for item in input_pattern_list:
@@ -183,11 +185,19 @@ def tplot_wildcard_expand(patterns, case_sensitive=True):
             else:
                 string_patterns.append(item)
         elif isinstance(item,str):
-            # If space-delimited, break out into list
-            items = item.split(' ')
-            for it in items:
-                string_patterns.append(it)
+            # tplot names can have embedded spaces, but we also want to allow space-delimited
+            # lists. If a space-delimited list is provided, check to see if the un-split version is
+            # a valid tplot name.  If not, try splitting it and look for the subpatterns.
+            if item in tn or '*' in item or '?' in item:
+                string_patterns.append(item)
+            elif ' ' in item:
+                expanded = item.split(' ')
+                string_patterns.extend(expanded)
+            else:
+                # No wildcard characters, no spaces, and not found in list of names.
+                # This item won't be found!  But add it to the pattern list anyway, and let wildcard_expand complain about it.
+                string_patterns.append(item)
         else:
-            logging.warning("wildcard_expand: bad input: "+str(item) +" Patterns must be a string or int")
-    tn = tplot_names(quiet=True)
-    return wildcard_expand(tn, patterns=string_patterns, case_sensitive=case_sensitive)
+            logging.warning("tplot_wildcard_expand: bad input: "+str(item) +" Patterns must be a string or int")
+
+    return wildcard_expand(tn, patterns=string_patterns, case_sensitive=case_sensitive, split_whitespace=False)
