@@ -32,7 +32,7 @@ def efi(trange=['2007-03-23', '2007-03-24'],
             Default: 'c'
 
         level: str
-            Data type; Valid options: 'l1', 'l2'
+            Processing level; Valid options: 'l1', 'l2'
             Default: 'l2'
 
         datatype: str or list of str
