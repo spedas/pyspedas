@@ -95,8 +95,6 @@ class TwaveletDataValidation(unittest.TestCase):
         ylim('tha_fgs_fac_bp_?_pow', 1.0e-3,4.1e-2)
         options('tha_fgs_fac_bp_?_pow', 'zlog', True)
         options('tha_fgs_fac_bp_?_pow', 'ylog', False)
-        options('tha_fgs_fac_bp_?_pow', 'zlog', True)
-        options('tha_fgs_fac_bp_?_pow', 'ylog', False)
         d=get_data('tha_fgs_fac_bp_x_pow')
         print(f"Python frequencies: bin count {d.y.shape[1]}, min {np.min(d.v)}, max: {np.max(d.v)}" )
         print(f"Python power: min {np.min(d.y)}, max {np.max(d.y)}")
