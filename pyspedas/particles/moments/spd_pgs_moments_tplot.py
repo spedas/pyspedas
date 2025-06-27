@@ -64,6 +64,7 @@ def spd_pgs_moments_tplot(moments, x=None, prefix='', suffix=''):
             options(prefix+key+suffix, 'ysubtitle', '[' + units + ']')
 
     options(prefix + 'velocity' + suffix, 'yrange', [-800, 800])
-    options(prefix + 'flux' + suffix, 'yrange', [-1e8, 1e8])
+    # Flux is really spiky, so it's hard to set good default limits...
+    options(prefix + 'flux' + suffix, 'yrange', [-1e10, 1e10])
 
     return [prefix + key + suffix for key in moments.keys()]
