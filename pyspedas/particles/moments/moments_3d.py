@@ -66,7 +66,7 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     charge = data['charge']
     mass = data['mass']
     energy = data['energy']
-    energy[energy < 0.1] = 0.1
+    #energy[energy < 0.1] = 0.1
 
     de = data['denergy']
     de_e = de/energy
