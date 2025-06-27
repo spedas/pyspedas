@@ -449,36 +449,35 @@ class TestGetspecBulkv(unittest.TestCase):
                         output=['moments'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
         tplot(['avgtemp_mom_nobulk_subtract', 'mms1_dis_dist_brst_avgtemp_bulk_subtract','avgtemp_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_avgtemp_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_avgtemp_bulk_subtract')
-        # Significant differences here, relative difference 0.82, absolute difference 1.8
-        assert_allclose(self.avgtemp_bulk_subtract.y, pydat.y, rtol=1.0, atol=2.0)
+        assert_allclose(self.avgtemp_bulk_subtract.y, pydat.y, rtol=1.0e-05)
         tplot(['mms1_dis_dist_brst_density_bulk_subtract','density_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_density_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_density_bulk_subtract')
-        # Significant differences here, relative difference 4.84, absolution difference 125799
-        #assert_allclose(self.density_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference 1.13e-05
+        assert_allclose(self.density_bulk_subtract.y, pydat.y, rtol=1.2e-05)
         # eflux not implemented yet
         #tplot(['mms1_dis_dist_brst_eflux_bulk_subtract','eflux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_eflux_bulk_subtract.png')
         #pydat=get_data('mms1_dis_dist_brst_eflux_bulk_subtract')
         #assert_allclose(self.eflux_bulk_subtract.y, pydat.y, rtol=1.0e-03)
         tplot(['mms1_dis_dist_brst_flux_bulk_subtract','flux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_flux_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_flux_bulk_subtract')
-        # Significant differences in bulkv-subtracted flux: relative difference 4.74, absolute difference 2.7e+11
-        #assert_allclose(self.flux_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference .0019
+        assert_allclose(self.flux_bulk_subtract.y, pydat.y, rtol=2.0e-03)
         tplot(['mms1_dis_dist_brst_mftens_bulk_subtract','mftens_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_mftens_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_mftens_bulk_subtract')
-        # Significant differences, relative difference 6.0, absolute difference 612460
-        #assert_allclose(self.mftens_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference .0003
+        assert_allclose(self.mftens_bulk_subtract.y, pydat.y, rtol=3.1e-03)
         tplot(['mms1_dis_dist_brst_ptens_bulk_subtract','ptens_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_ptens_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_ptens_bulk_subtract')
-        # Significant differences, relative difference 0.75, absolute difference 2086
-        #assert_allclose(self.ptens_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference 0.00023
+        assert_allclose(self.ptens_bulk_subtract.y, pydat.y, rtol=3.0e-03)
         tplot(['mms1_dis_dist_brst_velocity_bulk_subtract','velocity_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_velocity_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_velocity_bulk_subtract')
-        # Significant differences, relative difference 0.11, absolute difference 0.54
-        #assert_allclose(self.velocity_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference 0.0019
+        assert_allclose(self.velocity_bulk_subtract.y, pydat.y, rtol=2.0e-03)
         tplot(['mms1_dis_dist_brst_vthermal_bulk_subtract','vthermal_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_vthermal_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_vthermal_bulk_subtract')
-        # Significant differences, relative difference 0.5778,  absolute difference 10.58
-        #assert_allclose(self.vthermal_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference 2.e3-06
+        assert_allclose(self.vthermal_bulk_subtract.y, pydat.y, rtol=3.0e-06)
 
 
 if __name__ == '__main__':
