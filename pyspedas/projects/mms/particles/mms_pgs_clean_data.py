@@ -21,7 +21,7 @@ def mms_pgs_clean_data(data_in):
               'denergy': np.reshape(data_in['denergy'], [data_in['data'].shape[0], data_in['data'].shape[1]*data_in['data'].shape[2]], order='F')}
 
     de = output['energy'] - shift(output['energy'], [1, 0])
-    output['denergy'] = shift((de+shift(de, [1, 0]))/2.0, -1)
+    output['denergy'] = shift((de+shift(de, [1, 0]))/2.0, [-1,0])
     # just have to make a guess at the edges(bottom edge)
     output['denergy'][0, :] = de[1, :]
     # just have to make a guess at the edges(top edge)
