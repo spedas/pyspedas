@@ -133,7 +133,8 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     # t3 = sp.linalg.svdvals(t3x3)
     
     output = {'density': density, 
-              'flux': flux, 
+              'flux': flux,
+              'eflux': eflux,
               'mftens': mftens, 
               'velocity': velocity, 
               'ptens': ptens, 
