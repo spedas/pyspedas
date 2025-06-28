@@ -409,10 +409,9 @@ class TestGetspecBulkv(unittest.TestCase):
         units=get_units('mms1_dis_dist_brst_density_no_bulk_subtract')
         self.assertEqual(units,'1/cm^3')
         assert_allclose(self.density_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
-        # eflux not implemented yet
-        #tplot(['mms1_dis_dist_brst_eflux_no_bulk_subtract','eflux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_eflux_nobulk_subtract.png')
-        #pydat=get_data('mms1_dis_dist_brst_eflux_no_bulk_subtract')
-        #assert_allclose(self.eflux_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_eflux_no_bulk_subtract','eflux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_eflux_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_eflux_no_bulk_subtract')
+        assert_allclose(self.eflux_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
         tplot(['mms1_dis_dist_brst_flux_no_bulk_subtract','flux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_flux_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_flux_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_flux_no_bulk_subtract')
@@ -454,10 +453,10 @@ class TestGetspecBulkv(unittest.TestCase):
         pydat=get_data('mms1_dis_dist_brst_density_bulk_subtract')
         # max relative difference 1.13e-05
         assert_allclose(self.density_bulk_subtract.y, pydat.y, rtol=1.2e-05)
-        # eflux not implemented yet
-        #tplot(['mms1_dis_dist_brst_eflux_bulk_subtract','eflux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_eflux_bulk_subtract.png')
-        #pydat=get_data('mms1_dis_dist_brst_eflux_bulk_subtract')
-        #assert_allclose(self.eflux_bulk_subtract.y, pydat.y, rtol=1.0e-03)
+        tplot(['mms1_dis_dist_brst_eflux_bulk_subtract','eflux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_eflux_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_eflux_bulk_subtract')
+        # max relative difference 5.3e-05
+        assert_allclose(self.eflux_bulk_subtract.y, pydat.y, rtol=6.0e-05)
         tplot(['mms1_dis_dist_brst_flux_bulk_subtract','flux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_flux_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_flux_bulk_subtract')
         # max relative difference .0019
