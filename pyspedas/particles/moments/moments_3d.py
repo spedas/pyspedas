@@ -49,6 +49,7 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
 
             'density'
             'flux'
+            'eflux'
             'mftens'
             'velocity'
             'ptens'
@@ -66,7 +67,10 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     charge = data['charge']
     mass = data['mass']
     energy = data['energy']
-    #energy[energy < 0.1] = 0.1
+    # Original code set the minumum energy to 0.1 eV.
+    # In IDL, the energy was only set to 0.1 where e <= 0.0
+    # energy[energy < 0.1] = 0.1
+    energy[energy <= 0.0] = 0.1
 
     de = data['denergy']
     de_e = de/energy
