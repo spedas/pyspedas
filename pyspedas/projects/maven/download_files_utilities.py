@@ -42,14 +42,14 @@ def get_filenames(query, public):
         handler = urllib.request.HTTPBasicAuthHandler(p)
         opener = urllib.request.build_opener(handler)
         urllib.request.install_opener(opener)
-        logging.info("get_filenames() making request to private URL: %s", private_url)
+        logging.debug("get_filenames() making request to private URL: %s", private_url)
         page = urllib.request.urlopen(private_url)
-        logging.info("get_filenames() finished request to private URL: %s", private_url)
+        logging.debug("get_filenames() finished request to private URL: %s", private_url)
 
     else:
-        logging.info("get_filenames() making request to public URL: %s", public_url)
+        logging.debug("get_filenames() making request to public URL: %s", public_url)
         page = urllib.request.urlopen(public_url)
-        logging.info("get_filenames() finished request to public URL: %s", public_url)
+        logging.debug("get_filenames() finished request to public URL: %s", public_url)
 
     return page.read().decode("utf-8")
 
@@ -126,9 +126,9 @@ def get_orbit_files():
 
     orbit_files_url = "http://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/spk/"
     pattern = r">maven_orb_rec(\.orb|.{17}\.orb)<"
-    logging.info("get_orbit_files() making request to URL %s", orbit_files_url)
+    logging.debug("get_orbit_files() making request to URL %s", orbit_files_url)
     page = urllib.request.urlopen(orbit_files_url)
-    logging.info("get_orbit_files() finished request to URL %s", orbit_files_url)
+    logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url)
     page_string = str(page.read())
     toolkit_path = CONFIG["local_data_dir"]
 
@@ -150,21 +150,21 @@ def get_orbit_files():
 
     for matching_pattern in re.findall(pattern, page_string):
         filename = "maven_orb_rec" + matching_pattern
-        logging.info("get_orbit_files() making request to URL %s", orbit_files_url + filename)
+        logging.debug("get_orbit_files() making request to URL %s", orbit_files_url + filename)
         o_file = urllib.request.urlopen(orbit_files_url + filename)
-        logging.info("get_orbit_files() finished request to URL %s", orbit_files_url + filename)
+        logging.debug("get_orbit_files() finished request to URL %s", orbit_files_url + filename)
 
         if is_fsspec_uri(toolkit_path):
             ifn = "/".join([orbit_files_path, filename])
-            logging.info("reading fsspec file %s",ifn)
+            logging.debug("reading fsspec file %s",ifn)
             fo = fs.open(ifn, "wb")
         else:
             ifn = os.path.join(orbit_files_path, filename)
-            logging.info("reading plain file %s",ifn)
+            logging.debug("reading plain file %s",ifn)
             fo = open(ifn, "wb")
         with fo as code:
             content=o_file.read()
-            logging.info("writing %d bytes into file %s",len(content), ifn)
+            logging.debug("writing %d bytes into file %s",len(content), ifn)
             code.write(content)
 
     merge_orbit_files()
@@ -222,7 +222,7 @@ def merge_orbit_files():
     with fo as code:
         skip_2_lines = False
         for o_file in sorted_files:
-            logging.info("merge_orbit_files processing file %s", o_file)
+            logging.debug("merge_orbit_files processing file %s", o_file)
             if is_fsspec_uri(toolkit_path):
                 # assumes fsspec filesystem triggered above
                 fo_file = fs.open(o_file)
@@ -234,7 +234,7 @@ def merge_orbit_files():
                     f.readline()
                 skip_2_lines = True
                 content=f.read()
-                logging.info("writing %d bytes to output file %s",len(content),output_filename)
+                logging.debug("writing %d bytes to output file %s",len(content),output_filename)
                 if type(content) is bytes:
                     code.write(str(content))
                 else:
