@@ -303,6 +303,8 @@ def download_file(
     if username is not None:
         session.auth = requests.auth.HTTPDigestAuth(username, password)
 
+    request_time = datetime.datetime.now()
+    transfer_bytes = 0
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=ResourceWarning)
         if not basic_auth:
@@ -362,6 +364,7 @@ def download_file(
 
         with open(ftmp.name, "wb") as f:
             try:
+                transfer_bytes = len(fsrc.content)
                 # There is also the fsrc.raw file object, which returns the raw bytes as read from the socket.
                 # It may be gzip-compressed.  This is probably the wrong choice in nearly every scenario, so that
                 # option has been removed.
@@ -373,6 +376,14 @@ def download_file(
                 logging.warning("A ChunkedEncodingError was encountered while saving the request data.  The file may be corrupted.")
                 content_saved_ok = False
 
+        completion_time = datetime.datetime.now()
+        elapsed_dt = completion_time - request_time
+        elapsed_secs = elapsed_dt.total_seconds()
+        transfer_mbytes = transfer_bytes / 1024 / 1024
+        transfer_rate = transfer_mbytes/elapsed_secs
+        # We may want to have more categories here, and explicitly log very slow transfers
+        transfer_quality = "slow" if (transfer_rate < 1.0) else "normal"
+
         if is_fsspec_uri(filename):
             protocol, path = filename.split("://")
             fs = fsspec.filesystem(protocol, anon=False)
@@ -380,9 +391,9 @@ def download_file(
             # copy method is within filesystems under fsspec
             if check_downloaded_file(ftmp.name):
                 fs.put(ftmp.name, filename)
-                logging.info("Download complete: " + filename)
+                logging.info(f"Download of {filename} complete, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality})")
             else:
-                logging.error("Download of '" + filename + "' failed. The temp file will be removed.")
+                logging.error(f"Download of {filename} failed, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality}). The temp file will be removed.")
                 logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
         else:
             # make sure the directory exists
@@ -395,9 +406,9 @@ def download_file(
             # if the download was successful, copy to data directory
             if check_downloaded_file(ftmp.name):
                 copy(ftmp.name, filename)
-                logging.info("Download complete: " + filename)
+                logging.info(f"Download of {filename} complete, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality})")
             else:
-                logging.error("Download of '" + filename + "' failed. The temp file will be removed.")
+                logging.error(f"Download of {filename} failed, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality}). The temp file will be removed.")
                 logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
 
         # cleanup
