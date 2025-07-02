@@ -287,8 +287,8 @@ def download_file(
 
     if session is None:
         session = requests.Session()
-        # Configure retry strategyi
-        # TODO: Subclass Retry object and log each retry attempt
+        # Configure retry strategy
+        # We'll just use a fixed configuration, unless it turns out to need fine-tuning
         retries = Retry(
             total=2,  # Total number of retries
             backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
@@ -540,8 +540,8 @@ def download(
 
     if session is None:
         session = requests.Session()
-        # Configure retry strategyi
-        # TODO: Subclass Retry object and log each retry attempt
+        # Configure retry strategy
+        # We'll just use a fixed configuration, unless it turns out to need fine-tuning
         retries = Retry(
             total=2,  # Total number of retries
             backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
