@@ -344,6 +344,7 @@ def download_file(
         fsrc.close()
         return None
 
+    content_saved_ok = True
     if needs_to_download_file:
         fsuffix = filename.split('.') # could be fsspec uri
         fsuffix = '' if fsuffix[0] == filename else fsuffix[-1]
@@ -360,13 +361,17 @@ def download_file(
                 text_only = False
 
         with open(ftmp.name, "wb") as f:
-            # There is also the fsrc.raw file object, which returns the raw bytes as read from the socket.
-            # It may be gzip-compressed.  This is probably the wrong choice in nearly every scenario, so that
-            # option has been removed.
-            if text_only:
-                ret = f.write(fsrc.text.encode("utf-8"))
-            else:
-                ret = f.write(fsrc.content)
+            try:
+                # There is also the fsrc.raw file object, which returns the raw bytes as read from the socket.
+                # It may be gzip-compressed.  This is probably the wrong choice in nearly every scenario, so that
+                # option has been removed.
+                if text_only:
+                    ret = f.write(fsrc.text.encode("utf-8"))
+                else:
+                    ret = f.write(fsrc.content)
+            except requests.exceptions.ChunkedEncodingError:
+                logging.warning("A ChunkedEncodingError was encountered while saving the request data.  The file may be corrupted.")
+                content_saved_ok = False
 
         if is_fsspec_uri(filename):
             protocol, path = filename.split("://")
@@ -403,7 +408,7 @@ def download_file(
 
     # At this point, we check if the file can be opened.
     # If it cannot be opened, we delete the file and try again.
-    if nbr_tries == 0 and check_downloaded_file(filename) == False:
+    if nbr_tries == 0 and (content_saved_ok is False or check_downloaded_file(filename) is False):
         nbr_tries = 1
         logging.info("There was a problem with the file: " + filename)
         logging.info("We are going to download it for a second time.")
@@ -427,7 +432,7 @@ def download_file(
         )
 
     # If the file again cannot be opened, we give up.
-    if nbr_tries > 0 and check_downloaded_file(filename) == False:
+    if nbr_tries > 0 and (content_saved_ok is False or check_downloaded_file(filename) is False):
         nbr_tries = 2
         logging.info("Tried twice. There was a problem with the file: " + filename)
         logging.info("File will be removed. Try to download it again at a later time.")
