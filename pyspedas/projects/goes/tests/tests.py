@@ -16,7 +16,10 @@ class LoadTestCases(unittest.TestCase):
     def test_load_orbit_data(self):
         del_data()
         orbit_vars = pyspedas.projects.goes.orbit(downloadonly=True)
-        orbit_vars = pyspedas.projects.goes.orbit(notplot=True)
+        self.assertEqual(orbit_vars[0], 'goes_data/goes15/orbit/2013/goes15_ephemeris_ssc_20130101_v01.cdf')
+        orbit_vars = pyspedas.projects.goes.orbit(notplot=True, time_clip=False)
+        # This should return a dict of tplot structures, but we're getting a list of names, which don't exist as tplot variables.
+        #self.assertTrue(isinstance(orbit_vars, dict)
         orbit_vars = pyspedas.projects.goes.orbit()
         self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars)
         self.assertTrue("g15_orbit_XYZ_GSE" in orbit_vars)
