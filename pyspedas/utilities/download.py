@@ -3,6 +3,8 @@ import re
 import sys
 import warnings
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import logging
 import fnmatch
 import datetime
@@ -285,6 +287,18 @@ def download_file(
 
     if session is None:
         session = requests.Session()
+        # Configure retry strategyi
+        # TODO: Subclass Retry object and log each retry attempt
+        retries = Retry(
+            total=2,  # Total number of retries
+            backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
+            status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
+            allowed_methods=["GET"] # HTTP methods to retry on
+        )
+        session.mount('http://', HTTPAdapter(max_retries=retries))
+        session.mount('https://', HTTPAdapter(max_retries=retries))
+
+
 
     if username is not None:
         session.auth = requests.auth.HTTPDigestAuth(username, password)
@@ -526,6 +540,16 @@ def download(
 
     if session is None:
         session = requests.Session()
+        # Configure retry strategyi
+        # TODO: Subclass Retry object and log each retry attempt
+        retries = Retry(
+            total=2,  # Total number of retries
+            backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
+            status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
+            allowed_methods=["GET"] # HTTP methods to retry on
+        )
+        session.mount('http://', HTTPAdapter(max_retries=retries))
+        session.mount('https://', HTTPAdapter(max_retries=retries))
 
     if username is not None:
         session.auth = requests.auth.HTTPDigestAuth(username, password)
@@ -631,6 +655,7 @@ def download(
                                 )
                         except requests.exceptions.ConnectionError:
                             # Add this index to bad_index_set and cool down a bit
+                            logging.warning(f"Connection error getting remote index {url_base}, marking this URL as bad")
                             bad_index_set.add(url_base)
                             sleep(2)
                             continue
@@ -683,6 +708,9 @@ def download(
                     remote_path = url_base
 
                 # download the files
+                # Add a small delay between requesting the index and requesting the files
+                sleep(1)
+
                 for new_link in new_links:
                     resp_data = download(
                         remote_path=remote_path,
