@@ -18,6 +18,7 @@ from html.parser import HTMLParser
 from netCDF4 import Dataset
 from cdflib import CDF
 from time import sleep
+from .rate_connection_quality import rate_connection_quality
 
 def is_fsspec_uri(uri):
     """
@@ -382,7 +383,7 @@ def download_file(
         transfer_mbytes = transfer_bytes / 1024 / 1024
         transfer_rate = transfer_mbytes/elapsed_secs
         # We may want to have more categories here, and explicitly log very slow transfers
-        transfer_quality = "slow" if (transfer_rate < 1.0) else "normal"
+        transfer_quality = rate_connection_quality(elapsed_secs, transfer_mbytes, transfer_rate)
 
         if is_fsspec_uri(filename):
             protocol, path = filename.split("://")
@@ -419,6 +420,9 @@ def download_file(
 
     # At this point, we check if the file can be opened.
     # If it cannot be opened, we delete the file and try again.
+
+    # We haven't tried the download a second time yet, so we'll set the second_try flag to non-null
+    second_try = False
     if nbr_tries == 0 and (content_saved_ok is False or check_downloaded_file(filename) is False):
         nbr_tries = 1
         logging.info("There was a problem with the file: " + filename)
@@ -429,7 +433,7 @@ def download_file(
         elif os.path.exists(filename):
             os.unlink(filename)
 
-        download_file(
+        second_try = download_file(
             url=url,
             filename=filename,
             headers=headers_original,
@@ -443,7 +447,11 @@ def download_file(
         )
 
     # If the file again cannot be opened, we give up.
-    if nbr_tries > 0 and (content_saved_ok is False or check_downloaded_file(filename) is False):
+    # Since we did the second download with another call to download_file(), the content_saved_ok flag
+    # is no longer valid.  If the recursive call also failed, it should have returned None, so we'll
+    # check for that.
+    # TODO: Maybe this block should be indented another level, and only run if we made a second attempt?
+    if nbr_tries > 0 and (second_try is None or check_downloaded_file(filename) is False):
         nbr_tries = 2
         logging.info("Tried twice. There was a problem with the file: " + filename)
         logging.info("File will be removed. Try to download it again at a later time.")
