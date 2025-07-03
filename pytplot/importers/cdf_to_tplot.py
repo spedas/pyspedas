@@ -553,7 +553,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                     orig_dimensions = dp_props['Dim_Sizes']
                                 reshape_dim = tuple(orig_dimensions)
                                 if depend_1.shape != reshape_dim:
-                                    logging.warning('Cdflib returned dimensions %s which do not match original dimensions %s. Reshaping to original dimensions.  This may be fixed by updating to a more recent version of cdflib.', depend_1.shape, reshape_dim)
+                                    logging.warning('Variable %s DEPEND_1 attribute %s is string-valued, and cdflib returned dimensions %s which do not match original dimensions %s. Reshaping to original dimensions.  This may be fixed in a future version of cdflib.',var, dep_name, depend_1.shape, reshape_dim)
                                 depend_1 = np.reshape(depend_1, reshape_dim)
                                 #depend_1 = None
                                 pass
