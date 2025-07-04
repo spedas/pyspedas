@@ -88,6 +88,34 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.vthermal_bulk_subtract = get_data('mms1_dis_dist_brst_vthermal_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_vthermal_no_bulk_subtract','vthermal_mom_nobulk_subtract')
         tplot_copy('mms1_dis_dist_brst_vthermal_bulk_subtract','vthermal_mom_bulk_subtract')
+        cls.avgtemp_nobulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
+        cls.avgtemp_bulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_avgtemp_no_bulk_subtract','avgtemp_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_avgtemp_bulk_subtract','avgtemp_mom_bulk_subtract')
+        cls.t3_nobulk_subtract = get_data('mms1_dis_dist_brst_t3_no_bulk_subtract')
+        cls.t3_bulk_subtract = get_data('mms1_dis_dist_brst_t3_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_t3_no_bulk_subtract','t3_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_t3_bulk_subtract','t3_mom_bulk_subtract')
+        cls.magt3_nobulk_subtract = get_data('mms1_dis_dist_brst_magt3_no_bulk_subtract')
+        cls.magt3_bulk_subtract = get_data('mms1_dis_dist_brst_magt3_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_magt3_no_bulk_subtract','magt3_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_magt3_bulk_subtract','magt3_mom_bulk_subtract')
+        cls.symm_nobulk_subtract = get_data('mms1_dis_dist_brst_symm_no_bulk_subtract')
+        cls.symm_bulk_subtract = get_data('mms1_dis_dist_brst_symm_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_symm_no_bulk_subtract','symm_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_symm_bulk_subtract','symm_mom_bulk_subtract')
+        cls.symm_theta_nobulk_subtract = get_data('mms1_dis_dist_brst_symm_theta_no_bulk_subtract')
+        cls.symm_theta_bulk_subtract = get_data('mms1_dis_dist_brst_symm_theta_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_symm_theta_no_bulk_subtract','symm_theta_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_symm_theta_bulk_subtract','symm_theta_mom_bulk_subtract')
+        cls.symm_phi_nobulk_subtract = get_data('mms1_dis_dist_brst_symm_phi_no_bulk_subtract')
+        cls.symm_phi_bulk_subtract = get_data('mms1_dis_dist_brst_symm_phi_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_symm_phi_no_bulk_subtract','symm_phi_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_symm_phi_bulk_subtract','symm_phi_mom_bulk_subtract')
+        cls.symm_ang_nobulk_subtract = get_data('mms1_dis_dist_brst_symm_ang_no_bulk_subtract')
+        cls.symm_ang_bulk_subtract = get_data('mms1_dis_dist_brst_symm_ang_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_symm_ang_no_bulk_subtract','symm_ang_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_symm_ang_bulk_subtract','symm_ang_mom_bulk_subtract')
 
         # HPCA Spectra
         cls.hpca_e_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract')
@@ -449,6 +477,71 @@ class TestGetspecBulkv(unittest.TestCase):
         units=get_units('mms1_dis_dist_brst_vthermal_no_bulk_subtract')
         self.assertEqual(units,'km/s')
         assert_allclose(self.vthermal_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+        tplot(['mms1_dis_dist_brst_avgtemp_no_bulk_subtract','avgtemp_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_avgtemp_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
+        self.assertEqual(units,'eV')
+        assert_allclose(self.avgtemp_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+
+        tplot(['mms1_dis_dist_brst_t3_no_bulk_subtract','t3_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_t3_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_t3_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_t3_no_bulk_subtract')
+        self.assertEqual(units,'eV')
+        # The last component (t_para) is the only one guaranteed to be in the same position in the IDL
+        # and Python outputs.  The other two (t_perp1 and t_perp2) could be swapped, due to difference
+        # in eigenvalue sorting between the two platforms.
+        # First check t_para in column 2
+        # Max relative difference 1.5e-06
+        assert_allclose(self.t3_nobulk_subtract.y[:,2], pydat.y[:,2], rtol=2.0e-06)
+        # To check the other two components, we'll take the element-by-element maximum of y[:,0],y[:,1]
+        # for both the Python and IDL outputs.  Then we'll do the same for the minima.  The Python
+        # max and min values should match the IDL values, even if some of them are swapped.
+        idlmax = np.maximum(self.t3_nobulk_subtract.y[:,0], self.t3_nobulk_subtract.y[:,1])
+        idlmin = np.minimum(self.t3_nobulk_subtract.y[:,0], self.t3_nobulk_subtract.y[:,1])
+        pymax = np.maximum(pydat.y[:,0], pydat.y[:,1])
+        pymin = np.minimum(pydat.y[:,0], pydat.y[:,1])
+        assert_allclose(idlmax, pymax, rtol=2.0e-06)
+        assert_allclose(idlmin, pymin, rtol=2.0e-06)
+
+        tplot(['mms1_dis_dist_brst_magt3_no_bulk_subtract','magt3_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_magt3_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_magt3_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_magt3_no_bulk_subtract')
+        self.assertEqual(units,'eV')
+        # Max relative difference 1.7e-06
+        assert_allclose(self.magt3_nobulk_subtract.y, pydat.y, rtol=2.0e-06)
+
+
+        tplot(['mms1_dis_dist_brst_symm_no_bulk_subtract','symm_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_symm_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_symm_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_symm_no_bulk_subtract')
+        # max relative error ,0003
+        assert_allclose(self.symm_nobulk_subtract.y, pydat.y, rtol=5.0e-04)
+
+
+        tplot(['mms1_dis_dist_brst_symm_theta_no_bulk_subtract','symm_theta_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_symm_theta_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_symm_theta_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_symm_theta_no_bulk_subtract')
+        self.assertEqual(units,'degrees')
+        # max relative error 1.0e-05
+        assert_allclose(self.symm_theta_nobulk_subtract.y, pydat.y, rtol=2.0e-05)
+
+
+        tplot(['mms1_dis_dist_brst_symm_phi_no_bulk_subtract','symm_phi_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_symm_phi_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_symm_phi_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_symm_phi_no_bulk_subtract')
+        self.assertEqual(units,'degrees')
+        # max relative error .0003
+        assert_allclose(self.symm_phi_nobulk_subtract.y, pydat.y, rtol=5.0e-04)
+
+
+        tplot(['mms1_dis_dist_brst_symm_ang_no_bulk_subtract','symm_ang_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_symm_ang_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_symm_ang_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_symm_ang_no_bulk_subtract')
+        self.assertEqual(units,'degrees')
+        # max relative error 6.3e-05
+        assert_allclose(self.symm_ang_nobulk_subtract.y, pydat.y, rtol=7.0e-05)
 
     def test_getspec_moments_bulkv_subtract(self):
         """Test of getspec with bulk velocity subtraction"""
