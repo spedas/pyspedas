@@ -472,15 +472,16 @@ are the scientific products that should be used for analysis."""
             out_gyro_y[i, :], out_gyro[i, :] = mms_pgs_make_phi_spec(fac_data, resolution=dist_in['n_phi'])
 
         if 'fac_energy' in output:
-            out_fac_energy_y[i, :], out_fac_energy[i, :] = mms_pgs_make_e_spec(clean_data)
+            out_fac_energy_y[i, :], out_fac_energy[i, :] = mms_pgs_make_e_spec(fac_data)
 
         if 'fac_moments' in output:
             if scpot_data is not None:
                 scpot_val = scpot_data[i]
             else:
                 scpot_val = 0.0
+            fac_data['magf'] = mag_data[i]
 
-            fac_moments = spd_pgs_moments(clean_data, sc_pot=scpot_val)
+            fac_moments = spd_pgs_moments(fac_data, sc_pot=scpot_val)
             out_fac_density[i] = fac_moments['density']
             out_fac_avgtemp[i] = fac_moments['avgtemp']
             out_fac_vthermal[i] = fac_moments['vthermal']
