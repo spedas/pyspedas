@@ -207,149 +207,6 @@ class TestGetspecBulkv(unittest.TestCase):
         # Test Z values
         assert_allclose(self.e_bulk_subtract.y, pydat.y, rtol=1.0e-06)
 
-    def test_hpca_getspec_e_nobulkv_subtract(self):
-        """Test of getspec without bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['energy'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
-        tplot(['mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract','hpca_e_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_e_nobulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract')
-        # Test Y values (energy bins)  2D vs 1D mismatch (but values probably consistent)
-        #assert_allclose(self.hpca_e_nobulk_subtract.v, pydat.v, rtol=1.0e-06)
-        # Test Z values
-        assert_allclose(self.hpca_e_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
-
-    def test_hpca_getspec_e_bulkv_subtract(self):
-        """Test of getspec with bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['energy'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
-        tplot(['hpca_e_nobulk_subtract','mms1_hpca_hplus_phase_space_density_energy_bulk_subtract','hpca_e_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_e_bulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_energy_bulk_subtract')
-        # Test Y values (energy bins)  Probably 2d vs 1D issue
-        #assert_allclose(self.hpca_e_bulk_subtract.v, pydat.v, rtol=1.0e-06)
-        # Test Z values
-        assert_allclose(self.hpca_e_bulk_subtract.y, pydat.y, rtol=1.0e-06)
-
-    def test_hpca_getspec_energy_mag_nobulkv_subtract(self):
-        """Test of getspec without bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['fac_energy'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
-        tplot(['mms1_hpca_hplus_phase_space_density_fac_energy_no_bulk_subtract','hpca_energy_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_energy_fac_nobulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_energy_no_bulk_subtract')
-        # Test Y values (energy_mag bins) Probable 2d vs 1d issue
-        #assert_allclose(self.hpca_energy_mag_nobulk_subtract.v, pydat.v, rtol=1.0e-06)
-        # Test Z values
-        assert_allclose(self.hpca_energy_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
-
-    def test_hpca_getspec_energy_mag_bulkv_subtract(self):
-        """Test of getspec with bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['fac_energy'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
-        tplot(['hpca_energy_mag_nobulk_subtract','mms1_hpca_hplus_phase_space_density_fac_energy_bulk_subtract','hpca_energy_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_energy_mag_bulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_energy_bulk_subtract')
-        # Test Y values (energy_mag bins) 2d vs 1d
-        #assert_allclose(self.hpca_energy_mag_bulk_subtract.v, pydat.v, rtol=1.0e-06)
-        # Test Z values
-        assert_allclose(self.hpca_energy_mag_bulk_subtract.y, pydat.y, rtol=1.0e-06)
-
-    def test_hpca_getspec_phi_nobulkv_subtract(self):
-        """Test of getspec without bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['phi'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
-        tplot(['mms1_hpca_hplus_phase_space_density_phi_no_bulk_subtract','hpca_phi_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_phi_nobulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_phi_no_bulk_subtract')
-        # Test Y values (phi bins) 2d vs 1d issue
-        #assert_allclose(self.hpca_phi_nobulk_subtract.v, pydat.v, rtol=1.0e-06)
-        # Test Z values  Largest relative error about 1.2e-06
-        assert_allclose(self.hpca_phi_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
-
-    def test_hpca_getspec_phi_bulkv_subtract(self):
-        """Test of getspec with bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['phi'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
-        tplot(['hpca_phi_nobulk_subtract','mms1_hpca_hplus_phase_space_density_phi_bulk_subtract','hpca_phi_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_phi_bulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_phi_bulk_subtract')
-        # Test Y values (phi bins) 2d vs 1d issue
-        #assert_allclose(self.hpca_phi_bulk_subtract.v, pydat.v, rtol=1.0e-06)
-        # Test Z values  largest relative error about 2.3e-06
-        assert_allclose(self.hpca_phi_bulk_subtract.y, pydat.y, rtol=1.0e-05)
-
-    def test_hpca_getspec_gyro_nobulkv_subtract(self):
-        """Test of getspec without bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['gyro'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
-        tplot(['mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract','hpca_gyro_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_gyro_nobulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract')
-        # Test Y values (gyro bins) 2d vs 1d issue
-        #assert_allclose(self.hpca_gyro_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
-        # Test Z values
-        assert_allclose(self.hpca_gyro_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
-
-    def test_hpca_getspec_gyro_bulkv_subtract(self):
-        """Test of getspec with bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['gyro'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
-        tplot(['hpca_gyro_nobulk_subtract','mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract','hpca_gyro_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_gyro_bulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract')
-        # Test Y values (gyro bins) 2d vs 1d issue
-        #assert_allclose(self.hpca_gyro_bulk_subtract.v, pydat.v, rtol=1.0e-05)
-        # Test Z values
-        assert_allclose(self.hpca_gyro_bulk_subtract.y, pydat.y, rtol=1.0e-05)
-
-    def test_hpca_getspec_pa_nobulkv_subtract(self):
-        """Test of getspec without bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['pa'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
-        tplot(['mms1_hpca_hplus_phase_space_density_pa_no_bulk_subtract','hpca_pa_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_pa_nobulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_pa_no_bulk_subtract')
-        # Test Y values (pa bins) 2d vs 1d issue
-        #assert_allclose(self.hpca_pa_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
-        # Test Z values   largest relative error about .00036
-        assert_allclose(self.hpca_pa_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
-
-    def test_hpca_getspec_pa_bulkv_subtract(self):
-        """Test of getspec with bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['pa'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
-        tplot(['hpca_pa_nobulk_subtract','mms1_hpca_hplus_phase_space_density_pa_bulk_subtract','hpca_pa_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_pa_bulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_pa_bulk_subtract')
-        # Test Y values (pa bins) 2d vs 1d issue
-        #assert_allclose(self.hpca_pa_bulk_subtract.v, pydat.v, rtol=1.0e-05)
-        # Test Z values
-        assert_allclose(self.hpca_pa_bulk_subtract.y, pydat.y, rtol=1.0e-05)
-
-    def test_hpca_getspec_theta_nobulkv_subtract(self):
-        """Test of getspec without bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['theta'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
-        tplot(['mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract','hpca_theta_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_theta_nobulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract')
-        # Test Y values (theta bins)
-        #assert_allclose(self.hpca_theta_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
-        # Test Z values
-        assert_allclose(self.hpca_theta_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
-
-    def test_hpca_getspec_theta_bulkv_subtract(self):
-        """Test of getspec with bulk velocity subtraction"""
-
-        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
-                        output=['theta'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
-        tplot(['hpca_theta_nobulk_subtract','mms1_hpca_hplus_phase_space_density_theta_bulk_subtract','hpca_theta_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_theta_bulk_subtract.png')
-        pydat=get_data('mms1_hpca_hplus_phase_space_density_theta_bulk_subtract')
-        # Test Y values (theta bins) 2d vs 1d issue
-        #assert_allclose(self.hpca_theta_bulk_subtract.v, pydat.v, rtol=1.0e-05)
-        # Test Z values   largest relative error about .00012
-        assert_allclose(self.hpca_theta_bulk_subtract.y, pydat.y, rtol=2.0e-03)
 
     def test_getspec_theta_nobulkv_subtract(self):
         """Test of getspec without bulk velocity subtraction"""
@@ -778,6 +635,150 @@ class TestGetspecBulkv(unittest.TestCase):
         self.assertEqual(units,'km/s')
         # max relative difference 3.2e-06
         assert_allclose(self.vthermal_mag_bulk_subtract.y, pydat.y, rtol=4.0e-06)
+
+    def test_hpca_getspec_e_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['energy'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract','hpca_e_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_e_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract')
+        # Test Y values (energy bins)  2D vs 1D mismatch (but values probably consistent)
+        #assert_allclose(self.hpca_e_nobulk_subtract.v, pydat.v, rtol=1.0e-06)
+        # Test Z values
+        assert_allclose(self.hpca_e_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+    def test_hpca_getspec_e_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['energy'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_e_nobulk_subtract','mms1_hpca_hplus_phase_space_density_energy_bulk_subtract','hpca_e_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_e_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_energy_bulk_subtract')
+        # Test Y values (energy bins)  Probably 2d vs 1D issue
+        #assert_allclose(self.hpca_e_bulk_subtract.v, pydat.v, rtol=1.0e-06)
+        # Test Z values
+        assert_allclose(self.hpca_e_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+    def test_hpca_getspec_energy_mag_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['fac_energy'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_energy_no_bulk_subtract','hpca_energy_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_energy_fac_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_energy_no_bulk_subtract')
+        # Test Y values (energy_mag bins) Probable 2d vs 1d issue
+        #assert_allclose(self.hpca_energy_mag_nobulk_subtract.v, pydat.v, rtol=1.0e-06)
+        # Test Z values
+        assert_allclose(self.hpca_energy_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+    def test_hpca_getspec_energy_mag_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['fac_energy'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_energy_mag_nobulk_subtract','mms1_hpca_hplus_phase_space_density_fac_energy_bulk_subtract','hpca_energy_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_energy_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_energy_bulk_subtract')
+        # Test Y values (energy_mag bins) 2d vs 1d
+        #assert_allclose(self.hpca_energy_mag_bulk_subtract.v, pydat.v, rtol=1.0e-06)
+        # Test Z values
+        assert_allclose(self.hpca_energy_mag_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+    def test_hpca_getspec_phi_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['phi'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_phi_no_bulk_subtract','hpca_phi_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_phi_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_phi_no_bulk_subtract')
+        # Test Y values (phi bins) 2d vs 1d issue
+        #assert_allclose(self.hpca_phi_nobulk_subtract.v, pydat.v, rtol=1.0e-06)
+        # Test Z values  Largest relative error about 1.2e-06
+        assert_allclose(self.hpca_phi_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_phi_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['phi'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_phi_nobulk_subtract','mms1_hpca_hplus_phase_space_density_phi_bulk_subtract','hpca_phi_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_phi_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_phi_bulk_subtract')
+        # Test Y values (phi bins) 2d vs 1d issue
+        #assert_allclose(self.hpca_phi_bulk_subtract.v, pydat.v, rtol=1.0e-06)
+        # Test Z values  largest relative error about 2.3e-06
+        assert_allclose(self.hpca_phi_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_gyro_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['gyro'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract','hpca_gyro_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_gyro_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract')
+        # Test Y values (gyro bins) 2d vs 1d issue
+        #assert_allclose(self.hpca_gyro_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_gyro_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_gyro_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['gyro'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_gyro_nobulk_subtract','mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract','hpca_gyro_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_gyro_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract')
+        # Test Y values (gyro bins) 2d vs 1d issue
+        #assert_allclose(self.hpca_gyro_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_gyro_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_pa_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['pa'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_pa_no_bulk_subtract','hpca_pa_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_pa_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_pa_no_bulk_subtract')
+        # Test Y values (pa bins) 2d vs 1d issue
+        #assert_allclose(self.hpca_pa_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values   largest relative error about .00036
+        assert_allclose(self.hpca_pa_nobulk_subtract.y, pydat.y, rtol=1.0e-03)
+
+    def test_hpca_getspec_pa_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['pa'], no_regrid=True, units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_pa_nobulk_subtract','mms1_hpca_hplus_phase_space_density_pa_bulk_subtract','hpca_pa_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_pa_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_pa_bulk_subtract')
+        # Test Y values (pa bins) 2d vs 1d issue
+        #assert_allclose(self.hpca_pa_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_pa_bulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_theta_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['theta'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract','hpca_theta_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_theta_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_theta_no_bulk_subtract')
+        # Test Y values (theta bins)
+        #assert_allclose(self.hpca_theta_nobulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values
+        assert_allclose(self.hpca_theta_nobulk_subtract.y, pydat.y, rtol=1.0e-05)
+
+    def test_hpca_getspec_theta_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',subtract_bulk=True, species='hplus', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['theta'], units='eflux', center_measurement=True, suffix='_bulk_subtract')
+        tplot(['hpca_theta_nobulk_subtract','mms1_hpca_hplus_phase_space_density_theta_bulk_subtract','hpca_theta_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_theta_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_theta_bulk_subtract')
+        # Test Y values (theta bins) 2d vs 1d issue
+        #assert_allclose(self.hpca_theta_bulk_subtract.v, pydat.v, rtol=1.0e-05)
+        # Test Z values   largest relative error about .00012
+        assert_allclose(self.hpca_theta_bulk_subtract.y, pydat.y, rtol=2.0e-03)
 
 
 if __name__ == '__main__':
