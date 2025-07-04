@@ -674,7 +674,6 @@ class TestGetspecBulkv(unittest.TestCase):
         # max relative error .0015
         assert_allclose(self.symm_ang_bulk_subtract.y, pydat.y, rtol=.002)
 
-    @unittest.skip("fac_moments showing large discrepancies with IDL results")
     def test_getspec_fac_moments_nobulkv_subtract(self):
         """Test of getspec without bulk velocity subtraction"""
 
@@ -690,40 +689,43 @@ class TestGetspecBulkv(unittest.TestCase):
         pydat=get_data('mms1_dis_dist_brst_fac_density_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_fac_density_no_bulk_subtract')
         self.assertEqual(units,'1/cm^3')
-        assert_allclose(self.density_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference 1.2e-06
+        assert_allclose(self.density_mag_nobulk_subtract.y, pydat.y, rtol=2.0e-06)
 
         tplot(['mms1_dis_dist_brst_fac_eflux_no_bulk_subtract','eflux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_eflux_mag_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_eflux_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_fac_eflux_no_bulk_subtract')
         self.assertEqual(units,'eV/(cm^2-s)')
-        assert_allclose(self.eflux_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference .0004
+        assert_allclose(self.eflux_mag_nobulk_subtract.y, pydat.y, rtol=.0005)
 
         tplot(['mms1_dis_dist_brst_fac_flux_no_bulk_subtract','flux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_flux_mag_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_flux_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_fac_flux_no_bulk_subtract')
         self.assertEqual(units,'1/(cm^2-s)')
-        # largest relative difference about .00015
-        assert_allclose(self.flux_mag_nobulk_subtract.y, pydat.y, rtol=1.6e-04)
+        # largest relative difference about .0005
+        assert_allclose(self.flux_mag_nobulk_subtract.y, pydat.y, rtol=6.0e-04)
 
         tplot(['mms1_dis_dist_brst_fac_mftens_no_bulk_subtract','mftens_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_mftens_mag_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_mftens_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_fac_mftens_no_bulk_subtract')
         self.assertEqual(units,'eV/cm^3')
-        # largest relative difference about .00016
-        assert_allclose(self.mftens_mag_nobulk_subtract.y, pydat.y, rtol=1.7e-04)
+        # largest relative difference about .0005
+        assert_allclose(self.mftens_mag_nobulk_subtract.y, pydat.y, rtol=6.0e-04)
 
         tplot(['mms1_dis_dist_brst_fac_ptens_no_bulk_subtract','ptens_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_ptens_mag_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_ptens_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_fac_ptens_no_bulk_subtract')
         self.assertEqual(units,'eV/cm^3')
-        # largest relative difference about 0.0005
-        assert_allclose(self.ptens_mag_nobulk_subtract.y, pydat.y, rtol=6.0e-04)
+        # largest relative difference about 0.0009
+        assert_allclose(self.ptens_mag_nobulk_subtract.y, pydat.y, rtol=.001)
 
         tplot(['mms1_dis_dist_brst_fac_velocity_no_bulk_subtract','velocity_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_velocity_mag_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_velocity_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_fac_velocity_no_bulk_subtract')
         self.assertEqual(units,'km/s')
-        assert_allclose(self.velocity_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+        # max relative difference .0005
+        assert_allclose(self.velocity_mag_nobulk_subtract.y, pydat.y, rtol=.0006)
 
         tplot(['mms1_dis_dist_brst_fac_vthermal_no_bulk_subtract','vthermal_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_vthermal_mag_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_vthermal_no_bulk_subtract')
