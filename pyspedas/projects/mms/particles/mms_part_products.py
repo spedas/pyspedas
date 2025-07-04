@@ -481,6 +481,7 @@ are the scientific products that should be used for analysis."""
                 scpot_val = 0.0
             fac_data['magf'] = mag_data[i]
 
+            fac_data['theta'] = 90-fac_data['theta'] # convert back to latitude for moments calc
             fac_moments = spd_pgs_moments(fac_data, sc_pot=scpot_val)
             out_fac_density[i] = fac_moments['density']
             out_fac_avgtemp[i] = fac_moments['avgtemp']
