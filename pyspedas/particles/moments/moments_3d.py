@@ -1,7 +1,9 @@
 from copy import deepcopy
 import numpy as np
+from scipy.ndimage import shift
 
 from pyspedas.particles.moments.moments_3d_omega_weights import moments_3d_omega_weights
+from pyspedas import xyz_to_polar
 
 # use nansum from bottleneck if it's installed, otherwise use the numpy one
 try:
@@ -10,6 +12,30 @@ try:
 except ImportError:
     nansum = np.nansum
 
+def rot_mat(v1, v2):
+    """
+    Create a set of basis vectors based on magnetic field and velocity vectors. Used by moments_3d.
+
+    Parameters
+    ----------
+    v1: ndarray
+    v2: ndarray
+
+    Returns
+    -------
+    ndarray
+    A 3x3 rotation matrix that rotates v1 to the z' axis and v2 to the x' - z' plane
+    """
+
+    v1norm = v1/np.linalg.norm(v1)
+    v2norm = v2/np.linalg.norm(v2)
+    a = v1norm
+    b = np.cross(a, v2)
+    b = b/np.linalg.norm(b)
+    c = np.cross(b,a)
+    dd_out = [c, b, a]
+    data_out = np.column_stack(dd_out)
+    return data_out
 
 def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     """
@@ -56,6 +82,12 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
             'ttens'
             'vthermal'
             'avgtemp'
+            'magt3'
+            't3'
+            'symm'
+            'symm_theta'
+            'symm_phi'
+            'symm_ang'
 
     Examples
     --------
@@ -67,6 +99,8 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     charge = data['charge']
     mass = data['mass']
     energy = data['energy']
+    magf = data['magf']
+
     # Original code set the minumum energy to 0.1 eV.
     # In IDL, the energy was only set to 0.1 where e <= 0.0
     # energy[energy < 0.1] = 0.1
@@ -135,7 +169,82 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     vthermal = np.sqrt(2.0*avgtemp/mass)
 
     # t3 = sp.linalg.svdvals(t3x3)
-    
+
+    # Calculate eigenvalues and eigenvectors
+    t3, t3evec = np.linalg.eigh(t3x3, UPLO='U')
+
+    # Note: np.linalg.eigh() returns the eigenvalues t3 in ascending order.
+    # In IDL, they're not necessarily sorted.
+
+    # Do some magical sorting and shifting
+    # SPEDAS moments_3d takes magdir as a parameter, but no one seems to call it that wy.
+    # It defaults to [-1,1,0] if not passed, but they don't seem to be used anywhere.
+
+    magdir=np.array([-1.,1.,0.])
+    magfn = magdir/np.linalg.norm(magdir)
+
+    # Heuristic for identifying the t_parallel direction based on anisotropy of the eigenvalues.
+    # If the mid-valued eigenvalue is less than the average of min and max, choose the index of the max,
+    # otherwise the index of the min.
+
+    s = np.argsort(t3)
+    if t3[s[1]] <.5*(t3[s[0]] + t3[s[2]]):
+        num=s[2]
+    else:
+        num=s[0]
+
+    # Circular shift of the eigenvalue array and the columns of the eigenvector array.  This puts the
+    # selected component (t_para) in component 2, and t_perp1 and t_perp2 in columns 0 and 1.
+    # The order of t_perp1 and t_perp2 may differ between IDL and Python, but I am told that
+    # doesn't really matter in practice.   JWL 2025-07-03
+
+    shft = ([-1,1,0])[num]
+    t3 = shift(t3,shft,mode='grid-wrap')
+    t3evec = shift(t3evec,[0,shft], mode='grid-wrap')
+    # This uses the magdir version of magfn, but this dot product doesn't seem to be used anywhere.
+    # Instead, it is recalculated below from magf (from the input structure) and the velocity vector
+    # dot =  np.dot( magfn, t3evec[:,2] )
+
+    bmag = np.linalg.norm(magf)
+    magfn = magf/bmag
+
+    # The next few computations are a Python rendering of the following IDL code:
+    # b_dot_s = total( (magfn # [1,1,1]) * t3evec , 1)
+    # dummy = max(abs(b_dot_s),num)
+    #
+    # rot = rot_mat(mom.magf,mom.velocity)
+    # magt3x3 = invert(rot) # (t3x3 # rot)
+    # mom.magt3 = magt3x3[[0,4,8]]
+
+    # Broadcast magfn to a (3,3) matrix: each row is magfn
+    magfn_matrix = np.tile(magfn, (3, 1))  # shape (3,3)
+
+    # Element-wise multiplication
+    elementwise_product = magfn_matrix * t3evec  # shape (3,3)
+
+    # Sum across columns (axis=1)
+    b_dot_s = np.sum(elementwise_product, axis=1)  # shape (3,)
+    #dummy = np.max(np.abs(b_dot_s),num)
+
+    rot = rot_mat(magf,velocity)
+
+    # Tensor coordinate transform of t3x3
+    magt3x3 = np.linalg.inv(rot) @ (t3x3 @ rot)
+    magt3 = magt3x3.ravel()[[0,4,8]]
+    dot = np.dot( magfn, t3evec[:,2] )
+    symm_ang = np.arccos(np.abs(dot)) * 180.0/np.pi
+
+    if dot < 0:
+        t3evec = -t3evec
+    symm = t3evec[:,2]
+
+    magdir = symm
+
+    out = xyz_to_polar(np.array([symm]))
+    symm_theta = out[0,1]
+    symm_phi = out[0,2]
+
+
     output = {'density': density, 
               'flux': flux,
               'eflux': eflux,
@@ -144,5 +253,12 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
               'ptens': ptens, 
               'ttens': t3x3, 
               'vthermal': vthermal,
-              'avgtemp': avgtemp}
+              'avgtemp': avgtemp,
+              'magt3': magt3,
+              't3': t3,
+              'symm': symm,
+              'symm_theta': symm_theta,
+              'symm_phi': symm_phi,
+              'symm_ang': symm_ang,
+              }
     return output

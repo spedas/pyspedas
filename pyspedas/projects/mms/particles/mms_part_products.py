@@ -265,6 +265,12 @@ def mms_part_products(in_tvarname,
         out_mftens = np.zeros([ntimes, 6])
         out_ptens = np.zeros([ntimes, 6])
         out_ttens = np.zeros([ntimes, 3, 3])
+        out_magt3 = np.zeros([ntimes, 3])
+        out_t3 = np.zeros([ntimes, 3])
+        out_symm = np.zeros([ntimes, 3])
+        out_symm_theta = np.zeros(ntimes)
+        out_symm_phi = np.zeros(ntimes)
+        out_symm_ang = np.zeros(ntimes)
 
     if 'fac_moments' in output:
         out_fac_density = np.zeros(ntimes)
@@ -276,6 +282,13 @@ def mms_part_products(in_tvarname,
         out_fac_mftens = np.zeros([ntimes, 6])
         out_fac_ptens = np.zeros([ntimes, 6])
         out_fac_ttens = np.zeros([ntimes, 3, 3])
+        out_fac_magt3 = np.zeros([ntimes, 3])
+        out_fac_t3 = np.zeros([ntimes, 3])
+        out_fac_symm = np.zeros([ntimes, 3])
+        out_fac_symm_theta = np.zeros(ntimes)
+        out_fac_symm_phi = np.zeros(ntimes)
+        out_fac_symm_ang = np.zeros(ntimes)
+
 
     out_vars = []
     last_update_time = None
@@ -423,6 +436,7 @@ are the scientific products that should be used for analysis."""
                 scpot_val = scpot_data[i]
             else:
                 scpot_val = 0.0
+            clean_data['magf'] = mag_data[i]
 
             moments = spd_pgs_moments(clean_data, sc_pot=scpot_val)
             out_density[i] = moments['density']
@@ -434,6 +448,12 @@ are the scientific products that should be used for analysis."""
             out_mftens[i, :] = moments['mftens']
             out_ptens[i, :] = moments['ptens']
             out_ttens[i, :, :] = moments['ttens']
+            out_magt3[i,:] = moments['magt3']
+            out_t3[i,:] = moments['t3']
+            out_symm[i,:] = moments['symm']
+            out_symm_theta[i] = moments['symm_theta']
+            out_symm_phi[i] = moments['symm_phi']
+            out_symm_ang[i] = moments['symm_ang']
 
         # Perform transformation to FAC, regrid data, and apply limits in new coords
         if fac_requested:
@@ -470,6 +490,13 @@ are the scientific products that should be used for analysis."""
             out_fac_mftens[i, :] = fac_moments['mftens']
             out_fac_ptens[i, :] = fac_moments['ptens']
             out_fac_ttens[i, :, :] = fac_moments['ttens']
+            out_fac_magt3[i,:] = fac_moments['magt3']
+            out_fac_t3[i,:] = fac_moments['t3']
+            out_fac_symm[i,:] = fac_moments['symm']
+            out_fac_symm_theta[i] = fac_moments['symm_theta']
+            out_fac_symm_phi[i] = fac_moments['symm_phi']
+            out_fac_symm_ang[i] = fac_moments['symm_ang']
+
 
     if 'moments' in output:
         # put all of the moments arrays into a hash table prior to passing to the tplot routine
@@ -481,7 +508,14 @@ are the scientific products that should be used for analysis."""
               'ptens': out_ptens,
               'ttens': out_ttens,
               'vthermal': out_vthermal,
-              'avgtemp': out_avgtemp}
+              'avgtemp': out_avgtemp,
+              'magt3': out_magt3,
+              't3': out_t3,
+              'symm': out_symm,
+              'symm_theta': out_symm_theta,
+              'symm_phi': out_symm_phi,
+              'symm_ang': out_symm_ang,
+            }
         moments_vars = spd_pgs_moments_tplot(moments, x=data_times, prefix=user_prefix + in_tvarname + '_', suffix=suffix)
         out_vars.extend(moments_vars)
 
@@ -495,7 +529,14 @@ are the scientific products that should be used for analysis."""
               'ptens': out_fac_ptens,
               'ttens': out_fac_ttens,
               'vthermal': out_fac_vthermal,
-              'avgtemp': out_fac_avgtemp}
+              'avgtemp': out_fac_avgtemp,
+              'magt3': out_fac_magt3,
+              't3': out_fac_t3,
+              'symm': out_fac_symm,
+              'symm_theta': out_fac_symm_theta,
+              'symm_phi': out_fac_symm_phi,
+              'symm_ang': out_fac_symm_ang,
+               }
         fac_moments_vars = spd_pgs_moments_tplot(fac_moments, x=data_times, prefix=user_prefix + in_tvarname+'_fac_', suffix=suffix)
         out_vars.extend(fac_moments_vars)
 
