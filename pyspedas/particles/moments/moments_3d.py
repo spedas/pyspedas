@@ -171,14 +171,25 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     # t3 = sp.linalg.svdvals(t3x3)
 
     # Calculate eigenvalues and eigenvectors
-    t3, t3evec = np.linalg.eigh(t3x3, UPLO='U')
+    # For some data sets, eigh() may fail to converge. Perhpas eig() is more robust?
+    try:
+        t3, t3evec = np.linalg.eigh(t3x3, UPLO='U')
+        #t3, t3evec = np.linalg.eig(t3x3)
+    except np.linalg.linalg.LinAlgError:
+        # ERG can pass data arrays that are all zeros. This gives zero density and a t3x3 array full of NaNs.
+        # That makes the eigenvalue calculation throw LinAlgErrors.
+        # In that case, we just silently fill t3 and t3evec with NaNs and let the chips fall where they may.
+        # It happens too frequently, at least for ERG HEP, to bother logging it, otherwise the logs will
+        # get spammed with warnings.
+        t3 = np.array([np.nan, np.nan, np.nan])
+        t3evec = np.array([t3, t3, t3])
 
     # Note: np.linalg.eigh() returns the eigenvalues t3 in ascending order.
     # In IDL, they're not necessarily sorted.
 
     # Do some magical sorting and shifting
-    # SPEDAS moments_3d takes magdir as a parameter, but no one seems to call it that wy.
-    # It defaults to [-1,1,0] if not passed, but they don't seem to be used anywhere.
+    # SPEDAS moments_3d takes magdir as a parameter, but no one seems to call it that way.
+    # In that case, it defaults to [-1,1,0].
 
     magdir=np.array([-1.,1.,0.])
     magfn = magdir/np.linalg.norm(magdir)
@@ -202,7 +213,7 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     t3 = shift(t3,shft,mode='grid-wrap')
     t3evec = shift(t3evec,[0,shft], mode='grid-wrap')
     # This uses the magdir version of magfn, but this dot product doesn't seem to be used anywhere.
-    # Instead, it is recalculated below from magf (from the input structure) and the velocity vector
+    # Instead, it is recalculated further down from magf (from the input structure) and the velocity vector
     # dot =  np.dot( magfn, t3evec[:,2] )
 
     bmag = np.linalg.norm(magf)
