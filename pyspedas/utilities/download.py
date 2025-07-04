@@ -663,6 +663,7 @@ def download(
                     logging.info("Downloading remote index: " + url_base)
 
                     # we'll need to parse the HTML index file for the file list
+                    index_start_time = datetime.datetime.now()
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore", category=ResourceWarning)
                         try:
@@ -708,6 +709,12 @@ def download(
                     except AttributeError:
                         links = []
 
+                    index_done_time = datetime.datetime.now()
+                    index_dt = index_done_time - index_start_time
+                    index_elapsed = index_dt.total_seconds()
+
+                    if index_elapsed > 5.0:
+                        logging.warning(f"Remote index took {index_elapsed:.1f} seconds to return, may indicate problems on remote server (index_slow)")
                 # find the file names that match our string
                 if not regex:
                     # note: fnmatch.filter accepts ? (single character) and * (multiple characters)
