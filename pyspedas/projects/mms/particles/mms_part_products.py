@@ -529,15 +529,17 @@ are the scientific products that should be used for analysis."""
               'mftens': out_fac_mftens,
               'velocity': out_fac_velocity,
               'ptens': out_fac_ptens,
-              'ttens': out_fac_ttens,
               'vthermal': out_fac_vthermal,
               'avgtemp': out_fac_avgtemp,
-              'magt3': out_fac_magt3,
-              't3': out_fac_t3,
-              'symm': out_fac_symm,
-              'symm_theta': out_fac_symm_theta,
-              'symm_phi': out_fac_symm_phi,
-              'symm_ang': out_fac_symm_ang,
+              # These moments are deliberately excluded from field-aligned products with the /nomag
+              # keyword in IDL.  There's probably a good reason for that, so we'll do the same here.
+              # 'ttens': out_fac_ttens,
+              # 'magt3': out_fac_magt3,
+              # 't3': out_fac_t3,
+              # 'symm': out_fac_symm,
+              # 'symm_theta': out_fac_symm_theta,
+              # 'symm_phi': out_fac_symm_phi,
+              # 'symm_ang': out_fac_symm_ang,
                }
         fac_moments_vars = spd_pgs_moments_tplot(fac_moments, x=data_times, prefix=user_prefix + in_tvarname+'_fac_', suffix=suffix)
         out_vars.extend(fac_moments_vars)
