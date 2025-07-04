@@ -57,8 +57,16 @@ def spd_pgs_regrid(data, regrid_dimen):
               'bins': bins_grid}
 
     # assumes energies are constant across angle
-    output['energy'] = np.repeat(np.reshape(data['energy'][:, 0], [n_energy, 1]), n_bins_grid, axis=1).T
-    output['denergy'] = np.repeat(np.reshape(data['denergy'][:, 0], [n_energy, 1]), n_bins_grid, axis=1).T
+    output['energy'] = np.repeat(np.reshape(data['energy'][:, 0], [n_energy, 1]), n_bins_grid, axis=1)
+    output['denergy'] = np.repeat(np.reshape(data['denergy'][:, 0], [n_energy, 1]), n_bins_grid, axis=1)
+    # Some missions might not support bulk velocity subtraction or moments
+    # on field aligned or regridded data, so check before accessing
+    if 'orig_energy' in data.keys():
+        output['orig_energy'] = data['orig_energy']
+    if 'charge' in data.keys():
+        output['charge'] = data['charge']
+    if 'mass' in data.keys():
+        output['mass'] = data['mass']
 
     for i in range(0, n_energy):
         phi_temp = data['phi'][i, :]
