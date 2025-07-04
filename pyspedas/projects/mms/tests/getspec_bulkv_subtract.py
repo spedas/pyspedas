@@ -90,10 +90,6 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.vthermal_bulk_subtract = get_data('mms1_dis_dist_brst_vthermal_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_vthermal_no_bulk_subtract','vthermal_mom_nobulk_subtract')
         tplot_copy('mms1_dis_dist_brst_vthermal_bulk_subtract','vthermal_mom_bulk_subtract')
-        cls.avgtemp_nobulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
-        cls.avgtemp_bulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_bulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_avgtemp_no_bulk_subtract','avgtemp_mom_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_avgtemp_bulk_subtract','avgtemp_mom_bulk_subtract')
         cls.t3_nobulk_subtract = get_data('mms1_dis_dist_brst_t3_no_bulk_subtract')
         cls.t3_bulk_subtract = get_data('mms1_dis_dist_brst_t3_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_t3_no_bulk_subtract','t3_mom_nobulk_subtract')
@@ -121,41 +117,37 @@ class TestGetspecBulkv(unittest.TestCase):
 
         # Field Aligned Moments
         cls.avgtemp_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_mag_no_bulk_subtract')
-        cls.avgtemp_bulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_bulk_subtract')
+        cls.avgtemp_mag_bulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_avgtemp_mag_no_bulk_subtract','avgtemp_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_avgtemp_bulk_subtract','avgtemp_mom_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_avgtemp_mag_bulk_subtract','avgtemp_mom_mag_bulk_subtract')
         cls.density_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_density_mag_no_bulk_subtract')
-        cls.density_bulk_subtract = get_data('mms1_dis_dist_brst_density_bulk_subtract')
+        cls.density_mag_bulk_subtract = get_data('mms1_dis_dist_brst_density_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_density_mag_no_bulk_subtract','density_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_density_bulk_subtract','density_mom_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_density_mag_bulk_subtract','density_mom_mag_bulk_subtract')
         cls.eflux_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_eflux_mag_no_bulk_subtract')
-        cls.eflux_bulk_subtract = get_data('mms1_dis_dist_brst_eflux_bulk_subtract')
+        cls.eflux_mag_bulk_subtract = get_data('mms1_dis_dist_brst_eflux_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_eflux_mag_no_bulk_subtract','eflux_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_eflux_bulk_subtract','eflux_mom_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_eflux_mag_bulk_subtract','eflux_mom_mag_bulk_subtract')
         cls.flux_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_flux_mag_no_bulk_subtract')
-        cls.flux_bulk_subtract = get_data('mms1_dis_dist_brst_flux_bulk_subtract')
+        cls.flux_mag_bulk_subtract = get_data('mms1_dis_dist_brst_flux_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_flux_mag_no_bulk_subtract','flux_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_flux_bulk_subtract','flux_mom_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_flux_mag_bulk_subtract','flux_mom_mag_bulk_subtract')
         cls.mftens_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_mftens_mag_no_bulk_subtract')
-        cls.mftens_bulk_subtract = get_data('mms1_dis_dist_brst_mftens_bulk_subtract')
+        cls.mftens_mag_bulk_subtract = get_data('mms1_dis_dist_brst_mftens_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_mftens_mag_no_bulk_subtract','mftens_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_mftens_bulk_subtract','mftens_mom_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_mftens_mag_bulk_subtract','mftens_mom_mag_bulk_subtract')
         cls.ptens_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_ptens_mag_no_bulk_subtract')
-        cls.ptens_bulk_subtract = get_data('mms1_dis_dist_brst_ptens_bulk_subtract')
+        cls.ptens_mag_bulk_subtract = get_data('mms1_dis_dist_brst_ptens_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_ptens_mag_no_bulk_subtract','ptens_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_ptens_bulk_subtract','ptens_mom_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_ptens_mag_bulk_subtract','ptens_mom_mag_bulk_subtract')
         cls.velocity_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_velocity_mag_no_bulk_subtract')
-        cls.velocity_bulk_subtract = get_data('mms1_dis_dist_brst_velocity_bulk_subtract')
+        cls.velocity_mag_bulk_subtract = get_data('mms1_dis_dist_brst_velocity_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_velocity_mag_no_bulk_subtract','velocity_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_velocity_bulk_subtract','velocity_mom_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_velocity_mag_bulk_subtract','velocity_mom_mag_bulk_subtract')
         cls.vthermal_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_vthermal_mag_no_bulk_subtract')
-        cls.vthermal_bulk_subtract = get_data('mms1_dis_dist_brst_vthermal_bulk_subtract')
+        cls.vthermal_mag_bulk_subtract = get_data('mms1_dis_dist_brst_vthermal_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_vthermal_mag_no_bulk_subtract','vthermal_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_vthermal_bulk_subtract','vthermal_mom_bulk_subtract')
-        cls.avgtemp_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_mag_no_bulk_subtract')
-        cls.avgtemp_bulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_bulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_avgtemp_mag_no_bulk_subtract','avgtemp_mom_mag_nobulk_subtract')
-        tplot_copy('mms1_dis_dist_brst_avgtemp_bulk_subtract','avgtemp_mom_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_vthermal_mag_bulk_subtract','vthermal_mom_mag_bulk_subtract')
 
         # HPCA Spectra
         cls.hpca_e_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_energy_no_bulk_subtract')
@@ -542,13 +534,11 @@ class TestGetspecBulkv(unittest.TestCase):
         # Max relative difference 1.7e-06
         assert_allclose(self.magt3_nobulk_subtract.y, pydat.y, rtol=2.0e-06)
 
-
         tplot(['mms1_dis_dist_brst_symm_no_bulk_subtract','symm_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_symm_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_symm_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_symm_no_bulk_subtract')
         # max relative error ,0003
         assert_allclose(self.symm_nobulk_subtract.y, pydat.y, rtol=5.0e-04)
-
 
         tplot(['mms1_dis_dist_brst_symm_theta_no_bulk_subtract','symm_theta_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_symm_theta_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_symm_theta_no_bulk_subtract')
@@ -557,14 +547,12 @@ class TestGetspecBulkv(unittest.TestCase):
         # max relative error 1.0e-05
         assert_allclose(self.symm_theta_nobulk_subtract.y, pydat.y, rtol=2.0e-05)
 
-
         tplot(['mms1_dis_dist_brst_symm_phi_no_bulk_subtract','symm_phi_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_symm_phi_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_symm_phi_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_symm_phi_no_bulk_subtract')
         self.assertEqual(units,'degrees')
         # max relative error .0003
         assert_allclose(self.symm_phi_nobulk_subtract.y, pydat.y, rtol=5.0e-04)
-
 
         tplot(['mms1_dis_dist_brst_symm_ang_no_bulk_subtract','symm_ang_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_symm_ang_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_symm_ang_no_bulk_subtract')
@@ -644,13 +632,11 @@ class TestGetspecBulkv(unittest.TestCase):
         # Max relative difference 9.3e-06
         assert_allclose(self.magt3_bulk_subtract.y, pydat.y, rtol=1.0e-05)
 
-
         tplot(['mms1_dis_dist_brst_symm_bulk_subtract','symm_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_symm_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_symm_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_symm_bulk_subtract')
         # max relative error ,0003
         assert_allclose(self.symm_bulk_subtract.y, pydat.y, rtol=5.0e-04)
-
 
         tplot(['mms1_dis_dist_brst_symm_theta_bulk_subtract','symm_theta_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_symm_theta_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_symm_theta_bulk_subtract')
@@ -658,7 +644,6 @@ class TestGetspecBulkv(unittest.TestCase):
         self.assertEqual(units,'degrees')
         # max relative error .00019
         assert_allclose(self.symm_theta_bulk_subtract.y, pydat.y, rtol=2.0e-04)
-
 
         tplot(['mms1_dis_dist_brst_symm_phi_bulk_subtract','symm_phi_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_symm_phi_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_symm_phi_bulk_subtract')
@@ -733,6 +718,66 @@ class TestGetspecBulkv(unittest.TestCase):
         self.assertEqual(units,'km/s')
         assert_allclose(self.vthermal_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
 
+    def test_getspec_fac_moments_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['fac_moments'], no_regrid=True, units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        tplot(['mms1_dis_dist_brst_fac_avgtemp_bulk_subtract','avgtemp_mom_mag_bulk_subtract', 'avgtemp_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_avgtemp_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_avgtemp_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_avgtemp_bulk_subtract')
+        self.assertEqual(units,'eV')
+        # max relative difference 6.6e-06
+        assert_allclose(self.avgtemp_mag_bulk_subtract.y, pydat.y, rtol=7.0e-06)
+
+        tplot(['mms1_dis_dist_brst_fac_density_bulk_subtract','density_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_density_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_density_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_density_bulk_subtract')
+        self.assertEqual(units,'1/cm^3')
+        # max relative difference 1.2e-05
+        assert_allclose(self.density_mag_bulk_subtract.y, pydat.y, rtol=2.0e-05)
+
+        tplot(['mms1_dis_dist_brst_fac_eflux_bulk_subtract','eflux_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_eflux_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_eflux_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_eflux_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.eflux_mag_bulk_subtract.y, pydat.y, rtol=.0005)
+
+        tplot(['mms1_dis_dist_brst_fac_flux_bulk_subtract','flux_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_flux_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_flux_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_flux_bulk_subtract')
+        self.assertEqual(units,'1/(cm^2-s)')
+        # largest relative difference about .0005
+        assert_allclose(self.flux_mag_bulk_subtract.y, pydat.y, rtol=6.0e-04)
+
+        tplot(['mms1_dis_dist_brst_fac_mftens_bulk_subtract','mftens_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_mftens_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_mftens_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_mftens_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about .0008
+        assert_allclose(self.mftens_mag_bulk_subtract.y, pydat.y, rtol=.001)
+
+        tplot(['mms1_dis_dist_brst_fac_ptens_bulk_subtract','ptens_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_ptens_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_ptens_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_ptens_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about 0.0023
+        assert_allclose(self.ptens_mag_bulk_subtract.y, pydat.y, rtol=.003)
+
+        tplot(['mms1_dis_dist_brst_fac_velocity_bulk_subtract','velocity_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_velocity_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_velocity_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_velocity_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference .0005
+        assert_allclose(self.velocity_mag_bulk_subtract.y, pydat.y, rtol=.0006)
+
+        tplot(['mms1_dis_dist_brst_fac_vthermal_bulk_subtract','vthermal_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_vthermal_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_vthermal_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_vthermal_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference 3.2e-06
+        assert_allclose(self.vthermal_mag_bulk_subtract.y, pydat.y, rtol=4.0e-06)
 
 
 if __name__ == '__main__':
