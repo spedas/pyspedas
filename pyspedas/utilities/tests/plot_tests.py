@@ -7,7 +7,7 @@ from pytplot import store_data, options, timespan, tplot, tplot_options, degap, 
 import pytplot
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = False
+global_display = True
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -238,6 +238,15 @@ class PlotTestCases(unittest.TestCase):
         ylim('thc_fgs_dsl',-100, 100)
         tplot_options('title', 'Y limit [-100, 100]')
         tplot('thc_fgs_dsl',save_png='test_ylim',display=global_display)
+        ylim('thc_fgs_dsl',1, 100, 1)
+        tplot_options('title', 'Y limit [1, 100, 1] (should be log scaled)')
+        tplot('thc_fgs_dsl',save_png='test_ylim_1_100_log',display=global_display)
+        ylim('thc_fgs_dsl',1, 200)
+        tplot_options('title', 'Y limit [1, 200] (should still be log scaled)')
+        tplot('thc_fgs_dsl',save_png='test_ylim_1_200_log',display=global_display)
+        ylim('thc_fgs_dsl',1, 200, logflag=False)
+        tplot_options('title', 'Y limit [1, 200, False] (should now be linear scale)')
+        tplot('thc_fgs_dsl',save_png='test_ylim_1_200_linear',display=global_display)
         tplot_options('title', '')
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
 
@@ -611,6 +620,9 @@ class PlotTestCases(unittest.TestCase):
         zlim('esa_srvy_burst', 1.0e3, 1.0e20)
         tplot_options('title', 'Combining full & burst cadence with same energies: top=fast, middle=combined, bot=burst\nMiddle panel should have an expanded zrange (high max)')
         tplot(vars, save_png='test_pseudo_spectra_full_burst_explicitzrange',display=global_display)
+        zlim('esa_srvy_burst', 1.0e5, 1.0e6, False)
+        tplot_options('title', 'Combining full & burst cadence with same energies: top=fast, middle=combined, bot=burst\nMiddle panel should have a reduced zrange with linear scaling')
+        tplot(vars, save_png='test_pseudo_spectra_full_burst_explicitzrange_zlin',display=global_display)
         timespan('2007-03-23',1,'days') # Reset to avoid interfering with other tests
         tplot_options('title', '')
 
