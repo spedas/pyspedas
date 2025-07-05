@@ -415,6 +415,7 @@ def sosmag_to_tplot(
         options(var_name2, "ytitle", "b_gse")
         options(var_name2, "ysubtitle", "[nT]")
         set_coords(var_name2, "gse")
+        set_units(var_name2, "nT")
         var_names.append(var_name2)
 
         # Magnetic field in HPEN 'b_hpen_x', 'b_hpen_y', 'b_hpen_z'
@@ -430,6 +431,7 @@ def sosmag_to_tplot(
             options(var_name3, "ytitle", "b_hpen")
             options(var_name3, "ysubtitle", "[nT]")
             set_coords(var_name3, "hpen")
+            set_units(var_name3, "nT")
             var_names.append(var_name3)
 
         # Spacecraft Position in GSE 'position_x', 'position_y', 'position_z'
@@ -444,6 +446,7 @@ def sosmag_to_tplot(
         options(var_name4, "ytitle", "pos_gse")
         options(var_name4, "ysubtitle", "[km]")
         set_coords(var_name4,  "gse")
+        set_units(var_name4, "km")
         var_names.append(var_name4)
 
         # Data flags
@@ -688,6 +691,7 @@ def particle_to_tplot(
         options(var_name2, "ytitle", "pos_gse")
         options(var_name2, "ysubtitle", "[km]")
         set_coords(var_name2,"gse")
+        set_units(var_name2, "km")
         var_names.append(var_name2)
 
         # Print the variable names created
