@@ -41,6 +41,10 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.e_bulk_subtract = get_data('mms1_dis_dist_brst_energy_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_energy_no_bulk_subtract','e_spec_nobulk_subtract')
         tplot_copy('mms1_dis_dist_brst_energy_bulk_subtract','e_spec_bulk_subtract')
+        cls.e_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_energy_mag_no_bulk_subtract')
+        cls.e_mag_bulk_subtract = get_data('mms1_dis_dist_brst_energy_mag_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_energy_mag_no_bulk_subtract','e_mag_spec_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_energy_mag_bulk_subtract','e_mag_spec_bulk_subtract')
         cls.theta_nobulk_subtract = get_data('mms1_dis_dist_brst_theta_no_bulk_subtract')
         cls.theta_bulk_subtract = get_data('mms1_dis_dist_brst_theta_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_theta_no_bulk_subtract','theta_spec_nobulk_subtract')
@@ -57,6 +61,7 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.gyro_bulk_subtract = get_data('mms1_dis_dist_brst_gyro_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_gyro_no_bulk_subtract','gyro_spec_nobulk_subtract')
         tplot_copy('mms1_dis_dist_brst_gyro_bulk_subtract','gyro_spec_bulk_subtract')
+
         # Moments
         cls.avgtemp_nobulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_no_bulk_subtract')
         cls.avgtemp_bulk_subtract = get_data('mms1_dis_dist_brst_avgtemp_bulk_subtract')
@@ -179,6 +184,98 @@ class TestGetspecBulkv(unittest.TestCase):
         tplot_copy('mms1_hpca_hplus_phase_space_density_gyro_no_bulk_subtract','hpca_gyro_nobulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_gyro_bulk_subtract','hpca_gyro_bulk_subtract')
 
+        # HPCA Moments
+        cls.hpca_avgtemp_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_avgtemp_no_bulk_subtract')
+        cls.hpca_avgtemp_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_avgtemp_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_avgtemp_no_bulk_subtract','hpca_avgtemp_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_avgtemp_bulk_subtract','hpca_avgtemp_mom_bulk_subtract')
+        cls.hpca_density_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_density_no_bulk_subtract')
+        cls.hpca_density_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_density_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_density_no_bulk_subtract','hpca_density_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_density_bulk_subtract','hpca_density_mom_bulk_subtract')
+        cls.hpca_eflux_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_eflux_no_bulk_subtract')
+        cls.hpca_eflux_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_eflux_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_eflux_no_bulk_subtract','hpca_eflux_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_eflux_bulk_subtract','hpca_eflux_mom_bulk_subtract')
+        cls.hpca_flux_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract')
+        cls.hpca_flux_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_flux_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract','hpca_flux_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_flux_bulk_subtract','hpca_flux_mom_bulk_subtract')
+        cls.hpca_mftens_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_mftens_no_bulk_subtract')
+        cls.hpca_mftens_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_mftens_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_mftens_no_bulk_subtract','hpca_mftens_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_mftens_bulk_subtract','hpca_mftens_mom_bulk_subtract')
+        cls.hpca_ptens_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_ptens_no_bulk_subtract')
+        cls.hpca_ptens_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_ptens_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_ptens_no_bulk_subtract','hpca_ptens_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_ptens_bulk_subtract','hpca_ptens_mom_bulk_subtract')
+        cls.hpca_velocity_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_velocity_no_bulk_subtract')
+        cls.hpca_velocity_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_velocity_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_velocity_no_bulk_subtract','hpca_velocity_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_velocity_bulk_subtract','hpca_velocity_mom_bulk_subtract')
+        cls.hpca_vthermal_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_vthermal_no_bulk_subtract')
+        cls.hpca_vthermal_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_vthermal_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_vthermal_no_bulk_subtract','hpca_vthermal_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_vthermal_bulk_subtract','hpca_vthermal_mom_bulk_subtract')
+        cls.hpca_t3_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_t3_no_bulk_subtract')
+        cls.hpca_t3_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_t3_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_t3_no_bulk_subtract','hpca_t3_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_t3_bulk_subtract','hpca_t3_mom_bulk_subtract')
+        cls.hpca_magt3_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_magt3_no_bulk_subtract')
+        cls.hpca_magt3_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_magt3_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_magt3_no_bulk_subtract','hpca_magt3_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_magt3_bulk_subtract','hpca_magt3_mom_bulk_subtract')
+        cls.hpca_symm_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_symm_no_bulk_subtract')
+        cls.hpca_symm_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_symm_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_symm_no_bulk_subtract','hpca_symm_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_symm_bulk_subtract','hpca_symm_mom_bulk_subtract')
+        cls.hpca_symm_theta_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_symm_theta_no_bulk_subtract')
+        cls.hpca_symm_theta_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_symm_theta_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_symm_theta_no_bulk_subtract','hpca_symm_theta_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_symm_theta_bulk_subtract','hpca_symm_theta_mom_bulk_subtract')
+        cls.hpca_symm_phi_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_symm_phi_no_bulk_subtract')
+        cls.hpca_symm_phi_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_symm_phi_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_symm_phi_no_bulk_subtract','hpca_symm_phi_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_symm_phi_bulk_subtract','hpca_symm_phi_mom_bulk_subtract')
+        cls.hpca_symm_ang_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_symm_ang_no_bulk_subtract')
+        cls.hpca_symm_ang_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_symm_ang_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_symm_ang_no_bulk_subtract','hpca_symm_ang_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_symm_ang_bulk_subtract','hpca_symm_ang_mom_bulk_subtract')
+
+        # HPCA Field Aligned Moments
+        cls.hpca_avgtemp_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_avgtemp_mag_no_bulk_subtract')
+        cls.hpca_avgtemp_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_avgtemp_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_avgtemp_mag_no_bulk_subtract','hpca_avgtemp_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_avgtemp_mag_bulk_subtract','hpca_avgtemp_mom_mag_bulk_subtract')
+        cls.hpca_density_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_density_mag_no_bulk_subtract')
+        cls.hpca_density_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_density_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_density_mag_no_bulk_subtract','hpca_density_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_density_mag_bulk_subtract','hpca_density_mom_mag_bulk_subtract')
+        cls.hpca_eflux_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_eflux_mag_no_bulk_subtract')
+        cls.hpca_eflux_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_eflux_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_eflux_mag_no_bulk_subtract','hpca_eflux_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_eflux_mag_bulk_subtract','hpca_eflux_mom_mag_bulk_subtract')
+        cls.hpca_flux_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_flux_mag_no_bulk_subtract')
+        cls.hpca_flux_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_flux_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_flux_mag_no_bulk_subtract','hpca_flux_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_flux_mag_bulk_subtract','hpca_flux_mom_mag_bulk_subtract')
+        cls.hpca_mftens_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_mftens_mag_no_bulk_subtract')
+        cls.hpca_mftens_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_mftens_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_mftens_mag_no_bulk_subtract','hpca_mftens_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_mftens_mag_bulk_subtract','hpca_mftens_mom_mag_bulk_subtract')
+        cls.hpca_ptens_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_ptens_mag_no_bulk_subtract')
+        cls.hpca_ptens_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_ptens_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_ptens_mag_no_bulk_subtract','hpca_ptens_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_ptens_mag_bulk_subtract','hpca_ptens_mom_mag_bulk_subtract')
+        cls.hpca_velocity_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_velocity_mag_no_bulk_subtract')
+        cls.hpca_velocity_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_velocity_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_velocity_mag_no_bulk_subtract','hpca_velocity_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_velocity_mag_bulk_subtract','hpca_velocity_mom_mag_bulk_subtract')
+        cls.hpca_vthermal_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_vthermal_mag_no_bulk_subtract')
+        cls.hpca_vthermal_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_vthermal_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_vthermal_mag_no_bulk_subtract','hpca_vthermal_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_vthermal_mag_bulk_subtract','hpca_vthermal_mom_mag_bulk_subtract')
+
         tplot_names()
         del_data('mms1*')
 
@@ -206,6 +303,30 @@ class TestGetspecBulkv(unittest.TestCase):
         assert_allclose(self.e_nobulk_subtract.v, pydat.v, rtol=1.0e-06)
         # Test Z values
         assert_allclose(self.e_bulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+    def test_getspec_e_mag_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['fac_energy'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_dis_dist_brst_fac_energy_no_bulk_subtract','e_mag_spec_nobulk_subtract'],display=global_display,save_png='mms_getspec_e_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_energy_no_bulk_subtract')
+        # Test Y values (energy bins)
+        assert_allclose(self.e_mag_nobulk_subtract.v, pydat.v, rtol=1.0e-06)
+        # Test Z values
+        assert_allclose(self.e_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+    def test_getspec_e_mag_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='fpi',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['fac_energy'], no_regrid=True, units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        tplot(['e_mag_spec_bulk_subtract', 'mms1_dis_dist_brst_fac_energy_bulk_subtract','e_mag_spec_bulk_subtract'],display=global_display,save_png='mms_getspec_e_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_energy_bulk_subtract')
+        # Test Y values (energy bins)
+        assert_allclose(self.e_mag_bulk_subtract.v, pydat.v, rtol=1.0e-06)
+        # Test Z values
+        assert_allclose(self.e_mag_bulk_subtract.y, pydat.y, rtol=1.0e-06)
 
 
     def test_getspec_theta_nobulkv_subtract(self):
@@ -779,6 +900,250 @@ class TestGetspecBulkv(unittest.TestCase):
         #assert_allclose(self.hpca_theta_bulk_subtract.v, pydat.v, rtol=1.0e-05)
         # Test Z values   largest relative error about .00012
         assert_allclose(self.hpca_theta_bulk_subtract.y, pydat.y, rtol=2.0e-03)
+
+
+    def test_hpca_getspec_moments_no_bulk_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['moments'], units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_avgtemp_no_bulk_subtract','hpca_avgtemp_mom_no_bulk_subtract', 'hpca_avgtemp_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_avgtemp_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_avgtemp_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_avgtemp_no_bulk_subtract')
+        self.assertEqual(units,'eV')
+        # max relative difference 6.6e-06
+        assert_allclose(self.hpca_avgtemp_nobulk_subtract.y, pydat.y, rtol=7.0e-06)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_density_no_bulk_subtract','hpca_density_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_density_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_density_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_density_no_bulk_subtract')
+        self.assertEqual(units,'1/cm^3')
+        # max relative difference 1.2e-05
+        assert_allclose(self.hpca_density_nobulk_subtract.y, pydat.y, rtol=2.0e-05)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_eflux_no_bulk_subtract','hpca_eflux_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_eflux_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_eflux_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_eflux_no_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.hpca_eflux_nobulk_subtract.y, pydat.y, rtol=.0005)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract','hpca_flux_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_flux_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract')
+        self.assertEqual(units,'1/(cm^2-s)')
+        # largest relative difference about .0005
+        assert_allclose(self.hpca_flux_nobulk_subtract.y, pydat.y, rtol=6.0e-04)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_mftens_no_bulk_subtract','hpca_mftens_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_mftens_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_mftens_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_mftens_no_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about .0008
+        assert_allclose(self.hpca_mftens_nobulk_subtract.y, pydat.y, rtol=.001)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_ptens_no_bulk_subtract','hpca_ptens_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_ptens_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_ptens_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_ptens_no_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about 0.0023
+        assert_allclose(self.hpca_ptens_nobulk_subtract.y, pydat.y, rtol=.003)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_velocity_no_bulk_subtract','hpca_velocity_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_velocity_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_velocity_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_velocity_no_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference .0005
+        assert_allclose(self.hpca_velocity_nobulk_subtract.y, pydat.y, rtol=.0006)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_vthermal_no_bulk_subtract','hpca_vthermal_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_vthermal_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_vthermal_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_vthermal_no_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference 3.2e-06
+        assert_allclose(self.hpca_vthermal_nobulk_subtract.y, pydat.y, rtol=4.0e-06)
+
+    def test_hpca_getspec_moments_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['moments'], units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_avgtemp_bulk_subtract','hpca_avgtemp_mom_bulk_subtract', 'hpca_avgtemp_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_avgtemp_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_avgtemp_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_avgtemp_bulk_subtract')
+        self.assertEqual(units,'eV')
+        # max relative difference 6.6e-06
+        assert_allclose(self.hpca_avgtemp_bulk_subtract.y, pydat.y, rtol=7.0e-06)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_density_bulk_subtract','hpca_density_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_density_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_density_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_density_bulk_subtract')
+        self.assertEqual(units,'1/cm^3')
+        # max relative difference 1.2e-05
+        assert_allclose(self.hpca_density_bulk_subtract.y, pydat.y, rtol=2.0e-05)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_eflux_bulk_subtract','hpca_eflux_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_eflux_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_eflux_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_eflux_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.hpca_eflux_bulk_subtract.y, pydat.y, rtol=.0005)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_flux_bulk_subtract','hpca_flux_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_flux_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_flux_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_flux_bulk_subtract')
+        self.assertEqual(units,'1/(cm^2-s)')
+        # largest relative difference about .0005
+        assert_allclose(self.hpca_flux_bulk_subtract.y, pydat.y, rtol=6.0e-04)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_mftens_bulk_subtract','hpca_mftens_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_mftens_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_mftens_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_mftens_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about .0008
+        assert_allclose(self.hpca_mftens_bulk_subtract.y, pydat.y, rtol=.001)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_ptens_bulk_subtract','hpca_ptens_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_ptens_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_ptens_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_ptens_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about 0.0023
+        assert_allclose(self.hpca_ptens_bulk_subtract.y, pydat.y, rtol=.003)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_velocity_bulk_subtract','hpca_velocity_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_velocity_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_velocity_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_velocity_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference .0005
+        assert_allclose(self.hpca_velocity_bulk_subtract.y, pydat.y, rtol=.0006)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_vthermal_bulk_subtract','hpca_vthermal_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_vthermal_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_vthermal_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_vthermal_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference 3.2e-06
+        assert_allclose(self.hpca_vthermal_bulk_subtract.y, pydat.y, rtol=4.0e-06)
+
+    def test_hpca_getspec_fac_moments_nobulkv_subtract(self):
+        """Test of getspec without bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['fac_moments'], no_regrid=True, units='eflux', subtract_bulk=False, center_measurement=True, suffix='_no_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_avgtemp_no_bulk_subtract','hpca_avgtemp_mom_mag_nobulk_subtract', 'hpca_avgtemp_mom_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_avgtemp_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_avgtemp_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_avgtemp_no_bulk_subtract')
+        self.assertEqual(units,'eV')
+        assert_allclose(self.hpca_avgtemp_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_density_no_bulk_subtract','hpca_density_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_density_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_density_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_density_no_bulk_subtract')
+        self.assertEqual(units,'1/cm^3')
+        # max relative difference 1.2e-06
+        assert_allclose(self.hpca_density_mag_nobulk_subtract.y, pydat.y, rtol=2.0e-06)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_eflux_no_bulk_subtract','hpca_eflux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_eflux_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_eflux_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_eflux_no_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.hpca_eflux_mag_nobulk_subtract.y, pydat.y, rtol=.0005)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_flux_no_bulk_subtract','hpca_flux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_flux_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_flux_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_flux_no_bulk_subtract')
+        self.assertEqual(units,'1/(cm^2-s)')
+        # largest relative difference about .0005
+        assert_allclose(self.hpca_flux_mag_nobulk_subtract.y, pydat.y, rtol=6.0e-04)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_mftens_no_bulk_subtract','hpca_mftens_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_mftens_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_mftens_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_mftens_no_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about .0005
+        assert_allclose(self.hpca_mftens_mag_nobulk_subtract.y, pydat.y, rtol=6.0e-04)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_ptens_no_bulk_subtract','hpca_ptens_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_ptens_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_ptens_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_ptens_no_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about 0.0009
+        assert_allclose(self.hpca_ptens_mag_nobulk_subtract.y, pydat.y, rtol=.001)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_velocity_no_bulk_subtract','hpca_velocity_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_velocity_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_velocity_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_velocity_no_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference .0005
+        assert_allclose(self.hpca_velocity_mag_nobulk_subtract.y, pydat.y, rtol=.0006)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_vthermal_no_bulk_subtract','hpca_vthermal_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_vthermal_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_vthermal_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_vthermal_no_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        assert_allclose(self.hpca_vthermal_mag_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
+
+
+    def test_hpca_getspec_fac_moments_bulkv_subtract(self):
+        """Test of getspec with bulk velocity subtraction"""
+
+        mms_part_getspec(instrument='hpca',species='i', data_rate='brst',trange=['2015-11-19/08:34:41', '2015-11-19/08:35:53'],
+                        output=['fac_moments'], no_regrid=True, units='eflux', subtract_bulk=True, center_measurement=True, suffix='_bulk_subtract')
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_avgtemp_bulk_subtract','hpca_avgtemp_mom_mag_bulk_subtract', 'hpca_avgtemp_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_avgtemp_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_avgtemp_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_avgtemp_bulk_subtract')
+        self.assertEqual(units,'eV')
+        # max relative difference 6.6e-06
+        assert_allclose(self.hpca_avgtemp_mag_bulk_subtract.y, pydat.y, rtol=7.0e-06)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_density_bulk_subtract','hpca_density_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_density_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_density_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_density_bulk_subtract')
+        self.assertEqual(units,'1/cm^3')
+        # max relative difference 1.2e-05
+        assert_allclose(self.hpca_density_mag_bulk_subtract.y, pydat.y, rtol=2.0e-05)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_eflux_bulk_subtract','hpca_eflux_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_eflux_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_eflux_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_eflux_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.hpca_eflux_mag_bulk_subtract.y, pydat.y, rtol=.0005)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_flux_bulk_subtract','hpca_flux_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_flux_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_flux_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_flux_bulk_subtract')
+        self.assertEqual(units,'1/(cm^2-s)')
+        # largest relative difference about .0005
+        assert_allclose(self.hpca_flux_mag_bulk_subtract.y, pydat.y, rtol=6.0e-04)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_mftens_bulk_subtract','hpca_mftens_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_mftens_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_mftens_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_mftens_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about .0008
+        assert_allclose(self.hpca_mftens_mag_bulk_subtract.y, pydat.y, rtol=.001)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_ptens_bulk_subtract','hpca_ptens_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_ptens_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_ptens_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_ptens_bulk_subtract')
+        self.assertEqual(units,'eV/cm^3')
+        # largest relative difference about 0.0023
+        assert_allclose(self.hpca_ptens_mag_bulk_subtract.y, pydat.y, rtol=.003)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_velocity_bulk_subtract','hpca_velocity_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_velocity_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_velocity_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_velocity_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference .0005
+        assert_allclose(self.hpca_velocity_mag_bulk_subtract.y, pydat.y, rtol=.0006)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_vthermal_bulk_subtract','hpca_vthermal_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_vthermal_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_vthermal_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_vthermal_bulk_subtract')
+        self.assertEqual(units,'km/s')
+        # max relative difference 3.2e-06
+        assert_allclose(self.hpca_vthermal_mag_bulk_subtract.y, pydat.y, rtol=4.0e-06)
 
 
 if __name__ == '__main__':
