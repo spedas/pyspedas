@@ -6,7 +6,7 @@
 import pytplot
 import logging
 
-def zlim(name, min, max):
+def zlim(name, min, max, logflag=None):
     """
     This function will set the z axis range displayed for a specific tplot variable.
     This is only used for spec plots, where the z axis represents the magnitude of the values
@@ -19,7 +19,9 @@ def zlim(name, min, max):
         min : flt
             The start of the z axis.
         max : flt
-            The end of the z axis.   
+            The end of the z axis.
+        logflag: bool
+            (Optional) If True, use logarithmic scale; if False, linear scale, if None, no change
             
     Returns
     -------
@@ -36,5 +38,8 @@ def zlim(name, min, max):
         >>> pyspedas.zlim('Variable1', 2, 3)
 
     """
-    pytplot.options(name,'z_range',[min,max])
+    if logflag is None:
+        pytplot.options(name,'z_range',[min,max])
+    else:
+        pytplot.options(name,'z_range',[min, max, logflag])
     return

@@ -5,7 +5,7 @@
 import logging
 import pytplot
 
-def ylim(name, min, max):
+def ylim(name, min, max, logflag=None):
     """
     This function will set the y axis range displayed for a specific tplot variable.
     
@@ -16,7 +16,9 @@ def ylim(name, min, max):
         min : flt
             The start of the y axis.
         max : flt
-            The end of the y axis.   
+            The end of the y axis.
+        logflag: bool
+            (Optional) If True, the y axis will be logarithmic scale, if False, linear scale, if None, no change
             
     Returns
     -------
@@ -32,6 +34,8 @@ def ylim(name, min, max):
         >>> pyspedas.ylim('Variable1', 2, 4)
 
     """
-
-    pytplot.options(name,'y_range',[min, max])
+    if logflag is None:
+        pytplot.options(name,'y_range',[min, max])
+    else:
+        pytplot.options(name,'y_range',[min, max, logflag])
     return
