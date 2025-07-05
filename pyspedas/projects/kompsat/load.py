@@ -687,7 +687,7 @@ def particle_to_tplot(
         options(var_name2, "legend_names", pnames)
         options(var_name2, "ytitle", "pos_gse")
         options(var_name2, "ysubtitle", "[km]")
-        options(var_name2, "coord_sys", "gse")
+        set_coords(var_name2,"gse")
         var_names.append(var_name2)
 
         # Print the variable names created
