@@ -113,6 +113,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
+        echo Starting mms data_rate_segments tests at `date`
+        coverage run -a -m pyspedas.projects.mms.tests.data_rate_segments
         echo Starting akebono tests at `date`
         coverage run -a -m pyspedas.projects.akebono.tests.tests
         #echo Starting maven S3 tests at `date`
@@ -222,8 +224,6 @@ jobs:
         coverage run -a -m pyspedas.projects.mms.tests.fpi_tests
         echo Starting mms file_filter tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.file_filter
-        echo Starting mms data_rate_segments tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.data_rate_segments
         echo Starting mms curlometer tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.curlometer
         echo Starting mms wavpol tests at `date`
