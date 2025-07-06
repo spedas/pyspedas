@@ -306,18 +306,23 @@ def download_file(
 
     request_time = datetime.datetime.now()
     transfer_bytes = 0
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", category=ResourceWarning)
-        if not basic_auth:
-            fsrc = session.get(url, stream=True, verify=verify, headers=headers)
-        else:
-            fsrc = session.get(
-                url,
-                stream=True,
-                verify=verify,
-                headers=headers,
-                auth=(username, password),
-            )
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=ResourceWarning)
+            if not basic_auth:
+                fsrc = session.get(url, stream=True, verify=verify, headers=headers)
+            else:
+                fsrc = session.get(
+                    url,
+                    stream=True,
+                    verify=verify,
+                    headers=headers,
+                    auth=(username, password),
+                )
+    except requests.exceptions.ConnectionError as e:
+        logging.error("Unable to connect to URL: %s", str(e))
+        return None
+
     # need to delete the If-Modified-Since header so it's not set in the dictionary in subsequent calls
     if headers.get("If-Modified-Since") is not None:
         del headers["If-Modified-Since"]
