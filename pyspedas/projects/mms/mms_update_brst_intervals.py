@@ -51,22 +51,26 @@ def mms_update_brst_intervals():
             # should only be one file
             brst_file = brst_file[0]
 
-        times = load_csv_file(brst_file)
-        if not isinstance(times, tuple) or len(times) != 3:
-            logging.error('Error loading the CSV file')
-            return
+        try:
+            times = load_csv_file(brst_file)
+            if not isinstance(times, tuple) or len(times) != 3:
+                logging.error('Error loading the CSV file')
+                return
 
-        taistarttime, taiendtime, status = times
+            taistarttime, taiendtime, status = times
 
-        complete_idxs = np.argwhere(status == 'COMPLETE+FINISHED').flatten()
-        if len(complete_idxs) != 0:
-            tai_starts = taistarttime[complete_idxs]
-            tai_ends = taiendtime[complete_idxs]
+            complete_idxs = np.argwhere(status == 'COMPLETE+FINISHED').flatten()
+            if len(complete_idxs) != 0:
+                tai_starts = taistarttime[complete_idxs]
+                tai_ends = taiendtime[complete_idxs]
 
-            unix_starts.extend(mms_tai2unix(tai_starts))
-            unix_ends.extend(mms_tai2unix(tai_ends))
+                unix_starts.extend(mms_tai2unix(tai_starts))
+                unix_ends.extend(mms_tai2unix(tai_ends))
 
-        logging.info(f'Done grabbing updates for {start_str}-{end_str}')
+            logging.info(f'Done grabbing updates for {start_str}-{end_str}')
+        except IndexError:
+            logging.error(f'Error reading CSV file for {start_str}-{end_str}, possible empty file?')
+
 
         start_interval = end_interval
         end_interval = time_double(start_interval) + 6. * 30 * 24 * 60 * 60
