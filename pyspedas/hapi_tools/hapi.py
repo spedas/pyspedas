@@ -3,6 +3,7 @@ import warnings
 from pytplot import get_data, store_data, options, time_double
 import numpy as np
 from hapiclient import hapi as load_hapi
+from .replace_fillvals import replace_fillvals
 
 
 def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
@@ -157,14 +158,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         # check for fill values
         fill_value = param.get('fill')
         if fill_value is not None:
-            if param_type == 'double':
-                fill_value = float(fill_value)
-                data_out[data_out == fill_value] = np.nan
-            elif param_type == 'integer':
-                # NaN is only floating point, so we replace integer fill
-                # values with 0 instead of NaN
-                fill_value = int(fill_value)
-                data_out[data_out == fill_value] = 0
+            replace_fillvals(data_out, fill_value, param_type)
 
         bins = param.get('bins')
 
