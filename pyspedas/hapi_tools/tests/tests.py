@@ -63,7 +63,6 @@ class HAPITests(unittest.TestCase):
         self.assertTrue(data_exists('BY_GSE'))
         self.assertTrue(data_exists('BZ_GSE'))
 
-    #@unittest.skip("Skipping due to possible server-side change, unable to parse JSON response")
     def test_string_time(self):
         del_data()
         server = "https://supermag.jhuapl.edu/hapi"
