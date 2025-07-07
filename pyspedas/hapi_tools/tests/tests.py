@@ -1,9 +1,31 @@
 import unittest
 from pyspedas import hapi
 from pytplot import data_exists, del_data
+from pyspedas.hapi_tools.replace_fillvals import replace_fillvals
+import numpy as np
+from numpy.testing import assert_array_equal
 
 
 class HAPITests(unittest.TestCase):
+    def test_replace_fillvals(self):
+        da1_dbl = np.array([1.0, 2.0, 3.0, 4.0])
+        fv1_dbl = 3.0
+        replace_fillvals(da1_dbl, fv1_dbl, 'double')
+        assert_array_equal(da1_dbl, [1.0, 2.0, np.nan, 4.0])
+        da2_dbl = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0],[7.0, 2.0]])
+        fv2_dbl = [1.0, 2.0]
+        replace_fillvals(da2_dbl, fv2_dbl, 'double')
+        assert_array_equal(da2_dbl, np.array([[np.nan, np.nan], [3.0, 4.0], [5.0, 6.0],[7.0, np.nan]]))
+        # Repeat after replacement, should be nothing to replace, and output array same as before
+        fv2_dbl = [1.0, 2.0]
+        replace_fillvals(da2_dbl, fv2_dbl, 'double')
+        assert_array_equal(da2_dbl, np.array([[np.nan, np.nan], [3.0, 4.0], [5.0, 6.0],[7.0, np.nan]]))
+        da2_int = np.array([[0,1], [2,3], [4,5], [6,2]])
+        da2_fvint = 2
+        replace_fillvals(da2_int, da2_fvint, 'integer')
+        assert_array_equal(da2_int, np.array([[0,1],[0,3],[4,5],[6,0]]))
+
+
     def test_print_servers(self):
         with self.assertLogs(level='ERROR') as log: 
             hapi(trange=['2003-10-20', '2003-11-30'])
@@ -45,7 +67,7 @@ class HAPITests(unittest.TestCase):
     def test_string_time(self):
         del_data()
         server = "https://supermag.jhuapl.edu/hapi"
-        dataset = "TTB/PT1M/xyz"
+        dataset = "ttb/PT1M/baseline_all"
         start = "2020-05-10T00:00Z"
         stop = "2020-05-14T00:00Z"
         parameters = ''
