@@ -304,13 +304,20 @@ def download_file(
     if username is not None:
         session.auth = requests.auth.HTTPDigestAuth(username, password)
 
+    connect_timeout_secs = 10
+    read_timeout_secs = 10
     request_time = datetime.datetime.now()
     transfer_bytes = 0
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=ResourceWarning)
             if not basic_auth:
-                fsrc = session.get(url, stream=True, verify=verify, headers=headers)
+                fsrc = session.get(url,
+                                   stream=True,
+                                   verify=verify,
+                                   headers=headers,
+                                   timeout=(connect_timeout_secs, read_timeout_secs),
+                                   )
             else:
                 fsrc = session.get(
                     url,
@@ -318,6 +325,7 @@ def download_file(
                     verify=verify,
                     headers=headers,
                     auth=(username, password),
+                    timeout=(connect_timeout_secs, read_timeout_secs),
                 )
     except requests.exceptions.ConnectionError as e:
         logging.error("Unable to connect to URL: %s", str(e))
@@ -669,12 +677,17 @@ def download(
 
                     # we'll need to parse the HTML index file for the file list
                     index_start_time = datetime.datetime.now()
+                    connect_timeout_secs = 10
+                    read_timeout_secs = 10
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore", category=ResourceWarning)
                         try:
                             if not basic_auth:
                                 html_index = session.get(
-                                    url_base, verify=verify, headers=headers
+                                    url_base,
+                                    verify=verify,
+                                    headers=headers,
+                                    timeout=(connect_timeout_secs, read_timeout_secs),
                                 )
                             else:
                                 html_index = session.get(
@@ -682,6 +695,7 @@ def download(
                                     verify=verify,
                                     headers=headers,
                                     auth=(username, password),
+                                    timeout=(connect_timeout_secs, read_timeout_secs),
                                 )
                         except requests.exceptions.ConnectionError:
                             # Add this index to bad_index_set and cool down a bit
