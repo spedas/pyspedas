@@ -291,7 +291,7 @@ def download_file(
         # Configure retry strategy
         # We'll just use a fixed configuration, unless it turns out to need fine-tuning
         retries = Retry(
-            total=2,  # Total number of retries
+            total=3,  # Total number of retries
             backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
             status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
             allowed_methods=["GET"] # HTTP methods to retry on
@@ -305,7 +305,7 @@ def download_file(
         session.auth = requests.auth.HTTPDigestAuth(username, password)
 
     connect_timeout_secs = 10
-    read_timeout_secs = 10
+    read_timeout_secs = 20
     request_time = datetime.datetime.now()
     transfer_bytes = 0
     try:
@@ -580,7 +580,7 @@ def download(
         # Configure retry strategy
         # We'll just use a fixed configuration, unless it turns out to need fine-tuning
         retries = Retry(
-            total=2,  # Total number of retries
+            total=3,  # Total number of retries
             backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
             status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
             allowed_methods=["GET"] # HTTP methods to retry on
@@ -678,7 +678,7 @@ def download(
                     # we'll need to parse the HTML index file for the file list
                     index_start_time = datetime.datetime.now()
                     connect_timeout_secs = 10
-                    read_timeout_secs = 10
+                    read_timeout_secs = 20
                     with warnings.catch_warnings():
                         warnings.simplefilter("ignore", category=ResourceWarning)
                         try:
