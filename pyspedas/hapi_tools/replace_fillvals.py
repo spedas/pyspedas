@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 
-def replace_fillvals(data_array, fillval, param_type):
+def replace_fillvals(data_array, fillval, varname, param_type):
     """
     Replace fill values in data_array with NaNs.  If fillval is an array, each entry applies to the correspondiing data_array elements.
 
@@ -11,6 +11,8 @@ def replace_fillvals(data_array, fillval, param_type):
         Input data
     fillval: ndarray
         Fill values to replace with NaN in corresponding elements of data_array.
+    varname: str
+        The variable currently being processed (for log messages)
     param_type: str
         Data type as returned by hapi server.  Integer data is 0-filled, while floating point data is nan-filled.
 
@@ -35,6 +37,7 @@ def replace_fillvals(data_array, fillval, param_type):
         idx = np.where(data_array == fillval)
         data_array[idx] = replacement
     else:
+        logging.warning(f'replace_fillvals: Fillval for {varname} is a array-valued, which may not be standard-compliant.')
         # Array fillval, check that shapes match, and replace data_array values matching corresponding fillvals
         npfillval=np.array(fillval)
         npfillval_shape = npfillval.shape

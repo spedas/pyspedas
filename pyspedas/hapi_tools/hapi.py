@@ -158,7 +158,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         # check for fill values
         fill_value = param.get('fill')
         if fill_value is not None:
-            replace_fillvals(data_out, fill_value, param_type)
+            replace_fillvals(data_out, fill_value, param_name, param_type)
 
         bins = param.get('bins')
 
