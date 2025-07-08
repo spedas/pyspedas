@@ -9,7 +9,7 @@ def replace_fillvals(data_array, fillval, varname, param_type):
     ----------
     data_array: ndarray
         Input data
-    fillval: ndarray
+    fillval: int or float or list or ndarray
         Fill values to replace with NaN in corresponding elements of data_array.
     varname: str
         The variable currently being processed (for log messages)
