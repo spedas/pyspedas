@@ -48,6 +48,7 @@ def spd_pgs_moments_tplot(moments, x=None, prefix='', suffix=''):
         'avgtemp': 'eV',
         'sc_pot': 'V',
         'eflux': 'eV/(cm^2-s)',
+        'qflux': 'eV/(cm^2-s)',
         'mftens': 'eV/cm^3',
         'ptens': 'eV/cm^3',
         'symm_theta': 'degrees',
