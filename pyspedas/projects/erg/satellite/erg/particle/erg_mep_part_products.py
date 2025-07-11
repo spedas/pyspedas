@@ -206,6 +206,15 @@ def erg_mep_part_products(
         out_mftens = np.zeros([times_array.shape[0], 6])
         out_ptens = np.zeros([times_array.shape[0], 6])
         out_ttens = np.zeros([times_array.shape[0], 3, 3])
+        out_eflux = np.zeros([times_array.shape[0], 3])
+        out_t3 = np.zeros([times_array.shape[0], 3])
+        out_magt3 = np.zeros([times_array.shape[0], 3])
+        out_symm = np.zeros([times_array.shape[0], 3])
+        out_symm_phi = np.zeros(times_array.shape[0])
+        out_symm_theta = np.zeros(times_array.shape[0])
+        out_symm_ang = np.zeros(times_array.shape[0])
+        out_qflux = np.zeros([times_array.shape[0], 3])
+
 
     if 'fac_energy' in outputs_lc:
         out_fac_energy = np.zeros((times_array.shape[0], dist['n_energy']))
@@ -220,6 +229,15 @@ def erg_mep_part_products(
         out_fac_mftens = np.zeros([times_array.shape[0], 6])
         out_fac_ptens = np.zeros([times_array.shape[0], 6])
         out_fac_ttens = np.zeros([times_array.shape[0], 3, 3])
+        out_fac_eflux = np.zeros([times_array.shape[0], 3])
+        out_fac_t3 = np.zeros([times_array.shape[0], 3])
+        out_fac_magt3 = np.zeros([times_array.shape[0], 3])
+        out_fac_symm = np.zeros([times_array.shape[0], 3])
+        out_fac_symm_phi = np.zeros(times_array.shape[0])
+        out_fac_symm_theta = np.zeros(times_array.shape[0])
+        out_fac_symm_ang = np.zeros(times_array.shape[0])
+        out_fac_qflux = np.zeros([times_array.shape[0], 3])
+
     out_vars = []
     last_update_time = None
 
@@ -335,6 +353,15 @@ def erg_mep_part_products(
                 out_mftens[index, :] = moments['mftens']
                 out_ptens[index, :] = moments['ptens']
                 out_ttens[index, :] = moments['ttens']
+                out_eflux[index, :] = moments['eflux']
+                out_t3[index, :] = moments['t3']
+                out_magt3[index, :] = moments['magt3']
+                out_symm[index, :] = moments['symm']
+                out_symm_phi[index] = moments['symm_phi']
+                out_symm_theta[index] = moments['symm_theta']
+                out_symm_ang[index] = moments['symm_ang']
+                out_qflux[index] = moments['qflux']
+
 
         #  ;;Build theta spectrogram
         if 'theta' in outputs_lc:
@@ -404,6 +431,15 @@ def erg_mep_part_products(
                 out_fac_mftens[index, :] = fac_moments['mftens']
                 out_fac_ptens[index, :] = fac_moments['ptens']
                 out_fac_ttens[index, :] = fac_moments['ttens']
+                out_fac_eflux[index, :] = fac_moments['eflux']
+                out_fac_t3[index, :] = fac_moments['t3']
+                out_fac_magt3[index, :] = fac_moments['magt3']
+                out_fac_symm[index, :] = fac_moments['symm']
+                out_fac_symm_phi[index] = fac_moments['symm_phi']
+                out_fac_symm_theta[index] = fac_moments['symm_theta']
+                out_fac_symm_ang[index] = fac_moments['symm_ang']
+                out_fac_qflux[index] = fac_moments['qflux']
+
 
 
 
@@ -441,7 +477,16 @@ def erg_mep_part_products(
               'ptens': out_ptens,
               'ttens': out_ttens,
               'vthermal': out_vthermal,
-              'avgtemp': out_avgtemp}
+              'avgtemp': out_avgtemp,
+              'eflux': out_eflux,
+              't3': out_t3,
+              'magt3': out_magt3,
+              'symm': out_symm,
+              'symm_phi': out_symm_phi,
+              'symm_theta': out_symm_theta,
+              'symm_ang': out_symm_ang,
+              'qflux': out_qflux,
+                   }
         moments_vars = erg_pgs_moments_tplot(moments, x=times_array, prefix=in_tvarname, suffix=suffix)
         out_vars.extend(moments_vars)
 
@@ -460,7 +505,17 @@ def erg_mep_part_products(
               'ptens': out_fac_ptens,
               'ttens': out_fac_ttens,
               'vthermal': out_fac_vthermal,
-              'avgtemp': out_fac_avgtemp}
+              'avgtemp': out_fac_avgtemp,
+              'eflux': out_fac_eflux,
+              't3': out_fac_t3,
+              'magt3': out_fac_magt3,
+              'symm': out_fac_symm,
+              'symm_phi': out_fac_symm_phi,
+              'symm_theta': out_fac_symm_theta,
+              'symm_ang': out_fac_symm_ang,
+              'qflux': out_fac_qflux,
+
+                       }
         fac_mom_suffix = '_mag' + suffix
         fac_moments_vars = erg_pgs_moments_tplot(fac_moments, x=times_array, prefix=in_tvarname, suffix=fac_mom_suffix)
         out_vars.extend(fac_moments_vars)
