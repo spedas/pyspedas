@@ -76,6 +76,7 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
             'density'
             'flux'
             'eflux'
+            'qflux'
             'mftens'
             'velocity'
             'ptens'
@@ -158,6 +159,56 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     eflux = np.array([v2f_x, v2f_y, v2f_z])
 
     velocity = flux/density/1e5 # km/s
+
+    # Heat flux moments -- derived from code contributed by Terry Liu
+    #
+    # Terry's code has been modified to work with the units, scaling, and spacecraft potential handling in moments_3d, rather than the older
+    # n_3d, j_3d, and v_3d routines.
+    # JWL 2025-07-10
+
+    eV_J = 1.602176634e-19  # conversion from eV to J
+
+    mp=data['mass']  # mass units are eV/(km/sec)^2, for working with eflux units.  In these units, proton mass = 0.010453500
+    q = eV_J
+
+    v = np.sqrt(2.0 * energy/mp)  # convert energy array to velocity (km/sec)
+
+    vx = v*np.cos(data['theta']/180.*np.pi)*np.cos(data['phi']/180.*np.pi)
+    vy = v*np.cos(data['theta']/180.*np.pi)*np.sin(data['phi']/180.*np.pi)
+    vz = v*np.sin(data['theta']/180.*np.pi)
+
+    # Subtract bulk velocity to get thermal velocity, km/sec
+
+    wx=vx-velocity[0]
+    wy=vy-velocity[1]
+    wz=vz-velocity[2]
+
+    # thermal energy, eV
+    Eth=0.5*mp*(wx**2+wy**2+wz**2)
+
+    # Repurposed density calculation for integrating heat flux, original code made several calls to n_3d()
+
+    data_dvx = Eth*wx*data['data'] * de_e * weight * domega_weight[0,:,:]
+    data_dvy = Eth*wy*data['data'] * de_e * weight * domega_weight[0,:,:]
+    data_dvz = Eth*wz*data['data'] * de_e * weight * domega_weight[0,:,:]
+
+
+    dweight = np.sqrt(e_inf)/energy
+    parqx = np.sqrt(mass/2.)* 1e-5 * data_dvx * dweight
+    parqy = np.sqrt(mass/2.)* 1e-5 * data_dvy * dweight
+    parqz = np.sqrt(mass/2.)* 1e-5 * data_dvz * dweight
+
+    # Conversion to output units
+    conv_mw = eV_J*1.0e12  # output in mW/m^2
+    conv_ev = 1.0e05 # output in eV/(cm^2-sec)
+
+
+    heat_x = conv_ev * nansum(parqx)
+    heat_y = conv_ev * nansum(parqy)
+    heat_z = conv_ev * nansum(parqz)
+
+    qflux = [heat_x, heat_y, heat_z]
+
 
     mf3x3 = np.array([[mftens[0], mftens[3], mftens[4]], [mftens[3], mftens[1], mftens[5]], [mftens[4], mftens[5], mftens[2]]])
     pt3x3 = mf3x3 - np.outer(velocity, flux)*mass/1e5
@@ -259,6 +310,7 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     output = {'density': density, 
               'flux': flux,
               'eflux': eflux,
+              'qflux': qflux,
               'mftens': mftens, 
               'velocity': velocity, 
               'ptens': ptens, 
