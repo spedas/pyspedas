@@ -87,10 +87,4 @@ def esa(trange=['2007-03-23', '2007-03-24'],
                    downloadonly=downloadonly, notplot=notplot,
                    probe=probe, time_clip=time_clip, no_update=no_update)
 
-    #turn off auto Y resample
-    efluxv = pytplot.tnames('*_en_eflux') #resampling breaks the eflux plots
-    if len(efluxv) > 0:
-        for eflv in efluxv:
-            pytplot.options(eflv, 'y_no_resample', 1)
-            
     return outvars

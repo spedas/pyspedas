@@ -89,14 +89,4 @@ def fbk(trange=['2007-03-23', '2007-03-24'],
                    downloadonly=downloadonly, notplot=notplot,
                    probe=probe, time_clip=time_clip, no_update=no_update)
 
-    #turn off auto Y resample
-    scmv = pytplot.tnames('*_fb_s*')
-    if len(scmv) > 0:
-        for scv in scmv:
-            pytplot.options(scv, 'y_no_resample',1)
-    efiv = pytplot.tnames('*_fb_e*')
-    if len(efiv) > 0:
-        for efv in efiv:
-            pytplot.options(efv, 'y_no_resample',1)
-
     return outvars
