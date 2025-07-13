@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
 from pyspedas.projects.mms.particles.mms_part_getspec import mms_part_getspec
-from pytplot import data_exists, get_data, tplot_names, tplot
+from pyspedas import data_exists, get_data, tplot_names, tplot, get_coords, get_units
 
-global_display=False
+global_display=True
 
 class PGSTests(unittest.TestCase):
     def test_pgs_errors(self):
@@ -40,6 +40,56 @@ class PGSTests(unittest.TestCase):
         self.assertTrue(data_exists('pre_mms1_dis_dist_brst_phi'))
         self.assertTrue(data_exists('pre_mms1_dis_dist_brst_pa'))
         self.assertTrue(data_exists('pre_mms1_dis_dist_brst_gyro'))
+
+    def test_fpi_mom_metadata(self):
+        # Check coordinate systems and units for moments data, with and without sdc_units flag
+        mms_part_getspec(trange=['2015-10-16/13:06:00', '2015-10-16/13:06:10'],
+                         data_rate='brst',
+                         species='i',
+                         output='moments',
+                         prefix='pre_',
+                         )
+        mms_part_getspec(trange=['2015-10-16/13:06:00', '2015-10-16/13:06:10'],
+                         data_rate='brst',
+                         species='i',
+                         output='moments',
+                         prefix='pre_',
+                         suffix='_sdc_units',
+                         sdc_units=True)
+
+        self.assertTrue(data_exists('pre_mms1_dis_dist_brst_qflux'))
+        self.assertTrue(data_exists('pre_mms1_dis_dist_brst_ptens'))
+        self.assertTrue(data_exists('pre_mms1_dis_dist_brst_qflux_sdc_units'))
+        self.assertTrue(data_exists('pre_mms1_dis_dist_brst_ptens_sdc_units'))
+
+        tplot(['pre_mms1_dis_dist_brst_qflux','pre_mms1_dis_dist_brst_ptens',
+               'pre_mms1_dis_dist_brst_qflux_sdc_units','pre_mms1_dis_dist_brst_ptens_sdc_units'])
+
+        self.assertEqual(get_coords('pre_mms1_dis_dist_brst_qflux').lower(), 'dbcs')
+        self.assertEqual(get_units('pre_mms1_dis_dist_brst_qflux'), 'eV/(cm^2-s)')
+        self.assertEqual(get_coords('pre_mms1_dis_dist_brst_ptens').lower(), 'dbcs')
+        self.assertEqual(get_units('pre_mms1_dis_dist_brst_ptens'), 'eV/cm^3')
+
+        self.assertEqual(get_units('pre_mms1_dis_dist_brst_qflux_sdc_units'), 'mW/m^2')
+        self.assertEqual(get_units('pre_mms1_dis_dist_brst_ptens_sdc_units'), 'nPa')
+
+        # Check order of magnitude of qflux and ptens outputs, with/without the sdc_units flag,
+        # to make sure the values were actually converted and not just the metadata updated.
+
+        qfdat_std = get_data('pre_mms1_dis_dist_brst_qflux')
+        qfdat_sdc = get_data('pre_mms1_dis_dist_brst_qflux_sdc_units')
+        ptdat_std = get_data('pre_mms1_dis_dist_brst_ptens')
+        ptdat_sdc = get_data('pre_mms1_dis_dist_brst_ptens_sdc_units')
+
+        qfdat_std_max = np.abs(np.max(qfdat_std.y))
+        qfdat_sdc_max = np.abs(np.max(qfdat_sdc.y))
+        ptdat_std_max = np.abs(np.max(ptdat_std.y))
+        ptdat_sdc_max = np.abs(np.max(ptdat_sdc.y))
+
+        self.assertTrue(qfdat_std_max > 5.0e10)
+        self.assertTrue(ptdat_std_max > 4000)
+        self.assertTrue(qfdat_sdc_max < 1.0)
+        self.assertTrue(ptdat_sdc_max < 1.0)
 
     def test_fpi_disable_pe_corr(self):
         mms_part_getspec(trange=['2015-10-16/13:06:07', '2015-10-16/13:06:08'],
