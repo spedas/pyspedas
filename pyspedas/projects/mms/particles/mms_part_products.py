@@ -55,7 +55,9 @@ def mms_part_products(in_tvarname,
                       regrid=[32, 16],
                       vel_name=None,
                       prefix='',
-                      suffix=''):
+                      suffix='',
+                      sdc_units=False,
+                      ):
     """
     Generate spectra and moments from 3D MMS particle data; note: this routine isn't
     meant to be called directly - see the wrapper mms_part_getspec instead.
@@ -163,6 +165,12 @@ def mms_part_products(in_tvarname,
 
         suffix: str
             Suffix for output tplot variables. Default: ''
+
+        sdc_units: bool
+            If True, convert moments ptens and qflux values and units to nPa and mW/m^2 respectively, for
+            compatibility with MMS SDC products.
+            Default: False
+
             
     Returns
     ----------
@@ -523,7 +531,7 @@ are the scientific products that should be used for analysis."""
               'symm_phi': out_symm_phi,
               'symm_ang': out_symm_ang,
             }
-        moments_vars = spd_pgs_moments_tplot(moments, x=data_times, prefix=user_prefix + in_tvarname + '_', suffix=suffix)
+        moments_vars = spd_pgs_moments_tplot(moments, x=data_times, prefix=user_prefix + in_tvarname + '_', suffix=suffix, coords='DBCS', use_mms_sdc_units=sdc_units)
         out_vars.extend(moments_vars)
 
     if 'fac_moments' in output:
@@ -547,7 +555,7 @@ are the scientific products that should be used for analysis."""
               # 'symm_phi': out_fac_symm_phi,
               # 'symm_ang': out_fac_symm_ang,
                }
-        fac_moments_vars = spd_pgs_moments_tplot(fac_moments, x=data_times, prefix=user_prefix + in_tvarname+'_fac_', suffix=suffix)
+        fac_moments_vars = spd_pgs_moments_tplot(fac_moments, x=data_times, prefix=user_prefix + in_tvarname+'_fac_', suffix=suffix, coords='FA', use_mms_sdc_units=sdc_units)
         out_vars.extend(fac_moments_vars)
 
     if 'energy' in output:
