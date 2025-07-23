@@ -15,6 +15,56 @@ import numpy as np
 import pywt
 import pytplot
 
+def idl_wavelet_scales(n, dt, w0=2*np.pi, dj=None):
+    """
+    Reproduce the IDL/T&C logic for generating wavelet scales and frequencies.
+
+    Parameters
+    ----------
+    n : int
+        Number of samples in the time series.
+    dt : float
+        Sampling interval (in seconds).
+    w0 : float
+        Central frequency (default 2*pi for Morlet).
+    dj : float or None
+        Scale resolution step. Default: (1/8)*(2*pi/w0)
+
+    Returns
+    -------
+    scales : ndarray
+        Array of wavelet scales.
+    freqs : ndarray
+        Array of corresponding Fourier frequencies (Hz).
+    periods : ndarray
+        Fourier periods corresponding to each scale.
+    """
+    if dj is None:
+        dj = (1/8) * (2*np.pi / w0)
+
+    # Period range: [Nyquist period, 5% of total duration]
+    nyquist_period = 2 * dt
+    max_period = 0.05 * n * dt
+    prange = [nyquist_period, max_period]
+
+    # Scale range from period
+    fourier_factor = (w0 + np.sqrt(2 + w0**2)) / (4 * np.pi)
+    srange = np.array(prange) * fourier_factor
+
+    # Number of scales
+    j = int(np.floor(np.log2(srange[1] / srange[0]) / dj))
+    if j <= 0:
+        raise ValueError("Too few data points for wavelet analysis")
+
+    # Log-spaced scales
+    scales = srange[0] * 2**(np.arange(j + 1) * dj)
+
+    # Periods and frequencies
+    periods = scales / fourier_factor
+    freqs = 1.0 / periods
+
+    return scales, freqs, periods
+
 
 def wavelet(
     names,
@@ -96,9 +146,6 @@ def wavelet(
         logging.error('wavelet error: No pytplot names were provided.')
         return
 
-    if scales is None:
-        scales = np.arange(1, 128)
-
     for i, old in enumerate(varnames):
         old = varnames[i]
 
@@ -115,6 +162,17 @@ def wavelet(
         if len_time < 2:
             logging.error('wavelet error: Not enought data points for ' + old)
             continue
+
+        if scales is None:
+            n = len_time
+            # This is just the first sample difference.  We should probably check that the dt values
+            # are consistent throughout, and if not, interpolate onto a regular grid
+
+            dt = time[1] - time[0]
+
+            scales, idl_freqs, idl_periods = idl_wavelet_scales(n, dt)
+            sampling_period = 1.0
+
 
         coef, freqs = pywt.cwt(data, scales=scales, wavelet=wavename,
                                method=method, sampling_period=sampling_period)
