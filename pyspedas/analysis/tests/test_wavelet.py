@@ -7,7 +7,13 @@ import numpy as np
 from pyspedas.analysis.wavelet import wavelet
 import logging
 
+
 global_display = True
+
+def tc_scales_from_freqs(freqs, omega0=6.0):
+    """Convert desired physical frequencies [Hz] to wavelet scales using Torrence & Compo (1998)"""
+    fourier_factor = (omega0 + np.sqrt(2 + omega0**2)) / (4 * np.pi)
+    return 1.0 / (freqs * fourier_factor)  # No dt here!
 
 class TwaveletDataValidation(unittest.TestCase):
     """ Compares wavelet results between Python and IDL """
@@ -72,11 +78,34 @@ class TwaveletDataValidation(unittest.TestCase):
     def test_sin_wav(self):
         # The default is 'morl' rather than 'cmorl0.5-1.0, but it doesn't appear to make that much difference.
         # cmorl0.5-1.0 is what Eric used in the wiki example.
-        wavelet('sin_wav',wavename='cmorl0.5-1.0')
+        wavelet('sin_wav',wavename='cmorl1.5-1.0')
         pvar='sin_wav_pow'
         pyspedas.options(pvar, 'colormap', 'jet')
         pyspedas.ylim(pvar, 0.001, 0.1)
         pyspedas.options(pvar, 'ylog', True)
+        pyspedas.options(pvar, 'ytitle', pvar)
+        pyspedas.options(pvar,'zlog',True)
+        d=get_data('sin_wav_pow')
+        print(f"Python frequencies: bin count {d.y.shape[1]}, min {np.min(d.v)}, max: {np.max(d.v)}" )
+        print(f"Python power: min {np.min(d.y)}, max {np.max(d.y)}")
+        d_idl = get_data('idl_sin_wav_wv_pow')
+        print(f"IDL frequencies: bin count {d_idl.y.shape[1]}, min {np.min(d_idl.v)}, max: {np.max(d_idl.v)}" )
+        print(f"IDL power: min {np.min(d_idl.y)}, max {np.max(d_idl.y)}")
+        tplot(['sin_wav', 'sin_wav_pow', 'idl_sin_wav_wv_pow'])
+
+    def test_equiv_wav(self):
+
+        # 54 logarithmically spaced frequencies between IDL min and max
+        idl_freqs = np.logspace(np.log10(0.00051), np.log10(0.05), 54)
+
+        scales=tc_scales_from_freqs(idl_freqs)
+
+        wavelet('sin_wav',wavename='cmorl1.5-1.0', sampling_period=1.0)
+        pvar='sin_wav_pow'
+        pyspedas.options(pvar, 'colormap', 'spedas')
+        #pyspedas.ylim(pvar, 0.0005, 0.05)
+        pyspedas.options(pvar, 'ylog', True)
+        pyspedas.options(pvar, 'zlog', True)
         pyspedas.options(pvar, 'ytitle', pvar)
         d=get_data('sin_wav_pow')
         print(f"Python frequencies: bin count {d.y.shape[1]}, min {np.min(d.v)}, max: {np.max(d.v)}" )
