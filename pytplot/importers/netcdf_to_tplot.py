@@ -121,20 +121,26 @@ def netcdf_to_tplot(
         masked_vars = {}  # Dictionary containing properly masked variables
         for var in vars_and_atts.keys():
             reg_var = vfile.variables[var]
-            try:
-                var_fill_value = vars_and_atts[var]["missing_value"]
-                if np.isnan(var_fill_value) != True:
-                    # We want to force missing values to be nan so that plots don't look strange
-                    var_mask = np.ma.masked_where(
-                        reg_var == np.float32(var_fill_value), reg_var
-                    )
-                    var_filled = np.ma.filled(var_mask, np.nan)
-                    masked_vars[var] = var_filled
-                elif np.isnan(var_fill_value) == True:
-                    # missing values are already np.nan, don't need to do anything
-                    var_filled = reg_var
-                    masked_vars[var] = var_filled
-            except:  # continue # Go to next iteration, this variable doesn't have data to mask (probably just a descriptor variable (i.e., 'base_time')
+            # Check for some attributes that might be used to flag fill values
+            atts_dict = vars_and_atts[var]
+            fillval_atts_lc = ["fillval", "_fillval", "_fillvalue", "fillvalue", "missing_data"]
+            var_fill_value = None
+            for key in atts_dict.keys():
+                if key.lower() in fillval_atts_lc:
+                    # If multiple matching keys are found, the one that appears latest in the above list
+                    # will take precedence
+                    var_fill_value = atts_dict[key]
+
+            # If var_fill_value is None, or already NaN, there's nothing to do here.
+            # Integer arrays can't be NaN-filled, so if var_fill_value is any kind of integer, skip those too.
+            if var_fill_value is not None and not isinstance(var_fill_value, np.integer) and not np.isnan(var_fill_value):
+                # We want to force missing values to be nan so that plots don't look strange
+                var_mask = np.ma.masked_where(
+                    reg_var == np.float32(var_fill_value), reg_var
+                )
+                var_filled = np.ma.filled(var_mask, np.nan)
+                masked_vars[var] = var_filled
+            else:
                 var_filled = reg_var
                 masked_vars[var] = var_filled
 
