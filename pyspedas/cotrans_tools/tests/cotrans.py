@@ -10,6 +10,7 @@ These tests include the function in the following files:
 
 """
 import numpy as np
+from numpy.testing import assert_allclose
 import unittest
 import pyspedas
 import logging
@@ -19,6 +20,7 @@ from pyspedas.cotrans_tools.fac_matrix_make import fac_matrix_make
 from pytplot import get_data, store_data, del_data
 from pyspedas import cotrans_get_coord, cotrans_set_coord, sm2mlt, tplot_copy, set_units, get_units
 
+global_display=False
 
 class CotransTestCases(unittest.TestCase):
     """Tests for cotrans."""
@@ -353,6 +355,30 @@ class CotransTestCases(unittest.TestCase):
 
         res = set_units('xxx yyy zzz', 'nT')
         self.assertFalse(res)
+
+    def test_geogsm_geopack(self):
+        # Originally reported by Bob Weigel -- PySPEDAS GEO->GSM cotrans had weird artifacts at year boundaries
+        # compared to Geopack GEO->GSM transform and other Python packages
+        remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
+        remote_name = 'cotrans_tools/geogsm_gp_test.tplot'
+        datafile = pyspedas.download(remote_file=remote_name,
+                            remote_path=remote_server,
+                            local_path='testdata',
+                            no_download=False)
+
+        pyspedas.tplot_restore(datafile[0])
+        pyspedas.tplot_names()
+        pyspedas.cotrans('zgeo','zgeo_gsm_py',coord_in='geo',coord_out='gsm')
+        pyspedas.options('zgeo_gsm_py','ytitle','zgeo_gsm_py')
+        pyspedas.subtract('zgeo_gsm_py','zgeo_gsm',newname='pydiff')
+        pyspedas.options('pydiff','ytitle','idl_python_diff')
+        pyspedas.subtract('zgeo_gsm_gp','zgeo_gsm',newname='gpdiff')
+        pyspedas.options('gpdiff','ytitle','idl_geopack_diff')
+        pyspedas.tplot(['zgeo', 'zgeo_gsm', 'zgeo_gsm_py', 'pydiff', 'gpdiff'],display=global_display,save_png='geo_gsm_diffs.png')
+        didl=get_data('zgeo_gsm')
+        dpy = get_data('zgeo_gsm_py')
+        # Max relative difference around 2.7e-07
+        assert_allclose(didl.y, dpy.y, atol=3.0e-07)
 
 if __name__ == '__main__':
     unittest.main()
