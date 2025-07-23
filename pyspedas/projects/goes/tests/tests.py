@@ -1,10 +1,12 @@
 import os
 import unittest
 from pytplot import data_exists, tnames
+import numpy as np
 
 import pyspedas
 from pytplot import del_data, tplot
 
+global_display=False
 
 class LoadTestCases(unittest.TestCase):
 
@@ -244,6 +246,20 @@ class LoadTestCases(unittest.TestCase):
         )
         self.assertTrue("g11_xrs_xs" in xrs_vars)
         self.assertTrue(data_exists("g11_xrs_xs"))
+
+    def test_fillval_removal(self):
+        del_data()
+        trange=['2024-05-21','2024-05-22']
+        probe=18
+
+        pyspedas.projects.goes.euvs(probe=probe,trange=trange)
+        pyspedas.projects.goes.xrs(probe=probe,trange=trange)
+        pyspedas.tplot(['g18_euvs_MgII_standard','g18_xrs_xrsa_flux'],display=global_display,save_png='g18_xrs_euvs.png')
+        d=pyspedas.get_data('g18_euvs_MgII_standard')
+        datamin = np.nanmin(d.y)
+        # Fillval should be -9999 for this variable, was it removed?
+        self.assertTrue(datamin > -1.0)
+
 
     def test_load_eps_1m_data(self):
         del_data()
