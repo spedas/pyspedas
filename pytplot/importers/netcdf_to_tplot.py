@@ -133,7 +133,8 @@ def netcdf_to_tplot(
 
             # If var_fill_value is None, or already NaN, there's nothing to do here.
             # Integer arrays can't be NaN-filled, so if var_fill_value is any kind of integer, skip those too.
-            if var_fill_value is not None and not isinstance(var_fill_value, np.integer) and not np.isnan(var_fill_value):
+            # Some missions have strings defined as fill values.  (ICON)
+            if var_fill_value is not None and not isinstance(var_fill_value, np.integer) and not isinstance(var_fill_value, str) and not np.isnan(var_fill_value):
                 # We want to force missing values to be nan so that plots don't look strange
                 var_mask = np.ma.masked_where(
                     reg_var == np.float32(var_fill_value), reg_var
