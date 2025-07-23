@@ -260,6 +260,17 @@ class LoadTestCases(unittest.TestCase):
         # Fillval should be -9999 for this variable, was it removed?
         self.assertTrue(datamin > -1.0)
 
+    def test_xrs_scale(self):
+        del_data()
+        trange=['2024-05-21','2024-05-22']
+        probe=18
+
+        pyspedas.projects.goes.xrs(probe=probe,trange=trange)
+        pyspedas.tplot(['g18_xrs_xrsa_flux'],display=global_display,save_png='g18_xrs_xrsa_flux.png')
+        md=pyspedas.get_data('g18_xrs_xrsa_flux', metadata=True)
+        scale=md['plot_options']['yaxis_opt']['y_axis_type']
+        self.assertTrue(scale=='log')
+
 
     def test_load_eps_1m_data(self):
         del_data()
