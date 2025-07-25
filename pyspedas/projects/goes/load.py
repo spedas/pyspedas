@@ -490,7 +490,7 @@ def load(
 
     # This might make sense in the XRS load routine, but then we wouldn't be able to use partial_function for it...
     if 'xrs' in instrument:
-        xray_flux_vars = wildcard_expand(tvars,'*_xrs_*_flux')
+        xray_flux_vars = wildcard_expand(tvars,'*_xrs_*_flux', quiet=True)
         if len(xray_flux_vars) > 0:
             options(xray_flux_vars,'ylog',True)
     return tvars
