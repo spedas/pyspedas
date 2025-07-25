@@ -21,8 +21,9 @@ class LoadTestCases(unittest.TestCase):
         self.assertEqual(orbit_vars[0], 'goes_data/goes15/orbit/2013/goes15_ephemeris_ssc_20130101_v01.cdf')
         orbit_vars = pyspedas.projects.goes.orbit(notplot=True, time_clip=False)
         # This should return a dict of tplot structures, but we're getting a list of names, which don't exist as tplot variables.
-        #self.assertTrue(isinstance(orbit_vars, dict)
-        orbit_vars = pyspedas.projects.goes.orbit()
+        self.assertTrue(isinstance(orbit_vars, dict))
+        self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars.keys())
+        orbit_vars = pyspedas.projects.goes.orbit(time_clip=True)
         self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars)
         self.assertTrue("g15_orbit_XYZ_GSE" in orbit_vars)
         self.assertTrue("g15_orbit_XYZ_SM" in orbit_vars)
@@ -32,6 +33,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("g15_orbit_XYZ_GSE"))
         self.assertTrue(data_exists("g15_orbit_XYZ_SM"))
         self.assertTrue(data_exists("g15_orbit_XYZ_GEO"))
+        del_data('*')
+        # Both notplot and time_clip specified: should return dictionary, no crash, no tplot variables created
+        orbit_vars = pyspedas.projects.goes.orbit(time_clip=True, notplot=True)
+        self.assertTrue(isinstance(orbit_vars, dict))
+        self.assertFalse(data_exists("g15_orbit_XYZ_GSM"))
+        self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars.keys())
 
     def test_load_1min_mag_data(self):
         del_data()

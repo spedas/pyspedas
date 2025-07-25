@@ -1,3 +1,5 @@
+import pyspedas
+
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pytplot import time_clip as tclip
@@ -56,7 +58,10 @@ def load_orbit(
     """
     remote_data_dir = "https://spdf.gsfc.nasa.gov/pub/data/goes/"
     out_files = []  # list of local files downloaded
-    tvars = []  # list of tplot variables created
+    if notplot:
+        tvars = {}  # dictionary of tplot structures created
+    else:
+        tvars = []  # list of tplot variables created
 
     if not isinstance(probe, list):
         probe = [probe]
@@ -107,9 +112,15 @@ def load_orbit(
                 varnames=varnames,
                 notplot=notplot,
             )
-            tvars.extend(tvars_local)
 
-            if time_clip:
+            # if notplot, we're merging dictionaries, otherwise we're extending lists
+            if notplot:
+                tvars.update(tvars_local)
+            else:
+                tvars.extend(tvars_local)
+
+            # skip time_clip if notplot is specified
+            if time_clip and not notplot:
                 tclip(tvars_local, trange[0], trange[1], suffix="")
 
     if downloadonly:
