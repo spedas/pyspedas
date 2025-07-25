@@ -244,7 +244,7 @@ def download_file(
                 remote_fs.get(url, filename)
                 logging.info("File placed on \"local\": " + filename)
                 return filename
-            local_modtime = datetime.datetime.utcfromtimestamp(os.path.getmtime(filename))
+            local_modtime = datetime.datetime.fromtimestamp(os.path.getmtime(filename), datetime.timezone.utc)
 
             # remote newer than local
             if local_modtime < remote_modtime:
