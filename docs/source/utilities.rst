@@ -107,6 +107,7 @@ Creating and Managing Tplot Variables
 .. autofunction:: pyspedas.replace_metadata
 .. autofunction:: pyspedas.tplot_copy
 .. autofunction:: pyspedas.tplot_rename
+.. autofunction:: pyspedas.tplot_wildcard_expand
 
 Tplot Variable Metadata Getters/Setters
 ----------------------------------------
@@ -210,6 +211,7 @@ Miscellaneous utilities
 .. autofunction:: pyspedas.find_ip_address
 .. autofunction:: pyspedas.is_gzip
 .. autofunction:: pyspedas.libs
+.. autofunction:: pyspedas.wildcard_expand
 .. autofunction:: pyspedas.mpause_2
 .. autofunction:: pyspedas.mpause_t96
 
