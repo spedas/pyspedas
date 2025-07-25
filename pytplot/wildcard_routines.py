@@ -4,7 +4,7 @@ import logging
 from pytplot import data_quants
 from .tplot_names import tplot_names
 
-def wildcard_expand(master_list, patterns, case_sensitive=True, split_whitespace=True):
+def wildcard_expand(master_list, patterns, case_sensitive=True, split_whitespace=True, quiet=False):
     """ Find elements in master list matching one or more wild card patterns
 
     Parameters
@@ -18,6 +18,8 @@ def wildcard_expand(master_list, patterns, case_sensitive=True, split_whitespace
     split_whitespace: bool
         A boolean flag indicating that master_list or patterns should be treated as space-delimited lists.  Set to False if embedded spaces
         are to be matched.  Default: True
+    quiet: bool
+        A boolean flag indicating whether to suppress "match not found" warnings. Default: False
 
     Returns
     -------
@@ -96,7 +98,7 @@ def wildcard_expand(master_list, patterns, case_sensitive=True, split_whitespace
                 matched_items.add(original_item)
             elif fnmatch.fnmatchcase(temp_item, pattern):
                 found = True
-        if not found:
+        if not found and not quiet:
             logging.warning("wildcard_expand: No match found for %s", pattern)
 
     return ordered_matches
@@ -144,7 +146,7 @@ def tindex_byname(tvar_name):
         return None
 
 
-def tplot_wildcard_expand(patterns, case_sensitive=True):
+def tplot_wildcard_expand(patterns, case_sensitive=True, quiet=False):
     """ Return tplot variable names matching one or more wildcard patterns
 
     Parameters
@@ -154,6 +156,8 @@ def tplot_wildcard_expand(patterns, case_sensitive=True):
         Integers are converted to strings using tname_byindex()
     case_sensitive: bool
         A boolean flag indicating whether case-sensitive matching should be performed. Default: True
+    quiet: bool
+        A boolean flag indicating "no match found" log messages should be suppressed. Default: False
 
     Returns
     -------
@@ -175,6 +179,11 @@ def tplot_wildcard_expand(patterns, case_sensitive=True):
     string_patterns = []
     # Get list of existing tplot names
     tn = tplot_names(quiet=True)
+
+    if len(tn) == 0:
+        if not quiet:
+            logging.warning("tplot_wildcard_expand: List of tplot variable names is empty.")
+        return []
 
     # Interpret integers as tplot variable indices
     for item in input_pattern_list:
@@ -200,4 +209,4 @@ def tplot_wildcard_expand(patterns, case_sensitive=True):
         else:
             logging.warning("tplot_wildcard_expand: bad input: "+str(item) +" Patterns must be a string or int")
 
-    return wildcard_expand(tn, patterns=string_patterns, case_sensitive=case_sensitive, split_whitespace=False)
+    return wildcard_expand(tn, patterns=string_patterns, case_sensitive=case_sensitive, split_whitespace=False, quiet=quiet)
