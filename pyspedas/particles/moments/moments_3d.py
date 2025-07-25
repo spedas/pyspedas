@@ -226,7 +226,7 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     try:
         t3, t3evec = np.linalg.eigh(t3x3, UPLO='U')
         #t3, t3evec = np.linalg.eig(t3x3)
-    except np.linalg.linalg.LinAlgError:
+    except np.linalg.LinAlgError:
         # ERG can pass data arrays that are all zeros. This gives zero density and a t3x3 array full of NaNs.
         # That makes the eigenvalue calculation throw LinAlgErrors.
         # In that case, we just silently fill t3 and t3evec with NaNs and let the chips fall where they may.
