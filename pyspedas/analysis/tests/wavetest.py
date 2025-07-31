@@ -12,8 +12,8 @@ See also: wavelet98.py
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from pyspedas.analysis.wavelet98 import wavelet98
-from pyspedas.analysis.wave_signif import wave_signif
+from pyspedas import wavelet98
+from pyspedas import wave_signif
 from pyspedas import download
 import unittest
 import pyspedas
