@@ -140,6 +140,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('Rgse'))
         self.assertTrue('Rgse' in magephem_vars)
 
+    @unittest.skip("Certificate error at newmexicoconsortium.org")
     def test_load_magephem_ect_txt_data(self):
         del_data("*")
         magephem_ect_vars = pyspedas.projects.rbsp.magephem_ect(trange=["2018-11-05", "2018-11-08"], probe="a", cadence="1min", coord="op77q", filetype="txt")
@@ -149,6 +150,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("CDMAG_MLON"))
         self.assertTrue(data_exists("CDMAG_MLT"))
 
+    @unittest.skip("Certificate error at newmexicoconsortium.org")
     def test_load_magephem_ect_h5_data(self):
         del_data("*")
         magephem_ect_vars = pyspedas.projects.rbsp.magephem_ect(trange=["2018-11-05", "2018-11-08"], probe="a", cadence="1min", coord="op77q", filetype="h5")
