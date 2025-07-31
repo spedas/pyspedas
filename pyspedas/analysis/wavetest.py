@@ -14,17 +14,28 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pyspedas.analysis.wavelet98 import wavelet98
 from pyspedas.analysis.wave_signif import wave_signif
+from pyspedas import download
+import unittest
+import pyspedas
 
 
-def wavetest():
+def wavetest(noplot=False):
     """
     Python translation of wavetest.pro
     Wavelet analysis of NINO3 SST dataset.
     """
 
-    # Data file path (assume it's in the same directory as the script)
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    data_file = os.path.join(script_dir, "sst_nino3.dat")
+    # Download tplot files
+    remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
+    remote_name = 'analysis_tools/sst_nino3.dat'
+    datafile = download(remote_file=remote_name,
+                        remote_path=remote_server,
+                        no_download=False)
+    if not datafile:
+        # Skip tests
+        raise unittest.SkipTest("Cannot download data validation file")
+    # Load validation variables from the test file
+    data_file = datafile[0]
 
     # Check if data file exists
     if not os.path.exists(data_file):
@@ -82,9 +93,8 @@ def wavetest():
     coi = period / np.sqrt(2)  # Calculate COI based on wavelet period
     # Interpolate COI to match the length of the time array
     coi_interp = np.interp(time, time[: len(coi)], coi)
-    plt.fill_between(
-        time, coi_interp, np.max(period), color="white", alpha=0.7, hatch="///"
-    )
+    if not noplot:
+        plt.fill_between(time, coi_interp, np.max(period), color="white", alpha=0.7, hatch="///")
 
     # Reconstruction variance (Parseval's theorem) [Eqn(14)]
     # Adjust scale shape for broadcasting
@@ -153,18 +163,19 @@ def wavetest():
         scaleavg_signif = np.full_like(time, scaleavg_signif[0], dtype=np.float64)
 
     # Plotting
-    create_wavelet_plot(
-        time,
-        sst,
-        time,
-        period,
-        power,
-        global_ws,
-        scale_avg,
-        xrange,
-        global_signif,
-        scaleavg_signif,
-    )
+    if not noplot:
+        create_wavelet_plot(
+            time,
+            sst,
+            time,
+            period,
+            power,
+            global_ws,
+            scale_avg,
+            xrange,
+            global_signif,
+            scaleavg_signif,
+        )
 
     print("\nWavelet analysis completed!")
     return {
