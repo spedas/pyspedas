@@ -55,19 +55,29 @@ or "pyspedas.projects.themis.fgm()"
 Converting older PySPEDAS code for version 2.0 compatibility
 -------------------------------------------------------------
 
-The changes needed to make your code work with PySPEDAS 2.0 are very straightforward, and only involve your import statements, and
+The changes needed to make your code work with PySPEDAS 2.0 are very straightforward, and mostly involve your import statements, and
 any fully-qualified calls that include the pytplot or pyspedas.mission prefixes.
 There is no need to wait until the PySPEDAS 2.0 release to update your code -- all the new constructs have
-been supported by all PySPEDAS versions released since early 2024.
+been supported by PySPEDAS versions released since early 2024.
 
 There are several types of changes that you may need to make::
+
+pytplot imports and calls::
 
    1. All imports from the `pytplot` package should be changed to import from the top level PySPEDAS namespace instead.
    2. All fully-qualified calls of the form `pytplot.some_func()` should be changed to `pyspedas.some_func()`
    3. Imports or fully qualified calls from pytplot submodules like tplot_math will no longer be supported, and should use the top-level pyspedas namespace instead.
-   4. All imports of mission-specific code should use `pyspedas.projects.mission` rather than `pyspedas.mission`.
-   5. Fully qualified calls of the form `pyspedas.mission.some_func()` should be changed to `pyspedas.projects.mission.some_func()`
-   6. Imports or fully qualified calls to mission-specific modules will still be supported, but will need to use `pyspedas.projects.mission.module` rather than `pyspedas.mission.module`
+
+pyspedas mission-specific imports and calls::
+
+   1. All imports of mission-specific code should use `pyspedas.projects.mission` rather than `pyspedas.mission`.
+   2. Fully qualified calls of the form `pyspedas.mission.some_func()` should be changed to `pyspedas.projects.mission.some_func()`
+   3. Imports or fully qualified calls to mission-specific modules will still be supported, but will need to use `pyspedas.projects.mission.module` rather than `pyspedas.mission.module`
+
+Obsolete wrapper routines being removed::
+
+    1. pyspedas.cotrans_get_coord() should be replaced with pyspedas.get_coord()
+    2. pyspedas.cotrans_set_coord() should be replaced with pyspedas.set_coord()
 
 Updating pytplot imports
 ++++++++++++++++++++++++
@@ -132,6 +142,30 @@ PySPEDAS 2.0 compatible rewrites:
 
     # Direct calls will also need to be updated to use pyspedas.projects
     pyspedas.projects.omni.load(trange=["2013-11-5", "2013-11-6"])
+
+
+Updating references to obsolete wrapper routines
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Old style, pre-2.0:
+
+.. code-block:: python
+
+    # cotrans_get_coord and cotrans_set_coord are wrapper routines, which will be removed in PySPEDAS 2.0
+    from pyspedas import cotrans_get_coord, cotrans_set_coord
+    coord = cotrans_get_coord('somevar')
+    cotrans_set_coord('somevar', 'GSE')
+
+
+PySPEDAS 2.0 compatible rewrites:
+
+.. code-block:: python
+
+    # Import or call set_coord and get_coord from pyspedas namespace
+    from pyspedas import get_coord, set_coord
+    coord = get_coord('somevar')
+    set_coord('somevar', 'GSE')
+
 
 Updating your environment after upgrading to PySPEDAS 2.0 or later
 --------------------------------------------------------------------
