@@ -2,6 +2,8 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pytplot import time_clip as tclip
 from pytplot import netcdf_to_tplot
+from pyspedas import wildcard_expand
+from pyspedas import options
 
 from .config import CONFIG
 
@@ -486,4 +488,9 @@ def load(
     if len(tvars_r):
         tvars.extend(tvars_r)  # append GOES-R variables
 
+    # This might make sense in the XRS load routine, but then we wouldn't be able to use partial_function for it...
+    if 'xrs' in instrument:
+        xray_flux_vars = wildcard_expand(tvars,'*_xrs_*_flux', quiet=True)
+        if len(xray_flux_vars) > 0:
+            options(xray_flux_vars,'ylog',True)
     return tvars

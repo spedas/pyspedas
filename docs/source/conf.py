@@ -25,7 +25,7 @@ copyright = '2018-2025, Regents of the University of California, unless otherwis
 author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
-release = '1.7.25'
+release = '1.7.28'
 
 
 # -- General configuration ---------------------------------------------------

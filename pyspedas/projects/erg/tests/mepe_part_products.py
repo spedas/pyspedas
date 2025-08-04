@@ -89,6 +89,13 @@ class LoadTestCases(unittest.TestCase):
         tplot(vars, display=display, save_png='erg_mepe_moments.png' )
         self.assertTrue('erg_mepe_l2_3dflux_FEDU_density' in vars)
         self.assertTrue(data_exists('erg_mepe_l2_3dflux_FEDU_density'))
+        self.assertTrue('erg_mepe_l2_3dflux_FEDU_density' in vars)
+        self.assertEqual(pyspedas.get_units('erg_mepe_l2_3dflux_FEDU_density'), '1/cm^3')
+        self.assertTrue(data_exists('erg_mepe_l2_3dflux_FEDU_qflux'))
+        self.assertTrue('erg_mepe_l2_3dflux_FEDU_qflux' in vars)
+        self.assertEqual(pyspedas.get_units('erg_mepe_l2_3dflux_FEDU_qflux'), 'eV/(cm^2-sec)')
+        self.assertEqual(pyspedas.get_coords('erg_mepe_l2_3dflux_FEDU_qflux').lower(), 'dsi')
+
 
     def test_mepe_fac_moments(self):
         del_data('*')

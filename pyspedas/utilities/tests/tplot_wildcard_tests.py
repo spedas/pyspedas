@@ -64,6 +64,39 @@ class UtilTestCases(unittest.TestCase):
         result=wildcard_expand(['foo bar','baz quux'], 'foo bar', split_whitespace=False)
         self.assertEqual(result, ['foo bar'])
 
+    def test_wildcard_quiet(self):
+        master = ['string1', 'string2', 'string3']
+        patt1 = 'notfound'
+        with self.assertLogs(level='WARNING') as log:
+            # This should produce a warning
+            result = wildcard_expand(master,patt1)
+            self.assertTrue("No match found" in log.output[0])
+            # With quiet==True, there should be no warning
+            result = wildcard_expand(master,patt1,quiet=True)
+            self.assertTrue(len(log.output) == 1)
+
+    def test_tplot_wildcard_quiet(self):
+        del_data('*')
+        store_data('foo',deepcopy(tp_data))
+        patt1 = 'notfound'
+        with self.assertLogs(level='WARNING') as log:
+            # This should produce a warning
+            result = tplot_wildcard_expand(patt1)
+            self.assertTrue("No match found" in log.output[0])
+            # With quiet==True, there should be no warning
+            result = tplot_wildcard_expand(patt1,quiet=True)
+            self.assertTrue(len(log.output) == 1)
+            del_data('*')
+            # Should warn about empty list of tplot variable names
+            result = tplot_wildcard_expand(patt1)
+            self.assertTrue("is empty" in log.output[1])
+            # len(log.output) is now 2
+            # With quiet==True, there should be no warning
+            result = tplot_wildcard_expand(patt1,quiet=True)
+            self.assertTrue(len(log.output) == 2)
+
+
+
     def test_tplot_wildcard_expand(self):
         # Test wildcard expansion against current tplot variables
         del_data('*')

@@ -75,6 +75,10 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.eflux_bulk_subtract = get_data('mms1_dis_dist_brst_eflux_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_eflux_no_bulk_subtract','eflux_mom_nobulk_subtract')
         tplot_copy('mms1_dis_dist_brst_eflux_bulk_subtract','eflux_mom_bulk_subtract')
+        cls.qflux_nobulk_subtract = get_data('mms1_dis_dist_brst_qflux_no_bulk_subtract')
+        cls.qflux_bulk_subtract = get_data('mms1_dis_dist_brst_qflux_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_qflux_no_bulk_subtract','qflux_mom_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_qflux_bulk_subtract','qflux_mom_bulk_subtract')
         cls.flux_nobulk_subtract = get_data('mms1_dis_dist_brst_flux_no_bulk_subtract')
         cls.flux_bulk_subtract = get_data('mms1_dis_dist_brst_flux_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_flux_no_bulk_subtract','flux_mom_nobulk_subtract')
@@ -133,6 +137,10 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.eflux_mag_bulk_subtract = get_data('mms1_dis_dist_brst_eflux_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_eflux_mag_no_bulk_subtract','eflux_mom_mag_nobulk_subtract')
         tplot_copy('mms1_dis_dist_brst_eflux_mag_bulk_subtract','eflux_mom_mag_bulk_subtract')
+        cls.qflux_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_qflux_mag_no_bulk_subtract')
+        cls.qflux_mag_bulk_subtract = get_data('mms1_dis_dist_brst_qflux_mag_bulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_qflux_mag_no_bulk_subtract','qflux_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_dis_dist_brst_qflux_mag_bulk_subtract','qflux_mom_mag_bulk_subtract')
         cls.flux_mag_nobulk_subtract = get_data('mms1_dis_dist_brst_flux_mag_no_bulk_subtract')
         cls.flux_mag_bulk_subtract = get_data('mms1_dis_dist_brst_flux_mag_bulk_subtract')
         tplot_copy('mms1_dis_dist_brst_flux_mag_no_bulk_subtract','flux_mom_mag_nobulk_subtract')
@@ -197,6 +205,10 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.hpca_eflux_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_eflux_bulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_eflux_no_bulk_subtract','hpca_eflux_mom_nobulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_eflux_bulk_subtract','hpca_eflux_mom_bulk_subtract')
+        cls.hpca_qflux_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_qflux_no_bulk_subtract')
+        cls.hpca_qflux_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_qflux_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_qflux_no_bulk_subtract','hpca_qflux_mom_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_qflux_bulk_subtract','hpca_qflux_mom_bulk_subtract')
         cls.hpca_flux_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract')
         cls.hpca_flux_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_flux_bulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract','hpca_flux_mom_nobulk_subtract')
@@ -255,6 +267,10 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.hpca_eflux_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_eflux_mag_bulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_eflux_mag_no_bulk_subtract','hpca_eflux_mom_mag_nobulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_eflux_mag_bulk_subtract','hpca_eflux_mom_mag_bulk_subtract')
+        cls.hpca_qflux_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_qflux_mag_no_bulk_subtract')
+        cls.hpca_qflux_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_qflux_mag_bulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_qflux_mag_no_bulk_subtract','hpca_qflux_mom_mag_nobulk_subtract')
+        tplot_copy('mms1_hpca_hplus_phase_space_density_qflux_mag_bulk_subtract','hpca_qflux_mom_mag_bulk_subtract')
         cls.hpca_flux_mag_nobulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_flux_mag_no_bulk_subtract')
         cls.hpca_flux_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_flux_mag_bulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_flux_mag_no_bulk_subtract','hpca_flux_mom_mag_nobulk_subtract')
@@ -275,7 +291,6 @@ class TestGetspecBulkv(unittest.TestCase):
         cls.hpca_vthermal_mag_bulk_subtract = get_data('mms1_hpca_hplus_phase_space_density_vthermal_mag_bulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_vthermal_mag_no_bulk_subtract','hpca_vthermal_mom_mag_nobulk_subtract')
         tplot_copy('mms1_hpca_hplus_phase_space_density_vthermal_mag_bulk_subtract','hpca_vthermal_mom_mag_bulk_subtract')
-
         tplot_names()
         del_data('mms1*')
 
@@ -452,6 +467,13 @@ class TestGetspecBulkv(unittest.TestCase):
         self.assertEqual(units,'eV/(cm^2-s)')
         assert_allclose(self.eflux_nobulk_subtract.y, pydat.y, rtol=1.0e-06)
 
+        tplot(['mms1_dis_dist_brst_qflux_no_bulk_subtract','qflux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_qflux_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_qflux_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_qflux_no_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0003
+        assert_allclose(self.qflux_nobulk_subtract.y, pydat.y, rtol=.0005)
+
         tplot(['mms1_dis_dist_brst_flux_no_bulk_subtract','flux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_flux_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_flux_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_flux_no_bulk_subtract')
@@ -558,6 +580,11 @@ class TestGetspecBulkv(unittest.TestCase):
         # max relative difference 5.3e-05
         assert_allclose(self.eflux_bulk_subtract.y, pydat.y, rtol=6.0e-05)
 
+        tplot(['mms1_dis_dist_brst_qflux_bulk_subtract','qflux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_qflux_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_qflux_bulk_subtract')
+        # max relative difference .0002
+        assert_allclose(self.qflux_bulk_subtract.y, pydat.y, rtol=.0003)
+
         tplot(['mms1_dis_dist_brst_flux_bulk_subtract','flux_mom_bulk_subtract'],display=global_display,save_png='mms_getspec_flux_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_flux_bulk_subtract')
         # max relative difference .0019
@@ -662,6 +689,13 @@ class TestGetspecBulkv(unittest.TestCase):
         # max relative difference .0004
         assert_allclose(self.eflux_mag_nobulk_subtract.y, pydat.y, rtol=.0005)
 
+        tplot(['mms1_dis_dist_brst_fac_qflux_no_bulk_subtract','qflux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_qflux_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_qflux_no_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_qflux_no_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0005
+        assert_allclose(self.qflux_mag_nobulk_subtract.y, pydat.y, rtol=.0006)
+
         tplot(['mms1_dis_dist_brst_fac_flux_no_bulk_subtract','flux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_flux_mag_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_flux_no_bulk_subtract')
         units=get_units('mms1_dis_dist_brst_fac_flux_no_bulk_subtract')
@@ -721,6 +755,13 @@ class TestGetspecBulkv(unittest.TestCase):
         self.assertEqual(units,'eV/(cm^2-s)')
         # max relative difference .0004
         assert_allclose(self.eflux_mag_bulk_subtract.y, pydat.y, rtol=.0005)
+
+        tplot(['mms1_dis_dist_brst_fac_qflux_bulk_subtract','qflux_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_qflux_mag_bulk_subtract.png')
+        pydat=get_data('mms1_dis_dist_brst_fac_qflux_bulk_subtract')
+        units=get_units('mms1_dis_dist_brst_fac_qflux_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.qflux_mag_bulk_subtract.y, pydat.y, rtol=.0005)
 
         tplot(['mms1_dis_dist_brst_fac_flux_bulk_subtract','flux_mom_mag_bulk_subtract'],display=global_display,save_png='mms_getspec_flux_mag_bulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_flux_bulk_subtract')
@@ -928,6 +969,13 @@ class TestGetspecBulkv(unittest.TestCase):
         # max relative difference .0004
         assert_allclose(self.hpca_eflux_nobulk_subtract.y, pydat.y, rtol=.0005)
 
+        tplot(['mms1_hpca_hplus_phase_space_density_qflux_no_bulk_subtract','hpca_qflux_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_qflux_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_qflux_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_qflux_no_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.hpca_qflux_nobulk_subtract.y, pydat.y, rtol=.0005)
+
         tplot(['mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract','hpca_flux_mom_no_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_flux_nobulk_subtract.png')
         pydat=get_data('mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract')
         units=get_units('mms1_hpca_hplus_phase_space_density_flux_no_bulk_subtract')
@@ -989,6 +1037,13 @@ class TestGetspecBulkv(unittest.TestCase):
         # max relative difference .0004
         assert_allclose(self.hpca_eflux_bulk_subtract.y, pydat.y, rtol=.0005)
 
+        tplot(['mms1_hpca_hplus_phase_space_density_qflux_bulk_subtract','hpca_qflux_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_qflux_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_qflux_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_qflux_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.hpca_qflux_bulk_subtract.y, pydat.y, rtol=.0005)
+
         tplot(['mms1_hpca_hplus_phase_space_density_flux_bulk_subtract','hpca_flux_mom_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_flux_bulk_subtract.png')
         pydat=get_data('mms1_hpca_hplus_phase_space_density_flux_bulk_subtract')
         units=get_units('mms1_hpca_hplus_phase_space_density_flux_bulk_subtract')
@@ -1048,6 +1103,13 @@ class TestGetspecBulkv(unittest.TestCase):
         self.assertEqual(units,'eV/(cm^2-s)')
         # max relative difference .0004
         assert_allclose(self.hpca_eflux_mag_nobulk_subtract.y, pydat.y, rtol=.0005)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_qflux_no_bulk_subtract','hpca_qflux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_qflux_mag_nobulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_qflux_no_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_qflux_no_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.hpca_qflux_mag_nobulk_subtract.y, pydat.y, rtol=.0005)
 
         tplot(['mms1_hpca_hplus_phase_space_density_fac_flux_no_bulk_subtract','hpca_flux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_hpca_getspec_flux_mag_nobulk_subtract.png')
         pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_flux_no_bulk_subtract')
@@ -1109,6 +1171,13 @@ class TestGetspecBulkv(unittest.TestCase):
         self.assertEqual(units,'eV/(cm^2-s)')
         # max relative difference .0004
         assert_allclose(self.hpca_eflux_mag_bulk_subtract.y, pydat.y, rtol=.0005)
+
+        tplot(['mms1_hpca_hplus_phase_space_density_fac_qflux_bulk_subtract','hpca_qflux_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_qflux_mag_bulk_subtract.png')
+        pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_qflux_bulk_subtract')
+        units=get_units('mms1_hpca_hplus_phase_space_density_fac_qflux_bulk_subtract')
+        self.assertEqual(units,'eV/(cm^2-s)')
+        # max relative difference .0004
+        assert_allclose(self.hpca_qflux_mag_bulk_subtract.y, pydat.y, rtol=.0005)
 
         tplot(['mms1_hpca_hplus_phase_space_density_fac_flux_bulk_subtract','hpca_flux_mom_mag_bulk_subtract'],display=global_display,save_png='mms_hpca_getspec_flux_mag_bulk_subtract.png')
         pydat=get_data('mms1_hpca_hplus_phase_space_density_fac_flux_bulk_subtract')

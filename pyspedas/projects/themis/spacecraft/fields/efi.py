@@ -21,12 +21,13 @@ def efi(trange=['2007-03-23', '2007-03-24'],
 
     Parameters
     ----------
-        trange : list of str
+
+        trange: list of str
             time range of interest [starttime, endtime] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
             Default: ['2007-03-23', '2007-03-24']
-   
+
         probe: str or list of str
             Spacecraft probe letter(s) ('a', 'b', 'c', 'd' and/or 'e')
             Default: 'c'
@@ -55,7 +56,6 @@ def efi(trange=['2007-03-23', '2007-03-24'],
                 'efp', Particle burst E field vectors
                 'efw', Wave burst E field vectors
                 L2 default: efi
-
 
         suffix: str
             The tplot variable names will be given this suffix.

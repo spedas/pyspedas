@@ -55,7 +55,9 @@ def mms_part_products(in_tvarname,
                       regrid=[32, 16],
                       vel_name=None,
                       prefix='',
-                      suffix=''):
+                      suffix='',
+                      sdc_units=False,
+                      ):
     """
     Generate spectra and moments from 3D MMS particle data; note: this routine isn't
     meant to be called directly - see the wrapper mms_part_getspec instead.
@@ -163,6 +165,12 @@ def mms_part_products(in_tvarname,
 
         suffix: str
             Suffix for output tplot variables. Default: ''
+
+        sdc_units: bool
+            If True, convert moments ptens and qflux values and units to nPa and mW/m^2 respectively, for
+            compatibility with MMS SDC products.
+            Default: False
+
             
     Returns
     ----------
@@ -261,6 +269,7 @@ def mms_part_products(in_tvarname,
         out_vthermal = np.zeros(ntimes)
         out_flux = np.zeros([ntimes, 3])
         out_eflux = np.zeros([ntimes, 3])
+        out_qflux = np.zeros([ntimes, 3])
         out_velocity = np.zeros([ntimes, 3])
         out_mftens = np.zeros([ntimes, 6])
         out_ptens = np.zeros([ntimes, 6])
@@ -278,6 +287,7 @@ def mms_part_products(in_tvarname,
         out_fac_vthermal = np.zeros(ntimes)
         out_fac_flux = np.zeros([ntimes, 3])
         out_fac_eflux = np.zeros([ntimes, 3])
+        out_fac_qflux = np.zeros([ntimes, 3])
         out_fac_velocity = np.zeros([ntimes, 3])
         out_fac_mftens = np.zeros([ntimes, 6])
         out_fac_ptens = np.zeros([ntimes, 6])
@@ -443,6 +453,7 @@ are the scientific products that should be used for analysis."""
             out_vthermal[i] = moments['vthermal']
             out_flux[i, :] = moments['flux']
             out_eflux[i, :] = moments['eflux']
+            out_qflux[i, :] = moments['qflux']
             out_velocity[i, :] = moments['velocity']
             out_mftens[i, :] = moments['mftens']
             out_ptens[i, :] = moments['ptens']
@@ -487,6 +498,7 @@ are the scientific products that should be used for analysis."""
             out_fac_vthermal[i] = fac_moments['vthermal']
             out_fac_flux[i, :] = fac_moments['flux']
             out_fac_eflux[i, :] = fac_moments['eflux']
+            out_fac_qflux[i, :] = fac_moments['qflux']
             out_fac_velocity[i, :] = fac_moments['velocity']
             out_fac_mftens[i, :] = fac_moments['mftens']
             out_fac_ptens[i, :] = fac_moments['ptens']
@@ -504,6 +516,7 @@ are the scientific products that should be used for analysis."""
         moments = {'density': out_density, 
               'flux': out_flux,
               'eflux': out_eflux,
+              'qflux': out_qflux,
               'mftens': out_mftens, 
               'velocity': out_velocity, 
               'ptens': out_ptens,
@@ -517,7 +530,7 @@ are the scientific products that should be used for analysis."""
               'symm_phi': out_symm_phi,
               'symm_ang': out_symm_ang,
             }
-        moments_vars = spd_pgs_moments_tplot(moments, x=data_times, prefix=user_prefix + in_tvarname + '_', suffix=suffix)
+        moments_vars = spd_pgs_moments_tplot(moments, x=data_times, prefix=user_prefix + in_tvarname + '_', suffix=suffix, coords='DBCS', use_mms_sdc_units=sdc_units)
         out_vars.extend(moments_vars)
 
     if 'fac_moments' in output:
@@ -525,6 +538,7 @@ are the scientific products that should be used for analysis."""
         fac_moments = {'density': out_fac_density,
               'flux': out_fac_flux,
               'eflux': out_fac_eflux,
+              'qflux': out_fac_qflux,
               'mftens': out_fac_mftens,
               'velocity': out_fac_velocity,
               'ptens': out_fac_ptens,
@@ -540,7 +554,7 @@ are the scientific products that should be used for analysis."""
               # 'symm_phi': out_fac_symm_phi,
               # 'symm_ang': out_fac_symm_ang,
                }
-        fac_moments_vars = spd_pgs_moments_tplot(fac_moments, x=data_times, prefix=user_prefix + in_tvarname+'_fac_', suffix=suffix)
+        fac_moments_vars = spd_pgs_moments_tplot(fac_moments, x=data_times, prefix=user_prefix + in_tvarname+'_fac_', suffix=suffix, coords='FA', use_mms_sdc_units=sdc_units)
         out_vars.extend(fac_moments_vars)
 
     if 'energy' in output:

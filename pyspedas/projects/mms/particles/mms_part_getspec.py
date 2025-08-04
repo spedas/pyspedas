@@ -37,7 +37,9 @@ def mms_part_getspec(instrument='fpi',
                      suffix='', 
                      subtract_bulk = False,
                      vel_name = None,
-                     vel_data_rate = None):
+                     vel_data_rate = None,
+                     sdc_units = False,
+                     ):
     """
     Generate spectra and moments from 3D MMS particle data
 
@@ -161,6 +163,11 @@ def mms_part_getspec(instrument='fpi',
 
         suffix: str
             Suffix for output tplot variables. Default: ''
+
+        sdc_units: bool
+            If True, convert moments ptens and qflux values and units to nPa and mW/m^2 respectively, for
+            compatibility with MMS SDC products
+            Default: False
 
     Returns
     -------
@@ -300,7 +307,8 @@ def mms_part_getspec(instrument='fpi',
                           correct_photoelectrons=correct_photoelectrons, zero_negative_values=zero_negative_values,
                           internal_photoelectron_corrections=internal_photoelectron_corrections,
                           disable_photoelectron_corrections=disable_photoelectron_corrections, regrid=regrid,
-                          no_regrid=no_regrid, prefix=prefix, suffix=suffix, subtract_bulk = subtract_bulk)
+                          no_regrid=no_regrid, prefix=prefix, suffix=suffix, subtract_bulk = subtract_bulk,
+                          sdc_units=sdc_units)
         
         if new_vars is None:
             continue

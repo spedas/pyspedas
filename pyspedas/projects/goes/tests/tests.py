@@ -1,10 +1,12 @@
 import os
 import unittest
 from pytplot import data_exists, tnames
+import numpy as np
 
 import pyspedas
 from pytplot import del_data, tplot
 
+global_display=False
 
 class LoadTestCases(unittest.TestCase):
 
@@ -19,8 +21,9 @@ class LoadTestCases(unittest.TestCase):
         self.assertEqual(orbit_vars[0], 'goes_data/goes15/orbit/2013/goes15_ephemeris_ssc_20130101_v01.cdf')
         orbit_vars = pyspedas.projects.goes.orbit(notplot=True, time_clip=False)
         # This should return a dict of tplot structures, but we're getting a list of names, which don't exist as tplot variables.
-        #self.assertTrue(isinstance(orbit_vars, dict)
-        orbit_vars = pyspedas.projects.goes.orbit()
+        self.assertTrue(isinstance(orbit_vars, dict))
+        self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars.keys())
+        orbit_vars = pyspedas.projects.goes.orbit(time_clip=True)
         self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars)
         self.assertTrue("g15_orbit_XYZ_GSE" in orbit_vars)
         self.assertTrue("g15_orbit_XYZ_SM" in orbit_vars)
@@ -30,6 +33,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("g15_orbit_XYZ_GSE"))
         self.assertTrue(data_exists("g15_orbit_XYZ_SM"))
         self.assertTrue(data_exists("g15_orbit_XYZ_GEO"))
+        del_data('*')
+        # Both notplot and time_clip specified: should return dictionary, no crash, no tplot variables created
+        orbit_vars = pyspedas.projects.goes.orbit(time_clip=True, notplot=True)
+        self.assertTrue(isinstance(orbit_vars, dict))
+        self.assertFalse(data_exists("g15_orbit_XYZ_GSM"))
+        self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars.keys())
 
     def test_load_1min_mag_data(self):
         del_data()
@@ -244,6 +253,31 @@ class LoadTestCases(unittest.TestCase):
         )
         self.assertTrue("g11_xrs_xs" in xrs_vars)
         self.assertTrue(data_exists("g11_xrs_xs"))
+
+    def test_fillval_removal(self):
+        del_data()
+        trange=['2024-05-21','2024-05-22']
+        probe=18
+
+        pyspedas.projects.goes.euvs(probe=probe,trange=trange)
+        pyspedas.projects.goes.xrs(probe=probe,trange=trange)
+        pyspedas.tplot(['g18_euvs_MgII_standard','g18_xrs_xrsa_flux'],display=global_display,save_png='g18_xrs_euvs.png')
+        d=pyspedas.get_data('g18_euvs_MgII_standard')
+        datamin = np.nanmin(d.y)
+        # Fillval should be -9999 for this variable, was it removed?
+        self.assertTrue(datamin > -1.0)
+
+    def test_xrs_scale(self):
+        del_data()
+        trange=['2024-05-21','2024-05-22']
+        probe=18
+
+        pyspedas.projects.goes.xrs(probe=probe,trange=trange)
+        pyspedas.tplot(['g18_xrs_xrsa_flux'],display=global_display,save_png='g18_xrs_xrsa_flux.png')
+        md=pyspedas.get_data('g18_xrs_xrsa_flux', metadata=True)
+        scale=md['plot_options']['yaxis_opt']['y_axis_type']
+        self.assertTrue(scale=='log')
+
 
     def test_load_eps_1m_data(self):
         del_data()

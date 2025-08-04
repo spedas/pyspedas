@@ -304,16 +304,17 @@ def cdipdir_vect(time_in=None, iyear=None, idoy=None):
 
     for i in range(len(idoy)):
         # check the cache before re-calculating the dipole direction
-        if cdipdir_cache.get(iyear[i] + idoy[i]) != None:
-            d1.append(cdipdir_cache.get(iyear[i] + idoy[i])[0])
-            d2.append(cdipdir_cache.get(iyear[i] + idoy[i])[1])
-            d3.append(cdipdir_cache.get(iyear[i] + idoy[i])[2])
+        cached_value = cdipdir_cache.get(1000*iyear[i]+idoy[i])
+        if cached_value != None:
+            d1.append(cached_value[0])
+            d2.append(cached_value[1])
+            d3.append(cached_value[2])
             continue
         _d1, _d2, _d3 = cdipdir(None, iyear[i], idoy[i])
         d1.append(_d1)
         d2.append(_d2)
         d3.append(_d3)
-        cdipdir_cache[iyear[i] + idoy[i]] = [_d1, _d2, _d3]
+        cdipdir_cache[1000*iyear[i] + idoy[i]] = [_d1, _d2, _d3]
 
     return np.array(d1), np.array(d2), np.array(d3)
 
