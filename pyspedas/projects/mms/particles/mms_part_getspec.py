@@ -174,13 +174,13 @@ def mms_part_getspec(instrument='fpi',
     if trange is None:
         logging.error('Time range not specified; please specify time range using the trange keyword.')
         return
-### new ####
+
     if vel_data_rate is None:  # type: ignore
         if data_rate == 'brst':
             vel_data_rate = 'brst'
         else:
             vel_data_rate = 'srvy'
-####### new #########
+
     if mag_data_rate is None:
         if data_rate == 'brst':
             mag_data_rate = 'brst'
