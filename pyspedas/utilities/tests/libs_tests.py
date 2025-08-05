@@ -87,14 +87,14 @@ class LibsTestCase(unittest.TestCase):
         self.assertIn('Function:', output)
 
     def test_known_function_data_pytplot_subpackage_only(self):
-        libs('data', package=pytplot)
+        libs('data', package=pyspedas)
         output = sys.stdout.getvalue()
         self.assertIn('get_data', output)
         self.assertNotIn('Function: pyspedas', output)
 
     def test_qtplotter_error_exception(self):
         # This test is probably not the best way to handle this exception
-        libs('qtplotter', package=pytplot)  # This can be changed to anything. qtplotter error is during pytplot import search
+        libs('qtplotter', package=pyspedas)  # This can be changed to anything. qtplotter error is during pytplot import search
         output = sys.stdout.getvalue()
         self.assertNotIn('Error importing module pytplot.QtPlotter', output)
 

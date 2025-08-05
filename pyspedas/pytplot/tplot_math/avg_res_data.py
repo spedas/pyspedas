@@ -56,7 +56,7 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
         else:
            pyspedas.store_data(newname, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values})
 
-       pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopypyspedas.pytplot.data_quants[tvar].attrs)
+        pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 
     return
 

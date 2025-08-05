@@ -70,7 +70,7 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
             newname,
             data={"x": pyspedas.pytplot.data_quants[tvar1].coords["time"].values, "y": data},
         )
-        pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(
+       pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(
             pyspedas.pytplot.data_quants[tvar1].attrs
         )
     return newname

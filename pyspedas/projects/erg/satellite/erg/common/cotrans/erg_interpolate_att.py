@@ -2,8 +2,7 @@ import numpy as np
 from pyspedas import tnames
 from pyspedas import tcrossp
 from pyspedas import time_string
-from pyspedas import get_data, get_timespan
-import pyspedas.pytplot.tplot_math.degap
+from pyspedas import get_data, get_timespan, degap
 from scipy import interpolate
 
 from ...att.att import att

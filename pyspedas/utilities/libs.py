@@ -11,7 +11,6 @@ import io
 from fnmatch import fnmatchcase
 
 import pyspedas
-import pyspedas
 import functools
 
 
@@ -128,6 +127,6 @@ def libs(function_name, package=None):
                     # Restore the original stdout
                     sys.stdout = original_stdout
 
-    for module in [pyspedas, pytplot]:
+    for module in [pyspedas]:
         if not package or module.__name__ in package.__name__:
             traverse_modules(module, function_name, package)
