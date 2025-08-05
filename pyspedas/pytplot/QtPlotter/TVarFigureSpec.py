@@ -28,15 +28,15 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
-        self.crosshair = pytplot.tplot_opt_glob['crosshair']
+        self.crosshair = pyspedas.pytplot.tplot_opt_glob['crosshair']
 
         # Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
         self.layout.setHorizontalSpacing(10)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.show_xaxis = show_xaxis
-        if 'show_all_axes' in pytplot.tplot_opt_glob:
-            if pytplot.tplot_opt_glob['show_all_axes']:
+        if 'show_all_axes' in pyspedas.pytplot.tplot_opt_glob:
+            if pyspedas.pytplot.tplot_opt_glob['show_all_axes']:
                 self.show_xaxis = True
         # Set up the x axis
         if self.show_xaxis:
@@ -49,7 +49,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
         self.yaxis = AxisItem('left')
-        self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"])  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
+        self.yaxis.setStyle(textFillLimits=pyspedas.pytplot.tplot_opt_glob["axis_tick_num"])  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
         # Creating axes to bound the plots with lines
         self.xaxis2 = DateAxis(orientation='top', showValues=False)
         self.xaxis2.setHeight(0)
@@ -64,7 +64,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
                                                                 'top': self.xaxis2}, viewBox=vb)
 
         # Turn off zooming in on the y-axis, time resolution is much more important
-        self.plotwindow.setMouseEnabled(y=pytplot.tplot_opt_glob['y_axis_zoom'])
+        self.plotwindow.setMouseEnabled(y=pyspedas.pytplot.tplot_opt_glob['y_axis_zoom'])
 
         if pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
             self.plotwindow.showAxis("top")
@@ -81,37 +81,37 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        if pytplot.tplot_opt_glob['black_background']:
+        if pyspedas.pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
-                               str pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#FFF',
                                'white-space': 'pre-wrap'}
         else:
             self.labelStyle = {'font-size':
-                               str pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000',
                                'white-space': 'pre-wrap'}
 
         # Set the font size of the axes
         font = QtGui.QFont()
-        font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
+        font.setPixelSize(pyspedas.pytplot.tplot_opt_glob['axis_font_size'])
         self.xaxis.setTickFont(font)
         self.yaxis.setTickFont(font)
-        self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"],
+        self.yaxis.setStyle(textFillLimits=pyspedas.pytplot.tplot_opt_glob["axis_tick_num"],
                             tickFont=font)  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
 
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date:", "0")
         # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
-        self.hoverlegend.setItem pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
-        self.hoverlegend.setItem pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
-        self.hoverlegend.setItem pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
 
         # Just perform this operation once, so we don't need to keep doing it
-        self.data_2d = pytplot.tplot_utilities.reduce_spec_dataset(name=self.tvar_name)
+        self.data_2d = pyspedas.pytplot.tplot_utilities.reduce_spec_dataset(name=self.tvar_name)
 
     @staticmethod
     def getaxistype():
@@ -120,7 +120,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         return axis_type, link_y_axis
 
     def _set_crosshairs(self):
-        if pytplot.tplot_opt_glob['black_background']:
+        if pyspedas.pytplot.tplot_opt_glob['black_background']:
             self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('w'))
             self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('w'))
         else:
@@ -130,10 +130,10 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.plotwindow.addItem(self.hLine, ignoreBounds=True)
 
     def _set_roi_lines(self):
-        if 'roi_lines' in pytplot.tplot_opt_glob.keys():
+        if 'roi_lines' in pyspedas.pytplot.tplot_opt_glob.keys():
             # Locating the two times between which there's a roi
-            roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0])
-            roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][1])
+            roi_1 = pyspedas.pytplot.tplot_utilities.str_to_int(pyspedas.pytplot.tplot_opt_glob['roi_lines'][0])
+            roi_2 = pyspedas.pytplot.tplot_utilities.str_to_int(pyspedas.pytplot.tplot_opt_glob['roi_lines'][1])
             # find closest time to user-requested time
             x = pyspedas.pytplot.data_quants[self.tvar_name].coords['time']
             x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
@@ -175,7 +175,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _setxaxislabel(self):
         if self.show_xaxis:
-            self.xaxis.setLabel pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
+            self.xaxis.setLabel(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
         
     def getfig(self):
         return self
@@ -366,7 +366,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
             data_point = self.data_2d[x_argmin][y_argmin].values
 
             # Associate mouse position with current plot you're mousing over.
-            pytplot.hover_time.change_hover_time(int(mousePoint.x()), name=self.tvar_name)
+            pyspedas.pytplot.hover_time.change_hover_time(int(mousePoint.x()), name=self.tvar_name)
 
             # add crosshairs
             if self.crosshair:
@@ -383,22 +383,22 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.vLine.setVisible(True)
         self.hLine.setVisible(True)
 
-        date = (pytplot.tplot_utilities.int_to_str(x_val))[0:10]
-        time = (pytplot.tplot_utilities.int_to_str(x_val))[11:19]
+        date = (pyspedas.pytplot.tplot_utilities.int_to_str(x_val))[0:10]
+        time = (pyspedas.pytplot.tplot_utilities.int_to_str(x_val))[11:19]
 
         self.hoverlegend.setVisible(True)
         self.hoverlegend.setItem("Date:", date)
         # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
         self.hoverlegend.setItem(
-            pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', time)
+            pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', time)
         self.hoverlegend.setItem(
-            pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', str(y_val))
+            pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', str(y_val))
         self.hoverlegend.setItem(
-            pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', str(data_point))
+            pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', str(data_point))
 
     def _getyaxistype(self):
-        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_axis_type']
+        if 'y_axis_type' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            return pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_axis_type']
         else:
             return 'linear'
 
@@ -409,37 +409,37 @@ class TVarFigureSpec(pg.GraphicsLayout):
             self.zscale = 'linear'
 
     def _getzaxistype(self):
-        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_axis_type']
+        if 'z_axis_type' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            return pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_axis_type']
         else:
             return 'log'
 
     def _setcolors(self):
-        if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
-            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
+        if 'line_color' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            return pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
         else:
-            return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+            return pyspedas.pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 
     def _setcolormap(self):
-        if 'colormap' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
-            for cm in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['colormap']:
+        if 'colormap' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            for cm in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['colormap']:
                 return tplot_utilities.return_lut(cm)
         else:
             return tplot_utilities.return_lut("spedas")
 
     def _setxrange(self):
         # Check if x range is set.  Otherwise, x range is automatic.
-        if 'x_range' in pytplot.tplot_opt_glob:
-            self.plotwindow.setXRange(pytplot.tplot_opt_glob['x_range'][0], pytplot.tplot_opt_glob['x_range'][1])
+        if 'x_range' in pyspedas.pytplot.tplot_opt_glob:
+            self.plotwindow.setXRange(pyspedas.pytplot.tplot_opt_glob['x_range'][0], pyspedas.pytplot.tplot_opt_glob['x_range'][1])
 
     def _setyrange(self):
-        self.ymin = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]
-        self.ymax = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]
+        self.ymin = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]
+        self.ymax = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] <= 0 or \
-                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] <= 0:
-                self.ymin = np.nanmin(pytplot.data_quants[self.tvar_name].coords['spec_bins'].values)
-                self.ymax = np.nanmax(pytplot.data_quants[self.tvar_name].coords['spec_bins'].values)
+            if pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] <= 0 or \
+                    pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] <= 0:
+                self.ymin = np.nanmin(pyspedas.pytplot.data_quants[self.tvar_name].coords['spec_bins'].values)
+                self.ymax = np.nanmax(pyspedas.pytplot.data_quants[self.tvar_name].coords['spec_bins'].values)
             self.plotwindow.vb.setYRange(np.log10(self.ymin),
                                          np.log10(self.ymax),
                                          padding=0)
@@ -450,11 +450,11 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _setzrange(self):
         # Get Z Range
-        if 'z_range' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            self.zmin = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][0]
-            self.zmax = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][1]
+        if 'z_range' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            self.zmin = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][0]
+            self.zmax = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][1]
         else:
-            dataset_temp = pytplot.data_quants[self.tvar_name].where(pytplot.data_quants[self.tvar_name] != np.inf)
+            dataset_temp = pyspedas.pytplot.data_quants[self.tvar_name].where(pyspedas.pytplot.data_quants[self.tvar_name] != np.inf)
             dataset_temp = dataset_temp.where(dataset_temp != -np.inf)
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
@@ -464,15 +464,15 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _addtimebars(self):
         # find number of times to plot
-        dict_length = len(pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'])
+        dict_length = len(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'])
         # for each time
         for i in range(dict_length):
             # pull date, color, thickness
-            date_to_highlight = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
-            color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
-            thick = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
+            date_to_highlight = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
+            color = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
+            thick = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
             # make infinite line w/ parameters
-            # color = pytplot.tplot_utilities.rgb_color(color)
+            # color = pyspedas.pytplot.tplot_utilities.rgb_color(color)
             infline = pg.InfiniteLine(pos=date_to_highlight, pen=pg.mkPen(color, width=thick))
             # add to plot window
             self.plotwindow.addItem(infline)

@@ -957,12 +957,12 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
             #options(var_name, opt_dict=metadata[var_name]['var_attrs'])
 
         if to_merge is True:
-            cur_data_quant = pytplot.data_quants[var_name]
-            if isinstance(pytplot.data_quants[var_name], dict):  # non-record varying variable, shouldn't be merged
+            cur_data_quant = pyspedas.pytplot.data_quants[var_name]
+            if isinstance(pyspedas.pytplot.data_quants[var_name], dict):  # non-record varying variable, shouldn't be merged
                 continue
-            plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs)
-            pytplot.data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
-            pytplot.data_quants[var_name].attrs = plot_options
+            plot_options = copy.deepcopy(pyspedas.pytplot.data_quants[var_name].attrs)
+            pyspedas.pytplot.data_quants[var_name] = xr.concat([prev_data_quant, cur_data_quant], dim='time').sortby('time')
+            pyspedas.pytplot.data_quants[var_name].attrs = plot_options
 
     if notplot:
         return output_table

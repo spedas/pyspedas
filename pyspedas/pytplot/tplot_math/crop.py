@@ -35,8 +35,8 @@ def crop(tvar1,tvar2, replace=True):
     """
 
     # grab time and data arrays
-    tv1 = pytplot.data_quants[tvar1].copy()
-    tv2 = pytplot.data_quants[tvar2].copy()
+    tv1 = pyspedas.pytplot.data_quants[tvar1].copy()
+    tv2 = pyspedas.pytplot.data_quants[tvar2].copy()
     # find first and last time indices
     t0_1 = tv1.coords['time'][0]
     t0_2 = tv2.coords['time'][0]
@@ -47,21 +47,21 @@ def crop(tvar1,tvar2, replace=True):
     cut2 = min([tx_1, tx_2])
     # trim data
     tv1 = tv1.sel(time=slice(cut1, cut2))
-    tv1.attrs = copy.deepcopy(pytplot.data_quants[tvar1].attrs)
+    tv1.attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar1].attrs)
     tv2 = tv2.sel(time=slice(cut1, cut2))
-    tv2.attrs = copy.deepcopy(pytplot.data_quants[tvar2].attrs)
+    tv2.attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar2].attrs)
     # Replace the variables if specified
     if replace:
-        pytplot.data_quants[tvar1] = tv1
-        pytplot.data_quants[tvar1].name = tvar1
-        pytplot.data_quants[tvar2] = tv2
-        pytplot.data_quants[tvar2].name = tvar2
+        pyspedas.pytplot.data_quants[tvar1] = tv1
+        pyspedas.pytplot.data_quants[tvar1].name = tvar1
+        pyspedas.pytplot.data_quants[tvar2] = tv2
+        pyspedas.pytplot.data_quants[tvar2].name = tvar2
         return
     else:
-        pytplot.data_quants[tvar1 + '_cropped'] = copy.deepcopy(tv1)
-        pytplot.data_quants[tvar1 + '_cropped'].attrs = copy.deepcopy(tv1.attrs)
-        pytplot.data_quants[tvar1 + '_cropped'].name = tvar1+ '_cropped'
-        pytplot.data_quants[tvar2 + '_cropped'] = copy.deepcopy(tv2)
-        pytplot.data_quants[tvar2 + '_cropped'].attrs = copy.deepcopy(tv2.attrs)
-        pytplot.data_quants[tvar2 + '_cropped'].name = tvar2 + '_cropped'
+       pyspedas.pytplot.data_quants[tvar1 + '_cropped'] = copy.deepcopy(tv1)
+       pyspedas.pytplot.data_quants[tvar1 + '_cropped'].attrs = copy.deepcopy(tv1.attrs)
+       pyspedas.pytplot.data_quants[tvar1 + '_cropped'].name = tvar1+ '_cropped'
+       pyspedas.pytplot.data_quants[tvar2 + '_cropped'] = copy.deepcopy(tv2)
+       pyspedas.pytplot.data_quants[tvar2 + '_cropped'].attrs = copy.deepcopy(tv2.attrs)
+       pyspedas.pytplot.data_quants[tvar2 + '_cropped'].name = tvar2 + '_cropped'
     return tvar2 + '_cropped'

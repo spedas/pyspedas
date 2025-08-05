@@ -223,7 +223,7 @@ class AnalysisTestCases(BaseTestCase):
         """Test that parameters are correctly passed to subtract_average via subtract_median."""
 
         #with patch('pytplot.tplot_math.subtract_average') as mock_subtract_average:
-        with patch('pyspedas.tplot_math.subtract_average.subtract_average') as mock_subtract_average:
+        with patch('pyspedas.pytplot.tplot_math.subtract_average.subtract_average') as mock_subtract_average:
         #with patch('pyspedas.subtract_average') as mock_subtract_average:
             print(mock_subtract_average)
             subtract_median('test', newname='new_test', suffix='-sfx', overwrite=True)

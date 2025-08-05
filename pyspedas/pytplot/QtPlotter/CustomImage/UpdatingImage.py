@@ -45,10 +45,10 @@ class UpdatingImage(pg.ImageItem):
     def updatePicture(self, pixel_size=None):
         # Get the dimensions in pixels and in plot coordiantes
         if pixel_size is None:
-            width_in_pixels = pytplot.tplot_opt_glob['window_size'][0]
-            height_in_pixels = pytplot.tplot_opt_glob['window_size'][1]
-            width_in_plot_coords = pytplot.tplot_opt_glob['window_size'][0]
-            height_in_plot_coords = pytplot.tplot_opt_glob['window_size'][1]
+            width_in_pixels = pyspedas.pytplot.tplot_opt_glob['window_size'][0]
+            height_in_pixels = pyspedas.pytplot.tplot_opt_glob['window_size'][1]
+            width_in_plot_coords = pyspedas.pytplot.tplot_opt_glob['window_size'][0]
+            height_in_plot_coords = pyspedas.pytplot.tplot_opt_glob['window_size'][1]
         else:
             width_in_pixels = pixel_size.width()
             height_in_pixels = pixel_size.height()

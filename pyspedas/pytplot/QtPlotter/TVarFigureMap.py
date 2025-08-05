@@ -19,7 +19,7 @@ class TVarFigureMap(pg.GraphicsLayout):
     def __init__(self, tvar_name, show_xaxis=False):
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
-        self.crosshair = pytplot.tplot_opt_glob['crosshair']
+        self.crosshair = pyspedas.pytplot.tplot_opt_glob['crosshair']
 
         # Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
@@ -61,23 +61,23 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        if pytplot.tplot_opt_glob['black_background']:
+        if pyspedas.pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
-                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#FFF',
                                'white-space': 'pre-wrap'}
         else:
             self.labelStyle = {'font-size':
-                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000',
                                'white-space': 'pre-wrap'}
 
         # Set the font size of the axes
         font = QtGui.QFont()
-        font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
+        font.setPixelSize(pyspedas.pytplot.tplot_opt_glob['axis_font_size'])
         self.xaxis.setTickFont(font)
         self.yaxis.setTickFont(font)
-        self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"],
+        self.yaxis.setStyle(textFillLimits=pyspedas.pytplot.tplot_opt_glob["axis_tick_num"],
                             tickFont=font)  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
 
         if show_xaxis:
@@ -118,9 +118,9 @@ class TVarFigureMap(pg.GraphicsLayout):
         self.xaxis.setLabel("Longitude", **self.labelStyle)
 
     def _setyaxislabel(self):
-        ylabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
-        if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+        ylabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
+        if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            sublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
             self.yaxis.setLabel(f"{ylabel} <br> {sublabel} ", **self.labelStyle)
         else:
             self.yaxis.setLabel(ylabel, **self.labelStyle)
@@ -129,16 +129,16 @@ class TVarFigureMap(pg.GraphicsLayout):
         return self
 
     def _visdata(self):
-        datasets = [pytplot.data_quants[self.tvar_name]]
-        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
-            datasets.append(pytplot.data_quants[oplot_name])
+        datasets = [pyspedas.pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(pyspedas.pytplot.data_quants[oplot_name])
 
         cm_index = 0
         for dataset_xr in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name, no_spec_bins=True)
-            coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset_xr, ['lat', 'lon'])
+            dataset = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name, no_spec_bins=True)
+            coords = pyspedas.pytplot.tplot_utilities.return_interpolated_link_dict(dataset_xr, ['lat', 'lon'])
             t_link = coords['lat'].coords['time'].values
             lat = coords['lat'].values
             # Need to trim down the data points to fit within the link
@@ -163,7 +163,7 @@ class TVarFigureMap(pg.GraphicsLayout):
 
             for column_name in dataset.columns:
                 values = data.tolist()
-                colors = pytplot.tplot_utilities.get_heatmap_color(color_map=
+                colors = pyspedas.pytplot.tplot_utilities.get_heatmap_color(color_map=
                                                                    self.colormap[cm_index % len(self.colormap)],
                                                                    min_val=self.zmin, max_val=self.zmax, values=values,
                                                                    zscale=self.zscale)
@@ -183,9 +183,9 @@ class TVarFigureMap(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
-        zlabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'].replace(" \ ", " <br> ")
-        if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            zsublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+        zlabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'].replace(" \ ", " <br> ")
+        if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            zsublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
             zaxis.setLabel(f"{zlabel} <br> {zsublabel}", **self.labelStyle)
         else:
             zaxis.setLabel(zlabel, **self.labelStyle)
@@ -234,19 +234,19 @@ class TVarFigureMap(pg.GraphicsLayout):
             index_y = round(float(mousepoint.y()), 2)
 
             # get latitude and longitude arrays
-            time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time'].values
-            latitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
-            longitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
+            time = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time'].values
+            latitude = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
+            longitude = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
             # find closest time point to cursor
             radius = np.sqrt((latitude - index_y) ** 2 + (longitude - index_x) ** 2).argmin()
 
             time_point = time[radius]
             # get date and time
-            date = (pytplot.tplot_utilities.int_to_str(time_point))[0:10]
-            time = (pytplot.tplot_utilities.int_to_str(time_point))[11:19]
+            date = (pyspedas.pytplot.tplot_utilities.int_to_str(time_point))[0:10]
+            time = (pyspedas.pytplot.tplot_utilities.int_to_str(time_point))[11:19]
 
             # add crosshairs
-            pytplot.hover_time.change_hover_time(time_point, name=self.tvar_name)
+            pyspedas.pytplot.hover_time.change_hover_time(time_point, name=self.tvar_name)
             self.vLine.setVisible(True)
             self.hLine.setVisible(True)
             self.vLine.setPos(mousepoint.x())
@@ -273,28 +273,28 @@ class TVarFigureMap(pg.GraphicsLayout):
             self.zscale = 'linear'
 
     def _getzaxistype(self):
-        if 'z_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_axis_type']
+        if 'z_axis_type' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            return pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_axis_type']
         else:
             return 'linear'
 
     def _setcolors(self):
-        if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
-            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
+        if 'line_color' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            return pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
         else:
-            if pytplot.tplot_opt_glob['black_background']:
-                return pytplot.tplot_utilities.rgb_color(['w', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+            if pyspedas.pytplot.tplot_opt_glob['black_background']:
+                return pyspedas.pytplot.tplot_utilities.rgb_color(['w', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
             else:
-                return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+                return pyspedas.pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 
     def _setcolormap(self):
         colors = []
-        if 'colormap' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
-            for cm in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['colormap']:
-                colors.append(pytplot.tplot_utilities.return_lut(cm))
+        if 'colormap' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            for cm in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['colormap']:
+                colors.append(pyspedas.pytplot.tplot_utilities.return_lut(cm))
             return colors
         else:
-            return [pytplot.tplot_utilities.return_lut("inferno")]
+            return [pyspedas.pytplot.tplot_utilities.return_lut("inferno")]
 
     @staticmethod
     def getaxistype():
@@ -304,27 +304,27 @@ class TVarFigureMap(pg.GraphicsLayout):
 
     def _setxrange(self):
         # Check if x range is set. Otherwise, set it.
-        if 'map_x_range' in pytplot.tplot_opt_glob:
-            self.plotwindow.setXRange(pytplot.tplot_opt_glob['map_x_range'][0],
-                                      pytplot.tplot_opt_glob['map_x_range'][1])
+        if 'map_x_range' in pyspedas.pytplot.tplot_opt_glob:
+            self.plotwindow.setXRange(pyspedas.pytplot.tplot_opt_glob['map_x_range'][0],
+                                      pyspedas.pytplot.tplot_opt_glob['map_x_range'][1])
         else:
             self.plotwindow.setXRange(0, 360)
 
     def _setyrange(self):
         # Check if y range is set.  Otherwise, y range is automatic
-        if 'map_y_range' in pytplot.tplot_opt_glob:
-            self.plotwindow.setYRange(pytplot.tplot_opt_glob['map_y_range'][0],
-                                      pytplot.tplot_opt_glob['map_y_range'][1])
+        if 'map_y_range' in pyspedas.pytplot.tplot_opt_glob:
+            self.plotwindow.setYRange(pyspedas.pytplot.tplot_opt_glob['map_y_range'][0],
+                                      pyspedas.pytplot.tplot_opt_glob['map_y_range'][1])
         else:
             self.plotwindow.vb.setYRange(-90, 90)
 
     def _setzrange(self):
         # Get Z Range
-        if 'z_range' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            self.zmin = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][0]
-            self.zmax = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][1]
+        if 'z_range' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            self.zmin = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][0]
+            self.zmax = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['z_range'][1]
         else:
-            dataset_temp = pytplot.data_quants[self.tvar_name].where(pytplot.data_quants[self.tvar_name] != np.inf)
+            dataset_temp = pyspedas.pytplot.data_quants[self.tvar_name].where(pyspedas.pytplot.data_quants[self.tvar_name] != np.inf)
             dataset_temp = dataset_temp.where(dataset_temp != -np.inf)
             # Cannot have a 0 minimum in a log scale
             if self.zscale == 'log':
@@ -334,35 +334,35 @@ class TVarFigureMap(pg.GraphicsLayout):
 
     def _addtimebars(self):
         # grab tbardict
-        tbardict = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
+        tbardict = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
         ltbar = len(tbardict)
 
         for i in range(ltbar):
             # get times, color, point size
-            test_time = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
-            color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
-            pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
+            test_time = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
+            color = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
+            pointsize = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
             # correlate given time with corresponding lat/lon points
-            time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time']
-            latitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
-            longitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
+            time = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords['time']
+            latitude = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
+            longitude = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
             nearest_time_index = np.abs(time - test_time).argmin()
             lat_point = latitude[nearest_time_index]
             lon_point = longitude[nearest_time_index]
-            # color = pytplot.tplot_utilities.rgb_color(color)
+            # color = pyspedas.pytplot.tplot_utilities.rgb_color(color)
             self.plotwindow.scatterPlot([lon_point], [lat_point], size=pointsize, pen=pg.mkPen(None), brush=color)
 
         return
 
     def _setbackground(self):
-        if 'alpha' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
-            alpha = pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['alpha']
+        if 'alpha' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            alpha = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['alpha']
         else:
             alpha = 1
-        if 'basemap' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
-            if os.path.isfile(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap']):
+        if 'basemap' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            if os.path.isfile(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap']):
                 from matplotlib.pyplot import imread
-                img = imread(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap'],
+                img = imread(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['basemap'],
                              format='RGBA')
                 # Need to flip the image upside down...This will probably be fixed in
                 # a future release, so this will need to be deleted at some point
@@ -372,7 +372,7 @@ class TVarFigureMap(pg.GraphicsLayout):
                 self.plotwindow.addItem(bm)
 
     def _set_crosshairs(self):
-        if pytplot.tplot_opt_glob['black_background']:
+        if pyspedas.pytplot.tplot_opt_glob['black_background']:
             self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('w'))
             self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('w'))
         else:
@@ -385,18 +385,18 @@ class TVarFigureMap(pg.GraphicsLayout):
 
     def _addtimelistener(self):
         self.spacecraft_position = self.plotwindow.scatterPlot([], [], size=14, pen=pg.mkPen(None), brush='b')
-        pytplot.hover_time.register_listener(self._time_mover)
+        pyspedas.pytplot.hover_time.register_listener(self._time_mover)
 
     def _time_mover(self, time, name):
         if name != self.tvar_name:
             hover_time = time
             time = \
-            pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords[
+            pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].coords[
                 'time']
-            latitude = pytplot.data_quants[
-                pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
-            longitude = pytplot.data_quants[
-                pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
+            latitude = pyspedas.pytplot.data_quants[
+                pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lat']].values
+            longitude = pyspedas.pytplot.data_quants[
+                pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['lon']].values
             nearest_time_index = np.abs(time - hover_time).argmin()
             lat_point = latitude[nearest_time_index]
             lon_point = longitude[nearest_time_index]

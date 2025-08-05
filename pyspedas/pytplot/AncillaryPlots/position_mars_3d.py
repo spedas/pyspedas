@@ -19,7 +19,7 @@ def position_mars_3d(temp=None):
         raise("In order to use the 3D position viewing tool you must pip install PyOpenGL")
 
     # Tell Pytplot about new window
-    window = pytplot.tplot_utilities.get_available_qt_window(name='3D_MARS')
+    window = pyspedas.pytplot.tplot_utilities.get_available_qt_window(name='3D_MARS')
     window.resize(1000, 600)
     window.setWindowTitle('3D Mars Window')
 
@@ -86,14 +86,14 @@ def position_mars_3d(temp=None):
         spacecraft.translate(-1*previous_x, -1*previous_y, -1*previous_z)
 
         # Get the xarray for x/y/z positions of the spacecraft
-        if 'x' in pytplot.data_quants[name].attrs['plot_options']['links']:
-            x_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['x']]
-            y_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['y']]
-            z_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['z']]
-        elif 'mso_x' in pytplot.data_quants[name].attrs['plot_options']['links']:
-            x_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['mso_x']]
-            y_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['mso_y']]
-            z_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['mso_z']]
+        if 'x' in pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']:
+            x_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['x']]
+            y_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['y']]
+            z_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['z']]
+        elif 'mso_x' in pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']:
+            x_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['mso_x']]
+            y_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['mso_y']]
+            z_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['mso_z']]
         else:
             return
 
@@ -115,7 +115,7 @@ def position_mars_3d(temp=None):
         plot1.paintGL()
 
     # Register the above update function to the called functions
-    pytplot.hover_time.register_listener(update)
+    pyspedas.pytplot.hover_time.register_listener(update)
 
     return
 

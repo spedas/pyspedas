@@ -1,6 +1,5 @@
 """Tests of cal_fit function."""
 import pyspedas.projects.themis.spacecraft.fields.fit
-import pyspedas.get_data
 from pyspedas.pytplot.importers.tplot_restore import tplot_restore
 import unittest
 import numpy as np
@@ -203,7 +202,7 @@ class TestCalFitMeta(unittest.TestCase):
         vars = {'tha_fgs', 'tha_fgs_sigma', 'tha_fit_bfit', 'tha_fit_efit', 'tha_efs', 'tha_efs_sigma', 'tha_efs_0', 'tha_efs_dot0'}
         for var in vars:
             with self.subTest(f'Test of units in {var}', var=var):
-                meta = pytplot.get_data(var, metadata=True)
+                meta = pyspedas.pytplot.get_data(var, metadata=True)
                 self.assertIn('units', meta)
                 # axis_subtitle currently displays units
                 self.assertIn('axis_subtitle', meta['plot_options']['yaxis_opt'])
@@ -212,11 +211,11 @@ class TestCalFitMeta(unittest.TestCase):
         vars = {'tha_fgs', 'tha_fgs_sigma', 'tha_fit_bfit', 'tha_fit_efit', 'tha_efs', 'tha_efs_sigma', 'tha_efs_0', 'tha_efs_dot0'}
         for var in vars:
             with self.subTest(f'Test of legend in {var}', var=var):
-                meta = pytplot.get_data(var, metadata=True)
+                meta = pyspedas.pytplot.get_data(var, metadata=True)
                 self.assertIn('legend_names', meta['plot_options']['yaxis_opt'])
 
     def test_plot(selfs):
-        pytplot.tplot(['tha_fit_bfit', 'tha_fit_efit'],display=global_display, save_png='cal_fit.png')
+        pyspedas.pytplot.tplot(['tha_fit_bfit', 'tha_fit_efit'],display=global_display, save_png='cal_fit.png')
 
 if __name__ == '__main__':
     unittest.main()

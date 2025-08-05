@@ -11,7 +11,7 @@ def position_mars_2d(temp=None):
     MARS_DIAMETER = 3389.5 * 2
 
     # Set up the 2D interactive plot
-    window = pytplot.tplot_utilities.get_available_qt_window(name='2D_MARS')
+    window = pyspedas.pytplot.tplot_utilities.get_available_qt_window(name='2D_MARS')
     window.newlayout(pg.GraphicsWindow())
     window.resize(900, 300)
     window.setWindowTitle('Mars Position 2D Window')
@@ -82,14 +82,14 @@ def position_mars_2d(temp=None):
     # Define the update function on mouse moved events
     def update(t, name):
         # Get the xarray for x/y/z positions of the spacecraft
-        if 'x' in pytplot.data_quants[name].attrs['plot_options']['links']:
-            x_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['x']]
-            y_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['y']]
-            z_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['z']]
-        elif 'mso_x' in pytplot.data_quants[name].attrs['plot_options']['links']:
-            x_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['mso_x']]
-            y_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['mso_y']]
-            z_tvar = pytplot.data_quants[pytplot.data_quants[name].attrs['plot_options']['links']['mso_z']]
+        if 'x' in pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']:
+            x_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['x']]
+            y_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['y']]
+            z_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['z']]
+        elif 'mso_x' in pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']:
+            x_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['mso_x']]
+            y_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['mso_y']]
+            z_tvar = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[name].attrs['plot_options']['links']['mso_z']]
         else:
             return
 
@@ -122,7 +122,7 @@ def position_mars_2d(temp=None):
         plot_data3.setData([new_x], [new_z])
 
     # Register the update function to pytplot
-    pytplot.hover_time.register_listener(update)
+    pyspedas.pytplot.hover_time.register_listener(update)
 
     # Turn on the window!
     window.show()

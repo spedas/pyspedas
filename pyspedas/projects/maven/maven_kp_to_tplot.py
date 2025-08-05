@@ -567,7 +567,7 @@ def tplot_varcreate(insitu):
     for obs in insitu["SPACECRAFT"]:
         obs_specific = "mvn_kp::spacecraft::" + obs.lower()
         try:
-            pytplot.store_data(
+            pyspedas.pytplot.store_data(
                 obs_specific, data={"x": insitu["Time"], "y": insitu["SPACECRAFT"][obs]}
             )
             created_vars.append(obs_specific)
@@ -575,7 +575,7 @@ def tplot_varcreate(insitu):
             pass
 
     # Join together the matricies and remove the individual points
-    pytplot.join_vec(
+    pyspedas.pytplot.join_vec(
         [
             "mvn_kp::spacecraft::t11",
             "mvn_kp::spacecraft::t12",
@@ -590,7 +590,7 @@ def tplot_varcreate(insitu):
         newname="mvn_kp::geo_to_mso_matrix",
     )
 
-    pytplot.del_data(
+    pyspedas.pytplot.del_data(
         [
             "mvn_kp::spacecraft::t11",
             "mvn_kp::spacecraft::t12",
@@ -604,7 +604,7 @@ def tplot_varcreate(insitu):
         ]
     )
 
-    pytplot.join_vec(
+    pyspedas.pytplot.join_vec(
         [
             "mvn_kp::spacecraft::spacecraft_t11",
             "mvn_kp::spacecraft::spacecraft_t12",
@@ -619,7 +619,7 @@ def tplot_varcreate(insitu):
         newname="mvn_kp::spacecraft_to_mso_matrix",
     )
 
-    pytplot.del_data(
+    pyspedas.pytplot.del_data(
         [
             "mvn_kp::spacecraft::spacecraft_t11",
             "mvn_kp::spacecraft::spacecraft_t12",
@@ -662,40 +662,40 @@ def tplot_varcreate(insitu):
                     obs_specific = "mvn_kp::" + instrument.lower() + "::" + obs.lower()
                     try:
                         # store data in tplot variable
-                        pytplot.store_data(
+                        pyspedas.pytplot.store_data(
                             obs_specific,
                             data={"x": insitu["Time"], "y": insitu[instrument][obs]},
                         )
                         created_vars.append(obs_specific)
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific,
                             "mvn_kp::spacecraft::altitude",
                             link_type="alt",
                         )
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific, "mvn_kp::spacecraft::mso_x", link_type="x"
                         )
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific, "mvn_kp::spacecraft::mso_y", link_type="y"
                         )
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific, "mvn_kp::spacecraft::mso_z", link_type="z"
                         )
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific, "mvn_kp::spacecraft::geo_x", link_type="geo_x"
                         )
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific, "mvn_kp::spacecraft::geo_y", link_type="geo_y"
                         )
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific, "mvn_kp::spacecraft::geo_z", link_type="geo_z"
                         )
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific,
                             "mvn_kp::spacecraft::sub_sc_longitude",
                             link_type="lon",
                         )
-                        pytplot.link(
+                        pyspedas.pytplot.link(
                             obs_specific,
                             "mvn_kp::spacecraft::sub_sc_latitude",
                             link_type="lat",

@@ -240,7 +240,7 @@ def tplot_restore(filename):
                 pyspedas.pytplot.data_quants[temp[i+1]['name']] = temp[i+1]
             else:
                 pyspedas.pytplot.data_quants[temp[i+1].name] = temp[i+1]
-        pytplot.tplot_opt_glob = temp[num_data_quants+1]
+        pyspedas.pytplot.tplot_opt_glob = temp[num_data_quants+1]
         in_file.close()
     
     return

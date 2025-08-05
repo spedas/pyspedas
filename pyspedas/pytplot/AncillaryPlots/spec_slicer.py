@@ -15,7 +15,7 @@ def spec_slicer(var=None, time=None, interactive=False):
     indicates. """
 
     # Grab names of data loaded in as tplot variables.
-    names = list(pytplot.data_quants.keys())
+    names = list(pyspedas.pytplot.data_quants.keys())
     # Get data we'll actually work with here.
     valid_variables = tplot_utilities.get_spec_data(names)
 
@@ -25,13 +25,13 @@ def spec_slicer(var=None, time=None, interactive=False):
         labels = tplot_utilities.get_spec_slicer_axis_types(names)
 
         # Set up the 2D interactive plot
-        window = pytplot.tplot_utilities.get_available_qt_window(name='Spec_Slice')
+        window = pyspedas.pytplot.tplot_utilities.get_available_qt_window(name='Spec_Slice')
         window.newlayout(pg.GraphicsLayoutWidget())
         window.resize(1000, 600)
         window.setWindowTitle('Interactive Window')
         plot = window.centralWidget().addPlot(title='Spectrogram Slicing Plot', row=0, col=0)
         # Make it so that whenever this first starts up, you just have an empty plot
-        if pytplot.tplot_opt_glob['black_background']:
+        if pyspedas.pytplot.tplot_opt_glob['black_background']:
             pen_color = 'w'
         else:
             pen_color = 'k'
@@ -42,8 +42,8 @@ def spec_slicer(var=None, time=None, interactive=False):
         # TVarFigure(1D/Spec/Alt/Map), inside the _mousemoved function. It calls
         # "self._mouseMovedFunction(int(mousePoint.x()))" and that is called every time the mouse is
         # moved by Qt. Therefore, it gives the location of the mouse on the x axis. In tplot,
-        # mouse_moved_event is set to pytplot.hover_time.change_hover_time, so the mouseMovedFunction
-        # is pytplot.hover_time.change_hover_time. Thus, whenever change_hover_time is called, it
+        # mouse_moved_event is set to pyspedas.pytplot.hover_time.change_hover_time, so the mouseMovedFunction
+        # is pyspedas.pytplot.hover_time.change_hover_time. Thus, whenever change_hover_time is called, it
         # calls every other function that is registered. Since the below function update() is
         # registered as a listener, it'll update whenever hover_time is updated.
         # to the HoverTime class with "t" as the input.
@@ -55,7 +55,7 @@ def spec_slicer(var=None, time=None, interactive=False):
         def update(t, name):
             if name in valid_variables:
                 # Get the time closest to the x position the mouse is over.
-                time_array = pytplot.data_quants[name].coords['time'].values
+                time_array = pyspedas.pytplot.data_quants[name].coords['time'].values
                 array = np.asarray(time_array)
 
                 using_avg = False
@@ -65,18 +65,18 @@ def spec_slicer(var=None, time=None, interactive=False):
                         tavg = (t[0]+t[1]) / 2.0
                         using_avg = True
                         idx = (np.abs(array - tavg)).argmin()
-                        plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(tavg))
+                        plot.setTitle(name + " " + pyspedas.pytplot.tplot_utilities.int_to_str(tavg))
                     else:
                         idx = (np.abs(array - t)).argmin()
-                        plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(t[0]))
+                        plot.setTitle(name + " " + pyspedas.pytplot.tplot_utilities.int_to_str(t[0]))
                 else:
                     idx = (np.abs(array - t)).argmin()
-                    plot.setTitle(name + " " + pytplot.tplot_utilities.int_to_str(t))
+                    plot.setTitle(name + " " + pyspedas.pytplot.tplot_utilities.int_to_str(t))
                 # Grabbing the bins to display on the x axis
-                if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 2:
-                    bins = pytplot.data_quants[name].coords['spec_bins'][idx, :].values
+                if len(pyspedas.pytplot.data_quants[name].coords['spec_bins'].shape) == 2:
+                    bins = pyspedas.pytplot.data_quants[name].coords['spec_bins'][idx, :].values
                 else:
-                    bins = pytplot.data_quants[name].coords['spec_bins'].values
+                    bins = pyspedas.pytplot.data_quants[name].coords['spec_bins'].values
 
                 # If user indicated they wanted the interactive plot's axes to be logged, log 'em.
                 # But first make sure that values in x and y are loggable!
@@ -97,7 +97,7 @@ def spec_slicer(var=None, time=None, interactive=False):
                 tplot_utilities.set_spec_slice_x_range(name, x_axis_log, plot)
                 tplot_utilities.set_spec_slice_y_range(name, y_axis_log, plot)
 
-                if ('t_average' in pytplot.data_quants[name].attrs['plot_options']['extras']) or using_avg:
+                if ('t_average' in pyspedas.pytplot.data_quants[name].attrs['plot_options']['extras']) or using_avg:
                     # If the user indicated that they wanted to average the interactive plot's y values based on a
                     # certain time range around the cursor location, we then want to get average of values around
                     # the cursor location.
@@ -108,7 +108,7 @@ def spec_slicer(var=None, time=None, interactive=False):
                         left_bound = t[0]
                         right_bound = t[1]
                     else:
-                        delta = pytplot.data_quants[name].attrs['plot_options']['extras']['t_average']/int(2)
+                        delta = pyspedas.pytplot.data_quants[name].attrs['plot_options']['extras']['t_average']/int(2)
                         left_bound = time_array[idx] - delta
                         right_bound = time_array[idx] + delta
 
@@ -144,9 +144,9 @@ def spec_slicer(var=None, time=None, interactive=False):
                     time_diff = abs(idx_right - idx_left)
                     # Make sure to account for edge problem
                     if idx_right != -1:
-                        y_values_slice = pytplot.data_quants[name].isel(time=slice(idx_left,idx_right + 1))
+                        y_values_slice = pyspedas.pytplot.data_quants[name].isel(time=slice(idx_left,idx_right + 1))
                     else:
-                        y_values_slice = pytplot.data_quants[name].isel(time=slice(idx_left,None))
+                        y_values_slice = pyspedas.pytplot.data_quants[name].isel(time=slice(idx_left,None))
                     y_values_avgd = y_values_slice.sum(dim='time', keep_attrs=True)/np.float(time_diff)
 
                     data_at_slice = tplot_utilities.reduce_spec_dataset(tplot_dataset=y_values_avgd)
@@ -162,7 +162,7 @@ def spec_slicer(var=None, time=None, interactive=False):
                     # If the user just wants a plain jane interactive plot...
                     # Plot data based on time we're hovering over'
                     try:
-                        data_at_slice = pytplot.data_quants[name].isel(time=idx)
+                        data_at_slice = pyspedas.pytplot.data_quants[name].isel(time=idx)
                         data_at_slice = tplot_utilities.reduce_spec_dataset(tplot_dataset=data_at_slice)
 
                         data_values_at_slice = data_at_slice.values
@@ -195,7 +195,7 @@ def spec_slicer(var=None, time=None, interactive=False):
 
         # Make the above function called whenever hover_time is updated.
         if interactive:
-            pytplot.hover_time.register_listener(update)
+            pyspedas.pytplot.hover_time.register_listener(update)
 
         # Turn on the window!
         window.show()

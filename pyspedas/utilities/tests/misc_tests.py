@@ -98,62 +98,62 @@ class UtilTestCases(unittest.TestCase):
         v2_2d = y_vec
 
         # Scalar
-        pytplot.store_data('fptest',data={'x':xfp,'y':y_scalar})
+        pyspedas.pytplot.store_data('fptest',data={'x':xfp,'y':y_scalar})
         # 1-D vec, no metadata
-        pytplot.store_data('fptest_vec_no_v1',data={'x':xfp,'y':y_vec})
+        pyspedas.pytplot.store_data('fptest_vec_no_v1',data={'x':xfp,'y':y_vec})
         # 1-D vec, with 1-D (constant) V1
-        pytplot.store_data('fptest_vec_v1_1d',data={'x':xfp,'y':y_vec, 'v':v1_1d})
+        pyspedas.pytplot.store_data('fptest_vec_v1_1d',data={'x':xfp,'y':y_vec, 'v':v1_1d})
         # 1-D vec, with 2-D (time varying) V1
-        pytplot.store_data('fptest_vec_v1_2d',data={'x':xfp,'y':y_vec, 'v':v1_2d})
+        pyspedas.pytplot.store_data('fptest_vec_v1_2d',data={'x':xfp,'y':y_vec, 'v':v1_2d})
         # 3x3 mat, with no V1, no V2
-        pytplot.store_data('fptest_mat_v1_none_v2_none',data={'x':xfp,'y':y_mat})
+        pyspedas.pytplot.store_data('fptest_mat_v1_none_v2_none',data={'x':xfp,'y':y_mat})
         # 3x3 mat, with 1-D (constant) V1, 1-D (constant) V2
-        pytplot.store_data('fptest_mat_v1_1d_v2_1d',data={'x':xfp,'y':y_mat, 'v1':v1_1d, 'v2':v2_1d})
+        pyspedas.pytplot.store_data('fptest_mat_v1_1d_v2_1d',data={'x':xfp,'y':y_mat, 'v1':v1_1d, 'v2':v2_1d})
         # 3x3 mat, with 2-D (time varying) V1, 2-D (time varying) V2
-        pytplot.store_data('fptest_mat_v1_2d_v2_2d',data={'x':xfp,'y':y_mat, 'v1':v1_2d, 'v2':v2_2d})
+        pyspedas.pytplot.store_data('fptest_mat_v1_2d_v2_2d',data={'x':xfp,'y':y_mat, 'v1':v1_2d, 'v2':v2_2d})
         # 3x3 mat, with 2-D (time varying) V1, 1-D (constant) V2
-        pytplot.store_data('fptest_mat_v1_2d_v2_1d',data={'x':xfp,'y':y_mat, 'v1':v1_2d, 'v2':v2_1d})
+        pyspedas.pytplot.store_data('fptest_mat_v1_2d_v2_1d',data={'x':xfp,'y':y_mat, 'v1':v1_2d, 'v2':v2_1d})
         # 3x3 mat, with 1-D (constant) V1, 2-D (time varying) V2
-        pytplot.store_data('fptest_mat_v1_1d_v2_2d',data={'x':xfp,'y':y_mat, 'v1':v1_1d, 'v2':v2_2d})
+        pyspedas.pytplot.store_data('fptest_mat_v1_1d_v2_2d',data={'x':xfp,'y':y_mat, 'v1':v1_1d, 'v2':v2_2d})
         # 3x3 mat, with missing V1, 2-D (time varying) V2
         # This doesn't quite work.  The 'v2' value doesn't survive the store_data/get_data round trip
         # if v1 is missing.  Not sure if that really qualifies as a bug, considering how ill-advised such a
         # construct would be...
-        # pytplot.store_data('fptest_mat_v1_none_v2_2d',data={'x':xfp,'y':y_mat, 'v1':None, 'v2':v2_2d})
+        # pyspedas.pytplot.store_data('fptest_mat_v1_none_v2_2d',data={'x':xfp,'y':y_mat, 'v1':None, 'v2':v2_2d})
 
 
 
         # Test warning for no data in time range
-        pytplot.time_clip('fptest',1.5,1.7)
+        pyspedas.pytplot.time_clip('fptest',1.5,1.7)
 
         # Single value in time range
-        pytplot.time_clip('fptest',1.5,2.5)
+        pyspedas.pytplot.time_clip('fptest',1.5,2.5)
         self.assertTrue(data_exists('fptest-tclip'))
         dat=get_data('fptest-tclip')
         self.assertTrue(len(dat.times) == 1)
         self.assertTrue(dat.times[0] == 2.0)
 
         # Multiple values in time range
-        pytplot.time_clip('fptest',1.5,3.5)
+        pyspedas.pytplot.time_clip('fptest',1.5,3.5)
         dat=get_data('fptest-tclip')
         self.assertTrue(len(dat.times) == 2)
         assert_allclose(dat.times, [2.0, 3.0])
 
         # Multiple values in time range -- clip interior
-        pytplot.time_clip('fptest',1.5,3.5, suffix='-tclip-interior', interior_clip=True)
+        pyspedas.pytplot.time_clip('fptest',1.5,3.5, suffix='-tclip-interior', interior_clip=True)
         dat=get_data('fptest-tclip-interior')
         self.assertTrue(len(dat.times) == 3)
         assert_allclose(dat.times, [1.0, 4.0, 5.0])
 
         # Entire time range
-        pytplot.time_clip('fptest',-100.0,100.0, suffix='-full_range')
+        pyspedas.pytplot.time_clip('fptest',-100.0,100.0, suffix='-full_range')
         self.assertTrue(data_exists('fptest-full_range'))
         dat=get_data('fptest-full_range')
         self.assertTrue(len(dat.times) == 5)
         assert_allclose(dat.times, xfp)
 
         # Vector data, single value in time range, no metadata
-        pytplot.time_clip('fptest_vec_no_v1',1.5,2.5)
+        pyspedas.pytplot.time_clip('fptest_vec_no_v1',1.5,2.5)
         self.assertTrue(data_exists('fptest_vec_no_v1-tclip'))
         dat=get_data('fptest_vec_no_v1-tclip')
         self.assertTrue(len(dat.times) == 1)
@@ -161,7 +161,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.y[0,:], [3.0,4.0,5.0])
 
         # Vector data, single value in time range, constant metadata
-        pytplot.time_clip('fptest_vec_v1_1d',1.5,2.5)
+        pyspedas.pytplot.time_clip('fptest_vec_v1_1d',1.5,2.5)
         self.assertTrue(data_exists('fptest_vec_v1_1d-tclip'))
         dat=get_data('fptest_vec_v1_1d-tclip')
         self.assertTrue(len(dat.times) == 1)
@@ -170,7 +170,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v, v1_1d)
 
         # Vector data, multiple values in time range, constant metadata
-        pytplot.time_clip('fptest_vec_v1_1d',1.5,3.5)
+        pyspedas.pytplot.time_clip('fptest_vec_v1_1d',1.5,3.5)
         self.assertTrue(data_exists('fptest_vec_v1_1d-tclip'))
         dat=get_data('fptest_vec_v1_1d-tclip')
         self.assertTrue(len(dat.times) == 2)
@@ -179,7 +179,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v, v1_1d)
 
         # Vector data, single value in time range, time-varying metadata
-        pytplot.time_clip('fptest_vec_v1_2d',1.5,2.5)
+        pyspedas.pytplot.time_clip('fptest_vec_v1_2d',1.5,2.5)
         self.assertTrue(data_exists('fptest_vec_v1_2d-tclip'))
         dat=get_data('fptest_vec_v1_2d-tclip')
         self.assertTrue(len(dat.times) == 1)
@@ -189,7 +189,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v, v1_2d[1:2])
 
         # Vector data, multiple values in time range, time-varying metadata
-        pytplot.time_clip('fptest_vec_v1_2d',1.5,3.5)
+        pyspedas.pytplot.time_clip('fptest_vec_v1_2d',1.5,3.5)
         self.assertTrue(data_exists('fptest_vec_v1_2d-tclip'))
         dat=get_data('fptest_vec_v1_2d-tclip')
         self.assertTrue(len(dat.times) == 2)
@@ -200,7 +200,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v, v1_2d[1:3])
 
         # matrix data, single value in time range, no metadata
-        pytplot.time_clip('fptest_mat_v1_none_v2_none',1.5,2.5)
+        pyspedas.pytplot.time_clip('fptest_mat_v1_none_v2_none',1.5,2.5)
         self.assertTrue(data_exists('fptest_mat_v1_none_v2_none-tclip'))
         dat=get_data('fptest_mat_v1_none_v2_none-tclip')
         self.assertTrue(len(dat.times) == 1)
@@ -208,7 +208,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.y[0,:,:], y_mat[1,:,:])
 
         # matrix data, single value in time range, constant v1 and v2 metadata
-        pytplot.time_clip('fptest_mat_v1_1d_v2_1d',1.5,2.5)
+        pyspedas.pytplot.time_clip('fptest_mat_v1_1d_v2_1d',1.5,2.5)
         self.assertTrue(data_exists('fptest_mat_v1_1d_v2_1d-tclip'))
         dat=get_data('fptest_mat_v1_1d_v2_1d-tclip')
         self.assertTrue(len(dat.times) == 1)
@@ -218,7 +218,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v2, v2_1d)
 
         # matrix data, multiple values in time range, constant v1 and v2 metadata
-        pytplot.time_clip('fptest_mat_v1_1d_v2_1d',1.5,3.5)
+        pyspedas.pytplot.time_clip('fptest_mat_v1_1d_v2_1d',1.5,3.5)
         self.assertTrue(data_exists('fptest_mat_v1_1d_v2_1d-tclip'))
         dat=get_data('fptest_mat_v1_1d_v2_1d-tclip')
         self.assertTrue(len(dat.times) == 2)
@@ -228,7 +228,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v2, v2_1d)
 
         # matrix data, single value in time range, constant v1, time-varying v2 metadata
-        pytplot.time_clip('fptest_mat_v1_1d_v2_2d',1.5,2.5)
+        pyspedas.pytplot.time_clip('fptest_mat_v1_1d_v2_2d',1.5,2.5)
         self.assertTrue(data_exists('fptest_mat_v1_1d_v2_2d-tclip'))
         dat=get_data('fptest_mat_v1_1d_v2_2d-tclip')
         self.assertTrue(len(dat.times) == 1)
@@ -239,7 +239,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v2, v1_2d[1:2])
 
         # matrix data, multiple values in time range, constant v1, time-varying v2 metadata
-        pytplot.time_clip('fptest_mat_v1_1d_v2_2d',1.5,3.5)
+        pyspedas.pytplot.time_clip('fptest_mat_v1_1d_v2_2d',1.5,3.5)
         self.assertTrue(data_exists('fptest_mat_v1_1d_v2_2d-tclip'))
         dat=get_data('fptest_mat_v1_1d_v2_2d-tclip')
         self.assertTrue(len(dat.times) == 2)
@@ -250,7 +250,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v2, v1_2d[1:3])
 
         # matrix data, single values in time range, time-varying v1, constant v2 metadata
-        pytplot.time_clip('fptest_mat_v1_2d_v2_1d',1.5,2.5)
+        pyspedas.pytplot.time_clip('fptest_mat_v1_2d_v2_1d',1.5,2.5)
         self.assertTrue(data_exists('fptest_mat_v1_2d_v2_1d-tclip'))
         dat=get_data('fptest_mat_v1_2d_v2_1d-tclip')
         self.assertTrue(len(dat.times) == 1)
@@ -262,7 +262,7 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v2, v2_1d)
 
         # matrix data, multiple values in time range, time-varying v1, constant v2 metadata
-        pytplot.time_clip('fptest_mat_v1_2d_v2_1d',1.5,3.5)
+        pyspedas.pytplot.time_clip('fptest_mat_v1_2d_v2_1d',1.5,3.5)
         self.assertTrue(data_exists('fptest_mat_v1_2d_v2_1d-tclip'))
         dat=get_data('fptest_mat_v1_2d_v2_1d-tclip')
         self.assertTrue(len(dat.times) == 2)
@@ -274,34 +274,34 @@ class UtilTestCases(unittest.TestCase):
         assert_allclose(dat.v2, v2_1d)
 
         # Multiple variables in one call
-        pytplot.store_data('tst1',data={'x':x,'y':y})
-        pytplot.store_data('tst2',data={'x':x,'y':y})
+        pyspedas.pytplot.store_data('tst1',data={'x':x,'y':y})
+        pyspedas.pytplot.store_data('tst2',data={'x':x,'y':y})
         # reversed time limits
-        pytplot.time_clip(['tst1','tst2'],10,1)
+        pyspedas.pytplot.time_clip(['tst1','tst2'],10,1)
         # data completely outside time limits
-        pytplot.time_clip(['tst1','tst2'],10,20)
+        pyspedas.pytplot.time_clip(['tst1','tst2'],10,20)
         # one point in limits
-        pytplot.time_clip('tst1',1.5,2.5)
+        pyspedas.pytplot.time_clip('tst1',1.5,2.5)
         self.assertTrue(data_exists('tst1-tclip'))
         # overwrite
-        pytplot.del_data('tst1-tclip')
-        pytplot.time_clip('tst1',1.5,2.0,overwrite=True)
+        pyspedas.pytplot.del_data('tst1-tclip')
+        pyspedas.pytplot.time_clip('tst1',1.5,2.0,overwrite=True)
         self.assertFalse(data_exists('tst1-tclip'))
-        pytplot.time_clip('tst1',1.5,2.5,newname='tst1_new')
+        pyspedas.pytplot.time_clip('tst1',1.5,2.5,newname='tst1_new')
         self.assertTrue(data_exists('tst1_new'))
-        pytplot.time_clip('tst1',1.5,2.5,newname='',suffix='-tc1')
+        pyspedas.pytplot.time_clip('tst1',1.5,2.5,newname='',suffix='-tc1')
         self.assertTrue(data_exists('tst1-tc1'))
-        pytplot.time_clip('tst1',1.5,2.5,newname=[],suffix='-tc2')
+        pyspedas.pytplot.time_clip('tst1',1.5,2.5,newname=[],suffix='-tc2')
         self.assertTrue(data_exists('tst1-tc2'))
         # newname has different count than input names, default to suffix
-        pytplot.time_clip('tst1',1.5,2.5, newname=['foo','bar'],suffix='-tc3')
+        pyspedas.pytplot.time_clip('tst1',1.5,2.5, newname=['foo','bar'],suffix='-tc3')
         self.assertTrue(data_exists('tst1-tc3'))
-        pytplot.time_clip('tst1',1.5,2.5,newname=None, suffix='-tc4')
+        pyspedas.pytplot.time_clip('tst1',1.5,2.5,newname=None, suffix='-tc4')
         self.assertTrue(data_exists('tst1-tc4'))
         # no such tplot name
-        pytplot.time_clip('bogus',1.5,2.5)
+        pyspedas.pytplot.time_clip('bogus',1.5,2.5)
         # empty input list
-        pytplot.time_clip([],1.5,2.5)
+        pyspedas.pytplot.time_clip([],1.5,2.5)
 
         # Strings as start/end times
         trange = ['2007-03-23/9:30', '2007-03-23/12:00']

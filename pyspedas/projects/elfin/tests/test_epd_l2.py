@@ -8,8 +8,7 @@ How to run:
 import unittest
 import logging
 from numpy.testing import assert_allclose
-import pyspedas.get_data
-from pytplot.importers.tplot_restore import tplot_restore
+from pyspedas.pytplot.importers.tplot_restore import tplot_restore
 
 import pyspedas.projects.elfin
 from pyspedas.projects.elfin.epd.calibration_l2 import spec_pa_sort
@@ -45,21 +44,21 @@ class TestELFL2Validation(unittest.TestCase):
             raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
-        cls.elf_pef_hs_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch0")
-        cls.elf_pef_hs_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch1")
-        cls.elf_pef_hs_nflux_ch2 = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch2")
-        cls.elf_pef_hs_nflux_ch3 = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch3")
-        cls.elf_pef_hs_nflux_omni = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_omni")
-        cls.elf_pef_hs_nflux_para = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_para")
-        cls.elf_pef_hs_nflux_anti = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_anti")
-        cls.elf_pef_hs_nflux_perp = pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_perp")
-        cls.elf_pef_hs_antiLCdeg = pytplot.get_data(f"el{cls.probe}_pef_hs_antiLCdeg")
-        cls.elf_pef_hs_LCdeg = pytplot.get_data(f"el{cls.probe}_pef_hs_LCdeg")
-        cls.elf_pef_Et_nflux = pytplot.get_data(f"el{cls.probe}_pef_Et_nflux")
-        cls.elf_pef_pa = pytplot.get_data(f"el{cls.probe}_pef_pa")
-        cls.elf_pef_hs_Epat_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_nflux_ch0")
+        cls.elf_pef_hs_nflux_ch0 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch0")
+        cls.elf_pef_hs_nflux_ch1 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch1")
+        cls.elf_pef_hs_nflux_ch2 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch2")
+        cls.elf_pef_hs_nflux_ch3 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_ch3")
+        cls.elf_pef_hs_nflux_omni = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_omni")
+        cls.elf_pef_hs_nflux_para = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_para")
+        cls.elf_pef_hs_nflux_anti = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_anti")
+        cls.elf_pef_hs_nflux_perp = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_nflux_perp")
+        cls.elf_pef_hs_antiLCdeg = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_antiLCdeg")
+        cls.elf_pef_hs_LCdeg = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_LCdeg")
+        cls.elf_pef_Et_nflux = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_Et_nflux")
+        cls.elf_pef_pa = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_pa")
+        cls.elf_pef_hs_Epat_nflux_ch0 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_nflux_ch0")
         # Epat is 3d, can't save it with idl
-        cls.elf_pef_hs_Epat_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_nflux_ch1")
+        cls.elf_pef_hs_Epat_nflux_ch1 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_nflux_ch1")
 
         # load epd l2 hs eflux spectrogram
         calfile_name = f"{TEST_DATASET_PATH}validation_el{cls.probe}_epd_l2_hs_eflux_{cls.t[0][0:4]+cls.t[0][5:7]+cls.t[0][8:10]}.tplot"
@@ -71,18 +70,18 @@ class TestELFL2Validation(unittest.TestCase):
             raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
-        cls.elf_pef_hs_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch0")
-        cls.elf_pef_hs_eflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch1")
-        cls.elf_pef_hs_eflux_ch2 = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch2")
-        cls.elf_pef_hs_eflux_ch3 = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch3")
-        cls.elf_pef_hs_eflux_omni = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_omni")
-        cls.elf_pef_hs_eflux_para = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_para")
-        cls.elf_pef_hs_eflux_anti = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_anti")
-        cls.elf_pef_hs_eflux_perp = pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_perp")
-        cls.elf_pef_Et_eflux = pytplot.get_data(f"el{cls.probe}_pef_Et_eflux")
-        cls.elf_pef_hs_Epat_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_eflux_ch0")
+        cls.elf_pef_hs_eflux_ch0 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch0")
+        cls.elf_pef_hs_eflux_ch1 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch1")
+        cls.elf_pef_hs_eflux_ch2 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch2")
+        cls.elf_pef_hs_eflux_ch3 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_ch3")
+        cls.elf_pef_hs_eflux_omni = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_omni")
+        cls.elf_pef_hs_eflux_para = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_para")
+        cls.elf_pef_hs_eflux_anti = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_anti")
+        cls.elf_pef_hs_eflux_perp = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_eflux_perp")
+        cls.elf_pef_Et_eflux = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_Et_eflux")
+        cls.elf_pef_hs_Epat_eflux_ch0 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_eflux_ch0")
         # Epat is 3d, can't save it with idl
-        cls.elf_pef_hs_Epat_eflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_eflux_ch1")
+        cls.elf_pef_hs_Epat_eflux_ch1 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_hs_Epat_eflux_ch1")
 
 
         # load epd l2 fs nflux spectrogram
@@ -95,17 +94,17 @@ class TestELFL2Validation(unittest.TestCase):
             raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
-        cls.elf_pef_fs_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch0")
-        cls.elf_pef_fs_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch1")
-        cls.elf_pef_fs_nflux_omni = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_omni")
-        cls.elf_pef_fs_nflux_para = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_para")
-        cls.elf_pef_fs_nflux_anti = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_anti")
-        cls.elf_pef_fs_nflux_perp = pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_perp")
-        cls.elf_pef_fs_antiLCdeg = pytplot.get_data(f"el{cls.probe}_pef_fs_antiLCdeg")
-        cls.elf_pef_fs_LCdeg = pytplot.get_data(f"el{cls.probe}_pef_fs_LCdeg")
-        cls.elf_pef_fs_Epat_nflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_nflux_ch0")
+        cls.elf_pef_fs_nflux_ch0 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch0")
+        cls.elf_pef_fs_nflux_ch1 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_ch1")
+        cls.elf_pef_fs_nflux_omni = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_omni")
+        cls.elf_pef_fs_nflux_para = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_para")
+        cls.elf_pef_fs_nflux_anti = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_anti")
+        cls.elf_pef_fs_nflux_perp = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_nflux_perp")
+        cls.elf_pef_fs_antiLCdeg = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_antiLCdeg")
+        cls.elf_pef_fs_LCdeg = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_LCdeg")
+        cls.elf_pef_fs_Epat_nflux_ch0 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_nflux_ch0")
         # Epat is 3d, can't save it with idl
-        cls.elf_pef_fs_Epat_nflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_nflux_ch1")
+        cls.elf_pef_fs_Epat_nflux_ch1 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_nflux_ch1")
 
 
         # load epd l2 fs eflux spectrogram
@@ -118,38 +117,38 @@ class TestELFL2Validation(unittest.TestCase):
             raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
-        cls.elf_pef_fs_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_ch0")
-        cls.elf_pef_fs_eflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_ch1")
-        cls.elf_pef_fs_eflux_omni = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_omni")
-        cls.elf_pef_fs_eflux_para = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_para")
-        cls.elf_pef_fs_eflux_anti = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_anti")
-        cls.elf_pef_fs_eflux_perp = pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_perp")
-        cls.elf_pef_fs_Epat_eflux_ch0 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_eflux_ch0")
+        cls.elf_pef_fs_eflux_ch0 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_ch0")
+        cls.elf_pef_fs_eflux_ch1 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_ch1")
+        cls.elf_pef_fs_eflux_omni = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_omni")
+        cls.elf_pef_fs_eflux_para = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_para")
+        cls.elf_pef_fs_eflux_anti = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_anti")
+        cls.elf_pef_fs_eflux_perp = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_eflux_perp")
+        cls.elf_pef_fs_Epat_eflux_ch0 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_eflux_ch0")
         # Epat is 3d, can't save it with idl
-        cls.elf_pef_fs_Epat_eflux_ch1 = pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_eflux_ch1")
+        cls.elf_pef_fs_Epat_eflux_ch1 = pyspedas.pytplot.get_data(f"el{cls.probe}_pef_fs_Epat_eflux_ch1")
 
 
     def setUp(self):
         """ We need to clean tplot variables before each run"""
-        pytplot.del_data('*')
+        pyspedas.pytplot.del_data('*')
 
 
     def test_epd_l2_hs_nflux(self):
         """Validate epd l2 halfspin nflux spectogram"""
         pyspedas.projects.elfin.epd(trange=self.t, probe=self.probe, level='l2',no_update=True)
-        elf_pef_hs_nflux_ch0 = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch0")
-        elf_pef_hs_nflux_ch1 = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch1")
-        elf_pef_hs_nflux_ch2 = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch2")
-        elf_pef_hs_nflux_ch3 = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch3")
-        elf_pef_hs_nflux_perp = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_perp")
-        elf_pef_hs_nflux_anti = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_anti")
-        elf_pef_hs_nflux_para = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_para")
-        elf_pef_hs_nflux_omni = pytplot.get_data(f"el{self.probe}_pef_hs_nflux_omni")
-        elf_pef_hs_antiLCdeg = pytplot.get_data(f"el{self.probe}_pef_hs_antiLCdeg")
-        elf_pef_hs_LCdeg = pytplot.get_data(f"el{self.probe}_pef_hs_LCdeg")
-        elf_pef_hs_Epat_nflux = pytplot.get_data(f"el{self.probe}_pef_hs_Epat_nflux")
-        elf_pef_Et_nflux = pytplot.get_data(f"el{self.probe}_pef_Et_nflux")
-        elf_pef_pa = pytplot.get_data(f"el{self.probe}_pef_pa")
+        elf_pef_hs_nflux_ch0 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch0")
+        elf_pef_hs_nflux_ch1 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch1")
+        elf_pef_hs_nflux_ch2 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch2")
+        elf_pef_hs_nflux_ch3 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_nflux_ch3")
+        elf_pef_hs_nflux_perp = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_nflux_perp")
+        elf_pef_hs_nflux_anti = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_nflux_anti")
+        elf_pef_hs_nflux_para = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_nflux_para")
+        elf_pef_hs_nflux_omni = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_nflux_omni")
+        elf_pef_hs_antiLCdeg = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_antiLCdeg")
+        elf_pef_hs_LCdeg = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_LCdeg")
+        elf_pef_hs_Epat_nflux = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_Epat_nflux")
+        elf_pef_Et_nflux = pyspedas.pytplot.get_data(f"el{self.probe}_pef_Et_nflux")
+        elf_pef_pa = pyspedas.pytplot.get_data(f"el{self.probe}_pef_pa")
         
         assert_allclose(elf_pef_hs_Epat_nflux.v1, self.elf_pef_hs_Epat_nflux_ch1.v, rtol=1)
         assert_allclose(elf_pef_hs_Epat_nflux.y[:,:,0], self.elf_pef_hs_Epat_nflux_ch0.y, rtol=1e-02)
@@ -189,16 +188,16 @@ class TestELFL2Validation(unittest.TestCase):
             type_='eflux',
             Espec_LCfatol=40,
             Espec_LCfptol=5,)
-        elf_pef_hs_eflux_ch0 = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch0")
-        elf_pef_hs_eflux_ch1 = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch1")
-        elf_pef_hs_eflux_ch2 = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch2")
-        elf_pef_hs_eflux_ch3 = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch3")
-        elf_pef_hs_eflux_perp = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_perp")
-        elf_pef_hs_eflux_anti = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_anti")
-        elf_pef_hs_eflux_para = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_para")
-        elf_pef_hs_eflux_omni = pytplot.get_data(f"el{self.probe}_pef_hs_eflux_omni")
-        elf_pef_hs_Epat_eflux = pytplot.get_data(f"el{self.probe}_pef_hs_Epat_eflux")
-        elf_pef_Et_eflux = pytplot.get_data(f"el{self.probe}_pef_Et_eflux")
+        elf_pef_hs_eflux_ch0 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch0")
+        elf_pef_hs_eflux_ch1 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch1")
+        elf_pef_hs_eflux_ch2 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch2")
+        elf_pef_hs_eflux_ch3 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_eflux_ch3")
+        elf_pef_hs_eflux_perp = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_eflux_perp")
+        elf_pef_hs_eflux_anti = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_eflux_anti")
+        elf_pef_hs_eflux_para = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_eflux_para")
+        elf_pef_hs_eflux_omni = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_eflux_omni")
+        elf_pef_hs_Epat_eflux = pyspedas.pytplot.get_data(f"el{self.probe}_pef_hs_Epat_eflux")
+        elf_pef_Et_eflux = pyspedas.pytplot.get_data(f"el{self.probe}_pef_Et_eflux")
 
         assert_allclose(elf_pef_hs_Epat_eflux.v1, self.elf_pef_hs_Epat_eflux_ch1.v, rtol=1)
         assert_allclose(elf_pef_hs_Epat_eflux.y[:,:,0], self.elf_pef_hs_Epat_eflux_ch0.y,  rtol=1e-02)
@@ -235,15 +234,15 @@ class TestELFL2Validation(unittest.TestCase):
             fullspin=True,
             PAspec_energybins=[(0,3),(4,6)],
             )
-        elf_pef_fs_nflux_ch0 = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_ch0")
-        elf_pef_fs_nflux_ch1 = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_ch1")
-        elf_pef_fs_nflux_perp = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_perp")
-        elf_pef_fs_nflux_anti = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_anti")
-        elf_pef_fs_nflux_para = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_para")
-        elf_pef_fs_nflux_omni = pytplot.get_data(f"el{self.probe}_pef_fs_nflux_omni")
-        elf_pef_fs_antiLCdeg = pytplot.get_data(f"el{self.probe}_pef_fs_antiLCdeg")
-        elf_pef_fs_LCdeg = pytplot.get_data(f"el{self.probe}_pef_fs_LCdeg")
-        elf_pef_fs_Epat_nflux = pytplot.get_data(f"el{self.probe}_pef_fs_Epat_nflux")
+        elf_pef_fs_nflux_ch0 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_nflux_ch0")
+        elf_pef_fs_nflux_ch1 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_nflux_ch1")
+        elf_pef_fs_nflux_perp = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_nflux_perp")
+        elf_pef_fs_nflux_anti = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_nflux_anti")
+        elf_pef_fs_nflux_para = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_nflux_para")
+        elf_pef_fs_nflux_omni = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_nflux_omni")
+        elf_pef_fs_antiLCdeg = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_antiLCdeg")
+        elf_pef_fs_LCdeg = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_LCdeg")
+        elf_pef_fs_Epat_nflux = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_Epat_nflux")
 
         assert_allclose(elf_pef_fs_Epat_nflux.v1, self.elf_pef_fs_Epat_nflux_ch1.v, rtol=1)
         assert_allclose(elf_pef_fs_Epat_nflux.y[:,:,0], self.elf_pef_fs_Epat_nflux_ch0.y, rtol=1e-02)
@@ -276,13 +275,13 @@ class TestELFL2Validation(unittest.TestCase):
             type_='eflux',
             PAspec_energies=[(50,250),(250,430)],
             )
-        elf_pef_fs_eflux_ch0 = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_ch0")
-        elf_pef_fs_eflux_ch1 = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_ch1")
-        elf_pef_fs_eflux_perp = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_perp")
-        elf_pef_fs_eflux_anti = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_anti")
-        elf_pef_fs_eflux_para = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_para")
-        elf_pef_fs_eflux_omni = pytplot.get_data(f"el{self.probe}_pef_fs_eflux_omni")
-        elf_pef_fs_Epat_eflux = pytplot.get_data(f"el{self.probe}_pef_fs_Epat_eflux")
+        elf_pef_fs_eflux_ch0 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_eflux_ch0")
+        elf_pef_fs_eflux_ch1 = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_eflux_ch1")
+        elf_pef_fs_eflux_perp = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_eflux_perp")
+        elf_pef_fs_eflux_anti = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_eflux_anti")
+        elf_pef_fs_eflux_para = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_eflux_para")
+        elf_pef_fs_eflux_omni = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_eflux_omni")
+        elf_pef_fs_Epat_eflux = pyspedas.pytplot.get_data(f"el{self.probe}_pef_fs_Epat_eflux")
         
         assert_allclose(elf_pef_fs_Epat_eflux.v1, self.elf_pef_fs_Epat_eflux_ch1.v, rtol=1)
         assert_allclose(elf_pef_fs_Epat_eflux.y[:,:,0], self.elf_pef_fs_Epat_eflux_ch0.y, rtol=1e-02)

@@ -17,7 +17,7 @@ def generate_stack(name,
                    vert_spacing=25):
 
     # Set plot backgrounds to black if that tplot_option is set
-    if pytplot.tplot_opt_glob['black_background']:
+    if pyspedas.pytplot.tplot_opt_glob['black_background']:
         pg.setConfigOptions(background='k')
     else:
         pg.setConfigOptions(background='w')
@@ -30,8 +30,8 @@ def generate_stack(name,
     title_thickness = 50
 
     # Setting up the pyqtgraph window
-    new_stack.setWindowTitle(pytplot.tplot_opt_glob['title_text'])
-    new_stack.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+    new_stack.setWindowTitle(pyspedas.pytplot.tplot_opt_glob['title_text'])
+    new_stack.resize(pyspedas.pytplot.tplot_opt_glob['window_size'][0], pyspedas.pytplot.tplot_opt_glob['window_size'][1])
 
     # Vertical Box layout to store plots
     all_plots = []
@@ -54,7 +54,7 @@ def generate_stack(name,
         varlabel_correction = 0
 
     p_to_use = \
-        (pytplot.tplot_opt_glob['window_size'][1] - xaxis_thickness - title_thickness - varlabel_correction) / total_psize
+        (pyspedas.pytplot.tplot_opt_glob['window_size'][1] - xaxis_thickness - title_thickness - varlabel_correction) / total_psize
 
     # Whether or not there is a title row in pyqtgraph
     titlerow = 0
@@ -65,7 +65,7 @@ def generate_stack(name,
     while i < num_plots:
         last_plot = (i == num_plots - 1)
 
-        p_height = int pyspedas.pytplot.data_quants[name[i]].attrs['plot_options']['extras']['panel_size'] * p_to_use)
+        p_height = int(pyspedas.pytplot.data_quants[name[i]].attrs['plot_options']['extras']['panel_size'] * p_to_use)
 
         if last_plot:
             p_height += xaxis_thickness
@@ -102,8 +102,8 @@ def generate_stack(name,
             maximum_y_axis_width = plot.yaxis.getWidth()
 
     for plot in all_plots:
-        if 'yaxis_width' in pytplot.tplot_opt_glob:
-            plot.yaxis.setWidth(pytplot.tplot_opt_glob['yaxis_width'])
+        if 'yaxis_width' in pyspedas.pytplot.tplot_opt_glob:
+            plot.yaxis.setWidth(pyspedas.pytplot.tplot_opt_glob['yaxis_width'])
         else:
             plot.yaxis.setWidth(maximum_y_axis_width)
 
@@ -128,32 +128,32 @@ def _set_pyqtgraph_title(layout):
     Returns True if a Title is set.  Else, returns False.
     """
     title_set = False
-    if 'title_size' in pytplot.tplot_opt_glob:
-        size = pytplot.tplot_opt_glob['title_size']
-    if 'title_text' in pytplot.tplot_opt_glob:
+    if 'title_size' in pyspedas.pytplot.tplot_opt_glob:
+        size = pyspedas.pytplot.tplot_opt_glob['title_size']
+    if 'title_text' in pyspedas.pytplot.tplot_opt_glob:
         title_set = True
-        if pytplot.tplot_opt_glob['title_text'] != '' and pytplot.tplot_opt_glob['black_background']:
-            layout.addItem(LabelItem(pytplot.tplot_opt_glob['title_text'], size=size, color='w'), row=0, col=0)
+        if pyspedas.pytplot.tplot_opt_glob['title_text'] != '' and pyspedas.pytplot.tplot_opt_glob['black_background']:
+            layout.addItem(LabelItem(pyspedas.pytplot.tplot_opt_glob['title_text'], size=size, color='w'), row=0, col=0)
         else:
-            layout.addItem(LabelItem(pytplot.tplot_opt_glob['title_text'], size=size, color='k'), row=0, col=0)
+            layout.addItem(LabelItem(pyspedas.pytplot.tplot_opt_glob['title_text'], size=size, color='k'), row=0, col=0)
     return title_set
 
 
 def _get_figure_class(tvar_name, show_xaxis=True):
     if 'plotter' in pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] \
             and pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in \
-            pytplot.qt_plotters:
-        cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter']]
+            pyspedas.pytplot.qt_plotters:
+        cls = pyspedas.pytplot.qt_plotters[pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter']]
     else:
         spec_keyword = pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('spec', False)
         alt_keyword = pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('alt', False)
         map_keyword = pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('map', False)
         if spec_keyword:
-            cls = pytplot.qt_plotters['qtTVarFigureSpec']
+            cls = pyspedas.pytplot.qt_plotters['qtTVarFigureSpec']
         elif alt_keyword:
-            cls = pytplot.qt_plotters['qtTVarFigureAlt']
+            cls = pyspedas.pytplot.qt_plotters['qtTVarFigureAlt']
         elif map_keyword:
-            cls = pytplot.qt_plotters['qtTVarFigureMap']
+            cls = pyspedas.pytplot.qt_plotters['qtTVarFigureMap']
         else:
-            cls = pytplot.qt_plotters['qtTVarFigure1D']
+            cls = pyspedas.pytplot.qt_plotters['qtTVarFigure1D']
     return cls(tvar_name, show_xaxis=show_xaxis)

@@ -7,8 +7,8 @@ How to run:
 """
 import unittest
 import logging
-import pyspedas.get_data
-from pytplot.importers.tplot_restore import tplot_restore
+
+from pyspedas.pytplot.importers.tplot_restore import tplot_restore
 from numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal
 
 import pyspedas.projects.elfin
@@ -40,31 +40,31 @@ class TestELFStateValidation(unittest.TestCase):
             raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
-        cls.elf_pos_gei = pytplot.get_data(f"el{cls.probe}_pos_gei")
-        cls.elf_vel_gei = pytplot.get_data(f"el{cls.probe}_vel_gei")
-        cls.elf_att_gei = pytplot.get_data(f"el{cls.probe}_att_gei")
-        cls.elf_att_solution = pytplot.get_data(f"el{cls.probe}_att_solution_date")
-        cls.elf_att_flag = pytplot.get_data(f"el{cls.probe}_att_flag")
-        cls.elf_att_spinper = pytplot.get_data(f"el{cls.probe}_att_spinper")
-        cls.elf_spin_orbnorm = pytplot.get_data(f"el{cls.probe}_spin_orbnorm_angle")
-        cls.elf_spin_sun = pytplot.get_data(f"el{cls.probe}_spin_sun_angle")
+        cls.elf_pos_gei = pyspedas.pytplot.get_data(f"el{cls.probe}_pos_gei")
+        cls.elf_vel_gei = pyspedas.pytplot.get_data(f"el{cls.probe}_vel_gei")
+        cls.elf_att_gei = pyspedas.pytplot.get_data(f"el{cls.probe}_att_gei")
+        cls.elf_att_solution = pyspedas.pytplot.get_data(f"el{cls.probe}_att_solution_date")
+        cls.elf_att_flag = pyspedas.pytplot.get_data(f"el{cls.probe}_att_flag")
+        cls.elf_att_spinper = pyspedas.pytplot.get_data(f"el{cls.probe}_att_spinper")
+        cls.elf_spin_orbnorm = pyspedas.pytplot.get_data(f"el{cls.probe}_spin_orbnorm_angle")
+        cls.elf_spin_sun = pyspedas.pytplot.get_data(f"el{cls.probe}_spin_sun_angle")
 
 
     def setUp(self):
         """ We need to clean tplot variables before each run"""
-        pytplot.del_data('*')
+        pyspedas.pytplot.del_data('*')
 
     def test_state(self):
         """Validate state data."""
         pyspedas.projects.elfin.state(trange=self.t, probe=self.probe)
-        elf_pos_gei = pytplot.get_data(f"el{self.probe}_pos_gei")
-        elf_vel_gei = pytplot.get_data(f"el{self.probe}_vel_gei")
-        elf_att_gei = pytplot.get_data(f"el{self.probe}_att_gei")
-        elf_att_solution = pytplot.get_data(f"el{self.probe}_att_solution_date")
-        elf_att_flag = pytplot.get_data(f"el{self.probe}_att_flag")
-        elf_att_spinper = pytplot.get_data(f"el{self.probe}_att_spinper")
-        elf_spin_orbnorm = pytplot.get_data(f"el{self.probe}_spin_orbnorm_angle")
-        elf_spin_sun = pytplot.get_data(f"el{self.probe}_spin_sun_angle")
+        elf_pos_gei = pyspedas.pytplot.get_data(f"el{self.probe}_pos_gei")
+        elf_vel_gei = pyspedas.pytplot.get_data(f"el{self.probe}_vel_gei")
+        elf_att_gei = pyspedas.pytplot.get_data(f"el{self.probe}_att_gei")
+        elf_att_solution = pyspedas.pytplot.get_data(f"el{self.probe}_att_solution_date")
+        elf_att_flag = pyspedas.pytplot.get_data(f"el{self.probe}_att_flag")
+        elf_att_spinper = pyspedas.pytplot.get_data(f"el{self.probe}_att_spinper")
+        elf_spin_orbnorm = pyspedas.pytplot.get_data(f"el{self.probe}_spin_orbnorm_angle")
+        elf_spin_sun = pyspedas.pytplot.get_data(f"el{self.probe}_spin_sun_angle")
 
         assert_array_almost_equal(elf_pos_gei.y, self.elf_pos_gei.y, decimal=4)
         assert_array_almost_equal(elf_vel_gei.y, self.elf_vel_gei.y, decimal=4)

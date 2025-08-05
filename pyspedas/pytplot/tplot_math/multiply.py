@@ -59,18 +59,18 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
             data={
                 "x": pyspedas.pytplot.data_quants[tvar1].coords["time"].values,
                 "y": data,
-                "v": pytplot.data_quants[tvar1].coords["spec_bins"].values,
+                "v": pyspedas.pytplot.data_quants[tvar1].coords["spec_bins"].values,
             },
         )
-        pytplot.data_quants[newname].attrs = copy.deepcopy(
-            pytplot.data_quants[tvar1].attrs
+        pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(
+            pyspedas.pytplot.data_quants[tvar1].attrs
         )
     else:
-        pytplot.store_data(
+       pyspedas.pytplot.store_data(
             newname,
-            data={"x": pytplot.data_quants[tvar1].coords["time"].values, "y": data},
+            data={"x": pyspedas.pytplot.data_quants[tvar1].coords["time"].values, "y": data},
         )
-        pytplot.data_quants[newname].attrs = copy.deepcopy(
-            pytplot.data_quants[tvar1].attrs
+        pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(
+            pyspedas.pytplot.data_quants[tvar1].attrs
         )
     return newname

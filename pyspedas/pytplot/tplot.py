@@ -165,8 +165,8 @@ def tplot(name,
         var_label = list(pyspedas.pytplot.data_quants.keys())[var_label]
 
     if vert_spacing is None:
-        if 'vertical_spacing' in pytplot.tplot_opt_glob:
-            vert_spacing = pytplot.tplot_opt_glob['vertical_spacing']
+        if 'vertical_spacing' in pyspedas.pytplot.tplot_opt_glob:
+            vert_spacing = pyspedas.pytplot.tplot_opt_glob['vertical_spacing']
         else:
             vert_spacing = 25 # Just a default that looks ok
 
@@ -175,24 +175,24 @@ def tplot(name,
     else:
         if save_png is not None:
             layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes, vert_spacing=vert_spacing)
-            layout.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+            layout.resize(pyspedas.pytplot.tplot_opt_glob['window_size'][0], pyspedas.pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout.items()):
                 if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
-                    layout.items()[i].resize(pytplot.tplot_opt_glob['window_size'][0],
-                                             pytplot.tplot_opt_glob['window_size'][1])
+                    layout.items()[i].resize(pyspedas.pytplot.tplot_opt_glob['window_size'][0],
+                                             pyspedas.pytplot.tplot_opt_glob['window_size'][1])
             exporter = PyTPlot_Exporter.PytplotExporter(layout)
-            exporter.parameters()['width'] = pytplot.tplot_opt_glob['window_size'][0]
-            exporter.parameters()['height'] = pytplot.tplot_opt_glob['window_size'][1]
+            exporter.parameters()['width'] = pyspedas.pytplot.tplot_opt_glob['window_size'][0]
+            exporter.parameters()['height'] = pyspedas.pytplot.tplot_opt_glob['window_size'][1]
             exporter.export(save_png)
 
         if display:
             # This layout is used when the user wants a png image saved.
             layout_orig = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes, vert_spacing=vert_spacing)
-            layout_orig.resize(pytplot.tplot_opt_glob['window_size'][0], pytplot.tplot_opt_glob['window_size'][1])
+            layout_orig.resize(pyspedas.pytplot.tplot_opt_glob['window_size'][0], pyspedas.pytplot.tplot_opt_glob['window_size'][1])
             for i, item in enumerate(layout_orig.items()):
                 if type(item) == pg.graphicsItems.GraphicsLayout.GraphicsLayout:
-                    layout_orig.items()[i].resize(pytplot.tplot_opt_glob['window_size'][0],
-                                                  pytplot.tplot_opt_glob['window_size'][1])
+                    layout_orig.items()[i].resize(pyspedas.pytplot.tplot_opt_glob['window_size'][0],
+                                                  pyspedas.pytplot.tplot_opt_glob['window_size'][1])
 
             try: #TODO: This exporter requires h5py to be installed because that is what pyqtgraph requires.
                 exporter = QtPlotter.PytplotExporter(layout_orig)
@@ -204,8 +204,8 @@ def tplot(name,
             layout = QtPlotter.generate_stack(name, var_label=var_label, combine_axes=combine_axes, vert_spacing=vert_spacing)
 
             available_qt_window.newlayout(layout)
-            available_qt_window.resize(pytplot.tplot_opt_glob['window_size'][0],
-                                       pytplot.tplot_opt_glob['window_size'][1])
+            available_qt_window.resize(pyspedas.pytplot.tplot_opt_glob['window_size'][0],
+                                       pyspedas.pytplot.tplot_opt_glob['window_size'][1])
 
             # Implement button that lets you save the PNG
             available_qt_window.init_savepng(exporter)

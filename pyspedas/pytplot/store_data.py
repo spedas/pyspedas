@@ -104,7 +104,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     # If newname is specified, we are just renaming the variable
     if newname is not None:
-        pytplot.tplot_rename(name, newname)
+        pyspedas.pytplot.tplot_rename(name, newname)
         return True
 
     # if isinstance(data, str):

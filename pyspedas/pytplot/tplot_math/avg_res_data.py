@@ -45,18 +45,18 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
 
     tvar_new = pyspedas.pytplot.data_quants[tvar].coarsen(time=res, boundary='trim').mean()
     tvar_new.name = pyspedas.pytplot.data_quants[tvar].name
-    tvar_new.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+    tvar_new.attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 
     if newname is None:
-        pytplot.data_quants[tvar] = newname
+        pyspedas.pytplot.data_quants[tvar] = newname
     else:
-        if 'spec_bins' in pytplot.data_quants[tvar].coords:
-            pytplot.store_data(newname, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values,
+        if 'spec_bins' in pyspedas.pytplot.data_quants[tvar].coords:
+           pyspedas.store_data(newname, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values,
                                                'v': tvar_new.coords['spec_bins'].values})
         else:
-            pytplot.store_data(newname, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values})
+           pyspedas.store_data(newname, data={'x': tvar_new.coords['time'].values, 'y': tvar_new.values})
 
-        pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+       pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopypyspedas.pytplot.data_quants[tvar].attrs)
 
     return
 

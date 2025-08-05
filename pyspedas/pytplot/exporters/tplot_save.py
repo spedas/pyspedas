@@ -56,7 +56,7 @@ def tplot_save(names, filename=None):
     
     num_quants = len(to_pickle)
     to_pickle = [num_quants] + to_pickle
-    temp_tplot_opt_glob = pytplot.tplot_opt_glob
+    temp_tplot_opt_glob = pyspedas.pytplot.tplot_opt_glob
     to_pickle.append(temp_tplot_opt_glob)
     
     if filename==None:

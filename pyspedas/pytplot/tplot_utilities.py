@@ -271,7 +271,7 @@ def timebar_delete(t, varname=None, dim='height'):
             if i not in pyspedas.pytplot.data_quants.keys():
                 logging.info(str(i) + " is currently not in pytplot.")
                 return
-            if isinstance(pytplot.data_quants[i], dict):
+            if isinstance(pyspedas.pytplot.data_quants[i], dict):
                 # non-record varying variable
                 continue
             try:
@@ -329,17 +329,17 @@ def return_lut(name):
 
 def get_available_qt_window(name='Plot'):
     # Delete old windows
-    for n, w in zip(pytplot.pytplotWindow_names, pytplot.pytplotWindows):
+    for n, w in zip(pyspedas.pytplot.pytplotWindow_names, pyspedas.pytplot.pytplotWindows):
         if not w.isVisible():
             del w
             del n
 
     # Add a new one to the list
-    pytplot.pytplotWindows.append(pytplot.PlotWindow())
-    pytplot.pytplotWindow_names.append(name)
+    pyspedas.pytplot.pytplotWindows.append(pyspedas.pytplot.PlotWindow())
+    pyspedas.pytplot.pytplotWindow_names.append(name)
 
     # Return the latest window
-    return pytplot.pytplotWindows[-1]
+    return pyspedas.pytplot.pytplotWindows[-1]
 
 
 def rgb_color(color):
@@ -545,9 +545,9 @@ def get_spec_slicer_axis_types(names):
                 xtype_interactive = 'log'
 
             if 'yi_axis_type' in pyspedas.pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt'].keys():
-                ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type']
-            elif 'z_axis_type' in pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']:
-                ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['z_axis_type']
+                ytype_interactive = pyspedas.pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type']
+            elif 'z_axis_type' in pyspedas.pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']:
+                ytype_interactive = pyspedas.pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['z_axis_type']
             else:
                 ytype_interactive = 'log'
 
@@ -669,7 +669,7 @@ def reduce_spec_dataset(tplot_dataset=None, name=None):
     if tplot_dataset is not None:
         da = copy.deepcopy(tplot_dataset)
     elif name is not None:
-        da = copy.deepcopy(pyspedas.pyspedas.pytplot.data_quants[name])
+        da = copy.deepcopy(pyspedas.pytplot.data_quants[name])
     else:
         return
 

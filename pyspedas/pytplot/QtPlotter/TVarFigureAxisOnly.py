@@ -21,24 +21,24 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
         self.layout.setHorizontalSpacing(10)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-        if pytplot.tplot_opt_glob['black_background']:
+        if pyspedas.pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
-                               str pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#FFF'}
         else:
             self.labelStyle = {'font-size':
-                               str pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000'}
         
         vb = CustomVB(enableMouse=False)
         self.yaxis = AxisItem("left")
-        self.yaxis.setLabel pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
+        self.yaxis.setLabel(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
         self.yaxis.label.setRotation(0)
         qt_transform = pg.QtGui.QTransform()
         qt_transform.translate(0,-40)
         self.yaxis.label.setTransform(qt_transform)
         #self.yaxis.label.translate(0, -40)
-        mapping_function = interpolate.interp1d pyspedas.pytplot.data_quants[self.tvar_name].coords['time'].values, pyspedas.pytplot.data_quants[self.tvar_name].values)
+        mapping_function = interpolate.interp1d(pyspedas.pytplot.data_quants[self.tvar_name].coords['time'].values, pyspedas.pytplot.data_quants[self.tvar_name].values)
         if 'var_label_ticks' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']:
             num_ticks = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['var_label_ticks']
         else:
@@ -47,7 +47,7 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
 
         # Set the font size of the axes
         font = QtGui.QFont()
-        font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
+        font.setPixelSize(pyspedas.pytplot.tplot_opt_glob['axis_font_size'])
         xaxis.setTickFont(font)
 
         self.plotwindow = self.addPlot(row=0, col=0, axisItems={'bottom': xaxis, 'left': self.yaxis}, viewBox=vb, colspan=1)
