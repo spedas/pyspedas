@@ -29,8 +29,9 @@ def webengine_hack():
     app = QtWidgets.qApp = QtWidgets.QApplication(sys.argv)
     return app
 
+using_graphics = False  # there doesn't seem to be an execution path that make this true
 
-if pyspedas.pytplot.using_graphics:
+if using_graphics:
     from .QtPlotter import PyTPlot_Exporter
     from pyqtgraph.Qt import QtCore, QtGui, QtCore
     import pyqtgraph as pg
@@ -175,7 +176,7 @@ def tplot(name,
     if interactive:
         slice=True
 
-    if not pyspedas.pytplot.using_graphics and save_file is None:
+    if not using_graphics and save_file is None:
         print("Qt was not successfully imported.  Specify save_file to save the file as a .html file.")
         return
 
