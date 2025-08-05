@@ -166,9 +166,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._setxrange() # Need to change the x range again one last time, visualizing the data resets it
 
     def _setyaxislabel(self):
-        ylabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
+        ylabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(r" \ ", " <br> ")
         if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            sublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+            sublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(r" \ ", " <br> ")
             self.yaxis.setLabel(f"{ylabel} <br> {sublabel}", **self.labelStyle)
         else:
             self.yaxis.setLabel(ylabel, **self.labelStyle)
@@ -286,9 +286,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
-        zlabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'].replace(" \ ", " <br> ")
+        zlabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'].replace(r" \ ", " <br> ")
         if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            zsublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+            zsublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(r" \ ", " <br> ")
             zaxis.setLabel(f"{zlabel} <br> {zsublabel}", **self.labelStyle)
         else:
             zaxis.setLabel(zlabel, **self.labelStyle)

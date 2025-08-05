@@ -6,7 +6,7 @@ from pyqtgraph import LabelItem
 from pyqtgraph import functions as fn
 from pyqtgraph.Point import Point
 
-__all__ = ['LegendItem']
+#__all__ = ['LegendItem']
 
 class CustomLegendItem(pg.LegendItem):
         

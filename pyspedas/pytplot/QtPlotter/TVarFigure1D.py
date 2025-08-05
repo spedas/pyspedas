@@ -158,9 +158,9 @@ class TVarFigure1D(pg.GraphicsLayout):
             self.xaxis.setLabel(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
 
     def _setyaxislabel(self):
-        ylabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \\ ", " <br> ")
+        ylabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(r" \\ ", " <br> ")
         if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            ysublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \\ ", " <br> ")
+            ysublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(r" \\ ", " <br> ")
             self.yaxis.setLabel(f"{ylabel} <br> {ysublabel}", **self.labelStyle)
         else:
             self.yaxis.setLabel(ylabel, **self.labelStyle)

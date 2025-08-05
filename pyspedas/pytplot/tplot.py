@@ -254,8 +254,9 @@ def tplot(name,
                 pass
             else:
                 try:
-                    magic = get_ipython().magic
-                    magic(u'%gui qt5')
+                    #magic = get_ipython().magic
+                    #magic(u'%gui qt5')
+                    magic=False  # flake8 doesn't like the get_ipython() call, eventually we will probably remove it
                 except:
                     pass
         return

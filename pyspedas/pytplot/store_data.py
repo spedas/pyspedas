@@ -91,7 +91,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     """
     
-    global tplot_num
+    # global tplot_num
     create_time = datetime.datetime.now()
     # If delete is specified, we are just deleting the variable
     if delete is True:
