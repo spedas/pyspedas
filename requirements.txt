@@ -13,3 +13,7 @@ viresclient
 fsspec
 s3fs
 aioboto3
+pandas
+matplotlib>=3.6.2
+xarray
+netCDF4
