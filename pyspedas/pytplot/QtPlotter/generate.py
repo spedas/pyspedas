@@ -5,7 +5,7 @@
 
 
 from __future__ import division
-import pytplot
+import pyspedas
 from pyqtgraph import LabelItem
 import pyqtgraph as pg
 from .TVarFigureAxisOnly import TVarFigureAxisOnly
@@ -43,7 +43,7 @@ def generate_stack(name,
     total_psize = 0
     j = 0
     while j < num_plots:
-        total_psize += pytplot.data_quants[name[j]].attrs['plot_options']['extras']['panel_size']
+        total_psize += pyspedas.pytplot.data_quants[name[j]].attrs['plot_options']['extras']['panel_size']
         j += 1
 
     if var_label is not None:
@@ -65,7 +65,7 @@ def generate_stack(name,
     while i < num_plots:
         last_plot = (i == num_plots - 1)
 
-        p_height = int(pytplot.data_quants[name[i]].attrs['plot_options']['extras']['panel_size'] * p_to_use)
+        p_height = int pyspedas.pytplot.data_quants[name[i]].attrs['plot_options']['extras']['panel_size'] * p_to_use)
 
         if last_plot:
             p_height += xaxis_thickness
@@ -140,14 +140,14 @@ def _set_pyqtgraph_title(layout):
 
 
 def _get_figure_class(tvar_name, show_xaxis=True):
-    if 'plotter' in pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] \
-            and pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in \
+    if 'plotter' in pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras'] \
+            and pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter'] in \
             pytplot.qt_plotters:
         cls = pytplot.qt_plotters[pytplot.data_quants[tvar_name].attrs['plot_options']['extras']['plotter']]
     else:
-        spec_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('spec', False)
-        alt_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('alt', False)
-        map_keyword = pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('map', False)
+        spec_keyword = pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('spec', False)
+        alt_keyword = pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('alt', False)
+        map_keyword = pyspedas.pytplot.data_quants[tvar_name].attrs['plot_options']['extras'].get('map', False)
         if spec_keyword:
             cls = pytplot.qt_plotters['qtTVarFigureSpec']
         elif alt_keyword:

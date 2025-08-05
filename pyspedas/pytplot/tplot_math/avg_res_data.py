@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 import numpy as np
 import copy
 import logging
@@ -43,8 +43,8 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
         logging.info("avg_res_data: The new_tvar parameter is deprecated. Please use newname instead.")
         newname = new_tvar
 
-    tvar_new = pytplot.data_quants[tvar].coarsen(time=res, boundary='trim').mean()
-    tvar_new.name = pytplot.data_quants[tvar].name
+    tvar_new = pyspedas.pytplot.data_quants[tvar].coarsen(time=res, boundary='trim').mean()
+    tvar_new.name = pyspedas.pytplot.data_quants[tvar].name
     tvar_new.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
 
     if newname is None:

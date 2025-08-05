@@ -12,7 +12,7 @@ Also, see: https://www.harrisgeospatial.com/docs/SMOOTH.html
 import logging
 import math
 import numpy as np
-import pytplot
+import pyspedas
 
 
 def smooth(data, width=10, preserve_nans=None):
@@ -106,7 +106,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         >>> pyspedas.tsmooth('a')
 
     """
-    old_names = pytplot.tnames(names)
+    old_names = pyspedas.pytplot.tnames(names)
 
     if len(old_names) < 1:
         logging.error('tsmooth: No valid tplot variable names were provided.')
@@ -137,9 +137,9 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         new = n_names[i]
 
         if new != old:
-            pytplot.tplot_copy(old, new)
+            pyspedas.pytplot.tplot_copy(old, new)
 
-        data = pytplot.data_quants[new].values
+        data = pyspedas.pytplot.data_quants[new].values
 
         dim = data.shape
         if len(dim) == 1:
@@ -149,7 +149,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
                 data[:, k] = smooth(data[:, k], width=width,
                                     preserve_nans=preserve_nans)
 
-        pytplot.data_quants[new].values = data
+        pyspedas.pytplot.data_quants[new].values = data
 
         logging.info('tsmooth was applied to: ' + new)
 

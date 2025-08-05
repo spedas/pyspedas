@@ -5,10 +5,10 @@ import matplotlib as mpl
 from datetime import date, datetime, timezone
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-import pytplot
+import pyspedas
 from fnmatch import filter as tname_filter
 from time import sleep
-from pytplot.wildcard_routines import tplot_wildcard_expand, tname_byindex
+from pyspedas.pytplot.wildcard_routines import tplot_wildcard_expand, tname_byindex
 
 from .lineplot import lineplot
 from .specplot import specplot, specplot_make_1d_ybins
@@ -44,7 +44,7 @@ def pseudovar_component_props(varname: str):
                    'zmin':np.nan, 'zmax': np.nan, 'zlog':False,
                    'is_spec': False}
 
-    attrs = pytplot.data_quants[varname].attrs
+    attrs = pyspedas.pytplot.data_quants[varname].attrs
     plot_opts = attrs.get('plot_options')
     if plot_opts is not None:
         yaxis_opt = plot_opts.get('yaxis_opt')
@@ -56,7 +56,7 @@ def pseudovar_component_props(varname: str):
         yrange=[None, None]
 
     plot_extras = attrs['plot_options']['extras']
-    dat = pytplot.get_data(varname)
+    dat = pyspedas.pytplot.get_data(varname)
 
     if ylog is None or ylog is False or ylog == '' or ylog.lower() == 'linear':
         output_dict['ylog'] = False
@@ -227,7 +227,7 @@ def tplot(variables,
         return
 
 
-    varlabel_style = pytplot.tplot_opt_glob.get('varlabel_style')
+    varlabel_style = pyspedas.pytplot.tplot_opt_glob.get('varlabel_style')
     if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
         num_panels = len(variables)
         panel_sizes = [1]*num_panels
@@ -237,19 +237,19 @@ def tplot(variables,
 
     # support for the panel_size option
     for var_idx, variable in enumerate(variables):
-        if pytplot.data_quants.get(variable) is None:
+        if pyspedas.pytplot.data_quants.get(variable) is None:
             continue
-        panel_size = pytplot.data_quants[variable].attrs['plot_options']['extras'].get('panel_size')
+        panel_size = pyspedas.pytplot.data_quants[variable].attrs['plot_options']['extras'].get('panel_size')
         if panel_size is not None:
             panel_sizes[var_idx] = panel_size
 
     if xsize is None:
-        xsize = pytplot.tplot_opt_glob.get('xsize')
+        xsize = pyspedas.pytplot.tplot_opt_glob.get('xsize')
         if xsize is None:
             xsize = 12
 
     if ysize is None:
-        ysize = pytplot.tplot_opt_glob.get('ysize')
+        ysize = pyspedas.pytplot.tplot_opt_glob.get('ysize')
         if ysize is None:
             if num_panels > 4:
                 ysize = 8
@@ -273,16 +273,16 @@ def tplot(variables,
         processing_pseudovar_component = False
         fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes}, layout='constrained')
         fig.set_size_inches(xsize, ysize)
-        plot_title = pytplot.tplot_opt_glob['title_text']
+        plot_title = pyspedas.pytplot.tplot_opt_glob['title_text']
         fig.suptitle(plot_title)
         if (plot_title is not None) and plot_title != '':
-            if 'title_size' in pytplot.tplot_opt_glob:
-                title_size = pytplot.tplot_opt_glob['title_size']
+            if 'title_size' in pyspedas.pytplot.tplot_opt_glob:
+                title_size = pyspedas.pytplot.tplot_opt_glob['title_size']
                 fig.suptitle(plot_title, fontsize=title_size)
             else:
                 fig.suptitle(plot_title)
         # support for matplotlib styles
-        style = pytplot.tplot_opt_glob.get('style')
+        style = pyspedas.pytplot.tplot_opt_glob.get('style')
         if style is not None:
             plt.style.use(style)
     else:
@@ -296,15 +296,15 @@ def tplot(variables,
             # generate and use the right axis?  probably still wrong...
             axes = axis.twinx()
         # support for matplotlib styles -- shouldn't be needed if processing pseudovar components?
-        style = pytplot.tplot_opt_glob.get('style')
+        style = pyspedas.pytplot.tplot_opt_glob.get('style')
         if style is not None:
             plt.style.use(style)
 
 
-    axis_font_size = pytplot.tplot_opt_glob.get('axis_font_size')
-    vertical_spacing = pytplot.tplot_opt_glob.get('vertical_spacing')
-    xmargin = pytplot.tplot_opt_glob.get('xmargin')
-    ymargin = pytplot.tplot_opt_glob.get('ymargin')
+    axis_font_size = pyspedas.pytplot.tplot_opt_glob.get('axis_font_size')
+    vertical_spacing = pyspedas.pytplot.tplot_opt_glob.get('vertical_spacing')
+    xmargin = pyspedas.pytplot.tplot_opt_glob.get('xmargin')
+    ymargin = pyspedas.pytplot.tplot_opt_glob.get('ymargin')
     zrange = [None, None]
 
     colorbars = {}
@@ -323,13 +323,13 @@ def tplot(variables,
     # fig.subplots_adjust(hspace=vertical_spacing)
 
     for idx, variable in enumerate(variables):
-        var_data_org = pytplot.get_data(variable, dt=True)
-        var_metadata = pytplot.get_data(variable, metadata=True)
+        var_data_org = pyspedas.pytplot.get_data(variable, dt=True)
+        var_metadata = pyspedas.pytplot.get_data(variable, metadata=True)
 
         #Check for a 3d variable, call reduce_spec_dataset
         if hasattr(var_data_org, 'v1') and hasattr(var_data_org, 'v2'):
-            temp_dq = pytplot.tplot_utilities.reduce_spec_dataset(name=variable)
-            var_data_org = pytplot.get_data(variable, dt=True, data_quant_in=temp_dq)
+            temp_dq = pyspedas.pytplot.tplot_utilities.reduce_spec_dataset(name=variable)
+            var_data_org = pyspedas.pytplot.get_data(variable, dt=True, data_quant_in=temp_dq)
         
         if var_data_org is None:
             logging.info('Variable not found: ' + variable)
@@ -352,7 +352,7 @@ def tplot(variables,
         overplots = None
         spec = False
 
-        var_quants = pytplot.data_quants[variable]
+        var_quants = pyspedas.pytplot.data_quants[variable]
 
         if not isinstance(var_quants, dict):
             overplots = var_quants.attrs['plot_options'].get('overplots_mpl')
@@ -455,7 +455,7 @@ def tplot(variables,
                 # traces have been plotted so far, so we can correctly match option values to traces. The pseudovariable
                 # y_axis, z_axis, line and extra options are passed as parameters so they can be merged with the
                 # sub-variable options, with any pseudovar options overriding the sub-variable options.
-                trace_count_thisvar = pytplot.count_traces(var)
+                trace_count_thisvar = pyspedas.pytplot.count_traces(var)
                 if var == pseudovar_props['first_spec_var']:
                     pseudo_show_colorbar=True
                 else:
@@ -484,13 +484,13 @@ def tplot(variables,
         #global setting
         plot_extras = var_quants.attrs['plot_options']['extras']
         if plot_extras.get('data_gap') is not None and plot_extras.get('data_gap') > 0:
-            var_data = pytplot.makegap(var_data, dt = plot_extras.get('data_gap'))
+            var_data = pyspedas.pytplot.makegap(var_data, dt = plot_extras.get('data_gap'))
         else:
-            if pytplot.tplot_opt_glob['data_gap'] is not None and pytplot.tplot_opt_glob['data_gap'] > 0:
-                var_data = pytplot.makegap(var_data, dt = pytplot.tplot_opt_glob['data_gap'])
+            if pyspedas.pytplot.tplot_opt_glob['data_gap'] is not None and pyspedas.pytplot.tplot_opt_glob['data_gap'] > 0:
+                var_data = pyspedas.pytplot.makegap(var_data, dt = pyspedas.pytplot.tplot_opt_glob['data_gap'])
 
         # set the x-axis range, if it was set with xlim or tlimit or the trange parameter
-        if trange is None and pytplot.tplot_opt_glob.get('x_range') is None:
+        if trange is None and pyspedas.pytplot.tplot_opt_glob.get('x_range') is None:
             var_data_times = var_data.times
             time_idxs = np.arange(len(var_data_times))
         else:
@@ -499,11 +499,11 @@ def tplot(variables,
                     logging.error('Invalid trange setting: must be a 2-element list or array')
                     return
                 if isinstance(trange[0], str):
-                    x_range = pytplot.time_double(trange) # seconds since epoch
+                    x_range = pyspedas.pytplot.time_double(trange) # seconds since epoch
                     x_range_start = x_range[0]
                     x_range_stop = x_range[1]
             else:
-                x_range = pytplot.tplot_opt_glob['x_range']  # Seconds since epoch
+                x_range = pyspedas.pytplot.tplot_opt_glob['x_range']  # Seconds since epoch
                 x_range_start = x_range[0]
                 x_range_stop = x_range[1]
 
@@ -598,7 +598,7 @@ def tplot(variables,
             this_axis.tick_params(axis='x', labelsize=axis_font_size)
             this_axis.tick_params(axis='y', labelsize=axis_font_size)
 
-        char_size = pytplot.tplot_opt_glob.get('charsize')
+        char_size = pyspedas.pytplot.tplot_opt_glob.get('charsize')
         if char_size is None:
             char_size = 12
 
@@ -697,8 +697,8 @@ def tplot(variables,
                 continue
 
         # apply any vertical/horizontal bars
-        if pytplot.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
-            time_bars = pytplot.data_quants[variable].attrs['plot_options']['time_bar']
+        if pyspedas.pytplot.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
+            time_bars = pyspedas.pytplot.data_quants[variable].attrs['plot_options']['time_bar']
 
             for time_bar in time_bars:
                 # vertical bars
@@ -714,8 +714,8 @@ def tplot(variables,
                                       linestyle=time_bar.get('line_dash'))
 
         # highlight time intervals
-        if pytplot.data_quants[variable].attrs['plot_options'].get('highlight_intervals') is not None:
-            highlight_intervals = pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals']
+        if pyspedas.pytplot.data_quants[variable].attrs['plot_options'].get('highlight_intervals') is not None:
+            highlight_intervals = pyspedas.pytplot.data_quants[variable].attrs['plot_options']['highlight_intervals']
 
             for highlight_interval in highlight_intervals:
                 hightlight_opts = copy.deepcopy(highlight_interval)
@@ -728,8 +728,8 @@ def tplot(variables,
                                   **hightlight_opts)
 
         # add annotations
-        if pytplot.data_quants[variable].attrs['plot_options']['extras'].get('annotations') is not None:
-            annotations = pytplot.data_quants[variable].attrs['plot_options']['extras']['annotations']
+        if pyspedas.pytplot.data_quants[variable].attrs['plot_options']['extras'].get('annotations') is not None:
+            annotations = pyspedas.pytplot.data_quants[variable].attrs['plot_options']['extras']['annotations']
             for annotation in annotations:
                 this_axis.annotate(annotation['text'], annotation['position'],
                                    xycoords=annotation['xycoords'],
@@ -748,14 +748,14 @@ def tplot(variables,
         if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
             varlabels_extra_axes(num_panels, this_axis, var_label)
         else:
-            pytplot.var_label_panel(variables, var_label, axes,  axis_font_size)
+            pyspedas.pytplot.var_label_panel(variables, var_label, axes,  axis_font_size)
 
     # add the color bars to any spectra
     for idx, variable in enumerate(variables):
-        if pytplot.data_quants.get(variable) is None:
+        if pyspedas.pytplot.data_quants.get(variable) is None:
             continue
-        plot_extras = pytplot.data_quants[variable].attrs['plot_options']['extras']
-        zaxis_options = pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']
+        plot_extras = pyspedas.pytplot.data_quants[variable].attrs['plot_options']['extras']
+        zaxis_options = pyspedas.pytplot.data_quants[variable].attrs['plot_options']['zaxis_opt']
         if plot_extras.get('spec') is not None:
             spec = plot_extras['spec']
         else:
@@ -776,7 +776,7 @@ def tplot(variables,
             else:
                 this_axis = axes[idx]
 
-            xmargin = pytplot.tplot_opt_glob.get('xmargin')
+            xmargin = pyspedas.pytplot.tplot_opt_glob.get('xmargin')
             # if xmargin is None:
             #    fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
             
@@ -862,7 +862,7 @@ def varlabels_extra_axes(num_panels, this_axis, var_label):
         for label in var_label:
             if isinstance(label, int):
                 label = tname_byindex(label)
-            label_data = pytplot.get_data(label, xarray=True, dt=True)
+            label_data = pyspedas.pytplot.get_data(label, xarray=True, dt=True)
 
             if label_data is None:
                 logging.info('Variable not found: ' + label)
@@ -883,7 +883,7 @@ def varlabels_extra_axes(num_panels, this_axis, var_label):
             xaxis_labels = get_var_label_ticks(label_data, xaxis_ticks_dt)
             new_xaxis.set_xticks(xaxis_ticks_dt)
             new_xaxis.set_xticklabels(xaxis_labels)
-            ytitle = pytplot.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
+            ytitle = pyspedas.pytplot.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
             new_xaxis.set_xlabel(ytitle)
 
         # fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
@@ -900,7 +900,7 @@ def mouse_move_slice(event, slice_axes, slice_plot):
 
     # check for a spectrogram
     try:
-        data = pytplot.get_data(event.inaxes.var_name)
+        data = pyspedas.pytplot.get_data(event.inaxes.var_name)
     except AttributeError:
         return
 
@@ -919,9 +919,9 @@ def mouse_move_slice(event, slice_axes, slice_plot):
     else:
         vdata = data.v
 
-    xaxis_options = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['xaxis_opt']
-    yaxis_options = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['yaxis_opt']
-    zaxis_options = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['zaxis_opt']
+    xaxis_options = pyspedas.pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['xaxis_opt']
+    yaxis_options = pyspedas.pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['yaxis_opt']
+    zaxis_options = pyspedas.pytplot.data_quants[event.inaxes.var_name].attrs['plot_options']['zaxis_opt']
 
     yrange = yaxis_options.get('y_range')
     if yrange is None:
@@ -947,7 +947,7 @@ def mouse_move_slice(event, slice_axes, slice_plot):
     if x_subtitle is not None:
         slice_axes.set_xlabel(x_subtitle)
 
-    slice_yaxis_opt = pytplot.data_quants[event.inaxes.var_name].attrs['plot_options'].get('slice_yaxis_opt')
+    slice_yaxis_opt = pyspedas.pytplot.data_quants[event.inaxes.var_name].attrs['plot_options'].get('slice_yaxis_opt')
 
     xscale = None
     yscale = None

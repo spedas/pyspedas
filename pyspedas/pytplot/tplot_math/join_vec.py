@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 import pandas as pd
 import copy
 import xarray as xr
@@ -53,43 +53,43 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
         newname = "-".join(tvars) + "_joined"
 
     to_merge = False
-    if newname in pytplot.data_quants.keys() and merge:
-        prev_data_quant = pytplot.data_quants[newname]
+    if newname in pyspedas.pytplot.data_quants.keys() and merge:
+        prev_data_quant = pyspedas.pytplot.data_quants[newname]
         to_merge = True
 
     for i, val in enumerate(tvars):
         if i == 0:
-            if "spec_bins" in pytplot.data_quants[tvars[i]].coords:
-                df, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+            if "spec_bins" in pyspedas.pytplot.data_quants[tvars[i]].coords:
+                df, s = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
                     tvars[i]
                 )
             else:
-                df = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+                df = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
                     tvars[i], no_spec_bins=True
                 )
                 s = None
         else:
-            if "spec_bins" in pytplot.data_quants[tvars[i]].coords:
-                d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+            if "spec_bins" in pyspedas.pytplot.data_quants[tvars[i]].coords:
+                d = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
                     tvars[i], no_spec_bins=True
                 )
             else:
-                d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+                d = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
                     tvars[i], no_spec_bins=True
                 )
             df = pd.concat([df, d], axis=1)
 
     if s is None:
-        pytplot.store_data(newname, data={"x": df.index, "y": df.values})
+        pyspedas.pytplot.store_data(newname, data={"x": df.index, "y": df.values})
     else:
-        pytplot.store_data(newname, data={"x": df.index, "y": df.values, "v": s.values})
+        pyspedas.pytplot.store_data(newname, data={"x": df.index, "y": df.values, "v": s.values})
 
     if to_merge is True:
-        cur_data_quant = pytplot.data_quants[newname]
-        plot_options = copy.deepcopy(pytplot.data_quants[newname].attrs)
-        pytplot.data_quants[newname] = xr.concat(
+        cur_data_quant = pyspedas.pytplot.data_quants[newname]
+        plot_options = copy.deepcopy(pyspedas.pytplot.data_quants[newname].attrs)
+        pyspedas.pytplot.data_quants[newname] = xr.concat(
             [prev_data_quant, cur_data_quant], dim="time"
         ).sortby("time")
-        pytplot.data_quants[newname].attrs = plot_options
+        pyspedas.pytplot.data_quants[newname].attrs = plot_options
 
     return newname

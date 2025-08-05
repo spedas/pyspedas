@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-import pytplot
+import pyspedas
 from . import tplot_utilities
 import logging
 
@@ -37,12 +37,12 @@ def get_timespan(name=None):
     """
 
     if name is None:
-        if 'x_range' in pytplot.tplot_opt_glob.keys():
-            return pytplot.tplot_opt_glob['x_range']
+        if 'x_range' in pyspedas.pytplot.tplot_opt_glob.keys():
+            return pyspedas.pytplot.tplot_opt_glob['x_range']
         else:
             return None
-    elif name not in pytplot.data_quants.keys():
+    elif name not in pyspedas.pytplot.data_quants.keys():
         logging.info("The name %s is currently not in pytplot",name)
         return None
 
-    return pytplot.data_quants[name].attrs['plot_options']['trange'][0], pytplot.data_quants[name].attrs['plot_options']['trange'][1]
+    return pyspedas.pytplot.data_quants[name].attrs['plot_options']['trange'][0], pyspedas.pytplot.data_quants[name].attrs['plot_options']['trange'][1]

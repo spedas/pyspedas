@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 import copy
 import logging
 
@@ -43,21 +43,21 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
         newname = new_tvar
 
     # interpolate tvars
-    tv2 = pytplot.tplot_math.tinterp(tvar1, tvar2)
+    tv2 = pyspedas.pytplot.tplot_math.tinterp(tvar1, tvar2)
     # separate and multiply data
-    data1 = pytplot.data_quants[tvar1].values
-    data2 = pytplot.data_quants[tv2].values
+    data1 = pyspedas.pytplot.data_quants[tvar1].values
+    data2 = pyspedas.pytplot.data_quants[tv2].values
     data = data1 * data2
 
     if newname is None:
-        pytplot.data_quants[tvar1].values = data
+        pyspedas.pytplot.data_quants[tvar1].values = data
         return tvar1
 
-    if "spec_bins" in pytplot.data_quants[tvar1].coords:
-        pytplot.store_data(
+    if "spec_bins" in pyspedas.pytplot.data_quants[tvar1].coords:
+        pyspedas.pytplot.store_data(
             newname,
             data={
-                "x": pytplot.data_quants[tvar1].coords["time"].values,
+                "x": pyspedas.pytplot.data_quants[tvar1].coords["time"].values,
                 "y": data,
                 "v": pytplot.data_quants[tvar1].coords["spec_bins"].values,
             },

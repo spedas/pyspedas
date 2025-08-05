@@ -3,7 +3,7 @@ from dateutil.parser import parse
 import os
 import time
 
-import pytplot
+import pyspedas
 from .download_files_utilities import (
     set_new_data_root_dir,
     get_root_data_dir,

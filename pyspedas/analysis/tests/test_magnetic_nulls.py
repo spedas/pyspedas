@@ -1,7 +1,7 @@
 
 import unittest
 import pyspedas
-from pytplot import data_exists, tplot, get_data
+from pyspedas import data_exists, tplot, get_data
 import numpy as np
 
 # Set this to False for Github CI testing, True to show the plots for interactive use

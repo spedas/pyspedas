@@ -1,5 +1,5 @@
 import numpy as np
-from pytplot import get_data, store_data
+from pyspedas.pytplot import get_data, store_data
 
 
 def tcrossp(

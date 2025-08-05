@@ -1,7 +1,7 @@
 
 import os
 import unittest
-from pytplot import data_exists, del_data, timespan,tplot, tplot_names, get_data
+from pyspedas import data_exists, del_data, timespan,tplot, tplot_names, get_data
 from pyspedas.projects.erg import erg_hep_part_products
 from pyspedas.projects.erg.satellite.erg.particle.erg_hep_get_dist import erg_hep_get_dist
 from pyspedas.projects.erg.satellite.erg.particle.erg_pgs_make_e_spec import erg_pgs_make_e_spec
@@ -9,7 +9,7 @@ from pyspedas.projects.erg.satellite.erg.particle.erg_pgs_make_theta_spec import
 from pyspedas.projects.erg.satellite.erg.particle.erg_pgs_make_phi_spec import erg_pgs_make_phi_spec
 
 import pyspedas
-import pytplot
+import pyspedas
 
 display=False
 
@@ -244,8 +244,8 @@ class LoadTestCases(unittest.TestCase):
                                      suffix='_pa0-10')
 
         ## Decorate the obtained spectrum variables
-        pytplot.options('erg_hep_l2_FEDU_L_energy_mag_pa80-100', 'ytitle', 'HEP-e flux\nPA: 80-100\n\n[eV]')
-        pytplot.options('erg_hep_l2_FEDU_L_energy_mag_pa0-10', 'ytitle', 'HEP-e flux\nPA: 0-10\n\n[eV]')
+        pyspedas.pytplot.options('erg_hep_l2_FEDU_L_energy_mag_pa80-100', 'ytitle', 'HEP-e flux\nPA: 80-100\n\n[eV]')
+        pyspedas.pytplot.options('erg_hep_l2_FEDU_L_energy_mag_pa0-10', 'ytitle', 'HEP-e flux\nPA: 0-10\n\n[eV]')
         tplot(['erg_hep_l2_FEDU_L_energy_mag_pa80-100', 'erg_hep_l2_FEDU_L_energy_mag_pa0-10'], display=display, save_png='erg_hep_en_pa_limit.png')
         self.assertTrue('erg_hep_l2_FEDU_L_energy_mag_pa0-10' in vars2)
         self.assertTrue(data_exists('erg_hep_l2_FEDU_L_energy_mag_pa0-10'))

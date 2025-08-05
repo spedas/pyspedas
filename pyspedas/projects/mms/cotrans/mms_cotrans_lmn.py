@@ -4,7 +4,7 @@ This function transforms MMS vector fields from GSM coordinates to LMN (boundary
 
 import numpy as np
 import logging
-from pytplot import get_data, store_data, options, get_coords
+from pyspedas import get_data, store_data, options, get_coords
 import pyspedas
 from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.cotrans_tools.gsm2lmn import gsm2lmn

@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from pytplot import tnames, get_data, store_data, options
+from pyspedas.pytplot import tnames, get_data, store_data, options
 from .pwrspc import pwrspc
 
 

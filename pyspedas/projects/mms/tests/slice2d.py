@@ -118,7 +118,7 @@ class SliceTests(unittest.TestCase):
 
     def test_numeric_trange(self):
         from pyspedas.projects.mms.particles.mms_part_slice2d import mms_part_slice2d
-        from pytplot import time_double, time_string
+        from pyspedas import time_double, time_string
         time = '2017-09-10/09:32:20'
         trange = [time_double(time) - 60, time_double(time) + 60]
         # trange = ['2017-09-10/09:31:20', '2017-09-10/09:33:20']

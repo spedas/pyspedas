@@ -5,7 +5,7 @@ Unit Tests for lmn transformations.
 import numpy as np
 import unittest
 import pyspedas
-from pytplot import del_data, get_data, tnames, tplot, data_exists, tplot_restore
+from pyspedas.pytplot import del_data, get_data, tnames, tplot, data_exists, tplot_restore
 from pyspedas.projects.omni.omni_solarwind_load import omni_solarwind_load
 from pyspedas.cotrans_tools.lmn_matrix_make import lmn_matrix_make
 from pyspedas.projects.themis import fgm, state

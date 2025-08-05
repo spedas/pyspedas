@@ -1,6 +1,6 @@
 
 from .load import load
-from pytplot import options, data_quants
+from pyspedas.pytplot import options, data_quants
 
 # This routine was originally in psp/__init__.py.  If you need to see the history of this routine before
 # it was moved to its own file, please check the history for __init__.py.

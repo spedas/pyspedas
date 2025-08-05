@@ -1,5 +1,5 @@
 import numpy as np
-from pytplot import time_double
+from pyspedas.pytplot import time_double
 
 
 def mms_feeps_active_eyes(trange, probe, data_rate, species, level):

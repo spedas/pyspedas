@@ -7,37 +7,10 @@ from __future__ import division
 import sys
 import os
 import logging
-import pytplot
-from pytplot import tplot_utilities
+import pyspedas
+from pyspedas.pytplot import tplot_utilities
 import tempfile
 from .MPLPlotter.tplot import tplot as mpl_tplot
-
-def webengine_hack():
-    """ This function is a hack to resolve an import error. 
-    Without this, we sometimes get:
-    ImportError: QtWebEngineWidgets must be imported before a QCoreApplication instance is created
-    """
-    from PyQt5 import QtWidgets
-    app = QtWidgets.QApplication.instance()
-    if app is not None:
-        import sip
-        app.quit()
-        sip.delete(app)
-    import sys
-    from PyQt5 import QtCore, QtWebEngineWidgets
-    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
-    app = QtWidgets.qApp = QtWidgets.QApplication(sys.argv)
-    return app
-
-
-if pytplot.using_graphics:
-    from .QtPlotter import PyTPlot_Exporter
-    from pyqtgraph.Qt import QtCore, QtGui, QtCore
-    import pyqtgraph as pg
-    from . import QtPlotter
-    from pytplot.AncillaryPlots import spec_slicer
-    from pytplot.AncillaryPlots import position_mars_2d
-    from pytplot.AncillaryPlots import position_mars_3d
 
 def tplot(name,
           trange=None,
@@ -175,21 +148,21 @@ def tplot(name,
     if interactive:
         slice=True
 
-    if not pytplot.using_graphics and save_file is None:
+    if not pyspedas.pytplot.using_graphics and save_file is None:
         print("Qt was not successfully imported.  Specify save_file to save the file as a .html file.")
         return
 
     # Check a bunch of things
     for i in range(num_plots):
         if isinstance(name[i], int):
-            name[i] = list(pytplot.data_quants.keys())[name[i]]
-        if name[i] not in pytplot.data_quants.keys():
+            name[i] = list(pyspedas.pytplot.data_quants.keys())[name[i]]
+        if name[i] not in pyspedas.pytplot.data_quants.keys():
             logging.info(str(name[i]) + " is currently not in pytplot")
             return
 
 
     if isinstance(var_label, int):
-        var_label = list(pytplot.data_quants.keys())[var_label]
+        var_label = list(pyspedas.pytplot.data_quants.keys())[var_label]
 
     if vert_spacing is None:
         if 'vertical_spacing' in pytplot.tplot_opt_glob:
@@ -277,20 +250,20 @@ def extra_function_handler(extra_functions, extra_functions_args, names, slice, 
         functions_to_call.append(position_mars_3d.position_mars_3d)
         function_args_to_call.append([None])
 
-    static_list = [i for i in names if 'static' in pytplot.data_quants[i].attrs['plot_options']['extras']]
+    static_list = [i for i in names if 'static' in pyspedas.pytplot.data_quants[i].attrs['plot_options']['extras']]
     for tplot_var in static_list:
         # Call 2D static window; This will only plot something when spectrograms are involved.
         functions_to_call.append(spec_slicer.spec_slicer)
         function_args_to_call.append(
-            [tplot_var, pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static'],
+            [tplot_var, pyspedas.pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static'],
              False])
 
-    static_tavg_list = [i for i in names if 'static_tavg' in pytplot.data_quants[i].attrs['plot_options']['extras']]
+    static_tavg_list = [i for i in names if 'static_tavg' in pyspedas.pytplot.data_quants[i].attrs['plot_options']['extras']]
     for tplot_var in static_tavg_list:
         # Call 2D static window for time-averaged values; This will only plot something when spectrograms
         # are involved
         functions_to_call.append(spec_slicer.spec_slicer)
-        function_args_to_call.append([tplot_var,pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static_tavg'],
+        function_args_to_call.append([tplot_var,pyspedas.pytplot.data_quants[tplot_var].attrs['plot_options']['extras']['static_tavg'],
                              False])
 
     for f, args in zip(functions_to_call, function_args_to_call):

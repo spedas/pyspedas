@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-import pytplot
+import pyspedas
 import fnmatch
 import logging
 
@@ -32,19 +32,19 @@ def del_data(name=None):
     if name is None:
         name = '*'
 
-    names=pytplot.tnames(name)
+    names=pyspedas.tnames(name)
     if len(names) < 1:
         logging.warning("del_data: No valid tplot variables found, returning")
         return
 
     for name in names:
-        if isinstance(pytplot.data_quants[name], dict):
-            temp_data_quants = pytplot.data_quants[name]
+        if isinstance(pyspedas.pytplot.data_quants[name], dict):
+            temp_data_quants = pyspedas.pytplot.data_quants[name]
             str_name = temp_data_quants['name']
         else:
-            temp_data_quants = pytplot.data_quants[name]
+            temp_data_quants = pyspedas.pytplot.data_quants[name]
             str_name = temp_data_quants.name
 
-        del pytplot.data_quants[str_name]
+        del pyspedas.pytplot.data_quants[str_name]
         
     return

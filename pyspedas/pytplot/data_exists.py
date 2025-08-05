@@ -1,6 +1,6 @@
 
 import numpy as np
-import pytplot
+import pyspedas
 
 def data_exists(tvar):
     """
@@ -23,8 +23,8 @@ def data_exists(tvar):
         >>> pyspedas.data_exists('a')
 
     """
-    if tvar in pytplot.data_quants.keys():
-        data = pytplot.get_data(tvar, dt=True)
+    if tvar in pyspedas.pytplot.data_quants.keys():
+        data = pyspedas.get_data(tvar, dt=True)
         # multi-dimensional data returns a tuple, NRV variables return an ndarray
         if isinstance(data, tuple) or isinstance(data, np.ndarray) or isinstance(data, str) or isinstance(data, list):
             return True

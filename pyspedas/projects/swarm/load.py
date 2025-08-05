@@ -1,5 +1,5 @@
-from pytplot import time_string, time_double
-from pytplot import time_clip as tclip
+from pyspedas.pytplot import time_string, time_double
+from pyspedas.pytplot import time_clip as tclip
 from pyspedas.hapi_tools.hapi import hapi
 from .config import CONFIG
 

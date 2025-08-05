@@ -1,7 +1,7 @@
 import numpy as np
 import logging
-import pytplot
-from pytplot import data_exists
+import pyspedas
+from pyspedas.pytplot import data_exists
 from scipy import signal
 
 

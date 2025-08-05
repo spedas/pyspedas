@@ -1,5 +1,5 @@
 import pyqtgraph as pg
-import pytplot
+import pyspedas
 
 
 def position_mars_2d(temp=None):

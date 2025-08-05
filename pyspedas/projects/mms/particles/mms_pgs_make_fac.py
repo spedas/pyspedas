@@ -1,11 +1,11 @@
 import logging
 import numpy as np
-from pytplot import data_exists
+from pyspedas import data_exists
 from pyspedas.cotrans_tools.cotrans import cotrans
-from pytplot import tnormalize
-from pytplot import tcrossp
+from pyspedas import tnormalize
+from pyspedas import tcrossp
 from pyspedas.analysis.tinterpol import tinterpol
-from pytplot import get_data, store_data
+from pyspedas.pytplot import get_data, store_data
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)

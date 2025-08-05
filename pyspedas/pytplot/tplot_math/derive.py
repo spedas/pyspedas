@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
-import pytplot
+import pyspedas
 import numpy as np
 import copy
 import logging
@@ -37,10 +37,10 @@ def derive(tvar,newname=None, new_tvar=None):
         logging.info("derive: The new_tvar parameter is deprecated. Please use newname instead.")
         newname = new_tvar
 
-    a = pytplot.data_quants[tvar].differentiate('time')
+    a = pyspedas.pytplot.data_quants[tvar].differentiate('time')
     if newname is None:
         a.name = tvar
-        a.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+        a.attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
         pytplot.data_quants[tvar] = a
     else:
         data = {'x':a.coords['time'], 'y':a.values * 1e09}  # Internal time in units of nanoseconds

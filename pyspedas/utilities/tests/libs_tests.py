@@ -2,7 +2,7 @@ import unittest
 from io import StringIO
 import sys
 import pyspedas
-import pytplot
+import pyspedas
 from pyspedas.utilities.libs import libs
 
 

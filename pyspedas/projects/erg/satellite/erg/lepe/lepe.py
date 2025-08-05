@@ -1,8 +1,8 @@
 
 import numpy as np
-from pytplot import clip, get_data, options, store_data, ylim, zlim
+from pyspedas import clip, get_data, options, store_data, ylim, zlim
 
-from pytplot import time_double
+from pyspedas import time_double
 
 
 from ..load import load

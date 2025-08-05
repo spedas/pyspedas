@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime, timezone
 import numpy as np
-from pytplot import time_string, time_datetime
-from pytplot import time_float, time_double, degap, store_data, get_data, options, data_exists
+from pyspedas.pytplot import time_string, time_datetime
+from pyspedas.pytplot import time_float, time_double, degap, store_data, get_data, options, data_exists
 from pyspedas import time_ephemeris
 
 class TimeTestCases(unittest.TestCase):

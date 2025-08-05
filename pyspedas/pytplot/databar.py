@@ -1,6 +1,6 @@
 from . import tplot_utilities
 from .timebar import timebar
-import pytplot
+import pyspedas
 import logging
 
 
@@ -44,7 +44,7 @@ def databar(varname, y=0.0, delete=False, color="black", thick=1, dash=False):
     """
 
     # wildcard expansion
-    varname = pytplot.tnames(varname)
+    varname = pyspedas.tnames(varname)
 
     if len(varname) == 0:
         logging.warning("No valid tplot variables specified")

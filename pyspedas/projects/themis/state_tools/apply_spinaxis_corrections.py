@@ -1,7 +1,7 @@
 import logging
-from pytplot import get_data, store_data, tplot_copy
+from pyspedas.pytplot import get_data, store_data, tplot_copy
 import numpy as np
-from pytplot import data_exists
+from pyspedas.pytplot import data_exists
 
 
 def apply_oneaxis_correction(rawvar: str,

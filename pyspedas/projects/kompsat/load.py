@@ -34,8 +34,8 @@ import logging
 import requests
 import json
 import numpy as np
-from pytplot import store_data, options
-from pytplot import time_double, time_string, set_units, set_coords
+from pyspedas.pytplot import store_data, options
+from pyspedas.pytplot import time_double, time_string, set_units, set_coords
 
 
 # Global parameters for the functions in this file.

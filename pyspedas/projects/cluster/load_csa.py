@@ -9,10 +9,10 @@ with a CDF file which is packaged as tar.gz.
 We download the tar.gz file directly, without using pyspedas.download().
 """
 import logging
-from pytplot import time_clip as tclip
-from pytplot import time_string
-from pytplot import time_double
-from pytplot import cdf_to_tplot
+from pyspedas.pytplot import time_clip as tclip
+from pyspedas.pytplot import time_string
+from pyspedas.pytplot import time_double
+from pyspedas.pytplot import cdf_to_tplot
 
 import requests
 import sys

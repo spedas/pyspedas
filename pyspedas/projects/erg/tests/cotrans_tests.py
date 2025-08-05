@@ -2,7 +2,7 @@ import unittest
 import logging
 from pyspedas.projects.erg import mgf
 from pyspedas.projects.erg.satellite.erg.common.cotrans.erg_cotrans import erg_cotrans
-from pytplot import tplot_names, get_data, data_exists, store_data
+from pyspedas import tplot_names, get_data, data_exists, store_data
 import numpy as np
 from numpy.testing import assert_allclose
 

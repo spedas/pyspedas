@@ -3,11 +3,11 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import matplotlib.dates
 import numpy as np
-import pytplot
+import pyspedas
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
-from pytplot import get_data, tplot
-from pytplot.MPLPlotter.tplot import get_var_label_ticks
+from pyspedas.pytplot import get_data, tplot
+from pyspedas.pytplot.MPLPlotter.tplot import get_var_label_ticks
 from matplotlib import pyplot as plt
 
 def var_label_panel(
@@ -85,7 +85,7 @@ def var_label_panel(
             else:
                 label = var_label_list[i]
                 # print('label ', label)
-                label_data = pytplot.get_data(label, xarray=True, dt=True)
+                label_data = pyspedas.pytplot.get_data(label, xarray=True, dt=True)
                 y_label = label_data.attrs["plot_options"]["yaxis_opt"]["axis_label"]  # type: ignore
 
                 # Switch the type of the time array according to the version of numpy

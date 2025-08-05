@@ -4,8 +4,8 @@ import calendar
 import logging
 import numpy as np
 import xarray as xr
-import pytplot
-from pytplot import tplot, store_data
+import pyspedas
+from pyspedas.pytplot import tplot, store_data
 from netCDF4 import Dataset, num2date
 
 
@@ -213,9 +213,9 @@ def netcdf_to_tplot(
                 # Merge if the variable has been saved already in the current group of files.
                 # Also merge when the variable is already in tplot and merge is True.
                 if (var_name in stored_variables) or (
-                    var_name in pytplot.data_quants.keys() and (merge == True)
+                    var_name in pyspedas.pytplot.data_quants.keys() and (merge == True)
                 ):
-                    prev_data_quant = pytplot.data_quants[var_name]
+                    prev_data_quant = pyspedas.pytplot.data_quants[var_name]
                     to_merge = True
 
                 tplot_data = {"x": unix_times, "y": this_masked_var}
@@ -224,13 +224,13 @@ def netcdf_to_tplot(
                     stored_variables.append(var_name)
 
                 if to_merge == True:
-                    cur_data_quant = pytplot.data_quants[var_name]
-                    plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs)
+                    cur_data_quant = pyspedas.pytplot.data_quants[var_name]
+                    plot_options = copy.deepcopy(pyspedas.pytplot.data_quants[var_name].attrs)
                     merged_data = [prev_data_quant, cur_data_quant]
-                    pytplot.data_quants[var_name] = xr.concat(
+                    pyspedas.pytplot.data_quants[var_name] = xr.concat(
                         merged_data, dim="time"
                     ).sortby("time")
-                    pytplot.data_quants[var_name].attrs = plot_options
+                    pyspedas.pytplot.data_quants[var_name].attrs = plot_options
 
     # If we are interested in seeing a quick plot of the variables, do it
     if plot:

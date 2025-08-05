@@ -1,8 +1,8 @@
 import bisect
 import logging
 import numpy as np
-from pytplot import get_data, store_data, options
-from pytplot.tplot_math import degap
+from pyspedas.pytplot import get_data, store_data, options
+from pyspedas.pytplot.tplot_math import degap
 
 
 def spec_pa_sort(

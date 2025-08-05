@@ -11,7 +11,7 @@ from .utilities import (
 from .utilities import get_header_info
 from .orbit_time import orbit_time
 from .read_iuvs_file import read_iuvs_file
-import pytplot
+import pyspedas
 from collections import OrderedDict
 import builtins
 import os

@@ -1,6 +1,6 @@
 import numpy as np
-from pytplot import store_data, options
-from pytplot import time_double
+from pyspedas.pytplot import store_data, options
+from pyspedas.pytplot import time_double
 from pyspedas.cotrans_tools.xyz_to_polar import xyz_to_polar
 from .load_csv_file import load_csv_file
 

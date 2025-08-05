@@ -3,7 +3,7 @@ import pyspedas
 from pyspedas import mms_load_fpi
 import unittest
 
-from pytplot import data_exists, get_data, tplot
+from pyspedas import data_exists, get_data, tplot
 from pyspedas.projects.mms.fpi_tools.mms_fpi_split_tensor import mms_fpi_split_tensor
 from pyspedas.projects.mms.fpi_tools.mms_fpi_ang_ang import mms_fpi_ang_ang
 from pyspedas.projects.mms.fpi_tools.mms_get_fpi_dist import mms_get_fpi_dist

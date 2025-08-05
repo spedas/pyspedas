@@ -1,7 +1,7 @@
 import logging
 import math
 import numpy as np
-from pytplot import get_data, store_data, options
+from pyspedas import get_data, store_data, options
 from pyspedas import tinterpol
 
 

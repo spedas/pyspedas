@@ -1,7 +1,7 @@
 
 import os
 import unittest
-from pytplot import data_exists
+from pyspedas.pytplot import data_exists
 
 import pyspedas
 

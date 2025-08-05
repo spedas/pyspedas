@@ -1,6 +1,6 @@
 import numpy as np
-from pytplot import tnames
-from pytplot import get_data, store_data
+from pyspedas import tnames
+from pyspedas import get_data, store_data
 
 
 def remove_duplicated_tframe(tvars=[]):

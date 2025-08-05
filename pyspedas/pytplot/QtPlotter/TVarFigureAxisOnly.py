@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-import pytplot
+import pyspedas
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 from scipy import interpolate
@@ -23,24 +23,24 @@ class TVarFigureAxisOnly(pg.GraphicsLayout):
 
         if pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
-                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#FFF'}
         else:
             self.labelStyle = {'font-size':
-                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000'}
         
         vb = CustomVB(enableMouse=False)
         self.yaxis = AxisItem("left")
-        self.yaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
+        self.yaxis.setLabel pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'], **self.labelStyle)
         self.yaxis.label.setRotation(0)
         qt_transform = pg.QtGui.QTransform()
         qt_transform.translate(0,-40)
         self.yaxis.label.setTransform(qt_transform)
         #self.yaxis.label.translate(0, -40)
-        mapping_function = interpolate.interp1d(pytplot.data_quants[self.tvar_name].coords['time'].values, pytplot.data_quants[self.tvar_name].values)
-        if 'var_label_ticks' in pytplot.data_quants[self.tvar_name].attrs['plot_options']:
-            num_ticks = pytplot.data_quants[self.tvar_name].attrs['plot_options']['var_label_ticks']
+        mapping_function = interpolate.interp1d pyspedas.pytplot.data_quants[self.tvar_name].coords['time'].values, pyspedas.pytplot.data_quants[self.tvar_name].values)
+        if 'var_label_ticks' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']:
+            num_ticks = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['var_label_ticks']
         else:
             num_ticks=5
         xaxis = NonLinearAxis(orientation='bottom', mapping_function=mapping_function, num_ticks=num_ticks)

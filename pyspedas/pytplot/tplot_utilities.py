@@ -11,7 +11,7 @@ import math
 import numpy as np
 import pytz
 from dateutil.parser import parse
-import pytplot
+import pyspedas
 from platform import system
 import copy
 from . import spedas_colorbar
@@ -248,12 +248,12 @@ def get_heatmap_color(color_map, min_val, max_val, values, zscale='log'):
 
 def timebar_delete(t, varname=None, dim='height'):
     if varname is None:
-        for name in pytplot.data_quants:
-            if isinstance(pytplot.data_quants[name], dict):
+        for name in pyspedas.pytplot.data_quants:
+            if isinstance(pyspedas.pytplot.data_quants[name], dict):
                 # non-record varying variable
                 continue
             try:
-                list_timebars = pytplot.data_quants[name].attrs['plot_options']['time_bar']
+                list_timebars = pyspedas.pytplot.data_quants[name].attrs['plot_options']['time_bar']
             except KeyError:
                 continue
             elem_to_delete = []
@@ -263,19 +263,19 @@ def timebar_delete(t, varname=None, dim='height'):
                         elem_to_delete.append(elem)
             for i in elem_to_delete:
                 list_timebars.remove(i)
-            pytplot.data_quants[name].attrs['plot_options']['time_bar'] = list_timebars
+            pyspedas.pytplot.data_quants[name].attrs['plot_options']['time_bar'] = list_timebars
     else:
         if not isinstance(varname, list):
             varname = [varname]
         for i in varname:
-            if i not in pytplot.data_quants.keys():
+            if i not in pyspedas.pytplot.data_quants.keys():
                 logging.info(str(i) + " is currently not in pytplot.")
                 return
             if isinstance(pytplot.data_quants[i], dict):
                 # non-record varying variable
                 continue
             try:
-                list_timebars = pytplot.data_quants[i].attrs['plot_options']['time_bar']
+                list_timebars = pyspedas.pytplot.data_quants[i].attrs['plot_options']['time_bar']
             except KeyError:
                 continue
             elem_to_delete = []
@@ -285,7 +285,7 @@ def timebar_delete(t, varname=None, dim='height'):
                         elem_to_delete.append(elem)
             for j in elem_to_delete:
                 list_timebars.remove(j)
-            # pytplot.data_quants[i].attrs['plot_options']['time_bar']
+            # pyspedas.pytplot.data_quants[i].attrs['plot_options']['time_bar']
     return
 
 
@@ -524,7 +524,7 @@ def get_spec_data(names):
     # Just grab variables that are spectrograms.
     valid_vars = list()
     for n in names:
-        if 'spec_bins' in pytplot.data_quants[n].coords:
+        if 'spec_bins' in pyspedas.pytplot.data_quants[n].coords:
             valid_vars.append(n)
     return valid_vars
 
@@ -533,18 +533,18 @@ def get_spec_slicer_axis_types(names):
     # Get labels and axis types for plots.
     plot_labels = {}
     for n in names:
-        if 'spec_bins' in pytplot.data_quants[n].coords:
-            zlabel = pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['axis_label']
-            ylabel = pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['axis_label']
+        if 'spec_bins' in pyspedas.pytplot.data_quants[n].coords:
+            zlabel = pyspedas.pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['axis_label']
+            ylabel = pyspedas.pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['axis_label']
 
-            if 'xi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt'].keys():
-                xtype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type']
-            elif 'y_axis_type' in pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']:
-                xtype_interactive = pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['y_axis_type']
+            if 'xi_axis_type' in pyspedas.pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt'].keys():
+                xtype_interactive = pyspedas.pytplot.data_quants[n].attrs['plot_options']['interactive_xaxis_opt']['xi_axis_type']
+            elif 'y_axis_type' in pyspedas.pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']:
+                xtype_interactive = pyspedas.pytplot.data_quants[n].attrs['plot_options']['yaxis_opt']['y_axis_type']
             else:
                 xtype_interactive = 'log'
 
-            if 'yi_axis_type' in pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt'].keys():
+            if 'yi_axis_type' in pyspedas.pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt'].keys():
                 ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['interactive_yaxis_opt']['yi_axis_type']
             elif 'z_axis_type' in pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']:
                 ytype_interactive = pytplot.data_quants[n].attrs['plot_options']['zaxis_opt']['z_axis_type']
@@ -557,25 +557,25 @@ def get_spec_slicer_axis_types(names):
 
 def set_spec_slice_x_range(var, x_axis_log, plot):
     # Check if plot's x range has been set by user. If not, range is automatically set.
-    if 'xi_range' in pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']:
+    if 'xi_range' in pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']:
         if x_axis_log:
-            plot.setXRange(np.log10(pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][0]),
-                           np.log10(pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][1]),
+            plot.setXRange(np.log10(pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][0]),
+                           np.log10(pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][1]),
                            padding=0)
         elif not x_axis_log:
-            plot.setXRange(pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][0],
-                           pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][1], padding=0)
+            plot.setXRange(pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][0],
+                           pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_xaxis_opt']['xi_range'][1], padding=0)
 
 def set_spec_slice_y_range(var, y_axis_log, plot):
     # Check if plot's y range has been set by user. If not, range is automatically set.
-    if 'yi_range' in pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']:
+    if 'yi_range' in pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']:
         if y_axis_log:
-            plot.setYRange(np.log10(pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][0]),
-                           np.log10(pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1]),
+            plot.setYRange(np.log10(pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][0]),
+                           np.log10(pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1]),
                            padding=0)
         elif not y_axis_log:
-            plot.setYRange(pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][0],
-                           pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1], padding=0)
+            plot.setYRange(pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][0],
+                           pyspedas.pytplot.data_quants[var].attrs['plot_options']['interactive_yaxis_opt']['yi_range'][1], padding=0)
 
 
 def convert_tplotxarray_to_pandas_dataframe(name, no_spec_bins=False):
@@ -584,23 +584,23 @@ def convert_tplotxarray_to_pandas_dataframe(name, no_spec_bins=False):
     # This function sums over all dimensions except for the second non-time one.
     # This collapses many dimensions into just a single "energy bin" dimensions
 
-    matrix = pytplot.data_quants[name].values
+    matrix = pyspedas.pytplot.data_quants[name].values
     while len(matrix.shape) > 3:
         matrix = np.nansum(matrix, 3)
     if len(matrix.shape) == 3:
         matrix = np.nansum(matrix, 1)
     return_data = pd.DataFrame(matrix)
-    return_data = return_data.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+    return_data = return_data.set_index(pd.Index(pyspedas.pytplot.data_quants[name].coords['time'].values))
 
     if no_spec_bins:
         return return_data
 
-    if 'spec_bins' in pytplot.data_quants[name].coords:
-        spec_bins = pd.DataFrame(pytplot.data_quants[name].coords['spec_bins'].values)
-        if len(pytplot.data_quants[name].coords['spec_bins'].shape) == 1:
+    if 'spec_bins' in pyspedas.pytplot.data_quants[name].coords:
+        spec_bins = pd.DataFrame(pyspedas.pytplot.data_quants[name].coords['spec_bins'].values)
+        if len(pyspedas.pytplot.data_quants[name].coords['spec_bins'].shape) == 1:
             spec_bins = spec_bins.transpose()
         else:
-            spec_bins = spec_bins.set_index(pd.Index(pytplot.data_quants[name].coords['time'].values))
+            spec_bins = spec_bins.set_index(pd.Index(pyspedas.pytplot.data_quants[name].coords['time'].values))
 
         return return_data, spec_bins
 
@@ -614,7 +614,7 @@ def return_interpolated_link_dict(dataset, types):
             print(f"ERROR: {t} is not linked to {dataset.name}")
             raise Exception("Not a valid link")
 
-        link = pytplot.data_quants[dataset.attrs['plot_options']['links'][t]]
+        link = pyspedas.pytplot.data_quants[dataset.attrs['plot_options']['links'][t]]
         new_link = link.interp_like(dataset)
         ret_dict[t] = new_link
 
@@ -669,7 +669,7 @@ def reduce_spec_dataset(tplot_dataset=None, name=None):
     if tplot_dataset is not None:
         da = copy.deepcopy(tplot_dataset)
     elif name is not None:
-        da = copy.deepcopy(pytplot.data_quants[name])
+        da = copy.deepcopy(pyspedas.pyspedas.pytplot.data_quants[name])
     else:
         return
 

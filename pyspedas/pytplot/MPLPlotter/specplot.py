@@ -4,7 +4,7 @@ import matplotlib as mpl
 from datetime import datetime, timezone
 from matplotlib.colors import LinearSegmentedColormap
 import warnings
-import pytplot
+import pyspedas
 import logging
 from copy import copy
 
@@ -486,7 +486,7 @@ def specplot(
 
     # kludge to add support for the 'spedas' color bar
     if cmap == "spedas":
-        _colors = pytplot.spedas_colorbar
+        _colors = pyspedas.pytplot.spedas_colorbar
         spd_map = [
             (np.array([r, g, b])).astype(np.float64) / 256
             for r, g, b in zip(_colors.r, _colors.g, _colors.b)

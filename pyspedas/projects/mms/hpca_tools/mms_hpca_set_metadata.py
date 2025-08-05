@@ -1,5 +1,5 @@
-from pytplot import options
-from pytplot import tnames
+from pyspedas.pytplot import options
+from pyspedas.pytplot import tnames
 
 
 def mms_hpca_set_metadata(probe='1', fov=[0, 360], suffix=''):

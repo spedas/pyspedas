@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 import logging
-import pytplot
+import pyspedas
 
 def ylim(name, min, max, logflag=None):
     """
@@ -35,7 +35,7 @@ def ylim(name, min, max, logflag=None):
 
     """
     if logflag is None:
-        pytplot.options(name,'y_range',[min, max])
+        pyspedas.pytplot.options(name,'y_range',[min, max])
     else:
-        pytplot.options(name,'y_range',[min, max, logflag])
+        pyspedas.pytplot.options(name,'y_range',[min, max, logflag])
     return

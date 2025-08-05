@@ -109,10 +109,10 @@ def cal_fit(probe='a', no_cal=False):
     import numpy as np
     import logging
 
-    from pytplot import get_data, store_data, tplot_names, options
+    from pyspedas.pytplot import get_data, store_data, tplot_names, options
     from pyspedas.utilities.download import download
     from pyspedas.projects.themis.config import CONFIG
-    from pytplot import time_float_one
+    from pyspedas.pytplot import time_float_one
     from copy import deepcopy
     from numpy.linalg import inv
 

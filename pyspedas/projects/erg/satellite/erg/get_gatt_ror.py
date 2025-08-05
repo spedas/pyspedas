@@ -1,5 +1,5 @@
 import cdflib
-from pytplot import get_data
+from pyspedas import get_data
 import logging
 
 def get_gatt_ror(downloadonly, loaded_data):

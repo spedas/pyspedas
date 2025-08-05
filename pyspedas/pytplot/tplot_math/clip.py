@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
-import pytplot
+import pyspedas
 import numpy as np
 import copy
 import logging
@@ -46,27 +46,27 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
         newname = new_tvar
 
     #check for globbed or array input, and call recursively
-    tn = pytplot.tnames(tvar)
+    tn = pyspedas.pytplot.tnames(tvar)
     if len(tn) == 0:
         return
     elif len(tn) > 1:
         for j in range(len(tn)):
-            pytplot.clip(tn[j],ymin,ymax)
+            pyspedas.pytplot.clip(tn[j],ymin,ymax)
         return
 
 
-    a = copy.deepcopy(pytplot.data_quants[tvar].where(pytplot.data_quants[tvar] >= ymin))
+    a = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].where(pyspedas.pytplot.data_quants[tvar] >= ymin))
     a = copy.deepcopy(a.where(a <= ymax))
 
     if newname is None:
         a.name = tvar
-        pytplot.data_quants[tvar] = a
+        pyspedas.pytplot.data_quants[tvar] = a
     else:
         if 'spec_bins' in a.coords:
-            pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
-            pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+            pyspedas.pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+            pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
         else:
-            pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values})
-            pytplot.data_quants[newname].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+            pyspedas.pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values})
+            pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 
     return

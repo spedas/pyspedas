@@ -6,10 +6,10 @@
 import os
 import pickle
 import numpy as np
-import pytplot
-from pytplot.options import options
-from pytplot.store_data import store_data
-from pytplot.tplot_options import tplot_options
+import pyspedas
+from pyspedas.pytplot.options import options
+from pyspedas.pytplot.store_data import store_data
+from pyspedas.pytplot.tplot_options import tplot_options
 from scipy.io import readsav
 import logging
 
@@ -182,13 +182,13 @@ def tplot_restore(filename):
 
                         # create a dictionary with the desired mappings
                         data_att = {name.lower(): value for name, value in zip(att_names, att_values)}
-                        pytplot.data_quants[data_name].attrs['data_att'] = data_att
+                        pyspedas.pytplot.data_quants[data_name].attrs['data_att'] = data_att
 
                     if option_name.lower() not in ['color', 'colors']:
                         options(data_name, option_name, temp_tplot['dq'][i][3][option_name][0], quiet=True)
 
-            pytplot.data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
-            pytplot.data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
+            pyspedas.pytplot.data_quants[data_name].attrs['plot_options']['trange'] = temp_tplot['dq'][i][4].tolist()
+            pyspedas.pytplot.data_quants[data_name].attrs['plot_options']['create_time'] = temp_tplot['dq'][i][6]
         
             if not np.isscalar(temp_tplot['tv']): # Skip if it is a scalar
                 for option_name in temp_tplot['tv'][0][0].dtype.names:
@@ -208,16 +208,16 @@ def tplot_restore(filename):
  
                 
             # correct legend_names array
-            plt_options = pytplot.data_quants[data_name].attrs['plot_options']
+            plt_options = pyspedas.pytplot.data_quants[data_name].attrs['plot_options']
             yaxis_opts = plt_options.get('yaxis_opt')
             if yaxis_opts is not None:
                 yaxis_opts = plt_options.get('yaxis_opt')
                 if yaxis_opts.get('legend_names') is not None:
-                    lnames = pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'][0]
+                    lnames = pyspedas.pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'][0]
                     if isinstance(lnames, list) or isinstance(lnames, np.ndarray):
-                        pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lname.decode('utf-8') for lname in lnames]
+                        pyspedas.pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lname.decode('utf-8') for lname in lnames]
                     else:
-                        pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lnames.decode('utf-8')]
+                        pyspedas.pytplot.data_quants[data_name].attrs['plot_options']['yaxis_opt']['legend_names'] = [lnames.decode('utf-8')]
 
                 # decode any other string options
                 for y_key in yaxis_opts.keys():
@@ -237,9 +237,9 @@ def tplot_restore(filename):
         for i in range(0, num_data_quants):
             if isinstance(temp[i+1], dict):
                 # NRV variable
-                pytplot.data_quants[temp[i+1]['name']] = temp[i+1]
+                pyspedas.pytplot.data_quants[temp[i+1]['name']] = temp[i+1]
             else:
-                pytplot.data_quants[temp[i+1].name] = temp[i+1]
+                pyspedas.pytplot.data_quants[temp[i+1].name] = temp[i+1]
         pytplot.tplot_opt_glob = temp[num_data_quants+1]
         in_file.close()
     

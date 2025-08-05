@@ -1,6 +1,6 @@
 import logging
-from pytplot import time_clip as tclip
-from pytplot import cdf_to_tplot
+from pyspedas.pytplot import time_clip as tclip
+from pyspedas.pytplot import cdf_to_tplot
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from .config import CONFIG

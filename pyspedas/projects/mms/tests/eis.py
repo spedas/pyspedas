@@ -1,9 +1,9 @@
 import unittest
 from pyspedas import mms_load_eis, mms_eis_pad
 from pyspedas.projects.mms.eis_tools.mms_eis_omni import mms_eis_omni
-from pytplot import data_exists
+from pyspedas import data_exists
 from pyspedas.projects.mms.eis_tools.mms_eis_spec_combine_sc import mms_eis_spec_combine_sc
-from pytplot import tplot
+from pyspedas import tplot
 
 class EISTestCases(unittest.TestCase):
     def test_electronenergy(self):

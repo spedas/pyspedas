@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-import pytplot
+import pyspedas
 import logging
 
 
@@ -35,7 +35,7 @@ def get_ylimits(name, trg=None):
     """
 
     if isinstance(name, int):
-        name = list(pytplot.data_quants.keys())[name-1]
+        name = list(pyspedas.pytplot.data_quants.keys())[name-1]
     if not isinstance(name, list):
         name = [name]
     name_num = len(name)
@@ -44,10 +44,10 @@ def get_ylimits(name, trg=None):
 
     for i in range(name_num):
 
-        if name[i] not in pytplot.data_quants.keys():
+        if name[i] not in pyspedas.pytplot.data_quants.keys():
             logging.info(str(name[i]) + " is currently not in pytplot.")
             return
-        y = pytplot.data_quants[name[i]]
+        y = pyspedas.pytplot.data_quants[name[i]]
 
         # Slice the data around a time range
         if trg is not None:

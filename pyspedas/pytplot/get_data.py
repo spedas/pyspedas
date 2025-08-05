@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 import numpy as np
-import pytplot
+import pyspedas
 from collections import namedtuple
 import logging
 from astropy import units as u
@@ -68,11 +68,11 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
     if data_quant_in is not None:
         temp_data_quant = data_quant_in
     else:
-        if name not in pytplot.data_quants.keys():
+        if name not in pyspedas.pytplot.data_quants.keys():
             logging.info("The name " + str(name) + " is currently not in pytplot")
             return
     
-        temp_data_quant = pytplot.data_quants[name]
+        temp_data_quant = pyspedas.pytplot.data_quants[name]
 
     if isinstance(temp_data_quant, dict):
         # non-record varying variables are stored as dicts

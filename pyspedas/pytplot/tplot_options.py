@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 from . import tplot_utilities
 
 
@@ -46,7 +46,7 @@ def tplot_options(option, value):
     
     option = option.lower()
     
-    temp = tplot_utilities.set_tplot_options(option, value, pytplot.tplot_opt_glob)
-    pytplot.tplot_opt_glob = temp
+    temp = tplot_utilities.set_tplot_options(option, value, pyspedas.pytplot.tplot_opt_glob)
+    pyspedas.pytplot.tplot_opt_glob = temp
     
     return

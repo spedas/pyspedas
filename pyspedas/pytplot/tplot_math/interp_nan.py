@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 import copy
 import logging
 
@@ -40,12 +40,12 @@ def interp_nan(tvar, newname=None, new_tvar=None, s_limit=None):
         )
         newname = new_tvar
 
-    x = pytplot.data_quants[tvar].interpolate_na(dim="time", limit=s_limit)
-    x.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+    x = pyspedas.pytplot.data_quants[tvar].interpolate_na(dim="time", limit=s_limit)
+    x.attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 
     if newname is None:
-        pytplot.data_quants[tvar] = x
+        pyspedas.pytplot.data_quants[tvar] = x
         x.name = tvar
     else:
-        pytplot.data_quants[newname] = x
-        pytplot.data_quants[newname].name = newname
+        pyspedas.pytplot.data_quants[newname] = x
+        pyspedas.pytplot.data_quants[newname].name = newname

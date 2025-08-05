@@ -1,7 +1,7 @@
 import os
 import logging
 import unittest
-from pytplot import data_exists
+from pyspedas.pytplot import data_exists
 import pyspedas
 
 
@@ -145,7 +145,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_waves_rad1_rad2_data(self):
         import pyspedas
-        from pytplot import tplot, tplot_names
+        from pyspedas.pytplot import tplot, tplot_names
         # example of a Type III radio burst
         trange = ['2019-04-02/15:00', '2019-04-02/16:30']
         rad2_vars = pyspedas.wind.waves(trange=trange, time_clip=True, datatype='rad2')

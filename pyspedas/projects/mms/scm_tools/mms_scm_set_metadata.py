@@ -1,4 +1,4 @@
-from pytplot import options
+from pyspedas.pytplot import options
 
 
 def mms_scm_set_metadata(tnames, probe, datatype, coord, suffix=''):

@@ -1,5 +1,5 @@
 import logging
-from pytplot import get_data
+from pyspedas.pytplot import get_data
 from .wildcard_routines import tplot_wildcard_expand
 
 

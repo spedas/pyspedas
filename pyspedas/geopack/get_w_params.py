@@ -6,7 +6,7 @@ import zipfile
 from tempfile import mkdtemp
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pytplot import store_data, time_double
+from pyspedas import store_data, time_double
 
 
 def get_w(trange=None, create_tvar=False, newname=None):

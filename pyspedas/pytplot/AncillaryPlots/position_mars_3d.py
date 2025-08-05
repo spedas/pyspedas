@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 
 def position_mars_3d(temp=None):
     '''

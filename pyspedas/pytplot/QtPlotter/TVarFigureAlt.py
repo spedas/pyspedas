@@ -5,7 +5,7 @@
 
 import pyqtgraph as pg
 import numpy as np
-import pytplot
+import pyspedas
 from pyqtgraph.Qt import QtGui
 from .CustomLegend.CustomLegend import CustomLegendItem
 from .CustomAxis.AxisItem import AxisItem
@@ -17,7 +17,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
 
         self.tvar_name = tvar_name
         self.show_xaxis = show_xaxis
-        self.crosshair = pytplot.tplot_opt_glob['crosshair']
+        self.crosshair = pyspedas.pytplot.tplot_opt_glob['crosshair']
 
         # Sets up the layout of the Tplot Object
         pg.GraphicsLayout.__init__(self)
@@ -29,7 +29,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.xaxis.enableAutoSIPrefix(enable=False)
         # Set up the y axis
         self.yaxis = AxisItem("left")
-        self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"])  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
+        self.yaxis.setStyle(textFillLimits=pyspedas.pytplot.tplot_opt_glob["axis_tick_num"])  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
         vb = NoPaddingPlot()
 
         # Creating axes to bound the plots with lines
@@ -44,9 +44,9 @@ class TVarFigureAlt(pg.GraphicsLayout):
                                                                 'top': self.xaxis2}, viewBox=vb)
 
         # Turn off zooming in on the y-axis, altitude resolution is much more important
-        self.plotwindow.setMouseEnabled(y=pytplot.tplot_opt_glob['y_axis_zoom'])
+        self.plotwindow.setMouseEnabled(y=pyspedas.pytplot.tplot_opt_glob['y_axis_zoom'])
 
-        if pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
+        if pyspedas.pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
             self.plotwindow.showAxis("top")
             self.plotwindow.showAxis("right")
 
@@ -61,23 +61,23 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.colors = self._setcolors()
         self.colormap = self._setcolormap()
 
-        if pytplot.tplot_opt_glob['black_background']:
+        if pyspedas.pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
-                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#FFF',
                                'white-space': 'pre-wrap'}
         else:
             self.labelStyle = {'font-size':
-                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000',
                                'white-space': 'pre-wrap'}
 
         # Set the font size of the axes
         font = QtGui.QFont()
-        font.setPixelSize(pytplot.tplot_opt_glob['axis_font_size'])
+        font.setPixelSize(pyspedas.pytplot.tplot_opt_glob['axis_font_size'])
         self.xaxis.setTickFont(font)
         self.yaxis.setTickFont(font)
-        self.yaxis.setStyle(textFillLimits=pytplot.tplot_opt_glob["axis_tick_num"],
+        self.yaxis.setStyle(textFillLimits=pyspedas.pytplot.tplot_opt_glob["axis_tick_num"],
                             tickFont=font)  # Set an absurdly high number for the first 3, ensuring that at least 3 axis labels are always present
 
         if show_xaxis:
@@ -87,7 +87,7 @@ class TVarFigureAlt(pg.GraphicsLayout):
 
         self._mouseMovedFunction = mouse_function
 
-        if pytplot.tplot_opt_glob["black_background"]:
+        if pyspedas.pytplot.tplot_opt_glob["black_background"]:
             self.vLine = pg.InfiniteLine(angle=90, movable=False, pen=pg.mkPen('w'))
             self.hLine = pg.InfiniteLine(angle=0, movable=False, pen=pg.mkPen('w'))
         else:
@@ -105,8 +105,8 @@ class TVarFigureAlt(pg.GraphicsLayout):
         # Set legend options
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
         # Allow the user to set x-axis(time) and y-axis data names in crosshairs
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
 
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
@@ -132,9 +132,9 @@ class TVarFigureAlt(pg.GraphicsLayout):
         self.xaxis.setLabel("Altitude", **self.labelStyle)
 
     def _setyaxislabel(self):
-        ylabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
-        if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+        ylabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
+        if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            sublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
             self.yaxis.setLabel(f"{ylabel} <br> {sublabel}", **self.labelStyle)
         else:
             self.yaxis.setLabel(ylabel, **self.labelStyle)
@@ -147,14 +147,14 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return
 
     def _getyaxistype(self):
-        if 'y_axis_type' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_axis_type']
+        if 'y_axis_type' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            return pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_axis_type']
         else:
             return 'linear'
 
     def _setxrange(self):
-        if 'alt_range' in pytplot.tplot_opt_glob:
-            self.plotwindow.setXRange(pytplot.tplot_opt_glob['alt_range'][0], pytplot.tplot_opt_glob['alt_range'][1])
+        if 'alt_range' in pyspedas.pytplot.tplot_opt_glob:
+            self.plotwindow.setXRange(pyspedas.pytplot.tplot_opt_glob['alt_range'][0], pyspedas.pytplot.tplot_opt_glob['alt_range'][1])
         else:
             return
 
@@ -195,16 +195,16 @@ class TVarFigureAlt(pg.GraphicsLayout):
             # Set legend options
             self.hoverlegend.setVisible(True)
             # Allow the user to set x-axis(time) and y-axis data names in crosshairs
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', index_x)
-            self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', index_y)
+            self.hoverlegend.setItem(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', index_x)
+            self.hoverlegend.setItem(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', index_y)
         else:
             self.hoverlegend.setVisible(False)
             self.vLine.setVisible(False)
             self.hLine.setVisible(False)
 
     def _addlegend(self):
-        if 'legend_names' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            legend_names = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['legend_names']
+        if 'legend_names' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            legend_names = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['legend_names']
             if len(legend_names) != len(self.curves):
                 print("Number of lines do not match length of legend names")
             if len(legend_names) == 1:
@@ -233,28 +233,28 @@ class TVarFigureAlt(pg.GraphicsLayout):
         return
 
     def _setcolors(self):
-        if 'line_color' in pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
-            return pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
+        if 'line_color' in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']:
+            return pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['line_color']
         else:
-            if pytplot.tplot_opt_glob['black_background']:
-                return pytplot.tplot_utilities.rgb_color(['w', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+            if pyspedas.pytplot.tplot_opt_glob['black_background']:
+                return pyspedas.pytplot.tplot_utilities.rgb_color(['w', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
             else:
-                return pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
+                return pyspedas.pytplot.tplot_utilities.rgb_color(['k', 'r', 'seagreen', 'b', 'darkturquoise', 'm', 'goldenrod'])
 
     def _setcolormap(self):
         return
 
     def _setyrange(self):
         if self._getyaxistype() == 'log':
-            if pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] <= 0 or \
-                    pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] <= 0:
+            if pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0] <= 0 or \
+                    pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1] <= 0:
                 return
-            self.plotwindow.vb.setYRange(np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]),
-                                         np.log10(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]),
+            self.plotwindow.vb.setYRange(np.log10(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0]),
+                                         np.log10(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1]),
                                          padding=0)
         else:
-            self.plotwindow.vb.setYRange(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
-                                         pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1], padding=0)
+            self.plotwindow.vb.setYRange(pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][0],
+                                         pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['y_range'][1], padding=0)
 
     def _setzrange(self):
         return
@@ -263,27 +263,27 @@ class TVarFigureAlt(pg.GraphicsLayout):
         # initialize dataset variable
         datasets = []
         # grab tbardict
-        tbardict = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
+        tbardict = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar']
         ltbar = len(tbardict)
 
         # make sure data is in list format
-        datasets = [pytplot.data_quants[self.tvar_name]]
-        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
-            datasets.append(pytplot.data_quants[oplot_name])
+        datasets = [pyspedas.pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(pyspedas.pytplot.data_quants[oplot_name])
 
         for dataset in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name, no_spec_bins=True)
+            dataset = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset.name, no_spec_bins=True)
             # for location in tbar dict
             for i in range(ltbar):
                 # get times, color, point size
-                test_time = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
-                color = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
-                pointsize = pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
+                test_time = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["location"]
+                color = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_color"]
+                pointsize = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['time_bar'][i]["line_width"]
                 # correlate given time with corresponding data/alt points
-                time = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].coords['time'].values
-                altitude = pytplot.data_quants[pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].values
+                time = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].coords['time'].values
+                altitude = pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['links']['alt']].values
                 nearest_time_index = np.abs(time - test_time).argmin()
                 data_point = dataset.iloc[nearest_time_index][0]
                 alt_point = altitude[nearest_time_index]
@@ -292,16 +292,16 @@ class TVarFigureAlt(pg.GraphicsLayout):
 
     def _visdata(self):
 
-        datasets = [pytplot.data_quants[self.tvar_name]]
-        for oplot_name in pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
-            datasets.append(pytplot.data_quants[oplot_name])
+        datasets = [pyspedas.pytplot.data_quants[self.tvar_name]]
+        for oplot_name in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['overplots']:
+            datasets.append(pyspedas.pytplot.data_quants[oplot_name])
 
         line_num = 0
         for dataset_xr in datasets:
             # TODO: The below function is essentially a hack for now, because this code was written assuming the data was a dataframe object.
             # This needs to be rewritten to use xarray
-            dataset = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name, no_spec_bins=True)
-            coords = pytplot.tplot_utilities.return_interpolated_link_dict(dataset_xr, ['alt'])
+            dataset = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(dataset_xr.name, no_spec_bins=True)
+            coords = pyspedas.pytplot.tplot_utilities.return_interpolated_link_dict(dataset_xr, ['alt'])
             for i in range(0, len(dataset.columns)):
                 t_link = coords['alt'].coords['time'].values
                 x = coords['alt'].values

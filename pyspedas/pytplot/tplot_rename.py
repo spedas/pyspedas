@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-import pytplot
+import pyspedas
 from collections import OrderedDict
 import logging
 
@@ -32,13 +32,13 @@ def tplot_rename(old_name, new_name):
 
     #if old name input is a number, convert to corresponding name
     if isinstance(old_name, int):
-        if isinstance(pytplot.data_quants[old_name], dict):
-            old_name = pytplot.data_quants[old_name]['name']
+        if isinstance(pyspedas.pytplot.data_quants[old_name], dict):
+            old_name = pyspedas.pytplot.data_quants[old_name]['name']
         else:
-            old_name = pytplot.data_quants[old_name].name
+            old_name = pyspedas.pytplot.data_quants[old_name].name
 
     # check if old name is in current dictionary
-    if old_name not in pytplot.data_quants.keys():
+    if old_name not in pyspedas.pytplot.data_quants.keys():
         logging.info("The name %s is currently not in pytplot", old_name)
         return
 
@@ -55,7 +55,7 @@ def tplot_rename(old_name, new_name):
     # with a dangling reference to the old name.  This also matches the IDL behavior,
     # but should it?   JWL 2024/07/31
 
-    d = pytplot.data_quants
+    d = pyspedas.pytplot.data_quants
     d2 = OrderedDict([(new_name, v) if k == old_name else (k, v) for k, v in d.items()])
     new_data_quants = d2
     for key in d2:
@@ -65,5 +65,5 @@ def tplot_rename(old_name, new_name):
         else:
             new_data_quants[key].name = key
     
-    pytplot.data_quants = new_data_quants
+    pyspedas.pytplot.data_quants = new_data_quants
     return

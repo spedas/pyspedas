@@ -1,5 +1,5 @@
 from pyspedas.projects.themis.load import load
-import pytplot
+import pyspedas
 
 def esa(trange=['2007-03-23', '2007-03-24'],
         probe='c',

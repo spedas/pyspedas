@@ -1,8 +1,8 @@
 import os
 import logging
 import numpy as np
-from pytplot import store_data, options
-from pytplot import time_double
+from pyspedas import store_data, options
+from pyspedas import time_double
 from pyspedas.utilities.download import download
 from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals

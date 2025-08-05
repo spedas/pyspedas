@@ -1,6 +1,6 @@
 import logging
 import pyspedas
-import pytplot
+import pyspedas
 import numpy as np
 
 
@@ -54,7 +54,7 @@ def yclip(
     Examples
     --------
         import numpy as np
-        import pytplot
+        import pyspedas
         import pyspedas
 
         # Create some data
@@ -62,13 +62,13 @@ def yclip(
         data = np.array([1.0, 2.0, 3.0])
 
         # Store the data in tplot 'variable1'
-        pytplot.store_data('variable1', data={'x': times, 'y': data})
+        pyspedas.store_data('variable1', data={'x': times, 'y': data})
 
         # Clip the data between 1.5 and 2.5, replacing values outside this range with NaN
         pyspedas.yclip(names='variable1', ymin=1.5, ymax=2.5)
 
         # The clipped data is now stored in 'variable1-clip'
-        clipped_data = pytplot.get_data('variable1-clip')
+        clipped_data = pyspedas.get_data('variable1-clip')
         print(clipped_data)
     """
     # new_names is deprecated in favor of newname
@@ -106,6 +106,6 @@ def yclip(
     for i, old in enumerate(old_names):
         new = n_names[i]
 
-        data = pytplot.clip(old, ymin, ymax, new)
+        data = pyspedas.clip(old, ymin, ymax, new)
 
         logging.info("yclip was applied to: " + new)

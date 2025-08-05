@@ -3,12 +3,12 @@ import numpy as np
 from copy import deepcopy
 
 from pyspedas import tinterpol, tcopy
-from pytplot import time_double, tnames
-from pytplot import time_string
+from pyspedas import time_double, tnames
+from pyspedas import time_string
 
 from pyspedas.particles.moments.spd_pgs_moments import spd_pgs_moments
 from pyspedas.particles.spd_part_products.spd_pgs_regrid import spd_pgs_regrid
-from pytplot import get_timespan, get_data, store_data
+from pyspedas import get_timespan, get_data, store_data
 
 from .erg_hep_get_dist import erg_hep_get_dist
 from .erg_pgs_clean_data import erg_pgs_clean_data

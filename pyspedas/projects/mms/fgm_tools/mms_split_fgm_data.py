@@ -1,7 +1,7 @@
 import logging
 
-from pytplot import data_exists
-from pytplot import get_data, store_data, options
+from pyspedas import data_exists
+from pyspedas import get_data, store_data, options
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)

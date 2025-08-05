@@ -2,13 +2,13 @@ import unittest
 from unittest.mock import patch, Mock
 import numpy as np
 from pyspedas.projects.mms import mms_load_state, mms_load_tetrahedron_qf, mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_fpi, mms_load_hpca, mms_load_feeps, mms_load_edp, mms_load_edi, mms_load_aspoc, mms_load_dsp
-from pytplot import data_exists
+from pyspedas import data_exists
 from pyspedas.projects.mms.hpca_tools.mms_hpca_calc_anodes import mms_hpca_calc_anodes
 from pyspedas.projects.mms.hpca_tools.mms_hpca_spin_sum import mms_hpca_spin_sum
 from pyspedas.projects.mms.hpca_tools.mms_get_hpca_info import mms_get_hpca_info
 from pyspedas import tdpwrspc
 import pyspedas
-from pytplot import get_data, del_data, tplot
+from pyspedas import get_data, del_data, tplot
 import logging
 
 

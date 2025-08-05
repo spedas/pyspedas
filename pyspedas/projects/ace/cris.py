@@ -1,5 +1,5 @@
 from .load import load
-from pytplot import options
+from pyspedas import options
 from pyspedas.utilities.datasets import find_datasets
 
 # This routine was originally in ace/__init__.py, until being moved to its own file.

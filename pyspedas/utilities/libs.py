@@ -10,7 +10,7 @@ import sys
 import io
 from fnmatch import fnmatchcase
 
-import pytplot
+import pyspedas
 import pyspedas
 import functools
 

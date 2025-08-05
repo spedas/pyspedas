@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 import logging
 
 def annotate(tvar=None, text=None, position=None,
@@ -54,12 +54,12 @@ def annotate(tvar=None, text=None, position=None,
     """
 
     if isinstance(tvar, int):
-        var = list(pytplot.data_quants.keys())[tvar]
+        var = list(pyspedas.pytplot.data_quants.keys())[tvar]
 
     if not isinstance(tvar, list):
         tvar = [tvar]
 
-    names = pytplot.tplot_wildcard_expand(tvar)
+    names = pyspedas.pytplot.tplot_wildcard_expand(tvar)
     if len(names) == 0:
         logging.warning("annotations: no valid tplot variables specified")
         return
@@ -79,15 +79,15 @@ def annotate(tvar=None, text=None, position=None,
 
     for name in names:
 
-        if name not in pytplot.data_quants.keys():
+        if name not in pyspedas.pytplot.data_quants.keys():
                 logging.info(str(name) + " is currently not in pytplot.")
                 continue
 
         if delete:
-            pytplot.data_quants[name].attrs['plot_options']['extras']['annotations'] = None
+            pyspedas.pytplot.data_quants[name].attrs['plot_options']['extras']['annotations'] = None
             continue
 
-        if pytplot.data_quants[name].attrs['plot_options']['extras'].get('annotations') is None:
-            pytplot.data_quants[name].attrs['plot_options']['extras']['annotations'] = [annotations]
+        if pyspedas.pytplot.data_quants[name].attrs['plot_options']['extras'].get('annotations') is None:
+            pyspedas.pytplot.data_quants[name].attrs['plot_options']['extras']['annotations'] = [annotations]
         else:
-            pytplot.data_quants[name].attrs['plot_options']['extras']['annotations'].append(annotations)
+            pyspedas.pytplot.data_quants[name].attrs['plot_options']['extras']['annotations'].append(annotations)

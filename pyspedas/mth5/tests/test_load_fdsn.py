@@ -13,7 +13,7 @@ from pyspedas.mth5.utilities import datasets
 from pyspedas.mth5.config import CONFIG
 
 import pyspedas
-import pytplot
+import pyspedas
 
 import time
 import os
@@ -73,8 +73,8 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         cls.H5OPEN = len(o) > 0
 
     def setUp(self):
-        if len(pytplot.tplot_names()) > 0:
-            pytplot.del_data('*')
+        if len(pyspedas.tplot_names()) > 0:
+            pyspedas.del_data('*')
 
     def test01_load_fdsn_notrange(self):
         """
@@ -84,7 +84,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
             load_fdsn(network="4P", station="REU49")
         self.assertIn('trange not specified', cm.output[0])
-        self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
+        self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
 
     def test01_load_fdsn_nonetwork(self):
         """
@@ -97,7 +97,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
             load_fdsn(station='REU49', trange=[date_start, date_end])
         self.assertIn('Network not specified', cm.output[0])
-        self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
+        self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
 
     def test01_load_fdsn_nostation(self):
         """
@@ -110,7 +110,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
             load_fdsn(network='4P', trange=[date_start, date_end])
         self.assertIn('Station not specified', cm.output[0])
-        self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
+        self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
 
     def test02_load_fdsn_basic(self):
         date_start = '2015-06-22T01:45:00'
@@ -119,8 +119,8 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         load_fdsn(network="4P", station="GAW50", trange=[date_start, date_end])
 
         try:
-            self.assertTrue('fdsn_4P_REU49' in pytplot.tnames())
-            self.assertTrue('fdsn_4P_GAW50' in pytplot.tnames())
+            self.assertTrue('fdsn_4P_REU49' in pyspedas.tnames())
+            self.assertTrue('fdsn_4P_GAW50' in pyspedas.tnames())
             self.BASIC_TEST_FAILED = False
         except AssertionError:
             self.BASIC_TEST_FAILED = True
@@ -189,10 +189,10 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_end = '2015-06-22T02:20:00'
 
         tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nodownload=True)
-        time, data = pytplot.get_data(tvar)
+        time, data = pyspedas.get_data(tvar)
 
-        t1 = pytplot.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
-        t2 = pytplot.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')
+        t1 = pyspedas.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
+        t2 = pyspedas.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')
         self.assertTrue(t1 == date_start)
         self.assertTrue(t2 == date_end)
 
@@ -219,7 +219,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
                 except:
                     pass
             self.assertIn('Cannot initialize mth5 object', cm.output[0])
-            self.assertFalse('fdsn_4P_REU49' in pytplot.tnames())
+            self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
 
         # incorrect network
         test_network_station_error(network="4P_", station="REU49")

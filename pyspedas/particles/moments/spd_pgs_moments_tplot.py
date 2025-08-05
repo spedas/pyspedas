@@ -1,6 +1,6 @@
 
 import logging
-from pytplot import store_data, options, set_units, set_coords
+from pyspedas.pytplot import store_data, options, set_units, set_coords
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)

@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 import pyspedas
 from pyspedas.projects.secs.makeplots import make_plots
-from pytplot import del_data
+from pyspedas.pytplot import del_data
 from pyspedas.projects.secs.config import CONFIG
 
 

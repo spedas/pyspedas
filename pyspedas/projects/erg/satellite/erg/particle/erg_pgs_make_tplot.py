@@ -1,6 +1,6 @@
 
 import numpy as np
-from pytplot import store_data, options
+from pyspedas import store_data, options
 
 from .erg_units_string import erg_units_string
 

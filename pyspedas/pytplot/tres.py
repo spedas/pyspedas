@@ -4,7 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import logging
-import pytplot
+import pyspedas
 import numpy as np
 
 def tres(tplot_var):
@@ -34,10 +34,10 @@ def tres(tplot_var):
 
     """
     if isinstance(tplot_var, int):
-        tplot_var = list(pytplot.data_quants.keys())[tplot_var]
+        tplot_var = list(pyspedas.pytplot.data_quants.keys())[tplot_var]
 
     if isinstance(tplot_var, str):
-        data = pytplot.get_data(tplot_var)
+        data = pyspedas.get_data(tplot_var)
         if data is not None:
             delta_t = np.median(data.times[1:-1]-data.times[0:-2])
         else:

@@ -4,7 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import logging
-import pytplot
+import pyspedas
 from copy import deepcopy
 from collections import OrderedDict
 
@@ -34,22 +34,22 @@ def tplot_copy(old_name, new_name):
 
     # if old name input is a number, convert to corresponding name
     if isinstance(old_name, int):
-        if isinstance(pytplot.data_quants[old_name], dict):
-            old_name = pytplot.data_quants[old_name]['name']
+        if isinstance(pyspedas.pytplot.data_quants[old_name], dict):
+            old_name = pyspedas.pytplot.data_quants[old_name]['name']
         else:
-            old_name = pytplot.data_quants[old_name].name
+            old_name = pyspedas.pytplot.data_quants[old_name].name
 
     # check if old name is in current dictionary
-    if old_name not in pytplot.data_quants.keys():
+    if old_name not in pyspedas.pytplot.data_quants.keys():
         logging.info("The name %s is currently not in pytplot",old_name)
         return
 
     # Add a new data quantity with the copied data
-    if isinstance(pytplot.data_quants[old_name], dict):
+    if isinstance(pyspedas.pytplot.data_quants[old_name], dict):
         # old variable is a non-record varying variable
-        pytplot.store_data(new_name, data={'y': pytplot.data_quants[old_name]['data']})
+        pytplot.store_data(new_name, data={'y': pyspedas.pytplot.data_quants[old_name]['data']})
     else:
-        pytplot.data_quants[new_name] = deepcopy(pytplot.data_quants[old_name])
-        pytplot.data_quants[new_name].name = new_name
+        pyspedas.pytplot.data_quants[new_name] = deepcopy(pyspedas.pytplot.data_quants[old_name])
+        pyspedas.pytplot.data_quants[new_name].name = new_name
 
     return

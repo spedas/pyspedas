@@ -8,7 +8,7 @@ Similar to clean_spikes.pro in IDL SPEDAS.
 """
 import logging
 import numpy as np
-import pytplot
+import pyspedas
 from .tsmooth import tsmooth
 from .subtract_average import subtract_average
 
@@ -49,7 +49,7 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
         logging.info("clean_spikes: The new_names parameter is deprecated. Please use newname instead.")
         newname = new_names
 
-    old_names = pytplot.tnames(names)
+    old_names = pyspedas.pytplot.tnames(names)
 
     if len(old_names) < 1:
         logging.error('clean_spikes: No valid tplot names were provided.')
@@ -77,20 +77,20 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
 
         # Create new
         if old != new:
-            pytplot.tplot_copy(old, new)
+            pyspedas.pytplot.tplot_copy(old, new)
 
         # Perform subtract_average or just copy the values
         if sub_avg:
             subtract_average(new, newname=tmp)
         else:
-            pytplot.tplot_copy(new, tmp)
+            pyspedas.pytplot.tplot_copy(new, tmp)
 
         # Find spikes
         tmps = tmp + '-s'
         tsmooth(tmp, newname=tmps, width=nsmooth)
-        ds0 = pytplot.get_data(tmps)  # smoothed out values
+        ds0 = pyspedas.pytplot.get_data(tmps)  # smoothed out values
         ds = ds0[1]
-        dor0 = pytplot.get_data(tmp)  # original values
+        dor0 = pyspedas.pytplot.get_data(tmp)  # original values
         d0 = dor0[1]
         dn = d0.copy()  # final values
 
@@ -109,11 +109,11 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
                     if abs(d0[i, j] - ds[i, j]) > thresh * abs(ds[i, j]):
                         dn[i, j] = np.nan  # for spikes, set to NaN
 
-        # pytplot.data_quants[new] = d
-        pytplot.replace_data(new, dn)
+        # pyspedas.pytplot.data_quants[new] = d
+        pyspedas.pytplot.replace_data(new, dn)
 
         # remove temp data
-        del pytplot.data_quants[tmp]
-        del pytplot.data_quants[tmps]
+        del pyspedas.pytplot.data_quants[tmp]
+        del pyspedas.pytplot.data_quants[tmps]
 
         logging.info('clean_spikes was applied to: ' + new)

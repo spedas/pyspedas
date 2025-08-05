@@ -1,7 +1,7 @@
 import fnmatch
 import logging
 
-from pytplot import data_quants
+from pyspedas.pytplot import data_quants
 from .tplot_names import tplot_names
 
 def wildcard_expand(master_list, patterns, case_sensitive=True, split_whitespace=True, quiet=False):

@@ -3,10 +3,10 @@ import logging
 
 import numpy as np
 from copy import deepcopy
-from pytplot import tnames
-from pytplot import time_double
-from pytplot import time_string
-from pytplot import get_data
+from pyspedas import tnames
+from pyspedas import time_double
+from pyspedas import time_string
+from pyspedas import get_data
 from scipy import interpolate
 
 

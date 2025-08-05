@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-import pytplot
+import pyspedas
 
 def tplot_names(quiet=False):
     """
@@ -35,8 +35,8 @@ def tplot_names(quiet=False):
 
     # TODO: Print out links as well?
 
-    for key, _ in pytplot.data_quants.items():
-        if isinstance(pytplot.data_quants[key], dict):
+    for key, _ in pyspedas.pytplot.data_quants.items():
+        if isinstance(pyspedas.pytplot.data_quants[key], dict):
             # non-record varying variables are stored as dictionaries
             if isinstance(key, str):
                 names_to_print = key
@@ -48,17 +48,17 @@ def tplot_names(quiet=False):
             index += 1
             continue
 
-        if len(pytplot.data_quants[key].attrs['plot_options']['overplots_mpl']) != 0:
+        if len(pyspedas.pytplot.data_quants[key].attrs['plot_options']['overplots_mpl']) != 0:
             if quiet:
                 # In this context we only want variable names, and no other formatting
-                names_to_print = pytplot.data_quants[key].name
+                names_to_print = pyspedas.pytplot.data_quants[key].name
             else:
-                names_to_print = pytplot.data_quants[key].name + "  data from: "
-                for oplot_name in pytplot.data_quants[key].attrs['plot_options']['overplots_mpl']:
+                names_to_print = pyspedas.pytplot.data_quants[key].name + "  data from: "
+                for oplot_name in pyspedas.pytplot.data_quants[key].attrs['plot_options']['overplots_mpl']:
                     names_to_print = names_to_print + " " + oplot_name
         else:
             if isinstance(key, str):
-                names_to_print = pytplot.data_quants[key].name
+                names_to_print = pyspedas.pytplot.data_quants[key].name
 
         if quiet != True:
             print(index, ":", names_to_print)

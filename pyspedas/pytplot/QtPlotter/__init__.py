@@ -10,6 +10,6 @@ from .TVarFigureSpec import TVarFigureSpec
 from .TVarFigureMap import TVarFigureMap
 from .generate import generate_stack
 try:
-    from .PyTPlot_Exporter import PytplotExporter
+    from .PyTPlot_Exporter import pyspedasExporter
 except:
     pass

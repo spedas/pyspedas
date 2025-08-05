@@ -1,10 +1,10 @@
 import os
 import unittest
-from pytplot import data_exists, tnames
+from pyspedas.pytplot import data_exists, tnames
 import numpy as np
 
 import pyspedas
-from pytplot import del_data, tplot
+from pyspedas.pytplot import del_data, tplot
 
 global_display=False
 

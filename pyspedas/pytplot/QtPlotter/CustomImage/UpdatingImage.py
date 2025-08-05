@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 import pyqtgraph as pg
 import numpy as np
 from pyqtgraph.Qt import QtCore

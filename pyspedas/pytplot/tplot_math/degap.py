@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 import numpy as np
 import copy
 import logging
@@ -68,12 +68,12 @@ def degap(
         newname = new_tvar
 
     # check for globbed or array input, and call recursively
-    tn = pytplot.tnames(tvar)
+    tn = pyspedas.pytplot.tnames(tvar)
     if len(tn) == 0:
         return
     elif len(tn) > 1:
         for j in range(len(tn)):
-            pytplot.degap(
+            pyspedas.pytplot.degap(
                 tn[j],
                 dt=dt,
                 margin=margin,
@@ -86,9 +86,9 @@ def degap(
     # here we have 1 variable
 
     # fix from T.Hori, 2023-04-10, jimm02
-    #    gap_size = np.diff(pytplot.data_quants[tvar].coords['time']) This is in Nanoseconds, and causes a type mismatch with dt+margin
-    #    new_tvar_index = pytplot.data_quants[tvar].coords['time']
-    new_tvar_index = pytplot.get_data(tvar)[0]  # Unix time float64
+    #    gap_size = np.diff(pyspedas.pytplot.data_quants[tvar].coords['time']) This is in Nanoseconds, and causes a type mismatch with dt+margin
+    #    new_tvar_index = pyspedas.pytplot.data_quants[tvar].coords['time']
+    new_tvar_index = pyspedas.pytplot.get_data(tvar)[0]  # Unix time float64
     gap_size = np.diff(new_tvar_index)
     if maxgap is None:
         maxgap = np.nanmax(new_tvar_index)-np.nanmin(new_tvar_index)
@@ -139,25 +139,25 @@ def degap(
     new_index=np.array(new_index_float64*1e9,dtype='datetime64[ns]')
 
     # This can fail if the stored quantities are np.datetime64 and new_index is something else, like datetime.datetime
-    a = pytplot.data_quants[tvar].reindex({"time": new_index}, method=method)
+    a = pyspedas.pytplot.data_quants[tvar].reindex({"time": new_index}, method=method)
 
     if newname is None:
         a.name = tvar
-        a.attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
-        pytplot.data_quants[tvar] = copy.deepcopy(a)
+        a.attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
+        pyspedas.pytplot.data_quants[tvar] = copy.deepcopy(a)
     else:
         if "spec_bins" in a.coords:
-            pytplot.store_data(
+            pyspedas.pytplot.store_data(
                 newname,
                 data={"x": a.coords["time"], "y": a.values, "v": a.coords["spec_bins"]},
             )
-            pytplot.data_quants[newname].attrs = copy.deepcopy(
-                pytplot.data_quants[tvar].attrs
+            pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(
+                pyspedas.pytplot.data_quants[tvar].attrs
             )
         else:
-            pytplot.store_data(newname, data={"x": a.coords["time"], "y": a.values})
-            pytplot.data_quants[newname].attrs = copy.deepcopy(
-                pytplot.data_quants[tvar].attrs
+            pyspedas.pytplot.store_data(newname, data={"x": a.coords["time"], "y": a.values})
+            pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(
+                pyspedas.pytplot.data_quants[tvar].attrs
             )
 
     return

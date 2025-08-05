@@ -1,4 +1,4 @@
-import pytplot
+import pyspedas
 from . import time_double
 from .xlim import xlim
 import logging
@@ -39,27 +39,27 @@ def timespan(t1=None, dt=None, units="days", keyword=None, reset=False):
     """
 
     if reset is True:
-        if 'x_range_full' in pytplot.tplot_opt_glob.keys():
-            del pytplot.tplot_opt_glob['x_range_full']
-        if 'x_range_last' in pytplot.tplot_opt_glob.keys():
-            del pytplot.tplot_opt_glob['x_range_last']
-        if 'x_range' in pytplot.tplot_opt_glob.keys():
-            del pytplot.tplot_opt_glob['x_range']
-        if 'xfull' in pytplot.lim_info.keys():
-            del pytplot.lim_info['xfull']
-        if 'xlast' in pytplot.lim_info.keys():
-            del pytplot.lim_info['xlast']
+        if 'x_range_full' in pyspedas.pytplot.tplot_opt_glob.keys():
+            del pyspedas.pytplot.tplot_opt_glob['x_range_full']
+        if 'x_range_last' in pyspedas.pytplot.tplot_opt_glob.keys():
+            del pyspedas.pytplot.tplot_opt_glob['x_range_last']
+        if 'x_range' in pyspedas.pytplot.tplot_opt_glob.keys():
+            del pyspedas.pytplot.tplot_opt_glob['x_range']
+        if 'xfull' in pyspedas.pytplot.lim_info.keys():
+            del pyspedas.pytplot.lim_info['xfull']
+        if 'xlast' in pyspedas.pytplot.lim_info.keys():
+            del pyspedas.pytplot.lim_info['xlast']
         return
     elif isinstance(t1, (list, tuple, np.ndarray)):
         if len(t1) != 2:
             logging.warning('timespan: If input is a list or array, it must have 2 elements')
             return None
         else:
-            t1 = pytplot.time_double(t1)
+            t1 = pyspedas.pytplot.time_double(t1)
             xlim(t1[0], t1[1])
             return
     elif isinstance(t1, str):
-        t1 = pytplot.time_double(t1)
+        t1 = pyspedas.pytplot.time_double(t1)
 
     if keyword is not None:
         units = keyword
@@ -81,7 +81,7 @@ def timespan(t1=None, dt=None, units="days", keyword=None, reset=False):
         )
 
     if not isinstance(t1, (int, float, complex)):
-        t1 = pytplot.time_double(t1)
+        t1 = pyspedas.pytplot.time_double(t1)
     t2 = t1 + dt
     xlim(t1, t2)
 

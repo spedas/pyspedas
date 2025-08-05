@@ -1,5 +1,5 @@
 import numpy as np
-from pytplot import clip, get_data, options, ylim
+from pyspedas import clip, get_data, options, ylim
 
 from ..load import load
 from ..get_gatt_ror import get_gatt_ror

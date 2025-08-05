@@ -1,5 +1,5 @@
 from . import tplot_utilities
-import pytplot
+import pyspedas
 import logging
 
 
@@ -49,7 +49,7 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
     """
 
     # wildcard expansion
-    varname = pytplot.tnames(varname)
+    varname = pyspedas.tnames(varname)
 
     # make sure t entered is a list
     if not isinstance(t, list):
@@ -81,11 +81,11 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
             tbar = {}
             tbar["location"] = t[i]
             tbar["dimension"] = dim
-            tbar["line_color"] = pytplot.tplot_utilities.rgb_color(color)[0]
+            tbar["line_color"] = pyspedas.pytplot.tplot_utilities.rgb_color(color)[0]
             tbar["line_width"] = thick
             tbar["line_dash"] = dash_pattern
-            for name in pytplot.data_quants:
-                temp_data_quants = pytplot.data_quants[name]
+            for name in pyspedas.pytplot.data_quants:
+                temp_data_quants = pyspedas.pytplot.data_quants[name]
                 if isinstance(temp_data_quants, dict):
                     # non-record varying variable
                     continue
@@ -95,7 +95,7 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
         if not isinstance(varname, list):
             varname = [varname]
         for j in varname:
-            if j not in pytplot.data_quants.keys():
+            if j not in pyspedas.pytplot.data_quants.keys():
                 logging.info(str(j) + "is currently not in pytplot")
             else:
                 num_bars = len(t)
@@ -103,10 +103,10 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
                     tbar = {}
                     tbar["location"] = t[i]
                     tbar["dimension"] = dim
-                    tbar["line_color"] = pytplot.tplot_utilities.rgb_color(color)[0]
+                    tbar["line_color"] = pyspedas.pytplot.tplot_utilities.rgb_color(color)[0]
                     tbar["line_width"] = thick
                     tbar["line_dash"] = dash_pattern
-                    temp_data_quants = pytplot.data_quants[j]
+                    temp_data_quants = pyspedas.pytplot.data_quants[j]
                     if isinstance(temp_data_quants, dict):
                         # non-record varying variable
                         continue

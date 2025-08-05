@@ -7,11 +7,11 @@ Notes:
 import logging
 import numpy as np
 from copy import deepcopy
-#import pytplot
+#import pyspedas
 
 import pyspedas
 from pyspedas.cotrans_tools.cotrans_lib import subgei2gse
-from pytplot import data_exists, del_data, store_data, get_data, set_coords, get_coords
+from pyspedas.pytplot import data_exists, del_data, store_data, get_data, set_coords, get_coords
 from pyspedas.projects.themis import autoload_support
 
 

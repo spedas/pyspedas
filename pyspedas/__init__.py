@@ -1,7 +1,8 @@
-# Import pyspedas tools into pyspedas namespace
+#Import pyspedas tools into pyspedas namespace
 # These are imported as a convenience for pyspedas users.  For internal pyspedas development, it is
 # probably best to keep using the fully qualified module names.
 
+from .pytplot import *
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
 from .analysis.tvectot import tvectot
@@ -69,7 +70,6 @@ from .version import version
 # Note to developers: Do not use these imports for pyspedas internals, or it may cause
 # circular dependencies.  Import directly from pytplot instead.
 
-from pytplot import *
 from .projects.noaa.noaa_load_kp import noaa_load_kp
 # omni must precede mms to avoid problems with circular imports
 from .projects import omni
@@ -200,3 +200,21 @@ logger_handler = logger.handlers[0]  # should exist since basicConfig has been c
 logger_fmt = logging.Formatter(logging_format, logging_date_fmt)
 logger_handler.setFormatter(logger_fmt)
 logger.setLevel(logging_level)
+
+# Now that logging is configured, check to see if pytplot is installed.  If so, advise the
+# user that pytplot is now included with pyspedas, and that the external pytplot package can
+# and should be removed.
+
+try:
+    import pytplot as old_pytplot
+    # If we get here, the external package is installed.
+    logging.info("You appear to have the external pytplot or pytplot-mpl-temp packages installed.")
+    logging.info("PySPEDAS 2.0 and later now bundles the pytplot tools, and we recommend that you remove the external packages to avoid using obsolete code.")
+    logging.info("To uninstall:")
+    logging.info("pip uninstall pytplot")
+    logging.info("pip uninstall pytplot-mpl-temp")
+    logging.info("To update your own code for PySPEDAS 2.0 compatibility, please refer to our PySPEDAS 2.0 migration guide:")
+    logging.info("https://pyspedas.readthedocs.io/en/latest/pyspedas_2_migration.html")
+except ImportError:
+    # Nothing to do here, external pytplot package not found
+    pass

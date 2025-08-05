@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-import pytplot
+import pyspedas
 from . import tplot_utilities
 
 def xlim(min, max):
@@ -37,12 +37,12 @@ def xlim(min, max):
         min = tplot_utilities.str_to_float_fuzzy(min)
     if not isinstance(max, (int, float, complex)):
         max = tplot_utilities.str_to_float_fuzzy(max)
-    if 'x_range' in pytplot.tplot_opt_glob:
-        pytplot.tplot_opt_glob['x_range_last'] = pytplot.tplot_opt_glob['x_range']
-        pytplot.lim_info['xlast'] = pytplot.tplot_opt_glob['x_range']
+    if 'x_range' in pyspedas.pytplot.tplot_opt_glob:
+        pyspedas.pytplot.tplot_opt_glob['x_range_last'] = pyspedas.pytplot.tplot_opt_glob['x_range']
+        pyspedas.pytplot.lim_info['xlast'] = pyspedas.pytplot.tplot_opt_glob['x_range']
     else:
-        pytplot.tplot_opt_glob['x_range_full'] = [min, max]
-        pytplot.lim_info['xfull'] = [min, max]
-        pytplot.lim_info['xlast'] = [min, max]
-    pytplot.tplot_opt_glob['x_range'] = [min, max]
+        pyspedas.pytplot.tplot_opt_glob['x_range_full'] = [min, max]
+        pyspedas.pytplot.lim_info['xfull'] = [min, max]
+        pyspedas.pytplot.lim_info['xlast'] = [min, max]
+    pyspedas.pytplot.tplot_opt_glob['x_range'] = [min, max]
     return

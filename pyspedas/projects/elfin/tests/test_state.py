@@ -7,7 +7,7 @@ How to run:
 """
 import unittest
 import logging
-import pytplot.get_data
+import pyspedas.get_data
 from pytplot.importers.tplot_restore import tplot_restore
 from numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal
 

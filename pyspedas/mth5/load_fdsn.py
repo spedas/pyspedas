@@ -3,11 +3,11 @@ import os
 import mth5
 import numpy as np
 import pandas as pd
-import pytplot
+import pyspedas
 
 import pyspedas
 from .config import CONFIG
-from pytplot import store_data, options
+from pyspedas import store_data, options
 
 # MTH5 installation is checked in __init__
 from mth5.clients.make_mth5 import FDSN
@@ -175,9 +175,9 @@ def load_fdsn(trange=None, network=None, station=None,
         try:
             mth5_path = fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=mth5dir)
             if os.path.isfile(mth5_pathfile):
-                pytplot.logger.info(f"Deleting cached {mth5_pathfile}")
+                pyspedas.logger.info(f"Deleting cached {mth5_pathfile}")
                 os.remove(mth5_pathfile)
-            pytplot.logger.info(f"Creating cached {mth5_pathfile}")
+            pyspedas.logger.info(f"Creating cached {mth5_pathfile}")
             os.rename(mth5_path, mth5_pathfile)
             mth5_path = mth5_pathfile
         except Exception as e:
@@ -186,7 +186,7 @@ def load_fdsn(trange=None, network=None, station=None,
 
             # # Check if file was the cache file was created
             # if 'mth5_path' in locals() and os.path.isfile(mth5_path):
-            #     pytplot.logger.info(f"Cache was created and will be deleted: {mth5_path}")
+            #     pyspedas.logger.info(f"Cache was created and will be deleted: {mth5_path}")
             #     os.remove(mth5_path)
 
             # Exit code by flag
@@ -197,7 +197,7 @@ def load_fdsn(trange=None, network=None, station=None,
             mth5_tmp = fdsn_object.make_filename(request_df)
             mth5_file = os.path.join(mth5dir, mth5_tmp)
             if os.path.isfile(mth5_file):
-                pytplot.logger.info(f"Deleting mth5 temporary h5 file {mth5_tmp}")
+                pyspedas.logger.info(f"Deleting mth5 temporary h5 file {mth5_tmp}")
                 os.remove(mth5_file)
 
     # Using MTH5 as a context manager

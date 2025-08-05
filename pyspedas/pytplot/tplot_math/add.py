@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
-import pytplot
+import pyspedas
 import copy
 import logging
 

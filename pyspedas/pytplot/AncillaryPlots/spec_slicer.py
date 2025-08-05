@@ -1,7 +1,7 @@
 import pyqtgraph as pg
 import numpy as np
-import pytplot
-from pytplot import tplot_utilities
+import pyspedas
+from pyspedas.pytplot import tplot_utilities
 
 
 def spec_slicer(var=None, time=None, interactive=False):

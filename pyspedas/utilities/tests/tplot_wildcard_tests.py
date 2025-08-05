@@ -3,9 +3,9 @@ import unittest
 import pyspedas
 from copy import deepcopy
 
-from pytplot import del_data, tplot, tplot_options, tplot_names
-from pytplot import store_data, get_data
-from pytplot import wildcard_expand, tname_byindex, tplot_wildcard_expand, tindex_byname
+from pyspedas.pytplot import del_data, tplot, tplot_options, tplot_names
+from pyspedas.pytplot import store_data, get_data
+from pyspedas.pytplot import wildcard_expand, tname_byindex, tplot_wildcard_expand, tindex_byname
 
 global_display=False
 tp_data={'x':[1,2,3], 'y':[4,5,6]}

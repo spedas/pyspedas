@@ -4,10 +4,10 @@ Notes:
 """
 import logging
 import numpy as np
-import pytplot
-from pytplot import tnormalize, tcrossp
+import pyspedas
+from pyspedas.pytplot import tnormalize, tcrossp
 from pyspedas.cotrans_tools.tvector_rotate import tvector_rotate
-from pytplot import data_exists, get_coords, set_coords
+from pyspedas.pytplot import data_exists, get_coords, set_coords
 from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.analysis.tinterpol import tinterpol
 from pyspedas.analysis.deriv_data import deriv_data
@@ -115,22 +115,22 @@ def sse2sel(name_in: str, name_out: str, isseltosse: bool = False, ignore_input_
         lun_att_x_gse_name = name_lun_att_x
         lun_att_z_gse_name = name_lun_att_z
     # Make rotation matrix
-    sunpos = pytplot.get_data(sun_pos_gse_name)
+    sunpos = pyspedas.pytplot.get_data(sun_pos_gse_name)
     sun_pos_dim = sunpos.y.shape
 
     # X basis vector
     result = gse2sse(lun_att_x_gse_name, 'sel_x_sse', rotation_only=True)
-    sel_x_sse = pytplot.get_data('sel_x_sse')
+    sel_x_sse = pyspedas.pytplot.get_data('sel_x_sse')
     x_axis = sel_x_sse.y
     
     # Z basis vector
     result = gse2sse(lun_att_z_gse_name, 'sel_z_sse', rotation_only=True)
-    sel_z_sse = pytplot.get_data('sel_z_sse')
+    sel_z_sse = pyspedas.pytplot.get_data('sel_z_sse')
     z_axis = sel_z_sse.y
 
     # Y basis vector
     tcrossp('sel_z_sse', 'sel_x_sse', newname='sel_y_sse')
-    sel_y_sse = pytplot.get_data('sel_y_sse')
+    sel_y_sse = pyspedas.pytplot.get_data('sel_y_sse')
     y_axis = sel_y_sse.y
 
     out_data = np.zeros((sun_pos_dim[0], 3, 3))
@@ -143,7 +143,7 @@ def sse2sel(name_in: str, name_out: str, isseltosse: bool = False, ignore_input_
         out_data[:,:,0] = x_axis
         out_data[:,:,1] = y_axis
         out_data[:,:,2] = z_axis
-    pytplot.store_data('sel_mat_cotrans', data={'x': sunpos.times, 'y': out_data})
+    pyspedas.pytplot.store_data('sel_mat_cotrans', data={'x': sunpos.times, 'y': out_data})
     if not isseltosse:
         """ SSE -> SEL
         """

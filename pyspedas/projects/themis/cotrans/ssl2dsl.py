@@ -9,7 +9,7 @@ from math import pi
 import numpy as np
 from copy import deepcopy
 
-from pytplot import get_data, store_data, data_exists, get_coords, set_coords
+from pyspedas.pytplot import get_data, store_data, data_exists, get_coords, set_coords
 from pyspedas.projects.themis.state_tools import Spinmodel,get_spinmodel
 from pyspedas.projects.themis import autoload_support
 

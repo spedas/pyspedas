@@ -1,6 +1,6 @@
 import re
 import logging
-from pytplot import tplot_names
+from pyspedas.pytplot import tplot_names
 from .wildcard_routines import tplot_wildcard_expand
 
 

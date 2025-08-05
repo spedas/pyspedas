@@ -1,5 +1,5 @@
 import logging
-from pytplot import get_data, store_data
+from pyspedas.pytplot import get_data, store_data
 import xarray as xr
 from packaging.version import Version
 

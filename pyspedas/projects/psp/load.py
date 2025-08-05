@@ -1,7 +1,7 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pytplot import time_clip as tclip
-from pytplot import cdf_to_tplot
+from pyspedas.pytplot import time_clip as tclip
+from pyspedas.pytplot import cdf_to_tplot
 from .rfs import rfs_variables_to_load
 from .config import CONFIG
 
@@ -115,7 +115,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
     Examples
     ----------
         import pyspedas
-        from pytplot import tplot
+        from pyspedas.pytplot import tplot
         fields_psp_vars = pyspedas.projects.psp.fields(trange=['2018-11-5', '2018-11-6'])
 
         spc_psp_vars = pyspedas.projects.psp.spc(trange=['2018-11-5', '2018-11-6'])

@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 
-from pytplot import get_data
+from pyspedas.pytplot import get_data
 
 from pyspedas.utilities.interpol import interpol
 from pyspedas.particles.spd_part_products.spd_pgs_make_tplot import spd_pgs_make_tplot

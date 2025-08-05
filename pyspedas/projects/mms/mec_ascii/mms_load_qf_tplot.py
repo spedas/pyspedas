@@ -1,8 +1,8 @@
 import logging
 import pandas as pd
 import numpy as np
-from pytplot import time_clip as tclip
-from pytplot import store_data, options
+from pyspedas import time_clip as tclip
+from pyspedas.pytplot import store_data, options
 
 
 def mms_load_qf_tplot(filenames, suffix='', trange=None):

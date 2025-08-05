@@ -13,7 +13,7 @@ For an example, see:
 import logging
 import numpy as np
 import pywt
-import pytplot
+import pyspedas
 
 def idl_wavelet_scales(n, dt, w0=2*np.pi, dj=None):
     """
@@ -139,7 +139,7 @@ def wavelet(
         logging.info("wavelet: The new_names parameter is deprecated. Please use newname instead.")
         newname = new_names
 
-    varnames = pytplot.split_vec(names)
+    varnames = pyspedas.split_vec(names)
     powervar = []
 
     if len(varnames) < 1:
@@ -154,7 +154,7 @@ def wavelet(
         else:
             new = old + suffix
 
-        alldata = pytplot.get_data(old)
+        alldata = pyspedas.get_data(old)
         time = alldata[0]
         len_time = len(time)
         data = alldata[1]
@@ -179,8 +179,8 @@ def wavelet(
 
         power = np.abs(coef)**2
         power = power.transpose()
-        pytplot.store_data(new, data={'x': time, 'y': power, 'v': freqs})
-        pytplot.options(new, 'spec', 1)
+        pyspedas.store_data(new, data={'x': time, 'y': power, 'v': freqs})
+        pyspedas.pytplot.options(new, 'spec', 1)
         powervar.append(new)
 
         logging.info('wavelet was applied to: ' + new)

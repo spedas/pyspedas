@@ -6,7 +6,7 @@
 import pyqtgraph as pg
 import numpy as np
 import os
-import pytplot
+import pyspedas
 from pyqtgraph.Qt import QtCore, QtGui
 from .CustomImage.ColorbarImage import ColorbarImage
 from .CustomAxis.BlankAxis import BlankAxis
@@ -46,7 +46,7 @@ class TVarFigureMap(pg.GraphicsLayout):
 
         self.plotwindow.vb.setLimits(xMin=0, xMax=360, yMin=-90, yMax=90)
 
-        if pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
+        if pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
             self.plotwindow.showAxis("top")
             self.plotwindow.showAxis("right")
 

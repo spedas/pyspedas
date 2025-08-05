@@ -8,8 +8,8 @@ from pyspedas import themis
 from pyspedas import cotrans
 from pyspedas import mpause_2, mpause_t96
 from pyspedas import find_datasets
-from pytplot import data_exists, tkm2re, tplot, split_vec, del_data
-from pytplot import get_data, store_data, options
+from pyspedas.pytplot import data_exists, tkm2re, tplot, split_vec, del_data
+from pyspedas.pytplot import get_data, store_data, options
 import numpy as np
 from numpy.testing import assert_allclose
 
@@ -74,7 +74,7 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(anerror is None)
 
     def test_time_clip(self):
-        import pytplot
+        import pyspedas
         x=[1,2,3,4,5]
         y=[2,4,6,8,10]
         xfp = [1.0,2.0,3.0,4.0,5.0]
@@ -377,7 +377,7 @@ class UtilTestCases(unittest.TestCase):
 
     def test_imports(self):
         import pyspedas
-        from pytplot import del_data, data_exists, tplot_names
+        from pyspedas.pytplot import del_data, data_exists, tplot_names
         # fully qualified name without .projects.
         del_data('*')
         pyspedas.projects.themis.state(probe='a')

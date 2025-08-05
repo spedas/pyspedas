@@ -3,7 +3,7 @@ import datetime
 import logging
 import numpy as np
 import xarray as xr
-import pytplot
+import pyspedas
 import copy
 import time
 
@@ -241,12 +241,12 @@ def sts_to_tplot(
             ]  # data has as many dimensions as len(var_cn)
 
         # Check if we need to merge with existing tplot variables
-        if var_name in pytplot.data_quants.keys() and merge:
-            prev_data_quant = pytplot.data_quants[var_name]
+        if var_name in pyspedas.pytplot.data_quants.keys() and merge:
+            prev_data_quant = pyspedas.pytplot.data_quants[var_name]
             to_merge = True
 
         # Store the new data
-        pytplot.store_data(
+        pyspedas.pytplot.store_data(
             var_name,
             data={"x": sts_dict["time_unix"], "y": var_data},
         )
@@ -254,11 +254,11 @@ def sts_to_tplot(
 
         # If merging is needed, merge the new data with the existing data
         if to_merge is True:
-            cur_data_quant = pytplot.data_quants[var_name]
-            plot_options = copy.deepcopy(pytplot.data_quants[var_name].attrs)
-            pytplot.data_quants[var_name] = xr.concat(
+            cur_data_quant = pyspedas.pytplot.data_quants[var_name]
+            plot_options = copy.deepcopy(pyspedas.pytplot.data_quants[var_name].attrs)
+            pyspedas.pytplot.data_quants[var_name] = xr.concat(
                 [prev_data_quant, cur_data_quant], dim="time"
             ).sortby("time")
-            pytplot.data_quants[var_name].attrs = plot_options
+            pyspedas.pytplot.data_quants[var_name].attrs = plot_options
 
     return stored_variables

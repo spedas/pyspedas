@@ -1,6 +1,6 @@
 import unittest
 from pyspedas import CDAWeb
-from pytplot import data_exists, del_data, get_data, time_double, tplot_names, tplot
+from pyspedas.pytplot import data_exists, del_data, get_data, time_double, tplot_names, tplot
 
 
 class CDAWebTests(unittest.TestCase):

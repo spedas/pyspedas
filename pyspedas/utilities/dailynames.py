@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from pytplot import time_string, time_double
+from pyspedas.pytplot import time_string, time_double
 from datetime import datetime, timezone
 
 

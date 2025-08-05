@@ -4,7 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import logging
-import pytplot
+import pyspedas
 import numpy as np
 
 def link(names, link_name, link_type='alt'):
@@ -27,16 +27,16 @@ def link(names, link_name, link_type='alt'):
         names = [names]
         
     for i in names:
-        if i not in pytplot.data_quants.keys():
+        if i not in pyspedas.pytplot.data_quants.keys():
             logging.info(str(i) + " is not currently in pytplot.")
             return
         
         if isinstance(i,int):
-            i = list(pytplot.data_quants.keys())[i-1]
+            i = list(pyspedas.pytplot.data_quants.keys())[i-1]
 
-        if isinstance(pytplot.data_quants[i], dict):  # non-record varying variable
+        if isinstance(pyspedas.pytplot.data_quants[i], dict):  # non-record varying variable
             continue
-        pytplot.data_quants[pytplot.data_quants[i].name].attrs['plot_options']['links'][link_type] = link_name
+        pyspedas.pytplot.data_quants[pyspedas.pytplot.data_quants[i].name].attrs['plot_options']['links'][link_type] = link_name
                 
     return
 

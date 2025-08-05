@@ -802,7 +802,7 @@ def neutral_sheet(
     --------
         # This is a simple example, not a realistic demonstration of the model.
         import numpy as np
-        from pytplot import time_double
+        from pyspedas import time_double
 
         time = np.array(
             time_double(["2002-02-03T04:05:00", "2002-02-03T04:00:04", "2002-02-03T04:00:08"]),

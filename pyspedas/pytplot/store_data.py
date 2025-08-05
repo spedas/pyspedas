@@ -9,9 +9,9 @@ import numpy as np
 import datetime
 import logging
 from .del_data import del_data
-import pytplot
+import pyspedas
 import xarray as xr
-from pytplot import tplot_utilities as utilities
+from pyspedas.pytplot import tplot_utilities as utilities
 import copy
 import warnings
 
@@ -108,7 +108,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         return True
 
     # if isinstance(data, str):
-    #     pytplot.data_quants[name] = {'name': name, 'data': data}
+    #     pyspedas.pytplot.data_quants[name] = {'name': name, 'data': data}
     #     return True
     if isinstance(data, str):
         data = data.split(' ')
@@ -121,25 +121,25 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             return False
         # Copying the first variable to use all of its plot options
         # However, we probably want each overplot to retain its original plot option
-        pytplot.data_quants[name] = copy.deepcopy(pytplot.data_quants[base_data[0]])
-        pytplot.data_quants[name].attrs = copy.deepcopy(pytplot.data_quants[base_data[0]].attrs)
-        pytplot.data_quants[name].name = name
-        pytplot.data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
-        pytplot.data_quants[name].attrs['plot_options']['overplots_mpl'] = base_data
+        pyspedas.pytplot.data_quants[name] = copy.deepcopy(pyspedas.pytplot.data_quants[base_data[0]])
+        pyspedas.pytplot.data_quants[name].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[base_data[0]].attrs)
+        pyspedas.pytplot.data_quants[name].name = name
+        pyspedas.pytplot.data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
+        pyspedas.pytplot.data_quants[name].attrs['plot_options']['overplots_mpl'] = base_data
         # These sets of options should default to the sub-variables' options, not simply
         # copied from the first variable in the list.   These options can be still be set
         # on the pseudovariable, and they will override the sub-variable options.
-        pytplot.data_quants[name].attrs['plot_options']['yaxis_opt'] = {}
-        pytplot.data_quants[name].attrs['plot_options']['zaxis_opt'] = {}
-        pytplot.data_quants[name].attrs['plot_options']['line_opt'] = {}
-        pytplot.data_quants[name].attrs['plot_options']['extras'] = {}
+        pyspedas.pytplot.data_quants[name].attrs['plot_options']['yaxis_opt'] = {}
+        pyspedas.pytplot.data_quants[name].attrs['plot_options']['zaxis_opt'] = {}
+        pyspedas.pytplot.data_quants[name].attrs['plot_options']['line_opt'] = {}
+        pyspedas.pytplot.data_quants[name].attrs['plot_options']['extras'] = {}
         return True
 
     # if the data table doesn't contain an 'x', assume this is a non-record varying variable
     if 'x' not in data.keys():
         values = np.array(data.pop('y'))
-        pytplot.data_quants[name] = {'data': values}
-        pytplot.data_quants[name]['name'] = name
+        pyspedas.pytplot.data_quants[name] = {'data': values}
+        pyspedas.pytplot.data_quants[name]['name'] = name
         return True
 
     times = data.pop('x')
@@ -415,9 +415,9 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
         temp.attrs['plot_options']['error'] = err_values
 
-    pytplot.data_quants[name] = temp
+    pyspedas.pytplot.data_quants[name] = temp
 
-    pytplot.data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(temp)
+    pyspedas.pytplot.data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(temp)
 
     return True
 
@@ -427,10 +427,10 @@ def _get_base_tplot_vars(name,data):
     if not isinstance(data, list):
         data = [data]
     for var in data:
-        if var not in pytplot.data_quants:
+        if var not in pyspedas.pytplot.data_quants:
             logging.warning('store_data: Pseudovariable %s component %s not found, skipping', name, var)
-        elif isinstance(pytplot.data_quants[var].data, list):
-            base_vars += _get_base_tplot_vars(name,pytplot.data_quants[var].data)
+        elif isinstance(pyspedas.pytplot.data_quants[var].data, list):
+            base_vars += _get_base_tplot_vars(name,pyspedas.pytplot.data_quants[var].data)
         else:
             base_vars += [var]
     return base_vars

@@ -1,6 +1,6 @@
 
 import numpy as np
-import pytplot
+import pyspedas
 import logging
 
 def count_traces(tvar):
@@ -31,14 +31,14 @@ def count_traces(tvar):
     if not isinstance(tvar,list):
         tvar = [tvar]
     for v in tvar:
-        if v in pytplot.data_quants.keys():
-            data=pytplot.get_data(v, dt=True)
+        if v in pyspedas.pytplot.data_quants.keys():
+            data=pyspedas.pytplot.get_data(v, dt=True)
 
-            if pytplot.is_pseudovariable(v):
-                components = pytplot.data_quants[v].attrs['plot_options']['overplots_mpl']
+            if pyspedas.pytplot.is_pseudovariable(v):
+                components = pyspedas.pytplot.data_quants[v].attrs['plot_options']['overplots_mpl']
                 trace_count += count_traces(components)
             else:
-                plot_extras = pytplot.data_quants[v].attrs['plot_options']['extras']
+                plot_extras = pyspedas.pytplot.data_quants[v].attrs['plot_options']['extras']
                 if plot_extras.get('spec') is not None:
                     spec = plot_extras['spec']
                 else:

@@ -4,7 +4,7 @@ import time
 import logging
 import pickle
 import numpy as np
-from pytplot import time_double, time_string
+from pyspedas import time_double, time_string
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.utilities.download import download
 from pyspedas.projects.mms.mms_config import CONFIG

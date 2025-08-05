@@ -11,8 +11,8 @@ Notes
 This function is similar to cotrans.pro of IDL SPEDAS.
 """
 import logging
-import pytplot
-from pytplot import get_coords,set_coords
+import pyspedas
+from pyspedas.pytplot import get_coords,set_coords
 from pyspedas.cotrans_tools.cotrans_lib import subcotrans
 
 
@@ -83,11 +83,11 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
 
     if name_in is not None:
         # If a name_in is provided, use it for data.
-        tplot_data = pytplot.get_data(name_in)
+        tplot_data =pyspedas.pytplot.get_data(name_in)
         time_in = tplot_data[0]
         data_in = tplot_data[1]
     else:
-        pytplot.store_data('cotranstemp', data={'x': list(time_in),
+       pyspedas.pytplot.store_data('cotranstemp', data={'x': list(time_in),
                                                 'y': list(data_in)})
 
     if len(data_in[:]) < 1:
@@ -108,8 +108,8 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
         name_out = name_in + "_" + coord_out
 
     # Save output tplot variable.
-    pytplot.tplot_copy(name_in, name_out)
-    pytplot.data_quants[name_out].data = data_out
+    pyspedas.pytplot.tplot_copy(name_in, name_out)
+    pyspedas.pytplot.data_quants[name_out].data = data_out
 
     # We should change an attribute for the coordinate system.
     set_coords(name_out, coord_out.upper())

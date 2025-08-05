@@ -4,14 +4,14 @@ import unittest
 from unittest.mock import patch
 import sys
 import pyspedas
-from pytplot import smooth
+from pyspedas import smooth
 from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
                       yclip, time_clip, deriv_data, tdeflag, clean_spikes,
                       tinterpol, tvectot, wavelet, time_domain_filter)
-from pytplot import tcrossp
-from pytplot import tdotp
-from pytplot import tnormalize
-from pytplot import get_data, store_data, replace_data, time_string, time_float, data_exists, del_data
+from pyspedas import tcrossp
+from pyspedas import tdotp
+from pyspedas import tnormalize
+from pyspedas import get_data, store_data, replace_data, time_string, time_float, data_exists, del_data
 
 import numpy as np
 import copy
@@ -223,7 +223,7 @@ class AnalysisTestCases(BaseTestCase):
         """Test that parameters are correctly passed to subtract_average via subtract_median."""
 
         #with patch('pytplot.tplot_math.subtract_average') as mock_subtract_average:
-        with patch('pytplot.tplot_math.subtract_average.subtract_average') as mock_subtract_average:
+        with patch('pyspedas.tplot_math.subtract_average.subtract_average') as mock_subtract_average:
         #with patch('pyspedas.subtract_average') as mock_subtract_average:
             print(mock_subtract_average)
             subtract_median('test', newname='new_test', suffix='-sfx', overwrite=True)
@@ -457,7 +457,7 @@ class AnalysisTestCases(BaseTestCase):
 
     def test_tvectot(self):
         from pyspedas.projects.themis import state
-        from pytplot import data_exists
+        from pyspedas import data_exists
         state(probe='a')
         tvectot('tha_pos', join_component=True)
         self.assertTrue(data_exists('tha_pos_tot'))

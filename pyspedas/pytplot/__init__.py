@@ -132,10 +132,10 @@ from .xlim import xlim
 from .ylim import ylim
 from .zlim import zlim
 from .tlimit import tlimit
-from pytplot.exporters.tplot_save import tplot_save
+from pyspedas.pytplot.exporters.tplot_save import tplot_save
 from .tplot_names import tplot_names
 from .tnames import tnames
-from pytplot.importers.tplot_restore import tplot_restore
+from pyspedas.pytplot.importers.tplot_restore import tplot_restore
 from .is_pseudovariable import is_pseudovariable
 from .count_traces import count_traces
 from .get_timespan import get_timespan
@@ -153,9 +153,9 @@ from .options import options
 from .timestamp import timestamp
 from .time_double import time_float,time_double, time_float_one
 from .time_string import time_string, time_datetime, time_string_one
-from pytplot.importers.cdf_to_tplot import cdf_to_tplot
-from pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
-from pytplot.importers.sts_to_tplot import sts_to_tplot
+from pyspedas.pytplot.importers.cdf_to_tplot import cdf_to_tplot
+from pyspedas.pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
+from pyspedas.pytplot.importers.sts_to_tplot import sts_to_tplot
 from .tplot_utilities import compare_versions
 from .data_att_getters_setters import set_coords, get_coords, set_units, get_units
 from .data_exists import data_exists

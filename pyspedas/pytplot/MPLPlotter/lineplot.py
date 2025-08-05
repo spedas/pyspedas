@@ -1,5 +1,5 @@
 import numpy as np
-import pytplot
+import pyspedas
 import logging
 
 
@@ -97,7 +97,7 @@ def lineplot(var_data,
         legend_linewidth = 4
 
     if legend_size is None:
-        legend_size = pytplot.tplot_opt_glob.get('charsize')
+        legend_size = pyspedas.pytplot.tplot_opt_glob.get('charsize')
 
     markers = None
     if line_opts.get('marker') is not None:

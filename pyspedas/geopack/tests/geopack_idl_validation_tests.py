@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from geopack import geopack
 
-from pytplot import data_exists,del_data,cdf_to_tplot,tplot,subtract,tlimit
+from pyspedas import data_exists,del_data,cdf_to_tplot,tplot,subtract,tlimit
 import pyspedas
 from pyspedas import time_double
 from pyspedas.geopack import tt89
@@ -13,7 +13,7 @@ from pyspedas.geopack import tts04
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.geopack.get_w_params import get_w
 from pyspedas import tinterpol, tvectot
-from pytplot import join_vec, store_data, get_data, tkm2re, tplot_names
+from pyspedas import join_vec, store_data, get_data, tkm2re, tplot_names
 
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 

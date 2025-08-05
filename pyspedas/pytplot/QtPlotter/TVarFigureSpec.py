@@ -7,7 +7,7 @@ import pyqtgraph as pg
 import numpy as np
 from .. import tplot_utilities
 from pyqtgraph.Qt import QtCore, QtGui
-import pytplot
+import pyspedas
 from .CustomAxis.DateAxis import DateAxis
 from .CustomImage.UpdatingImage import UpdatingImage
 from .CustomImage.ColorbarImage import ColorbarImage
@@ -66,7 +66,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
         # Turn off zooming in on the y-axis, time resolution is much more important
         self.plotwindow.setMouseEnabled(y=pytplot.tplot_opt_glob['y_axis_zoom'])
 
-        if pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
+        if pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['border']:
             self.plotwindow.showAxis("top")
             self.plotwindow.showAxis("right")
 
@@ -83,12 +83,12 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
         if pytplot.tplot_opt_glob['black_background']:
             self.labelStyle = {'font-size':
-                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#FFF',
                                'white-space': 'pre-wrap'}
         else:
             self.labelStyle = {'font-size':
-                               str(pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
+                               str pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['extras']['char_size'])
                                + 'pt', 'color': '#000',
                                'white-space': 'pre-wrap'}
 
@@ -104,9 +104,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self.hoverlegend = CustomLegendItem(offset=(0, 0))
         self.hoverlegend.setItem("Date:", "0")
         # Allow the user to set x-axis(time), y-axis, and z-axis data names in crosshairs
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
-        self.hoverlegend.setItem(pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['crosshair'] + ':', "0")
+        self.hoverlegend.setItem pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['crosshair'] + ':', "0")
         self.hoverlegend.setVisible(False)
         self.hoverlegend.setParentItem(self.plotwindow.vb)
 
@@ -135,7 +135,7 @@ class TVarFigureSpec(pg.GraphicsLayout):
             roi_1 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][0])
             roi_2 = pytplot.tplot_utilities.str_to_int(pytplot.tplot_opt_glob['roi_lines'][1])
             # find closest time to user-requested time
-            x = pytplot.data_quants[self.tvar_name].coords['time']
+            x = pyspedas.pytplot.data_quants[self.tvar_name].coords['time']
             x_sub_1 = abs(x - roi_1 * np.ones(len(x)))
             x_sub_2 = abs(x - roi_2 * np.ones(len(x)))
             x_argmin_1 = np.nanargmin(x_sub_1)
@@ -166,16 +166,16 @@ class TVarFigureSpec(pg.GraphicsLayout):
         self._setxrange() # Need to change the x range again one last time, visualizing the data resets it
 
     def _setyaxislabel(self):
-        ylabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
-        if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
-            sublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+        ylabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_label'].replace(" \ ", " <br> ")
+        if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']:
+            sublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['yaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
             self.yaxis.setLabel(f"{ylabel} <br> {sublabel}", **self.labelStyle)
         else:
             self.yaxis.setLabel(ylabel, **self.labelStyle)
 
     def _setxaxislabel(self):
         if self.show_xaxis:
-            self.xaxis.setLabel(pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
+            self.xaxis.setLabel pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['xaxis_opt']['axis_label'], **self.labelStyle)
         
     def getfig(self):
         return self
@@ -286,9 +286,9 @@ class TVarFigureSpec(pg.GraphicsLayout):
 
     def _addlegend(self):
         zaxis = AxisItem('right')
-        zlabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'].replace(" \ ", " <br> ")
-        if "axis_subtitle" in pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            zsublabel = pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+        zlabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'].replace(" \ ", " <br> ")
+        if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
+            zsublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
             zaxis.setLabel(f"{zlabel} <br> {zsublabel}", **self.labelStyle)
         else:
             zaxis.setLabel(zlabel, **self.labelStyle)

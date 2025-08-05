@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-import pytplot
+import pyspedas
 import logging
 
 def zlim(name, min, max, logflag=None):
@@ -39,7 +39,7 @@ def zlim(name, min, max, logflag=None):
 
     """
     if logflag is None:
-        pytplot.options(name,'z_range',[min,max])
+        pyspedas.pytplot.options(name,'z_range',[min,max])
     else:
-        pytplot.options(name,'z_range',[min, max, logflag])
+        pyspedas.pytplot.options(name,'z_range',[min, max, logflag])
     return

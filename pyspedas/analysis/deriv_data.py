@@ -11,7 +11,6 @@ import logging
 import numpy as np
 
 import pyspedas
-import pytplot
 
 
 def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None, edge_order=1):
@@ -69,9 +68,9 @@ def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None,
         n_names = [s + suffix for s in old_names]
 
     for i, old in enumerate(old_names):
-        data = pytplot.get_data(old)
+        data = pyspedas.get_data(old)
         data_grad = np.gradient(data.y, data.times, axis = 0, edge_order=edge_order)
-        pytplot.store_data(n_names[i], data={'x': data.times, 'y': data_grad})
+        pyspedas.store_data(n_names[i], data={'x': data.times, 'y': data_grad})
         logging.info('deriv_data was applied to: ' + n_names[i])
 
     return n_names

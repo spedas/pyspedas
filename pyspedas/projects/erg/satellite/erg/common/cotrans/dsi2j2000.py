@@ -1,10 +1,10 @@
 import numpy as np
 from pyspedas import tinterpol
-from pytplot import tcrossp
-from pytplot import tnormalize
+from pyspedas import tcrossp
+from pyspedas import tnormalize
 from pyspedas.cotrans_tools.cotrans import cotrans
-from pytplot import time_string
-from pytplot import get_data, get_timespan, options, store_data, tplot_names
+from pyspedas import time_string
+from pyspedas import get_data, get_timespan, options, store_data, tplot_names
 
 from ...orb.orb import orb
 from .cart_trans_matrix_make import cart_trans_matrix_make

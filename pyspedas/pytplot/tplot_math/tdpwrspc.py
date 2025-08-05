@@ -12,7 +12,7 @@ import logging
 import numpy as np
 from .dpwrspc import dpwrspc
 from .split_vec import split_vec
-from pytplot import get_data, store_data, options, time_double, set_units
+from pyspedas.pytplot import get_data, store_data, options, time_double, set_units
 
 
 def tdpwrspc(

@@ -5,7 +5,7 @@ import unittest
 import datetime as dt
 import subprocess
 
-from pytplot import data_exists, tplot_names
+from pyspedas.pytplot import data_exists, tplot_names
 import pyspedas
 from pyspedas.projects import maven
 from pyspedas.projects.maven import config,                   \

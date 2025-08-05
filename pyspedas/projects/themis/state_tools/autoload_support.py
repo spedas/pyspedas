@@ -1,10 +1,10 @@
 import logging
 import pyspedas
 import pyspedas.projects.themis
-from pytplot import data_exists
-from pytplot import time_double
+from pyspedas.pytplot import data_exists
+from pyspedas.pytplot import time_double
 from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
-import pytplot
+import pyspedas
 
 
 def load_needed(trange_loaded,
@@ -71,7 +71,7 @@ def autoload_support(varname=None,
 
     """
     if varname is not None:
-        trange = pytplot.get_timespan(varname)
+        trange = pyspedas.pytplot.get_timespan(varname)
     elif trange is None:
         logging.error("Must specify either a tplot name or a time range in order to load support data")
         return
@@ -91,7 +91,7 @@ def autoload_support(varname=None,
 
     # Set time range (if needed)
     if trange is None:
-        trange_needed = pytplot.get_timespan(varname)
+        trange_needed = pyspedas.pytplot.get_timespan(varname)
     else:
         if isinstance(trange[0], str):
             trange_needed = time_double(trange)
@@ -125,8 +125,8 @@ def autoload_support(varname=None,
         if not (data_exists(v1)) or not (data_exists(v2)):
             do_state = True
         else:
-            v1_tr = pytplot.get_timespan(v1)
-            v2_tr = pytplot.get_timespan(v2)
+            v1_tr = pyspedas.pytplot.get_timespan(v1)
+            v2_tr = pyspedas.pytplot.get_timespan(v2)
             if (load_needed(v1_tr, trange_needed, tolerance=slop) or
                     load_needed(v2_tr, trange_needed, tolerance=slop)):
                 do_state = True
@@ -136,12 +136,12 @@ def autoload_support(varname=None,
         # needed time range.
 
         if data_exists(v3):
-            v3_tr = pytplot.get_timespan(v3)
+            v3_tr = pyspedas.pytplot.get_timespan(v3)
             if load_needed(v3_tr, trange_needed, tolerance=slop):
                 do_state = True
 
         if data_exists(v4):
-            v4_tr = pytplot.get_timespan(v4)
+            v4_tr = pyspedas.pytplot.get_timespan(v4)
             if load_needed(v4_tr, trange_needed, tolerance=slop):
                 do_state = True
 
@@ -156,10 +156,10 @@ def autoload_support(varname=None,
         if not (data_exists(v1) and data_exists(v2) and data_exists(v3) and data_exists(v4)):
             do_slp = True
         else:
-            v1_tr = pytplot.get_timespan(v1)
-            v2_tr = pytplot.get_timespan(v2)
-            v3_tr = pytplot.get_timespan(v3)
-            v4_tr = pytplot.get_timespan(v4)
+            v1_tr = pyspedas.pytplot.get_timespan(v1)
+            v2_tr = pyspedas.pytplot.get_timespan(v2)
+            v3_tr = pyspedas.pytplot.get_timespan(v3)
+            v4_tr = pyspedas.pytplot.get_timespan(v4)
             if (load_needed(v1_tr, trange_needed, tolerance=slop)
                     or load_needed(v2_tr, trange_needed, tolerance=slop)
                     or load_needed(v3_tr, trange_needed, tolerance=slop)

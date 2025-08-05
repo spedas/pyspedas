@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
-import pytplot
+import pyspedas
 import numpy as np
 import copy
 import logging
@@ -52,10 +52,10 @@ def add_across(tvar,column_range=None,newname=None,new_tvar=None):
 
     # separate and add data
 
-    if 'spec_bins' in pytplot.data_quants[tvar].coords:
-        d, s = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+    if 'spec_bins' in pyspedas.pytplot.data_quants[tvar].coords:
+        d, s = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
     else:
-        d = pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar, no_spec_bins=True)
+        d = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar, no_spec_bins=True)
         s = None
 
     time = d.index.copy()
@@ -112,11 +112,11 @@ def add_across(tvar,column_range=None,newname=None,new_tvar=None):
 
     #store added data
     if s is None:
-        pytplot.store_data(newname,data={'x':time, 'y':np.transpose(data)})
+        pyspedas.pytplot.store_data(newname,data={'x':time, 'y':np.transpose(data)})
     else:
-        pytplot.store_data(newname, data={'x': time, 'y':np.transpose(data), 'v': np.transpose(spec_data)})
+        pyspedas.pytplot.store_data(newname, data={'x': time, 'y':np.transpose(data), 'v': np.transpose(spec_data)})
 
-    #pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pytplot.data_quants[tvar].attrs)
+    #pyspedas.pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 
     return
 

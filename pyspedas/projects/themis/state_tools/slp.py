@@ -1,6 +1,6 @@
 import logging
 from pyspedas.projects.themis.load import load
-from pytplot import set_coords
+from pyspedas.pytplot import set_coords
 
 
 def slp(trange=['2007-03-23', '2007-03-24'],

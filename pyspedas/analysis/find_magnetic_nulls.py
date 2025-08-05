@@ -2,7 +2,7 @@ import numpy as np
 import logging
 from .lingradest import lingradest
 from pyspedas import tinterpol
-from pytplot import (get_data, store_data, time_double, time_string, time_clip, deflag, tnames,
+from pyspedas import (get_data, store_data, time_double, time_string, time_clip, deflag, tnames,
                      options, tplot_options, tsmooth, tplot, get_coords, get_units, set_coords, set_units)
 
 def classify_null_type(lambdas_in):

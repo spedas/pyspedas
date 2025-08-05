@@ -3,11 +3,11 @@ import unittest
 import numpy as np
 import pyspedas
 from pyspedas import themis
-from pytplot import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim, databar
-import pytplot
+from pyspedas import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim, databar
+import pyspedas
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
-global_display = True
+global_display = False
 default_trange=['2007-03-23','2007-03-24']
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -119,7 +119,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
     def test_time_data_bars(self):
-        from pytplot import timebar
+        from pyspedas import timebar
         del_data('*')
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
         themis.fgm(probe='c', trange=default_trange)
@@ -128,9 +128,9 @@ class PlotTestCases(unittest.TestCase):
         # use databar to place a databar
         databar('thc_fgs_dsl',-10000.0, color='red', dash=True)
         timebar(t=-10000.0,varname='thc_fge_dsl',databar=True,color='red', dash=True)
-        timebar(t=pytplot.time_double('2007-03-23/14:00'),varname='thc_fge_btotal',color='magenta')
-        timebar(t=pytplot.time_double('2007-03-23/14:30'),color='blue')
-        timebar(t=pytplot.time_double('2007-03-23/15:30'),color='green', dash=True)
+        timebar(t=pyspedas.time_double('2007-03-23/14:00'),varname='thc_fge_btotal',color='magenta')
+        timebar(t=pyspedas.time_double('2007-03-23/14:30'),color='blue')
+        timebar(t=pyspedas.time_double('2007-03-23/15:30'),color='green', dash=True)
         tplot_options('title', 'Databars at +/- 10000 top panel, timebars at 14:30 and 15:30 all panels, timebar at 14:00 bottom panel, linestyles and colors as specified')
         tplot(['thc_fge_dsl','thc_fge_btotal'], display=global_display, save_png='timebars.png')
         tplot_options('title', '')
@@ -283,7 +283,7 @@ class PlotTestCases(unittest.TestCase):
 
     def test_is_pseudovar(self):
         del_data("*")
-        from pytplot import is_pseudovariable
+        from pyspedas import is_pseudovariable
         themis.fgm(probe='c',trange=default_trange)
         timespan('2007-03-23', 1, 'days')
         store_data('test_pseudo_colors',data=['thc_fge_dsl','thc_fge_btotal'])
@@ -329,7 +329,7 @@ class PlotTestCases(unittest.TestCase):
 
     def test_count_traces(self):
         del_data("*")
-        from pytplot import count_traces
+        from pyspedas import count_traces
         themis.fgm(probe='c',trange=default_trange)
         store_data('test_pseudo_colors',data=['thc_fge_dsl','thc_fge_btotal'])
         tr_fge=count_traces('thc_fge_dsl')
@@ -339,8 +339,8 @@ class PlotTestCases(unittest.TestCase):
         self.assertEqual(tr_btotal,1)
         self.assertEqual(tr_pseudo,4)
         # We need to ensure thc_fge_dsl has a 'v' component, so we can pretend this variable is a spectrogram
-        fgs_data = pytplot.get_data('thc_fge_dsl')
-        fgs_meta = pytplot.get_data('thc_fge_dsl', metadata=True)
+        fgs_data = pyspedas.get_data('thc_fge_dsl')
+        fgs_meta = pyspedas.get_data('thc_fge_dsl', metadata=True)
         store_data('thc_fge_dsl',data={'x':fgs_data.times, 'y':fgs_data.y, 'v':[0, 1, 2]})
         options('thc_fge_dsl','spec',1)
         tr_pseudo_spec=count_traces('test_pseudo_colors')
@@ -432,7 +432,7 @@ class PlotTestCases(unittest.TestCase):
 
     def test_mms_epsd_specplot(self):
         del_data("*")
-        from pytplot import options
+        from pyspedas import options
         from pyspedas import mms_load_dsp
         timespan('2015-08-01',1,'days')
         # Logarithmic Y scale with lowest bin boundary = 0.0 by linear extrapolation from bin centers
@@ -535,7 +535,7 @@ class PlotTestCases(unittest.TestCase):
     def test_pseudovars_title(self):
         del_data("*")
         import pyspedas
-        from pytplot import store_data
+        from pyspedas import store_data
         pyspedas.projects.themis.state(probe='c',trange=default_trange)
         store_data('ps1', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
         store_data('ps2', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
@@ -550,7 +550,7 @@ class PlotTestCases(unittest.TestCase):
     def test_pseudovars_spectra(self):
         del_data("*")
         import pyspedas
-        from pytplot import zlim, ylim, timespan
+        from pyspedas import zlim, ylim, timespan
 
         # Load ESA and SST data
         pyspedas.projects.themis.esa(probe='a', trange=default_trange)
@@ -593,7 +593,7 @@ class PlotTestCases(unittest.TestCase):
     def test_pseudovars_spectra_explicit_yzranges(self):
         del_data("*")
         import pyspedas
-        from pytplot import zlim, ylim, timespan
+        from pyspedas import zlim, ylim, timespan
 
         # Load ESA and SST data
         pyspedas.projects.themis.esa(probe='a', trange=default_trange)
@@ -671,23 +671,23 @@ class PlotTestCases(unittest.TestCase):
     def test_psp_flux_plot(self):
         del_data("*")
         import pyspedas
-        import pytplot
+        import pyspedas
         import numpy as np
         # import matplotlib.pyplot as plt
-        from pytplot import tplot
+        from pyspedas import tplot
         spi_vars = pyspedas.projects.psp.spi(trange=['2022-12-12/00:00', '2022-12-12/23:59'], datatype='sf00_l3_mom', level='l3',
                                     time_clip=True)
-        time = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['time'].values
+        time = pyspedas.pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['time'].values
         # print(time)
-        energy_channel = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['spec_bins'].values
+        energy_channel = pyspedas.pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['spec_bins'].values
         # print(energy_channel)
         ec = energy_channel[0, :]
-        energy_flux = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].values
+        energy_flux = pyspedas.pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].values
         # print(energy_flux)
-        e_flux = pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['v'].values
+        e_flux = pyspedas.pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['v'].values
         energy_flux[energy_flux == 0] = np.nan
-        pytplot.store_data('E_Flux', data={'x': time.T, 'y': energy_flux, 'v': energy_channel})
-        pytplot.options('E_Flux', opt_dict={'Spec': 1, 'zlog': 1, 'Colormap': 'jet', 'ylog': 1})
+        pyspedas.store_data('E_Flux', data={'x': time.T, 'y': energy_flux, 'v': energy_channel})
+        pyspedas.options('E_Flux', opt_dict={'Spec': 1, 'zlog': 1, 'Colormap': 'jet', 'ylog': 1})
         timespan('2022-12-12',1,'days')
         tplot_options('title', 'Parker Solar Probe E_flux')
         tplot('E_Flux',display=global_display, save_png='psp_E_Flux')
@@ -716,7 +716,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2017-03-27',1,'days')
         mgf()
         orb()
-        from pytplot import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
+        from pyspedas import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
 
         split_vec('erg_orb_l2_pos_rmlatmlt')
         split_vec('erg_orb_l2_pos_Lm')
@@ -743,7 +743,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2017-03-27',1,'days')
         mgf()
         orb()
-        from pytplot import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
+        from pyspedas import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
 
         split_vec('erg_orb_l2_pos_rmlatmlt')
         split_vec('erg_orb_l2_pos_Lm')
@@ -775,7 +775,7 @@ class PlotTestCases(unittest.TestCase):
         tplot_options('title','No timespan or xlim set, using trange to plot 12:00 to 23:59')
         tplot('the_fgs_dsl', trange=['2007-03-23/12:00', '2007-03-24/00:00'], display=global_display, save_png='trange_pm.png')
         tplot_options('title', 'Using xlim to set time range from 00:00 to 12:00')
-        pytplot.xlim('2007-03-23/00:00:00','2007-03-23/12:00:00')
+        pyspedas.xlim('2007-03-23/00:00:00','2007-03-23/12:00:00')
         tplot('the_fgs_dsl',display=global_display, save_png='xlim_am.png')
         tplot_options('title', 'Xlim set to 00:00 to 12:00, overriding with trange from 10:00 to 12:00')
         tplot('the_fgs_dsl', trange=['2007-03-23/10:00', '2007-03-23/12:00:00'], display=global_display, save_png='xlim_am_trange_override.png')

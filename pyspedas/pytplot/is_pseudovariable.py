@@ -1,6 +1,6 @@
 
 import numpy as np
-import pytplot
+import pyspedas
 import logging
 
 def is_pseudovariable(tvar):
@@ -28,15 +28,15 @@ def is_pseudovariable(tvar):
 
     """
     pseudo_var = False
-    if tvar in pytplot.data_quants.keys():
-        var_quants = pytplot.data_quants[tvar]
+    if tvar in pyspedas.pytplot.data_quants.keys():
+        var_quants = pyspedas.pytplot.data_quants[tvar]
 
         if not isinstance(var_quants, dict):
             overplot_list = var_quants.attrs['plot_options'].get('overplots_mpl')
             if overplot_list is not None and len(overplot_list) > 0:
                 pseudo_var = True
 
-        var_data = pytplot.get_data(tvar, dt=True)
+        var_data = pyspedas.get_data(tvar, dt=True)
 
         if isinstance(var_data, list) or isinstance(var_data, str) or pseudo_var:
             return True

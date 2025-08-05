@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
-import pytplot
+import pyspedas
 import copy
 
 
@@ -32,14 +32,14 @@ def tinterp(tvar1,tvar2,replace=False):
         >>> pyspedas.tinterp('a','c')
 
     """
-    new_tvar2 = pytplot.data_quants[tvar2].interp_like(pytplot.data_quants[tvar1])
+    new_tvar2 = pyspedas.pytplot.data_quants[tvar2].interp_like(pyspedas.pytplot.data_quants[tvar1])
 
     if replace:
-        pytplot.data_quants[tvar2] = new_tvar2
+        pyspedas.pytplot.data_quants[tvar2] = new_tvar2
         return
     else:
-        pytplot.data_quants[tvar1 + '_tinterp'] = copy.deepcopy(new_tvar2)
-        pytplot.data_quants[tvar1 + '_tinterp'].attrs = copy.deepcopy(new_tvar2.attrs)
-        pytplot.data_quants[tvar1 + '_tinterp'].name = tvar1 + '_tinterp'
+        pyspedas.pytplot.data_quants[tvar1 + '_tinterp'] = copy.deepcopy(new_tvar2)
+        pyspedas.pytplot.data_quants[tvar1 + '_tinterp'].attrs = copy.deepcopy(new_tvar2.attrs)
+        pyspedas.pytplot.data_quants[tvar1 + '_tinterp'].name = tvar1 + '_tinterp'
 
     return tvar1 + '_tinterp'

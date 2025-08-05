@@ -17,7 +17,7 @@ import logging
 from pyspedas.projects.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.cotrans_tools.fac_matrix_make import fac_matrix_make
-from pytplot import get_data, store_data, del_data
+from pyspedas.pytplot import get_data, store_data, del_data
 from pyspedas import cotrans_get_coord, cotrans_set_coord, sm2mlt, tplot_copy, set_units, get_units
 
 global_display=False
@@ -58,7 +58,7 @@ class CotransTestCases(unittest.TestCase):
 
     def test_get_set_coords(self):
         """ Test for pytplot.set_coords/get_coords """
-        from pytplot import set_coords, get_coords
+        from pyspedas.pytplot import set_coords, get_coords
 
         del_data()
         doesntexist = get_coords('test_coord')
@@ -85,7 +85,7 @@ class CotransTestCases(unittest.TestCase):
 
     def test_get_set_units(self):
         """ Test for pytplot.set_coords/get_coords """
-        from pytplot import set_units, get_units, set_coords, get_coords
+        from pyspedas.pytplot import set_units, get_units, set_coords, get_coords
 
         del_data()
         doesntexist = get_units('test_units')
