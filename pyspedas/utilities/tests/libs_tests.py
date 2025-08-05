@@ -90,7 +90,7 @@ class LibsTestCase(unittest.TestCase):
         libs('data', package=pyspedas)
         output = sys.stdout.getvalue()
         self.assertIn('get_data', output)
-        self.assertNotIn('Function: pyspedas', output)
+        self.assertIn('Function: pyspedas', output)
 
     def test_qtplotter_error_exception(self):
         # This test is probably not the best way to handle this exception
