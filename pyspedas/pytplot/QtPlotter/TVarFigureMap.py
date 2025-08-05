@@ -185,7 +185,7 @@ class TVarFigureMap(pg.GraphicsLayout):
         zaxis = AxisItem('right')
         zlabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_label'].replace(r" \ ", " <br> ")
         if "axis_subtitle" in pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']:
-            zsublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(" \ ", " <br> ")
+            zsublabel = pyspedas.pytplot.data_quants[self.tvar_name].attrs['plot_options']['zaxis_opt']['axis_subtitle'].replace(r" \ ", " <br> ")
             zaxis.setLabel(f"{zlabel} <br> {zsublabel}", **self.labelStyle)
         else:
             zaxis.setLabel(zlabel, **self.labelStyle)
