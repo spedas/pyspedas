@@ -12,6 +12,33 @@ from pyspedas.pytplot import tplot_utilities
 import tempfile
 from .MPLPlotter.tplot import tplot as mpl_tplot
 
+def webengine_hack():
+    """ This function is a hack to resolve an import error.
+    Without this, we sometimes get:
+    ImportError: QtWebEngineWidgets must be imported before a QCoreApplication instance is created
+    """
+    from PyQt5 import QtWidgets
+    app = QtWidgets.QApplication.instance()
+    if app is not None:
+        import sip
+        app.quit()
+        sip.delete(app)
+    import sys
+    from PyQt5 import QtCore, QtWebEngineWidgets
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
+    app = QtWidgets.qApp = QtWidgets.QApplication(sys.argv)
+    return app
+
+
+if pyspedas.pytplot.using_graphics:
+    from .QtPlotter import PyTPlot_Exporter
+    from pyqtgraph.Qt import QtCore, QtGui, QtCore
+    import pyqtgraph as pg
+    from . import QtPlotter
+    from pyspedas.pytplot.AncillaryPlots import spec_slicer
+    from pyspedas.pytplot.AncillaryPlots import position_mars_2d
+    from pyspedas.pytplot.AncillaryPlots import position_mars_3d
+
 def tplot(name,
           trange=None,
           var_label=None,
