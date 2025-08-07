@@ -89,7 +89,7 @@ dependencies = [
     "spacepy==0.4.1",
     "cdasws==1.7.24",
     "netCDF4>=1.6.2",
-    "pywavelet==1.4.1s",
+    "pywavelet==1.4.1",
     "astropy==5.3.1",
     "hapiclient>=0.2.2",
     "pytplot-mpl-temp>=2.2.79",
