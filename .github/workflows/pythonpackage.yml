@@ -118,6 +118,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
+        echo Starting cluster S3 tests at `date`
+        coverage run -a -m pyspedas.projects.cluster.tests.uri_tests
         echo Starting mms data_rate_segments tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.data_rate_segments
         echo Starting akebono tests at `date`
@@ -165,8 +167,6 @@ jobs:
         coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
         echo Starting cluster tests at `date`
         coverage run -a -m pyspedas.projects.cluster.tests.tests
-        echo Starting cluster S3 tests at `date`
-        coverage run -a -m pyspedas.projects.cluster.tests.uri_tests
         echo Starting CDAWeb tests at `date`
         coverage run -a -m pyspedas.cdagui_tools.tests.tests
         echo Starting themis tplot_time  tests at `date`
