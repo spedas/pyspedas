@@ -32,7 +32,7 @@ jobs:
           uv pip install --system pyproject.toml
           pip install .
           pip install coveralls
-          pip install basemap
+          #pip install basemap
           pip install obspy
           pip install 'mth5>=0.4.9'
           #pip install 'moto[server]'
@@ -63,7 +63,7 @@ jobs:
           pip install uv
           uv pip install pyproject.toml
           pip install coveralls
-          pip install basemap
+          #pip install basemap
           pip install 'mth5>=0.4.9'
           python -m pyspedas.projects.mms.tests.setup_tests
           #pip install 'moto[server]'
