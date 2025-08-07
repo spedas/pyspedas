@@ -84,7 +84,7 @@ dependencies = [
     "numpy>=1.20.0",
     "requests==2.31.0",
     "geopack>=1.0.11",
-    "scipy==1.11.1",
+    "scipy==1.12.0",
     "cdflib>=1.0.0",
     "spacepy==0.4.1",
     "cdasws==1.7.24",
