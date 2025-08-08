@@ -47,7 +47,7 @@ and some IDEs (e.g. PyCharm) will mark them as potential errors because they
 only do static analysis of the import structures, even though they work perfectly
 at runtime.
 
-In a future release, this workaround may be removed, and users will need to import
+In PySPEDAS 2.0, this workaround will be removed, and users will need to import
 and call these routines from the 'pyspedas.projects' namespace:  "from pyspedas.projects import mms"
 or "pyspedas.projects.themis.fgm()"
 
@@ -174,13 +174,14 @@ After upgrading PySPEDAS to version 2.0, we recommend that you remove the pytplo
 
 .. code-block:: bash
 
-    pip uninstall pytplot
+    pip uninstall pytplot  # qt-based version, hasn't been used by PySPEDAS for a long time
+    pip uninstall pytplot-mpl-temp # matplotlib version used by PySPEDAS < 2.0.0
 
 
 Once you install PySPEDAS 2.0, the pytplot package will no longer be needed.  Removing it ensures that you'll catch any stray
 references to the old pytplot versions of pyspedas tools, which, if left in place, could lead to using obsolete code.
 
-For a period of time after PySPEDAS 2.0 is released, we may add code to detect whether pytplot is still installed, and
+For a period of time after PySPEDAS 2.0 is released, we may add code to detect, when pyspedas is imported, whether pytplot is still installed, and
 remind you that we recommend uninstalling it.
 
 If you're installing PySPEDAS 2.0 for the first time in a fresh virtual environment, you shouldn't have
