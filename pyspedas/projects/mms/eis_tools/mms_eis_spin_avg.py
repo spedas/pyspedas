@@ -47,7 +47,7 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
     --------
         List of tplot variables created.
     """
-    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' + level + '_'
+    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' 
 
     if data_units == 'flux':
         units_label = '1/(cm^2-sr-s-keV)'
@@ -58,8 +58,10 @@ def mms_eis_spin_avg(probe='1', species='proton', data_units='flux', datatype='e
 
     spin_data = get_data(prefix + datatype + '_spin' + suffix)
     if spin_data is None:
-        logging.error('Error, problem finding EIS spin variable to calculate spin-averages')
-        return
+        spin_data = get_data(prefix + '_' +  level + '_' +  datatype + '_spin' + suffix)
+        if spin_data is None:
+            logging.error('Error, problem finding EIS spin variable to calculate spin-averages')
+            return
 
     spin_times, spin_nums = spin_data
 

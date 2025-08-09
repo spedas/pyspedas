@@ -40,7 +40,7 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     
     probe = str(probe)
     species_str = datatype + '_' + species
-    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' + level + '_'
+    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' 
 
     if data_units == 'flux':
         units_label = '1/(cm^2-sr-s-keV)'
@@ -49,8 +49,8 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     elif data_units == 'counts':
         units_label = 'counts'
 
-    telescopes = tnames(pattern=prefix + species_str + '_*' + data_units + '_t?'+suffix)
-
+    #telescopes = tnames(pattern=prefix + level + '_' + species_str + '_*_' + data_units + '_t?' + suffix)
+    telescopes = tnames([f'{prefix}{level}_{datatype}_{species}_P*_{data_units}_t?{suffix}', f'{prefix}{datatype}_{species}_P*_{data_units}_t?{suffix}'])
     if len(telescopes) == 6:
         scope_data = get_data(telescopes[0])
             
