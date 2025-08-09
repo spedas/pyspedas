@@ -170,13 +170,14 @@ PySPEDAS 2.0 compatible rewrites:
 Updating your environment after upgrading to PySPEDAS 2.0 or later
 --------------------------------------------------------------------
 
-After upgrading PySPEDAS to version 2.0, we recommend that you remove the pytplot package:
+After upgrading PySPEDAS to version 2.0, we recommend that you remove the pytplot and pytplot-mpl-temp packages:
 
 .. code-block:: bash
 
     pip uninstall pytplot  # qt-based version, hasn't been used by PySPEDAS for a long time
     pip uninstall pytplot-mpl-temp # matplotlib version used by PySPEDAS < 2.0.0
 
+Most users will only have pytplot-mpl-temp, but it would be a good idea to check for and remove pytplot as well.
 
 Once you install PySPEDAS 2.0, the pytplot package will no longer be needed.  Removing it ensures that you'll catch any stray
 references to the old pytplot versions of pyspedas tools, which, if left in place, could lead to using obsolete code.
