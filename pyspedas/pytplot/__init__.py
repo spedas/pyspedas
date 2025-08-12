@@ -133,6 +133,7 @@ from .ylim import ylim
 from .zlim import zlim
 from .tlimit import tlimit
 from pyspedas.pytplot.exporters.tplot_save import tplot_save
+from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
 from .tplot_names import tplot_names
 from .tnames import tnames
 from pyspedas.pytplot.importers.tplot_restore import tplot_restore
