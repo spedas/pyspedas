@@ -1,7 +1,6 @@
 import re
 import logging
-from pyspedas.pytplot import tplot_names
-from .wildcard_routines import tplot_wildcard_expand
+from pyspedas.pytplot import tplot_names, tplot_wildcard_expand
 
 
 def tnames(pattern=None, regex=None):
