@@ -328,7 +328,7 @@ def tplot(variables,
 
         #Check for a 3d variable, call reduce_spec_dataset
         if hasattr(var_data_org, 'v1') and hasattr(var_data_org, 'v2'):
-            temp_dq = pyspedas.pytplot.tplot_utilities.reduce_spec_dataset(name=variable)
+            temp_dq = pyspedas.pytplot.reduce_spec_dataset(name=variable)
             var_data_org = pyspedas.pytplot.get_data(variable, dt=True, data_quant_in=temp_dq)
         
         if var_data_org is None:

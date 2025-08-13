@@ -1,6 +1,6 @@
 import pyspedas
 import numpy as np
-from pyspedas.pytplot import tplot_utilities as utilities
+from pyspedas.pytplot import get_y_range
 import logging
 
 
@@ -51,7 +51,7 @@ def replace_data(tplot_name, new_data):
     pyspedas.pytplot.data_quants[tplot_name].values = new_data_np
 
     pyspedas.pytplot.data_quants[tplot_name].attrs["plot_options"]["yaxis_opt"]["y_range"] = (
-        utilities.get_y_range(pyspedas.pytplot.data_quants[tplot_name])
+        get_y_range(pyspedas.pytplot.data_quants[tplot_name])
     )
 
     return

@@ -1,5 +1,5 @@
-from . import tplot_utilities
-from .timebar import timebar
+
+from pyspedas.pytplot import timebar
 import pyspedas
 import logging
 

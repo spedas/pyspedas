@@ -4,7 +4,6 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import pyspedas
-from . import tplot_utilities
 import logging
 
 def get_timespan(name=None):

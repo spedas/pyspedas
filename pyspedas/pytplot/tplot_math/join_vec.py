@@ -4,6 +4,8 @@ import copy
 import xarray as xr
 import logging
 
+from pyspedas.pytplot import convert_tplotxarray_to_pandas_dataframe
+
 
 # JOIN TVARS
 # join TVars into single TVar with multiple columns
@@ -60,21 +62,21 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
     for i, val in enumerate(tvars):
         if i == 0:
             if "spec_bins" in pyspedas.pytplot.data_quants[tvars[i]].coords:
-                df, s = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+                df, s = convert_tplotxarray_to_pandas_dataframe(
                     tvars[i]
                 )
             else:
-                df = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+                df = convert_tplotxarray_to_pandas_dataframe(
                     tvars[i], no_spec_bins=True
                 )
                 s = None
         else:
             if "spec_bins" in pyspedas.pytplot.data_quants[tvars[i]].coords:
-                d = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+                d = convert_tplotxarray_to_pandas_dataframe(
                     tvars[i], no_spec_bins=True
                 )
             else:
-                d = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(
+                d = convert_tplotxarray_to_pandas_dataframe(
                     tvars[i], no_spec_bins=True
                 )
             df = pd.concat([df, d], axis=1)

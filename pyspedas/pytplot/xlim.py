@@ -4,7 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
 import pyspedas
-from . import tplot_utilities
+from pyspedas.pytplot import str_to_float_fuzzy
 
 def xlim(min, max):
     """
@@ -34,9 +34,9 @@ def xlim(min, max):
 
     """
     if not isinstance(min, (int, float, complex)):
-        min = tplot_utilities.str_to_float_fuzzy(min)
+        min = str_to_float_fuzzy(min)
     if not isinstance(max, (int, float, complex)):
-        max = tplot_utilities.str_to_float_fuzzy(max)
+        max = str_to_float_fuzzy(max)
     if 'x_range' in pyspedas.pytplot.tplot_opt_glob:
         pyspedas.pytplot.tplot_opt_glob['x_range_last'] = pyspedas.pytplot.tplot_opt_glob['x_range']
         pyspedas.pytplot.lim_info['xlast'] = pyspedas.pytplot.tplot_opt_glob['x_range']

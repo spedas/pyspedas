@@ -29,17 +29,21 @@ tplot_opt_glob = dict(tools="xpan,crosshair,reset",
 lim_info = {}
 extra_layouts = {}
 
+from .get_y_range import get_y_range
 from .store_data import store_data, store
 from .tplot import tplot
 from .get_data import get_data, get
+from .str_to_float_fuzzy import str_to_float_fuzzy
 from .xlim import xlim
 from .ylim import ylim
 from .zlim import zlim
 from .tlimit import tlimit
+from . import spedas_colorbar
 from pyspedas.pytplot.exporters.tplot_save import tplot_save
 from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
 from .tplot_names import tplot_names
 from .tnames import tnames
+from .convert_tplotxarray_to_pandas_dataframe import convert_tplotxarray_to_pandas_dataframe
 from pyspedas.pytplot.importers.tplot_restore import tplot_restore
 from .is_pseudovariable import is_pseudovariable
 from .count_traces import count_traces
@@ -50,6 +54,7 @@ from .tplot_copy import tplot_copy
 from .replace_data import replace_data
 from .replace_metadata import replace_metadata
 from .get_ylimits import get_ylimits
+from .rgb_color import rgb_color
 from .timebar import timebar
 from .databar import databar
 from .del_data import del_data
@@ -66,7 +71,7 @@ from .data_exists import data_exists
 from .link import link
 from .tres import tres
 from .tplot_math import *
-from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
+from .reduce_spec_dataset import reduce_spec_dataset
 from .MPLPlotter.var_labels import var_label_panel
 from .MPLPlotter.ctime import ctime
 from .MPLPlotter.highlight import highlight

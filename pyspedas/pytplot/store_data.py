@@ -3,7 +3,6 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from __future__ import division
 import pandas as pd
 import numpy as np
 import datetime
@@ -11,7 +10,7 @@ import logging
 from .del_data import del_data
 import pyspedas
 import xarray as xr
-from pyspedas.pytplot import tplot_utilities as utilities
+from pyspedas.pytplot import get_y_range
 import copy
 import warnings
 
@@ -417,7 +416,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     pyspedas.pytplot.data_quants[name] = temp
 
-    pyspedas.pytplot.data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(temp)
+    pyspedas.pytplot.data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = get_y_range(temp)
 
     return True
 

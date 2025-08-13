@@ -56,7 +56,7 @@ def spec_mult(
     if 'spec_bins' not in pyspedas.pytplot.data_quants[tvar].coords:
         logging.error("Specified variable must have spec bins stored.  Returning...")
         return
-    d, s = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+    d, s = pyspedas.pytplot.convert_tplotxarray_to_pandas_dataframe(tvar)
     dataframe = d.values
     specframe = s.values
     new_df = pd.DataFrame(dataframe*specframe, columns=d.columns, index=d.index)

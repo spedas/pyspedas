@@ -3,12 +3,10 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from __future__ import division
 import sys
 import os
 import logging
 import pyspedas
-from pyspedas.pytplot import tplot_utilities
 import tempfile
 from .MPLPlotter.tplot import tplot as mpl_tplot
 

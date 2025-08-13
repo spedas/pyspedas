@@ -7,6 +7,7 @@ import pyspedas
 import numpy as np
 import copy
 import logging
+from pyspedas.pytplot import convert_tplotxarray_to_pandas_dataframe
 
 def add_across(tvar,column_range=None,newname=None,new_tvar=None):
     """
@@ -53,9 +54,9 @@ def add_across(tvar,column_range=None,newname=None,new_tvar=None):
     # separate and add data
 
     if 'spec_bins' in pyspedas.pytplot.data_quants[tvar].coords:
-        d, s = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar)
+        d, s = convert_tplotxarray_to_pandas_dataframe(tvar)
     else:
-        d = pyspedas.pytplot.tplot_utilities.convert_tplotxarray_to_pandas_dataframe(tvar, no_spec_bins=True)
+        d = convert_tplotxarray_to_pandas_dataframe(tvar, no_spec_bins=True)
         s = None
 
     time = d.index.copy()

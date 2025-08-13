@@ -1,5 +1,5 @@
 import pyspedas
-from pyspedas.pytplot import tplot_utilities as utilities
+from pyspedas.pytplot import get_y_range
 from copy import deepcopy
 import logging
 
@@ -39,7 +39,7 @@ def replace_metadata(tplot_name, new_metadata):
 
     pyspedas.pytplot.data_quants[tplot_name].attrs = deepcopy(new_metadata)
     pyspedas.pytplot.data_quants[tplot_name].attrs["plot_options"]["yaxis_opt"]["y_range"] = (
-        utilities.get_y_range(pyspedas.pytplot.data_quants[tplot_name])
+        get_y_range(pyspedas.pytplot.data_quants[tplot_name])
     )
 
     return

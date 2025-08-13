@@ -1,8 +1,8 @@
 import logging
 import pyspedas
 import numpy as np
-from pyspedas.pytplot import tplot_utilities as utilities
-from .wildcard_routines import tplot_wildcard_expand
+from pyspedas.pytplot import get_y_range
+from pyspedas.pytplot import tplot_wildcard_expand
 
 
 def options(name, option=None, value=None, opt_dict=None, quiet=False):
@@ -272,11 +272,11 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                         continue
                     else:
                         pyspedas.pytplot.data_quants[i].attrs['plot_options']['extras']['spec'] = value
-                        pyspedas.pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pyspedas.pytplot.data_quants[i])
+                        pyspedas.pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = get_y_range(pyspedas.pytplot.data_quants[i])
 
                 else:
                     pyspedas.pytplot.data_quants[i].attrs['plot_options']['extras']['spec'] = value
-                    pyspedas.pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pyspedas.pytplot.data_quants[i])
+                    pyspedas.pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = get_y_range(pyspedas.pytplot.data_quants[i])
 
                 # Set the default dimension to plot by.  All others will be summed over.
                 if 'spec_dim_to_plot' not in pyspedas.pytplot.data_quants[i].attrs['plot_options']['extras']:
@@ -586,7 +586,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
 
                 # If we're plotting against different coordinates, we need to change what we consider the "spec_bins"
                 pyspedas.pytplot.data_quants[i].coords['spec_bins'] = pyspedas.pytplot.data_quants[i].coords[coord_to_plot]
-                pyspedas.pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = utilities.get_y_range(pyspedas.pytplot.data_quants[i])
+                pyspedas.pytplot.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = get_y_range(pyspedas.pytplot.data_quants[i])
 
             elif option == 'spec_slices_to_use':
                 if not isinstance(value, dict):

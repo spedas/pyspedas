@@ -1,6 +1,6 @@
-from . import tplot_utilities
 import pyspedas
 import logging
+from pyspedas.pytplot import str_to_float_fuzzy, rgb_color
 
 def timebar_delete(t, varname=None, dim='height'):
     if varname is None:
@@ -101,7 +101,7 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
     if not isinstance(t[0], (int, float, complex)):
         t1 = []
         for time in t:
-            t1.append(tplot_utilities.str_to_float_fuzzy(time))
+            t1.append(str_to_float_fuzzy(time))
         t = t1
 
     dim = "height"
@@ -123,7 +123,7 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
             tbar = {}
             tbar["location"] = t[i]
             tbar["dimension"] = dim
-            tbar["line_color"] = pyspedas.pytplot.tplot_utilities.rgb_color(color)[0]
+            tbar["line_color"] = rgb_color(color)[0]
             tbar["line_width"] = thick
             tbar["line_dash"] = dash_pattern
             for name in pyspedas.pytplot.data_quants:
@@ -145,7 +145,7 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
                     tbar = {}
                     tbar["location"] = t[i]
                     tbar["dimension"] = dim
-                    tbar["line_color"] = pyspedas.pytplot.tplot_utilities.rgb_color(color)[0]
+                    tbar["line_color"] = rgb_color(color)[0]
                     tbar["line_width"] = thick
                     tbar["line_dash"] = dash_pattern
                     temp_data_quants = pyspedas.pytplot.data_quants[j]

@@ -1,5 +1,53 @@
+import logging
 import pyspedas
-from . import tplot_utilities
+
+
+def set_tplot_options(option, value, old_tplot_opt_glob):
+    new_tplot_opt_glob = old_tplot_opt_glob
+
+    if option in ['title_text', 'title']:
+        new_tplot_opt_glob['title_text'] = value
+
+    elif option == 'title_size':
+        new_tplot_opt_glob['title_size'] = value
+
+    elif option == 'var_label':
+        new_tplot_opt_glob['var_label'] = value
+
+    elif option == 'x_range':
+        new_tplot_opt_glob['x_range'] = value
+
+    elif option == 'data_gap':
+        new_tplot_opt_glob['data_gap'] = value
+
+    elif option == 'axis_font_size':
+        new_tplot_opt_glob['axis_font_size'] = value
+
+    elif option == 'xmargin':
+        new_tplot_opt_glob['xmargin'] = value
+
+    elif option == 'ymargin':
+        new_tplot_opt_glob['ymargin'] = value
+
+    elif option == 'style':
+        new_tplot_opt_glob['style'] = value
+
+    elif option == 'charsize':
+        new_tplot_opt_glob['charsize'] = value
+
+    elif option == 'xsize':
+        new_tplot_opt_glob['xsize'] = value
+
+    elif option == 'ysize':
+        new_tplot_opt_glob['ysize'] = value
+
+    elif option == 'varlabel_style':
+        new_tplot_opt_glob['varlabel_style'] = value
+
+    else:
+        logging.warning("Unknown option supplied: " + str(option))
+
+    return new_tplot_opt_glob
 
 
 def tplot_options(option, value):
@@ -46,7 +94,7 @@ def tplot_options(option, value):
     
     option = option.lower()
     
-    temp = tplot_utilities.set_tplot_options(option, value, pyspedas.pytplot.tplot_opt_glob)
+    temp = set_tplot_options(option, value, pyspedas.pytplot.tplot_opt_glob)
     pyspedas.pytplot.tplot_opt_glob = temp
     
     return
