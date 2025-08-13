@@ -214,7 +214,7 @@ class TestCalFitMeta(unittest.TestCase):
                 meta = pyspedas.pytplot.get_data(var, metadata=True)
                 self.assertIn('legend_names', meta['plot_options']['yaxis_opt'])
 
-    def test_plot(selfs):
+    def test_plot(self):
         pyspedas.pytplot.tplot(['tha_fit_bfit', 'tha_fit_efit'],display=global_display, save_png='cal_fit.png')
 
 if __name__ == '__main__':
