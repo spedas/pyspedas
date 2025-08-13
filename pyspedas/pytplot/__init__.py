@@ -12,94 +12,8 @@ import xarray as xr
 # xarray options
 xr.set_options(keep_attrs=True)
 
-using_graphics = False
-
-# runs without Qt
-# if not 'PYTPLOT_NO_GRAPHICS' in os.environ:
-#     using_graphics = True
-# else:
-#     print("Turning off qt graphics.  Bokeh plotting is still enabled.")
-#     using_graphics = False
-
-try:
-    import google.colab
-    using_graphics = False
-except:
-    pass
-
-# This variable will be constantly changed depending on what x value the user is hovering over
-class HoverTime(object):
-    hover_time = 0
-    functions_to_call = []
-
-    def register_listener(self, fn):
-        self.functions_to_call.append(fn)
-        return
-
-    # New time is time we're hovering over, grabbed from TVarFigure(1D/Spec/Alt/Map)
-    # name is whatever tplot we're currently hovering over (relevant for 2D interactive
-    # plots that appear when plotting a spectrogram).
-    def change_hover_time(self, new_time, name=None):
-        self.hover_time = new_time
-        for f in self.functions_to_call:
-            try:
-                f(self.hover_time, name)
-            except Exception as e:
-                print(e)
-        return
-
-if using_graphics:
-    try:
-        import pyqtgraph as pg
-        from pyqtgraph.Qt import QtWidgets
-
-        #Note: This is absolutely required for windows systems to work currently
-        #But presumably it will be fixed at some point in the future
-        if sys.platform.startswith('win'):
-            pg.ptime.time = lambda: 0
-
-        pg.setConfigOptions(imageAxisOrder='row-major')
-        pg.setConfigOptions(background='w')
-
-
-        class PlotWindow(QtWidgets.QMainWindow):
-            def __init__(self):
-                super().__init__()
-
-            def init_savepng(self, exporter):
-                if exporter is None:
-                    return
-                # Set up the save PNG button/call exportpng function that activates when user presses button
-                exportdatapngaction = QtWidgets.QAction("Save PNG", self)
-                exportdatapngaction.triggered.connect(lambda: self.exportpng(exporter))
-
-                # Set up menu bar to display and call creation of save PNG button
-                menubar = self.menuBar()
-                menubar.setNativeMenuBar(False)
-                menubar.addAction(exportdatapngaction)
-                self.setWindowTitle('PyTplot Window')
-
-            def exportpng(self, exporter):
-                if exporter is None:
-                    print("Cannot save the image.  Try installing h5py to get around this issue.")
-                    return
-                # Function called by save PNG button to grab the image from the plot window and save it
-                fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', 'pytplot.png', filter="png (*.png *.)")
-                exporter.parameters()['width'] = tplot_opt_glob['window_size'][0]
-                exporter.parameters()['height'] = tplot_opt_glob['window_size'][1]
-                exporter.export(fname[0])
-
-            def newlayout(self, layout):
-                # Needed for displaying plots
-                self.setCentralWidget(layout)
-
-    except Exception as e:
-        print("Qt graphics import failed with error " + str(e))
-        print("Turning off qt graphics.  Bokeh plotting is still enabled.")
-        using_graphics = False
 
 # Global Variables
-hover_time = HoverTime()
 data_quants = OrderedDict()
 interactive_window = None  # 2D interactive window that appears whenever plotting spectrograms w/ tplot.
 # If option 't_average' is set by user, then x and y values on this plot are the average of the user-specified
@@ -114,16 +28,6 @@ tplot_opt_glob = dict(tools="xpan,crosshair,reset",
                       y_axis_zoom=False)
 lim_info = {}
 extra_layouts = {}
-
-if using_graphics:
-    pytplotWindow_names = []
-    pytplotWindows = []  # This is a list that will hold future qt windows
-    from . import QtPlotter
-
-    qt_plotters = {'qtTVarFigure1D': QtPlotter.TVarFigure1D,
-                   'qtTVarFigureSpec': QtPlotter.TVarFigureSpec,
-                   'qtTVarFigureAlt': QtPlotter.TVarFigureAlt,
-                   'qtTVarFigureMap': QtPlotter.TVarFigureMap}
 
 from .store_data import store_data, store
 from .tplot import tplot
@@ -157,7 +61,6 @@ from .time_string import time_string, time_datetime, time_string_one
 from pyspedas.pytplot.importers.cdf_to_tplot import cdf_to_tplot
 from pyspedas.pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
 from pyspedas.pytplot.importers.sts_to_tplot import sts_to_tplot
-from .tplot_utilities import compare_versions
 from .data_att_getters_setters import set_coords, get_coords, set_units, get_units
 from .data_exists import data_exists
 from .link import link
@@ -169,61 +72,3 @@ from .MPLPlotter.var_labels import var_label_panel
 from .MPLPlotter.ctime import ctime
 from .MPLPlotter.highlight import highlight
 from .MPLPlotter.annotate import annotate
-
-# set up logging/console output
-import logging
-from os import environ
-
-logging_level = environ.get('PYTPLOT_LOGGING_LEVEL')
-logging_format = environ.get('PYTPLOT_LOGGING_FORMAT')
-logging_date_fmt = environ.get('PYTPLOT_LOGGING_DATE_FORMAT')
-
-if logging_format is None:
-    logging_format = '%(asctime)s: %(message)s'
-
-if logging_date_fmt is None:
-    logging_date_fmt = '%d-%b-%y %H:%M:%S'
-
-if logging_level is None:
-    logging_level = logging.INFO
-else:
-    logging_level = logging_level.lower()
-    if logging_level == 'debug':
-        logging_level = logging.DEBUG
-    elif logging_level == 'info':
-        logging_level = logging.INFO
-    elif logging_level == 'warn' or logging_level == 'warning':
-        logging_level = logging.WARNING
-    elif logging_level == 'error':
-        logging_level = logging.ERROR
-    elif logging_level == 'critical':
-        logging_level = logging.CRITICAL
-
-logging.captureWarnings(True)
-
-# basicConfig here doesn't work if it has previously been called
-logging.basicConfig(format=logging_format, datefmt=logging_date_fmt, level=logging_level)
-
-# manually set the logger options from the defaults/environment variables
-logger = logging.getLogger()
-logger_handler = logger.handlers[0]  # should exist since basicConfig has been called
-logger_fmt = logging.Formatter(logging_format, logging_date_fmt)
-logger_handler.setFormatter(logger_fmt)
-logger.setLevel(logging_level)
-
-# Start the App
-if using_graphics:
-    try:
-        pg.mkQApp()
-    except Exception as e:
-        print("Qt graphics import failed with error " + str(e))
-        print("Turning off qt graphics.  Bokeh plotting is still enabled.")
-        using_graphics = False
-
-    # Ok.  In possibly the weirdest turn of events, I get a warning that interrupts Qt specplots
-    # if I DO NOT import this library.  There is an error about collections.abc in the ImageItem.render()
-    # function in pyqtgraph that completely works FINE as long as I've imported this library somewhere before
-    # that render function being called.  Why??
-    # update 23 March 2022: egrimes bumped the indentation for this import to be under the using_graphics if statement
-    # since this is only required for Qt
-    import requests
