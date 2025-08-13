@@ -2,6 +2,48 @@ from . import tplot_utilities
 import pyspedas
 import logging
 
+def timebar_delete(t, varname=None, dim='height'):
+    if varname is None:
+        for name in pyspedas.pytplot.data_quants:
+            if isinstance(pyspedas.pytplot.data_quants[name], dict):
+                # non-record varying variable
+                continue
+            try:
+                list_timebars = pyspedas.pytplot.data_quants[name].attrs['plot_options']['time_bar']
+            except KeyError:
+                continue
+            elem_to_delete = []
+            for elem in list_timebars:
+                for num in t:
+                    if (elem['location'] == num) and (elem['dimension'] == dim):
+                        elem_to_delete.append(elem)
+            for i in elem_to_delete:
+                list_timebars.remove(i)
+            pyspedas.pytplot.data_quants[name].attrs['plot_options']['time_bar'] = list_timebars
+    else:
+        if not isinstance(varname, list):
+            varname = [varname]
+        for i in varname:
+            if i not in pyspedas.pytplot.data_quants.keys():
+                logging.info(str(i) + " is currently not in pytplot.")
+                return
+            if isinstance(pyspedas.pytplot.data_quants[i], dict):
+                # non-record varying variable
+                continue
+            try:
+                list_timebars = pyspedas.pytplot.data_quants[i].attrs['plot_options']['time_bar']
+            except KeyError:
+                continue
+            elem_to_delete = []
+            for elem in list_timebars:
+                for num in t:
+                    if (elem['location'] == num) and (elem['dimension'] == dim):
+                        elem_to_delete.append(elem)
+            for j in elem_to_delete:
+                list_timebars.remove(j)
+            # pyspedas.pytplot.data_quants[i].attrs['plot_options']['time_bar']
+    return
+
 
 def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1, dash=False):
     """
@@ -71,7 +113,7 @@ def timebar(t, varname=None, databar=False, delete=False, color="black", thick=1
         dash_pattern = "dashed"
 
     if delete is True:
-        tplot_utilities.timebar_delete(t, varname, dim)
+        timebar_delete(t, varname, dim)
         return
 
     # if no varname specified, add timebars to every plot
