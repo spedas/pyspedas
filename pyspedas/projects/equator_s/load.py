@@ -88,7 +88,7 @@ def load(
     --------
     >>> import pyspedas
     >>> from pyspedas import tplot
-    >>> edi_vars = pyspedas.equator_s.edi(trange=['1998-04-06', '1998-04-07'])
+    >>> edi_vars = pyspedas.projects.equator_s.edi(trange=['1998-04-06', '1998-04-07'])
     >>> print(edi_vars)
     ['V_ed_xyz_gse%eq_pp_edi', 'E_xyz_gse%eq_pp_edi']
     >>> tplot(edi_vars)
