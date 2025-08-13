@@ -26,6 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install obspy
           pip install 'mth5>=0.4.9'
           pip install 'moto[server]'
       if: matrix.os == 'ubuntu-latest'
@@ -34,6 +35,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install obspy
           pip install 'mth5>=0.4.9'
           pip install 'moto[server]'
       if: matrix.os == 'windows-latest'
@@ -42,6 +44,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install obspy
           pip install 'mth5>=0.4.9'
           pip install 'moto[server]'
       if: matrix.os == 'macos-latest'
