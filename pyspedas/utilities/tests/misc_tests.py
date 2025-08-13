@@ -4,7 +4,6 @@ import unittest
 import pyspedas
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas import tcopy
-from pyspedas import themis
 from pyspedas import cotrans
 from pyspedas import mpause_2, mpause_t96
 from pyspedas import find_datasets
@@ -318,7 +317,7 @@ class UtilTestCases(unittest.TestCase):
         trange = ['2023-03-24', '2023-03-25']
         # THEMIS orbits come from the 'state' datatype
         # We will use GSE coordinates for the plots we'll make.
-        themis.state(probe='a', trange=trange, varformat='*_pos_gse')
+        pyspedas.projects.themis.state(probe='a', trange=trange, varformat='*_pos_gse')
         cotrans('tha_pos_gse', name_out='tha_pos_gsm', coord_in='GSE', coord_out='GSM')
         posdat = get_data('tha_pos_gsm')
         re = 6378.0
@@ -336,7 +335,7 @@ class UtilTestCases(unittest.TestCase):
         trange = ['2023-03-24', '2023-03-25']
         # THEMIS orbits come from the 'state' datatype
         # We will use GSE coordinates for the plots we'll make.
-        themis.state(probe='a', trange=trange, varformat='*_pos_gse')
+        pyspedas.projects.themis.state(probe='a', trange=trange, varformat='*_pos_gse')
         cotrans('tha_pos_gse', name_out='tha_pos_gsm', coord_in='GSE', coord_out='GSM')
         posdat = get_data('tha_pos_gsm')
         re = 6378.0
@@ -387,44 +386,23 @@ class UtilTestCases(unittest.TestCase):
         pyspedas.projects.themis.state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
 
-        # import themis without .projects.
-        from pyspedas import themis
-        del_data('*')
-        themis.state(probe='a')
-        self.assertTrue(data_exists('tha_pos'))
         # import themis with .projects.
         from pyspedas.projects import themis
         del_data('*')
         themis.state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
 
-        # import themis.state without .projects.
-        # PyCharm's static analysis doesn't like this (red underlines) but it works at runtime
-        from pyspedas.themis import state
-        del_data('*')
-        state(probe='a')
-        self.assertTrue(data_exists('tha_pos'))
         # import state with .projects.
         from pyspedas.projects.themis import state
         del_data('*')
         state(probe='a')
         self.assertTrue(data_exists('tha_pos'))
 
-        from pyspedas import mms
-        del_data('*')
-        mms.fgm()
-        self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
-
         from pyspedas.projects.mms import fgm
         del_data('*')
         fgm()
         self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2'))
 
-        # deep import themis.state without .projects.
-        from pyspedas.themis.state_tools.state import state
-        del_data('*')
-        state(probe='a')
-        self.assertTrue(data_exists('tha_pos'))
         # deep import themis.state with .projects.
         from pyspedas.projects.themis.state_tools.state import state
         del_data('*')

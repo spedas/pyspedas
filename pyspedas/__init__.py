@@ -66,10 +66,6 @@ from .utilities.xdegap import xdegap
 from .version import version
 
 
-# Import pytplot tools into pyspedas namespace
-# Note to developers: Do not use these imports for pyspedas internals, or it may cause
-# circular dependencies.  Import directly from pytplot instead.
-
 from .projects.noaa.noaa_load_kp import noaa_load_kp
 # omni must precede mms to avoid problems with circular imports
 from .projects import omni
@@ -92,73 +88,7 @@ from .projects.mms.particles.mms_part_getspec import mms_part_getspec
 from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
 
 
-# The code below is needed for backward compatibility, so users can continue to do things
-# like "from pyspedas.mms import mec" even after mms has been moved to the projects directory.
-
-import sys
-from importlib import import_module
-
-# List of submodules we want to make available under the pyspedas namespace
-submodules = ['ace', 'akebono', 'barrel', 'cluster', 'cnofs', 'csswe', 'de2', 'dscovr',
-             'elfin', 'equator_s', 'erg', 'fast', 'geotail', 'goes', 'image', 'kompsat',
-              'kyoto', 'lanl', 'maven', 'mica', 'mms', 'noaa', 'omni', 'poes', 'polar', 'psp',
-              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state_tools', 'twins',
-              'ulysses'
-              ]
-
-for submodule in submodules:
-    # Import the module from the new path
-    full_module_path = f"pyspedas.projects.{submodule}"
-    imported_module = import_module(full_module_path)
-
-    # Add it to sys.modules under the old path
-    sys.modules[f"pyspedas.{submodule}"] = imported_module
-
-# This set of imports is still needed for backward compatibility, when using fully-qualified
-# routine names in function calls, like "pyspedas.mms.mec()" rather than "pyspedas.projects.mms.mec()"
-
-# Make mission-specific namespaces available under pyspedas
-from .projects import ace
-from .projects import akebono
-from .projects import barrel
-from .projects import cluster
-from .projects import cnofs
-from .projects import csswe
-from .projects import de2
-from .projects import dscovr
-from .projects import elfin
-from .projects import equator_s
-from .projects import erg
-from .projects import fast
-from .projects import geotail
-from .projects import goes
-from .projects import image
-from .projects import kompsat
-# for backward compatibility
-from .projects.kompsat.load import load as kompsat_load
-from .projects import kyoto
-from .projects import lanl
-from .projects import maven
-# for backward compatibility
-from .projects.maven import maven_load
-from .projects import mica
-from .projects import mms
-from .projects import noaa
-from .projects import poes
-from .projects import polar
-from .projects import psp
-from .projects import rbsp
-from .projects import secs
-from .projects import soho
-from .projects import solo
-from .projects import st5
-from .projects import stereo
-from .projects import swarm
-from .projects import themis
-from .projects import twins
-from .projects import ulysses
 from . import vires
-from .projects import wind
 
 # set up logging/console output
 import logging
