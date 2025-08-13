@@ -4,8 +4,6 @@ source_pkgs =
 omit =
   */bin/*
   */docs/*
-  */QtPlotter/*
-  */AncillaryPlots/*
   */pytplot/tplot_math/tests/tests.py
   */pyspedas/cdagui_tools/cdagui.py
   */pyspedas/projects/maven/interp_utilities.py
