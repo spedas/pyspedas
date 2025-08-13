@@ -70,7 +70,8 @@ from .projects.noaa.noaa_load_kp import noaa_load_kp
 # omni must precede mms to avoid problems with circular imports
 from .projects import omni
 # lmn_matrix_make requires omni 
-from .cotrans_tools.lmn_matrix_make import lmn_matrix_make 
+from .cotrans_tools.lmn_matrix_make import lmn_matrix_make
+from .projects.kompsat.load import load as kompsat_load
 
 # Import routine names with mission prefixes into pyspedas namespace
 from .projects.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \

@@ -2,9 +2,8 @@
 import unittest
 import numpy as np
 import pyspedas
-from pyspedas import themis
 from pyspedas import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim, databar
-import pyspedas
+from pyspedas.projects import themis
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
 global_display = False
