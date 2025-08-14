@@ -1,4 +1,5 @@
 import pyspedas
+from pyspedas.pytplot import tplot_wildcard_expand
 import logging
 
 def annotate(tvar=None, text=None, position=None,
@@ -59,7 +60,7 @@ def annotate(tvar=None, text=None, position=None,
     if not isinstance(tvar, list):
         tvar = [tvar]
 
-    names = pyspedas.pytplot.tplot_wildcard_expand(tvar)
+    names = tplot_wildcard_expand(tvar)
     if len(names) == 0:
         logging.warning("annotations: no valid tplot variables specified")
         return

@@ -1,7 +1,6 @@
 
-from .subtract_average import subtract_average
+from pyspedas.pytplot import subtract_average
 import logging
-
 
 def subtract_median(
         names,

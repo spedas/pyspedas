@@ -1,6 +1,7 @@
 
 import logging
 import pyspedas
+from pyspedas.pytplot import tnames, tplot_copy
 import numpy
 
 
@@ -54,7 +55,7 @@ def subtract_average(
         logging.info("subtract_average: The new_names parameter is deprecated. Please use newname instead.")
         newname = new_names
 
-    old_names = pyspedas.pytplot.tnames(names)
+    old_names = tnames(names)
 
     if len(old_names) == 0:
         return
@@ -81,13 +82,13 @@ def subtract_average(
     if len(n_names) != len(old_names):
         n_names = [s + suffix for s in old_names]
 
-    old_names = pyspedas.pytplot.tnames(names)
+    old_names = tnames(names)
 
     for old_idx, old in enumerate(old_names):
         new = n_names[old_idx]
 
         if new != old:
-            pyspedas.pytplot.tplot_copy(old, new)
+            tplot_copy(old, new)
 
         data = pyspedas.pytplot.data_quants[new].values
         # Subtracting the average will fail if data is not a floating point type

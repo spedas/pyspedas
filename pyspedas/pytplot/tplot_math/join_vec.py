@@ -1,4 +1,5 @@
 import pyspedas
+from pyspedas.pytplot import store_data
 import pandas as pd
 import copy
 import xarray as xr
@@ -82,9 +83,9 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
             df = pd.concat([df, d], axis=1)
 
     if s is None:
-        pyspedas.pytplot.store_data(newname, data={"x": df.index, "y": df.values})
+        store_data(newname, data={"x": df.index, "y": df.values})
     else:
-        pyspedas.pytplot.store_data(newname, data={"x": df.index, "y": df.values, "v": s.values})
+        store_data(newname, data={"x": df.index, "y": df.values, "v": s.values})
 
     if to_merge is True:
         cur_data_quant = pyspedas.pytplot.data_quants[newname]

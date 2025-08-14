@@ -2,7 +2,7 @@ import fnmatch
 import logging
 
 from pyspedas.pytplot import data_quants
-from .tplot_names import tplot_names
+from pyspedas.pytplot import tplot_names
 
 def wildcard_expand(master_list, patterns, case_sensitive=True, split_whitespace=True, quiet=False):
     """ Find elements in master list matching one or more wild card patterns

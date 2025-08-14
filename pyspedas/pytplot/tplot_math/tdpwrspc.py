@@ -10,8 +10,8 @@ Similar to tdpwrspc.pro in IDL SPEDAS.
 """
 import logging
 import numpy as np
-from .dpwrspc import dpwrspc
-from .split_vec import split_vec
+from pyspedas.pytplot import dpwrspc
+from pyspedas.pytplot import split_vec
 from pyspedas.pytplot import get_data, store_data, options, time_double, set_units
 
 

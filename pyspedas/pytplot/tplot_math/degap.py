@@ -1,4 +1,5 @@
 import pyspedas
+from pyspedas.pytplot import store_data, get_data, tnames
 import numpy as np
 import copy
 import logging
@@ -68,12 +69,12 @@ def degap(
         newname = new_tvar
 
     # check for globbed or array input, and call recursively
-    tn = pyspedas.pytplot.tnames(tvar)
+    tn = tnames(tvar)
     if len(tn) == 0:
         return
     elif len(tn) > 1:
         for j in range(len(tn)):
-            pyspedas.pytplot.degap(
+            degap(
                 tn[j],
                 dt=dt,
                 margin=margin,
@@ -88,7 +89,7 @@ def degap(
     # fix from T.Hori, 2023-04-10, jimm02
     #    gap_size = np.diff(pyspedas.pytplot.data_quants[tvar].coords['time']) This is in Nanoseconds, and causes a type mismatch with dt+margin
     #    new_tvar_index = pyspedas.pytplot.data_quants[tvar].coords['time']
-    new_tvar_index = pyspedas.pytplot.get_data(tvar)[0]  # Unix time float64
+    new_tvar_index = get_data(tvar)[0]  # Unix time float64
     gap_size = np.diff(new_tvar_index)
     if maxgap is None:
         maxgap = np.nanmax(new_tvar_index)-np.nanmin(new_tvar_index)
@@ -147,7 +148,7 @@ def degap(
         pyspedas.pytplot.data_quants[tvar] = copy.deepcopy(a)
     else:
         if "spec_bins" in a.coords:
-            pyspedas.pytplot.store_data(
+            store_data(
                 newname,
                 data={"x": a.coords["time"], "y": a.values, "v": a.coords["spec_bins"]},
             )
@@ -155,7 +156,7 @@ def degap(
                 pyspedas.pytplot.data_quants[tvar].attrs
             )
         else:
-            pyspedas.pytplot.store_data(newname, data={"x": a.coords["time"], "y": a.values})
+            store_data(newname, data={"x": a.coords["time"], "y": a.values})
             pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(
                 pyspedas.pytplot.data_quants[tvar].attrs
             )

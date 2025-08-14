@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pyspedas
+from pyspedas.pytplot import store_data
 import numpy as np
 import copy
 import logging
@@ -48,7 +49,7 @@ def derive(tvar,newname=None, new_tvar=None):
             if coord != 'time' and coord != 'spec_bins':
                 data[coord] = a.coords[coord].values
 
-        pyspedas.pytplot.store_data(newname, data=data)
+        store_data(newname, data=data)
         pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 
     return

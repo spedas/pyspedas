@@ -5,6 +5,7 @@
 
 import logging
 import pyspedas
+from pyspedas.pytplot import store_data
 from copy import deepcopy
 from collections import OrderedDict
 
@@ -47,7 +48,7 @@ def tplot_copy(old_name, new_name):
     # Add a new data quantity with the copied data
     if isinstance(pyspedas.pytplot.data_quants[old_name], dict):
         # old variable is a non-record varying variable
-        pyspedas.pytplot.store_data(new_name, data={'y': pyspedas.pytplot.data_quants[old_name]['data']})
+        store_data(new_name, data={'y': pyspedas.pytplot.data_quants[old_name]['data']})
     else:
         pyspedas.pytplot.data_quants[new_name] = deepcopy(pyspedas.pytplot.data_quants[old_name])
         pyspedas.pytplot.data_quants[new_name].name = new_name

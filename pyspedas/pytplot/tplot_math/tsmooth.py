@@ -13,6 +13,7 @@ import logging
 import math
 import numpy as np
 import pyspedas
+from pyspedas.pytplot import tnames, tplot_copy
 
 
 def smooth(data, width=10, preserve_nans=None):
@@ -106,7 +107,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         >>> pyspedas.tsmooth('a')
 
     """
-    old_names = pyspedas.pytplot.tnames(names)
+    old_names = tnames(names)
 
     if len(old_names) < 1:
         logging.error('tsmooth: No valid tplot variable names were provided.')
@@ -137,7 +138,7 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
         new = n_names[i]
 
         if new != old:
-            pyspedas.pytplot.tplot_copy(old, new)
+            tplot_copy(old, new)
 
         data = pyspedas.pytplot.data_quants[new].values
 

@@ -1,6 +1,6 @@
 import logging
 from pyspedas.pytplot import get_data
-from .wildcard_routines import tplot_wildcard_expand
+from pyspedas.pytplot import tplot_wildcard_expand
 
 
 def get_any(name,tag_name):

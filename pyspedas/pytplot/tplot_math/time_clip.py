@@ -8,6 +8,7 @@ Similar to tclip.pro in IDL SPEDAS.
 """
 import logging
 import pyspedas
+from pyspedas.pytplot import store_data, get_data, tnames, time_float, time_string, tplot_copy
 import numpy as np
 import copy
 
@@ -77,7 +78,7 @@ def time_clip(
         logging.info("time_clip: The new_names parameter is deprecated. Please use newname instead.")
         newname = new_names
 
-    old_names = pyspedas.pytplot.tnames(names)
+    old_names = tnames(names)
 
     if len(old_names) < 1:
         logging.warning('time_clip: No valid tplot variables matching '+str(names))
@@ -101,16 +102,16 @@ def time_clip(
 
     if isinstance(time_start, str):
         time_start_str = time_start
-        time_start_float = pyspedas.pytplot.time_float(time_start)
+        time_start_float = time_float(time_start)
     else:
-        time_start_str = pyspedas.pytplot.time_string(time_start)
+        time_start_str = time_string(time_start)
         time_start_float = time_start
 
     if isinstance(time_end, str):
         time_end_str = time_end
-        time_end_float = pyspedas.pytplot.time_float(time_end)
+        time_end_float = time_float(time_end)
     else:
-        time_end_str = pyspedas.pytplot.time_string(time_end)
+        time_end_str = time_string(time_end)
         time_end_float = time_end
 
 
@@ -120,10 +121,10 @@ def time_clip(
 
     for j in range(len(old_names)):
         if old_names[j] != n_names[j]:
-            pyspedas.pytplot.tplot_copy(old_names[j], n_names[j])
+            tplot_copy(old_names[j], n_names[j])
 
-        alldata = pyspedas.pytplot.get_data(n_names[j])
-        metadata = copy.deepcopy(pyspedas.pytplot.get_data(n_names[j], metadata=True))
+        alldata = get_data(n_names[j])
+        metadata = copy.deepcopy(get_data(n_names[j], metadata=True))
 
         if not isinstance(alldata, tuple): # NRV variable
             continue
@@ -137,7 +138,7 @@ def time_clip(
             logging.info('time_clip found empty data for variable '+old_names[j])
             continue
 
-        new_time = np.array(pyspedas.pytplot.time_float(time))
+        new_time = np.array(time_float(time))
 
         if interior_clip:
             # Invert sense of default comparison
@@ -192,40 +193,40 @@ def time_clip(
             if 'v1' in tmp_q.coords.keys() and\
                 'v2' in tmp_q.coords.keys() and\
                     'v3' in tmp_q.coords.keys():
-                pyspedas.pytplot.store_data(n_names[j], data={
+                store_data(n_names[j], data={
                     'x': time[cond],
                     'y': data[cond, :, :, :],
                     'v1': v1_data, 'v2': v2_data, 'v3': v3_data},
                     attr_dict=metadata)
             elif 'v1' in tmp_q.coords.keys() and\
                     'v2' in tmp_q.coords.keys():
-                pyspedas.pytplot.store_data(n_names[j], data={
+                store_data(n_names[j], data={
                     'x': time[cond],
                     'y': data[cond, :, :],
                     'v1': v1_data, 'v2': v2_data},
                     attr_dict=metadata)
             elif 'v1' in tmp_q.coords.keys():
-                pyspedas.pytplot.store_data(n_names[j], data={
+                store_data(n_names[j], data={
                     'x': time[cond],
                     'y': data[cond, :],
                     'v1': v1_data}, attr_dict=metadata)
             elif 'spec_bins' in tmp_q.coords.keys():
-                pyspedas.pytplot.store_data(n_names[j], data={
+                store_data(n_names[j], data={
                     'x': time[cond],
                     'y': data[cond, :],
                     'v': v_data}, attr_dict=metadata)
             elif 'v' in tmp_q.coords.keys():
-                pyspedas.pytplot.store_data(n_names[j], data={
+                store_data(n_names[j], data={
                     'x': time[cond],
                     'y': data[cond, :],
                     'v': v_data}, attr_dict=metadata)
             elif data.ndim == 1:
-                pyspedas.pytplot.store_data(n_names[j], data={
+                store_data(n_names[j], data={
                     'x': time[cond],
                     'y': data[cond]},
                     attr_dict=metadata)
             else:
-                pyspedas.pytplot.store_data(n_names[j], data={
+                store_data(n_names[j], data={
                     'x': time[cond],
                     'y': data[cond]},
                     attr_dict=metadata)

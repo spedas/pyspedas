@@ -9,6 +9,7 @@ Similar to split_vec.pro in IDL SPEDAS.
 
 import logging
 import pyspedas
+from pyspedas.pytplot import store_data, get_data
 import numpy as np
 import logging
 
@@ -74,11 +75,11 @@ def split_vec(
         newname = tvar
 
     # Gather data from the tvar
-    alldata = pyspedas.pytplot.get_data(tvar)
+    alldata = get_data(tvar)
     time = alldata[0]
     data = alldata[1]
     dim = data.shape
-    metadata = pyspedas.pytplot.get_data(tvar, metadata=True)
+    metadata = get_data(tvar, metadata=True)
 
     # If already size one, simply return
     if len(dim) == 1:
@@ -122,7 +123,7 @@ def split_vec(
 
         data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze()}
 
-        if not pyspedas.pytplot.store_data(split_name, data=data_for_tplot, attr_dict=metadata):
+        if not store_data(split_name, data=data_for_tplot, attr_dict=metadata):
             raise Exception(f"Failed to store {split_name} in pytplot.")
 
     return created_variables

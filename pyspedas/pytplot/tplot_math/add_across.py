@@ -7,7 +7,7 @@ import pyspedas
 import numpy as np
 import copy
 import logging
-from pyspedas.pytplot import convert_tplotxarray_to_pandas_dataframe
+from pyspedas.pytplot import convert_tplotxarray_to_pandas_dataframe, store_data
 
 def add_across(tvar,column_range=None,newname=None,new_tvar=None):
     """
@@ -113,9 +113,9 @@ def add_across(tvar,column_range=None,newname=None,new_tvar=None):
 
     #store added data
     if s is None:
-        pyspedas.pytplot.store_data(newname,data={'x':time, 'y':np.transpose(data)})
+        store_data(newname,data={'x':time, 'y':np.transpose(data)})
     else:
-        pyspedas.pytplot.store_data(newname, data={'x': time, 'y':np.transpose(data), 'v': np.transpose(spec_data)})
+        store_data(newname, data={'x': time, 'y':np.transpose(data), 'v': np.transpose(spec_data)})
 
     #pyspedas.pytplot.data_quants[new_tvar].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 

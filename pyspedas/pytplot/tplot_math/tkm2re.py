@@ -1,5 +1,6 @@
 import logging
 import pyspedas
+from pyspedas.pytplot import store_data, get_data, tnames
 
 
 def tkm2re(name, km=False, newname=None, suffix=''):
@@ -39,7 +40,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
     """
     km_in_re = 6371.2
 
-    names = pyspedas.pytplot.tnames(name)
+    names = tnames(name)
 
     if names == []:
         logging.error('tkm2re: No valid tplot variables found: ' + name)
@@ -63,8 +64,8 @@ def tkm2re(name, km=False, newname=None, suffix=''):
     out = []
 
     for in_tvar, out_tvar in zip(names, newname):
-        data = pyspedas.pytplot.get_data(in_tvar)
-        metadata = pyspedas.pytplot.get_data(in_tvar, metadata=True)
+        data = get_data(in_tvar)
+        metadata = get_data(in_tvar, metadata=True)
 
         if data is None:
             logging.error('Problem reading variable: ' + in_tvar)
@@ -75,7 +76,7 @@ def tkm2re(name, km=False, newname=None, suffix=''):
         else:
             data_out = data.y*km_in_re
 
-        saved = pyspedas.pytplot.store_data(out_tvar, data={'x': data.times, 'y': data_out}, attr_dict=metadata)
+        saved = store_data(out_tvar, data={'x': data.times, 'y': data_out}, attr_dict=metadata)
 
         if not saved:
             logging.error('Problem creating tplot variable.')

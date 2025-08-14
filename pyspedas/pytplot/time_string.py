@@ -2,7 +2,7 @@
 Transform datetimes from decimal to string.
 """
 from datetime import datetime, timezone
-from .time_double import time_float
+from pyspedas.pytplot import time_float
 
 def time_string_one(float_time=None, fmt=None):
     """

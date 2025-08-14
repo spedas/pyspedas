@@ -1,4 +1,5 @@
 import pyspedas
+from pyspedas.pytplot import tplot_wildcard_expand
 import logging
 
 def highlight(variables=None, range=None, color='gray', alpha=0.2, fill=True, edgecolor=None, facecolor=None, hatch=None, delete=False):
@@ -32,7 +33,7 @@ def highlight(variables=None, range=None, color='gray', alpha=0.2, fill=True, ed
     """
     if not isinstance(variables, list):
         variables = [variables]
-    tvars=pyspedas.pytplot.tplot_wildcard_expand(variables)
+    tvars=tplot_wildcard_expand(variables)
     if len(tvars) == 0:
         logging.warning("highlight: No valid tplot names specified")
 

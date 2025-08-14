@@ -1,6 +1,6 @@
 import pyspedas
-from . import time_double
-from .xlim import xlim
+from pyspedas.pytplot import time_double
+from pyspedas.pytplot import xlim
 import logging
 import numpy as np
 

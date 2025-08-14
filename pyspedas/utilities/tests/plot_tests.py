@@ -715,7 +715,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2017-03-27',1,'days')
         mgf()
         orb()
-        from pyspedas import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
+        from pyspedas import tplot_options, options, tplot_names, split_vec, get_data, tnames
 
         split_vec('erg_orb_l2_pos_rmlatmlt')
         split_vec('erg_orb_l2_pos_Lm')
@@ -742,7 +742,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2017-03-27',1,'days')
         mgf()
         orb()
-        from pyspedas import tplot_options, options, tplot_names, split_vec, get_data, tplot_opt_glob, tnames
+        from pyspedas import tplot_options, options, tplot_names, split_vec, get_data, tnames
 
         split_vec('erg_orb_l2_pos_rmlatmlt')
         split_vec('erg_orb_l2_pos_Lm')

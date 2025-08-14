@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pyspedas
+from pyspedas.pytplot import store_data, tinterp
 import copy
 import logging
 
@@ -46,7 +47,7 @@ def subtract(
         newname = new_tvar
 
     #interpolate tvars
-    tv2 = pyspedas.pytplot.tinterp(tvar1,tvar2)
+    tv2 = tinterp(tvar1,tvar2)
 
     #separate and subtract data
     data1 = pyspedas.pytplot.data_quants[tvar1].values
@@ -59,10 +60,10 @@ def subtract(
         return tvar1
 
     if 'spec_bins' in pyspedas.pytplot.data_quants[tvar1].coords:
-        pyspedas.pytplot.store_data(newname, data={'x': pyspedas.pytplot.data_quants[tvar1].coords['time'].values, 'y': data, 'v':pyspedas.pytplot.data_quants[tvar1].coords['spec_bins'].values})
+        store_data(newname, data={'x': pyspedas.pytplot.data_quants[tvar1].coords['time'].values, 'y': data, 'v':pyspedas.pytplot.data_quants[tvar1].coords['spec_bins'].values})
         pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar1].attrs)
     else:
-        pyspedas.pytplot.store_data(newname,data={'x': pyspedas.pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
+        store_data(newname,data={'x': pyspedas.pytplot.data_quants[tvar1].coords['time'].values, 'y': data})
         pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar1].attrs)
 
     return newname

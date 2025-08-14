@@ -9,6 +9,7 @@ Similar to tdeflag.pro in IDL SPEDAS, but now a wrapper for deflag.py
 """
 import logging
 import pyspedas
+from pyspedas.pytplot import tnames, deflag
 
 def tdeflag(names,
             flag=None,
@@ -74,7 +75,7 @@ def tdeflag(names,
         logging.info("tdeflag: The new_names parameter is deprecated. Please use newname instead.")
         newname = new_names
 
-    old_names = pyspedas.pytplot.tnames(names)
+    old_names = tnames(names)
 
     if len(old_names) < 1:
         logging.error('tdeflag: No valid tplot names were provided.')
@@ -98,7 +99,7 @@ def tdeflag(names,
         logging.info('input newname has incorrect number of elements')
 
     for i in range(len(old_names)):
-        pyspedas.pytplot.deflag(old_names[i], flag, newname=n_names[i], method=method, fillval=fillval)
+        deflag(old_names[i], flag, newname=n_names[i], method=method, fillval=fillval)
         logging.info('tdeflag was applied to: ' + n_names[i])
 
     return n_names

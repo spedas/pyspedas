@@ -8,6 +8,7 @@ Similar to spec_mult.pro in IDL SPEDAS.
 """
 
 import pyspedas
+from pyspedas.pytplot import store_data, convert_tplotxarray_to_pandas_dataframe
 import pandas as pd
 import copy
 import logging
@@ -56,10 +57,10 @@ def spec_mult(
     if 'spec_bins' not in pyspedas.pytplot.data_quants[tvar].coords:
         logging.error("Specified variable must have spec bins stored.  Returning...")
         return
-    d, s = pyspedas.pytplot.convert_tplotxarray_to_pandas_dataframe(tvar)
+    d, s = convert_tplotxarray_to_pandas_dataframe(tvar)
     dataframe = d.values
     specframe = s.values
     new_df = pd.DataFrame(dataframe*specframe, columns=d.columns, index=d.index)
-    pyspedas.pytplot.store_data(newname,data={'x': new_df.index,'y': new_df.values})
+    store_data(newname,data={'x': new_df.index,'y': new_df.values})
     pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
     return

@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 import logging
 import pyspedas
+from pyspedas.pytplot import options
 
 def ylim(name, min, max, logflag=None):
     """
@@ -35,7 +36,7 @@ def ylim(name, min, max, logflag=None):
 
     """
     if logflag is None:
-        pyspedas.pytplot.options(name,'y_range',[min, max])
+        options(name,'y_range',[min, max])
     else:
-        pyspedas.pytplot.options(name,'y_range',[min, max, logflag])
+        options(name,'y_range',[min, max, logflag])
     return

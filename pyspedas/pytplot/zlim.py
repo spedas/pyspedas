@@ -5,6 +5,7 @@
 
 import pyspedas
 import logging
+from pyspedas.pytplot import options
 
 def zlim(name, min, max, logflag=None):
     """
@@ -39,7 +40,7 @@ def zlim(name, min, max, logflag=None):
 
     """
     if logflag is None:
-        pyspedas.pytplot.options(name,'z_range',[min,max])
+        options(name,'z_range',[min,max])
     else:
-        pyspedas.pytplot.options(name,'z_range',[min, max, logflag])
+        options(name,'z_range',[min, max, logflag])
     return

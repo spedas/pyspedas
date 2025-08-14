@@ -4,6 +4,7 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pytplot
 
 import pyspedas
+from pyspedas.pytplot import store_data, tnames
 import numpy as np
 import copy
 import logging
@@ -46,12 +47,12 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
         newname = new_tvar
 
     #check for globbed or array input, and call recursively
-    tn = pyspedas.pytplot.tnames(tvar)
+    tn = tnames(tvar)
     if len(tn) == 0:
         return
     elif len(tn) > 1:
         for j in range(len(tn)):
-            pyspedas.pytplot.clip(tn[j],ymin,ymax)
+            clip(tn[j],ymin,ymax)
         return
 
 
@@ -63,10 +64,10 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
         pyspedas.pytplot.data_quants[tvar] = a
     else:
         if 'spec_bins' in a.coords:
-            pyspedas.pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+            store_data(newname, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
             pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
         else:
-            pyspedas.pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values})
+            store_data(newname, data={'x': a.coords['time'], 'y': a.values})
             pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 
     return

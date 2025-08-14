@@ -11,9 +11,9 @@ import numpy as np
 import xarray as xr
 import datetime
 from datetime import timedelta
-from pyspedas.pytplot.store_data import store_data
+from pyspedas.pytplot import store_data
 from pyspedas.pytplot import tplot
-from pyspedas.pytplot.options import options
+from pyspedas.pytplot import options
 import pyspedas
 import copy
 from collections.abc import Iterable

@@ -1,4 +1,5 @@
 import pyspedas
+from pyspedas.pytplot import store_data, get_data, tnames
 import copy
 import numpy as np
 import logging
@@ -66,12 +67,12 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
     #        return
     
     # check for globbed or array input, and call recursively
-    tn = pyspedas.pytplot.tnames(tvar)
+    tn = tnames(tvar)
     if len(tn) == 0:
         return
     elif len(tn) > 1:
         for j in range(len(tn)):
-            pyspedas.pytplot.deflag(tn[j], flag, method=method, fillval=fillval)
+            deflag(tn[j], flag, method=method, fillval=fillval)
         return
 
     # Now flag needs to be an array
@@ -90,7 +91,7 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
     
     nf = len(flag)
     if method == 'remove_nan':  # this is different from the other methods, which retain all time intervals
-        a = copy.deepcopy(pyspedas.pytplot.get_data(tvar))
+        a = copy.deepcopy(get_data(tvar))
         alen = len(a)
         # Ignore more than 2d Y input
         if alen > 3:
@@ -133,17 +134,17 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
             return
         if newname is None:
             if alen == 2:
-                pyspedas.pytplot.store_data(tvar, data={'x': new_time, 'y': new_data})
+                store_data(tvar, data={'x': new_time, 'y': new_data})
             else:
-                pyspedas.pytplot.store_data(tvar, data={'x': new_time, 'y': new_data, 'v': new_v})
+                store_data(tvar, data={'x': new_time, 'y': new_data, 'v': new_v})
         else:
             if alen == 2:
-                pyspedas.pytplot.store_data(newname, data={'x': new_time, 'y': new_data})
+                store_data(newname, data={'x': new_time, 'y': new_data})
             else:
-                pyspedas.pytplot.store_data(newname, data={'x': new_time, 'y': new_data, 'v': new_v})
+                store_data(newname, data={'x': new_time, 'y': new_data, 'v': new_v})
             pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
     elif method == 'repeat' or method == 'linear' or method == 'replace':
-        a = copy.deepcopy(pyspedas.pytplot.get_data(tvar))
+        a = copy.deepcopy(get_data(tvar))
         time = a[0]
         data = a[1]
         # Force the data into a 2-d view, retaining the original shape so we can restore it later
@@ -216,14 +217,14 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
 
         if newname is None:
             if alen == 2:
-                pyspedas.pytplot.store_data(tvar, data={'x': time, 'y': data.reshape(original_data_shape)})
+                store_data(tvar, data={'x': time, 'y': data.reshape(original_data_shape)})
             else:
-                pyspedas.pytplot.store_data(tvar, data={'x': time, 'y': data.reshape(original_data_shape), 'v': v})
+                store_data(tvar, data={'x': time, 'y': data.reshape(original_data_shape), 'v': v})
         else:
             if alen == 2:
-                pyspedas.pytplot.store_data(newname, data={'x': time, 'y': data.reshape(original_data_shape)})
+                store_data(newname, data={'x': time, 'y': data.reshape(original_data_shape)})
             else:
-                pyspedas.pytplot.store_data(newname, data={'x': time, 'y': data.reshape(original_data_shape), 'v': v})
+                store_data(newname, data={'x': time, 'y': data.reshape(original_data_shape), 'v': v})
                 pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
     else:  # any other option includes method=None, replace flags with NaN
         nf = len(flag)
@@ -236,10 +237,10 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
             pyspedas.pytplot.data_quants[tvar] = a
         else:
             if 'spec_bins' in a.coords:
-                pyspedas.pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
+                store_data(newname, data={'x': a.coords['time'], 'y': a.values, 'v': a.coords['spec_bins']})
                 pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
             else:
-                pyspedas.pytplot.store_data(newname, data={'x': a.coords['time'], 'y': a.values})
+                store_data(newname, data={'x': a.coords['time'], 'y': a.values})
                 pyspedas.pytplot.data_quants[newname].attrs = copy.deepcopy(pyspedas.pytplot.data_quants[tvar].attrs)
 
     return

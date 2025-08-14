@@ -4,6 +4,7 @@ import logging
 import numpy as np
 import xarray as xr
 import pyspedas
+from pyspedas.pytplot import store_data
 import copy
 import time
 
@@ -246,7 +247,7 @@ def sts_to_tplot(
             to_merge = True
 
         # Store the new data
-        pyspedas.pytplot.store_data(
+        store_data(
             var_name,
             data={"x": sts_dict["time_unix"], "y": var_data},
         )

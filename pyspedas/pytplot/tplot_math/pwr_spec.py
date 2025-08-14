@@ -1,7 +1,7 @@
 import numpy as np
 import logging
 import pyspedas
-from pyspedas.pytplot import data_exists
+from pyspedas.pytplot import data_exists, store_data, get_data, options
 from scipy import signal
 
 
@@ -48,7 +48,7 @@ def pwr_spec(tvar, nbp=256, nsp=128, newname=None):
         logging.error("Input variable %s does not exist", tvar)
         return
 
-    d =pyspedas.pytplot.get_data(tvar)
+    d =get_data(tvar)
     x, y = d[0], d[1]
 
     if len(y.shape) > 1:
@@ -81,9 +81,9 @@ def pwr_spec(tvar, nbp=256, nsp=128, newname=None):
     if newname is None:
         newname = tvar + "_pwrspec"
 
-    pyspedas.pytplot.store_data(newname, data={"x": x_new, "y": pxx_new, "v": f_new})
-    pyspedas.pytplot.options(newname, "spec", 1)
-    pyspedas.pytplot.options(newname, "zlog", 1)
-    pyspedas.pytplot.options(newname, "ylog", 1)
+    store_data(newname, data={"x": x_new, "y": pxx_new, "v": f_new})
+    options(newname, "spec", 1)
+    options(newname, "zlog", 1)
+    options(newname, "ylog", 1)
 
     return

@@ -3,10 +3,9 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from __future__ import division
 import pyspedas
 
-from .xlim import xlim
+from pyspedas.pytplot import xlim
 
 
 def tlimit(arg=None, full=False, last=False):

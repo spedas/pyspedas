@@ -1,6 +1,7 @@
 
 import numpy as np
 import pyspedas
+from pyspedas.pytplot import get_data, is_pseudovariable
 import logging
 
 def count_traces(tvar):
@@ -32,9 +33,9 @@ def count_traces(tvar):
         tvar = [tvar]
     for v in tvar:
         if v in pyspedas.pytplot.data_quants.keys():
-            data=pyspedas.pytplot.get_data(v, dt=True)
+            data=get_data(v, dt=True)
 
-            if pyspedas.pytplot.is_pseudovariable(v):
+            if is_pseudovariable(v):
                 components = pyspedas.pytplot.data_quants[v].attrs['plot_options']['overplots_mpl']
                 trace_count += count_traces(components)
             else:

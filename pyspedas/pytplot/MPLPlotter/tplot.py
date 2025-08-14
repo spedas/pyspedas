@@ -8,10 +8,10 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import pyspedas
 from fnmatch import filter as tname_filter
 from time import sleep
-from pyspedas.pytplot.wildcard_routines import tplot_wildcard_expand, tname_byindex
-
-from .lineplot import lineplot
-from .specplot import specplot, specplot_make_1d_ybins
+from pyspedas.pytplot import tplot_wildcard_expand, tname_byindex, get_data, var_label_panel
+from pyspedas.pytplot import lineplot, count_traces, makegap
+from pyspedas.pytplot import specplot, specplot_make_1d_ybins, reduce_spec_dataset
+from pyspedas.pytplot import get_var_label_ticks
 
 # the following improves the x-axis ticks labels
 import matplotlib.units as munits
@@ -56,7 +56,7 @@ def pseudovar_component_props(varname: str):
         yrange=[None, None]
 
     plot_extras = attrs['plot_options']['extras']
-    dat = pyspedas.pytplot.get_data(varname)
+    dat = get_data(varname)
 
     if ylog is None or ylog is False or ylog == '' or ylog.lower() == 'linear':
         output_dict['ylog'] = False
@@ -323,13 +323,13 @@ def tplot(variables,
     # fig.subplots_adjust(hspace=vertical_spacing)
 
     for idx, variable in enumerate(variables):
-        var_data_org = pyspedas.pytplot.get_data(variable, dt=True)
-        var_metadata = pyspedas.pytplot.get_data(variable, metadata=True)
+        var_data_org = get_data(variable, dt=True)
+        var_metadata = get_data(variable, metadata=True)
 
         #Check for a 3d variable, call reduce_spec_dataset
         if hasattr(var_data_org, 'v1') and hasattr(var_data_org, 'v2'):
-            temp_dq = pyspedas.pytplot.reduce_spec_dataset(name=variable)
-            var_data_org = pyspedas.pytplot.get_data(variable, dt=True, data_quant_in=temp_dq)
+            temp_dq = reduce_spec_dataset(name=variable)
+            var_data_org = get_data(variable, dt=True, data_quant_in=temp_dq)
         
         if var_data_org is None:
             logging.info('Variable not found: ' + variable)
@@ -455,7 +455,7 @@ def tplot(variables,
                 # traces have been plotted so far, so we can correctly match option values to traces. The pseudovariable
                 # y_axis, z_axis, line and extra options are passed as parameters so they can be merged with the
                 # sub-variable options, with any pseudovar options overriding the sub-variable options.
-                trace_count_thisvar = pyspedas.pytplot.count_traces(var)
+                trace_count_thisvar = count_traces(var)
                 if var == pseudovar_props['first_spec_var']:
                     pseudo_show_colorbar=True
                 else:
@@ -484,10 +484,10 @@ def tplot(variables,
         #global setting
         plot_extras = var_quants.attrs['plot_options']['extras']
         if plot_extras.get('data_gap') is not None and plot_extras.get('data_gap') > 0:
-            var_data = pyspedas.pytplot.makegap(var_data, dt = plot_extras.get('data_gap'))
+            var_data = makegap(var_data, dt = plot_extras.get('data_gap'))
         else:
             if pyspedas.pytplot.tplot_opt_glob['data_gap'] is not None and pyspedas.pytplot.tplot_opt_glob['data_gap'] > 0:
-                var_data = pyspedas.pytplot.makegap(var_data, dt = pyspedas.pytplot.tplot_opt_glob['data_gap'])
+                var_data = makegap(var_data, dt = pyspedas.pytplot.tplot_opt_glob['data_gap'])
 
         # set the x-axis range, if it was set with xlim or tlimit or the trange parameter
         if trange is None and pyspedas.pytplot.tplot_opt_glob.get('x_range') is None:
@@ -748,7 +748,7 @@ def tplot(variables,
         if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
             varlabels_extra_axes(num_panels, this_axis, var_label)
         else:
-            pyspedas.pytplot.var_label_panel(variables, var_label, axes,  axis_font_size)
+            var_label_panel(variables, var_label, axes,  axis_font_size)
 
     # add the color bars to any spectra
     for idx, variable in enumerate(variables):
@@ -862,7 +862,7 @@ def varlabels_extra_axes(num_panels, this_axis, var_label):
         for label in var_label:
             if isinstance(label, int):
                 label = tname_byindex(label)
-            label_data = pyspedas.pytplot.get_data(label, xarray=True, dt=True)
+            label_data = get_data(label, xarray=True, dt=True)
 
             if label_data is None:
                 logging.info('Variable not found: ' + label)
@@ -900,7 +900,7 @@ def mouse_move_slice(event, slice_axes, slice_plot):
 
     # check for a spectrogram
     try:
-        data = pyspedas.pytplot.get_data(event.inaxes.var_name)
+        data = get_data(event.inaxes.var_name)
     except AttributeError:
         return
 
@@ -984,18 +984,6 @@ def mouse_move_slice(event, slice_axes, slice_plot):
     except ValueError:
         return
     sleep(0.01)
-
-
-def get_var_label_ticks(var_xr, times):
-    out_ticks = []
-    extras = var_xr.attrs['plot_options']['extras']
-    var_label_format = extras.get('var_label_format')
-    if var_label_format is None:
-        var_label_format = '{:.2f}'
-    for time in times:
-        out_ticks.append(var_label_format.format(var_xr.interp(coords={'time': time}, kwargs={'fill_value': 'extrapolate', 'bounds_error': False}).values))
-    return out_ticks
-
 
 def replace_common_exp(title):
     if hasattr(title, 'decode'):

@@ -1,4 +1,5 @@
 import pyspedas
+from pyspedas.pytplot import store_data, get_data, degap, del_data
 import numpy as np
 
 
@@ -56,27 +57,27 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
     # gap_index_locations = np.where(gap_size > dt0)
 
     # First create a temporary tplot variable for the data, times need to be in unix time
-    #x = pyspedas.pytplot.time_float(var_data.times)
+    #x = time_float(var_data.times)
     x = np.int64(var_data.times)/1e9
     if var_data.y.ndim == 1:
-        pyspedas.pytplot.store_data("makegap_tmp", data={"x": x, "y": var_data.y})
+        store_data("makegap_tmp", data={"x": x, "y": var_data.y})
     else:  # multiple dimensions
         var_data_out = None
-        pyspedas.pytplot.store_data("makegap_tmp", data={"x": x, "y": var_data.y})
+        store_data("makegap_tmp", data={"x": x, "y": var_data.y})
         # Check for values, v, or v1, v2, v3
         if len(var_data) == 2:  # No v's
-            pyspedas.pytplot.store_data("makegap_tmp", data={"x": x, "y": var_data.y})
+            store_data("makegap_tmp", data={"x": x, "y": var_data.y})
         elif len(var_data) == 3:  # v or v1,needs indexing if it's 2d
-            pyspedas.pytplot.store_data(
+            store_data(
                 "makegap_tmp", data={"x": x, "y": var_data.y, "v": var_data[2]}
             )
         elif len(var_data) == 4:  # has both v1 and v2
-            pyspedas.pytplot.store_data(
+            store_data(
                 "makegap_tmp",
                 data={"x": x, "y": var_data.y, "v1": var_data[2], "v2": var_data[3]},
             )
         elif len(var_data) == 5:  # has v1, v2, v3
-            pyspedas.pytplot.store_data(
+            store_data(
                 "makegap_tmp",
                 data={
                     "x": x,
@@ -87,8 +88,8 @@ def makegap(var_data, dt=None, margin=0.0, func="nan"):
                 },
             )
     # Now, degap the variable
-    pyspedas.pytplot.degap("makegap_tmp", dt=dt, margin=margin, func=func)
+    degap("makegap_tmp", dt=dt, margin=margin, func=func)
     # and return the getdata result
-    var_data_out = pyspedas.pytplot.get_data("makegap_tmp", dt=True)
-    pyspedas.pytplot.del_data("makegap_tmp")
+    var_data_out = get_data("makegap_tmp", dt=True)
+    del_data("makegap_tmp")
     return var_data_out

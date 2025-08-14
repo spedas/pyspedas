@@ -7,10 +7,9 @@ import pandas as pd
 import numpy as np
 import datetime
 import logging
-from pyspedas.pytplot import del_data
+from pyspedas.pytplot import del_data, tplot_rename, get_y_range
 import pyspedas
 import xarray as xr
-from pyspedas.pytplot import get_y_range
 import copy
 import warnings
 
@@ -103,7 +102,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     # If newname is specified, we are just renaming the variable
     if newname is not None:
-        pyspedas.pytplot.tplot_rename(name, newname)
+        tplot_rename(name, newname)
         return True
 
     # if isinstance(data, str):
