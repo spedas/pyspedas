@@ -5,6 +5,8 @@
 #from .pytplot import *
 
 from .pytplot import get_y_range
+from .pytplot import tplot_rename
+from .pytplot import del_data
 from .pytplot import store_data
 from .pytplot import store
 from .pytplot import get_data

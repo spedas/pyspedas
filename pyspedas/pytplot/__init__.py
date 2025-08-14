@@ -30,6 +30,8 @@ lim_info = {}
 extra_layouts = {}
 
 from .get_y_range import get_y_range
+from .tplot_rename import tplot_rename
+from .del_data import del_data
 from .store_data import store_data, store
 from .get_data import get_data, get
 from .str_to_float_fuzzy import str_to_float_fuzzy
@@ -49,7 +51,6 @@ from .is_pseudovariable import is_pseudovariable
 from .count_traces import count_traces
 from .get_timespan import get_timespan
 from .tplot_options import tplot_options
-from .tplot_rename import tplot_rename
 from .tplot_copy import tplot_copy
 from .replace_data import replace_data
 from .replace_metadata import replace_metadata
@@ -57,7 +58,6 @@ from .get_ylimits import get_ylimits
 from .rgb_color import rgb_color
 from .timebar import timebar
 from .databar import databar
-from .del_data import del_data
 from .timespan import timespan
 from .timestamp import timestamp
 from .time_double import time_float,time_double, time_float_one
