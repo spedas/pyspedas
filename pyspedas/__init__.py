@@ -10,16 +10,17 @@ from .pytplot import store
 from .pytplot import get_data
 from .pytplot import get
 from .pytplot import str_to_float_fuzzy
-from .pytplot import xlim
-from .pytplot import ylim
-from .pytplot import zlim
-from .pytplot import tlimit
-from .pytplot import tplot_save
 from .pytplot import tplot_names
 from .pytplot import wildcard_expand
 from .pytplot import tplot_wildcard_expand
 from .pytplot import tname_byindex
 from .pytplot import tindex_byname
+from .pytplot import options
+from .pytplot import xlim
+from .pytplot import ylim
+from .pytplot import zlim
+from .pytplot import tlimit
+from .pytplot import tplot_save
 from .pytplot import tnames
 from .pytplot import convert_tplotxarray_to_pandas_dataframe
 from .pytplot import tplot_restore
@@ -37,7 +38,6 @@ from .pytplot import timebar
 from .pytplot import databar
 from .pytplot import del_data
 from .pytplot import timespan
-from .pytplot import options
 from .pytplot import timestamp
 from .pytplot import time_float
 from .pytplot import time_double
@@ -54,6 +54,7 @@ from .pytplot import data_exists
 from .pytplot import link
 from .pytplot import tres
 
+from .pytplot import tinterp
 from .pytplot import add_across
 from .pytplot import add
 from .pytplot import avg_res_data
@@ -64,7 +65,6 @@ from .pytplot import degap
 from .pytplot import derive
 from .pytplot import divide
 from .pytplot import interp_nan
-from .pytplot import tinterp
 from .pytplot import join_vec
 from .pytplot import multiply
 from .pytplot import spec_mult
@@ -93,6 +93,7 @@ from .pytplot import reduce_spec_dataset
 from .pytplot import lineplot
 from .pytplot import specplot
 from .pytplot import specplot_make_1d_ybins
+from .pytplot import get_var_label_ticks
 from .pytplot import var_label_panel
 from .pytplot import ctime
 from .pytplot import highlight

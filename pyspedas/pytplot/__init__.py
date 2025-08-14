@@ -33,14 +33,15 @@ from .get_y_range import get_y_range
 from .store_data import store_data, store
 from .get_data import get_data, get
 from .str_to_float_fuzzy import str_to_float_fuzzy
+from .tplot_names import tplot_names
+from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
+from .options import options
 from .xlim import xlim
 from .ylim import ylim
 from .zlim import zlim
 from .tlimit import tlimit
 from . import spedas_colorbar
 from .exporters.tplot_save import tplot_save
-from .tplot_names import tplot_names
-from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
 from .tnames import tnames
 from .convert_tplotxarray_to_pandas_dataframe import convert_tplotxarray_to_pandas_dataframe
 from .importers.tplot_restore import tplot_restore
@@ -58,7 +59,6 @@ from .timebar import timebar
 from .databar import databar
 from .del_data import del_data
 from .timespan import timespan
-from .options import options
 from .timestamp import timestamp
 from .time_double import time_float,time_double, time_float_one
 from .time_string import time_string, time_datetime, time_string_one
@@ -68,6 +68,7 @@ from .data_exists import data_exists
 from .link import link
 from .tres import tres
 
+from .tplot_math.tinterp import tinterp
 from .tplot_math.add_across import add_across
 from .tplot_math.add import add
 from .tplot_math.avg_res_data import avg_res_data
@@ -105,6 +106,7 @@ from .tplot_math.tdpwrspc import tdpwrspc
 from .reduce_spec_dataset import reduce_spec_dataset
 from .MPLPlotter.lineplot import lineplot
 from .MPLPlotter.specplot import specplot, specplot_make_1d_ybins
+from .MPLPlotter.get_var_label_ticks import get_var_label_ticks
 from .MPLPlotter.var_labels import var_label_panel
 from .MPLPlotter.ctime import ctime
 from .MPLPlotter.highlight import highlight
