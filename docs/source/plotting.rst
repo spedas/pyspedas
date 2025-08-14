@@ -1,35 +1,26 @@
-PyTplot
-=======
+Plotting routines
+=================
 
-PyTplot (as implemented by the pytplot-matplotlib-temp PyPI package) can be thought of as a companion package to PySPEDAS.
-
-In the future, the pytplot tools will be migrated into the pyspedas package.  They are all available for
-importing directly from the top level pyspedas module.
-
-This section describes the tools relevant for creating plots in PySPEDAS.
-
+In past releases of PySPEDAS, plotting utilities, and many other tools that work with tplot variables, were
+imported from the external pytplot-mpl-temp package.  As of PySPEDAS 2.0, they are now bundled with PySPEDAS.
 
 Plotting
 --------
 
-tplot is the top level plotting routine.  It is now just a wrapper
-for the matplotlib-specific plot routines described below.
+tplot is the top level plotting routine.  It uses the matplotlib plotting library to render plots of tplot variables.
 
-.. autofunction:: pytplot.tplot
+.. autofunction:: pyspedas.tplot
 
-The matplotlib-specific version of tplot, which actually does all the work.
 
-.. autofunction:: pytplot.MPLPlotter.tplot.tplot
+lineplot is a line plotting routine called by tplot. It is not usually called by users,
+but is documented here for completeness.
 
-Line plotting routine called by tplot. Not usually called by users,
-documented here for completeness.
+.. autofunction:: pyspedas.lineplot
 
-.. autofunction:: pytplot.MPLPlotter.lineplot.lineplot
+specplot is a spectrogram plotting routine called by tplot. It is not usually called by users,
+but is docuemented here for completeness.
 
-Spectrogram plotting routine called by tplot. Not usually called by users,
-docuemented here for completeness.
-
-.. autofunction:: pytplot.MPLPlotter.specplot.specplot
+.. autofunction:: pyspedas.specplot
 
 Time Windowing and Plot Limits
 -------------------------------
@@ -53,7 +44,7 @@ then return the list of timestamps selected.
 At the moment, ctime does not work reliably in a Jupyter notebook when the matplotlib 'ipympl'
 backend is used, or with the default 'inline' non-interactive back end.  If you are developing a notebook which
 calls ctime, we recommend specifying the 'auto' backend (via the 'magic' command "%matplotlib auto") before importing
-or calling any pyspedas, pytplot, or matplotlib routines.
+or calling any pyspedas or matplotlib routines.
 
 .. autofunction:: pyspedas.ctime
 

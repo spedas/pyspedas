@@ -36,7 +36,6 @@ Example
 
 .. code-block:: python
 
-        import pytplot
         import pyspedas
         from pyspedas.projects.erg import erg_mep_part_products
         from pyspedas import timespan, tplot
@@ -56,8 +55,8 @@ Example
                                      trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'], suffix='_pa0-10')
 
         ## Decorate the obtained spectrum variables
-        pytplot.options('erg_mepe_l2_3dflux_FEDU_energy_mag_pa80-100', 'ytitle', 'MEP-e flux\nPA: 80-100\n\n[eV]')
-        pytplot.options('erg_mepe_l2_3dflux_FEDU_energy_mag_pa0-10', 'ytitle', 'MEP-e flux\nPA: 0-10\n\n[eV]')
+        pyspedas.options('erg_mepe_l2_3dflux_FEDU_energy_mag_pa80-100', 'ytitle', 'MEP-e flux\nPA: 80-100\n\n[eV]')
+        pyspedas.options('erg_mepe_l2_3dflux_FEDU_energy_mag_pa0-10', 'ytitle', 'MEP-e flux\nPA: 0-10\n\n[eV]')
         tplot(['erg_mepe_l2_3dflux_FEDU_energy_mag_pa80-100', 'erg_mepe_l2_3dflux_FEDU_energy_mag_pa0-10'], save_png='erg_mep_en_pa_limit.png')
 
 .. image:: _static/erg_mep_en_pa_limit.png

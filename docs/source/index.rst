@@ -13,7 +13,7 @@ PySPEDAS is an implementation of the Space Physics Environment Data Analysis Sof
 
 The SPEDAS framework is written in IDL and contains data loading, data analysis and data plotting tools for various scientific missions (NASA, NOAA, etc.) and ground magnetometers.
 
-PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mission, multi-instrument figures simple, e.g., to create a figure showing magnetometer data from `Solar Orbiter <https://pyspedas.readthedocs.io/en/latest/solo.html>`_, `Parker Solar Probe <https://pyspedas.readthedocs.io/en/latest/psp.html>`_, `MMS <https://pyspedas.readthedocs.io/en/latest/mms.html>`_, and `THEMIS <https://pyspedas.readthedocs.io/en/latest/themis.html>`_,
+PySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to create a figure showing magnetometer data from `Solar Orbiter <https://pyspedas.readthedocs.io/en/latest/solo.html>`_, `Parker Solar Probe <https://pyspedas.readthedocs.io/en/latest/psp.html>`_, `MMS <https://pyspedas.readthedocs.io/en/latest/mms.html>`_, and `THEMIS <https://pyspedas.readthedocs.io/en/latest/themis.html>`_,
 
 .. code-block:: python
    
@@ -54,7 +54,7 @@ PySPEDAS and `pyTplot <https://pytplot.readthedocs.io/>`_ make creating multi-mi
    coords
    utilities
    mission_specific_tools
-   pytplot
+   plotting
    contributing
 
 

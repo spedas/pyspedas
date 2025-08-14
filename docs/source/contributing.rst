@@ -66,7 +66,7 @@ If you're fluent enough in another language to help translate some of our docume
 
 We like to provide lots of code examples of how to use individual PySPEDAS tools, perform larger workflows using several different tools, or use PySPEDAS in conjunction
 with other PyHC packages. Our preferred way of sharing examples is via Jupyter notebooks. We maintain several Github repositories (under the SPEDAS Github organization)
-for notebooks focusing on the THEMIS/ARTEMIS and MMS missions, and general PySPEDAS and PyTplot capabilities.
+for notebooks focusing on the THEMIS/ARTEMIS and MMS missions, and general PySPEDAS capabilities.
 
 If you've created something that might interest or help other PySPEDAS users, please feel free to share it (preferably as a Github pull request, or by emailing the maintainers)
 and we'll be happy to take a look.
