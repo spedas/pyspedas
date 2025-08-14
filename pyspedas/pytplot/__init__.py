@@ -111,7 +111,7 @@ from .MPLPlotter.var_labels import var_label_panel
 from .MPLPlotter.ctime import ctime
 from .MPLPlotter.highlight import highlight
 from .MPLPlotter.annotate import annotate
-from .tplot import tplot
+from .MPLPlotter.tplot import tplot
 from .importers.cdf_to_tplot import cdf_to_tplot
 from .importers.netcdf_to_tplot import netcdf_to_tplot
 

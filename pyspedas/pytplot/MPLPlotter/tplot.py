@@ -218,7 +218,99 @@ def tplot(variables,
           slice=False,
           return_plot_objects=False):
     """
-    This function creates tplot windows using matplotlib as a backend.
+    Plot tplot variables to the display, or as saved files, using Matplotlib
+
+    Parameters
+    ----------
+        variables: str or list of str, required
+            List of tplot variables to be plotted.  Space-delimited strings may be used instead f
+            lists.  Wildcards will be expanded.
+        trange: list of string or float, optional
+            If set, this time range will be used, temporarily overriding any previous xlim or timespan calls
+        var_label : str or list of str, optional
+            A list of variables to be displayed as values underneath the X axis major tick marks
+        xsize: float, optional
+            Plot size in the horizontal direction (in inches)
+        ysize: float, optional
+            Plot size in the vertical direction (in inches)
+        dpi: float, optional
+            The resolution of the plot in dots per inch
+        save_png : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in PNG format.
+        save_eps : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in EPS format.
+        save_jpeg : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in JPEG format.
+        save_pdf : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in PDF format.
+        save_svg : str, optional
+            A full file name and path.
+            If this option is set, the plot will be automatically saved to the file name provided in SVG format.
+        dpi: float, optional
+            The resolution of the plot in dots per inch
+        display: bool, optional
+            If True, then this function will display the plotted tplot variables. Use False to suppress display (for example, if
+            saving to a file, or returning plot objects to be displayed later). Default: True
+        fig: Matplotlib figure object
+            Use an existing figure to plot in (mainly for recursive calls to render composite variables)
+        axis: Matplotlib axes object
+            Use an existing set of axes to plot on (mainly for recursive calls to render composite variables)
+        running_trace_count: int, optional
+            In recursive calls for rendering composite variables, the index of the trace currently being rendered.
+        pseudo_idx: int, optional
+            In recursive calls for rendering composite variables, the index of the variable component currently being rendered.
+        pseudo_right_axis: bool, optional
+            In recursive calls for rendering composite variables, a flag to indicate the Y scale should be placed on
+            the right Y axis.
+        pseudo_xaxis_options: dict, optional
+            In recursice calls for rendering composite variables, X axis options inherited from the parent variable
+        pseudo_yaxis_options: dict, optional
+            In recursive calls for rendering composite variables, Y axis options inherited from the parent variable
+        pseudo_zaxis_options: dict, optional
+            In recursive calls for rendering composite variables, Z axis options inherited from the parent variable
+        pseudo_line_options: dict, optional
+            In recursive calls for rendering composite variables, line options inherited from the parent variable
+        pseudo_extra_options: dict, optional
+            In recursive calls for rendering composite variables, extra options inherited from the parent variable
+        show_colorbar: bool, optional
+            Show a colorbar showing the Z scale for spectrogram plots.
+        slice: bool, optional
+            If True, show an interactive window with a plot of Z versus Y values for the X axis (time) value under the cursor. Default: False
+        return_plot_objects: bool, optional
+            If true, returns the matplotlib fig and axes objects for further manipulation. Default: False
+
+    Returns
+    -------
+        Any
+            Returns matplotlib fig and axes objects, if return_plot_objects==True
+
+    Examples
+    --------
+        >>> # Plot a single line plot
+        >>> import pyspedas
+        >>> x_data = [2,3,4,5,6]
+        >>> y_data = [1,2,3,4,5]
+        >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.tplot("Variable1")
+
+        >>> # Plot two variables
+        >>> x_data = [1,2,3,4,5]
+        >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
+        >>> pyspedas.store_data("Variable2", data={'x':x_data, 'y':y_data})
+        >>> pyspedas.tplot(["Variable1", "Variable2"])
+
+        >>> # Plot two plots, adding a third variable's values as annotations at X axis major tick marks
+        >>> x_data = [1,2,3]
+        >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
+        >>> v_data = [1,2,3]
+        >>> pyspedas.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
+        >>> pyspedas.options("Variable3", 'spec', 1)
+        >>> pyspedas.tplot(["Variable2", "Variable3"], var_label='Variable1')
+
     """
     # This call resolves wildcard patterns and converts integers to variable names
     variables = tplot_wildcard_expand(variables)
