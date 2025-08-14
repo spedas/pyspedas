@@ -7,7 +7,7 @@ import pyspedas
 
 import pyspedas
 from .config import CONFIG
-from pyspedas import store_data, options
+from pyspedas.tplot_tools import store_data, options
 
 # MTH5 installation is checked in __init__
 from mth5.clients.make_mth5 import FDSN

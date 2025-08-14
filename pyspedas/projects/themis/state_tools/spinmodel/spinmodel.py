@@ -3,9 +3,9 @@ import math
 import logging
 from typing import Dict
 from .spinmodel_segment import SpinmodelSegment
-from pyspedas.pytplot import get_data, store_data
-from pyspedas.pytplot import data_exists
-from pyspedas.pytplot import time_string
+from pyspedas.tplot_tools import get_data, store_data
+from pyspedas.tplot_tools import data_exists
+from pyspedas.tplot_tools import time_string
 
 
 def get_sm_data(probe: str,

@@ -1,5 +1,5 @@
 import logging
-from pyspedas import get_data, store_data
+from pyspedas.tplot_tools import get_data, store_data
 
 
 def mms_fpi_split_tensor(tensor_variable):

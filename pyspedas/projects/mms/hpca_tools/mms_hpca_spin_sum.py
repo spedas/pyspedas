@@ -1,6 +1,6 @@
 import numpy as np
-from pyspedas.pytplot import get_data, store_data, options
-from pyspedas.pytplot import tnames
+from pyspedas.tplot_tools import get_data, store_data, options
+from pyspedas.tplot_tools import tnames
 
 
 def mms_hpca_spin_sum(probe='1', datatypes=None, species=['hplus', 'oplus', 'oplusplus', 'heplus', 'heplusplus'], fov=['0', '360'], avg=False, suffix=''):

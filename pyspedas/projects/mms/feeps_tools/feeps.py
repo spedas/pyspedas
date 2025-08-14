@@ -8,7 +8,7 @@ from pyspedas.projects.mms.feeps_tools.mms_feeps_remove_sun import mms_feeps_rem
 from pyspedas.projects.mms.feeps_tools.mms_feeps_omni import mms_feeps_omni
 from pyspedas.projects.mms.feeps_tools.mms_feeps_spin_avg import mms_feeps_spin_avg
 from pyspedas.projects.mms.mms_config import CONFIG
-from pyspedas.pytplot import time_clip as tclip
+from pyspedas.tplot_tools import time_clip as tclip
 
 def recvary_log_filter(log):
     if 'record-varying' in log.msg:

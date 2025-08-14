@@ -1,6 +1,6 @@
 import numpy as np
 from pyspedas import tnames
-from pyspedas import time_float
+from pyspedas.tplot_tools import time_float
 from pyspedas import clip, get_data, options, store_data, ylim, zlim
 
 from ..load import load
@@ -279,7 +279,7 @@ def pwe_wfc(
             store_data(t_plot_name, data={
                        'x': time_new, 'y': data_new}, attr_dict=dl_in)
             options(t_plot_name, 'ytitle', '\n'.join(t_plot_name.split('_')))
-            # ylim settings because pyspedas.pytplot.timespan() doesn't affect in ylim.
+            # ylim settings because pyspedas.tplot_tools.timespan() doesn't affect in ylim.
             # May be it will be no need in future.
             if not all_time_range_flag:
                 if time_new[0] <= trange_in_float[0]:

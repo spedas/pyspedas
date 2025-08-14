@@ -4,8 +4,8 @@ import importlib.resources
 from typing import List, Dict
 
 import numpy as np
-from pyspedas.pytplot import time_double, time_string
-from pyspedas.pytplot import get_timespan, store, get, store_data, get_data
+from pyspedas.tplot_tools import time_double, time_string
+from pyspedas.tplot_tools import get_timespan, store, get, store_data, get_data
 
 
 def read_epde_calibration_data(path: pathlib.Path) -> List[Dict]:

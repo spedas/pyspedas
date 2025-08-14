@@ -1,6 +1,6 @@
 """Tests of waelet tool."""
 import pyspedas
-from pyspedas import get_data, tplot, tplot_rename, ylim, zlim, options
+from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options
 import unittest
 from numpy.testing import assert_allclose
 import numpy as np

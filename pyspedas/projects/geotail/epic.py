@@ -1,5 +1,5 @@
 from .load import load
-from pyspedas.pytplot import options
+from pyspedas.tplot_tools import options
 
 # This routine was originally in geotail/__init__.py, until being moved to its own file.
 # Please refer to __init__.py if you need to see the revision history before it was moved.

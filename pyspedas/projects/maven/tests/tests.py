@@ -1,6 +1,6 @@
 import os
 import unittest
-from pyspedas.pytplot import data_exists, tplot_names, del_data
+from pyspedas.tplot_tools import data_exists, tplot_names, del_data
 from pyspedas.projects import maven
 from pyspedas.projects.maven.download_files_utilities import get_orbit_files, merge_orbit_files, get_file_from_site
 from pyspedas.projects.maven.maven_kp_to_tplot import maven_kp_to_tplot

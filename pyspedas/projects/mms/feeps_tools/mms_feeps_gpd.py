@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 import pyspedas 
-from pyspedas.pytplot import get, store, options
+from pyspedas.tplot_tools import get, store, options
 from pyspedas.projects.mms.feeps_tools.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas.projects.mms.feeps_tools.mms_feeps_getgyrophase import mms_feeps_getgyrophase
 

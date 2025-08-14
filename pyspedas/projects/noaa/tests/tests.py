@@ -1,6 +1,6 @@
 import unittest
 import pyspedas
-from pyspedas.pytplot import data_exists, del_data, get_data
+from pyspedas.tplot_tools import data_exists, del_data, get_data
 import numpy as np
 
 

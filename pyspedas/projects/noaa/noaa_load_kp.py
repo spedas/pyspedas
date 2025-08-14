@@ -10,7 +10,7 @@ Data is stored in tplot variables with the following names:
 
 import logging, os
 import numpy as np
-from pyspedas.pytplot import (
+from pyspedas.tplot_tools import (
     time_string,
     time_double,
     store_data,

@@ -3,9 +3,9 @@ import unittest
 import numpy as np
 from geopack import geopack
 
-from pyspedas import data_exists,del_data,cdf_to_tplot,tplot,subtract,tlimit
+from pyspedas.tplot_tools import data_exists,del_data,cdf_to_tplot,tplot,subtract,tlimit
 import pyspedas
-from pyspedas import time_double
+from pyspedas.tplot_tools import time_double
 from pyspedas.geopack import tt89
 from pyspedas.geopack import tt96
 from pyspedas.geopack import tt01

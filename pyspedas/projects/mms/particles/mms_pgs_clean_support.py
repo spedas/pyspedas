@@ -1,5 +1,5 @@
 from pyspedas import tinterpol
-from pyspedas.pytplot import get_data
+from pyspedas.tplot_tools import get_data
 
 
 def mms_pgs_clean_support(times, mag_name=None, vel_name=None, sc_pot_name=None):

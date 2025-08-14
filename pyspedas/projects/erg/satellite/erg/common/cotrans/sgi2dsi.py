@@ -1,5 +1,5 @@
 import numpy as np
-from pyspedas import get_data, options, store_data, tplot_names
+from pyspedas.tplot_tools import get_data, options, store_data, tplot_names
 
 from .erg_interpolate_att import erg_interpolate_att
 from .vector_rotate import vector_rotate

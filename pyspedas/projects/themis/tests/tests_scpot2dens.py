@@ -5,6 +5,7 @@ import pyspedas
 import pyspedas
 from pyspedas.projects.themis.analysis.scpot2dens import dens_pot
 from pyspedas.projects.themis.analysis import scpot2dens
+from pyspedas.tplot_tools import get_data
 import numpy as np
 
 
@@ -120,10 +121,10 @@ class TestScpo2densValidation(unittest.TestCase):
                                       f'th{probe}_peer_avgtemp'],
                             level='l2', time_clip=True)
 
-        dens_e_time, dens_e = pyspedas.pytplot.get_data(f'th{probe}_peer_density')
-        dens_i_time, dens_i = pyspedas.pytplot.get_data(f'th{probe}_peir_density')
-        sc_pot_time, sc_pot = pyspedas.pytplot.get_data(f'th{probe}_peer_sc_pot')
-        Te_time, Te = pyspedas.pytplot.get_data(f'th{probe}_peer_avgtemp')
+        dens_e_time, dens_e = get_data(f'th{probe}_peer_density')
+        dens_i_time, dens_i = get_data(f'th{probe}_peir_density')
+        sc_pot_time, sc_pot = get_data(f'th{probe}_peer_sc_pot')
+        Te_time, Te = get_data(f'th{probe}_peer_avgtemp')
 
         Npot = scpot2dens(sc_pot, sc_pot_time, Te, Te_time, dens_e, dens_e_time, dens_i, dens_i_time, probe=probe)
 

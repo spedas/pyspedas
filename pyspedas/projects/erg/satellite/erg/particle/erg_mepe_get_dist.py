@@ -3,9 +3,9 @@ import logging
 
 import numpy as np
 from pyspedas import tnames
-from pyspedas import time_double
-from pyspedas import time_string
-from pyspedas import get_data
+from pyspedas.tplot_tools import time_double
+from pyspedas.tplot_tools import time_string
+from pyspedas.tplot_tools import get_data
 from scipy import interpolate
 
 from .get_mepe_flux_angle_in_sga import get_mepe_flux_angle_in_sga

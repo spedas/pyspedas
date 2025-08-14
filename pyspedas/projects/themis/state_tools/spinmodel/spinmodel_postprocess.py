@@ -1,6 +1,6 @@
 import logging
 from .spinmodel import Spinmodel, save_spinmodel
-from pyspedas.pytplot import data_exists
+from pyspedas.tplot_tools import data_exists
 
 
 def spinmodel_postprocess(probe: str, suffix: str=''):

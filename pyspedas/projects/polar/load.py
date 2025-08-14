@@ -1,7 +1,7 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.pytplot import time_clip as tclip
-from pyspedas.pytplot import cdf_to_tplot
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import cdf_to_tplot
 
 from .config import CONFIG
 
@@ -103,7 +103,7 @@ def load(trange=['1997-01-03', '1997-01-04'],
     Example
     ----------
         import pyspedas
-        from pyspedas.pytplot import tplot
+        from pyspedas.tplot_tools import tplot
         mfe_polar_vars = pyspedas.projects.polar.mfe(trange=['1997-01-03', '1997-01-04'])
 
         efi_polar_vars = pyspedas.projects.polar.efi(trange=['1997-01-03', '1997-01-04'])

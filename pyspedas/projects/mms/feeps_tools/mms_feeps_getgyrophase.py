@@ -3,7 +3,7 @@ import numpy as np
 from pyspedas.projects import mms
 from pyspedas import tinterpol
 from pyspedas.projects.mms.feeps_tools.mms_feeps_active_eyes import mms_feeps_active_eyes
-from pyspedas.pytplot import get, store, options, time_double
+from pyspedas.tplot_tools import get, store, options, time_double
 
 
 def mms_feeps_getgyrophase(trange=['2017-07-11/22:30', '2017-07-11/22:35'], probe='2', data_rate='brst', level='l2', datatype='electron'):

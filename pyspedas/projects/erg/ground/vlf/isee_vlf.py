@@ -2,7 +2,7 @@ import cdflib
 import numpy as np
 
 from pyspedas import tnames
-from pyspedas import get_data, store_data, options, clip, ylim, zlim
+from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim, zlim
 
 from ...satellite.erg.load import load
 from ...satellite.erg.get_gatt_ror import get_gatt_ror

@@ -1,5 +1,5 @@
 from pyspedas import tnames
-from pyspedas import get_data, store_data, options
+from pyspedas.tplot_tools import get_data, store_data, options
 
 
 def mms_load_fpi_calc_pad(probe='1', level='sitl', datatype='', data_rate='', suffix='', autoscale=True):

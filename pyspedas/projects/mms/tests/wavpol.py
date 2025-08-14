@@ -1,9 +1,9 @@
 import unittest
 import pyspedas
-from pyspedas import data_exists
+from pyspedas.tplot_tools import data_exists
 from pyspedas import fac_matrix_make
 from pyspedas import tinterpol
-from pyspedas import get_data, store_data
+from pyspedas.tplot_tools import get_data, store_data
 from pyspedas import twavpol
 
 

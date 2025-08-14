@@ -91,7 +91,7 @@ def fgm_load(trange=['2022-08-19', '2022-08-19'],
     Example
     ----------
         import pyspedas
-        from pyspedas.pytplot import tplot
+        from pyspedas.tplot_tools import tplot
         fgm_vars = pyspedas.projects.elfin.fgm(probe='a', trange=['2022-08-19', '2022-08-19'])
         tplot(['ela_fgs_fsp_res_ndw', 'ela_fgs_fsp_res_obw', 'ela_att_gei_fsp_interp'])
 

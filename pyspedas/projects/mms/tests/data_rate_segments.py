@@ -4,7 +4,7 @@ from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments,
 from pyspedas.projects.mms.deprecated.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
 from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
-from pyspedas import data_exists, del_data
+from pyspedas.tplot_tools import data_exists, del_data
 
 
 class SegmentTestCases(unittest.TestCase):

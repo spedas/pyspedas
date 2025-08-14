@@ -1,5 +1,5 @@
 import unittest
-from pyspedas import data_exists
+from pyspedas.tplot_tools import data_exists
 import pyspedas
 
 

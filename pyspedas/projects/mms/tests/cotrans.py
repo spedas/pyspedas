@@ -1,6 +1,6 @@
 import unittest
 import pyspedas
-from pyspedas import data_exists, tplot_rename, set_coords
+from pyspedas.tplot_tools import data_exists, tplot_rename, set_coords
 from pyspedas.projects.mms.cotrans.mms_qcotrans import mms_qcotrans
 from pyspedas.projects.mms.cotrans.mms_cotrans_lmn import mms_cotrans_lmn
 

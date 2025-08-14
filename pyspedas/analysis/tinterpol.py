@@ -1,6 +1,6 @@
 import datetime
 import logging
-from pyspedas import get_data, store, tnames
+from pyspedas.tplot_tools import get_data, store, tnames
 import numpy as np
 
 

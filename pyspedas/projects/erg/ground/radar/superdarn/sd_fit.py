@@ -4,7 +4,7 @@ import fnmatch
 import numpy as np
 
 from copy import deepcopy
-from pyspedas import get_data, store_data, options, clip, ylim, zlim
+from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim, zlim
 from pyspedas import tnames
 
 from ....satellite.erg.load import load

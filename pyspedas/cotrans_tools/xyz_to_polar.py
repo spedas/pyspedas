@@ -1,5 +1,5 @@
 import numpy as np
-import pyspedas
+from pyspedas.tplot_tools import get_data, store_data
 
 def xyz_to_polar(data, co_latitude=False):
     """
@@ -28,7 +28,7 @@ def xyz_to_polar(data, co_latitude=False):
     if isinstance(data, str):
         make_tvars = True
         name_in = data
-        d = pyspedas.pytplot.get_data(name_in)
+        d = get_data(name_in)
         data = d.y
 
     x = data[:, 0]
@@ -42,9 +42,9 @@ def xyz_to_polar(data, co_latitude=False):
         out[:, 1] = 90.0 - out[:, 1]
 
     if make_tvars:
-       pyspedas.pytplot.store_data(name_in+'_mag', data={'x':d.times, 'y':out[:,0]})
-       pyspedas.pytplot.store_data(name_in + '_th', data={'x': d.times, 'y': out[:, 1]})
-       pyspedas.pytplot.store_data(name_in + '_phi', data={'x': d.times, 'y': out[:, 2]})
+       store_data(name_in+'_mag', data={'x':d.times, 'y':out[:,0]})
+       store_data(name_in + '_th', data={'x': d.times, 'y': out[:, 1]})
+       store_data(name_in + '_phi', data={'x': d.times, 'y': out[:, 2]})
        return
     else:
         return out

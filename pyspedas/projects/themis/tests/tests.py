@@ -4,7 +4,7 @@ import unittest
 import logging
 import pyspedas
 import pyspedas
-from pyspedas.pytplot import data_exists, get_coords
+from pyspedas.tplot_tools import data_exists, get_coords
 
 
 

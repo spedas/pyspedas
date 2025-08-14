@@ -1,7 +1,7 @@
 import logging
 import os
 import matplotlib.pyplot as plt
-from pyspedas import get_data
+from pyspedas.tplot_tools import get_data
 from . import mms_load_mec
 
 

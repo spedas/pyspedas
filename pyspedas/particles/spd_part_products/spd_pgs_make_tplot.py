@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from pyspedas.pytplot import store_data, options
+from pyspedas.tplot_tools import store_data, options
 
 from pyspedas.particles.spd_units_string import spd_units_string
 

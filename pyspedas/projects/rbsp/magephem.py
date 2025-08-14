@@ -164,7 +164,7 @@ def magephem_ect(trange=["2018-11-5", "2018-11-6"], probe="a", cadence="1min", c
     """
     from pyspedas.utilities.dailynames import dailynames
     from pyspedas.utilities.download import download
-    from pyspedas.pytplot import time_clip as tclip
+    from pyspedas.tplot_tools import time_clip as tclip
 
     from .config import CONFIG_ECT
     from .magephem_read import magephem_read_h5, magephem_read_txt

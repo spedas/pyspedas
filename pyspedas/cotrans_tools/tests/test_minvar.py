@@ -4,7 +4,7 @@ Unit Tests for minvar function.
 import pyspedas
 from pyspedas.cotrans_tools.minvar import minvar
 from pyspedas.cotrans_tools.minvar_matrix_make import minvar_matrix_make
-from pyspedas.pytplot import data_exists, tplot_names, tplot, get_data, tplot_copy, del_data, store_data
+from pyspedas.tplot_tools import data_exists, tplot_names, tplot, get_data, tplot_copy, del_data, store_data
 import numpy as np
 import unittest
 from pyspedas import tplot_restore

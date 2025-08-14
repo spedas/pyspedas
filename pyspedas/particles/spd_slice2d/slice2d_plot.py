@@ -39,7 +39,7 @@ def slice2d_plot(
     else:
         spec_options["norm"] = mpl.colors.LogNorm(vmin=zrange[0], vmax=zrange[1])
 
-    style = pyspedas.pytplot.tplot_opt_glob.get("style")
+    style = pyspedas.tplot_tools.tplot_opt_glob.get("style")
 
     if style is None:
         if colormap is None:
@@ -48,7 +48,7 @@ def slice2d_plot(
         plt.style.use(style)
 
     if colormap == "spedas":
-        _colors = pyspedas.pytplot.spedas_colorbar
+        _colors = pyspedas.tplot_tools.spedas_colorbar
         spd_map = [
             (np.array([r, g, b])).astype(np.float64) / 256
             for r, g, b in zip(_colors.r, _colors.g, _colors.b)
@@ -59,7 +59,7 @@ def slice2d_plot(
 
     spec_options["cmap"] = cmap
 
-    char_size = pyspedas.pytplot.tplot_opt_glob.get("charsize")
+    char_size = pyspedas.tplot_tools.tplot_opt_glob.get("charsize")
     if char_size is None:
         char_size = 12
 
@@ -72,7 +72,7 @@ def slice2d_plot(
     if yrange is not None:
         axes.set_ylim(yrange)
 
-    axis_font_size = pyspedas.pytplot.tplot_opt_glob.get("axis_font_size")
+    axis_font_size = pyspedas.tplot_tools.tplot_opt_glob.get("axis_font_size")
 
     if axis_font_size is not None:
         axes.tick_params(axis="x", labelsize=axis_font_size)

@@ -1,7 +1,7 @@
 """ Tests of spinmodel construction and interpolation """
 import unittest
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
-from pyspedas.pytplot import get_data, store_data, time_string, del_data, cdf_to_tplot
+from pyspedas.tplot_tools import get_data, store_data, time_string, del_data, cdf_to_tplot
 from pyspedas.projects.themis import state, get_spinmodel
 
 
@@ -50,7 +50,7 @@ class SpinmodelDataValidation(unittest.TestCase):
         del_data('*')
         filename = datafile[0]
         cdf_to_tplot(filename)
-        # pyspedas.pytplot.tplot_restore(filename)
+        # tplot_restore(filename)
         t_dummy, trange = get_data('parm_trange')
         t_dummy, probe_idx = get_data('parm_probe')
         t_dummy, correction_level = get_data('parm_correction_level')
@@ -66,7 +66,7 @@ class SpinmodelDataValidation(unittest.TestCase):
         thm_data = state(trange=trange, probe=probe, get_support_data=True)
         cls.model = get_spinmodel(probe, int_corr_level)
         cls.model.make_tplot_vars('py_seg_')
-        #pyspedas.pytplot.tplot_names()
+        #tplot_names()
         dummy_t, tst_times = get_data('interp_times')
         res = cls.model.interp_t(tst_times)
         store_data('py_spinphase', data={'x': tst_times, 'y': res.spinphase})
@@ -78,7 +78,7 @@ class SpinmodelDataValidation(unittest.TestCase):
 
     def setUp(self):
         """ We need to clean tplot variables before each run"""
-        # pyspedas.pytplot.del_data('*')
+        # pyspedas.tplot_tools.del_data('*')
 
     def test_seg_t1(self):
         pydata = get_data('py_seg_t1')

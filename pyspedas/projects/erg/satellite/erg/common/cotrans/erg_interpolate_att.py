@@ -1,8 +1,8 @@
 import numpy as np
 from pyspedas import tnames
 from pyspedas import tcrossp
-from pyspedas import time_string
-from pyspedas import get_data, get_timespan, degap
+from pyspedas.tplot_tools import time_string
+from pyspedas.tplot_tools import get_data, get_timespan, degap
 from scipy import interpolate
 
 from ...att.att import att

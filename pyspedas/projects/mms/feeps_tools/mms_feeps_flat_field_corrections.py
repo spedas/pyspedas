@@ -1,6 +1,6 @@
 import numpy as np
-from pyspedas.pytplot import get, store
-from pyspedas.pytplot import tnames
+from pyspedas.tplot_tools import get, store
+from pyspedas.tplot_tools import tnames
 
 
 def mms_feeps_flat_field_corrections(probes = ['1', '2', '3', '4'], data_rate = 'brst', suffix = ''):

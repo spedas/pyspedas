@@ -1,7 +1,7 @@
 """Tests of ssl2dsl and dsl2gse functions."""
 
 import unittest
-from pyspedas.pytplot import get_data,del_data,tplot_restore,data_exists, set_coords
+from pyspedas.tplot_tools import get_data,del_data,tplot_restore,data_exists, set_coords
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 from pyspedas.projects.themis import autoload_support, ssl2dsl,dsl2gse
 
@@ -39,9 +39,9 @@ class DSLCotransDataValidation(unittest.TestCase):
         # Load validation variables from the test file
         del_data('*')
         filename = datafile[0]
-        # pyspedas.pytplot.cdf_to_tplot(filename)
+        # cdf_to_tplot(filename)
         tplot_restore(filename)
-        #pyspedas.pytplot.tplot_names()
+        #tplot_names()
         cls.basis_x = get_data('basis_x')
         cls.basis_y = get_data('basis_y')
         cls.basis_z = get_data('basis_z')

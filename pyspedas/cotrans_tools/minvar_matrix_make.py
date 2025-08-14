@@ -1,7 +1,7 @@
 import pyspedas
 from pyspedas.cotrans_tools.minvar import minvar
 from .rotmat_set_coords import rotmat_set_coords
-from pyspedas.pytplot import get_data, store_data, time_double, time_string
+from pyspedas.tplot_tools import get_data, store_data, time_double, time_string
 import numpy as np
 
 

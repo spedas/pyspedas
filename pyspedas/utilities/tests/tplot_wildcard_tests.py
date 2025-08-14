@@ -3,9 +3,9 @@ import unittest
 import pyspedas
 from copy import deepcopy
 
-from pyspedas.pytplot import del_data, tplot, tplot_options, tplot_names
-from pyspedas.pytplot import store_data, get_data
-from pyspedas.pytplot import wildcard_expand, tname_byindex, tplot_wildcard_expand, tindex_byname
+from pyspedas.tplot_tools import del_data, tplot, tplot_options, tplot_names
+from pyspedas.tplot_tools import store_data, get_data
+from pyspedas.tplot_tools import wildcard_expand, tname_byindex, tplot_wildcard_expand, tindex_byname
 
 global_display=False
 tp_data={'x':[1,2,3], 'y':[4,5,6]}
@@ -183,7 +183,7 @@ class UtilTestCases(unittest.TestCase):
 
     def test_tplot_names_embedded_spaces(self):
         # Tplot names can have embedded spaces, make sure they're treated correctly
-        from pyspedas import store_data, del_data, tnames, tplot_names, data_exists
+        from pyspedas.tplot_tools import store_data, del_data, tnames, tplot_names, data_exists
         del_data('*')
         t=[1.0,2.0,3.0]
         d=[1,2,3]

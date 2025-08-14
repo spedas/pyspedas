@@ -1,7 +1,7 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas import time_clip as tclip
-from pyspedas import cdf_to_tplot
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import cdf_to_tplot
 
 from .config import CONFIG
 

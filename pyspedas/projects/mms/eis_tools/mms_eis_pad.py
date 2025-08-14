@@ -2,7 +2,7 @@ import warnings
 import logging
 import numpy as np
 from pyspedas import tnames
-from pyspedas import get_data, store_data, options
+from pyspedas.tplot_tools import get_data, store_data, options
 from pyspedas.projects.mms.eis_tools.mms_eis_pad_spinavg import mms_eis_pad_spinavg
 
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one

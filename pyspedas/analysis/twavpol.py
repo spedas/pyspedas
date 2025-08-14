@@ -84,7 +84,7 @@ except ImportError:
     nansum = np.nansum
 
 from numpy import nansum
-from pyspedas import get_data, store_data, options, tnames
+from pyspedas.tplot_tools import get_data, store_data, options, tnames
 
 empty_initializer = 0.0
 

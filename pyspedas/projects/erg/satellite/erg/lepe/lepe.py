@@ -2,7 +2,7 @@
 import numpy as np
 from pyspedas import clip, get_data, options, store_data, ylim, zlim
 
-from pyspedas import time_double
+from pyspedas.tplot_tools import time_double
 
 
 from ..load import load

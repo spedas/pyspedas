@@ -4,7 +4,7 @@ from pyspedas.projects.mms.fgm_tools.mms_fgm_remove_flags import mms_fgm_remove_
 from pyspedas.projects.mms.fgm_tools.mms_fgm_set_metadata import mms_fgm_set_metadata
 from pyspedas.projects.mms.fgm_tools.mms_split_fgm_data import mms_split_fgm_data
 from pyspedas.projects.mms.mms_config import CONFIG
-from pyspedas import data_exists
+from pyspedas.tplot_tools import data_exists
 from pyspedas import del_data
 
 

@@ -3,8 +3,8 @@ from pyspedas import tinterpol
 from pyspedas import tcrossp
 from pyspedas import tnormalize
 from pyspedas.cotrans_tools.cotrans import cotrans
-from pyspedas import time_string
-from pyspedas import get_data, get_timespan, options, store_data, tplot_names
+from pyspedas.tplot_tools import time_string
+from pyspedas.tplot_tools import get_data, get_timespan, options, store_data, tplot_names
 
 from ...orb.orb import orb
 from .cart_trans_matrix_make import cart_trans_matrix_make

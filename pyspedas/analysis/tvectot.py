@@ -1,6 +1,6 @@
 import numpy as np
 from copy import deepcopy
-from pyspedas import get_data, store_data, options, tplot_wildcard_expand
+from pyspedas.tplot_tools import get_data, store_data, options, tplot_wildcard_expand
 from typing import Union, List
 import logging
 

@@ -7,7 +7,7 @@ try:
     nanmean = bn.nanmean
 except ImportError:
     nanmean = np.nanmean
-from pyspedas import get_data, store_data, options, tnames
+from pyspedas.tplot_tools import get_data, store_data, options, tnames
 
 
 def mms_eis_spec_combine_sc(
@@ -100,7 +100,7 @@ def mms_eis_spec_combine_sc(
                 # note: return from get_data here is (times, data, v)
                 #       according to https://github.com/MAVENSDC/PyTplot/blob/ec87591521e84bae8d81caccaf64fc2a5785186f/pytplot/get_data.py#L66
                 # note: there are also available 'spec_bins' values
-                #print(pyspedas.pytplot.data_quants[omni_vars[p]].coords)
+                #print(pyspedas.tplot_tools.data_quants[omni_vars[p]].coords)
                 #t, data, v = get_data(omni_vars[p])
                 omni_times, omni_data, omni_energies = get_data(omni_vars[p])
                 time_size[p] = len(omni_times)

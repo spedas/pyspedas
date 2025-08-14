@@ -1,6 +1,6 @@
 import logging
 import re
-from pyspedas.pytplot import time_double, store_data, options, time_clip as tclip
+from pyspedas.tplot_tools import time_double, store_data, options, time_clip as tclip
 from pyspedas import download, dailynames
 from .kyoto_config import CONFIG
 

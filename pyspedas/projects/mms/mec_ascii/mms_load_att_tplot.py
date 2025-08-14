@@ -1,8 +1,8 @@
 import logging
 import pandas as pd
 import numpy as np
-from pyspedas import time_clip as tclip
-from pyspedas import store_data
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import store_data
 
 
 def mms_load_att_tplot(filenames, level='def', probe='1', datatypes=['spinras', 'spindec'], suffix='', trange=None):

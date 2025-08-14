@@ -2,9 +2,9 @@ import unittest
 
 import numpy as np
 
-from pyspedas import data_exists
+from pyspedas.tplot_tools import data_exists
 import pyspedas
-from pyspedas import time_double
+from pyspedas.tplot_tools import time_double
 from pyspedas.geopack import tt89
 from pyspedas.geopack import tt96
 from pyspedas.geopack import tt01

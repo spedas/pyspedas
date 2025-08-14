@@ -2,8 +2,8 @@ import csv
 import logging
 import requests
 import numpy as np
-from pyspedas import store_data, options
-from pyspedas import time_double, time_string
+from pyspedas.tplot_tools import store_data, options
+from pyspedas.tplot_tools import time_double, time_string
 
 
 def get_mms_srois(start_time=None, end_time=None, sc_id=None):

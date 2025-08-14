@@ -1,11 +1,11 @@
 import logging
-from pyspedas import time_double
+from pyspedas.tplot_tools import time_double
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from .mms_file_filter import mms_file_filter
 from .mms_get_local_files import mms_get_local_files
-from pyspedas import cdf_to_tplot
-from pyspedas import time_clip as tclip
+from pyspedas.tplot_tools import cdf_to_tplot
+from pyspedas.tplot_tools import time_clip as tclip
 from .mms_config import CONFIG
 
 CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/mms/'

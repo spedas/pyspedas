@@ -4,9 +4,9 @@ import logging
 import numpy as np
 from copy import deepcopy
 from pyspedas import tnames
-from pyspedas import time_double
-from pyspedas import time_string
-from pyspedas import get_data
+from pyspedas.tplot_tools import time_double
+from pyspedas.tplot_tools import time_string
+from pyspedas.tplot_tools import get_data
 from scipy import interpolate
 
 

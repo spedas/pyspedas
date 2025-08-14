@@ -1,7 +1,7 @@
 import os
 import unittest
-from pyspedas.pytplot import data_exists
-from pyspedas.pytplot import get_data
+from pyspedas.tplot_tools import data_exists
+from pyspedas.tplot_tools import get_data
 import pyspedas
 from pyspedas.projects.poes.load import load
 

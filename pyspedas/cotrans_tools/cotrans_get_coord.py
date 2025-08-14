@@ -1,6 +1,6 @@
 import logging
-from pyspedas.pytplot import get_coords
+from pyspedas.tplot_tools import get_coords
 
 def cotrans_get_coord(name):
-    logging.info("cotrans_get_coord is now a wrapper forpyspedas.pytplot).  This version will eventually be removed.")
+    logging.info("cotrans_get_coord is now a wrapper for pyspedas.get_coords).  This version will eventually be removed.")
     return get_coords(name)

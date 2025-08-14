@@ -2,8 +2,8 @@
 import unittest
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 from copy import deepcopy
-from pyspedas.pytplot import data_exists, get_data, store_data, cdf_to_tplot, del_data, tplot_restore, replace_metadata
-from pyspedas.pytplot import get_coords,set_coords
+from pyspedas.tplot_tools import data_exists, get_data, store_data, cdf_to_tplot, del_data, tplot_restore, replace_metadata
+from pyspedas.tplot_tools import get_coords,set_coords
 from pyspedas.projects.themis import gse2sse,sse2sel
 
 
@@ -43,7 +43,7 @@ class LunCotransDataValidation(unittest.TestCase):
         filename = datafile[0]
         #cdf_to_tplot(filename)
         tplot_restore(filename)
-        # pyspedas.pytplot.tplot_names()
+        # tplot_names()
         # Input variables
         #coord_set_coord('tha_state_pos_gse','gse')
         #coord_set_coord('tha_state_vel_gse','gse')

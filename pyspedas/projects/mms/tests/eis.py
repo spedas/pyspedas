@@ -1,7 +1,7 @@
 import unittest
 from pyspedas import mms_load_eis, mms_eis_pad
 from pyspedas.projects.mms.eis_tools.mms_eis_omni import mms_eis_omni
-from pyspedas import data_exists
+from pyspedas.tplot_tools import data_exists
 from pyspedas.projects.mms.eis_tools.mms_eis_spec_combine_sc import mms_eis_spec_combine_sc
 from pyspedas import tplot
 

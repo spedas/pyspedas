@@ -1,8 +1,8 @@
 import logging
 import re
 from datetime import datetime, timedelta
-from pyspedas.pytplot import time_clip as tclip
-from pyspedas.pytplot import store_data, options
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import store_data, options
 from pyspedas import dailynames, download
 from .kyoto_config import CONFIG
 

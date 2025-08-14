@@ -1,6 +1,6 @@
 import unittest
 from pyspedas import kompsat_load
-from pyspedas.pytplot import data_exists
+from pyspedas.tplot_tools import data_exists
 
 
 class Kompsat_Tests(unittest.TestCase):

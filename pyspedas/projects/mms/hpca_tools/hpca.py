@@ -6,7 +6,7 @@ from pyspedas.projects.mms.hpca_tools.mms_hpca_set_metadata import mms_hpca_set_
 from pyspedas.projects.mms.hpca_tools.mms_get_hpca_info import mms_get_hpca_info
 from pyspedas.projects.mms.hpca_tools.mms_hpca_energies import mms_hpca_energies
 from pyspedas.projects.mms.mms_config import CONFIG
-from pyspedas.pytplot import get_data, store_data, get
+from pyspedas.tplot_tools import get_data, store_data, get
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)

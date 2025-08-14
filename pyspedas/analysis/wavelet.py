@@ -14,6 +14,7 @@ import logging
 import numpy as np
 import pywt
 import pyspedas
+from pyspedas.tplot_tools import options, store_data
 
 def idl_wavelet_scales(n, dt, w0=2*np.pi, dj=None):
     """
@@ -179,8 +180,8 @@ def wavelet(
 
         power = np.abs(coef)**2
         power = power.transpose()
-        pyspedas.store_data(new, data={'x': time, 'y': power, 'v': freqs})
-        pyspedas.pytplot.options(new, 'spec', 1)
+        store_data(new, data={'x': time, 'y': power, 'v': freqs})
+        options(new, 'spec', 1)
         powervar.append(new)
 
         logging.info('wavelet was applied to: ' + new)

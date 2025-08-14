@@ -3,11 +3,11 @@ import numpy as np
 import pyspedas
 #from pyspedas import tinterpol, interpol
 
-from pyspedas.pytplot import get_coords
-from pyspedas.pytplot import tnormalize
-from pyspedas.pytplot import tcrossp
+from pyspedas.tplot_tools import get_coords
+from pyspedas.tplot_tools import tnormalize
+from pyspedas.tplot_tools import tcrossp
 
-from pyspedas.pytplot import get_data, store_data, del_data
+from pyspedas.tplot_tools import get_data, store_data, del_data
 
 from pyspedas.cotrans_tools.xyz_to_polar import xyz_to_polar
 from pyspedas.cotrans_tools.cotrans import cotrans

@@ -1,6 +1,6 @@
 import numpy as np
 import logging
-from pyspedas.pytplot import tnames, store_data, time_double, degap, tdeflag, time_clip
+from pyspedas.tplot_tools import tnames, store_data, time_double, degap, tdeflag, time_clip
 from pyspedas.projects.omni.load import load as omni_load
 from pyspedas.utilities.tcopy import tcopy_one
 

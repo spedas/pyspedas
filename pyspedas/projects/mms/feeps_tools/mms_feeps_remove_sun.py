@@ -1,6 +1,6 @@
 import logging
 from .mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
-from pyspedas.pytplot import get, store
+from pyspedas.tplot_tools import get, store
 import numpy as np
 
 logging.captureWarnings(True)

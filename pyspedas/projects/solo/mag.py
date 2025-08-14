@@ -1,4 +1,4 @@
-from pyspedas.pytplot import options
+from pyspedas.tplot_tools import options
 from .load import load
 
 

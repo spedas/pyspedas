@@ -1,7 +1,7 @@
 
 import os
 import unittest
-from pyspedas import data_exists, del_data, tplot_names
+from pyspedas.tplot_tools import data_exists, del_data, tplot_names
 
 import pyspedas
 

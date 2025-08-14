@@ -1,7 +1,7 @@
 import logging
 
-from pyspedas.pytplot import get, store, del_data, tnames, tplot_rename, options, tplot
-from pyspedas.pytplot import time_clip as tclip
+from pyspedas.tplot_tools import get, store, del_data, tnames, tplot_rename, options, tplot
+from pyspedas.tplot_tools import time_clip as tclip
 
 from pyspedas.projects.elfin.epd.calibration_l2 import epd_l2_Espectra, epd_l2_PAspectra
 from pyspedas.projects.elfin.epd.calibration_l1 import calibrate_epd

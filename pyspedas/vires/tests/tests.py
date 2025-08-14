@@ -1,7 +1,7 @@
 import unittest
 import pyspedas
 from viresclient import SwarmRequest
-from pyspedas import data_exists, del_data
+from pyspedas.tplot_tools import data_exists, del_data
 
 class LoadTestCases(unittest.TestCase):
     def test_get_collections(self):

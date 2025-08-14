@@ -29,10 +29,10 @@ def tcopy_one(name_in, name_out):
 
     """
     # Copies one tplot variable
-    tvar_old = pyspedas.pytplot.data_quants[name_in]
+    tvar_old = pyspedas.tplot_tools.data_quants[name_in]
     tvar_new = copy.deepcopy(tvar_old)
     tvar_new.name = name_out
-    pyspedas.pytplot.data_quants.update({name_out: tvar_new})
+    pyspedas.tplot_tools.data_quants.update({name_out: tvar_new})
     logging.info(name_in + ' copied to ' + name_out)
 
 

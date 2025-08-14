@@ -3,9 +3,9 @@ import matplotlib as mpl
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import pyspedas
-from pyspedas import get_data
+from pyspedas.tplot_tools import get_data
 import pyspedas
-from pyspedas import time_double
+from pyspedas.tplot_tools import time_double
 from pyspedas.projects.mms.fpi_tools.mms_get_fpi_dist import mms_get_fpi_dist
 from pyspedas.projects.mms.fpi_tools.mms_pad_fpi import mms_pad_fpi
 
@@ -146,7 +146,7 @@ def mms_fpi_ang_ang(
 
     # add support for the 'spedas' color bar
     if cmap == "spedas":
-        _colors = pyspedas.pytplot.spedas_colorbar
+        _colors = pyspedas.tplot_tools.spedas_colorbar
         spd_map = [
             (np.array([r, g, b])).astype(np.float64) / 256
             for r, g, b in zip(_colors.r, _colors.g, _colors.b)

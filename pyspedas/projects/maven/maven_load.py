@@ -4,6 +4,8 @@ import os
 import time
 
 import pyspedas
+from pyspedas.tplot_tools import options, link, cdf_to_tplot, sts_to_tplot
+
 from .download_files_utilities import (
     set_new_data_root_dir,
     get_root_data_dir,
@@ -498,7 +500,7 @@ def load_data(
                     else:
                         # The description (part of the filename) is appended to the variable name
                         suf = desc + suffix
-                    created_vars = pyspedas.pytplot.cdf_to_tplot(
+                    created_vars = cdf_to_tplot(
                         cdf_dict[desc],
                         varformat=varformat,
                         varnames=varnames,
@@ -520,7 +522,7 @@ def load_data(
                         "instrument"
                     )
                     if instr in ["swi", "swe"]:
-                        pyspedas.pytplot.options(created_vars, "spec", 1)
+                        options(created_vars, "spec", 1)
                     loaded_tplot_vars.append(created_vars)
 
             # Load in STS files
@@ -534,7 +536,7 @@ def load_data(
                         # The description (part of the filename) is appended to the variable name
                         suf = desc + suffix
                     try:
-                        created_vars = pyspedas.pytplot.sts_to_tplot(
+                        created_vars = sts_to_tplot(
                             sts_dict[desc],
                             prefix=prefix,
                             suffix=suf,
@@ -548,7 +550,7 @@ def load_data(
                 # Remove the Decimal Day column, not really useful
                 for tvar in loaded_tplot_vars:
                     if "DDAY_" in tvar:
-                        pyspedas.pytplot.del_data(tvar)
+                        pyspedas.tplot_tools.del_data(tvar)
                         del tvar
 
             # Flatten out the list and only grab the unique tplot variables
@@ -568,33 +570,33 @@ def load_data(
                 logging.info(kp_data_loaded)
                 # Link all created KP data to the ancillary KP data
                 for tvar in kp_data_loaded:
-                    pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type="alt")
-                    pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type="x")
-                    pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type="y")
-                    pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type="z")
-                    pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type="geo_x")
-                    pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type="geo_y")
-                    pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type="geo_z")
-                    pyspedas.pytplot.link(
+                    link(tvar, "mvn_kp::spacecraft::altitude", link_type="alt")
+                    link(tvar, "mvn_kp::spacecraft::mso_x", link_type="x")
+                    link(tvar, "mvn_kp::spacecraft::mso_y", link_type="y")
+                    link(tvar, "mvn_kp::spacecraft::mso_z", link_type="z")
+                    link(tvar, "mvn_kp::spacecraft::geo_x", link_type="geo_x")
+                    link(tvar, "mvn_kp::spacecraft::geo_y", link_type="geo_y")
+                    link(tvar, "mvn_kp::spacecraft::geo_z", link_type="geo_z")
+                    link(
                         tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type="lon"
                     )
-                    pyspedas.pytplot.link(
+                    link(
                         tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type="lat"
                     )
 
             # Link all created tplot variables to the corresponding KP data
             for tvar in flat_list:
-                pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::altitude", link_type="alt")
-                pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::mso_x", link_type="x")
-                pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::mso_y", link_type="y")
-                pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::mso_z", link_type="z")
-                pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::geo_x", link_type="geo_x")
-                pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::geo_y", link_type="geo_y")
-                pyspedas.pytplot.link(tvar, "mvn_kp::spacecraft::geo_z", link_type="geo_z")
-                pyspedas.pytplot.link(
+                link(tvar, "mvn_kp::spacecraft::altitude", link_type="alt")
+                link(tvar, "mvn_kp::spacecraft::mso_x", link_type="x")
+                link(tvar, "mvn_kp::spacecraft::mso_y", link_type="y")
+                link(tvar, "mvn_kp::spacecraft::mso_z", link_type="z")
+                link(tvar, "mvn_kp::spacecraft::geo_x", link_type="geo_x")
+                link(tvar, "mvn_kp::spacecraft::geo_y", link_type="geo_y")
+                link(tvar, "mvn_kp::spacecraft::geo_z", link_type="geo_z")
+                link(
                     tvar, "mvn_kp::spacecraft::sub_sc_longitude", link_type="lon"
                 )
-                pyspedas.pytplot.link(
+                link(
                     tvar, "mvn_kp::spacecraft::sub_sc_latitude", link_type="lat"
                 )
 
