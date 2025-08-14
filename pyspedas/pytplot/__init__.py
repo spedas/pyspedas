@@ -31,7 +31,6 @@ extra_layouts = {}
 
 from .get_y_range import get_y_range
 from .store_data import store_data, store
-from .tplot import tplot
 from .get_data import get_data, get
 from .str_to_float_fuzzy import str_to_float_fuzzy
 from .xlim import xlim
@@ -39,12 +38,12 @@ from .ylim import ylim
 from .zlim import zlim
 from .tlimit import tlimit
 from . import spedas_colorbar
-from pyspedas.pytplot.exporters.tplot_save import tplot_save
-from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
+from .exporters.tplot_save import tplot_save
 from .tplot_names import tplot_names
+from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
 from .tnames import tnames
 from .convert_tplotxarray_to_pandas_dataframe import convert_tplotxarray_to_pandas_dataframe
-from pyspedas.pytplot.importers.tplot_restore import tplot_restore
+from .importers.tplot_restore import tplot_restore
 from .is_pseudovariable import is_pseudovariable
 from .count_traces import count_traces
 from .get_timespan import get_timespan
@@ -63,16 +62,54 @@ from .options import options
 from .timestamp import timestamp
 from .time_double import time_float,time_double, time_float_one
 from .time_string import time_string, time_datetime, time_string_one
-from pyspedas.pytplot.importers.cdf_to_tplot import cdf_to_tplot
-from pyspedas.pytplot.importers.netcdf_to_tplot import netcdf_to_tplot
-from pyspedas.pytplot.importers.sts_to_tplot import sts_to_tplot
+from .importers.sts_to_tplot import sts_to_tplot
 from .data_att_getters_setters import set_coords, get_coords, set_units, get_units
 from .data_exists import data_exists
 from .link import link
 from .tres import tres
-from .tplot_math import *
+
+from .tplot_math.add_across import add_across
+from .tplot_math.add import add
+from .tplot_math.avg_res_data import avg_res_data
+from .tplot_math.clip import clip
+from .tplot_math.crop import crop
+from .tplot_math.deflag import deflag
+from .tplot_math.degap import degap
+from .tplot_math.derive import derive
+from .tplot_math.divide import divide
+from .tplot_math.interp_nan import interp_nan
+from .tplot_math.tinterp import tinterp
+from .tplot_math.join_vec import join_vec
+from .tplot_math.multiply import multiply
+from .tplot_math.spec_mult import spec_mult
+from .tplot_math.split_vec import split_vec
+from .tplot_math.subtract import subtract
+from .tplot_math.pwr_spec import pwr_spec
+from .tplot_math.tsmooth import smooth
+from .tplot_math.tsmooth import tsmooth
+from .tplot_math.tdotp import tdotp
+from .tplot_math.tcrossp import tcrossp
+from .tplot_math.tnormalize import tnormalize
+from .tplot_math.subtract_average import subtract_average
+from .tplot_math.subtract_median import subtract_median
+from .tplot_math.clean_spikes import clean_spikes
+from .tplot_math.time_clip import time_clip
+from .tplot_math.tkm2re import tkm2re
+from .tplot_math.makegap import makegap
+from .tplot_math.tdeflag import tdeflag
+from .tplot_math.pwrspc import pwrspc
+from .tplot_math.tpwrspc import tpwrspc
+from .tplot_math.dpwrspc import dpwrspc
+from .tplot_math.tdpwrspc import tdpwrspc
+
 from .reduce_spec_dataset import reduce_spec_dataset
+from .MPLPlotter.lineplot import lineplot
+from .MPLPlotter.specplot import specplot, specplot_make_1d_ybins
 from .MPLPlotter.var_labels import var_label_panel
 from .MPLPlotter.ctime import ctime
 from .MPLPlotter.highlight import highlight
 from .MPLPlotter.annotate import annotate
+from .tplot import tplot
+from .importers.cdf_to_tplot import cdf_to_tplot
+from .importers.netcdf_to_tplot import netcdf_to_tplot
+
