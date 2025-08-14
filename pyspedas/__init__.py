@@ -244,7 +244,7 @@ try:
     # If we get here, the external package is installed.
     logging.info("You appear to have the external pytplot or pytplot-mpl-temp packages installed.")
     logging.info("PySPEDAS 2.0 and later now bundles the pytplot tools, and we recommend that you remove the external packages to avoid using obsolete code.")
-    logging.info("To uninstall:")
+    logging.info("To uninstall, run these commands in a terminal window (not a Python window!) in the environment you're using with PySPEDAS:")
     logging.info("pip uninstall pytplot")
     logging.info("pip uninstall pytplot-mpl-temp")
     logging.info("To update your own code for PySPEDAS 2.0 compatibility, please refer to our PySPEDAS 2.0 migration guide:")
