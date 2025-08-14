@@ -17,8 +17,8 @@ import logging
 from pyspedas.projects.themis.cotrans.dsl2gse import dsl2gse
 from pyspedas.cotrans_tools.cotrans import cotrans
 from pyspedas.cotrans_tools.fac_matrix_make import fac_matrix_make
-from pyspedas.tplot_tools import get_data, store_data, del_data
-from pyspedas import cotrans_get_coord, cotrans_set_coord, sm2mlt, tplot_copy, set_units, get_units
+from pyspedas.tplot_tools import get_data, store_data, del_data, get_coords, set_coords
+from pyspedas import sm2mlt, tplot_copy, set_units, get_units
 
 global_display=False
 
@@ -30,31 +30,6 @@ class CotransTestCases(unittest.TestCase):
             doesntexist = fac_matrix_make('doesnt_exist')
             self.assertTrue(doesntexist is None)
             self.assertIn("Error reading tplot variable: doesnt_exist", log.output[0])
-
-    def test_get_set_coord_wrappers(self):
-        """ Test for cotrans_set_coord/cotrans_get_coord wrappers """
-        del_data()
-        doesntexist = cotrans_get_coord('test_coord')
-        self.assertTrue(doesntexist is None)
-        store_data('test_coord', data={'x': [1, 2, 3, 4, 5], 'y': [1, 1, 1, 1, 1]})
-        with self.assertLogs(level='ERROR') as log:
-            cotrans(name_in='test_coord', coord_out="geo")
-            self.assertIn("cotrans error: No input coordinates were provided.", log.output[0])
-        before = cotrans_get_coord('test_coord')
-        self.assertTrue(before is None)
-        setcoord = cotrans_set_coord('test_coord', 'GSE')
-        self.assertTrue(setcoord)
-        after = cotrans_get_coord('test_coord')
-        self.assertTrue(after == 'GSE')
-        md = get_data('test_coord', metadata=True)
-        md['data_att']['units'] = 'km'
-        setcoord = cotrans_set_coord('test_coord', 'GSM')
-        self.assertTrue(setcoord)
-        md_after = get_data('test_coord', metadata=True)
-        after = cotrans_get_coord('test_coord')
-        self.assertTrue(after == 'GSM')
-        self.assertTrue(md_after['data_att']['units'] == 'km')
-        setcoord = cotrans_set_coord('doesnt_exist', 'GSM')
 
     def test_get_set_coords(self):
         """ Test for pytplot.set_coords/get_coords """
@@ -330,11 +305,11 @@ class CotransTestCases(unittest.TestCase):
         tplot_copy('v1', 'v3')
         tplot_copy('v1','v4')
 
-        cotrans_set_coord('v?', 'GSE')
-        c1 = cotrans_get_coord('v1')
-        c2 = cotrans_get_coord('v2')
-        c3 = cotrans_get_coord('v3')
-        c4 = cotrans_get_coord('v4')
+        set_coords('v?', 'GSE')
+        c1 = get_coords('v1')
+        c2 = get_coords('v2')
+        c3 = get_coords('v3')
+        c4 = get_coords('v4')
         self.assertTrue(c1 == 'GSE')
         self.assertTrue(c2 == 'GSE')
         self.assertTrue(c3 == 'GSE')
@@ -350,7 +325,7 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(u3 == 'nT')
         self.assertTrue(u4 == 'nT')
 
-        res = cotrans_set_coord('nonexistent', 'GSE')
+        res = set_coords('nonexistent', 'GSE')
         self.assertFalse(res)
 
         res = set_units('xxx yyy zzz', 'nT')
