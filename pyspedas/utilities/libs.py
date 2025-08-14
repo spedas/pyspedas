@@ -23,18 +23,19 @@ def libs(function_name, package=None):
     function_name (str):
         The name or partial name of the function to search for. If "*" or "?" are found in the function name, a case-insensitive wildcard match is performed, otherwise
         function_name is treated as a substring to match.
-        package (module, optional): The Python package in which to search for the function.
+
+    package (module, optional): The Python package in which to search for the function.
         Default is the pyspedas package. This should be a Python module object.
 
     Note
     ----
 
-    All submodules of pyspedas and pytplot are imported during the search. The package option is
+    All submodules of pyspedas are imported during the search. The package option is
     simply narrows the search.
     The function specifically searches for functions, not classes or other objects.
     If multiple functions with the same name exist in different modules within the package, it will list them all.
     The function handles ImportError exceptions by printing an error message and
-    continuing the search, except 'pytplot.QtPlotter'. pytplot.QtPlotter results in error during import and ignored
+    continuing the search.
 
     Example
     -------
