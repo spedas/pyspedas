@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import datetime
 import logging
-from .del_data import del_data
+from pyspedas.pytplot import del_data
 import pyspedas
 import xarray as xr
 from pyspedas.pytplot import get_y_range

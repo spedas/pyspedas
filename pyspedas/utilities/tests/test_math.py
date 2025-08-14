@@ -1,8 +1,7 @@
 """Automated tests for tplot math and utility functions."""
 
 import unittest
-from pyspedas.pytplot.tplot_math import (clean_spikes, smooth, tsmooth, tdotp, tcrossp, tnormalize, subtract_median,
-    subtract_average, time_clip)
+from pyspedas.pytplot import clean_spikes, smooth, tsmooth, tdotp, tcrossp, tnormalize, subtract_median, subtract_average, time_clip
 from pyspedas.pytplot import get_data, store_data, time_double, time_string, time_datetime, del_data
 from datetime import datetime,timezone
 import numpy as np

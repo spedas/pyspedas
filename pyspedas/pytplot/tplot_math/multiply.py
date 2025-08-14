@@ -43,7 +43,7 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
         newname = new_tvar
 
     # interpolate tvars
-    tv2 = pyspedas.pytplot.tplot_math.tinterp(tvar1, tvar2)
+    tv2 = pyspedas.pytplot.tinterp(tvar1, tvar2)
     # separate and multiply data
     data1 = pyspedas.pytplot.data_quants[tvar1].values
     data2 = pyspedas.pytplot.data_quants[tv2].values
