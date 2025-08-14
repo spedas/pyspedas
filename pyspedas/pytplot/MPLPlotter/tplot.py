@@ -205,7 +205,6 @@ def tplot(variables,
           fig=None,
           axis=None,
           running_trace_count=None,
-          trace_count_thisvar=None,
           pseudo_idx=None,
           pseudo_right_axis=False,
           pseudo_xaxis_options=None,
@@ -214,7 +213,6 @@ def tplot(variables,
           pseudo_line_options=None,
           pseudo_extra_options=None,
           show_colorbar=True,
-          second_axis_size=0.0,
           slice=False,
           return_plot_objects=False):
     """
@@ -362,7 +360,6 @@ def tplot(variables,
     # (for example, an energy spectrum plus spacecraft potential).  JWL 2024-03-26
 
     if fig is None and axis is None:
-        processing_pseudovar_component = False
         fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes}, layout='constrained')
         fig.set_size_inches(xsize, ysize)
         plot_title = pyspedas.pytplot.tplot_opt_glob['title_text']
@@ -380,7 +377,6 @@ def tplot(variables,
     else:
         # fig and axis have been passed as parameters, most likely a recursive tplot call to render
         # a pseudovariable
-        processing_pseudovar_component = True
         if pseudo_idx == 0 or pseudo_right_axis == False:
             # setting up first axis
             axes = axis
@@ -394,25 +390,8 @@ def tplot(variables,
 
 
     axis_font_size = pyspedas.pytplot.tplot_opt_glob.get('axis_font_size')
-    vertical_spacing = pyspedas.pytplot.tplot_opt_glob.get('vertical_spacing')
-    xmargin = pyspedas.pytplot.tplot_opt_glob.get('xmargin')
-    ymargin = pyspedas.pytplot.tplot_opt_glob.get('ymargin')
-    zrange = [None, None]
 
     colorbars = {}
-
-    # if xmargin is None:
-    #    xmargin = [0.10, 0.05]
-
-    # fig.subplots_adjust(left=xmargin[0], right=1-xmargin[1])
-
-    # if ymargin is not None:
-    #    fig.subplots_adjust(top=1-ymargin[0], bottom=ymargin[1])
-
-    # if vertical_spacing is None:
-    #    vertical_spacing = 0.07
-
-    # fig.subplots_adjust(hspace=vertical_spacing)
 
     for idx, variable in enumerate(variables):
         var_data_org = get_data(variable, dt=True)
@@ -558,9 +537,7 @@ def tplot(variables,
                       xsize=xsize, ysize=ysize,
                       fig=fig, axis=this_axis, display=False,
                       running_trace_count=traces_processed,
-                      trace_count_thisvar=trace_count_thisvar,
                       pseudo_idx=pseudo_idx,
-                      second_axis_size=0.1,
                       pseudo_xaxis_options=xaxis_options, pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
                       pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
                       pseudo_right_axis=pseudo_right_axis,
@@ -858,22 +835,10 @@ def tplot(variables,
             if colorbars.get(variable) is None:
                 continue
 
-            # add the color bar
-            if running_trace_count == 0:
-                # there's going to be a second axis, so we need to make sure there's room for it
-                second_axis_size = 0.07
-
             if num_panels == 1:
                 this_axis = axes
             else:
                 this_axis = axes[idx]
-
-            xmargin = pyspedas.pytplot.tplot_opt_glob.get('xmargin')
-            # if xmargin is None:
-            #    fig.subplots_adjust(left=0.14, right=0.87-second_axis_size)
-            
-            if plot_extras.get('second_axis_size') is not None:
-                second_axis_size = plot_extras['second_axis_size']
 
             colorbar = fig.colorbar(colorbars[variable]['im'], ax=this_axis)
 
