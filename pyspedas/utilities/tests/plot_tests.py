@@ -2,7 +2,7 @@
 import unittest
 import numpy as np
 import pyspedas
-from pyspedas import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim, databar
+from pyspedas.tplot_tools import store_data, options, timespan, tplot, tplot_options, degap, tplot_names, del_data, ylim, databar
 from pyspedas.projects import themis
 
 # Set this to false for Github CI tests, set to True for interactive use to see plots.
@@ -118,7 +118,7 @@ class PlotTestCases(unittest.TestCase):
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
 
     def test_time_data_bars(self):
-        from pyspedas import timebar
+        from pyspedas.tplot_tools import timebar
         del_data('*')
         timespan('2007-03-23',1,'days') # reset to avoid interfering with other tests
         themis.fgm(probe='c', trange=default_trange)
@@ -534,7 +534,7 @@ class PlotTestCases(unittest.TestCase):
     def test_pseudovars_title(self):
         del_data("*")
         import pyspedas
-        from pyspedas import store_data
+        from pyspedas.tplot_tools import store_data
         pyspedas.projects.themis.state(probe='c',trange=default_trange)
         store_data('ps1', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
         store_data('ps2', ['thc_spin_initial_delta_phi', 'thc_spin_idpu_spinper'])
@@ -676,14 +676,14 @@ class PlotTestCases(unittest.TestCase):
         from pyspedas import tplot
         spi_vars = pyspedas.projects.psp.spi(trange=['2022-12-12/00:00', '2022-12-12/23:59'], datatype='sf00_l3_mom', level='l3',
                                     time_clip=True)
-        time = pyspedas.pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['time'].values
+        time = pyspedas.tplot_tools.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['time'].values
         # print(time)
-        energy_channel = pyspedas.pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['spec_bins'].values
+        energy_channel = pyspedas.tplot_tools.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['spec_bins'].values
         # print(energy_channel)
         ec = energy_channel[0, :]
-        energy_flux = pyspedas.pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].values
+        energy_flux = pyspedas.tplot_tools.data_quants['psp_spi_EFLUX_VS_ENERGY'].values
         # print(energy_flux)
-        e_flux = pyspedas.pytplot.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['v'].values
+        e_flux = pyspedas.tplot_tools.data_quants['psp_spi_EFLUX_VS_ENERGY'].coords['v'].values
         energy_flux[energy_flux == 0] = np.nan
         pyspedas.store_data('E_Flux', data={'x': time.T, 'y': energy_flux, 'v': energy_channel})
         pyspedas.options('E_Flux', opt_dict={'Spec': 1, 'zlog': 1, 'Colormap': 'jet', 'ylog': 1})
