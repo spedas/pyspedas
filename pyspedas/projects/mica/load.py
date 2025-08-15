@@ -2,8 +2,8 @@ import logging
 import numpy as np
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pytplot import time_clip as tclip
-from pytplot import cdf_to_tplot, get_data, store_data, options
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import cdf_to_tplot, get_data, store_data, options
 
 from .config import CONFIG
 

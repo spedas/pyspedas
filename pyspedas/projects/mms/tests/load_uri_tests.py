@@ -6,7 +6,7 @@ import requests
 import unittest
 import subprocess
 
-from pytplot import data_exists, del_data, tplot, get_data
+from pyspedas.tplot_tools import data_exists, del_data, tplot, get_data
 from pyspedas.projects.mms import mms_config, mms_load_state,            \
                                   mms_load_tetrahedron_qf, mms_load_mec, \
                                   mms_load_fgm, mms_load_scm,            \

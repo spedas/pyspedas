@@ -1,5 +1,5 @@
-from pytplot import tnames
-from pytplot import options
+from pyspedas import tnames
+from pyspedas import options
 
 
 def mms_eis_set_metadata(tplotnames, data_rate='srvy', datatype='extof', suffix=''):

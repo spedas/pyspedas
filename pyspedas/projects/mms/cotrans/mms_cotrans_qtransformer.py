@@ -12,7 +12,7 @@ It also takes an optional argument:
 probe: the spacecraft probe number (default is '1')
 The function returns the name of the output tplot variable.
 """
-from pytplot import tplot_copy, get
+from pyspedas import tplot_copy, get
 from .mms_cotrans_qrotate import mms_cotrans_qrotate
 
 

@@ -8,7 +8,7 @@ Creates a new tplot variable as the time average of original.
 """
 import logging
 import numpy as np
-from pytplot import store_data, get_data, tnames, time_float
+from pyspedas.tplot_tools import store_data, get_data, tnames, time_float
 
 
 def avg_data(names, trange=[], res=None, width=None,

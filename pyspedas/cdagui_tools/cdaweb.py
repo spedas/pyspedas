@@ -11,7 +11,7 @@ import logging
 import os
 import re
 from cdasws import CdasWs
-from pytplot import cdf_to_tplot, netcdf_to_tplot, time_clip as tclip
+from pyspedas.tplot_tools import cdf_to_tplot, netcdf_to_tplot, time_clip as tclip
 from pyspedas.utilities.download import download
 from pyspedas.cdagui_tools.config import CONFIG
 

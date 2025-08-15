@@ -1,6 +1,6 @@
 """Tests of twavpol functions."""
 import pyspedas
-from pyspedas import get_data, cdf_to_tplot, tplot, data_exists, tplot_rename, tplot_copy
+from pyspedas.tplot_tools import get_data, cdf_to_tplot, tplot, data_exists, tplot_rename, tplot_copy
 import unittest
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 import numpy as np

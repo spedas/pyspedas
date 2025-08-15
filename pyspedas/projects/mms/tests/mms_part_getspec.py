@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from pyspedas.projects.mms.particles.mms_part_getspec import mms_part_getspec
-from pyspedas import data_exists, get_data, tplot_names, tplot, get_coords, get_units
+from pyspedas.tplot_tools import data_exists, get_data, tplot_names, tplot, get_coords, get_units
 
 global_display=True
 

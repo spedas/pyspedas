@@ -1,7 +1,6 @@
 """Tests of cal_fit function."""
 import pyspedas.projects.themis.spacecraft.fields.fit
-import pytplot.get_data
-from pytplot.importers.tplot_restore import tplot_restore
+from pyspedas import tplot_restore, get_data
 import unittest
 import numpy as np
 from pyspedas.projects.themis.spacecraft.fields.fit import cal_fit
@@ -41,26 +40,26 @@ class TestCalFitDataValidation(unittest.TestCase):
         # Load validation variables from the test file
         filename = calfile[0]
         tplot_restore(filename)
-        cls.tha_fit = pytplot.get_data('tha_fit')
-        cls.tha_fgs = pytplot.get_data('tha_fgs')
-        cls.tha_fgs_sigma = pytplot.get_data('tha_fgs_sigma')
-        cls.tha_fit_bfit = pytplot.get_data('tha_fit_bfit')
-        cls.tha_fit_efit = pytplot.get_data('tha_fit_efit')
-        cls.tha_efs = pytplot.get_data('tha_efs')
-        cls.tha_efs_sigma = pytplot.get_data('tha_efs_sigma')
-        cls.tha_efs_0 = pytplot.get_data('tha_efs_0')
-        cls.tha_efs_dot0 = pytplot.get_data('tha_efs_dot0')
+        cls.tha_fit = get_data('tha_fit')
+        cls.tha_fgs = get_data('tha_fgs')
+        cls.tha_fgs_sigma = get_data('tha_fgs_sigma')
+        cls.tha_fit_bfit = get_data('tha_fit_bfit')
+        cls.tha_fit_efit = get_data('tha_fit_efit')
+        cls.tha_efs = get_data('tha_efs')
+        cls.tha_efs_sigma = get_data('tha_efs_sigma')
+        cls.tha_efs_0 = get_data('tha_efs_0')
+        cls.tha_efs_dot0 = get_data('tha_efs_dot0')
 
     def setUp(self):
         """ We need to clean tplot variables before each run"""
-        pytplot.del_data('*')
+        pyspedas.tplot_tools.del_data('*')
 
     def test_fgs(self):
         """Validate tha_fgs."""
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
 
         cal_fit(probe='a')
-        tha_fgs = pytplot.get_data('tha_fgs')
+        tha_fgs = get_data('tha_fgs')
 
         diff = np.nanmedian(tha_fgs.y - self.tha_fgs.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
@@ -69,7 +68,7 @@ class TestCalFitDataValidation(unittest.TestCase):
         """Validate tha_fgs_sigma."""
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
         cal_fit(probe='a')
-        tha_fgs_sigma = pytplot.get_data('tha_fgs_sigma')
+        tha_fgs_sigma = get_data('tha_fgs_sigma')
         diff = np.nanmedian(tha_fgs_sigma.y - self.tha_fgs_sigma.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
 
@@ -77,7 +76,7 @@ class TestCalFitDataValidation(unittest.TestCase):
         """Validate tha_fit_bfit."""
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit'], time_clip=True)
         cal_fit(probe='a')
-        tha_fit_bfit = pytplot.get_data('tha_fit_bfit')
+        tha_fit_bfit = get_data('tha_fit_bfit')
         diff = np.nanmedian(tha_fit_bfit.y - self.tha_fit_bfit.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
 
@@ -86,7 +85,7 @@ class TestCalFitDataValidation(unittest.TestCase):
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
-        tha_fit_efit = pytplot.get_data('tha_fit_efit')
+        tha_fit_efit = get_data('tha_fit_efit')
         diff = np.nanmedian(tha_fit_efit.y - self.tha_fit_efit.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
 
@@ -95,7 +94,7 @@ class TestCalFitDataValidation(unittest.TestCase):
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
-        tha_efs = pytplot.get_data('tha_efs')
+        tha_efs = get_data('tha_efs')
         diff = np.nanmedian(tha_efs.y - self.tha_efs.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
 
@@ -104,7 +103,7 @@ class TestCalFitDataValidation(unittest.TestCase):
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
-        tha_efs_sigma = pytplot.get_data('tha_efs_sigma')
+        tha_efs_sigma = get_data('tha_efs_sigma')
         diff = np.nanmedian(tha_efs_sigma.y - self.tha_efs_sigma.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
 
@@ -113,7 +112,7 @@ class TestCalFitDataValidation(unittest.TestCase):
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
-        tha_efs_0 = pytplot.get_data('tha_efs_0')
+        tha_efs_0 = get_data('tha_efs_0')
         diff = np.nanmedian(tha_efs_0.y - self.tha_efs_0.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
 
@@ -122,7 +121,7 @@ class TestCalFitDataValidation(unittest.TestCase):
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a')
-        tha_efs_dot0 = pytplot.get_data('tha_efs_dot0')
+        tha_efs_dot0 = get_data('tha_efs_dot0')
         diff = np.nanmedian(tha_efs_dot0.y - self.tha_efs_dot0.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
 
@@ -155,16 +154,16 @@ class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
         # Load validation variables from the test file
         filename = calfile[0]
         tplot_restore(filename)
-        self.tha_efs = pytplot.get_data('tha_efs')
+        self.tha_efs = get_data('tha_efs')
 
-        pytplot.del_data('*')
+        pyspedas.tplot_tools.del_data('*')
 
     def test_efs(self):
         """Validate tha_efs."""
         pyspedas.projects.themis.fit(trange=self.t, probe='a', level='l1', varnames=['tha_fit', 'tha_fit_code'],
                             get_support_data=True, time_clip=True)
         cal_fit(probe='a', no_cal=True)
-        tha_efs = pytplot.get_data('tha_efs')
+        tha_efs = get_data('tha_efs')
         diff = np.nanmedian(tha_efs.y - self.tha_efs.y, axis=0, keepdims=True)
         self.assertAlmostEqual(diff.sum(), 0)
 
@@ -203,7 +202,7 @@ class TestCalFitMeta(unittest.TestCase):
         vars = {'tha_fgs', 'tha_fgs_sigma', 'tha_fit_bfit', 'tha_fit_efit', 'tha_efs', 'tha_efs_sigma', 'tha_efs_0', 'tha_efs_dot0'}
         for var in vars:
             with self.subTest(f'Test of units in {var}', var=var):
-                meta = pytplot.get_data(var, metadata=True)
+                meta = get_data(var, metadata=True)
                 self.assertIn('units', meta)
                 # axis_subtitle currently displays units
                 self.assertIn('axis_subtitle', meta['plot_options']['yaxis_opt'])
@@ -212,11 +211,11 @@ class TestCalFitMeta(unittest.TestCase):
         vars = {'tha_fgs', 'tha_fgs_sigma', 'tha_fit_bfit', 'tha_fit_efit', 'tha_efs', 'tha_efs_sigma', 'tha_efs_0', 'tha_efs_dot0'}
         for var in vars:
             with self.subTest(f'Test of legend in {var}', var=var):
-                meta = pytplot.get_data(var, metadata=True)
+                meta = get_data(var, metadata=True)
                 self.assertIn('legend_names', meta['plot_options']['yaxis_opt'])
 
-    def test_plot(selfs):
-        pytplot.tplot(['tha_fit_bfit', 'tha_fit_efit'],display=global_display, save_png='cal_fit.png')
+    def test_plot(self):
+        pyspedas.tplot_tools.tplot(['tha_fit_bfit', 'tha_fit_efit'],display=global_display, save_png='cal_fit.png')
 
 if __name__ == '__main__':
     unittest.main()

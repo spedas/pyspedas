@@ -2,10 +2,10 @@
 import logging
 
 import numpy as np
-from pytplot import tnames
-from pytplot import time_double
-from pytplot import time_string
-from pytplot import get_data
+from pyspedas import tnames
+from pyspedas.tplot_tools import time_double
+from pyspedas.tplot_tools import time_string
+from pyspedas.tplot_tools import get_data
 from scipy import interpolate
 
 from .get_lepi_flux_angle_in_sga import get_lepi_flux_angle_in_sga

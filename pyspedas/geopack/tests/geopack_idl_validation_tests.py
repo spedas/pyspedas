@@ -3,9 +3,9 @@ import unittest
 import numpy as np
 from geopack import geopack
 
-from pytplot import data_exists,del_data,cdf_to_tplot,tplot,subtract,tlimit
+from pyspedas.tplot_tools import data_exists,del_data,cdf_to_tplot,tplot,subtract,tlimit
 import pyspedas
-from pyspedas import time_double
+from pyspedas.tplot_tools import time_double
 from pyspedas.geopack import tt89
 from pyspedas.geopack import tt96
 from pyspedas.geopack import tt01
@@ -13,7 +13,7 @@ from pyspedas.geopack import tts04
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.geopack.get_w_params import get_w
 from pyspedas import tinterpol, tvectot
-from pytplot import join_vec, store_data, get_data, tkm2re, tplot_names
+from pyspedas import join_vec, store_data, get_data, tkm2re, tplot_names
 
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
 
@@ -25,7 +25,7 @@ display=False
 def get_params(model, g_variables=None):
     support_trange = [time_double(trange[0])-60*60*24, 
                       time_double(trange[1])+60*60*24]
-    pyspedas.kyoto.dst(trange=support_trange)
+    pyspedas.projects.kyoto.dst(trange=support_trange)
     pyspedas.projects.omni.data(trange=trange)
     join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
     if model == 't01' and g_variables is None:

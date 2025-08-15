@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from pytplot import data_exists, del_data, tplot
+from pyspedas.tplot_tools import data_exists, del_data, tplot
 
 import pyspedas
 from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
@@ -45,7 +45,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('density'))
 
     def test_load_hfr_spectra(self):
-        from pytplot import tplot
+        from pyspedas.tplot_tools import tplot
         del_data('*')
         pyspedas.projects.rbsp.emfisis(trange=['2013-01-17', '2013-01-18'], datatype='hfr', level='l2', wavetype='spectra')
         self.assertTrue(data_exists('HFR_Spectra'))

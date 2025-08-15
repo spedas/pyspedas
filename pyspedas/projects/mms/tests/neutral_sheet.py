@@ -3,7 +3,7 @@ import unittest
 import pyspedas
 from pyspedas import tkm2re
 from pyspedas.analysis.neutral_sheet import neutral_sheet
-from pytplot import get_data
+from pyspedas.tplot_tools import get_data
 
 pyspedas.projects.mms.mec()
 tkm2re('mms1_mec_r_gsm')

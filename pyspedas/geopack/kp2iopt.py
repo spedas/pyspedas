@@ -1,5 +1,5 @@
 import numpy as np
-from pytplot import tnames,data_exists
+from pyspedas import tnames,data_exists
 from pyspedas import tinterpol
 
 

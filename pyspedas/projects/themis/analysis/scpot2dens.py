@@ -1,8 +1,8 @@
 import pyspedas
-import pytplot
+import pyspedas
 import numpy as np
 from scipy.interpolate import interp1d
-from pytplot.time_double import time_double
+from pyspedas.tplot_tools.time_double import time_double
 
 def dens_pot(scpot, offset, pder_calc=False):
     """
@@ -154,7 +154,7 @@ def scpot2dens(scpot, scptime, Te, Tetime, dens_e, dens_e_time, dens_i, dens_i_t
 
     ```python
     import pyspedas
-    import pytplot
+    import pyspedas
     from pyspedas.projects.themis.analysis import scpot2dens
 
     # Define the time range for which to load the data
@@ -167,16 +167,16 @@ def scpot2dens(scpot, scptime, Te, Tetime, dens_e, dens_e_time, dens_i, dens_i_t
                         level='l2')
 
     # Retrieve electron density
-    dens_e_time, dens_e = pytplot.get_data('thc_peer_density')
+    dens_e_time, dens_e = get_data('thc_peer_density')
 
     # Retrieve ion density
-    dens_i_time, dens_i = pytplot.get_data('thc_peir_density')
+    dens_i_time, dens_i = get_data('thc_peir_density')
 
     # Retrieve spacecraft potential
-    sc_pot_time, sc_pot = pytplot.get_data('thc_peer_sc_pot')
+    sc_pot_time, sc_pot = get_data('thc_peer_sc_pot')
 
     # Retrieve electron temperature
-    Te_time, Te = pytplot.get_data('thc_peer_avgtemp')
+    Te_time, Te = get_data('thc_peer_avgtemp')
 
     # Calculate the plasma density from spacecraft potential
     Npot = scpot2dens(sc_pot, sc_pot_time, Te, Te_time, dens_e, dens_e_time, dens_i, dens_i_time, 'c')

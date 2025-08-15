@@ -1,7 +1,7 @@
 import numpy as np
-from pytplot import tnames
-from pytplot import time_float
-from pytplot import get_data, options, store_data, ylim, zlim
+from pyspedas import tnames
+from pyspedas.tplot_tools import time_float
+from pyspedas.tplot_tools import get_data, options, store_data, ylim, zlim
 
 from ..load import load
 from ..get_gatt_ror import get_gatt_ror
@@ -180,7 +180,7 @@ def pwe_efd(
             t_plot_name = prefix + elem + '_dsi'
             options(t_plot_name, 'ytitle', elem + ' vector in DSI')
             options(t_plot_name, 'legend_names', labels)
-            # ylim settings because pytplot.timespan() doesn't affect in ylim.
+            # ylim settings because pyspedas.tplot_tools.timespan() doesn't affect in ylim.
             # May be it will be no need in future.
             get_data_vars = get_data(t_plot_name)
             if get_data_vars[0][0] < time_min_max[0]:
@@ -215,7 +215,7 @@ def pwe_efd(
             store_data(t_plot_name, data={
                        'x': time_new, 'y': data_new}, attr_dict=dl_in)
             options(t_plot_name, 'ytitle', '\n'.join(t_plot_name.split('_')))
-            # ylim settings because pytplot.timespan() doesn't affect in ylim.
+            # ylim settings because pyspedas.tplot_tools.timespan() doesn't affect in ylim.
             # May be it will be no need in future.
             if time_new[0] < time_min_max[0]:
                 min_time_index = np.where((time_new <= time_min_max[0]))[0][-1]

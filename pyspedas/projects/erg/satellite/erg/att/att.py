@@ -1,6 +1,6 @@
 import pandas as pd
-from pytplot import time_float
-from pytplot import store_data
+from pyspedas.tplot_tools import time_float
+from pyspedas.tplot_tools import store_data
 
 from ..load import load
 

@@ -76,7 +76,7 @@ def erg_pgs_limit_range(data_in, phi=None, theta=None, energy=None,
             theta_max = data_in['theta'] + 0.
 
         # ;determine which bins intersect the specified range
-        in_range = ((theta_min < theta_min_max[1]) \
+        in_range = ((theta_min < theta_min_max[1])
                     & (theta_max > theta_min_max[0]))
         data_in['bins'][in_range == False] = 0
 

@@ -3,8 +3,8 @@ import os
 import unittest
 import logging
 import pyspedas
-import pytplot
-from pytplot import data_exists, get_coords
+import pyspedas
+from pyspedas.tplot_tools import data_exists, get_coords
 
 
 

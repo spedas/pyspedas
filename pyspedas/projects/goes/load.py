@@ -1,7 +1,7 @@
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pytplot import time_clip as tclip
-from pytplot import netcdf_to_tplot
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import netcdf_to_tplot
 from pyspedas import wildcard_expand
 from pyspedas import options
 

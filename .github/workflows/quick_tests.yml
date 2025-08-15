@@ -26,6 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install mt-metadata
           pip install obspy
           pip install 'mth5>=0.4.9'
           pip install 'moto[server]'
@@ -35,6 +36,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install mt-metadata
           pip install obspy
           pip install 'mth5>=0.4.9'
           pip install 'moto[server]'
@@ -44,6 +46,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coveralls
+          pip install mt-metadata
           pip install obspy
           pip install 'mth5>=0.4.9'
           pip install 'moto[server]'
@@ -56,7 +59,7 @@ jobs:
         # exit-zero treats all errors as warnings. 
         flake8 . --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
     - name: Test with unittest
-      if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects'
+      if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' ||  github.ref == 'refs/heads/pyspedas_2_0_dev'
       env:
         SPEDAS_DATA_DIR: data
         ACE_DATA_DIR: ace_data/

@@ -4,7 +4,7 @@ import requests
 import unittest
 import subprocess
 
-from pytplot import data_exists
+from pyspedas.tplot_tools import data_exists
 from pyspedas.projects.cluster import load_csa, config
 
 #==========================================================

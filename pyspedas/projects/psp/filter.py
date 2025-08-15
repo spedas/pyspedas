@@ -3,7 +3,7 @@ import enum
 import numpy as np
 from copy import deepcopy
 from collections.abc import Iterable
-from pytplot import tplot_names, data_quants, get_timespan, get_data, store_data
+from pyspedas.tplot_tools import tplot_names, data_quants, get_timespan, get_data, store_data
 
 def filter_fields(tvars, dqflag = 0, keep = False, names_out = True):
     """

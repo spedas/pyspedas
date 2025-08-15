@@ -2,7 +2,7 @@ from copy import deepcopy
 import numpy as np
 from scipy.ndimage import shift
 from scipy.constants import c as const_c
-from pyspedas import time_double
+from pyspedas.tplot_tools import time_double
 from pyspedas.particles.spd_slice2d.slice2d_nearest import slice2d_nearest
 from pyspedas.particles.spd_slice2d.slice2d_intrange import slice2d_intrange
 from pyspedas.particles.spd_slice2d.slice2d_get_support import slice2d_get_support

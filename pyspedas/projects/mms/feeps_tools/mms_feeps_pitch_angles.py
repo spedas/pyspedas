@@ -1,8 +1,8 @@
 import logging
 from pyspedas.projects.mms.feeps_tools.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas import mms_load_fgm
-from pytplot import data_exists
-from pytplot import get, store
+from pyspedas.tplot_tools import data_exists
+from pyspedas.tplot_tools import get, store
 import numpy as np
 import math
 

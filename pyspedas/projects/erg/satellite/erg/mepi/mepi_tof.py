@@ -1,4 +1,4 @@
-from pytplot import options, ylim, get_data
+from pyspedas import options, ylim, get_data
 
 from ..load import load
 from ..get_gatt_ror import get_gatt_ror

@@ -5,10 +5,10 @@ import numpy as np
 
 from copy import deepcopy
 from scipy.spatial import KDTree
-from pytplot import tnames
-from pytplot import time_double
-from pytplot import time_string
-from pytplot import get_data
+from pyspedas import tnames
+from pyspedas.tplot_tools import time_double
+from pyspedas.tplot_tools import time_string
+from pyspedas.tplot_tools import get_data
 from scipy import interpolate
 
 from astropy.coordinates import spherical_to_cartesian, cartesian_to_spherical

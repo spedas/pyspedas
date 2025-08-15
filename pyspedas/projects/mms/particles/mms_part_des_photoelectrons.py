@@ -2,7 +2,7 @@ import os
 import logging
 from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.utilities.download import download
-from pytplot import get_data, cdf_to_tplot
+from pyspedas.tplot_tools import get_data, cdf_to_tplot
 
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)

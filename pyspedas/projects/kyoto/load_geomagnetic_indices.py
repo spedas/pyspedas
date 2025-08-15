@@ -4,7 +4,7 @@ from .load_ae import load_ae
 from pyspedas.projects.themis.ground.gmag import gmag as thm_gmag
 from pyspedas.projects.noaa.noaa_load_kp import noaa_load_kp
 from pyspedas.projects.omni import data as omni_load
-from pytplot import time_clip as tclip
+from pyspedas.tplot_tools import time_clip as tclip
 
 
 def load_geomagnetic_indices(

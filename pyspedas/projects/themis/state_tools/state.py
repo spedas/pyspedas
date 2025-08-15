@@ -1,5 +1,5 @@
 from pyspedas.projects.themis.load import load
-from pytplot import data_exists, del_data
+from pyspedas.tplot_tools import data_exists, del_data
 from .apply_spinaxis_corrections import apply_spinaxis_corrections
 from .spinmodel.spinmodel_postprocess import spinmodel_postprocess
 

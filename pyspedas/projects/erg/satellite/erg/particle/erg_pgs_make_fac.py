@@ -1,11 +1,11 @@
 import numpy as np
 
 from pyspedas import tcopy
-from pytplot import get_data, store_data, tnames
+from pyspedas.tplot_tools import get_data, store_data, tnames
 
 from pyspedas.cotrans_tools.cotrans import cotrans
-from pytplot import tnormalize
-from pytplot import tcrossp
+from pyspedas import tnormalize
+from pyspedas import tcrossp
 from pyspedas.analysis.tinterpol import tinterpol
 
 from ..common.cotrans.erg_cotrans import erg_cotrans

@@ -14,7 +14,7 @@ Returns:
 list of str: List of variables created.
 """
 import logging
-from pytplot import get_data, get_coords
+from pyspedas.tplot_tools import get_data, get_coords
 from .mms_cotrans_qtransformer import mms_cotrans_qtransformer
 
 

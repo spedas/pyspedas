@@ -1,5 +1,5 @@
-from pytplot import options
-from pytplot import tnames
+from pyspedas import options
+from pyspedas import tnames
 
 
 def mms_fpi_set_metadata(probe, data_rate, datatype, level, suffix=''):

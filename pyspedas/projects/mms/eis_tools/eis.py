@@ -3,7 +3,7 @@ from pyspedas.projects.mms.eis_tools.mms_eis_omni import mms_eis_omni
 from pyspedas.projects.mms.eis_tools.mms_eis_spin_avg import mms_eis_spin_avg
 from pyspedas.projects.mms.eis_tools.mms_eis_set_metadata import mms_eis_set_metadata
 from pyspedas.projects.mms.mms_config import CONFIG
-from pytplot import tnames
+from pyspedas import tnames
 
 
 

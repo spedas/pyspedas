@@ -4,8 +4,8 @@ from pyspedas.projects.mms.fgm_tools.mms_fgm_remove_flags import mms_fgm_remove_
 from pyspedas.projects.mms.fgm_tools.mms_fgm_set_metadata import mms_fgm_set_metadata
 from pyspedas.projects.mms.fgm_tools.mms_split_fgm_data import mms_split_fgm_data
 from pyspedas.projects.mms.mms_config import CONFIG
-from pytplot import data_exists
-from pytplot import del_data
+from pyspedas.tplot_tools import data_exists
+from pyspedas import del_data
 
 
 def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy',

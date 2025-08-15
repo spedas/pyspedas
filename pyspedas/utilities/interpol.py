@@ -27,7 +27,7 @@ def interpol(
 
     Examples
     --------
-        import pyspedas
+
         >>> import pyspedas
         >>> x1 = [0, 4, 8, 12]
         >>> time1 = [pyspedas.time_float("2020-01-01") + i for i in x1]

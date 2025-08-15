@@ -2,8 +2,8 @@ import os
 import logging
 import numpy as np
 from scipy.io import readsav
-from pytplot import store_data, options
-from pytplot import time_double
+from pyspedas.tplot_tools import store_data, options
+from pyspedas.tplot_tools import time_double
 from pyspedas.utilities.download import download
 from pyspedas.projects.mms.mms_config import CONFIG
 

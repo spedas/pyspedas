@@ -1,11 +1,11 @@
 
 import os
 import unittest
-from pytplot import data_exists, del_data, timespan,tplot
+from pyspedas.tplot_tools import data_exists, del_data, timespan, tplot, options
 from pyspedas.projects.erg import erg_lep_part_products
 
 import pyspedas
-import pytplot
+import pyspedas
 
 display=False
 
@@ -196,8 +196,8 @@ class LoadTestCases(unittest.TestCase):
                                      mag_name=mag_vn, pos_name=pos_vn,
                                      trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'], suffix='_pa0-10')
         ## Decorate the obtained spectrum variables
-        pytplot.options('erg_lepi_l2_3dflux_FPDU_energy_mag_pa80-100', 'ytitle', 'LEP-i flux\nPA: 80-100\n\n[eV]')
-        pytplot.options('erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10', 'ytitle', 'LEP-i flux\nPA: 0-10\n\n[eV]')
+        options('erg_lepi_l2_3dflux_FPDU_energy_mag_pa80-100', 'ytitle', 'LEP-i flux\nPA: 80-100\n\n[eV]')
+        options('erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10', 'ytitle', 'LEP-i flux\nPA: 0-10\n\n[eV]')
         tplot(['erg_lepi_l2_3dflux_FPDU_energy_mag_pa80-100', 'erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10'], display=display, save_png='erg_lepi_en_pa_limit.png')
         self.assertTrue(data_exists('erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10'))
         self.assertTrue('erg_lepi_l2_3dflux_FPDU_energy_mag_pa0-10' in vars2)

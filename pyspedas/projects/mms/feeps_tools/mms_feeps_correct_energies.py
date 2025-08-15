@@ -1,6 +1,6 @@
-from pytplot import get, store
+from pyspedas.tplot_tools import get, store
 from .mms_feeps_energy_table import mms_feeps_energy_table
-from pytplot import tnames
+from pyspedas.tplot_tools import tnames
 
 
 def mms_feeps_correct_energies(probes, data_rate, level='l2', suffix=''):

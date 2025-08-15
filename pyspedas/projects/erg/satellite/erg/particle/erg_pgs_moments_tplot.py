@@ -1,4 +1,4 @@
-from pyspedas import store_data, options, set_units, set_coords
+from pyspedas.tplot_tools import store_data, options, set_units, set_coords
 
 def erg_pgs_moments_tplot(
     moments,

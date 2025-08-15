@@ -1,11 +1,11 @@
 
 import os
 import unittest
-from pytplot import data_exists, del_data, timespan,tplot, tplot_names
+from pyspedas.tplot_tools import data_exists, del_data, timespan,tplot, tplot_names, options
 from pyspedas.projects.erg import erg_xep_part_products
 
 import pyspedas
-import pytplot
+import pyspedas
 
 display=False
 
@@ -126,8 +126,8 @@ class LoadTestCases(unittest.TestCase):
                                      mag_name=mag_vn, pos_name=pos_vn,
                                      trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'], suffix='_pa0-10')
         ## Decorate the obtained spectrum variables
-        pytplot.options('erg_xep_l2_FEDU_SSD_energy_mag_pa80-100', 'ytitle', 'XEP-e flux\nPA: 80-100\n\n[eV]')
-        pytplot.options('erg_xep_l2_FEDU_SSD_energy_mag_pa0-10', 'ytitle', 'XEP-e flux\nPA: 0-10\n\n[eV]')
+        options('erg_xep_l2_FEDU_SSD_energy_mag_pa80-100', 'ytitle', 'XEP-e flux\nPA: 80-100\n\n[eV]')
+        options('erg_xep_l2_FEDU_SSD_energy_mag_pa0-10', 'ytitle', 'XEP-e flux\nPA: 0-10\n\n[eV]')
         tplot(['erg_xep_l2_FEDU_SSD_energy_mag_pa80-100', 'erg_xep_l2_FEDU_SSD_energy_mag_pa0-10'], display=display, save_png='erg_xep_en_pa_limit.png')
         self.assertTrue('erg_xep_l2_FEDU_SSD_energy_mag_pa80-100' in vars1)
         self.assertTrue(data_exists('erg_xep_l2_FEDU_SSD_energy_mag_pa80-100'))

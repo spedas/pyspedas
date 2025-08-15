@@ -1,6 +1,6 @@
 import logging
 import warnings
-from pytplot import get_data, store_data, options, time_double
+from pyspedas.tplot_tools import get_data, store_data, options, time_double
 import numpy as np
 from hapiclient import hapi as load_hapi
 from .replace_fillvals import replace_fillvals

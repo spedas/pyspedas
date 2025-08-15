@@ -1,6 +1,6 @@
 import numpy as np
-from pytplot import store_data, options
-from pytplot import time_double
+from pyspedas.tplot_tools import store_data, options
+from pyspedas.tplot_tools import time_double
 from .load_csv_file import load_csv_file
 
 

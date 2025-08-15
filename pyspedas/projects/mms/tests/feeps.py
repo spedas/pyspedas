@@ -3,7 +3,7 @@ import logging
 from ..feeps_tools.mms_read_feeps_sector_masks_csv import mms_read_feeps_sector_masks_csv
 from pyspedas import mms_load_feeps, mms_feeps_pad
 from pyspedas.projects.mms.feeps_tools.mms_feeps_gpd import mms_feeps_gpd
-from pytplot import del_data, tplot, data_exists, get
+from pyspedas import del_data, tplot, data_exists, get
 
 
 class FEEPSTestCases(unittest.TestCase):
@@ -131,7 +131,7 @@ class FEEPSTestCases(unittest.TestCase):
         # or other formatting issues.  Update the file_times array in this test whenever new
         # CSVs are added.
 
-        from pytplot import time_string
+        from pyspedas.tplot_tools import time_string
 
         file_times=[1447200000.0000000, # 11/11/2015
              1468022400.0000000, # 7/9/2016

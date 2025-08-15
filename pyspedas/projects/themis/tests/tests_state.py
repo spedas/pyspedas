@@ -1,7 +1,7 @@
 import logging
 import unittest
 from pyspedas.projects.themis import state, ssc, ssc_pre
-from pytplot import data_exists, get_data, del_data, tplot_restore
+from pyspedas.tplot_tools import data_exists, get_data, del_data, tplot_restore
 from numpy.testing import assert_allclose
 
 class Themis_StateDataTests(unittest.TestCase):
@@ -35,7 +35,7 @@ class Themis_StateDataTests(unittest.TestCase):
         del_data('*')
         filename = datafile[0]
         tplot_restore(filename)
-        #pytplot.tplot_names()
+        #tplot_names()
         cls.tha_pos = get_data('tha_state_pos')
         cls.tha_vel = get_data('tha_state_vel')
         cls.tha_spinras = get_data('tha_state_spinras')

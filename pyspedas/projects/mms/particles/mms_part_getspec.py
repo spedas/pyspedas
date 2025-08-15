@@ -2,7 +2,7 @@ import logging
 from time import time
 from pyspedas.projects import mms
 from pyspedas.projects.mms.particles.mms_part_products import mms_part_products
-from pytplot import time_double
+from pyspedas.tplot_tools import time_double
 logging.captureWarnings(True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
 

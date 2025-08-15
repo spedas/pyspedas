@@ -1,8 +1,8 @@
 import logging
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pytplot import time_clip as tclip
-from pytplot import cdf_to_tplot
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import cdf_to_tplot
 
 from .config import CONFIG
 
@@ -88,7 +88,7 @@ def load(
     --------
     >>> import pyspedas
     >>> from pyspedas import tplot
-    >>> edi_vars = pyspedas.equator_s.edi(trange=['1998-04-06', '1998-04-07'])
+    >>> edi_vars = pyspedas.projects.equator_s.edi(trange=['1998-04-06', '1998-04-07'])
     >>> print(edi_vars)
     ['V_ed_xyz_gse%eq_pp_edi', 'E_xyz_gse%eq_pp_edi']
     >>> tplot(edi_vars)

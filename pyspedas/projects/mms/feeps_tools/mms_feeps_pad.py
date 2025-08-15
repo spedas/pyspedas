@@ -1,7 +1,7 @@
 import logging
 import warnings
 import numpy as np
-from pytplot import get, store, options
+from pyspedas.tplot_tools import get, store, options
 from pyspedas.projects.mms.feeps_tools.mms_feeps_pitch_angles import mms_feeps_pitch_angles
 from pyspedas.projects.mms.feeps_tools.mms_feeps_active_eyes import mms_feeps_active_eyes
 from pyspedas.projects.mms.feeps_tools.mms_feeps_pad_spinavg import mms_feeps_pad_spinavg

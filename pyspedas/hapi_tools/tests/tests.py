@@ -1,6 +1,6 @@
 import unittest
 from pyspedas import hapi
-from pytplot import data_exists, del_data
+from pyspedas.tplot_tools import data_exists, del_data
 from pyspedas.hapi_tools.replace_fillvals import replace_fillvals
 import numpy as np
 from numpy.testing import assert_array_equal

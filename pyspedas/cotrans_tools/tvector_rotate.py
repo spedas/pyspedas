@@ -2,7 +2,7 @@ import logging
 import numpy as np
 import pyspedas
 from pyspedas import tinterpol
-from pytplot import get_data, store_data, tnames
+from pyspedas.tplot_tools import get_data, store_data, tnames
 from pyspedas.cotrans_tools.quaternions import qtom, mtoq, qslerp
 from pyspedas.cotrans_tools.matrix_array_lib import ctv_verify_mats, ctv_left_mats, ctv_swap_hands
 from copy import deepcopy

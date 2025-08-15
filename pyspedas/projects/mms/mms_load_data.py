@@ -4,9 +4,9 @@ import logging
 import warnings
 from importlib.metadata import version, PackageNotFoundError
 import numpy as np
-from pytplot import cdf_to_tplot
-from pytplot import time_clip as tclip
-from pytplot import time_double, time_string
+from pyspedas.tplot_tools import cdf_to_tplot
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
 from shutil import copyfileobj, copy

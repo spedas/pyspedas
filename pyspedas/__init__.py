@@ -1,6 +1,110 @@
-# Import pyspedas tools into pyspedas namespace
+#Import pyspedas tools into pyspedas namespace
 # These are imported as a convenience for pyspedas users.  For internal pyspedas development, it is
 # probably best to keep using the fully qualified module names.
+
+#from .pytplot import *
+
+from .tplot_tools import get_y_range
+from .tplot_tools import tplot_rename
+from .tplot_tools import del_data
+from .tplot_tools import store_data
+from .tplot_tools import store
+from .tplot_tools import get_data
+from .tplot_tools import get
+from .tplot_tools import str_to_float_fuzzy
+from .tplot_tools import tplot_names
+from .tplot_tools import wildcard_expand
+from .tplot_tools import tplot_wildcard_expand
+from .tplot_tools import tname_byindex
+from .tplot_tools import tindex_byname
+from .tplot_tools import options
+from .tplot_tools import xlim
+from .tplot_tools import ylim
+from .tplot_tools import zlim
+from .tplot_tools import tlimit
+from .tplot_tools import tplot_save
+from .tplot_tools import tnames
+from .tplot_tools import convert_tplotxarray_to_pandas_dataframe
+from .tplot_tools import tplot_restore
+from .tplot_tools import is_pseudovariable
+from .tplot_tools import count_traces
+from .tplot_tools import get_timespan
+from .tplot_tools import tplot_options
+from .tplot_tools import tplot_rename
+from .tplot_tools import tplot_copy
+from .tplot_tools import replace_data
+from .tplot_tools import replace_metadata
+from .tplot_tools import get_ylimits
+from .tplot_tools import rgb_color
+from .tplot_tools import timebar
+from .tplot_tools import databar
+from .tplot_tools import del_data
+from .tplot_tools import timespan
+from .tplot_tools import timestamp
+from .tplot_tools import time_float
+from .tplot_tools import time_double
+from .tplot_tools import time_float_one
+from .tplot_tools import time_string_one
+from .tplot_tools import time_string
+from .tplot_tools import time_datetime
+from .tplot_tools import sts_to_tplot
+from .tplot_tools import set_coords
+from .tplot_tools import get_coords
+from .tplot_tools import set_units
+from .tplot_tools import get_units
+from .tplot_tools import data_exists
+from .tplot_tools import link
+from .tplot_tools import tres
+
+from .tplot_tools import tinterp
+from .tplot_tools import add_across
+from .tplot_tools import add
+from .tplot_tools import avg_res_data
+from .tplot_tools import clip
+from .tplot_tools import crop
+from .tplot_tools import deflag
+from .tplot_tools import degap
+from .tplot_tools import derive
+from .tplot_tools import divide
+from .tplot_tools import interp_nan
+from .tplot_tools import join_vec
+from .tplot_tools import multiply
+from .tplot_tools import spec_mult
+from .tplot_tools import split_vec
+from .tplot_tools import subtract
+from .tplot_tools import pwr_spec
+from .tplot_tools import clean_spikes
+from .tplot_tools import tdotp
+from .tplot_tools import tcrossp
+from .tplot_tools import tnormalize
+from .tplot_tools import subtract_median
+from .tplot_tools import subtract_average
+from .tplot_tools import smooth
+from .tplot_tools import tsmooth
+from .tplot_tools import time_clip
+from .tplot_tools import tkm2re
+from .tplot_tools import makegap
+from .tplot_tools import tdeflag
+from .tplot_tools import pwrspc
+from .tplot_tools import tpwrspc
+from .tplot_tools import dpwrspc
+from .tplot_tools import tdpwrspc
+
+
+from .tplot_tools import reduce_spec_dataset
+from .tplot_tools import lineplot
+from .tplot_tools import specplot
+from .tplot_tools import specplot_make_1d_ybins
+from .tplot_tools import get_var_label_ticks
+from .tplot_tools import var_label_panel
+from .tplot_tools import ctime
+from .tplot_tools import highlight
+from .tplot_tools import annotate
+from .tplot_tools import tplot
+from .tplot_tools import cdf_to_tplot
+from .tplot_tools import netcdf_to_tplot
+
+
 
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
@@ -17,8 +121,6 @@ from .analysis.lingradest import lingradest
 from .cdagui_tools.cdagui import cdagui
 from .cdagui_tools.cdaweb import CDAWeb
 from .cotrans_tools.cotrans import cotrans
-from .cotrans_tools.cotrans_get_coord import cotrans_get_coord
-from .cotrans_tools.cotrans_set_coord import cotrans_set_coord
 from .cotrans_tools.rotmat_get_coords import rotmat_get_coords
 from .cotrans_tools.rotmat_set_coords import rotmat_set_coords
 from .cotrans_tools.tvector_rotate import tvector_rotate
@@ -65,16 +167,12 @@ from .utilities.xdegap import xdegap
 from .version import version
 
 
-# Import pytplot tools into pyspedas namespace
-# Note to developers: Do not use these imports for pyspedas internals, or it may cause
-# circular dependencies.  Import directly from pytplot instead.
-
-from pytplot import *
 from .projects.noaa.noaa_load_kp import noaa_load_kp
 # omni must precede mms to avoid problems with circular imports
 from .projects import omni
 # lmn_matrix_make requires omni 
-from .cotrans_tools.lmn_matrix_make import lmn_matrix_make 
+from .cotrans_tools.lmn_matrix_make import lmn_matrix_make
+from .projects.kompsat.load import load as kompsat_load
 
 # Import routine names with mission prefixes into pyspedas namespace
 from .projects.mms import mms_load_mec, mms_load_fgm, mms_load_scm, mms_load_edi, \
@@ -92,73 +190,7 @@ from .projects.mms.particles.mms_part_getspec import mms_part_getspec
 from .projects.mms.particles.mms_part_slice2d import mms_part_slice2d
 
 
-# The code below is needed for backward compatibility, so users can continue to do things
-# like "from pyspedas.mms import mec" even after mms has been moved to the projects directory.
-
-import sys
-from importlib import import_module
-
-# List of submodules we want to make available under the pyspedas namespace
-submodules = ['ace', 'akebono', 'barrel', 'cluster', 'cnofs', 'csswe', 'de2', 'dscovr',
-             'elfin', 'equator_s', 'erg', 'fast', 'geotail', 'goes', 'image', 'kompsat',
-              'kyoto', 'lanl', 'maven', 'mica', 'mms', 'noaa', 'omni', 'poes', 'polar', 'psp',
-              'rbsp', 'secs', 'soho', 'solo', 'st5', 'stereo', 'swarm', 'themis', 'themis.state_tools', 'twins',
-              'ulysses'
-              ]
-
-for submodule in submodules:
-    # Import the module from the new path
-    full_module_path = f"pyspedas.projects.{submodule}"
-    imported_module = import_module(full_module_path)
-
-    # Add it to sys.modules under the old path
-    sys.modules[f"pyspedas.{submodule}"] = imported_module
-
-# This set of imports is still needed for backward compatibility, when using fully-qualified
-# routine names in function calls, like "pyspedas.mms.mec()" rather than "pyspedas.projects.mms.mec()"
-
-# Make mission-specific namespaces available under pyspedas
-from .projects import ace
-from .projects import akebono
-from .projects import barrel
-from .projects import cluster
-from .projects import cnofs
-from .projects import csswe
-from .projects import de2
-from .projects import dscovr
-from .projects import elfin
-from .projects import equator_s
-from .projects import erg
-from .projects import fast
-from .projects import geotail
-from .projects import goes
-from .projects import image
-from .projects import kompsat
-# for backward compatibility
-from .projects.kompsat.load import load as kompsat_load
-from .projects import kyoto
-from .projects import lanl
-from .projects import maven
-# for backward compatibility
-from .projects.maven import maven_load
-from .projects import mica
-from .projects import mms
-from .projects import noaa
-from .projects import poes
-from .projects import polar
-from .projects import psp
-from .projects import rbsp
-from .projects import secs
-from .projects import soho
-from .projects import solo
-from .projects import st5
-from .projects import stereo
-from .projects import swarm
-from .projects import themis
-from .projects import twins
-from .projects import ulysses
 from . import vires
-from .projects import wind
 
 # set up logging/console output
 import logging
@@ -200,3 +232,21 @@ logger_handler = logger.handlers[0]  # should exist since basicConfig has been c
 logger_fmt = logging.Formatter(logging_format, logging_date_fmt)
 logger_handler.setFormatter(logger_fmt)
 logger.setLevel(logging_level)
+
+# Now that logging is configured, check to see if pytplot is installed.  If so, advise the
+# user that pytplot is now included with pyspedas, and that the external pytplot package can
+# and should be removed.
+
+try:
+    import tplot_tools as old_pytplot
+    # If we get here, the external package is installed.
+    logging.info("You appear to have the external pytplot or pytplot-mpl-temp packages installed.")
+    logging.info("PySPEDAS 2.0 and later now bundles the pytplot tools, and we recommend that you remove the external packages to avoid using obsolete code.")
+    logging.info("To uninstall, run these commands in a terminal window (not a Python window!) in the environment you're using with PySPEDAS:")
+    logging.info("pip uninstall pytplot")
+    logging.info("pip uninstall pytplot-mpl-temp")
+    logging.info("To update your own code for PySPEDAS 2.0 compatibility, please refer to our PySPEDAS 2.0 migration guide:")
+    logging.info("https://pyspedas.readthedocs.io/en/latest/pyspedas_2_migration.html")
+except ImportError:
+    # Nothing to do here, external pytplot package not found
+    pass

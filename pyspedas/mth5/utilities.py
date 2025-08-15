@@ -3,7 +3,7 @@ import csv
 import pyspedas
 from io import StringIO
 from collections import defaultdict
-from pytplot import time_datetime
+from pyspedas.tplot_tools import time_datetime
 
 
 def _list_of_fdsn_channels():
@@ -37,7 +37,7 @@ def mth5_time_str(time):
 
         Parameters:
             time :  str
-                Time in pytplot format
+                Time in pyspedas format
 
         Returns:
             Time in MTH5 format

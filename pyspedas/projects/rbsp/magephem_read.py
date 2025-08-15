@@ -9,7 +9,7 @@ import linecache
 import h5py
 import numpy as np
 import pandas as pd
-from pytplot import store_data
+from pyspedas.tplot_tools import store_data
 
 name_332 = [
     "Time",

@@ -2,16 +2,13 @@
 
 import unittest
 from unittest.mock import patch
+import importlib
 import sys
 import pyspedas
-from pytplot import smooth
-from pyspedas import (subtract_average, subtract_median, tsmooth, avg_data,
-                      yclip, time_clip, deriv_data, tdeflag, clean_spikes,
-                      tinterpol, tvectot, wavelet, time_domain_filter)
-from pytplot import tcrossp
-from pytplot import tdotp
-from pytplot import tnormalize
-from pytplot import get_data, store_data, replace_data, time_string, time_float, data_exists, del_data
+from pyspedas.tplot_tools import smooth, subtract_average, subtract_median, tsmooth, time_clip, tdeflag, clean_spikes
+from pyspedas.tplot_tools import get_data, store_data, replace_data, time_string, time_float, data_exists, del_data
+from pyspedas.tplot_tools import tcrossp, tdotp, tnormalize
+from pyspedas import avg_data, yclip, deriv_data, tinterpol, tvectot, wavelet, time_domain_filter
 
 import numpy as np
 import copy
@@ -218,15 +215,13 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test-m')
         self.assertIsNotNone(d)
 
-    @unittest.skip('The architecture of pytplot does not support the following mock')
     def test_subtract_median_parameter_passing(self):
         """Test that parameters are correctly passed to subtract_average via subtract_median."""
+        sm = importlib.import_module('pyspedas.tplot_tools.tplot_math.subtract_median')
 
-        #with patch('pytplot.tplot_math.subtract_average') as mock_subtract_average:
-        with patch('pytplot.tplot_math.subtract_average.subtract_average') as mock_subtract_average:
-        #with patch('pyspedas.subtract_average') as mock_subtract_average:
+        with patch.object(sm, 'subtract_average') as mock_subtract_average:
             print(mock_subtract_average)
-            subtract_median('test', newname='new_test', suffix='-sfx', overwrite=True)
+            pyspedas.subtract_median('test', newname='new_test', suffix='-sfx', overwrite=True)
 
             # Check that subtract_average was called with the correct parameters, including median=1
             mock_subtract_average.assert_called_once_with(
@@ -457,7 +452,7 @@ class AnalysisTestCases(BaseTestCase):
 
     def test_tvectot(self):
         from pyspedas.projects.themis import state
-        from pytplot import data_exists
+        from pyspedas.tplot_tools import data_exists
         state(probe='a')
         tvectot('tha_pos', join_component=True)
         self.assertTrue(data_exists('tha_pos_tot'))

@@ -1,5 +1,5 @@
 import logging
-from pytplot import get_data
+from pyspedas.tplot_tools import get_data
 import numpy as np
 
 from pyspedas.projects.elfin.load import load

@@ -2,7 +2,7 @@
 Unit Tests for mms_part_getspec bulk velocity subtraction.
 """
 import pyspedas
-from pytplot import data_exists, tplot_names, tplot, get_data, tplot_copy, del_data, store_data
+from pyspedas.tplot_tools import data_exists, tplot_names, tplot, get_data, tplot_copy, del_data, store_data
 import numpy as np
 import unittest
 from pyspedas import tplot_restore

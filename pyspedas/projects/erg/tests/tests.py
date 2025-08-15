@@ -1,7 +1,7 @@
 
 import os
 import unittest
-from pytplot import data_exists, del_data, tplot_names, get_data
+from pyspedas.tplot_tools import data_exists, del_data, tplot_names, get_data
 from pyspedas.projects.erg.satellite.erg.particle.erg_lepi_get_dist import erg_lepi_get_dist
 from pyspedas.projects.erg.satellite.erg.particle.erg_mepi_get_dist import erg_mepi_get_dist
 from pyspedas.projects.erg.satellite.erg.particle.erg_lepe_get_dist import erg_lepe_get_dist

@@ -2,7 +2,6 @@ numpy>=1.20.0
 requests
 cdflib>=1.0.0
 spacepy
-pytplot-mpl-temp>=2.2.79
 cdasws>=1.7.24
 netCDF4
 pywavelets
@@ -14,3 +13,6 @@ viresclient
 fsspec
 s3fs
 aioboto3
+pandas
+matplotlib>=3.6.2
+xarray

@@ -1,7 +1,7 @@
 import os
 import unittest
 import pyspedas
-from pytplot import data_exists, del_data
+from pyspedas.tplot_tools import data_exists, del_data
 
 
 class LoadTestCases(unittest.TestCase):

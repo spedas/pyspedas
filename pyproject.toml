@@ -92,11 +92,14 @@ dependencies = [
     "pywavelets",
     "astropy",
     "hapiclient>=0.2.2",
-    "pytplot-mpl-temp>=2.2.79",
     "viresclient",
     "fsspec",
     "s3fs",
     "aioboto3",
+    "pandas",
+    "matplotlib>=3.6.2",
+    "xarray",
+    "netCDF4",
 ]
 
 [project.urls]

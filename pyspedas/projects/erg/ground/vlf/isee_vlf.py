@@ -1,8 +1,8 @@
 import cdflib
 import numpy as np
 
-from pytplot import tnames
-from pytplot import get_data, store_data, options, clip, ylim, zlim
+from pyspedas import tnames
+from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim, zlim
 
 from ...satellite.erg.load import load
 from ...satellite.erg.get_gatt_ror import get_gatt_ror

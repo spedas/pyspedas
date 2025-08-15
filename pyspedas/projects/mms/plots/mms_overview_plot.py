@@ -2,7 +2,7 @@ import logging
 import pyspedas
 from pyspedas.projects.mms import fgm, fpi, feeps, hpca, edp, eis
 from pyspedas.projects.themis import gmag
-from pytplot import options, tplot_options, store_data, tplot, tnames, time_double, time_string
+from pyspedas import options, tplot_options, store_data, tplot, tnames, time_double, time_string
 
 
 def mms_overview_plot(

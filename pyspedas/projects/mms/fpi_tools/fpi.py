@@ -4,7 +4,7 @@ from pyspedas.projects.mms.fpi_tools.mms_load_fpi_calc_pad import mms_load_fpi_c
 from pyspedas.projects.mms.fpi_tools.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
 from pyspedas.projects.mms.fpi_tools.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
 from pyspedas.projects.mms.mms_config import CONFIG
-from pytplot import tplot_rename, del_data
+from pyspedas import tplot_rename, del_data
 
 
 def mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='fast',

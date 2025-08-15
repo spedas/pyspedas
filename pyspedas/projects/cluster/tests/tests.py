@@ -1,6 +1,6 @@
 import os
 import unittest
-from pytplot import data_exists, del_data, tplot_names, tplot
+from pyspedas.tplot_tools import data_exists, del_data, tplot_names, tplot
 import pyspedas
 from pyspedas.projects.cluster.load_csa import cl_master_probes, cl_master_datatypes
 

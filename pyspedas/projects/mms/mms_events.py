@@ -2,7 +2,7 @@ import os
 import logging
 import numpy as np
 import pandas as pd
-from pyspedas import time_string, time_double
+from pyspedas.tplot_tools import time_string, time_double
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix
 from pyspedas.utilities.download import download
 from pyspedas.projects.mms.mms_config import CONFIG

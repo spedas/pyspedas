@@ -1,5 +1,5 @@
-from pytplot import tnames
-from pytplot import options, get_data, store_data
+from pyspedas.tplot_tools import tnames
+from pyspedas.tplot_tools import options, get_data, store_data
 
 
 def mms_hpca_elevations():

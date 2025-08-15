@@ -1,8 +1,8 @@
 import logging
 import pandas as pd
 import numpy as np
-from pytplot import time_clip as tclip
-from pytplot import store_data, options
+from pyspedas.tplot_tools import time_clip as tclip
+from pyspedas.tplot_tools import store_data, options
 
 
 def mms_load_eph_tplot(filenames, level='def', probe='1', datatypes=['pos', 'vel'], suffix='', trange=None):

@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from pytplot import time_double
+from pyspedas.tplot_tools import time_double
 import pandas as pd
 import time
 import logging

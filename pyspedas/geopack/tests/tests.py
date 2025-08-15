@@ -2,9 +2,9 @@ import unittest
 
 import numpy as np
 
-from pytplot import data_exists
+from pyspedas.tplot_tools import data_exists
 import pyspedas
-from pyspedas import time_double
+from pyspedas.tplot_tools import time_double
 from pyspedas.geopack import tt89
 from pyspedas.geopack import tt96
 from pyspedas.geopack import tt01
@@ -14,12 +14,12 @@ from pyspedas.geopack.get_w_params import get_w
 from pyspedas.geopack import trace_equator_89
 from pyspedas.geopack import trace_iono_89
 from pyspedas import tinterpol
-from pytplot import join_vec, store_data, get_data, tdeflag, del_data
+from pyspedas import join_vec, store_data, get_data, tdeflag, del_data
 
 trange = ['2015-10-16', '2015-10-17']
 
 def gen_circle():
-    import pytplot
+    import pyspedas
     # Generate a circle at 5 RE in the XZ plane
     angle = np.arange(0.0,361.0, 1.0)
     angle_rad = np.deg2rad(angle)
@@ -27,18 +27,18 @@ def gen_circle():
     x=5.0*np.sin(angle_rad)*6371.2
     z=5.0*np.cos(angle_rad)*6371.2
     t=np.zeros(len(angle_rad))
-    t[:] = pytplot.time_double('2024-01-01/06:31:00') + np.arange(0.0,361.0,1.0)
+    t[:] = pyspedas.time_double('2024-01-01/06:31:00') + np.arange(0.0,361.0,1.0)
     pos=np.zeros((len(angle_rad),3), np.float64)
     pos[:,0] = x
     pos[:,1] = y
     pos[:,2] = z
-    pytplot.store_data('circle_magpoles_5re',data={'x':t,'y':pos})
-    pytplot.set_coords('circle_magpoles_5re', 'GSM')
+    pyspedas.store_data('circle_magpoles_5re',data={'x':t,'y':pos})
+    pyspedas.set_coords('circle_magpoles_5re', 'GSM')
 
 def get_params(model, g_variables=None):
     support_trange = [time_double(trange[0])-60*60*24, 
                       time_double(trange[1])+60*60*24]
-    pyspedas.kyoto.dst(trange=support_trange)
+    pyspedas.projects.kyoto.dst(trange=support_trange)
     pyspedas.projects.omni.data(trange=trange)
     join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
     if model == 't01' and g_variables is None:
@@ -155,7 +155,7 @@ class LoadTestCases(unittest.TestCase):
         trace_iono_89(time_double('2007-03-23/00:00:00'), np.array([-2.0,0.0,-1.0]),iopt=3, south=True)
 
     def test_t96_roi(self):
-        import pytplot
+        import pyspedas
         gen_circle()
         params = get_params('t96')
         dat=get_data(params)
@@ -165,10 +165,10 @@ class LoadTestCases(unittest.TestCase):
         newdat[:,:] = dat.y[0,]
         store_data(params,data={'x':circ_dat.times, 'y':newdat})
         tt96('circle_magpoles_5re', parmod=params)
-        #pytplot.tplot(['circle_magpoles_5re','circle_magpoles_5re_bt96'])
+        #pyspedas.tplot(['circle_magpoles_5re','circle_magpoles_5re_bt96'])
 
     def test_t01_roi(self):
-        import pytplot
+        import pyspedas
         gen_circle()
         params = get_params('t01')
         dat=get_data(params)
@@ -178,10 +178,10 @@ class LoadTestCases(unittest.TestCase):
         newdat[:,:] = dat.y[0,]
         store_data(params,data={'x':circ_dat.times, 'y':newdat})
         tt01('circle_magpoles_5re', parmod=params)
-        #pytplot.tplot(['circle_magpoles_5re','circle_magpoles_5re_bt01'])
+        #pyspedas.tplot(['circle_magpoles_5re','circle_magpoles_5re_bt01'])
 
     def test_t04_roi(self):
-        import pytplot
+        import pyspedas
         gen_circle()
         params = get_params('ts04')
         dat=get_data(params)
@@ -191,7 +191,7 @@ class LoadTestCases(unittest.TestCase):
         newdat[:,:] = dat.y[0,]
         store_data(params,data={'x':circ_dat.times, 'y':newdat})
         tts04('circle_magpoles_5re', parmod=params)
-        #pytplot.tplot(['circle_magpoles_5re','circle_magpoles_5re_bts04'])
+        #pyspedas.tplot(['circle_magpoles_5re','circle_magpoles_5re_bts04'])
 
 if __name__ == '__main__':
     unittest.main()

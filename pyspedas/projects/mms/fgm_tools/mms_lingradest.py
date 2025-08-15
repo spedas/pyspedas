@@ -2,7 +2,7 @@ import logging
 import numpy as np
 from pyspedas import tinterpol
 from pyspedas.analysis.lingradest import  lingradest
-from pytplot import get_data, store_data, options, join_vec
+from pyspedas.tplot_tools import get_data, store_data, options, join_vec
 
 
 def mms_lingradest(fields=None, positions=None, suffix=''):

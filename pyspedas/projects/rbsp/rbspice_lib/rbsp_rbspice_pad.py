@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from pytplot import get_data, store_data, options
+from pyspedas.tplot_tools import get_data, store_data, options
 from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad_spinavg import rbsp_rbspice_pad_spinavg
 
 # use nanmean from bottleneck if it's installed, otherwise use the numpy one

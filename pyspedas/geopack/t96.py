@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from pytplot import get_data, store_data
+from pyspedas.tplot_tools import get_data, store_data
 from geopack import geopack, t96
 
 

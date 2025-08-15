@@ -39,10 +39,10 @@ Example
 
 .. code-block:: python
 
+    import pyspedas
     from pyspedas.mth5.load_fdsn import load_fdsn
-    import pytplot
     load_fdsn(network="4P", station="ALW48", trange=['2015-06-22', '2015-06-24'])
-    pytplot.tplot('fdsn_4P_ALW48')
+    pyspedas.tplot('fdsn_4P_ALW48')
 
 .. image:: _static/mth5_4p_alw48.png
    :align: center

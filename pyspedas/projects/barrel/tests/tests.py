@@ -2,7 +2,7 @@
 import os
 import unittest
 import pyspedas
-from pytplot import del_data, data_exists, time_double, get_data
+from pyspedas.tplot_tools import del_data, data_exists, time_double, get_data
 
 
 class LoadTestCases(unittest.TestCase):

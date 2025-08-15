@@ -1,6 +1,6 @@
 
 from pyspedas.projects.themis.load import load
-from pytplot import options
+from pyspedas.tplot_tools import options
 
 def fgm(trange=['2007-03-23', '2007-03-24'],
         probe='c',
