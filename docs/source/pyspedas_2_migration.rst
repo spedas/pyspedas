@@ -161,10 +161,10 @@ PySPEDAS 2.0 compatible rewrites:
 
 .. code-block:: python
 
-    # Import or call set_coord and get_coord from pyspedas namespace
-    from pyspedas import get_coord, set_coord
-    coord = get_coord('somevar')
-    set_coord('somevar', 'GSE')
+    # Import or call set_coords and get_coords from pyspedas namespace
+    from pyspedas import get_coords, set_coords
+    coord = get_coords('somevar')
+    set_coords('somevar', 'GSE')
 
 
 Updating your environment after upgrading to PySPEDAS 2.0 or later
