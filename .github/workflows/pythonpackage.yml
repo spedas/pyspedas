@@ -1,6 +1,6 @@
 name: build
 
-on: [push, pull_request, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -28,13 +28,13 @@ jobs:
         VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
           pip install coveralls
           pip install basemap
           pip install mt-metadata
           pip install obspy
           pip install 'mth5>=0.4.9'
           pip install 'moto[server]'
+          pip install .
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
@@ -44,13 +44,13 @@ jobs:
         VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
           pip install coveralls
           pip install basemap
           pip install mt-metadata
           pip install obspy
           pip install 'mth5>=0.4.9'
           pip install 'moto[server]'
+          pip install ,
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
@@ -66,8 +66,9 @@ jobs:
           pip install mt-metadata
           pip install obspy
           pip install 'mth5>=0.4.9'
-          python -m pyspedas.projects.mms.tests.setup_tests
           pip install 'moto[server]'
+          pip install .
+          python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |

@@ -1,0 +1,58 @@
+name: release_pypi
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of release: draft or release (default draft)'
+        required: true
+        default: 'draft'
+        type: choice
+        options:
+          - draft
+          - release
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.9]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          python -m pip install --upgrade pip
+          # setuptools and build to build release
+          pip install setuptools
+          pip install build
+          # twine to upload to pypi
+          pip install twine
+
+      - name: Build release
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo "========================================================="
+          echo "Building release files"
+          python -m build --sdist --wheel
+          echo "Contents of dist directory:"
+          ls -lst dist
+          echo "========================================================="
+
+      - name: Upload release to pypi
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo "========================================================="
+          echo "Contents of dist directory"
+          ls -lst dist
+          echo "Skipping pypi upload"
+          echo "========================================================="
