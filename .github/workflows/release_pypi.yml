@@ -48,14 +48,30 @@ jobs:
           ls -lst dist
           echo "========================================================="
 
-      - name: Upload release to pypi
-        if: github.ref == 'refs/heads/master'
-        run: |
-          echo "========================================================="
-          echo "Contents of dist directory"
-          ls -lst dist
-          release_type=${{ github.event.inputs.release_type }}
-          echo Release type: $release_type
-          echo "Tags: ${{ github.event.inputs.tags }}" 
-          echo "Skipping pypi upload"
-          echo "========================================================="
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish-to_testpypi:
+    needs: build
+    name: >-
+      Publish to pypi
+    runs-on: ubuntu-latest
+    if: github.event.inputs.release_type == 'draft'
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/pyspedas  # Replace <package-name> with your PyPI project name
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/
+    - name: Publish distribution 📦 to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
