@@ -57,7 +57,7 @@ jobs:
   publish-to_testpypi:
     needs: build
     name: >-
-      Publish to pypi
+      Publish to testpypi
     runs-on: ubuntu-latest
     if: github.event.inputs.release_type == 'draft'
     environment:
