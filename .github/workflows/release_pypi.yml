@@ -54,5 +54,8 @@ jobs:
           echo "========================================================="
           echo "Contents of dist directory"
           ls -lst dist
+          release_type=${{ github.event.inputs.release_type }}
+          echo Release type: $release_type
+          echo "Tags: ${{ github.event.inputs.tags }}" 
           echo "Skipping pypi upload"
           echo "========================================================="
