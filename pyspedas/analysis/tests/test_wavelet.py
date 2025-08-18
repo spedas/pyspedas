@@ -1,10 +1,11 @@
 """Tests of waelet tool."""
 import pyspedas
-from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options
+from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options, tplot_options
 import unittest
 from numpy.testing import assert_allclose
 import numpy as np
 from pyspedas.analysis.wavelet import wavelet
+from pyspedas.analysis.wav_data import wav_data
 
 global_display = False
 
@@ -161,6 +162,66 @@ class TwaveletDataValidation(unittest.TestCase):
         assert_allclose(d.v, self.wavetest_powspec.v)
         # Max relative difference 2.8e-06
         assert_allclose(d.y, self.wavetest_powspec.y, rtol=3e-05)
+
+
+    def test_wav_data(self):
+        # Compare results of wav_data.py to wav_data.pro
+
+        # IDL results (from savefile)
+        # IDL Themis data, after all transformation, but before applying wavelets
+        tvars = ["tha_fgs_fac_bp_x", "tha_fgs_fac_bp_y", "tha_fgs_fac_bp_z"]
+        # IDL results after applying wav_data.pro
+        idl_pow = [
+            "idl_fgs_fac_bp_x_wv_pow",
+            "idl_fgs_fac_bp_y_wv_pow",
+            "idl_fgs_fac_bp_z_wv_pow",
+        ]
+
+        # Python results (to be computed below)
+        py_pow = [
+            "tha_fgs_fac_bp_x_wv_pow",
+            "tha_fgs_fac_bp_y_wv_pow",
+            "tha_fgs_fac_bp_z_wv_pow",
+        ]
+
+        all_vars = []
+        dcomp = ["time", "y", "v"]
+        dxyz = ["x", "y", "z"]
+
+        for i in range(3):
+            # Compute the wavelet transform for each of x,y,z
+            wav_data(tvars[i])
+
+            # Compare python results with IDL results
+            d1 = get_data(idl_pow[i])
+            d2 = get_data(py_pow[i])
+            print(f"IDL {idl_pow[i]}: {d1.y.shape}, {d1.v.shape}")
+            print(f"Python {py_pow[i]}: {d2.y.shape}, {d2.v.shape}")
+            for j in range(3):
+                # Find max difference
+                max_diff = np.abs(np.max(d1[j] - d2[j]))
+                print(f"- Max difference for {dcomp[j]}: {max_diff}")
+                assert_allclose(d1[j], d2[j], rtol=1e-3, atol=1e-3)
+
+            # Set plotting parameters
+            options(py_pow[i], "ytitle", "python " + dxyz[i])
+            options(idl_pow[i], "ytitle", "idl " + dxyz[i])
+            options(py_pow[i], "ztitle", "python Ptot")
+            options(idl_pow[i], "ztitle", "idl Ptot")
+            options(py_pow[i], "zlog", True)
+            options(py_pow[i], "ylog", False)
+            options(idl_pow[i], "zlog", True)
+            options(idl_pow[i], "ylog", False)
+            zlim(py_pow[i], 1.0e-1, 1.0e2)
+            ylim(py_pow[i], 1.0e-3, 4.1e-2)
+            zlim(idl_pow[i], 1.0e-1, 1.0e2)
+            ylim(idl_pow[i], 1.0e-3, 4.1e-2)
+            all_vars.append(idl_pow[i])
+            all_vars.append(py_pow[i])
+
+        # Plot 6 panels (x,y,z - IDL, python)
+        tplot_options("title", "wav_data: IDL - Python comparison")
+        tplot(all_vars, display=global_display, save_png="wav_data_test.png")        
 
 if __name__ == '__main__':
     unittest.main()
