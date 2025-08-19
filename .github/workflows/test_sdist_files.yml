@@ -1,0 +1,75 @@
+name: quick_tests
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.13]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies (Linux)
+      run: |
+          python -m pip install --upgrade pip
+          pip install build
+          python -m build
+          pip install --no-deps --no-binary=:all: dist/*.tar.gz
+      if: matrix.os == 'ubuntu-latest'
+
+    - name: Hide the repo copy so imports use site-packages
+      run: |
+        # keep it around for debugging; delete instead if you want the space back
+        if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
+
+    - name: Sanity check import location
+      shell: python
+      run: |
+        import pyspedas, pathlib, sys
+        p = pathlib.Path(pyspedas.__file__).resolve()
+        print("pyspedas import path:", p)
+        print("sys.path[0]:", sys.path[0])
+        assert "site-packages" in str(p), f"Still importing from repo: {p}"
+
+    - name: Asset check (sdist)
+      shell: python
+      run: |
+        from importlib import resources
+        from pathlib import Path
+        import sys
+
+        # This list contains a selection of non-source-code files that are needed at runtime,
+        # like PNGs for plotting, calibration files, sun contamination sector lists, etc.
+        # It should be sufficient to list one item from each group, to make sure they make it
+        # into the built distribution.
+        
+        EXPECTED = [
+          "projects/mms/feeps_tools/sun/MMS1_FEEPS_ContaminatedSectors_20151111.csv",
+          "projects/mms/mec_tools/earth_polar1.png",
+          "projects/elfin/epd/ela_epde_cal_data.txt",
+        ]
+    
+        root = resources.files("pyspedas")
+        missing = []
+        for rel in EXPECTED:
+            p = root.joinpath(*Path(rel).parts)
+            if not p.is_file():
+                missing.append(rel)
+    
+        print("Checked assets:", len(EXPECTED))
+        if missing:
+            print("Missing assets:", missing)
+            sys.exit(1)
+    
+        # Try opening each file to catch permission/zip issues
+        for rel in EXPECTED:
+            with resources.as_file(root / rel) as fh_path:
+                assert fh_path.is_file()
+        print("All expected assets present and readable.")
