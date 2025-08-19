@@ -1,4 +1,4 @@
-name: quick_tests
+name: test_sdist_files
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -21,7 +21,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install build
           python -m build
-          pip install --no-deps --no-binary=:all: dist/*.tar.gz
+          pip install --no-binary=:all: dist/*.tar.gz
       if: matrix.os == 'ubuntu-latest'
 
     - name: Hide the repo copy so imports use site-packages
