@@ -40,7 +40,11 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     
     probe = str(probe)
     species_str = datatype + '_' + species
-    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' 
+    # FIXME
+    # The variable names may change between older and newer CDFs. (the level may or may not appear in the name)
+    # Any changes here might need to propagate to other code
+
+    prefix = 'mms' + probe + '_epd_eis_' + data_rate + '_' + level + '_'
 
     if data_units == 'flux':
         units_label = '1/(cm^2-sr-s-keV)'
@@ -49,8 +53,12 @@ def mms_eis_omni(probe, species='proton', datatype='extof', suffix='', data_unit
     elif data_units == 'counts':
         units_label = 'counts'
 
-    #telescopes = tnames(pattern=prefix + level + '_' + species_str + '_*_' + data_units + '_t?' + suffix)
-    telescopes = tnames([f'{prefix}{level}_{datatype}_{species}_P*_{data_units}_t?{suffix}', f'{prefix}{datatype}_{species}_P*_{data_units}_t?{suffix}'])
+    # FIXME
+    # The variable name may differ here between older and newer CDFs (the level may or may not be present)
+    # Any changes here will probably need to propagate to several other routines.
+
+    telescopes = tnames(pattern=prefix + species_str + '_*' + data_units + '_t?'+suffix)
+
     if len(telescopes) == 6:
         scope_data = get_data(telescopes[0])
             
