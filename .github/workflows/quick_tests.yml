@@ -68,15 +68,14 @@ jobs:
         # keep it around for debugging; delete instead if you want the space back
         if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
 
-    - name: Prove we’re importing the installed package
+    - name: Sanity check import location
+      shell: python
       run: |
-        python - <<'PY'
-import pyspedas, pathlib
-p = pathlib.Path(pyspedas.__file__).resolve()
-print("pyspedas is being imported from:", p)
-assert "site-packages" in str(p), f"Still importing from the repo: {p}"
-PY
-
+        import pyspedas, pathlib, sys
+        p = pathlib.Path(pyspedas.__file__).resolve()
+        print("pyspedas import path:", p)
+        print("sys.path[0]:", sys.path[0])
+        assert "site-packages" in str(p), f"Still importing from repo: {p}"
     - name: Test with unittest
       if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' ||  github.ref == 'refs/heads/pyspedas_2_0_dev'
       env:
