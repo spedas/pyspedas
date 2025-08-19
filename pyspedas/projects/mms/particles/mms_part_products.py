@@ -149,7 +149,7 @@ def mms_part_products(in_tvarname,
         no_regrid: bool
             Flag to disable reegridding
         
-            ###new###
+            
         subtract_bulk: bool
             Subtracts the bulk velocity from the distribution data
 
@@ -415,7 +415,6 @@ are the scientific products that should be used for analysis."""
             clean_data = mms_pgs_split_hpca(clean_data)
         
         if subtract_bulk == True: 
-            #import spd_pgs_v_shift, make sure its in correct folder
             spd_pgs_v_shift(clean_data,vel_data[i,:])
 
         # Apply phi, theta, & energy limits
