@@ -62,7 +62,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip build
         python -m build           # dist/*.whl and dist/*.tar.gz
-        pip install dist/*.whl   # installs your wheel, pulls deps (e.g., numpy) from PyPI
+        pip install --force-reinstall dist/*.whl   # installs your wheel, pulls deps (e.g., numpy) from PyPI
     - name: Hide the repo copy so imports use site-packages
       run: |
         # keep it around for debugging; delete instead if you want the space back
