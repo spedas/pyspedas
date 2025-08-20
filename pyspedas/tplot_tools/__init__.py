@@ -27,6 +27,7 @@ extra_layouts = {}
 from .get_y_range import get_y_range
 from .tplot_rename import tplot_rename
 from .del_data import del_data
+from .replace_metadata import replace_metadata
 from .store_data import store_data, store
 from .get_data import get_data, get
 from .str_to_float_fuzzy import str_to_float_fuzzy
