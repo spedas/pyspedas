@@ -111,6 +111,33 @@ class LunCotransDataValidation(unittest.TestCase):
         orig_meta['data_att']['coord_sys'] = 'goofy'  # won't affect tha_state_pos_gse, should not affect newvar either
         self.assertEqual(get_coords('newvar').lower(),'gse')
         self.assertEqual(get_coords('tha_state_pos_gse').lower(),'gse')
+        # restore original coord sys
+        orig_meta['data_att']['coord_sys'] = 'gse'
+        # test replacing metadata if variable doesn't exist
+        replace_metadata('nonexistent',orig_meta)
+        # test store_data with empty metadata
+        empty_meta = {}
+        store_data('newvar',data={'x':data[0],'y':data[1]}, attr_dict=empty_meta)
+        upd_metadata = get_data('newvar', metadata=True)
+        self.assertTrue('plot_options' in upd_metadata.keys())
+        self.assertTrue('create_time' in upd_metadata['plot_options'].keys())
+        self.assertTrue('error' in upd_metadata['plot_options'].keys())
+        self.assertTrue(upd_metadata['plot_options']['yaxis_opt']['y_range'] is not None)
+        # test replace_metadata with empty metadata
+        empty_meta = {}
+        replace_metadata('newvar',empty_meta)
+        upd_metadata = get_data('newvar', metadata=True)
+        self.assertTrue('plot_options' in upd_metadata.keys())
+        self.assertTrue('create_time' in upd_metadata['plot_options'].keys())
+        self.assertTrue('error' in upd_metadata['plot_options'].keys())
+        self.assertTrue(upd_metadata['plot_options']['yaxis_opt']['y_range'] is not None)
+
+        # test store_data with metadata only
+        new_meta = deepcopy(orig_meta)
+        new_meta['data_att']['coord_sys'] = 'gsm'
+        store_data('newvar', attr_dict=new_meta)
+        updated_meta = get_data('newvar',metadata=True)
+        self.assertEqual(updated_meta['data_att']['coord_sys'].lower(), 'gsm')
 
     def test_gse2sse_pos(self):
         """ Validate gse2sse position transform """
