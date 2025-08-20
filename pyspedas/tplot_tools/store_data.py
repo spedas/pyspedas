@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import datetime
 import logging
-from pyspedas.tplot_tools import del_data, tplot_rename, get_y_range
+from pyspedas.tplot_tools import del_data, tplot_rename, get_y_range, replace_metadata
 import pyspedas
 import xarray as xr
 import copy
@@ -96,9 +96,13 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         del_data(name)
         return False
 
-    if data is None and newname is None:
-        logging.error('store_data: Neither data array nor newname supplied, nothing to do.')
+    if data is None and newname is None and attr_dict is None:
+        logging.error('store_data: data array, newname, and attr_dict all unspecified, nothing to do.')
         return False
+
+    if data is None and newname is None and attr_dict is not None:
+        replace_metadata(name,attr_dict)
+        return True
 
     # If newname is specified, we are just renaming the variable
     if newname is not None:
