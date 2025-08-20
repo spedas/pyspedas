@@ -2,8 +2,9 @@
 Unit Tests for minvar function.
 """
 import pyspedas
-from pyspedas.cotrans_tools.minvar import minvar
-from pyspedas.cotrans_tools.minvar_matrix_make import minvar_matrix_make
+from pyspedas import minvar
+from pyspedas import minvar_matrix_make
+from pyspedas import rotmat_get_coords, get_coords
 from pyspedas.tplot_tools import data_exists, tplot_names, tplot, get_data, tplot_copy, del_data, store_data
 import numpy as np
 import unittest
@@ -102,7 +103,7 @@ class TestMinvar(unittest.TestCase):
         # Compare totals
         self.assertTrue(np.sum(total1 - total2) < self.tol)
 
-    def test_minrar_code_coverage(self):
+    def test_minvar_code_coverage(self):
         """Test to cover the code from IDL"""
         data = np.array([[0, 0, 1], [0, 0, 1]])
         vrot, v, w = minvar(data)
@@ -128,8 +129,14 @@ class TestMinvar(unittest.TestCase):
         pyspedas.projects.themis.fgm(probe='c', trange=trange, level='l2', coord='gse')
         minvar_matrix_make('thc_fgs_gse',tstart='2007-07-10/07:54:00',tstop='2007-07-10/07:56:30')
         self.assertTrue(data_exists('thc_fgs_gse_mva_mat'))
+        mat_coord=rotmat_get_coords('thc_fgs_gse_mva_mat')
         pyspedas.tvector_rotate('thc_fgs_gse_mva_mat','thc_fgs_gse',newname='mva_data_day')
         self.assertTrue((data_exists('mva_data_day')))
+        out_coord=get_coords('mva_data_day')
+        self.assertTrue(len(mat_coord) == 2)
+        self.assertEqual(mat_coord[0].lower(),"gse")
+        self.assertEqual(mat_coord[1].lower(),"mva")
+        self.assertEqual(out_coord.lower(),'mva')
 
     def test_minvar_matrix_extra_outputs(self):
         trange=['2007-07-10', '2007-07-11']
