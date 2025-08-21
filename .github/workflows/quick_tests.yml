@@ -196,12 +196,12 @@ jobs:
         coverage run -a -m  pyspedas.projects.equator_s.tests.tests
         echo Starting image tests at `date`
         coverage run -a -m  pyspedas.projects.image.tests.tests
-        #echo Starting psp tests at `date`
-        #coverage run -a -m  pyspedas.projects.psp.tests.tests
+        echo Starting psp tests at `date`
+        coverage run -a -m  pyspedas.projects.psp.tests.tests
         echo Starting rbsp tests at `date`
         coverage run -a -m  pyspedas.projects.rbsp.tests.tests
-        #echo Starting stereo tests at `date`
-        #coverage run -a -m  pyspedas.projects.stereo.tests.tests
+        echo Starting stereo tests at `date`
+        coverage run -a -m  pyspedas.projects.stereo.tests.tests
         echo Starting twins tests at `date`
         coverage run -a -m  pyspedas.projects.twins.tests.tests
         echo Starting wind tests at `date`from pyspedas.poes.load import load
