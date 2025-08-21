@@ -1,6 +1,6 @@
 """Tests of waelet tool."""
 import pyspedas
-from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options, tplot_options
+from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options, tplot_options, join_vec, store_data
 import unittest
 from numpy.testing import assert_allclose
 import numpy as np
@@ -222,6 +222,30 @@ class TwaveletDataValidation(unittest.TestCase):
         # Plot 6 panels (x,y,z - IDL, python)
         tplot_options("title", "wav_data: IDL - Python comparison")
         tplot(all_vars, display=global_display, save_png="wav_data_test.png")        
+
+    def test_store_data_singleton_v(self):
+        times=[0.0,1.0,2.0]
+        y=[0.0,1.0,2.0]
+        v1=[1]
+        v2=[0.1,0.2,0.3]
+
+        # scalar v  (e.g. for 3-vector, or spectrogram with non-time-varying bin values
+        store_data('newvar',data={'x':times,'y':y, 'v':v1})
+        md=get_data('newvar',metadata=True)
+        assert_allclose(md['extra_v_values'],np.array(v1))
+        # array v (e.g. spectrogram with time-varying bin values)
+        store_data('newvar2',data={'x':times,'y':y, 'v1':v2})
+        md=get_data('newvar2',metadata=True)
+        assert_allclose(md['extra_v_values'],np.array(v2))
+
+
+    def test_join_vec(self):
+        dat_x = get_data('idl_fgs_fac_bp_x_wv_pow')
+        day_y = get_data('idl_fgs_fac_bp_y_wv_pow')
+        dat_z = get_data('idl_fgs_fac_bp_z_wv_pow')
+        join_vec(['idl_fgs_fac_bp_x_wv_pow','idl_fgs_fac_bp_y_wv_pow','idl_fgs_fac_bp_z_wv_pow'], newname='wv_pow_joined')
+        dat_jv = get_data('wv_pow_joined')
+        #self.assertEqual(len(dat_jv),3) # Should have times, yvals, and a 'v' component
 
 if __name__ == '__main__':
     unittest.main()
