@@ -221,6 +221,20 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     else:
         trange = [times[0], times[-1]]
 
+    # Special case if y is 1-dimensional and 'v' or 'v1' is present
+    # This can happen if split_data is called on a vector-valued variable that has a DEPEND_1.
+    # We can't use v as a coordinate, or we'll get a ValueError creating the xarray object,
+    # so we'll save its value here, then after the xarray object is created, stash it in a different
+    # attribute.  Then join_vec can find it and restore the depend_1 array from split-out components.
+    extra_v_values = None
+    if len(values.shape) == 1:
+        if 'v' in data.keys():
+            extra_v_values = np.array(data.pop('v'))
+            logging.info("store_data: %s is scalar-valued, but has a 'v' attribute. It will be stored as the extra_v_value attribute.",name)
+        elif 'v1' in data.keys():
+            extra_v_values = np.array(data.pop('v1'))
+            logging.info("store_data: %s is scalar-valued, but has a 'v1' attribute. IT will be stored as the extra_v_value attribute.", name)
+
     # Figure out the 'v' data
     # This seems to be conflating specplot bins with general DEPEND_N attributes.
     # Maybe only do this stuff if it's marked as a spectrum?  But what if it's from
@@ -398,6 +412,8 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     # Add dicts to the xarray attrs
     temp.name = name
     temp.attrs = copy.deepcopy(attr_dict)
+    if extra_v_values is not None:
+        temp.attrs['extra_v_values'] = extra_v_values
 
     if 'plot_options' not in temp.attrs.keys():
         temp.attrs['plot_options'] = {}
