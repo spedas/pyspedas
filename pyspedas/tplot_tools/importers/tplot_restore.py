@@ -153,11 +153,13 @@ def tplot_restore(filename):
                 # it will throw a harmless, but confusing ValueError exception when trying to convert the data to xarray form.
                 # We can avoid that by simply ignoring any v attributres in this case.  JWL 2025-07-05
 
-                if len(temp_y_data.shape) == 1:
-                    logging.info(f"Variable {data_name} is scalar-valued, but has an unnecessary v attribute, which will be ignored." )
-                    store_data(data_name, data={'x':temp_x_data, 'y':temp_y_data})
-                else:
-                    store_data(data_name, data={'x':temp_x_data, 'y':temp_y_data, 'v':temp_v_data})
+                #if len(temp_y_data.shape) == 1:
+                #    logging.info(f"Variable {data_name} is scalar-valued, but has an unnecessary v attribute, which will be ignored." )
+                #    store_data(data_name, data={'x':temp_x_data, 'y':temp_y_data})
+                #else:
+                #    store_data(data_name, data={'x':temp_x_data, 'y':temp_y_data, 'v':temp_v_data})
+                store_data(data_name, data={'x':temp_x_data, 'y':temp_y_data, 'v':temp_v_data})
+
             else:
                 #Change from little endian to big endian, since pandas apparently hates little endian
                 #We might want to move this into the store_data procedure eventually
