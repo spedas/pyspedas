@@ -230,10 +230,8 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     if len(values.shape) == 1:
         if 'v' in data.keys():
             extra_v_values = np.array(data.pop('v'))
-            logging.info("store_data: %s is scalar-valued, but has a 'v' attribute. It will be stored as the extra_v_value attribute.",name)
         elif 'v1' in data.keys():
             extra_v_values = np.array(data.pop('v1'))
-            logging.info("store_data: %s is scalar-valued, but has a 'v1' attribute. IT will be stored as the extra_v_value attribute.", name)
 
     # Figure out the 'v' data
     # This seems to be conflating specplot bins with general DEPEND_N attributes.
