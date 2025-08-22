@@ -138,9 +138,9 @@ jobs:
         # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
         echo "========================================================="
         echo IP address for this test:
-        coverage run -a --debug=pathmap-m pyspedas.utilities.tests.test_find_ip_address
+        coverage run -a -m pyspedas.utilities.tests.test_find_ip_address --debug=pathmap
         echo Starting mms data_rate_segments tests at `date`
-        coverage run -a --debug=pathmap -m pyspedas.projects.mms.tests.data_rate_segments
+        coverage run -a  -m pyspedas.projects.mms.tests.data_rate_segments --debug=pathmap
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space after all tests:"
