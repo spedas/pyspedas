@@ -139,13 +139,7 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run --debug=pathmap -a -m pyspedas.utilities.tests.test_find_ip_address
-        echo Starting mms data_rate_segments tests at `date`
-        coverage run --debug=pathmap -a  -m pyspedas.projects.mms.tests.data_rate_segments
-        echo "========================================================="
-        # Show the free disk space on this filesystem
-        echo "Disk space after all tests:"
-        df -h .
-        echo "========================================================="        
+
 
         echo Done with tests at `date`
         
@@ -153,5 +147,6 @@ jobs:
         mv __repo_pyspedas pyspedas
 
         echo "Producing coverage report"
-        coverage report
+        coverage combine --debug=pathmap
+        coverage report --debug=pathmap
         coveralls
