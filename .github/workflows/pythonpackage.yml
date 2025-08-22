@@ -147,6 +147,7 @@ jobs:
         mv __repo_pyspedas pyspedas
 
         echo "Producing coverage report"
-        coverage combine --debug=pathmap
+        #coverage combine --debug=pathmap
         coverage report --debug=pathmap
+        cat coverage_debug
         coveralls
