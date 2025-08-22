@@ -1,6 +1,6 @@
 """Tests of waelet tool."""
 import pyspedas
-from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options, tplot_options, join_vec, store_data
+from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options, tplot_options, split_vec, join_vec, store_data
 import unittest
 from numpy.testing import assert_allclose
 import numpy as np
@@ -240,12 +240,38 @@ class TwaveletDataValidation(unittest.TestCase):
 
 
     def test_join_vec(self):
-        dat_x = get_data('idl_fgs_fac_bp_x_wv_pow')
-        day_y = get_data('idl_fgs_fac_bp_y_wv_pow')
-        dat_z = get_data('idl_fgs_fac_bp_z_wv_pow')
-        join_vec(['idl_fgs_fac_bp_x_wv_pow','idl_fgs_fac_bp_y_wv_pow','idl_fgs_fac_bp_z_wv_pow'], newname='wv_pow_joined')
-        dat_jv = get_data('wv_pow_joined')
-        #self.assertEqual(len(dat_jv),3) # Should have times, yvals, and a 'v' component
+        dat_x = get_data('tha_fgs_fac_bp_x')
+        day_y = get_data('tha_fgs_fac_bp_y')
+        dat_z = get_data('tha_fgs_fac_bp_z')
+        join_vec(['tha_fgs_fac_bp_x','tha_fgs_fac_bp_y','tha_fgs_fac_bp_z'], newname='tha_fgs_joined')
+        dat_jv = get_data('tha_fgs_joined')
+        self.assertEqual(len(dat_jv),3) # Should have times, yvals, and a 'v' component
+
+    def test_split_rejoin_non_time_varying(self):
+        time=np.array([0.0, 1.0, 2.0, 3.0, 4.0])
+        yvals = np.array( [[0.0, 0.0, 0.0], [1.0,1.0,1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0], [4.0, 4.0, 4.0]])
+        const_v = np.array([11.0, 12.0, 13.0])
+        store_data('newvar',data={'x':time, 'y':yvals, 'v':const_v})
+        orig_data = get_data('newvar')
+        split_vec('newvar')
+        join_vec('newvar_*', newname='newvar_rejoined')
+        joined_dat=get_data('newvar_rejoined')
+        self.assertEqual(len(joined_dat), 3)
+        assert_allclose(joined_dat.v, const_v)
+
+    def test_split_rejoin_time_varying(self):
+        time=np.array([0.0, 1.0, 2.0, 3.0, 4.0])
+        yvals = np.array( [[0.0, 0.0, 0.0], [1.0,1.0,1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0], [4.0, 4.0, 4.0]])
+        time_varying_v = np.array([[1.0, 2.0, 3.0], [11.0, 12.0, 13.0], [21.0, 22.0, 23.0], [31.0, 32.0, 33.0], [41.0, 42.0, 43.0]])
+        store_data('newvar_tv',data={'x':time, 'y':yvals, 'v':time_varying_v})
+        orig_data = get_data('newvar_tv')
+        split_vec('newvar_tv')
+        dx = get_data('newvar_tv_x')
+        md = get_data('newvar_tv_x', metadata=True)
+        join_vec('newvar_tv_*', newname='newvar_tv_rejoined')
+        joined_dat=get_data('newvar_tv_rejoined')
+        self.assertEqual(len(joined_dat), 3)
+        assert_allclose(joined_dat.v, time_varying_v)
 
 if __name__ == '__main__':
     unittest.main()
