@@ -19,5 +19,5 @@ omit =
 [paths]
 pyspedas =
   pyspedas                      # repo path used for reporting (must exist at report time)
-  */site-packages/pyspedas
-  */dist-packages/pyspedas
+  **/site-packages/pyspedas
+  **/dist-packages/pyspedas
