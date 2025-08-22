@@ -154,4 +154,4 @@ jobs:
         coverage xml --debug=pathmap
         grep avg_data coverage.xml
         cat coverage_debug
-        coveralls
+        coveralls < coveralls.xml
