@@ -1,9 +1,8 @@
 import os
 import unittest
 
-from pyspedas.tplot_tools import data_exists, del_data, tplot
-
 import pyspedas
+from pyspedas.tplot_tools import data_exists, del_data, tplot
 from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
 
 global_display=False
@@ -139,27 +138,11 @@ class LoadTestCases(unittest.TestCase):
         print(magephem_vars)
         self.assertTrue(data_exists('Rgse'))
         self.assertTrue('Rgse' in magephem_vars)
-
-    @unittest.skip("Certificate error at newmexicoconsortium.org")
-    def test_load_magephem_ect_txt_data(self):
-        del_data("*")
-        magephem_ect_vars = pyspedas.projects.rbsp.magephem_ect(trange=["2018-11-05", "2018-11-08"], probe="a", cadence="1min", coord="op77q", filetype="txt")
         self.assertTrue(data_exists("Lsimple"))
         self.assertTrue(data_exists("Lm_eq"))
         self.assertTrue(data_exists("CDMAG_MLAT"))
         self.assertTrue(data_exists("CDMAG_MLON"))
         self.assertTrue(data_exists("CDMAG_MLT"))
-
-    @unittest.skip("Certificate error at newmexicoconsortium.org")
-    def test_load_magephem_ect_h5_data(self):
-        del_data("*")
-        magephem_ect_vars = pyspedas.projects.rbsp.magephem_ect(trange=["2018-11-05", "2018-11-08"], probe="a", cadence="1min", coord="op77q", filetype="h5")
-        self.assertTrue(data_exists("Lsimple"))
-        self.assertTrue(data_exists("Lm_eq"))
-        self.assertTrue(data_exists("CDMAG_MLAT"))
-        self.assertTrue(data_exists("CDMAG_MLON"))
-        self.assertTrue(data_exists("CDMAG_MLT"))
-
 
 if __name__ == '__main__':
     unittest.main()
