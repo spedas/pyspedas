@@ -146,8 +146,11 @@ jobs:
         echo "Restoring pyspedas directory to produce coverage report"
         mv __repo_pyspedas pyspedas
 
+        cat coverage_debug
+        rm coverage_debug
         echo "Producing coverage report"
         #coverage combine --debug=pathmap
-        coverage report --debug=pathmap
+        #coverage report --debug=pathmap
+        coverage xml --debug=pathmap
         cat coverage_debug
         coveralls
