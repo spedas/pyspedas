@@ -152,5 +152,6 @@ jobs:
         #coverage combine --debug=pathmap
         #coverage report --debug=pathmap
         coverage xml --debug=pathmap
+        grep avg_data coverage.xml
         cat coverage_debug
         coveralls
