@@ -81,9 +81,27 @@ def split_vec(
     dim = data.shape
     metadata = get_data(tvar, metadata=True)
 
+    has_v = False
+    combined_v = None
+    time_varying_v = False
+
     # If already size one, simply return
     if len(dim) == 1:
         return [tvar]
+    # Is there depend_1 data to split?
+    elif len(dim) == 2:
+        if len(alldata) == 3:
+            has_v = True
+            combined_v = alldata[2]
+            if len(combined_v.shape) == 1:
+                time_varying_v = False
+            else:
+                time_varying_v = True
+
+    elif len(dim) > 2:
+        logging.error(f"split_vec:data array for {tvar} has {len(dim)} dimensions, too many to split")
+        return None
+
 
     vec_length = dim[1]
 
@@ -108,8 +126,8 @@ def split_vec(
     if columns == 'all':
         columns = range(vec_length)
 
+    v_idx = 0
     for i in columns:
-
         # if not a list
         if isinstance(i, list):
             range_start = i[0]
@@ -121,9 +139,16 @@ def split_vec(
         split_name = newname + suffix[i]
         created_variables = created_variables + [split_name]
 
-        data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze()}
+        if has_v and time_varying_v:
+            data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze(), 'v': combined_v[:,v_idx]}
+        elif has_v and not time_varying_v:
+            data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze(), 'v': np.array([combined_v[v_idx]])}
+        else:
+            data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze()}
+
 
         if not store_data(split_name, data=data_for_tplot, attr_dict=metadata):
             raise Exception(f"Failed to store {split_name} in pyspedas.")
+        v_idx += 1
 
     return created_variables
