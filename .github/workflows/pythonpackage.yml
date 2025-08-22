@@ -154,4 +154,14 @@ jobs:
         coverage xml --debug=pathmap
         grep avg_data coverage.xml
         cat coverage_debug
-        coveralls < coveralls.xml
+        #coveralls < coveralls.xml
+
+    - name: Upload to Coveralls
+      uses: coverallsapp/github-action@v2
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: coverage.xml
+        format: cobertura
+
