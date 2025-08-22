@@ -1,6 +1,9 @@
 [run]
 source_pkgs =
   pyspedas
+# Store relative paths so reporting tools don’t see absolute site-packages paths.
+relative_files = True
+
 omit =
   */bin/*
   */docs/*
@@ -12,3 +15,9 @@ omit =
   */pyspedas/projects/mms/tests/load_uri_tests.py
   */pyspedas/projects/mms/deprecated/*
   */pyspedas/projects/maven/tests/uri_tests.py
+
+[paths]
+pyspedas =
+  "pyspedas"                       # repo path used for reporting (must exist at report time)
+  "**/site-packages/pyspedas"
+  "**/dist-packages/pyspedas"
