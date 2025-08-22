@@ -371,7 +371,7 @@ jobs:
 
         echo Done with tests at `date`
         
-        echo "Restoring pyspedas directory to produce coverage report
+        echo "Restoring pyspedas directory to produce coverage report"
         mv __repo_pyspedas pyspedas
 
         echo "Producing coverage report"
