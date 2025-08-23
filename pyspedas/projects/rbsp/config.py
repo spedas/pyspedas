@@ -9,7 +9,3 @@ if os.environ.get('SPEDAS_DATA_DIR'):
 
 if os.environ.get('RBSP_DATA_DIR'):
     CONFIG['local_data_dir'] = os.environ['RBSP_DATA_DIR']
-    
-    
-CONFIG_ECT = CONFIG.copy()
-CONFIG_ECT['remote_data_dir'] = "https://rbsp-ect.newmexicoconsortium.org/data_pub/"
