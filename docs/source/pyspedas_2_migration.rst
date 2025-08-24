@@ -79,6 +79,12 @@ Obsolete wrapper routines being removed::
     1. pyspedas.cotrans_get_coord() should be replaced with pyspedas.get_coord()
     2. pyspedas.cotrans_set_coord() should be replaced with pyspedas.set_coord()
 
+Obsolete parameter names::
+
+    1. Routines that used 'new_names' to specify output variables now use 'newname'
+    2. Routines that used 'newnames' now use 'newname'
+    3. Routines that used 'new_tvar' now use 'newname'
+
 Updating pytplot imports
 ++++++++++++++++++++++++
 
@@ -165,6 +171,42 @@ PySPEDAS 2.0 compatible rewrites:
     from pyspedas import get_coords, set_coords
     coord = get_coords('somevar')
     set_coords('somevar', 'GSE')
+
+
+
+Updating obsolete parameter names
+---------------------------------
+Old style, pre-2.0:
+
+.. code-block:: python
+
+    # using obsolete parameter names
+
+    # The following routines used 'new_names' for the output variables:
+    # avg_data, deriv_data, wavelet, clean_spikes, subtract_average, subtract_median
+    # tdeflag, time_clip, tsmooth, yclip
+
+    subtract_average('input_var', new_names='output_var')
+
+    # tvectot used 'newnames'
+
+    tvectot('input_var',newnames='output_var')
+
+    # The following routines used 'new_tvar' :
+    # add, add_across, avg_res_data, clip, deflag, derive, divide, spec_mult, subtract
+    # degap, interp_nan, join_vec, multiply, split_vec
+
+    deflag('input_var', new_tvar='output_var')
+
+PySPEDAS 2.0 compatible rewrites:
+
+.. code-block:: python
+
+    # use 'newname' parameter to specify output variables
+
+    subtract_average('input_var', newname='output_var')
+    tvectot('input_var',newname='output_var')
+    deflag('input_var', newname='output_var')
 
 
 Updating your environment after upgrading to PySPEDAS 2.0 or later
