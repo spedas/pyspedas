@@ -5,7 +5,7 @@ import numpy as np
 import logging
 
 
-def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=None):
+def deflag(tvar, flag=None, newname=None, method=None, fillval=None):
     """
     Replace NaN or other 'flag' values in arrays with interpolated or other values.
 
@@ -29,11 +29,6 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
             If not specified, then the data in tvar1 will be replaced.
             This is not an option for multiple variable input, for
             multiple or pseudo variables, the data is overwritten.
-        new_tvar : str (Deprecated)
-            Name of new tvar for deflagged data storage.  
-            If not specified, then the data in tvar1 will be replaced.
-            THIS is not an option for multiple variable input, for 
-            multiple or pseudo variables, the data is overwritten.
         fillval: int, float (optional)
             Value to use as replacement when method='replace'
 
@@ -55,11 +50,6 @@ def deflag(tvar, flag=None, newname=None, new_tvar=None, method=None, fillval=No
         >>> pyspedas.deflag('d',[100,90,7,2,57],newname='e')
 
     """
-
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info("deflag: The new_tvar parameter is deprecated. Please use newname instead.")
-        newname = new_tvar
 
     # for linear method, and flag of NaN, or none, interp_nan an be called
     #    if (flag == None or np.isnan(flag)) and method == 'linear':

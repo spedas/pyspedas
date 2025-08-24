@@ -4,7 +4,7 @@ import copy
 import logging
 
 
-def multiply(tvar1, tvar2, newname=None, new_tvar=None):
+def multiply(tvar1, tvar2, newname=None):
     """
     Multiplies two tplot variables.  Will interpolate if the two are not on the same time cadence.
 
@@ -15,8 +15,6 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
         tvar2 : int/float
             Name of second tplot variable.
         newname : str
-            Name of new tplot variable.  If not set, then the data in tvar1 is replaced.
-        new_tvar : str (Deprecated)
             Name of new tplot variable.  If not set, then the data in tvar1 is replaced.
 
     Returns
@@ -36,12 +34,6 @@ def multiply(tvar1, tvar2, newname=None, new_tvar=None):
         >>> ac = pyspedas.get_data(n)
         >>> print(ac)
     """
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info(
-            "multiply: The new_tvar parameter is deprecated. Please use newname instead."
-        )
-        newname = new_tvar
 
     # interpolate tvars
     tv2 = tinterp(tvar1, tvar2)

@@ -12,7 +12,6 @@ def degap(
     maxgap=None,
     func="nan",
     newname=None,
-    new_tvar=None,
     onenanpergap=False,
     twonanpergap=False,
 ):
@@ -36,10 +35,7 @@ def degap(
             substitution or forward-filled values.
         newname : str, optional
             The new tplot variable name to store the data into.  If None, then the data is overwritten.
-            THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten.
-        new_tvar : str, optional (Deprecated)
-            The new tplot variable name to store the data into.  If None, then the data is overwritten.
-            THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten.
+            This is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten.
         onenanpergap : bool
             if set to True, then only insert one NaN value, rather than adding NaN values at dt resolution
         twonanpergap : bool
@@ -60,13 +56,6 @@ def degap(
         >>> b = pyspedas.get("b")
         >>> print(b)
     """
-
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info(
-            "degap: The new_tvar parameter is deprecated. Please use newname instead."
-        )
-        newname = new_tvar
 
     # check for globbed or array input, and call recursively
     tn = tnames(tvar)

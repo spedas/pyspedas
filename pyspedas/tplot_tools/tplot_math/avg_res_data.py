@@ -3,7 +3,7 @@ import numpy as np
 import copy
 import logging
 
-def avg_res_data(tvar,res,newname=None,new_tvar=None):
+def avg_res_data(tvar,res,newname=None):
     """
     Averages the variable over a specified period of time.
 
@@ -13,8 +13,6 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
             Name of tplot variable.
         res : int/float
             The new data resolution
-        new_tvar : str (Deprecated)
-            Name of new tvar for averaged data.  If not set, then the data in tvar is replaced.
         newname : str
             Name of new tvar for averaged data.  If not set, then the data in tvar is replaced.
 
@@ -37,11 +35,6 @@ def avg_res_data(tvar,res,newname=None,new_tvar=None):
         >>> pyspedas.avg_res_data('d',2,'d2res')
 
     """
-
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info("avg_res_data: The new_tvar parameter is deprecated. Please use newname instead.")
-        newname = new_tvar
 
     tvar_new = pyspedas.tplot_tools.data_quants[tvar].coarsen(time=res, boundary='trim').mean()
     tvar_new.name = pyspedas.tplot_tools.data_quants[tvar].name

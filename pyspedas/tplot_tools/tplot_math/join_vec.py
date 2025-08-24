@@ -11,7 +11,7 @@ from pyspedas.tplot_tools import convert_tplotxarray_to_pandas_dataframe
 
 # JOIN TVARS
 # join TVars into single TVar with multiple columns
-def join_vec(tvars, newname=None, new_tvar=None, merge=False):
+def join_vec(tvars, newname=None, merge=False):
     """
     Joins 1D tplot variables into one tplot variable.
 
@@ -24,8 +24,6 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
         Name of tplot variables to join together.
     newname : str, optional
         The name of the new tplot variable. If not specified (the default), a name will be assigned.
-    new_tvar : str, optional (Deprecated)
-        The name of the new tplot variable. If not specified, a name will be assigned.
     merge : bool, optional
         Whether or not to merge the created variable into an older variable.
         Default is False.
@@ -44,12 +42,6 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
     >>> pyspedas.join_vec(['d','e','g'],newname='deg')
 
     """
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info(
-            "join_vec: The new_tvar parameter is deprecated. Please use newname instead."
-        )
-        newname = new_tvar
 
     to_merge = False
     if newname in pyspedas.tplot_tools.data_quants.keys() and merge:
