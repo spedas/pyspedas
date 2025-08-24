@@ -70,7 +70,6 @@ def idl_wavelet_scales(n, dt, w0=2*np.pi, dj=None):
 def wavelet(
     names,
     newname=None,
-    new_names=None,
     suffix='_pow',
     wavename='morl',
     scales=None,
@@ -84,9 +83,6 @@ def wavelet(
     names: str/list of str
         List of pytplot names.
     newname: str/list of str, optional
-        List of new names for tplot variables.
-        Default: If not given, then a suffix is applied.
-    new_names: str/list of str, optional (Deprecated)
         List of new names for tplot variables.
         Default: If not given, then a suffix is applied.
     suffix: str, optional
@@ -135,10 +131,6 @@ def wavelet(
         >>> pyspedas.options(pvar, 'ytitle', pvar)
         >>> pyspedas.tplot([var, pvar])
     """
-    # new_names is deprecated in favor of newname
-    if new_names is not None:
-        logging.info("wavelet: The new_names parameter is deprecated. Please use newname instead.")
-        newname = new_names
 
     varnames = pyspedas.split_vec(names)
     powervar = []

@@ -12,7 +12,7 @@ from pyspedas.tplot_tools import store_data, get_data, tnames, time_float
 
 
 def avg_data(names, trange=[], res=None, width=None,
-             newname=None, new_names=None, suffix=None, overwrite=False):
+             newname=None, suffix=None, overwrite=False):
     """
     Get a new tplot variable with averaged data.
 
@@ -33,9 +33,6 @@ def avg_data(names, trange=[], res=None, width=None,
     newname: str/list of str, optional
         List of new names for tplot variables.
         If not given, then a suffix is applied.
-    new_names: str/list of str, optional (Deprecated)
-        List of new names for tplot variables.
-        If not given, then a suffix is applied.
     suffix: str, optional
         A suffix to apply.
         Default is '-avg'.
@@ -49,11 +46,6 @@ def avg_data(names, trange=[], res=None, width=None,
         List of new pytplot names.
 
     """
-
-    # new_tvar is deprecated in favor of newname
-    if new_names is not None:
-        logging.info("avg_data: The new_names parameter is deprecated. Please use newname instead.")
-        newname = new_names
 
     old_names = tnames(names)
 

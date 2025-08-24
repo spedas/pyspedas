@@ -17,7 +17,6 @@ def time_clip(
         time_start,
         time_end,
         newname=None,
-        new_names=None,
         suffix='-tclip',
         overwrite=False,
         interior_clip=False
@@ -34,9 +33,6 @@ def time_clip(
     time_end : float or string
         End time.
     newname: str/list of str, optional
-        List of new names for tplot variables.
-        Default: None. If not given, then a suffix is applied or the variables are overwritten
-    new_names: str/list of str, optional (Deprecated)
         List of new names for tplot variables.
         Default: None. If not given, then a suffix is applied or the variables are overwritten
     suffix: str, optional
@@ -73,11 +69,6 @@ def time_clip(
         logging.warning('time_clip: no valid tplot variables specified')
         return
 
-    # new_names is deprecated
-    if new_names is not None:
-        logging.info("time_clip: The new_names parameter is deprecated. Please use newname instead.")
-        newname = new_names
-
     old_names = tnames(names)
 
     if len(old_names) < 1:
@@ -95,7 +86,7 @@ def time_clip(
         n_names = [n_names]
 
     if len(n_names) != len(old_names):
-        logging.warning('time_clip: new_names and old_names have different lengths, using suffixes instead')
+        logging.warning('time_clip: new names and input names have different lengths, using suffixes instead')
         n_names = [s + suffix for s in old_names]
 
     # We want the start/end times as both strings (for log messages) and floats (for comparisons)

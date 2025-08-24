@@ -10,7 +10,6 @@ def yclip(
     ymax,
     flag=None,
     newname=None,
-    new_names=None,
     suffix=None,
     overwrite=None,
 ):
@@ -32,10 +31,6 @@ def yclip(
     newname : str or list of str, optional
         List of new names for tplot variables.
         If not given, then a suffix is applied.
-    new_names : str or list of str, optional
-        List of new names for tplot variables.
-        If not given, then a suffix is applied.
-        This parameter is deprecated.
     suffix : str, optional
         A suffix to apply. Default is '-clip'.
     overwrite : bool, optional
@@ -71,12 +66,6 @@ def yclip(
         clipped_data = pyspedas.get_data('variable1-clip')
         print(clipped_data)
     """
-    # new_names is deprecated in favor of newname
-    if new_names is not None:
-        logging.info(
-            "yclip: The new_names parameter is deprecated. Please use newname instead."
-        )
-        newname = new_names
 
     old_names = pyspedas.tnames(names)
 

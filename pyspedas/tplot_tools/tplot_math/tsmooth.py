@@ -65,7 +65,7 @@ def smooth(data, width=10, preserve_nans=None):
 
 
 def tsmooth(names, width=10, median=None, preserve_nans=None,
-            newname=None, new_names=None, suffix=None, overwrite=None):
+            newname=None, suffix=None, overwrite=None):
     """
     Smooths a tplot variable.
 
@@ -82,10 +82,6 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
     newname: str/list of str, optional
         List of new names for tplot variables.
         If not given, then a suffix is applied. 
-        The default is None.
-    new_names: str/list of str, optional (deprecated)
-        List of new names for tplot variables.
-        If not given, then a suffix is applied.
         The default is None.
     suffix: str, optional
         A suffix to apply. Default is '-s'.
@@ -112,11 +108,6 @@ def tsmooth(names, width=10, median=None, preserve_nans=None,
     if len(old_names) < 1:
         logging.error('tsmooth: No valid tplot variable names were provided.')
         return
-
-    # new_names is deprecated
-    if new_names is not None:
-        logging.info("tsmooth: The new_names parameter is deprecated. Please use newname instead.")
-        newname = new_names
 
     if suffix is None:
         suffix = '-s'

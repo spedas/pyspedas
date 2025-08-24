@@ -15,7 +15,6 @@ def tdeflag(names,
             flag=None,
             method='remove_nan',
             newname=None,
-            new_names=None,
             suffix=None,
             overwrite=None,
             fillval=None
@@ -42,10 +41,6 @@ def tdeflag(names,
         List of new names for tplot variables.
         If '', then tplot variables are replaced.
         Default: None. If not specified then a suffix is applied.
-    new_names: str/list of str, optional (Deprecated)
-        List of new names for tplot variables.
-        If '', then tplot variables are replaced.
-        Default: None.
     suffix: str, optional
         A suffix to apply.
         Default: '-deflag'.
@@ -70,10 +65,6 @@ def tdeflag(names,
     >>> d_deflagged = pyspedas.get_data('e')
     >>> print(d_deflagged)
     """
-    # new_names is deprecated in favor of newname
-    if new_names is not None:
-        logging.info("tdeflag: The new_names parameter is deprecated. Please use newname instead.")
-        newname = new_names
 
     old_names = tnames(names)
 

@@ -8,7 +8,6 @@ import numpy
 def subtract_average(
         names,
         newname=None,
-        new_names=None,
         suffix=None,
         overwrite=None,
         median=None
@@ -21,9 +20,6 @@ def subtract_average(
     names: str/list of str
         List of tplot variable names to process (wildcards accepted)
     newname: str/list of str, optional
-        List of new names for tplot variables.
-        Default: None. If not given, then a suffix is applied.
-    new_names: str/list of str, optional (Deprecated)
         List of new names for tplot variables.
         Default: None. If not given, then a suffix is applied.
     suffix: str, optional
@@ -49,11 +45,6 @@ def subtract_average(
         >>> pyspedas.tplot(['a','a-d'])
 
     """
-
-    # new_names is deprecated in favor of newname
-    if new_names is not None:
-        logging.info("subtract_average: The new_names parameter is deprecated. Please use newname instead.")
-        newname = new_names
 
     old_names = tnames(names)
 

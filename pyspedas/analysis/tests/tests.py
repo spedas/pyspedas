@@ -200,14 +200,6 @@ class AnalysisTestCases(BaseTestCase):
         d = get_data('test_one-d')
         self.assertTrue((d[1] == [0]).all())
 
-    def test_subtract_average_logging_deprecation(self):
-        """Test logging for deprecation warning with new_names."""
-        with self.assertLogs(level='INFO') as log:
-            subtract_average('test', new_names='test_deprecated')
-            self.assertIn("The new_names parameter is deprecated", log.output[0])
-
-    # For subtract_median
-
     def test_subtract_median_basic(self):
         """Test basic functionality of subtract_median."""
         store_data('test', data={'x': [1., 2., 3.], 'y': [4., 5., 6.]})
@@ -227,14 +219,6 @@ class AnalysisTestCases(BaseTestCase):
             mock_subtract_average.assert_called_once_with(
                 'test', newname='new_test', suffix='-sfx', overwrite=True, median=1
             )
-
-
-    def test_subtract_median_deprecation_warning(self):
-        """Test subtract_median for deprecation warning with new_names."""
-        with self.assertLogs(level='INFO') as log:
-            subtract_median('test', new_names='deprecated_test')
-            self.assertIn("The new_names parameter is deprecated", log.output[0])
-
 
     def test_yclip(self):
         """Test yclip."""
@@ -281,7 +265,7 @@ class AnalysisTestCases(BaseTestCase):
         avg_data('test', width=2, overwrite=True)  # Test overwrite
         store_data('test', data={'x': [1., 2., 3., 4., 5., 6.],
                                  'y': [3., 5., 8., -4., 20., 1.]})
-        avg_data('test', width=2, newname='aabb')  # Test new_names
+        avg_data('test', width=2, newname='aabb')  # Test newname
         d = get_data('aabb')
         # Test multiple names
         avg_data(['test', 'aabb'], newname='aaabbb', width=2)
