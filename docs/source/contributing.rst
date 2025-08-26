@@ -11,7 +11,7 @@ Useful resources for PySPEDAS contributors
     - `PySPEDAS on readthedocs.io <https://pyspedas.readthedocs.io>`_
 - PySPEDAS example repositories, including many Jupyter notebooks
     - `PySPEDAS examples <https://github.com/spedas/pyspedas_examples>`_
-    - `THEMIS examples <https://github.com/spedas/themis_examples>`_
+    - `THEMIS examples <https://github.com/spedas/themis-examples>`_
     - `MMS examples <https://github.com/spedas/mms-examples>`_
 - `Python in Heliophysics Community <https://pyhc.org>`_
 - `PySPEDAS Code of Conduct <https://github.com/spedas/pyspedas?tab=coc-ov-file#readme>`_
