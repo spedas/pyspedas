@@ -34,15 +34,15 @@ for it, then open the installer and follow the instructions.  You should probabl
 for any installation options that appear.  More detailed instructions for your platform are
 available from https://docs.python.org/3/using/index.html .
 
-Installing PyCharm Community Edition
-------------------------------------
+Installing PyCharm
+-------------------
 
-PyCharm (Community Edition) is a free-to-use interactive development environment for Python.
-This is the main tool you will use to interact with Python and PySPEDAS.
+PyCharm is a free-to-use interactive development environment for Python.
+This (or whatever other IDE you prefer) is the main tool you will use to interact with Python and PySPEDAS.
 
 The software can be downloaded and installed from https://www.jetbrains.com/pycharm/download/ .
-Scoll down past the "PyCharm Professional" downloader (which requires a paid license) and choose
-the "PyCharm Community Edition" download.  After completing the download, click on the installer and
+
+After completing the download, click on the installer and
 follow the prompts.  Near the end of the installation (depending on your operating system), you may come to a screen with some
 options: "64-bit launcher", "Open folder as project", ".py file associations", "Add launchers dir to the PATH".
 We recommend selecting all these options.
@@ -70,7 +70,10 @@ Once you've decided where to put your data directory, you need to ensure that th
 variable is set whenever you log in. On Mac or Linux, this can be done by adding a line to your
 shell startup files (e.g. .cshrc, .zshrc, .bashrc or whatever shell you use):
 
-setenv SPEDAS_DATA_DIR /path/to/data/directory
+.. code-block:: bash
+
+   setenv SPEDAS_DATA_DIR /path/to/data/directory
+
 
 On Windows, you can open the Windows settings, search for "environment variables",
 go the the appropriate control panel, and add the SPEDAS_DATA_DIR environment variable to your
@@ -144,13 +147,12 @@ status area and progress bar at the bottom of the PyCharm window to see what it'
 Eventually, you should see a message that pyspedas (and probably many other packages) were successfully installed.
 
 There are a few other packages that are not installed by default alongside pyspedas.
-The spacepy, basemap, and mth5 packages are optional dependencies that are needed to support
-the MMS mission, SECS and EICS plots, and MTH5 magnetometer station data.
+The basemap and mth5 packages are optional dependencies that are needed to support SECS and EICS plots, and MTH5 magnetometer station data.
+
 To install:
 
 .. code-block:: bash
 
-   pip install spacepy
    pip install basemap
    pip install mth5
 
