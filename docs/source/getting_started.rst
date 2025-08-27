@@ -13,7 +13,7 @@ The following installation guide represents a somewhat minimal approach to getti
 installation.   It assumes you are starting from scratch, with no pre-existing Python version or developer tools installed.
 More advanced users might wish to make different choices of Python distributions (e.g. anaconda rather than
 python.org), or use a different development environment (e.g Spyder, Visual Studio Code, or some other
-environment rather than PyCharm Community Edition).  The installation details might differ slightly for
+environment rather than PyCharm).  The installation details might differ slightly for
 various operating systems or choices of Python distribution or development environment, but the general
 order of operations should be simple and straightforward.
 
