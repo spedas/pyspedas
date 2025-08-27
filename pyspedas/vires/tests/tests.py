@@ -1,7 +1,15 @@
 import unittest
 import pyspedas
-from viresclient import SwarmRequest
+import logging
 from pyspedas.tplot_tools import data_exists, del_data
+
+try:
+    from viresclient import SwarmRequest
+except ImportError:
+    logging.info('The viresclient package is needed for this operation, but does not appear to be installed.')
+    logging.info('To use this feature, install viresclient with "pip install viresclient".')
+    logging.info('If pip install fails, try "conda install viresclient".')
+
 
 class LoadTestCases(unittest.TestCase):
     def test_get_collections(self):
