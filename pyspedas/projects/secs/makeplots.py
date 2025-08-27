@@ -20,7 +20,10 @@ try:
     from mpl_toolkits.basemap.solar import daynight_terminator
     from mpl_toolkits.basemap import Basemap
 except ImportError:
-    logging.info('The basemap package is needed for SECS and EICS plots, but was not found. Installation instructions can be found at: https://matplotlib.org/basemap/users/installing.html or https://anaconda.org/anaconda/basemap')
+    logging.info('The basemap package is needed for SECS and EICS plots, but was not found.')
+    logging.info('To use this capability install basemap with "pip install basemap".')
+    logging.info('If pip install fails, try "conda install basemap".')
+    logging.info('IF needed, additional installation instructions can be found at: https://matplotlib.org/basemap/users/installing.html or https://anaconda.org/anaconda/basemap')
 
 
 class CenteredNorm(Normalize):
