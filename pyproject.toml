@@ -7,7 +7,7 @@ name = "pyspedas"
 version = "2.0.0a"
 description = "Python Space Physics Environment Data Analysis Software (pySPEDAS)"
 readme = {file = "README.md", content-type = "text/markdown"}
-requires-python = ">=3.9,<3.14"
+requires-python = ">=3.9"
 license = "MIT"
 authors = [
     {name = "Jim Lewis", email = "jwl@ssl.berkeley.edu"},
