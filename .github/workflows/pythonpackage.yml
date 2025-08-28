@@ -35,6 +35,7 @@ jobs:
           source .venv/bin/activate
           echo "python: $(which python)"
           python -m build
+          ls -lsR dist
           wheelbase=$(echo dist/*.whl)
           extras='[vires,maps,mth5]'
           wheel_extras=${wheelbase}
