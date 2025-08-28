@@ -35,7 +35,7 @@ jobs:
           ./.venv/bin/activate
           echo "python: ${which python)
           python -m build
-          pip install dist/*.whl
+          pip install dist/*.whl[vires,maps,mth5]
           python -m pyspedas.projects.mms.tests.setup_tests
           exit 1
       if: matrix.os == 'ubuntu-latest'
