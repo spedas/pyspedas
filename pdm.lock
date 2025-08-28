@@ -5,7 +5,7 @@
 groups = ["default", "depend", "doc", "jupyter", "lint", "maps", "mth5", "setup", "test", "vires"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:83cac9d5ea2bf8aec361a92a5d6211368e3f3f16b2ea416401c1655e48a3cca3"
+content_hash = "sha256:f6f74972efad780a6bf074fe8ed1ae663898c44f3c93aff31d61c58d8d17e85a"
 
 [[metadata.targets]]
 requires_python = ">=3.9"
@@ -4459,6 +4459,15 @@ files = [
     {file = "pillow-11.3.0-pp311-pypy311_pp73-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:504b6f59505f08ae014f724b6207ff6222662aab5cc9542577fb084ed0676ac7"},
     {file = "pillow-11.3.0-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:c84d689db21a1c397d001aa08241044aa2069e7587b398c8cc63020390b1c1b8"},
     {file = "pillow-11.3.0.tar.gz", hash = "sha256:3828ee7586cd0b2091b6209e5ad53e20d0649bbe87164a459d0676e035e8f523"},
+]
+
+[[package]]
+name = "pip"
+version = "25.2"
+summary = ""
+files = [
+    {file = "pip-25.2-py3-none-any.whl", hash = "sha256:6d67a2b4e7f14d8b31b8b52648866fa717f45a1eb70e83002f4331d07e953717"},
+    {file = "pip-25.2.tar.gz", hash = "sha256:578283f006390f85bb6282dffb876454593d637f5d1be494b5202ce4877e71f2"},
 ]
 
 [[package]]
