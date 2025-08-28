@@ -28,13 +28,8 @@ jobs:
         VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
           python -m pip install --upgrade pip
-          pip install build
-          pip install coveralls
-          pip install basemap
-          pip install mt-metadata
-          pip install obspy
-          pip install 'mth5>=0.4.9'
-          pip install 'moto[server]'
+          pip install pdm
+          pip install -G "mth5,maps,viresclient,lint,test,setup"
           python -m build
           pip install dist/*.whl
           python -m pyspedas.projects.mms.tests.setup_tests
@@ -46,13 +41,8 @@ jobs:
         VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
           python -m pip install --upgrade pip
-          pip install build
-          pip install coveralls
-          pip install basemap
-          pip install mt-metadata
-          pip install obspy
-          pip install 'mth5>=0.4.9'
-          pip install 'moto[server]'
+          pip install pdm
+          pip install -G "mth5,maps,viresclient,lint,test,setup"
           python -m build
           pip install dist/*.whl
           python -m pyspedas.projects.mms.tests.setup_tests
@@ -64,13 +54,8 @@ jobs:
         VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
           python -m pip install --upgrade pip
-          pip install build
-          pip install coveralls
-          pip install basemap
-          pip install mt-metadata
-          pip install obspy
-          pip install 'mth5>=0.4.9'
-          pip install 'moto[server]'
+          pip install pdm
+          pip install -G "mth5,maps,viresclient,lint,test,setup"
           python -m build
           pip install dist/*.whl
           python -m pyspedas.projects.mms.tests.setup_tests
