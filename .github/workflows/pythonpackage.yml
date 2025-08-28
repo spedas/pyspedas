@@ -30,6 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pdm
           # Use the runner's Python installation, not a venv
+          pdm config python.use_venv False
           echo "python: $(which python)"
           pdm use -f "$(which python)"
           pdm config python.use_venv False
