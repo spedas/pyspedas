@@ -27,8 +27,8 @@ jobs:
         MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
         VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
-          working_dir=${pwd}
-          echo working dir: $working_dir
+          working_dir=$(pwd)
+          echo working dir: ${working_dir}
           python -m pip install --upgrade pip
           pip install pdm
           pdm install -dG "lint,test,setup"
