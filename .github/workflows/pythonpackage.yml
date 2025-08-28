@@ -38,7 +38,7 @@ jobs:
           ls -lsR dist
           wheelbase=$(echo dist/*.whl)
           extras='[vires,maps,mth5]'
-          wheel_extras=${wheelbase}
+          wheel_extras=${extras}
           pip install ${wheelbase}${wheel_extras}
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest'
