@@ -33,7 +33,7 @@ jobs:
           pip install pdm
           pdm install -dG lint -dG test -dG setup --no-default
           source .venv/bin/activate
-          echo "python: $(which python)
+          echo "python: $(which python)"
           python -m build
           pip install dist/*.whl[vires,maps,mth5]
           python -m pyspedas.projects.mms.tests.setup_tests
