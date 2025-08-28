@@ -124,7 +124,8 @@ mth5  = ["mth5","obspy", "mt-metadata"]
 vires = ["viresclient"]
 maps  = ["basemap"]  # example marker
 
-# --- Development dependencies, not in wheel metadata, for PySPEDAS devs, CI workflows, etcmth5,
+# --- Development dependencies, not in wheel metadata, for PySPEDAS devs, CI workflows, etc
+
 [dependency-groups]
 lint = [
     "ruff>=0.12.10",
@@ -151,3 +152,18 @@ setup = [
     "wheel>=0.45.1",
     "pip>=25.2",
 ]
+
+# Ruff linter configuration -- mostly the defaults, with just a few changes
+[tool.ruff]
+
+line-length = 127
+indent-width = 4
+
+# Assume Python 3.9
+target-version = "py39"
+
+[tool.ruff.lint]
+
+select = ["E4", "E7", "E9", "F", "C9", "W"]
+ignore = []
+
