@@ -27,9 +27,12 @@ jobs:
         MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
         VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
       run: |
+          working_dir=${pwd}
+          echo working dir: $working_dir
           python -m pip install --upgrade pip
           pip install pdm
-          pdm install -G "mth5,maps,vires,lint,test,setup"
+          pdm install -dG "lint,test,setup"
+          exit 1
           pdm run python -m build
           pdm run pip install dist/*.whl
           pdm run python -m pyspedas.projects.mms.tests.setup_tests
