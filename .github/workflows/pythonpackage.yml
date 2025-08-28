@@ -35,7 +35,10 @@ jobs:
           source .venv/bin/activate
           echo "python: $(which python)"
           python -m build
-          pip install dist/*.whl[vires,maps,mth5]
+          wheelbase=$(echo dist/*.whl)
+          extras='[vires,maps,mth5]'
+          wheel_extras=${wheelbase}
+          pip install ${wheelbase}${wheel_extras}
           python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
