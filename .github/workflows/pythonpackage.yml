@@ -66,11 +66,11 @@ jobs:
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |
-        #pip install flake8
+        pip install flake8
         # stop the build if there are Python syntax errors or undefined names
-        pdm run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127 --exclude 'erg'
+        run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127 --exclude 'erg'
         # exit-zero treats all errors as warnings. 
-        pdm run flake8 . --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
+        run flake8 . --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
     - name: Hide the repo copy so imports use site-packages
       run: |
         # keep it around for debugging; delete instead if you want the space back
