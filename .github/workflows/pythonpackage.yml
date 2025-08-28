@@ -136,29 +136,29 @@ jobs:
         echo Starting akebono tests at `date`
         pdm run coverage run -a -m pyspedas.projects.akebono.tests.tests
         #echo Starting maven S3 tests at `date`
-        #coverage run -a -m pyspedas.projects.maven.tests.uri_tests
+        #pdm run coverage run -a -m pyspedas.projects.maven.tests.uri_tests
         echo Starting maven tests at `date`
-        coverage run -a -m pyspedas.projects.maven.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.maven.tests.tests
         echo Starting ace tests at `date`
-        coverage run -a -m pyspedas.projects.ace.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.ace.tests.tests
         echo Starting erg tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.tests
         echo Starting erg cotrans tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.cotrans_tests
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.cotrans_tests
         echo Starting erg ground data tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.ground_tests
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.ground_tests
         echo Starting erg mepe particle tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.mepe_part_products
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.mepe_part_products
         echo Starting erg mepi particle tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.mepi_part_products
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.mepi_part_products
         echo Starting erg lepe particle tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.lepe_part_products
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.lepe_part_products
         echo Starting erg lepi particle tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.lepi_part_products
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.lepi_part_products
         echo Starting erg xep particle tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.xep_part_products
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.xep_part_products
         echo Starting erg hep particle tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.hep_part_products
+        pdm run coverage run -a -m pyspedas.projects.erg.tests.hep_part_products
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space after ERG tests:"
@@ -169,87 +169,87 @@ jobs:
         df -h .
         echo "========================================================="
         echo Starting VIRES client tests at `date`
-        coverage run -a -m pyspedas.vires.tests.tests
+        pdm run coverage run -a -m pyspedas.vires.tests.tests
         echo Starting secs tests at `date`
-        coverage run -a -m pyspedas.projects.secs.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.secs.tests.tests
         echo Starting MTH5 import test at `date`
-        coverage run -a -m pyspedas.mth5.tests.test_mth5_import
+        pdm run coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
-        coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
+        pdm run coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
         echo Starting cluster tests at `date`
-        coverage run -a -m pyspedas.projects.cluster.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.cluster.tests.tests
         echo Starting cluster S3 tests at `date`
-        coverage run -a -m pyspedas.projects.cluster.tests.uri_tests
+        pdm run coverage run -a -m pyspedas.projects.cluster.tests.uri_tests
         echo Starting CDAWeb tests at `date`
-        coverage run -a -m pyspedas.cdagui_tools.tests.tests
+        pdm run coverage run -a -m pyspedas.cdagui_tools.tests.tests
         echo Starting themis tplot_time  tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests_tplot_time
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
-        coverage run -a -m pyspedas.projects.barrel.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.barrel.tests.tests
         echo Starting elfin epd_l1 tests at `date`
-        coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l1
+        pdm run coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l1
         echo Starting elfin epd_l2 tests at `date`
-        coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l2
+        pdm run coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l2
         echo Starting elfin state tests at `date`      
-        coverage run -a -m pyspedas.projects.elfin.tests.test_state
+        pdm run coverage run -a -m pyspedas.projects.elfin.tests.test_state
         echo Starting elfin tests at `date`      
-        coverage run -a -m pyspedas.projects.elfin.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.elfin.tests.tests
         echo Starting elfin epd calibration tests at `date`      
-        coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
+        pdm run coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
         echo Starting soho tests at `date`
-        coverage run -a -m pyspedas.projects.soho.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.soho.tests.tests
         echo Starting de2 tests at `date`
-        coverage run -a -m pyspedas.projects.de2.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.de2.tests.tests
         echo Starting st5 tests at `date`
-        coverage run -a -m pyspedas.projects.st5.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.st5.tests.tests
         echo Starting lanl tests at `date`
-        coverage run -a -m pyspedas.projects.lanl.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.lanl.tests.tests
         echo Starting cotrans quaternion tests at `date`
-        coverage run -a -m pyspedas.cotrans_tools.tests.quaternions
+        pdm run coverage run -a -m pyspedas.cotrans_tools.tests.quaternions
         echo Starting cnofs tests at `date`
-        coverage run -a -m pyspedas.projects.cnofs.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.cnofs.tests.tests
         echo Starting kompsat tests at `date`
-        coverage run -a -m pyspedas.projects.kompsat.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.kompsat.tests.tests
         echo Starting hapi tests at `date`
-        coverage run -a -m pyspedas.hapi_tools.tests.tests
+        pdm run coverage run -a -m pyspedas.hapi_tools.tests.tests
         echo Starting noaa tests at `date`
-        coverage run -a -m pyspedas.projects.noaa.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.noaa.tests.tests
         echo Starting particles tests at `date`
-        coverage run -a -m pyspedas.particles.tests.tests
+        pdm run coverage run -a -m pyspedas.particles.tests.tests
         echo Starting mms cotrans tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.cotrans
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.cotrans
         echo Starting mms events tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.events
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.events
         echo Starting mms orbit_plots tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.orbit_plots
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.orbit_plots
         echo Starting mms overview_plots tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.overview_plots
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.overview_plots
         echo Starting mms neutral sheet tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.neutral_sheet
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.neutral_sheet
         echo Starting mms ql_lib_sitl tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.ql_l1b_sitl_tests
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.ql_l1b_sitl_tests
         echo Starting mms_part_getspec tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.mms_part_getspec
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.mms_part_getspec
         echo Starting mms_part_getspec FPI bulk velocity subtraction tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.getspec_bulkv_subtract
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.getspec_bulkv_subtract
         echo Starting mms load routine tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.load_routine_tests
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.load_routine_tests
         echo Starting mms feeps tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.feeps
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.feeps
         echo Starting mms eis tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.eis
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.eis
         echo Starting mms fpi tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.fpi_tests
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.fpi_tests
         echo Starting mms file_filter tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.file_filter
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.file_filter
         echo Starting mms curlometer tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.curlometer
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.curlometer
         echo Starting mms wavpol tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.wavpol
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.wavpol
         echo Starting mms slice2d tests at `date`
-        coverage run -a -m pyspedas.projects.mms.tests.slice2d
+        pdm run coverage run -a -m pyspedas.projects.mms.tests.slice2d
         #echo Starting mms S3 tests at `date`
-        #coverage run -a -m pyspedas.projects.mms.tests.load_uri_tests
+        #pdm run coverage run -a -m pyspedas.projects.mms.tests.load_uri_tests
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space after MMS tests:"
@@ -260,101 +260,101 @@ jobs:
         df -h .
         echo "========================================================="        
         echo Starting dscovr tests at `date`
-        coverage run -a -m pyspedas.projects.dscovr.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.dscovr.tests.tests
         echo Starting utilities download tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.download_tests
+        pdm run coverage run -a -m pyspedas.utilities.tests.download_tests
         echo Starting utilities misc tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.misc_tests
+        pdm run coverage run -a -m pyspedas.utilities.tests.misc_tests
         echo Starting tplot wildcard tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.tplot_wildcard_tests
+        pdm run coverage run -a -m pyspedas.utilities.tests.tplot_wildcard_tests
         echo Starting plotting tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.plot_tests
+        pdm run coverage run -a -m pyspedas.utilities.tests.plot_tests
         echo Starting utilities time_tests tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.time_tests
+        pdm run coverage run -a -m pyspedas.utilities.tests.time_tests
         echo Starting utilities libs_tests tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.libs_tests
+        pdm run coverage run -a -m pyspedas.utilities.tests.libs_tests
         echo Starting utilities S3 tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.download_uri_tests
+        pdm run coverage run -a -m pyspedas.utilities.tests.download_uri_tests
         echo Starting cotrans tests at `date`
-        coverage run -a -m pyspedas.cotrans_tools.tests.cotrans
+        pdm run coverage run -a -m pyspedas.cotrans_tools.tests.cotrans
         echo Starting utilities xdegap tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_xdegap
+        pdm run coverage run -a -m  pyspedas.utilities.tests.test_xdegap
         echo Starting utilities tplot_math tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_math
+        pdm run coverage run -a -m  pyspedas.utilities.tests.test_math
         echo Starting cotrans minvar tests at `date`
-        coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
+        pdm run coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
         echo Starting cotrans fac tests at `date`
-        coverage run -a -m  pyspedas.cotrans_tools.tests.test_fac
+        pdm run coverage run -a -m  pyspedas.cotrans_tools.tests.test_fac
         echo Starting cotrans lmn tests at `date`
-        coverage run -a -m  pyspedas.cotrans_tools.tests.test_lmn
+        pdm run coverage run -a -m  pyspedas.cotrans_tools.tests.test_lmn
         echo Starting csswe tests at `date`
-        coverage run -a -m pyspedas.projects.csswe.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.csswe.tests.tests
         echo Starting equator_s tests at `date`
-        coverage run -a -m pyspedas.projects.equator_s.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.equator_s.tests.tests
         echo Starting image tests at `date`
-        coverage run -a -m pyspedas.projects.image.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.image.tests.tests
         echo Starting psp tests at `date`
-        coverage run -a -m pyspedas.projects.psp.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.psp.tests.tests
         echo Starting rbsp tests at `date`
-        coverage run -a -m pyspedas.projects.rbsp.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.rbsp.tests.tests
         echo Starting stereo tests at `date`
-        coverage run -a -m pyspedas.projects.stereo.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.stereo.tests.tests
         echo Starting twins tests at `date`
-        coverage run -a -m pyspedas.projects.twins.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.twins.tests.tests
         echo Starting wind tests at `date`from pyspedas.poes.load import load
-        coverage run -a -m pyspedas.projects.wind.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.wind.tests.tests
         echo Starting poes tests at `date`
-        coverage run -a -m pyspedas.projects.poes.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.poes.tests.tests
         echo Starting polar tests at `date`
-        coverage run -a -m pyspedas.projects.polar.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.polar.tests.tests
         echo Starting geopack tests at `date`
-        coverage run -a -m pyspedas.geopack.tests.tests
+        pdm run coverage run -a -m pyspedas.geopack.tests.tests
         echo Starting geopack-IDL validation tests at `date`
-        coverage run -a -m pyspedas.geopack.tests.geopack_idl_validation_tests
+        pdm run coverage run -a -m pyspedas.geopack.tests.geopack_idl_validation_tests
         echo Starting geotail tests at `date`
-        coverage run -a -m pyspedas.projects.geotail.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.geotail.tests.tests
         echo Starting analysis tests at `date`
-        coverage run -a -m pyspedas.analysis.tests.tests
+        pdm run coverage run -a -m pyspedas.analysis.tests.tests
         echo Starting analysis wavpol tests at `date`
-        coverage run -a -m pyspedas.analysis.tests.test_twavpol
+        pdm run coverage run -a -m pyspedas.analysis.tests.test_twavpol
         echo Starting analysis wavelet tests at `date`
-        coverage run -a -m  pyspedas.analysis.tests.test_wavelet
+        pdm run coverage run -a -m  pyspedas.analysis.tests.test_wavelet
         echo Starting analysis magnetic nulls tests at `date`
-        coverage run -a -m pyspedas.analysis.tests.test_magnetic_nulls
+        pdm run coverage run -a -m pyspedas.analysis.tests.test_magnetic_nulls
         echo Starting fast tests at `date`
-        coverage run -a -m pyspedas.projects.fast.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.fast.tests.tests
         echo Starting omni tests at `date`
-        coverage run -a -m pyspedas.projects.omni.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.omni.tests.tests
         echo Starting themis tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests
         echo Starting goes tests at `date`
-        coverage run -a -m pyspedas.projects.goes.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.goes.tests.tests
         echo Starting mica tests at `date`
-        coverage run -a -m pyspedas.projects.mica.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.mica.tests.tests
         echo Starting ulysses tests at `date`
-        coverage run -a -m pyspedas.projects.ulysses.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.ulysses.tests.tests
         echo Starting solo tests at `date`
-        coverage run -a -m pyspedas.projects.solo.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.solo.tests.tests
         echo Starting kyoto tests at `date`
-        coverage run -a -m pyspedas.projects.kyoto.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.kyoto.tests.tests
         echo Starting swarm tests at `date`
-        coverage run -a -m pyspedas.projects.swarm.tests.tests
+        pdm run coverage run -a -m pyspedas.projects.swarm.tests.tests
         echo Starting themis_check_args tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests_themis_check_args
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests_themis_check_args
         echo Starting themis autoload support tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.autoload_support_tests
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.autoload_support_tests
         echo Starting themis cal_fit tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests_cal_fit
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests_cal_fit
         echo Starting themis dsl_cotrans tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests_dsl_cotrans
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests_dsl_cotrans
         echo Starting themis lunar_cotrans tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests_lunar_cotrans
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests_lunar_cotrans
         echo Starting themis spinmodel tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests_spinmodel
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests_spinmodel
         echo Starting themis state tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests_state
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests_state
         echo Starting themis scpot2dens tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.tests_scpot2dens
+        pdm run coverage run -a -m pyspedas.projects.themis.tests.tests_scpot2dens
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space after all tests:"
@@ -367,7 +367,7 @@ jobs:
         mv __repo_pyspedas pyspedas
 
         echo "Producing coverage report"
-        coverage xml --debug=pathmap
+        pdm run coverage xml --debug=pathmap
         grep avg_data coverage.xml
 
     - name: Upload to Coveralls
