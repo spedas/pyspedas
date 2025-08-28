@@ -7,7 +7,7 @@ name = "pyspedas"
 version = "2.0.0a"
 description = "Python Space Physics Environment Data Analysis Software (pySPEDAS)"
 readme = {file = "README.md", content-type = "text/markdown"}
-requires-python = ">=3.9"
+requires-python = ">=3.9,<=3.13"
 license = "MIT"
 authors = [
     {name = "Jim Lewis", email = "jwl@ssl.berkeley.edu"},
@@ -119,19 +119,20 @@ include-package-data = true
 
 # --- End-user selectable extras (go into wheel metadata) ---
 [project.optional-dependencies]
-mth5  = ["mth5","obspy"]
+mth5  = ["mth5","obspy", "mt-metadata"]
 vires = ["viresclient"]
 maps  = ["basemap"]  # example marker
 
 # Optionally, a meta extra that groups several features:
-all = [
-  "mth5","obspy","viresclient","maps"
-]
+all = ["mth5","obspy","mt-metadata","viresclient","basemap"]
 
 # --- Developer groups (don’t ship in wheel metadata) ---
 [tool.pdm.group.dev.dependencies]
-
-
-[tool.pdm.group.test.dependencies]
+lint = ["ruff", "flake8"]
+doc = ["sphinx>=1.7.6","sphinx-rtd-theme"]
+jupyter = ["jupyter", "nbdime"]
+depend = ["uv"]
+test = ["moto[server]", "coveralls", "build"]
+all = ["ruff", "flake8", "jupyter", "nbdime", "sphinx>=1.7.6", "sphinx-rtd-theme", "uv", "moto[server]", "coveralls", "build"]
 
 
