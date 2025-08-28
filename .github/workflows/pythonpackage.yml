@@ -30,7 +30,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install pdm
           # Use the runner's Python installation, not a venv
+          echo "python: $(which python)"
           pdm use -f "$(which python)"
+          pdm config python.use_venv False
           pdm install -G "mth5,maps,vires,lint,test,setup"
           python -m build
           pip install dist/*.whl
