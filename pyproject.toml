@@ -91,7 +91,6 @@ dependencies = [
     "pywavelets>=1.4.1",
     "astropy>=5.3.1",
     "hapiclient>=0.2.2",
-    "viresclient>=0.11.2",
     "fsspec>=2023.9.0",
     "s3fs>=2023.9.0",
     "aioboto3>=11.1.1",
@@ -117,3 +116,22 @@ include-package-data = true
 "pyspedas.projects.mms.mec_tools" = ["*.png"]
 "pyspedas.projects.elfin.epd" = ["el*_epde_cal_data.txt"]
 "pyspedas.projects.elfin.tests" = ["test_epde_cal_data.txt"]
+
+# --- End-user selectable extras (go into wheel metadata) ---
+[project.optional-dependencies]
+mth5  = ["mth5","obspy"]
+vires = ["viresclient"]
+maps  = ["basemap"]  # example marker
+
+# Optionally, a meta extra that groups several features:
+all = [
+  "mth5","obspy","viresclient","maps"
+]
+
+# --- Developer groups (don’t ship in wheel metadata) ---
+[tool.pdm.group.dev.dependencies]
+
+
+[tool.pdm.group.test.dependencies]
+
+
