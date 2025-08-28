@@ -32,10 +32,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install pdm
           pdm install -dG "lint,test,setup"
+          ./.venv/bin/activate
+          echo "python: ${which python)
+          python -m build
+          pip install dist/*.whl
+          python -m pyspedas.projects.mms.tests.setup_tests
           exit 1
-          pdm run python -m build
-          pdm run pip install dist/*.whl
-          pdm run python -m pyspedas.projects.mms.tests.setup_tests
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       env:
