@@ -31,13 +31,12 @@ jobs:
           echo working dir: ${working_dir}
           python -m pip install --upgrade pip
           pip install pdm
-          pdm install -dG "lint,test,setup"
-          ./.venv/bin/activate
+          pdm install -dG lint -dG test -dG setup
+          source .venv/bin/activate
           echo "python: ${which python)
           python -m build
           pip install dist/*.whl[vires,maps,mth5]
           python -m pyspedas.projects.mms.tests.setup_tests
-          exit 1
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       env:
@@ -71,6 +70,7 @@ jobs:
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |
+        source .venv/bin/activate
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --exclude '*venv*','build','erg' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
@@ -84,6 +84,7 @@ jobs:
     - name: Sanity check import location
       shell: bash
       run: |
+        source .venv/bin/activate
         pdm run python - <<'PY'
         import pyspedas, pathlib, sys
         p = pathlib.Path(pyspedas.__file__).resolve()
@@ -92,7 +93,7 @@ jobs:
         print("sys.path[0]:", sys.path[0])
         assert "site-packages" in str(p), f"Still importing from repo: {p}"
         PY
-
+        exit 1
     - name: Test with unittest
       if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev'
       env:
@@ -128,6 +129,7 @@ jobs:
         ST5_DATA_DIR: st5_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
+        source .venv/bin/activate
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space prior to starting tests:"
