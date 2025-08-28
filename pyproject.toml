@@ -7,7 +7,7 @@ name = "pyspedas"
 version = "2.0.0a"
 description = "Python Space Physics Environment Data Analysis Software (pySPEDAS)"
 readme = {file = "README.md", content-type = "text/markdown"}
-requires-python = ">=3.9,<=3.13"
+requires-python = ">=3.9,<3.14"
 license = "MIT"
 authors = [
     {name = "Jim Lewis", email = "jwl@ssl.berkeley.edu"},
@@ -124,7 +124,7 @@ mth5  = ["mth5","obspy", "mt-metadata"]
 vires = ["viresclient"]
 maps  = ["basemap"]  # example marker
 
-# --- Development dependencies, not in wheel metadata, for PySPEDAS devs, CI workflows, etc
+# --- Development dependencies, not in wheel metadata, for PySPEDAS devs, CI workflows, etcmth5,
 [dependency-groups]
 lint = [
     "ruff>=0.12.10",
