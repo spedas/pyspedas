@@ -1,6 +1,6 @@
 name: quick_tests
 
-on: [workflow_dispatch]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
@@ -23,60 +23,90 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies (Linux)
       run: |
+          working_dir=$(pwd)
+          echo working dir: ${working_dir}
+          echo "Installing pip and pdm"
           python -m pip install --upgrade pip
-          pip install build
-          pip install coveralls
-          pip install mt-metadata
-          pip install obspy
-          pip install 'mth5>=0.4.9'
-          pip install 'moto[server]'
+          pip install pdm
+          echo "Installing lint, setup, and test dependencies only"
+          pdm install -dG lint -dG test -dG setup --no-default
+          echo "Activating venv created by pdm"
+          source .venv/bin/activate
+          echo "python: $(which python)"
+          echo "Building pyspedas sdist and wheel"
           python -m build
-          pip install dist/*.whl
+          wheelbase=$(echo dist/*.whl)
+          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
+          pip install ${wheelbase}
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       run: |
+          working_dir=$(pwd)
+          echo working dir: ${working_dir}
+          echo "Installing pip and pdm"
           python -m pip install --upgrade pip
-          pip install build
-          pip install coveralls
-          pip install mt-metadata
-          pip install obspy
-          pip install 'mth5>=0.4.9'
-          pip install 'moto[server]'
-          python -m build        
-          pip install dist/*.whl
+          pip install pdm
+          echo "Installing lint, setup, and test dependencies only"
+          pdm install -dG lint -dG test -dG setup --no-default
+          echo "Activating venv created by pdm"
+          source .venv/bin/activate
+          echo "python: $(which python)"
+          echo "Building pyspedas sdist and wheel"
+          python -m build
+          wheelbase=$(echo dist/*.whl)
+          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
+          pip install ${wheelbase}
       if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
       run: |
+          working_dir=$(pwd)
+          echo working dir: ${working_dir}
+          echo "Installing pip and pdm"
           python -m pip install --upgrade pip
-          pip install build
-          pip install coveralls
-          pip install mt-metadata
-          pip install obspy
-          pip install 'mth5>=0.4.9'
-          pip install 'moto[server]'
+          pip install pdm
+          echo "Installing lint, setup, and test dependencies only"
+          pdm install -dG lint -dG test -dG setup --no-default
+          echo "Activating venv created by pdm"
+          source .venv/bin/activate
+          echo "python: $(which python)"
+          echo "Building pyspedas sdist and wheel"
           python -m build
-          pip install dist/*.whl
+          wheelbase=$(echo dist/*.whl)
+          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
+          pip install ${wheelbase}
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |
-        pip install flake8
+        source .venv/bin/activate
+        #pip install flake8
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
+        flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
         # exit-zero treats all errors as warnings. 
-        flake8 . --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
+        flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
+    - name: Lint with ruff
+      run: |
+        source .venv/bin/activate
+        # stop the build if there are Python syntax errors or undefined names
+        ruff check .  --select=E9,F63,F7,F82 --statistics
+        # exit-zero treats all errors as warnings. 
+        ruff check . --exit-zero --statistics --line-length=127 -- --max-complexity=10
     - name: Hide the repo copy so imports use site-packages
       run: |
         # keep it around for debugging; delete instead if you want the space back
         if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
 
     - name: Sanity check import location
-      shell: python
+      shell: bash
       run: |
+        source .venv/bin/activate
+        python - <<'PY'
         import pyspedas, pathlib, sys
         p = pathlib.Path(pyspedas.__file__).resolve()
+        print("sys.executable:", sys.executable)
         print("pyspedas import path:", p)
         print("sys.path[0]:", sys.path[0])
         assert "site-packages" in str(p), f"Still importing from repo: {p}"
+        PY
     - name: Test with unittest
       if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' ||  github.ref == 'refs/heads/pyspedas_2_0_dev'
       env:
@@ -110,6 +140,7 @@ jobs:
         ST5_DATA_DIR: st5_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
+        source .venv/bin/activate
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space prior to starting tests:"
