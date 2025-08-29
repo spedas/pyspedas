@@ -60,13 +60,16 @@ If you don't think you'll use those features, you can just install the core PySP
 
 If you do want to use any of those features, you can install them with pip like this:
 
+(The square brackets are special characters in some shells, so be sure to use quotes around the argument
+if you're installing pyspedas with extras.)
+
 .. code-block:: bash
 
     # Install all the extras
-    pip install pyspedas[mth5,maps,vires]
+    pip install 'pyspedas[mth5,maps,vires]'
 
     # Install basemap only, to support EICS and SECS maps
-    pip install pyspedas[maps]
+    pip install 'pyspedas[maps]'
 
 If you're one of the unlucky users who are having difficulty installing these dependencies on your
 platform, there is a workaround that might let you use those features anyway: you can try
