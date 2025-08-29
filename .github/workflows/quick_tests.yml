@@ -38,8 +38,9 @@ jobs:
           echo "Building pyspedas sdist and wheel"
           python -m build
           wheelbase=$(echo dist/*.whl)
+          extras='[mth5]'
           echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}
+          pip install ${wheelbase}${extras}
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       run: |
