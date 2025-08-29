@@ -18,3 +18,4 @@ matplotlib>=3.6.2
 xarray
 sphinx>=1.7.6
 sphinx-rtd-theme
+tomli
