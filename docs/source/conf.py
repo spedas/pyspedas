@@ -14,18 +14,28 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
+import tomli
 
 import pyspedas
 import pyspedas.cotrans_tools.cotrans
 
 # -- Project information -----------------------------------------------------
 
+try:
+    with open("../../pyproject.toml", "rb") as f:
+        toml_dict = tomli.load(f)
+
+    pyproj_version = toml_dict['project']['version']
+except (KeyError, FileNotFoundError):
+    pyproj_version = 'unknown'
+
+print(f"Pyproj_version: {pyproj_version}")
 project = 'PySPEDAS'
 copyright = '2018-2025, Regents of the University of California, unless otherwise indicated'
 author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
-release = '1.7.28'
+release = pyproj_version
 
 
 # -- General configuration ---------------------------------------------------
