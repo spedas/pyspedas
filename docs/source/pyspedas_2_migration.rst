@@ -66,10 +66,13 @@ if you're installing pyspedas with extras.)
 .. code-block:: bash
 
     # Install all the extras
-    pip install 'pyspedas[mth5,maps,vires]'
+    pip install 'pyspedas[all]'
 
     # Install basemap only, to support EICS and SECS maps
     pip install 'pyspedas[maps]'
+
+    # Install maps and mth5 extras, but not vires
+    pip install 'pyspedas[maps,mth5]'
 
 If you're one of the unlucky users who are having difficulty installing these dependencies on your
 platform, there is a workaround that might let you use those features anyway: you can try
