@@ -33,6 +33,8 @@ jobs:
           echo "Activating venv created by pdm"
           source .venv/bin/activate
           echo "python: $(which python)"
+          echo "Installing coverage"
+          pip install coverage
           echo "Building pyspedas sdist and wheel"
           python -m build
           wheelbase=$(echo dist/*.whl)
