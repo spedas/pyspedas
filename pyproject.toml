@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyspedas"
-version = "2.0.0a"
+version = "2.0.2a1"
 description = "Python Space Physics Environment Data Analysis Software (pySPEDAS)"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.9"
@@ -151,6 +151,7 @@ setup = [
     "build>=1.3.0",
     "wheel>=0.45.1",
     "pip>=25.2",
+    "pdm-bump>=0.9.12",
 ]
 
 # Ruff linter configuration -- mostly the defaults, with just a few changes
