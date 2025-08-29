@@ -42,7 +42,7 @@ jobs:
           echo "Building pyspedas sdist and wheel"
           python -m build
           wheelbase=$(echo dist/*.whl)
-          extras='[vires,maps,mth5]'
+          extras='[all]'
           wheel_extras=${extras}
           echo "Installing pyspedas, pyspedas dependencies and extras in venv"
           pip install ${wheelbase}${wheel_extras}
