@@ -8,10 +8,10 @@ Creates a new tplot variable as the time average of original.
 """
 import logging
 import numpy as np
-from pyspedas.tplot_tools import store_data, get_data, tnames, time_float
+from pyspedas.tplot_tools import store_data, get_data, tnames, time_double
 
 
-def avg_data(names, trange=[], res=None, width=None,
+def avg_data(names, trange=None, res=None, width=None,
              newname=None, suffix=None, overwrite=False):
     """
     Get a new tplot variable with averaged data.
@@ -49,11 +49,15 @@ def avg_data(names, trange=[], res=None, width=None,
 
     old_names = tnames(names)
 
+    if res is None and width is None:
+        res = 60  # Default is 60 sec
+
     if names is None or len(old_names) < 1:
         logging.error('avg_data: No valid tplot names were provided.')
         return
 
     if suffix is None:
+        # IDL SPEDAS default suffix is '_avg'
         suffix = '-avg'
 
     if overwrite:
@@ -77,7 +81,7 @@ def avg_data(names, trange=[], res=None, width=None,
         metadata = get_data(old, metadata=True)
 
         time = d[0]
-        time = np.array(time_float(time))
+        time = np.array(time_double(time))
         time_len = len(time)
 
         data = np.array(d[1])
@@ -94,30 +98,28 @@ def avg_data(names, trange=[], res=None, width=None,
         # Data may also contain v, v1, v2, v3
         process_energies = []
         retain_energies = []
-        for i in range(len(d)):
+        for i, lend in enumerate(d):
             if i > 1:
-                if len(d[i]) == len(time):
+                if len(lend) == len(time):
                     process_energies.append(i)
                 else:
                     # These will retained in the results as-is
                     retain_energies.append(i)
+
         process_v = {}
         for i in process_energies:
             process_v[d._fields[i]] = []
 
         # Find start and end times
-        if trange is not None:
-            trange = time_float(trange)
-        if len(trange) == 2 and trange[0] < trange[1]:
-            time_start = trange[0]
-            time_end = trange[1]
+        if trange is not None and len(trange) == 2 and trange[0] < trange[1]:
+            time_start = time_double(trange[0])
+            time_end = time_double(trange[1])
+        elif res is not None:
+            # Define start and end times similar to IDL
+            time_start = np.floor(time[0] / res) * res
+            time_end = np.floor(time[-1] / res + 1) * res
         else:
             time_start = time[0]
-            time_end = time[-1]
-
-        if time_start < time[0]:
-            time_start = time[0]
-        if time_end > time[-1]:
             time_end = time[-1]
 
         # Check for empty set
@@ -127,22 +129,19 @@ def avg_data(names, trange=[], res=None, width=None,
             continue
 
         # Find time bins
-
         time_duration = time_end - time_start
-        if res is None and width is None:
-            res = 60  # Default is 60 sec
 
         if res is not None:
             # Given the resolution, compute bins
             dt = res
-            bin_count = int(time_duration/dt)
-            ind = np.floor((time-time_start)/dt)
+            bin_count = int(time_duration / dt)
+            ind = np.floor((time - time_start) / dt)
         else:
             # Given the width, compute bins
             bins = np.arange(count_in_range)
-            ind = np.floor(bins/width)
-            bin_count = int(count_in_range/width)
-            dt = time_duration/bin_count
+            ind = np.floor(bins / width)
+            bin_count = int(count_in_range / width)
+            dt = time_duration / bin_count
 
         if bin_count < 2:
             msg = 'avg_data: too few bins. Bins=' + str(bin_count) \
@@ -151,8 +150,8 @@ def avg_data(names, trange=[], res=None, width=None,
             continue
 
         # Split time into bins
-        mdt = (time_end-time_start)/dt
-        if (mdt-int(mdt) >= 0.5):
+        mdt = (time_end - time_start) / dt
+        if (mdt - int(mdt) >= 0.5):
             max_ind = np.ceil(mdt)
         else:
             max_ind = np.floor(mdt)
@@ -162,8 +161,8 @@ def avg_data(names, trange=[], res=None, width=None,
         ind[w2] = -1
 
         # Find new times
-        mx = np.max(ind)+1
-        new_times = (np.arange(mx)+0.5)*dt + time_start
+        mx = np.max(ind) + 1
+        new_times = (np.arange(mx) + 0.5) * dt + time_start
 
         # Find new data
         new_data = []
@@ -175,23 +174,26 @@ def avg_data(names, trange=[], res=None, width=None,
             isempty = True if len(idx0) < 1 else False
 
             if dim1 < 2:
-                nd0 = np.nan if isempty else np.average(data[idx0])
+                nd0 = np.nan if isempty else np.nanmean(data[idx0])
             else:
                 nd0 = []
                 for j in range(dim1):
-                    nd0.append(np.nan) if isempty else nd0.append(np.average(data[idx0, j]))
+                    tmp = np.nan if isempty else np.nanmean(data[idx0, j])
+                    nd0.append(tmp)
+
             new_data.append(nd0)
 
-            for i in process_energies:
+            for ii in process_energies:
                 # The following processes v, v1, v2, v3
-                dime1 = len(d[i][0])
+                dime1 = len(d[ii][0])
                 if dime1 < 2:
-                    nd1 = np.nan if isempty else np.average(d[i][idx0])
+                    nd1 = np.nan if isempty else np.nanmean(d[ii][idx0])
                 else:
                     nd1 = []
                     for j in range(dime1):
-                        nd1.append(np.nan) if isempty else nd1.append(np.average(d[i][idx0, j]))
-                process_v[d._fields[i]].append(nd1)
+                        tmp = np.nan if isempty else np.nanmean(d[ii][idx0, j])
+                        nd1.append(tmp)
+                process_v[d._fields[ii]].append(nd1)
 
         # Create the new tplot variable
         data_dict = {'x': new_times, 'y': new_data}
@@ -202,6 +204,6 @@ def avg_data(names, trange=[], res=None, width=None,
 
         store_data(new, data=data_dict, attr_dict=metadata)
 
-        logging.info('avg_data was applied to: ' + new)
+        logging.info('avg_data was applied to: %s', new)
 
     return n_names
