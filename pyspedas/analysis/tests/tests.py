@@ -2,6 +2,7 @@
 
 import unittest
 from unittest.mock import patch
+from numpy.testing import assert_allclose
 import importlib
 import sys
 import pyspedas
@@ -280,8 +281,42 @@ class AnalysisTestCases(BaseTestCase):
         avg_data('test1', res=1.e8)  # Test res error
         d2 = get_data('test2')
         self.assertTrue(len(d2) > 0)
-        self.assertTrue(d2[1][-1][0] == 19.0)
+        self.assertTrue(d2[1][-1][0] == 15.0)
         self.assertTrue(len(d2[2]) == len(d2[0]))
+
+    def test_avg_data_idl(self):
+        # Compare data with IDL avg_data 
+        # Requires file: avg_data_validate.tplot from
+        #   https://github.com/spedas/test_data
+
+            # Download tplot files
+        
+        from pyspedas import download
+        remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
+        remote_name = 'analysis_tools/avg_data_validate.tplot'
+        datafile = download(remote_file=remote_name,
+                            remote_path=remote_server,
+                            no_download=False)
+
+        trange = ['2010-02-13 00:00:00', '2010-02-13 11:59:59']
+        probe = 'b'
+        pyspedas.projects.themis.esa(trange = trange, probe=probe)
+        var = 'thb_peir_en_eflux'
+        vara = var + '-avg'
+        pyspedas.time_clip(var, trange[0], trange[1], overwrite=True)
+        pyspedas.avg_data(var)
+
+        # Get IDL data
+        pyspedas.tplot_restore(datafile[0])
+        varidl = var + '_avg'
+
+        # Compare IDL to python results
+        d1 = pyspedas.get_data(varidl)
+        d2 = pyspedas.get_data(vara)
+
+        assert_allclose(d1[0], d2[0], atol=1e-5, rtol=1e-5, equal_nan=True)
+        assert_allclose(d1[1], d2[1], atol=1e-5, rtol=1e-5, equal_nan=True)
+        assert_allclose(d1[2], d2[2], atol=1e-5, rtol=1e-5, equal_nan=True)
 
     def test_clean_spikes(self):
         """Test clean_spikes."""
