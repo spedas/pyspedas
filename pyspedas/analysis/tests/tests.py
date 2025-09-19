@@ -288,6 +288,8 @@ class AnalysisTestCases(BaseTestCase):
         # Compare data with IDL avg_data 
         # Requires file: avg_data_validate.tplot from
         #   https://github.com/spedas/test_data
+        # The SPEDAS script that creates the file: general/tools/python_validate/avg_data_python_validate.pro
+
 
             # Download tplot files
         

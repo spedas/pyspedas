@@ -15,7 +15,7 @@ class LunCotransDataValidation(unittest.TestCase):
     def setUpClass(cls):
         """
         IDL Data has to be downloaded to perform these tests
-        The SPEDAS script that creates the file: projects/themis/state/cotrans/thm_cotrans_validate.pro
+        The SPEDAS script that creates the file: general/tools/python_validate/thm_cotrans_validate.pro
         """
         from pyspedas.utilities.download import download
         from pyspedas.projects.themis.config import CONFIG

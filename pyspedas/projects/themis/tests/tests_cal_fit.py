@@ -15,7 +15,7 @@ class TestCalFitDataValidation(unittest.TestCase):
         """
         IDL Data has to be downloaded to perform these tests
         The IDL script that creates data file:
-        https://github.com/spedas/pyspedas-validation/blob/cal_fit/src/themis/validation_files/thm_load_fit_validation_files.pro
+        general/tools/python_validate/thm_load_fit_validation_files.pro
         """
         from pyspedas.utilities.download import download
         from pyspedas.projects.themis.config import CONFIG
@@ -130,7 +130,11 @@ class TestCalFitEfsNoCalDataValidation(unittest.TestCase):
     """Tests of the data been identical to SPEDAS (IDL)."""
 
     def setUp(self):
-        """ IDL Data has to be downloaded to perform these tests"""
+        """
+        IDL Data has to be downloaded to perform these tests
+        The IDL script that creates data file:
+        general/tools/python_validate/thm_load_fit_validation_files.pro
+        """
         from pyspedas.utilities.download import download
         from pyspedas.projects.themis.config import CONFIG
 

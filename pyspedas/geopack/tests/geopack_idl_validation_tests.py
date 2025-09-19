@@ -49,7 +49,7 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
     def setUpClass(cls):
         """
         IDL Data has to be downloaded to perform these tests
-        The SPEDAS script that creates the file: projects/themis/state/cotrans/thm_cotrans_validate.pro
+        The SPEDAS script that creates the file: general/tools/python_validate/geopack_validate.pro
         """
         from pyspedas.utilities.download import download
         from pyspedas.projects.themis.config import CONFIG

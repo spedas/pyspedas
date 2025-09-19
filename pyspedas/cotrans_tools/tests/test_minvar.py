@@ -25,6 +25,8 @@ class TestMinvar(unittest.TestCase):
         rng = np.random.default_rng(seed=31415)
         cls.rdata = rng.random((10, 3))
 
+        # The SPEDAS script that creates the file: general/tools/python_validate/minvar_python_validate.pro
+
         # Download tplot files
         remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
         remote_name = 'cotrans_tools/mva_python_validate.tplot'

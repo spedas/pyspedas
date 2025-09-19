@@ -27,7 +27,7 @@ class TestFac(unittest.TestCase):
 
         # Download tplot files
         # Comparison data was generated using both thm_fac_matrix_make and fac_matrix_make, using the script
-        # general/cotrans/special/fac/fac_matrix_make_python_validate
+        # general/tools/python_validate/fac_matrix_make_python_validate
         remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
         remote_name = 'cotrans_tools/fac_python_validate.tplot'
         datafile = download(remote_file=remote_name,

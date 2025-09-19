@@ -26,6 +26,8 @@ def wavetest(noplot=False):
     """
 
     # Download tplot files
+    # The SPEDAS script that creates the file: general/tools/python_validate/wavelet_python_validate.pro
+
     remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
     remote_name = 'analysis_tools/sst_nino3.dat'
     datafile = download(remote_file=remote_name,

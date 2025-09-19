@@ -11,7 +11,7 @@ class Themis_StateDataTests(unittest.TestCase):
     def setUpClass(cls):
         """
         IDL Data has to be downloaded to perform these tests
-        The IDL script that creates data file: projects/themis/state/thm_state_validate.pro
+        The IDL script that creates data file: general/tools/python_validate/thm_state_validate.pro
         """
         from pyspedas.utilities.download import download
         from pyspedas.projects.themis.config import CONFIG

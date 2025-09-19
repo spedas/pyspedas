@@ -334,6 +334,7 @@ class CotransTestCases(unittest.TestCase):
     def test_geogsm_geopack(self):
         # Originally reported by Bob Weigel -- PySPEDAS GEO->GSM cotrans had weird artifacts at year boundaries
         # compared to Geopack GEO->GSM transform and other Python packages
+        # The SPEDAS script that creates the file: general/tools/python_validate/cotrans_gsm_test.pro
         remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
         remote_name = 'cotrans_tools/geogsm_gp_test.tplot'
         datafile = pyspedas.download(remote_file=remote_name,

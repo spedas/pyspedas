@@ -59,8 +59,10 @@ class TestLMNTransform(unittest.TestCase):
         # Set to true when running locally
         localfile = False  
         # Set to your local directory, if running locally
-        localdir = "C:/work/idl_working/"  
-        
+        localdir = "C:/work/idl_working/"
+
+        # The SPEDAS script that creates the file: general/tools/python_validate/lmn_python_validate.pro
+
         # Github files
         remote_server = "https://github.com/spedas/test_data/raw/refs/heads/main/"
         filename_solarwind = "solarwind_python_validate.tplot"
