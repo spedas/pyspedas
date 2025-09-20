@@ -5,7 +5,7 @@ from geopack import geopack
 
 from pyspedas.tplot_tools import data_exists,del_data,cdf_to_tplot,tplot,subtract,tlimit
 import pyspedas
-from pyspedas.tplot_tools import time_double
+from pyspedas.tplot_tools import time_double, tplot_restore
 from pyspedas.geopack import tt89
 from pyspedas.geopack import tt96
 from pyspedas.geopack import tt01
@@ -21,6 +21,8 @@ from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, 
 trange = ['2015-10-16', '2015-10-17']
 
 display=False
+
+
 
 def get_params(model, g_variables=None):
     support_trange = [time_double(trange[0])-60*60*24, 
@@ -62,7 +64,7 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
 
         # Download tplot files
         remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
-        remote_name = 'analysis_tools/geopack_idl_validate.cdf'
+        remote_name = 'analysis_tools/geopack_idl_validate_multi_gp14.tplot'
 
         datafile = download(remote_file=remote_name,
                             remote_path=remote_server,
@@ -74,7 +76,12 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
 
         del_data('*')
         filename = datafile[0]
-        cdf_to_tplot(filename)
+        #filename = '/tmp/geopack_idl_validate.cdf'
+        #cdf_to_tplot(filename)
+        #filename = '/tmp/geopack_idl_validate_multi_gp13.tplot'
+        #filename = '/tmp/geopack_idl_validate_multi_gp14.tplot'
+        tplot_restore(filename)
+
         # Input parameters
         cls.iopt=3
         cls.kp=2.0
@@ -90,6 +97,70 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         cls.w4 = 30.0
         cls.w5 = 18.5
         cls.w6 = 60.0
+
+    def model_circ_data_tt01(self, year: str):
+        tv_pos = get_data(f'circle_magpoles_5re_{year}_km')
+        t1 = tv_pos.times[0]
+        t2 = tv_pos.times[-1]
+        params = np.zeros([2, 10])
+        params[:, 0] = self.pdyn
+        params[:, 1] = self.dsti
+        params[:, 2] = self.yimf
+        params[:, 3] = self.zimf
+        params[:, 4] = self.g1
+        params[:, 5] = self.g2
+        store_data('parmod', data={'x': [t1, t2], 'y': params})
+        tinterpol('parmod', f'circle_magpoles_5re_{year}_km', method='nearest', newname='parmod_interp')
+        tt01(f'circle_magpoles_5re_{year}_km', parmod='parmod_interp')
+        subtract(f'tst5re_{year}_bt01', f'circle_magpoles_5re_{year}_km_bt01', f'bt01_{year}_diff')
+        # tkm2re('tha_state_pos_gsm')
+        # tvectot('tha_state_pos_gsm_re',join_component=True)
+        tplot([f'tst5re_{year}_bt01', f'circle_magpoles_5re_{year}_km_bt01', f'bt01_{year}_diff'], display=display,
+              save_png=f'circ_t01_{year}_diffs')
+
+    def model_circ_data_tts04(self, year:str):
+        tv_pos=get_data(f'circle_magpoles_5re_{year}_km')
+        t1=tv_pos.times[0]
+        t2=tv_pos.times[-1]
+        params = np.zeros([2,10])
+        params[:,0] = self.pdyn
+        params[:,1] = self.dsti
+        params[:,2] = self.yimf
+        params[:,3] = self.zimf
+        params[:,4] = self.w1
+        params[:,5] = self.w2
+        params[:,6] = self.w3
+        params[:,7] = self.w4
+        params[:,8] = self.w5
+        params[:,9] = self.w6
+        store_data('parmod',data={'x':[t1,t2],'y':params})
+        tinterpol('parmod', f'circle_magpoles_5re_{year}_km', method='nearest',newname='parmod_interp')
+        tts04(f'circle_magpoles_5re_{year}_km', parmod='parmod_interp')
+        py_b = get_data(f'circle_magpoles_5re_{year}_km_bts04')
+        idl_b = get_data(f'tst5re_{year}_bts04')
+        subtract(f'tst5re_{year}_bts04',f'circle_magpoles_5re_{year}_km_bts04',f'bts04_{year}_diff')
+        tplot([f'tst5re_{year}_bts04',f'circle_magpoles_5re_{year}_km_bts04',f'bts04_{year}_diff'], display=display, save_png=f'circ_ts04_{year}_diffs')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def model_circ_data_tt96(self, year:str):
+        tv_pos=get_data(f'circle_magpoles_5re_{year}_km')
+        t1=tv_pos.times[0]
+        t2=tv_pos.times[-1]
+        params = np.zeros([2,10])
+        params[:,0] = self.pdyn
+        params[:,1] = self.dsti
+        params[:,2] = self.yimf
+        params[:,3] = self.zimf
+        store_data('parmod',data={'x':[t1,t2],'y':params})
+        tinterpol('parmod',f'circle_magpoles_5re_{year}',method='nearest',newname='parmod_interp')
+        tt96(f'circle_magpoles_5re_{year}_km', parmod='parmod_interp')
+        #tkm2re('tha_state_pos_gsm')
+        #tvectot('tha_state_pos_gsm_re',join_component=True)
+        subtract(f'tst5re_{year}_bt96',f'circle_magpoles_5re_{year}_km_bt96',f'bt96_{year}_diff')
+        tplot([f'tst5re_{year}_bt96',f'circle_magpoles_5re_{year}_km_bt96',f'bt96_{year}_diff'], display=display, save_png=f'circ_t96_{year}_diffs')
+        #tlimit(['2007-03-23/15:00','2007-03-23/17:00'])
+        #tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'], display=display)
+        tlimit(full=True)
 
     def test_tilt(self):
         tilt_times,tilt_vals = get_data('bt89_tilt')
@@ -136,27 +207,28 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         tlimit(full=True)
         assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
 
-    def test_tt96_circ(self):
-        tv_pos=get_data('circle_magpoles_5re_km')
-        t1=tv_pos.times[0]
-        t2=tv_pos.times[-1]
-        params = np.zeros([2,10])
-        params[:,0] = self.pdyn
-        params[:,1] = self.dsti
-        params[:,2] = self.yimf
-        params[:,3] = self.zimf
-        store_data('parmod',data={'x':[t1,t2],'y':params})
-        tinterpol('parmod','circle_magpoles_5re',method='nearest',newname='parmod_interp')
-        tt96('circle_magpoles_5re_km', parmod='parmod_interp')
-        #tkm2re('tha_state_pos_gsm')
-        #tvectot('tha_state_pos_gsm_re',join_component=True)
-        py_b = get_data('circle_magpoles_5re_km_bt96')
-        idl_b = get_data('tst5re_bt96')
-        subtract('tst5re_bt96','circle_magpoles_5re_km_bt96','bt96_diff')
-        tplot(['tst5re_bt96','circle_magpoles_5re_km_bt96','bt96_diff'], display=display, save_png='circ_t96_diffs')
-        #tlimit(['2007-03-23/15:00','2007-03-23/17:00'])
-        #tplot(['bt96','tha_state_pos_gsm_bt96','bt96_diff','tha_state_pos_gsm_re_tot'], display=display)
-        tlimit(full=True)
+    def test_tt96_circ_2026(self):
+        self.model_circ_data_tt96('2026')
+        py_b = get_data('circle_magpoles_5re_2026_km_bt96')
+        idl_b = get_data('tst5re_2026_bt96')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_tt96_circ_2024(self):
+        self.model_circ_data_tt96('2024')
+        py_b = get_data('circle_magpoles_5re_2024_km_bt96')
+        idl_b = get_data('tst5re_2024_bt96')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_tt96_circ_2019(self):
+        self.model_circ_data_tt96('2019')
+        py_b = get_data('circle_magpoles_5re_2019_km_bt96')
+        idl_b = get_data('tst5re_2019_bt96')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_tt96_circ_2014(self):
+        self.model_circ_data_tt96('2014')
+        py_b = get_data('circle_magpoles_5re_2014_km_bt96')
+        idl_b = get_data('tst5re_2014_bt96')
         assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
 
 
@@ -182,30 +254,6 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         tplot(['bt01','tha_state_pos_gsm_bt01','bt01_diff','tha_state_pos_gsm_re_tot'], display=display,save_png='t01_diffs')
         assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
 
-    def test_tt01_circ(self):
-        tv_pos=get_data('circle_magpoles_5re_km')
-        t1=tv_pos.times[0]
-        t2=tv_pos.times[-1]
-        params = np.zeros([2,10])
-        params[:,0] = self.pdyn
-        params[:,1] = self.dsti
-        params[:,2] = self.yimf
-        params[:,3] = self.zimf
-        params[:,4] = self.g1
-        params[:,5] = self.g2
-        store_data('parmod',data={'x':[t1,t2],'y':params})
-        tinterpol('parmod', 'circle_magpoles_5re_km', method='nearest',newname='parmod_interp')
-        tt01('circle_magpoles_5re_km', parmod='parmod_interp')
-        py_b = get_data('circle_magpoles_5re_km_bt01')
-        idl_b = get_data('tst5re_bt01')
-        subtract('tst5re_bt01','circle_magpoles_5re_km_bt01','bt01_diff')
-        #tkm2re('tha_state_pos_gsm')
-        #tvectot('tha_state_pos_gsm_re',join_component=True)
-        tplot(['tst5re_bt01','circle_magpoles_5re_km_bt01','bt01_diff'], display=display,save_png='circ_t01_diffs')
-        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
-
-
-
     def test_tts04(self):
         tv_pos=get_data('tha_state_pos_gsm')
         t1=tv_pos.times[0]
@@ -230,30 +278,54 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         tplot(['bts04','tha_state_pos_gsm_bts04','bts04_diff'], display=display, save_png='ts04_diffs')
         assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
 
-    def test_circ_tts04(self):
-        tv_pos=get_data('circle_magpoles_5re_km')
-        t1=tv_pos.times[0]
-        t2=tv_pos.times[-1]
-        params = np.zeros([2,10])
-        params[:,0] = self.pdyn
-        params[:,1] = self.dsti
-        params[:,2] = self.yimf
-        params[:,3] = self.zimf
-        params[:,4] = self.w1
-        params[:,5] = self.w2
-        params[:,6] = self.w3
-        params[:,7] = self.w4
-        params[:,8] = self.w5
-        params[:,9] = self.w6
-        store_data('parmod',data={'x':[t1,t2],'y':params})
-        tinterpol('parmod', 'circle_magpoles_5re_km', method='nearest',newname='parmod_interp')
-        tts04('circle_magpoles_5re_km', parmod='parmod_interp')
-        py_b = get_data('circle_magpoles_5re_km_bts04')
-        idl_b = get_data('tst5re_bts04')
-        subtract('tst5re_bts04','circle_magpoles_5re_km_bts04','bts04_diff')
-        tplot(['tst5re_bts04','circle_magpoles_5re_km_bts04','bts04_diff'], display=display, save_png='circ_ts04_diffs')
+
+    def test_circ_tts04_2026(self):
+        self.model_circ_data_tts04('2026')
+        py_b = get_data('circle_magpoles_5re_2026_km_bts04')
+        idl_b = get_data('tst5re_2026_bts04')
         assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
 
+    def test_circ_tts04_2024(self):
+        self.model_circ_data_tts04('2024')
+        py_b = get_data('circle_magpoles_5re_2024_km_bts04')
+        idl_b = get_data('tst5re_2024_bts04')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_circ_tts04_2019(self):
+        self.model_circ_data_tts04('2019')
+        py_b = get_data('circle_magpoles_5re_2019_km_bts04')
+        idl_b = get_data('tst5re_2019_bts04')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_circ_tts04_2014(self):
+        self.model_circ_data_tts04('2014')
+        py_b = get_data('circle_magpoles_5re_2014_km_bts04')
+        idl_b = get_data('tst5re_2014_bts04')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_circ_tt01_2026(self):
+        self.model_circ_data_tt01('2026')
+        py_b = get_data('circle_magpoles_5re_2026_km_bt01')
+        idl_b = get_data('tst5re_2026_bt01')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_circ_tt01_2024(self):
+        self.model_circ_data_tt01('2024')
+        py_b = get_data('circle_magpoles_5re_2024_km_bt01')
+        idl_b = get_data('tst5re_2024_bt01')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_circ_tt01_2019(self):
+        self.model_circ_data_tt01('2019')
+        py_b = get_data('circle_magpoles_5re_2019_km_bt01')
+        idl_b = get_data('tst5re_2019_bt01')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
+
+    def test_circ_tt01_2014(self):
+        self.model_circ_data_tt01('2014')
+        py_b = get_data('circle_magpoles_5re_2014_km_bt01')
+        idl_b = get_data('tst5re_2014_bt01')
+        assert_allclose(py_b.y, idl_b.y, rtol=.001, atol=0.5)
 
 if __name__ == '__main__':
     unittest.main()
