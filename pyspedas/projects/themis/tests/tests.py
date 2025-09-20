@@ -146,6 +146,7 @@ class LoadTestCases(unittest.TestCase):
         vars = pyspedas.projects.themis.efi(trange=['2017-01-01','2017-01-02'], probe='a',time_clip=True, datatype='efw')
         self.assertTrue(data_exists('tha_efw_gse'))
 
+    @unittest.skip('Reprocesing needed')
     def test_load_l2_efp_data(self):
         """Load EFI L2 wave burst data"""
         vars = pyspedas.projects.themis.efi(trange=['2017-01-01','2017-01-02'], probe='a',time_clip=True, datatype='efp')
