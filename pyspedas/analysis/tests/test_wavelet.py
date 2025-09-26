@@ -1,6 +1,6 @@
 """Tests of waelet tool."""
 import pyspedas
-from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options, tplot_options, split_vec, join_vec, store_data
+from pyspedas.tplot_tools import get_data, tplot, tplot_rename, ylim, zlim, options, tplot_options, split_vec, join_vec, store_data, del_data, time_double
 import unittest
 from numpy.testing import assert_allclose
 import numpy as np
@@ -222,6 +222,67 @@ class TwaveletDataValidation(unittest.TestCase):
         # Plot 6 panels (x,y,z - IDL, python)
         tplot_options("title", "wav_data: IDL - Python comparison")
         tplot(all_vars, display=global_display, save_png="wav_data_test.png")        
+
+    def test_wav_data_keywords(self):
+        # Test various wav_data keywords
+        # using a synthetic sine wave dataset so that the test is fast and self-contained
+        
+        del_data()
+        t = np.arange(4000, dtype=float)
+        vtime = time_double('2010-01-01') + 10 * t
+
+        # Create a two-dimensional variable
+        var = 'sin_wav'
+        vdata = np.zeros((4000, 2), dtype=float)
+        vdata[:, 0] = np.cos(2 * np.pi * t / 32.)
+        vdata[:, 1] = np.sin(2 * np.pi * t / 64.)
+        store_data(var, data={'x': vtime, 'y': vdata})
+
+        # Test rbin, dimennum
+        wav_data(var, dimennum=1, rbin=4)
+        var1x = 'sin_wav(1)_wv_pow'
+        var1 = 'test_rbin'
+        tplot_rename(var1x, var1)
+        d = get_data(var1)
+        # Since rbin=4, length should be 1000
+        self.assertEqual(len(d[0]), 1000)
+
+        # Test trange
+        wav_data(var, dimennum=0, trange=[vtime[1000], vtime[2000]])
+        var2x = 'sin_wav(0)_wv_pow'
+        var2 = 'test_trange'
+        tplot_rename(var2x, var2)
+        d = get_data(var2)
+        # Since trange is 1001 points, length should be 1001
+        self.assertEqual(len(d[0]), 1001)
+
+        # Test resolution
+        wav_data(var, dimennum=0, resolution=8)
+        var3x = 'sin_wav(0)_wv_pow'
+        var3 = 'test_resolution'
+        tplot_rename(var3x, var3)
+        d = get_data(var3)
+        # Since resolution=8, length should be 500
+        self.assertEqual(len(d[0]), 500)
+
+        # Test prange
+        wav_data(var, dimennum=0, prange=[8, 60])
+        var4x = 'sin_wav(0)_wv_pow'
+        var4 = 'test_prange'
+        tplot_rename(var4x, var4)
+        d = get_data(var4)
+        # Period range should be within 8 to 60
+        p = np.array(1. / d[2])
+        print(p)
+        self.assertTrue(np.min(p) >= 8.0)
+        self.assertTrue(np.max(p) <= 60.0)
+        # In this case, the first p should be 8.0
+        self.assertAlmostEqual(np.min(p), 8.0, delta=0.01)
+
+        # Plot all results (optional)
+        vnames = pyspedas.tplot_names()
+        print(vnames)
+        tplot(vnames, display=global_display, save_png="wav_data_keywords.png")
 
     def test_store_data_singleton_v(self):
         times=[0.0,1.0,2.0]
