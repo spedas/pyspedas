@@ -119,14 +119,14 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_mgf_l2_mag_8sec_sm'))
         self.assertTrue('erg_mgf_l2_mag_8sec_sm' in mgf_vars)
 
-    @unittest.skip('Disabling, CDF variable names have changed')
+    #@unittest.skip('Disabling, CDF variable names have changed')
     def test_load_lepe_data(self):
         del_data()
         lepe_vars = pyspedas.projects.erg.lepe()
         self.assertTrue(data_exists('erg_lepe_l2_omniflux_FEDO'))
         self.assertTrue('erg_lepe_l2_omniflux_FEDO' in lepe_vars)
 
-    @unittest.skip('Disabling, CDF variable names have changed')
+    #@unittest.skip('Disabling, CDF variable names have changed')
     def test_load_lepe_3dflux(self):
         del_data()
         lepe_vars = pyspedas.projects.erg.lepe(datatype='3dflux')
@@ -134,7 +134,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('erg_lepe_l2_3dflux_FEDU' in lepe_vars)
 
 
-    @unittest.skip('Disabling, CDF variable names have changed')
+    #@unittest.skip('Disabling, CDF variable names have changed')
     def test_load_lepe_l3_data(self):
         del_data()
         lepe_vars = pyspedas.projects.erg.lepe(level='l3', et_diagram=True)

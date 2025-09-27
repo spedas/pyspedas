@@ -197,8 +197,8 @@ jobs:
         coverage run -a -m pyspedas.projects.erg.tests.mepe_part_products
         echo Starting erg mepi particle tests at `date`
         coverage run -a -m pyspedas.projects.erg.tests.mepi_part_products
-        #echo Starting erg lepe particle tests at `date`
-        #coverage run -a -m pyspedas.projects.erg.tests.lepe_part_products
+        echo Starting erg lepe particle tests at `date`
+        coverage run -a -m pyspedas.projects.erg.tests.lepe_part_products
         echo Starting erg lepi particle tests at `date`
         coverage run -a -m pyspedas.projects.erg.tests.lepi_part_products
         echo Starting erg xep particle tests at `date`
