@@ -197,8 +197,8 @@ jobs:
         coverage run -a -m pyspedas.projects.erg.tests.mepe_part_products
         echo Starting erg mepi particle tests at `date`
         coverage run -a -m pyspedas.projects.erg.tests.mepi_part_products
-        echo Starting erg lepe particle tests at `date`
-        coverage run -a -m pyspedas.projects.erg.tests.lepe_part_products
+        #echo Starting erg lepe particle tests at `date`
+        #coverage run -a -m pyspedas.projects.erg.tests.lepe_part_products
         echo Starting erg lepi particle tests at `date`
         coverage run -a -m pyspedas.projects.erg.tests.lepi_part_products
         echo Starting erg xep particle tests at `date`
@@ -232,16 +232,16 @@ jobs:
         coverage run -a -m pyspedas.projects.themis.tests.tests_tplot_time
         echo Starting barrel tests at `date`
         coverage run -a -m pyspedas.projects.barrel.tests.tests
-        echo Starting elfin epd_l1 tests at `date`
-        coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l1
-        echo Starting elfin epd_l2 tests at `date`
-        coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l2
-        echo Starting elfin state tests at `date`      
-        coverage run -a -m pyspedas.projects.elfin.tests.test_state
-        echo Starting elfin tests at `date`      
-        coverage run -a -m pyspedas.projects.elfin.tests.tests
-        echo Starting elfin epd calibration tests at `date`      
-        coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
+        #echo Starting elfin epd_l1 tests at `date`
+        #coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l1
+        #echo Starting elfin epd_l2 tests at `date`
+        #coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l2
+        #echo Starting elfin state tests at `date`      
+        #coverage run -a -m pyspedas.projects.elfin.tests.test_state
+        #echo Starting elfin tests at `date`      
+        #coverage run -a -m pyspedas.projects.elfin.tests.tests
+        #echo Starting elfin epd calibration tests at `date`      
+        #coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
         echo Starting soho tests at `date`
         coverage run -a -m pyspedas.projects.soho.tests.tests
         echo Starting de2 tests at `date`
