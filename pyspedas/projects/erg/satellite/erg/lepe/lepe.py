@@ -26,7 +26,7 @@ def lepe(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True,
-    version: Optional[str] = None,
+    version: Optional[str] = "v04_01",
     only_fedu: bool = False,
     et_diagram: bool = False,
     force_download: bool = False,
