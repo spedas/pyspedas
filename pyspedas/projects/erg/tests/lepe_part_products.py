@@ -8,6 +8,8 @@ import pyspedas
 import pyspedas
 
 display=False
+# Set for a specific CDF version, or None for most recent version
+version=None
 
 class LoadTestCases(unittest.TestCase):
 
@@ -15,7 +17,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'], datatype='3dflux', version=version )
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepe_l2_3dflux_FEDU', outputs='theta', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'] )
         tplot( 'erg_lepe_l2_3dflux_FEDU_theta', display=display, save_png='erg_lepe_theta.png' )
@@ -26,7 +28,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'], datatype='3dflux' , version=version)
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepe_l2_3dflux_FEDU', outputs='theta', trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], phi_in=[0., 180.0] )
         tplot( 'erg_lepe_l2_3dflux_FEDU_theta', display=display, save_png='erg_lepe_theta_limit_phi.png' )
@@ -37,7 +39,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'], datatype='3dflux', version=version )
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepe_l2_3dflux_FEDU', outputs='theta' )
         tplot( 'erg_lepe_l2_3dflux_FEDU_theta', display=display, save_png='erg_lepe_theta_no_trange.png' )
@@ -48,7 +50,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepe_l2_3dflux_FEDU', outputs='phi', trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'] )
         tplot( 'erg_lepe_l2_3dflux_FEDU_phi', display=display, save_png='erg_lepe_phi.png' )
@@ -60,7 +62,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
         vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
@@ -75,7 +77,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' , version=version )
         vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
         vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
@@ -90,7 +92,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
         vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
@@ -110,7 +112,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
         vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
@@ -125,7 +127,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
         vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
@@ -140,18 +142,18 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         # Calculate and plot energy spectrum
         vars = erg_lep_part_products( 'erg_lepe_l2_3dflux_FEDU', outputs='energy', trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'] )
         tplot( 'erg_lepe_l2_3dflux_FEDU_energy', display=display, save_png='erg_lepe_en_spec.png' )
         self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU_energy'))
         self.assertTrue('erg_lepe_l2_3dflux_FEDU_energy' in vars)
 
-    def test_lepe_pad(self):
+    def test_lepe_energy_limit_pa(self):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
         vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
@@ -162,13 +164,13 @@ class LoadTestCases(unittest.TestCase):
                                      trange=[ '2017-04-05 21:45:00', '2017-04-05 22:45:00'])
         self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU_pa'))
         self.assertTrue('erg_lepe_l2_3dflux_FEDU_pa' in vars)
-        tplot('erg_lepe_l2_3dflux_FEDU_pa', display=display, save_png='erg_lepe_pa.png')
+        tplot('erg_lepe_l2_3dflux_FEDU_pa', display=display, save_png='erg_lepe_energy_limit_pa.png')
 
     def test_lepe_energy_limit_gyro(self):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux')
+        pyspedas.projects.erg.lepe(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         vars = pyspedas.projects.erg.mgf(
             trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
         vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
@@ -187,7 +189,7 @@ class LoadTestCases(unittest.TestCase):
         del_data('*')
         # Load LEP-e Lv.2 3-D flux data
         timespan('2017-04-05 21:45:00', 2.25, keyword='hours')
-        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux' )
+        pyspedas.projects.erg.lepe( trange=[ '2017-04-05 21:45:00', '2017-04-05 23:59:59'], datatype='3dflux', version=version )
         vars = pyspedas.projects.erg.mgf(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary B-field data
         vars = pyspedas.projects.erg.orb(trange=['2017-04-05 21:45:00', '2017-04-05 23:59:59'])  # Load necessary orbit data
         mag_vn = 'erg_mgf_l2_mag_8sec_dsi'
