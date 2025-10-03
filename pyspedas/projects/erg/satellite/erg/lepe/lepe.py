@@ -1,4 +1,5 @@
 
+import logging
 import numpy as np
 from pyspedas import clip, get_data, options, store_data, ylim, zlim
 
@@ -9,7 +10,33 @@ from ..load import load
 from ..get_gatt_ror import get_gatt_ror
 
 
-from typing import List, Optional
+from typing import List, Optional, Iterable, Any
+
+# LEPE data is returned as a dictionary, not tplot variables.  This routine searches the dictionary keys, and renames
+# anything that doesn't follow the version v04_01 conventions that the rest of the codebase expects.
+
+def fix_lepe_varnames(var_dict: dict):
+    rename_dict = {}
+    for varname in var_dict.keys():
+        if 'fedo' in varname:
+            newname = varname.replace('fedo', 'FEDO')
+            rename_dict[varname] = newname
+        elif 'fedu' in varname:
+            newname = varname.replace('fedu', 'FEDU')
+            rename_dict[varname] = newname
+        elif 'count_rate_bg' in varname:
+            newname = varname.replace('count_rate_bg', 'Count_Rate_BG')
+            rename_dict[varname] = newname
+        elif 'count_rate' in varname:
+            newname = varname.replace('count_rate', 'Count_Rate')
+            rename_dict[varname] = newname
+
+    for oldname in rename_dict.keys():
+        value = var_dict.pop(oldname)
+        newname = rename_dict[oldname]
+        logging.info(f'Renaming {oldname} to {newname}')
+        var_dict[newname] = value
+
 
 def lepe(
     trange: List[str] = ['2017-04-04', '2017-04-05'],
@@ -26,7 +53,7 @@ def lepe(
     passwd: Optional[str] = None,
     time_clip: bool = False,
     ror: bool = True,
-    version: Optional[str] = "v04_01",
+    version: Optional[str] = None,
     only_fedu: bool = False,
     et_diagram: bool = False,
     force_download: bool = False,
@@ -179,6 +206,9 @@ def lepe(
         except:
             print('printing PI info and rules of the road was failed')
 
+    if (isinstance(loaded_data, dict) and (len(loaded_data) > 0)):
+        fix_lepe_varnames(loaded_data)
+
     if initial_notplot_flag or downloadonly:
         return loaded_data
 
@@ -188,17 +218,35 @@ def lepe(
             v_keyname = 'v'
             if v_keyname not in loaded_data[prefix + 'FEDO' + suffix]:
                 v_keyname = 'v1'
-            v_array = (loaded_data[prefix + 'FEDO' + suffix][v_keyname][:, 0, :] +
-                       loaded_data[prefix + 'FEDO' + suffix][v_keyname][:, 1, :]) / 2.
+            raw_v1_array = loaded_data[prefix + 'FEDO' + suffix][v_keyname]
+            if len(raw_v1_array.shape) == 3:
+                # Prior to version 5, the v array included upper and lower bounds that neeeded to be averaged
+                v_array = (loaded_data[prefix + 'FEDO' + suffix][v_keyname][:, 0, :] +
+                           loaded_data[prefix + 'FEDO' + suffix][v_keyname][:, 1, :]) / 2.
+            else:
+                # Version 5 doesn't have the extra dimension
+                v_array = raw_v1_array
             # change minus values to NaN
             v_array = np.where(v_array < 0., np.nan, v_array)
-            all_nan_v_indices_array = np.where(
-                np.all(np.isnan(v_array), axis=1))[0]
-            store_data(prefix + 'FEDO' + suffix,
-                       data={'x': np.delete(loaded_data[prefix + 'FEDO' + suffix]['x'], all_nan_v_indices_array, axis=0),
-                             'y': np.delete(loaded_data[prefix + 'FEDO' + suffix]['y'], all_nan_v_indices_array, axis=0),
-                             'v': np.delete(v_array, all_nan_v_indices_array, 0)},
-                       attr_dict={'CDF':loaded_data[prefix + 'FEDO' + suffix]['CDF']})
+
+            if len(v_array.shape) == 2:
+                # Version 4 had time-varying v values.  Delete times where v values were all-NaN
+
+                all_nan_v_indices_array = np.where(
+                    np.all(np.isnan(v_array), axis=1))[0]
+                store_data(prefix + 'FEDO' + suffix,
+                           data={'x': np.delete(loaded_data[prefix + 'FEDO' + suffix]['x'], all_nan_v_indices_array, axis=0),
+                                 'y': np.delete(loaded_data[prefix + 'FEDO' + suffix]['y'], all_nan_v_indices_array, axis=0),
+                                 'v': np.delete(v_array, all_nan_v_indices_array, 0)},
+                           attr_dict={'CDF':loaded_data[prefix + 'FEDO' + suffix]['CDF']})
+            else:
+                # Version 5 has same v array for all times, don't bother cleaning all-NaNs
+                store_data(prefix + 'FEDO' + suffix,
+                           data={'x': loaded_data[prefix + 'FEDO' + suffix]['x'],
+                                 'y': loaded_data[prefix + 'FEDO' + suffix]['y'],
+                                 'v': v_array},
+                           attr_dict={'CDF':loaded_data[prefix + 'FEDO' + suffix]['CDF']})
+
             tplot_variables.append(prefix + 'FEDO' + suffix)
 
             # set spectrogram plot option
@@ -238,41 +286,71 @@ def lepe(
             tplot_variables = []
             other_variables_dict = {}
             if prefix + 'FEDU' + suffix in loaded_data:
-                trange_double = np.array(time_double(trange))
-                trange_dt64 = (trange_double*1.0e6).astype('datetime64[us]')
-                time_array = np.array(loaded_data[prefix + 'FEDU' + suffix]['x'])
-                inside_indices_array = np.argwhere( (trange_dt64[0] < time_array)
-                             & (trange_dt64[1] > time_array))
-                inside_indices_list = inside_indices_array[:, 0].tolist()
-                v_keyname = 'v'
-                if v_keyname not in loaded_data[prefix + 'FEDU' + suffix]:
-                    v_keyname = 'v1'
-                store_data(prefix + 'FEDU' + suffix,
-                           data={'x': time_array[inside_indices_list],
-                                 'y': loaded_data[prefix + 'FEDU' + suffix]['y'][inside_indices_list],
-                                 'v1': (loaded_data[prefix + 'FEDU' + suffix][v_keyname][inside_indices_list][:, 0, :]
-                                        + loaded_data[prefix + 'FEDU' + suffix][v_keyname][inside_indices_list][:, 1, :]) / 2.,  # arithmetic mean
-                                 'v2': ['01', '02', '03', '04', '05', 'A', 'B', '18', '19', '20', '21', '22'],
-                                 'v3': [i for i in range(16)]},
-                       attr_dict={'CDF':loaded_data[prefix + 'FEDU' + suffix]['CDF']})
-
+                make_3dflux_tvar(loaded_data, prefix+'FEDU'+suffix, trange)
                 tplot_variables.append(prefix + 'FEDU' + suffix)
 
-                options(prefix + 'FEDU' + suffix, 'spec', 1)
-                ylim(prefix + 'FEDU' + suffix, 19, 21*1e3)
-                zlim(prefix + 'FEDU' + suffix, 1, 1e6)
-                options(prefix + 'FEDU' + suffix, 'zlog', 1)
-                options(prefix + 'FEDU' + suffix, 'ylog', 1)
-                options(prefix + 'FEDU' + suffix, 'ysubtitle', '[eV]')
-
             if prefix + 'Count_Rate' + suffix in loaded_data:
+                make_3dflux_tvar(loaded_data, prefix+'Count_Rate'+suffix, trange)
+                tplot_variables.append(prefix + 'Count_Rate' + suffix)
                 other_variables_dict[prefix + 'Count_Rate' +
                                      suffix] = loaded_data[prefix + 'Count_Rate' + suffix]
+
+
             if prefix + 'Count_Rate_BG' + suffix in loaded_data:
+                # Can't use make_3dflux_tvar here because this variable doesn't have a v3 dimension
+                varname=prefix + 'Count_Rate_BG'+suffix
+                trange_double = np.array(time_double(trange))
+                trange_dt64 = (trange_double * 1.0e6).astype('datetime64[us]')
+                time_array = np.array(loaded_data[varname]['x'])
+                inside_indices_array = np.argwhere((trange_dt64[0] < time_array)
+                                                   & (trange_dt64[1] > time_array))
+                inside_indices_list = inside_indices_array[:, 0].tolist()
+                v_keyname = 'v'
+                if v_keyname not in loaded_data[varname].keys():
+                    v_keyname = 'v1'
+                raw_v1_array = loaded_data[varname][v_keyname]
+
+                if len(raw_v1_array.shape) == 3:
+                    # Prior to version 5, the v1 array had three dimensions: time, upper/lower, energy
+                    # The upper/lower bounds need to be averaged to get center values.
+                    # For version 4 and earlier, the data dimensions are time, sector, energy.
+
+                    store_data(varname,
+                               data={'x': time_array[inside_indices_list],
+                                     'y': loaded_data[varname]['y'][inside_indices_list],
+                                     'v1': (raw_v1_array[inside_indices_list][:, 0, :]
+                                            + raw_v1_array[inside_indices_list][:, 1, :]) / 2.,  # arithmetic mean
+                                     'v2': [i for i in range(16)],
+                                    },
+                               attr_dict={'CDF': loaded_data[varname]['CDF']})
+                else:
+                    # Version 5 has a one-dimensional v1 array (which is no longer the energy...it's the sector/phase)
+                    # Dimensions are now time x 16 x 32 x 12
+                    # v1, v2 are present in the metadata, v2 is time-varying energies
+                    # For version 4 and earlier, the data dimensions are time, sector, energy.
+                    # With version 5, the data dimensions are time, energy, phase/sector
+                    # So the last two dimensions and their metadata need to be swapped for V5 and later
+
+                    data_array_filtered = loaded_data[varname]['y'][inside_indices_list]
+                    data_array_permuted = np.moveaxis(data_array_filtered, (1, 2), (2,1))
+                    store_data(varname,
+                               data={'x': time_array[inside_indices_list],
+                                     'y': data_array_permuted,
+                                     'v1': loaded_data[varname]['v2'][inside_indices_list],
+                                     'v2': raw_v1_array,
+                                    },
+                               attr_dict={'CDF': loaded_data[varname]['CDF']})
+
+                options(varname, 'spec', 1)
+                ylim(varname, 19, 21 * 1e3)
+                zlim(varname, 1, 1e6)
+                options(varname, 'zlog', 1)
+                options(varname, 'ylog', 1)
+                options(varname, 'ysubtitle', '[eV]')
+
+                tplot_variables.append(prefix + 'Count_Rate_BG' + suffix)
                 other_variables_dict[prefix + 'Count_Rate_BG' +
                                      suffix] = loaded_data[prefix + 'Count_Rate_BG' + suffix]
-
-                tplot_variables.append(other_variables_dict)
 
                 return tplot_variables
 
@@ -280,13 +358,26 @@ def lepe(
             tplot_variables = []
 
             if prefix + 'FEDU' + suffix in loaded_data:
-                store_data(prefix + 'FEDU' + suffix,
-                           data={'x': loaded_data[prefix + 'FEDU' + suffix]['x'],
-                                 'y': loaded_data[prefix + 'FEDU' + suffix]['y'],
-                                 'v1': (loaded_data[prefix + 'FEDU' + suffix]['v1'][:, 0, :]
-                                        + loaded_data[prefix + 'FEDU' + suffix]['v1'][:, 1, :]) / 2.,  # arithmetic mean
-                                 'v2': loaded_data[prefix + 'FEDU' + suffix]['v2']},
-                       attr_dict={'CDF':loaded_data[prefix + 'FEDU' + suffix]['CDF']})
+                raw_v1_array = loaded_data[prefix + 'FEDU' + suffix]['v1']
+                if len(raw_v1_array.shape) == 3:
+                    # Prior to version 5, v1 array had dimensions time, upper/lower, energy
+                    # The upper/lower values need to be averaged to get the bin centers
+                    store_data(prefix + 'FEDU' + suffix,
+                               data={'x': loaded_data[prefix + 'FEDU' + suffix]['x'],
+                                     'y': loaded_data[prefix + 'FEDU' + suffix]['y'],
+                                     'v1': (raw_v1_array[:, 0, :]
+                                            + raw_v1_array[:, 1, :]) / 2.,  # arithmetic mean
+                                     'v2': loaded_data[prefix + 'FEDU' + suffix]['v2']},
+                           attr_dict={'CDF':loaded_data[prefix + 'FEDU' + suffix]['CDF']})
+                else:
+                    # In version 5, the v1 array doesn't have the extra dimension
+                    store_data(prefix + 'FEDU' + suffix,
+                               data={'x': loaded_data[prefix + 'FEDU' + suffix]['x'],
+                                     'y': loaded_data[prefix + 'FEDU' + suffix]['y'],
+                                     'v1': raw_v1_array,
+                                     'v2': loaded_data[prefix + 'FEDU' + suffix]['v2']},
+                           attr_dict={'CDF':loaded_data[prefix + 'FEDU' + suffix]['CDF']})
+
                 tplot_variables.append(prefix + 'FEDU' + suffix)
 
                 options(prefix + 'FEDU' + suffix, 'spec', 1)
@@ -303,9 +394,16 @@ def lepe(
                 FEDU_CDF_data = loaded_data[prefix + 'FEDU' + suffix]['CDF']
 
                 if not only_fedu:
+                    # version 5: 32-element 1-D array
+                    # version 4: times x 32, takes the first sample and fixes nans
+                    ev_array = FEDU_get_data[2]
+                    if len(ev_array.shape) == 2:
+                        # version 4: times x 32, take first sample and fix nans
+                        ytitle_eV_array = np.round(np.nan_to_num(ev_array[0, :]), 2)
+                    else:
+                        # version 5: fix all nans
+                        ytitle_eV_array = np.round(np.nan_to_num(ev_array[:]), 2)
 
-                    ytitle_eV_array = np.round(
-                        np.nan_to_num(FEDU_get_data[2][0, :]), 2)
                     # processing for erg_lepe_l3_pa_enech_??(??:01,01,..32)_FEDU
                     for i in range(FEDU_get_data[1].shape[1]):
                         tplot_name = prefix + 'enech_' + \
@@ -331,8 +429,14 @@ def lepe(
                 if et_diagram:
                     ytitle_deg_array = np.round(
                         np.nan_to_num(FEDU_get_data[3]), 3)
-                    all_nan_v_indices_array = np.where(
-                        np.all(np.isnan(FEDU_get_data[2]), axis=1))[0]
+                    # Version 5: ev_array is time-varying, remove times with all-NaN#
+                    # Version 4: constant ev_array, don't delete anything
+                    ev_array = FEDU_get_data[2]
+                    if len(ev_array.shape) == 2:
+                        all_nan_v_indices_array = np.where(
+                            np.all(np.isnan(ev_array), axis=1))[0]
+                    else:
+                        all_nan_v_indices_array = []
                     x_all_nan_deleted_array = np.delete(
                         FEDU_get_data[0], all_nan_v_indices_array, axis=0)
                     y_all_nan_deleted_array = np.delete(
@@ -368,3 +472,56 @@ def lepe(
                 return tplot_variables
 
     return loaded_data
+
+
+def make_3dflux_tvar(loaded_data: dict[Any, Any],varname: str, trange: Iterable[str]):
+    trange_double = np.array(time_double(trange))
+    trange_dt64 = (trange_double * 1.0e6).astype('datetime64[us]')
+    time_array = np.array(loaded_data[varname]['x'])
+    inside_indices_array = np.argwhere((trange_dt64[0] < time_array)
+                                       & (trange_dt64[1] > time_array))
+    inside_indices_list = inside_indices_array[:, 0].tolist()
+    v_keyname = 'v'
+    if v_keyname not in loaded_data[varname].keys():
+        v_keyname = 'v1'
+    raw_v1_array = loaded_data[varname][v_keyname]
+
+    if len(raw_v1_array.shape) == 3:
+        # Prior to version 5, the v1 array had three dimensions: time, upper/lower, energy
+        # The upper/lower bounds need to be averaged to get center values.
+        # Data array dimensions are time x 32 x 12 x 16  (time, energy, channel, phase)
+        store_data(varname,
+                   data={'x': time_array[inside_indices_list],
+                         'y': loaded_data[varname]['y'][inside_indices_list],
+                         'v1': (raw_v1_array[inside_indices_list][:, 0, :]
+                                + raw_v1_array[inside_indices_list][:, 1, :]) / 2.,  # arithmetic mean
+                         'v2': ['01', '02', '03', '04', '05', 'A', 'B', '18', '19', '20', '21', '22'],
+                         'v3': [i for i in range(16)]},
+                   attr_dict={'CDF': loaded_data[varname]['CDF']})
+    else:
+        # Version 5 has a one-dimensional v1 array (which is now the sector, not the energy!)
+        # Dimensions are now time x 16 x 32 x 12 (time, sector, energy, channel)
+        # v1, v2, v3 are all present in the metadata, v2 is time-varying energies
+        # Note that the axis order has changed from version 4!
+        # Version 4: time, energy, channel, phase
+        # Version5: time, phase, energy, channel
+        # So we need to permute the axes and the metadata to ensure that lepe_get_dist will still work.
+        data_array_filtered = loaded_data[varname]['y'][inside_indices_list]
+        data_array_permuted = np.moveaxis(data_array_filtered, (1,2,3), (3,1,2))
+        store_data(varname,
+                   data={'x': time_array[inside_indices_list],
+                         'y':data_array_permuted,
+                         'v1': loaded_data[varname]['v2'][inside_indices_list], # energies
+                         'v2': loaded_data[varname]['v3'], # channels (string valued!)
+                          # The v1 in the CDF is 1-based, but we need it to be zero-based
+                         'v3': [i for i in range(16)] # sectors
+                         },
+                   attr_dict={'CDF': loaded_data[varname]['CDF']})
+
+
+    options(varname, 'spec', 1)
+    ylim(varname, 19, 21 * 1e3)
+    zlim(varname, 1, 1e6)
+    options(varname, 'zlog', 1)
+    options(varname, 'ylog', 1)
+    options(varname, 'ysubtitle', '[eV]')
