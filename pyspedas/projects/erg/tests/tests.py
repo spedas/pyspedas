@@ -119,23 +119,59 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_mgf_l2_mag_8sec_sm'))
         self.assertTrue('erg_mgf_l2_mag_8sec_sm' in mgf_vars)
 
-    #@unittest.skip('Disabling, CDF variable names have changed')
-    def test_load_lepe_data(self):
+    def test_load_lepe_data_v4(self):
+        del_data()
+        lepe_vars = pyspedas.projects.erg.lepe(version='v04_01')
+        self.assertTrue(data_exists('erg_lepe_l2_omniflux_FEDO'))
+        self.assertTrue('erg_lepe_l2_omniflux_FEDO' in lepe_vars)
+
+    def test_load_lepe_data_v5(self):
         del_data()
         lepe_vars = pyspedas.projects.erg.lepe()
         self.assertTrue(data_exists('erg_lepe_l2_omniflux_FEDO'))
         self.assertTrue('erg_lepe_l2_omniflux_FEDO' in lepe_vars)
 
-    #@unittest.skip('Disabling, CDF variable names have changed')
-    def test_load_lepe_3dflux(self):
+    def test_load_lepe_3dflux_v4(self):
+        del_data()
+        lepe_vars = pyspedas.projects.erg.lepe(datatype='3dflux', version='v04_01')
+        self.assertTrue('erg_lepe_l2_3dflux_FEDU' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU'))
+        self.assertTrue('erg_lepe_l2_3dflux_Count_Rate' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l2_3dflux_Count_Rate'))
+        self.assertTrue('erg_lepe_l2_3dflux_Count_Rate_BG' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l2_3dflux_Count_Rate_BG'))
+        fedu_dat = get_data('erg_lepe_l2_3dflux_FEDU')
+        cr_dat = get_data('erg_lepe_l2_3dflux_Count_Rate')
+        bg_dat = get_data('erg_lepe_l2_3dflux_Count_Rate_BG')
+        fedu_dims = fedu_dat[1].shape
+        cr_dims = cr_dat[1].shape
+        bg_dims = bg_dat[1].shape
+        self.assertEqual(fedu_dims, (9962,32,12,16))
+        self.assertEqual(cr_dims, (9962,32,12,16))
+        self.assertEqual(bg_dims, (9962,32,16))
+
+    def test_load_lepe_3dflux_v5(self):
         del_data()
         lepe_vars = pyspedas.projects.erg.lepe(datatype='3dflux')
-        # No tplot variables, just a list with strings and dicts
         self.assertTrue('erg_lepe_l2_3dflux_FEDU' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU'))
+        self.assertTrue('erg_lepe_l2_3dflux_Count_Rate' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l2_3dflux_Count_Rate'))
+        self.assertTrue('erg_lepe_l2_3dflux_Count_Rate_BG' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l2_3dflux_Count_Rate_BG'))
+        fedu_dat = get_data('erg_lepe_l2_3dflux_FEDU')
+        cr_dat = get_data('erg_lepe_l2_3dflux_Count_Rate')
+        bg_dat = get_data('erg_lepe_l2_3dflux_Count_Rate_BG')
+        fedu_dims = fedu_dat[1].shape
+        cr_dims = cr_dat[1].shape
+        bg_dims = bg_dat[1].shape
+        # The v5 CDFs contain fewer data points than the v4 CDFs (quality filtering?)
+        self.assertEqual(fedu_dims, (9552,32,12,16))
+        self.assertEqual(cr_dims, (9552,32,12,16))
+        self.assertEqual(bg_dims, (9552,32,16))
 
 
-    #@unittest.skip('Disabling, CDF variable names have changed')
-    def test_load_lepe_l3_data(self):
+    def test_load_lepe_l3_data_v5(self):
         del_data()
         lepe_vars = pyspedas.projects.erg.lepe(level='l3', et_diagram=True)
         self.assertTrue(data_exists('erg_lepe_l3_pa_FEDU'))
@@ -145,6 +181,15 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_lepe_l3_pa_pabin_01_FEDU'))
         self.assertTrue('erg_lepe_l3_pa_pabin_01_FEDU' in lepe_vars)
 
+    def test_load_lepe_l3_data_v4(self):
+        del_data()
+        lepe_vars = pyspedas.projects.erg.lepe(level='l3', et_diagram=True, version='v04_01')
+        self.assertTrue(data_exists('erg_lepe_l3_pa_FEDU'))
+        self.assertTrue('erg_lepe_l3_pa_FEDU' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l3_pa_enech_01_FEDU'))
+        self.assertTrue('erg_lepe_l3_pa_enech_01_FEDU' in lepe_vars)
+        self.assertTrue(data_exists('erg_lepe_l3_pa_pabin_01_FEDU'))
+        self.assertTrue('erg_lepe_l3_pa_pabin_01_FEDU' in lepe_vars)
 
     def test_load_lepi_data(self):
         del_data()
@@ -219,7 +264,31 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('erg_lepi_l2_3dflux_FPDU' in lepi_vars)
         self.assertTrue('erg_lepi_l2_3dflux_FHEDU' in lepi_vars)
 
-    def test_load_lepe_get_dist(self):
+    def test_load_lepe_get_dist_v4(self):
+        del_data()
+        lepe_vars = pyspedas.projects.erg.lepe(datatype='3dflux',version='v04_01')
+        base = "erg_lepe_l2_3dflux_"
+        for species in ['FEDU']:
+            var = base + species
+            vardat = get_data(var)
+            varmeta = get_data(var, metadata=True)
+            t = vardat[0]
+            dist = erg_lepe_get_dist(var, single_time="2017-04-04 00:00:00", species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_lepe_get_dist(var, index=[0], species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_lepe_get_dist(var, index=0, species=None)
+            self.assertTrue(len(dist['time']) == 1)
+            dist = erg_lepe_get_dist(var, index=[0,1,2], species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_lepe_get_dist(var, index=np.array([0,1,2]), species=None)
+            self.assertTrue(len(dist['time']) == 3)
+            dist = erg_lepe_get_dist(var, trange=[t[0,], t[-1]], species=None)
+            self.assertTrue(len(dist['time']) == len(t))
+        self.assertTrue(data_exists('erg_lepe_l2_3dflux_FEDU'))
+        self.assertTrue('erg_lepe_l2_3dflux_FEDU' in lepe_vars)
+
+    def test_load_lepe_get_dist_v5(self):
         del_data()
         lepe_vars = pyspedas.projects.erg.lepe(datatype='3dflux')
         base = "erg_lepe_l2_3dflux_"
