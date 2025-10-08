@@ -3,7 +3,6 @@ source_pkgs =
   pyspedas
 # Store relative paths so reporting tools don’t see absolute site-packages paths.
 relative_files = True
-debug_file = coverage_debug
 omit =
   */bin/*
   */docs/*
