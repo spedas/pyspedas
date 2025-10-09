@@ -111,7 +111,7 @@ class FEEPSTestCases(unittest.TestCase):
                         datatype = 'electron',
                         data_units = 'counts')
 
-        mms_load_feeps(trange = ['2020-08-03/01:05:00','2020-08-03/01:08:00'],
+        feeps_vars = mms_load_feeps(trange = ['2020-08-03/01:05:00','2020-08-03/01:08:00'],
                    probe = '2',
                    level = 'l2',
                    data_rate = 'brst',
@@ -119,6 +119,7 @@ class FEEPSTestCases(unittest.TestCase):
                    data_units = 'intensity',
                    get_err = True)
         self.assertTrue(data_exists('mms2_epd_feeps_brst_l2_electron_intensity_omni_percent_uncertainty'))
+        self.assertTrue('mms2_epd_feeps_brst_l2_electron_intensity_omni_percent_uncertainty' in feeps_vars)
         tplot(['mms2_epd_feeps_brst_l2_electron_intensity_omni',
             'mms2_epd_feeps_brst_l2_electron_intensity_omni_percent_uncertainty'],
             display=global_display,
