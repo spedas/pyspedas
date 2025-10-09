@@ -275,3 +275,6 @@ def mms_feeps_omni(eyes,
             options(newname2, 'zlog',1)
             options(newname2, 'ztitle','[Percent uncertainty/100]')
             options(newname2, 'ysubtitle','[keV]')
+            out_vars.append(newname2)
+
+    return out_vars
