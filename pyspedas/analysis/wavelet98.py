@@ -6,6 +6,7 @@ Reference: Torrence, C. and G. P. Compo, 1998: A Practical Guide to
            Wavelet Analysis. <I>Bull. Amer. Meteor. Soc.</I>, 79, 61-78.
 """
 
+
 import numpy as np
 from scipy.special import gamma, factorial
 from scipy.stats import chi2
@@ -132,17 +133,21 @@ def wavelet98(
         Number of scales minus one to use in the wavelet transform.
         Scales range from s0 to s0 * 2^(J * dj).
         Default is int(np.floor(np.log2(n * dt / s0) / dj)).
-    pad : int {0, 1, 2}, optional
-        pad = 0, no padding (default)
-        pad = 1, pad the time series to the next power of 2
-        pad = 2, pad the time series to the next power of 4
+    pad : int {0, 1, 2}, optional::
+
+            pad = 0, no padding (default)
+            pad = 1, pad the time series to the next power of 2
+            pad = 2, pad the time series to the next power of 4
+
     mother : string {'MORLET', 'PAUL', 'DOG'}, optional
         A string giving the mother wavelet to use. Default is 'MORLET'.
     param : float, optional
-        Parameter for the mother wavelet. Default is -1.
-            For 'Morlet' this is k0 (wavenumber), default is 6.
-            For 'Paul' this is m (order), default is 4.
-            For 'DOG' this is m (m-th derivative), default is 2.
+        Parameter for the mother wavelet. Default is -1::
+
+                For 'Morlet' this is k0 (wavenumber), default is 6.
+                For 'Paul' this is m (order), default is 4.
+                For 'DOG' this is m (m-th derivative), default is 2.
+
     lag1 : float, optional
         Lag-1 autocorrelation of the time series used for SIGNIF levels.
         Default is 0.0.

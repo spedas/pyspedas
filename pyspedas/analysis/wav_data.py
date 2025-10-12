@@ -4,6 +4,7 @@ Python implementation of IDL SPEDAS wav_data.pro.
 Uses wavelet2.py which is a wrapper for wavelet98.py.
 """
 
+
 import numpy as np
 import logging
 from pyspedas.analysis.wavelet2 import wavelet2
@@ -394,13 +395,15 @@ def wav_data(
     Returns
     -------
     dict
-        Dictionary with the following keys:
-        - 'wave': ndarray, wavelet transform data
-        - 'power': ndarray, power spectral data
-        - 'period': ndarray, period/frequency scale values
-        - 'yax': ndarray, y-axis values (period or frequency)
-        - 'time': ndarray, time values
-        - 'returned_rotmats': ndarray or None, rotation matrices if get_rotmats=True and rotate_pow=True
+        Dictionary with the following keys::
+
+            'wave': ndarray, wavelet transform data
+            'power': ndarray, power spectral data
+            'period': ndarray, period/frequency scale values
+            'yax': ndarray, y-axis values (period or frequency)
+            'time': ndarray, time values
+            'returned_rotmats': ndarray or None, rotation matrices if get_rotmats=True and rotate_pow=True
+
     """
     # Get tplot variable name
     name = tplot_prefix if tplot_prefix else varname

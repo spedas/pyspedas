@@ -115,6 +115,8 @@ from .analysis.twavpol import twavpol
 from .analysis.wavelet import wavelet
 from .analysis.wavelet98 import wavelet98
 from .analysis.wave_signif import wave_signif
+from .analysis.wav_data import wav_data
+from .analysis.wavelet2 import wavelet2
 from .analysis.time_domain_filter import time_domain_filter
 from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
 from .analysis.lingradest import lingradest

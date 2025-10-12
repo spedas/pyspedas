@@ -12,13 +12,13 @@ See also: wavelet98.py
 import numpy as np
 from scipy.stats import chi2
 
-
 def wave_signif(Y, dt, scale, sigtest, **kwargs):
     """
     Compute significance levels for wavelet transforms.
 
     Parameters:
     -----------
+
     Y : float or array_like
         The time series, or, the VARIANCE of the time series.
         (If this is a single number, it is assumed to be the variance...)
@@ -27,41 +27,45 @@ def wave_signif(Y, dt, scale, sigtest, **kwargs):
     scale : array_like
         The vector of scale indices, from previous call to WAVELET.
     sigtest : int {0, 1, 2}
-        Type of significance test:
-        - If 0 (the default), then just do a regular chi-square test,
-           i.e. Eqn (18) from Torrence & Compo.
-        - If 1, then do a "time-average" test, i.e. Eqn (23).
-                 In this case, DOF should be set to NA, the number
-                 of local wavelet spectra that were averaged together.
-                 For the Global Wavelet Spectrum, this would be NA=N,
-                 where N is the number of points in your time series.
-        - If 2, then do a "scale-average" test, i.e. Eqns (25)-(28).
-                 In this case, DOF should be set to a
-                 two-element vector [S1,S2], which gives the scale
-                 range that was averaged together.
-                 e.g. if one scale-averaged scales between 2 and 8,
-                     then DOF=[2,8].
+        Type of significance test::
+
+            If 0 (the default), then just do a regular chi-square test,
+               i.e. Eqn (18) from Torrence & Compo.
+            If 1, then do a "time-average" test, i.e. Eqn (23).
+                     In this case, DOF should be set to NA, the number
+                     of local wavelet spectra that were averaged together.
+                     For the Global Wavelet Spectrum, this would be NA=N,
+                     where N is the number of points in your time series.
+            If 2, then do a "scale-average" test, i.e. Eqns (25)-(28).
+                     In this case, DOF should be set to a
+                     two-element vector [S1,S2], which gives the scale
+                     range that was averaged together.
+                     e.g. if one scale-averaged scales between 2 and 8,
+                         then DOF=[2,8].
+
     kwargs : dict
-        Dictionary, containing optional additional parameters:
-        - lag1: Lag-1 autocorrelation (default: 0.0)
-        - siglvl: Significance level (default: 0.95)
-        - mother: Mother wavelet ('MORLET', 'PAUL', 'DOG')
-        - param: Mother wavelet parameter
-        - dof: Degrees of freedom for significance tests
-        - gws: Global wavelet spectrum (optional)
-        - confidence: If True, return confidence intervals.
+        Dictionary, containing optional additional parameters::
+
+            lag1: Lag-1 autocorrelation (default: 0.0)
+            siglvl: Significance level (default: 0.95)
+            mother: Mother wavelet ('MORLET', 'PAUL', 'DOG')
+            param: Mother wavelet parameter
+            dof: Degrees of freedom for significance tests
+            gws: Global wavelet spectrum (optional)
+            confidence: If True, return confidence intervals.
 
     Returns:
     --------
     signif : array_like
         Significance levels for the wavelet power spectrum.
     outputs : dict
-        Dictionary containing optional output parameters:
-        - 'Cdelta': Reconstruction factor
-        - 'period': Vector of Fourier periods corresponding to scales
-        - 'fft_theor': Theoretical red-noise spectrum as function of period
-        - 'Savg': Scale average (for sigtest=2 only)
-        - 'Smid': Scale midpoint (for sigtest=2 only)
+        Dictionary containing optional output parameters::
+
+            'Cdelta': Reconstruction factor
+            'period': Vector of Fourier periods corresponding to scales
+            'fft_theor': Theoretical red-noise spectrum as function of period
+            'Savg': Scale average (for sigtest=2 only)
+            'Smid': Scale midpoint (for sigtest=2 only)
     """
 
     # Default parameters

@@ -1,6 +1,36 @@
 Analysis Tools
 ==============
 
+Wavelet Analysis Tools
+-----------------------
+
+
+There are several tools in PySPEDAS for performing wavelet analysis on tplot variables or data arrays.
+
+The wavelet98 routine implements wavelet transforms as described in Torrence & Compo (1998).  It works with bare data arrays.
+
+Reference: Torrence, C. and G. P. Compo, 1998: A Practical Guide to Wavelet Analysis. <I>Bull. Amer. Meteor. Soc.</I>, 79, 61-78.
+
+.. autofunction:: pyspedas.wavelet98
+
+The wavelet2 routine is a wrapper for wavelet98.  It also works with bare data arrays.
+
+.. autofunction:: pyspedas.wavelet2
+
+The wavelet routine provides an interface to the external pywavelets package, and works with tplot variables.
+If the wavelet scales are unspecified, they are derived using an algorithm similar to that used by the IDL SPEDAS wav_data routine.
+
+.. autofunction:: pyspedas.wavelet
+
+The wav_data routine is a Python implementation of the IDL SPEDAS wav_data routine.   This is the routine to use
+if you want to reproduce results from IDL SPEDAS.
+
+.. autofunction:: pyspedas.wav_data
+
+The wave_signif routine computes significance levels for a wavelet transform.
+
+.. autofunction:: pyspedas.wave_signif
+
 Generalized 3-D Particle Distribution Tools
 --------------------------------------------
 
