@@ -119,7 +119,7 @@ In order to successfully access the specified cloud repository, the user is requ
 
 ## Usage
 
-You can load data into tplot variables by calling `pyspedas.projecs.mission.instrument()`, e.g.,
+You can load data into tplot variables by calling `pyspedas.projects.mission.instrument()`, e.g.,
 
 To load and plot 1 day of THEMIS FGM data for probe 'd':
 ```python
