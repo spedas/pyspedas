@@ -4,12 +4,12 @@ Python implementation of IDL SPEDAS wav_data.pro.
 Uses wavelet2.py which is a wrapper for wavelet98.py.
 """
 
-
 import numpy as np
 import logging
 from pyspedas.analysis.wavelet2 import wavelet2
 from pyspedas.analysis.reduce_tres import reduce_tres
 from pyspedas.analysis.roundsig import roundsig
+from pyspedas.analysis.interp_gap import interp_gap
 from scipy.ndimage import uniform_filter1d
 from pyspedas import get_data, store_data, options, tnames
 
@@ -33,8 +33,9 @@ def smooth_wavelet(wv, wid, gaussian=False):
     Notes
     -----
     This function modifies wv in-place to match IDL behavior.
+    It does not return a new array.
     """
-    dim = list(wv.shape) + [1, 1]  # Pad dimensions
+    dim = list(wv.shape) + [1, 1]
     nk = dim[2] if len(dim) > 2 else 1
     nj = dim[1] if len(dim) > 1 else 1
     nt = dim[0]
@@ -52,8 +53,8 @@ def smooth_wavelet(wv, wid, gaussian=False):
                 if widi[j] > 1:  # Only smooth if width > 1
                     # Create Gaussian kernel using dgen equivalent
                     kernel_size = widi[j]
-                    x = np.linspace(-2, 2, kernel_size)
-                    kernel = np.exp(-(x**2))
+                    vx = np.linspace(-2, 2, kernel_size)
+                    kernel = np.exp(-(vx**2))
                     kernel = kernel / np.sum(kernel)
 
                     # Apply convolution with edge truncation
@@ -94,6 +95,7 @@ def smooth_wavelet(wv, wid, gaussian=False):
                     size=min(widi[j], nt - 1),
                     mode="nearest",  # Equivalent to IDL's /edge_truncate
                 )
+                # smoothed = smooth(signal, width=widi[j], preserve_nans=True)
 
                 if wv.ndim >= 3:
                     wv[:, j, k] = smoothed
@@ -123,16 +125,20 @@ def cross_corr_wavelet(wa, wb, wid, gaussian=False):
 
     Returns
     -------
-    gam : ndarray
-        Coherence array
-    coinc : ndarray
-        Coincidence (real part) array
-    quad : ndarray
-        Quadrature (imaginary part) array
-    crat : ndarray
-        Coincidence ratio array
+    gam, coinc, quad, crat : tuple
+
+        gam : ndarray
+            Coherence array
+        coinc : ndarray
+            Coincidence (real part) array
+        quad : ndarray
+            Quadrature (imaginary part) array
+        crat : ndarray
+            Coincidence ratio array
     """
     # Cross-correlation
+    wa = np.asarray(wa, dtype=complex)
+    wb = np.asarray(wb, dtype=complex)
     p = wa * np.conj(wb)
     coinc = np.real(p)
     quad = np.imag(p)
@@ -163,7 +169,7 @@ def cross_corr_wavelet(wa, wb, wid, gaussian=False):
     return gam, coinc, quad, crat
 
 
-def rotate_wavelet2(wv, B, xdir=None, wid=None, rotmats=None, get_rotmats=False):
+def rotate_wavelet2(wv, bfield, xdir=None, wid=None, rotmats=None, get_rotmats=False):
     """
     Rotate a 3D wavelet vector field into local coordinate frames defined by B and xdir.
 
@@ -174,12 +180,12 @@ def rotate_wavelet2(wv, B, xdir=None, wid=None, rotmats=None, get_rotmats=False)
     wv : ndarray of shape (nt, jv+1, 3)
         Input wavelet transform data with 3 spatial components.
 
-    B : ndarray of shape (nt, 3)
+    bfield : ndarray of shape (nt, 3)
         Vector field that defines the "z" axis of the local coordinate system at each time.
 
     xdir : array-like of shape (3,), optional
-        A reference direction (default: [0, 0, 1]) used to define the "y" axis with B.
-        This should not be parallel to B.
+        A reference direction (default: [0, 0, 1]) used to define the "y" axis with bfield.
+        This should not be parallel to bfield.
 
     wid : array-like of shape (jv+1,), required if rotmats is not supplied
         Smoothing window width (used on field B) for each scale.
@@ -192,12 +198,14 @@ def rotate_wavelet2(wv, B, xdir=None, wid=None, rotmats=None, get_rotmats=False)
 
     Returns
     -------
-    wvp : ndarray of shape (nt, jv+1, 3)
-        Wavelet transform rotated into local coordinates.
+    wvp, rotmats_out : tuple
 
-    rotmats_out : ndarray
-        If True, return the computed rotation matrices. Shape (nt, jv+1, 3, 3).
-        If False, return None.
+        wvp : ndarray of shape (nt, jv+1, 3)
+            Wavelet transform rotated into local coordinates.
+
+        rotmats_out : ndarray
+            If True, return the computed rotation matrices. Shape (nt, jv+1, 3, 3).
+            If False, return None.
     """
     # Get dimensions like IDL
     dim = list(wv.shape)
@@ -235,14 +243,14 @@ def rotate_wavelet2(wv, B, xdir=None, wid=None, rotmats=None, get_rotmats=False)
 
             # Smooth B field components
             for k in range(3):
-                width = min(int(wid[j]), nt - 1)
-                if width > 1:
+                vwidth = min(int(wid[j]), nt - 1)
+                if vwidth > 1:
                     # Use uniform_filter1d to match IDL's smooth with /edge_truncate
                     rot[:, k, 2] = uniform_filter1d(
-                        B[:, k].astype(float), size=width, mode="nearest"
+                        bfield[:, k].astype(float), size=vwidth, mode="nearest"
                     )
                 else:
-                    rot[:, k, 2] = B[:, k]
+                    rot[:, k, 2] = bfield[:, k]
 
             # Normalize z-axis (rot[*,*,2])
             z_norm = np.sqrt(np.sum(rot[:, :, 2] ** 2, axis=1))
@@ -251,8 +259,8 @@ def rotate_wavelet2(wv, B, xdir=None, wid=None, rotmats=None, get_rotmats=False)
             rot[:, :, 2] = rot[:, :, 2] / z_norm[:, np.newaxis]
 
             # Compute y-axis
-            for i in range(nt):
-                rot[i, :, 1] = np.cross(rot[i, :, 2], xdir)
+            for ni in range(nt):
+                rot[ni, :, 1] = np.cross(rot[ni, :, 2], xdir)
 
             # Normalize y-axis
             y_norm = np.sqrt(np.sum(rot[:, :, 1] ** 2, axis=1))
@@ -260,8 +268,8 @@ def rotate_wavelet2(wv, B, xdir=None, wid=None, rotmats=None, get_rotmats=False)
             rot[:, :, 1] = rot[:, :, 1] / y_norm[:, np.newaxis]
 
             # Compute x-axis
-            for i in range(nt):
-                rot[i, :, 0] = np.cross(rot[i, :, 1], rot[i, :, 2])
+            for ni in range(nt):
+                rot[ni, :, 0] = np.cross(rot[ni, :, 1], rot[ni, :, 2])
 
             # Store rotation matrices if requested
             if get_rotmats:
@@ -290,6 +298,12 @@ def rotate_wavelet2(wv, B, xdir=None, wid=None, rotmats=None, get_rotmats=False)
         return wvp, None
 
 
+def wav_data_set_options(varname, vdict):
+    """Set pyspedas options for wavelet data visualization."""
+    for key, value in vdict.items():
+        options(varname, key, value)
+
+
 def wav_data(
     varname,
     period=None,
@@ -304,14 +318,12 @@ def wav_data(
     kolom=None,
     normval=None,
     normconst=1.0,
-    normname=None,
     get_components=False,
     tint_pow=None,
     fraction=False,
     rotmats=None,
     get_rotmats=False,
     wid=None,
-    hermition_k=None,
     dimennum=None,
     rotate_pow=False,
     maxpoints=32768,  # 2^15 like IDL
@@ -357,9 +369,6 @@ def wav_data(
         Normalization values
     normconst : float, optional
         Normalization constant (default=1.0)
-    normname : str, optional
-        Name of tplot variable for normalization
-        TODO: not implemented yet, depends on function data_cut
     get_components : bool, optional
         Store individual component power spectra
     tint_pow : float, optional
@@ -372,8 +381,6 @@ def wav_data(
         Return rotation matrices
     wid : array-like, optional
         Smoothing width array
-    hermition_k : int, optional
-        Hermitian analysis at specific frequency index
     dimennum : int, optional
         Select specific component of input variable
     rotate_pow : bool, optional
@@ -395,7 +402,7 @@ def wav_data(
     Returns
     -------
     dict
-        Dictionary with the following keys::
+        Dictionary with the following keys:
 
             'wave': ndarray, wavelet transform data
             'power': ndarray, power spectral data
@@ -403,7 +410,6 @@ def wav_data(
             'yax': ndarray, y-axis values (period or frequency)
             'time': ndarray, time values
             'returned_rotmats': ndarray or None, rotation matrices if get_rotmats=True and rotate_pow=True
-
     """
     # Get tplot variable name
     name = tplot_prefix if tplot_prefix else varname
@@ -421,14 +427,14 @@ def wav_data(
     # Get data
     d = get_data(name)
     time = d[0]
-    B = d[1]
+    bfield = d[1]
     if time is None or len(time) == 0:
         logging.info(f"Variable: {name} has no data.")
         return
 
     # Select component if requested
     if dimennum is not None:
-        B = B[:, dimennum]
+        bfield = bfield[:, dimennum]
         name = f"{name}({dimennum})"
 
     # Frequency/period range
@@ -437,14 +443,14 @@ def wav_data(
 
     # Rebin if requested
     if rbin is not None:
-        n = len(time)
-        nrbin = n // rbin
+        nn = len(time)
+        nrbin = nn // rbin
         time = time[: nrbin * rbin].reshape(nrbin, rbin).mean(axis=1)
-        B = B[: nrbin * rbin]
-        if B.ndim == 2:
-            B = B.reshape(nrbin, rbin, B.shape[1]).mean(axis=1)
+        bfield = bfield[: nrbin * rbin]
+        if bfield.ndim == 2:
+            bfield = bfield.reshape(nrbin, rbin, bfield.shape[1]).mean(axis=1)
         else:
-            B = B.reshape(nrbin, rbin).mean(axis=1)
+            bfield = bfield.reshape(nrbin, rbin).mean(axis=1)
 
     # Limit maxpoints
     if len(time) > maxpoints and trange is None:
@@ -455,12 +461,12 @@ def wav_data(
     # Apply trange
     if trange is not None:
         if len(trange) == 1:
-            idx = np.argmin(np.abs(time - trange[0]))
+            idxn = np.argmin(np.abs(time - trange[0]))
             rr = np.arange(
-                max(0, idx - maxpoints // 2), min(len(time), idx + maxpoints // 2)
+                max(0, idxn - maxpoints // 2), min(len(time), idxn + maxpoints // 2)
             )
             time = time[rr[0] : rr[-1] + 1]
-            B = B[rr[0] : rr[-1] + 1]
+            bfield = bfield[rr[0] : rr[-1] + 1]
         else:
             t0, t1 = min(trange), max(trange)
             w = np.where((time >= t0) & (time <= t1))[0]
@@ -473,19 +479,13 @@ def wav_data(
                 )
                 return
             time = time[w]
-            B = B[w]
-
-    # Remove nans
-    mask = np.isfinite(B).all(axis=-1) if B.ndim > 1 else np.isfinite(B)
-    bad_index = np.where(~mask)[0]
-    B = B[mask]
-    time = time[mask]
+            bfield = bfield[w]
 
     # dt and check sampling like IDL
     dtime = np.diff(time)
     dt = np.mean(dtime)
 
-    # Check for uniform sampling and resample if needed (IDL logic)
+    # Check for uniform sampling and resample if needed
     tgap_threshold = 0.1
     # Fix resampling threshold to match IDL: total(abs(minmax(dtime)/dt-1)) gt tgap_threshold
     if (
@@ -497,61 +497,53 @@ def wav_data(
         resample = False
 
     if resample:
-        logging.info("Warning!!! Resampling data onto a uniform period")
-        # IDL resampling logic
+        # This part fixes any time axis non-uniformity by resampling onto a uniform grid
+        logging.warning("Warning!!! Resampling data onto a uniform period")
         dsample = np.round(dtime / np.median(dtime)).astype(int)
-        samples = np.concatenate([[0], np.cumsum(dsample)])
+        samples = np.concatenate(([0], np.cumsum(dsample, dtype=int)))
+        grid_len = samples[-1] + 1
 
-        # Create new time array filled with NaNs
-        re_time = np.full(np.max(samples) + 1, np.nan)
+        re_time = np.full(grid_len, np.nan, dtype=float)
         re_time[samples] = time
-        time = re_time
+        time = interp_gap(np.arange(grid_len, dtype=float), re_time)["y"]
 
-        # Interpolate gaps in time
-        valid_mask = np.isfinite(time)
-        if np.any(valid_mask):
-            time_indices = np.arange(len(time))
-            time[~valid_mask] = np.interp(
-                time_indices[~valid_mask], time_indices[valid_mask], time[valid_mask]
+        # Initialize re_B with the appropriate shape and data type
+        if bfield.ndim == 1:
+            re_b = np.full(grid_len, np.nan, dtype=bfield.dtype)
+            re_b[samples] = bfield
+        elif bfield.ndim == 2:
+            re_b = np.full((grid_len, bfield.shape[1]), np.nan, dtype=bfield.dtype)
+            re_b[samples, :] = bfield
+        elif bfield.ndim == 3:
+            re_b = np.full(
+                (grid_len, bfield.shape[1], bfield.shape[2]), np.nan, dtype=bfield.dtype
             )
-
-        # Create new B array filled with NaNs
-        dim = list(B.shape)
-        dim[0] = np.max(samples) + 1
-        if B.ndim == 2:
-            re_B = np.full((dim[0], dim[1]), np.nan)
-            re_B[samples, :] = B
+            re_b[samples, :, :] = bfield
         else:
-            re_B = np.full(dim[0], np.nan)
-            re_B[samples] = B
-        B = re_B
+            re_b = np.full((grid_len,) + bfield.shape[1:], np.nan, dtype=bfield.dtype)
+            src = (slice(None),) * (bfield.ndim - 1)
+            re_b[(samples,) + src] = bfield
 
-        # Interpolate gaps in B data
-        if B.ndim == 2:
-            for i in range(B.shape[1]):
-                valid_mask = np.isfinite(B[:, i])
-                if np.any(valid_mask):
-                    B_indices = np.arange(len(B))
-                    B[~valid_mask, i] = np.interp(
-                        B_indices[~valid_mask], B_indices[valid_mask], B[valid_mask, i]
-                    )
-        else:
-            valid_mask = np.isfinite(B)
-            if np.any(valid_mask):
-                B_indices = np.arange(len(B))
-                B[~valid_mask] = np.interp(
-                    B_indices[~valid_mask], B_indices[valid_mask], B[valid_mask]
-                )
+        bfield = re_b
 
-        # Recalculate dt
         dtime = np.diff(time)
         dt = np.mean(dtime)
+
+    # Interpolate gaps in bfield to match IDL
+    interp_out = interp_gap(time, bfield)
+    nbad_count = interp_out["count"]
+    if nbad_count > 0:
+        logging.info(f"Warning!!! Interpolating {nbad_count} bad points in data")
+        bfield = interp_out["y"]
+        # bad_index = interp_out["index"] # not used
 
     # Pad for FFT
     pad = 2
 
     # Compute wavelet
-    wave, period = wavelet2(B, dt, pad=pad, period=period, prange=prange, param=param)
+    wave, period = wavelet2(
+        bfield, dt, pad=pad, period=period, prange=prange, param=param
+    )
 
     if isinstance(wave, int) and wave == -1:
         logging.info("Time interval too short, Returning")
@@ -560,55 +552,12 @@ def wav_data(
     nt, jv1 = wave.shape[:2]
     nk = wave.shape[2] if wave.ndim == 3 else 1
 
-    # IDL-style masking implementation - properly define badtime
-    badtime = np.zeros(nt, dtype=bool)
-
-    # Mark bad times from original bad_index mapping to new time array
-    if len(bad_index) > 0:
-        # Map original bad indices to new time indices after resampling
-        original_length = len(mask)
-        for bad_idx in bad_index:
-            # Proportional mapping to new time array
-            if original_length > 0:
-                mapped_idx = int((bad_idx / original_length) * nt)
-                if 0 <= mapped_idx < nt:
-                    badtime[mapped_idx] = True
-
-    # Axis labels
-    yax = period if per_axis else 1.0 / period
-    ysubtitle = "Seconds" if per_axis else "f (Hz)"
-    mm = [np.min(yax), np.max(yax)]
-
-    # Width used in smoothing - add IDL upper bound
-    if wid is None:
-        wid = (period / 2 / dt * avg_period) * 2 + 1
-    # IDL: wid = 3 > round(period/2/dt*avg_period)*2+1 < (nt-1)
-    wid = np.clip(np.maximum(wid, 3).astype(int), 3, nt - 1)
-
-    # Create mask array like IDL (now with badtime properly defined)
-    if np.any(badtime):
-        # IDL logic: create mask with NaN for bad times, 1 for good times
-        mask_array = np.ones(nt, dtype=float)
-        mask_array[badtime] = np.nan
-
-        # Smooth the mask like IDL
-        mask_2d = mask_array[:, None] * np.ones(jv1)
-        smooth_wavelet(mask_2d, wid)
-
-        # IDL sets mask = ([1.,!values.f_nan])[msk]
-        # Where msk is boolean array of mask validity
-        msk = np.isfinite(mask_2d)
-        mask_final = np.ones_like(mask_2d)
-        mask_final[~msk] = np.nan
-    else:
-        # No bad times - mask is all ones like IDL
-        mask_final = 1.0
-
-    # Magnitude wavelet (if requested)
+    # Magnitude wavelet
     wvmag = None
     if magrat:
+        logging.info("Computing magnitude now")
         wvmag, _ = wavelet2(
-            np.sqrt(np.sum(B**2, axis=-1)),
+            np.sqrt(np.sum(bfield**2, axis=-1)),
             dt,
             pad=pad,
             period=period,
@@ -616,45 +565,61 @@ def wav_data(
             param=param,
         )
 
+    # Axis labels
+    yax = period if per_axis else 1.0 / period
+    ysubtitle = "Seconds" if per_axis else "f (Hz)"
+    mm = [np.min(yax), np.max(yax)]
+
+    # Width used in smoothing
+    if wid is None:
+        wid = (period / 2 / dt * avg_period) * 2 + 1
+    wid = np.maximum(wid, 3).astype(int)
+
     # Normalization
     normpow = normconst
     if normval is not None:
-        if np.isscalar(normval):
-            normpow = normval * normconst
-        elif hasattr(normval, "__len__") and len(normval) == nt:
-            # Reshape normval for smoothing
-            normpow = (normval * normconst)[:, None] * np.ones(jv1)
+        normval_arr = np.asarray(normval, dtype=float)
+        if normval_arr.size == nt:
+            logging.info("Calculating Normalization")
+            normpow = normval_arr[:, None] * np.full((1, jv1), normconst, dtype=float)
             smooth_wavelet(normpow, wid)
-        else:
-            normpow = normval * normconst
+        elif normval_arr.size == 1:
+            normpow = float(normval_arr.ravel()[0])
 
     tsfx = ""
     if fraction:
-        # Handle 1D case properly like IDL
+        # Fractional normalization
+        logging.info("Calculating Fractional Power")
         if nk > 1:
-            normpow = (np.sum(B**2, axis=-1))[:, None] * np.ones(jv1)
+            normpow = (np.sum(bfield**2, axis=-1))[:, None] * np.ones(jv1)
         else:
-            normpow = (B**2)[:, None] * np.ones(jv1)
+            normpow = (bfield**2)[:, None] * np.ones(jv1)
         smooth_wavelet(normpow, wid)
         normpow = 1.0 / normpow
-        tsfx += "/<B^2>"
+        tsfx += "$<B^2>$"
 
+    zrangetmp = None  # temp zrange
     if kolom is not None:
-        # Ensure proper broadcasting
+        # Kolmogorov normalization
+        logging.info("Calculating Kolmogorov Normalization")
         if np.isscalar(normpow):
             normpow = normpow / (kolom * period ** (5.0 / 3.0))
         else:
             normpow = normpow / (np.ones(nt)[:, None] * (kolom * period ** (5.0 / 3.0)))
-        tsfx += "/P_K"
+        tsfx += "$P_{K}$"
+        zrangetmp = [0.1, 10.0]
     elif tint_pow is not None:
-        # Ensure proper broadcasting
+        # Power-law normalization
+        logging.info("Calculating Power-Law Normalization")
         if np.isscalar(normpow):
             normpow = normpow / (period**tint_pow)
         else:
             normpow = normpow / (np.ones(nt)[:, None] * (period**tint_pow))
         tsfx += "*f"
         if tint_pow != 1:
-            tsfx += f"^{tint_pow:.2f}"
+            vsub = f"{tint_pow:4.2f}"
+            tsfx += f"$_{{{vsub}}}$"
+        zrangetmp = [0.0001, 1.0]
 
     # Apply normalization - handle scalar and array cases
     if np.isscalar(normpow):
@@ -667,42 +632,31 @@ def wav_data(
         if wvmag is not None:
             wvmag *= np.sqrt(normpow)
 
-    # Power - match IDL exactly
+    # Power
     if nk == 1:
-        pow = np.abs(wave) ** 2  # IDL: pow = abs(wv)^2
+        wpow = np.abs(wave) ** 2
     else:
-        pow = np.sum(np.abs(wave) ** 2, axis=2)
+        wpow = np.sum(np.abs(wave) ** 2, axis=2)
 
-    # zrange - match IDL calculation exactly using roundsig
-    if np.all(pow > 0):
-        # IDL: roundsig(10^(average(alog(pow*mask),/nan)/alog(10)),sigfi=.2) * [.1,10]
-        if np.isscalar(mask_final):
-            pow_masked = pow * mask_final
-        else:
-            pow_masked = pow * mask_final
-        valid_pow = pow_masked[np.isfinite(pow_masked) & (pow_masked > 0)]
-        if len(valid_pow) > 0:
-            # Calculate average of log10(pow*mask) ignoring NaN
-            log_pow_mean = np.mean(np.log10(valid_pow))
-            # Apply roundsig with sigfig=0.2 like IDL
-            rounded_val = roundsig(10**log_pow_mean, sigfig=0.2)
-            zrange = rounded_val * np.array([0.1, 10])
-        else:
-            zrange = np.array([1e-6, 1e-3])
+    # zrange
+    mask_final = 1.0
+    zrange = [-1.0, 1.0]
+    if zrangetmp is not None:
+        zrange = zrangetmp
     else:
-        if tint_pow is not None:
-            zrange = np.array([0.0001, 0.1])  # IDL default for tint_pow
-        else:
-            zrange = np.array([1e-6, 1e-3])
+        zrange = roundsig(
+            10 ** np.nanmean(np.log10(wpow * mask_final)), sigfig=0.2
+        ) * np.array([0.1, 10.0])
 
-    # Store main power with nmorlet suffix like IDL
+    # Store main power with nmorlet suffix
     wvs = "_wv"
     if nmorlet is not None:
         wvs += str(int(nmorlet))
 
-    # Use reduce_tres like IDL
+    # Use reduce_tres
     r = resolution if resolution else 0
-    rdtime = reduce_tres(time, r) if r > 0 else time
+    rdtime = reduce_tres(time, r)
+    ztitle = ""  # ztitle changes for each tplot variable
 
     polopts = {
         "spec": 1,
@@ -710,10 +664,10 @@ def wav_data(
         "ylog": 1,
         "ystyle": 1,
         "no_interp": 1,
-        "zrange": [-1, 1],
+        "zrange": [-1.0, 1.0],
         "zlog": 0,
         "zstyle": 1,
-        "ztitle": "",
+        "ztitle": ztitle,
         "ysubtitle": ysubtitle,
     }
 
@@ -726,349 +680,248 @@ def wav_data(
         "zlog": 1,
         "zstyle": 1,
         "zrange": zrange,
-        "ztitle": f"P_Tot{tsfx}",
+        "ztitle": ztitle,
         "ysubtitle": ysubtitle,
     }
 
-    # Apply mask like IDL - remove the duplicate mask=1.0 line
+    # Apply mask
     powname = name + wvs + "_pow"
-    if np.isscalar(mask_final):
-        reduced_pow = reduce_tres(pow * mask_final, r) if r > 0 else pow * mask_final
-    else:
-        reduced_pow = reduce_tres(pow * mask_final, r) if r > 0 else pow * mask_final
+    reduced_pow = reduce_tres(wpow * mask_final, r)
+    powopts["ztitle"] = "$P_{Tot}$" + tsfx
     store_data(
         powname, data={"x": rdtime, "y": reduced_pow, "v": yax}, attr_dict=powopts
     )
-    options(powname, "spec", 1)
-    options(powname, "ylog", 1)
-    options(powname, "zlog", 1)
+    wav_data_set_options(powname, powopts)
 
     if nk == 1:
-        return {"wave": wave, "power": pow, "period": period, "yax": yax, "time": time}
+        # Single component ends here
+        return {"wave": wave, "power": wpow, "period": period, "yax": yax, "time": time}
 
-    # Store components if requested (with proper masking)
+    # Store components if requested
     if get_components and nk > 1:
         cstr = ["x", "y", "z", "4"]
-        for i in range(nk):
-            powi = np.abs(wave[..., i]) ** 2
-            if np.isscalar(mask_final):
-                reduced_powi = (
-                    reduce_tres(powi * mask_final, r) if r > 0 else powi * mask_final
-                )
-            else:
-                reduced_powi = (
-                    reduce_tres(powi * mask_final, r) if r > 0 else powi * mask_final
-                )
+        for ni in range(nk):
+            powi = np.abs(wave[..., ni]) ** 2
+            nistr = cstr[ni]
+            varname = name + "_" + nistr + wvs + "_pow"
+            powopts["ztitle"] = "$P_{" + nistr + "}$" + tsfx
             store_data(
-                f"{name}_{cstr[i]}{wvs}_pow",
-                data={"x": rdtime, "y": reduced_powi, "v": yax},
+                varname,
+                data={"x": rdtime, "y": reduce_tres(powi * mask_final, r), "v": yax},
+                attr_dict=powopts,
             )
+            wav_data_set_options(varname, powopts)
 
-    # Magnitude ratio (with proper masking)
+    # Magnitude ratio
     if magrat and wvmag is not None:
+        varname = name + wvs + "_rat_par"
         powb = np.abs(wvmag) ** 2
-        pol = powb / pow
+        pol = powb / wpow
         smooth_wavelet(pol, wid)
+        ztitle = "$P_{mag}/P_{tot}$"
         ratopts = polopts.copy()
-        ratopts["ztitle"] = "P_mag/P_tot"
-        ratopts["zrange"] = [0, 1]
-        if np.isscalar(mask_final):
-            reduced_pol = (
-                reduce_tres(pol * mask_final, r) if r > 0 else pol * mask_final
-            )
-        else:
-            reduced_pol = (
-                reduce_tres(pol * mask_final, r) if r > 0 else pol * mask_final
-            )
+        ratopts["ztitle"] = ztitle
+        ratopts["zrange"] = [0.0, 1.0]
         store_data(
-            name + wvs + "_rat_par",
-            data={"x": rdtime, "y": reduced_pol, "v": yax},
+            varname,
+            data={"x": rdtime, "y": reduce_tres(pol * mask_final, r), "v": yax},
             attr_dict=ratopts,
         )
+        wav_data_set_options(varname, ratopts)
 
-    # Update all other stored data to use mask_final instead of mask
-    # Polarization for nk==2 (with proper masking)
+    ratopts = polopts.copy()
+    ratopts["ztitle"] = "$P_{\\parallel}/P_{tot}$"
+    ratopts["zrange"] = [0, 1]
+
     if nk == 2:
-        i = 1j
-        powr = np.abs(wave[..., 0] + i * wave[..., 1]) ** 2
-        powl = np.abs(wave[..., 0] - i * wave[..., 1]) ** 2
+        # Form right/left circular powers powr / powl
+        powr = np.abs(wave[..., 0] + 1j * wave[..., 1]) ** 2
+        powl = np.abs(wave[..., 0] - 1j * wave[..., 1]) ** 2
         pol = (powr - powl) / (powl + powr)
         smooth_wavelet(pol, wid)
-        pol_opts = polopts.copy()
-        pol_opts["ztitle"] = "<σ_p>"
-        if np.isscalar(mask_final):
-            reduced_pol = (
-                reduce_tres(pol * mask_final, r) if r > 0 else pol * mask_final
-            )
-        else:
-            reduced_pol = (
-                reduce_tres(pol * mask_final, r) if r > 0 else pol * mask_final
-            )
+        reduced_pol = reduce_tres(pol * mask_final, r)
+        varname = name + wvs + "_pol_perp"
+        polopts["ztitle"] = "$P_{\\perp}$"
         store_data(
-            name + wvs + "_pol_perp",
+            varname,
             data={"x": rdtime, "y": reduced_pol, "v": yax},
-            attr_dict=pol_opts,
+            attr_dict=polopts,
         )
+        wav_data_set_options(varname, polopts)
 
-    # Update rotation section to use mask_final
+    # Rotate wavelet
     if rotate_pow:
+        logging.info("Computing power and polarization for TPLOT")
         wv_rot, returned_rotmats = rotate_wavelet2(
-            wave, B, wid=wid, rotmats=rotmats, get_rotmats=get_rotmats
+            wave, bfield, wid=wid, rotmats=rotmats, get_rotmats=get_rotmats
         )
-        i = 1j
-        powr = np.abs(wv_rot[..., 0] + i * wv_rot[..., 1]) ** 2
-        powl = np.abs(wv_rot[..., 0] - i * wv_rot[..., 1]) ** 2
+        powr = np.abs(wv_rot[..., 0] + 1j * wv_rot[..., 1]) ** 2
+        powl = np.abs(wv_rot[..., 0] - 1j * wv_rot[..., 1]) ** 2
         powb = np.abs(wv_rot[..., 2]) ** 2
 
         pol = powb / (powb + powl + powr)
         smooth_wavelet(pol, wid)
-        ratopts = polopts.copy()
-        ratopts["ztitle"] = "<P_||/P_tot>"
-        ratopts["zrange"] = [0, 1]
-        if np.isscalar(mask_final):
-            reduced_pol = (
-                reduce_tres(pol * mask_final, r) if r > 0 else pol * mask_final
-            )
-        else:
-            reduced_pol = (
-                reduce_tres(pol * mask_final, r) if r > 0 else pol * mask_final
-            )
+        varname = name + wvs + "_pol_par"
         store_data(
-            name + wvs + "_pol_par",
-            data={"x": rdtime, "y": reduced_pol, "v": yax},
+            varname,
+            data={"x": rdtime, "y": reduce_tres(pol * mask_final, r), "v": yax},
             attr_dict=ratopts,
         )
+        wav_data_set_options(varname, ratopts)
 
         pol = (powr - powl) / (powl + powr)
         smooth_wavelet(pol, wid)
-        pol_opts = polopts.copy()
-        pol_opts["ztitle"] = "<σ_p>"
-        if np.isscalar(mask_final):
-            reduced_pol = (
-                reduce_tres(pol * mask_final, r) if r > 0 else pol * mask_final
-            )
-        else:
-            reduced_pol = (
-                reduce_tres(pol * mask_final, r) if r > 0 else pol * mask_final
-            )
+        varname = name + wvs + "_pol_perp"
+        polopts["ztitle"] = "$P_{\\perp}$"
         store_data(
-            name + wvs + "_pol_perp",
-            data={"x": rdtime, "y": reduced_pol, "v": yax},
-            attr_dict=pol_opts,
+            varname,
+            data={"x": rdtime, "y": reduce_tres(pol * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(varname, polopts)
 
-    # Hermitian analysis - add the missing section
-    if hermition_k is not None and nk == 3:
-        wv_hm = (
-            np.conj(wave[:, hermition_k, :])[:, None] * wave[:, hermition_k, :][:, None]
-        )
-        wv_pow = wv_hm[:, 0, 0] + wv_hm[:, 1, 1] + wv_hm[:, 2, 2]
-        if np.isscalar(mask_final):
-            reduced_wv_pow = (
-                reduce_tres(wv_pow * mask_final, r) if r > 0 else wv_pow * mask_final
-            )
-        else:
-            reduced_wv_pow = (
-                reduce_tres(wv_pow * mask_final[:, 0], r)
-                if r > 0
-                else wv_pow * mask_final[:, 0]
-            )
-        store_data(name + wvs + "_H_pow", data={"x": rdtime, "y": reduced_wv_pow})
+    # TODO: Hermitian analysis - hermition_k
+    # Removed because IDL code uses the function 'polyroots' which is not defined
 
-        dbb = wv_hm.reshape(nt, 9)[:, [0, 4, 8, 1, 2, 5]]
-        if np.isscalar(mask_final):
-            dbb_normalized = dbb / (wv_pow[:, None]) * mask_final
-        else:
-            dbb_normalized = dbb / (wv_pow[:, None]) * mask_final[:, 0:1]
-
-        reduced_dbb_real = (
-            reduce_tres(dbb_normalized.real, r) if r > 0 else dbb_normalized.real
-        )
-        reduced_dbb_imag = (
-            reduce_tres(dbb_normalized.imag, r) if r > 0 else dbb_normalized.imag
-        )
-        store_data(name + wvs + "_HN_real", data={"x": rdtime, "y": reduced_dbb_real})
-        store_data(name + wvs + "_HN_imag", data={"x": rdtime, "y": reduced_dbb_imag})
-
-        # Eigenvalue calculation (replaces IDL LA_ELMHES/LA_HQR)
-        eigenvalues = np.zeros((nt, 3), dtype=float)
-        for n in range(nt):
-            # Extract 3x3 Hermitian matrix at time n
-            herm_matrix = wv_hm[n, :, :]
-            # Compute eigenvalues using numpy (equivalent to IDL LA_ELMHES+LA_HQR)
-            evals = np.linalg.eigvals(herm_matrix)
-            # Sort eigenvalues in descending order like IDL
-            eigenvalues[n, :] = np.sort(np.real(evals))[::-1]
-
-        # Normalize eigenvalues by trace like IDL
-        trace = np.sum(eigenvalues, axis=1)
-        eigenvalues_norm = eigenvalues / trace[:, None]
-
-        # Store eigenvalues like IDL
-        if np.isscalar(mask_final):
-            reduced_eigenvalues = (
-                reduce_tres(eigenvalues_norm * mask_final, r)
-                if r > 0
-                else eigenvalues_norm * mask_final
-            )
-        else:
-            reduced_eigenvalues = (
-                reduce_tres(eigenvalues_norm * mask_final[:, 0:1], r)
-                if r > 0
-                else eigenvalues_norm * mask_final[:, 0:1]
-            )
-        store_data(name + wvs + "_H_eval", data={"x": rdtime, "y": reduced_eigenvalues})
-
-    # Update cross-correlation sections to use mask_final
     if cross1 and nk >= 2:
+        logging.info("Computing cross-correlation cross1")
         # Linear polarization cross-correlation
-        i = 1j
-        wa = wave[..., 0] + i * wave[..., 1]
-        wb = wave[..., 0] - i * wave[..., 1]
+        wa = wave[..., 0] + 1j * wave[..., 1]
+        wb = wave[..., 0] - 1j * wave[..., 1]
 
-        gam, coinc, quad, crat = cross_corr_wavelet(wa, wb, wid, gaussian=True)
+        cpol, cpow, cpowb, _ = cross_corr_wavelet(wa, wb, wid, gaussian=True)
 
-        ratopts_gam = polopts.copy()
-        ratopts_gam["ztitle"] = "γ_l"
-        if np.isscalar(mask_final):
-            reduced_gam = (
-                reduce_tres(gam * mask_final, r) if r > 0 else gam * mask_final
-            )
-        else:
-            reduced_gam = (
-                reduce_tres(gam * mask_final, r) if r > 0 else gam * mask_final
-            )
+        vname = name + wvs + "_gam_lin"
+        ratopts["ztitle"] = "$g_l$"
         store_data(
-            name + wvs + "_gam_lin",
-            data={"x": rdtime, "y": reduced_gam, "v": yax},
-            attr_dict=ratopts_gam,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(cpol * mask_final, r), "v": yax},
+            attr_dict=ratopts,
         )
+        wav_data_set_options(vname, ratopts)
 
-        pol_opts_coin = polopts.copy()
-        pol_opts_coin["ztitle"] = "C_l"
-        reduced_coinc = (
-            reduce_tres(coinc * mask_final, r) if r > 0 else coinc * mask_final
-        )
+        vname = name + wvs + "_coin_lin"
+        polopts["ztitle"] = "$C_l$"
         store_data(
-            name + wvs + "_coin_lin",
-            data={"x": rdtime, "y": reduced_coinc, "v": yax},
-            attr_dict=pol_opts_coin,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(cpow * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(vname, polopts)
 
-        pol_opts_quad = polopts.copy()
-        pol_opts_quad["ztitle"] = "Q_l"
-        reduced_quad = reduce_tres(quad * mask_final, r) if r > 0 else quad * mask_final
+        vname = name + wvs + "_quad_lin"
+        polopts["ztitle"] = "$Q_l$"
         store_data(
-            name + wvs + "_quad_lin",
-            data={"x": rdtime, "y": reduced_quad, "v": yax},
-            attr_dict=pol_opts_quad,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(cpowb * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(vname, polopts)
 
         # Circular polarization cross-correlation
         wa = wave[..., 0]
         wb = wave[..., 1]
+        cpol, cpow, cpowb, _ = cross_corr_wavelet(wa, wb, wid, gaussian=True)
 
-        gam, coinc, quad, crat = cross_corr_wavelet(wa, wb, wid, gaussian=True)
-
-        ratopts_gam["ztitle"] = "γ_p"
-        reduced_gam = reduce_tres(gam * mask_final, r) if r > 0 else gam * mask_final
+        vname = name + wvs + "_gam_cir"
+        ratopts["ztitle"] = "$g_p$"
         store_data(
-            name + wvs + "_gam_cir",
-            data={"x": rdtime, "y": reduced_gam, "v": yax},
-            attr_dict=ratopts_gam,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(cpol * mask_final, r), "v": yax},
+            attr_dict=ratopts,
         )
+        wav_data_set_options(vname, ratopts)
 
-        pol_opts_coin["ztitle"] = "C_p"
-        reduced_coinc = (
-            reduce_tres(coinc * mask_final, r) if r > 0 else coinc * mask_final
-        )
+        vname = name + wvs + "_coin_cir"
+        polopts["ztitle"] = "$C_p$"
         store_data(
-            name + wvs + "_coin_cir",
-            data={"x": rdtime, "y": reduced_coinc, "v": yax},
-            attr_dict=pol_opts_coin,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(cpow * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(vname, polopts)
 
-        pol_opts_quad["ztitle"] = "Q_p"
-        reduced_quad = reduce_tres(quad * mask_final, r) if r > 0 else quad * mask_final
+        vname = name + wvs + "_quad_cir"
+        polopts["ztitle"] = "$Q_p$"
         store_data(
-            name + wvs + "_quad_cir",
-            data={"x": rdtime, "y": reduced_quad, "v": yax},
-            attr_dict=pol_opts_quad,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(cpowb * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(vname, polopts)
 
     if cross2 and nk >= 3:
+        logging.info("Computing cross-correlation cross2")
         # Parallel-perpendicular cross-correlation
-        i = 1j
         wa = wave[..., 2]  # parallel component
-        wb = wave[..., 0] + i * wave[..., 1]  # right-handed
+        wb = wave[..., 0] + 1j * wave[..., 1]  # right-handed
 
-        gam, coinc, quad, crat = cross_corr_wavelet(wa, wb, wid, gaussian=False)
+        c2pol, c2pow, c2powb, _ = cross_corr_wavelet(wa, wb, wid, gaussian=False)
 
-        ratopts_gam = polopts.copy()
-        ratopts_gam["ztitle"] = "γ_pr"
-        reduced_gam = reduce_tres(gam * mask_final, r) if r > 0 else gam * mask_final
+        vname = name + wvs + "_gam_pr"
+        ratopts["ztitle"] = "$g_{pr}$"
         store_data(
-            name + wvs + "_gam_pr",
-            data={"x": rdtime, "y": reduced_gam, "v": yax},
-            attr_dict=ratopts_gam,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(c2pol * mask_final, r), "v": yax},
+            attr_dict=ratopts,
         )
+        wav_data_set_options(vname, ratopts)
 
-        pol_opts_coin = polopts.copy()
-        pol_opts_coin["ztitle"] = "C_pr"
-        reduced_coinc = (
-            reduce_tres(coinc * mask_final, r) if r > 0 else coinc * mask_final
-        )
+        vname = name + wvs + "_coin_pr"
+        polopts["ztitle"] = "$C_{pr}$"
         store_data(
-            name + wvs + "_coin_pr",
-            data={"x": rdtime, "y": reduced_coinc, "v": yax},
-            attr_dict=pol_opts_coin,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(c2pow * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(vname, polopts)
 
-        pol_opts_quad = polopts.copy()
-        pol_opts_quad["ztitle"] = "Q_pr"
-        reduced_quad = reduce_tres(quad * mask_final, r) if r > 0 else quad * mask_final
+        vname = name + wvs + "_quad_pr"
+        polopts["ztitle"] = "$Q_{pr}$"
         store_data(
-            name + wvs + "_quad_pr",
-            data={"x": rdtime, "y": reduced_quad, "v": yax},
-            attr_dict=pol_opts_quad,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(c2powb * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(vname, polopts)
 
         # Left-handed
-        wb = wave[..., 0] - i * wave[..., 1]
-        gam, coinc, quad, crat = cross_corr_wavelet(wa, wb, wid, gaussian=False)
+        wb = wave[..., 0] - 1j * wave[..., 1]
+        c2pol, c2pow, c2powb, _ = cross_corr_wavelet(wa, wb, wid, gaussian=False)
 
-        ratopts_gam["ztitle"] = "γ_pl"
-        reduced_gam = reduce_tres(gam * mask_final, r) if r > 0 else gam * mask_final
+        vname = name + wvs + "_gam_pl"
+        ratopts["ztitle"] = "$g_{pl}$"
         store_data(
-            name + wvs + "_gam_pl",
-            data={"x": rdtime, "y": reduced_gam, "v": yax},
-            attr_dict=ratopts_gam,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(c2pol * mask_final, r), "v": yax},
+            attr_dict=ratopts,
         )
+        wav_data_set_options(vname, ratopts)
 
-        pol_opts_coin["ztitle"] = "C_pl"
-        reduced_coinc = (
-            reduce_tres(coinc * mask_final, r) if r > 0 else coinc * mask_final
-        )
+        vname = name + wvs + "_coin_pl"
+        polopts["ztitle"] = "$C_{pl}$"
         store_data(
-            name + wvs + "_coin_pl",
-            data={"x": rdtime, "y": reduced_coinc, "v": yax},
-            attr_dict=pol_opts_coin,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(c2pow * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(vname, polopts)
 
-        pol_opts_quad["ztitle"] = "Q_pl"
-        reduced_quad = reduce_tres(quad * mask_final, r) if r > 0 else quad * mask_final
+        vname = name + wvs + "_quad_pl"
+        polopts["ztitle"] = "$Q_{pl}$"
         store_data(
-            name + wvs + "_quad_pl",
-            data={"x": rdtime, "y": reduced_quad, "v": yax},
-            attr_dict=pol_opts_quad,
+            vname,
+            data={"x": rdtime, "y": reduce_tres(c2powb * mask_final, r), "v": yax},
+            attr_dict=polopts,
         )
+        wav_data_set_options(vname, polopts)
 
     logging.info(f"Finished wav_data for {name}")
 
     # Return dictionary with results
     result = {
         "wave": wave,
-        "power": pow,
+        "power": wpow,
         "period": period,
         "yax": yax,
         "time": time,
