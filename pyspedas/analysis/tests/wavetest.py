@@ -16,7 +16,7 @@ from pyspedas import wavelet98
 from pyspedas import wave_signif
 from pyspedas import download
 import unittest
-import pyspedas
+from pyspedas.projects.themis.config import CONFIG
 
 
 def wavetest(noplot=False):
@@ -30,9 +30,11 @@ def wavetest(noplot=False):
 
     remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
     remote_name = 'analysis_tools/sst_nino3.dat'
+    outputdir = os.path.join(CONFIG["local_data_dir"], "idltestfiles")
     datafile = download(remote_file=remote_name,
                         remote_path=remote_server,
-                        no_download=False)
+                        no_download=False,
+                        local_path=outputdir,)
     if not datafile:
         # Skip tests
         raise unittest.SkipTest("Cannot download data validation file")
