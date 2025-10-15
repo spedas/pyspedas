@@ -96,7 +96,9 @@ def wavelet2(
     # Loop over each column (component)
     for d in range(d2):
         # Call the main wavelet function for each component
-        wv98 = wavelet98(y[:, d], dt, s0=srange[0], dj=dj, J=jv, pad=pad, param=w0)
+        wv98 = wavelet98(
+            y[:, d], dt, s0=srange[0], dj=dj, j_scales=jv, pad=pad, param=w0
+        )
         wv = wv98[0]
         period = wv98[2]
         wave[:, :, d] = wv
