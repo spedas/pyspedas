@@ -73,7 +73,7 @@ def wavetest(noplot=False):
     # Perform wavelet transform
     print("Computing wavelet transform...")
     wave, scale, period, signif, daughter_ret, sst_recon, fft_theor_out = wavelet98(
-        sst, dt, pad=pad, dj=dj, J=j1, s0=s0, mother=mother, recon=True
+        sst, dt, pad=pad, dj=dj, j_scales=j1, s0=s0, mother=mother, recon=True
     )
     power = np.abs(wave) ** 2  # Wavelet power spectrum
 

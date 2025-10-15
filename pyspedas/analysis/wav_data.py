@@ -780,7 +780,7 @@ def wav_data(
         )
         wav_data_set_options(varname, polopts)
 
-    # TODO: Hermitian analysis - hermition_k
+    # Hermitian analysis - hermition_k
     # Removed because IDL code uses the function 'polyroots' which is not defined
 
     if cross1 and nk >= 2:
