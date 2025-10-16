@@ -21,7 +21,7 @@ class CDAWeb:
 
     def __init__(self):
         """Initialize."""
-        self.cdas = CdasWs(endpoint=CONFIG['cdas_endpoint'])
+        self.cdas = CdasWs(endpoint=CONFIG["cdas_endpoint"])
 
     def get_observatories(self):
         """Return a list of strings CDAWeb uses to designate missions or mission groups
@@ -164,7 +164,7 @@ class CDAWeb:
         get_support_data=False,
         prefix="",
         suffix="",
-        varnames=[],
+        varnames=None,
         notplot=False,
         merge=False,
         trange=None,
@@ -191,6 +191,7 @@ class CDAWeb:
             If set, append this string to the variable name when creating the tplot variables.
         varnames: list of str
             If set, specifies a list of variables to load from the data files.
+            If None or [] or ['*'], load all variables.
         notplot: bool
             If True, return data directly as tplot data structures, rather than a list of tplot names.
         merge: bool
@@ -224,12 +225,10 @@ class CDAWeb:
         loaded_vars = []
 
         # Set the local and remote directories
-        remotehttp = CONFIG['remote_data_dir']
+        remotehttp = CONFIG["remote_data_dir"]
         if local_dir is None:
             local_dir = CONFIG["local_data_dir"]
 
-        count = 0
-        dcount = 0
         cdf_files = []
         netcdf_files = []
         all_files = []
@@ -265,11 +264,11 @@ class CDAWeb:
                     elif f.endswith(".nc"):
                         netcdf_files.append(f)
                     else:
-                        logging.warning("File type not supported: " + f)
+                        logging.warning("File type not supported: %s", f)
 
                 if len(cdf_files) > 0:
                     cdf_files.sort()
-                    logging.info("Downloaded " + str(len(cdf_files)) + " CDF files.")
+                    logging.info("Downloaded %d CDF files.", len(cdf_files))
                     try:
                         cdf_vars = cdf_to_tplot(
                             cdf_files,
@@ -291,9 +290,7 @@ class CDAWeb:
 
                 if len(netcdf_files) > 0:
                     netcdf_files.sort()
-                    logging.info(
-                        "Downloaded " + str(len(netcdf_files)) + " NetCDF files."
-                    )
+                    logging.info("Downloaded %d NetCDF files.", len(netcdf_files))
                     try:
                         netcdf_vars = netcdf_to_tplot(
                             netcdf_files,
@@ -311,7 +308,7 @@ class CDAWeb:
 
                 loaded_vars = list(set(loaded_vars))
                 no_of_variables = len(loaded_vars)
-                logging.info("Number of tplot variables loaded:" + str(no_of_variables))
+                logging.info("Number of tplot variables loaded: %d", no_of_variables)
 
                 if time_clip and trange is not None:
                     if trange[0] >= trange[1]:
