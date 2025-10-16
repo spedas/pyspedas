@@ -1,0 +1,5 @@
+[MESSAGES CONTROL]
+disable=C0301
+
+[MASTER]
+max-line-length=150
