@@ -22,7 +22,7 @@ from collections.abc import Iterable
 def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None, get_support_data=False, get_metadata=False,
                  get_ignore_data=False, string_encoding='ascii',
                  prefix='', suffix='', plot=False, merge=False,
-                 center_measurement=False, notplot=False, varnames=[]):
+                 center_measurement=False, notplot=False, varnames=None):
     """
     This function will automatically create tplot variables from CDF files.  In general, the files should be
     ISTP compliant for this importer to work.  Each variable is read into a new tplot variable (a.k.a an xarray DataArray),
@@ -76,7 +76,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
         varnames: str or list of str
-            Load these variables only. If [] or ['*'], then load everything.
+            Load these variables only. If None or [] or ['*'], then load everything.
 
     Returns:
         List of tplot variables created (unless notplot keyword is used).
@@ -106,6 +106,9 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     if prefix != '' or suffix != '':
         check_pre_suff = True
 
+    if varnames is None:
+        varnames = []
+
     if not isinstance(varnames, list):
         varnames = [varnames]
 
@@ -117,7 +120,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     if isinstance(filenames, str):
         filenames = [filenames]
     elif isinstance(filenames, list):
-        filenames = filenames
+        pass
     else:
         logging.warning("Invalid filenames input. Must be string or list of strings.")
         return stored_variables
