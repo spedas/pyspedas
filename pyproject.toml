@@ -132,6 +132,7 @@ all = ["mth5", "obspy", "mt-metadata", "viresclient", "basemap"]
 lint = [
     "ruff>=0.12.10",
     "flake8>=7.3.0",
+    "pylint>=2.17.0",
 ]
 doc = [
     "sphinx>=1.7.6",
@@ -164,8 +165,9 @@ indent-width = 4
 # Assume Python 3.9
 target-version = "py39"
 
-[tool.ruff.lint]
+ignore = [
+    "E501",  # Ignore line too long
+]
 
-select = ["E4", "E7", "E9", "F", "C9", "W"]
-ignore = []
-
+[tool.pylint]
+disable = ["line-too-long", "too-many-arguments",]
