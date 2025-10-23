@@ -25,6 +25,7 @@ import unittest
 from numpy.testing import assert_allclose
 import numpy as np
 from pyspedas.analysis.wavelet import wavelet
+from pyspedas.analysis.wavelet98 import wavelet98
 from pyspedas.analysis.wav_data import wav_data
 from pyspedas.utilities.download import download
 from pyspedas.projects.themis.config import CONFIG
@@ -32,6 +33,7 @@ from pyspedas.projects.themis.config import CONFIG
 global_display = False
 local_idl_file = False  # Set to True to use a local IDL savefile (assumes directory ~/idltestfiles/ exists)
 outputdir = os.path.join(CONFIG["local_data_dir"], "idltestfiles")
+
 
 def tc_scales_from_freqs(freqs, omega0=6.0):
     """Convert desired physical frequencies [Hz] to wavelet scales using Torrence & Compo (1998)"""
@@ -58,9 +60,7 @@ def load_idl_savefile(savefile):
     else:
         # Download tplot files, all files should be under directory analysis_tools/
         remote_server = "https://github.com/spedas/test_data/raw/refs/heads/main/"
-        remote_name = (
-            "analysis_tools/" + savefile
-        )  
+        remote_name = "analysis_tools/" + savefile
         datafile = download(
             remote_file=remote_name,
             remote_path=remote_server,
@@ -720,6 +720,112 @@ class TwaveletDataValidation(unittest.TestCase):
         pyspedas.tplot(all_vars1, display=global_display, save_png=local_png)
         local_png = os.path.join(local_path, "wav_data_cross2.png")
         pyspedas.tplot(all_vars2, display=global_display, save_png=local_png)
+
+    def test_wavelet98_paul_dog(self):
+        # Test wavelet98.py Paul and Dog and compare with IDL results.
+
+        print("\n\nTesting wavelet98 Paul and Dog wavelets\n")
+
+        # Load IDL savefile
+        filename = load_idl_savefile("wavelet98_paul_dog_test.tplot")
+        # If filename does not exist, skip the test
+        if not os.path.exists(filename):
+            self.skipTest(
+                "Cannot find local IDL savefile for comparison. Filename: " + filename
+            )
+
+        # Load validation variables from the test file
+        pyspedas.del_data("*")
+        pyspedas.tplot_restore(filename)
+        pyspedas.tplot_names()
+
+        # Rename the IDL results to distinguish them
+        pyspedas.tplot_rename("wav_paul", "idl_wav_paul")
+        options("idl_wav_paul", "ytitle", "idl")
+        pyspedas.tplot_rename("pow_paul", "idl_pow_paul")
+        options("idl_pow_paul", "ytitle", "idl")
+        pyspedas.tplot_rename("wav_dog", "idl_wav_dog")
+        options("idl_wav_dog", "ytitle", "idl")
+        pyspedas.tplot_rename("pow_dog", "idl_pow_dog")
+        options("idl_pow_dog", "ytitle", "idl")
+
+        var = "sin_wav"
+        data = get_data(var)
+        vtime = data[0]
+        vy = data[1]
+        dt = np.median(np.diff(vtime))  # time step in seconds
+
+        # PAUL wavelet
+        paul_res = wavelet98(vy, dt, mother="PAUL")
+        wave_paul = paul_res[0]
+        period_paul = paul_res[2]
+
+        store_data("wav_paul", data={"x": vtime, "y": wave_paul, "v": period_paul})
+        options("wav_paul", "ytitle", "python")
+        options("wav_paul", "ysubtitle", "Paul")
+
+        pow_paul = np.abs(wave_paul) ** 2
+        store_data("pow_paul", data={"x": vtime, "y": pow_paul, "v": period_paul})
+        options("pow_paul", "ytitle", "Power")
+        options("pow_paul", "ysubtitle", "Paul")
+        options("pow_paul", "spec", 1)
+        options("pow_paul", "ylog", 1)
+
+        # Compare IDL to Python Paul results
+        d_idl_paul = get_data("idl_wav_paul")
+        d_py_paul = get_data("wav_paul")
+        assert_allclose(d_idl_paul.times, d_py_paul.times)
+        assert_allclose(d_idl_paul.v, d_py_paul.v)
+        assert_allclose(d_idl_paul.y, d_py_paul.y, rtol=7e-05, atol=7e-5)
+        p_idl_paul = get_data("idl_pow_paul")
+        p_py_paul = get_data("pow_paul")
+        assert_allclose(p_idl_paul.times, p_py_paul.times)
+        assert_allclose(p_idl_paul.v, p_py_paul.v)
+        assert_allclose(p_idl_paul.y, p_py_paul.y, rtol=7e-05, atol=7e-5)
+
+        # DOG wavelet
+        dog_res = wavelet98(vy, dt, mother="DOG")
+        wave_dog = dog_res[0]
+        period_dog = dog_res[2]
+
+        store_data("wav_dog", data={"x": vtime, "y": wave_dog, "v": period_dog})
+        options("wav_dog", "ytitle", "python")
+        options("wav_dog", "ysubtitle", "Dog")
+
+        pow_dog = np.abs(wave_dog) ** 2
+        store_data("pow_dog", data={"x": vtime, "y": pow_dog, "v": period_dog})
+        options("pow_dog", "ytitle", "Power")
+        options("pow_dog", "ysubtitle", "Dog")
+        options("pow_dog", "spec", 1)
+        options("pow_dog", "ylog", 1)
+
+        # Compare dog results
+        d_idl_dog = get_data("idl_wav_dog")
+        d_py_dog = get_data("wav_dog")
+        assert_allclose(d_idl_dog.times, d_py_dog.times)
+        assert_allclose(d_idl_dog.v, d_py_dog.v)
+        assert_allclose(d_idl_dog.y, d_py_dog.y, rtol=7e-05, atol=7e-5)
+        p_idl_dog = get_data("idl_pow_dog")
+        p_py_dog = get_data("pow_dog")
+        assert_allclose(p_idl_dog.times, p_py_dog.times)
+        assert_allclose(p_idl_dog.v, p_py_dog.v)
+        assert_allclose(p_idl_dog.y, p_py_dog.y, rtol=7e-05, atol=7e-5)
+
+        # Plot all results (optional)
+        allvar = [
+            var,
+            "wav_paul",
+            "idl_wav_paul",
+            "pow_paul",
+            "idl_pow_paul",
+            "wav_dog",
+            "idl_wav_dog",
+            "pow_dog",
+            "idl_pow_dog",
+        ]
+        local_path = outputdir
+        local_png = os.path.join(local_path, "wavelet98_paul_dog_test.png")
+        tplot(allvar, display=global_display, save_png=local_png)
 
 
 if __name__ == "__main__":

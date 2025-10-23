@@ -13,6 +13,43 @@ from scipy.stats import chi2
 
 # Morlet wavelet function (Fourier domain)
 def morlet(k0, scale, k):
+    """
+    Morlet wavelet in the Fourier domain.
+
+    Parameters
+    ----------
+    k0 : float
+        Non-dimensional wavenumber of the Morlet wavelet. If set to -1,
+        the function will use the default value of 6.0.
+    scale : float
+        Wavelet scale.
+    k : array_like
+        Array of angular wavenumbers (rad / time unit). Typically created
+        as in wavelet98: k = [0, k_pos..., k_neg...].
+
+    Returns
+    -------
+    vmorlet : ndarray
+        Complex-valued Morlet wavelet evaluated in the Fourier domain at
+        the frequencies given by `k`. Shape matches `k`.
+    period : float
+        Equivalent Fourier period corresponding to the provided `scale`.
+    coi : float
+        Cone-of-influence value for this scale (in same units as `period`).
+    dofmin : int
+        Minimum degrees of freedom for significance testing (no smoothing).
+    cdelta : float
+        Reconstruction factor used for inverse wavelet reconstruction.
+        May be -1 if undefined for the chosen `k0`.
+    psi0 : float
+        Time-domain normalization constant of the mother wavelet.
+
+    Notes
+    -----
+    Implementation follows Torrence & Compo (1998). The returned `vmorlet`
+    is normalized such that total energy equals the signal length N (see
+    inline code comment "total energy=N").
+    """
     # Set default wavenumber if not provided
     if k0 == -1:
         k0 = 6.0
@@ -44,6 +81,43 @@ def morlet(k0, scale, k):
 
 # Paul wavelet function (Fourier domain)
 def paul(m, scale, k):
+    """
+    Paul wavelet in the Fourier domain.
+
+    Parameters
+    ----------
+    m : float
+        Order of the Paul wavelet. If set to -1, the function will use the
+        default value of 4.0.
+    scale : float
+        Wavelet scale.
+    k : array_like
+        Array of angular wavenumbers (rad / time unit). Typically created
+        as in wavelet98: k = [0, k_pos..., k_neg...].
+
+    Returns
+    -------
+    vpaul : ndarray
+        Complex-valued Paul wavelet evaluated in the Fourier domain at
+        the frequencies given by `k`. Shape matches `k`.
+    period : float
+        Equivalent Fourier period corresponding to the provided `scale`.
+    coi : float
+        Cone-of-influence value for this scale (in same units as `period`).
+    dofmin : int
+        Minimum degrees of freedom for significance testing (no smoothing).
+    cdelta : float
+        Reconstruction factor used for inverse wavelet reconstruction.
+        May be -1 if undefined for the chosen `m`.
+    psi0 : float
+        Time-domain normalization constant of the mother wavelet.
+
+    Notes
+    -----
+    Implementation follows Torrence & Compo (1998). The returned `vpaul`
+    is normalized such that total energy equals the signal length N (see
+    inline code comment "total energy=N").
+    """
     # Set default order if not provided
     if m == -1:
         m = 4.0
@@ -65,6 +139,43 @@ def paul(m, scale, k):
 
 # Derivative of Gaussian (DOG) wavelet function (Fourier domain)
 def dog(m, scale, k):
+    """
+    Derivative of Gaussian (DOG) wavelet in the Fourier domain.
+
+    Parameters
+    ----------
+    m : int or float
+        Order of the DOG wavelet (m-th derivative). If set to -1, the
+        function will use the default value of 2.
+    scale : float
+        Wavelet scale.
+    k : array_like
+        Array of angular wavenumbers (rad / time unit). Typically created
+        as in this module: k = [0, k_pos..., k_neg...].
+
+    Returns
+    -------
+    gauss : ndarray
+        Complex-valued DOG wavelet evaluated in the Fourier domain at the
+        frequencies given by `k`. Shape matches `k`.
+    period : float
+        Equivalent Fourier period corresponding to the provided `scale`.
+    coi : float
+        Cone-of-influence value for this scale (in same units as `period`).
+    dofmin : int
+        Minimum degrees of freedom for significance testing (no smoothing).
+    cdelta : float
+        Reconstruction factor used for inverse wavelet reconstruction.
+        May be -1 if undefined for the chosen `m`.
+    psi0 : float
+        Time-domain normalization constant of the mother wavelet.
+
+    Notes
+    -----
+    Implementation follows Torrence & Compo (1998). Returned `gauss` is
+    normalized such that total energy equals the signal length when used
+    consistently with the rest of the transform implementation in this file.
+    """
     # Set default order if not provided
     if m == -1:
         m = 2
@@ -256,11 +367,11 @@ def wavelet98(
     # Main loop over all scales
     for a1 in range(na):
         if mother.upper() == "MORLET":
-            psi_fft, period1, coi, dofmin, Cdelta, psi0 = morlet(param, scale[a1], k)
+            psi_fft, period1, coi, dofmin, cdelta, psi0 = morlet(param, scale[a1], k)
         elif mother.upper() == "PAUL":
-            psi_fft, period1, coi, dofmin, Cdelta, psi0 = paul(param, scale[a1], k)
+            psi_fft, period1, coi, dofmin, cdelta, psi0 = paul(param, scale[a1], k)
         elif mother.upper() == "DOG":
-            psi_fft, period1, coi, dofmin, Cdelta, psi0 = dog(param, scale[a1], k)
+            psi_fft, period1, coi, dofmin, cdelta, psi0 = dog(param, scale[a1], k)
         else:
             raise ValueError(
                 "Unknown mother wavelet; accepted values: MORLET, PAUL, DOG"
@@ -301,9 +412,9 @@ def wavelet98(
 
     # Optional: reconstruct the time series from the wavelet transform [Eqn (11)]
     if recon:
-        if Cdelta == -1:
+        if cdelta == -1:
             y2 = -1
-            print("Cdelta undefined, cannot reconstruct with this wavelet")
+            print("cdelta undefined, cannot reconstruct with this wavelet")
         else:
             wave_float = (
                 wave.astype(np.float32)
@@ -316,7 +427,7 @@ def wavelet98(
             y2 = (
                 dj
                 * np.sqrt(dt)
-                / (Cdelta * psi0)
+                / (cdelta * psi0)
                 * np.sum(wave_float * scale_factor[None, :], axis=1)
             )
             y2 = y2[:n1]  # Ensure the reconstructed array matches the original length
