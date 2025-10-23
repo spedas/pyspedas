@@ -20,7 +20,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         time_clip=False,
         username=None,
         password=None,
-        last_version=False,
+        last_version=True,
         force_download=False,
         ):
     """
