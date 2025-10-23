@@ -1,6 +1,5 @@
 import logging
 import pyspedas
-import pyspedas
 import numpy as np
 
 
@@ -95,6 +94,6 @@ def yclip(
     for i, old in enumerate(old_names):
         new = n_names[i]
 
-        data = pyspedas.clip(old, ymin, ymax, new)
+        _ = pyspedas.clip(old, ymin, ymax, new)
 
         logging.info("yclip was applied to: " + new)
