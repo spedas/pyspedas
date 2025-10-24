@@ -162,9 +162,6 @@ setup = [
 line-length = 127
 indent-width = 4
 
-# Assume Python 3.9
-target-version = "py39"
-
 ignore = [
     "E501",  # Ignore line too long
 ]
