@@ -18,7 +18,7 @@ The routines in this module can be used to load data from the Ulysses mission.
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 vhm_vars = pyspedas.ulysses.vhm()
 
@@ -29,7 +29,7 @@ tplot('B_MAG')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 swoops_vars = pyspedas.ulysses.swoops()
 
@@ -40,7 +40,7 @@ tplot(['Density', 'Temperature', 'Velocity'])
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 swics_vars = pyspedas.ulysses.swics()
 
@@ -51,7 +51,7 @@ tplot('Velocity')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 epac_vars = pyspedas.ulysses.epac()
 
@@ -62,7 +62,7 @@ tplot('Omni_Protons')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 hiscale_vars = pyspedas.ulysses.hiscale()
 
@@ -73,7 +73,7 @@ tplot('Electrons')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 cospin_vars = pyspedas.ulysses.cospin()
 ```
@@ -82,7 +82,7 @@ cospin_vars = pyspedas.ulysses.cospin()
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 urap_vars = pyspedas.ulysses.urap()
 ```
@@ -91,7 +91,7 @@ urap_vars = pyspedas.ulysses.urap()
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 grb_vars = pyspedas.ulysses.grb()
 

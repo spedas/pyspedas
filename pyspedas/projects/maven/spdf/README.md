@@ -44,7 +44,7 @@ Get started by importing pyspedas and tplot; these are required to load and plot
 
 ```python
 from pyspedas.maven.spdf import load
-from pytplot import tplot
+from pyspedas import tplot
 ```
 
 #### Magnetometer (MAG)

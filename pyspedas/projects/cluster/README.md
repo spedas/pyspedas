@@ -28,7 +28,7 @@ The SPDF and CSA datasets differ in naming conventions, dataset layout, and poss
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 fgm_vars = pyspedas.cluster.fgm(trange=['2018-11-5', '2018-11-6'])
 
@@ -40,7 +40,7 @@ tplot('B_xyz_gse__C1_UP_FGM')
 ```python
 
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 asp_vars = pyspedas.cluster.aspoc(trange=['2004-10-01', '2004-10-2'])
 
@@ -51,7 +51,7 @@ tplot('I_ion__C1_PP_ASP')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 cis_vars = pyspedas.cluster.cis(trange=['2004-10-01', '2004-10-2'])
 
@@ -63,7 +63,7 @@ tplot(['N_p__C1_PP_CIS', 'V_p_xyz_gse__C1_PP_CIS', 'T_p_par__C1_PP_CIS', 'T_p_pe
 ```python
 
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 dwp_vars = pyspedas.cluster.dwp(trange=['2004-10-01', '2004-10-2'])
 
@@ -74,7 +74,7 @@ tplot('Correl_Ivar__C1_PP_DWP')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 edi_vars = pyspedas.cluster.edi(trange=['2004-10-01', '2004-10-2'])
 
@@ -85,7 +85,7 @@ tplot(['V_ed_xyz_gse__C1_PP_EDI', 'E_xyz_gse__C1_PP_EDI'])
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 efw_vars = pyspedas.cluster.efw(trange=['2004-10-01', '2004-10-2'])
 
@@ -96,7 +96,7 @@ tplot('E_dusk__C1_PP_EFW')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 peace_vars = pyspedas.cluster.peace(trange=['2004-10-01', '2004-10-2'])
 
@@ -107,7 +107,7 @@ tplot(['N_e_den__C1_PP_PEA', 'V_e_xyz_gse__C1_PP_PEA', 'T_e_par__C1_PP_PEA', 'T_
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 rap_vars = pyspedas.cluster.rapid(trange=['2004-10-01', '2004-10-2'])
 
@@ -118,7 +118,7 @@ tplot(['J_e_lo__C1_PP_RAP', 'J_e_hi__C1_PP_RAP', 'J_p_lo__C1_PP_RAP', 'J_p_hi__C
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 sta_vars = pyspedas.cluster.staff(trange=['2004-10-01', '2004-10-02'])
 
@@ -129,7 +129,7 @@ tplot('B_par_f1__C1_PP_STA')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 wbd_vars = pyspedas.cluster.wbd(trange=['2012-11-06/02:10', '2012-11-06/02:20'])
 
@@ -140,7 +140,7 @@ tplot('WBD_Elec')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 whi_vars = pyspedas.cluster.whi()
 
@@ -151,7 +151,7 @@ tplot('N_e_res__C1_PP_WHI')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 fgm_vars = pyspedas.cluster.load_csa(trange=['2008-11-01','2008-11-02'],datatypes=['CP_FGM_FULL'])
 tplot(['B_vec_xyz_gse__C1_CP_FGM_FULL','B_mag__C1_CP_FGM_FULL'])

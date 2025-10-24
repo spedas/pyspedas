@@ -77,7 +77,7 @@ First import the required functions from pyspedas and tplot.
 Then load and plot magnetometer or particle data.
 
 ```python
-from pytplot import tplot
+from pyspedas import tplot
 from pyspedas import kompsat_load
 
 # Plot L2 magnetometer data

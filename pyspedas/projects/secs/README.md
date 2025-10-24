@@ -29,7 +29,7 @@ https://matplotlib.org/basemap/stable/users/installation.html
 ```python
 # Save the following in a file (eg. eics_plots.py) and run it.
 import pyspedas
-from pyspedas.secs.makeplots import make_plots
+from pyspedas.projects.secs.makeplots import make_plots
 
 if __name__ == "__main__":
     # Download and unzip the data files.

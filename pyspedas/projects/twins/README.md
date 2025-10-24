@@ -13,7 +13,7 @@ The routines in this module can be used to load data from the TWINS mission.
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 img_vars = pyspedas.twins.imager(trange=['2018-11-5', '2018-11-6'])
 tplot('smooth_image_val')
@@ -23,7 +23,7 @@ tplot('smooth_image_val')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 lad_vars = pyspedas.twins.lad(trange=['2018-11-5/6:00', '2018-11-5/6:20'], time_clip=True)
 
@@ -34,7 +34,7 @@ tplot(['lad1_data', 'lad2_data'])
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 
 ephem_vars = pyspedas.twins.ephemeris(trange=['2018-11-5', '2018-11-6'])
 
