@@ -31,6 +31,25 @@ The wave_signif routine computes significance levels for a wavelet transform.
 
 .. autofunction:: pyspedas.wave_signif
 
+Available wavelet definitions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following routines are the predefined wavelet functions used by the wavelet98 routines.
+
+Morlet wavelet:
+
+.. autofunction:: pyspedas.analysis.wavelet98.morlet
+
+Paul wavelet:
+
+.. autofunction:: pyspedas.analysis.wavelet98.paul
+
+Difference of gaussians wavelet:
+
+.. autofunction:: pyspedas.analysis.wavelet98.dog
+
+
+
 Generalized 3-D Particle Distribution Tools
 --------------------------------------------
 
