@@ -251,7 +251,7 @@ jobs:
         echo Starting geotail tests at `date`
         coverage run -a -m  pyspedas.projects.geotail.tests.tests
         echo Starting analysis tests at `date`
-        coverage run -a -m  pyspedas.analysis.tests.tests
+        coverage run -a -m  pyspedas.analysis.tests.test_analysis
         echo Starting analysis wavpol tests at `date`
         coverage run -a -m  pyspedas.analysis.tests.test_twavpol
         echo Starting analysis wavelet tests at `date`
