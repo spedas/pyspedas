@@ -2,7 +2,7 @@
 import unittest
 import numpy as np
 
-from ...mms.mms_file_filter import mms_file_filter
+from ..mms_file_filter import mms_file_filter
 
 TEST_DATA = ['C:\\Users\\admin\\data\\mms\\mms1\\dfg\\srvy\\ql\\2016\\01\\mms1_dfg_srvy_ql_20160115_v2.13.2.cdf',
     'C:\\Users\\admin\\data\\mms\\mms1\\dfg\\srvy\\ql\\2016\\01\\mms1_dfg_srvy_ql_20160116_v2.13.2.cdf',
