@@ -5,6 +5,10 @@
 *.tmp
 *.sav
 *.bat
+*.cdf
+*.nc
+*.fits
+*.tplot
 
 *~
 
@@ -225,7 +229,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-*.cdf
+
 
 # Mynotes
 .notes.txt
