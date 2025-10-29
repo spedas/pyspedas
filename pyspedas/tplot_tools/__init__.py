@@ -3,7 +3,7 @@
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/PyTplot
 
-from _collections import OrderedDict
+from collections import OrderedDict
 
 import os
 import sys
@@ -15,12 +15,24 @@ xr.set_options(keep_attrs=True)
 
 # Global Variables
 data_quants = OrderedDict()
-tplot_opt_glob = dict(tools="xpan,crosshair,reset",
-                      min_border_top=12, min_border_bottom=12,
-                      title_align='center', window_size=[800, 800],
-                      title_size='12', title_text='', crosshair=True,
-                      data_gap=0, black_background=False, axis_font_size=12, axis_tick_num=[(0, 1000000000), (3, 1),],
-                      y_axis_zoom=False)
+tplot_opt_glob = dict(
+    tools="xpan,crosshair,reset",
+    min_border_top=12,
+    min_border_bottom=12,
+    title_align="center",
+    window_size=[800, 800],
+    title_size="12",
+    title_text="",
+    crosshair=True,
+    data_gap=0,
+    black_background=False,
+    axis_font_size=12,
+    axis_tick_num=[
+        (0, 1000000000),
+        (3, 1),
+    ],
+    y_axis_zoom=False,
+)
 lim_info = {}
 extra_layouts = {}
 
@@ -32,7 +44,12 @@ from .store_data import store_data, store
 from .get_data import get_data, get
 from .str_to_float_fuzzy import str_to_float_fuzzy
 from .tplot_names import tplot_names
-from .wildcard_routines import wildcard_expand, tplot_wildcard_expand, tname_byindex, tindex_byname
+from .wildcard_routines import (
+    wildcard_expand,
+    tplot_wildcard_expand,
+    tname_byindex,
+    tindex_byname,
+)
 from .options import options
 from .xlim import xlim
 from .ylim import ylim
@@ -41,7 +58,9 @@ from .tlimit import tlimit
 from . import spedas_colorbar
 from .exporters.tplot_save import tplot_save
 from .tnames import tnames
-from .convert_tplotxarray_to_pandas_dataframe import convert_tplotxarray_to_pandas_dataframe
+from .convert_tplotxarray_to_pandas_dataframe import (
+    convert_tplotxarray_to_pandas_dataframe,
+)
 from .importers.tplot_restore import tplot_restore
 from .is_pseudovariable import is_pseudovariable
 from .count_traces import count_traces
@@ -56,7 +75,7 @@ from .timebar import timebar
 from .databar import databar
 from .timespan import timespan
 from .timestamp import timestamp
-from .time_double import time_float,time_double, time_float_one
+from .time_double import time_float, time_double, time_float_one
 from .time_string import time_string, time_datetime, time_string_one
 from .importers.sts_to_tplot import sts_to_tplot
 from .data_att_getters_setters import set_coords, get_coords, set_units, get_units
@@ -110,4 +129,3 @@ from .MPLPlotter.annotate import annotate
 from .MPLPlotter.tplot import tplot
 from .importers.cdf_to_tplot import cdf_to_tplot
 from .importers.netcdf_to_tplot import netcdf_to_tplot
-
