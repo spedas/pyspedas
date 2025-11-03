@@ -5,6 +5,15 @@ Coming soon
 ------------
 The items here are mostly stubs to be filled in later.
 
+Setting up a development environment for PySPEDAS maintainers and contributors is a little different than the type
+of setup an end user might do.   You will want to clone PySPEDAS from the GitHub repository, rather than installing some
+PyPI release.   This lets you either commit your changes to the official repo (PySPEDAS core maintainers), or a personal fork
+of the official repo (outside contributors).
+
+PySPEDAS uses pdm and uv to manage your virtual environment.  These tools will need to be installed and configured in your environment
+before completing the rest of the setup.  The PySPEDAS pyproject.toml file also defines a number of developer dependencies you might find
+useful for formatting, linting, and building PySPEDAS.
+
 Setting up a PyCharm development environment for PySPEDAS
 ----------------------------------------------------------
 
@@ -14,7 +23,7 @@ Setting up a PyCharm development environment for PySPEDAS
 
 3)  Select GitHub from the left pane (assuming you've already set up your
     GitHub credentials), then select the spedas/pyspedas repository (PySPEDAS
-    team members) or your fork of the repo (Outside contributors).   PyCharm
+    team members) or your fork of the repo (outside contributors).   PyCharm
     will automatically populate the "Directory" control.  You should probably
     change the name to match the Conda environment you set up in step 1.
 
@@ -23,7 +32,7 @@ Setting up a PyCharm development environment for PySPEDAS
 5) When the clone operation completes, open your new PyCharm project in a new PyCharm window.
 
 6)  Depending on your PyCharm settings, it may create a project interpreter for your project.  We
-    need to replace it with the Conda environment in step 1.  Delete any .venv or venv folder it
+    need to replace it with the Conda environment you created in step 1.  Delete any .venv or venv folder it
     might have created for you.  Near the bottom right corner of the PyCharm window is a control
     that will let you set up the project interpeter.  Click on that, then click "Add new interpreter"
     in the menu that appears, then click "Add local interpreter".   An "Add Python interpreter" dialog
@@ -89,13 +98,23 @@ Setting up a PyCharm development environment for PySPEDAS
 
     In Python->Integrated Tools, the docstring format should be set to "NumPy".
 
+Setting up a PySPEDAS development environment in Visual Studio Code
+--------------------------------------------------------------------
 
+TBD
 
 Directory hierarchy and project layout
 ---------------------------------------
 
+TBD
+
 Stylistic guidelines
 --------------------
+
+Docstrings
+^^^^^^^^^^
+
+We use the numpy formatting conventions, and automatically generate documentation pages for pyspedas.readthedocs.io using Sphinx.
 
 Documentation
 ^^^^^^^^^^^^^

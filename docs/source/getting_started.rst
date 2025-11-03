@@ -7,12 +7,12 @@ Requirements
 --------------
 PySPEDAS supports Windows, macOS and Linux.
 
-At this writing (January 2025), PySPEDAS is compatible with Python versions 3.9 through 3.12.
+At this writing (October 2025), PySPEDAS is compatible with Python versions 3.10 through 3.14.
 
 The following installation guide represents a somewhat minimal approach to getting a working PySPEDAS
 installation.   It assumes you are starting from scratch, with no pre-existing Python version or developer tools installed.
-More advanced users might wish to make different choices of Python distributions (e.g. anaconda rather than
-python.org), or use a different development environment (e.g Spyder, Visual Studio Code, or some other
+More advanced users might wish to make different choices of Python distributions (e.g. python.org rather than
+Anaconda), or use a different development environment (e.g Spyder, Visual Studio Code, or some other
 environment rather than PyCharm).  The installation details might differ slightly for
 various operating systems or choices of Python distribution or development environment, but the general
 order of operations should be simple and straightforward.
@@ -24,15 +24,47 @@ You will need to install a compatible version of Python on your system (even if 
 operating system, it is not recommended to use it for PySPEDAS.  There is no issue having multiple Python
 versions or installations on the same machine).
 
-We recommend installing Python 3.12 from https://python.org/downloads .
+For managing Python environments to be used with PySPEDAS, we recommend [Anaconda](https://www.continuum.io/downloads/), Anaconda
+gives you a relatively easy way to install and manage Python environments, and comes with a suite of packages useful for scientific data
+analysis. Step-by-step instructions for installing Anaconda can be found at:
+[Windows](https://docs.anaconda.com/anaconda/install/windows/), [macOS](https://docs.anaconda.com/anaconda/install/mac-os/), [Linux](https://docs.anaconda.com/anaconda/install/linux/)
 
-Note that the latest available Python release is 3.13, and this is what the page will offer
-to download by default, but PySPEDAS isn't yet compatible with this release.  Scroll
-down to the section entitled "Looking for a specific release?", find the entry for Python 3.12
-(whatever minor release is current -- Python 3.12.8 as of this writing), click the "Download" button
-for it, then open the installer and follow the instructions.  You should probably accept the defaults
-for any installation options that appear.  More detailed instructions for your platform are
-available from https://docs.python.org/3/using/index.html .
+Anaconda is not a requirement -- PySPEDAS will run just fine in a Python installation downloaded from python.org.
+However, Anaconda may make it easier to install some of the other Python packages PySPEDAS depends on.
+Some PySPEDAS dependencies are not always available as pre-compiled wheels, depending on the OS and CPU architecture
+you're using.  (Older releases of MacOS seem to be particularly prone to package installation issues).
+While a full Anaconda installation is larger and more complicated than downloading directly from python.org, it does have the advantage of allowing a user to "conda install" a dependency if "pip install" doesn't work.
+Anaconda also has the advantage of bundling many other tools that are useful to scientific programmers.
+
+As of October 2025, Python 3.14 is the latest available Python release.  The core PySPEDAS
+features are all compatible with Python 3.14, but there are still compatibility issues with a few dependencies,
+particularly the basemap package used to create plots from SECS/EICS data.  Since Python 3.14 has only been released
+a few weeks ago, it's possible that the rest of the dependencies will catch up soon.
+
+Python 3.13 is well-tested and fully compatible with PySPEDAS, but some users may want to avoid it because of poor performance for some workloads.
+Python 3.12 is a solid choice, performs better than Python 3.13, and is therefore the one we would recommend
+to most users.
+
+To install Python using Anaconda, start "Anaconda Navigator".  You should see something like this:
+
+.. image:: _static/anaconda_environments.png
+   :align: center
+   :class: imgborder
+
+
+Locate the "Environments" tab highlighted in the above screenshot, and click on it.  The Environments screen
+should look something like this:
+
+.. image:: _static/anaconda_new_environment.png
+   :align: center
+   :class: imgborder
+
+
+The center pane shows any Python environments that have already been created by Anaconda.  To create a new Python environment,
+locate the 'Create' control highlighted in the above screenshot, and click it to bring up the "New Environment" dialog.
+Make sure the "Python" option is selected, and use the dropdown control to select the version of Python to be used in the new environment.
+Finally, enter the name you want to use for the new environment (perhaps something like 'pyspedas_conda_py312'), and click "Create".  This should set up
+Anaconda will then start setting up a new Python environment for you to use with PySPEDAS.
 
 Installing PyCharm
 -------------------
@@ -76,7 +108,7 @@ shell startup files (e.g. .cshrc, .zshrc, .bashrc or whatever shell you use):
 
 
 On Windows, you can open the Windows settings, search for "environment variables",
-go the the appropriate control panel, and add the SPEDAS_DATA_DIR environment variable to your
+go to the appropriate control panel, and add the SPEDAS_DATA_DIR environment variable to your
 user environment variable settings.
 
 You may need to log out of your account and log back in so these changes take effect.
@@ -84,16 +116,29 @@ You may need to log out of your account and log back in so these changes take ef
 Create a Python project in PyCharm
 ----------------------------------
 
-You will need to create a Python project and "virtual environment", which is where you'll
-install pyspedas and some other tools you'll need.
+You will need to create a Python project within PyCharm, and connect it to the Python environment you previously set up with Conda.
+
 
 You should have an icon for PyCharm on your desktop or start menu.  Use it to open PyCharm.
 
 Instructions for creating a new PyCharm project and environment can be found here:
 https://www.jetbrains.com/help/pycharm/creating-and-running-your-first-python-project.html
-The default name for your project will probably be something like "pythonProject" under
-a "PycharmProjects" folder...for this tutorial, change the name to PySPEDAS.
 
+In PyCharm, use the File->New Project... menu to bring up a dialog that should look something like this:
+
+
+.. image:: _static/pycharm_new_project.png
+   :align: center
+   :class: imgborder
+
+The above screenshot highlights the choices you should make in the "New Project" dialog:  it should be created
+as a "Pure Python" project.  Choose an appopriate name for your project (here, "PySPEDAS").   For "Interpreter Type",
+select "Custom Environment".   For "Environment:" select "Select existing".  Use the "Type:" dropdown to select "Conda".
+Use the "Environment:" dropdown menu to select the name of the Anaconda environment you set up in a previous step (here,
+we're using "conda_pyspedas_py312).
+
+When you've made all the necessary selections, click on the "Create" button in the lower right.  PyCharm
+will set up your new PySPEDAS project, and connect it to the Python environment you created in Anaconda.
 This step may take several minutes, as it sets up a new Python virtual environment, copies the
 necessary files into it, and indexes them.  At the bottom of your PyCharm window, there
 should be a status area and progress bar showing what it's doing.
@@ -128,33 +173,73 @@ there should be a stack of icons near the bottom.  Hover over them until you fin
 labeled "Terminal", and open it.  (See annotated screen shot in previous section.)
 You can also get to this with View->Tool Windows->Terminal
 
-To install the pyspedas package using PyPI:
+PySPEDAS core install, versus optional extra dependencies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On certain platforms and Python versions, a few of the libraries required by certain PySPEDAS features
+are difficult to install.  They may need to be compiled from source code rather than being provided as binary wheels,
+and may depend on certain other libraries or compilers being installed on your system, otherwise installing these packages
+will fail.  Or they might have very restricted version requirements for other tools like matplotlib, possibly leading to version
+conflicts that prevent installation.
+
+Prior to PySPEDAS 2.0, ``pip install pyspedas`` unconditionally installed all dependencies, even though
+many users may not be interested in those features.  PySPEDAS 2.0 moves some of these
+troublesome dependencies into 'extras', so they are no longer installed by default.
+The corresponding PySPEDAS features are::
+
+    1. SECS and EICS plots required the basemap package in order to plot data on a map of North America
+    2. Loading data via the VIRES service (SWARM and a few other ESA missions) requires the viresclient package
+    3. Loading seismographic magentometer data requires the mth5 package.
+
+If you don't think you'll use those features, you can just install the core PySPEDAS tools, without the extras, with:
 
 .. code-block:: bash
 
-   pip install pyspedas
+    pip install pyspedas
 
+If you do want to use any of those features, you can install them with pip like this:
 
-In the future, to upgrade to the latest version of pySPEDAS, include the '--upgrade' option when calling pip, e.g.,
-
-.. code-block:: bash
-
-   pip install pyspedas --upgrade
-
-This will start the installation of the PySPEDAS package, along with various other packages that it depends on.
-This may take quite a while, depending on your internet connection speed and hard drive speed.  Keep an eye on the
-status area and progress bar at the bottom of the PyCharm window to see what it's doing.
-Eventually, you should see a message that pyspedas (and probably many other packages) were successfully installed.
-
-There are a few other packages that are not installed by default alongside pyspedas.
-The basemap and mth5 packages are optional dependencies that are needed to support SECS and EICS plots, and MTH5 magnetometer station data.
-
-To install:
+(The square brackets are special characters in some shells, so be sure to use quotes around the argument
+if you're installing pyspedas with extras.)
 
 .. code-block:: bash
 
-   pip install basemap
-   pip install mth5
+    # Install all the extras
+    pip install 'pyspedas[all]'
+
+    # Install basemap only, to support EICS and SECS maps
+    pip install 'pyspedas[maps]'
+
+    # Install maps and mth5 extras, but not vires
+    pip install 'pyspedas[maps,mth5]'
+
+Trouble installing PySPEDAS or its dependencies?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you're one of the unlucky users who are having difficulty installing these dependencies on your
+platform, there is a workaround that might let you use those features anyway: you can try
+using 'conda' rather than 'pip' to install the dependencies.  (This is why we recommend installing Python
+via Anaconda rather than python.org:  the latter option does not give you the option to install packages
+via 'conda'.)
+
+.. code-block:: bash
+
+    # Install basemap for SECS/EICS maps
+    conda install -c conda-forge basemap
+
+    # Install mth5 for loading magnetotelluric/seismographical data
+    conda install -c conda-forge mth5
+
+    # Install virecslient, for downloading SWARM or other ESA data from the VIRES service:
+    conda install -c conda-forge viresclient
+
+After installing the dependencies via `conda`, try `pip install 'pyspedas[all]'` again (or some combination of `mth5`,
+`maps`, or `vires` depending on what you were trying to install) to complete the installation.  Repeat as necessary for each
+dependency that doesn't install cleanly via `pip`.
+
+Install support for Jupyter notebooks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 Many PySPEDAS examples are distributed as jupyter notebooks, so you will probably
 want the "jupyter" package:

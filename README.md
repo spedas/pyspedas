@@ -50,13 +50,27 @@ The Python-based Space Physics Environment Data Analysis Software (PySPEDAS) fra
 
 Python 3.10+ is required.
 
-We recommend [Anaconda](https://www.continuum.io/downloads/) which comes with a suite of packages useful for scientific data analysis. Step-by-step instructions for installing Anaconda can be found at: [Windows](https://docs.anaconda.com/anaconda/install/windows/), [macOS](https://docs.anaconda.com/anaconda/install/mac-os/), [Linux](https://docs.anaconda.com/anaconda/install/linux/)
+We recommend [Anaconda](https://www.continuum.io/downloads/), which gives you a relatively easy way to manage your 
+Python installations, and comes with a suite of packages useful for scientific data 
+analysis. Step-by-step instructions for installing Anaconda can be found at:
+[Windows](https://docs.anaconda.com/anaconda/install/windows/), [macOS](https://docs.anaconda.com/anaconda/install/mac-os/), [Linux](https://docs.anaconda.com/anaconda/install/linux/)
+
+Anaconda is not a requirement - if you prefer to download and install Python directly from python.org,
+and manage your own virtual environments, PySPEDAS will work just fine.  However, some PySPEDAS
+dependencies may be hard to install cleanly via 'pip', and it's nice to have the option of trying
+'conda install', which is one reason that we recommend installing Python with Anaconda.
+
+Most people prefer to use a Python IDE like PyCharm, Visual Studio Code, Spyder, etc. to
+do their Python programming. Each IDE has its own way of setting up Python environments for
+your projects, so please consult the documentation for your preferred tool set.
 
 
 ## Installation
 
 ### Virtual Environment
-To avoid potential dependency issues with other Python packages, we suggest creating a virtual environment for PySPEDAS; you can create a virtual environment in your terminal with:
+To avoid potential dependency conflicts with other Python packages, we suggest creating 
+a virtual environment for PySPEDAS; you can create a virtual environment in your terminal 
+with:
 
 ```bash
 python -m venv pyspedas
@@ -90,6 +104,11 @@ python -m ipykernel install --user --name pyspedas --display-name "Python (pySPE
 Then once you open the notebook, go to "Kernel" then "Change kernel" and select the one named "Python (PySPEDAS)"
 
 ### Install
+
+With the release of PySPEDAS 2.0, PySPEDAS has a number of dependencies that are now optional.  That can make it 
+easier to install on platforms that may not have binary wheels available for certain dependencies.  There
+are additional dependencies that are only useful for developing and maintaining PySPEDAS itself.
+
 PySPEDAS supports Windows, macOS and Linux. To get started, install the `pyspedas` package using PyPI:
 
 ```bash
@@ -252,8 +271,9 @@ or by emailing the project maintainers at jwl@ssl.berkeley.edu .
 
 ## PyTplot
 
-Pytplot is a separate project (soon to be merged into PySPEDAS), that replicates the IDL "tplot" functionality. Pyspedas uses a modified version of pytplot with matplotlib as the plotting library.
-
+Previous releases of PySPEDAS depended on the external pytplot or pytplot-mpl-temp Python packages.
+Starting with PySPEDAS 2.0, these external packages are no longer required -- their functionality is now
+included directly in PySPEDAS.
 
 ## Contributing
 We welcome contributions to PySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
@@ -274,8 +294,6 @@ In the interest of fostering an open and welcoming environment, we as contributo
 For examples of pyspedas, see: https://github.com/spedas/pyspedas_examples
 
 For MMS examples, see: https://github.com/spedas/mms-examples
-
-For pytplot (matplotlib version), see: https://github.com/MAVENSDC/PyTplot/tree/matplotlib-backend
 
 For cdflib, see: https://github.com/MAVENSDC/cdflib
 
