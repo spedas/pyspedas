@@ -69,6 +69,8 @@ PySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
    :maxdepth: 1
 
    devguide
+   dev_pycharm
+   dev_vscode
    adminguide
 
 
