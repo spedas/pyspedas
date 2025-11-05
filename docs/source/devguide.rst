@@ -104,7 +104,7 @@ Now that you've connected PyCharm to your GitHub account, you can create a PyCha
 
 7) When the clone operation completes, open your new PyCharm project in a new PyCharm window.
 
-6)  Depending on your PyCharm settings, it may have already created a project interpreter for your project.  We
+8)  Depending on your PyCharm settings, it may have already created a project interpreter for your project.  We
     need to replace it with the Conda environment you created in step 1.  Delete any .venv or venv folder it
     might have created for you in the top level project directory.  Near the bottom right corner of the PyCharm window is a control
     that will let you set up the project interpeter:
@@ -134,7 +134,7 @@ It may take a few minutes for PyCharm to set up and index the project environmen
 
 Next, you'll need to install some development tools to manage your PySPEDAS project.
 
-7)  PySPEDAS uses the pdm package management tool to manage the pyspedas environment.  We also recommend using 'uv'
+9)  PySPEDAS uses the pdm package management tool to manage the pyspedas environment.  We also recommend using 'uv'
     to install dependencies.  Your new Conda environment should already have 'pip' installed, so we'll use pip to
     install pdm and uv. Open a terminal window and run the following pip commands:
 
@@ -145,17 +145,17 @@ Next, you'll need to install some development tools to manage your PySPEDAS proj
 
 
 
-8)  Ensure that the PyCharm terminal is using the pdm and uv installations you just created, rather than some installation
+10)  Ensure that the PyCharm terminal is using the pdm and uv installations you just created, rather than some installation
     in a different, isolated environment.  Closing and reopening the terminal window, or closing and reopening the PyCharm
     project should accomplish this.
 
-8)  After successfully installing pdm and uv, configure pdm to use uv:
+11)  After successfully installing pdm and uv, configure pdm to use uv:
 
 .. code-block:: bash
 
     pdm config use_uv true
 
-9)  Now you are ready to install the dependencies needed for PySPEDAS.  Do this in the terminal window with:
+12)  Now you are ready to install the dependencies needed for PySPEDAS.  Do this in the terminal window with:
 
 .. code-block:: bash
 
@@ -163,7 +163,7 @@ Next, you'll need to install some development tools to manage your PySPEDAS proj
 
 This should install all the runtime, optional, and development dependencies.
 
-10) If any package dependencies failed to install cleanly with 'pdm sync', you may need to install
+13) If any package dependencies failed to install cleanly with 'pdm sync', you may need to install
     them with conda instead.  This is rare on Linux or Windows, but may happen on Mac, depending on what MacOS and
     Python versions you're using.  For any packages that failed to install, try installing them with conda instead:
 
@@ -175,7 +175,7 @@ This should install all the runtime, optional, and development dependencies.
 
 Repeat for each package that failed to install.  Then try 'pdm sync' again to see if any other installation failures occurred.
 
-11) Once you've successfully installed all the PySPEDAS dependencies, you
+14) Once you've successfully installed all the PySPEDAS dependencies, you
     should be ready to test your installation!
 
     Quick "smoke check": open a Python  console window and "import pyspedas".  There should be no
