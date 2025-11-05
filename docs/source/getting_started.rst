@@ -28,10 +28,11 @@ You will need to install a compatible version of Python on your system (even if 
 operating system, it is not recommended to use it for PySPEDAS.  There is no issue having multiple Python
 versions or installations on the same machine).
 
-For managing Python environments to be used with PySPEDAS, we recommend [Anaconda](https://www.continuum.io/downloads/), Anaconda
+For managing Python environments to be used with PySPEDAS, we recommend Anaconda (https://www.anaconda.com/download), Anaconda
 gives you a relatively easy way to install and manage Python environments, and comes with a suite of packages useful for scientific data
 analysis. Step-by-step instructions for installing Anaconda can be found at:
-[Windows](https://docs.anaconda.com/anaconda/install/windows/), [macOS](https://docs.anaconda.com/anaconda/install/mac-os/), [Linux](https://docs.anaconda.com/anaconda/install/linux/)
+(Windows) (https://docs.anaconda.com/anaconda/install/windows/), (macOS)(https://docs.anaconda.com/anaconda/install/mac-os/),
+(Linux)(https://docs.anaconda.com/anaconda/install/linux/)
 
 Anaconda is not a requirement -- PySPEDAS will run just fine in a Python installation downloaded from python.org.
 However, Anaconda may make it easier to install some of the other Python packages PySPEDAS depends on.
@@ -88,6 +89,8 @@ We recommend selecting all these options.
 You may need to restart your machine to finalize the installation.
 
 More PyCharm installation instructions are available at https://www.jetbrains.com/help/pycharm/installation-guide.html
+
+.. _setting-environment-variables:
 
 Set PySPEDAS environment variables
 ----------------------------------
@@ -254,6 +257,8 @@ want the "jupyter" package:
 
    pip install jupyter
 
+.. _check_pycharm_settings:
+
 Check PyCharm setting for Python plots
 --------------------------------------
 
@@ -278,6 +283,7 @@ The "Show plots in tool window" checkbox should be unchecked and the rest grayed
 as it appears in the above screen shot.  If the box is checked, click on it to disable the option, then
 click "OK" to update the settings.
 
+.. _simple-workflow:
 
 Try a simple PySPEDAS workflow
 ------------------------------
