@@ -1,3 +1,5 @@
+.. _getting-started:
+
 Getting Started
 ====================================
 
@@ -16,6 +18,8 @@ Anaconda), or use a different development environment (e.g Spyder, Visual Studio
 environment rather than PyCharm).  The installation details might differ slightly for
 various operating systems or choices of Python distribution or development environment, but the general
 order of operations should be simple and straightforward.
+
+.. _installing-python:
 
 Installing Python
 -----------------
@@ -65,6 +69,8 @@ locate the 'Create' control highlighted in the above screenshot, and click it to
 Make sure the "Python" option is selected, and use the dropdown control to select the version of Python to be used in the new environment.
 Finally, enter the name you want to use for the new environment (perhaps something like 'pyspedas_conda_py312'), and click "Create".  This should set up
 Anaconda will then start setting up a new Python environment for you to use with PySPEDAS.
+
+.. _installing-pycharm:
 
 Installing PyCharm
 -------------------
