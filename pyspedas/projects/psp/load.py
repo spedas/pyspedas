@@ -22,7 +22,8 @@ def load(trange=['2018-11-5', '2018-11-6'],
          username=None,
          password=None,
          last_version=False,
-         force_download=False):
+         force_download=False,
+         version=None):
     """
     This function loads Parker Solar Probe (PSP) data into tplot variables; this function is not
     meant to be called directly; instead, see the wrappers: 
@@ -55,7 +56,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                             'sqtn_rfs_V1V2']
             Default: 'mag_RTN'
 
-        spectypes: str
+        spec_types: str
             Valid options: for DFB AC spectral data
             Default: None
 
@@ -103,10 +104,27 @@ def load(trange=['2018-11-5', '2018-11-6'],
         time_clip: bool
             Time clip the variables to exactly the range specified in the trange keyword
             Default: False
+            
+        username: str
+            Username to download private data
+            Default: None
+        
+        password: str
+            Password to download private data
+            Default: None
+            
+        last_version: bool
+            Use a wildcard pattern to download the highest version available of the CDF
+            Default: False
         
         force_download: bool
             If True, downloads the file even if a newer version exists locally. 
             Default: False.
+
+        version: str
+            If supplied, the load routine will look for this specific CDF version, rather than a wildcard pattern
+            matching any version.  Valid version strings look like "vN.M" for FIELDS sqtn_rfs_v1v1 data, or 
+            "vNN" for all other data types. Default: None
 
     Returns
     ----------
@@ -155,24 +173,34 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     prefix = user_prefix + 'psp_'  #To cover the case if one *does* call this routine directly.
 
+    if version is not None:
+        cdf_version = version
+        last_version = False
+    else:
+        last_version = True
+        if datatype.lower() == 'sqtn_rfs_v1v2':
+            cdf_version = "v?.?"
+        else:
+            cdf_version = "v??"
+    
     file_resolution = 24*3600.
     if instrument == 'fields':
         prefix = user_prefix + '' #CDF Variables are already prefixed with psp_fld_
 
         # 4_per_cycle and 1min are daily, not 6h like the full resolution 'mag_(rtn|sc)'
         if datatype in ['mag_rtn', 'mag_sc']:
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_'+cdf_version+'.cdf'
             file_resolution = 6*3600.
         elif datatype in ['mag_rtn_1min', 'mag_sc_1min', 'rfs_hfr', 'rfs_lfr', 'rfs_burst', 'f2_100bps', 'aeb']:
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype in ['mag_rtn_4_per_cycle', 'mag_rtn_4_sa_per_cyc']:
-            pathformat = instrument + '/' + level + '/mag_rtn_4_per_cycle/%Y/psp_fld_' + level + '_mag_rtn_4_sa_per_cyc_%Y%m%d_v??.cdf'
+            pathformat = instrument + '/' + level + '/mag_rtn_4_per_cycle/%Y/psp_fld_' + level + '_mag_rtn_4_sa_per_cyc_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype in ['mag_sc_4_per_cycle', 'mag_sc_4_sa_per_cyc']:
-            pathformat = instrument + '/' + level + '/mag_sc_4_per_cycle/%Y/psp_fld_' + level + '_mag_sc_4_sa_per_cyc_%Y%m%d_v??.cdf'
+            pathformat = instrument + '/' + level + '/mag_sc_4_per_cycle/%Y/psp_fld_' + level + '_mag_sc_4_sa_per_cyc_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype == 'sqtn_rfs_v1v2':
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'        
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype == 'rfs_lfr_qtn':
-            pathformat = instrument + '/' + level + '/' + datatype + '/psp_fld_' + level + '_' + datatype + '_%Y%m*_v??.cdf'
+            pathformat = instrument + '/' + level + '/' + datatype + '/psp_fld_' + level + '_' + datatype + '_%Y%m*_'+cdf_version+'.cdf'
         elif datatype in ['dfb_dc_spec', 'dfb_ac_spec', 'dfb_dc_xspec', 'dfb_ac_xspec']:
             out_vars = []
             for item in spec_types:
@@ -189,39 +217,39 @@ def load(trange=['2018-11-5', '2018-11-6'],
             else:
                 dtype_tmp = datatype[:11]
                 stype_tmp = datatype[12:]
-            pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+            pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype == 'sqtn_rfs_v1v2':
             # unfortunately the naming format of quasi-thermal-noise cdf file is different from others
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype == 'sqtn_rfs_V1V2':
             # unpublished QTN data
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype == 'merged_scam_wf':
             if username == None:
-                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_'+cdf_version+'.cdf'
             else:
-                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_'+cdf_version+'.cdf'
 
         # unpublished data
         elif username != None:
             if datatype in ['mag_RTN', 'mag_SC']:
-                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_'+cdf_version+'.cdf'
                 file_resolution = 6*3600.
 
             elif datatype in ['mag_RTN_1min', 'mag_RTN_4_Sa_per_Cyc', 'mag_SC_1min', 'mag_SC_4_Sa_per_Cyc']:
-                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
 
             elif datatype ==  'sqtn_rfs_V1V2':
-                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v?.?.cdf'
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
             elif datatype in ['ephem_spp_rtn']:
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/spp_fld_' + level + '_' + datatype + '_%Y%m%d_v01.cdf'
             else:
-                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_v??.cdf'
+                pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
 
 
         else:
             # Generic SPDF path.  
-            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_v??.cdf'
+            pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d%H_'+cdf_version+'.cdf'
             file_resolution = 6*3600.
 
         # Files on Berkeley server are stored in monthly directories 
@@ -243,27 +271,27 @@ def load(trange=['2018-11-5', '2018-11-6'],
         # prefixes. This prefix ambiguity will be handled farther down
         # and is set to 'psp' for the time being.
         prefix = user_prefix + 'psp_spc_'
-        pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_v??.cdf'
+        pathformat = 'sweap/spc/' + level + '/' + datatype + '/%Y/psp_swp_spc_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
     elif instrument == 'spe':
         prefix = user_prefix + 'psp_spe_'
-        pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_v??.cdf'
+        pathformat = 'sweap/spe/' + level + '/' + datatype + '/%Y/psp_swp_sp?_*_%Y%m%d_'+cdf_version+'.cdf'
     elif instrument == 'spi':
         if username is None:
             prefix = user_prefix + 'psp_spi_'
-            pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/psp_swp_spi_*_%Y%m%d_v??.cdf'
+            pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/psp_swp_spi_*_%Y%m%d_'+cdf_version+'.cdf'
         else:
             # unpublished data
             prefix = user_prefix + 'psp_spi_'
             pathformat = 'sweap/spi/' + level + '/' + datatype + '/%Y/%m/psp_swp_' + datatype + '*_%Y%m%d_v0?.cdf'
     elif instrument == 'epihi':
         prefix = user_prefix + 'psp_epihi_'
-        pathformat = 'isois/epihi/' + level + '/' + datatype + '/%Y/psp_isois-epihi_' + level + '*_%Y%m%d_v??.cdf'
+        pathformat = 'isois/epihi/' + level + '/' + datatype + '/%Y/psp_isois-epihi_' + level + '*_%Y%m%d_'+cdf_version+'.cdf'
     elif instrument == 'epilo':
         prefix = user_prefix + 'psp_epilo_'
-        pathformat = 'isois/epilo/' + level + '/' + datatype + '/%Y/psp_isois-epilo_' + level + '*_%Y%m%d_v??.cdf'
+        pathformat = 'isois/epilo/' + level + '/' + datatype + '/%Y/psp_isois-epilo_' + level + '*_%Y%m%d_'+cdf_version+'.cdf'
     elif instrument == 'epi':
         prefix = user_prefix + 'psp_isois_'
-        pathformat = 'isois/merged/' + level + '/' + datatype + '/%Y/psp_isois_' + level + '-' + datatype + '_%Y%m%d_v??.cdf'
+        pathformat = 'isois/merged/' + level + '/' + datatype + '/%Y/psp_isois_' + level + '-' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
 
     # find the full remote path names using the trange
     remote_names = dailynames(file_format=pathformat, trange=trange, res=file_resolution)

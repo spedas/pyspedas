@@ -22,6 +22,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         password=None,
         last_version=False,
         force_download=False,
+        version=None,
         ):
     """
     This function loads Parker Solar Probe FIELDS data
@@ -117,6 +118,11 @@ def fields(trange=['2018-11-5', '2018-11-6'],
             If True, downloads the file even if a newer version exists locally. 
             Default: False.
 
+        version: str
+            If supplied, the load routine will look for this specific CDF version, rather than a wildcard pattern
+            matching any version.  Valid version strings look like "vN.M" for FIELDS sqtn_rfs_v1v1 data, or
+            "vNN" for all other data types. Default: None
+
     Returns
     ----------
         List of tplot variables created.
@@ -154,7 +160,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
         suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
         downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
-        username=username, password=password,last_version=last_version, force_download=force_download
+        username=username, password=password,last_version=last_version, force_download=force_download, version=version,
     )
     
     if loaded_vars is None or notplot or downloadonly:
@@ -173,7 +179,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
             instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
             suffix=suffix, prefix=prefix, get_support_data=True, varformat=varformat, varnames=['psp_fld_l2_quality_flags'],
             downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
-            username=username, password=password,last_version=last_version, force_download=force_download
+            username=username, password=password,last_version=last_version, force_download=force_download, version=version,
         )
         qf_root = prefix+'psp_fld_l2_quality_flags'+suffix if prefix+'psp_fld_l2_quality_flags'+suffix in loaded_extra else None
         loaded_vars += loaded_extra

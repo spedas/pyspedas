@@ -1,5 +1,6 @@
 import os
 import unittest
+import numpy as np
 from pyspedas.tplot_tools import data_exists
 import pyspedas
 
@@ -21,6 +22,52 @@ class LoadTestCases(unittest.TestCase):
         fields_vars = pyspedas.projects.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='sqtn_rfs_V1V2', username='hello', password='world')
         spc = pyspedas.projects.psp.spc(trange=['2018-11-5', '2018-11-5/06:00'], username='hello', password='world')
         spi = pyspedas.projects.psp.spi(trange=['2018-11-5', '2018-11-5/06:00'], username='hello', password='world')
+
+    def test_fields_berkeley_multiple_versions(self):
+        trange = ['2025-01-01/12:00:00', '2025-01-01/13:00:00']
+
+        fields_vars = pyspedas.projects.psp.fields(trange=trange,
+                   datatype='mag_RTN_4_Sa_per_Cyc',
+                   time_clip=True,
+                   username='none',
+                   password='none')
+
+        var_dat = pyspedas.get_data('psp_fld_l2_mag_RTN_4_Sa_per_Cyc')
+        pyspedas.tplot('psp_fld_l2_mag_RTN_4_Sa_per_Cyc',save_png='psp_fields_multiversion.png')
+
+        # If multiple versions are loaded in the same call, times will be non-monotonic
+        t = var_dat.times
+        dt = t[1:]-t[0:-1]
+        dtmin = np.min(dt)
+        self.assertTrue(dtmin > 0.0)
+
+    def test_fields_berkeley_explicit_version(self):
+        trange = ['2025-01-01/12:00:00', '2025-01-01/13:00:00']
+
+        fields_vars = pyspedas.projects.psp.fields(trange=trange,
+                   datatype='mag_RTN_4_Sa_per_Cyc',
+                   time_clip=True,
+                   username='none',
+                   password='none',
+                   version='v02')
+
+        var_dat = pyspedas.get_data('psp_fld_l2_mag_RTN_4_Sa_per_Cyc')
+        pyspedas.tplot('psp_fld_l2_mag_RTN_4_Sa_per_Cyc',save_png='psp_fields_expversion.png')
+
+        # If multiple versions are loaded in the same call, times will be non-monotonic
+        t = var_dat.times
+        dt = t[1:]-t[0:-1]
+        dtmin = np.min(dt)
+        self.assertTrue(dtmin > 0.0)
+
+
+    def test_fields_sqtn_rfs_v1v1_explicit_version(self):
+        trange = ['2025-03-17/00:00:00', '2025-03-18/00:00:00']
+
+        fields_vars = pyspedas.projects.psp.fields(trange=trange,
+                                                   datatype='sqtn_rfs_v1v2',
+                                                   time_clip=True,version='v2.1')
+        self.assertTrue('electron_density' in fields_vars)
 
     def test_load_dfb_dbm_dvac(self):
         fields_vars = pyspedas.projects.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='dfb_dbm_dvac', level='l2')
