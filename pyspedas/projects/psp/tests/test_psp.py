@@ -33,7 +33,6 @@ class LoadTestCases(unittest.TestCase):
                    password='none')
 
         var_dat = pyspedas.get_data('psp_fld_l2_mag_RTN_4_Sa_per_Cyc')
-        pyspedas.tplot('psp_fld_l2_mag_RTN_4_Sa_per_Cyc',save_png='psp_fields_multiversion.png')
 
         # If multiple versions are loaded in the same call, times will be non-monotonic
         t = var_dat.times
@@ -52,7 +51,6 @@ class LoadTestCases(unittest.TestCase):
                    version='v02')
 
         var_dat = pyspedas.get_data('psp_fld_l2_mag_RTN_4_Sa_per_Cyc')
-        pyspedas.tplot('psp_fld_l2_mag_RTN_4_Sa_per_Cyc',save_png='psp_fields_expversion.png')
 
         # If multiple versions are loaded in the same call, times will be non-monotonic
         t = var_dat.times
