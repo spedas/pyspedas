@@ -418,6 +418,7 @@ jobs:
 
     - name: Upload to Coveralls
       uses: coverallsapp/github-action@v2
+      if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
