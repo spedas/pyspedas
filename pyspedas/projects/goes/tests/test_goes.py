@@ -1,12 +1,16 @@
 import os
 import unittest
-from pyspedas.tplot_tools import data_exists, tnames
 import numpy as np
-
+import logging
 import pyspedas
-from pyspedas.tplot_tools import del_data, tplot
+from pyspedas.tplot_tools import data_exists, del_data
+from pyspedas.projects.goes.config import CONFIG
 
-global_display=False
+global_display = False
+outputdir = os.path.join(CONFIG["local_data_dir"], "idltestfiles")
+if os.path.exists(outputdir) is False:
+    os.makedirs(outputdir)
+
 
 class LoadTestCases(unittest.TestCase):
 
@@ -18,7 +22,8 @@ class LoadTestCases(unittest.TestCase):
     def test_load_orbit_data(self):
         del_data()
         orbit_vars = pyspedas.projects.goes.orbit(downloadonly=True)
-        self.assertEqual(orbit_vars[0], 'goes_data/goes15/orbit/2013/goes15_ephemeris_ssc_20130101_v01.cdf')
+        filename = os.path.basename(orbit_vars[0])
+        self.assertEqual(filename, "goes15_ephemeris_ssc_20130101_v01.cdf")
         orbit_vars = pyspedas.projects.goes.orbit(notplot=True, time_clip=False)
         # This should return a dict of tplot structures, but we're getting a list of names, which don't exist as tplot variables.
         self.assertTrue(isinstance(orbit_vars, dict))
@@ -33,7 +38,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("g15_orbit_XYZ_GSE"))
         self.assertTrue(data_exists("g15_orbit_XYZ_SM"))
         self.assertTrue(data_exists("g15_orbit_XYZ_GEO"))
-        del_data('*')
+        del_data("*")
         # Both notplot and time_clip specified: should return dictionary, no crash, no tplot variables created
         orbit_vars = pyspedas.projects.goes.orbit(time_clip=True, notplot=True)
         self.assertTrue(isinstance(orbit_vars, dict))
@@ -256,28 +261,37 @@ class LoadTestCases(unittest.TestCase):
 
     def test_fillval_removal(self):
         del_data()
-        trange=['2024-05-21','2024-05-22']
-        probe=18
+        trange = ["2024-05-21", "2024-05-22"]
+        probe = 18
 
-        pyspedas.projects.goes.euvs(probe=probe,trange=trange)
-        pyspedas.projects.goes.xrs(probe=probe,trange=trange)
-        pyspedas.tplot(['g18_euvs_MgII_standard','g18_xrs_xrsa_flux'],display=global_display,save_png='g18_xrs_euvs.png')
-        d=pyspedas.get_data('g18_euvs_MgII_standard')
+        pyspedas.projects.goes.euvs(probe=probe, trange=trange)
+        pyspedas.projects.goes.xrs(probe=probe, trange=trange)
+        local_png = os.path.join(outputdir, "testing_g18_xrs_euvs.png")
+        pyspedas.tplot(
+            ["g18_euvs_MgII_standard", "g18_xrs_xrsa_flux"],
+            display=global_display,
+            save_png=local_png,
+        )
+        d = pyspedas.get_data("g18_euvs_MgII_standard")
         datamin = np.nanmin(d.y)
         # Fillval should be -9999 for this variable, was it removed?
         self.assertTrue(datamin > -1.0)
 
     def test_xrs_scale(self):
         del_data()
-        trange=['2024-05-21','2024-05-22']
-        probe=18
+        trange = ["2024-05-21", "2024-05-22"]
+        probe = 18
 
-        pyspedas.projects.goes.xrs(probe=probe,trange=trange)
-        pyspedas.tplot(['g18_xrs_xrsa_flux'],display=global_display,save_png='g18_xrs_xrsa_flux.png')
-        md=pyspedas.get_data('g18_xrs_xrsa_flux', metadata=True)
-        scale=md['plot_options']['yaxis_opt']['y_axis_type']
-        self.assertTrue(scale=='log')
-
+        pyspedas.projects.goes.xrs(probe=probe, trange=trange)
+        local_png = os.path.join(outputdir, "testing_g18_xrs_xrsa_flux.png")
+        pyspedas.tplot(
+            ["g18_xrs_xrsa_flux"],
+            display=global_display,
+            save_png=local_png,
+        )
+        md = pyspedas.get_data("g18_xrs_xrsa_flux", metadata=True)
+        scale = md["plot_options"]["yaxis_opt"]["y_axis_type"]
+        self.assertTrue(scale == "log")
 
     def test_load_eps_1m_data(self):
         del_data()
@@ -316,7 +330,9 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_xrs_data_16(self):
         del_data()
-        xrs_vars_16 = pyspedas.projects.goes.xrs(probe="16", trange=["2022-09-01", "2022-09-02"])
+        xrs_vars_16 = pyspedas.projects.goes.xrs(
+            probe="16", trange=["2022-09-01", "2022-09-02"]
+        )
         self.assertTrue("g16_xrs_xrsa_flux" in xrs_vars_16)
         self.assertTrue(data_exists("g16_xrs_xrsa_flux"))
 
@@ -403,6 +419,54 @@ class LoadTestCases(unittest.TestCase):
         )
         self.assertTrue("g18_sgps_AvgIntProtonFlux" in sgps_vars_18)
         self.assertTrue(data_exists("g18_sgps_AvgIntProtonFlux"))
+
+    def test_load_goes_reprocessed(self):
+        # Load reprocessed data, GOES 8-15, GOES-R file format
+
+        # 1. hires mag (large file, slow)
+        del_data()
+        mag_vars = pyspedas.projects.goes.load(
+            probe="13",
+            instrument="mag",
+            trange=["2015-01-01 00:00:00", "2015-01-01 12:00:00"],
+            time_clip=True,
+            goes_r=True,
+        )
+        logging.info(mag_vars)
+        self.assertTrue("g13_mag_b_gsm" in mag_vars)
+        # tplot("g13_mag_b_gsm")
+
+        # 2. hires xrs
+        del_data()
+        xrs_vars = pyspedas.projects.goes.load(
+            probe="13",
+            instrument="xrs",
+            datatype="hi",
+            trange=["2015-01-20 00:00:00", "2015-01-20 12:00:00"],
+            time_clip=True,
+            goes_r=True,
+        )
+        logging.info(xrs_vars)
+        self.assertTrue("g13_xrs_a_flux" in xrs_vars)
+        self.assertTrue("g13_xrs_b_flux" in xrs_vars)
+        # tplot(["g13_xrs_a_flux", "g13_xrs_b_flux"])
+
+        # 3. lowres xrs
+        # del_data()
+        xrs_vars2 = pyspedas.projects.goes.load(
+            probe="13",
+            instrument="xrs",
+            trange=["2015-01-20 00:00:00", "2015-01-20 12:00:00"],
+            time_clip=True,
+            goes_r=True,
+        )
+        logging.info(xrs_vars2)
+        self.assertTrue("g13_xrs_xrsa_flux" in xrs_vars2)
+        self.assertTrue("g13_xrs_xrsb_flux" in xrs_vars2)
+        # tplot(["g13_xrs_xrsa_flux", "g13_xrs_xrsb_flux"])
+
+        # The following shows both hi and lowres xrs data together
+        # tplot(["g13_xrs_a_flux", "g13_xrs_xrsa_flux","g13_xrs_b_flux","g13_xrs_xrsb_flux"])
 
 
 if __name__ == "__main__":
