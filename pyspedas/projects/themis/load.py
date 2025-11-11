@@ -25,6 +25,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          no_update=False,
          time_clip=False,
          force_download=False,
+         config=CONFIG,
          ):
     """
     This function loads data from the THEMIS mission;
@@ -59,7 +60,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
     for prb in probe:
 
         # Remote data directory (CDAWeb for SSC data)
-        remote_data_dir = CONFIG['remote_data_dir']
+        remote_data_dir = config['remote_data_dir']
 
         if instrument == 'ask':
             if stations is None:
@@ -199,7 +200,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
             files = download(remote_file=remote_names,
                              remote_path=remote_data_dir,
-                             local_path=CONFIG['local_data_dir'],
+                             local_path=config['local_data_dir'],
                              no_download=no_update,
                              last_version=True,
                              force_download=force_download,)
