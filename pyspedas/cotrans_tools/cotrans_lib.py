@@ -11,6 +11,7 @@ Notes
 These functions are in cotrans_lib.pro of IDL SPEDAS.
 For a comparison to IDL, see: http://spedas.org/wiki/index.php?title=Cotrans
 """
+
 import numpy as np
 import logging
 from datetime import datetime, timezone, timedelta
@@ -40,14 +41,17 @@ def safe_fromtimestamp(timestamp):
         t = [timestamp]
     else:
         t = timestamp
-        
+
     for i in range(len(t)):
         if t[i] > 0:
             result.append(datetime.fromtimestamp(t[i], timezone.utc))
         else:
-            result.append(datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=t[i]))
+            result.append(
+                datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=t[i])
+            )
 
     return result
+
 
 def get_time_parts(time_in):
     """
@@ -82,9 +86,9 @@ def get_time_parts(time_in):
     idoy = np.array([tt.timetuple().tm_yday for tt in tnp])
     ih = np.array([tt.hour for tt in tnp])
     im = np.array([tt.minute for tt in tnp])
-    isec = np.array([tt.second + tt.microsecond/1000000.0 for tt in tnp])
+    isec = np.array([tt.second + tt.microsecond / 1000000.0 for tt in tnp])
 
-    if len(tnp)==1:
+    if len(tnp) == 1:
         # if only one element, return a scalar
         iyear = iyear[0]
         idoy = idoy[0]
@@ -122,18 +126,18 @@ def csundir_vect(time_in):
 
     # Julian day and greenwich mean sideral time
     pisd = np.pi / 180.0
-    fday = (ih * 3600.0 + im * 60.0 + isec)/86400.0
-    jj = 365 * (iyear-1900) + np.fix((iyear-1901)/4) + idoy
+    fday = (ih * 3600.0 + im * 60.0 + isec) / 86400.0
+    jj = 365 * (iyear - 1900) + np.fix((iyear - 1901) / 4) + idoy
     dj = jj - 0.5 + fday
-    gst = np.mod(279.690983 + 0.9856473354 * dj + 360.0 * fday + 180.0,
-                 360.0) * pisd
+    gst = np.mod(279.690983 + 0.9856473354 * dj + 360.0 * fday + 180.0, 360.0) * pisd
 
     # longitude along ecliptic
     vl = np.mod(279.696678 + 0.9856473354 * dj, 360.0)
     t = dj / 36525.0
     g = np.mod(358.475845 + 0.985600267 * dj, 360.0) * pisd
-    slong = (vl + (1.91946 - 0.004789 * t) * np.sin(g) + 0.020094 *
-             np.sin(2.0 * g)) * pisd
+    slong = (
+        vl + (1.91946 - 0.004789 * t) * np.sin(g) + 0.020094 * np.sin(2.0 * g)
+    ) * pisd
 
     # inclination of Earth's axis
     obliq = (23.45229 - 0.0130125 * t) * pisd
@@ -151,7 +155,7 @@ def csundir_vect(time_in):
     sdec = np.arctan(sc)
 
     # right ascension of the sun
-    sra = np.pi - np.arctan2((cob/sob) * sc, -np.cos(slp)/cosd)
+    sra = np.pi - np.arctan2((cob / sob) * sc, -np.cos(slp) / cosd)
 
     return gst, slong, sra, sdec, obliq
 
@@ -191,8 +195,8 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     y = iyear - (iyear % 5)
     if y < minyear:
         y = minyear
-    elif y > maxyear-5:
-        y = maxyear-5
+    elif y > maxyear - 5:
+        y = maxyear - 5
 
     # Do not interpolate beyond boundaries (minyear and maxyear).
     if iyear < minyear:
@@ -209,42 +213,42 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     h = h0
 
     # Interpolate for dates.
-    f2 = (iyear + (idoy-1)/365.25 - year0)/5.
+    f2 = (iyear + (idoy - 1) / 365.25 - year0) / 5.0
     f1 = 1.0 - f2
-    f3 = iyear + (idoy-1)/365.25 - maxind
+    f3 = iyear + (idoy - 1) / 365.25 - maxind
     nloop = len(g0)
     if year1 <= maxind:
         # years 1970-2020
         g1 = ga[year1]
         h1 = ha[year1]
         for i in range(nloop):
-            g[i] = g0[i]*f1 + g1[i]*f2
-            h[i] = h0[i]*f1 + h1[i]*f2
+            g[i] = g0[i] * f1 + g1[i] * f2
+            h[i] = h0[i] * f1 + h1[i] * f2
     else:
         # years 2020-2025
         for i in range(nloop):
-            g[i] = g0[i] + dg[i]*f3
-            h[i] = h0[i] + dh[i]*f3
+            g[i] = g0[i] + dg[i] * f3
+            h[i] = h0[i] + dh[i] * f3
 
     s = 1.0
     for i in range(2, 15):
-        mn = int(i*(i-1.0)/2.0 + 1.0)
-        s = int(s*(2.0*i-3.0)/(i-1.0))
+        mn = int(i * (i - 1.0) / 2.0 + 1.0)
+        s = int(s * (2.0 * i - 3.0) / (i - 1.0))
         g[mn] *= s
         h[mn] *= s
-        g[mn-1] *= s
-        h[mn-1] *= s
+        g[mn - 1] *= s
+        h[mn - 1] *= s
         p = s
         for j in range(2, i):
             aa = 1.0
             if j == 2:
                 aa = 2.0
-            p = p * np.sqrt(aa*(i-j+1)/(i+j-2))
+            p = p * np.sqrt(aa * (i - j + 1) / (i + j - 2))
             mnn = int(mn + j - 1)
             g[mnn] *= p
             h[mnn] *= p
-            g[mnn-1] *= p
-            h[mnn-1] *= p
+            g[mnn - 1] *= p
+            h[mnn - 1] *= p
 
     g10 = -g[1]
     g11 = g[2]
@@ -253,13 +257,13 @@ def cdipdir(time_in=None, iyear=None, idoy=None):
     sq = g11**2 + h11**2
     sqq = np.sqrt(sq)
     sqr = np.sqrt(g10**2 + sq)
-    s10 = -h11/sqq
-    c10 = -g11/sqq
-    st0 = sqq/sqr
-    ct0 = g10/sqr
+    s10 = -h11 / sqq
+    c10 = -g11 / sqq
+    st0 = sqq / sqr
+    ct0 = g10 / sqr
 
-    stc1 = st0*c10
-    sts1 = st0*s10
+    stc1 = st0 * c10
+    sts1 = st0 * s10
 
     d1 = stc1
     d2 = sts1
@@ -288,9 +292,11 @@ def cdipdir_vect(time_in=None, iyear=None, idoy=None):
     -----
     Same as SPEDAS cdipdir_vec.
     """
-    if ((time_in is None or not isinstance(time_in, list))
+    if (
+        (time_in is None or not isinstance(time_in, list))
         and (iyear is None or not isinstance(iyear, list))
-            and (idoy is None or not isinstance(idoy, list))):
+        and (idoy is None or not isinstance(idoy, list))
+    ):
         return cdipdir(time_in, iyear, idoy)
 
     if (iyear is None) or (idoy is None):
@@ -302,10 +308,17 @@ def cdipdir_vect(time_in=None, iyear=None, idoy=None):
 
     cdipdir_cache = {}
 
+    # If idoy and iyear are not lists, make them so
+    if not isinstance(iyear, list) and not isinstance(iyear, np.ndarray):
+        iyear = [iyear]
+
+    if not isinstance(idoy, list) and not isinstance(idoy, np.ndarray):
+        idoy = [idoy]
+
     for i in range(len(idoy)):
         # check the cache before re-calculating the dipole direction
-        cached_value = cdipdir_cache.get(1000*iyear[i]+idoy[i])
-        if cached_value != None:
+        cached_value = cdipdir_cache.get(1000 * iyear[i] + idoy[i])
+        if cached_value is not None:
             d1.append(cached_value[0])
             d2.append(cached_value[1])
             d3.append(cached_value[2])
@@ -314,7 +327,7 @@ def cdipdir_vect(time_in=None, iyear=None, idoy=None):
         d1.append(_d1)
         d2.append(_d2)
         d3.append(_d3)
-        cdipdir_cache[1000*iyear[i] + idoy[i]] = [_d1, _d2, _d3]
+        cdipdir_cache[1000 * iyear[i] + idoy[i]] = [_d1, _d2, _d3]
 
     return np.array(d1), np.array(d2), np.array(d3)
 
@@ -501,8 +514,8 @@ def tgsegsm_vect(time_in, data_in):
 
     rgmgs = np.sqrt(gmgs1**2 + gmgs2**2 + gmgs3**2)
 
-    cdze = (ge1 * gm1 + ge2 * gm2 + ge3 * gm3)/rgmgs
-    sdze = (ge1 * gmgs1 + ge2 * gmgs2 + ge3 * gmgs3)/rgmgs
+    cdze = (ge1 * gm1 + ge2 * gm2 + ge3 * gm3) / rgmgs
+    sdze = (ge1 * gmgs1 + ge2 * gmgs2 + ge3 * gmgs3) / rgmgs
 
     xgsm = xgse
     ygsm = cdze * ygse + sdze * zgse
@@ -582,8 +595,8 @@ def tgsmgse_vect(time_in, data_in):
 
     rgmgs = np.sqrt(gmgs1**2 + gmgs2**2 + gmgs3**2)
 
-    cdze = (ge1 * gm1 + ge2 * gm2 + ge3 * gm3)/rgmgs
-    sdze = (ge1 * gmgs1 + ge2 * gmgs2 + ge3 * gmgs3)/rgmgs
+    cdze = (ge1 * gm1 + ge2 * gm2 + ge3 * gm3) / rgmgs
+    sdze = (ge1 * gmgs1 + ge2 * gmgs2 + ge3 * gmgs3) / rgmgs
 
     xgse = xgsm
     ygse = cdze * ygsm - sdze * zgsm
@@ -856,7 +869,7 @@ def subgeo2mag(time_in, data_in):
     mag = geo  # the output
 
     # Step 2. Transform cartesian to spherical.
-    x2y2 = geo[:, 0]**2 + geo[:, 1]**2
+    x2y2 = geo[:, 0] ** 2 + geo[:, 1] ** 2
     # r = np.sqrt(x2y2 + geo[:, 2]**2)
     theta = np.arctan2(geo[:, 2], np.sqrt(x2y2))  # lat
     phi = np.arctan2(geo[:, 1], geo[:, 0])  # long
@@ -872,10 +885,10 @@ def subgeo2mag(time_in, data_in):
         out = mlong @ d[i]
 
         mlat = np.zeros((3, 3), float)
-        mlat[0, 0] = np.cos(np.pi/2.0 - theta[i])
-        mlat[0, 2] = -np.sin(np.pi/2.0 - theta[i])
-        mlat[2, 0] = np.sin(np.pi/2.0 - theta[i])
-        mlat[2, 2] = np.cos(np.pi/2.0 - theta[i])
+        mlat[0, 0] = np.cos(np.pi / 2.0 - theta[i])
+        mlat[0, 2] = -np.sin(np.pi / 2.0 - theta[i])
+        mlat[2, 0] = np.sin(np.pi / 2.0 - theta[i])
+        mlat[2, 2] = np.cos(np.pi / 2.0 - theta[i])
         mlat[1, 1] = 1.0
         mag[i] = mlat @ out
 
@@ -916,7 +929,7 @@ def submag2geo(time_in, data_in):
     geo = subgei2geo(time_in, gei)
 
     # Step 2. Transform cartesian to spherical.
-    x2y2 = geo[:, 0]**2 + geo[:, 1]**2
+    x2y2 = geo[:, 0] ** 2 + geo[:, 1] ** 2
     # r = np.sqrt(x2y2 + geo[:, 2]**2)
     theta = np.arctan2(geo[:, 2], np.sqrt(x2y2))  # lat
     phi = np.arctan2(geo[:, 1], geo[:, 0])  # long
@@ -924,10 +937,10 @@ def submag2geo(time_in, data_in):
     for i in range(n):
         # Step 3. Apply rotations.
         glat = np.zeros((3, 3), float)
-        glat[0, 0] = np.cos(np.pi/2.0 - theta[i])
-        glat[0, 2] = np.sin(np.pi/2.0 - theta[i])
-        glat[2, 0] = -np.sin(np.pi/2.0 - theta[i])
-        glat[2, 2] = np.cos(np.pi/2.0 - theta[i])
+        glat[0, 0] = np.cos(np.pi / 2.0 - theta[i])
+        glat[0, 2] = np.sin(np.pi / 2.0 - theta[i])
+        glat[2, 0] = -np.sin(np.pi / 2.0 - theta[i])
+        glat[2, 2] = np.cos(np.pi / 2.0 - theta[i])
         glat[1, 1] = 1.0
         out = glat @ d[i]
 
@@ -1016,19 +1029,25 @@ def j2000_matrix_vec(time_in):
     # One Julian year = 365.25 days
     # One Julian century is 36525 days
     # J2000 time array in Julian centuries:
-    time = (np.array(time_in)/(60.0*60.0*24) + 2440587.5 - 2451545.0)/36525.0
+    time = (np.array(time_in) / (60.0 * 60.0 * 24) + 2440587.5 - 2451545.0) / 36525.0
     t2 = time**2
     t3 = time**3
 
-    zeta = (0.11180860865024398e-01 * time
-            + 0.14635555405334670e-05 * t2
-            + 0.87256766326094274e-07 * t3)
-    theta = (0.97171734551696701e-02 * time
-             - 0.20684575704538352e-05 * t2
-             - 0.20281210721855218e-06 * t3)
-    zee = (0.11180860865024398e-01 * time
-           + 0.53071584043698687e-05 * t2
-           + 0.88250634372368822e-07 * t3)
+    zeta = (
+        0.11180860865024398e-01 * time
+        + 0.14635555405334670e-05 * t2
+        + 0.87256766326094274e-07 * t3
+    )
+    theta = (
+        0.97171734551696701e-02 * time
+        - 0.20684575704538352e-05 * t2
+        - 0.20281210721855218e-06 * t3
+    )
+    zee = (
+        0.11180860865024398e-01 * time
+        + 0.53071584043698687e-05 * t2
+        + 0.88250634372368822e-07 * t3
+    )
 
     sinzet = np.sin(zeta)
     coszet = np.cos(zeta)
@@ -1048,25 +1067,35 @@ def j2000_matrix_vec(time_in):
     premat[2, 2, :] = costhe
 
     r = 1296000.0
-    dtr = np.pi/(180.0)
-    st = dtr/(3600.0)
-    epso = st*(1.813e-3*t3-5.9e-4*t2-4.6815e+1*time + 8.4381448e+4)
+    dtr = np.pi / (180.0)
+    st = dtr / (3600.0)
+    epso = st * (1.813e-3 * t3 - 5.9e-4 * t2 - 4.6815e1 * time + 8.4381448e4)
 
     # Start: Calculations inside spd_get_nut_angles_vec.pro
     funar, sinco, cosco = set_j2000_params()
     fund = [0, 0, 0, 0, 0]
-    fund[0] = st*(335778.877+(1342.0*r+295263.137)*time-13.257*t2+1.1e-2*t3)
-    fund[1] = st*(450160.28-(5.0*r+482890.539)*time+7.455*t2+8.0e-3*t3)
-    fund[2] = st*(1287099.804+(99.0*r+1292581.224)*time-5.77e-1*t2-1.2e-2*t3)
-    fund[3] = st*(485866.733+(1325.0*r+715922.633)*time+31.31*t2+6.4e-2*t3)
-    fund[4] = st*(1072261.307+(1236.0*r+1105601.328)*time-6.891*t2+1.9e-2*t3)
+    fund[0] = st * (
+        335778.877 + (1342.0 * r + 295263.137) * time - 13.257 * t2 + 1.1e-2 * t3
+    )
+    fund[1] = st * (
+        450160.28 - (5.0 * r + 482890.539) * time + 7.455 * t2 + 8.0e-3 * t3
+    )
+    fund[2] = st * (
+        1287099.804 + (99.0 * r + 1292581.224) * time - 5.77e-1 * t2 - 1.2e-2 * t3
+    )
+    fund[3] = st * (
+        485866.733 + (1325.0 * r + 715922.633) * time + 31.31 * t2 + 6.4e-2 * t3
+    )
+    fund[4] = st * (
+        1072261.307 + (1236.0 * r + 1105601.328) * time - 6.891 * t2 + 1.9e-2 * t3
+    )
 
     arg = funar @ fund
     t = [np.ones(n), time]
     sumpsi = np.sum(0.0001 * (sinco @ t) * np.sin(arg), 0)
     sumeps = np.sum(0.0001 * (cosco @ t) * np.cos(arg), 0)
-    delpsi = st*sumpsi
-    deleps = st*sumeps
+    delpsi = st * sumpsi
+    deleps = st * sumeps
     eps = epso + deleps
 
     # End: Calculations inside spd_get_nut_angles_vec.pro
@@ -1079,14 +1108,14 @@ def j2000_matrix_vec(time_in):
     sinpsi = np.sin(delpsi)
 
     nutmat[0, 0, :] = cospsi
-    nutmat[0, 1, :] = -sinpsi*cosepO
-    nutmat[0, 2, :] = -sinpsi*sinepO
-    nutmat[1, 0, :] = sinpsi*cosep
-    nutmat[1, 1, :] = cospsi*cosep*cosepO + sinep*sinepO
-    nutmat[1, 2, :] = cospsi*cosep*sinepO - sinep*cosepO
-    nutmat[2, 0, :] = sinpsi*sinep
-    nutmat[2, 1, :] = cospsi*sinep*cosepO - cosep*sinepO
-    nutmat[2, 2, :] = cospsi*sinep*sinepO + cosep*cosepO
+    nutmat[0, 1, :] = -sinpsi * cosepO
+    nutmat[0, 2, :] = -sinpsi * sinepO
+    nutmat[1, 0, :] = sinpsi * cosep
+    nutmat[1, 1, :] = cospsi * cosep * cosepO + sinep * sinepO
+    nutmat[1, 2, :] = cospsi * cosep * sinepO - sinep * cosepO
+    nutmat[2, 0, :] = sinpsi * sinep
+    nutmat[2, 1, :] = cospsi * sinep * cosepO - cosep * sinepO
+    nutmat[2, 2, :] = cospsi * sinep * sinepO + cosep * cosepO
     # ctv_mm_mult
     cmatrix = ctv_mm_mult(premat, nutmat)
 
@@ -1194,18 +1223,15 @@ def get_all_paths_t1_t2():
     -------
     Dictionary of strings.
     """
-    p = {'gei': {'gse': 'subgei2gse',
-                 'geo': 'subgei2geo',
-                 'j2000': 'subgei2j2000'},
-         'gse': {'gei': 'subgse2gei',
-                 'gsm': 'subgse2gsm'},
-         'gsm': {'gse': 'subgsm2gse',
-                 'sm': 'subgsm2sm'},
-         'geo': {'gei': 'subgeo2gei',
-                 'mag': 'subgeo2mag'},
-         'sm': {'gsm': 'subsm2gsm'},
-         'mag': {'geo': 'submag2geo'},
-         'j2000': {'gei': 'subj20002gei'}}
+    p = {
+        "gei": {"gse": "subgei2gse", "geo": "subgei2geo", "j2000": "subgei2j2000"},
+        "gse": {"gei": "subgse2gei", "gsm": "subgse2gsm"},
+        "gsm": {"gse": "subgsm2gse", "sm": "subgsm2sm"},
+        "geo": {"gei": "subgeo2gei", "mag": "subgeo2mag"},
+        "sm": {"gsm": "subsm2gsm"},
+        "mag": {"geo": "submag2geo"},
+        "j2000": {"gei": "subj20002gei"},
+    }
     return p
 
 
@@ -1305,17 +1331,17 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
 
     """
     data_out = data_in
-    coord_systems = ['GSE', 'GSM', 'SM', 'GEI', 'GEO', 'MAG', 'J2000']
+    coord_systems = ["GSE", "GSM", "SM", "GEI", "GEO", "MAG", "J2000"]
     coord_all = [a.lower() for a in coord_systems]
     coord_in = coord_in.lower()
     coord_out = coord_out.lower()
 
     if coord_in not in coord_all:
-        logging.error("Unknown coord_in value %s",coord_in)
+        logging.error("Unknown coord_in value %s", coord_in)
         return None
 
     if coord_out not in coord_all:
-        logging.error("Unknown coord_out value %s",coord_out)
+        logging.error("Unknown coord_out value %s", coord_out)
         return None
 
     if coord_in == coord_out:
@@ -1329,9 +1355,9 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
     logging.info(p)
 
     # Daisy chain the list of transformations.
-    for i in range(len(p)-1):
+    for i in range(len(p) - 1):
         c1 = p[i]
-        c2 = p[i+1]
+        c2 = p[i + 1]
         subname = "sub" + c1 + "2" + c2
         data_out = globals()[subname](time_in, data_out)
 
