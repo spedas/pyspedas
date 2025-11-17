@@ -1361,4 +1361,12 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
         subname = "sub" + c1 + "2" + c2
         data_out = globals()[subname](time_in, data_out)
 
+    # Make the output the same type as the input.
+    if isinstance(data_in, list):
+        data_out = data_out.tolist()
+    elif isinstance(data_in, tuple):
+        data_out = tuple(data_out)
+    elif isinstance(data_in, np.ndarray):
+        data_out = np.array(data_out)
+
     return data_out
