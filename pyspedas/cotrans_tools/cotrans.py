@@ -10,23 +10,37 @@ Notes
 -----
 This function is similar to cotrans.pro of IDL SPEDAS.
 """
+
 import logging
+import numpy as np
 import pyspedas
-from pyspedas.tplot_tools import store_data, get_data, get_coords,set_coords, tplot_copy
+from pyspedas import (
+    store_data,
+    get_data,
+    get_coords,
+    set_coords,
+    tplot_copy,
+)
 from pyspedas.cotrans_tools.cotrans_lib import subcotrans
 
 
-def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
-            coord_in=None, coord_out=None):
+def cotrans(
+    name_in=None,
+    name_out=None,
+    time_in=None,
+    data_in=None,
+    coord_in=None,
+    coord_out=None,
+):
     """
     Transform data from coord_in to coord_out.
 
     Parameters
     ----------
     name_in: str, optional
-        Pytplot name for input data.
+        Tplot name for input data.
     name_out: str, optional
-        Pytplot name for output data.
+        Tplot name for output data.
     time_in: list of float, optional
         Time array.
         Ignored if name_in is provided.
@@ -42,15 +56,18 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
 
     Returns
     -------
-    Returns 1 for successful completion.
+    Returns 1 for successful completion, 0 for error.
         Fills a new tplot variable with data in the coord_out system.
+
+    np.array
+        If name_in and name_out are not provided, returns the transformed data array.
     """
     if coord_out is None:
         logging.error("cotrans error: No output coordinates were provided.")
         return 0
 
     # Input data may be specified as a bare array rather than a tplot variable
-    if not (name_in is None):
+    if name_in is not None:
         var_coord_in = get_coords(name_in)
     else:
         var_coord_in = None
@@ -58,10 +75,11 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     # If the input coordinate system is supplied as an argument, and the tplot variable has a coordinate system
     # specified in its metadata, check that they match, and if not, log the error and return failure.
 
-    if not (var_coord_in is None) and not(coord_in is None):
+    if var_coord_in is not None and coord_in is not None:
         if var_coord_in.lower() != coord_in.lower():
-            logging.error("cotrans error: " + name_in + " has " +
-                          var_coord_in.lower() + " coordinates, but transform from " + coord_in.lower() + " was requested.")
+            logging.error(
+                f"cotrans error: {name_in} has {var_coord_in.lower()} coordinates, but transform from {coord_in.lower()} was requested."
+            )
             return 0
 
     if coord_in is None:
@@ -75,33 +93,42 @@ def cotrans(name_in=None, name_out=None, time_in=None, data_in=None,
     all_coords = ["gse", "gsm", "sm", "gei", "geo", "mag", "j2000"]
 
     if coord_in not in all_coords:
-        logging.error("cotrans error: Requested input coordinate system %s not supported.",coord_in)
+        logging.error(
+            f"cotrans error: Requested input coordinate system {coord_in} not supported."
+        )
         return 0
     if coord_out not in all_coords:
-        logging.error("cotrans error: Requested output coordinate system %s not supported.",coord_out)
+        logging.error(
+            f"cotrans error: Requested output coordinate system {coord_out} not supported.",
+        )
         return 0
 
     if name_in is not None:
         # If a name_in is provided, use it for data.
-        tplot_data =get_data(name_in)
+        tplot_data = get_data(name_in)
         time_in = tplot_data[0]
         data_in = tplot_data[1]
-    else:
-       store_data('cotranstemp', data={'x': list(time_in),
-                                                'y': list(data_in)})
 
     if len(data_in[:]) < 1:
         logging.error("cotrans error: Data is empty.")
         return 0
 
     # Perform coordinate transformation.
-    data_out = subcotrans(list(time_in), list(data_in), coord_in, coord_out)
+    if not isinstance(data_in, np.ndarray) and not isinstance(data_in, list):
+        data_in = np.array(data_in)
+    if not isinstance(time_in, np.ndarray) and not isinstance(time_in, list):
+        time_in = np.array(time_in)
 
+    data_out = subcotrans(time_in, data_in, coord_in, coord_out)
+
+    # If no input or output tplot variable names are provided, return the transformed data.
     if name_in is None and name_out is None:
         return data_out
 
+    # Otherwise, store the data in a tplot variable.
     if name_in is None:
-        name_in = 'cotranstemp'
+        store_data("cotranstemp", data={"x": time_in, "y": data_in})
+        name_in = "cotranstemp"
 
     # Find the name of the output tplot variable.
     if name_out is None:
