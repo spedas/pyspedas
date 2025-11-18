@@ -18,3 +18,11 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
   - id: forbid-submodules
   - id: check-toml
   - id: check-yaml
+
+- repo: https://github.com/sirosen/texthooks
+  rev: 0.7.1
+  hooks:
+#  - id: fix-smartquotes
+  - id: fix-spaces
+  - id: fix-ligatures
+  - id: forbid-bidi-controls
