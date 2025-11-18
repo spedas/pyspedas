@@ -26,3 +26,26 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
   - id: fix-spaces
   - id: fix-ligatures
   - id: forbid-bidi-controls
+
+#- repo: https://github.com/sphinx-contrib/sphinx-lint
+#  rev: v1.0.1
+#  hooks:
+#  - id: sphinx-lint
+
+- repo: https://github.com/abravalheri/validate-pyproject
+  rev: v0.24.1
+  hooks:
+  - id: validate-pyproject
+    name: validate pyproject.toml
+    additional_dependencies: ['validate-pyproject-schema-store[all]']
+
+# - repo: https://github.com/hukkin/mdformat
+#   rev: 1.0.0
+#   hooks:
+#   - id: mdformat
+#     name: format .md files
+#     additional_dependencies:
+#     - mdformat-footnote
+#     - mdformat-gfm
+#     - mdformat-gfm-alerts
+#     - mdformat-ruff
