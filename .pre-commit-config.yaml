@@ -1,4 +1,11 @@
-# configuration file for pre-commit and pre-commit.ci
+# Configuration file for pre-commit and pre-commit.ci.
+#
+# To perform automated fixes, either run `pre-commit run --all-files`
+# or comment `pre-commit.ci autofix` on a pull request.
+
+ci:  # https://pre-commit.ci/#configuration
+  autofix_prs: false
+  autoupdate_schedule: monthly
 
 repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 
