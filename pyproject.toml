@@ -167,5 +167,14 @@ ignore = [
     "E501",  # Ignore line too long
 ]
 
+[tool.codespell]
+skip = "*.png,*.jpg,*.jpeg,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,venv,*.lock"
+# Add false positives found by codespell to ignore-words-list
+ignore-words-list = """
+fo,
+inout,
+tha,
+thi"""
+
 [tool.pylint]
 disable = ["line-too-long", "too-many-arguments",]
