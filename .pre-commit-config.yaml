@@ -11,13 +11,15 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
   - id: check-merge-conflict
   - id: check-case-conflict
   - id: check-illegal-windows-names
-#  - id: name-tests-test
   - id: detect-private-key
   - id: fix-byte-order-marker
   - id: mixed-line-ending
   - id: forbid-submodules
   - id: check-toml
   - id: check-yaml
+#  - id: trailing-whitespace
+#  - id: end-of-file-fixer
+#  - id: name-tests-test
 
 #- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
 #  rev: v2.15.0
