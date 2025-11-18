@@ -52,12 +52,14 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 #  hooks:
 #  - id: sphinx-lint
 
-#- repo: https://github.com/codespell-project/codespell
-#  rev: v2.4.1
-#  hooks:
-#  - id: codespell
-#    name: codespell (add false positives to pyproject.toml)
-#    args: [--write-changes]
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.4.1
+  hooks:
+  - id: codespell
+    name: codespell (add false positives to pyproject.toml)
+    # temporarily exclude most files since suggested changes require some thought
+    exclude: pyspedas|docs/source
+    # args: [--write-changes]
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
   rev: 0.35.0
