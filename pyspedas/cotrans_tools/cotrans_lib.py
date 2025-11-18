@@ -293,9 +293,9 @@ def cdipdir_vect(time_in=None, iyear=None, idoy=None):
     Same as SPEDAS cdipdir_vec.
     """
     if (
-        (time_in is None or not isinstance(time_in, list))
-        and (iyear is None or not isinstance(iyear, list))
-        and (idoy is None or not isinstance(idoy, list))
+        (time_in is None or not isinstance(time_in, (list, tuple, np.ndarray)))
+        and (iyear is None or not isinstance(iyear, (list, tuple, np.ndarray)))
+        and (idoy is None or not isinstance(idoy, (list, tuple, np.ndarray)))
     ):
         return cdipdir(time_in, iyear, idoy)
 
