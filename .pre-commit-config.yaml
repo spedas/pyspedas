@@ -32,6 +32,11 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 #  hooks:
 #  - id: sphinx-lint
 
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.35.0
+  hooks:
+  - id: check-github-workflows
+
 - repo: https://github.com/abravalheri/validate-pyproject
   rev: v0.24.1
   hooks:
