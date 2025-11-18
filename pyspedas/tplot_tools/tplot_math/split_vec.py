@@ -7,6 +7,7 @@ Similar to split_vec.pro in IDL SPEDAS.
 
 """
 
+import copy
 import logging
 import pyspedas
 from pyspedas.tplot_tools import store_data, get_data
@@ -146,8 +147,28 @@ def split_vec(
         else:
             data_for_tplot = {'x': time, 'y': data[:, split_col].squeeze()}
 
+        plot_options = metadata.get('plot_options', {})
+        yaxis_opt = plot_options.get('yaxis_opt', {})
+        labels = yaxis_opt.get('legend_names', None)
+        if labels is None:
+            cdf = metadata.get('CDF', {})
+            labels = cdf.get('LABELS', None)
 
-        if not store_data(split_name, data=data_for_tplot, attr_dict=metadata):
+        if labels is None:
+            attrs = metadata
+        else:
+            # Make a deep copy to avoid modifying original metadata
+            attrs = copy.deepcopy(metadata)
+            if 'plot_options' not in attrs:
+                attrs['plot_options'] = {}
+            if 'yaxis_opt' not in attrs['plot_options']:
+                attrs['plot_options']['yaxis_opt'] = {}
+            attrs['plot_options']['yaxis_opt']['legend_names'] = []
+
+            if v_idx < len(labels):
+                attrs['plot_options']['yaxis_opt']['legend_names'].append(labels[v_idx])
+
+        if not store_data(split_name, data=data_for_tplot, attr_dict=attrs):
             raise Exception(f"Failed to store {split_name} in pyspedas.")
         v_idx += 1
 
