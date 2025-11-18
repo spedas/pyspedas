@@ -52,6 +52,12 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     name: validate pyproject.toml
     additional_dependencies: ['validate-pyproject-schema-store[all]']
 
+# - repo: https://github.com/tox-dev/pyproject-fmt
+#   rev: v2.11.1
+#   hooks:
+#   - id: pyproject-fmt
+#     name: format pyproject.toml
+
 # - repo: https://github.com/hukkin/mdformat
 #   rev: 1.0.0
 #   hooks:
