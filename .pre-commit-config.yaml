@@ -1,0 +1,21 @@
+# configuration file for pre-commit and pre-commit.ci
+
+repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+  - id: check-ast
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-merge-conflict
+  - id: check-case-conflict
+  - id: check-illegal-windows-names
+  - id: name-tests-test
+  - id: detect-private-key
+  - id: fix-byte-order-marker
+  - id: mixed-line-ending
+  - id: forbid-submodules
+  - id: check-json
+  - id: check-toml
+  - id: check-yaml
