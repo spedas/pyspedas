@@ -13,6 +13,8 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
   - id: detect-private-key
   - id: fix-byte-order-marker
   - id: mixed-line-ending
+    args: [--fix=lf]
+    exclude: docs/make.bat
   - id: forbid-submodules
   - id: check-toml
   - id: check-yaml
