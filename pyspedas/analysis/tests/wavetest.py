@@ -12,11 +12,20 @@ See also: wavelet98.py
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from pyspedas import wavelet98
-from pyspedas import wave_signif
-from pyspedas import download
-import unittest
-from pyspedas.projects.themis.config import CONFIG
+from pyspedas import wavelet98, wave_signif
+from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
+
+# Whether to display plots during testing
+global_display = TESTING_CONFIG["global_display"]
+# Directory to save testing output files
+output_dir = TESTING_CONFIG["local_testing_dir"]
+# Ensure output directory exists
+analysis_dir = "analysis_tools"
+save_dir = os.path.join(output_dir, analysis_dir)
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
+# Directory with IDL SPEDAS validation files
+validation_dir = TESTING_CONFIG["remote_validation_dir"]
 
 
 def wavetest(noplot=False):
@@ -28,18 +37,9 @@ def wavetest(noplot=False):
     # Download tplot files
     # The SPEDAS script that creates the file: general/tools/python_validate/wavelet_python_validate.pro
 
-    remote_server = 'https://github.com/spedas/test_data/raw/refs/heads/main/'
-    remote_name = 'analysis_tools/sst_nino3.dat'
-    outputdir = os.path.join(CONFIG["local_data_dir"], "idltestfiles")
-    datafile = download(remote_file=remote_name,
-                        remote_path=remote_server,
-                        no_download=False,
-                        local_path=outputdir,)
-    if not datafile:
-        # Skip tests
-        raise unittest.SkipTest("Cannot download data validation file")
-    # Load validation variables from the test file
-    data_file = datafile[0]
+    data_file = test_data_download_file(
+        validation_dir, analysis_dir, "sst_nino3.dat", save_dir
+    )
 
     # Check if data file exists
     if not os.path.exists(data_file):
@@ -98,7 +98,9 @@ def wavetest(noplot=False):
     # Interpolate COI to match the length of the time array
     coi_interp = np.interp(time, time[: len(coi)], coi)
     if not noplot:
-        plt.fill_between(time, coi_interp, np.max(period), color="white", alpha=0.7, hatch="///")
+        plt.fill_between(
+            time, coi_interp, np.max(period), color="white", alpha=0.7, hatch="///"
+        )
 
     # Reconstruction variance (Parseval's theorem) [Eqn(14)]
     # Adjust scale shape for broadcasting
@@ -211,7 +213,7 @@ def create_wavelet_plot(
     fig = plt.figure(figsize=(12, 10))
 
     # Plot 1: Time series (top panel, full width)
-    ax1 = plt.subplot2grid((4, 4), (0, 0), colspan=3)
+    _ = plt.subplot2grid((4, 4), (0, 0), colspan=3)
     plt.plot(time, sst, "b-", linewidth=1)
     plt.xlim(xrange)
     plt.xlabel("Time (year)")
@@ -225,14 +227,14 @@ def create_wavelet_plot(
     )
 
     # Plot 2: Wavelet power spectrum (middle left, 3/4 width)
-    ax2 = plt.subplot2grid((4, 4), (1, 0), colspan=3, rowspan=2)
+    _ = plt.subplot2grid((4, 4), (1, 0), colspan=3, rowspan=2)
 
     # Create contour plot with IDL-like styling
     levels = [0.5, 1, 2, 4]  # Contour levels for power spectrum
     colors = ["lightblue", "yellow", "orange", "red"]
 
     X, Y = np.meshgrid(time_wv, period)
-    cs = plt.contourf(X, Y, power.T, levels=levels, colors=colors, extend="max")
+    _ = plt.contourf(X, Y, power.T, levels=levels, colors=colors, extend="max")
 
     # Cone of influence (placeholder)
     coi = np.max(period) * np.ones_like(time_wv)  # Placeholder for COI calculation
@@ -268,7 +270,7 @@ def create_wavelet_plot(
     plt.grid(True, alpha=0.3)
 
     # Plot 4: Scale-average time series (bottom panel, 3/4 width)
-    ax4 = plt.subplot2grid((4, 4), (3, 0), colspan=3)
+    _ = plt.subplot2grid((4, 4), (3, 0), colspan=3)
     plt.plot(time_wv, scale_avg, "b-", linewidth=2)
     # Plot significance as horizontal line
     if np.isscalar(scaleavg_signif):
@@ -282,7 +284,11 @@ def create_wavelet_plot(
     plt.title("d) 2-8 yr Scale-average Time Series")
     plt.grid(True, alpha=0.3)
 
-    plt.show()
+    # Save figure to output directory and then show it (optionally)
+    output_path = os.path.join(save_dir, "wavelet_analysis_nino3_sst.png")
+    fig.savefig(output_path, dpi=300, facecolor="white")
+    if global_display:
+        plt.show()
 
 
 if __name__ == "__main__":
